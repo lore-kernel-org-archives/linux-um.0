@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CM0Rv-0004sf-IN for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2004 01:43:31 -0700
-Received: from pimout1-ext.prodigy.net ([207.115.63.77])
+	id 1CM0g4-0006TY-S7 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 01:58:08 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CM0Ru-00036q-OK for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2004 01:43:31 -0700
-From: Chris Wedgwood <cw@f00f.org>
-Message-ID: <20041025084308.GA19935@taniwha.stupidest.org>
-References: <20041012001759.317908695@zion.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20041012001759.317908695@zion.localdomain>
-Subject: [uml-devel] Re: [patch 07/10] uml: kbuild - add even more cleaning
+	id 1CM0g3-0004gw-2U for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 01:58:08 -0700
+Message-ID: <417CC1D7.7000605@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] What to send to Andrew next
+References: <200410220516.i9M5GwFL007932@ccure.user-mode-linux.org>
+	<200410221852.27232.blaisorblade_spam@yahoo.it>
+	<200410222128.i9MLSmWY005910@ccure.user-mode-linux.org>
+In-Reply-To: <200410222128.i9MLSmWY005910@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,17 +29,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 25 Oct 2004 01:43:08 -0700
-To: blaisorblade_spam@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 25 Oct 2004 11:05:27 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Oct 12, 2004 at 02:17:59AM +0200, blaisorblade_spam@yahoo.it wrote:
+Jeff Dike wrote:
+> blaisorblade_spam@yahoo.it said:
+> 
+>>1) FOR INSTANCE, I sent the patch avoiding SIGPROF being touched by
+>>change_signals(). Why did not you bother at it? 
+>>2) copy_from_user_skas() does not make sense. When accessing the page
+>>tables,  they would be happy to get some locking. If you want to take
+>>a look to the  4G-4G patch from Ingo Molnar, which must do something
+>>identical,  
+> 
+> 
+> Because I lost them, probably.  I'll go look for them.
+> 
+> 
+>>Well, yes, but let's try to be fast on these. They are very good
+>>patches and  fix also security problems. 
+> 
+> 
+> Yeah, syscall-security-* can go in now.  I want to see his test cases before
+> pushing the signal delivery stuff though.
+> 
+> 
+I'm working to integrate the bulk of tiny tests into a few more handy programs,
+they will be mailed as fast as possible.
 
->  MRPROPER_FILES += $(SYMLINK_HEADERS) $(ARCH_SYMLINKS) \
-> -	$(addprefix $(ARCH_DIR)/kernel/,$(KERN_SYMLINKS))
-> +	$(addprefix $(ARCH_DIR)/kernel/,$(KERN_SYMLINKS)) $(ARCH_DIR)/os
+On your list of incremental patches, there are still missing syscall-security-4
+and -5, which fix a bug and a incorrect interpretation in the previos patches.
+Is this intentionally?
 
-these sorts of rules don't work when doing "make O=build ARCH=um ..."
+And to close all holes I've seen so far, the TRACESYSGOOD patches are needed
+(Test-case included in breakout.c).
+
+Bodo
 
 
 -------------------------------------------------------
