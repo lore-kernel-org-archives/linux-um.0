@@ -2,25 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Adh7b-0007fJ-CR for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:39:07 -0800
+	id 1Adh82-0007gU-SQ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 18:39:34 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Adh7a-0000sa-JY
+	(Exim 4.30) id 1Adh82-00012Q-3I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:39:06 -0800
-Message-Id: <200401060258.i062wWFI023087@ccure.user-mode-linux.org>
-Subject: Re: Resolution (Re: [uml-devel] 2.4.22-[67] problems) 
-In-Reply-To: Your message of "Tue, 30 Dec 2003 10:43:30 PST."
-	<20031230184330.GD1365@alcor.net> 
-References: <20031220011323.GW18100@alcor.net>
-	<20031220171450.GB10692@ccure.user-mode-linux.org>
-	<20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
-	<20031228093317.GK17472@alcor.net>
-	<20031228095115.GL17472@alcor.net>
-	<20031228101240.GN17472@alcor.net>
-	<20031228113042.GO17472@alcor.net>
-	<20031230184330.GD1365@alcor.net> 
+	Mon, 05 Jan 2004 18:39:34 -0800
+Message-Id: <200401060258.i062wuFI023117@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4 
+In-Reply-To: Your message of "Tue, 30 Dec 2003 00:32:34 +0800."
+	<Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com> 
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -35,21 +28,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 05 Jan 2004 21:58:32 -0500
-To: Matt Zimmerman <mdz@debian.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org
+Date: Mon, 05 Jan 2004 21:58:56 -0500
+To: Jeff Chua <jchua@fedex.com>
+Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-mdz@debian.org said:
-> It turns out that this problem seems to be due to compiler
-> incompatibility. UML had been built with gcc 2.95 due to old breakage,
-> and when built with gcc 3.3 (as glibc is), everything starts working
-> again.  My suspicion is that this is due to certain recent changes in
-> pthreads.
+jchua@fedex.com said:
+> Starting daemons: syslogd klogd inetd namedKernel panic: Kernel mode
+> fault at addr 0x48965000, ip 0x400e51a4 
 
-Is it your opinion that there's no problem in UML itself?  Having a field
-in the sigcontext getting magically munged is somewhat worrying.  I'd be 
-happier knowing what exactly was happening so I can be sure this wasn't
-exposing some subtle UML bug.
+Can you get a stack trace from the panic?
 
 				Jeff
 
