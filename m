@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DEICi-00011F-1g for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:36:12 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DEICd-0002IJ-DU for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:36:11 -0800
+	id 1DEINY-0001mw-Qa for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 18:47:24 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DEINY-0006xl-4S for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 18:47:24 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
+References: <200503240335.15219.blaisorblade@yahoo.it>
+In-Reply-To: <200503240335.15219.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200503240335.15219.blaisorblade@yahoo.it>
-Subject: [uml-devel] SKAS-V8, UML/2.4.27-bs2-pre7 released,
+Message-Id: <200503240346.35907.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] SKAS-V8, UML/2.4.27-bs2-pre7 released,
 	start of work on SKAS/x86-64
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -28,21 +30,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Mar 2005 03:35:14 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 24 Mar 2005 03:46:33 +0100
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Ok, I've put on the site the announcements of SKAS-v8 (which is identical to 
--rc5, I just need to update the tarballs), of the test tree (very test) for 
-UML/2.4.
+On Thursday 24 March 2005 03:35, Blaisorblade wrote:
+> Ok, I've put on the site the announcements of SKAS-v8 (which is identical
+> to -rc5, I just need to update the tarballs), of the test tree (very test)
+> for UML/2.4.
+It does not compile with GCC 3.4, but from what I see no 2.4.27 tree will 
+compile with that GCC, even for i386: it is stricter on attributes like 
+regparm and thus on FASTCALL, so he refuses this:
 
-And, most important, of SKAS-v9-pre1 (for 2.6.11), which is the start towards 
-a SKAS version working on x86-64.
+static FASTCALL(void reschedule_idle(struct task_struct * p));
 
-The code is there, it still works well on x86, it compiles (or at least 
-should) on x86-64, and I hope it will work on x86-64. Last time I did the 
-port (which was a separate patch from the x86 one, so it was almost thrown 
-away; this time I've not done this error), the patch didn't work for don't 
-ask me which reasons... I hope this time I can debug it soon.
+static void reschedule_idle(struct task_struct * p)
+
+because it says they are different declarations.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
