@@ -2,31 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CJIw6-0003Az-JE for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Oct 2004 14:51:30 -0700
-Received: from main.gmane.org ([80.91.229.2])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CJIw5-00033T-2r for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Oct 2004 14:51:30 -0700
-Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1CJIw2-0004Vh-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 17 Oct 2004 23:51:26 +0200
-Received: from host-12-107-230-171.dtccom.net ([12.107.230.171])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 17 Oct 2004 23:51:26 +0200
-Received: from srivasta by host-12-107-230-171.dtccom.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 17 Oct 2004 23:51:26 +0200
-From: Manoj Srivastava <srivasta@ieee.org>
-Message-ID: <878ya5yu70.fsf@glaurung.internal.golden-gryphon.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] A recipe for building SELinux enabled UML kernsls and
-	Root FS
+	id 1CJZ7j-00010L-9A for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Oct 2004 08:08:35 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CJZ7i-0003OW-Cw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Oct 2004 08:08:35 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] core dumps and hostfs
+References: <8066.1097696719@marajade.sandelman.ottawa.on.ca>
+In-Reply-To: <8066.1097696719@marajade.sandelman.ottawa.on.ca>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200410171534.58416.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,36 +29,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 17 Oct 2004 15:18:43 -0500
+Date: Sun, 17 Oct 2004 15:34:58 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 
-Hi,
+On Wednesday 13 October 2004 21:45, Michael Richardson wrote:
+> I have a problem with core dumps under UML.
+> It seems that they don't work on hostfs. My guess is that there is
+> something in hostfs that doesn't return the right answer.
+>
+> fs/exec.c, do_coredump(long signr, struct pt_regs * regs) has the
+> following code:
+>
+> 	file = filp_open(corename, O_CREAT | 2 | O_NOFOLLOW, 0600);
+> 	if (IS_ERR(file))
+> 		goto fail;
+> 	inode = file->f_dentry->d_inode;
+> %	if (inode->i_nlink > 1)
+> %		goto close_fail;	/* multiple links - don't dump */
+> 	if (d_unhashed(file->f_dentry))
+> 		goto close_fail;
+>
+> 	if (!S_ISREG(inode->i_mode))
+> 		goto close_fail;
+> 	if (!file->f_op)
+> 		goto close_fail;
+> 	if (!file->f_op->write)
+> 		goto close_fail;
+> 	if (do_truncate(file->f_dentry, 0) != 0)
+> 		goto close_fail;
+>
+> 	retval = binfmt->core_dump(signr, regs, file);
+>
+> Note that since the file gets created, I looked carefully at what
+> happens, and finally I noticed that the file has multiple hard links!
+>
+> As such that would cause the test at (%) to fail. Look below to
+> EXPERIMENT.
+>
+> Does this make any sense to anyone?
+> I did not have this problem with 2.4.19-47.
+I think this will not appear with UML versions until 2.4.24-1um included. In 
+fact, I'm going to release (don't know when) some 2.4 patches without all the 
+hostfs changes, to make it more stable. I'm not seeing, for now, where does 
+this come from, but I do not expect the "rewritten" hostfs to work (nor does 
+Jeff, for now).
 
-        I was trying to set up a UML guest that would be able to run
- SELinux, and I discovered that there were no pre-packaged solutions
- out there. Not only that, I found that I had to struggle quite a bit
- to put something like that together -- and I am not quite a kernel
- compilation newbie.
-
-	I have put together a recipe page (not quite a HOWTO, of
- which there are several excellent examples out there) at 
- <URL:http://www.golden-gryphon.com/software/security/selinux-uml.xhtml>
- This is not a general HOWTO document, it is instead a step by step
- procedure that can be followed to generate a SELinux capable UML.
-
-	The root_fs generation step is Debian specific, but there rest
- of it should be distribution agnostic.
-
-	Hope this helps.
-
-	manoj
+Thanks for the plenty of details, I'll use them later, when debugging this.
 -- 
-Actual war is a very messy business.  Very, very messy business. Kirk,
-"A Taste of Armageddon", stardate 3193.0
-Manoj Srivastava     <srivasta@acm.org>    <http://www.golden-gryphon.com/>
-1024D/BF24424C print 4966 F272 D093 B493 410B  924B 21BA DABB BF24 424C
-
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
