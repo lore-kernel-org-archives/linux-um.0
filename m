@@ -2,19 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CU3wS-0000M7-RK for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Nov 2004 06:04:20 -0800
-Received: from ppsw-0.csi.cam.ac.uk ([131.111.8.130])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CU3wR-00064b-MW for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Nov 2004 06:04:20 -0800
-From: Anton Altaparmakov <aia21@cam.ac.uk>
-Content-Type: text/plain
-Message-Id: <1100613788.24599.45.camel@imp.csi.cam.ac.uk>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] And another bug report for UML in latest Linux 2.6-BK
-	repository.
+	id 1CU5WA-000758-D3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 07:45:18 -0800
+Received: from [217.204.41.189] (helo=kula.newsnow.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CU5W6-0001S0-5r
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 07:45:18 -0800
+Message-ID: <419A205F.7000107@praguespringpeople.org>
+From: Struan Bartlett <struan@praguespringpeople.org>
+MIME-Version: 1.0
+Subject: uml-patch-2.4.27-1 not fixed Re: [uml-devel] 2.4.27 guest bug
+	reconfirmed Re bug report [ 745826 ] run cat /dev/urandom
+References: <418E5CA1.90308@praguespringpeople.org>
+	<419737C6.3060904@praguespringpeople.org>
+	<200411151821.11779.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411151821.11779.blaisorblade_spam@yahoo.it>
+Content-Type: multipart/alternative;
+	boundary="------------030505070502050101040901"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,56 +31,164 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Nov 2004 14:03:09 +0000
-To: jdike@karaya.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, lkml <linux-kernel@vger.kernel.org>
+Date: Tue, 16 Nov 2004 16:44:31 +0100
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-With my .config (quoted in my first bug report), just disabling SKAS
-mode, makes UML compile but not work at all.  It goes like this before
-it locks up:
+This is a multi-part message in MIME format.
+--------------030505070502050101040901
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-linux umid=uml0 mem=256m ubd0=ubd0 ubd1=/usr/src/ntfs_hdd10
-eth0=tuntap,uml0,fe:fd:dd:f8:a6:4e ssl=none con=xterm
-xterm=gnome-terminal,-t,-x root=/dev/ubda1
-Set 'uml0' persistent and owned by uid 29847
-Starting uml...
-Checking PROT_EXEC mmap in /tmp...OK
-Kernel virtual memory size shrunk to 243269632 bytes
-tracing thread pid = 29367
-Linux version 2.6.10-rc2 (aia21@imp) (gcc version 3.3.4 (pre 3.3.5
-20040809)) #1 Tue Nov 16 13:59:36 GMT 2004
-Built 1 zonelists
-Kernel command line: mem=256m ubd0=ubd0 ubd1=/usr/src/ntfs_hdd10
-eth0=tuntap,uml0,fe:fd:dd:f8:a6:4e ssl=none con=xterm root=/dev/ubda1
-PID hash table entries: 2048 (order: 11, 32768 bytes)
-Dentry cache hash table entries: 65536 (order: 6, 262144 bytes)
-Inode-cache hash table entries: 32768 (order: 5, 131072 bytes)
-Memory: 254592k available
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-Checking for host processor cmov support...Yes
-Checking for host processor xmm support...No
-Checking that ptrace can change system call numbers...OK
-Checking syscall emulation patch for ptrace...check_ptrace : child
-exited with exitcode 1, while expecting 0; status 0x100
-missing
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-Checking for /dev/anon on the host...Not available (open failed with
-errno 2)
-NET: Registered protocol family 16
-sleeping process 29410 got unexpected signal : 11
+I've compiled and ran the test (below) on a virgin 2.4.27 kernel patched 
+with uml-patch-2.4.27-1.bz2.
 
-I now have to press Ctrl+C to get back to my shell.
+Result: the bug is still readily reproducible and _is not fixed_ in this 
+patch.
 
-Best regards,
+P.S. Jeff Dike: if CONFIG_NETFILTER=y is set in .config, the patched 
+kernel fails to compile.
 
-	Anton
--- 
-Anton Altaparmakov <aia21 at cam.ac.uk> (replace at with @)
-Unix Support, Computing Service, University of Cambridge, CB2 3QH, UK
-Linux NTFS maintainer / IRC: #ntfs on irc.freenode.net
-WWW: http://linux-ntfs.sf.net/, http://www-stu.christs.cam.ac.uk/~aia21/
+Blaisorblade wrote:
 
+>On Sunday 14 November 2004 11:47, Struan Bartlett wrote:
+>  
+>
+>>I've now tested for this bug using a simplified methodology on the
+>>latest patched-versions of the host (2.4.27 and 2.6.8) and guest (2.4.27
+>>and 2.6.9).
+>>    
+>>
+>>_New methodology_
+>>    
+>>
+>>My Debian guest system raises two xterms at startup. On each I log in as
+>>root. On one, I enter:
+>>    
+>>
+>>while true; do echo >/dev/null; done
+>>    
+>>
+>>On the second, I enter:
+>>    
+>>
+>>cat /dev/urandom
+>>    
+>>
+>>The devastating symptom: within 5 seconds the guest kernel has paniced
+>>and exited with the message (below) "kernel BUG at sched.c:564!".
+>>
+>>_Findings_
+>>    
+>>
+>>guest 2.4.27: patched with uml-2.4.27-bs1.patch and
+>>uml-patch-2.4.24-1base.patch - no change; this bug is readily
+>>reproducible and so IS NOT FIXED, regardless of whether the guest is run
+>>on host 2.4.27 or 2.6.8
+>>    
+>>
+>>_Conclusion_
+>>
+>>If such a simple pair of commands as this causes such devastating
+>>consequences, it seems the 2.4.27 kernel sched.c line 564 needs to be
+>>taken a look at - unless, that is, Jeff Dike's recent post about
+>>uml-patch-2.4.27-1 "a nasty scheduler race fixed" addresses this bug.
+>>    
+>>
+>I may be wrong, but I think I should have picked that patch into 2.4.27-bs1.
+>
+>I'll take a look at your report - there is one patch applied on 2.6 that 
+>seemed unneeded on 2.4 until now - this may be reconsidered...
+>  
+>
+
+
+--------------030505070502050101040901
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-15"
+ http-equiv="Content-Type">
+  <title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+I've compiled and ran the test (below) on a virgin 2.4.27 kernel
+patched with uml-patch-2.4.27-1.bz2.<br>
+<br>
+Result: the bug is still readily reproducible and <u>is not fixed</u>
+in this patch.<br>
+<br>
+P.S. Jeff Dike: if CONFIG_NETFILTER=y is set in .config, the patched
+kernel fails to compile.<br>
+<br>
+Blaisorblade wrote:
+<blockquote cite="mid200411151821.11779.blaisorblade_spam@yahoo.it"
+ type="cite">
+  <pre wrap="">On Sunday 14 November 2004 11:47, Struan Bartlett wrote:
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">I've now tested for this bug using a simplified methodology on the
+latest patched-versions of the host (2.4.27 and 2.6.8) and guest (2.4.27
+and 2.6.9).
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">_New methodology_
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">My Debian guest system raises two xterms at startup. On each I log in as
+root. On one, I enter:
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">while true; do echo &gt;/dev/null; done
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">On the second, I enter:
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">cat /dev/urandom
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">The devastating symptom: within 5 seconds the guest kernel has paniced
+and exited with the message (below) "kernel BUG at sched.c:564!".
+
+_Findings_
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">guest 2.4.27: patched with uml-2.4.27-bs1.patch and
+uml-patch-2.4.24-1base.patch - no change; this bug is readily
+reproducible and so IS NOT FIXED, regardless of whether the guest is run
+on host 2.4.27 or 2.6.8
+    </pre>
+  </blockquote>
+  <blockquote type="cite">
+    <pre wrap="">_Conclusion_
+
+If such a simple pair of commands as this causes such devastating
+consequences, it seems the 2.4.27 kernel sched.c line 564 needs to be
+taken a look at - unless, that is, Jeff Dike's recent post about
+uml-patch-2.4.27-1 "a nasty scheduler race fixed" addresses this bug.
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->I may be wrong, but I think I should have picked that patch into 2.4.27-bs1.</pre>
+  <pre wrap="">I'll take a look at your report - there is one patch applied on 2.6 that 
+seemed unneeded on 2.4 until now - this may be reconsidered...
+  </pre>
+</blockquote>
+<br>
+</body>
+</html>
+
+--------------030505070502050101040901--
 
 
 -------------------------------------------------------
