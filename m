@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AzG2i-0008GO-Ho for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Mar 2004 06:11:12 -0800
-Received: from grassmarket.ucs.ed.ac.uk ([129.215.166.64])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AzFU3-0001Zh-8F for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Mar 2004 05:35:23 -0800
-Message-ID: <4048871F.4080400@sms.ed.ac.uk>
-From: Jonathan Boler <j.m.boler@sms.ed.ac.uk>
+	id 1Azw4s-00064Z-TV for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 Mar 2004 03:04:14 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Azvpe-0000tT-P3 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 Mar 2004 02:48:30 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
+	<200403040216.i242G1Wo009026@ccure.user-mode-linux.org>
+	<Pine.LNX.4.58.0403041007440.24549@boston.corp.fedex.com>
+In-Reply-To: <Pine.LNX.4.58.0403041007440.24549@boston.corp.fedex.com>
 MIME-Version: 1.0
-References: <20040305100144.E26293@almesberger.net>
-In-Reply-To: <20040305100144.E26293@almesberger.net>
-Content-Type: multipart/mixed; boundary="------------080902000808090309060806"
-Subject: [uml-devel] Re: [uml-user] hack: avoid "Registered protocol family 2"
-	hang
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200403071154.07717.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,62 +29,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 05 Mar 2004 13:56:47 +0000
-To: Werner Almesberger <werner@almesberger.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 7 Mar 2004 11:54:07 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
+Alle 03:19, gioved=EC 4 marzo 2004, Jeff Chua ha scritto:
+> I'm on 2.6.3 and uml-patch-2.6.3-rc2 + 00-2.6.2-v1-host-SKAS2 no longer
+> has this problem.
 
-This is a multi-part message in MIME format.
---------------080902000808090309060806
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Better: it does not *yet* have it. That came from a patch in 2.4 not put in=
+=20
+2.6 that fixed the Oops on cat /dev/kmem. In the new patch that has been=20
+replaced.
 
-Werner Almesberger wrote:
-> I've attached a little hack that should make the hang after
-> NET: Registered protocol family 2
-> disappear. This isn't the real solution (haven't yet figured
-> out how this is truly supposed to work on non-SMP), but it 
-> gives me a happier UML :-)
-> 
-> - Werner
-> 
+However, I am *sure* that this is the same thing: indeed, when I said "some=
+one=20
+had problems" I referred to exactly *this* ones.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-The actual bug has been fixed. The problem was the host cpu Hz was being 
-truncated to a signed int so uml wouldn't run on a host faster than 2.1Ghz.
-
-Patch attached
-
-Jonathan
-
---------------080902000808090309060806
-Content-Type: text/plain;
- name="hz.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="hz.patch"
-
---- arch/um/kernel/time.c       2004-03-05 13:54:12.262248632 +0000
-+++ ../../linux-2.6.3/arch/um/kernel/time.c     2004-03-04 08:54:33.000000000 +0000
-@@ -88,7 +88,8 @@
- static unsigned long long get_host_hz(void)
- {
-        char mhzline[16], *end;
--       int ret, mult, mhz, rest, len;
-+       int ret, mult, rest, len;
-+       unsigned long long mhz;
- 
-        ret = cpu_feature("cpu MHz", mhzline, 
-                          sizeof(mhzline) / sizeof(mhzline[0]));
-
-
---------------080902000808090309060806--
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
