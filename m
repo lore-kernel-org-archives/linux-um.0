@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CHV5r-0005bN-KE for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Oct 2004 15:26:07 -0700
+	id 1CHV5V-0005XK-PO for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Oct 2004 15:25:45 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CHV5n-0005Mh-Tp
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CHV5T-0002sz-Te
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Oct 2004 15:26:07 -0700
-Message-Id: <200410122334.i9CNYE3P004286@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Panic while core dumping in tt-mode 
-In-Reply-To: Your message of "Thu, 07 Oct 2004 18:13:37 +0200."
-	<8B6FF516CBA0194AB0996705076B02520F7C52@ABGEX01E.abg.fsc.net> 
-References: <8B6FF516CBA0194AB0996705076B02520F7C52@ABGEX01E.abg.fsc.net> 
+	Tue, 12 Oct 2004 15:25:45 -0700
+Message-Id: <200410122333.i9CNXq3P004254@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Kernel panic "read of switch_pipe failed" in 2.6.8.1 
+In-Reply-To: Your message of "Sat, 09 Oct 2004 20:41:56 EDT."
+	<lars-37F7DA.20415609102004@sea.gmane.org> 
+References: <lars-37F7DA.20415609102004@sea.gmane.org> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,27 +28,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Oct 2004 19:34:14 -0400
-To: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Tue, 12 Oct 2004 19:33:52 -0400
+To: Lars Kellogg-Stedman <lars@oddbit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Bodo.Stroesser@fujitsu-siemens.com said:
-> No, silly speculation! The real reason is, that in signal delivery no
-> fp-status is written and the pointer to the fp-status in the
-> signalcontext is set to NULL, if a thread had never used the fp-regs.
-> Easy to fix that, but what with the other issues: - In skas fpregs
-> never are dumped. (Instead random data is written
->   to core) - dumping the register sets of other threads running in the
-> same
->   thread group and mm is not supported - fpxregs are not dumped. They
-> could be dumped "if (have_fpx_regs)"
->   (from arch/um/os-Linux/sys-i386/registers.c) Should I try a fix?
-> Does it make sense to fix all this? 
+lars@oddbit.com said:
+> I'm occasionally seeing the following during the UML boot process:
+>   Kernel panic: read of switch_pipe failed, errno = 9 
 
-It does.  I just haven't bothered because no one has complained about it and
-the fp stuff is ugly.
+What's the full output?
+
+This has happened once or twice before, and the cause was something closing
+the wrong file descriptor.
 
 				Jeff
+
 
 
 -------------------------------------------------------
