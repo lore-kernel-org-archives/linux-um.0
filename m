@@ -1,19 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bpr6u-0000PO-Tq for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jul 2004 09:16:56 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1Bpr6u-0005DY-Ek
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jul 2004 09:16:56 -0700
-Message-Id: <200407281714.i6SHEkeh002948@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] [UM] remove a group of unused bh functions 
-In-Reply-To: Your message of "Wed, 28 Jul 2004 18:29:27 +0800."
-	<41078007.5000802@greatcn.org> 
-References: <41078007.5000802@greatcn.org> 
+	id 1BprDi-0002Gk-KK for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Jul 2004 09:23:58 -0700
+Message-Id: <200407281722.i6SHM6eh002963@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: Bug#260111: user-mode-linux: upgrade hangs at
+	"NET4: Linux TCP/IP 1.0 for NET4.0 " 
+In-Reply-To: Your message of "Wed, 28 Jul 2004 03:15:02 EDT."
+	<200407280315.08207.alydar@users.sourceforge.net> 
+References: <200407280315.08207.alydar@users.sourceforge.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,15 +24,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Jul 2004 13:14:46 -0400
-To: Coywolf Qi Hunt <coywolf@greatcn.org>
-Cc: akpm@osdl.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 28 Jul 2004 13:22:06 -0400
+To: Allen Chan <alydar@users.sourceforge.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 260111@bugs.debian.org
 
-coywolf@greatcn.org said:
-> This patch removes a group of unused bh functions in um. This 2.2
-> legacy code should be cleaned up. 
+alydar@users.sourceforge.net said:
+> #2  0xa014f091 in cpu_idle () at process_kern.c:212 
+> #3  0xa000f635 in rest_init () at init/main.c:364
+> #4  0xa00025e6 in start_kernel () at init/main.c:458
 
-Applied to my tree, thanks.
+This is the problem stack.  One of the init functions is tripping over a
+semaphore, and no one has been able to tell me which init function it is
+or which semaphore.  Although the down isn't showing in this stack, which is
+a bit confusing.
 
 				Jeff
 
