@@ -1,27 +1,35 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CtOiH-00072w-VQ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Jan 2005 03:18:25 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CtOiG-00021n-C6
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Jan 2005 03:18:25 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] SIGSEGV and SA_NODEFER
-References: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
-	<20050125084506.GA562@bytesex>
-	<200501251116.18892.blaisorblade@yahoo.it>
-In-Reply-To: <200501251116.18892.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	id 1CtkJy-0001jR-U9 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Jan 2005 02:22:46 -0800
+Received: from main.gmane.org ([80.91.229.2])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CtkJy-0006xS-4K for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Jan 2005 02:22:46 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CtkJv-0000mh-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 26 Jan 2005 11:22:43 +0100
+Received: from dsl-082-082-127-166.arcor-ip.net ([82.82.127.166])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 26 Jan 2005 11:22:43 +0100
+Received: from skoehler by dsl-082-082-127-166.arcor-ip.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 26 Jan 2005 11:22:43 +0100
+From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
+Message-ID: <ct7r17$cqj$1@sea.gmane.org>
+References: <41F54FE9.7060503@better.se>
+	<200501242113.16569.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <200501250516.39648.rob@landley.net>
+In-Reply-To: <200501242113.16569.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: skas3 patch breaks ATI video drivers
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,51 +41,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Jan 2005 05:16:39 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 26 Jan 2005 11:24:50 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 25 January 2005 05:16 am, Blaisorblade wrote:
-> > > > I'm using stdin/stdout as the console.  (And even though you put it
-> > > > into raw mode, I still can't ctrl-c out of the processs I'm running,
-> > > > either.)
-> >
-> > Hmm, ^C works perfectly fine for me.  Usually I work with a virtual
-> > serial line as console ("console=ttyS0 ssl0=fd:0,fd:1 con=pts"), works
-> > better than the uml console as applications don't expect the linux vt
-> > ioctls work on these devices ;)
->
-> About this, Rob: do you use /dev/console in the inittab line? If you do,
-> then that's the problem - it should become a FAQ somewhere I guess.
+> I.e. the compilation problem is not in the kernel module, right? In this case, 
+> the problem is that you have /usr/include/asm symlinked to your kernel's 
+> include/asm-i386 directory, which is the wrong setup. However your solution 
+> should not give any problem.
 
-I'm not using init, I'm running my script as init.  So I'd guess it's 
-using /dev/console, yes.
+Kernel-Modules are usually compiled against the sources in either 
+/usr/src/linux or /lib/modules/<version>/build.
 
-I know that /dev/console is funky.  That's why I want the option to let ctrl-c 
-kill the whole vmlinux instance.  (Possibly as a command line option.)  I'll 
-look into that later...
+Take a look at the nvidia-kernel ebuild or other ebuilds that build 
+kernel modules. It would be fatal to compile them against the headers in 
+/usr/include. On Gentoo, you can have linux26-headers-2.6.7 installed, 
+but actually be running a 2.6.10 Kernel - and even worse, it is even 
+possible to keep 2.4 headers when running a 2.6 kernel.
 
-> > I'm still at 2.6.10 + patches though, not yet at 2.6.11-rc2.
-> >
-> > > However, I'm not sure that patch is at fault... there is a locking
-> > > problem which *could* maybe be responsible of this...; I actually
-> > > wonder about why this locking problem has never shown up in reports or
-> > > in testing (it exists, only it's a race condition)... there is a
-> > > situation where it shows up with a side effect, indeed, so the problem
-> > > exists...
-> >
-> > Heavy swapping (see other mail) and thus some stuff running _very_ slow
-> > might open such race windows wide enougth that one actually hits them.
->
-> Yes, my only doubt was that he seemed to mean that the guest was swapping,
-> and *this* different situation would have the opposite effect, probably.
-
-Host is swapping, client configured without even support for swap.  (If I can 
-get the darn client vmlinux down to 1 megabyte, I'd be thrilled.  Didn't 
-somebody once make the entire block layer configurable out once?  With 
-hostfs, I don't need it...)
-
-Rob
 
 
 -------------------------------------------------------
