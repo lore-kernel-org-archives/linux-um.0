@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CQJkv-0003n6-2Q for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 22:08:57 -0800
-Received: from adsl-b5-232-218.telepac.pt ([82.154.232.218]
-	helo=puma-vgertech.no-ip.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CQJkt-0000LG-Cs for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 22:08:56 -0800
-Message-ID: <418C6A72.4080807@vgertech.com>
-From: Nuno Silva <nuno.silva@vgertech.com>
+	id 1CQQu9-0004Ze-QZ for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 06 Nov 2004 05:46:57 -0800
+Received: from [217.204.41.189] (helo=kula.newsnow.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CQQu9-0003fD-65
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 06 Nov 2004 05:46:57 -0800
+Received: from r3bh172.chello.upc.cz ([213.220.251.172] helo=[192.168.2.10])
+	by kula.newsnow.net with esmtp (Exim 3.35 #1 (Debian))
+	id 1CQQu6-0004nw-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 06 Nov 2004 13:46:54 +0000
+Message-ID: <418CD5CD.2060504@praguespringpeople.org>
+From: Struan Bartlett <struan@praguespringpeople.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Fighting latency
-References: <20041104155015.GA29182@gandalf.intern.marcant.net>
-	<200411050044.59629.blaisorblade_spam@yahoo.it>
-	<418AEB71.1090005@vgertech.com>
-	<200411052038.15491.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200411052038.15491.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] con0=pty '/dev/ttpy0: device or resource busy' bug?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,40 +31,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 06 Nov 2004 06:08:50 +0000
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, nils toedtmann <user-mode-linux-devel@nils.toedtmann.net>
+Date: Sat, 06 Nov 2004 14:46:53 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
->>Maybe having the linux binary in a ramfs will work better?
-> 
-> Wise idea! But you forgot the UML "RAM" from $TMPDIR.
+My thanks to everyone who's contributed to UML - it is a wonderfully useful
+thing.
 
-No i didn't :-) And i advise against it because of the problems that you 
-point out below (OOM). Anyway, if the data is frequently used it won't 
-be sent to swap... If you only touch that data once every 5 minutes and 
-you have some memory pressure you may get a bigger latency.
+I need to run uml xterm-free and tty-free so 'm running uml with:
 
-If you must have fast-as-it-gets memory access making several UBDs, one 
-of them very small in ramfs, may be better, YMMV.
+# linux con=pty
 
-...
+When I disconnect 'minicom' from /dev/ttyp0 and reconnect, minicom says:
 
->>You can also do some creative mount --bind, to mount only one ramfs
->>instance, if you have many UMLs running.
-> 
-> Not needed I think - use different names for UML binaries as needed. It will 
-> pickup a good name for the RAM file.
+# minicom
+minicom: cannot open /dev/ttyp0: Device or resource busy
 
-I was thinking about chroot environments. And saving some MB by using 
-the same binary - living in ramfs - to run many UMLs.
+When I disconnect 'minicom' from /dev/ttyp1 or /dev/ttyp2 and reconnect, minicom connects just fine.
 
-Regarding double-cacheing you may try NFS or directIO (with directIO the 
-guest can create disk I/O even if it's not needed and ruin the host's 
-I/O performance). Again, YMMV.
+Is this a known bug?
 
-Thanks,
-Nuno Silva
+Regards,
+
+Struan Bartlett
+
+
 
 
 -------------------------------------------------------
