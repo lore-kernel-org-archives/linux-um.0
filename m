@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9BMc-0002Dq-1q for user-mode-linux-devel@lists.sourceforge.net;
+	id 1D9BMc-0002Dr-7J for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 09 Mar 2005 16:17:18 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D9BMZ-0004JL-Ib for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 16:17:17 -0800
-Message-Id: <200503100215.j2A2FpDN015222@ccure.user-mode-linux.org>
+	id 1D9BMZ-0004JV-Jf for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 16:17:18 -0800
+Message-Id: <200503100216.j2A2GnDN015254@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/9] UML - ptrace interface cleanup
+Subject: [uml-devel] [PATCH 8/9] UML - Consolidate tlb flushing code
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,783 +24,1046 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 09 Mar 2005 21:15:51 -0500
+Date: Wed, 09 Mar 2005 21:16:49 -0500
 To: torvalds@osdl.org
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From Bodo Stroesser, mostly:
-Gets rid of all inclusions of {sys,linux,asm}/ptrace.h since their effects
-and contents are somewhat distro- and architecture-dependent.  
-arch/um/sysdep/ptrace_user is now responsible for providing the system's
-ptrace interfaces to UML.
-As such, it is a purely userspace header, and this exposed a couple of
-places where kernel files were including it.  One of them needed 
-MAX_REG_OFFSET, so this was provided by adding a new generated header,
-user-constants.h, which includes this.
-Also, changed PTRACE_{PEEK,POKE}_USER to _USR since that seems to be more
-standard.
+This patch merges now-identical page table walking and flushing code that
+had been duplicated in skas and tt modes.  The differences had been the
+low-level address space updating operations, which are now abstracted away
+in the respective do_ops functions.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-InIndex: linux-2.6.11/arch/um/Makefile
+Index: linux-2.6.11/arch/um/include/tlb.h
 ===================================================================
---- linux-2.6.11.orig/arch/um/Makefile	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/Makefile	2005-03-08 20:23:17.000000000 -0500
-@@ -182,13 +182,18 @@
- $(ARCH_DIR)/include/task.h: $(ARCH_DIR)/util/mk_task
- 	$(call filechk,gen_header)
+--- linux-2.6.11.orig/arch/um/include/tlb.h	2005-03-08 22:25:56.000000000 -0500
++++ linux-2.6.11/arch/um/include/tlb.h	2005-03-09 17:21:33.000000000 -0500
+@@ -36,6 +36,11 @@
  
-+$(ARCH_DIR)/include/user_constants.h: $(ARCH_DIR)/os/util/mk_user_constants
-+	$(call filechk,gen_header)
-+
- $(ARCH_DIR)/include/kern_constants.h: $(ARCH_DIR)/util/mk_constants
- 	$(call filechk,gen_header)
+ extern void mprotect_kernel_vm(int w);
+ extern void force_flush_all(void);
++extern void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
++			     unsigned long end_addr, int force, int data,
++			     void (*do_ops)(int, struct host_vm_op *, int));
++extern int flush_tlb_kernel_range_common(unsigned long start, 
++					 unsigned long end);
  
- $(ARCH_DIR)/include/skas_ptregs.h: $(ARCH_DIR)/kernel/skas/util/mk_ptregs
- 	$(call filechk,gen_header)
- 
--$(ARCH_DIR)/util/mk_task $(ARCH_DIR)/util/mk_constants: $(ARCH_DIR)/util \
-+$(ARCH_DIR)/os/util/mk_user_constants: $(ARCH_DIR)/os/util FORCE ;
-+
-+$(ARCH_DIR)/util/mk_task $(ARCH_DIR)/util/mk_constants: $(ARCH_DIR)/include/user_constants.h $(ARCH_DIR)/util \
- 	FORCE ;
- 
- $(ARCH_DIR)/kernel/skas/util/mk_ptregs: $(ARCH_DIR)/kernel/skas/util FORCE ;
-@@ -199,4 +204,7 @@
- $(ARCH_DIR)/kernel/skas/util: scripts_basic FORCE
- 	$(Q)$(MAKE) $(build)=$@
- 
-+$(ARCH_DIR)/os/util: scripts_basic FORCE
-+	$(Q)$(MAKE) $(build)=$@
-+
- export SUBARCH USER_CFLAGS OS
-Index: linux-2.6.11/arch/um/include/registers.h
+ extern int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+ 		    int r, int w, int x, struct host_vm_op *ops, int index, 
+Index: linux-2.6.11/arch/um/include/um_mmu.h
 ===================================================================
---- linux-2.6.11.orig/arch/um/include/registers.h	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/include/registers.h	2005-03-08 20:23:17.000000000 -0500
-@@ -9,6 +9,8 @@
- #include "sysdep/ptrace.h"
+--- linux-2.6.11.orig/arch/um/include/um_mmu.h	2005-03-08 20:17:35.000000000 -0500
++++ linux-2.6.11/arch/um/include/um_mmu.h	2005-03-09 09:19:18.000000000 -0500
+@@ -6,22 +6,22 @@
+ #ifndef __ARCH_UM_MMU_H
+ #define __ARCH_UM_MMU_H
  
- extern void init_thread_registers(union uml_pt_regs *to);
-+extern int save_fp_registers(int pid, unsigned long *fp_regs);
-+extern int restore_fp_registers(int pid, unsigned long *fp_regs);
- extern void save_registers(int pid, union uml_pt_regs *regs);
- extern void restore_registers(int pid, union uml_pt_regs *regs);
- extern void init_registers(int pid);
-Index: linux-2.6.11/arch/um/include/sysdep-i386/ptrace.h
-===================================================================
---- linux-2.6.11.orig/arch/um/include/sysdep-i386/ptrace.h	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/include/sysdep-i386/ptrace.h	2005-03-08 20:24:49.000000000 -0500
-@@ -7,6 +7,7 @@
- #define __SYSDEP_I386_PTRACE_H
- 
- #include "uml-config.h"
-+#include "user_constants.h"
- 
- #ifdef UML_CONFIG_MODE_TT
- #include "sysdep/sc.h"
-@@ -14,6 +15,9 @@
- 
- #ifdef UML_CONFIG_MODE_SKAS
- 
-+#define MAX_REG_NR (UM_FRAME_SIZE / sizeof(unsigned long))
-+#define MAX_REG_OFFSET (UM_FRAME_SIZE)
-+
- /* syscall emulation path in ptrace */
- 
- #ifndef PTRACE_SYSEMU
-@@ -26,7 +30,7 @@
- 
- #include "skas_ptregs.h"
- 
--#define HOST_FRAME_SIZE 17
-+extern void update_debugregs(int seq);
- 
- #define REGS_IP(r) ((r)[HOST_IP])
- #define REGS_SP(r) ((r)[HOST_SP])
-Index: linux-2.6.11/arch/um/include/sysdep-i386/ptrace_user.h
-===================================================================
---- linux-2.6.11.orig/arch/um/include/sysdep-i386/ptrace_user.h	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/include/sysdep-i386/ptrace_user.h	2005-03-08 20:31:37.000000000 -0500
-@@ -6,6 +6,8 @@
- #ifndef __SYSDEP_I386_PTRACE_USER_H__
- #define __SYSDEP_I386_PTRACE_USER_H__
- 
-+#include <sys/ptrace.h>
-+#include <linux/ptrace.h>
- #include <asm/ptrace.h>
- 
- #define PT_OFFSET(r) ((r) * sizeof(long))
-@@ -33,9 +35,6 @@
- #define FP_FRAME_SIZE (27)
- #define FPX_FRAME_SIZE (128)
- 
--#define MAX_REG_OFFSET (FRAME_SIZE_OFFSET)
--#define MAX_REG_NR (FRAME_SIZE)
--
- #ifdef PTRACE_GETREGS
- #define UM_HAVE_GETREGS
- #endif
-@@ -60,6 +59,4 @@
- #define UM_HAVE_SETFPXREGS
- #endif
- 
--extern void update_debugregs(int seq);
--
- #endif
-Index: linux-2.6.11/arch/um/include/sysdep-x86_64/ptrace.h
-===================================================================
---- linux-2.6.11.orig/arch/um/include/sysdep-x86_64/ptrace.h	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/include/sysdep-x86_64/ptrace.h	2005-03-08 20:25:54.000000000 -0500
-@@ -8,6 +8,7 @@
- #define __SYSDEP_X86_64_PTRACE_H
- 
- #include "uml-config.h"
-+#include "user_constants.h"
- 
- #ifdef UML_CONFIG_MODE_TT
- #include "sysdep/sc.h"
-@@ -16,6 +17,9 @@
- #ifdef UML_CONFIG_MODE_SKAS
- #include "skas_ptregs.h"
- 
-+#define MAX_REG_OFFSET (UM_FRAME_SIZE)
-+#define MAX_REG_NR ((MAX_REG_OFFSET) / sizeof(unsigned long))
-+
- #define REGS_IP(r) ((r)[HOST_IP])
- #define REGS_SP(r) ((r)[HOST_SP])
- 
-Index: linux-2.6.11/arch/um/include/sysdep-x86_64/ptrace_user.h
-===================================================================
---- linux-2.6.11.orig/arch/um/include/sysdep-x86_64/ptrace_user.h	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/include/sysdep-x86_64/ptrace_user.h	2005-03-08 20:23:17.000000000 -0500
-@@ -8,6 +8,8 @@
- #define __SYSDEP_X86_64_PTRACE_USER_H__
- 
- #define __FRAME_OFFSETS
-+#include <sys/ptrace.h>
-+#include <linux/ptrace.h>
- #include <asm/ptrace.h>
- #undef __FRAME_OFFSETS
- 
-@@ -45,9 +47,6 @@
- #define PT_ORIG_RAX_OFFSET (ORIG_RAX)
- #define PT_ORIG_RAX(regs) ((regs)[PT_INDEX(ORIG_RAX)])
- 
--#define MAX_REG_OFFSET (FRAME_SIZE)
--#define MAX_REG_NR ((MAX_REG_OFFSET) / sizeof(unsigned long))
--
- /* x86_64 FC3 doesn't define this in /usr/include/linux/ptrace.h even though
-  * it's defined in the kernel's include/linux/ptrace.h. Additionally, use the
-  * 2.4 name and value for 2.4 host compatibility.
-Index: linux-2.6.11/arch/um/kernel/process.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/process.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/process.c	2005-03-08 20:35:04.000000000 -0500
-@@ -12,11 +12,6 @@
- #include <stdlib.h>
- #include <setjmp.h>
- #include <sys/time.h>
--#include <sys/ptrace.h>
--
--/*Userspace header, must be after sys/ptrace.h, and both must be included. */
--#include <linux/ptrace.h>
--
- #include <sys/wait.h>
- #include <sys/mman.h>
- #include <asm/unistd.h>
-@@ -28,7 +23,6 @@
- #include "signal_kern.h"
- #include "signal_user.h"
- #include "sysdep/ptrace.h"
--#include "sysdep/ptrace_user.h"
- #include "sysdep/sigcontext.h"
- #include "irq_user.h"
- #include "ptrace_user.h"
-@@ -36,6 +30,7 @@
- #include "init.h"
- #include "os.h"
- #include "uml-config.h"
-+#include "ptrace_user.h"
+-#include "linux/config.h"
++#include "uml-config.h"
  #include "choose-mode.h"
- #include "mode.h"
- #ifdef UML_CONFIG_MODE_SKAS
-@@ -259,7 +254,7 @@
- 		panic("check_sysemu : expected SIGTRAP, "
- 		      "got status = %d", status);
  
--	n = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET,
-+	n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET,
- 		   os_getpid());
- 	if(n < 0)
- 		panic("check_sysemu : failed to modify system "
-@@ -285,12 +280,12 @@
- 			panic("check_ptrace : expected (SIGTRAP|SYSCALL_TRAP), "
- 			      "got status = %d", status);
+-#ifdef CONFIG_MODE_TT
++#ifdef UML_CONFIG_MODE_TT
+ #include "mmu-tt.h"
+ #endif
  
--		syscall = ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_NR_OFFSET,
-+		syscall = ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_NR_OFFSET,
- 				 0);
- 		if(syscall == __NR_getpid){
- 			if (!count)
- 				panic("check_ptrace : SYSEMU_SINGLESTEP doesn't singlestep");
--			n = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET,
-+			n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET,
- 				   os_getpid());
- 			if(n < 0)
- 				panic("check_sysemu : failed to modify system "
-@@ -336,10 +331,10 @@
- 			panic("check_ptrace : expected SIGTRAP + 0x80, "
- 			      "got status = %d", status);
- 		
--		syscall = ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_NR_OFFSET,
-+		syscall = ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_NR_OFFSET,
- 				 0);
- 		if(syscall == __NR_getpid){
--			n = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET,
-+			n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_NR_OFFSET,
- 				   __NR_getppid);
- 			if(n < 0)
- 				panic("check_ptrace : failed to modify system "
-Index: linux-2.6.11/arch/um/kernel/ptrace.c
+-#ifdef CONFIG_MODE_SKAS
++#ifdef UML_CONFIG_MODE_SKAS
+ #include "mmu-skas.h"
+ #endif
+ 
+-typedef union {
+-#ifdef CONFIG_MODE_TT
++typedef union mm_context {
++#ifdef UML_CONFIG_MODE_TT
+ 	struct mmu_context_tt tt;
+ #endif
+-#ifdef CONFIG_MODE_SKAS
++#ifdef UML_CONFIG_MODE_SKAS
+ 	struct mmu_context_skas skas;
+ #endif
+ } mm_context_t;
+Index: linux-2.6.11/arch/um/kernel/skas/tlb.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/kernel/ptrace.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/ptrace.c	2005-03-08 20:23:17.000000000 -0500
-@@ -15,8 +15,8 @@
- #include "asm/ptrace.h"
- #include "asm/uaccess.h"
- #include "kern_util.h"
--#include "ptrace_user.h"
- #include "skas_ptrace.h"
-+#include "sysdep/ptrace.h"
+--- linux-2.6.11.orig/arch/um/kernel/skas/tlb.c	2005-03-08 22:25:56.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/skas/tlb.c	2005-03-09 17:21:33.000000000 -0500
+@@ -49,220 +49,37 @@
+ static void fix_range(struct mm_struct *mm, unsigned long start_addr,
+ 		      unsigned long end_addr, int force)
+ {
+-	pgd_t *npgd;
+-	pud_t *npud;
+-	pmd_t *npmd;
+-	pte_t *npte;
+-	unsigned long addr,  end;
+-	int r, w, x, fd;
+-	struct host_vm_op ops[16];
+-	int op_index = -1, last_op = sizeof(ops) / sizeof(ops[0]) - 1;
+-
+-	if(mm == NULL) return;
+-	fd = mm->context.skas.mm_fd;
+-	for(addr = start_addr; addr < end_addr;){
+-		npgd = pgd_offset(mm, addr);
+-		if(!pgd_present(*npgd)){
+-			if(force || pgd_newpage(*npgd)){
+-				end = addr + PGDIR_SIZE;
+-				if(end > end_addr)
+-					end = end_addr;
+-				op_index = add_munmap(addr, end - addr, ops, 
+-						      op_index, last_op, fd,
+-						      do_ops);
+-				pgd_mkuptodate(*npgd);
+-			}
+-			addr += PGDIR_SIZE;
+-			continue;
+-		}
+-
+-		npud = pud_offset(npgd, addr);
+-		if(!pud_present(*npud)){
+-			if(force || pud_newpage(*npud)){
+-				end = addr + PUD_SIZE;
+-				if(end > end_addr)
+-					end = end_addr;
+-				op_index = add_munmap(addr, end - addr, ops, 
+-						      op_index, last_op, fd,
+-						      do_ops);
+-				pud_mkuptodate(*npud);
+-			}
+-			addr += PUD_SIZE;
+-			continue;
+-		}
+-
+-		npmd = pmd_offset(npud, addr);
+-		if(!pmd_present(*npmd)){
+-			if(force || pmd_newpage(*npmd)){
+-				end = addr + PMD_SIZE;
+-				if(end > end_addr)
+-					end = end_addr;
+-				op_index = add_munmap(addr, end - addr, ops, 
+-						      op_index, last_op, fd,
+-						      do_ops);
+-				pmd_mkuptodate(*npmd);
+-			}
+-			addr += PMD_SIZE;
+-			continue;
+-		}
+-
+-		npte = pte_offset_kernel(npmd, addr);
+-		r = pte_read(*npte);
+-		w = pte_write(*npte);
+-		x = pte_exec(*npte);
+-		if(!pte_dirty(*npte))
+-			w = 0;
+-		if(!pte_young(*npte)){
+-			r = 0;
+-			w = 0;
+-		}
+-		if(force || pte_newpage(*npte)){
+-			if(pte_present(*npte))
+-				op_index = add_mmap(addr, 
+-						    pte_val(*npte) & PAGE_MASK,
+-						    PAGE_SIZE, r, w, x, ops, 
+-						    op_index, last_op, fd,
+-						    do_ops);
+-			else op_index = add_munmap(addr, PAGE_SIZE, ops, 
+-						   op_index, last_op, fd, 
+-						   do_ops);
+-		}
+-		else if(pte_newprot(*npte))
+-			op_index = add_mprotect(addr, PAGE_SIZE, r, w, x, ops, 
+-						op_index, last_op, fd,
+-						do_ops);
+-
+-		*npte = pte_mkuptodate(*npte);
+-		addr += PAGE_SIZE;
+-	}
+-	do_ops(fd, ops, op_index);
+-}
+-
+-void flush_tlb_kernel_range_skas(unsigned long start, unsigned long end)
+-{
+-	struct mm_struct *mm;
+-	pgd_t *pgd;
+-	pud_t *pud;
+-	pmd_t *pmd;
+-	pte_t *pte;
+-	unsigned long addr, last;
+-	int updated = 0, err;
+-
+-	mm = &init_mm;
+-	for(addr = start; addr < end;){
+-		pgd = pgd_offset(mm, addr);
+-		pud = pud_offset(pgd, addr);
+-		pmd = pmd_offset(pud, addr);
+- 		if(!pgd_present(*pgd)){
+-			if(pgd_newpage(*pgd)){
+-				updated = 1;
+-				last = addr + PGDIR_SIZE;
+-				if(last > end)
+-					last = end;
+-				err = os_unmap_memory((void *) addr, 
+-						      last - addr);
+-				if(err < 0)
+-					panic("munmap failed, errno = %d\n",
+-					      -err);
+-			}
+-			addr += PGDIR_SIZE;
+-			continue;
+-		}
+-
+-		pud = pud_offset(pgd, addr);
+-		if(!pud_present(*pud)){
+-			if(pud_newpage(*pud)){
+-				updated = 1;
+-				last = addr + PUD_SIZE;
+-				if(last > end)
+-					last = end;
+-				err = os_unmap_memory((void *) addr,
+-						      last - addr);
+-				if(err < 0)
+-					panic("munmap failed, errno = %d\n",
+-					      -err);
+-			}
+-			addr += PUD_SIZE;
+-			continue;
+-		}
+-
+-		pmd = pmd_offset(pud, addr);
+-		if(!pmd_present(*pmd)){
+-			if(pmd_newpage(*pmd)){
+-				updated = 1;
+-				last = addr + PMD_SIZE;
+-				if(last > end)
+-					last = end;
+-				err = os_unmap_memory((void *) addr,
+-						      last - addr);
+-				if(err < 0)
+-					panic("munmap failed, errno = %d\n",
+-					      -err);
+-			}
+-			addr += PMD_SIZE;
+-			continue;
+-		}
+-
+-		pte = pte_offset_kernel(pmd, addr);
+-		if(!pte_present(*pte) || pte_newpage(*pte)){
+-			updated = 1;
+-			err = os_unmap_memory((void *) addr, PAGE_SIZE);
+-			if(err < 0)
+-				panic("munmap failed, errno = %d\n", -err);
+-			if(pte_present(*pte))
+-				map_memory(addr, pte_val(*pte) & PAGE_MASK,
+-					   PAGE_SIZE, 1, 1, 1);
+-		}
+-		else if(pte_newprot(*pte)){
+-			updated = 1;
+-			protect_memory(addr, PAGE_SIZE, 1, 1, 1, 1);
+-  		}
+-		addr += PAGE_SIZE;
+-	}
+-}
++        int fd = mm->context.skas.mm_fd;
  
- /*
-  * Called by kernel/ptrace.c when detaching..
-Index: linux-2.6.11/arch/um/kernel/skas/mem_user.c
+-void flush_tlb_kernel_vm_skas(void)
+-{
+-	flush_tlb_kernel_range_skas(start_vm, end_vm);
++        fix_range_common(mm, start_addr, end_addr, force, fd, do_ops);
+ }
+ 
+ void __flush_tlb_one_skas(unsigned long addr)
+ {
+-	flush_tlb_kernel_range_skas(addr, addr + PAGE_SIZE);
++        flush_tlb_kernel_range_common(addr, addr + PAGE_SIZE);
+ }
+ 
+ void flush_tlb_range_skas(struct vm_area_struct *vma, unsigned long start, 
+ 		     unsigned long end)
+ {
+-	if(vma->vm_mm == NULL)
+-		flush_tlb_kernel_range_skas(start, end);
+-	else fix_range(vma->vm_mm, start, end, 0);
++        if(vma->vm_mm == NULL)
++                flush_tlb_kernel_range_common(start, end);
++        else fix_range(vma->vm_mm, start, end, 0);
+ }
+ 
+ void flush_tlb_mm_skas(struct mm_struct *mm)
+ {
+ 	/* Don't bother flushing if this address space is about to be
+-	 * destroyed.
+-	 */
+-	if(atomic_read(&mm->mm_users) == 0)
+-		return;
++         * destroyed.
++         */
++        if(atomic_read(&mm->mm_users) == 0)
++                return;
+ 
+-	flush_tlb_kernel_vm_skas();
+-	fix_range(mm, 0, host_task_size, 0);
++        fix_range(mm, 0, host_task_size, 0);
++        flush_tlb_kernel_range_common(start_vm, end_vm);
+ }
+ 
+ void force_flush_all_skas(void)
+ {
+-	fix_range(current->mm, 0, host_task_size, 1);
++        fix_range(current->mm, 0, host_task_size, 1);
+ }
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.11/arch/um/kernel/tlb.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/kernel/skas/mem_user.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/skas/mem_user.c	2005-03-08 20:26:27.000000000 -0500
-@@ -5,7 +5,6 @@
- 
- #include <errno.h>
- #include <sys/mman.h>
--#include <sys/ptrace.h>
- #include "mem_user.h"
+--- linux-2.6.11.orig/arch/um/kernel/tlb.c	2005-03-08 23:07:08.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/tlb.c	2005-03-09 17:21:33.000000000 -0500
+@@ -9,88 +9,270 @@
+ #include "asm/tlbflush.h"
+ #include "choose-mode.h"
+ #include "mode_kern.h"
++#include "user_util.h"
+ #include "tlb.h"
  #include "mem.h"
- #include "user.h"
-Index: linux-2.6.11/arch/um/kernel/skas/process.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/skas/process.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/skas/process.c	2005-03-08 20:32:05.000000000 -0500
-@@ -10,8 +10,6 @@
- #include <setjmp.h>
- #include <sched.h>
- #include <sys/wait.h>
--#include <sys/ptrace.h>
--#include <linux/ptrace.h>
- #include <sys/mman.h>
- #include <sys/user.h>
- #include <asm/unistd.h>
-@@ -62,7 +60,7 @@
++#include "mem_user.h"
++#include "os.h"
++
++void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
++                      unsigned long end_addr, int force, int data,
++                      void (*do_ops)(int, struct host_vm_op *, int))
++{
++        pgd_t *npgd;
++        pud_t *npud;
++        pmd_t *npmd;
++        pte_t *npte;
++        unsigned long addr, end;
++        int r, w, x;
++        struct host_vm_op ops[16];
++        int op_index = -1, last_op = sizeof(ops) / sizeof(ops[0]) - 1;
++
++        if(mm == NULL) return;
++
++        for(addr = start_addr; addr < end_addr;){
++                npgd = pgd_offset(mm, addr);
++                if(!pgd_present(*npgd)){
++                        if(force || pgd_newpage(*npgd)){
++                                end = addr + PGDIR_SIZE;
++                                if(end > end_addr)
++                                        end = end_addr;
++                                op_index = add_munmap(addr, end - addr, ops, 
++                                                      op_index, last_op, data,
++                                                      do_ops);
++                                pgd_mkuptodate(*npgd);
++                        }
++                        addr += PGDIR_SIZE;
++                        continue;
++                }
++
++                npud = pud_offset(npgd, addr);
++                if(!pud_present(*npud)){
++                        if(force || pud_newpage(*npud)){
++                                end = addr + PUD_SIZE;
++                                if(end > end_addr)
++                                        end = end_addr;
++                                op_index = add_munmap(addr, end - addr, ops, 
++                                                      op_index, last_op, data,
++                                                      do_ops);
++                                pud_mkuptodate(*npud);
++                        }
++                        addr += PUD_SIZE;
++                        continue;
++                }
++
++                npmd = pmd_offset(npud, addr);
++                if(!pmd_present(*npmd)){
++                        if(force || pmd_newpage(*npmd)){
++                                end = addr + PMD_SIZE;
++                                if(end > end_addr)
++                                        end = end_addr;
++                                op_index = add_munmap(addr, end - addr, ops, 
++                                                      op_index, last_op, data,
++                                                      do_ops);
++                                pmd_mkuptodate(*npmd);
++                        }
++                        addr += PMD_SIZE;
++                        continue;
++                }
++
++                npte = pte_offset_kernel(npmd, addr);
++                r = pte_read(*npte);
++                w = pte_write(*npte);
++                x = pte_exec(*npte);
++                if(!pte_dirty(*npte))
++                        w = 0;
++                if(!pte_young(*npte)){
++                        r = 0;
++                        w = 0;
++                }
++                if(force || pte_newpage(*npte)){
++                        if(pte_present(*npte))
++                                op_index = add_mmap(addr, 
++                                                    pte_val(*npte) & PAGE_MASK,
++                                                    PAGE_SIZE, r, w, x, ops, 
++                                                    op_index, last_op, data,
++                                                    do_ops);
++                        else op_index = add_munmap(addr, PAGE_SIZE, ops, 
++                                                   op_index, last_op, data, 
++                                                   do_ops);
++                }
++                else if(pte_newprot(*npte))
++                        op_index = add_mprotect(addr, PAGE_SIZE, r, w, x, ops, 
++                                                op_index, last_op, data,
++                                                do_ops);
++
++                *npte = pte_mkuptodate(*npte);
++                addr += PAGE_SIZE;
++        }
++        (*do_ops)(data, ops, op_index);
++}
++
++int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
++{
++        struct mm_struct *mm;
++        pgd_t *pgd;
++        pud_t *pud;
++        pmd_t *pmd;
++        pte_t *pte;
++        unsigned long addr, last;
++        int updated = 0, err;
++
++        mm = &init_mm;
++        for(addr = start; addr < end;){
++                pgd = pgd_offset(mm, addr);
++                if(!pgd_present(*pgd)){
++                        if(pgd_newpage(*pgd)){
++                                updated = 1;
++                                last = addr + PGDIR_SIZE;
++                                if(last > end)
++                                        last = end;
++                                err = os_unmap_memory((void *) addr, 
++                                                      last - addr);
++                                if(err < 0)
++                                        panic("munmap failed, errno = %d\n",
++                                              -err);
++                        }
++                        addr += PGDIR_SIZE;
++                        continue;
++                }
++
++                pud = pud_offset(pgd, addr);
++                if(!pud_present(*pud)){
++                        if(pud_newpage(*pud)){
++                                updated = 1;
++                                last = addr + PUD_SIZE;
++                                if(last > end)
++                                        last = end;
++                                err = os_unmap_memory((void *) addr,
++                                                      last - addr);
++                                if(err < 0)
++                                        panic("munmap failed, errno = %d\n",
++                                              -err);
++                        }
++                        addr += PUD_SIZE;
++                        continue;
++                }
++
++                pmd = pmd_offset(pud, addr);
++                if(!pmd_present(*pmd)){
++                        if(pmd_newpage(*pmd)){
++                                updated = 1;
++                                last = addr + PMD_SIZE;
++                                if(last > end)
++                                        last = end;
++                                err = os_unmap_memory((void *) addr,
++                                                      last - addr);
++                                if(err < 0)
++                                        panic("munmap failed, errno = %d\n",
++                                              -err);
++                        }
++                        addr += PMD_SIZE;
++                        continue;
++                }
++
++                pte = pte_offset_kernel(pmd, addr);
++                if(!pte_present(*pte) || pte_newpage(*pte)){
++                        updated = 1;
++                        err = os_unmap_memory((void *) addr,
++                                              PAGE_SIZE);
++                        if(err < 0)
++                                panic("munmap failed, errno = %d\n",
++                                      -err);
++                        if(pte_present(*pte))
++                                map_memory(addr,
++                                           pte_val(*pte) & PAGE_MASK,
++                                           PAGE_SIZE, 1, 1, 1);
++                }
++                else if(pte_newprot(*pte)){
++                        updated = 1;
++                        protect_memory(addr, PAGE_SIZE, 1, 1, 1, 1);
++                }
++                addr += PAGE_SIZE;
++        }
++        return(updated);
++}
  
- 	if (!local_using_sysemu)
- 	{
--		err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, __NR_getpid);
-+		err = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_NR_OFFSET, __NR_getpid);
- 		if(err < 0)
- 			panic("handle_trap - nullifying syscall failed errno = %d\n",
- 			      errno);
-Index: linux-2.6.11/arch/um/kernel/trap_user.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/trap_user.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/trap_user.c	2005-03-08 20:23:17.000000000 -0500
-@@ -8,7 +8,6 @@
- #include <setjmp.h>
- #include <signal.h>
- #include <sys/time.h>
--#include <sys/ptrace.h>
- #include <sys/wait.h>
- #include <asm/page.h>
- #include <asm/unistd.h>
-Index: linux-2.6.11/arch/um/kernel/tt/exec_user.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/exec_user.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/exec_user.c	2005-03-08 20:23:17.000000000 -0500
-@@ -9,8 +9,6 @@
- #include <sched.h>
- #include <errno.h>
- #include <sys/wait.h>
--#include <sys/ptrace.h>
--#include <linux/ptrace.h>
- #include <signal.h>
- #include "user_util.h"
- #include "kern_util.h"
-Index: linux-2.6.11/arch/um/kernel/tt/gdb.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/gdb.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/gdb.c	2005-03-08 20:23:17.000000000 -0500
-@@ -8,8 +8,8 @@
- #include <errno.h>
- #include <string.h>
- #include <signal.h>
--#include <sys/ptrace.h>
- #include <sys/types.h>
-+#include "ptrace_user.h"
- #include "uml-config.h"
- #include "kern_constants.h"
- #include "chan_user.h"
-Index: linux-2.6.11/arch/um/kernel/tt/ptproxy/proxy.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/ptproxy/proxy.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/ptproxy/proxy.c	2005-03-08 20:23:17.000000000 -0500
-@@ -18,9 +18,9 @@
- #include <termios.h>
- #include <sys/wait.h>
- #include <sys/types.h>
--#include <sys/ptrace.h>
- #include <sys/ioctl.h>
- #include <asm/unistd.h>
-+#include "ptrace_user.h"
- 
- #include "ptproxy.h"
- #include "sysdep.h"
-Index: linux-2.6.11/arch/um/kernel/tt/ptproxy/ptrace.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/ptproxy/ptrace.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/ptproxy/ptrace.c	2005-03-08 20:23:17.000000000 -0500
-@@ -12,9 +12,7 @@
- #include <signal.h>
- #include <sys/types.h>
- #include <sys/time.h>
--#include <sys/ptrace.h>
- #include <sys/wait.h>
--#include <asm/ptrace.h>
- 
- #include "ptproxy.h"
- #include "debug.h"
-@@ -127,7 +125,7 @@
- 
- 	case PTRACE_PEEKDATA:
- 	case PTRACE_PEEKTEXT:
--	case PTRACE_PEEKUSER:
-+	case PTRACE_PEEKUSR:
- 		/* The value being read out could be -1, so we have to 
- 		 * check errno to see if there's an error, and zero it
- 		 * beforehand so we're not faked out by an old error
-@@ -144,11 +142,11 @@
- 
- 	case PTRACE_POKEDATA:
- 	case PTRACE_POKETEXT:
--	case PTRACE_POKEUSER:
-+	case PTRACE_POKEUSR:
- 		result = ptrace(arg1, child, arg3, arg4);
- 		if(result == -1) return(-errno);
- 
--		if(arg1 == PTRACE_POKEUSER) ptrace_pokeuser(arg3, arg4);
-+		if(arg1 == PTRACE_POKEUSR) ptrace_pokeuser(arg3, arg4);
- 		return(result);
- 
- #ifdef UM_HAVE_SETFPREGS
-Index: linux-2.6.11/arch/um/kernel/tt/ptproxy/sysdep.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/ptproxy/sysdep.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/ptproxy/sysdep.c	2005-03-08 20:23:17.000000000 -0500
-@@ -11,7 +11,6 @@
- #include <signal.h>
- #include <errno.h>
- #include <sys/types.h>
--#include <sys/ptrace.h>
- #include <linux/unistd.h>
- #include "ptrace_user.h"
- #include "user_util.h"
-@@ -20,21 +19,21 @@
- int get_syscall(pid_t pid, long *arg1, long *arg2, long *arg3, long *arg4, 
- 		long *arg5)
+ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
  {
--	*arg1 = ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_ARG1_OFFSET, 0);
--	*arg2 = ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_ARG2_OFFSET, 0);
--	*arg3 = ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_ARG3_OFFSET, 0);
--	*arg4 = ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_ARG4_OFFSET, 0);
--	*arg5 = ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_ARG5_OFFSET, 0);
--	return(ptrace(PTRACE_PEEKUSER, pid, PT_SYSCALL_NR_OFFSET, 0));
-+	*arg1 = ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_ARG1_OFFSET, 0);
-+	*arg2 = ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_ARG2_OFFSET, 0);
-+	*arg3 = ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_ARG3_OFFSET, 0);
-+	*arg4 = ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_ARG4_OFFSET, 0);
-+	*arg5 = ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_ARG5_OFFSET, 0);
-+	return(ptrace(PTRACE_PEEKUSR, pid, PT_SYSCALL_NR_OFFSET, 0));
+-	address &= PAGE_MASK;
+-	flush_tlb_range(vma, address, address + PAGE_SIZE);
++        address &= PAGE_MASK;
++        flush_tlb_range(vma, address, address + PAGE_SIZE);
  }
  
- void syscall_cancel(pid_t pid, int result)
+ void flush_tlb_all(void)
  {
--	if((ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, 
-+	if((ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_NR_OFFSET, 
- 		   __NR_getpid) < 0) ||
- 	   (ptrace(PTRACE_SYSCALL, pid, 0, 0) < 0) ||
- 	   (wait_for_stop(pid, SIGTRAP, PTRACE_SYSCALL, NULL) < 0) ||
--	   (ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET, result) < 0) ||
-+	   (ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET, result) < 0) ||
- 	   (ptrace(PTRACE_SYSCALL, pid, 0, 0) < 0))
- 		printk("ptproxy: couldn't cancel syscall: errno = %d\n", 
- 		       errno);
-@@ -42,7 +41,7 @@
- 
- void syscall_set_result(pid_t pid, long result)
+-	flush_tlb_mm(current->mm);
++        flush_tlb_mm(current->mm);
+ }
+   
+ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
  {
--	ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET, result);
-+	ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET, result);
+-	CHOOSE_MODE_PROC(flush_tlb_kernel_range_tt, 
+-			 flush_tlb_kernel_range_skas, start, end);
++        CHOOSE_MODE_PROC(flush_tlb_kernel_range_tt, 
++                         flush_tlb_kernel_range_common, start, end);
  }
  
- void syscall_continue(pid_t pid)
-@@ -52,7 +51,7 @@
- 
- int syscall_pause(pid_t pid) 
+ void flush_tlb_kernel_vm(void)
  {
--	if(ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, __NR_pause) < 0){
-+	if(ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_NR_OFFSET, __NR_pause) < 0){
- 		printk("syscall_change - ptrace failed, errno = %d\n", errno);
- 		return(-1);
- 	}
-Index: linux-2.6.11/arch/um/kernel/tt/ptproxy/wait.c
+-	CHOOSE_MODE(flush_tlb_kernel_vm_tt(), flush_tlb_kernel_vm_skas());
++        CHOOSE_MODE(flush_tlb_kernel_vm_tt(), 
++                    flush_tlb_kernel_range_common(start_vm, end_vm));
+ }
+ 
+ void __flush_tlb_one(unsigned long addr)
+ {
+-	CHOOSE_MODE_PROC(__flush_tlb_one_tt, __flush_tlb_one_skas, addr);
++        CHOOSE_MODE_PROC(__flush_tlb_one_tt, __flush_tlb_one_skas, addr);
+ }
+ 
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start, 
+-		     unsigned long end)
++     unsigned long end)
+ {
+-	CHOOSE_MODE_PROC(flush_tlb_range_tt, flush_tlb_range_skas, vma, start, 
+-			 end);
++        CHOOSE_MODE_PROC(flush_tlb_range_tt, flush_tlb_range_skas, vma, start, 
++                         end);
+ }
+ 
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+-	CHOOSE_MODE_PROC(flush_tlb_mm_tt, flush_tlb_mm_skas, mm);
++        CHOOSE_MODE_PROC(flush_tlb_mm_tt, flush_tlb_mm_skas, mm);
+ }
+ 
+ void force_flush_all(void)
+ {
+-	CHOOSE_MODE(force_flush_all_tt(), force_flush_all_skas());
++        CHOOSE_MODE(force_flush_all_tt(), force_flush_all_skas());
+ }
+ 
+ pgd_t *pgd_offset_proc(struct mm_struct *mm, unsigned long address)
+ {
+-	return(pgd_offset(mm, address));
++        return(pgd_offset(mm, address));
+ }
+ 
+ pud_t *pud_offset_proc(pgd_t *pgd, unsigned long address)
+ {
+-	return(pud_offset(pgd, address));
++        return(pud_offset(pgd, address));
+ }
+ 
+ pmd_t *pmd_offset_proc(pud_t *pud, unsigned long address)
+ {
+-	return(pmd_offset(pud, address));
++        return(pmd_offset(pud, address));
+ }
+ 
+ pte_t *pte_offset_proc(pmd_t *pmd, unsigned long address)
+ {
+-	return(pte_offset_kernel(pmd, address));
++        return(pte_offset_kernel(pmd, address));
+ }
+ 
+ pte_t *addr_pte(struct task_struct *task, unsigned long addr)
+ {
+-	pgd_t *pgd = pgd_offset(task->mm, addr);
+-	pud_t *pud = pud_offset(pgd, addr);
+-	pmd_t *pmd = pmd_offset(pud, addr);
++        pgd_t *pgd = pgd_offset(task->mm, addr);
++        pud_t *pud = pud_offset(pgd, addr);
++        pmd_t *pmd = pmd_offset(pud, addr);
+ 
+-	return(pte_offset_map(pmd, addr));
++        return(pte_offset_map(pmd, addr));
+ }
+ 
+ int add_mmap(unsigned long virt, unsigned long phys, unsigned long len, 
+-	     int r, int w, int x, struct host_vm_op *ops, int index, 
+-	     int last_filled, int data,
+-	     void (*do_ops)(int, struct host_vm_op *, int))
++     int r, int w, int x, struct host_vm_op *ops, int index, 
++     int last_filled, int data,
++     void (*do_ops)(int, struct host_vm_op *, int))
+ {
+-	__u64 offset;
++        __u64 offset;
+ 	struct host_vm_op *last;
+ 	int fd;
+ 
+@@ -183,14 +365,3 @@
+ 						      .x	= x } } });
+ 	return(index);
+ }
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.11/arch/um/kernel/tt/mem.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/ptproxy/wait.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/ptproxy/wait.c	2005-03-08 20:23:17.000000000 -0500
-@@ -9,14 +9,13 @@
- #include <errno.h>
- #include <signal.h>
- #include <sys/wait.h>
--#include <sys/ptrace.h>
+--- linux-2.6.11.orig/arch/um/kernel/tt/mem.c	2005-03-08 20:17:35.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/tt/mem.c	2005-03-08 22:41:46.000000000 -0500
+@@ -15,7 +15,7 @@
  
- #include "ptproxy.h"
- #include "sysdep.h"
- #include "wait.h"
- #include "user_util.h"
-+#include "ptrace_user.h"
- #include "sysdep/ptrace.h"
--#include "sysdep/ptrace_user.h"
- #include "sysdep/sigcontext.h"
- 
- int proxy_wait_return(struct debugger *debugger, pid_t unused)
-@@ -59,10 +58,10 @@
- 
- 	pid = debugger->pid;
- 
--	ip = ptrace(PTRACE_PEEKUSER, pid, PT_IP_OFFSET, 0);
-+	ip = ptrace(PTRACE_PEEKUSR, pid, PT_IP_OFFSET, 0);
- 	IP_RESTART_SYSCALL(ip);
- 
--	if(ptrace(PTRACE_POKEUSER, pid, PT_IP_OFFSET, ip) < 0)
-+	if(ptrace(PTRACE_POKEUSR, pid, PT_IP_OFFSET, ip) < 0)
- 		tracer_panic("real_wait_return : Failed to restart system "
- 			     "call, errno = %d\n", errno);
- 
-Index: linux-2.6.11/arch/um/kernel/tt/syscall_user.c
+ void before_mem_tt(unsigned long brk_start)
+ {
+-	if(!jail || debug)
++	if(debug)
+ 		remap_data(UML_ROUND_DOWN(&_stext), UML_ROUND_UP(&_etext), 1);
+ 	remap_data(UML_ROUND_DOWN(&_sdata), UML_ROUND_UP(&_edata), 1);
+ 	remap_data(UML_ROUND_DOWN(&__bss_start), UML_ROUND_UP(&_end), 1);
+Index: linux-2.6.11/arch/um/kernel/tt/process_kern.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/syscall_user.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/syscall_user.c	2005-03-08 20:23:17.000000000 -0500
-@@ -6,7 +6,6 @@
- #include <unistd.h>
- #include <signal.h>
- #include <errno.h>
--#include <sys/ptrace.h>
- #include <asm/unistd.h>
- #include "sysdep/ptrace.h"
- #include "sigcontext.h"
-@@ -73,7 +72,7 @@
- 		return;
+--- linux-2.6.11.orig/arch/um/kernel/tt/process_kern.c	2005-03-08 20:17:35.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/tt/process_kern.c	2005-03-09 17:21:32.000000000 -0500
+@@ -85,24 +85,6 @@
+ 	   (prev_sched->exit_state == EXIT_DEAD))
+ 		os_kill_process(prev_sched->thread.mode.tt.extern_pid, 1);
  
- 	/* syscall number -1 in sysemu skips syscall restarting in host */
--	if(ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, 
-+	if(ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_NR_OFFSET, 
- 		  local_using_sysemu ? -1 : __NR_getpid) < 0)
- 		tracer_panic("do_syscall : Nullifying syscall failed, "
- 			     "errno = %d", errno);
+-	/* This works around a nasty race with 'jail'.  If we are switching
+-	 * between two threads of a threaded app and the incoming process 
+-	 * runs before the outgoing process reaches the read, and it makes
+-	 * it all the way out to userspace, then it will have write-protected 
+-	 * the outgoing process stack.  Then, when the outgoing process 
+-	 * returns from the write, it will segfault because it can no longer
+-	 * write its own stack.  So, in order to avoid that, the incoming 
+-	 * thread sits in a loop yielding until 'reading' is set.  This 
+-	 * isn't entirely safe, since there may be a reschedule from a timer
+-	 * happening between setting 'reading' and sleeping in read.  But,
+-	 * it should get a whole quantum in which to reach the read and sleep,
+-	 * which should be enough.
+-	 */
+-
+-	if(jail){
+-		while(!reading) sched_yield();
+-	}
+-
+ 	change_sig(SIGVTALRM, vtalrm);
+ 	change_sig(SIGALRM, alrm);
+ 	change_sig(SIGPROF, prof);
+@@ -394,84 +376,6 @@
+ 	default_idle();
+ }
+ 
+-/* Changed by jail_setup, which is a setup */
+-int jail = 0;
+-
+-int __init jail_setup(char *line, int *add)
+-{
+-	int ok = 1;
+-
+-	if(jail) return(0);
+-#ifdef CONFIG_SMP
+-	printf("'jail' may not used used in a kernel with CONFIG_SMP "
+-	       "enabled\n");
+-	ok = 0;
+-#endif
+-#ifdef CONFIG_HOSTFS
+-	printf("'jail' may not used used in a kernel with CONFIG_HOSTFS "
+-	       "enabled\n");
+-	ok = 0;
+-#endif
+-#ifdef CONFIG_MODULES
+-	printf("'jail' may not used used in a kernel with CONFIG_MODULES "
+-	       "enabled\n");
+-	ok = 0;
+-#endif	
+-	if(!ok) exit(1);
+-
+-	/* CAP_SYS_RAWIO controls the ability to open /dev/mem and /dev/kmem.
+-	 * Removing it from the bounding set eliminates the ability of anything
+-	 * to acquire it, and thus read or write kernel memory.
+-	 */
+-	cap_lower(cap_bset, CAP_SYS_RAWIO);
+-	jail = 1;
+-	return(0);
+-}
+-
+-__uml_setup("jail", jail_setup,
+-"jail\n"
+-"    Enables the protection of kernel memory from processes.\n\n"
+-);
+-
+-static void mprotect_kernel_mem(int w)
+-{
+-	unsigned long start, end;
+-	int pages;
+-
+-	if(!jail || (current == &init_task)) return;
+-
+-	pages = (1 << CONFIG_KERNEL_STACK_ORDER);
+-
+-	start = (unsigned long) current_thread + PAGE_SIZE;
+-	end = (unsigned long) current_thread + PAGE_SIZE * pages;
+-	protect_memory(uml_reserved, start - uml_reserved, 1, w, 1, 1);
+-	protect_memory(end, high_physmem - end, 1, w, 1, 1);
+-
+-	start = (unsigned long) UML_ROUND_DOWN(&_stext);
+-	end = (unsigned long) UML_ROUND_UP(&_etext);
+-	protect_memory(start, end - start, 1, w, 1, 1);
+-
+-	start = (unsigned long) UML_ROUND_DOWN(&_unprotected_end);
+-	end = (unsigned long) UML_ROUND_UP(&_edata);
+-	protect_memory(start, end - start, 1, w, 1, 1);
+-
+-	start = (unsigned long) UML_ROUND_DOWN(&__bss_start);
+-	end = (unsigned long) UML_ROUND_UP(brk_start);
+-	protect_memory(start, end - start, 1, w, 1, 1);
+-
+-	mprotect_kernel_vm(w);
+-}
+-
+-void unprotect_kernel_mem(void)
+-{
+-	mprotect_kernel_mem(1);
+-}
+-
+-void protect_kernel_mem(void)
+-{
+-	mprotect_kernel_mem(0);
+-}
+-
+ extern void start_kernel(void);
+ 
+ static int start_kernel_proc(void *unused)
+Index: linux-2.6.11/arch/um/kernel/tt/tlb.c
+===================================================================
+--- linux-2.6.11.orig/arch/um/kernel/tt/tlb.c	2005-03-08 22:25:56.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/tt/tlb.c	2005-03-09 17:21:33.000000000 -0500
+@@ -50,202 +50,20 @@
+ static void fix_range(struct mm_struct *mm, unsigned long start_addr, 
+ 		      unsigned long end_addr, int force)
+ {
+-	pgd_t *npgd;
+-	pud_t *npud;
+-	pmd_t *npmd;
+-	pte_t *npte;
+-	unsigned long addr, end;
+-	int r, w, x;
+-	struct host_vm_op ops[16];
+-	int op_index = -1, last_op = sizeof(ops) / sizeof(ops[0]) - 1;
+-
+-	if((current->thread.mode.tt.extern_pid != -1) && 
+-	   (current->thread.mode.tt.extern_pid != os_getpid()))
+-		panic("fix_range fixing wrong address space, current = 0x%p",
+-		      current);
+-	if(mm == NULL) return;
+-	for(addr=start_addr;addr<end_addr;){
+-		if(addr == TASK_SIZE){
+-			/* Skip over kernel text, kernel data, and physical
+-			 * memory, which don't have ptes, plus kernel virtual
+-			 * memory, which is flushed separately, and remap
+-			 * the process stack.  The only way to get here is
+-			 * if (end_addr == STACK_TOP) > TASK_SIZE, which is
+-			 * only true in the honeypot case.
+-			 */
+-			addr = STACK_TOP - ABOVE_KMEM;
+-			continue;
+-		}
+-
+-		npgd = pgd_offset(mm, addr);
+- 		if(!pgd_present(*npgd)){
+- 			if(force || pgd_newpage(*npgd)){
+- 				end = addr + PGDIR_SIZE;
+- 				if(end > end_addr)
+- 					end = end_addr;
+-				op_index = add_munmap(addr, end - addr, ops, 
+-						      op_index, last_op, 0,
+-						      do_ops);
+-				pgd_mkuptodate(*npgd);
+- 			}
+-			addr += PGDIR_SIZE;
+-			continue;
+- 		}
+-
+-		npud = pud_offset(npgd, addr);
+-		if(!pud_present(*npud)){
+-			if(force || pud_newpage(*npud)){
+- 				end = addr + PUD_SIZE;
+- 				if(end > end_addr)
+- 					end = end_addr;
+-				op_index = add_munmap(addr, end - addr, ops, 
+-						      op_index, last_op, 0,
+-						      do_ops);
+-				pud_mkuptodate(*npud);
+-			}
+-			addr += PUD_SIZE;
+-			continue;
+-		}
+-
+-		npmd = pmd_offset(npud, addr);
+-		if(!pmd_present(*npmd)){
+-			if(force || pmd_newpage(*npmd)){
+- 				end = addr + PMD_SIZE;
+- 				if(end > end_addr)
+- 					end = end_addr;
+-				op_index = add_munmap(addr, end - addr, ops, 
+-						      op_index, last_op, 0,
+-						      do_ops);
+-				pmd_mkuptodate(*npmd);
+-			}
+-			addr += PMD_SIZE;
+-			continue;
+-		}
+-
+-		npte = pte_offset_kernel(npmd, addr);
+-		r = pte_read(*npte);
+-		w = pte_write(*npte);
+-		x = pte_exec(*npte);
+-		if(!pte_dirty(*npte))
+-			w = 0;
+-		if(!pte_young(*npte)){
+-			r = 0;
+-			w = 0;
+-		}
+-		if(force || pte_newpage(*npte)){
+-			if(pte_present(*npte))
+-				op_index = add_mmap(addr, 
+-						    pte_val(*npte) & PAGE_MASK,
+-						    PAGE_SIZE, r, w, x, ops, 
+-						    op_index, last_op, 0,
+-						    do_ops);
+-			else op_index = add_munmap(addr, PAGE_SIZE, ops, 
+-						   op_index, last_op, 0, 
+-						   do_ops);
+-		}
+-		else if(pte_newprot(*npte))
+-			op_index = add_mprotect(addr, PAGE_SIZE, r, w, x, ops, 
+-						op_index, last_op, 0, 
+-						do_ops);
+-
++        if((current->thread.mode.tt.extern_pid != -1) && 
++           (current->thread.mode.tt.extern_pid != os_getpid()))
++                panic("fix_range fixing wrong address space, current = 0x%p",
++                      current);
+ 
+-		*npte = pte_mkuptodate(*npte);
+-		addr += PAGE_SIZE;
+-	}
+-	do_ops(0, ops, op_index);
++        fix_range_common(mm, start_addr, end_addr, force, 0, do_ops);
+ }
+ 
+ atomic_t vmchange_seq = ATOMIC_INIT(1);
+ 
+-static void flush_kernel_vm_range(unsigned long start, unsigned long end, 
+-				  int update_seq)
+-{
+-	struct mm_struct *mm;
+-	pgd_t *pgd;
+-	pud_t *pud;
+-	pmd_t *pmd;
+-	pte_t *pte;
+-	unsigned long addr, last;
+-	int updated = 0, err;
+-
+-	mm = &init_mm;
+-	for(addr = start; addr < end;){
+-		pgd = pgd_offset(mm, addr);
+- 		if(!pgd_present(*pgd)){
+- 			if(pgd_newpage(*pgd)){
+-				updated = 1;
+- 				last = addr + PGDIR_SIZE;
+- 				if(last > end)
+- 					last = end;
+-				err = os_unmap_memory((void *) addr, 
+-						      last - addr);
+-				if(err < 0)
+-					panic("munmap failed, errno = %d\n",
+-					      -err);
+-			}
+-			addr += PGDIR_SIZE;
+-			continue;
+-		}
+-
+-		pud = pud_offset(pgd, addr);
+-		if(!pud_present(*pud)){
+-			if(pud_newpage(*pud)){
+-				updated = 1;
+-				last = addr + PUD_SIZE;
+-				if(last > end)
+-					last = end;
+-				err = os_unmap_memory((void *) addr,
+-						      last - addr);
+-				if(err < 0)
+-					panic("munmap failed, errno = %d\n",
+-					      -err);
+-			}
+-			addr += PUD_SIZE;
+-			continue;
+-		}
+-
+-		pmd = pmd_offset(pud, addr);
+-		if(!pmd_present(*pmd)){
+-			if(pmd_newpage(*pmd)){
+-				updated = 1;
+-				last = addr + PMD_SIZE;
+-				if(last > end)
+-					last = end;
+-				err = os_unmap_memory((void *) addr,
+-						      last - addr);
+-				if(err < 0)
+-					panic("munmap failed, errno = %d\n",
+-					      -err);
+-			}
+-			addr += PMD_SIZE;
+-			continue;
+-		}
+-
+-		pte = pte_offset_kernel(pmd, addr);
+-		if(!pte_present(*pte) || pte_newpage(*pte)){
+-			updated = 1;
+-			err = os_unmap_memory((void *) addr,
+-					      PAGE_SIZE);
+-			if(err < 0)
+-				panic("munmap failed, errno = %d\n",
+-				      -err);
+-			if(pte_present(*pte))
+-				map_memory(addr,
+-					   pte_val(*pte) & PAGE_MASK,
+-					   PAGE_SIZE, 1, 1, 1);
+-		}
+-		else if(pte_newprot(*pte)){
+-			updated = 1;
+-			protect_memory(addr, PAGE_SIZE, 1, 1, 1, 1);
+-		}
+-		addr += PAGE_SIZE;
+-	}
+-	if(updated && update_seq) atomic_inc(&vmchange_seq);
+-}
+-
+ void flush_tlb_kernel_range_tt(unsigned long start, unsigned long end)
+ {
+-        flush_kernel_vm_range(start, end, 1);
++        if(flush_tlb_kernel_range_common(start, end))
++                atomic_inc(&vmchange_seq);
+ }
+ 
+ static void protect_vm_page(unsigned long addr, int w, int must_succeed)
+@@ -302,8 +120,10 @@
+ 	/* Assumes that the range start ... end is entirely within
+ 	 * either process memory or kernel vm
+ 	 */
+-	if((start >= start_vm) && (start < end_vm)) 
+-		flush_kernel_vm_range(start, end, 1);
++	if((start >= start_vm) && (start < end_vm)){
++		if(flush_tlb_kernel_range_common(start, end))
++			atomic_inc(&vmchange_seq);
++	}
+ 	else fix_range(vma->vm_mm, start, end, 0);
+ }
+ 
+@@ -316,24 +136,14 @@
+ 	fix_range(mm, 0, STACK_TOP, 0);
+ 
+ 	seq = atomic_read(&vmchange_seq);
+-	if(current->thread.mode.tt.vm_seq == seq) return;
++	if(current->thread.mode.tt.vm_seq == seq)
++		return;
+ 	current->thread.mode.tt.vm_seq = seq;
+-	flush_kernel_vm_range(start_vm, end_vm, 0);
++	flush_tlb_kernel_range_common(start_vm, end_vm);
+ }
+ 
+ void force_flush_all_tt(void)
+ {
+ 	fix_range(current->mm, 0, STACK_TOP, 1);
+-	flush_kernel_vm_range(start_vm, end_vm, 0);
++	flush_tlb_kernel_range_common(start_vm, end_vm);
+ }
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 Index: linux-2.6.11/arch/um/kernel/tt/tracer.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/kernel/tt/tracer.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/tt/tracer.c	2005-03-08 20:23:17.000000000 -0500
-@@ -12,7 +12,6 @@
- #include <sched.h>
- #include <string.h>
- #include <sys/mman.h>
--#include <sys/ptrace.h>
- #include <sys/time.h>
- #include <sys/wait.h>
- #include "user.h"
-@@ -293,7 +292,7 @@
- 				signal_index[proc_id] = last_index;
- 			signal_record[proc_id][signal_index[proc_id]].pid = pid;
- 			gettimeofday(&signal_record[proc_id][signal_index[proc_id]].time, NULL);
--			eip = ptrace(PTRACE_PEEKUSER, pid, PT_IP_OFFSET, 0);
-+			eip = ptrace(PTRACE_PEEKUSR, pid, PT_IP_OFFSET, 0);
- 			signal_record[proc_id][signal_index[proc_id]].addr = eip;
- 			signal_record[proc_id][signal_index[proc_id]++].signal = sig;
- #endif			
-Index: linux-2.6.11/arch/um/kernel/user_util.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/user_util.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/user_util.c	2005-03-08 20:23:17.000000000 -0500
-@@ -10,7 +10,6 @@
- #include <setjmp.h>
- #include <sys/mman.h>
- #include <sys/stat.h>
--#include <sys/ptrace.h>
- #include <sys/utsname.h>
- #include <sys/param.h>
- #include <sys/time.h>
-@@ -29,6 +28,7 @@
- #include "mem_user.h"
- #include "init.h"
- #include "helper.h"
-+#include "ptrace_user.h"
- #include "uml-config.h"
+--- linux-2.6.11.orig/arch/um/kernel/tt/tracer.c	2005-03-08 22:25:56.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/tt/tracer.c	2005-03-09 17:21:33.000000000 -0500
+@@ -468,19 +468,6 @@
+ "    the debug switch.\n\n"
+ );
  
- #define COMMAND_LINE_SIZE _POSIX_ARG_MAX
-Index: linux-2.6.11/arch/um/os-Linux/process.c
+-static int __init uml_honeypot_setup(char *line, int *add)
+-{
+-	jail_setup("", add);
+-	honeypot = 1;
+-	return 0;
+-}
+-__uml_setup("honeypot", uml_honeypot_setup, 
+-"honeypot\n"
+-"    This makes UML put process stacks in the same location as they are\n"
+-"    on the host, allowing expoits such as stack smashes to work against\n"
+-"    UML.  This implies 'jail'.\n\n"
+-);
+-
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+  * Emacs will notice this stuff at the end of the file and automatically
+Index: linux-2.6.11/arch/um/kernel/tt/trap_user.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/os-Linux/process.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/os-Linux/process.c	2005-03-08 20:23:17.000000000 -0500
-@@ -8,9 +8,9 @@
- #include <errno.h>
- #include <signal.h>
- #include <linux/unistd.h>
--#include <sys/ptrace.h>
- #include <sys/mman.h>
- #include <sys/wait.h>
-+#include "ptrace_user.h"
- #include "os.h"
- #include "user.h"
- #include "user_util.h"
-Index: linux-2.6.11/arch/um/os-Linux/sys-i386/registers.c
-===================================================================
---- linux-2.6.11.orig/arch/um/os-Linux/sys-i386/registers.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/os-Linux/sys-i386/registers.c	2005-03-08 20:23:17.000000000 -0500
-@@ -5,7 +5,7 @@
+--- linux-2.6.11.orig/arch/um/kernel/tt/trap_user.c	2005-03-08 20:17:35.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/tt/trap_user.c	2005-03-09 17:21:33.000000000 -0500
+@@ -20,8 +20,6 @@
+ 	struct signal_info *info;
+ 	int save_errno = errno, is_user;
  
- #include <errno.h>
- #include <string.h>
--#include <sys/ptrace.h>
-+#include "sysdep/ptrace_user.h"
- #include "sysdep/ptrace.h"
- #include "uml-config.h"
- #include "skas_ptregs.h"
-@@ -27,6 +27,23 @@
- 		memcpy(to->skas.xfp, exec_fpx_regs, sizeof(to->skas.xfp));
+-	unprotect_kernel_mem();
+-
+ 	/* This is done because to allow SIGSEGV to be delivered inside a SEGV
+ 	 * handler.  This can happen in copy_user, and if SEGV is disabled,
+ 	 * the process will die.
+@@ -48,7 +46,6 @@
+ 	}
+ 	*r = save_regs;
+ 	errno = save_errno;
+-	if(is_user) protect_kernel_mem();
  }
  
-+/* XXX These need to use [GS]ETFPXREGS and copy_sc_{to,from}_user_skas needs
-+ * to pass in a sufficiently large buffer
-+ */
-+int save_fp_registers(int pid, unsigned long *fp_regs)
-+{
-+	if(ptrace(PTRACE_GETFPREGS, pid, 0, fp_regs) < 0)
-+		return(-errno);
-+	return(0);
-+}
-+
-+int restore_fp_registers(int pid, unsigned long *fp_regs)
-+{
-+	if(ptrace(PTRACE_SETFPREGS, pid, 0, fp_regs) < 0)
-+		return(-errno);
-+	return(0);
-+}
-+
- static int move_registers(int pid, int int_op, union uml_pt_regs *regs,
- 			  int fp_op, unsigned long *fp_regs)
- {
-Index: linux-2.6.11/arch/um/os-Linux/sys-x86_64/registers.c
-===================================================================
---- linux-2.6.11.orig/arch/um/os-Linux/sys-x86_64/registers.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/os-Linux/sys-x86_64/registers.c	2005-03-08 20:23:17.000000000 -0500
-@@ -5,8 +5,7 @@
- 
- #include <errno.h>
- #include <string.h>
--#include <sys/ptrace.h>
--#include "sysdep/ptrace.h"
-+#include "ptrace_user.h"
- #include "uml-config.h"
- #include "skas_ptregs.h"
- #include "registers.h"
-Index: linux-2.6.11/arch/um/os-Linux/util/Makefile
-===================================================================
---- linux-2.6.11.orig/arch/um/os-Linux/util/Makefile	2003-09-15 09:40:47.000000000 -0400
-+++ linux-2.6.11/arch/um/os-Linux/util/Makefile	2005-03-08 20:23:17.000000000 -0500
-@@ -0,0 +1,4 @@
-+hostprogs-y		:= mk_user_constants 
-+always			:= $(hostprogs-y)
-+
-+mk_user_constants-objs	:= mk_user_constants.o
-Index: linux-2.6.11/arch/um/os-Linux/util/mk_user_constants.c
-===================================================================
---- linux-2.6.11.orig/arch/um/os-Linux/util/mk_user_constants.c	2003-09-15 09:40:47.000000000 -0400
-+++ linux-2.6.11/arch/um/os-Linux/util/mk_user_constants.c	2005-03-08 20:23:17.000000000 -0500
-@@ -0,0 +1,29 @@
-+#include <stdio.h>
-+#include <asm/types.h>
-+/* For some reason, x86_64 nowhere defines u64 and u32, even though they're
-+ * used throughout the headers.
-+ */
-+typedef __u64 u64;
-+typedef __u32 u32;
-+#include <asm/user.h>
-+
-+int main(int argc, char **argv)
-+{
-+  printf("/*\n");
-+  printf(" * Generated by mk_user_constants\n");
-+  printf(" */\n");
-+  printf("\n");
-+  printf("#ifndef __UM_USER_CONSTANTS_H\n");
-+  printf("#define __UM_USER_CONSTANTS_H\n");
-+  printf("\n");
-+  /* I'd like to use FRAME_SIZE from ptrace.h here, but that's wrong on 
-+   * x86_64 (216 vs 168 bytes).  user_regs_struct is the correct size on
-+   * both x86_64 and i386.
-+   */
-+  printf("#define UM_FRAME_SIZE %d\n", (int) sizeof(struct user_regs_struct));
-+
-+  printf("\n");
-+  printf("#endif\n");
-+
-+  return(0);
-+}
-Index: linux-2.6.11/arch/um/sys-i386/ptrace.c
-===================================================================
---- linux-2.6.11.orig/arch/um/sys-i386/ptrace.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/sys-i386/ptrace.c	2005-03-08 20:23:17.000000000 -0500
-@@ -10,7 +10,7 @@
- #include "asm/ptrace.h"
- #include "asm/uaccess.h"
- #include "asm/unistd.h"
--#include "ptrace_user.h"
-+#include "sysdep/ptrace.h"
- #include "sysdep/sigcontext.h"
- #include "sysdep/sc.h"
- 
-Index: linux-2.6.11/arch/um/sys-i386/ptrace_user.c
-===================================================================
---- linux-2.6.11.orig/arch/um/sys-i386/ptrace_user.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/sys-i386/ptrace_user.c	2005-03-08 20:23:17.000000000 -0500
-@@ -7,8 +7,8 @@
- #include <errno.h>
- #include <unistd.h>
- #include <linux/stddef.h>
--#include <sys/ptrace.h>
--#include <asm/ptrace.h>
-+#include "ptrace_user.h"
-+/* Grr, asm/user.h includes asm/ptrace.h, so has to follow ptrace_user.h */
- #include <asm/user.h>
- #include "kern_util.h"
- #include "sysdep/thread.h"
-@@ -52,7 +52,7 @@
- 	nregs = sizeof(dummy->u_debugreg)/sizeof(dummy->u_debugreg[0]);
- 	for(i = 0; i < nregs; i++){
- 		if((i == 4) || (i == 5)) continue;
--		if(ptrace(PTRACE_POKEUSER, pid, &dummy->u_debugreg[i],
-+		if(ptrace(PTRACE_POKEUSR, pid, &dummy->u_debugreg[i],
- 			  regs[i]) < 0)
- 			printk("write_debugregs - ptrace failed on "
- 			       "register %d, value = 0x%x, errno = %d\n", i,
-@@ -68,7 +68,7 @@
- 	dummy = NULL;
- 	nregs = sizeof(dummy->u_debugreg)/sizeof(dummy->u_debugreg[0]);
- 	for(i = 0; i < nregs; i++){
--		regs[i] = ptrace(PTRACE_PEEKUSER, pid,
-+		regs[i] = ptrace(PTRACE_PEEKUSR, pid,
- 				 &dummy->u_debugreg[i], 0);
- 	}
- }
-Index: linux-2.6.11/arch/um/sys-i386/signal.c
-===================================================================
---- linux-2.6.11.orig/arch/um/sys-i386/signal.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/sys-i386/signal.c	2005-03-08 20:39:58.000000000 -0500
-@@ -11,8 +11,8 @@
- #include "asm/unistd.h"
- #include "frame_kern.h"
- #include "signal_user.h"
--#include "ptrace_user.h"
- #include "sigcontext.h"
-+#include "registers.h"
- #include "mode.h"
- 
- #ifdef CONFIG_MODE_SKAS
-@@ -51,7 +51,7 @@
- 	regs->regs.skas.fault_type = FAULT_WRITE(sc.err);
- 	regs->regs.skas.trap_type = sc.trapno;
- 
--	err = ptrace_setfpregs(userspace_pid[0], fpregs);
-+	err = restore_fp_registers(userspace_pid[0], fpregs);
- 	if(err < 0){
- 	  	printk("copy_sc_from_user_skas - PTRACE_SETFPREGS failed, "
- 		       "errno = %d\n", err);
-@@ -90,7 +90,7 @@
- 	sc.err = TO_SC_ERR(fault_type);
- 	sc.trapno = regs->regs.skas.trap_type;
- 
--	err = ptrace_getfpregs(userspace_pid[0], fpregs);
-+	err = save_fp_registers(userspace_pid[0], fpregs);
- 	if(err < 0){
- 	  	printk("copy_sc_to_user_skas - PTRACE_GETFPREGS failed, "
- 		       "errno = %d\n", err);
-Index: linux-2.6.11/arch/um/sys-ppc/ptrace_user.c
-===================================================================
---- linux-2.6.11.orig/arch/um/sys-ppc/ptrace_user.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/sys-ppc/ptrace_user.c	2005-03-08 20:23:17.000000000 -0500
-@@ -1,4 +1,3 @@
--#include <sys/ptrace.h>
- #include <errno.h>
- #include <asm/ptrace.h>
- #include "sysdep/ptrace.h"
-@@ -8,7 +7,7 @@
-     int i;
-     for (i=0; i < sizeof(struct sys_pt_regs)/sizeof(PPC_REG); ++i) {
- 	errno = 0;
--	regs_out->regs[i] = ptrace(PTRACE_PEEKUSER, pid, i*4, 0);
-+	regs_out->regs[i] = ptrace(PTRACE_PEEKUSR, pid, i*4, 0);
- 	if (errno) {
- 	    return -errno;
- 	}
-@@ -21,7 +20,7 @@
-     int i;
-     for (i=0; i < sizeof(struct sys_pt_regs)/sizeof(PPC_REG); ++i) {
- 	if (i != 34 /* FIXME: PT_ORIG_R3 */ && i <= PT_MQ) {
--	    if (ptrace(PTRACE_POKEUSER, pid, i*4, regs_in->regs[i]) < 0) {
-+	    if (ptrace(PTRACE_POKEUSR, pid, i*4, regs_in->regs[i]) < 0) {
- 		return -errno;
- 	    }
- 	}
-Index: linux-2.6.11/arch/um/sys-x86_64/ptrace_user.c
-===================================================================
---- linux-2.6.11.orig/arch/um/sys-x86_64/ptrace_user.c	2005-03-08 20:17:35.000000000 -0500
-+++ linux-2.6.11/arch/um/sys-x86_64/ptrace_user.c	2005-03-08 20:23:17.000000000 -0500
-@@ -6,9 +6,7 @@
- 
- #include <stddef.h>
- #include <errno.h>
--#define __FRAME_OFFSETS
--#include <sys/ptrace.h>
--#include <asm/ptrace.h>
-+#include "ptrace_user.h"
- #include "user.h"
- #include "kern_constants.h"
- 
-@@ -42,12 +40,12 @@
- void arch_leave_kernel(void *task, int pid)
- {
- #ifdef UM_USER_CS
--        if(ptrace(PTRACE_POKEUSER, pid, CS, UM_USER_CS) < 0)
-+        if(ptrace(PTRACE_POKEUSR, pid, CS, UM_USER_CS) < 0)
-                 printk("POKEUSR CS failed");
- #endif
- 
--        if(ptrace(PTRACE_POKEUSER, pid, DS, __USER_DS) < 0)
-+        if(ptrace(PTRACE_POKEUSR, pid, DS, __USER_DS) < 0)
-                 printk("POKEUSR DS failed");
--        if(ptrace(PTRACE_POKEUSER, pid, ES, __USER_DS) < 0)
-+        if(ptrace(PTRACE_POKEUSR, pid, ES, __USER_DS) < 0)
-                 printk("POKEUSR ES failed");
- }
+ /*
 
 
 
