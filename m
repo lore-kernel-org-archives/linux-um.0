@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BCi2A-00047L-17 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Apr 2004 09:42:14 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BCi29-0008Jf-JS for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Apr 2004 09:42:13 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+	id 1BCiaE-0002l4-P7 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Apr 2004 10:17:26 -0700
+Received: from covered.with.vernix.org ([64.209.120.201] ident=qmailr)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BCiaD-0006cX-SX for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Apr 2004 10:17:25 -0700
+From: "Nicholas E. Walker" <new@vernix.org>
 Subject: Re: [uml-devel] Re: V=R
+Message-ID: <20040411171722.GI1297@vernix.org>
 References: <20040410140840.GB5782@ccure.user-mode-linux.org>
 	<20040410145043.GA28734@bakunin.copyleft.de>
-In-Reply-To: <20040410145043.GA28734@bakunin.copyleft.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200404111854.06363.blaisorblade_spam@yahoo.it>
+In-Reply-To: <20040410145043.GA28734@bakunin.copyleft.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,56 +28,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 11 Apr 2004 18:54:06 +0200
-Content-Transfer-Encoding: quoted-printable
+Date: Sun, 11 Apr 2004 13:17:22 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 16:50, sabato 10 aprile 2004, Michael Koehne ha scritto:
-> Moin Jeff Dike,
->
-> > On Sat, Apr 10, 2004 at 01:06:51PM +0200, Sven K=F6hler wrote:
-> > > is there any way for the UML-kernel to allocate a non-swappable
-> > > memore-region in the host's memory? this could be especially important
-> > > for dedicated host-machines that are only to run UMLs.
-> >
-> > What I am going to do is make it possible to manage the host's memory
-> > so that it doesn't swap, and the UMLs in effect are mlocked.
->
->   this reminds me on VM's V=3DR nucleus option. A V=3DR is a memory parti=
-tion
+On Sat, Apr 10, 2004 at 04:50:43PM +0200, Michael Koehne wrote:
+>   this reminds me on VM's V=R nucleus option. A V=R is a memory partition
 >   dedicated to 1 user, e.g. an MVS guest running under VM who is doing its
 >   own demand paging. To translate this to Linux could be the following :
->
->   e.g. a system with 1GB real ram could boot `linux mem=3D256m` with
+> 
+>   e.g. a system with 1GB real ram could boot `linux mem=256m` with
 >   only a quarter of ram for the hosting system. We now need two tricks:
->
->   1: add 768m of ram as V=3DR memory (dont use it for Linux processes,
->      buffers, ...) partition and offer it as /dev/v=3Dr. (this would
+> 
+>   1: add 768m of ram as V=R memory (dont use it for Linux processes,
+>      buffers, ...) partition and offer it as /dev/v=r. (this would
 >      be a host kernel patch)
->
->   2: use this V=3DR region for UML `linux mem=3D256m@256m` (this would
+> 
+>   2: use this V=R region for UML `linux mem=256m@256m` (this would
 >      be a user kernel patch)
+> 
+>   I dont know how difficult implementation would be, but I think most
+>   of an UML V=R is already there. The real V=R is vice versa, so VM
+>   is running in upper core, to offer the lower core to the one and
+>   only guest a virtual=real environment.
 
-Well, if you mlock() the UML RAM, you already implement something such. The=
-=20
-problem is that such a patch will never go inside the official UML kernel=20
-tree, so someone should maintain it outside. Anyway, what you say, i.e. the=
-=20
-fact that some system (S/390?) support it, could make it easier for the=20
-"mlock" patch to be accepted.
+You could try using the NVRD (non-volatile ram disk) driver to acheive
+this.  It creates /dev/nvrd0 out of all memory not allocated by the
+kernel.
 
-Bye
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+http://www.savan.com/erez/v2.4.16-rmk1-hh15/nvrd.c
 
+It's not as efficient as it could be because it is designed to allow for
+enlarging the ram disk (so it puts the first block at the highest memory
+address, all addresses are reversed).  This is sort of useless in a
+system where RAM is volatile..
+
+Nicholas
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
