@@ -2,17 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BFy9c-000632-22 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Apr 2004 09:31:24 -0700
-Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
+	id 1BG5oZ-0006lC-Ss for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Apr 2004 17:42:11 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BFy9b-0007jI-QV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Apr 2004 09:31:23 -0700
-Message-ID: <20040420163121.17795.qmail@praize.com>
-From: "gboutwel" <gboutwel@praize.com>
+	id 1BG5oZ-00053o-Dx for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Apr 2004 17:42:11 -0700
+Message-ID: <06e701c4273a$64796400$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Problems with the SKAS patch and 2.6
-Content-Type: Text/Plain;
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] compile with allmodconfig !?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,85 +26,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 20 Apr 2004 16:31:21 -0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 21 Apr 2004 02:48:41 +0200
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-> Well, what you did is correct (you had to apply both the UML
-patch and that 
+hi !
+today i tried to compile a 2.6.4 uml kernel.
 
-> version of the SKAS patch); the problem is that for 2.6.6-rc1
-you need one 
+this is what i did:
 
-> more fix for the UML patch (it was posted here by Jeff Chua
-and it's 2 thread 
+i downloaded 
+http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.4.tar.bz2
+http://uml-pub.ists.dartmouth.edu/uml/uml-patch-2.6.4-1.bz2
+and patched the kernel with the uml-patch
 
-> before this one).
-
-
-
-Yeah I figured this out, and applied it, but wasn't able to finish
-compiling an UML guest, started getting error in /usr/innclude/asm
-directory.  Dealing with mpsecc.h, I think this is cause Debian
-(unstable/SID) doesn't have new enough kernel-headers, does that
-sound about right?
+after "make menuconfig ARCH=um" all was fine - i got a running kernel.
 
 
+furthermore, i tought: why selecting manually, which modules to compile?
+i would like a uml-kernel with ALL the modules suitable for being loaded
+with that kernel.
 
-> You must undo your changes to the Makefile since that patch
-already contains 
+so i tried:
 
-> it.
+make allmodconfig ARCH=um
+make linux ARCH=um
 
+but after that compiling fails at the very beginning with:
 
+"gcc: -pg and -fomit-frame-pointer are incompatible"
 
-Actually I only applied part of Jeff's patch.  I've had problems
-with some of his Makefile changes, but have up til now been able
-to compile fine without those changes.
+for the stock kernel without the uml-patch applied, compiling with 
+allmodconfig works without a problem.
 
+what can i do to get a uml-kernel with all the "uml`able" modules ?
+does someone need to dig through the config options to deceide, what modules
+are suitable for running inside uml and have no dependency to "real" hardware?
 
+IMHO, allmodconfig should work, when compiling uml.
 
-> The steps.
+btw:  i`m on suse 9 with gcc 3.3.1
 
-
-
-> Thanks, it is always important to post them, so that the help
-can be more 
-
-> detailed.
+regards
+roland
 
 
 
-> > The 2.6.6-rc1 host is doing good though.
-
-
-
-> Thanks for this test: the SKAS patch is very well tested, but
-I absolutely did 
-
-> not have the time to test that little change (2 lines, so don't
-worry).
-
-
-
-No problem, least I could do with you putting it out there is
-try it, and wanted to provide feedback for those that might be
-thinking about trying it.  That's what I use this box for.  To
-'mess around' with UML. :) At this point I'll add that this box
-is not an SMP box and I don't have SMP features enabled.
-
-
-
-George
-
-
-
-----------------------------------------------------
-
-Need to store your files online? 
-
-Upload them for free in Praize Briefcase
-
-http://www.praize.com/cgi-bin/members/mybriefcase.cgi
 
 
 
