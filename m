@@ -1,15 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Chris Emerson <uml-devel@mail.nosreme.org>
-Message-ID: <20041021065645.GA24531@ixion.tartarus.org>
-References: <415408E40001A675@ms001msg.mail.fw>
-	<200410181948.22460.blaisorblade_spam@yahoo.it>
-	<20041018203757.GA28381@ixion.tartarus.org>
-	<20041018210402.GB3049@localhost.localdomain>
+From: Cameron Patrick <cameron@patrick.wattle.id.au>
+Subject: Re: [uml-devel] UML "Distro" ?
+Message-ID: <20041021065935.GB4900@patrick.wattle.id.au>
+References: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
 Content-Disposition: inline
-In-Reply-To: <20041018210402.GB3049@localhost.localdomain>
-Subject: [uml-devel] Re: [uml-user] UML on PPC? state of the art
+In-Reply-To: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,30 +19,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 21 Oct 2004 07:56:45 +0100
-To: SteX <ste@openlabs.it>
+Date: Thu, 21 Oct 2004 14:59:35 +0800
+To: roland <for_spam@gmx.de>
 Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Oct 18, 2004 at 11:04:02PM +0200, SteX wrote:
-> On Mon, Oct 18, 2004 at 09:37:57PM +0100, Chris Emerson wrote:
-> > I'm hoping to do a bit more work on it soon.  It's tricky with a
-> > full-time day job and a wife who things (probably rightly) I should be
-> > doing more useful things when I'm at home.  :-)  So no promises...
-> > 
-> > Anyway, the code has changed quite a bit in the last few years, so it'll
-> > take me a while to get my head around it again even if I do find the
-> > time.
-> Since you are the last who worked on it would be good if you help us to
-> find the way to help (you) and your work. Do you agree?
 
-Apparently Oleg Orel has UML on PPC basically working, and will
-hopefully release it soon (within a few weeks).  So I think it's worth
-waiting (a reasonable time) for Oleg's work, to avoid duplicating the
-effort.
+--5I6of5zJg18YgZEa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If we lose patience, though, I agree with you.  :-)
+roland wrote:
 
-Chris
+> I would like to hear your opinion if it`s worth thinking about a
+> "UML Linux Distribution".
+
+Sounds like an eminently sensible idea to me :-)
+
+> It could be based on another distro (debian? fedora?) and contain:
+
+My personal bias would be to base it on Debian, as it is generally
+quite readily hackable, and has a lot of the infrastructure to support
+UML already there.  Dunno, I don't think it really matters that much.
+
+> - A setup for installation of a minimalistic, UML-"ready" base
+> system - call it a "UML runtime environment". That means: Recent and
+> skas/sysemu-patched kernel(2.6), modules, X, uml-utilities, screen,
+> scripts, bridge-utils......
+
+Is having X installed really desirable most of the time?  Most of the
+uses for this distro would be on servers, and having X on the host
+makes maintaining the distro harder for relatively little benefit.
+
+> - Pre-configured environment (bridge setup,tmpfs,mountpoints...)
+
+Scripts to make it easy to add and remove UML guest instances would
+also be quite useful -- especially if it could take care of having
+UMLs running as their own user id (for security reasons) and setting
+up a root filesystem.
+
+> - basic root-filesystems "ready to run"
+
+Or alternatively, including tools like rootstrap to make generating
+root fs'es easy?
+
+Cameron.
+
+
+--5I6of5zJg18YgZEa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFBd15Xl1rlvh2uVnMRAscRAJ0TJWvKb7gS5yEMrvGfxcmPEdL9DwCgpdpg
+f5goQRLnJ0Oh1Pl+8AdZcug=
+=Mo9e
+-----END PGP SIGNATURE-----
+
+--5I6of5zJg18YgZEa--
 
 
 -------------------------------------------------------
