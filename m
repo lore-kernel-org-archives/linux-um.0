@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZZna-0000wR-GI for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 11:05:58 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CZZnZ-0004Vh-Kz for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 11:05:58 -0800
-Message-ID: <41AE160D.3030807@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] 2.6.9-bb3 on 2.6.9 host problem - triggering a host
-	bug?
-References: <200411292315.25368.blaisorblade_spam@yahoo.it>
-	<200411301950.13529.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200411301950.13529.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1CZdqd-0004ZC-UM for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 15:25:23 -0800
+Received: from pool-141-154-235-89.bos.east.verizon.net ([141.154.235.89]
+	helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CZdqb-000872-Sf
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 15:25:23 -0800
+Message-Id: <200412020141.iB21f4iT004918@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Tue, 30 Nov 2004 15:20:17 PST."
+	<20041130152017.129e134c.akpm@osdl.org> 
+References: <20041130200845.2C5058BAFE@zion.localdomain>
+	<20041130152017.129e134c.akpm@osdl.org> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [patch 1/2] Uml - first part rework of run_helper()
+	and users.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,25 +31,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 01 Dec 2004 20:05:49 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 01 Dec 2004 20:41:03 -0500
+To: Andrew Morton <akpm@osdl.org>
+Cc: blaisorblade_spam@yahoo.it, bstroesser@fujitsu-siemens.com, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> On Monday 29 November 2004 23:15, Blaisorblade wrote:
-> 
-> I pressed Enter before filling in details - this is what I get on some UML 
-> versions at startup. Specifically, I get it on -bb3, and on versions based on 
-> it, on startup. I've tried removing the patches I've added to -bb3 and it 
-> still does not work, which is not nice.
-> 
-Have started to analyze the crash. If I did it right, the crash occurs at the
-beginning of kmem_cache_alloc(). It seems to be called with argument NULL as the
-pointer to the cache --> segfault.
+akpm@osdl.org said:
+> That makes five UML patches which I have queued up pending
+> confirmation:
+>
+> hostfs-uml-set-sendfile-to-generic_file_sendfile.patch
+> hostfs-uml-add-some-other-pagecache-methods.patch 
+> uml-terminal-cleanup.patch 
+> uml-first-part-rework-of-run_helper-and-users.patch
+> uml-finish-fixing-run_helper-failure-path.patch 
 
-Hope, this helps.
+These are all fine.  Feel free to send them to Linus.
 
-Bodo
+				Jeff
+
 
 
 -------------------------------------------------------
