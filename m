@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BHKBa-0006Kl-Pn for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Apr 2004 03:15:02 -0700
+	id 1BHLDr-0001l8-WE for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Apr 2004 04:21:28 -0700
 Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BHKBa-0002bx-3B for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Apr 2004 03:15:02 -0700
+	id 1BHLDr-0007hx-2U for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Apr 2004 04:21:27 -0700
 Received: from localhost (henrik@localhost)
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id i3OAEwK03411
+	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id i3OBLMK03917
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 24 Apr 2004 12:14:58 +0200
-From: Henrik Nordstrom <hno@marasystems.com>
-Message-ID: <Pine.LNX.4.44.0404241208240.3373-100000@filer.marasystems.com>
+	Sat, 24 Apr 2004 13:21:22 +0200
+From: Henrik Nordstrom <uml@henrik.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0404241208240.3373-100000@filer.marasystems.com>
+Message-ID: <Pine.LNX.4.44.0404241303430.3819-200000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] 2.4 hostfs no longer mounts specified directoryy
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-1463811839-640370305-1082805682=:3819"
+Subject: [uml-devel] [patch] 2.4 hostfs no longer mounts specified directory
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,24 +30,202 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 24 Apr 2004 12:14:57 +0200 (CEST)
+Date: Sat, 24 Apr 2004 13:21:22 +0200 (CEST)
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Something seems to have changed in how hostfs parses the filesystem flags
-option.  It no longer succeeds in specifying the location of the hostfs
-directory and the uml instead always uses the host root (/).
 
-Neither rootflags=/... for booting from hostfs or manual mount works. In 
-both cases it always gives the host root (/), not the specified directory.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-Using the current 2.4 CVS, ported to 2.4.26.
+---1463811839-640370305-1082805682=:3819
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-Was previously using the almost current 2.4 CVS (before humfs), ported to 
-2.4.26-rc2 with no problem.
+The attached patch fixes a number of hostfs problems in the current 2.4 
+tree. With this patch hostfs again has the same capabilities as before the 
+addition of humfs.
+
+  * Use the specified host directory like was done earlier, not hardcoded
+to "/"
+  * Allocate the root directory name. The mount flags is freed by the 
+kernel.
+  * host_file.c was missing #include <string.h> (uses strlen, memcpy 
+etc..) (gcc warnings)
+  * make all hostfs files owned by root (uid=0), not file owner on the
+host.
+
+
+Todo:
+
+  - Give hostfs a real mount structure in the kernel superblock like humfs
+has, allowing for storage of various mount flags and not only a root path.
+  - uid= mount flag to specify what uid the filesystem should be mounted 
+as inside the uml. [depends on the above]
+  - use "nobody" as uid if the host file uid is different from the host 
+uid running the uml. [almost a oneliner, independent of the above but 
+touches the same area]
+
+Notes:
+
+  - The hostfs "jail" option is not very secure in combination with the 
+ability to specify a root path. One can easily use .. or symlinks to 
+subvert this. The ability to specify a root path should maybe be disabled 
+if a jail path is specified. Chrooting would be a much better option.
+
 
 Regards
 Henrik
 
+---1463811839-640370305-1082805682=:3819
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="2.4-hostfs.patch"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.44.0404241321220.3819@filer.marasystems.com>
+Content-Description: 
+Content-Disposition: attachment; filename="2.4-hostfs.patch"
+
+SW5kZXg6IGFyY2gvdW0vZnMvaG9zdGZzL2hvc3RfZmlsZS5jDQo9PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09DQpSQ1MgZmlsZTogL2N2c3Jvb3QvdXNlci1tb2Rl
+LWxpbnV4L2xpbnV4L2FyY2gvdW0vZnMvaG9zdGZzL2hvc3RfZmlsZS5jLHYN
+CnJldHJpZXZpbmcgcmV2aXNpb24gMS4xDQpkaWZmIC11IC1wIC1yMS4xIGhv
+c3RfZmlsZS5jDQotLS0gYXJjaC91bS9mcy9ob3N0ZnMvaG9zdF9maWxlLmMJ
+NyBBcHIgMjAwNCAyMDo0NDowMSAtMDAwMAkxLjENCisrKyBhcmNoL3VtL2Zz
+L2hvc3Rmcy9ob3N0X2ZpbGUuYwkyNCBBcHIgMjAwNCAxMDo1NjoxOSAtMDAw
+MA0KQEAgLTExLDYgKzExLDcgQEANCiAjaW5jbHVkZSA8ZGlyZW50Lmg+DQog
+I2luY2x1ZGUgPHV0aW1lLmg+DQogI2luY2x1ZGUgPHN5cy92ZnMuaD4NCisj
+aW5jbHVkZSA8c3RyaW5nLmg+DQogI2luY2x1ZGUgIm9zLmgiDQogI2luY2x1
+ZGUgInVzZXIuaCINCiAjaW5jbHVkZSAiaG9zdGZzLmgiDQpJbmRleDogYXJj
+aC91bS9mcy9ob3N0ZnMvaG9zdGZzX3VzZXIuYw0KPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQ0KUkNTIGZpbGU6IC9jdnNyb290L3VzZXItbW9kZS1saW51eC9s
+aW51eC9hcmNoL3VtL2ZzL2hvc3Rmcy9ob3N0ZnNfdXNlci5jLHYNCnJldHJp
+ZXZpbmcgcmV2aXNpb24gMS4yMw0KZGlmZiAtdSAtcCAtcjEuMjMgaG9zdGZz
+X3VzZXIuYw0KLS0tIGFyY2gvdW0vZnMvaG9zdGZzL2hvc3Rmc191c2VyLmMJ
+NyBBcHIgMjAwNCAyMDo0NDowMiAtMDAwMAkxLjIzDQorKysgYXJjaC91bS9m
+cy9ob3N0ZnMvaG9zdGZzX3VzZXIuYwkyNCBBcHIgMjAwNCAxMDo1NjoxOSAt
+MDAwMA0KQEAgLTYyLDcgKzYyLDcgQEAgX191bWxfc2V0dXAoImhvc3Rmcz0i
+LCBob3N0ZnNfYXJncywNCiBzdGF0aWMgaW50IGFjY2Vzc19maWxlKGNoYXIg
+KmZpbGUsIGludCB1aWQsIGludCBnaWQsIGludCByLCBpbnQgdywgaW50IHgs
+IA0KIAkJICAgICAgIHZvaWQgKm1vdW50KQ0KIHsNCi0JY29uc3QgY2hhciAq
+cGF0aFtdID0geyBqYWlsX2RpciwgZmlsZSwgTlVMTCB9Ow0KKwljb25zdCBj
+aGFyICpwYXRoW10gPSB7IGphaWxfZGlyLCBtb3VudCwgZmlsZSwgTlVMTCB9
+Ow0KIAljaGFyIHRtcFtIT1NURlNfQlVGU0laRV07DQogCWludCBlcnIsIG1v
+ZGUgPSAwOw0KIA0KQEAgLTg4LDcgKzg4LDcgQEAgc3RhdGljIGludCBta19u
+b2QoY29uc3QgY2hhciAqZmlsZSwgaW50IA0KIAkJICBpbnQgZ3IsIGludCBn
+dywgaW50IGd4LCBpbnQgb3IsIGludCBvdywgaW50IG94LCANCiAJCSAgaW50
+IHR5cGUsIGludCBkZXYsIHZvaWQgKm1vdW50KQ0KIHsNCi0JY29uc3QgY2hh
+ciAqcGF0aFtdID0geyBqYWlsX2RpciwgZmlsZSwgTlVMTCB9Ow0KKwljb25z
+dCBjaGFyICpwYXRoW10gPSB7IGphaWxfZGlyLCBtb3VudCwgZmlsZSwgTlVM
+TCB9Ow0KIAljaGFyIHRtcFtIT1NURlNfQlVGU0laRV07DQogCWludCBlcnIg
+PSAtRU5PTUVNOw0KIAlpbnQgbW9kZSA9IDA7DQpAQCAtMTI3LDMwICsxMjcs
+MzIgQEAgc3RhdGljIGludCBzdGF0X2ZpbGUoY29uc3QgY2hhciAqZmlsZSwg
+dg0KIAkJICAgICB1bnNpZ25lZCBsb25nICpjdGltZV9vdXQsIGludCAqYmxr
+c2l6ZV9vdXQsIA0KIAkJICAgICB1bnNpZ25lZCBsb25nIGxvbmcgKmJsb2Nr
+c19vdXQpDQogew0KLQljb25zdCBjaGFyICpwYXRoW10gPSB7IGphaWxfZGly
+LCBmaWxlLCBOVUxMIH07DQotDQorCWNvbnN0IGNoYXIgKnBhdGhbXSA9IHsg
+amFpbF9kaXIsIG1vdW50LCBmaWxlLCBOVUxMIH07DQorCWludCB1aWQ7DQor
+CSp1aWRfb3V0ID0gMDsgLyogVGhpcyBzaG91bGQgdXNlIGEgbW91bnQgb3B0
+aW9uICovDQogCXJldHVybihob3N0X3N0YXRfZmlsZShwYXRoLCBkZXZfb3V0
+LCBpbm9kZV9vdXQsIG1vZGVfb3V0LCBubGlua19vdXQsIA0KLQkJCSAgICAg
+IHVpZF9vdXQsIGdpZF9vdXQsIHNpemVfb3V0LCBhdGltZV9vdXQsIG10aW1l
+X291dCwgDQorCQkJICAgICAgJnVpZCwgZ2lkX291dCwgc2l6ZV9vdXQsIGF0
+aW1lX291dCwgbXRpbWVfb3V0LCANCiAJCQkgICAgICBjdGltZV9vdXQsIGJs
+a3NpemVfb3V0LCBibG9ja3Nfb3V0KSk7DQorDQogfQ0KIA0KIHN0YXRpYyBp
+bnQgZmlsZV90eXBlKGNvbnN0IGNoYXIgKmZpbGUsIGludCAqcmRldiwgdm9p
+ZCAqbW91bnQpDQogew0KLQljb25zdCBjaGFyICpwYXRoW10gPSB7IGphaWxf
+ZGlyLCBmaWxlLCBOVUxMIH07DQorCWNvbnN0IGNoYXIgKnBhdGhbXSA9IHsg
+amFpbF9kaXIsIG1vdW50LCBmaWxlLCBOVUxMIH07DQogDQogCXJldHVybiho
+b3N0X2ZpbGVfdHlwZShwYXRoLCByZGV2KSk7DQogfQ0KIA0KIHN0YXRpYyBp
+bnQgb3Blbl9maWxlKGNoYXIgKmZpbGUsIGludCB1aWQsIGludCBnaWQsIGlu
+dCByLCBpbnQgdywgdm9pZCAqbW91bnQpDQogew0KLQljb25zdCBjaGFyICpw
+YXRoW10gPSB7IGphaWxfZGlyLCBmaWxlLCBOVUxMIH07DQorCWNvbnN0IGNo
+YXIgKnBhdGhbXSA9IHsgamFpbF9kaXIsIG1vdW50LCBmaWxlLCBOVUxMIH07
+DQogDQogCXJldHVybihob3N0X29wZW5fZmlsZShwYXRoLCByLCB3KSk7DQog
+fQ0KIA0KIHN0YXRpYyB2b2lkICpvcGVuX2RpcihjaGFyICpmaWxlLCBpbnQg
+dWlkLCBpbnQgZ2lkLCBpbnQgKmVycl9vdXQsIHZvaWQgKm1vdW50KQ0KIHsN
+Ci0JY29uc3QgY2hhciAqcGF0aFtdID0geyBqYWlsX2RpciwgZmlsZSwgTlVM
+TCB9Ow0KKwljb25zdCBjaGFyICpwYXRoW10gPSB7IGphaWxfZGlyLCBtb3Vu
+dCwgZmlsZSwgTlVMTCB9Ow0KIA0KIAlyZXR1cm4oaG9zdF9vcGVuX2Rpcihw
+YXRoLCBlcnJfb3V0KSk7DQogfQ0KQEAgLTE3MCw3ICsxNzIsNyBAQCBzdGF0
+aWMgaW50IGZpbGVfY3JlYXRlKGNoYXIgKmZpbGUsIGludCB1DQogCQkgICAg
+ICAgaW50IGdyLCBpbnQgZ3csIGludCBneCwgaW50IG9yLCBpbnQgb3csIGlu
+dCBveCwgDQogCQkgICAgICAgdm9pZCAqbW91bnQpDQogew0KLQljb25zdCBj
+aGFyICpwYXRoW10gPSB7IGphaWxfZGlyLCBmaWxlLCBOVUxMIH07DQorCWNv
+bnN0IGNoYXIgKnBhdGhbXSA9IHsgamFpbF9kaXIsIG1vdW50LCBmaWxlLCBO
+VUxMIH07DQogDQogCXJldHVybihob3N0X2ZpbGVfY3JlYXRlKHBhdGgsIHVy
+LCB1dywgdXgsIGdyLCBndywgZ3gsIG9yLCBvdywgb3gpKTsNCiB9DQpAQCAt
+MTc4LDcgKzE4MCw3IEBAIHN0YXRpYyBpbnQgZmlsZV9jcmVhdGUoY2hhciAq
+ZmlsZSwgaW50IHUNCiBzdGF0aWMgaW50IHNldF9hdHRyKGNvbnN0IGNoYXIg
+KmZpbGUsIHN0cnVjdCBob3N0ZnNfaWF0dHIgKmF0dHJzLCANCiAJCSAgICB2
+b2lkICptb3VudCkNCiB7DQotCWNvbnN0IGNoYXIgKnBhdGhbXSA9IHsgamFp
+bF9kaXIsIGZpbGUsIE5VTEwgfTsNCisJY29uc3QgY2hhciAqcGF0aFtdID0g
+eyBqYWlsX2RpciwgbW91bnQsIGZpbGUsIE5VTEwgfTsNCiANCiAJcmV0dXJu
+KGhvc3Rfc2V0X2F0dHIocGF0aCwgYXR0cnMpKTsNCiB9DQpAQCAtMTg2LDI4
+ICsxODgsMjggQEAgc3RhdGljIGludCBzZXRfYXR0cihjb25zdCBjaGFyICpm
+aWxlLCBzdA0KIHN0YXRpYyBpbnQgbWFrZV9zeW1saW5rKGNvbnN0IGNoYXIg
+KmZyb20sIGNvbnN0IGNoYXIgKnRvLCBpbnQgdWlkLCBpbnQgZ2lkLA0KIAkJ
+CXZvaWQgKm1vdW50KQ0KIHsNCi0JY29uc3QgY2hhciAqcGF0aFtdID0geyBq
+YWlsX2RpciwgZnJvbSwgTlVMTCB9Ow0KKwljb25zdCBjaGFyICpwYXRoW10g
+PSB7IGphaWxfZGlyLCBtb3VudCwgZnJvbSwgTlVMTCB9Ow0KIA0KIAlyZXR1
+cm4oaG9zdF9tYWtlX3N5bWxpbmsocGF0aCwgdG8pKTsNCiB9DQogDQogc3Rh
+dGljIGludCB1bmxpbmtfZmlsZShjb25zdCBjaGFyICpmaWxlLCB2b2lkICpt
+b3VudCkNCiB7DQotCWNvbnN0IGNoYXIgKnBhdGhbXSA9IHsgamFpbF9kaXIs
+IGZpbGUsIE5VTEwgfTsNCisJY29uc3QgY2hhciAqcGF0aFtdID0geyBqYWls
+X2RpciwgbW91bnQsIGZpbGUsIE5VTEwgfTsNCiANCiAJcmV0dXJuKGhvc3Rf
+dW5saW5rX2ZpbGUocGF0aCkpOw0KIH0NCiANCiBzdGF0aWMgaW50IG1rX2Rp
+cihjb25zdCBjaGFyICpmaWxlLCBpbnQgbW9kZSwgaW50IHVpZCwgaW50IGdp
+ZCwgdm9pZCAqbW91bnQpDQogew0KLQljb25zdCBjaGFyICpwYXRoW10gPSB7
+IGphaWxfZGlyLCBmaWxlLCBOVUxMIH07DQorCWNvbnN0IGNoYXIgKnBhdGhb
+XSA9IHsgamFpbF9kaXIsIG1vdW50LCBmaWxlLCBOVUxMIH07DQogDQogCXJl
+dHVybihob3N0X21rZGlyKHBhdGgsIG1vZGUpKTsNCiB9DQogDQogc3RhdGlj
+IGludCBybV9kaXIoY29uc3QgY2hhciAqZmlsZSwgaW50IHVpZCwgaW50IGdp
+ZCwgdm9pZCAqbW91bnQpDQogew0KLQljb25zdCBjaGFyICpwYXRoW10gPSB7
+IGphaWxfZGlyLCBmaWxlLCBOVUxMIH07DQorCWNvbnN0IGNoYXIgKnBhdGhb
+XSA9IHsgamFpbF9kaXIsIG1vdW50LCBmaWxlLCBOVUxMIH07DQogDQogCXJl
+dHVybihob3N0X3JtZGlyKHBhdGgpKTsNCiB9DQpAQCAtMjE1LDggKzIxNyw4
+IEBAIHN0YXRpYyBpbnQgcm1fZGlyKGNvbnN0IGNoYXIgKmZpbGUsIGludCAN
+CiBzdGF0aWMgaW50IGxpbmtfZmlsZShjb25zdCBjaGFyICp0bywgY29uc3Qg
+Y2hhciAqZnJvbSwgaW50IHVpZCwgaW50IGdpZCwgDQogCQkgICAgIHZvaWQg
+Km1vdW50KQ0KIHsNCi0JY29uc3QgY2hhciAqdG9fcGF0aFtdID0geyBqYWls
+X2RpciwgdG8sIE5VTEwgfTsNCi0JY29uc3QgY2hhciAqZnJvbV9wYXRoW10g
+PSB7IGphaWxfZGlyLCBmcm9tLCBOVUxMIH07DQorCWNvbnN0IGNoYXIgKnRv
+X3BhdGhbXSA9IHsgamFpbF9kaXIsIG1vdW50LCB0bywgTlVMTCB9Ow0KKwlj
+b25zdCBjaGFyICpmcm9tX3BhdGhbXSA9IHsgamFpbF9kaXIsIG1vdW50LCBm
+cm9tLCBOVUxMIH07DQogDQogCXJldHVybihob3N0X2xpbmtfZmlsZSh0b19w
+YXRoLCBmcm9tX3BhdGgpKTsNCiB9DQpAQCAtMjI0LDE1ICsyMjYsMTUgQEAg
+c3RhdGljIGludCBsaW5rX2ZpbGUoY29uc3QgY2hhciAqdG8sIGNvbg0KIHN0
+YXRpYyBpbnQgcmVhZF9saW5rKGNoYXIgKmZpbGUsIGludCB1aWQsIGludCBn
+aWQsIGNoYXIgKmJ1ZiwgaW50IHNpemUsIA0KIAkJICAgICB2b2lkICptb3Vu
+dCkNCiB7DQotCWNvbnN0IGNoYXIgKnBhdGhbXSA9IHsgamFpbF9kaXIsIGZp
+bGUsIE5VTEwgfTsNCisJY29uc3QgY2hhciAqcGF0aFtdID0geyBqYWlsX2Rp
+ciwgbW91bnQsIGZpbGUsIE5VTEwgfTsNCiANCiAJcmV0dXJuKGhvc3RfcmVh
+ZGxpbmsocGF0aCwgYnVmLCBzaXplKSk7DQogfQ0KIA0KIHN0YXRpYyBpbnQg
+cmVuYW1lX2ZpbGUoY2hhciAqZnJvbSwgY2hhciAqdG8sIHZvaWQgKm1vdW50
+KQ0KIHsNCi0JY29uc3QgY2hhciAqdG9fcGF0aFtdID0geyBqYWlsX2Rpciwg
+dG8sIE5VTEwgfTsNCi0JY29uc3QgY2hhciAqZnJvbV9wYXRoW10gPSB7IGph
+aWxfZGlyLCBmcm9tLCBOVUxMIH07DQorCWNvbnN0IGNoYXIgKnRvX3BhdGhb
+XSA9IHsgamFpbF9kaXIsIG1vdW50LCB0bywgTlVMTCB9Ow0KKwljb25zdCBj
+aGFyICpmcm9tX3BhdGhbXSA9IHsgamFpbF9kaXIsIG1vdW50LCBmcm9tLCBO
+VUxMIH07DQogDQogCXJldHVybihob3N0X3JlbmFtZV9maWxlKHRvX3BhdGgs
+IGZyb21fcGF0aCkpOw0KIH0NCkBAIC0yNDMsNyArMjQ1LDcgQEAgc3RhdGlj
+IGludCBzdGF0X2ZzKGxvbmcgKmJzaXplX291dCwgbG9uZw0KIAkJICAgdm9p
+ZCAqZnNpZF9vdXQsIGludCBmc2lkX3NpemUsIGxvbmcgKm5hbWVsZW5fb3V0
+LCANCiAJCSAgIGxvbmcgKnNwYXJlX291dCwgdm9pZCAqbW91bnQpDQogew0K
+LQljb25zdCBjaGFyICpwYXRoW10gPSB7IGphaWxfZGlyLCBtb3VudCwgTlVM
+TCB9Ow0KKwljb25zdCBjaGFyICpwYXRoW10gPSB7IGphaWxfZGlyLCBtb3Vu
+dCwgbW91bnQsIE5VTEwgfTsNCiANCiAJcmV0dXJuKGhvc3Rfc3RhdGZzKHBh
+dGgsIGJzaXplX291dCwgYmxvY2tzX291dCwgYmZyZWVfb3V0LCBiYXZhaWxf
+b3V0LCANCiAJCQkgICBmaWxlc19vdXQsIGZmcmVlX291dCwgZnNpZF9vdXQs
+IGZzaWRfc2l6ZSwgDQpAQCAtMjc5LDggKzI4MSwxMSBAQCBzdGF0aWMgc3Ry
+dWN0IGV4dGVybmZzX2ZpbGVfb3BzIGhvc3Rmc19mDQogc3RhdGljIHN0cnVj
+dCBleHRlcm5mc19maWxlX29wcyAqbW91bnRfZnMoY2hhciAqbW91bnRfYXJn
+LCANCiAJCQkJCSAgdm9pZCAqKm1vdW50X2RhdGFfb3V0KQ0KIHsNCi0JaWYo
+aG9zdF9yb290X2ZpbGVuYW1lKG1vdW50X2FyZywgbW91bnRfZGF0YV9vdXQp
+KQ0KKwljaGFyICpyb290Ow0KKwlpZihob3N0X3Jvb3RfZmlsZW5hbWUobW91
+bnRfYXJnLCAmcm9vdCkpDQogCQlyZXR1cm4oTlVMTCk7DQorDQorCSptb3Vu
+dF9kYXRhX291dCA9IHVtbF9zdHJkdXAocm9vdCk7DQogDQogCXJldHVybigm
+aG9zdGZzX2ZpbGVfb3BzKTsNCiB9DQo=
+---1463811839-640370305-1082805682=:3819--
 
 
 -------------------------------------------------------
