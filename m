@@ -2,15 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CEsJn-0000iO-L2 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Oct 2004 09:37:39 -0700
-Received: from mail-relay-3.tiscali.it ([213.205.33.43])
+	id 1CEsJp-0000ib-7H for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Oct 2004 09:37:41 -0700
+Received: from mail-relay-1.tiscali.it ([213.205.33.41])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CEsJc-0002ET-Ih for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Oct 2004 09:37:39 -0700
+	id 1CEsJe-0002Eo-0p for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Oct 2004 09:37:41 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041005162044.A6C11B005@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml: makefile fix for .lds scripts.
+Message-Id: <20041005163021.B5E6FB00C@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] uml: remove SIGPROF from change_signals
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,32 +22,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 05 Oct 2004 18:20:43 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Tue, 05 Oct 2004 18:30:21 +0200
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Remove uml.lds and dyn.lds from extra-y; this was a relict from the recent
-past.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>, Jeff Dike <jdike@addtoit.com>
+
+Since local_irq_save() and local_irq_disable() should match (apart from saving
+the flags), get/set_signals must match [un]block_signals, i.e. change_signals;
+since get/set_signals don't enable/disable SIGPROF (and this behaviour is safe
+as explained in the comment the patch adds, since the profiling code does not
+interact with the kernel code), not even change_signals must toggle it.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.9-current-paolo/arch/um/kernel/Makefile |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
+ uml-linux-2.6.8.1-paolo/arch/um/kernel/signal_user.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletion(-)
 
-diff -puN arch/um/kernel/Makefile~uml-makefiles-lds-script-fix arch/um/kernel/Makefile
---- linux-2.6.9-current/arch/um/kernel/Makefile~uml-makefiles-lds-script-fix	2004-10-05 18:20:08.097717672 +0200
-+++ linux-2.6.9-current-paolo/arch/um/kernel/Makefile	2004-10-05 18:20:08.099717368 +0200
-@@ -3,7 +3,7 @@
- # Licensed under the GPL
- #
+diff -puN arch/um/kernel/signal_user.c~uml-remove-SIGPROF-change_signals arch/um/kernel/signal_user.c
+--- uml-linux-2.6.8.1/arch/um/kernel/signal_user.c~uml-remove-SIGPROF-change_signals	2004-09-21 18:11:58.000000000 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/kernel/signal_user.c	2004-09-21 18:11:58.000000000 +0200
+@@ -57,6 +57,10 @@ int change_sig(int signal, int on)
+ 	return(!sigismember(&old, signal));
+ }
  
--extra-y := vmlinux.lds uml.lds dyn.lds
-+extra-y := vmlinux.lds
- clean-files := vmlinux.lds.S
- 
- obj-y = checksum.o config.o exec_kern.o exitcode.o frame_kern.o frame.o \
++/* Both here and in set/get_signal we don't touch SIGPROF, because we must not
++ * disable profiling; it's safe because the profiling code does not interact
++ * with the kernel code at all.*/
++
+ static void change_signals(int type)
+ {
+ 	sigset_t mask;
+@@ -65,7 +69,6 @@ static void change_signals(int type)
+ 	sigaddset(&mask, SIGVTALRM);
+ 	sigaddset(&mask, SIGALRM);
+ 	sigaddset(&mask, SIGIO);
+-	sigaddset(&mask, SIGPROF);
+ 	if(sigprocmask(type, &mask, NULL) < 0)
+ 		panic("Failed to change signal mask - errno = %d", errno);
+ }
 _
 
 
