@@ -1,25 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ct9sI-0005T8-Eo for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 11:27:46 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Ct9sH-0004zX-Nb for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 11:27:46 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SIGSEGV and SA_NODEFER
-References: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
-	<200501212058.16992.blaisorblade@yahoo.it>
-	<200501221134.44585.rob@landley.net>
-In-Reply-To: <200501221134.44585.rob@landley.net>
+	id 1CtA80-0006K8-SD for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 11:44:00 -0800
+Received: from mxfep02.bredband.com ([195.54.107.73])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CtA7z-0002Ko-4b for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 11:44:00 -0800
+Received: from kakmonster.int.dactylis.com ([85.224.135.43] [85.224.135.43])
+	by mxfep02.bredband.com with ESMTP id
+	<20050124194343.TMZL12890.mxfep02.bredband.com@kakmonster.int.dactylis.com>
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 24 Jan 2005 20:43:43 +0100
+Received: from [85.224.198.209]
+	(c-d1c6e055.165-1-64736c11.cust.bredbandsbolaget.se [85.224.198.209])
+	(authenticated bits=0)
+	by kakmonster.int.dactylis.com (8.13.1/8.13.1) with ESMTP id
+	j0OJhbca011750
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 24 Jan 2005 20:43:42 +0100
+Message-ID: <41F54FE9.7060503@better.se>
+From: Marcus Better <marcus@better.se>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501242045.09164.blaisorblade@yahoo.it>
+Subject: [uml-devel] skas3 patch breaks ATI video drivers
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,93 +38,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Jan 2005 20:45:09 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
-Cc: Rob Landley <rob@landley.net>
+Date: Mon, 24 Jan 2005 20:43:37 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 22 January 2005 17:34, Rob Landley wrote:
-> On Friday 21 January 2005 02:58 pm, Blaisorblade wrote:
-> > That is -mm1, I've already looked at both... the patches listed below are
-> > minor fixes / improvements...
-> >
-> > The name of the 2.6.11-rc1-mm2 patch which probably fixed your issue is:
-> >
-> > uml-fix-a-stack-corruption-crash.patch
->
-> I reverted that patch, rebuilt vmlinux, tried again, and it's happily
-> halfway through the binutils build as I type.  That fix doesn't seem to be
-> it. (Makes a certain amount of sense, since I wasn't seeing a crash, I was
-> seeing a hang.)
-Hmm, and so what is fixing your problem? It's difficult to tell in this 
-case...
-> > If it's not a problem, try removing it from -mm2 and recompiling, and
-> > test if you get the crash with the new kernel (which is what I expect)...
-> >
-> > > More later, lunch is over...
-> >
-> > Here, now, I must go to dinner... bye!
->
-> Another interesting point is that with -mm2 (patched or unpatched), I'm
-> seeing output hiccups when the system swaps.
-Host or guest? If it's the host system, then my idea about it (a locking 
-problem) is a good explaination, but if it's the guest system to swap I 
-haven't clear why it works (not investigated well yet, through).
-> Here's a cut and paste of a 
-> section where it was extracting the binutils tarball:
->
-> binutils-2.14/gas/testsuite/gas/hppa/unsorted/common.s
-> binutils-2.14/gas/testsuite/gas/hppa/unsorted/fragbug.s
-> binutils-2.14/gas/testsuite/gas/hppa/unsorteortedrted/ted/ged/gld/glo/globg
->lobalobalobalbbalbualbuglbug.bug.sug.sg.s.ss
-> binutils-2.14/gas/testsuite/gas/hppa/unsorted/importbug.s
->
-> And later on...
->
-> binutils-2.14/ld/testsuite/ld-sparc/tlssunbin64.dd
-> binutils-2.14/ld/testsuite/ld-sparc/tlssunbin64.rd
-> binutils-2.14/ld/testsuite/lde/ld-/ld-sld-spd-spa-sparsparcparc/arc/trc/tlc
->/tls/tlsstlssulssunssunbsunbiunbinnbin6bin64in64.n64.s64.s4.s.ss
-> binubinutinutinutilutilstils-ils-2ls-2.s-2.1-2.142.14/.14/l14/ld4/ld//ld/tl
->d/ted/tes/testtestsestsustsuitsuitsuiteuite/ite/lte/lde/ld-/ld-sld-spd-spa-s
->parsparcparc/arc/trc/tlc/tls/tlsstlssulssunssunbsunbiunbinnbin6bin64in64.n64
->.s64.sd4.sd.sdsd binutils-2.14/ld/testsuite/ld-sparc/tlssunbin64.td
-> binutils-2.14/ld/testsuite/ld-sparc/tlssunbinpic32.s
-> binutils-2.14/ld/testsuite/ld-sparc/tlssunbinpic64.s
-> binutils-2.14/ld/testsuite/ld-sparc/tlssunnopic32.dd
->
-> It did it about five or six times, that I noticed.  (And it did it before I
-> reverted the stack fix patch, so that's not it.)
->
-> I had all that output piped to tee, which output it to out.txt, and the
-> corresponding line of out.txt isn't glitched, so it seems to just be a
-> cosmetic bug in the display code.  But I thought I'd report it anyway.
-Good thing, thanks...
-> I'm 
-> using stdin/stdout as the console.  (And even though you put it into raw
-> mode, I still can't ctrl-c out of the processs I'm running, either.)
+Hi all,
 
-Does this happen in -bb4 too? Also, does it happen even if you use a xterm 
-console?
+I applied Blaisorblade's host-skas3-2.6.9-v7.patch, and it breaks the 
+fglrx graphics driver from ATI[1]. This is with Debian kernel 2.6.9, but 
+I believe it applies to vanilla kernels also.
 
-> Rob
+The problem is the following declaration added to include/asm-i386/desc.h:
 
-Well, am I right if I suppose the other version you tested (with success) is 
-only 2.6.9-bb4, for this console issue?
+----------------------------------------------------------
+extern int modify_ldt(struct mm_struct * mm, int func, void __user *ptr,
+		      unsigned long bytecount);
+----------------------------------------------------------
 
-There is a patch which was merged in 2.6.10-mm1 (IIRC), which changes heavily 
-the I/O core... I'm CC:ing the author for more investigation.
+The fglrx driver contains the following macro in a source file:
 
-However, I'm not sure that patch is at fault... there is a locking problem 
-which *could* maybe be responsible of this...; I actually wonder about why 
-this locking problem has never shown up in reports or in testing (it exists, 
-only it's a race condition)... there is a situation where it shows up with a 
-side effect, indeed, so the problem exists...
+_syscall3( int, modify_ldt, int, func, void *, ptr, unsigned long, 
+bytecount )
+
+Here the compiler chokes with the following error:
+---------------------------------------------------------
+/usr/src/modules/fglrx-4.3.0-3.14.6/firegl_public.c:181: error: 
+conflicting types for `modify_ldt'
+include/asm/desc.h:144: error: previous declaration of `modify_ldt'
+---------------------------------------------------------
+
+I don't understand the details of the kernel code, but it seems that the 
+problem is that the SKAS patch defines the function modify_ldt which 
+conflicts with the syscall macros.
+
+I renamed the new function to _modify_ldt instead (and changed the two 
+or three references to it in ldt.c), and this seems to fix the problem.
+
+Please CC replies to me, I'm not subscribed to the list.
+
+Thanks for your work!
+
+Marcus B.
+
+[1] http://www.ati.com/support/drivers/linux/radeon-linux.html
 
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
