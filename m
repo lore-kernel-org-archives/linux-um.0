@@ -2,17 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8Ndd-0002Qf-3B for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:11:33 -0800
+	id 1D8Ndg-0002Qp-T8 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:11:36 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D8Ndb-0001ya-GE for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:11:33 -0800
-Message-Id: <200503072038.j27Kc6bc003978@ccure.user-mode-linux.org>
+	id 1D8Ndf-0001ys-84 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:11:36 -0800
+Message-Id: <200503072037.j27KbJbc003952@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 8/16] UML - Code cleanup
+Subject: [uml-devel] [PATCH 3/16] UML - slirp driver tells the network it's
+	not ethernet
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,73 +25,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 07 Mar 2005 15:38:06 -0500
+Date: Mon, 07 Mar 2005 15:37:19 -0500
 To: Linus Torvalds <torvalds@osdl.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, bstroesser@fujitsu-siemens.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, tzachar@cs.bgu.ac.il
 
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+From: Nir Tzachar <tzachar@cs.bgu.ac.il>
+Tell the netdevice code that a slirp device is not ethernet.
 
-Shifting register restore and userspace resume to the
-beginning of the userspace loop, we can remove the
-identical code done before the loop.
-
-Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: uml-i386/arch/um/kernel/skas/process.c
+Index: linux-2.6.11/arch/um/drivers/slirp_kern.c
 ===================================================================
---- uml-i386.orig/arch/um/kernel/skas/process.c	2005-03-02 23:39:26.408483443 -0800
-+++ uml-i386/arch/um/kernel/skas/process.c	2005-03-02 23:45:55.666136061 -0800
-@@ -139,17 +139,20 @@
- 	int err, status, op, pid = userspace_pid[0];
- 	int local_using_sysemu; /*To prevent races if using_sysemu changes under us.*/
+--- linux-2.6.11.orig/arch/um/drivers/slirp_kern.c	2005-03-05 12:07:31.000000000 -0500
++++ linux-2.6.11/arch/um/drivers/slirp_kern.c	2005-03-05 12:08:16.000000000 -0500
+@@ -33,8 +33,11 @@
  
--	restore_registers(pid, regs);
--		
--	local_using_sysemu = get_using_sysemu();
-+	while(1){
-+		restore_registers(pid, regs);
- 
--	op = local_using_sysemu ? PTRACE_SYSEMU : PTRACE_SYSCALL;
--	err = ptrace(op, pid, 0, 0);
-+		/* Now we set local_using_sysemu to be used for one loop */
-+		local_using_sysemu = get_using_sysemu();
-+
-+		op = SELECT_PTRACE_OPERATION(local_using_sysemu, singlestepping(NULL));
-+
-+		err = ptrace(op, pid, 0, 0);
-+		if(err)
-+			panic("userspace - could not resume userspace process, "
-+			      "pid=%d, ptrace operation = %d, errno = %d\n",
-+			      op, errno);
- 
--	if(err)
--		panic("userspace - PTRACE_%s failed, errno = %d\n",
--		       local_using_sysemu ? "SYSEMU" : "SYSCALL", errno);
--	while(1){
- 		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
- 		if(err < 0)
- 			panic("userspace - waitpid failed, errno = %d\n", 
-@@ -187,19 +190,6 @@
- 			/* Avoid -ERESTARTSYS handling in host */
- 			PT_SYSCALL_NR(regs->skas.regs) = -1;
- 		}
--
--		restore_registers(pid, regs);
--
--		/*Now we ended the syscall, so re-read local_using_sysemu.*/
--		local_using_sysemu = get_using_sysemu();
--
--		op = SELECT_PTRACE_OPERATION(local_using_sysemu, singlestepping(NULL));
--
--		err = ptrace(op, pid, 0, 0);
--		if(err)
--			panic("userspace - PTRACE_%s failed, "
--			      "errno = %d\n",
--			      local_using_sysemu ? "SYSEMU" : "SYSCALL", errno);
- 	}
- }
- 
+ 	dev->init = NULL;
+ 	dev->hard_header_len = 0;
+-	dev->addr_len = 4;
+-	dev->type = ARPHRD_ETHER;
++	dev->header_cache_update = NULL;
++	dev->hard_header_cache = NULL;
++	dev->hard_header = NULL;
++	dev->addr_len = 0;
++	dev->type = ARPHRD_SLIP;
+ 	dev->tx_queue_len = 256;
+ 	dev->flags = IFF_NOARP;
+ 	printk("SLIRP backend - command line:");
 
 
 
