@@ -2,24 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CEuPm-0002CC-US for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Oct 2004 11:51:58 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CEuPl-0008IY-OC for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Oct 2004 11:51:58 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] T-mode processes
-References: <29246.1096763190@marajade.sandelman.ottawa.on.ca>
-	<200410042057.19226.blaisorblade_spam@yahoo.it>
-	<Pine.LNX.4.61.0410042223180.483@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.61.0410042223180.483@filer.marasystems.com>
+	id 1CEuui-0001mc-Kb for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Oct 2004 12:23:56 -0700
+Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CEuty-0005lo-RE for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Oct 2004 12:23:56 -0700
+Received: from NHROCAVG2.ets.enterasys.com (nhrocavg2.enterasys.com
+	[134.141.79.124])
+	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id i95JMwao003874
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 5 Oct 2004 15:22:58 -0400 (EDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200410052051.47614.blaisorblade_spam@yahoo.it>
+	charset="us-ascii"
+Message-ID: <EAC7622167479948B614F8B9AD41C505ECA5CD@MAANDMBX2.ets.enterasys.com>
+From: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
+Subject: [uml-devel] 2.6.8.1: Kernel panic: handle_trap - failed to wait at
+	end of syscall, errno = 4, status = 4479
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,61 +32,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 5 Oct 2004 20:51:47 +0200
+Date: Tue, 5 Oct 2004 15:22:04 -0400
+Content-Transfer-Encoding: 8bit
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Michael Richardson <mcr@sandelman.ottawa.on.ca>
 
-On Monday 04 October 2004 22:25, Henrik Nordstrom wrote:
-> On Mon, 4 Oct 2004, BlaisorBlade wrote:
-> > Actually, what I should do is to set the "mm->dumpable" flag to 1 inside
-> > mm/proc_mm.c (after mm_alloc(), it is 0). The situation is clear.
-> > However, to write a good patch, I want to study well the "mm->dumpable"
-> > flag use (when it's set, when not...) otherwise I could open a security
-> > hole (even because there are people using UML setuid to root, for the
-> > mlock() patch).
->
-> I don't think it is safe to set dumpable to 1 once it has become 0.
+I'm trying with root_fs.fc-2-client.pristine.20040504. I've got
+the incrementals in there:
 
-I think you are overlooking something ... read the original mail. The problem 
-is that for the userspace thread mm->dumpable is always 0, and this happens 
-on every known SKAS3 patch revision. Simply nobody thought about this before 
-now.
-
-The field does not "become" 0. allocate_mm, or whatever, allocates the 
-mm_struct, fills it with 0, and then initializes some basic fields. After 
-fork and execve, the dumpable field is adjusted according to the needs (and 
-can become 1).
-
-Since opening /proc/mm is more or less like creating a new process (or even 
-like forking), dumpable can become 1, following the general Linux rules. 
-
-Actually, the current fork() code simply copies the dumpable flag with all the 
-rest, and does not change it; this also makes a lot of sense, and I guess 
-that open_proc_mm will just copy the current->mm->dumpable setting to the new 
-mm.
-
-However, that's a problem if a process using /proc/mm changes its setting of 
-mm->dumpable (which happens on uid changes and with prctl). Does in that case 
-the uid of the ptraced process change?
-
-If needed, it could be reloaded on the new mm when using PROC_SWITCH_MM, but 
-that is strange. Also, I don't understand why prctl() does not do any 
-security check.
-
-And anyway, I'm not rushing on this... I want to study the mainstream code and 
-the ptrace exploit patch, before coding anything here.
-
-> If you want to fix this you need to find secure ways to prevent it from
-> becoming 0, or to add another parameter defining "security restricted"
-> processes differently from dumpable.
-
-Hmm, Alan Cox has been writing some changes to the dumpable flag (a sysctl 
-option, I think).
-
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+Checking PROT_EXEC mmap in /tmp...OK
+Linux version 2.6.8.1-1um (jtsillas@gabriel) (gcc version 3.2.2 20030222
+(Red Hat Linux 3.2.2-5)) #1 Tue Oct 5 15:17:54 EDT 2004
+Built 1 zonelists
+Kernel command line:
+ubd0=/local/tmp/root_fs.fc-2-client.pristine.20040504 root=98:0
+PID hash table entries: 16 (order 4: 128 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 30040k available
+Calibrating delay loop... 3722.44 BogoMIPS
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+openpty failed, errno = 8
+openpty failed, errno = 8
+Checking for /dev/anon on the host...Not available (open failed with
+errno 2)
+NET: Registered protocol family 16
+mconsole (version 2) initialized on /home/jtsillas/.uml/BlLygB/mconsole
+ubd : Synchronous mode
+devfs: 2004-01-31 Richard Gooch (rgooch@atnf.csiro.au)
+devfs: boot_options: 0x1
+Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+loop: loaded (max 8 devices)
+Universal TUN/TAP device driver 1.5 (C)1999-2002 Maxim Krasnyansky
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 2048 bind 4096)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+Initializing software serial port version 1
+Using anticipatory io scheduler
+ /dev/ubd/disc0: unknown partition table
+Initializing stdio console driver
+VFS: Mounted root (ext2 filesystem) readonly.
+Mounted devfs on /dev
+INIT: version 2.85 booting
+Kernel panic: handle_trap - failed to wait at end of syscall, errno = 4,
+status = 4479
 
 
 -------------------------------------------------------
