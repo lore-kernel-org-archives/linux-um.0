@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CnW89-0005re-8P for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Jan 2005 22:00:49 -0800
-Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CnW85-0001W9-TP
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Jan 2005 22:00:49 -0800
-Message-ID: <41E0C885.3020608@tuxrocks.com>
-From: Frank Sorenson <frank@tuxrocks.com>
+	id 1CniFF-0000R8-Sm for User-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Jan 2005 10:56:57 -0800
+Received: from mail6.mdx.safepages.com ([216.127.133.49])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CniFE-0005SI-Dq for User-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Jan 2005 10:56:57 -0800
+From: James McMechan <James_McMechan@hotmail.com>
+References: <41DD9FA6.3010208@cpe.fr>
+In-Reply-To: <41DD9FA6.3010208@cpe.fr>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
-References: <200501082106.38306.rob@landley.net>
-In-Reply-To: <200501082106.38306.rob@landley.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200501091045.49962.James_McMechan@hotmail.com>
+Subject: [uml-devel] Re: news for uml_hcd driver ?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,57 +28,63 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 08 Jan 2005 23:00:37 -0700
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 9 Jan 2005 10:45:49 -0800
+Content-Transfer-Encoding: 8bit
+To: Hubert FONGARNAND <hubert.fongarnand@cpe.fr>
+Cc: User-mode-linux-devel@lists.sourceforge.net, mcmechan@isp.com
 
-Rob Landley wrote:
-<snip>
+On Thursday 06 January 2005 12:29 pm, you wrote:
+> Hello
+> I'm a french student, (engineer school). I work on a very interessant
+> project. We want to develop a USB kernel driver for a joystick. In order
+> to test our driver, we'd want to run it in user space (with UML and
+> UML_HCD), doing this way we are sure not to crash the host kernel...
+> We success to compile a 2.4.18 kernel with your patch, but the uml_hcd
+> module don't seem to work (we don't see anything in /proc/bus/usb, when
+> usbdevfs in mounted).
+> Is there any developement on this driver today?
+> Is there a way to port this driver for the 2.6 kernel ?
+> Does it exist a way to run a device driver in user space (emulation ?)
+>
+> Thank you in advance
+> your sincerelly
+>
+> Hubert FONGARNAND
+> CPE Student
+It should still work what was your host kernel (the one you were running UML 
+on top of)
 
-Rob,
+I think that 2.4.19-39um as a guest kernel also worked but about 2.4.20 Greg 
+Kroh back-ported the 2.5/2.6 USB structures to 2.4 and broke the 
+umusb-2.4.19-39 patch. Later 2.4.19-XXum versions should also work but are 
+untested.
 
-I may not be able to answer all your questions, but I may be able to
-offer a few pointers.
+From the web page (which seems to be down?)
+Operation of the user mode linux host controller requires that the host system 
+has /proc/bus/usb mounted and writable by the user running the user mode 
+linux kernel.
 
-For the UML kernel version, the stock 2.6.x kernel is getting better,
-but still isn't the most stable and reliable kernel.  Right now, the
-most stable I've found is using 2.6.9 from kernel.org, with the -bb4
-patches from
-http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/
+Usually when I had problems it was that user mcmechan could not write to 
+the /proc/bus/usb files or that the host kernel driver had found a driver for 
+the device on the host kernel which caused the host USB driver to run not the 
+UML USB driver
 
-There are several thing you can do to improve the speed at which the UML
-runs.  When UML starts, it opens a file in /tmp (or somewhere else if
-TMPDIR is set), mmaps it, and uses that as its memory.  To speed this
-up, make sure that it's located on a tmpfs-mounted filesystem (so it's
-real memory).
+As to porting the uml-hcd to 2.6 it should be possible but there has not been 
+that much interest in running USB from UML though it seems to be picking up 
+again.
 
-fstab:
-none   /UML/MEMORY      tmpfs   defaults,size=768M      0 0
+As I recall it will enumerate the devices on the host but has a problem 
+creating the /proc/bus/usb files in the UML
+The proper solution was to setup a new style HCD in the 2.6 tree but UML is 
+rather different than USB expected e.g. no DMA and at the time creating the 
+absent DMA infrastructure seemed like much work to hit a moving target.
 
-Starting the UML:
-export TMPDIR=/UML/MEMORY
-/UML/linux ...
+As to emulation:
+UML is my preferred way to work on USB or I would have done it differently.
+VMWARE might have a way to run USB also but I don't remember seeing any last 
+time I looked at the web pages, and it would not help nearly as much for 
+debugging.
 
-
-Also, with an unpatched host kernel, your UML will run slower.  If
-possible, patch the host kernel to allow UMLs to run in SKAS mode and
-take advantage of some SYSEMU code.  These patches are also here:
-http://www.user-mode-linux.org/~blaisorblade/patchlist.html or you can
-get the 2.6.10 host patch from
-http://uml.tuxrocks.com/Patches/host-skas3-2.6.10-v7.patch
-
-I don't know much about hostfs, so I can't give any real ideas there.
-UML doesn't support TLS yet, so make sure that your UML root_fs doesn't
-have a /lib/tls directory.
-
-Hope this helps,
-
-Frank
--- 
-Frank Sorenson - KD7TZK
-Systems Manager, Computer Science Department
-Brigham Young University
-frank@tuxrocks.com
 
 
 -------------------------------------------------------
