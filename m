@@ -1,26 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CH4NL-00047n-W5 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 10:54:23 -0700
-Received: from nudl.linbit.com ([212.69.162.21] helo=mail.linbit.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CH4NK-0007HH-A2 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 10:54:23 -0700
-From: Lars Ellenberg <Lars.Ellenberg@linbit.com>
-Subject: Re: [uml-devel] uml "ip header error" for large (fragmented) udp
-	packets
-Message-ID: <j7l8RdbM+9uLzg0PWMggkBg=lge@web.de>
-References: </ydgn6vAKqzNNA6XYwRcEgI=lge@web.de>
-	<vm4cST3zEEx6OdPLK17ocyg=lge@web.de>
-	<20041006203539.GC22794@wotan.suse.de>
-	<200410072041.51890.blaisorblade_spam@yahoo.it>
-	<RO4HJxErhAMlOpdbW1UCZm8=lge@web.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <RO4HJxErhAMlOpdbW1UCZm8=lge@web.de>
+	id 1CH5ra-0003VG-5c for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 12:29:42 -0700
+Received: from brown.brainfood.com ([146.82.138.61]
+	helo=gradall.private.brainfood.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CH5rV-0008N4-Vz for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 12:29:42 -0700
+From: Adam Heath <adam@doogie.org>
+Subject: Re: [uml-devel] Implement vsyscall/sysenter, patch 2/4
+In-Reply-To: <200410081912.i98JCUr20451@trolli.pdb.fsc.net>
+Message-ID: <Pine.LNX.4.58.0410111428510.1211@gradall.private.brainfood.com>
+References: <200410081912.i98JCUr20451@trolli.pdb.fsc.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,79 +27,100 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 11 Oct 2004 19:55:12 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andrew Beekhof <andrew@beekhof.net>, Lars Marowsky-Bree <lmb@suse.de>
+Date: Mon, 11 Oct 2004 14:29:05 -0500 (CDT)
+To: bodo.stroesser@fujitsu-siemens.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com, blaisorblade_spam@yahoo.it
 
-/ 2004-10-07 22:24:54 +0200
-\ Lars Ellenberg:
+On Fri, 8 Oct 2004,  wrote:
 
-> now, what I found:
-> arch/um/drivers/net_kern.c:
-> struct sk_buff *ether_adjust_skb(struct sk_buff *skb, int extra)
-> {
-> 	if((skb != NULL) && (skb_tailroom(skb) < extra)){
-> 	  	struct sk_buff *skb2;
-> 
-> 		skb2 = skb_copy_expand(skb, 0, extra, GFP_ATOMIC);
-> 		dev_kfree_skb(skb);
-> 		skb = skb2;
-> 	}
-> 	if(skb != NULL) skb_put(skb, extra);
-> 	return(skb);
-> }
-> 
-> net/core/skbuff.c:
->  *	BUG ALERT: ip_summed is not copied. Why does this work? Is it used
->  *	only by netfilter in the cases when checksum is recalculated? --ANK
->  */
-> struct sk_buff *skb_copy_expand(const struct sk_buff *skb,
-> 				int newheadroom, int newtailroom, int gfp_mask)
-> {
-> 
-> 
-> does that trigger something in someones brain maybe?
-> someone "sees" it?
-> 
-> otherwise I keep poking around...
+> To make the vsyscall-page available for copy_from_user() and
+> ptrace(), we should use kernel's "gate-vma" mechanism.
+> Therefore we need a valid page structure. To have this, one
+> page (or more) is allocated at boot time, the contents of the
+> vsyscall-page is copied into this page and the page's pte is
+> inserted in swapper's pagetables.
+> Now it will be copied into the pagetables of all processes.
+>
+> Note: this alone doesn't work, since FIXADDR_USER_START and
+>       FIXADDR_USER_END are not yet defined correctly. Also
+>       access_ok_skas() does not yet grant read accesses to
+>       pages not in the normal user area.
+>
+> Risks:
+> Please check the first hunk! I don't know, whether this change is OK.
+> Maybe fixrange_init() is wrong anyway with 3-level-pagetables?
+>
+>
+> Signed-off-by: Bodo Stroesser <bodo.stroesser@fujitsu-siemens.com>
+>
+> ---
+>
+>
+> --- linux-2.6.9-rc2-orig/arch/um/kernel/mem.c	2004-09-27 19:24:56.000000000 +0200
+> +++ linux-2.6.9-rc2/arch/um/kernel/mem.c	2004-10-05 15:36:57.032218318 +0200
+> @@ -121,7 +121,7 @@
+>
+>  	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
+>  		pmd = (pmd_t *)pgd;
+> -		for (; (j < PTRS_PER_PMD) && (vaddr != end); pmd++, j++) {
+> +		for (; (j < PTRS_PER_PMD) && (vaddr < end); pmd++, j++) {
+>  			if (pmd_none(*pmd)) {
+>  				pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
+>  				set_pmd(pmd, __pmd(_KERNPG_TABLE +
+> @@ -175,6 +175,29 @@
+>  }
+>  #endif /* CONFIG_HIGHMEM */
+>
+> +static void __init fixaddr_user_init( void)
+> +{
+> +	long size = FIXADDR_USER_END - FIXADDR_USER_START;
+> +	pgd_t *pgd;
+> +	pmd_t *pmd;
+> +	pte_t *pte;
+> +	unsigned long paddr, vaddr = FIXADDR_USER_START;
+> +
+> +	if (  ! size )
+> +		return;
+> +
+> +	fixrange_init( FIXADDR_USER_START, FIXADDR_USER_END, swapper_pg_dir);
+> +	paddr = (unsigned long)alloc_bootmem_low_pages( size);
+> +	memcpy( (void *)paddr, (void *)FIXADDR_USER_START, size);
 
-since UML => Host does not work, but
-Host => UML does, this suggests that
-the bug is somewhere on the sending side.
+Use consistent spacing.
 
-I was not able to track it down.
-
-but, I just patched out the "verify checksum" from the receiving part,
-and get 16000 byte through now, sometimes more (this seems to be a
-buffer issue).
-
-so for now, I just don't care for the ip checksum on my UMLs,
-and I have to live with no fragmented UDP from UML => Host.
-but between my UMLs, I have now up to 16k UDP, that should be enough for
-the moment beeing.
-
-
-bute but effective: dont care for checksums.  at first I had additional
-printks in the code wherever it said "goto inhdr_error", to find where
-exactly it breaks.
-only the now #if 0'ed one triggered.
-
-	Lars Ellenberg
-
-
---- linux-2.6.6/net/ipv4/ip_input.c.orig	2004-10-11 19:35:57.000000000 +0200
-+++ linux-2.6.6/net/ipv4/ip_input.c	2004-10-11 19:53:58.000000000 +0200
-@@ -403,8 +403,10 @@
- 
- 	iph = skb->nh.iph;
- 
-+#if 0
- 	if (ip_fast_csum((u8 *)iph, iph->ihl) != 0)
- 		goto inhdr_error; 
-+#endif
- 
- 	{
- 		__u32 len = ntohs(iph->tot_len); 
+> +	paddr = __pa(paddr);
+> +	for ( ; size > 0; size-=PAGE_SIZE, vaddr+=PAGE_SIZE, paddr+=PAGE_SIZE) {
+> +		pgd = swapper_pg_dir + pgd_index(vaddr);
+> +		pmd = pmd_offset(pgd, vaddr);
+> +		pte = pte_offset_kernel(pmd, vaddr);
+> +		pte_set_val( (*pte), paddr, PAGE_READONLY);
+> +	}
+> +}
+> +
+>  void paging_init(void)
+>  {
+>  	unsigned long zones_size[MAX_NR_ZONES], vaddr;
+> @@ -195,6 +218,8 @@
+>  	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
+>  	fixrange_init(vaddr, FIXADDR_TOP, swapper_pg_dir);
+>
+> +	fixaddr_user_init();
+> +
+>  #ifdef CONFIG_HIGHMEM
+>  	init_highmem();
+>  #endif
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+> Use IT products in your business? Tell us what you think of them. Give us
+> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
+> http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
 
 -------------------------------------------------------
