@@ -2,17 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPWrR-0004k6-Kb for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:56:25 -0800
+	id 1CPWrI-0004k1-Pf for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:16 -0800
 Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
 	helo=zion.localdomain)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPWrQ-0000QG-8y for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:56:25 -0800
+	id 1CPWrC-0000Oe-B8 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:16 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041103231759.C564055C8D@zion.localdomain>
-Subject: [uml-devel] [patch 19/20] uml: readd linux Makefile target - fixes to
-	the old version.
+Message-Id: <20041103231723.BF97C363A8@zion.localdomain>
+Subject: [uml-devel] [patch 04/20] uml: fix symbol conflict in linking
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,67 +23,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 04 Nov 2004 00:17:59 +0100
+Date: Thu, 04 Nov 2004 00:17:23 +0100
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it
 
 
-(Please CC me on replies).
-We have readded the "linux" target which just creates a hardlink to vmlinux.
-It was noted (sorry for forgetting who said this) that "make ARCH=um"
-will leave an old "linux" file, since the target is not listed in .PHONY.
+Since arch/um/kernel/tt/unmap_fin.o is linked statically, it could contain
+some symbols also contained in the rest of vmlinux; on some systems, this
+actually happens (due to some glibc differences).
 
-Using a symlink, instead of an hard link, was suggested because the hard link
-does not get updated with make vmlinux. But mv linux $destpath (the most
-meaningful installation command) is broken, so I instead added linux to .PHONY.
-Obviously, linux will not be rebuilt on "make vmlinux ARCH=um", but this makes
-sense (if people use the new way, don't use old tricks). Anyway, we remove
-"linux" in any case.
+Since that file *must* be linked statically and then relinked (its code must
+remap the whole .text area except the section it is contained in during UML
+startup), we cannot change this. So, we use objcopy to turn all symbols into
+local ones except for switcheroo(), which is the only function actually
+defined in the source (the other ones are brought in during linking).
 
-Acked-by: Jeff Dike <jdike@addtoit.com>
+This shouldn't hurt other systems, while improving the behaviour on affected
+ones (there is still another issue I'm trying to fix). And it is logically
+always needed (i.e., without this UML has just happened to work until now).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- vanilla-linux-2.6.9-paolo/arch/um/Makefile |   13 ++++++++-----
- 1 files changed, 8 insertions(+), 5 deletions(-)
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/Makefile |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff -puN arch/um/Makefile~uml-readd-linux-target-part2 arch/um/Makefile
---- vanilla-linux-2.6.9/arch/um/Makefile~uml-readd-linux-target-part2	2004-11-03 23:30:36.465715896 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/Makefile	2004-11-03 23:30:36.467715592 +0100
-@@ -63,16 +63,18 @@ ifeq ($(CONFIG_MODE_SKAS), y)
- $(SYS_HEADERS) : $(ARCH_DIR)/include/skas_ptregs.h
- endif
+diff -puN arch/um/kernel/tt/Makefile~uml-link-fix-symbol-conflict arch/um/kernel/tt/Makefile
+--- vanilla-linux-2.6.9/arch/um/kernel/tt/Makefile~uml-link-fix-symbol-conflict	2004-11-03 23:44:57.575807264 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/Makefile	2004-11-03 23:44:57.577806960 +0100
+@@ -4,6 +4,7 @@
+ #
  
-+.PHONY: linux
-+
- all: linux
+ extra-y := unmap_fin.o
++clean-files := unmap_tmp.o
  
- linux: vmlinux
--	$(RM) $@
--	ln $< $@
-+	ln -f $< $@
+ obj-y = exec_kern.o exec_user.o gdb.o ksyms.o mem.o mem_user.o process_kern.o \
+ 	syscall_kern.o syscall_user.o time.o tlb.o tracer.o trap_user.o \
+@@ -20,10 +21,9 @@ UNMAP_CFLAGS := $(patsubst -fprofile-arc
+ $(USER_OBJS) : %.o: %.c
+ 	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
  
- define archhelp
-   echo '* linux		- Binary kernel image (./linux) - for backward'
--  echo '		   compatibility only: now you can simply run'
--  echo '		   the vmlinux binary you find in the kernel root.'
-+  echo '		   compatibility only, this creates a hard link to the'
-+  echo '		   real kernel binary, the the "vmlinux" binary you'
-+  echo '		   find in the kernel root.'
- endef
+-$(O_TARGET) : $(obj)/unmap_fin.o
+-
+ $(obj)/unmap.o: $(src)/unmap.c
+ 	$(CC) $(UNMAP_CFLAGS) -c -o $@ $<
  
- prepare: $(ARCH_SYMLINKS) $(SYS_HEADERS) $(GEN_HEADERS) \
-@@ -118,7 +120,8 @@ define cmd_vmlinux__
- 	-Wl,-T,$(vmlinux-lds) $(vmlinux-init) \
- 	-Wl,--start-group $(vmlinux-main) -Wl,--end-group \
- 	-L/usr/lib -lutil \
--	$(filter-out $(vmlinux-lds) $(vmlinux-init) $(vmlinux-main) FORCE ,$^)
-+	$(filter-out $(vmlinux-lds) $(vmlinux-init) $(vmlinux-main) \
-+	FORCE ,$^) ; rm -f linux
- endef
- 
- USER_CFLAGS := $(patsubst -I%,,$(CFLAGS))
+-$(obj)/unmap_fin.o : $(src)/unmap.o
+-	ld -r -o $@ $< -lc -L/usr/lib
++$(obj)/unmap_fin.o : $(obj)/unmap.o
++	ld -r -o $(obj)/unmap_tmp.o  $< -lc -L/usr/lib
++	objcopy $(obj)/unmap_tmp.o $@ -G switcheroo
 _
 
 
