@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYHhb-0005De-Cr
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 20:29:55 -0800
-Received: from mta9.adelphia.net ([68.168.78.199])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYHhb-0001sd-20
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 20:29:55 -0800
-Received: from mizar.alcor.net ([68.64.159.24]) by mta9.adelphia.net
-          (InterMail vM.5.01.06.05 201-253-122-130-105-20030824) with SMTP
-          id <20031222042949.GRVM5224.mta9.adelphia.net@mizar.alcor.net>
-          for <user-mode-linux-devel@lists.sourceforge.net>;
-          Sun, 21 Dec 2003 23:29:49 -0500
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] UML on Alpha
-Message-ID: <20031222042948.GZ9354@alcor.net>
-References: <20031220052032.GC1152@erdos.home> <200312211644.39563.blaisorblade_spam@yahoo.it> <20031222041523.GA1023@erdos.home>
+	id 1AYIwX-0007kg-DP
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 21:49:25 -0800
+Received: from nevyn.them.org ([66.93.172.17] ident=Debian-exim)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
+	(Exim 4.24)
+	id 1AYIwX-0003DA-0N
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 21:49:25 -0800
+From: Daniel Jacobowitz <dan@debian.org>
+Subject: Re: [uml-devel] 2.4.22-[67] problems
+Message-ID: <20031222054914.GA8813@nevyn.them.org>
+References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org> <20031221004742.GE9354@alcor.net> <200312211658.44353.blaisorblade_spam@yahoo.it> <20031221224001.GO9354@alcor.net> <20031221231638.GR9354@alcor.net> <200312220025.hBM0PlFI012918@ccure.user-mode-linux.org> <20031222040857.GV9354@alcor.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20031222041523.GA1023@erdos.home>
+In-Reply-To: <20031222040857.GV9354@alcor.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +26,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 21 Dec 2003 20:29:48 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 22 Dec 2003 00:49:14 -0500
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, 224502@bugs.debian.org, debian-glibc@lists.debian.org
 
-On Mon, Dec 22, 2003 at 12:15:23PM +0800, Cameron Patrick wrote:
+On Sun, Dec 21, 2003 at 08:08:57PM -0800, Matt Zimmerman wrote:
+> On Sun, Dec 21, 2003 at 07:25:47PM -0500, Jeff Dike wrote:
+> 
+> > mdz@debian.org said:
+> > > I have just verified this myself.  Building user-mode-linux
+> > > 2.4.22-7um-1 on woody works fine (even when running on unstable), but
+> > > building it on unstable does not.
+> > 
+> > Conversely, does a unstable-built UML run on woody?
+> 
+> The unstable-built UML is broken on woody as well.  So far, my most
+> reproducible test case so far (not 100%, but close) is to start up a netcat
+> listener, and connect to it with input from /dev/zero, i.e. just push a
+> bunch of data over a TCP connection.  What happens is this:
 
-> I've been working on 2.4 so far.  I'm not running 2.6 on any machine at
-> all ATM, and from the sounds of this mailing list, you can't run a 2.6
-> UML on a 2.4 host?  Also, the Alpha is running Debian woody at the
-> moment, and I'm not sure how well that copes with a 2.6 kernel.
+...
 
-It requires that the usual handful of packages be updated (procps,
-util-linux, module-init-tools/modutils, etc.).
+Matt, could you try with different compilers?  This sounds a lot more
+to me like a compiler bug than a libc one (but that's just a hunch).
 
 -- 
- - mdz
+Daniel Jacobowitz
+MontaVista Software                         Debian GNU/Linux Developer
 
 
 -------------------------------------------------------
