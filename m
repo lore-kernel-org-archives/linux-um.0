@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DIv14-0004WI-Jb for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 13:51:18 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DIv12-00084v-Vi for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 13:51:18 -0700
+	id 1DIv4x-0004gd-4u for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 13:55:19 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DIv4v-0000sB-GL for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 13:55:19 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.9-bs7 panic on check_sysemu
-References: <4250729B.7040407@rimuhosting.com>
-	<200504041532.23866.blaisorblade@yahoo.it>
-	<200504051323.47160.rob@landley.net>
-In-Reply-To: <200504051323.47160.rob@landley.net>
+Subject: Re: [uml-devel] question about UML sigcontext in tt mode
+References: <003501c535d8$e8574a50$90b3c68a@st.com>
+	<20050404140011.GA1977@ccure.user-mode-linux.org>
+	<200504051320.45424.rob@landley.net>
+In-Reply-To: <200504051320.45424.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200504052255.39254.blaisorblade@yahoo.it>
+Message-Id: <200504052259.41817.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,45 +31,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 5 Apr 2005 22:55:39 +0200
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Peter <peter.spamcatcher@rimuhosting.com>
+Date: Tue, 5 Apr 2005 22:59:41 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Jeff Dike <jdike@addtoit.com>, Alex LIU <alex.liu@st.com>
 
-On Tuesday 05 April 2005 19:23, Rob Landley wrote:
-> On Monday 04 April 2005 09:32 am, Blaisorblade wrote:
-> > > Is this a case where I should be upgrading my host kernels (will do
-> > > that in time anyway)?
+On Tuesday 05 April 2005 19:20, Rob Landley wrote:
+> On Monday 04 April 2005 10:00 am, Jeff Dike wrote:
+> > On Thu, Mar 31, 2005 at 06:03:34PM +0800, Alex LIU wrote:
+> > > union uml_pt_regs {
+> > > #ifdef UML_CONFIG_MODE_TT
+> > >  struct tt_regs {
+> > >   long syscall;
+> > >   void *sc;
+> > >  } tt;
+> > > #endif
+> > > };
+> > > -------------------------------------
+> > >
+> > > Then why the tt.sc is defined as void while not as struct sigcontext?
+> > > Thanks!
 > >
-> > You simply need to update the SKAS patch version. -V2 is very old, and
-> > many bugs (including this, that is a bug in the SYSEMU part of the SKAS
-> > patch). Upgrading to -V7 for the SKAS patch, even on the same host kernel
-> > version (i.e. against 2.6.8.1), would fix that.
+> > Probably because you can't get a definition of struct sigcontext into
+> > processor.h and have it still compile.
 > >
-> > Also, some older guest kernels may seem to work, because they don't
-> > diagnose such bugs. But actually they have problems in some situations,
-> > because of the host bugs. For instance panicking with a simple "echo 0 >
-> > /proc/sysemu; echo 1 > /proc/sysemu".
-> >
-> > > Or is there something that can be done on the guest to make it work on
-> > > older kernels also?
-> >
-> > Not a lot, except disabling SYSEMU (and its performance advantage)
-> > entirely - add the "nosysemu" param to the UML command line and it will
-> > work.
-> >
-> > But it won't be as slow as if you didn't use SKAS.
-> >
-> > Bye
+> > Try #including sigcontext.h there and you'll see what I mean.
 >
-> Speaking of which, I ask this from time to time:
+> I don't know about can't.
 >
-> What's the minimal patch set that _just_ adds -SKAS0 mode to something like
-> a 2.6.11 kernel?  I'd like to try it out, but every time I sit down to
-> whack at it my interest budget runs out sifting through a mountain of
-> unrelated x86-64 patches to try to figure out what exactly I need to apply
-> to get just SKAS0...
-Also, I forgot: during your development work use SKAS. It doesn't give any big 
-difference visible inside the Virtual Machine (except for bugs).
+> #define sigcontext WALRUS
+> #include <processor.h>
+> thingy
+> #undef WALRUS
+>
+> Adviseable is another matter entirely.  (Did I mention I have a knack for
+> coming up with disgusting solutions to impossible problems?)
+I've not tested if it's impossible in this very case, however: if any host 
+header includes kernel headers on the host, and we include it from a 
+kernelspace file, we run into trouble.
+
+So, defining away like you do above every and each identifier present in every 
+possible versions of glibc / kernel headers would indeed work. Is this still 
+a solution?
+
+So, we cut the problem by excluding the unusable headers from the compiler 
+search path. arch/um/include are includable everywhere, /usr/include from 
+userspace files, <currentTreeRoot>/include/{asm,linux,*}/ from kernelspace 
+only.
+
+If you really come up with a general solution, let us know. Please. Thanks for 
+you effort anyway.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
