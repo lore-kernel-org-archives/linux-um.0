@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWn04-0003rs-5q
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:30:48 -0800
+	id 1AWn6S-00043q-8J
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:37:24 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.24)
-	id 1AWn02-00036D-9i
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:30:46 -0800
-Message-Id: <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [bug] uml segfaults if forcing static link, 2.6.0-test11 
-In-Reply-To: Your message of "Wed, 17 Dec 2003 22:54:58 +0100."
-             <Pine.LNX.4.58.0312172249020.19508@earth> 
-References: <Pine.LNX.4.58.0312171735540.8123@earth> <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth>  <Pine.LNX.4.58.0312172249020.19508@earth> 
+	id 1AWn6P-0000gf-Ia
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:37:22 -0800
+Message-Id: <200312180151.hBI1pfkS008231@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Unresolved symbols with 2.4.23 & 2.4.22-7um: 
+In-Reply-To: Your message of "Tue, 16 Dec 2003 19:32:20 EST."
+             <3FDFA414.9060004@davidcoulson.net> 
+References: <3FDFA414.9060004@davidcoulson.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -26,20 +26,14 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Dec 2003 20:46:01 -0500
-To: Ingo Molnar <mingo@elte.hu>
+Date: Wed, 17 Dec 2003 20:51:41 -0500
+To: David Coulson <david@davidcoulson.net>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-mingo@elte.hu said:
-> the attached .config produces an UML binary that segfaults much the
-> same way as before the ALIGN fixes. 
+david@davidcoulson.net said:
+> I added these to arch/um/kernel/ksyms.c 
 
-HAHAHA, there is justice in this world :-)
-
-This one is your fault, I think.
-
-See this patch and see if it fixes the problem:
-	http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=106867347801038&w=2
+Thanks, these will be in the next patch.
 
 				Jeff
 
