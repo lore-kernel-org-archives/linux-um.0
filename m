@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A6HrJ-0008EM-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 05 Oct 2003 16:00:13 -0700
-Received: from brown.brainfood.com ([146.82.138.61] helo=gradall.private.brainfood.com)
+	id 1A53sn-0000uj-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 02 Oct 2003 06:52:41 -0700
+Received: from cimice4.lam.cz ([212.71.168.94] helo=vagabond.light.src)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A6HrF-0006gU-Jg
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 05 Oct 2003 16:00:09 -0700
-From: Adam Heath <adam@doogie.org>
-Subject: Re: [uml-devel] Re: Hostaudio module parameters
-In-Reply-To: <BAY7-F106QD9Eg44PdO0000c3b5@hotmail.com>
-Message-ID: <Pine.LNX.4.44.0310051758510.1367-100000@gradall.private.brainfood.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1A53sl-0004GI-VS
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 02 Oct 2003 06:52:40 -0700
+From: Jan Hudec <bulb@ucw.cz>
+Subject: Re: [uml-devel] Re: pthreads?
+Message-ID: <20031002135220.GB5026@vagabond>
+References: <20031002093128.GB3512@vagabond> <Pine.GSO.4.21.0310021146500.8567-100000@vervain.sonytel.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.GSO.4.21.0310021146500.8567-100000@vervain.sonytel.be>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,17 +26,28 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 5 Oct 2003 17:59:23 -0500 (CDT)
-To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
+Date: Thu, 2 Oct 2003 15:52:20 +0200
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Gerd Knorr <kraxel@bytesex.org>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sun, 5 Oct 2003, Steve Schmidtke wrote:
+On Thu, Oct 02, 2003 at 12:03:10 +0200, Geert Uytterhoeven wrote:
+> Hence _your_ simple application doesn't need libpthread.
 
-> This could be abused to allow reading and writing arbitrary files on the host by loading the module with parameters within the UML.
+Hence NEITHER OF GTK, GDK, GLIB, GMODULE, GOBJECT, PANGO, ATK, X11 NEED
+libpthread!
 
-Use filemap.
+> | gcc -Wl,-T,arch/um/uml.lds.s -static -Wl,--wrap,malloc -Wl,--wrap,free -Wl, --wrap,calloc  -o linux arch/um/main.o vmlinux -L/usr/lib -lutil -L/usr/X11R6/li b -lgtk -lgdk -lX11 -lXi -lXext -lglib -lgmodule -ldl -lm -lgthread
 
+However if you link with gthread, you need pthread.
+So: a) Please don't blame it on X11.
+    b) Don't link against gthread unless you need them.
+    b.1) If you only call Gtk stuff in one thread, you don't need them.
+    b.2) If you call Gtk stuff from more than one thread, you can still
+	 provide gthread library with custom locking and get rid of
+	 pthread.
 
+-------------------------------------------------------------------------------
+						 Jan 'Bulb' Hudec <bulb@ucw.cz>
 
 
 -------------------------------------------------------
