@@ -2,20 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ynpO-00067y-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 15 Sep 2003 00:31:18 -0700
-Received: from mailout02.sul.t-online.com ([194.25.134.17])
+	id 19ypW2-0000Kw-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 15 Sep 2003 02:19:26 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19ynpN-0005Jx-H6
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Sep 2003 00:31:17 -0700
-Subject: Re: [uml-devel] [PATCH] Starting a command inside UML from mconsole
-From: Ulf.Bartelt@t-online.de (Ulf Bartelt)
-In-Reply-To: <Pine.LNX.4.44.0309142216310.7867-100000@filer.marasystems.com>
-References: <Pine.LNX.4.44.0309142216310.7867-100000@filer.marasystems.com>
-Content-Type: text/plain
-Message-Id: <1063611042.14239.16.camel@kira.chaos-gmbz>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	id 19ypW1-00048I-Hb
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Sep 2003 02:19:25 -0700
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] Re: pthreads? 
+In-Reply-To: <Pine.GSO.4.21.0309150853020.3191-100000@vervain.sonytel.be>
+Message-ID: <Pine.LNX.4.44.0309151033390.15749-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,49 +24,48 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Sep 2003 09:31:03 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 15 Sep 2003 11:19:11 +0200 (CEST)
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jeff Dike <jdike@addtoit.com>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-Am Son, 2003-09-14 um 22.28 schrieb Henrik Nordstrom:
-> On Sun, 14 Sep 2003, Michael Richardson wrote:
+On Mon, 15 Sep 2003, Geert Uytterhoeven wrote:
+
+> On Sat, 13 Sep 2003, Jeff Dike wrote:
+> > geert@linux-m68k.org said:
+> > > First step: libpthread redefines sigaction to install its own signal
+> > > handler around the signal.
+> > 
+> > Gawd, that's unpleasant.  What does its signal handler do?
 > 
-> > It is entirely reasonable that the admin of the host system doesn't even
-> > have login priveledges on the guest system, but would like the guest to
-> > shutdown nicely before he reboots the host.
-> 
-> For this there already is control-alt-delete (cad command in mconsole). A
-> guest which wants to be cleanly shut down ought to have a cad handler in
-> it's inittab (all distros does).
+> For reference, here's the code (from Debian glibc_2.3.1-16):
 
-Exactly.  All an uml hostig admin wants to know is the path to the uml
-stop script and I *don't* want the admin to do other things than using
-exactly that script, especially (s)he shall not issue commands at will
-in my uml.  The uml was set up by me and only I know what and how to
-take down and in which order.  So ctrl-alt-del or maybe some means to
-tell the uml of a soon coming powerdown/powerfail should be all what's
-needed to brimg a customer's uml down cleanly.
+The interesting part is what the signal handler does, not how it is
+installed.  According to the code you quoted the signal handler is
+__pthread_signhandler or __pthread_sighandler_rt depending on the
+sigaction type.
 
-> I see the ability to execute commands from mconsole more of a advanced 
-> administration and debugging tool, where a channel to the guest is always 
-> guaranteed no matter what happens inside the guest (within reasonable 
-> limits).
+From my understanding of ptherads but without reading the code this signal
+handler is supposed to route the signal to the correct threads. Linux
+kernel signal management in cloned processes differs significantly from
+POSIX Threads signal specification and this signal routing tries to make
+Linux look more like the POSIX Threads specification.
 
-I was to lazy up to now to fight thru driving an uml by expect... from
-debootstrap's state of having a mini-Debian installed to having it up
-and reachable in the network, some install steps need to be done and a
-"perfect remote control" without networking and other tricky things
-would make my installer simpler.  But the init= bootarg is my friend and
-I can live doing it that way...
+> I removed all libpthread overridings of symbols that are used by UML
+> (intersection of 'U' symbols of vmlinux and 'T' and 'W' symbols of libpthread),
+> and now UML boots. I'll try to find out which one is the bad guy...
 
-So I think such an "uml remote control" would be nice to have but not
-essential...
+In this case I would say UML is one of the bad guys due to it's symbols
+which overrides libc or pthreads. Any application which needs to override
+libc primitives to work is a bad guy and pthreads is technically part of
+libc when using threaded applications.
 
--- 
-#
-# Say it in Python ;-)
-#
-try:     you.run(away)
-finally: borg.assimilate(you)
+Hoever, if UML uses clone() or other libc calls (yes, clone() is a libc
+call, direcly matched by a kernel syscall) in a manner which should not
+confuse other users of the same calls then pthreads may be a bad guy as
+well, not dealing properly with the situation.
+
+Regards
+Henrik
 
 
 
