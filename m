@@ -2,15 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DAnke-0003HX-De for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Mar 2005 03:28:48 -0800
+	id 1DAnmU-0003KT-DP for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Mar 2005 03:30:42 -0800
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DAnkc-0002R3-KA for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Mar 2005 03:28:48 -0800
+	id 1DAnmS-0002eB-Kj for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Mar 2005 03:30:42 -0800
 From: blaisorblade@yahoo.it
-Message-Id: <20050311192753.043836477@zion>
-Subject: [uml-devel] [patch 1/1] uml-export-getgid-for-hostfs
+Message-Id: <20050311192945.DEB396477@zion>
+Subject: [uml-devel] [patch 1/2] uml: export getgid for hostfs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,11 +22,12 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 11 Mar 2005 20:27:52 +0100
+Date: Fri, 11 Mar 2005 20:29:45 +0100
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
+Export this symbol which is now needed for a typo fix (getuid() -> getgid()).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
@@ -35,8 +36,8 @@ Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
  1 files changed, 1 insertion(+)
 
 diff -puN arch/um/os-Linux/user_syms.c~uml-export-getgid-for-hostfs arch/um/os-Linux/user_syms.c
---- linux-2.6.11/arch/um/os-Linux/user_syms.c~uml-export-getgid-for-hostfs	2005-03-11 20:15:37.347405816 +0100
-+++ linux-2.6.11-paolo/arch/um/os-Linux/user_syms.c	2005-03-11 20:15:43.868414472 +0100
+--- linux-2.6.11/arch/um/os-Linux/user_syms.c~uml-export-getgid-for-hostfs	2005-03-11 20:16:17.061368376 +0100
++++ linux-2.6.11-paolo/arch/um/os-Linux/user_syms.c	2005-03-11 20:16:17.065367768 +0100
 @@ -82,6 +82,7 @@ EXPORT_SYMBOL_PROTO(statfs);
  EXPORT_SYMBOL_PROTO(statfs64);
  
