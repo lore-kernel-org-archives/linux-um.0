@@ -1,10 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 From: Henrik Nordstrom <hno@marasystems.com>
-In-Reply-To: <010c01c3b54d$99552830$2000000a@schlepptopp>
-Message-ID: <Pine.LNX.4.44.0311280938340.3315-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] How to copy COW files to another machine across the
+ network?
+In-Reply-To: <50376.130.217.250.13.1069985464.squirrel@webmail.scms.waikato.ac.nz>
+Message-ID: <Pine.LNX.4.44.0311280940300.3315-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: bug in COW? -  Re: [uml-user] uml 2.6.0-test9 crash
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -15,22 +16,26 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 Nov 2003 09:39:51 +0100 (CET)
-To: roland <for_spam@gmx.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Date: Fri, 28 Nov 2003 09:49:41 +0100 (CET)
+To: Shao-Lin Joseph Chung <sc57@cs.waikato.ac.nz>
+Cc: UML User list <user-mode-linux-user@lists.sourceforge.net>, UML Devel list <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, 28 Nov 2003, roland wrote:
+On Fri, 28 Nov 2003, Shao-Lin Joseph Chung wrote:
 
-> after making the rootfs-clone a cow-filesystem (by adding ubd2=rootfsclone.cow,rootfsclone.img),
-> the freeze happened again when doing some heavy writing. so - am i allowed to assume, that
-> there is a bug in the copy-on-write code?
+> As the subject says, I'm trying to copy the COW files across the network. 
+> But the size of those copies got expanded to the same size of the backing
+> file.
 
-Maybe, maybe not. What does vmstat on the host report while you run this?
+You can't move COW files around unless you make a tool to adjust the COW
+file header after the move. If not UML will disregard the COW file as
+invalid and revert to the backing file copy.. UML checks that the 
+following parameters match the backing file
+  * Full file name including path
+  * File size
+  * Modification timestamp
 
-> btw: could anybody recommend a general filesystem stresstest-tool which does the worst to
-> filesytems, you can do (besides formatting or overwriting)? :D
-
-bonnie++ is a good one..
+Regarding the size: You need to use a copying tool which accounts for 
+holes in the file. See for example the --sparse option to cp.
 
 Regards
 Henrik
