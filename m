@@ -2,16 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPWqH-0004cs-U0 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:13 -0800
-Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
-	helo=zion.localdomain)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPWqG-0000GY-Ev for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:13 -0800
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20041103231740.3112355C7D@zion.localdomain>
-Subject: [uml-devel] [patch 11/20] uml: remove SIGPROF from change_signals
+	id 1CPX3p-00073O-Ct for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 18:09:13 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CPX3o-0002Pi-No for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 18:09:13 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: Uml: hostfs sendfile support
+References: <20041102150339.GA6904@gandalf.intern.marcant.net>
+	<200411032037.56892.blaisorblade_spam@yahoo.it>
+	<20041104011116.GB5175@gandalf.intern.marcant.net>
+In-Reply-To: <20041104011116.GB5175@gandalf.intern.marcant.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart4893120.WOCtJdFSgr";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200411040309.18181.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,48 +30,62 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 04 Nov 2004 00:17:40 +0100
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it
+Date: Thu, 4 Nov 2004 03:09:03 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: nils toedtmann <user-mode-linux-user@nils.toedtmann.net>, user-mode-linux-user@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
 
+--nextPart4893120.WOCtJdFSgr
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>, Jeff Dike <jdike@addtoit.com>
+On Thursday 04 November 2004 02:11, nils toedtmann wrote:
+> I cc this mail to user-mode-linux-devel and LKML, too. But as i do not
+> subscribe to those lists it will probably get rejected. So you may
+> want to forward it.
+No need. LKML is open, and UML-devel follows that.
 
-Since local_irq_save() and local_irq_disable() should match (apart from saving
-the flags), get/set_signals must match [un]block_signals, i.e. change_signals;
-since get/set_signals don't enable/disable SIGPROF (and this behaviour is safe
-as explained in the comment the patch adds, since the profiling code does not
-interact with the kernel code), not even change_signals must toggle it.
+> > > > I don't remember at the moment.
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+> > So, if you want to use httpd, either don't use in on hostfs, or use it =
+on
+> > 2.4,
 
- vanilla-linux-2.6.9-paolo/arch/um/kernel/signal_user.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletion(-)
+> That's what i did. It was my sole 2.4-uml ...
 
-diff -puN arch/um/kernel/signal_user.c~uml-remove-SIGPROF-change_signals arch/um/kernel/signal_user.c
---- vanilla-linux-2.6.9/arch/um/kernel/signal_user.c~uml-remove-SIGPROF-change_signals	2004-11-03 23:44:59.984441096 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/kernel/signal_user.c	2004-11-03 23:44:59.986440792 +0100
-@@ -57,6 +57,10 @@ int change_sig(int signal, int on)
- 	return(!sigismember(&old, signal));
- }
- 
-+/* Both here and in set/get_signal we don't touch SIGPROF, because we must not
-+ * disable profiling; it's safe because the profiling code does not interact
-+ * with the kernel code at all.*/
-+
- static void change_signals(int type)
- {
- 	sigset_t mask;
-@@ -65,7 +69,6 @@ static void change_signals(int type)
- 	sigaddset(&mask, SIGVTALRM);
- 	sigaddset(&mask, SIGALRM);
- 	sigaddset(&mask, SIGIO);
--	sigaddset(&mask, SIGPROF);
- 	if(sigprocmask(type, &mask, NULL) < 0)
- 		panic("Failed to change signal mask - errno = %d", errno);
- }
-_
+> > or recompile apache disabling the usage of sendfile(). This is a new
+> > notice I get, however.
+
+> > That said, there is a possibility the patch is just a one-liner. It see=
+ms
+> > there is generic support for this. Try the attached one. Report what
+> > happens, please, so I know what to do with it. If it works, it will be
+> > included in next release.
+
+> Whoopy! It works.
+Wonderful!
+> Many thanks!
+
+Ok, in this case, I'm going to include that in next release. Bye and thanks=
+=20
+for the report!
+=2D-=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+--nextPart4893120.WOCtJdFSgr
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQBBiY9OqH9OHC+5NscRAiZWAJ0Sn/j2+vi/uR+s/8N9vKw6GkyoXwCgiaUd
+AFxEIV7gHchQN2lruJl7GU8=
+=qz1x
+-----END PGP SIGNATURE-----
+
+--nextPart4893120.WOCtJdFSgr--
 
 
 -------------------------------------------------------
