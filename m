@@ -1,20 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CE3ol-0007kk-V5 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Oct 2004 03:42:15 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CE3oe-0008HK-9g for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Oct 2004 03:42:15 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] T-mode processes
-In-Reply-To: <29246.1096763190@marajade.sandelman.ottawa.on.ca>
-Message-ID: <Pine.LNX.4.61.0410031239090.13697@filer.marasystems.com>
-References: <29246.1096763190@marajade.sandelman.ottawa.on.ca>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+From: Paul Warren <pdw@ex-parrot.com>
+Message-ID: <20041003125850.G4601@sphinx.mythic-beasts.com>
+References: <4144F914.4080609@merkurio.com.ve>
+	<200409132148.56200.blaisorblade_spam@yahoo.it>
+	<14ugk0trj7f3rcneq3ed42vetdnbv9gcqs@4ax.com>
+	<200409181918.45184.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200409181918.45184.blaisorblade_spam@yahoo.it>;
+	from blaisorblade_spam@yahoo.it on Sat, Sep 18, 2004 at
+	07:18:45PM +0200
+Subject: [uml-devel] Re: [uml-user] How to announce new SKAS3 releases
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,21 +23,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 3 Oct 2004 12:41:37 +0200 (CEST)
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sun, 3 Oct 2004 12:58:50 +0100
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, Harald Kapper <hk@kapper.net>
 
-On Sat, 2 Oct 2004, Michael Richardson wrote:
+On Sat, Sep 18, 2004 at 07:18:45PM +0200, BlaisorBlade wrote:
+> > might I suggest an announce-list for skas-patches?
+> 
+> > I simply wouldn't have noticed the latest one released on 12th september ;)
+> Setting up an announce-list would be a bit heavy to manage for me. I could, 
+> instead, make sure to post the announce both here and on uml-devel, and add a 
+> tag like "SKAS-announce" to the title. Would it be Ok for you?
 
-> So, this tells me that kill-9 can't kill a process which is being
-> strace'ed. I really think that this is a bug.
+I too would be in favour of an announce list - for UML in general,
+rather than just for SKAS.  Tagging with [announce] would certainly be
+sufficient, but a separate list would make my procmail that little bit
+simpler.
 
-It is the way it should be, even if somewhat confusing. Traced processes 
-are special in many ways.
+cheers,
 
-
-Regards
-Henrik
+Paul
 
 
 -------------------------------------------------------
