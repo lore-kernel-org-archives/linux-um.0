@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A6cnq-0006X7-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 06 Oct 2003 14:22:02 -0700
+	id 1A6cnK-0006Oe-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 06 Oct 2003 14:21:30 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A6cno-0003xW-L3
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 06 Oct 2003 14:22:01 -0700
+	id 1A6cnI-0003sy-Jv
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 06 Oct 2003 14:21:28 -0700
 Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h96LBmj06692
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 6 Oct 2003 17:11:49 -0400
-Message-Id: <200310062123.h96LNhGj020809@ccure.karaya.com>
-Subject: Re: [uml-devel] Separate COW patch. 
-In-Reply-To: Your message of "Mon, 29 Sep 2003 11:53:40 CDT."
-             <2D4B6CD74137D4119A1100104BC6BCBF0BC58605@dubntex006.qwest.net> 
-References: <2D4B6CD74137D4119A1100104BC6BCBF0BC58605@dubntex006.qwest.net> 
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h96LBIj06659
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 6 Oct 2003 17:11:18 -0400
+Message-Id: <200310062122.h96LMhGj020784@ccure.karaya.com>
+Subject: Re: [uml-devel] mconsole proc interface patch 
+In-Reply-To: Your message of "29 Sep 2003 18:47:31 +0200."
+             <1064854051.21559.5.camel@mancillotti.retesintesi.net> 
+References: <1064854051.21559.5.camel@mancillotti.retesintesi.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,19 +29,22 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 06 Oct 2003 17:23:42 -0400
-To: "Montgomery, Kendal L" <kendal.montgomery@qwest.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@sonycom.com
+Date: Mon, 06 Oct 2003 17:22:43 -0400
+To: marco ancillotti <mancillotti@interfree.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-kendal.montgomery@qwest.com said:
-> Where can I get what you've worked on so far?  I'd be willing to give
-> it a try and possibly help to sort out the remaining pieces that need
-> to make it work. 
+mancillotti@interfree.it said:
+> in last version of uml patch there's a bug that make uml crash when
+> from uml_mconsole someone try to use:
+> proc ../SOMETHINK
+> there's a patch to resolv prolem. 
 
-It's in arch/um/drivers/cow_kern.c.  The bit that got me hung up was ensuring
-that COW bitmap updates happen before the actual I/O.  This is necessary
-in case the UML crashes during a write.  You want the bitmap update to
-happen only after the data has been written.
+It sure didn't take long for people to start finding problems there :-)
+
+I thought (but didn't check) that any .. action would result in -ENOENT
+because the superblock being used isn't mounted anywhere.
+
+I'm not sure that fix is right, but I'll find some other fix if so.
 
 				Jeff
 
