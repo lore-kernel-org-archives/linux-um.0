@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DEINY-0001mw-Qa for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:47:24 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DEINY-0006xl-4S for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:47:24 -0800
+	id 1DEPz7-0001mX-Lq for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Mar 2005 02:54:41 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DEPz4-0003Pq-94 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Mar 2005 02:54:41 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <200503240335.15219.blaisorblade@yahoo.it>
-In-Reply-To: <200503240335.15219.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Hostfs permission checks are all wonky.
+References: <200503201417.59739.rob@landley.net>
+	<200503222019.10709.blaisorblade@yahoo.it>
+	<200503230109.06359.rob@landley.net>
+In-Reply-To: <200503230109.06359.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200503240346.35907.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] SKAS-V8, UML/2.4.27-bs2-pre7 released,
-	start of work on SKAS/x86-64
+Message-Id: <200503241153.56262.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,22 +31,94 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Mar 2005 03:46:33 +0100
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 24 Mar 2005 11:53:56 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>
 
-On Thursday 24 March 2005 03:35, Blaisorblade wrote:
-> Ok, I've put on the site the announcements of SKAS-v8 (which is identical
-> to -rc5, I just need to update the tarballs), of the test tree (very test)
-> for UML/2.4.
-It does not compile with GCC 3.4, but from what I see no 2.4.27 tree will 
-compile with that GCC, even for i386: it is stricter on attributes like 
-regparm and thus on FASTCALL, so he refuses this:
+On Wednesday 23 March 2005 07:09, Rob Landley wrote:
+> On Tuesday 22 March 2005 02:19 pm, Blaisorblade wrote:
+> > On Sunday 20 March 2005 20:17, Rob Landley wrote:
 
-static FASTCALL(void reschedule_idle(struct task_struct * p));
 
-static void reschedule_idle(struct task_struct * p)
+> A side effect of this is that I have to chown console to belong to the user
+> running UML in order to run "./linux rootfstype=hostfs rw init=/bin/sh",
+> because otherwise it can't open /dev/console to get the initial console.
+> (This is with the stdio console.)  /dev/console has permissions 600.
+>
 
-because it says they are different declarations.
+> > > If /dev/console doesn't belong to the current user, the
+> > > system can't even open the initial console, despite the fact the output
+> > > does NOT go to TTY1 if I'm running it an xterm.
+> >
+> > /dev/console and /dev/tty1 are entirely different. If you open a getty
+> > on /dev/console, Ctrl-C won't work there.
+>
+> I'm booting with init=/bin/sh (or a shellscript).  It opens /dev/console
+> for me behind the scenes, I don't make any special arrangements.  You're
+> right, ctrl-c doesn't work.  It would be nice if it did...
+>
+> What I meant by not going to /dev/tty1 is that's where console output goes
+> by default in the parent system, so if the thing were managing to write to
+> the parent's /dev/console that's where all the output would wind up.  But
+> it's not, it's going to stdout like it's supposed to.  Minus the wonky
+> permissions check you noticed above...
+>
+> > 1) Which version of UML are you using? If you are using the incrementals,
+> > they contain the hostfs rewrite which has all these problems... (with
+> > that, you can't even do a stat on a device you don't own, wrongly).
+>
+> 2.6.11 from kernel.org.
+>
+> > 2) Which command line? I recall you run with hostfs as root fs, but I'm
+> > not really sure of this.
+>
+> Try it, it's easy.
+>
+> ./linux rootfstype=hostfs rootflags=/ rw init=/bin/sh
+>
+> If you run it from an xterm, that should work.  If you run it from an ssh
+> session, it probably won't because of the permissions on /dev/console
+> discussed above.
+I'm not understanding the difference at the moment...
+
+> You mean like this darn bug I've been seeing for weeks?
+
+> io scheduler noop registered
+> loop: loaded (max 8 devices)
+> Initialized stdio console driver
+> Console initialized on /dev/tty0
+> VFS: Mounted root (hostfs filesystem).
+> idr_remove called for id=3 which is not allocated.
+> Call Trace:
+> a01fba48:  [<a007cbec>]
+> a01fba84:  [<a007cc13>]
+> a01fba9c:  [<a0085eaa>]
+> a01fbb04:  [<a0085697>]
+> a01fbb4c:  [<a00860a4>]
+> a01fbb68:  [<a007d09d>]
+> a01fbb74:  [<a004cc5e>]
+> a01fbb7c:  [<a004cdb6>]
+> a01fbb80:  [<a008e193>]
+> a01fbba8:  [<a004cd31>]
+> a01fbbc8:  [<a004526c>]
+> a01fbbe4:  [<a00451bf>]
+> a01fbc24:  [<a0045365>]
+> a01fbc38:  [<a0045445>]
+> a01fbc54:  [<a0011de9>]
+> a01fbcc0:  [<a0011e30>]
+> a01fbce4:  [<a0012d18>]
+> a01fbd14:  [<a0017887>]
+> a01fbd20:  [<a0097808>]
+>
+> sh-2.05b#
+>
+> It does that all the time.  (The id=? bit changes with each run.) 
+> Somewhere around here I've got a trace from when I built it with debug
+> symbols, I can get that for you at the same time I try out your patch...
+I'd like that a lot, and also your .config - I've never seen that message nor 
+I know the users of that kernel internal API (but probably UML itself isn't 
+using that).
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
