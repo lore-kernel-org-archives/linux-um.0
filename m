@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DECSI-0003VW-Fa for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 12:27:54 -0800
-Received: from server.ispbrasil.com.br ([66.160.135.36] helo=ispbrasil.com.br)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DECSF-0003HF-Dd
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 12:27:54 -0800
-Message-ID: <002001c52fe6$e51158b0$0201a8c0@lualele>
-From: "itamar" <itamar@ispbrasil.com.br>
+	id 1DEHVY-0006ge-DE for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 17:51:36 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DEHVT-00067d-Ft for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 17:51:36 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [patch 02/12] uml: cpu_relax fix
+References: <20050322162121.4295D2125C@zion>
+	<4241A2C0.2050206@fujitsu-siemens.com>
+In-Reply-To: <4241A2C0.2050206@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="Windows-1252";
-	reply-type=original
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] swap problem solved.
+Content-Disposition: inline
+Message-Id: <200503240250.38153.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,53 +30,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 23 Mar 2005 17:28:33 -0300
+Date: Thu, 24 Mar 2005 02:50:37 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net, monsta@monsta.hu
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-I am found a solution for my problem in this page
+On Wednesday 23 March 2005 18:09, Bodo Stroesser wrote:
+> blaisorblade@yahoo.it wrote:
+> > Use rep_nop instead of barrier for cpu_relax, following $(SUBARCH)'s
+> > doing that (i.e. i386 and x86_64).
+>
+> IIRC, Jeff had the idea, to use sched_yield() for this (from a discussion
+> on #uml).
+Hmm, makes sense, but this is to benchmark well... I remember from early 
+discussions on 2.6 scheduler that using sched_yield might decrease 
+performance (IIRC starve the calling application).
 
-http://uml.pimb.org/howto/uml-debian-install.html#SWAP
+Also, that call should be put inside the idle loop, not for cpu_relax, which 
+is very different, since it is used (for instance) in kernel/spinlock.c for 
+spinlocks, and in such things. The "Pause" opcode is explicitly recommended 
+(by Intel manuals, I don't recall why) for things like spinlock loops, and 
+using yield there would be bad.
 
-You only need to run the following commands the first time you use a copy of 
-the installer. They are needed to configure the ubd device nodes correctly, 
-as the presupplied ones have got the wrong minor numbers
+> S390 does something similar using a special DIAG-opcode that 
+> gives permission to zVM, that another Guest might run.
 
+> On a host running many UMLs, this might improve performance.
+>
+> So, I would like to have the small patch below (it's not tested, just an
+> idea).
 
-# cd /dev
-# rm ubd*
-# mknod ubd0 b 98 0
-# mknod ubd1 b 98 16
-# mknod ubd2 b 98 32
-# mknod ubd3 b 98 48
-# mknod ubd4 b 98 64
-# mknod ubd5 b 98 80
-# mknod ubd6 b 98 96
-# mknod ubd7 b 98 112
-
-
-Itamar Reis Peixoto
-+55 (34) 3238 3845
-e-mail : itamar@ispbrasil.com.br
-http://www.ispbrasil.com.br
-
-
-I am starting my guest machine with ubd1=/uml/clau/swap.img
-
-
--bash-2.05b# swapon -a
-swapon: /dev/ubd/1: No such device
--bash-2.05b#
-
-
-my fstab
-/dev/ubd/0      /               ext3    defaults,usrquota 1 1
-/proc           /proc           proc    defaults
-devpts          /dev/pts        devpts  mode=0622 0 0
-/dev/ubd/1      none            swap    sw      0       0
-
-
-How to make my swap working ?
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 
