@@ -1,18 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CLYgf-0003JO-0e for User-mode-linux-devel@lists.sourceforge.net;
-	Sat, 23 Oct 2004 20:04:53 -0700
-Received: from bay24-f2.bay24.hotmail.com ([64.4.18.52] helo=hotmail.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CLYge-00044D-4K for User-mode-linux-devel@lists.sourceforge.net;
-	Sat, 23 Oct 2004 20:04:52 -0700
-From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
-Subject: [uml-devel] [patches] ptrace fix, x11 fb update, minor stuff.
+	id 1CM0Rv-0004sf-IN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 01:43:31 -0700
+Received: from pimout1-ext.prodigy.net ([207.115.63.77])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CM0Ru-00036q-OK for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 01:43:31 -0700
+From: Chris Wedgwood <cw@f00f.org>
+Message-ID: <20041025084308.GA19935@taniwha.stupidest.org>
+References: <20041012001759.317908695@zion.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_4c75_41b1_31ca"
-Message-ID: <BAY24-F2R77bieLYCT40001280e@hotmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20041012001759.317908695@zion.localdomain>
+Subject: [uml-devel] Re: [patch 07/10] uml: kbuild - add even more cleaning
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,64 +27,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 24 Oct 2004 03:03:42 +0000
-To: kraxel@bytesex.org
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 25 Oct 2004 01:43:08 -0700
+To: blaisorblade_spam@yahoo.it
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
+On Tue, Oct 12, 2004 at 02:17:59AM +0200, blaisorblade_spam@yahoo.it wrote:
 
-------=_NextPart_000_4c75_41b1_31ca
-Content-Type: text/plain; format=flowed
+>  MRPROPER_FILES += $(SYMLINK_HEADERS) $(ARCH_SYMLINKS) \
+> -	$(addprefix $(ARCH_DIR)/kernel/,$(KERN_SYMLINKS))
+> +	$(addprefix $(ARCH_DIR)/kernel/,$(KERN_SYMLINKS)) $(ARCH_DIR)/os
 
-Gerd Knorr wrote:
->the X-Server wants IOPL access for some obscure
->reason, it shouldn't need that when running on top of a framebuffer
->device.  Anyone has an idea on that?
-
-I looked into this a while ago.  What I found was that you have to add UML 
-to the exclude ifdef in CheckGenericGA() from xfree86/common/xf86Bus.c, and 
-also around all the iopl() and ioperm() exclude ifdefs in 
-xfree86/os_support/linux/linux_video.c.
-
-I think it doesn't hurt to add  Option "PciOsConfig"  to the ServerFlags 
-section in the conf file.
-
-I also remember making the attached guest kernel patch at one point 
-(apologies for hand editing it).
-
-It would be nice if someone would code up an Option "NoHwIO" or something to 
-X that takes care of this, instead of the ifdef hell. :)
-
-Hope that helps,
-
-Steve Schmidtke
-
-
-------=_NextPart_000_4c75_41b1_31ca
-Content-Type: text/plain; name="vt_kbd.txt"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment; filename="vt_kbd.txt"
-
-diff *~ -Naur linux.orig/drivers/char/vt.c linux.new/drivers/char/vt.c
---- linux.orig/drivers/char/vt.c	Thu Nov 28 18:53:12 2002
-+++ linux.new/drivers/char/vt.c		Sun Aug  1 13:44:36 2003
-@@ -146,7 +146,13 @@
-
-int _kbd_rate(struct kbd_repeat *rep)
-{
-+#if defined(__arch_um__)
-+	/* if X finds that this succeeds, it won't try to bang on
-+	 * the (non-existent) hardware directly */
-+	return 0;
-+#else
-	return -EINVAL;
-+#endif
-}
-
-void (*kd_mksound)(unsigned int hz, unsigned int ticks) = _kd_mksound;
-
-
-------=_NextPart_000_4c75_41b1_31ca--
+these sorts of rules don't work when doing "make O=build ARCH=um ..."
 
 
 -------------------------------------------------------
