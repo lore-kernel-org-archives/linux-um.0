@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19wiMd-0006C9-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 09 Sep 2003 06:17:00 -0700
-Received: from tailtiu.davidcoulson.net ([207.166.203.132] helo=mail.mx.davidcoulson.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.22)
-	id 19wiMc-0006R3-Kc
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Sep 2003 06:16:58 -0700
-Message-ID: <3F5DD2C8.5040900@davidcoulson.net>
-From: David Coulson <david@davidcoulson.net>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Kernel panic: I/O op mismatch
-References: <Pine.LNX.4.44.0309081936590.26334-100000@gradall.private.brainfood.com> <200309091310.h89DAt2J002539@ccure.karaya.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 19wknh-0002Ki-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 09 Sep 2003 08:53:05 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 19wkng-0004So-G0
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Sep 2003 08:53:04 -0700
+Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h89FjDj11813
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 9 Sep 2003 11:45:15 -0400
+Message-Id: <200309091552.h89FqY2J003517@ccure.karaya.com>
+Subject: Re: [uml-devel] Kernel panic: I/O op mismatch 
+In-Reply-To: Your message of "Tue, 09 Sep 2003 09:16:56 EDT."
+             <3F5DD2C8.5040900@davidcoulson.net> 
+References: <Pine.LNX.4.44.0309081936590.26334-100000@gradall.private.brainfood.com> <200309091310.h89DAt2J002539@ccure.karaya.com>  <3F5DD2C8.5040900@davidcoulson.net> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,19 +29,16 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 09 Sep 2003 09:16:56 -0400
-To: Jeff Dike <jdike@addtoit.com>
+Date: Tue, 09 Sep 2003 11:52:34 -0400
+To: David Coulson <david@davidcoulson.net>
 Cc: Adam Heath <adam@doogie.org>, user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> I've been playing with this quite a bit and I can't make it misbehave.  So,
-> I need some clues as to what you're doing that I'm not.
+david@davidcoulson.net said:
+> I can give you a shell on a box that does it reliably. 
 
-./linux :-)
+OK, send me the details...
 
-I can give you a shell on a box that does it reliably.
-
-David
+			Jeff
 
 
 
