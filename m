@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CrxCi-0007LS-6X for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Jan 2005 03:43:52 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1CrxYD-000096-0N for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Jan 2005 04:06:05 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CrxCd-0006g9-AO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Jan 2005 03:43:52 -0800
+	id 1CrxY9-0000aM-Bz for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Jan 2005 04:06:04 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] UML - stalling during large file transfers
-References: <41F0A696.8050201@printsoft.com>
-In-Reply-To: <41F0A696.8050201@printsoft.com>
+Subject: Re: [uml-devel] UML - Is it using swap space?
+References: <41F0A6F3.4030109@printsoft.com>
+In-Reply-To: <41F0A6F3.4030109@printsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501211255.59809.blaisorblade@yahoo.it>
+Message-Id: <200501211318.16207.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,46 +29,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Jan 2005 12:55:59 +0100
+Date: Fri, 21 Jan 2005 13:18:15 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Gerhard Hannemann <gerhard.hannemann@printsoft.com>
 
-On Friday 21 January 2005 07:52, Gerhard Hannemann wrote:
-> Encountered a baffling problem while copying large amounts of files from
-> a archive (*.tbz) or from a remote system to a directory within a
-> running UML system. The UML stalls while the IDE hardrive thrashes along
-> for server minutes. It recovers, continues on with some more files, and
-> stall again. While this is happening, all maternity's connected to that
-> UML just freeze.
-> The host system is perfectly accessible and on show minimal CPU usages.
-> A running top session within the UML also show low CPU and moderate
-> memory usage. However the UML's load increases up to 3.x for several
-> minutes and then recovers.
-> System Data:
->
->       Host:
->       AMD Athlon 2.1Ghz running Gentoo using 2.6.9 kernel with skas3 patch.
->       1 SCSI 18G drive (boot drive) and one IDE 15G drive.
->       1G tmpfs
->       UML:
->       Vanilla 2.4.27 UML kernel (patched of UML usage)
->       3G file system and 512M swap.
->       The UML is run using 512M of mem.
->       The UML runs from the IDE drive.
+On Friday 21 January 2005 07:53, Gerhard Hannemann wrote:
+> Why does it seem that my UML does is not using its swap space?
+I don't think that this is related to UML itself. I describe the most common 
+possibility below, which is a general Linux VM behaviour, but I don't know if 
+you are experiencing what I describe - run the check I suggest and you'll 
+verify if I guessed right or wrong.
 
-I've just read the beginning, however I suspect you are running a 
-not-up-to-date UML with the kernel option "CONFIG_BLK_DEV_UBD_SYNC" or the 
-option "ubd=sync" on the command line. Until a little time ago, that meaned 
-that the write requests (which are synchronous) were executed by the UML 
-kernel and not by the separate thread used normally.
+If I'm right, then UML is simply not using its swap because there is no reason 
+to use it. And no, 1M of free memory is not always a good one. Read on to 
+understand why.
+> The memory usage drops down to just 1M
+The free memory, right? Well, probably it's just cached data.
+> yet tools such as 
+> top and free never indcate that any swap space is ever being used.
+> I provide the UML with a 512M swap_fs file and swapon -s
+> seems to indicate that its available.
+Well, why should Linux use the swap if there's free memory? Free memory is 
+unused memory, i.e. keeping memory free is mostly useless. It's better to use 
+it as file cache. So even a machine without running processes can have only 
+1M free, and the rest filled by cache data. And such a machine will never use 
+its swap. (Swapping the file cache is brain-damaged, normally).
 
-The workaround is to recompile disabling that option, and adding for each UBD 
-the 's' option (i.e. ubd0= becomes ubd0s= and so on). So, you still get the 
-safety without the slowdown.
+Look at the "free" output on the 2nd line:
 
-This workaround is not needed in recent UML versions (for instance 2.6.9-bs5 
-is surely ok, I don't remember if stock 2.6.9 already has the fix). The fix 
-has not yet been backported to 2.4 (although it's easy).
+-/+ buffers/cache: .... ....
+
+It is the important one - it counts the memory which is used excluding the 
+file cache. And it allows you to see if what I described is your situation or 
+not.
+
+However, the real problem would be if with free swap space the system went 
+OOM, which is not your case... it happened with the 2.6.9 kernel - because of 
+one VM bug (described on lwn.net/Kernel).
+
+But you said in the other message you run a 2.4.27 UML, so it's not your case. 
+(The host kernel being 2.6.9 is unrelated to the swapping inside the guest).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
