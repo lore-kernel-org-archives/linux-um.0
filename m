@@ -2,35 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BJUV4-0000Ko-8y for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Apr 2004 02:40:06 -0700
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BJUV3-0001MZ-LK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Apr 2004 02:40:05 -0700
-Received: from hirsch.in-berlin.de (localhost [127.0.0.1])
-	by hirsch.in-berlin.de (8.12.11/8.12.11/Debian-3) with ESMTP id
-	i3U9e1u2008524 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 30 Apr 2004 11:40:02 +0200
-Received: (from uucp@localhost)
-	by hirsch.in-berlin.de (8.12.11/8.12.11/Debian-3) with UUCP id
-	i3U9P1tL006970 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Apr 2004 11:25:01 +0200
-Received: from bytesex.org (kraxel@localhost [127.0.0.1])
-	by bytesex.org (8.12.3/8.12.3/Debian-6.6) with ESMTP id i3U9jvKx019241
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 30 Apr 2004 11:45:57 +0200
-Received: (from kraxel@localhost)
-	by bytesex.org (8.12.3/8.12.3/Debian-6.6) id i3U9jvl5019240
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Apr 2004 11:45:57 +0200
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20040430094557.GA19219@bytesex.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1BJbGC-0006O0-4a for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Apr 2004 09:53:12 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BJbGA-0006MF-O2 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Apr 2004 09:53:10 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] patch for 2.6.6-rc1
+References: <Pine.LNX.4.58.0404162157280.29213@boston.corp.fedex.com>
+	<Pine.LNX.4.58.0404211409570.2147@boston.corp.fedex.com>
+	<08bf01c427fb$86cb9520$2000000a@schlepptopp>
+In-Reply-To: <08bf01c427fb$86cb9520$2000000a@schlepptopp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Subject: [uml-devel] [patch] ethtool support
+Message-Id: <200404301545.10555.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -42,65 +29,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 30 Apr 2004 11:45:57 +0200
-To: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 30 Apr 2004 15:45:10 +0200
+Content-Transfer-Encoding: quoted-printable
+To: roland <for_spam@gmx.de>, Jeff Chua <jeff98@silk.corp.fedex.com>
+Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-  Hi,
+Alle 01:51, gioved=EC 22 aprile 2004, roland ha scritto:
+> hi jeff,
+> sorry, but it still doesn`t work for me.
+> i tried both kernel 2.6.6-rc1 and 2.6.6-rc2 sources to compile a guest
+> kernel.
+>
+> i have attached a log from what i have done - errors are at the end.
 
-Trivial patch for the uml network driver: basic ethtool support
-so it returns name + version on ETHTOOL_GDRVINFO.
+Please post the arch/um/kernel/config.c file the build produced, which gave=
+=20
+the error. The change to the "QUOTE" line is to be analyzed. The other pers=
+on=20
+("gboutwel" <gboutwel@praize.com>) having problems had not this one because=
+=20
+he did not reach this step.
 
-  Gerd
+I've finally seen what it does:
 
---- linux-2.6.5/arch/um/drivers/net_kern.c.ethtool	2004-04-28 15:17:29.125885216 +0200
-+++ linux-2.6.5/arch/um/drivers/net_kern.c	2004-04-28 16:59:57.841138416 +0200
-@@ -15,6 +15,7 @@
- #include "linux/module.h"
- #include "linux/init.h"
- #include "linux/etherdevice.h"
-+#include "linux/ethtool.h"
- #include "linux/list.h"
- #include "linux/inetdevice.h"
- #include "linux/ctype.h"
-@@ -242,7 +243,30 @@
- 
- static int uml_net_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- {
--	return(-EINVAL);
-+	static const struct ethtool_drvinfo info = {
-+		.cmd     = ETHTOOL_GDRVINFO,
-+		.driver  = "uml virtual ethernet",
-+		.version = "42",
-+	};
-+	void *useraddr;
-+	u32 ethcmd;
-+
-+	switch (cmd) {
-+        case SIOCETHTOOL:
-+		useraddr = ifr->ifr_data;
-+		if (copy_from_user(&ethcmd, useraddr, sizeof(ethcmd)))
-+			return -EFAULT;
-+		switch (ethcmd) {
-+		case ETHTOOL_GDRVINFO:
-+			if (copy_to_user(useraddr, &info, sizeof(info)))
-+				return -EFAULT;
-+			return 0;
-+		default:
-+			return -EOPNOTSUPP;
-+		}
-+	default:
-+		return -EINVAL;
-+	}
- }
- 
- void uml_net_user_timer_expire(unsigned long _conn)
+-QUOTE =3D 'my $$config=3D`cat $(TOPDIR)/.config`; $$config =3D~ s/"/\\"/g =
+;=20
+$$config =3D~ s/\n/\\n"\n"/g ; while(<STDIN>) { $$_ =3D~ s/CONFIG/$$config/=
+;=20
+print $$_ }'
++QUOTE =3D 'my $$config=3D`cat $(TOPDIR)/.config`; $$config =3D~ s/"/\\"/g =
+;=20
+$$config =3D~ s/\\n/\\\n"\\n"/g ; while(<STDIN>) { $$_ =3D~ s/CONFIG/$$conf=
+ig/;=20
+print $$_ }'
+
+the change is from:
+
+$$config =3D~ s/\n/\\n"\n"/g
+
+to:
+
+$$config =3D~ s/\\n/\\\n"\\n"/g
+
+probably because the PERL code needs to be quoted once more.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: Oracle 10g
-Get certified on the hottest thing ever to hit the market... Oracle 10g. 
-Take an Oracle 10g class now, and we'll give you the exam FREE. 
-http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
+Get certified on the hottest thing ever to hit the market... Oracle 10g.=20
+Take an Oracle 10g class now, and we'll give you the exam FREE.=20
+http://ads.osdn.com/?ad_id149&alloc_id=8166&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
