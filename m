@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CD2tw-0003BU-Hx for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Sep 2004 08:31:24 -0700
+	id 1CD75O-0000Cj-9i for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Sep 2004 12:59:30 -0700
 Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CD2tu-0005SQ-Db for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Sep 2004 08:31:24 -0700
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CD75N-0003mG-1w for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Sep 2004 12:59:30 -0700
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C3F@ABGEX01E.abg.fsc.net>
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C40@ABGEX01E.abg.fsc.net>
 From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
-Subject: [uml-devel] Signal handling: deliver segfault immediately
+Subject: [uml-devel] Signal handling: use the kernels restorer
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,83 +26,183 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 30 Sep 2004 17:29:06 +0200
+Date: Thu, 30 Sep 2004 21:59:08 +0200
 Content-Transfer-Encoding: 8bit
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-This one covers the fact, that the SIGSEGV signal, which is created by
-force_sigsegv() in case of an error in handle_signal(), is not delivered
-to the user immediately. In the worst case it even could be masked if a
-sigprocmask() systemcall follows immediately after return from kernel.
-The patch is relevant for other architectures, too.
+Normally, with each call to sigaction() glibc set the flag SA_RESTORER
+and gives the address of the restorer it wants to use to the kernel. If
+the user specifies his own restorer, this one is used instead.
+But if a user directly calls sys_sigaction() without glibc being
+involved (e.g. via "int 0x80"), he can reset SA_RESTORER. Now the kernel
+should use it's own restorer-stub. On i386 it's located in the
+vsyscall-page. UML must use the old method of putting it onto the stack.
+The patch modifies the signal-stack-setup to get the restorer on the
+stack working. It is also a 1st step to enabling the syscall-page in
+UML. (Just replace the addresses on the stack with the addresses from
+the syscall-page)
 
-As a further consequence of the patch the first instruction of a signal
-handler will be checked for a system call, if the process should be
-singlestepped (not a big risk, but better close the hole, I think). If
-you don't want this, replace the "break" by "return 1".
+While testing that stuff, I could crash UML by using the wrong
+systemcall-number in the restorer-stub (has been wrong for
+sys_sigreturn). I think, there is no check in sys_(rt_)sigreturn(),
+whether the contents of the stack is wrong. But why should this crash
+the kernel? Unfortunately at the moment I can't see, what UML prints
+out, because messages to console are not displayed (don't know why,
+yet). If the system runs, I can use dmesg, but when it is crashed ...
 
 Bodo
 
 
---- arch/um/kernel/signal_kern.c.orig	2004-09-30 16:34:07.610109219
+--- orig/arch/um/include/frame_kern.h	2004-09-30 21:01:10.101299289
 +0200
-+++ arch/um/kernel/signal_kern.c	2004-09-30 16:51:51.743255023
++++ new/arch/um/include/frame_kern.h	2004-09-30 21:01:54.321991562
 +0200
-@@ -38,7 +38,7 @@
- /*
-  * OK, we're invoking a handler
-  */	
--static void handle_signal(struct pt_regs *regs, unsigned long signr, 
-+static int  handle_signal(struct pt_regs *regs, unsigned long signr, 
+@@ -10,13 +10,11 @@
+ #define _BLOCKABLE (~(_S(SIGKILL) | _S(SIGSTOP)))
+ 
+ extern int setup_signal_stack_sc(unsigned long stack_top, int sig, 
+-				 unsigned long handler,
+-				 void (*restorer)(void), 
++				 struct k_sigaction * ka,
+ 				 struct pt_regs *regs, 
+ 				 sigset_t *mask);
+ extern int setup_signal_stack_si(unsigned long stack_top, int sig, 
+-				 unsigned long handler, 
+-				 void (*restorer)(void), 
++				 struct k_sigaction * ka,
+ 				 struct pt_regs *regs, siginfo_t *info, 
+ 				 sigset_t *mask);
+ 
+--- orig/arch/um/kernel/signal_kern.c	2004-09-30 20:48:00.055858897
++0200
++++ new/arch/um/kernel/signal_kern.c	2004-09-30 21:07:11.038652291
++0200
+@@ -42,7 +42,6 @@
  			  struct k_sigaction *ka, siginfo_t *info, 
  			  sigset_t *oldset)
  {
-@@ -103,23 +103,25 @@
- 		recalc_sigpending();
- 		spin_unlock_irq(&current->sighand->siglock);
- 	}
-+
-+	return err;
- }
+-	void (*restorer)(void);
+ 	unsigned long sp;
+ 	int err;
  
- static int kern_do_signal(struct pt_regs *regs, sigset_t *oldset)
+@@ -75,18 +74,10 @@
+ 	if((ka->sa.sa_flags & SA_ONSTACK) && (sas_ss_flags(sp) == 0))
+ 		sp = current->sas_ss_sp + current->sas_ss_size;
+ 
+-	if (ka->sa.sa_flags & SA_RESTORER) 
+-		restorer = ka->sa.sa_restorer;
+-	else restorer = NULL;
+-
+ 	if(ka->sa.sa_flags & SA_SIGINFO)
+-		err = setup_signal_stack_si(sp, signr, 
+-					    (unsigned long)
+ka->sa.sa_handler,
+-					    restorer, regs, info,
+oldset);
++		err = setup_signal_stack_si(sp, signr, ka, regs, info,
+oldset);
+ 	else
+-		err = setup_signal_stack_sc(sp, signr, 
+-					    (unsigned long)
+ka->sa.sa_handler,
+-					    restorer, regs, oldset);
++		err = setup_signal_stack_sc(sp, signr, ka, regs,
+oldset);
+ 
+ 	if(err) {
+ 		spin_lock_irq(&current->sighand->siglock);
+--- orig/arch/um/sys-i386/signal.c	2004-09-30 20:50:34.493337205
++0200
++++ new/arch/um/sys-i386/signal.c	2004-09-30 21:20:31.572359436
++0200
+@@ -201,10 +201,11 @@
+ };
+ 
+ int setup_signal_stack_sc(unsigned long stack_top, int sig, 
+-			  unsigned long handler, void (*restorer)(void),
+
++			  struct k_sigaction * ka,
+ 			  struct pt_regs *regs, sigset_t *mask)
  {
- 	struct k_sigaction ka_copy;
- 	siginfo_t info;
--	int sig;
-+	int sig, handled_sig = 0;
+ 	struct sigframe __user *frame;
++	void * restorer;
+ 	int err = 0;
  
--	sig = get_signal_to_deliver(&info, &ka_copy, regs, NULL);
--	if(sig > 0){
-+	while ( (sig = get_signal_to_deliver(&info, &ka_copy, regs,
-NULL)) ) {
-+		handled_sig = 1;
- 		/* Whee!  Actually deliver the signal.  */
--		handle_signal(regs, sig, &ka_copy, &info, oldset);
--		return(1);
-+		if ( ! handle_signal(regs, sig, &ka_copy, &info, oldset)
-)
-+			break;
- 	}
+ 	stack_top &= -8UL;
+@@ -212,6 +213,9 @@
+ 	if(verify_area(VERIFY_WRITE, frame, sizeof(*frame)))
+ 		return(1);
+ 	
++	restorer = (void *)frame->retcode;
++	if ( ka->sa.sa_flags & SA_RESTORER )
++		restorer = ka->sa.sa_restorer;
+ 	err |= __put_user(restorer, &frame->pretcode);
+ 	err |= __put_user(sig, &frame->sig);
+ 	err |= copy_sc_to_user(&frame->sc, NULL, regs);
+@@ -221,21 +225,21 @@
+ 				      sizeof(frame->extramask));
  
- 	/* Did we come from a system call? */
--	if(PT_REGS_SYSCALL_NR(regs) >= 0){
-+	if(!handled_sig && PT_REGS_SYSCALL_NR(regs) >= 0){
- 		/* Restart the system call - no handlers present */
- 		if(PT_REGS_SYSCALL_RET(regs) == -ERESTARTNOHAND ||
- 		   PT_REGS_SYSCALL_RET(regs) == -ERESTARTSYS ||
-@@ -143,7 +145,8 @@
- 	if((current->ptrace & PT_DTRACE) && 
- 	   is_syscall(PT_REGS_IP(&current->thread.regs)))
-  		(void)
-CHOOSE_MODE(current->thread.mode.tt.singlestep_syscall = 1, 0);
--	return(0);
-+
-+	return( handled_sig);
+ 	/*
+-	 * This is movl $,%eax ; int $0x80
++	 * This is popl %eax ; movl $,%eax ; int $0x80
+ 	 *
+ 	 * WE DO NOT USE IT ANY MORE! It's only left here for historical
+ 	 * reasons and because gdb uses it as a signature to notice
+ 	 * signal handler stack frames.
+ 	 */
+-	err |= __put_user(0xb8, (char __user *)(frame->retcode+0));
+-	err |= __put_user(__NR_rt_sigreturn, (int __user
+*)(frame->retcode+1));
+-	err |= __put_user(0x80cd, (short __user *)(frame->retcode+5));
++	err |= __put_user(0xb858, (short __user *)(frame->retcode+0));
++	err |= __put_user(__NR_sigreturn, (int __user
+*)(frame->retcode+2));
++	err |= __put_user(0x80cd, (short __user *)(frame->retcode+6));
+ 
+ 	if(err)
+ 		return(err);
+ 
+ 	PT_REGS_SP(regs) = (unsigned long) frame;
+-	PT_REGS_IP(regs) = (unsigned long) handler;
++	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
+ 	PT_REGS_EAX(regs) = (unsigned long) sig;
+ 	PT_REGS_EDX(regs) = (unsigned long) 0;
+ 	PT_REGS_ECX(regs) = (unsigned long) 0;
+@@ -243,11 +247,12 @@
  }
  
- int do_signal(void)
+ int setup_signal_stack_si(unsigned long stack_top, int sig, 
+-			  unsigned long handler, void (*restorer)(void),
+
++			  struct k_sigaction * ka,
+ 			  struct pt_regs *regs, siginfo_t *info, 
+ 			  sigset_t *mask)
+ {
+ 	struct rt_sigframe __user *frame;
++	void * restorer;
+ 	int err = 0;
+ 
+ 	stack_top &= -8UL;
+@@ -255,6 +260,9 @@
+ 	if(verify_area(VERIFY_WRITE, frame, sizeof(*frame)))
+ 		return(1);
+ 	
++	restorer = (void *)frame->retcode;
++	if ( ka->sa.sa_flags & SA_RESTORER )
++		restorer = ka->sa.sa_restorer;
+ 	err |= __put_user(restorer, &frame->pretcode);
+ 	err |= __put_user(sig, &frame->sig);
+ 	err |= __put_user(&frame->info, &frame->pinfo);
+@@ -278,7 +286,7 @@
+ 		return(err);
+ 
+ 	PT_REGS_SP(regs) = (unsigned long) frame;
+-	PT_REGS_IP(regs) = (unsigned long) handler;
++	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
+ 	PT_REGS_EAX(regs) = (unsigned long) sig;
+ 	PT_REGS_EDX(regs) = (unsigned long) &frame->info;
+ 	PT_REGS_ECX(regs) = (unsigned long) &frame->uc;
 
 
 -------------------------------------------------------
