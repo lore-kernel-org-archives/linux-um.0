@@ -1,29 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Ag6vQ-0006WO-6x for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Jan 2004 10:36:32 -0800
-Received: from mta11.adelphia.net ([68.168.78.205])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ag6vP-0007fd-Qv for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Jan 2004 10:36:31 -0800
+	id 1AfvqG-00057C-32 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 22:46:28 -0800
+Received: from mta9.adelphia.net ([68.168.78.199])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AfvqF-0004AH-OZ for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 22:46:27 -0800
 From: Matt Zimmerman <mdz@debian.org>
-Message-ID: <20040112183623.GB1436@alcor.net>
-References: <20031220171450.GB10692@ccure.user-mode-linux.org>
-	<20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
-	<20031228093317.GK17472@alcor.net>
-	<20031228095115.GL17472@alcor.net>
-	<20031228101240.GN17472@alcor.net>
-	<20031228113042.GO17472@alcor.net>
-	<20031230184330.GD1365@alcor.net>
-	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
-	<20040108070718.GI28393@alcor.net>
+Message-ID: <20040112064620.GU1436@alcor.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040108070718.GI28393@alcor.net>
-Subject: [uml-devel] Panic with slirp transport and gcc 3.3
+Subject: [uml-devel] [inkblot@movealong.org: Bug#224215: incorrect /proc
+	timestamp]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,48 +26,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 12 Jan 2004 10:36:23 -0800
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, debian-gcc@lists.debian.org, ballombe@debian.org, 176485@bugs.debian.org
+Date: Sun, 11 Jan 2004 22:46:20 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: 224215-forwarded@bugs.debian.org
 
-On Wed, Jan 07, 2004 at 11:07:18PM -0800, Matt Zimmerman wrote:
+----- Forwarded message from Nate Riffe <inkblot@movealong.org> -----
 
-> On Mon, Jan 05, 2004 at 09:58:32PM -0500, Jeff Dike wrote:
-> 
-> > mdz@debian.org said:
-> > > It turns out that this problem seems to be due to compiler
-> > > incompatibility. UML had been built with gcc 2.95 due to old breakage,
-> > > and when built with gcc 3.3 (as glibc is), everything starts working
-> > > again.  My suspicion is that this is due to certain recent changes in
-> > > pthreads.
-> > 
-> > Is it your opinion that there's no problem in UML itself?  Having a field
-> > in the sigcontext getting magically munged is somewhat worrying.  I'd be 
-> > happier knowing what exactly was happening so I can be sure this wasn't
-> > exposing some subtle UML bug.
-> 
-> I was not able to come to a satisfactory conclusion as to the origin of the
-> problem, and once I found a solution, I stopped looking.  I'm copying
-> debian-gcc and debian-glibc in case they're interested.
-> 
-> Summary for debian-{gcc,glibc}:
-> 
-> UML built with gcc-2.95 fails to run correctly on a current unstable system
-> with a 2.4 kernel.  The symptoms are very strange; This started to happen recently; UML had been building
-> with gcc 2.95 successfully for over 9 months now with no problems.
-> 
-> Details are here: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=224431
+Date: Tue, 16 Dec 2003 19:17:10 -0600
+From: Nate Riffe <inkblot@movealong.org>
+Resent-From: Nate Riffe <inkblot@movealong.org>
+To: submit@bugs.debian.org
+Subject: Bug#224215: incorrect /proc timestamp
 
-By the way, the original reason why I started building UML with gcc-2.95 was
-because building with 3.x broke the slirp transport like so:
+Package: user-mode-linux
 
-Kernel panic: read of switch_pipe failed, errno = 9
+The timestamp of /proc after mounting the proc filesystem is fixed at
+Jan 1, 1970 (likely initialized to 0 in Unix time and then never set).
+This causes problems for some distributions running as UML systems
+using the user-mode-linux kernel, including Debian, which relies on the
+timestamp of /proc to clear out the contents of /var/run and
+/var/lock.  Comments in the "bootmisc.sh" initscript indicate that the
+/proc timestamp is normally the time at which /proc is mounted.
 
-errno 9 is EBADF.  I never did find the real cause of that bug, but it has
-resurfaced now that I am building with gcc 3.3 again to fix the other, worse
-bug.  I would be interested to know if anyone else has run into it.  More
-information is here:
+I have also seen this issue with every other UML kernel to which I
+have access, and so I believe it is probably an upstream bug.
 
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=176485&archive=yes
+-- 
+--< ((\))< >----< inkblot@movealong.org >----< http://www.movealong.org/ >--
+pub  1024D/05A058E0 2002-03-07 Nate Riffe (06-Mar-2002) <inkblot@movealong.org>
+     Key fingerprint = 0DAC F5CB D182 3165 D757  C466 CD42 12A8 05A0 58E0
+
+----- End forwarded message -----
 
 -- 
  - mdz
