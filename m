@@ -2,15 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpCzA-0001ay-B0 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1CpCzA-0001b7-R0 for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 13 Jan 2005 13:58:32 -0800
 Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CpCz8-0001OV-B2 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1CpCz9-0001Oi-OO for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 13 Jan 2005 13:58:32 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20050113210108.751921FEF9@zion>
-Subject: [uml-devel] [patch 09/11] uml: add stack content to dumps
+Message-Id: <20050113210111.86DE01FEFB@zion>
+Subject: [uml-devel] [patch 10/11] uml: add stack addresses to dumps
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,85 +22,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Jan 2005 22:01:08 +0100
+Date: Thu, 13 Jan 2005 22:01:11 +0100
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it, bstroesser@fujitsu-siemens.com
 
 
-Copy some code from i386 to print the stack content. Rough form yet, should
-work although.
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+
+Add stack addresses to print of symbols from stack trace.
+For stack analysis it's important to have this information.
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+
+For UML, we should also copy the CONFIG_FRAME_POINTER stack walking from i386,
+and move the result to sys-i386.
+
+Another note: this should be done for i386 also, if ksymoops does not have
+problems.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.10-rc-paolo/arch/um/kernel/sysrq.c |   40 +++++++++++++++++++++++----
- 1 files changed, 35 insertions(+), 5 deletions(-)
+ linux-2.6.11-paolo/arch/um/kernel/sysrq.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff -puN arch/um/kernel/sysrq.c~uml-add-stack-content-to-dumps arch/um/kernel/sysrq.c
---- linux-2.6.10-rc/arch/um/kernel/sysrq.c~uml-add-stack-content-to-dumps	2004-11-30 18:32:12.000000000 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/kernel/sysrq.c	2004-11-30 20:27:06.540447816 +0100
-@@ -15,11 +15,13 @@
- void show_trace(unsigned long * stack)
- {
- 	/* XXX: Copy the CONFIG_FRAME_POINTER stack-walking backtrace from
--	 * arch/i386/kernel/traps.c. */
-+	 * arch/i386/kernel/traps.c, and then move this to sys-i386/sysrq.c.*/
-         unsigned long addr;
- 
--        if (!stack)
-+        if (!stack) {
-                 stack = (unsigned long*) &stack;
-+		WARN_ON(1);
-+	}
+diff -puN arch/um/kernel/sysrq.c~uml-add-stack-addresses-to-dumps arch/um/kernel/sysrq.c
+--- linux-2.6.11/arch/um/kernel/sysrq.c~uml-add-stack-addresses-to-dumps	2005-01-13 21:54:57.450269544 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/sysrq.c	2005-01-13 21:56:09.250354272 +0100
+@@ -25,12 +25,13 @@ void show_trace(unsigned long * stack)
  
          printk("Call Trace: \n");
          while (((long) stack & (THREAD_SIZE-1)) != 0) {
-@@ -34,7 +36,8 @@ void show_trace(unsigned long * stack)
- }
- 
- /*
-- * The architecture-independent dump_stack generator
-+ * stack dumps generator - this is used by arch-independent code.
-+ * And this is identical to i386 currently.
-  */
- void dump_stack(void)
- {
-@@ -44,7 +47,34 @@ void dump_stack(void)
- }
- EXPORT_SYMBOL(dump_stack);
- 
--void show_stack(struct task_struct *task, unsigned long *sp)
-+/*Stolen from arch/i386/kernel/traps.c */
-+static int kstack_depth_to_print = 24;
-+
-+/* This recently started being used in arch-independent code too, as in
-+ * kernel/sched.c.*/
-+void show_stack(struct task_struct *task, unsigned long *esp)
- {
--	show_trace(sp);
-+	unsigned long *stack;
-+	int i;
-+
-+	if (esp == NULL) {
-+		if (task != current) {
-+			esp = (unsigned long *) KSTK_ESP(task);
-+			/* Which one? No actual difference - just coding style.*/
-+			//esp = (unsigned long *) PT_REGS_IP(&task->thread.regs);
-+		} else {
-+			esp = (unsigned long *) &esp;
-+		}
-+	}
-+
-+	stack = esp;
-+	for(i = 0; i < kstack_depth_to_print; i++) {
-+		if (kstack_end(stack))
-+			break;
-+		if (i && ((i % 8) == 0))
-+			printk("\n       ");
-+		printk("%08lx ", *stack++);
-+	}
-+
-+	show_trace(esp);
+-                addr = *stack++;
++                addr = *stack;
+ 		if (__kernel_text_address(addr)) {
+-			printk(" [<%08lx>]", addr);
++			printk("%08lx:  [<%08lx>]", (unsigned long) stack, addr);
+ 			print_symbol(" %s", addr);
+ 			printk("\n");
+                 }
++                stack++;
+         }
+         printk("\n");
  }
 _
 
