@@ -1,35 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D70cf-000804-AT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 16:24:53 -0800
-Received: from mail.scgiservices.com ([198.107.3.67])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D70cP-0004jS-Ly
+	id 1D73UB-00015a-RD for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 19:28:19 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1D73Tr-0004XG-Md
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 16:24:53 -0800
-Received: from localhost (localhost [127.0.0.1])
-	by mail.scgiservices.com (Postfix) with ESMTP id 9B6022881B
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu,  3 Mar 2005 16:24:32 -0800 (PST)
-Received: from mail.scgiservices.com ([127.0.0.1])
-	by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 12943-08 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu,  3 Mar 2005 16:24:27 -0800 (PST)
-Received: from SCG2 (c-67-160-159-191.client.comcast.net [67.160.159.191])
-	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by mail.scgiservices.com (Postfix) with ESMTP id 1BADB2881A
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu,  3 Mar 2005 16:24:26 -0800 (PST)
-From: "Anthony Brock" <brocka@sterlingcgi.com>
-Message-ID: <OJEEKGNKKDLJIEPBEJMIAEIOCAAA.brocka@sterlingcgi.com>
+	Thu, 03 Mar 2005 19:28:19 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Triage on the pending patches
+References: <200503030822.j238MoBY016825@ccure.user-mode-linux.org>
+	<200503030008.51336.rob@landley.net>
+	<200503031844.j23IhmDS003473@ccure.user-mode-linux.org>
+In-Reply-To: <200503031844.j23IhmDS003473@ccure.user-mode-linux.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] SKAS3 v8 for x86_64
+Message-Id: <200503032111.43966.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,18 +33,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 3 Mar 2005 16:24:25 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 3 Mar 2005 21:11:36 -0500
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
 
-Recently some individuals posted a "port" of the SKAS 3 patch to x86_64.
-However, this port was for the 2.4 kernel. Has anyone worked on porting SKAS
-3 (especially v7 or v8) to the x86_64 architecture on 2.6 kernel? Is this
-even on the radar for the current developers?
+On Thursday 03 March 2005 01:43 pm, Jeff Dike wrote:
+> rob@landley.net said:
+> > Well, just in case your job was too easy, here's one more.  Using the
+> > "quiet" option shows a couple of lines being printed out by printf
+> > that should be printed out by printk (so they'll _shut_up_ when you
+> > ask it to).
+>
+> Those are printfs for a reason.  Early boot mesages (before the kernel is
+> actually running) won't be seen if they are printk-d and the thing crashes
+> before the console is initialized.  The messages will be stuck in the
+> printk buffer, and you will be none the wiser.
+>
+> So, they can be made quiet if you really want, but that's not the way.
 
-Thanks!
+I suspected there was a reason, nice to know what it is.  It would be nice if 
+they could be made quiet, because I'm in the process of doing a gross hack to 
+run an independent process wrapped in UML.
 
-Tony
+Basically, my nefarious scheme is to add the squashfs patch to UML, append a 
+squashfs image to the end of the  UML executable, and have a cpio ramfs init 
+script search through /proc/self/exe for the 32 bytes that were at the start 
+of the squashfs (which includes a 4 byte magic signature thingy) to determine 
+offset to pass to "losetup -o $OFFSET /dev/loop0 /proc/self/exe", and then 
+mount /dev/loop0 / and run the executable I want out of that filesystem.
 
+And there's a cheap and dirty way to get a self contained program running 
+under UML.  (I hope to actually have an example working this evening using 
+2.6.11.)
+
+The down side is that UML (even with the quiet option) just won't shut up 
+about its init stuff.  Hence me looking into cleaning that up...
+
+> 				Jeff
+
+Rob
 
 
 -------------------------------------------------------
