@@ -2,27 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aicky-0001wG-7b for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jan 2004 09:00:08 -0800
-Received: from pool-141-154-56-2.bos.east.verizon.net ([141.154.56.2]
-	helo=uml.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Aickx-0005e0-Oe
+	id 1Aicps-0003Wx-JT for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Jan 2004 09:05:12 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1Aicps-0006EB-1u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jan 2004 09:00:07 -0800
-Received: from uml.user-mode-linux.org (uml.user-mode-linux.org [127.0.0.1])
-	by uml.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id i0HFlQ0m009270
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 17 Jan 2004 10:48:07 -0500
-Received: from uml.user-mode-linux.org (jdike@localhost)
-	by uml.user-mode-linux.org (8.12.5/8.12.5/Submit) with ESMTP id
-	i0HFlPtk009266 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 17 Jan 2004 10:47:26 -0500
-Message-Id: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
-Mime-Version: 1.0
+	Mon, 19 Jan 2004 09:05:12 -0800
+References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
+	<200401172009.50449.blaisorblade_spam@yahoo.it>
+From: Gerd Knorr <kraxel@bytesex.org>
+In-Reply-To: <200401172009.50449.blaisorblade_spam@yahoo.it>
+Message-ID: <87vfn7yikh.fsf@bytesex.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] uml-patch-2.4.23-2
+Subject: [uml-devel] Re: uml-patch-2.6.0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,27 +28,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 10:47:25 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: 19 Jan 2004 18:06:06 +0100
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-This patch fixes a number of bugs including
-	with ubd-mmap in force, device data remaining mapped after the device
-was closed - this should fix the EBADF errors some people were seeing on UML
-shutdown, it allows 2.6 to boot with ubd-mmap, and there's some potential that
-it fixed file corruption.  Anyone who has been seeing ubd-mmap problems should
-test this and let me know one way or the other.
-	/dev/anon is now correctly checked for and used if it's available
-	fixed the linker script to get rid of the segfaults seen with RH and
-Fedora
-	mhz is now a long long, so UML again will stop hanging on fast hosts
-	lots of small changes to fix minor bugs, compilation problems, and
-to reduce the number of diffs between the 2.4 and 2.6 trees
+BlaisorBlade <blaisorblade_spam@yahoo.it> writes:
 
-CVS hasn't been updated yet because SF is broken again.  I'll check everything
-in when the CVS server is back up.
+> Module support fix is trivial, and does not depend on anything controversial, 
+> until you don't enable CONFIG_MODVERSIONS. So apply the patch. I've also 
+> infos (and some code) about fixing the panic you get on startup with it 
+> enabled.
 
-				Jeff
+Uhm, no.  Applied and builds for me, but doesn't work, insmod
+complains about *plenty* of unknown symbols.
 
+G-02-LinkScriptCleanup.patch removes various ksymtab stuff from
+common.lds.S (which is in the RODATA #define these days), that one
+looks like it could be needed too to make modules work ...
+
+  Gerd
+
+-- 
+"... und auch das ganze Wochenende oll" -- Wetterbericht auf RadioEins
 
 
 -------------------------------------------------------
