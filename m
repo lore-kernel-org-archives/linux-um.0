@@ -2,16 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cp6wG-0005ae-Bs for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Cp6wG-0005af-Bt for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 13 Jan 2005 07:31:08 -0800
 Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Cp6wC-0005zT-G0 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Cp6wC-0005zS-G0 for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 13 Jan 2005 07:31:07 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20050113051332.4F4AA6324F@zion>
-Subject: [uml-devel] [patch 4/8] uml: drop unused buffer_head.h header from
-	hostfs
+Message-Id: <20050113051330.097A36324D@zion>
+Subject: [uml-devel] [patch 3/8] uml: Commentary addition to recent SYSEMU fix.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,34 +22,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Jan 2005 06:13:32 +0100
+Date: Thu, 13 Jan 2005 06:13:29 +0100
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 
-Drop that header inclusion - I discovered this header was unused while
-checking whether I can use the __set_page_dirty_nobuffers speedup suggested by
-Andrew Morton.
+Add some comments about the "uml-sysemu-fixes" patch of 2.6.10-mm1 (merged in 2.6.11-rc1).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.11-paolo/fs/hostfs/hostfs_kern.c |    1 -
- 1 files changed, 1 deletion(-)
+ linux-2.6.11-paolo/arch/um/kernel/tt/tracer.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+)
 
-diff -puN fs/hostfs/hostfs_kern.c~uml-drop-buffer_head-header-from-hostfs fs/hostfs/hostfs_kern.c
---- linux-2.6.11/fs/hostfs/hostfs_kern.c~uml-drop-buffer_head-header-from-hostfs	2005-01-13 01:57:47.533076768 +0100
-+++ linux-2.6.11-paolo/fs/hostfs/hostfs_kern.c	2005-01-13 01:57:47.564072056 +0100
-@@ -15,7 +15,6 @@
- #include <linux/pagemap.h>
- #include <linux/blkdev.h>
- #include <linux/list.h>
--#include <linux/buffer_head.h>
- #include <linux/root_dev.h>
- #include <linux/statfs.h>
- #include <linux/kdev_t.h>
+diff -puN arch/um/kernel/tt/tracer.c~uml-comment-fix-sysemu-tt arch/um/kernel/tt/tracer.c
+--- linux-2.6.11/arch/um/kernel/tt/tracer.c~uml-comment-fix-sysemu-tt	2005-01-13 01:56:56.494835760 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/tt/tracer.c	2005-01-13 01:56:56.498835152 +0100
+@@ -313,6 +313,15 @@ int tracer(int (*init_proc)(void *), voi
+ 				sig = 0;
+ 				op = do_proc_op(task, proc_id);
+ 				switch(op){
++				/*
++				 * This is called when entering user mode; after
++				 * this, we start intercepting syscalls.
++				 *
++				 * In fact, a process is started in kernel mode,
++				 * so with is_tracing() == 0 (and that is reset
++				 * when executing syscalls, since UML kernel has
++				 * the right to do syscalls);
++				 */
+ 				case OP_TRACE_ON:
+ 					arch_leave_kernel(task, pid);
+ 					tracing = 1;
+@@ -347,6 +356,11 @@ int tracer(int (*init_proc)(void *), voi
+ 					continue;
+ 				}
+ 				tracing = 0;
++				/* local_using_sysemu has been already set
++				 * below, since if we are here, is_tracing() on
++				 * the traced task was 1, i.e. the process had
++				 * already run through one iteration of the
++				 * loop which executed a OP_TRACE_ON request.*/
+ 				do_syscall(task, pid, local_using_sysemu);
+ 				sig = SIGUSR2;
+ 				break;
 _
 
 
