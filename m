@@ -1,21 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATo1o-0007US-MR
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Dec 2003 12:00:16 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1ATo1m-0003of-Jf
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Dec 2003 12:00:14 -0800
-Message-Id: <200312092014.hB9KE0iY003447@ccure.user-mode-linux.org>
+	id 1ATo5T-0007kD-WA
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Dec 2003 12:04:03 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1ATo5T-0008Fd-2e
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Dec 2003 12:04:03 -0800
+From: Henrik Nordstrom <hno@marasystems.com>
 Subject: Re: [uml-devel] [PATCH] provide asm/ldt.h 
-In-Reply-To: Your message of "Tue, 09 Dec 2003 13:01:01 CST."
-             <Pine.LNX.4.44.0312091259250.1263-100000@gradall.private.brainfood.com> 
-References: <Pine.LNX.4.44.0312091259250.1263-100000@gradall.private.brainfood.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+In-Reply-To: <Pine.LNX.4.44.0312091259250.1263-100000@gradall.private.brainfood.com>
+Message-ID: <Pine.LNX.4.44.0312092101350.27531-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,20 +23,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 09 Dec 2003 15:14:00 -0500
+Date: Tue, 9 Dec 2003 21:03:42 +0100 (CET)
 To: Adam Heath <adam@doogie.org>
-Cc: Henrik Nordstrom <hno@marasystems.com>, Steve Bennett <steveb@snapgear.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Steve Bennett <steveb@snapgear.com>, user-mode-linux-devel@lists.sourceforge.net
 
-adam@doogie.org said:
-> The user-side of UML should not care about the kernel version *at
-> all*.  It should only be concerned with the posix interface defined by
-> the host compiling environment, and the arch interface defined by UML.
+On Tue, 9 Dec 2003, Adam Heath wrote:
 
-Ummm, you should perhaps read the thread before responding to it.  We are
-talking about compiling userspace stuff inside UML against the UML 
-/usr/include/asm.
+> This is not correct.
+> 
+> The user-side of UML should not care about the kernel version *at all*.  It
+> should only be concerned with the posix interface defined by the host
+> compiling environment, and the arch interface defined by UML.
 
-				Jeff
+We are talkning about userspace applications which are in different ways
+dependent on the kernel they run against. This includes but not limited to
+
+  * iptables
+  * strace
+  * modutils
+
+and how these should be build when using a UML kernel.
+
+We are NOT talking about the UML kernel sources as such.
+
+Regards
+Henrik
+
 
 
 
