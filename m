@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQCBc-0003x1-4T for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 May 2004 14:31:44 -0700
-Received: from mail.gmx.net ([213.165.64.20])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BQCBb-00061b-Ej for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 May 2004 14:31:43 -0700
-Message-ID: <085c01c43d20$7f13fa40$2000000a@schlepptopp>
+	id 1BQCic-0001Hb-GL for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 May 2004 15:05:50 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BQCib-0005fe-SZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 May 2004 15:05:50 -0700
+Message-ID: <093601c43d25$42633a20$2000000a@schlepptopp>
 From: "roland" <for_spam@gmx.de>
-References: <20040518180259.GC29114@ccure.user-mode-linux.org>
-	<Pine.LNX.4.44.0405182131440.10300-100000@filer.marasystems.com>
-	<20040518220017.GA29646@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] CVS not updated?
+References: <40AA0BD9.7070403@thermeoneurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="ISO-8859-15"
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] poll: uml bug management - was: Re: [uml-user] 2.6.6
+	Kernel mconsole & mem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,79 +28,109 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 May 2004 23:38:44 +0200
-To: Jeff Dike <jdike@addtoit.com>, Henrik Nordstrom <uml@hno.marasystems.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 19 May 2004 00:12:40 +0200
+To: Mark Olliver <mpo@thermeoneurope.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, blaisorblade_spam@yahoo.it
 
->I find the UML is way better for CVS than SF.  It's very much faster.
-i can agree, that the SF anoncvs is a horror (at least i remember it WAS a horror, when i used it some time ago).
-afaik, behaviour with non-anon cvs usage on sourceforge was quite different - so only anoncvs-users had big problems.
+have seen the same problem with a uml 2.6.6 guest compiled and running on a suse 9.1 host.
+(mkstemp failed and left processes after shutdown)
+
+what`s your host OS ? 
+what`s your guest rootfs?
+do you use skas or tt ?
+
+btw: should we file a bug-report at:
+http://sourceforge.net/tracker/?group_id=429&atid=100429
+or shouldn`t that bugtracker not being used anymore - in general ?
+if not, IMHO that bugtracker should be marked "obsolete"(like the SF cvs repository) - otherwise
+newbies will file reports there and get pissed , because nobody cares about.
+on that page there still are bugs "open" for years now - and nobody knows, if they still exist, or 
+not.
+
+i think it`s very difficult, to track bugs on the mailinglist, only.
+we know, that jeff is collecting the bug reports:
+>The bug tracker is the UML mailing lists.  I stick bug reports and patches in 
+>a todo folder and delete them from there when I fix (or merge) them.  I pay
+>almost no attention to the SF patch and bug report thingies.  So if you want
+>your bug to get attention, send it to one of the lists.
+
+imho, if uml users/developers probably hit a bug, they should be able to browse the list of 
+known uml bugs and add comments. this adds transparency and encourages people to try to reproduce. 
+furthermore, this could encourage people to "debug" some uml code, because they see: ohhh 
+- that bug has priority 9 for 6 months now - let`s have a look....i`m soo geeky - probably 
+i get this fixed :)
+currently, there isn`t much transparency - users need to dig into the whole "noise" of the 
+mailinglist - and if a bug is reported on the mailinglist a while ago, jeff is the only person 
+to know, that this bug exists and still needs to be fixed.
+
+i would like to give an example for a really nice "bug page":
+http://rockbox.haxx.se/bugs.shtml
+
+that page is created by a script, which extracts the information from SF and puts it into a 
+nicely formatted page:
+http://cvs.sourceforge.net/viewcvs.py/rockbox/www/getbugs.pl
+
+why not using it, too ?
+i vote for it!
+:)
+comments ?
 
 regards
 roland
 
+ps:
+since such bug page needs maintenance - i offer doing that job (as good as i can).
+
+
+
+
 ----- Original Message ----- 
-From: "Jeff Dike" <jdike@addtoit.com>
-To: "Henrik Nordstrom" <uml@hno.marasystems.com>
-Cc: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Wednesday, May 19, 2004 12:00 AM
-Subject: Re: [uml-devel] CVS not updated?
+From: "Mark Olliver" <mpo@thermeoneurope.com>
+To: <user-mode-linux-user@lists.sourceforge.net>
+Sent: Tuesday, May 18, 2004 3:12 PM
+Subject: [uml-user] 2.6.6 Kernel mconsole & mem
 
 
-> On Tue, May 18, 2004 at 09:42:13PM +0200, Henrik Nordstrom wrote:
-> > >From the error message I think you are missing a "anonymous" system user
-> > or a suitable mapping in your CVS password file to another suitable system 
-> > user..
-> > 
-> > The CVS password file format is
-> > 
-> > login:[password][:unixuser]
-> > 
-> > if the unixuser is not specified the login is used..
-> > 
-> > Example for anonymous CVS with pubcvs as the UNIX user
-> > 
-> >   anonymous::pubcvs
+> Hi
 > 
-> Thanks for your help.  It looks like it works now.
+> I am using a host and guest 2.6.6 kernel with uml and skas patches 
+> applied. I can get a uml instance to startup ok and can talk to it via 
+> the network.
 > 
-> > I can offer to login to try to fix the problem if the above does not help.  
-> > My SSH keys can be found at http://marasystems.com/people/hno/,
-> > http://www.squid-cache.org/~hno/ or
-> > http://hem.passagen.se/hno/Welcome.html
+> However, I can not communicate with it via mconsole, when it boots it 
+> gives me the error:
+>     make_umid - mkstemp failed, errno = 2
 > 
-> You have an account on www.user-mode-linux.org, if you want to have a look
-> at the CVS setup.  I'd especially appreciate a look at the security since
-> I haven't done anything in particular to lock it down.
+> also when I shut the uml instance down with a shutdown -h 0 is shuts 
+> down the instance but leaves a few processes running on the host system.
 > 
-> > I was on the edge to move my projects from SF about 6 months ago due to
-> > the numerous CVS issues, but they have managed to restore the quality of
-> > their service and today the only reason I see to not use SF for my 
-> > projects is if I were to use another revision control system such as 
-> > arch or subversion.. but at the moment I find CVS works very well for my 
-> > purposes..
+> I have been starting the instances using
+> ./linux umid=uml127 ubd0=root_fs_cp127 udb1=swapfile-uml127 
+> eth0=tuntap,,,192.168.xxx.250
 > 
-> I find the UML is way better for CVS than SF.  It's very much faster.
+> Any ideas or suggestions of where I may have gone wrong are welcome.
 > 
-> Also, I'd like to be independent of SF in case VA starts having trouble
-> or if they decide to start making access to project metadata difficult.
-> You could argue that they already do (and I, in fact would), with their
->  insistence that everything be done through your browser.
+> Thanks
 > 
-> With CVS moved, I now reply on SF for the web site, downloads, and mailing
-> lists.  The lists will be the next to move.  The downloads will stay since
-> SF is just one mirror of many, and it'll be easy to get rid of it if they
-> start misbehaving.
+> Mark
 > 
-> The site will stay on SF until I get my UML-on-demand scheme working.  This
-> involves spreading UML web server images around the net at various cooperative
-> locations, like UML ISPs, having the server loads monitored by some central
-> daemon, and that daemon starting up new UMLs and shutting them down as the
-> load requires, using the nameserver to spread the load around.  Once I get
-> this up and running, the site should be /.-proof, given that there's enough
-> capacity available.
+> -- 
+> Mark Olliver
 > 
-> Jeff
+> Thermeon Europe Ltd.
+> 
+> e-Card: http://www.thermeoneurope.com/e-Card/mpo
+> 
+> Email mpo@thermeoneurope.com
+> Web www.thermeoneurope.com
+> 
+> Support 0906 515 0908
+> Int. Support +44 1293 864 341
+> Support Email support@thermeoneurope.com
+> 
+> Sales +44 1293 864 334
+> Sales Email sales@thermeoneurope.com
+> 
 > 
 > 
 > -------------------------------------------------------
@@ -110,9 +139,9 @@ Subject: Re: [uml-devel] CVS not updated?
 > 6.0/768 connection for only $19.95/mo for the first 3 months!
 > http://ads.osdn.com/?ad_id=2562&alloc_id=6184&op=click
 > _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> User-mode-linux-user mailing list
+> User-mode-linux-user@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
 > 
 
 
