@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ywwX-00008v-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 15 Sep 2003 10:15:17 -0700
-Received: from tailtiu.davidcoulson.net ([207.166.203.132] helo=mail.mx.davidcoulson.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.22)
-	id 19ywwU-00089Y-LV
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Sep 2003 10:15:14 -0700
-Message-ID: <3F65F384.3070204@davidcoulson.net>
-From: David Coulson <david@davidcoulson.net>
+	id 19yxq4-0004sN-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 15 Sep 2003 11:12:40 -0700
+Received: from smtp014.mail.yahoo.com ([216.136.173.58])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
+	id 19yxq4-00033s-Fu
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Sep 2003 11:12:40 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] Starting a command inside UML from mconsole
+References: <200309131820.45833.blaisorblade_spam@yahoo.it> <20030913194849.GX8622@alcor.net> <200309142050.03304.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200309142050.03304.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Kernel panic: I/O op mismatch
-References: <60343.202.181.236.220.1063198180.squirrel@secure.yoric.net>    <3F5F20F1.4080908@davidcoulson.net> <58934.202.181.236.220.1063643369.squirrel@secure.yoric.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200309151912.02394.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,28 +28,28 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Sep 2003 13:14:44 -0400
-To: vincent@yoric.net
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 15 Sep 2003 19:12:02 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Vincent wrote:
-> sorry for bothering, just wondering if you able to get rid of the devfs
-> compile error for 2.4.22-4?
+Alle 20:50, domenica 14 settembre 2003, BlaisorBlade ha scritto:
+> > > - is the ability to read arguments with spaces(within quotes) needed
+> > > even for the program name?
+> Now, I'm posting the patch against 2.4.22-3um(I am not so fast to port
+> patches back and forth to reach -4um for now). It does compile, I've got to
+> test the parsing part but I want to post it even now so that you can say me
+> if I'm doing it well or using a completely wrong way, and such things(I'm
+> new to kernel hacking, as I said, even if I found enough docs).
 
-Hrm, seems to compile here just fine.
-
-> do you able to get 2.4.22-3 compile with highmem support? since i've been
-> having problem compiling with highmem support since 2.4.21
-
-No, it seems broken.
-
-
-David
-
+> Thanks for the interest, and sorry if you think you wasted your time.
+In fact :-(. Sorry for anyone who tried it: the parsing code is totally wrong. 
+I'm going to correct it. I wrote it very fast, and I was thinking only to the 
+kernel related issues...
 -- 
-David Coulson                                    email: d@vidcoulson.com
-Linux Developer /                          web: http://davidcoulson.net/
-Network Engineer                                   phone: (216) 533-6967
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
+
 
 
 
