@@ -1,18 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Atvqe-0006hl-I4
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 13:36:44 -0800
-Received: from bureau8.utcc.utoronto.ca ([128.100.132.18])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtvlB-0007E9-CF
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 13:31:05 -0800
-Message-ID: <40352B06.3030406@users.sourceforge.net>
-From: kuas <ku4s@users.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1AtyLD-0008Fy-4H
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 16:16:27 -0800
+Received: from [69.93.28.254] (helo=unix.easyadmin ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AtyFf-0003B4-TA
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 16:10:43 -0800
+Subject: Re: [uml-devel] Re: [discuss] UML and AMD-64
+From: Matt Ayres <matta@tektonic.net>
+In-Reply-To: <20040113175635.GE2673@jaa.iki.fi>
+References: <E1AgMua-00075F-00@hermes.virtue>
+	 <20040113175635.GE2673@jaa.iki.fi>
+Content-Type: text/plain
+Message-Id: <1077235841.8412.37.camel@wopr.tektonic.net>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] System Call Mechanism
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,32 +26,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 Feb 2004 16:30:46 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 19 Feb 2004 19:10:41 -0500
+To: Jani Averbach <jaa@jaa.iki.fi>
+Cc: trb@categorical.net, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, discuss@x86-64.org, aj@suse.de
 
-Hello,
+Did you use the skas3 patch?  My understand from looking at it is that
+skas3 is written for i386 only, hence you would only be able to run a
+32-bit kernel.  
 
-I'm posting this question to here since this is development problem, the 
-other newsgroup seems to be more like users problem and I would think 
-this forum would be able to explain more about my question. I will post 
-to the other newsgroup if that's the  one where I should really be posting
-
-I'm trying to find out how the system call mechanism presently works in 
-UML. I have looked into the high level description in the slides. Any 
-pointers to any other documents that I might missed are appreciated.
-
-I seems to me the new or current implementation of system call involves 
-conversion from interupt 80 at the host OS into signals back in UML 
-kernel. Is this the same mechanism for the current TT and SKAS? Or  TT 
-mode still using ptrace thread tracing mechanism to intercept the system 
-call? If there is a signal from the host to UML kernel process, there 
-must be a signal handler registered by the UML kernel.
-
-Any quick deeper overview about this mechanism would be really welcome. 
-Thanks in advance.
-
-
-Kuas.
+On Tue, 2004-01-13 at 12:56, Jani Averbach wrote:
+> On 2004-01-13 22:40+1100, Tim Barbour wrote:
+> > I am wondering whether an AMD-64 box can host user-mode Linux. I know that an
+> > AMD-64 system is supposed to be able to run 32-bit applications, but does that
+> > extend as far as running a 32-bit UML virtual machine ?
+> > 
+> > Is there any possibility of running a 64-bit UML virtual machine on an AMD-64 ?
+> > 
+> 
+> I have used an 32bit UML in my AMD64 (pure 64bit system). So it is
+> doable. I can't remember any hiccups and installation was really
+> straightforward.
+> 
+> BR, Jani
+-- 
+Matt Ayres <matta@tektonic.net>
+TekTonic
 
 
 
