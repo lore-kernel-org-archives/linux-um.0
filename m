@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D0uRO-0002PI-Kq for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Feb 2005 20:36:02 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	id 1D14YV-0001XF-GB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Feb 2005 07:24:03 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D0uRN-0005Zl-4V for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Feb 2005 20:36:02 -0800
-Message-ID: <17d401c51318$3da4f1d0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
+	id 1D14YR-0005yJ-Q3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Feb 2005 07:24:03 -0800
+Message-ID: <42121406.40901@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] SKAS-v8: RC2 released against 2.6.7 - 2.6.11-rc3-bk6
+	kernels
 References: <200502110411.35438.blaisorblade@yahoo.it>
 	<169101c512ef$6c905850$0201a8c0@hawk>
 	<170001c512f4$2c279940$0201a8c0@hawk>
-	<200502150622.j1F6Mo5D005785@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] SKAS-v8: RC2 released against 2.6.7 - 2.6.11-rc3-bk6
-	kernels 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <170001c512f4$2c279940$0201a8c0@hawk>
+Content-Type: multipart/mixed; boundary="------------060904080003000101050904"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +29,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 14 Feb 2005 22:31:32 -0600
-To: Jeff Dike <jdike@addtoit.com>
+Date: Tue, 15 Feb 2005 16:23:50 +0100
+To: "Christopher S. Aker" <caker@theshore.net>
 Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-> > [root@host27 root]# /vbin/kernel/2.6.11-rc3-mm2-aio
-> > Checking for /proc/mm...found
-> > Checking for the skas3 patch in the host...found
-> > Checking PROT_EXEC mmap in /tmp...OK
->
-> Does this have my exception-table patch in it?
->
-> Jeff
+This is a multi-part message in MIME format.
+--------------060904080003000101050904
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yes.  This is the same UML kernel I had trouble with on my 2.6.7 host, with an older
-SKAS version.
+Christopher S. Aker wrote:
+>>I just rolled a 2.6.11-rc4+cfq-ts-21 host kernel and I'll be testing this today.
+> 
+> 
+> 2.6.11 doesn't seem to be ready for host duty yet:
+> 
+Yes. There is a bug in the v8-rc2 patch for 2.6.11
+Try the attached fix, please.
 
--Chris
+       Bodo
 
+
+To BlaisorBlade: I tested the v8-rc2 for 2.6.9, too. It works fine for me.
+
+--------------060904080003000101050904
+Content-Type: text/x-diff;
+ name="skas-2.6.11-v8-rc2-fix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="skas-2.6.11-v8-rc2-fix.patch"
+
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+
+This patch fixes a bug in SKAS3 host patch v8-rc2 for 2.6.11,
+that causes syscalls not to be intercepted, when PTRACE_SYSEMU
+is used.
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+---
+
+--- linux-2.6.11-rc4/arch/i386/kernel/ptrace.c.orig	2005-02-15 15:33:26.000000000 +0100
++++ linux-2.6.11-rc4/arch/i386/kernel/ptrace.c	2005-02-15 15:58:18.000000000 +0100
+@@ -802,7 +802,7 @@ int do_syscall_trace(struct pt_regs *reg
+ 	if (is_singlestep)
+ 		send_sigtrap(current, regs, 0);
+ 
+-	if (!test_thread_flag(TIF_SYSCALL_TRACE))
++	if (!test_thread_flag(TIF_SYSCALL_TRACE) && !is_sysemu)
+ 		return 0;
+ 
+ 	/* the 0x80 provides a way for the tracing parent to distinguish
+
+--------------060904080003000101050904--
 
 
 -------------------------------------------------------
