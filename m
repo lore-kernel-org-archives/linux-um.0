@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5tId-0005ua-7S for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Sep 2004 14:51:19 -0700
-Received: from w218.z064002068.nyc-ny.dsl.cnc.net ([64.2.68.218])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1C5qdH-0001V9-H9 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Sep 2004 12:00:32 -0700
-From: Allen Chan <alydar@users.sourceforge.net>
+	id 1C5tJN-0005pr-0E for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 10 Sep 2004 14:52:05 -0700
+Received: from witte.sonytel.be ([80.88.33.193])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C5qoR-0002pL-Fr for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 10 Sep 2004 12:12:06 -0700
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [uml-devel] [patch 1/1] Refer to CONFIG_USERMODE, not to CONFIG_UM
+In-Reply-To: <20040910170859.24ABDC74B@zion.localdomain>
+Message-ID: <Pine.GSO.4.58.0409102109330.9294@waterleaf.sonytel.be>
+References: <20040910170859.24ABDC74B@zion.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200409101457.10376.alydar@users.sourceforge.net>
-Subject: [uml-devel] Broken compile with latest incremental 2.6.8.1-1um patches
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,25 +26,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 10 Sep 2004 14:57:10 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@addtoit.com
+Date: Fri, 10 Sep 2004 21:11:37 +0200 (MEST)
+To: blaisorblade_spam@yahoo.it
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-Using all of the updated incremental patches as of this moment on a 
-pristine 2.6.8.1 kernel, I get the following compile error:
+On Fri, 10 Sep 2004 blaisorblade_spam@yahoo.it wrote:
+> We should also figure out how to make the config process work better for UML.
+> We would like to make UML able to "source drivers/Kconfig" and have the right
+> drivers selectable (i.e. LVM, ramdisk, and so on) and the ones for actual
+> hardware excluded. I've been reading such a request even from Jeff Dike at the
+> last Kernel Summit, (in the lwn.net coverage) but without any followup.
 
-gcc -Wl,-T,arch/um/kernel/uml.lds.s -static -Wl,--wrap,malloc 
--Wl,--wrap,free -Wl,--wrap,calloc \
-        -o linux vmlinux -L/usr/lib -lutil
-vmlinux(.text+0x1e0baa): In function `metafs_init_file':
-: undefined reference to `print_log'
-collect2: ld returned 1 exit status
-make: *** [linux] Error 1
+Yes, I agree 100%!
 
-I was able to correct this manually by commenting out the print_log() 
-call in the externfs patch.  On the version of the externfs patch 
-from a few days ago, I had to comment out two lines containing 
-print_log() calls.
+Drivers for `modern' hardware (e.g. PCI, USB), shouldn't be a problem, since
+they have good dependencies.
+
+`legacy' hardware is more of a problem. Since the consensus was that CONFIG_ISA
+is meant to indicate ISA slots, perhaps we need something like CONFIG_XBUS to
+mark all these legacy drivers?
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 -------------------------------------------------------
