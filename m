@@ -2,24 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19zwL6-0003cQ-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 03:48:44 -0700
-Received: from fmr09.intel.com ([192.52.57.35] helo=hermes.hd.intel.com)
+	id 19zzW2-0003nN-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 07:12:14 -0700
+Received: from mailgate5.cinetic.de ([217.72.192.165])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19zwKh-0006k7-C3
-	for User-mode-linux-devel@lists.sourceforge.net; Thu, 18 Sep 2003 03:48:19 -0700
-Received: from petasus.hd.intel.com (petasus.hd.intel.com [10.127.45.3])
-	by hermes.hd.intel.com (8.11.6p2/8.11.6/d: outer.mc,v 1.83 2003/09/05 14:45:27 rfjohns1 Exp $) with ESMTP id h8IAjQ215708
-	for <User-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 10:45:26 GMT
-Received: from fmsmsxvs042.fm.intel.com (fmsmsxvs042.fm.intel.com [132.233.42.128])
-	by petasus.hd.intel.com (8.11.6p2/8.11.6/d: inner.mc,v 1.35 2003/05/22 21:18:01 rfjohns1 Exp $) with SMTP id h8IAgS512681
-	for <User-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 10:42:28 GMT
-content-class: urn:content-classes:message
+	id 19zzW1-0006rG-Fe
+	for User-mode-linux-devel@lists.sourceforge.net; Thu, 18 Sep 2003 07:12:13 -0700
+Message-Id: <200309181411.h8IEBTQ20012@mailgate5.cinetic.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+From: "Oliver Oppitz" <o.oppitz@web.de>
 Subject: RE: [uml-devel] UML and Execution Replay 
-Message-ID: <A06801158AE07847B27A52C1A074BC1D0247B968@fmsmsx404.fm.intel.com>
-From: "Wichmann, Mats D" <mats.d.wichmann@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -30,24 +23,49 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Sep 2003 03:47:44 -0700
+Date: Thu, 18 Sep 2003 16:11:29 +0200
 Content-Transfer-Encoding: quoted-printable
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Oliver Oppitz <o.oppitz@web.de>, LarsMarowsky-Bree <lmb@suse.de>, User-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>, "Wichmann, Mats D" <mats.d.wichmann@intel.com>
+Cc: LarsMarowsky-Bree <lmb@suse.de>, Oliver Oppitz <o.oppitz@web.de>, User-mode-linux-devel@lists.sourceforge.net
 
+Thanks for the hint. Seems a great occasion to talk to a lot of interesting=
+ people...
 
-> mats.d.wichmann@intel.com said:
-> > Werner is presenting on umlsim at Linux-Kongress in Saarbr=C3=BCcken in
-> > about a month if that's of  interest...=20
+ Oliver
+
+"Wichmann, Mats D" <mats.d.wichmann@intel.com> schrieb am 18.09.03 13:22:36:
 >=20
-> He also presented at OLS a couple of months ago, so checking=20
-> those proceedings might be of interest.
+>=20
+> > mats.d.wichmann@intel.com said:
+> > > Werner is presenting on umlsim at Linux-Kongress in Saarbr=C3=BCcken =
+in
+> > > about a month if that's of  interest...=20
+> >=20
+> > He also presented at OLS a couple of months ago, so checking=20
+> > those proceedings might be of interest.
+>=20
+> Indeed.  I found it complex enough that it helped
+> to hear him speak about it in person, though, and
+> Oliver has a .de email address so I thought that
+> might be a nice opportunity (Jeff will also
+> be speaking at Linux-Kongress, by the way).
+>=20
+>=20
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-Indeed.  I found it complex enough that it helped
-to hear him speak about it in person, though, and
-Oliver has a .de email address so I thought that
-might be a nice opportunity (Jeff will also
-be speaking at Linux-Kongress, by the way).
+
+___________________________________________________________________________=
+___
+Doppelsieg fur WEB.DE FreeMail und Club bei Stiftung Warentest!
+Beste Sicherheitswertung und Verfuegbarkeit! http://f.web.de/?mc=3D021181
+
 
 
 -------------------------------------------------------
