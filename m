@@ -2,19 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhJTD-0002Kg-57 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jan 2004 18:12:23 -0800
+	id 1AhJY1-0004Fg-5A for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Jan 2004 18:17:21 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AhJTC-0003nr-Ky
+	(Exim 4.30) id 1AhJY0-0004Va-IB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jan 2004 18:12:22 -0800
-Message-Id: <200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: uml-patch-2.6.0 
-In-Reply-To: Your message of "13 Jan 2004 19:55:58 +0100."
-	<87y8sbbrup.fsf@bytesex.org> 
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org> 
+	Thu, 15 Jan 2004 18:17:20 -0800
+Message-Id: <200401160238.i0G2cYrf004298@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: Panic with slirp transport and gcc 3.3 
+In-Reply-To: Your message of "Tue, 13 Jan 2004 10:51:57 PST."
+	<20040113185156.GW1514@alcor.net> 
+References: <20031228093317.GK17472@alcor.net>
+	<20031228095115.GL17472@alcor.net>
+	<20031228101240.GN17472@alcor.net>
+	<20031228113042.GO17472@alcor.net>
+	<20031230184330.GD1365@alcor.net>
+	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
+	<20040108070718.GI28393@alcor.net>
+	<20040112183623.GB1436@alcor.net> <20040113152542.GD7072@seventeen>
+	<200401131730.i0DHUMhg002358@ccure.user-mode-linux.org>
+	<20040113185156.GW1514@alcor.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,19 +37,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Jan 2004 21:33:38 -0500
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 15 Jan 2004 21:38:34 -0500
+To: Matt Zimmerman <mdz@debian.org>
+Cc: Bill Allombert <allomber@math.u-bordeaux.fr>, user-mode-linux-devel@lists.sourceforge.net, 176485@bugs.debian.org
 
-kraxel@bytesex.org said:
->  * what is the status of kernel modules in 2.6 kernels?  
+mdz@debian.org said:
+> Certainly (this is from 2.4.23-1um).  Seems like something goes weird
+> with procfs, but I've no idea why this only happens with slirp (and
+> newer gcc for that matter).
 
-They still don't work.  I still haven't got around to fixing it.
+Just tried it, boots fine here, but then I'm not playing with new gccs.
 
->  * Any known issues with 2.6.1 kernels?
+Can you send me the binary that crashes?  I assume it's statically linked...
 
-Fewer, now that I got the 2.6.1 patch out.  UML lacks [gs]et_thread_area
-still, so 2.6 UMLs won't boot new libcs.
+I'm thinking that something funky is happening in the initcalls, and the slirp
+initcall happens to push the funkiness over the edge.
 
 				Jeff
 
