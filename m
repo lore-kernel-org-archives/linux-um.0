@@ -1,16 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Bb24I-00042I-Th for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jun 2004 11:56:58 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1Bb24I-0001Ke-2M for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jun 2004 11:56:58 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
 	3.3.3 similarities to 2.6.6!?
 References: <114001c44bf7$b69ca120$2000000a@schlepptopp>
-	<200406142109.45156.blaisorblade_spam@yahoo.it>
-	<87oenle40x.fsf@amaterasu.srvr.nix>
-	<200406162109.57341.blaisorblade_spam@yahoo.it>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200406162109.57341.blaisorblade_spam@yahoo.it> (BlaisorBlade's
-	message of "Wed, 16 Jun 2004 21:09:57 +0200")
-Message-ID: <87pt7yuidy.fsf@amaterasu.srvr.nix>
+	<200406171925.27567.blaisorblade_spam@yahoo.it>
+	<005201c45496$51bd3b00$dd02a8c0@ferraro>
+In-Reply-To: <005201c45496$51bd3b00$dd02a8c0@ferraro>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200406172046.21192.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,66 +30,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Jun 2004 19:52:25 +0100
+Date: Thu, 17 Jun 2004 20:46:21 +0200
 Content-Transfer-Encoding: quoted-printable
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: uml <uml@dot1q.net>, roland <for_spam@gmx.de>, uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
+To: uml <uml@dot1q.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
+Cc: roland <for_spam@gmx.de>
 
-On Wed, 16 Jun 2004, BlaisorBlade stated:
-> Alle 08:20, marted=EC 15 giugno 2004, Nix ha scritto:
->> On Mon, 14 Jun 2004, BlaisorBlade mused:
->=20
->> > Well, ok, more hints, the first possible answer to this one seems to be
->> > that SuSE enables -funit-at-a-time:
->>
->> (unsurprising, given that -funit-at-a-time's primary author is jh@suse ;=
-} )
->=20
-> Well, someone following gcc development! Compliments! Do you think, too t=
-hat=20
-> SuSE gcc is a pre-release or heavily patched?
+Alle 20:10, gioved=EC 17 giugno 2004, hai scritto:
+> Ah, I only tried adding the -fno-unit-at-a-time switch to -O2.. it seemed
+> to work quite cleanly, and as well as expected by simply replacing the -O2
+> with -O1 as I was previously doing.
 
-I think SuSE are using the `hammer branch' of GCC (described at
-<http://gcc.gnu.org/cvs.html#devbranches>) with a few local patches.
-unit-at-a-time was first implemented in this branch.
+Wow! Now we know what to do... thanks a lot!
 
-(hammer is a branch of GCC 3.3, and will eventually die: there are no
-plans to forward-port it. Forward porting it to 3.5 would be horrible
-anyway.)
+> I'm really unsure about the attribute_used declaration, but if you can te=
+ll
+> me how or what to test, I'm more than willing to give it a few dozen
+> recompiles.
 
->> Yep, -funit-at-a-time will definitely break kernels that aren't
->> expecting it, both because of elision of unused statics and because some
->> arches depend on emission of asm's at the top level to emit stuff in the
->> same order in generated code, and with -funit-at-a-time this just
->> doesn't happen anymore. (I don't think i386 is such an architecture,
->> though.)
->=20
-> However, I would like to see a successful test-case with
-> -fno-unit-at-a-time, plus understanding what are the faulting
-> declaration (i.e. adding attribute_used where needed), before saying
-> this bug is over.
+Well, thanks a lot for your effort and availability... but the attribute_us=
+ed=20
+thing will be a series of little code changes, adding attribute_used to a l=
+ot=20
+of "static" simbols which gcc is somehow deleting. However, I cannot test=20
+anything since I haven't the buggy gcc. Since you have, take a broken binar=
+y=20
+and a working one (the only difference must be the -fno-unit-at-a-time swit=
+ch=20
+in the right places) and run:
 
-Yep; just because there's one problem doesn't mean there aren't others
-hiding underneath it.
+nm broken > list1
+nm working > list2
+diff -u list1 list2 > theChanges
 
->> > static const int hello ATTRIBUTE_USED  =3D 56;
->> >
->> > int main()
->> > {
->> >         asm(
->> >         "mov hello, %eax\n"
->> >         );
->>
->> Well, in this *specific* case, hello should be marked as clobbered,
->=20
-> If you mean should be marked by the coder, ok (gcc is not smart).
+and send me "theChanges" (I don't need nor want list1 or list2 for now, the=
+y=20
+are too big maybe for a 56k modem to download). With that at hand, it will =
 
-GCC knows nothing whatever about the string in asm statements, so yes,
-you have to mark it yourself.
+take probably ten minutes for the fix.
 
+Bye
 --=20
-`We in no way believe that this Christ was a space alien.'
-                    --- A creationist website goes completely bonkers
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+
 
 
 -------------------------------------------------------
