@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CCiNR-0002Bb-OI for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Sep 2004 10:36:29 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CCiNR-0006PK-1F for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Sep 2004 10:36:29 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] (no subject)
-References: <8B6FF516CBA0194AB0996705076B02520F7C3C@ABGEX01E.abg.fsc.net>
-In-Reply-To: <8B6FF516CBA0194AB0996705076B02520F7C3C@ABGEX01E.abg.fsc.net>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200409291933.48271.blaisorblade_spam@yahoo.it>
+	id 1CCkgn-0004D6-VT for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Sep 2004 13:04:37 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CCkgl-0003uN-QK
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Sep 2004 13:04:37 -0700
+Message-Id: <200409292110.i8TLAeLR003432@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Minor problems with interrupted systemcalls 
+In-Reply-To: Your message of "Wed, 29 Sep 2004 18:34:14 +0200."
+	<8B6FF516CBA0194AB0996705076B02520F7C3D@ABGEX01E.abg.fsc.net> 
+References: <8B6FF516CBA0194AB0996705076B02520F7C3D@ABGEX01E.abg.fsc.net> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,63 +28,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Sep 2004 19:33:48 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
+Date: Wed, 29 Sep 2004 17:10:40 -0400
+To: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-On Monday 27 September 2004 11:20, Stroesser, Bodo wrote:
-> On Saturday 25 September 2004 21:35, BlaisorBlade wrote:
-> > ...
-> > This particular part is Ok, but could you, please, avoid trumpling
->
-> over and removing the sysemu code? It's absolutely not needed.
->
-> > If you enclose the last two ptrace calls in "if (!use_sysemu)" and you
->
-> move the "handle_syscall" after them, you get your fix + no change for
-> sysemu.
-> Sorry. I didn't intend to break sysemu! Did I miss something or does it
-> come from my confusing mail format?
-> Here is the code of handle_trap() after applying the patch:
-Ah, ok. Please accept my excuses, I didn't read well the patch (was I too 
-tired?). However ok, it is correct, and the code is written this way in 
-2.6.9-rc2, in fact, as with the original sysemu patch - the problem was in 
-some little changes done by Jeff in his tree.
+Bodo.Stroesser@fujitsu-siemens.com said:
+> A small piece of code regarding SA_ONESHOT should be removed only. In
+> 2.6.9 this is done in get_signal_to_deliver(), and since
+> get_signal_to_deliver() writes a copy of the corresponding k_sigaction
+> into caller's ka_copy, it is a real NOOP. 
 
+Yup, I was looking at that when I was pulling your patch apart, but decided
+to leave it alone for now.  I just got rid of it.
 
-> > ...
-> > A side note: posting HTML messages is bad (on LKML it is enough to be
->
-> totally & completely ignored, I guess); and the above is what the inline
-> patch becomes while answering to an HTML message - could you please
-> either send plain-text or move the patches to attachments (I strongly
-> prefer the first solution)?
+On the subject of escaping from UML, I have a exploit lying around from when
+I fixed the bug in tt mode, and it fails to escape in skas mode.  I'm not
+sure why, though.
 
-> OK. Thank you for the advice. Unfortunately I'm missing experience in
-> writing to mailing lists. And I have to do it with our companies Outlook
-> client...
-> In the meantime I found a switch to modify the settings to "text only".
-> Hope it's better now?
+I'm also uncertain about sysenter.  It should go through the same ptrace path
+as int 0x80, and be intercepted in the same way, and a quick look at entry.S
+indicates that it does.  The remaining question is whether syscall restarting
+works the same, and I don't see any x86 code looking at the syscall instruction
+before deciding to subtract 2 bytes from eip.
 
-Ok, that's perfect!
-If you want to get advices on such questions, you may want to take a look at 
-the LKML FAQ:
+				Jeff
 
-http://www.tux.org/lkml/
-(The only important question I remember is "when/why to send the patch 
-inline/attached/send an URL from the Web").
-
-And these two documents about patch submission format:
-
-http://linux.yyz.us/patch-format.html
-http://www.zip.com.au/~akpm/linux/patches/stuff/tpp.txt
-(Note: when you find differences, do whatever you prefer; inserting the kernel 
-version is a good idea, like the 1st doc says).
-
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
 
 -------------------------------------------------------
