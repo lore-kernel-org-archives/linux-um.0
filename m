@@ -2,27 +2,34 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bxlen-0005Tn-QN for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Aug 2004 05:04:37 -0700
-Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
+	id 1BxmPi-0002M8-HD for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 Aug 2004 05:53:06 -0700
+Received: from ip-217-18-179-10.reverse.dsi.net ([217.18.179.10]
+	helo=sindar.exse.net)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1Bxlen-0007gk-80 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Aug 2004 05:04:37 -0700
-Received: from NHROCAVG2.ets.enterasys.com (nhrocavg2.enterasys.com
-	[134.141.79.124])
-	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id i7JC4Yao029580
+	id 1BxmPh-0007OB-0u for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 Aug 2004 05:53:06 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by sindar.exse.net (Postfix) with ESMTP id C693821760
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 19 Aug 2004 08:04:35 -0400 (EDT)
-Message-ID: <412496FC.4090101@enterasys.com>
-From: "D. Bahi" <dbahi@enterasys.com>
+	Thu, 19 Aug 2004 14:52:55 +0200 (CEST)
+Received: from sindar.exse.net ([127.0.0.1])
+	by localhost (sindar [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 02860-40
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 19 Aug 2004 14:52:54 +0200 (CEST)
+Received: from [10.0.6.6] (pD9F63232.dip.t-dialin.net [217.246.50.50])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by sindar.exse.net (Postfix) with ESMTP id 6B357151
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 19 Aug 2004 14:52:54 +0200 (CEST)
+Message-ID: <4124A2C3.7040004@exse.net>
+From: Sebastian <seb@exse.net>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] mem= and large file support
-References: <412415B0.5060102@enterasys.com>
-	<200408190603.i7J63Zek004748@ccure.user-mode-linux.org>
-In-Reply-To: <200408190603.i7J63Zek004748@ccure.user-mode-linux.org>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig0A49B6213A909D7B3D94AD38"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] debugging a 2.6.7-2 booting problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,77 +41,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 Aug 2004 08:03:08 -0400
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 19 Aug 2004 14:53:23 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig0A49B6213A909D7B3D94AD38
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
-cool - so... it's in tempfile.c : 53
-make_tempfile calls mkstemp -
-
-so maybe a build option required to get the
-option in with this library call? but which?
-
-info on libc says:
-
-      When the sources are compiled with `_FILE_OFFSET_BITS == 64' on a
-      32-bit system this function is in fact `tmpfile64', i.e. the LFS
-      interface transparently replaces the old interface.
-
-so i'll try that.
-
-and just for 'create_mem_file' completeness
-the devanon case doesn't need attention with
-the mmap. right?
-
------
-
-rt_sigprocmask(SIG_UNBLOCK, [ALRM VTALRM], [ALRM VTALRM IO], 8) = 0
-rt_sigprocmask(SIG_BLOCK, [IO], NULL, 8) = 0
-gettimeofday({1092914208, 599204}, NULL) = 0
-getpid()                                = 24405
-open("/tmp/vm_file-3NJodS", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
-unlink("/tmp/vm_file-3NJodS")           = 0
-fchmod(3, 0777)                         = 0
-_llseek(3, 2147483648, [2147483648], SEEK_SET) = 0
-write(3, "\0", 1)                       = -1 EFBIG (File too large)
---- SIGXFSZ (File size limit exceeded) @ 0 (0) ---
-+++ killed by SIGXFSZ +++
+Hi,
 
 
-Jeff Dike wrote:
+I have booting problems with 2.6.7-um2+sysemu.
 
-> dbahi@enterasys.com said:
-> 
->>btw: with the 26-3um and 2.6.8.1 announce Jeff mentions the new SKAS,
->>! TT, STATIC allows mem= ~2.75G upper limit but do we need O_LARGEFILE
->>somewhere? or to compile with -D_FILE_OFFSET_64_BITS 
-> 
-> 
-> Probably.  Can you strace that and see where E2BIG is coming from?
-> 
-> 				Jeff
-> 
+host ist 2.6.7
+host and client : debian sarge.
 
 
---------------enig0A49B6213A909D7B3D94AD38
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I did run uml under gdb (with 'break panic'), but cannot get a backtrace.
+Can anyone help me ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (MingW32)
 
-iD8DBQFBJJcC3XQ4zakZ3z4RAi7qAJ97AVergwz/6f346DePh4IEom4AmgCfUnX/
-4KoOOCYz5uNc8hMqVatC2LM=
-=S0LZ
------END PGP SIGNATURE-----
+-------------------------------------------------------------
+Starting kernel log daemon: klogd.
+Starting MTA: exim4.
+Starting MySQL database server: mysqld.
+Starting Samba daemons: nmbd smbdKernel panic: Kernel stack overflow
+ Detaching after fork from child process 18722.
 
---------------enig0A49B6213A909D7B3D94AD38--
+
+Program exited with code 01.
+(gdb) bt
+No stack.
+(gdb)
+-------------------------------------------------------------
+
+
+
+/sebastian
 
 
 -------------------------------------------------------
