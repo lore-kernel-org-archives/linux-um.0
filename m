@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPkOv-0000Ed-Tg for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 08:51:37 -0700
+	id 1BPlV8-0007ev-1S for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 10:02:06 -0700
 Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPkOv-00027w-CS for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 08:51:37 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BPlV7-0005P1-Bb for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 10:02:05 -0700
 Received: from localhost (henrik@localhost)
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id i4HFpZb17846
+	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id i4HH21n18507
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 17 May 2004 17:51:35 +0200
+	Mon, 17 May 2004 19:02:01 +0200
 From: Henrik Nordstrom <uml@hno.marasystems.com>
-Message-ID: <Pine.LNX.4.44.0405171748550.17607-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] CVS not updated?
+In-Reply-To: <Pine.LNX.4.44.0405171748550.17607-100000@filer.marasystems.com>
+Message-ID: <Pine.LNX.4.44.0405171859530.18477-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] CVS not updated?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,12 +29,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 May 2004 17:51:35 +0200 (CEST)
+Date: Mon, 17 May 2004 19:02:01 +0200 (CEST)
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Is the SF CVS no longer updated with the current 2.4 sources? It seems the 
-last sources in the SF CVS is around 2.4.23-2 (last tag is 2.4.23-1), but 
-the released patch is now up to 2.4.26-1..
+On Mon, 17 May 2004, Henrik Nordstrom wrote:
+
+> Is the SF CVS no longer updated with the current 2.4 sources? It seems the 
+> last sources in the SF CVS is around 2.4.23-2 (last tag is 2.4.23-1), but 
+> the released patch is now up to 2.4.26-1..
+
+The more I look at the CVS tree the more confused I get.. what is
+actaually in the CVS at the moment? Looks like something like the current
+patch but based on 2.4.23 instead of 2.4.26..
 
 Regards
 Henrik
