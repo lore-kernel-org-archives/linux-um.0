@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPWqt-0004ix-3y for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:51 -0800
+	id 1CPWrU-0004k7-7L for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:28 -0800
 Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
 	helo=zion.localdomain)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPWqq-0004Kl-NJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:51 -0800
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CPWrO-0000QC-AC for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:28 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041103231757.63EB155C8B@zion.localdomain>
-Subject: [uml-devel] [patch 18/20] uml: clear errno in CATCH_EINTR
+Message-Id: <20041103231754.C22B355C89@zion.localdomain>
+Subject: [uml-devel] [patch 17/20] UML: Lots of little fixes by Jeff Dike.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,32 +23,188 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 04 Nov 2004 00:17:57 +0100
+Date: Thu, 04 Nov 2004 00:17:54 +0100
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it
 
 
-To avoid silly messages coming out during debugging or when things break,
-after that we've read in CATCH_EINTR that errno == EINTR, clear it, so that
-it's 0 in next iteration.
+From: Jeff Dike <jdike@addtoit.com>
+
+This is a large set of small fixes and other changes:
+
+Fixed a file descriptor leak in the network driver when changing an IP
+address.
+
+The port channel now sets SO_REUSEADDR.
+
+Added some initcall and exitcall definitions to arch/um/include/init.h
+so that they can be used from userspace code.
+
+Fixed the error handling in run_helper.
+
+Added the log() facility to mem_user.c.
+
+Fixed a problem with recursive segfaults not being handled correctly.
+
+tty_log_fd and umid aren't added to the command line any more.
+
+Fixed some prints.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- vanilla-linux-2.6.9-paolo/arch/um/include/user_util.h |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
+ vanilla-linux-2.6.9-paolo/arch/um/drivers/port_user.c             |    8 ++
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/mem_user.c               |   33 ++++++++++
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/sigio_kern.c             |    2 
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/include/mode-skas.h |    2 
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/trap_user.c           |    7 ++
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/tty_log.c                |    2 
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/umid.c                   |    1 
+ vanilla-linux-2.6.9-paolo/arch/um/os-Linux/file.c                 |    3 
+ 8 files changed, 55 insertions(+), 3 deletions(-)
 
-diff -puN arch/um/include/user_util.h~uml-clear-errno-in-CATCH_EINTR arch/um/include/user_util.h
---- vanilla-linux-2.6.9/arch/um/include/user_util.h~uml-clear-errno-in-CATCH_EINTR	2004-11-03 23:30:34.178063672 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/include/user_util.h	2004-11-03 23:30:34.181063216 +0100
-@@ -8,7 +8,7 @@
+diff -puN arch/um/drivers/port_user.c~uml-random arch/um/drivers/port_user.c
+--- vanilla-linux-2.6.9/arch/um/drivers/port_user.c~uml-random	2004-11-03 23:29:27.894140360 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/drivers/port_user.c	2004-11-03 23:29:27.967129264 +0100
+@@ -123,12 +123,18 @@ struct chan_ops port_ops = {
+ int port_listen_fd(int port)
+ {
+ 	struct sockaddr_in addr;
+-	int fd, err;
++	int fd, err, arg;
  
- #include "sysdep/ptrace.h"
+ 	fd = socket(PF_INET, SOCK_STREAM, 0);
+ 	if(fd == -1) 
+ 		return(-errno);
  
--#define CATCH_EINTR(expr) while (((expr) < 0) && (errno == EINTR))
-+#define CATCH_EINTR(expr) while ((errno = 0, ((expr) < 0)) && (errno == EINTR))
++	arg = 1;
++	if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &arg, sizeof(arg)) < 0){
++		err = -errno;
++		goto out;
++	}
++
+ 	addr.sin_family = AF_INET;
+ 	addr.sin_port = htons(port);
+ 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+diff -puN arch/um/kernel/mem_user.c~uml-random arch/um/kernel/mem_user.c
+--- vanilla-linux-2.6.9/arch/um/kernel/mem_user.c~uml-random	2004-11-03 23:29:27.934134280 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/mem_user.c	2004-11-03 23:29:27.967129264 +0100
+@@ -228,6 +228,39 @@ int protect_memory(unsigned long addr, u
+ 	return(0);
+ }
  
- extern int mode_tt;
++#if 0
++/* Debugging facility for dumping stuff out to the host, avoiding the timing
++ * problems that come with printf and breakpoints.
++ * Enable in case of emergency.
++ */
++
++int logging = 1;
++int logging_fd = -1;
++
++int logging_line = 0;
++char logging_buf[512];
++
++void log(char *fmt, ...)
++{
++        va_list ap;
++        struct timeval tv;
++        struct openflags flags;
++
++        if(logging == 0) return;
++        if(logging_fd < 0){
++                flags = of_create(of_trunc(of_rdwr(OPENFLAGS())));
++                logging_fd = os_open_file("log", flags, 0644);
++        }
++        gettimeofday(&tv, NULL);
++        sprintf(logging_buf, "%d\t %u.%u  ", logging_line++, tv.tv_sec,
++                tv.tv_usec);
++        va_start(ap, fmt);
++        vsprintf(&logging_buf[strlen(logging_buf)], fmt, ap);
++        va_end(ap);
++        write(logging_fd, logging_buf, strlen(logging_buf));
++}
++#endif
++
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+  * Emacs will notice this stuff at the end of the file and automatically
+diff -puN arch/um/kernel/sigio_kern.c~uml-random arch/um/kernel/sigio_kern.c
+--- vanilla-linux-2.6.9/arch/um/kernel/sigio_kern.c~uml-random	2004-11-03 23:29:27.936133976 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/sigio_kern.c	2004-11-03 23:29:27.967129264 +0100
+@@ -28,7 +28,7 @@ int write_sigio_irq(int fd)
+ 	int err;
+ 
+ 	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
+-			  SA_INTERRUPT | SA_SAMPLE_RANDOM, "write sigio", 
++			     SA_INTERRUPT | SA_SAMPLE_RANDOM, "write sigio",
+ 			     NULL);
+ 	if(err){
+ 		printk("write_sigio_irq : um_request_irq failed, err = %d\n",
+diff -puN arch/um/kernel/skas/include/mode-skas.h~uml-random arch/um/kernel/skas/include/mode-skas.h
+--- vanilla-linux-2.6.9/arch/um/kernel/skas/include/mode-skas.h~uml-random	2004-11-03 23:29:27.959130480 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/include/mode-skas.h	2004-11-03 23:29:27.968129112 +0100
+@@ -6,6 +6,8 @@
+ #ifndef __MODE_SKAS_H__
+ #define __MODE_SKAS_H__
+ 
++#include <sysdep/ptrace.h>
++
+ extern unsigned long exec_regs[];
+ extern unsigned long exec_fp_regs[];
+ extern unsigned long exec_fpx_regs[];
+diff -puN arch/um/kernel/tt/trap_user.c~uml-random arch/um/kernel/tt/trap_user.c
+--- vanilla-linux-2.6.9/arch/um/kernel/tt/trap_user.c~uml-random	2004-11-03 23:29:27.960130328 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/trap_user.c	2004-11-03 23:29:27.968129112 +0100
+@@ -30,6 +30,13 @@ void sig_handler_common_tt(int sig, void
+ 	if(sig == SIGSEGV)
+ 		change_sig(SIGSEGV, 1);
+ 
++	/* This is done because to allow SIGSEGV to be delivered inside a SEGV
++	 * handler.  This can happen in copy_user, and if SEGV is disabled,
++	 * the process will die.
++	 */
++	if(sig == SIGSEGV)
++		change_sig(SIGSEGV, 1);
++
+ 	r = &TASK_REGS(get_current())->tt;
+ 	save_regs = *r;
+ 	is_user = user_context(SC_SP(sc));
+diff -puN arch/um/kernel/tty_log.c~uml-random arch/um/kernel/tty_log.c
+--- vanilla-linux-2.6.9/arch/um/kernel/tty_log.c~uml-random	2004-11-03 23:29:27.962130024 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/tty_log.c	2004-11-03 23:29:27.968129112 +0100
+@@ -205,6 +205,8 @@ static int __init set_tty_log_fd(char *n
+ 		printf("set_tty_log_fd - strtoul failed on '%s'\n", name);
+ 		tty_log_fd = -1;
+ 	}
++
++	*add = 0;
+ 	return 0;
+ }
+ 
+diff -puN arch/um/kernel/umid.c~uml-random arch/um/kernel/umid.c
+--- vanilla-linux-2.6.9/arch/um/kernel/umid.c~uml-random	2004-11-03 23:29:27.963129872 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/umid.c	2004-11-03 23:29:27.968129112 +0100
+@@ -54,6 +54,7 @@ static int __init set_umid(char *name, i
+ 
+ static int __init set_umid_arg(char *name, int *add)
+ {
++	*add = 0;
+ 	return(set_umid(name, 0, printf));
+ }
+ 
+diff -puN arch/um/os-Linux/file.c~uml-random arch/um/os-Linux/file.c
+--- vanilla-linux-2.6.9/arch/um/os-Linux/file.c~uml-random	2004-11-03 23:29:27.964129720 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/os-Linux/file.c	2004-11-03 23:29:27.969128960 +0100
+@@ -308,7 +308,8 @@ int os_seek_file(int fd, __u64 offset)
+ 	__u64 actual;
+ 
+ 	actual = lseek64(fd, offset, SEEK_SET);
+-	if(actual != offset) return(-errno);
++	if(actual != offset)
++		return(-errno);
+ 	return(0);
+ }
  
 _
 
