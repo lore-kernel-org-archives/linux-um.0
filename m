@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cyjbx-00073W-9Q for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 20:37:57 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Cyjbv-000571-NZ
+	id 1Cytv2-0002Ds-Tg for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 07:38:20 -0800
+Received: from smtp.gentoo.org ([156.56.111.197])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1Cytv1-0002rS-Ha
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 20:37:57 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Why is UML built static all the time?
-References: <200502080203.53596.rob@landley.net>
-	<200502081746.j18Hkds0002747@ccure.user-mode-linux.org>
-In-Reply-To: <200502081746.j18Hkds0002747@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200502082235.36838.rob@landley.net>
+	Wed, 09 Feb 2005 07:38:20 -0800
+Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
+	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.42)
+	id 1Cytv0-0003os-0m for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 15:38:18 +0000
+Received: from apache by nuthatch.gentoo.org with local (Exim 4.42)
+	id 1Cytuz-0002nD-OP for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 15:38:17 +0000
+From: bugzilla-daemon@gentoo.org
+Message-Id: <E1Cytuz-0002nD-OP@nuthatch.gentoo.org>
+Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,24 +30,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Feb 2005 22:35:36 -0500
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 09 Feb 2005 15:38:17 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 08 February 2005 12:46 pm, Jeff Dike wrote:
-> rob@landley.net said:
-> > Is there any easy way to get UML to do a dynamic build?  I tried
-> > removing  -static from the makefile, but the build broke.
->
-> Turn off CONFIG_MODE_TT.  The build will make a dynamic binary.
->
-> With tt mode enabled, UML must be a static binary.
->
-> 				Jeff
+http://bugs.gentoo.org/show_bug.cgi?id=49277
 
-Gotcha, but skas mode is useless to me until SKAS0 comes out...
 
-Rob
+
+
+
+------- Additional Comments From dsd@gentoo.org  2005-02-09 07:38 PST -------
+Could someone please update me with the status of this bug? Are there still problems?
+
+I notice that the latest version in portage is based on 2.6.8.1. Would upgrading to a newer version (assuming there are newer releases) help at all?
+
+
+
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
