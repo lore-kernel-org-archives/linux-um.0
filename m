@@ -2,29 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTJPF-0006QG-ED for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 04:50:41 -0700
-Received: from smtp4.wanadoo.fr ([193.252.22.27] helo=mwinf0402.wanadoo.fr)
+	id 1BTJeQ-0000aw-T2 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 May 2004 05:06:22 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTJPF-0002WT-2E for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 04:50:41 -0700
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
-From: Laurent Vivier <LaurentVivier@wanadoo.fr>
-In-Reply-To: <003b01c443cc$8349fcb0$0201a8c0@hawk>
-References: <20040229043549.GA8583@ccure.user-mode-linux.org>
-	<02dc01c43c4a$bb7c0490$2000000a@schlepptopp>
-	<1084831251.1230.4.camel@chartreuse>
-	<03ff01c43c5d$7db6e5e0$2000000a@schlepptopp>
-	<20040518175904.GB29114@ccure.user-mode-linux.org>
-	<1084987654.2250.4.camel@chartreuse>
-	<006f01c443b2$29434290$0201a8c0@hawk>
-	<1085646154.1264.6.camel@chartreuse>
-	<003b01c443cc$8349fcb0$0201a8c0@hawk>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-2sO3f3aeCw++30G1gd82"
-Message-Id: <1085658646.1256.9.camel@chartreuse>
-Mime-Version: 1.0
+	id 1BTJeQ-0006C1-6I for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 May 2004 05:06:22 -0700
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] Re: [uml-user] Sources of entropy?
+In-Reply-To: <084601c440d6$67d64090$2000000a@schlepptopp>
+Message-ID: <Pine.LNX.4.44.0405271356001.12161-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,52 +25,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 May 2004 13:50:49 +0200
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 27 May 2004 14:06:06 +0200 (CEST)
+To: roland <for_spam@gmx.de>
+Cc: Chris Snyder <csnyder@mvpsoft.com>, Jeff Dike <jdike@addtoit.com>, blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
 
+On Sun, 23 May 2004, roland wrote:
 
+> afaik, uml still has a general problem with /dev/random entropy.
+> please read:
+> http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=107914271712404&w=2
+> 
+> proxying /dev/random from the host sounds like a good solution.
 
---=-2sO3f3aeCw++30G1gd82
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Better yet to implement a /dev/random entropy source in UML using the host 
+/dev/random..  it should be as simple as a kernel thread polling for write 
+on the UML /dev/random, pulling entropy in from the host as needed.
 
-Le jeu 27/05/2004 =E0 11:25, Christopher S. Aker a =E9crit :
-> > It's effectively a patch for 2.4.22. Sorry. I correct the typo on the w=
-eb page.
-> > I create a new patch for 2.4.26 (do you really want 2.4.24 ???)
->=20
-> 2.4.26 would be great, although I'm using the 2.4.24-1um patch against a =
-2.4.26
-> tree, but the more up-to-date the better.
->=20
+But if it is possible to proxy devices then obviously the above can easily
+be done in a normal user process, moving entropy from the proxied random
+device to the UML random device.
 
-Could you try this one, please ?
-
-http://perso.wanadoo.fr/laurent.vivier/UML/um-sysemu-2.4.26-1.patch
-
-> Thanks,
-> -Chris
---=20
-                   Laurent Vivier
-+------------------------------------------------+
-     "Any sufficiently advanced technology is=20
-indistinguishable from magic." -- Arthur C. Clarke
-
---=-2sO3f3aeCw++30G1gd82
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e=2E?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBAtdYVbmJwdIv5dzMRAjLKAJwNJ2jtYHMnOSGf5otYn2lJZZlyLgCfQRXR
-6AjpYJUq6rXOfIgLQ2LusH0=
-=czsv
------END PGP SIGNATURE-----
-
---=-2sO3f3aeCw++30G1gd82--
+Regards
+Henrik
 
 
 
