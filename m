@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aw1Xr-0004Tu-Bx for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Feb 2004 08:05:59 -0800
-Received: from [166.70.202.181] (helo=denlin.zserve.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Aw1Oz-0004XU-EU
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Feb 2004 07:56:49 -0800
-Message-ID: <403CC5BA.50808@muhlesteins.com>
-From: Dennis Muhlestein <devel@muhlesteins.com>
+	id 1Aw4RZ-0001gM-Fm for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Feb 2004 11:11:41 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Aw4Ic-0005X1-JU for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Feb 2004 11:02:26 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] System Call Mechanism
+References: <40352B06.3030406@users.sourceforge.net>
+In-Reply-To: <40352B06.3030406@users.sourceforge.net>
 MIME-Version: 1.0
-References: <403BD8BC.4080205@muhlesteins.com>
-In-Reply-To: <403BD8BC.4080205@muhlesteins.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [uml-user] 2.6.3 Kernel panics (kernel/exit.c:793)
+Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200402251652.52680.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,60 +27,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 25 Feb 2004 08:56:42 -0700
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 25 Feb 2004 16:52:52 +0100
+Content-Transfer-Encoding: quoted-printable
+To: kuas <ku4s@users.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
 
-I had another failure.  This time:
+Alle 22:30, gioved=EC 19 febbraio 2004, kuas ha scritto:
+> Hello,
+>
+> I'm posting this question to here since this is development problem, the
+> other newsgroup seems to be more like users problem and I would think
+> this forum would be able to explain more about my question. I will post
+> to the other newsgroup if that's the  one where I should really be posting
 
-Kernel panic: kernel BUG at kernel/exit.c:793
+Perfect choice. I'll try to answer, for things I know or I *think* to know.
 
-These errors (see below) are all releated I believe.  Here is some more 
-info:
-Before I was using skas3, I had the system running in TT mode.  The 
-problem occurred faster then.
+> I seems to me the new or current implementation of system call involves
+> conversion from interupt 80 at the host OS into signals back in UML
+> kernel. Is this the same mechanism for the current TT and SKAS? Or  TT
+> mode still using ptrace thread tracing mechanism to intercept the system
+> call?
 
-I can reproduce this simply by trying to compile something.  Sometimes 
-it takes only a minute or so, sometimes it lasts 5 or 10.  I don't 
-always get the exact same error but I do consistently get a kernel panic.
+SKAS mode, the more modern one, still uses the same interception mechanism =
+as=20
+TT: i.e. ptraces the child, intercepts the syscall, nullifies it (i.e. the =
 
-Be glad to provide some more information if requested.
--Dennis
+host kernel receives a getpid syscall) and goes on. Look at these files:
 
-Dennis Muhlestein wrote:
+arch/um/kernel/skas/process.c: handle_trap () and userspace().
+arch/um/kernel/skas/syscall_*.c
 
-> Host is 2.4.24 w/ skas3
-> Kernel is 2.6.3 with uml-patch 2.6.3-rc2-1
+Only difference is that in SKAS mode you have one single child process bein=
+g=20
+ptraced, on the host; it runs the virtual processes code, and does syscall =
+
+with int 0x80 which are intercepted. To do a context switch, UML uses setjm=
+p=20
+and longjmp to switch the stack state and PTRACE_SWITCH_MM (implemented on =
+
+the host inside arch/i386/kernel/ptrace.c, read the skas patch) to switch t=
+he=20
+virtual mappings of the child at once. More details about memory handling a=
+t=20
+request, since you asked for one exact thing and maybe are not interested i=
+n=20
+this.
+
+> If there is a signal from the host to UML kernel process, there
+> must be a signal handler registered by the UML kernel.
 >
-> My file system is based on gentoo.  The system seems to boot and run,
-> ok, but if I try to install any
-> new applications, invariably I get a kernel panic somewhere in the build
-> process.
->
-> It's quite sparatic and I get different messages when it dies: here 
-> are two:
->
->    Kernel mode fault at addr 0x0, ip 0x400cfa89
->    Kernel panic: Segfault with no mm
->
-> Any suggestions where to look for answers?  I've seen some other
-> references on the mailing lists to gentoo root file systems.  Is anyone
-> having better luck than I?  Thanks for input.
->
-> -Dennis
->
->
->
-> -------------------------------------------------------
-> SF.Net is sponsored by: Speed Start Your Linux Apps Now.
-> Build and deploy apps & Web services for Linux with
-> a free DVD software kit from IBM. Click Now!
-> http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
->
->
+> Any quick deeper overview about this mechanism would be really welcome.
+> Thanks in advance.
+
+
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
@@ -89,7 +89,7 @@ Dennis Muhlestein wrote:
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
