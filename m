@@ -1,19 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5QLI-0007Pw-Bw for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 07:56:08 -0700
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C5QLG-0002U6-Qu for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 07:56:08 -0700
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Message-ID: <Pine.LNX.4.58.0409091046350.2824@sparrow>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Kernel stack overflow
+	id 1C5Sut-0002Fm-RX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 10:41:03 -0700
+Received: from mail-relay-1.tiscali.it ([213.205.33.41])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C5Suq-0004Q4-Cl for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 10:41:02 -0700
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20040908173855.68F518D0B@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] uml-update-2.6.8-finish
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,34 +22,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Sep 2004 10:52:16 -0400 (EDT)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
+Date: Wed, 08 Sep 2004 19:38:55 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
-Good morning, Jeff,
-	The whoopis VM on Zaphod crashed this morning with this on the 
-console:
 
-whoopis login: Kernel panic: Kernel stack overflow
+Add some updates for API changes in 2.6.8 which were not included in the original
+UML patch; these fixes were detected by some warnings, so I probably missed some more
+ones.
 
-	The kernel completely went away, no coredump.
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
 
-Linux whoopis.com 2.6.6-1um #1 Wed May 26 03:06:23 EDT 2004 i686 i686 i386 
-GNU/Linux
+ uml-linux-2.6.8.1-paolo/include/asm-um/dma-mapping.h |    2 ++
+ 1 files changed, 2 insertions(+)
 
-	I realize I should upgrade, just wanted to pass this one along in 
-case it hadn't been seen before.
-	Cheers,
-	- Bill
-
----------------------------------------------------------------------------
-        "5) what are people like spaf/chris rouland/lance then?
-a) THEY ARE THE ENEMY. WHITEHATS = ENEMY."
-        -- http://www.blackhatbloc.org/phrack/texts/faq1.txt
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+diff -puN include/asm-um/dma-mapping.h~uml-update-2.6.8-finish include/asm-um/dma-mapping.h
+--- uml-linux-2.6.8.1/include/asm-um/dma-mapping.h~uml-update-2.6.8-finish	2004-09-07 15:17:57.593456048 +0200
++++ uml-linux-2.6.8.1-paolo/include/asm-um/dma-mapping.h	2004-09-07 15:17:57.595455744 +0200
+@@ -1,6 +1,8 @@
+ #ifndef _ASM_DMA_MAPPING_H
+ #define _ASM_DMA_MAPPING_H
+ 
++#include <asm/scatterlist.h>
++
+ static inline int
+ dma_supported(struct device *dev, u64 mask)
+ {
+_
 
 
 -------------------------------------------------------
