@@ -2,16 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTzQC-0003Tp-1Q for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 May 2004 01:42:28 -0700
+	id 1BTzTE-00043n-CG for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 01:45:36 -0700
 Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTzQB-0006MK-Da for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 May 2004 01:42:27 -0700
+	id 1BTzTB-0006vD-Ie for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 01:45:33 -0700
 From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] No of ubd
-In-Reply-To: <200405290754.i4T7sZa19953@lifewood.com>
-Message-ID: <Pine.LNX.4.44.0405291040550.9729-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] RE: NX inside UML - WAS: Re: Intelpitchespocket-size
+	'personal server'
+In-Reply-To: <1085784625.18033.67.camel@kira.himalaya.homeip.net>
+Message-ID: <Pine.LNX.4.44.0405291044100.9729-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -25,17 +26,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 29 May 2004 10:42:02 +0200 (CEST)
-To: Raymond Wong <raymond@lifewood.com>
-Cc: leen.meyer@home.nl, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 29 May 2004 10:45:31 +0200 (CEST)
+To: Ulf Bartelt <ulf.bartelt@web.de>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, 29 May 2004, Raymond Wong wrote:
+On Sat, 29 May 2004, Ulf Bartelt wrote:
 
-> Is it possible to create more ubd drives?  It is very easy to runhout of drives.
+> the last crash i had was a suddnely terminating uml process ( just
+> falling down to the host prompt without any error message and i am not
+> good runtime-debugger :-( ) when i tried to compress multiple copies of
+> linux-2.4.24 sources with all compression metods e2compr (see
+> e2compr.sourceforge.net) offers in parallel...
+> 
+> there i really dont know who is to blame.... uml or e2compr?
 
-How many drives do you need, with how many partitons?
+uml, unless you pushed the uml guest too far in memory usage..
 
-8 * 16 is a large amount of partitions..
+no applications should be able to terminate the uml, but if you push a 
+Linux system too far in memory usage bad things will often happen..
 
 Regards
 Henrik
