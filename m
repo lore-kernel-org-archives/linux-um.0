@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ynIx-00043Q-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 23:57:47 -0700
-Received: from mail2.sonytel.be ([195.0.45.172] helo=witte.sonytel.be)
+	id 19ynpO-00067y-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 15 Sep 2003 00:31:18 -0700
+Received: from mailout02.sul.t-online.com ([194.25.134.17])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19ynIw-0003Jg-PQ
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 23:57:46 -0700
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uml-devel] Re: pthreads? 
-In-Reply-To: <200309131854.h8DIsEe4006813@ccure.karaya.com>
-Message-ID: <Pine.GSO.4.21.0309150853020.3191-100000@vervain.sonytel.be>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 19ynpN-0005Jx-H6
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Sep 2003 00:31:17 -0700
+Subject: Re: [uml-devel] [PATCH] Starting a command inside UML from mconsole
+From: Ulf.Bartelt@t-online.de (Ulf Bartelt)
+In-Reply-To: <Pine.LNX.4.44.0309142216310.7867-100000@filer.marasystems.com>
+References: <Pine.LNX.4.44.0309142216310.7867-100000@filer.marasystems.com>
+Content-Type: text/plain
+Message-Id: <1063611042.14239.16.camel@kira.chaos-gmbz>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,99 +26,49 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Sep 2003 08:57:42 +0200 (MEST)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 15 Sep 2003 09:31:03 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 13 Sep 2003, Jeff Dike wrote:
-> geert@linux-m68k.org said:
-> > First step: libpthread redefines sigaction to install its own signal
-> > handler around the signal.
+Am Son, 2003-09-14 um 22.28 schrieb Henrik Nordstrom:
+> On Sun, 14 Sep 2003, Michael Richardson wrote:
 > 
-> Gawd, that's unpleasant.  What does its signal handler do?
-
-For reference, here's the code (from Debian glibc_2.3.1-16):
-
-| /* The wrapper around sigaction.  Install our own signal handler
-|    around the signal. */
-| int __sigaction(int sig, const struct sigaction * act,
-|               struct sigaction * oact)
-| {
-|   struct sigaction newact;
-|   struct sigaction *newactp;
-| 
-|   if (sig == __pthread_sig_restart ||
-|       sig == __pthread_sig_cancel ||
-|       (sig == __pthread_sig_debug && __pthread_sig_debug > 0))
-|     {
-|       __set_errno (EINVAL);
-|       return -1;
-|     }
-|   if (act)
-|     {
-|       newact = *act;
-|       if (act->sa_handler != SIG_IGN && act->sa_handler != SIG_DFL
-|           && sig > 0 && sig < NSIG)
-|         {
-|           if (act->sa_flags & SA_SIGINFO)
-|             newact.sa_handler = (__sighandler_t) __pthread_sighandler_rt;
-|           else
-|             newact.sa_handler = (__sighandler_t) __pthread_sighandler;
-|         }
-|       newactp = &newact;
-|     }
-|   else
-|     newactp = NULL;
-|   if (__libc_sigaction(sig, newactp, oact) == -1)
-|     return -1;
-|   if (sig > 0 && sig < NSIG)
-|     {
-|       if (oact != NULL
-|           /* We may have inherited SIG_IGN from the parent, so return the
-|              kernel's idea of the signal handler the first time
-|              through.  */
-|           && (__sighandler_t) __sighandler[sig].old != SIG_ERR)
-|         oact->sa_handler = (__sighandler_t) __sighandler[sig].old;
-|       if (act)
-|         /* For the assignment it does not matter whether it's a normal
-|            or real-time signal.  */
-|         __sighandler[sig].old = (arch_sighandler_t) act->sa_handler;
-|     }
-|   return 0;
-| }
-| #if 0 // FIXME UML sigaction
-|     // FIXME: causes problems with UML
-|     //   Checking for the skas3 patch in the host...found
-|     //   Checking for /proc/mm...found
-|     //   capture_stack : Expected SIGSTOP, got status = 0xb7f
-| 
-| strong_alias(__sigaction, sigaction)
-| #endif // FIXME UML
-
-As you can see, I have to uncomment the strong_alias(...) to make UML boot.
-
-> > and quits without any further messages. If I try to run it under gdb,
-> > gdb crashes immediately with a segmentation fault. 
+> > It is entirely reasonable that the admin of the host system doesn't even
+> > have login priveledges on the guest system, but would like the guest to
+> > shutdown nicely before he reboots the host.
 > 
-> Try stracing it.  You can tell a lot about its progress by looking at its 
-> system calls.
+> For this there already is control-alt-delete (cad command in mconsole). A
+> guest which wants to be cleanly shut down ought to have a cad handler in
+> it's inittab (all distros does).
 
-Didn't help much neither...
+Exactly.  All an uml hostig admin wants to know is the path to the uml
+stop script and I *don't* want the admin to do other things than using
+exactly that script, especially (s)he shall not issue commands at will
+in my uml.  The uml was set up by me and only I know what and how to
+take down and in which order.  So ctrl-alt-del or maybe some means to
+tell the uml of a soon coming powerdown/powerfail should be all what's
+needed to brimg a customer's uml down cleanly.
 
-I removed all libpthread overridings of symbols that are used by UML
-(intersection of 'U' symbols of vmlinux and 'T' and 'W' symbols of libpthread),
-and now UML boots. I'll try to find out which one is the bad guy...
+> I see the ability to execute commands from mconsole more of a advanced 
+> administration and debugging tool, where a channel to the guest is always 
+> guaranteed no matter what happens inside the guest (within reasonable 
+> limits).
 
-Gr{oetje,eeting}s,
+I was to lazy up to now to fight thru driving an uml by expect... from
+debootstrap's state of having a mini-Debian installed to having it up
+and reachable in the network, some install steps need to be done and a
+"perfect remote control" without networking and other tricky things
+would make my installer simpler.  But the init= bootarg is my friend and
+I can live doing it that way...
 
-						Geert
+So I think such an "uml remote control" would be nice to have but not
+essential...
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+#
+# Say it in Python ;-)
+#
+try:     you.run(away)
+finally: borg.assimilate(you)
 
 
 
