@@ -2,19 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhDFE-0002zP-4S for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jan 2004 11:33:32 -0800
-Received: from dhcp22.ists.dartmouth.edu ([129.170.249.122]
-	helo=uml.user-mode-linux.org)
+	id 1AhJTD-0002Kg-57 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Jan 2004 18:12:23 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AhDFD-0007Zz-FE
+	(Exim 4.30) id 1AhJTC-0003nr-Ky
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jan 2004 11:33:31 -0800
-Message-Id: <200401140725.i0E7Pr9b001444@uml.user-mode-linux.org>
+	Thu, 15 Jan 2004 18:12:22 -0800
+Message-Id: <200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: uml-patch-2.6.0 
+In-Reply-To: Your message of "13 Jan 2004 19:55:58 +0100."
+	<87y8sbbrup.fsf@bytesex.org> 
+References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
+	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] uml-patch-2.6.1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,25 +29,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Jan 2004 02:25:52 -0500
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 15 Jan 2004 21:33:38 -0500
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This patch updates UML to 2.6.1.  No functional changes or bug fixes this time
-around.
+kraxel@bytesex.org said:
+>  * what is the status of kernel modules in 2.6 kernels?  
 
-The 2.6.1 UML patch is available at
-	http://www.user-mode-linux.org/mirror/uml-patch-2.6.1-1.bz2
+They still don't work.  I still haven't got around to fixing it.
 
-BK users can pull my 2.5 repository from
-	http://www.user-mode-linux.org:5000/uml-2.5
+>  * Any known issues with 2.6.1 kernels?
 
-For the other UML mirrors and other downloads, see 
-        http://user-mode-linux.sourceforge.net/dl-sf.html
- 
-Other links of interest:
- 
-        The UML project home page : http://user-mode-linux.sourceforge.net
-        The UML Community site : http://usermodelinux.org
+Fewer, now that I got the 2.6.1 patch out.  UML lacks [gs]et_thread_area
+still, so 2.6 UMLs won't boot new libcs.
 
 				Jeff
 
