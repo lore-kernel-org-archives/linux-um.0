@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKKjS-00082M-UW for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Oct 2004 10:58:42 -0700
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CKKjR-0003Mf-32 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Oct 2004 10:58:42 -0700
-Message-ID: <4176A85F.3000007@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1CKOxj-000723-GY for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Oct 2004 15:29:43 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CKOxi-0003YM-Lk for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Oct 2004 15:29:43 -0700
+Message-ID: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Error in audit syscalls ?
+Subject: [uml-devel] UML "Distro" ?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,54 +26,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 20 Oct 2004 20:03:11 +0200
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 21 Oct 2004 00:31:43 +0200
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Searching the bugs in sysemu I think I've found another little error.
-Compared to i386 it should be wrong, but I don't know much about
-syscall auditing. So can anyone test this?
+Hi folks, 
 
-Bodo
+I would like to hear your opinion if it`s worth thinking about a "UML Linux Distribution".
 
+It could be based on another distro (debian? fedora?) and contain:
 
----
+- A setup for installation of a minimalistic, UML-"ready" base system - call it a "UML 
+  runtime environment". That means: Recent and skas/sysemu-patched kernel(2.6), modules, 
+  X, uml-utilities, screen, scripts, bridge-utils......
+- Pre-configured environment (bridge setup,tmpfs,mountpoints...)
+- some UML kernels
+- basic root-filesystems "ready to run"
 
---- a/arch/um/kernel/tt/syscall_user.c	2004-10-20 19:50:06.946514414 +0200
-+++ b/arch/um/kernel/tt/syscall_user.c	2004-10-20 19:50:36.562620180 +0200
-@@ -29,7 +29,7 @@ void syscall_handler_tt(int sig, union u
-  	SC_START_SYSCALL(sc);
+This could be valuable to people who want to get UML run quickly at good performance or want 
+to roll it out in larger environments
 
-  	index = record_syscall_start(syscall);
--	syscall_trace(regs, 1);
-+	syscall_trace(regs, 0);
-  	result = execute_syscall(regs);
+What do you think ?
 
-  	/* regs->sc may have changed while the system call ran (there may
-@@ -39,7 +39,7 @@ void syscall_handler_tt(int sig, union u
+( ) Ohhhh - nooooo, not another Distro!
+( ) probably useful to make setup/usage of UML easier
+( ) becoming useless, if skas/sysemu go into vanilla kernel
 
-  	SC_SET_SYSCALL_RETURN(sc, result);
+:)
 
--	syscall_trace(regs, 0);
-+	syscall_trace(regs, 1);
-  	record_syscall_end(index, result);
-  }
+regards
+Roland
 
---- a/arch/um/kernel/skas/syscall_user.c	2004-10-20 19:50:19.568428569 +0200
-+++ b/arch/um/kernel/skas/syscall_user.c	2004-10-20 19:50:43.568462424 +0200
-@@ -18,12 +18,12 @@ void handle_syscall(union uml_pt_regs *r
-
-  	index = record_syscall_start(UPT_SYSCALL_NR(regs));
-
--	syscall_trace(regs, 1);
-+	syscall_trace(regs, 0);
-  	result = execute_syscall(regs);
-
-  	REGS_SET_SYSCALL_RETURN(regs->skas.regs, result);
-
--	syscall_trace(regs, 0);
-+	syscall_trace(regs, 1);
-  	record_syscall_end(index, result);
-  }
 
 
 
