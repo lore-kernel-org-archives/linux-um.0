@@ -1,14 +1,31 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Johannes Berg <johannes@sipsolutions.de>
-In-Reply-To: <11a101c44409$2f7dbb20$2000000a@schlepptopp>
-References: <pan.2004.05.17.20.30.18.825415@sipsolutions.de>
-	<11a101c44409$2f7dbb20$2000000a@schlepptopp>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-M97aLSsXQHxsboimV2h3"
-Message-Id: <1085679517.2641.0.camel@johannes>
-Mime-Version: 1.0
-Subject: [uml-devel] Re: [uml-user] odd ping problems
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BTjMH-00008s-6j for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 08:33:21 -0700
+Received: from smtpq3.home.nl ([213.51.128.198])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BTjME-0005G2-Sz for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 08:33:19 -0700
+Received: from [213.51.128.136] (port=45149 helo=smtp5.home.nl)
+	by smtpq3.home.nl with esmtp (Exim 4.30) id 1BTjME-0002YK-0x
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 17:33:18 +0200
+Received: from cc22149-a.groni1.gr.home.nl ([217.121.240.26]:33797
+	helo=ws-02.local) by smtp5.home.nl with esmtp (Exim 4.30)
+	id 1BTjMC-0002UW-2j for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 17:33:16 +0200
+From: Leendert Meyer <leen.meyer@home.nl>
+Subject: Re: [uml-devel] No of ubd
+References: <Pine.LNX.4.44.0405280922080.27901-100000@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0405280922080.27901-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200405281737.19674.leen.meyer@home.nl>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,49 +37,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 May 2004 19:38:37 +0200
-To: roland <for_spam@gmx.de>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, caker@theshore.net, michel@pollet.net, Jeff Dike <jdike@addtoit.com>
+Date: Fri, 28 May 2004 17:37:19 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
+On Friday 28 May 2004 10:13, Henrik Nordstrom wrote:
+> On Fri, 28 May 2004, Raymond Wong wrote:
+> > How many ubd drives are available to use?  8? Or 256?
+>
+> 8, each with 16 partitions.
 
+To create an ubd partition, one does on the host e.g.
 
---=-M97aLSsXQHxsboimV2h3
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+  dd if=/dev/zero of=rootfs count=1 bs=1G
+  mkreiserfs -ff rootfs
 
-On Thu, 2004-05-27 at 18:39, roland wrote:
-> your uml responds to the large ping? mine doesn`t respond to large pings
-> at all.
+But how to make an ubd drive?
 
-Yes, it definitely responds to a large ping, see original transcript I
-posted.
+Cheers,
 
-johannes
-
---=-M97aLSsXQHxsboimV2h3
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Comment: Johannes Berg (SIP Solutions)
-
-iQIVAwUAQLYnmaVg1VMiehFYAQJWoA//c7nM9BLxKw6GmuUgR3vwpz/oOXB0+d+K
-3y40SZwCDT/co6O1AZTj2J7Y783ngJ4PkGGbnDQ499baqkZhcUkWWCqNF7W9g5rd
-NKMH37SlkKFqA/9OHaK1t0rzGWe66X08L2hrnU3JuGCqVtCHjZZC2eI+QVbe2pDM
-nSYwjOpwWO8gfgx+25rrNZprCQEjzxzc2u5TUwLzYzJbxqmSFeA8cej0P5CI3Z34
-CoTZUe76z63ltU0E8dflpu1KTrzveohI1jJA/VfQhyHupygpx1p29SfcStioawe8
-l1bPaIy0ZZWH75lvKBMKiHz4ND77GmJoCnQv3rp6eiRKqwHIK0IOpRQ2JyNhvH2N
-l2WL2vyD49DJmyPzFgHaV+rTznVt4ReRzzPyudMnFT4d0pCQIgHsbrF6zcLaQdAl
-xhBqdRIP5nruPF+8z0+1hYnvWIG73ZzSIr9r3LqcMh325Lhp/D39EyPi3sXKGwC+
-Jhx2tXVfi1yX9Fw4/Zy59RpxBu0vns6Ne/nFNNnDQv04fvVasKMlTG0dx7CVDjtT
-9wPXqsQvFotzFjc+tov5OIMy3BcipFXkPIItfVqpIi0idVb7ZQeJYGbbZfYK0xaJ
-H7OeGbs0z+jMghJSpRksd5gIJAT0WqlCRsgxl5vXvcf5/OcX0O4kJBTrPVW3+8rr
-jetiUXec9YA=
-=v6bu
------END PGP SIGNATURE-----
-
---=-M97aLSsXQHxsboimV2h3--
-
+Leen
 
 
 -------------------------------------------------------
