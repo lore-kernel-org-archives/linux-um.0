@@ -1,24 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BRW1H-00072Q-9D for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 May 2004 05:54:31 -0700
+	id 1BRW5P-0008JV-8P for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 22 May 2004 05:58:47 -0700
 Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BRW1G-0002NK-LT for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 May 2004 05:54:30 -0700
-Message-ID: <046001c43ffc$e9b52d90$2000000a@schlepptopp>
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BRW5O-00047x-OJ for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 22 May 2004 05:58:46 -0700
+Message-ID: <048e01c43ffd$829f72e0$2000000a@schlepptopp>
 From: "roland" <for_spam@gmx.de>
-References: <200405210556.i4L5uIX19375@lifewood.com>
-	<004101c43f3b$497c26b0$dd02a8c0@ferraro>
-	<20040521174707.GA7508@ccure.user-mode-linux.org>
-	<005001c43f79$bcfce6e0$dd02a8c0@ferraro>
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [uml-user] mem=64M, mem=128M, mem=ANYTHING ignored??
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,118 +26,131 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 22 May 2004 15:01:34 +0200
-To: uml <uml@dot1q.net>, user-mode-linux-user@lists.sourceforge.net
+Date: Sat, 22 May 2004 15:05:51 +0200
+To: uml@hno.marasystems.com
 Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-success, too.
-
-the error definitely seems  to be a compile issue.
-if i compile with -O2, uml just uses the 32M memory default
-if i compile with -O1, uml uses the param "mem=..." the right way
-
-furthermore, with O2
-- there are left 5 "linux" processes running, after shutting down uml
-- if i do a "killall linux" 2 of them being terminated, 3 still left running
-  i need to kill them with "kill -9 pid"
-- the terminal becomes unusable after shutdown - need to issue an "reset" on 
-  that terminal to have it working right again
-
-with O1
-- there is only 1 "linux" process being left (still bad because i need to kill 
-  that to boot again)
-- the terminal behaves correctly after shutdown 
-
-mhhh - don`t know how much "improvement" does "O2" in favour of "O1" - but
-who should we ask now, to help hunting this "bug" ?
-gcc folks ?
-
-regards
-roland
-
-
-
+Works here using UML 2.6.6-1um (SuSE9.1) on a 2.6.4 based host(SuSE 9.1), too
+strange..
 
 ----- Original Message ----- 
-From: "uml" <uml@dot1q.net>
-To: <user-mode-linux-user@lists.sourceforge.net>
-Sent: Friday, May 21, 2004 11:22 PM
-Subject: Re: [uml-user] mem=64M, mem=128M, mem=ANYTHING ignored??
+From: "Henrik Nordstrom" <uml@hno.marasystems.com>
+To: "roland" <for_spam@gmx.de>
+Cc: "Jeff Dike" <jdike@addtoit.com>; <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Thursday, May 20, 2004 8:51 PM
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory
 
 
-> SUCCESS.
-> 
-> I wish I had kept the original .config file that was giving me problems
-> because I'd have run a diff against it to see what was throwing the errors.
-> 
-> I changed several things at once, however, so I am unsure as to what did it.
-> I'm going to retrace through my steps to see if I can reproduce the error on
-> this system and post what I discover here.  I'm going to try to
-> reincorporate -O2 instead of using -O1 as well.
-> 
-> Additionally, the UML now shuts down cleanly without any extra 'linux'
-> threads running.  Memory is recognized correctly as well and it's running a
-> 2.6.6-1 uml kernel.
-> 
-> Thanks for the help and ideas, hopefully I'll be able to contribue some
-> diagnostics for someone else in my position who's willing to search this
-> group. =)
-> 
-> 
+> On Thu, 20 May 2004, roland wrote:
+>
+> > my UML is 2.6.6  (but i have seen this on other 2.6.x, too) - it uses devfs
+> > host seems irrelevent - i have seen this on 2.4 and on 2.6 hosts
+>
+> Works here using UML 2.4.26-1um on a 2.4 based host..
+>
+> Regards
+> Henrik
+>
+
+----- Original Message ----- 
+From: "roland" <for_spam@gmx.de>
+To: "Jeff Dike" <jdike@addtoit.com>
+Cc: <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Thursday, May 20, 2004 8:28 PM
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory
+
+
+> Hi !
+> I have dig into this and made a repro-case:
+>
+> #!/bin/bash
+> while IFS=- read line ; do
+>  echo $line
+> done < <(cat /etc/hosts)
+>
+> on HOST this prints the contents of /etc/hosts
+> on UML this gives:
+> ./test: line 4: /dev/fd/62: No such file or directory
+>
+> it seems,  bash process substitution has problems within UML (at least within my uml)
+>
+> i have googled a little bit - maybe this gives a hint:
+> http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=d6142de0d1ec5cd&rnum=2
+> http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=161582ba6e79f8c7&rnum=3
+> http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=94e9a60998cb724c&rnum=3
+>
+> anybody able to reproduce ?
+>
+> my UML is 2.6.6  (but i have seen this on other 2.6.x, too) - it uses devfs
+> host seems irrelevent - i have seen this on 2.4 and on 2.6 hosts
+>
+> regards
+> roland
+>
+>
+>
+>
+>
+>
 > ----- Original Message ----- 
 > From: "Jeff Dike" <jdike@addtoit.com>
-> To: "uml" <uml@dot1q.net>
-> Cc: <user-mode-linux-user@lists.sourceforge.net>
-> Sent: Friday, May 21, 2004 1.47 PM
-> Subject: Re: [uml-user] mem=64M, mem=128M, mem=ANYTHING ignored??
-> 
-> 
-> > On Fri, May 21, 2004 at 09:55:34AM -0400, uml wrote:
-> > > On node 0 totalpages: 8192
-> > >   DMA zone: 8192 pages, LIFO batch:2
+> To: "roland" <for_spam@gmx.de>
+> Cc: <user-mode-linux-devel@lists.sourceforge.net>
+> Sent: Thursday, May 20, 2004 2:40 AM
+> Subject: Re: [uml-devel] /dev/fd/62: No such file or directory
+>
+>
+> > for_spam@gmx.de said:
+> > > can anybody give me a hint, what`s the problem, and how to (probably)
+> > > fix this ?
 > >
-> > > Kernel command line: ubd0=cow1 mem=128M root=98:0
+> > Can you trace these back to the system call within which these happen?
 > >
-> > Ummmm, strange.  It certainly works here:
-> >
-> > On node 0 totalpages: 32768
-> >   DMA zone: 32768 pages, LIFO batch:8
-> >
-> > Kernel command line: ubd0=cow,/home/jdike/roots/debian_22 con0=fd:0,fd:1
-> con1=none con=pts ssl=pts umid=debian mem=128M root=98:0
-> >
-> > That was with 2.6.6.  There are no obvious typos in your command line, but
-> > it's giving you the default 32M.
-> >
-> > Can you show us the command line at the shell prompt?
+> > Figuring out which command in which script causes it, and putting a strace
+> > in front of it should do the trick.
 > >
 > > Jeff
 > >
-> >
-> > -------------------------------------------------------
-> > This SF.Net email is sponsored by: Oracle 10g
-> > Get certified on the hottest thing ever to hit the market... Oracle 10g.
-> > Take an Oracle 10g class now, and we'll give you the exam FREE.
-> > http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
-> > _______________________________________________
-> > User-mode-linux-user mailing list
-> > User-mode-linux-user@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
-> >
-> >
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: Oracle 10g
-> Get certified on the hottest thing ever to hit the market... Oracle 10g. 
-> Take an Oracle 10g class now, and we'll give you the exam FREE.
-> http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
-> 
+>
+> Hi !
+> I`m getting the following errors with uml 2.6.6 (2.6.4 had that, too) and suse9 rootfs during boot (see below).
+> can anybody give me a hint, what`s the problem, and how to (probably) fix this ?
+> networking basically works - but i have to setup the defaultroute manually afterwards and soooo many errors during boot really
+don`t
+> give a good "feeling" :)
+>
+> regards
+> roland
+>
+>
+> Master Resource Control: previous runlevel: N, switching to runlevel: 3
+> Setting up network interfaces:
+>     lo        /sbin/ifup: line 119: /dev/fd/62: No such file or directory
+> /sbin/ifup: line 540: /dev/fd/62: No such file or directory
+> /sbin/ifup: line 1: /dev/fd/62: No such file or directory
+> /sbin/ifup: line 1: /dev/fd/61: No such file or directory
+> /sbin/ifup: line 171: /dev/fd/62: No such file or directory
+> /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+> /etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+> done
+>     eth0      /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+> /sbin/ifup: line 119: /dev/fd/62: No such file or directory
+> /sbin/ifup: line 540: /dev/fd/62: No such file or directory
+> /sbin/ifup: line 171: /dev/fd/62: No such file or directory
+> /sbin/ifup: line 1: /dev/fd/62: No such file or directory
+> /sbin/ifup: line 1: /dev/fd/61: No such file or directory
+> IP/Netmask: 100.1.7.247 / 255.255.252.0
+> /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+> /etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+> done
+> /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+> /etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+> /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+> /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+>
+>
+>
+
 
 
 -------------------------------------------------------
