@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6a5Y-0007QR-KM for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 12:32:40 -0700
-Received: from pimout2-ext.prodigy.net ([207.115.63.101])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C6a5X-0004dn-UD for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 12:32:40 -0700
-From: Chris Wedgwood <cw@f00f.org>
-Subject: Re: [uml-devel] glibc and NPTL, problem, workarounds, etc.
-Message-ID: <20040912193237.GA8253@taniwha.stupidest.org>
-References: <Pine.LNX.4.58.0409081440150.3136@sparrow>
-	<200409122020.51479.blaisorblade_spam@yahoo.it>
-	<20040912190258.GA7818@taniwha.stupidest.org>
-	<200409122127.12738.blaisorblade_spam@yahoo.it>
+	id 1C6gEj-00075S-Pv for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2004 19:06:33 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C6gEg-0004dr-P3
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2004 19:06:33 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
+Message-ID: <20040913031014.GA13184@ccure.user-mode-linux.org>
+References: <20040826020626.GA28471@malice.crymeariver.org>
+	<200409111745.18659.blaisorblade_spam@yahoo.it>
+	<20040911182615.GB2966@ccure.user-mode-linux.org>
+	<200409121752.07398.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200409122127.12738.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200409121752.07398.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,27 +31,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 12 Sep 2004 12:32:37 -0700
+Date: Sun, 12 Sep 2004 23:10:14 -0400
 To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, William Stearns <wstearns@pobox.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, David Jeffery <djeffery@britsys.net>, linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2004 at 09:27:12PM +0200, BlaisorBlade wrote:
+On Sun, Sep 12, 2004 at 05:52:44PM +0200, BlaisorBlade wrote:
+> It worked no worse than current version (which is broken). In fact the 2.4 
+> clone had 2 arguments. So it's obvious.
 
-> Are you sure? I remember that NPTL needs using some new instructions
-> of i686 (maybe CMOVxx) for futexes, to be atomic.
+In fact, it worked better.  It worked on a modern Debian filesystem, where
+my old code didn't.  Hence I didn't notice the mistake (although I should 
+have compared what I did with David's patch and justified the differences,
+if any).
 
-i586 and later i486 will suffice
+> However, this is non-standard. I've added just a comment for now, since you 
+> may have reason to keep the current code, but such behaviour calls for 
+> breakage when things change.
 
-> However, if I'm wrong, we could even pretend to be i386.
+Yeah, I not sure why I did things the way I did.  That's very old code, and
+there may have been some good reason for it which has since disappeared.
 
-NPTL can be made to work too there I'm told, with a little more
-effort.  I'm not sure if anyone will ever bother...
+Offhand, it looks like doing things in the standard way will clean up
+copy_thread a bit.
 
-> Well, you compile Gentoo for your own processor - you might maybe
-> even enable -mregparm for everything (which even breaks binary
-> compatibility everything).
-
-i was thinking gentoo on a i585 would maybe build /lib/tls/i586
+				Jeff
 
 
 -------------------------------------------------------
