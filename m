@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWNre-0000rP-W5
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 14:40:26 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1AWNra-0000VV-8K
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 14:40:22 -0800
-Message-Id: <200312162255.hBGMtYkS003408@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] uml-patch-2.4.22-7 
-In-Reply-To: Your message of "Tue, 16 Dec 2003 14:16:05 EST."
-             <1071602165.3374.23.camel@wopr.tektonic.net> 
-References: <Pine.LNX.4.44.0312161250240.3476-100000@sparrow>  <1071602165.3374.23.camel@wopr.tektonic.net> 
+	id 1AWNu5-00010E-Cv
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 14:42:57 -0800
+Received: from mta13.mail.adelphia.net ([68.168.78.44] helo=mta13.adelphia.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AWNu5-0003mn-0P
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 14:42:57 -0800
+Received: from mizar.alcor.net ([68.64.159.24]) by mta13.adelphia.net
+          (InterMail vM.5.01.06.05 201-253-122-130-105-20030824) with SMTP
+          id <20031216222608.KCCX16367.mta13.adelphia.net@mizar.alcor.net>
+          for <user-mode-linux-devel@lists.sourceforge.net>;
+          Tue, 16 Dec 2003 17:26:08 -0500
+From: Matt Zimmerman <mdz@debian.org>
+Message-ID: <20031216222607.GA31999@alcor.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Type: multipart/mixed; boundary="dDRMvlgZJXvWKvBx"
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] hostaudio fails to build as a module
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,51 +28,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Dec 2003 17:55:34 -0500
-To: Matt Ayres <matta@tektonic.net>
-Cc: William Stearns <wstearns@pobox.com>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 16 Dec 2003 14:26:07 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-matta@tektonic.net said:
-> Well, when reboot/shutdown -r is run from within a UML it shuts down
-> and then states "INIT: no more processes in this runlevel" running
-> 2.4.22-um6.
 
-Does it halt?
 
-Where did you get your filesystem image?
+--dDRMvlgZJXvWKvBx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I saw this a while back, and it turned out to be the filesystem.  The script
-that finally shuts the system down wasn't running, and the reason was that
-the running rc script called it through a link, and the link wasn't there.
+DSP_HELP and MIXER_HELP are undefined when MODULE is defined.  This patch
+just moves them out of the conditional.
 
-> Is there a thread that I can be pointed to or a brief explanation of
-> how this is a benefit? 
+-- 
+ - mdz
 
-The benefit is that when something does a 'sleep 1' inside UML, it will
-sleep for 1 second, and not 2 or 3 seconds.  There have been various complaints
-about this on the lists.
+--dDRMvlgZJXvWKvBx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="hostaudio-module.diff"
 
-> ubd-mmap is new behavior that doesn't need to be enabled? (meaning,
-> just upgrade to -7 and we'll seen some better performance using the
-> block device) ?  
+--- kernel-source-2.4.22/arch/um/drivers/hostaudio_kern.c.orig	2003-12-16 14:23:31.000000000 -0800
++++ kernel-source-2.4.22/arch/um/drivers/hostaudio_kern.c	2003-12-16 14:24:02.000000000 -0800
+@@ -20,6 +20,14 @@
+ char *dsp = HOSTAUDIO_DEV_DSP;
+ char *mixer = HOSTAUDIO_DEV_MIXER;
+ 
++#define DSP_HELP \
++"    This is used to specify the host dsp device to the hostaudio driver.\n" \
++"    The default is \"" HOSTAUDIO_DEV_DSP "\".\n\n"
++
++#define MIXER_HELP \
++"    This is used to specify the host mixer device to the hostaudio driver.\n" \
++"    The default is \"" HOSTAUDIO_DEV_MIXER "\".\n\n"
++
+ #ifndef MODULE
+ static int set_dsp(char *name, int *add)
+ {
+@@ -27,10 +35,6 @@
+ 	return(0);
+ }
+ 
+-#define DSP_HELP \
+-"    This is used to specify the host dsp device to the hostaudio driver.\n" \
+-"    The default is \"" HOSTAUDIO_DEV_DSP "\".\n\n"
+-
+ __uml_setup("dsp=", set_dsp, "dsp=<dsp device>\n" DSP_HELP);
+ 
+ static int set_mixer(char *name, int *add)
+@@ -39,10 +43,6 @@
+ 	return(0);
+ }
+ 
+-#define MIXER_HELP \
+-"    This is used to specify the host mixer device to the hostaudio driver.\n" \
+-"    The default is \"" HOSTAUDIO_DEV_MIXER "\".\n\n"
+-
+ __uml_setup("mixer=", set_mixer, "mixer=<mixer device>\n" MIXER_HELP);
+ 
+ #else /*MODULE*/
 
-No, you have to turn it on (by adding ubd=mmap to the command line).
-
-> Do you know how much performance is gained from
-> ubd-mmap and /dev/anon individually? 
-
-It's not performance of an individual UML per se (the testing I've done shows
-that the performance is about the same), it's lower memory consumption on
-the host.  ubd-mmap eliminates the duplicate copies of data on the host (in
-the host page cache and the UML page cache) by mapping the host page cache
-directly into UML physical memory.  /dev/anon completes the picture by
-releasing the overmapped physical memory pages back to the host.
-
-So, it'll increase your hosting capacity, and if the host is swapping, improve
-performance by keeping more UMLs in memory.
-
-				Jeff
-
+--dDRMvlgZJXvWKvBx--
 
 
 -------------------------------------------------------
