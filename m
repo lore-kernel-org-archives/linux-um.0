@@ -1,22 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AxCjG-0004LQ-AV for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 28 Feb 2004 14:14:38 -0800
+	id 1AxGWR-0006hK-Qz for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 28 Feb 2004 18:17:39 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AxCIe-0003yB-81
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AxGLY-0004H8-PZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 28 Feb 2004 13:47:08 -0800
+	Sat, 28 Feb 2004 18:06:25 -0800
+Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	by ccure.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id
+	i1T2abM9008321 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 28 Feb 2004 21:36:37 -0500
+Received: (from jdike@localhost)
+	by ccure.user-mode-linux.org (8.12.5/8.12.5/Submit) id i1T2ab68008319
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 28 Feb 2004 21:36:37 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH] Removing user_syms.c altogether
-Message-ID: <20040228223333.GB7716@ccure.user-mode-linux.org>
-References: <200402282010.41036.blaisorblade_spam@yahoo.it>
+Message-ID: <20040229023636.GB8272@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200402282010.41036.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] [PATCH] fix writing into /dev/kmem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,19 +34,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 28 Feb 2004 17:33:33 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 28 Feb 2004 21:36:36 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Feb 28, 2004 at 08:10:40PM +0100, BlaisorBlade wrote:
-> I've moved the EXPORT_SYMBOLS from ksyms.c to user_ksyms.c, with fake 
-> prototypes. The reason is to avoid copying code from linux/module.h and to 
-> remove one user-objs for the cleanup - that one cannot go away with the os_* 
-> expansion.
+The patch below fixes a bug in the /dev/kmem driver which causes UML to
+die if you write to it.  Of course, the kernel will die if you write random
+crap to kernel memory, but at least it doesn't die in a UML-specific way.
 
-Umm, was there supposed to be a patch attached to that? :-)
+This is a cut'n'paste from an xterm, so apply with patch -l.
 
 				Jeff
+
+--- drivers/char/mem.c~ 2004-01-05 11:23:32.000000000 -0500
++++ drivers/char/mem.c  2004-02-27 08:52:14.000000000 -0500
+@@ -287,6 +287,7 @@
+        ssize_t virtr = 0;
+        char * kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
+ 
++       p = (unsigned long) __va(p);
+        if (p < (unsigned long) high_memory) {
+                wrote = count;
+                if (count > (unsigned long) high_memory - p)
+@@ -321,7 +322,7 @@
+                free_page((unsigned long)kbuf);
+        }
+ 
+-       *ppos = p;
++       *ppos = __pa((void *) p);
+        return virtr + wrote;
+ }
 
 
 -------------------------------------------------------
