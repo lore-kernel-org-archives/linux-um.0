@@ -1,15 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200401080019.i080JOtd008375@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Wed, 07 Jan 2004 20:12:04 +0100."
-	<200401072012.05007.blaisorblade_work@yahoo.it> 
-References: <200312242019.23335.blaisorblade_work@yahoo.it>
-	<200401062038.37402.blaisorblade_work@yahoo.it>
-	<20040106202145.GA11953@mars.ravnborg.org>
-	<200401072012.05007.blaisorblade_work@yahoo.it> 
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AeUGL-0006Un-T4 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jan 2004 23:07:25 -0800
+Received: from mta13.mail.adelphia.net ([68.168.78.44] helo=mta13.adelphia.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AeUGL-0006oS-H7 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jan 2004 23:07:25 -0800
+From: Matt Zimmerman <mdz@debian.org>
+Subject: Re: Resolution (Re: [uml-devel] 2.4.22-[67] problems)
+Message-ID: <20040108070718.GI28393@alcor.net>
+References: <20031220011323.GW18100@alcor.net>
+	<20031220171450.GB10692@ccure.user-mode-linux.org>
+	<20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
+	<20031228093317.GK17472@alcor.net>
+	<20031228095115.GL17472@alcor.net>
+	<20031228101240.GN17472@alcor.net>
+	<20031228113042.GO17472@alcor.net>
+	<20031230184330.GD1365@alcor.net>
+	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [kbuild-devel] Needed help for UML kbuild.
+Content-Disposition: inline
+In-Reply-To: <200401060258.i062wWFI023087@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,51 +35,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 07 Jan 2004 19:19:24 -0500
-To: BlaisorBlade <blaisorblade_work@yahoo.it>
-Cc: Sam Ravnborg <sam@ravnborg.org>, kbuild-devel@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 7 Jan 2004 23:07:18 -0800
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, debian-gcc@lists.debian.org
 
-blaisorblade_work@yahoo.it said:
-> some modules(i.e. hostaudio) are built from a "userspace" (needing the
-> special  treatment) file and a "kernel" (to be compiled as usual)
-> file. How will  kbuild link them together?
+On Mon, Jan 05, 2004 at 09:58:32PM -0500, Jeff Dike wrote:
 
-> I have three workarounds:
-> - split the module into 2 separate ones, with the kernel one requiring the 
-> other. BUT a lot of EXPORT_SYMBOLS should be added (one for each function 
-> inside the userspace file at least)
-> - create a symlink from arch/um/drivers/hostaudio_user.c(old place) to 
-> arch/um/os/drivers/hostaudio_user.c (new place) and pass the symlink to gcc.
-> This must be done only when the file will be part of a module.
-> Note that arch/um/os is a symlink to arch/um/os-{Linux, Win, any OS needed}.
-> - (worst option) make kbuild link together objects from different folders 
-> inside one module. But I don't like this and I guess this would never be 
-> accepted (this is against a fundamental kbuild assumption, IIRC).
+> mdz@debian.org said:
+> > It turns out that this problem seems to be due to compiler
+> > incompatibility. UML had been built with gcc 2.95 due to old breakage,
+> > and when built with gcc 3.3 (as glibc is), everything starts working
+> > again.  My suspicion is that this is due to certain recent changes in
+> > pthreads.
+> 
+> Is it your opinion that there's no problem in UML itself?  Having a field
+> in the sigcontext getting magically munged is somewhat worrying.  I'd be 
+> happier knowing what exactly was happening so I can be sure this wasn't
+> exposing some subtle UML bug.
 
-Option 2 would work, although I would try to avoid that.  I would rather
-have everything under arch/um/os be userspace code, and none of it be kernel
-code.
+I was not able to come to a satisfactory conclusion as to the origin of the
+problem, and once I found a solution, I stopped looking.  I'm copying
+debian-gcc and debian-glibc in case they're interested.
 
-So, rather than have a module consisting of a userspace chunk and a kernel
-chunk needing to be turned into a single .o, I would rather look at having
-two modules, with the userspace piece plugging into an interface in the
-kernel piece.  
+Summary for debian-{gcc,glibc}:
 
-This is what I've envisioned for hostfs for a long time.  You don't need to
-stick host files underneath hostfs files - you can stick other host resources
-under them, and the way to do that is to have multiple hostfs userspace modules
-which plug into an interface in the hostfs kernel piece, each of which provides
-access to a different sort of host resource.
+UML built with gcc-2.95 fails to run correctly on a current unstable system
+with a 2.4 kernel.  The symptoms are very strange; This started to happen recently; UML had been building
+with gcc 2.95 successfully for over 9 months now with no problems.
 
-So, I would look at the other problematic modules and see if they can be treated
-in the same way.
+Details are here: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=224431
 
-So, I basically don't like the idea of making the CFLAGS munging part of kbuild
-overall.  It's very UML-specific now, and in the future, it will become specific
-to small pieces of UML.
-
-				Jeff
-
+-- 
+ - mdz
 
 
 -------------------------------------------------------
