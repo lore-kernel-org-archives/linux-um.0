@@ -2,23 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C57Ys-0004SO-PQ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 11:52:54 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C57Yr-00025z-UY for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 11:52:54 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
-References: <BACKUPJQjdF8qoH28Db000022d5@NOSPAM.BRITSYS.NET>
-	<413E5265.2080001@britsys.net>
-In-Reply-To: <413E5265.2080001@britsys.net>
+	id 1C57lh-0006fC-RX for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 12:06:09 -0700
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1C57lh-0003se-0T for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 12:06:09 -0700
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.58.0409081440150.3136@sparrow>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200409082009.51059.blaisorblade_spam@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] glibc and NPTL, problem, workarounds, etc.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,44 +25,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 8 Sep 2004 20:09:51 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: David Jeffery <djeffery@britsys.net>, ralston@stral.net
+Date: Wed, 8 Sep 2004 15:02:03 -0400 (EDT)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: William Stearns <wstearns@pobox.com>
 
-On Wednesday 08 September 2004 02:29, David Jeffery wrote:
-> Michael Ralston wrote:
-> >I've been testing out this patch...
-> >
-> >It seems it allows me to start a uml-2.6.8.1 with SKAS using libc6-2.3.2.
-> >I'm not sure if programs that make use of NPTL are running correctly
-> > though.
->
-> It depends on what part of pthreads the programs use.  My patch only
-> fixes basic thread creation.  If you run the pthread test suite from
-> LSB, you'll find there is alot still broken.  Sorry for my patch
-> sounding more impressive than it was.  The few pthread things I ran work
-> but they didn't make extensive use of the nptl's pthread features.  I'm
-> going to try and look at what's broken but no guarantees I'll know how
-> to fix it.
-Ok, now that seems reasonable.
+Good day, all,
+	Zaphod had a rather nasty filesystem crash last week.  It happened 
+around the time that two other events happened; the raid array forgot it 
+had drive 3 (requiring me to remove and re-add the drive and start a raid 
+rebuild), and one of the users was attempting to upgrade glibc on debian.  
+This put in a new version of glibc, along with the NPTL (Native Posix 
+Threading Libraries) that don't work with UML.  From that point, that user 
+could log in with ssh, but could no longer run any applications because 
+bash refused to fork.
 
-The biggest problem are these two syscalls (this is a quote from 
-arch/um/kernel/sys_call_table.c):
+	There are a couple of workarounds for this problem.  First, when 
+installing any root filesystem, check afterwards to see if there's a 
+directory called /lib/tls/ .  If so, rename or delete it.  This removes 
+the NPTL extensions to glibc but leaves glibc itself, so applications 
+continue to work; they just never try to use the NPTL extensions.
+	To make sure it's never used again, do the following as root:
 
-        [ __NR_set_thread_area ] (syscall_handler_t *) sys_ni_syscall,
-        [ __NR_get_thread_area ] (syscall_handler_t *) sys_ni_syscall,
+rm -rf /lib/tls/
+mkdir /lib/tls/
+chmod 000 /lib/tls/
+chattr +i /lib/tls/
 
-We've always been knowing that the problem is setting the TLS space - on i386 
-you do it by allocating a memory area for each thread and setting a reference 
-to it(to change on thread switching) in the GDT (a special memory area 
-handled by the CPU).
-However, it should be possible to make them work - see modify_ldt 
-implementation in SKAS mode to understand how.
+	Now even root can't write to that directory.  Any attempt to 
+install a new version of glibc will probably fail because rpm/apt can't 
+write to that directory, but it's better than having a non-functioning 
+system.
 
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+	In trying to run the above commands while fixing his system, I ran
+into the problem where the commands I wanted to run loaded glibc and the
+NPTL libaries, and therefore refused to run (the error message I got on
+fork mentioned "nptl").  In fact, running single user mode (starting up
+uml with "ro single init=/bin/bash") didn't do any better since bash
+needed to fork to run the above commands and the fork failed.
+	The workaround to the above is this:
+
+export LD_ASSUME_KERNEL=2.4.1
+exec /bin/bash
+
+	which replaces your current bash with a new one that won't try to 
+load the nptl libraries.  Now you can run commands even though the 
+/lib/tls/ directory is there - this would be an excellent time to remove 
+them.  :-)
+
+	Jeff, I have a seriously hard time believing that simply running 
+nptl binaries could cause journal errors out on the host.  I'm much more 
+inclined to believe that the raid rebuild might have briefly set the block 
+devices read-only, long enough for the journal to give up because there's 
+no place to put the data.  I just thought I'd bring up the closesness in 
+time in case it triggered any connections for you.
+	I do have some of the host journal errors if they're useful, but I 
+suspect they're not.
+	Cheers,
+	- Bill
+
+---------------------------------------------------------------------------
+	"Computers let you make more mistakes faster than any other
+invention in human history, with the possible exception of handguns and
+tequila." 
+	-- Mitch Radcliffe
+(Courtesy of Hugo van der Kooij <hvdkooij@caiw.nl>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
