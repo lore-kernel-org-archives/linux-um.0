@@ -2,33 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A01oC-0003CS-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 09:39:08 -0700
-Received: from mout2.freenet.de ([194.97.50.155])
+	id 1A04VI-0003g7-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 12:31:48 -0700
+Received: from esperi.demon.co.uk ([194.222.138.8] ident=0)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A01oB-00043e-7q
-	for User-mode-linux-devel@lists.sourceforge.net; Thu, 18 Sep 2003 09:39:07 -0700
-Received: from [194.97.55.147] (helo=mx4.freenet.de)
-	by mout2.freenet.de with asmtp (Exim 4.23)
-	id 1A01oA-0000Vw-6L
-	for User-mode-linux-devel@lists.sourceforge.net; Thu, 18 Sep 2003 18:39:06 +0200
-Received: from b292a.pppool.de ([213.7.41.42] helo=home.petschge.de)
-	by mx4.freenet.de with esmtp (Exim 4.23 #2)
-	id 1A01o6-0003OO-LH
-	for User-mode-linux-devel@lists.sourceforge.net; Thu, 18 Sep 2003 18:39:03 +0200
-Received: from localhost (localhost.petschge.de [127.0.0.1])
-	by home.petschge.de (Postfix on Linux (i386)) with ESMTP id EBC683BCE5
-	for <User-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 18:36:54 +0200 (CEST)
-Received: from mars (localhost.petschge.de [127.0.0.1])
-	by home.petschge.de (Postfix on Linux (i386)) with SMTP id 7D2453BCE4
-	for <User-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 18:36:53 +0200 (CEST)
-From: "Patrick \"Petschge\" Kilian" <petschge@web.de>
-Subject: Re: [uml-devel] Re: compile problem with uml-patch-2.4.22-4 
-References: <200309150545.h8F5jJWw022233@hongkong.cs.nmsu.edu> <20030916212039.19A8B3BCE4@home.petschge.de> <200309180023.h8I0NGNu021764@ccure.karaya.com>
+	id 1A04VF-0000oj-UY
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Sep 2003 12:31:46 -0700
+Received: from esperi.demon.co.uk (1000@amaterasu.srvr.nix [192.168.1.14])
+	by esperi.demon.co.uk (8.12.10/8.12.10) with ESMTP id h8IJVa7l032181
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Sep 2003 20:31:36 +0100
+Subject: Re: [uml-devel] redefinition of `struct ptrace_faultinfo' with
+ uml-2.4.22-4 + skas3
+References: <87brtkuwm8.fsf@amaterasu.srvr.nix>
+From: Nix <nix@esperi.demon.co.uk>
+In-Reply-To: <87brtkuwm8.fsf@amaterasu.srvr.nix> (nix@esperi.demon.co.uk's
+ message of "Wed, 17 Sep 2003 00:44:31 +0100")
+Message-ID: <87llsluc4p.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
-Message-Id: <20030918163653.7D2453BCE4@home.petschge.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -39,141 +30,114 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Sep 2003 18:36:53 +0200
-To: User-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 18 Sep 2003 20:31:34 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On Wed, 17 Sep 2003, nix@esperi.demon.co.uk muttered drunkenly:
+> This has come up before on the lists (first report in late 2002), and
+> nobody's ever come up with preprocessed source. Until now.
 
->>> Yes, I am volunteering if nobody else wants to do it.
->> In this case I volunteer to do some spellchecking and proof reading ;-)
-> Cool, patches like that are useful and easy to merge...
+I've kludged around it like so:
 
-I didn't want to way for something to proof read, so I started on my own. 
-Most descriptions are the same as in 2.6.0-test5. Please pay special 
-attention to the follwoing help textes, as I have written them on my own.
+Index: linux/include/asm-um/ptrace-generic.h
+===================================================================
+RCS file: /cvsroot/user-mode-linux/linux/include/asm-um/ptrace-generic.h,v
+retrieving revision 1.11
+diff -u -r1.11 ptrace-generic.h
+--- linux/include/asm-um/ptrace-generic.h	20 Dec 2002 23:52:04 -0000	1.11
++++ linux/include/asm-um/ptrace-generic.h	18 Sep 2003 19:23:39 -0000
+@@ -14,6 +14,8 @@
+ 
+ #define pt_regs pt_regs_subarch
+ #define show_regs show_regs_subarch
++#define ptrace_faultinfo ptrace_faultinfo_subarch
++#define ptrace_ldt ptrace_ldt_subarch
+ 
+ #include "asm/arch/ptrace.h"
+ 
+@@ -21,6 +23,8 @@
+ #undef show_regs
+ #undef user_mode
+ #undef instruction_pointer
++#undef ptrace_faultinfo
++#undef ptrace_ldt
+ 
+ #include "sysdep/ptrace.h"
+ #include "skas_ptrace.h"
 
-CONFIG_HOST_2G_2G
-CONFIG_HIGHMEM
-CONFIG_PROC_MM
-CONFIG_DEV_ANON
-CONFIG_UML_WATCHDOG
+However, I now have *another* problem. (This could well be a problem for
+-user, but I can't tell; SourceForge's useless mail archive search
+system is down. Again.)
 
-Configure.help.patch:
------
+loki:/mirror/uml# uml-esperi ubd0=/mirror/uml/esperi-core-cow.image,/mirror/uml/esperi-core.image umid=esperi eth0=tuntap,tap0 eth1=tuntap,tap1
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+Linux version 2.4.22-4um (compiler@loki) (gcc version 2.95.4 20010319 (prerelease)) #2 Thu Sep 18 10:46:56 BST 2003
+On node 0 totalpages: 8192
+zone(0): 8192 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: ubd0=/mirror/uml/esperi-core-cow.image,/mirror/uml/esperi-core.image umid=esperi eth0=tuntap,tap0 root=/dev/ubd0
+Calibrating delay loop... 483.69 BogoMIPS
+Memory: 30116k available
+Dentry cache hash table entries: 4096 (order: 3, 32768 bytes)
+Inode cache hash table entries: 2048 (order: 2, 16384 bytes)
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+Buffer cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 8192 (order: 3, 32768 bytes)
+Checking for host processor cmov support...No
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+VFS: Disk quotas vdquot_6.5.1
+Journalled Block Device driver loaded
+pty: 256 Unix98 ptys configured
+Initializing software serial port version 1
+mconsole (version 2) initialized on /root/.uml/esperi/mconsole
+Creating "/mirror/uml/esperi-core-cow.image" as COW file for "/mirror/uml/esperi-core.image"
+Partition check:
+ ubda: unknown partition table
+io_thread - read failed, err = 9
+Kernel panic: Kernel mode signal 8
+ 
+<6>Initializing stdio console driver
+Netdevice 0 : TUN/TAP backend - 
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP, IGMP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 2048 bind 2048)
+ip_conntrack version 2.1 (235 buckets, 1880 max) - 288 bytes per conntrack
+ip_tables: (C) 2000-2002 Netfilter core team
+ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>.  http://snowman.net/projects/ipt_recent/
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+NET4: Ethernet Bridge 008 for NET4.0
+[freeze]
 
+It's not completely repeatable; I get a boot about 20% of the time
+(identical log up to the entry to userspace except for the absence of
+the read failed and panic messages), and this the rest of the time.
+If I turn TUN/TAP off, the problem goes away, so it looks like I'm
+using TUN/TAP wrongly.
 
---- linux-2.4.22-uml/Documentation/Configure.help       Wed Sep 17 12:03:54 
-2003
-+++ linux-2.4.22-uml2/Documentation/Configure.help      Thu Sep 18 18:31:42 
-2003
-@@ -27646,6 +27646,96 @@
- CONFIG_CRYPTO_TEST
-   Quick & dirty crypto test module.
+I get the same failure mode whether I say
 
-+Separate Kernel Address Space support
-+CONFIG_MODE_SKAS
-+  This option controls whether skas (separate kernel address space)
-+  support is compiled in.  If you have applied the skas patch to the
-+  host, then you certainly want to say Y here (and consider saying N
-+  to CONFIG_MODE_TT).  Otherwise, it is safe to say Y.  Disabling this
-+  option will shrink the UML binary slightly.
-+
-+Tracing thread support
-+CONFIG_MODE_TT
-+  This option controls whether tracing thread support is compiled
-+  into UML.  Normally, this should be set to Y.  If you intend to
-+  use only skas mode (and the host has the skas patch applied to it),
-+  then it is OK to say N here.
-+
-+Force a static link
-+CONFIG_STATIC_LINK
-+  If CONFIG_MODE_TT is disabled, then this option gives you the ability
-+  to force a static link of UML.  Normally, if only skas mode is built
-+  in to UML, it will be linked as a shared binary.  This is inconvenient
-+  for use in a chroot jail.  So, if you intend to run UML inside a
-+  chroot, and you disable CONFIG_MODE_TT, you probably want to say Y
-+  here.
-+
-+HoneyPot ProcFS
-+CONFIG_HPPFS
-+  hppfs (HoneyPot ProcFS) is a filesystem which allows UML /proc
-+  entries to be overridden, removed, or fabricated from the host.
-+  Its purpose is to allow a UML to appear to be a physical machine
-+  by removing or changing anything in /proc which gives away the
-+  identity of a UML.
-+
-+  See <http://user-mode-linux.sf.net/hppfs.html> for more information.
-+
-+  You only need this if you are setting up a UML honeypot.  Otherwise,
-+  it is safe to say 'N' here.
-+
-+2G/2G host address space split
-+CONFIG_HOST_2G_2G
-+  Most Linux machines are configured so that the kernel occupies the
-+  upper 1G of the 4G address space and processes use the lower 3G.
-+  However, some machine are configured with a 2G/2G split, with the
-+  kernel occupying the upper 2G and processes using the lower 2G.
-+
-+  To allow UML to run on a host you have to say Y here. N should be
-+  a save choice most of the time.
-+
-+Support for high memory
-+CONFIG_HIGHMEM
-+  Currently broken, so N is the save answer.
-+
-+Support for /proc/mm
-+CONFIG_PROC_MM
-+  If you don't know what this does just say Y.
-+
-+Kernel stack size order
-+CONFIG_KERNEL_STACK_ORDER
-+  This option determines the size of UML kernel stacks.  They will
-+  be 1 << order pages.  The default is OK unless you're running Valgrind
-+  on UML, in which case, set this to 3.
-+
-+Anonymous Memory support
-+CONFIG_DEV_ANON
-+  Don't ask. Just say Y.
-+
-+Support for software watchdog inside UML
-+CONFIG_UML_WATCHDOG
-+  It's save to say N here.
-+
-+COW block device
-+CONFIG_COW
-+  This is a layered driver which sits above two other block devices.
-+  One is read-only, and the other is a read-write layer which stores
-+  all changes.  This provides the illusion that the read-only layer
-+  can be mounted read-write and changed.
-+
-+pcap transport
-+CONFIG_UML_NET_PCAP
-+ The pcap transport makes a pcap packet stream on the host look
-+  like an ethernet device inside UML.  This is useful for making
-+  UML act as a network monitor for the host.  You must have libcap
-+  installed in order to build the pcap transport into UML.
-+
-+  For more information, see
-+  <http://user-mode-linux.sourceforge.net/networking.html>  That site
-+  has examples of the UML command line to use to enable this option.
-+
-+  If you intend to use UML as a network monitor for the host, say
-+  Y here.  Otherwise, say N.
-+
- #
- # A couple of things I keep forgetting:
- #   capitalize: AppleTalk, Ethernet, DOS, DMA, FAT, FTP, Internet,
+eth0=tuntap,tap0
 
------
+or whether I let uml_net do the magic via
 
-mfg,
-Patrick "Petschge" Kilian
+eth0=tuntap,,,192.168.14.20
+
+I presume something is wrong with the TUN/TAP code.
 
 -- 
-Erst wenn das letzte Closed-Source-System gehackt ist, werdet ihrmerken, 
-dass man Sicherheit nicht durch Verschleierung oder durch
-Gesetze erreicht.
-
+`I treat debconf as a hostile imperialist agent.  "ALL CONFIGS YOURS
+ NOW CONFIGS OURS ARE."' --- Stephen J. Turnbull
 
 
 -------------------------------------------------------
