@@ -1,20 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZnka-0002cM-Do for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Dec 2004 01:59:48 -0800
-Received: from india.tejasnetworks.com ([164.164.94.83]
-	helo=pop-mail.india.tejasnetworks.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CZnkZ-0006gG-Rm for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Dec 2004 01:59:48 -0800
-Message-ID: <41AE6206.60108@india.tejasnetworks.com>
-From: mohit <mohit@india.tejasnetworks.com>
+Message-ID: <267988DEACEC5A4D86D5FCD780313FBB0238EB81@exch-03.noida.hcltech.com>
+From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] UML upgrade
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4D856.1A729CD4"
+Subject: [uml-devel] Telnet problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,19 +16,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 02 Dec 2004 05:59:58 +0530
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, "S. Hebbar" <shebbar@india.tejasnetworks.com>, jdike@addtoit.com
+Date: Thu, 2 Dec 2004 15:32:59 +0530
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+------_=_NextPart_001_01C4D856.1A729CD4
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
 Hi,
+Im running uml on RedHat 9 host with command as follows:
+ 
+./linux ubd0=guest1.diff,root_fs con=port:9001 con0=fd:0,fd:1 umid=guest1
+mem=32m
+ 
+Now when i try to telnet on uml with command
+telnet localhost 9001
+ 
+sometimes it successfully get the login & password prompt to login on uml
+and sometimes get hanged and login: prompt doesn't appear.
+ 
+Can anyone throw some light on it why this is happening???
 
-I have uml version 2.4.20-1um with 2.4 kernal Redhat system. I am facing 
-some crash related problems when i am running uml. So i want to upgrade 
-it to 2.6.4-1 UML. The patch i got is with different file system. How 
-should i proceed from my present configuration.
+Thanks and Best Regards,
+Adil Mujeeb
 
-Regards
-Mohit
 
+
+------_=_NextPart_001_01C4D856.1A729CD4
+Content-Type: text/html;
+	charset="iso-8859-1"
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+
+<META content="MSHTML 5.00.3821.2800" name=GENERATOR></HEAD>
+<BODY>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004>Hi,</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004>Im 
+running uml on RedHat 9 host with command as follows:</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004>./linux ubd0=guest1.diff,root_fs con=port:9001 
+con0=fd:0,fd:1 umid=guest1 mem=32m</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004>Now 
+when i try to telnet on uml with command</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004>telnet 
+localhost 9001</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004>sometimes it successfully get the login &amp; password 
+prompt to login on uml and sometimes get hanged and login: prompt doesn't 
+appear.</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004>Can 
+anyone throw some light on it why this is happening???</SPAN></FONT></DIV>
+<P><FONT face="Comic Sans MS" size=2>Thanks and Best Regards,</FONT><FONT 
+face=Arial><BR><B></B></FONT><B><FONT color=#0000ff face="Times New Roman">Adil 
+Mujeeb</FONT></B><BR></P></BODY></HTML>
+
+------_=_NextPart_001_01C4D856.1A729CD4--
 
 
 -------------------------------------------------------
