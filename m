@@ -2,33 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19va2d-0003Vn-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 03:11:39 -0700
-Received: from mout2.freenet.de ([194.97.50.155])
+	id 19vcjq-0005WX-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 06:04:26 -0700
+Received: from bela.bezeqint.net ([192.115.106.24])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19va2c-0005dR-0Y
-	for User-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 03:11:38 -0700
-Received: from [194.97.50.136] (helo=mx3.freenet.de)
-	by mout2.freenet.de with asmtp (Exim 4.21)
-	id 19va2V-0002Oz-PZ
-	for User-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 12:11:31 +0200
-Received: from b2afe.pppool.de ([213.7.42.254] helo=home.petschge.de)
-	by mx3.freenet.de with esmtp (Exim 4.22 #1)
-	id 19va2U-0004mZ-LV
-	for User-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 12:11:31 +0200
-Received: from localhost (localhost.petschge.de [127.0.0.1])
-	by home.petschge.de (Postfix on Linux (i386)) with ESMTP id 1B7063BCE5
-	for <User-mode-linux-devel@lists.sourceforge.net>; Fri,  5 Sep 2003 23:14:52 +0200 (CEST)
-Received: from mars (localhost.petschge.de [127.0.0.1])
-	by home.petschge.de (Postfix on Linux (i386)) with SMTP id BB6C53BCE4
-	for <User-mode-linux-devel@lists.sourceforge.net>; Fri,  5 Sep 2003 23:14:50 +0200 (CEST)
-From: "Patrick \"Petschge\" Kilian" <petschge@web.de>
-Subject: Re: [uml-devel] run away 2.6.0 
-References: <200309021220.13334.petschge@gmx.de> <200309021850.h82Io9Hx001652@ccure.karaya.com> <20030903095811.DD7693BC56@home.petschge.de> <20030904144728.A58113BCE4@home.petschge.de> <200309052012.h85KCSjh001305@ccure.karaya.com>
+	id 19vcjp-0007Zs-Ek
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 06:04:25 -0700
+Received: from bezeqint.net (bzq-218-213-43.red.bezeqint.net [81.218.213.43])
+	by bela.bezeqint.net (Bezeq International SMTP out Mail Server) with ESMTP id C5E493422B
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat,  6 Sep 2003 15:55:00 +0300 (IDT)
+Message-ID: <3F59DC82.7070900@bezeqint.net>
+From: Etay Meiri <etay-m@bezeqint.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
-Message-Id: <20030905211450.BB6C53BCE4@home.petschge.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Child exit when booting uml 2.4.20 on 2.6.0-test4 host
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -39,26 +27,44 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 05 Sep 2003 23:14:50 +0200
-To: User-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 06 Sep 2003 16:09:22 +0300
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
 Hi,
 
-Jeff Dike wrote:
->> Why doesn't gdb show me the function names?
-> Because those are all process addresses.  gdb only knows about UML
-> symbols.
-Ok, I admit, I never used gdb for anything else than debugging uml. Please 
-could anybody give me a hint or some manuals to read, how I can debug this 
-situatuion?
+I have been running a UML kernel version 2.4.20 on a RH9
+host with kernel 2.4.20-8. Everything is working properly in
+that environment. Now that I've upgraded the host system to
+2.6.0-test4 I can't boot that same UML kernel as before.
+I get the following error:
 
-Thanks for your help,
-Patrick "Petschge" Kilian
+Checking root filesystem
+/dev/ubd/0: clean, 43713/75520 files, 136981/151040 blocks
+[/sbin/fsck.ext3 (1) -- /] fsck.ext3 -a /dev/ubd/0
+[  OK  ]
+Remounting root filesystem in read-write mode:  [  OK  ]
+Activating swap partitions:  [  OK  ]
+Finding module dependencies:  [  OK  ]
+Checking filesystems
+Checking all file systems.
+[  OK  ]
+Mounting local filesystems:  Child 15433 exited with signal 11
+
+The uml fs seems to be ok because I can mount it as a loop device
+in the host system.
+
+This is the command line I use for running UML:
+
+./linux-2.4.20 ubd0=./root_fs_rh_9 mem=48M 
+eth0=ethertap,tap1,,192.168.1.13 con=pty con0=fd:0,fd:1
+
+TIA,
 
 -- 
-I still think the fastest way to get wholesale IPv6 adoption
-is to write a pr0n server that serves thumbnails over IPv[46]
-and full-size images over IPv6 only.              -- Ingvar
+--------------------------------
+Etay Meiri
+etay-m@bezeqint.net
+--------------------------------
 
 
 
