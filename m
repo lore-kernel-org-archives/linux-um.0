@@ -1,17 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDnc6-0005Yw-RI for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:22 -0800
-Received: from mail-relay-3.tiscali.it ([213.205.33.43])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DDnc5-0004FI-Nf for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:22 -0800
-From: blaisorblade@yahoo.it
-Message-Id: <20050322162131.7FC529766B@zion>
-Subject: [uml-devel] [patch 06/12] uml: disable more hardware kconfig opt and
-	rename USERMODE to UML
+	id 1DE1yH-00079w-AW for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 01:16:13 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DE1y1-0008Fq-JA
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 01:16:13 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Hostfs permission checks are all wonky.
+References: <200503201417.59739.rob@landley.net>
+	<200503222019.10709.blaisorblade@yahoo.it>
+In-Reply-To: <200503222019.10709.blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200503230313.06299.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,258 +32,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 17:21:31 +0100
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Wed, 23 Mar 2005 03:13:04 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade@yahoo.it>
 
+On Tuesday 22 March 2005 02:19 pm, Blaisorblade wrote:
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> Ok, I'm now seeing that UML uses access() (inside access_file()) to check
+> permissions.
+>
+> See hostfs_permission -> access_file -> access. hostfs_permission (not
+> access_file) should skip the "access_file" call in case its type is
+> OS_TYPE_CHARDEV / OS_TYPE_BLOCKDEV / OS_TYPE_FIFO / OS_TYPE_SOCK.
+>
+> Look at init_inode() about how to see the file's type, but even better look
+> at the cached information, i.e. inode->i_mode and the S_* access macro
+> (look at init_special_inode about this).
 
-Disable some hardware-only configuration options when configuring for ARCH=um.
+Just confirming: this patch fixed it.  Both /dev/loop0 and /dev/console work 
+just fine with hostfs root now.
 
-By the way, we rename CONFIG_USERMODE to CONFIG_UML, as requested some time ago by the
-UML maintainer Jeff Dike.
+Can this patch make it into 2.6.12?
 
-We also update defconfig as a consequence of all this.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.11-paolo/arch/um/Kconfig       |    3 --
- linux-2.6.11-paolo/arch/um/defconfig     |   43 +++++--------------------------
- linux-2.6.11-paolo/drivers/block/Kconfig |   10 +++----
- linux-2.6.11-paolo/drivers/char/Kconfig  |    2 -
- linux-2.6.11-paolo/drivers/net/Kconfig   |    8 +++--
- linux-2.6.11-paolo/init/Kconfig          |    2 -
- 6 files changed, 20 insertions(+), 48 deletions(-)
-
-diff -puN arch/um/Kconfig~uml-disable-more-hardware-kconfig-opt arch/um/Kconfig
---- linux-2.6.11/arch/um/Kconfig~uml-disable-more-hardware-kconfig-opt	2005-03-21 15:25:45.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/Kconfig	2005-03-21 15:25:45.000000000 +0100
-@@ -3,7 +3,7 @@ config GENERIC_HARDIRQS
- 	bool
- 	default y
- 
--config USERMODE
-+config UML
- 	bool
- 	default y
- 
-@@ -244,7 +244,6 @@ config KERNEL_HALF_GIGS
- 
- config HIGHMEM
- 	bool "Highmem support"
--	depends on BROKEN
- 
- config KERNEL_STACK_ORDER
- 	int "Kernel stack size order"
-diff -puN drivers/block/Kconfig~uml-disable-more-hardware-kconfig-opt drivers/block/Kconfig
---- linux-2.6.11/drivers/block/Kconfig~uml-disable-more-hardware-kconfig-opt	2005-03-21 15:25:45.000000000 +0100
-+++ linux-2.6.11-paolo/drivers/block/Kconfig	2005-03-21 15:25:45.000000000 +0100
-@@ -6,7 +6,7 @@ menu "Block devices"
- 
- config BLK_DEV_FD
- 	tristate "Normal floppy disk support"
--	depends on (!ARCH_S390 && !M68K && !IA64 && !USERMODE) || Q40 || (SUN3X && BROKEN)
-+	depends on (!ARCH_S390 && !M68K && !IA64 && !UML) || Q40 || (SUN3X && BROKEN)
- 	---help---
- 	  If you want to use the floppy disk drive(s) of your PC under Linux,
- 	  say Y. Information about this driver, especially important for IBM
-@@ -210,7 +210,7 @@ config BLK_DEV_UMEM
- 
- config BLK_DEV_UBD
- 	bool "Virtual block device"
--	depends on USERMODE
-+	depends on UML
- 	---help---
-           The User-Mode Linux port includes a driver called UBD which will let
-           you access arbitrary files on the host computer as block devices.
-@@ -243,7 +243,7 @@ config BLK_DEV_COW_COMMON
- 
- config MMAPPER
- 	tristate "Example IO memory driver (BROKEN)"
--	depends on USERMODE && BROKEN
-+	depends on UML && BROKEN
- 	---help---
-           The User-Mode Linux port can provide support for IO Memory
-           emulation with this option.  This allows a host file to be
-@@ -455,7 +455,7 @@ config INITRAMFS_ROOT_GID
- #for instance.
- config LBD
- 	bool "Support for Large Block Devices"
--	depends on X86 || MIPS32 || PPC32 || ARCH_S390_31 || SUPERH || USERMODE
-+	depends on X86 || MIPS32 || PPC32 || ARCH_S390_31 || SUPERH || UML
- 	help
- 	  Say Y here if you want to attach large (bigger than 2TB) discs to
- 	  your machine, or if you want to have a raid or loopback device
-@@ -463,7 +463,7 @@ config LBD
- 
- config CDROM_PKTCDVD
- 	tristate "Packet writing on CD/DVD media"
--	depends on !USERMODE
-+	depends on !UML
- 	help
- 	  If you have a CDROM drive that supports packet writing, say Y to
- 	  include preliminary support. It should work with any MMC/Mt Fuji
-diff -puN drivers/char/Kconfig~uml-disable-more-hardware-kconfig-opt drivers/char/Kconfig
---- linux-2.6.11/drivers/char/Kconfig~uml-disable-more-hardware-kconfig-opt	2005-03-21 15:25:45.000000000 +0100
-+++ linux-2.6.11-paolo/drivers/char/Kconfig	2005-03-21 15:25:45.000000000 +0100
-@@ -59,7 +59,7 @@ config VT_CONSOLE
- 
- config HW_CONSOLE
- 	bool
--	depends on VT && !S390 && !USERMODE
-+	depends on VT && !S390 && !UML
- 	default y
- 
- config SERIAL_NONSTANDARD
-diff -puN drivers/net/Kconfig~uml-disable-more-hardware-kconfig-opt drivers/net/Kconfig
---- linux-2.6.11/drivers/net/Kconfig~uml-disable-more-hardware-kconfig-opt	2005-03-21 15:25:45.000000000 +0100
-+++ linux-2.6.11-paolo/drivers/net/Kconfig	2005-03-21 15:25:45.000000000 +0100
-@@ -158,7 +158,7 @@ endif
- #
- 
- menu "Ethernet (10 or 100Mbit)"
--	depends on NETDEVICES
-+	depends on NETDEVICES && !UML
- 
- config NET_ETHERNET
- 	bool "Ethernet (10 or 100Mbit)"
-@@ -1790,7 +1790,7 @@ endmenu
- #
- 
- menu "Ethernet (1000 Mbit)"
--	depends on NETDEVICES
-+	depends on NETDEVICES && !UML
- 
- config ACENIC
- 	tristate "Alteon AceNIC/3Com 3C985/NetGear GA620 Gigabit support"
-@@ -2100,7 +2100,7 @@ endmenu
- #
- 
- menu "Ethernet (10000 Mbit)"
--	depends on NETDEVICES
-+	depends on NETDEVICES && !UML
- 
- config IXGB
- 	tristate "Intel(R) PRO/10GbE support"
-@@ -2179,11 +2179,13 @@ config 2BUFF_MODE
- 
- endmenu
- 
-+if !UML
- source "drivers/net/tokenring/Kconfig"
- 
- source "drivers/net/wireless/Kconfig"
- 
- source "drivers/net/pcmcia/Kconfig"
-+endif
- 
- source "drivers/net/wan/Kconfig"
- 
-diff -puN init/Kconfig~uml-disable-more-hardware-kconfig-opt init/Kconfig
---- linux-2.6.11/init/Kconfig~uml-disable-more-hardware-kconfig-opt	2005-03-21 15:25:45.000000000 +0100
-+++ linux-2.6.11-paolo/init/Kconfig	2005-03-21 15:25:45.000000000 +0100
-@@ -421,7 +421,7 @@ config OBSOLETE_MODPARM
- 
- config MODVERSIONS
- 	bool "Module versioning support (EXPERIMENTAL)"
--	depends on MODULES && EXPERIMENTAL && !USERMODE
-+	depends on MODULES && EXPERIMENTAL && !UML
- 	help
- 	  Usually, you have to use modules compiled with your kernel.
- 	  Saying Y here makes it sometimes possible to use modules
-diff -puN arch/um/defconfig~uml-disable-more-hardware-kconfig-opt arch/um/defconfig
---- linux-2.6.11/arch/um/defconfig~uml-disable-more-hardware-kconfig-opt	2005-03-21 15:25:45.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/defconfig	2005-03-21 15:25:45.000000000 +0100
-@@ -1,10 +1,10 @@
- #
- # Automatically generated make config: don't edit
--# Linux kernel version: 2.6.11
--# Fri Mar  4 15:38:53 2005
-+# Linux kernel version: 2.6.12-rc1-bk1
-+# Sun Mar 20 16:53:00 2005
- #
- CONFIG_GENERIC_HARDIRQS=y
--CONFIG_USERMODE=y
-+CONFIG_UML=y
- CONFIG_MMU=y
- CONFIG_UID16=y
- CONFIG_RWSEM_GENERIC_SPINLOCK=y
-@@ -31,6 +31,7 @@ CONFIG_MCONSOLE=y
- # CONFIG_SMP is not set
- CONFIG_NEST_LEVEL=0
- CONFIG_KERNEL_HALF_GIGS=1
-+# CONFIG_HIGHMEM is not set
- CONFIG_KERNEL_STACK_ORDER=2
- CONFIG_UML_REAL_TIME_CLOCK=y
- 
-@@ -61,7 +62,6 @@ CONFIG_KALLSYMS=y
- # CONFIG_KALLSYMS_ALL is not set
- CONFIG_KALLSYMS_EXTRA_PASS=y
- CONFIG_BASE_FULL=y
--CONFIG_BASE_SMALL=0
- CONFIG_FUTEX=y
- CONFIG_EPOLL=y
- CONFIG_SHMEM=y
-@@ -70,6 +70,7 @@ CONFIG_CC_ALIGN_LABELS=0
- CONFIG_CC_ALIGN_LOOPS=0
- CONFIG_CC_ALIGN_JUMPS=0
- # CONFIG_TINY_SHMEM is not set
-+CONFIG_BASE_SMALL=0
- 
- #
- # Loadable module support
-@@ -215,38 +216,6 @@ CONFIG_DUMMY=m
- CONFIG_TUN=m
- 
- #
--# Ethernet (10 or 100Mbit)
--#
--# CONFIG_NET_ETHERNET is not set
--
--#
--# Ethernet (1000 Mbit)
--#
--
--#
--# Ethernet (10000 Mbit)
--#
--
--#
--# Token Ring devices
--#
--
--#
--# Wireless LAN (non-hamradio)
--#
--# CONFIG_NET_RADIO is not set
--
--#
--# PCMCIA network device support
--#
--# CONFIG_NET_PCMCIA is not set
--
--#
--# PCMCIA network device support
--#
--# CONFIG_NET_PCMCIA is not set
--
--#
- # Wan interfaces
- #
- # CONFIG_WAN is not set
-@@ -431,7 +400,9 @@ CONFIG_CRC32=m
- #
- # Kernel hacking
- #
-+# CONFIG_PRINTK_TIME is not set
- CONFIG_DEBUG_KERNEL=y
-+CONFIG_LOG_BUF_SHIFT=14
- # CONFIG_SCHEDSTATS is not set
- # CONFIG_DEBUG_SLAB is not set
- # CONFIG_DEBUG_SPINLOCK is not set
-_
+Rob
 
 
 -------------------------------------------------------
