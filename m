@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DEHn8-0008I7-6l for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:09:46 -0800
-Received: from smtp207.mail.sc5.yahoo.com ([216.136.129.97])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DEHn7-00044o-RX for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:09:46 -0800
-Message-ID: <42422165.20505@yahoo.com.au>
-From: Nick Piggin <nickpiggin@yahoo.com.au>
+	id 1DEHrN-0008Q6-EH for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 18:14:09 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DEHrJ-0000L4-ON for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 18:14:09 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [patch 05/12] uml: extend cmd line limits
+References: <s2401e0e.085@ORANGE.OUS.EDU>
+In-Reply-To: <s2401e0e.085@ORANGE.OUS.EDU>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [patch 02/12] uml: cpu_relax fix
-References: <20050322162121.4295D2125C@zion>
-	<4241A2C0.2050206@fujitsu-siemens.com>
-	<200503240250.38153.blaisorblade@yahoo.it>
-In-Reply-To: <200503240250.38153.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_hHiQCMmT07snGp5"
+Message-Id: <200503240311.45515.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,40 +27,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Mar 2005 13:09:41 +1100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
+Date: Thu, 24 Mar 2005 03:11:45 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anthony Brock <Anthony_Brock@ous.edu>
 
-Blaisorblade wrote:
-> On Wednesday 23 March 2005 18:09, Bodo Stroesser wrote:
-> 
->>blaisorblade@yahoo.it wrote:
->>
->>>Use rep_nop instead of barrier for cpu_relax, following $(SUBARCH)'s
->>>doing that (i.e. i386 and x86_64).
->>
->>IIRC, Jeff had the idea, to use sched_yield() for this (from a discussion
->>on #uml).
-> 
-> Hmm, makes sense, but this is to benchmark well... I remember from early 
-> discussions on 2.6 scheduler that using sched_yield might decrease 
-> performance (IIRC starve the calling application).
-> 
+--Boundary-00=_hHiQCMmT07snGp5
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Typically, for places where cpu_relax is used, sched_yield would be
-a poor fit. So yes it could easily reduce performance.
+On Tuesday 22 March 2005 22:30, Anthony Brock wrote:
+> Blaisor,
+>
+> Perhaps the error message should be changed from:
+>
+> "add_arg: Too much command line!\n"
+>
+> to something like:
+>
+> "add_arg: Too many command line arguments!\n"
+>
+> Does this explain the error more clearly? Or am I mistaken?
+Yes, I was copying it and didn't notice the message didn't make sense.
 
-> Also, that call should be put inside the idle loop, not for cpu_relax, which 
-> is very different, since it is used (for instance) in kernel/spinlock.c for 
-> spinlocks, and in such things. The "Pause" opcode is explicitly recommended 
-> (by Intel manuals, I don't recall why) for things like spinlock loops, and 
-> using yield there would be bad.
-> 
+Here is the patch, it's queued and will be sent shortly.
 
-The other thing is that sched_yield won't relax at all if you are the
-only thing running, it will be a busy wait. So again, maybe not a great
-fit for the idle loop either.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
+--Boundary-00=_hHiQCMmT07snGp5
+Content-Type: text/x-diff; charset="iso-8859-1";
+	name="uml-correct-message.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="uml-correct-message.patch"
+
+
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, "Anthony Brock" <Anthony_Brock@ous.edu>
+
+Replace the message with a more meaningful one. Noted by Anthony Brock.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.11-paolo/arch/um/kernel/um_arch.c |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN arch/um/kernel/um_arch.c~uml-correct-message arch/um/kernel/um_arch.c
+--- linux-2.6.11/arch/um/kernel/um_arch.c~uml-correct-message	2005-03-24 03:04:59.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/um_arch.c	2005-03-24 03:05:36.000000000 +0100
+@@ -47,7 +47,7 @@ char command_line[COMMAND_LINE_SIZE] = {
+ void add_arg(char *arg)
+ {
+ 	if (strlen(command_line) + strlen(arg) + 1 > COMMAND_LINE_SIZE) {
+-		printf("add_arg: Too much command line!\n");
++		printf("add_arg: Too many command line arguments!\n");
+ 		exit(1);
+ 	}
+ 	if(strlen(command_line) > 0)
+_
+
+--Boundary-00=_hHiQCMmT07snGp5--
 
 
 
