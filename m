@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AJekZ-0004IZ-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 12:04:31 -0800
+	id 1AJelW-0004O7-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 12:05:30 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AJekY-0008Ug-G4
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 11 Nov 2003 12:04:30 -0800
+	id 1AJelV-0000By-DI
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 11 Nov 2003 12:05:29 -0800
 Received: from ccure.user-mode-linux.org (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id hABJpE107820
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 14:51:15 -0500
-Message-Id: <200311111912.hABJCjIU002435@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Slight host audio problem in 2.4.22-6 
-In-Reply-To: Your message of "Tue, 11 Nov 2003 08:39:46 PST."
-             <20031111.084000.-502533.0.mcmechanjw@juno.com> 
-References: <20031111.084000.-502533.0.mcmechanjw@juno.com> 
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id hABJqF107866
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 14:52:15 -0500
+Message-Id: <200311112013.hABKDPIU002749@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] skas & /proc/mm in the host kernel, yet /proc/mm 'not found' 
+In-Reply-To: Your message of "Mon, 10 Nov 2003 07:33:45 GMT."
+             <878ymoiso6.fsf@amaterasu.srvr.nix> 
+References: <200309182037.h8IKbMEk028815@hongkong.cs.nmsu.edu> <20030919095020.294F93BCE4@home.petschge.de> <20030920173518.521B03BCE7@home.petschge.de> <Pine.LNX.4.58.0309220535000.28187@crystal.nuked.org> <200309232016.h8NKGNaK003251@ccure.karaya.com> <Pine.LNX.4.58.0309232330340.28187@crystal.nuked.org> <200309241619.h8OGJwaK006019@ccure.karaya.com> <87fzig533b.fsf@amaterasu.srvr.nix> <200311100239.hAA2daxD013066@ccure.user-mode-linux.org>  <878ymoiso6.fsf@amaterasu.srvr.nix> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,18 +29,19 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Nov 2003 14:12:45 -0500
-To: James W McMechan <mcmechanjw@juno.com>
+Date: Tue, 11 Nov 2003 15:13:25 -0500
+To: Nix <nix@esperi.org.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-mcmechanjw@juno.com said:
-> The new help defines were only in the non module part of the #ifndef
-> attached patch to move it before the whole #ifndef so it should work
-> both as a module and built-in 
+nix@esperi.org.uk said:
+> The crash seems to happen when I'm sshed in from the outside world
+> doing things that involve lots of tty activity: I wonder if the tty
+> logging may be at fault?
 
-Oops... Thanks.
+I just checked the code.  It seems to close everything that it opens, so
+that appears not to be the problem.
 
-		Jeff
+				Jeff
 
 
 
