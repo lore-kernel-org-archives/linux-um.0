@@ -2,18 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuGMG-0005Hm-O0 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Feb 2004 11:30:44 -0800
-Received: from [69.93.28.254] (helo=unix.easyadmin ident=qmailr)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AuG7I-0001Sn-Op for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Feb 2004 11:15:16 -0800
-From: Matt Ayres <matta@tektonic.net>
-Content-Type: text/plain
-Message-Id: <1077305069.8412.62.camel@wopr.tektonic.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [PATCH] skas3 for x86_64 arch
+	id 1AuH5X-0002ar-6y for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Feb 2004 12:17:31 -0800
+Received: from externalmx.valinux.com ([198.186.202.147]
+	helo=externalmx.vasoftware.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AuFCs-00031c-Gk for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Feb 2004 10:16:58 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33]:36577)
+	by externalmx.vasoftware.com with smtp (Exim 4.24 #1 (Debian))
+	id 1AuEpD-0007i6-78
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 20 Feb 2004 09:52:31 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [discuss] UML and AMD-64
+References: <E1AgMua-00075F-00@hermes.virtue>
+	<20040113175635.GE2673@jaa.iki.fi>
+	<1077235841.8412.37.camel@wopr.tektonic.net>
+In-Reply-To: <1077235841.8412.37.camel@wopr.tektonic.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Disposition: inline
+Message-Id: <200402201854.30464.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,28 +35,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 14:24:31 -0500
+Date: Fri, 20 Feb 2004 18:54:30 +0100
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+Alle 01:10, venerd=EC 20 febbraio 2004, Matt Ayres ha scritto:
+> Did you use the skas3 patch?  My understand from looking at it is that
+> skas3 is written for i386 only, hence you would only be able to run a
+> 32-bit kernel.
 
-I just did a quick port of the skas3 patch to the x86_64 architecture. 
-Everything seems very straightforward except for the do_mmap2 function. 
+Not exactly: it is for i386 only, so when you compile the host kernel for=20
+amd64, you cannot use it. However, I think that the porting probably is not=
+=20
+too hard, having a test box at hand.
 
-I don't have a x86_64 machine or an emulator so I can't even verify this
-even compiles.  I would appreciate if someone able to test this could
-let me know if it compiles/works and if there are any problems provide
-verbose information.  If it doesn't compile, pasting the errors of the
-build should be enough. If it compiles but panics I would appreciate the
-oops to be run through ksymoops and that output sent.
-
-The patch is at: http://www.tektonic.net/public/host-skas3-x86_64.patch
-
-Thanks!
-
--- 
-Matt Ayres <matta@tektonic.net>
-TekTonic
+Bye
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
@@ -54,7 +60,7 @@ TekTonic
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
