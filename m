@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CjjRT-00065n-LW for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Dec 2004 11:25:07 -0800
-Received: from coderock.org
-	([193.77.147.115] helo=trashy.coderock.org ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CjjRS-0004l0-Ly for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Dec 2004 11:25:07 -0800
-From: Domen Puncer <domen@coderock.org>
-Message-ID: <20041229192533.GB25844@nd47.coderock.org>
-References: <20041225175720.0DC7E1ED41@trashy.coderock.org>
-	<200412291918.23156.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200412291918.23156.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: delete unused file
+	id 1Cjrjc-0001Ne-LY for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Dec 2004 20:16:24 -0800
+Received: from pike.sandelman.ca ([205.150.200.164])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1Cjrjb-0004yc-L9
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Dec 2004 20:16:24 -0800
+Subject: Re: [uml-devel] synchronous hostfs 
+In-Reply-To: Message from Blaisorblade <blaisorblade@yahoo.it> of "Wed,
+	29 Dec 2004 19:06:08 +0100." <200412291906.08122.blaisorblade@yahoo.it>
+References: <27776.1104084973@marajade.sandelman.ottawa.on.ca>
+	<200412291906.08122.blaisorblade@yahoo.it> 
+Message-ID: <23369.1104380180@marajade.sandelman.ottawa.on.ca>
+From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,39 +27,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Dec 2004 20:25:33 +0100
+Date: Wed, 29 Dec 2004 23:16:20 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On 29/12/04 19:18 +0100, Blaisorblade wrote:
-> On Saturday 25 December 2004 18:57, domen@coderock.org wrote:
-> > Remove nowhere referenced file. (egrep "filename\." didn't find anything)
-> >
-> > Signed-off-by: Domen Puncer <domen@coderock.org>
-> > ---
-> >
-> >
-> >  kj/arch/um/include/umn.h |   27 ---------------------------
-> >  1 files changed, 27 deletions(-)
-> This one could be correct (I think yes, but I haven't checked), but the other 
-> ones aren't.
-> 
-> In fact, they are referenced by way of symlinks (i.e. archparam-i386.h is 
-> symlinked as archparam.h, for instance from your patch #3).
-
-Ahh... that's why filenames were a bit weird.
-
-Thanks for reply.
+-----BEGIN PGP SIGNED MESSAGE-----
 
 
-	Domen
+>>>>> "Blaisorblade" == Blaisorblade  <blaisorblade@yahoo.it> writes:
+    >> I'm running 2.4.26-um3.  I happen to be running hostfs with NFS
+    >> underneath.  I get core dumps from my application, and I want to
+    >> gdb them outside of the UML.
+
+    >> I had to switch from core dump to NFS (which seems to fail now)
+    >> to putting them in /tmp (which is ramdisk), and then move them to
+    >> /var/tmp, which is hostfs.
+
+    Blaisorblade> Hmm - were you putting the core dumps inside a hostfs
+    Blaisorblade> mount, right? This has been reported to fail badly
+
+  Yes, previously.
+
+    Blaisorblade> with 2.4.26-3um... the hostfs contained in 2.4.24-1um
+    Blaisorblade> and 2.4.27-1bs (this tree is from me, on my homepage)
+    Blaisorblade> is stable, while the one in 2.4.24-2um and subsequent
+    Blaisorblade> releases isn't.
+
+  I'll try it on my next compile.
+
+    >> Is there some way to defeat the caching that is occuring?  or
+    >> even to just flush it? (other than umount)
+
+    Blaisorblade> Hmmm, I don't know this... probably giving "sync"
+    Blaisorblade> inside UML should work.  I remember that Jeff said
+    Blaisorblade> that he made hostfs asynchronous in those releases on
+    Blaisorblade> purpose (for performance, IIRC), and this is not bad.
+
+  I actually wonder if there is really any advantage.
+  I'd like to be convinced.
+
+  It seems that for executables, mapping hostfs files straight into the
+guest address space wouldn't care. I'd have thought that for stdio
+things, that any buffering done by guest kernel would be really just
+wasted. glibc has already buffered pretty much everything...
+
+  However, I'd like to be able to turn it off.
+
+- -- 
+]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
+]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
+] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
+] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+Comment: Finger me for keys
+
+iQCVAwUBQdOBE4qHRg3pndX9AQH1dgQA6/oZIVgXnHeGVzfe607Lm5+FRfne0Sw7
+OuNd3+mgbEpZMxExMI1bMPv0mvDD7SCoHjy3Fn7nR61n5iOLeAOOxIIuPxvzmzsO
+Hc1jh8NQQARsBrIqpJKW+5UO5Y7Vr0BE6V990QPa/Yhv0T4vSQOucP5IZfvV6yAN
+Q8gwgs6zd34=
+=9+kS
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now. 
-http://productguide.itmanagersjournal.com/
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
