@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CYtwF-0006xU-4x for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 14:24:07 -0800
+	id 1CYtz0-0007Ph-CU for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Nov 2004 14:26:58 -0800
 Received: from plam.fujitsu-siemens.com ([217.115.66.9])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CYtwD-0005af-O5 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 14:24:07 -0800
-Message-ID: <41ABA179.1050809@fujitsu-siemens.com>
+	id 1CYtyy-0005xm-7y for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Nov 2004 14:26:57 -0800
+Message-ID: <41ABA22B.8020004@fujitsu-siemens.com>
 From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] UML 2.6.10-rc2-mm3 + incremental crashes
-References: <41A6228D.4050908@fujitsu-siemens.com>
-	<200411292319.04391.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200411292319.04391.blaisorblade_spam@yahoo.it>
-Content-Type: multipart/mixed; boundary="------------070201080209060005040409"
+Subject: Re: [uml-devel] 2.6.9-bb3 on 2.6.9 host problem - triggering a host
+	bug?
+References: <200411292315.25368.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411292315.25368.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,120 +28,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 29 Nov 2004 23:23:53 +0100
+Date: Mon, 29 Nov 2004 23:26:51 +0100
 To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
-
-This is a multi-part message in MIME format.
---------------070201080209060005040409
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 Blaisorblade wrote:
-> On Thursday 25 November 2004 19:21, Bodo Stroesser wrote:
+> Checking for the skas3 patch in the host...found
+> Checking for /proc/mm...found
+> Checking PROT_EXEC mmap in /tmp...OK
+> Linux version 2.6.9-skas3-v7-bb3nobodo-rework-hang (paolo@zion) (gcc version 
+> 3.3.2 (Mandrake Linux 10.0 3.3.2-6mdk)) #9 FriNov 26 03:51:10 CET 2004
+> Built 1 zonelists
+> Kernel command line: ubd0s=slack90.rootfs rootfs=/dev/ubd0 ubd7=slack90.swapfs 
+> mem=64m eth0=tuntap,,,192.168.0.100 UML_XDISPLAY=192.168.0.100:0 
+> UML_IP=192.168.0.3 con=xterm con0=fd:0,fd:1 root=98:0
+> PID hash table entries: 512 (order: 9, 8192 bytes)
+> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
+> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
+> Memory: 61792k available
+> Kernel panic - not syncing: Segfault with no mm
 > 
->>Have started to test with the new 2.6.10-rc2-mm3 + incrementals tree.
->>
->>First, it didn't compile, because there are inconsistent definitions
->>for __pgd_alloc in include/linux/mm.h and arch/um/kernel/mem.c.
->>I added "fastcall" in arch/um/kernel/mem.c, then the build succeeded.
->>
->>But now the kernel crashes on startup. Please ignore the error messages
->>regarding ext3.ko. For the "first shot" I didn't update the initrd.
->>But the kernel should handle the fs in ext2-mode anyway.
->>
->>Bodo
-> 
-> It seems (I've just read it in the ML, not very clearly) that this is 
-> addressed by:
-Yes. That caker pointed out on #uml.
-But there is another crash, that happens sometimes only, since it's dependend
-on timing. To fix this other one, you need the appended patch too.
-> 
-> http://marc.theaimsgroup.com/?l=linux-kernel&m=110117212115156&w=2
-> 
-> I.e. it's a host kernel bug with quotas and DevFS (or whatever). The marked 
-> portion of the traces match.
-> 
->>Error messages from SKAS:
-> 
-> 
->>Call Trace:
-> 
-> [...]
-> 
->>  [<a0073939>] invalidate_bh_lru+0x19/0x40
->>  [<a007396a>] invalidate_bh_lrus+0xa/0x10
-> 
-> **
-> 
->>  [<a009e3e8>] vfs_quota_off+0xa8/0x220
->>  [<a008d231>] do_umount+0x1b1/0x1d0
->>  [<a008d2b7>] sys_umount+0x67/0x90
-> 
-> **
-> 
->>  [<a00182bb>] handle_page_fault+0x16b/0x1f0
->>  [<a0018465>] segv+0x85/0x1e0
->>  [<a001d53a>] execute_syscall_skas+0xda/0x120
->>  [<a00172cc>] record_syscall_start+0x4c/0x60
->>  [<a001d5b0>] handle_syscall+0x30/0x60
->>  [<a001c7e0>] handle_trap+0x30/0x130
->>  [<a001cc38>] userspace+0x188/0x1e0
->>  [<a001d190>] fork_handler+0x0/0x80
->>  [<a01ab228>] __restore+0x0/0x8
->>  [<a001d190>] fork_handler+0x0/0x80
->>  [<a01ab3e1>] __kill+0x11/0x20
->>
->>
->>
->>Error messages from TT:
-> 
-> 
->>Call Trace:
-> 
-> [...]
-> **
-> 
->>  [<a009e3e8>] vfs_quota_off+0xa8/0x220
->>  [<a008d231>] do_umount+0x1b1/0x1d0
->>  [<a008d2b7>] sys_umount+0x67/0x90
-> 
-> **
-> 
->>  [<a001170f>] sys_execve+0x3f/0x50
->>  [<a01ab474>] sigemptyset+0x24/0x40
->>  [<a001aaba>] execute_syscall_tt+0xda/0x120
->>  [<a00172cc>] record_syscall_start+0x4c/0x60
->>  [<a001ab3f>] syscall_handler_tt+0x3f/0x70
->>  [<a001bd6d>] sig_handler_common_tt+0x8d/0x110
->>  [<a002e2ae>] sig_handler+0x1e/0x40
->>  [<a01ab228>] __restore+0x0/0x8
-> 
-> 
+> EIP: 0000:[<00000000>] CPU: 0 Not tainted EFLAGS: 00000000
+>     Not tainted
+> EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+> ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 0000 ES: 0000
+Meanwhile, I have some experience analyzing the call trace.
+It's very difficult, when not even impossible, since the output lacks the
+stack-addresses. Could you please insert a additional address-field in
+the output?
+
+Bodo
+> Call Trace:
+>  [<080791d3>] printk+0x13/0x20
+>  [<0808bbd6>] notifier_call_chain+0x26/0x50
+>  [<08078468>] panic+0x58/0xc0
+>  [<0805f2a2>] segv+0x192/0x1d0
+>  [<081e2157>] sigemptyset+0x17/0x30
+>  [<0805d483>] change_signals+0x43/0x70
+>  [<0805f673>] segv_handler+0xc3/0xd0
+>  [<0805d4cd>] unblock_signals+0xd/0x10
+>  [<08061cc4>] sig_handler_common_skas+0xa4/0xc0
+>  [<080616a0>] start_kernel_proc+0x0/0x30
+>  [<0805f6a3>] sig_handler+0x13/0x20
+>  [<081e1e88>] __restore+0x0/0x8
+>  [<080616a0>] start_kernel_proc+0x0/0x30
+>  [<0804871d>] start_kernel+0xfd/0x1b0
+>  [<0805d509>] enable_mask+0x39/0x50
+>  [<081e2157>] sigemptyset+0x17/0x30
+>  [<081e1e88>] __restore+0x0/0x8
+>  [<08071158>] file_io+0x28/0x80
+>  [<08071158>] file_io+0x28/0x80
+>  [<0805d509>] enable_mask+0x39/0x50
+>  [<081e2157>] sigemptyset+0x17/0x30
+>  [<0805d509>] enable_mask+0x39/0x50
+>  [<081e2157>] sigemptyset+0x17/0x30
+>  [<08071158>] file_io+0x28/0x80
+>  [<0805d509>] enable_mask+0x39/0x50
+>  [<081e2157>] sigemptyset+0x17/0x30
+>  [<0805d5f0>] set_signals+0x80/0x180
+>  [<08079727>] release_console_sem+0x1f7/0x270
+>  [<080795f5>] release_console_sem+0xc5/0x270
+>  [<080793a5>] vprintk+0x1c5/0x2e0
+>  [<080791d3>] printk+0x13/0x20
+>  [<0804cfb0>] free_all_bootmem+0x10/0x20
+>  [<0805969a>] mem_init+0xfa/0x110
+>  [<08059662>] mem_init+0xc2/0x110
+>  [<080616c7>] start_kernel_proc+0x27/0x30
+>  [<0805ad0a>] run_kernel_thread+0x3a/0x50
+>  [<080616a0>] start_kernel_proc+0x0/0x30
+>  [<0805acef>] run_kernel_thread+0x1f/0x50
+>  [<080616a0>] start_kernel_proc+0x0/0x30
+>  [<080613c7>] new_thread_handler+0x67/0xa0
+>  [<080616a0>] start_kernel_proc+0x0/0x30
+>  [<081e1e88>] __restore+0x0/0x8
+>  [<081e20e1>] kill+0x11/0x20
 > 
 
-
---------------070201080209060005040409
-Content-Type: text/x-diff;
- name="timer-context.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="timer-context.patch"
-
---- a/arch/um/kernel/time_kern.c	2004-11-29 16:10:48.766132965 +0100
-+++ b/arch/um/kernel/time_kern.c	2004-11-29 16:11:04.423088221 +0100
-@@ -155,7 +155,7 @@ void __const_udelay(unsigned long usecs)
- void timer_handler(int sig, union uml_pt_regs *regs)
- {
- 	local_irq_disable();
--	update_process_times(user_context(UPT_SP(regs)));
-+	update_process_times(CHOOSE_MODE(user_context(UPT_SP(regs)), (regs)->skas.is_user));
- 	local_irq_enable();
- 	if(current_thread->cpu == 0)
- 		timer_irq(regs);
-
---------------070201080209060005040409--
 
 
 -------------------------------------------------------
