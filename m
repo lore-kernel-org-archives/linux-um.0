@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D3JOg-0007Q4-Dv for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 Feb 2005 11:39:10 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D3JOf-0005YE-1X for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 Feb 2005 11:39:10 -0800
-Message-ID: <33ba01c5184d$5f393420$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <200502110411.35438.blaisorblade@yahoo.it>
-	<169101c512ef$6c905850$0201a8c0@hawk>
-	<170001c512f4$2c279940$0201a8c0@hawk>
-	<42121406.40901@fujitsu-siemens.com>
-Subject: Re: [uml-devel] SKAS-v8: RC2 released against 2.6.7 - 2.6.11-rc3-bk6
-	kernels
+	id 1D3g7C-0000sG-Ah for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Feb 2005 11:54:38 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1D3g77-0007LG-Dq for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Feb 2005 11:54:38 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] cross-build patch breaks UML build
+References: <4214934C.9030105@fujitsu-siemens.com>
+In-Reply-To: <4214934C.9030105@fujitsu-siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200502222053.08135.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,18 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 21 Feb 2005 13:41:41 -0600
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 22 Feb 2005 20:53:07 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
 
-> Yes. There is a bug in the v8-rc2 patch for 2.6.11
-> Try the attached fix, please.
+On Thursday 17 February 2005 13:51, Bodo Stroesser wrote:
+> Have setup a new tree with all of the latest incremental patches included.
+> UML build fails with:
+>     make[1]: *** No rule to make target `arch/um/kernel/vmlinux.lds',
+> needed by `__build'.  Stop. The problem is, that after applying cross-build
+> patch, the symbolic link vmlinux.lds.S to uml.lds.S or dyn.lds.S no longer
+> is created by make. After having linked by hand, make finished
+> successfully.
+The Al Viro's original patch had a vmlinus.lds.S created in form of a file 
+#including the right one. The Jeff's version lost the file. See the 
+discussion above for the original URL.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-I now have a few hosts running 2.6.11-rc4 with the fix you posted.  It's been working
-great.
-
-Thanks!
--Chris
 
 
 
