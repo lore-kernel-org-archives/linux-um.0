@@ -2,21 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CX3oF-0006iq-9O for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 12:32:15 -0800
-Received: from dns2.uxu.ch ([195.216.70.51])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CX3oE-0004LH-6c for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 12:32:15 -0800
-Message-ID: <41A4EE93.9090800@uxu.ch>
-From: =?ISO-8859-1?Q?Felix_M=FCri?= <uml@uxu.ch>
+	id 1CXBvL-0003M3-J7 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 21:12:07 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CXBvK-0000Jo-Em for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 21:12:07 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 1/1] uml: fix some ptrace functions
+	returns values
+References: <20041124000715.E3A2FAB24@zion.localdomain>
+	<41A3F6F6.1040903@osdl.org>
+In-Reply-To: <41A3F6F6.1040903@osdl.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] uml_router: cleanup
-References: <BAY24-F27D8548BC9B2976EFF8B3883B80@phx.gbl>
-	<874qjfftsz.fsf@bytesex.org>
-In-Reply-To: <874qjfftsz.fsf@bytesex.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411250514.46355.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,45 +31,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 24 Nov 2004 21:26:59 +0100
-To: User-mode-linux-devel@lists.sourceforge.net
-Cc: Gerd Knorr <kraxel@bytesex.org>, Steve Schmidtke <steve_schmidtke@hotmail.com>
+Date: Thu, 25 Nov 2004 05:14:46 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: "Randy.Dunlap" <rddunlap@osdl.org>, akpm@osdl.org, linux-kernel@vger.kernel.org, jdike@addtoit.com
 
-Gerd Knorr schrieb:
+On Wednesday 24 November 2004 03:50, Randy.Dunlap wrote:
+> blaisorblade_spam@yahoo.it wrote:
+> > From: Jeff Dike <jdike@addtoit.com>
+> >
+> > This patch adds ptrace_setfpregs and makes these functions return -errno
+> > on failure.
 
-> "Steve Schmidtke" <steve_schmidtke@hotmail.com> writes:
-> 
-> 
->>Hi,
->>
->>While I was playing around with uml_switch, I started thinking that
->>the code is a bit messy and really could use a facelift.
-> 
-> While browsing the code I figured that it likely is easier to largely
-> rewrite the stuff rather than trying to fix the existing stuff.
-> Especially the mac handling is broken by design.
-> 
-Hello,
+> Looks OK except that someone's SPACEBAR is broken (missing)
+> and there are (unneeded/unwanted) parens on the returns.
+Yes, that is Jeff Dike's keyboard - it's cursing all over arch/um with that 
+style.
 
-long ago I found similar issues with the uml_switch codebase. My 
-problem was not the mac handling, but an missing feature to 
-connect two switches together via an udp-tunnel. I have rewritten 
-(but not redesigned) most of the code. The latest published 
-codebase can be found here:
-
-http://www.uxu.ch/uxu/software/uml_switch2
-
-
-regards
-
-Felix
-
-
-P.S.: My code is (since about a year) in the state of further 
-improvement (I want an uml-switch, which can start and stop 
-uml-guests and be controlled via a control socket), but this 
-codebase is actually not in an releasable state (although I use 
-it on my production machine :-)
+I'm going to resend it more conforming to the kernel style.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
