@@ -2,22 +2,31 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8a6Y-0004gr-L3 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Mar 2005 00:30:14 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	id 1D8ctD-0005F2-F5 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Mar 2005 03:28:39 -0800
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D8a6X-0001Tn-V1
+	(Exim 4.41) id 1D8ctB-0003D1-Ba
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Mar 2005 00:30:14 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20050308082502.GB23067@bytesex>
-References: <20041128010910.1b5478c7.akpm@osdl.org>
-	<200503051858.05050.blaisorblade@yahoo.it>
+	Tue, 08 Mar 2005 03:28:38 -0800
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1D8csi-00080d-CA for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Mar 2005 12:28:08 +0100
+Received: from naked.iki.fi ([62.142.249.112])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 08 Mar 2005 12:28:08 +0100
+Received: from naked by naked.iki.fi with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 08 Mar 2005 12:28:08 +0100
+From: Nuutti Kotivuori <naked@iki.fi>
+Message-ID: <87psya4btv.fsf@aka.i.naked.iki.fi>
+References: <3524bf1f05030712562d547e1c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200503051858.05050.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Fw: [patch] uml: terminal cleanup
+Subject: [uml-devel] Re: tun/tap network throughput problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,95 +38,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Mar 2005 09:25:03 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 08 Mar 2005 13:27:24 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> > -void register_winch(int fd, void *device_data)
-> > +void register_winch(int fd, struct tty_struct *tty)
-> >  {
-> >   int pid, thread, thread_fd;
-> >   int count;
-> Hmm, I saw you have put a forward declaration of struct tty_struct, however it 
-> does not seem nice anyway... I don't think that using void* is nice either, 
-> but both things have pitfalls.
+Young Koh wrote:
+> i found other postings discussing queues of tun/tap devices when
+> packets are coming to UML kernel and between two UML machines. but i
+> couldn't find posting about packets from UML to other machine, even
+> though they are all related, it looks.
+>
+> anybody has any idea where packets are being dropped and how i can
+> solve it?
 
-It's enougth to just have "struct tty_struct;" declared, at least for
-code paths which don't access the elements of the the struct and just
-pass it through (like the usermode code does in that case).  That
-shouldn't create much trouble as you don't need the full tty_struct
-declaration for the userspace code, but the compiler can still do type
-checking on the arguments (thats why I didn't want it being void*).
+Remember to check the packet drop readings from inside the UML kernel
+as well as on all interfaces on the host side.
 
-> > -void line_close(struct line *lines, struct tty_struct *tty)
-> > +void line_close(struct tty_struct *tty, struct file * filp)
-> >  {
-> > - struct line *line;
-> > - int n;
-> > -
-> > - if(tty == NULL) n = 0;
-> > - else n = tty->index;
-> > - line = &lines[n];
-> > + struct line *line = tty->driver_data;
-> >
-> >   down(&line->sem);
-> >   line->count--;
-> > -
-> > - /* I don't like this, but I can't think of anything better.  What's
-> > -  * going on is that the tty is in the process of being closed for
-> > -  * the last time.  Its count hasn't been dropped yet, so it's still
-> > -  * at 1.  This may happen when line->count != 0 because of the initial
-> > -  * console open (without a tty) bumping it up to 1.
-> > -  */
-> > - if((line->tty != NULL) && (line->tty->count == 1))
-> > -  line->tty = NULL;
-> > - if(line->count == 0)
-> > -  line_disable(line, -1);
-> > + if (tty->count == 1) {
+Since you are sending large packets, I would suggest making sure that
+all involved interfaces have large enough txqueues.
 
-Hmm, while looking at this again, I think maybe this should be
-"tty->count == 0" (it's _behind_ the line->count-- after all ...).
-Guess you are writing me because you are trying to pin down a bug,
-maybe that one is it ;)
+You can monitor queue buildup by:
 
-> > +  line_disable(tty, -1);
-> > +  tty->driver_data = NULL;
-> > + }
-> >   up(&line->sem);
-> >  }
-> Why did you delete this comment? I don't think you fixed the problem, you just 
-> worked it around the other way...
+  watch -n1 tc -d -s qdisc show
 
-No, it's fixed.
+There should be no places for silent drops in the packet handling
+things - go around and try to find where the packets are dropping (or
+being queued forever).
 
-> Or better, you removed the initial console open, if it refers to the item #2 
-> above... but the code isn't clean...
+-- Naked
 
-Yes, the hackish console open is gone, and thus the hack above which
-attempts to care about that on close (but never really worked correctly)
-is gone as well.
-
-The old code used to use the stdio console device before it actually
-registered the device in the tty layer, this is why these hacks used to
-be in there.  Now the console device is registered after the stdio
-console is initialized, and all the problems associated with that are
-gone ;)
-
-Drawback of that is that is that you don't see any messages until the
-stdio console is initialized.  That isn't a big problem if the kernel
-survives up to this point as the console code will simply print all
-messages buffered up so far as soon as the console device is opened.
-But if the kernel dies early you don't see the messages.  In that case
-the new stderr console will help, which can be enabled with "stderr=1"
-in the kernel cmd line (maybe additionally "console=stderr") and which
-is simple enougth that it can register very early in the boot process.
-
-HTH,
-
-  Gerd
-
--- 
-#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
