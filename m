@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CuVen-0000Dk-OG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Jan 2005 04:55:25 -0800
-Received: from [141.2.14.4] (helo=mars.tm.informatik.uni-frankfurt.de)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CuVeJ-0007DB-Mw
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Jan 2005 04:55:25 -0800
-Subject: Re: [uml-devel] State of gdkfb ?
-From: "Michael 'Mickey' Lauer" <mickey@tm.informatik.uni-frankfurt.de>
-In-Reply-To: <Pine.GSO.4.61.0501281318210.20061@waterleaf.sonytel.be>
-References: <1106908848.25603.10.camel@gandalf.tm.informatik.uni-frankfurt.de>
-	<Pine.GSO.4.61.0501281318210.20061@waterleaf.sonytel.be>
-Content-Type: text/plain
-Message-Id: <1106916882.25603.13.camel@gandalf.tm.informatik.uni-frankfurt.de>
-Mime-Version: 1.0
+	id 1CubWL-00067n-Ku for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Jan 2005 11:11:05 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CubWE-0007UO-B2 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Jan 2005 11:11:05 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] UML remote GUI problems
+References: <41FA9D7D@ditwebm>
+In-Reply-To: <41FA9D7D@ditwebm>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200501281910.21151.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,39 +29,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 Jan 2005 13:54:42 +0100
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 28 Jan 2005 19:10:11 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Greg Furlong <C01386107@student.dit.ie>
 
-Am Freitag, den 28.01.2005, 13:19 +0100 schrieb Geert Uytterhoeven:
-> On Fri, 28 Jan 2005, Michael 'Mickey' Lauer wrote:
-> > could you be so kind and give me a status update about your uml
-> > framebuffer patch regarding kernel 2.6? UML in 2.6.11-rc1-mm1 is the
-> > first version since quite a while that works here. We use it to
-> > prototype root file systems for our embedded Linux distributions like
-> > OpenZaurus and familiar Linux.
-> 
-> I didn't continue to work on it since quite a while.
-> However, I did try Gerd Knorr's x11fb and it worked much better than mine!
+On Friday 28 January 2005 17:30, Greg Furlong wrote:
+> I am a final year student taking a degree in Computing at Dublin Institute
+> of Technology - Ireland. In my final year project I am doing a project
+> using User Mode Linux. My project has set out to research the capabilities
+> of User Mode Linux in a teaching environment.
 
-Ok, thanks very much. I will give those patches a try. Gerd, do you plan
-to submit them to the -mm tree eventually?
+> So far I have set up a server 
+> and now have users logging on from a terminal. They use a COW file so as
+> not to corrupt the file system. Next I want to investigate and test the
+> capabilities of User Mode Linux over a network using a Graphical User
+> Interface. The problem that I am having is that I am finding it difficult
+> to set up the GUI system.
 
-> Gr{oetje,eeting}s,
+> I was wondering if anybody could give me some 
+> pointers in the right direction
+Without knowing which are your difficulties? It's difficult.
+> or could tell me of a tutorial on how to 
+> set it up.
 
-:))
+> I have already looked at the user mode Linux 
+> website on sourceforge but have been unable to successfully complete the
+> GUI instructions.
+What's the problem?
 
-Greetings from Germany & Have a nice weekend!
-
+You must install Xnest inside your guest system... it will then be able to 
+forward connection to another X system (on which you have to authorize TCP 
+connections from the UML system). Then it should work, more or less.
+> I am running Red Hat Linux 9 2.4.20-8
+> User mode Linux Patch 2.4.27-1
+> Remote Terminal Putty
+On windows? well, there are also Xservers on Windows (the cygwin one for 
+instance)...
 -- 
-Regards,
-
-Mickey.
-------------------------------------------------------------------
-Dipl.-Inf. Michael 'Mickey' Lauer <mickey@tm.cs.uni-frankfurt.de>
-------------------------------------------------------------------
-
-
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
