@@ -1,25 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CNLQM-0007VO-7d for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 18:19:26 -0700
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CNLQK-0003kB-St for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 18:19:26 -0700
-Message-ID: <41819A8A.20403@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: [patch 1/1] SYSEMU: avoid intercepting syscall
-	on return when using SYSCALL again.
-References: <20041021231834.9D3833F37@zion.localdomain>
-	<200410290104.22725.blaisorblade_spam@yahoo.it>
-	<41818295.5000209@fujitsu-siemens.com>
-	<200410290200.46907.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200410290200.46907.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1CNQVt-00061g-Oz for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 23:45:29 -0700
+Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CNQVt-00037V-7p for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 23:45:29 -0700
+From: Werner Almesberger <wa@almesberger.net>
+Subject: Re: [uml-devel] Re: Why UML often does not build (was: Re: [PATCH]
+	UML: Build fix for TT w/o SKAS)
+Message-ID: <20041029034444.A24523@almesberger.net>
+References: <20041027053602.GB30735@taniwha.stupidest.org>
+	<200410282254.21944.blaisorblade_spam@yahoo.it>
+	<20041028214242.GB2269@taniwha.stupidest.org>
+	<200410290149.31665.blaisorblade_spam@yahoo.it>
+	<20041029002831.GD12434@taniwha.stupidest.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20041029002831.GD12434@taniwha.stupidest.org>;
+	from cw@f00f.org on Thu, Oct 28, 2004 at 05:28:31PM -0700
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,46 +33,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 29 Oct 2004 03:19:06 +0200
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: jdike@addtoit.com, Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 29 Oct 2004 03:44:44 -0300
+To: Chris Wedgwood <cw@f00f.org>
+Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>
 
-Blaisorblade wrote:
-> No. Just strace any process inside UML. Let's "strace ls". Last time I 
-> checked, it does not work. Oh hell! It works (as of 2.6.9)! Well, you already 
-> fixed that.
-> 
-No. Here you are wrong. The problem is still there (or is it again there?).
-Sorry.
+Chris Wedgwood wrote:
+> the problem here is that ptrace semantics are not well defined to
+> anything subtle can and will break from time to time
 
-My latest patch "patch-singlestep-sighdlr" has been too complete!
-Setting TIF_SIGPENDING after ptrace_notify() in syscall_trace() in neccessary
-only on the 2nd tracepoint (entryexit == 1).
-And setting it on the 1st tracepoint lets some specific systemcalls loop.
-Example: sys_rt_sigaction() wants to be called without SIGPENDING. Thus it returns
-with -ERESTARTNOINTR. On return do_signal() is called, which resets TIF_SIGPENDING
-and sets EIP back to the syscall. Now the syscall starts, runs through
-syscall_trace() and TIF_SIGPENDING is set again. Now it returns with -ERESTARTNOINTR
-...
-...
+I wonder what the "correct" solution for this would be: write a
+specification for Linux ptrace, or try to get the POSIX folks
+interested ?
 
-Here's the patch:
+Given that we get subtle ptrace breakages quite regularly, it
+would be nice to see this eventually get resolved. "The
+implementation is the specification" doesn't seem to work well
+in this case.
 
----
+BTW, things have improved around UML quite a bit recently, and I
+think this is to no small amount due to Paolo's work.
 
---- a/arch/um/kernel/ptrace.c	2004-10-29 02:27:42.000000000 +0200
-+++ b/arch/um/kernel/ptrace.c	2004-10-29 02:28:24.000000000 +0200
-@@ -330,7 +330,8 @@ void syscall_trace(union uml_pt_regs *re
-  	   between a syscall stop and SIGTRAP delivery */
-  	ptrace_notify(SIGTRAP | (((current->ptrace & PT_TRACESYSGOOD) &&
-  				 !is_singlestep) ? SYSCALL_TRAP : 0));
--	set_thread_flag(TIF_SIGPENDING); /* force do_signal() --> is_syscall() */
-+	if ( entryexit ) /* force do_signal() --> is_syscall() */
-+		set_thread_flag(TIF_SIGPENDING);
+- Werner
 
-  	/*
-  	 * this isn't the same as continuing with a signal, but it will do
-
+-- 
+  _________________________________________________________________________
+ / Werner Almesberger, Buenos Aires, Argentina         wa@almesberger.net /
+/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
