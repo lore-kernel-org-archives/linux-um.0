@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ahw7U-0003Hj-G6 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 11:28:32 -0800
+	id 1Ahw8g-0003Sf-Rw for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 11:29:46 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Ahw7T-0002C8-Um
+	(Exim 4.30) id 1Ahw8g-0002Wr-93
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 11:28:32 -0800
+	Sat, 17 Jan 2004 11:29:46 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: uml-patch-2.6.0
-Message-ID: <20040117195019.GA7405@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] uml-patch-2.6.0
+Message-ID: <20040117195137.GB7405@ccure.user-mode-linux.org>
 References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<87y8sbbrup.fsf@bytesex.org>
-	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
-	<200401172009.38339.blaisorblade_spam@yahoo.it>
+	<200401172009.50449.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200401172009.38339.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200401172009.50449.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,22 +29,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 14:50:19 -0500
+Date: Sat, 17 Jan 2004 14:51:37 -0500
 To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jan 17, 2004 at 08:09:38PM +0100, BlaisorBlade wrote:
-> Do the apply_alternatives + constants silly fix posted 1000 times and compile 
-> without CONFIG_MODVERSIONS. Then you don't get the kernel panic, and 
-> everything works.
+On Sat, Jan 17, 2004 at 08:09:50PM +0100, BlaisorBlade wrote:
+> Thanks for that (it was really needed). However, about the various fixes I 
+> built, there is a lot of that that should go in. Go here:
 > 
-> I've succesfully built kernel with CONFIG_MODVERSIONS, but *maybe* the 
-> Makefile patch is needed for that (since files are post-processed with 
-> genksyms). However, I have fixed some other things which could interact with 
-> this, especially for the link scripts.
+> http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/2.6.1-v1/
+> 
+> I've updated all the stuff that was there. You claimed you didn't want some 
+> patches, now I've organized things so they can be easily excluded. Do *not* 
+> use the combo.
+> 
+> This are some brief patches descriptions (in the 00-README).
 
-Did you actually get modules to work?  I was under the impression you hadn't
-got that far yet, just getting UML to build with CONFIG_MODULES endabled.
+OK, I'll pull them down and start merging them in...
 
 				Jeff
 
