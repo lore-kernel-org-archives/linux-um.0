@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C1sMQ-0007vR-VL for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2004 13:02:38 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C1sMQ-0006k3-9l for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2004 13:02:38 -0700
+	id 1C1sRt-0000RR-PB for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2004 13:08:17 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1C1sRq-0004TJ-U8 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2004 13:08:17 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] creash of 2.6.7-bb6
+References: <41324B9B.5040100@exse.net>
+In-Reply-To: <41324B9B.5040100@exse.net>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200408302158.55579.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Released skas-2.4.25-v2 - Cleaning up my web-site
+Message-Id: <200408302201.57650.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,20 +29,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 30 Aug 2004 21:58:55 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Mon, 30 Aug 2004 22:01:57 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Sebastian <seb@exse.net>, Jeff Dike <jdike@addtoit.com>
 
-First, I've released the 2.4.25-v2 version of the SKAS patch, which includes 
-the leak fix and various other changes. Don't look for the /proc/mm config 
-option, it's always on.
+Hmmm, thanks for it, but did the kernel actually crash (it seems a debug 
+message rather than a crash one)? And what was the machine doing in that 
+moment?
 
-http://www.user-mode-linux.org/~blaisorblade/
-
-Also, if you want, take a look here, and give me comments. I want to clean up 
-my web-pages, and the below one is a try to do this.
-http://www.user-mode-linux.org/~blaisorblade/NewPage/
-
-Bye
+The only UML function in the trace is do_buffer_op - could it have some bugs?
+ 
+> Badness in sk_del_node_init at include/net/sock.h:333
+> Call Trace:  [<a01244d8>] __unix_remove_socket+0x68/0x70
+>  [<a0124824>] unix_release_sock+0x14/0x1f0
+>  [<a002c9ec>] local_bh_enable+0x1c/0x80
+>  [<a0019560>] do_buffer_op+0x0/0x150
+>  [<a0124ca7>] unix_release+0x27/0x30
+> 
+>     [<a00dd3ea>] sock_release+0x5a/0x70
+>  [<a00ddd14>] sock_close+0x34/0x50
+>  [<a00dea83>] sys_shutdown+0x43/0x50
+>  [<a005a96e>] __fput+0xbe/0xd0
+>  [<a00591f7>] filp_close+0x57/0x90
+>  [<a0059282>] sys_close+0x52/0x70
+> 
+>     [<a0018e6a>] execute_syscall_skas+0xaa/0xb0
+>  [<a0014832>] unblock_signals+0x12/0x20
+>  [<a0015359>] record_syscall_start+0x59/0x70
+>  [<a0018eab>] handle_syscall+0x3b/0x90
+>  [<a0017caf>] handle_trap+0x2f/0x140
+>  [<a00182df>] save_registers+0x3f/0x70
+> 
+>     [<a00180ca>] userspace+0x15a/0x1d0
+>  [<a0018b20>] fork_handler+0x0/0xb0
+>  [<a0018bc1>] fork_handler+0xa1/0xb0
+>  [<a0018b20>] fork_handler+0x0/0xb0
+>  [<a0018aed>] new_thread_proc+0x1d/0x30
+> 
+> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
+> net/unix/af_unix.c (333)
+> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
+> net/unix/af_unix.c (333)
+> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
+> net/unix/af_unix.c (333)
+> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
+> net/unix/af_unix.c (333)
+> KERNEL: assertion (sk_unhashed(sk)) failed at net/unix/af_unix.c (334)
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
