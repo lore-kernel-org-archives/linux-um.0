@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BC1WU-0007Jv-Iu for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Apr 2004 12:18:42 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	id 1BCHbL-0005Mi-5J for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Apr 2004 05:28:47 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BC1WU-0002Y8-0d for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Apr 2004 12:18:42 -0700
+	id 1BCHbK-0004ie-DO for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Apr 2004 05:28:46 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] A quick humfs HOWTO
-References: <Pine.LNX.4.44.0404081039320.7910-100000@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.44.0404081039320.7910-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] uml responsivenes or "AS vs DEADLINE Scheduler on
+	uml-host" - was: [uml-user] Network lags
+References: <Pine.LNX.4.59.9.0404091209570.10714@hathi.bw-networx.net>
+	<200404091626.i39GQqsf002414@ccure.user-mode-linux.org>
+	<195901c41e61$3132cb90$2000000a@schlepptopp>
+In-Reply-To: <195901c41e61$3132cb90$2000000a@schlepptopp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200404092049.25126.blaisorblade_spam@yahoo.it>
+Message-Id: <200404101428.36306.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,30 +30,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 9 Apr 2004 20:49:25 +0200
+Date: Sat, 10 Apr 2004 14:28:36 +0200
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Henrik Nordstrom <uml@henrik.marasystems.com>
+To: roland <for_spam@gmx.de>, Jeff Dike <jdike@addtoit.com>
+Cc: Joern Bredereck <jb@bw-networx.net>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, mingo@elte.hu
 
-Alle 10:43, gioved=EC 8 aprile 2004, Henrik Nordstrom ha scritto:
-> On Thu, 8 Apr 2004, Nuno Silva wrote:
-> > In the meanwhile I'm thinking about this system and it seems that this
-> > will eat lots of inodes because every file will be present twice in the
-> > [host] filesystem with the metadata version using only a few bytes.
->
-> Indeed, so the host better use a filesystem which can handle this
-> efficiently such as reiserfs if you plan on very large filesystems.
+Alle 20:33, venerd=EC 9 aprile 2004, roland ha scritto:
+> Hi !
+> I think i found an interesting "scheduling issue" which led me to switch
+> the subject of the thread.
 
-Actually, Reiser4 will even be more efficent: first because of the FS itsel=
-f,=20
-second because we could then use sys_reiser4. It's a syscall designed for=20
-reading little amounts of data from little files, without opening a fd,=20
-calling read() and closing it.
+1) Well, you switched from AS to deadline and got a significant IO performa=
+nce=20
+improvement, which made UML faster since it was Disk-bound. The problem wit=
+h=20
+AS is that it uses an heuristic, which assumes sequential reads.
 
-"Casually", it was designed to read little metadata files which store=20
-attributes. However I think that syscall could also be supported by other=20
-FS's - at least it is possible. However a compile-time option is worth of=20
-note.
+But "find /" is very seeky, so it is slow with AS. So if you remove this bg=
+=20
+thread, you should get significantly different results.
+
+Also, AS has had some changes in later kernels, so you should probably upgr=
+ade=20
+your host kernel to the latest version. A security hole (a local exploit to=
+=20
+become root) has also been fixed after 2.6.0.
+
+2) In your last email, you speak about hogging the UML CPU. If Jeff guessed=
+=20
+correctly what happens, then avoiding that UML is idle will decrease the=20
+worst-case ping response times.
 
 --=20
 Paolo Giarrusso, aka Blaisorblade
