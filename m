@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cbi6n-00087O-Dg for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 08:22:37 -0800
-Received: from bay24-f4.bay24.hotmail.com ([64.4.18.54] helo=hotmail.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cbi6m-0000pY-0K for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 08:22:36 -0800
-Message-ID: <BAY24-F497D39F4DD7020932ACAB83B50@phx.gbl>
-In-Reply-To: <20041206192526.GC12953@bytesex>
-From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Subject: [uml-devel] Re: What to do with uml_switch?
+	id 1CbiL1-0000yL-Ef for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 08:37:19 -0800
+Received: from web26103.mail.ukl.yahoo.com ([217.12.10.227])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CbiL0-00036M-Q0 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 08:37:19 -0800
+Message-ID: <20041207163711.8475.qmail@web26103.mail.ukl.yahoo.com>
+From: Roland Kaeser <roli8200@yahoo.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: [uml-devel] No DNS resolution on uml guest
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,41 +25,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Dec 2004 16:21:17 +0000
-To: kraxel@bytesex.org, mcr@marajade.sandelman.ottawa.on.ca
-Cc: blaisorblade_spam@yahoo.it, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 7 Dec 2004 17:37:11 +0100 (CET)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Gerd Knorr wrote:
-> >   3) can create *multiple* switches and keep them seperate
->
->Hmm, not sure I like that idea.  Is this with vlan tagging support?
->How can this be configured?  Is the command mode the only way, or can
->you also use some config file or command line switches for that?
+Hello All
 
-I thought about adding vlan support, but then realized if I wasn't going to 
-code up some sort of multi-membership system (union ports?), it would be 
-simpler just to run multiple uml_switches.  It should be obvious I don't 
-know what I'm talking about, so I left it alone. :)
+I have a very strange behaviour on a uml guest system. 
+The guest os (Fedora 2) cannot make any name resolution but the "normal" network
+works properly.
+I'm using the guest file system which i have snapshoted from a special installation
+on a "real" machine. The guest file system and the machine installation have exactly
+the same files. When I try to make the dns resolution on the original machine it
+works well.  The resolution on the uml guest doesn't works event when the whole
+package filter (iptables) is disabled and set to accept.
+I use a linux bridge to communicate with the outside world.
 
-> >   4) can record all packets to a .pcap file
-> >   5) can play packets from a .pcap file at a given rate
-> >      (or under command line interface control)
-> >   6) can optionally answer ARP queries for imaginary nodes.
->
->Hmm, I don't think it is a good idea to put that kind of testing code
->into the switch daemon.  I'd make the switch daemon behave as close as
->possible to a real switch, then use the normal tools you use for real
->networks as well.  I think uml_switch should just support a monitor port
->which will see all traffic (even the switched one), that is the usual
->way how it's done on physical hardware.
-
-I'm eating my own dog food (since I too suggested a monitor port), and I've 
-coded up a framework for doing just that.  I need to test it more before 
-submitting a patch for review and comment.
-
-Steve Schmidtke
+Roland
 
 
+	
+
+	
+		
+___________________________________________________________ 
+Gesendet von Yahoo! Mail - Jetzt mit 250MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
 
 
 -------------------------------------------------------
