@@ -1,19 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B5Smw-0000pF-1y for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Mar 2004 09:00:34 -0800
-Received: from web25105.mail.ukl.yahoo.com ([217.12.10.53])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1B5Smv-0004Fz-Gf for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Mar 2004 09:00:33 -0800
-Message-ID: <20040322170011.8039.qmail@web25105.mail.ukl.yahoo.com>
-From: =?iso-8859-1?q?maria=20maria?= <for_spam2004@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] 802.11 emulation under UML
+Message-Id: <200403222112.i2MLCRVB021449@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Mon, 22 Mar 2004 03:48:21 +0530."
+	<Pine.LNX.4.58.0403220308250.7230@mars.cse.iitb.ac.in> 
+References: <362b01c40ee7$26b1b070$2000000a@schlepptopp>
+	<Pine.LNX.4.58.0403220308250.7230@mars.cse.iitb.ac.in> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [uml-user] problems with kernel-2.6.1(UML)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,32 +19,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Mar 2004 18:00:11 +0100 (CET)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 22 Mar 2004 16:12:27 -0500
+To: K Santhosh Kumar <santhosh@cse.iitb.ac.in>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-Hi!
-I want to make a module based off the net daemon that
-has wireless extensions.
-The first thing I need to do is to make an uml
-wireless daemon that simulates 802.11 protocol
-(CSMA/CA: to send RTS, CTS, ACK for each packet, to
-run a backoff algorithm 
-to realize collision avoidance, etc...).
-I would like to know where in the uml switch code is
-the best place to do that.
-I'm really looking for some help with uml switch
-because it is pretty undocumented... I think I need to
-add some set from inside uml, but I really don't know
-how to do...I'm pretty new to linux.....
-Can someone help me?
-Thank you in advance!
+santhosh@cse.iitb.ac.in said:
+> Host Kernel: 2.6.1-1.57skas3+mpls1custom
+> UML configuration  kernel    => linux-2.6.1 uml-patch =>
+> uml-patch-2.6.1-1 
 
-Maria
+Try something vaguely modern in both cases.
 
+				Jeff
 
-______________________________________________________________________
-Yahoo! Mail: 6MB di spazio gratuito, 30MB per i tuoi allegati, l'antivirus, il filtro Anti-spam
-http://it.yahoo.com/mail_it/foot/?http://it.mail.yahoo.com/
 
 
 -------------------------------------------------------
