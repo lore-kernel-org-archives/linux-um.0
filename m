@@ -2,17 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19xjvg-0008QH-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 12 Sep 2003 02:09:24 -0700
-Received: from mail2.sonytel.be ([195.0.45.172] helo=witte.sonytel.be)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19xjvg-0008EP-4L
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 12 Sep 2003 02:09:24 -0700
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <878you2xu2.fsf@bytesex.org>
-Message-ID: <Pine.GSO.4.21.0309121104430.2312-100000@vervain.sonytel.be>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 19xljg-0002hc-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 12 Sep 2003 04:05:08 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.22)
+	id 19xljf-0000Us-87
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 12 Sep 2003 04:05:07 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
+Message-ID: <20030912110805.GA16252@bytesex.org>
+References: <878you2xu2.fsf@bytesex.org> <Pine.GSO.4.21.0309121104430.2312-100000@vervain.sonytel.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.GSO.4.21.0309121104430.2312-100000@vervain.sonytel.be>
 Subject: [uml-devel] Re: pthreads?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -24,37 +27,35 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Sep 2003 11:07:54 +0200 (MEST)
-To: Gerd Knorr <kraxel@bytesex.org>
+Date: Fri, 12 Sep 2003 13:08:05 +0200
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-On 12 Sep 2003, Gerd Knorr wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> > I'm working on a virtual frame buffer device for UML that displays in a GDK/GTK
-> > window.
+> > What is the point of using gdk?  I'd go with Xlib for that, if all you
+> > need is just a X11 window to blit the vitual framebuffer to IMHO isn't
+> > worth the trouble involved when using gdk/gtk.  You just don't need
+> > all the fancy stuff provided by the toolkit ...
 > 
-> What is the point of using gdk?  I'd go with Xlib for that, if all you
-> need is just a X11 window to blit the vitual framebuffer to IMHO isn't
-> worth the trouble involved when using gdk/gtk.  You just don't need
-> all the fancy stuff provided by the toolkit ...
+> GdkRgb is nice for displaying pictures, without having to care about X server
+> visuals, etc. I.e. I need to write less code.
 
-GdkRgb is nice for displaying pictures, without having to care about X server
-visuals, etc. I.e. I need to write less code.  And I want a few buttons to
-control the fbdev behavior.
+I would probably try to map the X11 ximage format directly into linux
+framebuffer format, so you can use XPutImage() (or XShmPutImage()) to
+display the virtual framebuffer memory without any conversions.
 
-BTW, it's libX11 that needs libpthread...
+> And I want a few buttons to control the fbdev behavior.
 
-Gr{oetje,eeting}s,
+Well, ok, at this point it becomes very ugly with plain Xlib.  What
+stuff do you want control there?
 
-						Geert
+> BTW, it's libX11 that needs libpthread...
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Oops.  I'd expected it is one of the many gtk libs ...
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  Gerd
 
+-- 
+You have a new virus in /var/mail/kraxel
 
 
 -------------------------------------------------------
