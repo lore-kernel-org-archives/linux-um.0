@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BlHuY-0006dQ-VX for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jul 2004 18:53:18 -0700
-Received: from rdns.193.240.218.216.fre.communitycolo.net ([216.218.240.193]
-	helo=pogo.kaffe.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1BlHuY-0003pY-ME for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jul 2004 18:53:18 -0700
-Received: from c-24-7-107-92.client.comcast.net ([24.7.107.92]
-	helo=jimpick.com)
-	by pogo.kaffe.org with asmtp (Exim 3.35 #1 (Debian))
-	id 1BlHzG-00085g-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 15 Jul 2004 18:58:10 -0700
-Message-ID: <40F7349E.7010109@jimpick.com>
-From: Jim Pick <jim@jimpick.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070108010500090203080505"
-Subject: [uml-devel] Off by one error in umid.c
+	id 1BlYJ1-0007Lc-Uz for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Jul 2004 12:23:39 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1BlYIx-0005jv-G0
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Jul 2004 12:23:35 -0700
+Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	by ccure.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id
+	i6GKJKqa003236 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 16 Jul 2004 16:19:21 -0400
+Message-Id: <200407162019.i6GKJKqa003236@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] uml-patch-2.4.26-2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,61 +29,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Jul 2004 18:51:26 -0700
+Date: Fri, 16 Jul 2004 16:19:19 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
 
+This long-awaited patch contains a lot of humfs/hostfs work, plus a bunch of
+bug fixes which hopefully return UML to the stability of 2.4.24.  More 
+specifically:
 
-This is a multi-part message in MIME format.
---------------070108010500090203080505
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Fixed some humfs bugs and bumped the version number.  Modes are now
+included in the metadata and directories with subdirectories named
+'metadata' now have someplace to put their own metadata.
 
-Here's a fix for a little memory corruption I was having.  I was passing 
-in a uml_dir directory without a trailing slash.
+Fixed hostfs to work with the restructured externfs.  It is now also
+safe against running out of file descriptors.  The one problem I see now
+is a 'inodes in use' message when unmounting a hostfs filesystem.
 
-Cheers,
+linux is now the default build target, so that 'make ARCH=um' now does
+what you'd expect.
 
-  - Jim
+Fixed some bugs in the malloc and free wrappers.
 
-Index: linux-2.4.22-uml1/arch/um/kernel/umid.c
-===================================================================
---- linux-2.4.22-uml1.orig/arch/um/kernel/umid.c	2004-07-15 
-16:34:57.000000000 -0700
-+++ linux-2.4.22-uml1/arch/um/kernel/umid.c	2004-07-15 
-18:15:54.699873738 -0700
-@@ -200,7 +200,7 @@
-  static int __init set_uml_dir(char *name, int *add)
-  {
-  	if((strlen(name) > 0) && (name[strlen(name) - 1] != '/')){
--		uml_dir = malloc(strlen(name) + 1);
-+		uml_dir = malloc(strlen(name) + 2);
-  		if(uml_dir == NULL){
-  			printf("Failed to malloc uml_dir - error = %d\n",
-  			       errno);
+The port chan now sets SO_REUSEEADDR so ports can be immediately reused.
 
+Directory opens and pipe creations are now handled in filehandle.c to
+protect them against failing because with -EMFILE.
 
---------------070108010500090203080505
-Content-Type: text/plain;
- name="umid_dir_off-by-one.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="umid_dir_off-by-one.patch"
+The tt mode switch pipe is now filehandles to protect process
+creations from failing with -EMFILE.
 
-Index: linux-2.4.22-uml1/arch/um/kernel/umid.c
-===================================================================
---- linux-2.4.22-uml1.orig/arch/um/kernel/umid.c	2004-07-15 16:34:57.000000000 -0700
-+++ linux-2.4.22-uml1/arch/um/kernel/umid.c	2004-07-15 18:15:54.699873738 -0700
-@@ -200,7 +200,7 @@
- static int __init set_uml_dir(char *name, int *add)
- {
- 	if((strlen(name) > 0) && (name[strlen(name) - 1] != '/')){
--		uml_dir = malloc(strlen(name) + 1);
-+		uml_dir = malloc(strlen(name) + 2);
- 		if(uml_dir == NULL){
- 			printf("Failed to malloc uml_dir - error = %d\n",
- 			       errno);
+Backed out a bug fix which broke modules.
 
---------------070108010500090203080505--
+				Jeff
+
 
 
 -------------------------------------------------------
