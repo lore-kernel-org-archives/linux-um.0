@@ -2,17 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPNrl-0001we-Vb for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 08:20:09 -0800
-Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
-	helo=zion.localdomain)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPNri-0006dQ-8u for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 08:20:09 -0800
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20041103160621.0707356742@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml: fix ptrace() hang on 2.6.9 host due to
-	host changes
+	id 1CPNrt-0001yc-Ef for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:20:17 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CPNrs-0006f6-LT for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:20:17 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+References: <200410221929.07592.blaisorblade_spam@yahoo.it>
+	<6343.1099436425@marajade.sandelman.ottawa.on.ca>
+In-Reply-To: <6343.1099436425@marajade.sandelman.ottawa.on.ca>
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_uTQiBVeM8p4Iz5k"
+Message-Id: <200411031718.54774.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] mm->dumpable issue (was: Re: /proc/mm patches)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,96 +28,94 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 03 Nov 2004 17:06:19 +0100
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it, kraxel@bytesex.org
+Date: Wed, 3 Nov 2004 17:18:54 +0100
+To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+
+--Boundary-00=_uTQiBVeM8p4Iz5k
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Wednesday 03 November 2004 00:00, Michael Richardson wrote:
+> Is there a final patch that you think might work, and deal with the
+> mm->dumpable flag issue?
+
+> I was all set to test the previous patch, but then you said not to...
+On top of -V7 you can apply the attached patch. I'm almost sure it works. The 
+problem is that I have not the certainty that it is not exploitable, i.e. it 
+can be used to gain access to root privileges. I am almost sure it is not... 
+but please *avoid* using a setuid UML binary with this patch (it is not a 
+good idea, anyway, but it is even worse with this patch. I believe that to 
+exploit it, if at all possible, having a setuid binary which is coded to use 
+SKAS (either UML or a malicious program).
+
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+--Boundary-00=_uTQiBVeM8p4Iz5k
+Content-Type: text/x-diff; charset="iso-8859-1";
+	name="fix-dumpable-handling.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="fix-dumpable-handling.patch"
 
 
-From: Gerd Knorr <kraxel@bytesex.org>, Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>, Henrik Nordstrom <uml@hno.marasystems.com>, Michael Richardson <mcr@sandelman.ottawa.on.ca>
 
-Uml was using kill(pid, SIGKILL) instead of ptrace(PTRACE_KILL, pid), which
-used to work, while being probably undocumented. Due to the changes in 2.6.9
-to the ptrace(2) semantics, with the introduction of TASK_TRACED by Roland
-McGrath, this does not more work, so this patch should fix it.
+When a child mm is created by opening /proc/mm, without this patch its
+mm->dumpable flag is left set to 0, even when there is no reason to do so.
 
-With help of Gerd Knorr report and analysis, and its early fix of this
-problem. He fixed the problem by sending SIGCONT to the child processes after
-SIGKILL. Which IMHO should not be needed (I think this is a regression, which
-he already reported).
+This way, for instance, if <pid> is the pid of a userspace thread,
+/proc/<pid> is only readable by root (which was the original reason letting
+this be diagnosed by Michael Richardson).
 
-I improved his one, by replacing the SIGCONT hack with using PTRACE_KILL
-instead.
+Paolo and Henrik discussed about this in detail, finally Paolo wrote the patch
+and sent it for comment.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- vanilla-linux-2.6.9-paolo/arch/um/include/os.h             |    1 +
- vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/process.c    |    2 +-
- vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/process_kern.c |    2 +-
- vanilla-linux-2.6.9-paolo/arch/um/os-Linux/process.c       |    8 ++++++++
- 4 files changed, 11 insertions(+), 2 deletions(-)
+ vanilla-linux-2.6.9-paolo/arch/i386/kernel/ptrace.c |    8 ++++++++
+ vanilla-linux-2.6.9-paolo/mm/proc_mm.c              |    2 ++
+ 2 files changed, 10 insertions(+)
 
-diff -puN arch/um/include/os.h~uml-hang-on-2.6.9-host arch/um/include/os.h
---- vanilla-linux-2.6.9/arch/um/include/os.h~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.232616920 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/include/os.h	2004-10-31 23:46:12.237616160 +0100
-@@ -157,6 +157,7 @@ extern unsigned long os_process_pc(int p
- extern int os_process_parent(int pid);
- extern void os_stop_process(int pid);
- extern void os_kill_process(int pid, int reap_child);
-+extern void os_kill_ptraced_process(int pid, int reap_child);
- extern void os_usr1_process(int pid);
- extern int os_getpid(void);
+diff -puN mm/proc_mm.c~fix-dumpable-handling mm/proc_mm.c
+--- vanilla-linux-2.6.9/mm/proc_mm.c~fix-dumpable-handling	2004-10-26 00:54:35.478864480 +0200
++++ vanilla-linux-2.6.9-paolo/mm/proc_mm.c	2004-10-26 00:54:35.482863872 +0200
+@@ -126,6 +126,8 @@ static int open_proc_mm(struct inode *in
  
-diff -puN arch/um/os-Linux/process.c~uml-hang-on-2.6.9-host arch/um/os-Linux/process.c
---- vanilla-linux-2.6.9/arch/um/os-Linux/process.c~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.233616768 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/os-Linux/process.c	2004-10-31 23:52:07.401623024 +0100
-@@ -8,6 +8,7 @@
- #include <errno.h>
- #include <signal.h>
- #include <linux/unistd.h>
-+#include <sys/ptrace.h>
- #include <sys/mman.h>
- #include <sys/wait.h>
- #include "os.h"
-@@ -94,6 +95,13 @@ void os_kill_process(int pid, int reap_c
- 		
- }
+ 	init_new_empty_context(mm);
+ 	arch_pick_mmap_layout(mm);
++	mm->dumpable = current->mm->dumpable;
++	wmb();
  
-+void os_kill_ptraced_process(int pid, int reap_child)
-+{
-+	ptrace(PTRACE_KILL, pid);
-+	if(reap_child)
-+		CATCH_EINTR(waitpid(pid, NULL, 0));
-+}
+ 	spin_lock(&mmlist_lock);
+ 	list_add(&mm->mmlist, &current->mm->mmlist);
+diff -puN arch/i386/kernel/ptrace.c~fix-dumpable-handling arch/i386/kernel/ptrace.c
+--- vanilla-linux-2.6.9/arch/i386/kernel/ptrace.c~fix-dumpable-handling	2004-10-26 00:54:35.480864176 +0200
++++ vanilla-linux-2.6.9-paolo/arch/i386/kernel/ptrace.c	2004-10-26 00:54:35.483863720 +0200
+@@ -568,6 +568,14 @@ asmlinkage int sys_ptrace(long request, 
+ 			break;
+ 		}
+ 
++		/* Let's be safe. If we are ptraced from a non-dumpable process,
++		 * let's not be dumpable. Don't try to be smart and turn
++		 * current->dumpable to 1: it may be unsafe.*/
++		if (!current->dumpable) {
++			new->dumpable = 0;
++			wmb();
++		}
 +
- void os_usr1_process(int pid)
- {
- 	kill(pid, SIGUSR1);
-diff -puN arch/um/kernel/skas/process.c~uml-hang-on-2.6.9-host arch/um/kernel/skas/process.c
---- vanilla-linux-2.6.9/arch/um/kernel/skas/process.c~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.234616616 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/process.c	2004-10-31 23:51:43.532251720 +0100
-@@ -389,7 +389,7 @@ void switch_mm_skas(int mm_fd)
- void kill_off_processes_skas(void)
- {
- #warning need to loop over userspace_pids in kill_off_processes_skas
--	os_kill_process(userspace_pid[0], 1);
-+	os_kill_ptraced_process(userspace_pid[0], 1);
- }
- 
- void init_registers(int pid)
-diff -puN arch/um/kernel/tt/process_kern.c~uml-hang-on-2.6.9-host arch/um/kernel/tt/process_kern.c
---- vanilla-linux-2.6.9/arch/um/kernel/tt/process_kern.c~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.235616464 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/process_kern.c	2004-10-31 23:46:12.238616008 +0100
-@@ -82,7 +82,7 @@ void *switch_to_tt(void *prev, void *nex
- 	prev_sched = current->thread.prev_sched;
-	if((prev_sched->exit_state == EXIT_ZOMBIE) ||
-	   (prev_sched->exit_state == EXIT_DEAD))
--		os_kill_process(prev_sched->thread.mode.tt.extern_pid, 1);
-+		os_kill_ptraced_process(prev_sched->thread.mode.tt.extern_pid, 1);
- 
- 	/* This works around a nasty race with 'jail'.  If we are switching
- 	 * between two threads of a threaded app and the incoming process 
+ 		atomic_inc(&new->mm_users);
+ 		child->mm = new;
+ 		child->active_mm = new;
 _
+
+--Boundary-00=_uTQiBVeM8p4Iz5k--
+
 
 
 -------------------------------------------------------
