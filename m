@@ -2,26 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CtaMs-0006Pz-6P for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Jan 2005 15:45:06 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CtaMq-0004fT-8P
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Jan 2005 15:45:06 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] SIGSEGV and SA_NODEFER
-References: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
-	<200501251430.26927.rob@landley.net>
-	<200501252150.56501.blaisorblade@yahoo.it>
-In-Reply-To: <200501252150.56501.blaisorblade@yahoo.it>
+	id 1CtZKZ-0002eE-E5 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 14:38:39 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CtZKV-0006up-OG for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 14:38:39 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <20041118160909.GA7630@halcrow.us>
+	<200411181839.26596.blaisorblade_spam@yahoo.it>
+	<20050125215416.GA2912@halcrow.us>
+In-Reply-To: <20050125215416.GA2912@halcrow.us>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200501251743.16020.rob@landley.net>
+Content-Disposition: inline
+Message-Id: <200501252337.58219.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] keyring syscalls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,104 +31,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Jan 2005 17:43:16 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
+Date: Tue, 25 Jan 2005 23:37:57 +0100
+To: Michael Halcrow <uml@halcrow.us>
+Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Tuesday 25 January 2005 03:50 pm, Blaisorblade wrote:
-
-> > Actually, I don't think I've tried to do a chown on UML at all.  As I
-> > said, the files I care about the ownership of being right (the /dev
-> > directory) are all in a ramfs.  Everything else should belong to root, I
-> > just care that the permissions are right.  (A user can set the suid bit
-> > on their own files, right?)
+On Tuesday 25 January 2005 22:54, Michael Halcrow wrote:
+> On Thu, Nov 18, 2004 at 06:39:26PM +0100, Blaisorblade wrote:
+> > On Thursday 18 November 2004 17:09, Michael Halcrow wrote:
+> > Ok, please list the new syscalls - I see at least add_key() and
+> > request_key() too - are these three the only ones? I'll build the
+> > patch ASAP when getting your answer.
 >
-> Theoretically yes... however, sadly, chmod 4777 /mnt/host/bin/dash works
-> and is a suitable exploit... with other shells, it depends (bash refuses to
-> work as setuid)...
-
-I was thinking more along the lines of installing the "su" binary and such 
-correctly and having the permissions retained long enough to make the 
-squashfs image out of it.
-
-I'm not worried about security within the UML instance.  It's running as a 
-normal user, and it's running a build script.  When the script exits, the VM 
-exits.  It's not a server or anything, it's basically an runtime for a batch 
-file.
-
-> > And what I meant to say earlier is that some programs chuser (like bind
-> > and httpd and such), which they do at runtime
+> I spent some more time today trying to implement these silly
+> request_key, add_key, and keyctl syscalls in the 2.6.10 kernel, but I
+> haven't had any luck.  It would be a *tremendous* help for me in my
+> filesystem development if I could just get these syscalls working in
+> UML; it is much more tedious having to use kgdb in my debugging.  I
+> tried adding entries on to the end of the
+> include/sysdep-i386/syscalls.h and the kernel/sys_call_table.c files.
+> I also exported the symbols in os-Linux/user_syms.c.  I am trying to
+> work from the documentation here:
 >
-> You mean they call setuid() / setgid() or such, which should be ok... but
-> you get
+> http://jdike.stearns.org/uml/arch-port.html
 >
-> > Still, good point.  I'm doing a rebuild without UML and I'll run "find .
-> > -not -uid 0" on the result to see what comes up...
+> I am not entirely clear on the function that ``[ 222 ] =
+> sys_ni_syscall,'' at the end of the table in syscalls.h is supposed to
+> serve.  Syscalls in UML contstitutes new territory for me.
+Well, like 
+> I would assume that the __NR_* assignments in the UML environment are
+> identical to those of the host system.  That means that request_key,
+> for example, maps to identifier 288 on the i386 architecture, right?
+Yes, because when a program says "I want to call the write() syscall", all it 
+contains to identify the "write" syscall between all the existing ones is the 
+__NR_write value... so it is very important that they never change (on the 
+same architecture). As long as UML must emulate i386, the identifiers must 
+match.
 
-Speaking of which, I did this and there wasn't anything that didn't belong to 
-root.  (Okay, /proc and /dev/pts showed plenty of stuff, but that's because I 
-forgot and left them mounted after the build.  And several group ids were 
-nonzero in /dev, but I expected that...)
+> The keyctl.c utility defines these syscall identifiers, so I need to
+> make sure that I get the numbers right for the syscall table lookup.
 
-> > > > > I'm not at all happy with this, but I don't want someone using
-> > > > > hostfs over its possibilities. NFS is much better, anyway.
-> > > >
-> > > > NFS gives me hives
-> > >
-> > > ?? What's hives?
->
-> I've searched for it - is not "hive" the place for bees? I understand you
-> mean something like "issues"...
+> Thanks,
+> Mike
+Well, it should be fixed in the -mm tree (and probably in 2.6.11-rc2-bk2, I 
+guess, though it's not tested)... browse the patches at 
+http://user-mode-linux.sourceforge.net/patches.html.
 
-American colloquialism.  "gives me hives" also means it makes you break out in 
-a rash, and the meaning's wandered a bit towards "makes my skin crawl"...
-
-> > An NFS server can't be exposed to the internet securely.
->
-> Agreed... you cannot rely on root access on the host, otherwise what you
-> would do likely is to add some firewall rules (and to ask it to listen on
-> the "lo" interface only, if possible).
-
-I could beat it into submission, but it's not worth the performance boost or 
-the conceptual complexity.  One advantage of UML is that I have to build the 
-linux kernel _anyway_, so it's not an extra package I need to include in the 
-build process and make sure I keep up to date.  I'll happily milk that for 
-all it's worth.
-
-> > I'm told the most recent version of NFS has been redesigned to work like
-> > Samba: a client that mounts one of these things opens a TCP/IP session,
-> > and if it gets closed the client re-opens it.  I should look into that,
-> > but the last time I did support for the new way of doing it it wasn't in
-> > the kernel yet.
->
-> Well, IIRC NFS over TCP/IP exists and works also for NFSv3 (maybe
-> EXPERIMENTAL, but it's included since some time, even in 2.4 I think, and
-> probably is more reliable than hostfs). NFSv4 is the only real
-> secure-thought protocol, and it's experimental like you say.
-
-I think v3 was the one I looked at, and it didn't do what I was looking for, 
-and the NFS guys I talked to told me that how I _wanted_ it to work was 
-pretty close to a description of NVSv4.
-
-> > > The problem is that its slower than NFS!
-> >
-> > Okay, remember how my build process is designed to be packaged up,
-> > exported to some random Linux system out there, and run as a normal user
-> > without root access?  HostFS is exactly what I need.  Even assuming an
-> > NFS server is installed on the target system, a normal user can't run
-> > nfsd if it isn't already running on the system, and can't control what it
-> > exports if it is.
-> >
-> > Maybe I'll profile it and look at speeding it up later, but not anytime
-> > soon...
->
-> In that case, you could maybe see humfs ready (which is a hostfs with an
-> added support for storing metadatas on the host filesystem). I guess it
-> won't be before 2.6.13.
-
-Sounds like fun.  When you've got something for me to test, I'll be here. :)
-
-Rob
+It should be in next release...
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
