@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Advmz-0007gn-9B for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:18:49 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	id 1AdvpH-0007pv-J4 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:21:11 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1Advmy-0000Ai-OO for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:18:48 -0800
+	id 1AdvpH-0001Cx-11 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:21:11 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<200401061718.i06HILtd002620@ccure.user-mode-linux.org>
-	<a0602040abc20a9f6862e@[192.168.1.10]>
-In-Reply-To: <a0602040abc20a9f6862e@[192.168.1.10]>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200401061918.31447.blaisorblade_spam@yahoo.it>
+Message-Id: <200401061921.00054.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] 2.6-specific UML patches (modules, modversions,
+	various other stuff)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,29 +28,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 6 Jan 2004 19:18:31 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 6 Jan 2004 19:20:59 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 19:11, marted=EC 6 gennaio 2004, Johannes Formann ha scritto:
-> At 12:18 Uhr -0500 06.01.2004, Jeff Dike wrote:
-> >No, gdb it, put a breakpoint on panic, get a stack trace when it hits the
-> >breakpoint.
->
-> I'd run it once without a breakpoint set (after compiling it with
-> debug symbols):
+Hi! I'm happy to hear again from you.
 
-you need to type this before starting:
+I don't remember if you answered when I posted this URL:
+http://web.tiscali.it/no-redirect-tiscali/blaisorblade/
 
-(host gdb) handle SIGSEGV pass nostop noprint=20
-(host gdb) handle SIGUSR1 pass nostop noprint
+There you will find a number of patches for UML 2.6. Some are mine and some 
+come from Ingo and M A Young; I've included everything Ingo posted minus the 
+speedup - breakage for 2.4 host. That is, MM_COPY_SEGMENTS is still called by 
+UML but if the host is a 2.6 that is a no-op.
 
-see http://user-mode-linux.sourceforge.net/debugging-skas.html for details.
+Only use the v8! In the Readme there is a careful description of each patch - 
+ask for more comments if you need.
 
-And we *do* need the backtrace when it hits the breakpoint on panic, please.
+They are tested enough (at least for building UML; the resulting patch should 
+work even on i386, and at least it compiles). Maybe you already have in your 
+tree some of the patches; they apply onto vanilla linux kernel. The -test9 
+patch has been split: the change for tty_init has been removed, and the 
+change to mm/memory.c has been replaced. You can find the two patches to move 
+out here, as A-03* and A-04*:
 
-Bye and thanks for your reports
---=20
+http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/v6/A-Orig/
+
+The replacements are in the B directory. About the A-04 patch, and this hunk 
+in particular(it goes to mm/memory.c):
+
+@@ -700,19 +719,8 @@
+
+                vma = find_extend_vma(mm, start);
+
+-#ifdef FIXADDR_USER_START
+-               if (!vma &&
+-                   start >= FIXADDR_USER_START && start < FIXADDR_USER_END) {
+-                       static struct vm_area_struct fixmap_vma = {
+-                               /* Catch users - if there are any valid
+-                                  ones, we can make this be "&init_mm" or
+-                                  something.  */
+-                               .vm_mm = NULL,
+-                               .vm_start = FIXADDR_USER_START,
+-                               .vm_end = FIXADDR_USER_END,
+-                               .vm_page_prot = PAGE_READONLY,
+-                               .vm_flags = VM_READ | VM_EXEC,
+-                       };
++#ifdef FIXADDR_START
++               if (!vma && start >= FIXADDR_START && start < FIXADDR_TOP) {
+                        unsigned long pg = start & PAGE_MASK;
+                        pgd_t *pgd;
+                        pmd_t *pmd;
+Did you have any reason for replacing FIXADDR_USER_START with FIXADDR_START?
+I've looked in older patches and saw that FIXADDR_USER_START didn't exist, so 
+I thought that you simply didn't see the change happened in mainline; even 
+because I've maybe understood what code does, and there is no need to map 
+anything in a process's address space except for the VSYSCALL page. Am I 
+right?
+
+I must admit that with my replacement for that patch, I've got one 
+non-repeatable segfault, in the early boot process. I've never had it any 
+more, so maybe it's elsewhere.
+
+For the makefile patches, they haven't still been accepted by Kbuild 
+developers :-(. But everything is open (kbuild mail list is not that active, 
+actually...)
+
+Bye
+-- 
 cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
 Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
@@ -63,7 +107,7 @@ EOSIGN
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
