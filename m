@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ybvN-0004e6-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 11:48:41 -0700
-Received: from smtp014.mail.yahoo.com ([216.136.173.58])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 19ybvM-0005Td-Au
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 11:48:40 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Starting a command inside UML from mconsole
-References: <200309131820.45833.blaisorblade_spam@yahoo.it> <20030913194849.GX8622@alcor.net>
-In-Reply-To: <20030913194849.GX8622@alcor.net>
+	id 19ycqw-00005c-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 12:48:10 -0700
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 19ycqv-0004J8-57
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 12:48:09 -0700
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] Child exit when booting uml 2.4.20 on 2.6.0-test4
+ host
+In-Reply-To: <200309141946.05977.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.GSO.4.53.0309142027420.13499@altair.dur.ac.uk>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_bhLZ/+ZuU5QxIRr"
-Message-Id: <200309142050.03304.blaisorblade_spam@yahoo.it>
+Content-Type: MULTIPART/MIXED; BOUNDARY="-559023410-851401618-1063568206=:13499"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,214 +25,146 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Sep 2003 20:50:03 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 14 Sep 2003 20:36:46 +0100 (BST)
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
---Boundary-00=_bhLZ/+ZuU5QxIRr
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+---559023410-851401618-1063568206=:13499
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-Alle 21:48, sabato 13 settembre 2003, Matt Zimmerman ha scritto:
-> On Sat, Sep 13, 2003 at 06:20:45PM +0200, BlaisorBlade wrote:
-> >
-> > I'd like a discussion about this(how much interest in this there is,
-> > suggestions, requests). Especially:
->
-> This is interesting.  I wrote a small client/server system for the purpose
-> of programmatically executing programs within UML.  It works nicely, with
-> the exception that it is necessary to install the server within UML in
-> order for it to work.  It would be nice to be able to do this with a
-> pristine UML.
->
-> What do you do with stdin, stdout and stderr?  I connect them to a UML
-> serial device, which can be connected to the tty (for interactive programs)
-> or any other UML channel.
-Hmm, I didn't think to this. I was thinking to *simple* commands, only a bit 
-more complicate than the cad one, such as calling mount(I thought to the 
-->"Add shared directory" VMWare menu item...). Also, this is my first "true" 
-kernel work, and I took most of the code from kernel/kmod.c, i.e. the one 
-which runs modprobe/hotplug.
+On Sun, 14 Sep 2003, BlaisorBlade wrote:
 
-Your idea is good(opening a file and dupping it to 0,1,2 handles should be 
-simple). Only I wouldn't like that it becomes too long to implement, i.e. to 
-do in user-space. And I must go discovering how exactly to do it inside the 
-kernel(I'll do this, however).
->
-> > - is the ability to read arguments with spaces(within quotes) needed even
-> > for the program name?
->
-> I don't think this is particularly crucial; does it cause some unexpected
-> difficulty?
-No, simply I hadn't wrote the code yet and at first I thought that this was 
-useless(because the program path wouldn't normally contain spaces).
+> I could see the bug with 2.6.0-test4/test5, and for me, too it was solved
+> using 2.4.22-3um. So that's ok.
 
-Now, I'm posting the patch against 2.4.22-3um(I am not so fast to port patches 
-back and forth to reach -4um for now). It does compile, I've got to test the 
-parsing part but I want to post it even now so that you can say me if I'm 
-doing it well or using a completely wrong way, and such things(I'm new to 
-kernel hacking, as I said, even if I found enough docs).
+If you want to try it on 2.6, I got impatient waiting for Jeff's patch to
+appear in his 2.6 tree and forward ported his patch (attached), with some
+minor cleanups.
 
-I already know that the limit to 20 args is ugly; it's only a fast crap I put 
-there, even because I had doubt about calling kmalloc. What I understood,at 
-the end, is that I can call it freely in runner_thread(with GFP_KERNEL and 
-without GFP_ATOMIC) and that I must free it only if execve(which is wrapped 
-inside exec_usermodehelper, see kernel/kmod.c) fails. Is it right?
+	Michael Young
+---559023410-851401618-1063568206=:13499
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="sigjmp.patch"
+Content-Transfer-Encoding: BASE64
+Content-Description: 
+Content-Disposition: attachment; filename="sigjmp.patch"
 
-Thanks for the interest, and sorry if you think you wasted your time.
--- 
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+ZGlmZiAtTmF1ciBsaW51eC0vYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jIGxp
+bnV4Ky9hcmNoL3VtL2tlcm5lbC9wcm9jZXNzLmMNCi0tLSBsaW51eC0vYXJj
+aC91bS9rZXJuZWwvcHJvY2Vzcy5jCTIwMDMtMDktMTQgMTk6MTc6MzcuMDAw
+MDAwMDAwICswMTAwDQorKysgbGludXgrL2FyY2gvdW0va2VybmVsL3Byb2Nl
+c3MuYwkyMDAzLTA5LTE0IDE4OjA1OjU2LjAwMDAwMDAwMCArMDEwMA0KQEAg
+LTIyOSwxMSArMjI5LDExIEBADQogDQogaW50IHJ1bl9rZXJuZWxfdGhyZWFk
+KGludCAoKmZuKSh2b2lkICopLCB2b2lkICphcmcsIHZvaWQgKipqbXBfcHRy
+KQ0KIHsNCi0Jam1wX2J1ZiBidWY7DQorCXNpZ2ptcF9idWYgYnVmOw0KIAlp
+bnQgbjsNCiANCiAJKmptcF9wdHIgPSAmYnVmOw0KLQluID0gc2V0am1wKGJ1
+Zik7DQorCW4gPSBzaWdzZXRqbXAoYnVmLDEpOw0KIAlpZihuICE9IDApDQog
+CQlyZXR1cm4obik7DQogCSgqZm4pKGFyZyk7DQpkaWZmIC1OYXVyIGxpbnV4
+LS9hcmNoL3VtL2tlcm5lbC9za2FzL3Byb2Nlc3MuYyBsaW51eCsvYXJjaC91
+bS9rZXJuZWwvc2thcy9wcm9jZXNzLmMNCi0tLSBsaW51eC0vYXJjaC91bS9r
+ZXJuZWwvc2thcy9wcm9jZXNzLmMJMjAwMy0wOS0xNCAxOToxNzo0NC4wMDAw
+MDAwMDAgKzAxMDANCisrKyBsaW51eCsvYXJjaC91bS9rZXJuZWwvc2thcy9w
+cm9jZXNzLmMJMjAwMy0wOS0xNCAxODowNTo1Ni4wMDAwMDAwMDAgKzAxMDAN
+CkBAIC0xODQsMTIgKzE4NCwxMiBAQA0KIHZvaWQgbmV3X3RocmVhZCh2b2lk
+ICpzdGFjaywgdm9pZCAqKnN3aXRjaF9idWZfcHRyLCB2b2lkICoqZm9ya19i
+dWZfcHRyLA0KIAkJdm9pZCAoKmhhbmRsZXIpKGludCkpDQogew0KLQlqbXBf
+YnVmIHN3aXRjaF9idWYsIGZvcmtfYnVmOw0KKwlzaWdqbXBfYnVmIHN3aXRj
+aF9idWYsIGZvcmtfYnVmOw0KIA0KIAkqc3dpdGNoX2J1Zl9wdHIgPSAmc3dp
+dGNoX2J1ZjsNCiAJKmZvcmtfYnVmX3B0ciA9ICZmb3JrX2J1ZjsNCiANCi0J
+aWYoc2V0am1wKGZvcmtfYnVmKSA9PSAwKQ0KKwlpZihzaWdzZXRqbXAoZm9y
+a19idWYsMSkgPT0gMCkNCiAJCW5ld190aHJlYWRfcHJvYyhzdGFjaywgaGFu
+ZGxlcik7DQogDQogCXJlbW92ZV9zaWdzdGFjaygpOw0KQEAgLTE5NywxMiAr
+MTk3LDEyIEBADQogDQogdm9pZCB0aHJlYWRfd2FpdCh2b2lkICpzdywgdm9p
+ZCAqZmIpDQogew0KLQlqbXBfYnVmIGJ1ZiwgKipzd2l0Y2hfYnVmID0gc3cs
+ICpmb3JrX2J1ZjsNCisJc2lnam1wX2J1ZiBidWYsICoqc3dpdGNoX2J1ZiA9
+IHN3LCAqZm9ya19idWY7DQogDQogCSpzd2l0Y2hfYnVmID0gJmJ1ZjsNCiAJ
+Zm9ya19idWYgPSBmYjsNCi0JaWYoc2V0am1wKGJ1ZikgPT0gMCkNCi0JCWxv
+bmdqbXAoKmZvcmtfYnVmLCAxKTsNCisJaWYoc2lnc2V0am1wKGJ1ZiwxKSA9
+PSAwKQ0KKwkJc2lnbG9uZ2ptcCgqZm9ya19idWYsIDEpOw0KIH0NCiANCiBz
+dGF0aWMgaW50IG1vdmVfcmVnaXN0ZXJzKGludCBpbnRfb3AsIGludCBmcF9v
+cCwgdW5pb24gdW1sX3B0X3JlZ3MgKnJlZ3MsDQpAQCAtMjU3LDM0ICsyNTcs
+MzQgQEANCiANCiB2b2lkIHN3aXRjaF90aHJlYWRzKHZvaWQgKm1lLCB2b2lk
+ICpuZXh0KQ0KIHsNCi0Jam1wX2J1ZiBteV9idWYsICoqbWVfcHRyID0gbWUs
+ICpuZXh0X2J1ZiA9IG5leHQ7DQorCXNpZ2ptcF9idWYgbXlfYnVmLCAqKm1l
+X3B0ciA9IG1lLCAqbmV4dF9idWYgPSBuZXh0Ow0KIAkNCiAJKm1lX3B0ciA9
+ICZteV9idWY7DQotCWlmKHNldGptcChteV9idWYpID09IDApDQotCQlsb25n
+am1wKCpuZXh0X2J1ZiwgMSk7DQorCWlmKHNpZ3NldGptcChteV9idWYsMSkg
+PT0gMCkNCisJCXNpZ2xvbmdqbXAoKm5leHRfYnVmLCAxKTsNCiB9DQogDQot
+c3RhdGljIGptcF9idWYgaW5pdGlhbF9qbXBidWY7DQorc3RhdGljIHNpZ2pt
+cF9idWYgaW5pdGlhbF9qbXBidWY7DQogDQogLyogWFhYIE1ha2UgdGhlc2Ug
+cGVyY3B1ICovDQogc3RhdGljIHZvaWQgKCpjYl9wcm9jKSh2b2lkICphcmcp
+Ow0KIHN0YXRpYyB2b2lkICpjYl9hcmc7DQotc3RhdGljIGptcF9idWYgKmNi
+X2JhY2s7DQorc3RhdGljIHNpZ2ptcF9idWYgKmNiX2JhY2s7DQogDQogaW50
+IHN0YXJ0X2lkbGVfdGhyZWFkKHZvaWQgKnN0YWNrLCB2b2lkICpzd2l0Y2hf
+YnVmX3B0ciwgdm9pZCAqKmZvcmtfYnVmX3B0cikNCiB7DQotCWptcF9idWYg
+Kipzd2l0Y2hfYnVmID0gc3dpdGNoX2J1Zl9wdHI7DQorCXNpZ2ptcF9idWYg
+Kipzd2l0Y2hfYnVmID0gc3dpdGNoX2J1Zl9wdHI7DQogCWludCBuOw0KIA0K
+IAkqZm9ya19idWZfcHRyID0gJmluaXRpYWxfam1wYnVmOw0KLQluID0gc2V0
+am1wKGluaXRpYWxfam1wYnVmKTsNCisJbiA9IHNpZ3NldGptcChpbml0aWFs
+X2ptcGJ1ZiwxKTsNCiAJaWYobiA9PSAwKQ0KIAkJbmV3X3RocmVhZF9wcm9j
+KCh2b2lkICopIHN0YWNrLCBuZXdfdGhyZWFkX2hhbmRsZXIpOw0KIAllbHNl
+IGlmKG4gPT0gMSkNCiAJCXJlbW92ZV9zaWdzdGFjaygpOw0KIAllbHNlIGlm
+KG4gPT0gMil7DQogCQkoKmNiX3Byb2MpKGNiX2FyZyk7DQotCQlsb25nam1w
+KCpjYl9iYWNrLCAxKTsNCisJCXNpZ2xvbmdqbXAoKmNiX2JhY2ssIDEpOw0K
+IAl9DQogCWVsc2UgaWYobiA9PSAzKXsNCiAJCWttYWxsb2Nfb2sgPSAwOw0K
+QEAgLTI5NCw3ICsyOTQsNyBAQA0KIAkJa21hbGxvY19vayA9IDA7DQogCQly
+ZXR1cm4oMSk7DQogCX0NCi0JbG9uZ2ptcCgqKnN3aXRjaF9idWYsIDEpOw0K
+KwlzaWdsb25nam1wKCoqc3dpdGNoX2J1ZiwgMSk7DQogfQ0KIA0KIHZvaWQg
+cmVtb3ZlX3NpZ3N0YWNrKHZvaWQpDQpAQCAtMzA5LDE1ICszMDksMTUgQEAN
+CiANCiB2b2lkIGluaXRpYWxfdGhyZWFkX2NiX3NrYXModm9pZCAoKnByb2Mp
+KHZvaWQgKiksIHZvaWQgKmFyZykNCiB7DQotCWptcF9idWYgaGVyZTsNCisJ
+c2lnam1wX2J1ZiBoZXJlOw0KIA0KIAljYl9wcm9jID0gcHJvYzsNCiAJY2Jf
+YXJnID0gYXJnOw0KIAljYl9iYWNrID0gJmhlcmU7DQogDQogCWJsb2NrX3Np
+Z25hbHMoKTsNCi0JaWYoc2V0am1wKGhlcmUpID09IDApDQotCQlsb25nam1w
+KGluaXRpYWxfam1wYnVmLCAyKTsNCisJaWYoc2lnc2V0am1wKGhlcmUsMSkg
+PT0gMCkNCisJCXNpZ2xvbmdqbXAoaW5pdGlhbF9qbXBidWYsIDIpOw0KIAl1
+bmJsb2NrX3NpZ25hbHMoKTsNCiANCiAJY2JfcHJvYyA9IE5VTEw7DQpAQCAt
+MzI4LDEzICszMjgsMTMgQEANCiB2b2lkIGhhbHRfc2thcyh2b2lkKQ0KIHsN
+CiAJYmxvY2tfc2lnbmFscygpOw0KLQlsb25nam1wKGluaXRpYWxfam1wYnVm
+LCAzKTsNCisJc2lnbG9uZ2ptcChpbml0aWFsX2ptcGJ1ZiwgMyk7DQogfQ0K
+IA0KIHZvaWQgcmVib290X3NrYXModm9pZCkNCiB7DQogCWJsb2NrX3NpZ25h
+bHMoKTsNCi0JbG9uZ2ptcChpbml0aWFsX2ptcGJ1ZiwgNCk7DQorCXNpZ2xv
+bmdqbXAoaW5pdGlhbF9qbXBidWYsIDQpOw0KIH0NCiANCiBpbnQgbmV3X21t
+KGludCBmcm9tKQ0KZGlmZiAtTmF1ciBsaW51eC0vYXJjaC91bS9rZXJuZWwv
+dHJhcF91c2VyLmMgbGludXgrL2FyY2gvdW0va2VybmVsL3RyYXBfdXNlci5j
+DQotLS0gbGludXgtL2FyY2gvdW0va2VybmVsL3RyYXBfdXNlci5jCTIwMDMt
+MDktMTQgMTk6MTg6MTAuMDAwMDAwMDAwICswMTAwDQorKysgbGludXgrL2Fy
+Y2gvdW0va2VybmVsL3RyYXBfdXNlci5jCTIwMDMtMDktMTQgMTg6MDU6NTYu
+MDAwMDAwMDAwICswMTAwDQpAQCAtMTIzLDkgKzEyMyw5IEBADQogDQogdm9p
+ZCBkb19sb25nam1wKHZvaWQgKmIsIGludCB2YWwpDQogew0KLQlqbXBfYnVm
+ICpidWYgPSBiOw0KKwlzaWdqbXBfYnVmICpidWYgPSBiOw0KIA0KLQlsb25n
+am1wKCpidWYsIHZhbCk7DQorCXNpZ2xvbmdqbXAoKmJ1ZiwgdmFsKTsNCiB9
+DQogDQogLyoNCmRpZmYgLU5hdXIgbGludXgtL2FyY2gvdW0va2VybmVsL3R0
+L3VhY2Nlc3NfdXNlci5jIGxpbnV4Ky9hcmNoL3VtL2tlcm5lbC90dC91YWNj
+ZXNzX3VzZXIuYw0KLS0tIGxpbnV4LS9hcmNoL3VtL2tlcm5lbC90dC91YWNj
+ZXNzX3VzZXIuYwkyMDAzLTA5LTE0IDE5OjE4OjEzLjAwMDAwMDAwMCArMDEw
+MA0KKysrIGxpbnV4Ky9hcmNoL3VtL2tlcm5lbC90dC91YWNjZXNzX3VzZXIu
+YwkyMDAzLTA5LTE0IDE4OjA1OjU2LjAwMDAwMDAwMCArMDEwMA0KQEAgLTcy
+LDEwICs3MiwxMCBAQA0KIAlzdHJ1Y3QgdHRfcmVncyBzYXZlID0gVEFTS19S
+RUdTKGdldF9jdXJyZW50KCkpLT50dDsNCiAJaW50IHJldDsNCiAJdW5zaWdu
+ZWQgbG9uZyAqZmFkZHJwID0gKHVuc2lnbmVkIGxvbmcgKilmYXVsdF9hZGRy
+Ow0KLQlqbXBfYnVmIGpidWY7DQorCXNpZ2ptcF9idWYgamJ1ZjsNCiANCiAJ
+KmZhdWx0X2NhdGNoZXIgPSAmamJ1ZjsNCi0JaWYoc2V0am1wKGpidWYpID09
+IDApew0KKwlpZihzaWdzZXRqbXAoamJ1ZiwxKSA9PSAwKXsNCiAJCXJldCA9
+IHN0cmxlbihzdHIpICsgMTsNCiAJfSANCiAJZWxzZSB7DQpkaWZmIC1OYXVy
+IGxpbnV4LS9hcmNoL3VtL2tlcm5lbC91YWNjZXNzX3VzZXIuYyBsaW51eCsv
+YXJjaC91bS9rZXJuZWwvdWFjY2Vzc191c2VyLmMNCi0tLSBsaW51eC0vYXJj
+aC91bS9rZXJuZWwvdWFjY2Vzc191c2VyLmMJMjAwMy0wNy0yNyAxODowNTo1
+Ni4wMDAwMDAwMDAgKzAxMDANCisrKyBsaW51eCsvYXJjaC91bS9rZXJuZWwv
+dWFjY2Vzc191c2VyLmMJMjAwMy0wOS0xNCAxODowNDowMC4wMDAwMDAwMDAg
+KzAxMDANCkBAIC0xOCw5ICsxOCw5IEBADQogew0KIAl1bnNpZ25lZCBsb25n
+ICpmYWRkcnAgPSAodW5zaWduZWQgbG9uZyAqKSBmYXVsdF9hZGRyLCByZXQ7
+DQogDQotCWptcF9idWYgamJ1ZjsNCisJc2lnam1wX2J1ZiBqYnVmOw0KIAkq
+ZmF1bHRfY2F0Y2hlciA9ICZqYnVmOw0KLQlpZihzZXRqbXAoamJ1ZikgPT0g
+MCl7DQorCWlmKHNpZ3NldGptcChqYnVmLDEpID09IDApew0KIAkJKCpvcCko
+dG8sIGZyb20sIG4pOw0KIAkJcmV0ID0gMDsNCiAJCSpmYXVsdGVkX291dCA9
+IDA7DQo=
 
---Boundary-00=_bhLZ/+ZuU5QxIRr
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="mconsole_exec.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="mconsole_exec.patch"
-
---- linuxUm-2.4.22/arch/um/drivers/mconsole_user.c.saved	2003-09-13 20:22:06.000000000 +0200
-+++ linuxUm-2.4.22/arch/um/drivers/mconsole_user.c	2003-09-14 18:15:13.000000000 +0200
-@@ -21,6 +21,7 @@
- 	{ "version", mconsole_version, MCONSOLE_INTR },
- 	{ "halt", mconsole_halt, MCONSOLE_PROC },
- 	{ "reboot", mconsole_reboot, MCONSOLE_PROC },
-+        { "exec", mconsole_exec, MCONSOLE_PROC },
- 	{ "config", mconsole_config, MCONSOLE_PROC },
- 	{ "remove", mconsole_remove, MCONSOLE_PROC },
- 	{ "sysrq", mconsole_sysrq, MCONSOLE_INTR },
---- linuxUm-2.4.22/arch/um/drivers/mconsole_kern.c.saved	2003-09-13 20:22:06.000000000 +0200
-+++ linuxUm-2.4.22/arch/um/drivers/mconsole_kern.c	2003-09-14 20:27:00.000000000 +0200
-@@ -18,6 +18,7 @@
- #include "linux/file.h"
- #include "linux/fs.h"
- #include "linux/proc_fs.h"
-+#include "linux/kmod.h"
- #include "asm/irq.h"
- #include "asm/uaccess.h"
- #include "user_util.h"
-@@ -210,6 +211,7 @@
-     help - Print this message \n\
-     halt - Halt UML \n\
-     reboot - Reboot UML \n\
-+    exec - execute a command as root inside the UML\n\
-     config <dev>=<config> - Add a new device to UML;  \n\
- 	same syntax as command line \n\
-     config <dev> - Query the configuration of a device \n\
-@@ -266,6 +268,95 @@
- 	mconsole_reply(req, "", 0, 0);
- }
- 
-+/* This is the focal point of the exec patch. Much code comes from
-+ * kernel/kmod.c. But I just couldn't use call_usermodehelper, because it must be 
-+ * called from process context.*/
-+struct subprocess_info {
-+        char *command;
-+        pid_t retval;
-+};
-+
-+/* This code must be called in a new thread, and uses 2.4 exec_usermodehelper
-+ * (which seems to be gone inside 2.6) to start the specified program.
-+ * This function is like ____call_usermodehelper*/
-+int runner_thread(void * data)
-+{
-+        struct subprocess_info *sub_info = data;
-+	char buf[MCONSOLE_MAX_DATA];
-+        char *ptr = buf, *endptr;
-+        char *path, *argv[21]; /*For now.*/
-+	char *envp[] = { "HOME=/", "TERM=linux", "PATH=/sbin:/usr/sbin:/bin:/usr/bin", NULL };
-+	int i = 0, retval;
-+	strcpy(buf, sub_info->command);
-+
-+	ptr += strlen("exec");
-+
-+	while (i < 20) {
-+		while(isspace(*ptr)) ptr++;
-+
-+		if (ptr == NULL)
-+			break;
-+
-+		endptr = ptr;
-+		if (*ptr == '\"' || *ptr == '\'') { /*quoted arg*/
-+			while (*endptr != *ptr || *(endptr - 1) == '\\') endptr++;
-+			ptr++;  /*skips the first quote*/
-+		} else {
-+			while(!isspace(*endptr)) endptr++;
-+		}
-+		argv[i++] = ptr;
-+		*endptr = '\0';
-+		ptr = endptr + 1;
-+	}
-+
-+	if (*argv[0] == '\0')
-+		sub_info->retval = -EINVAL; /*invalid command to execute, though this maybe 
-+					      is not needed.*/
-+	path = argv[0];
-+	argv[i] = NULL;
-+
-+	/*path = "/bin/sleep";
-+        argv = { path, "20", NULL };*/
-+        retval = exec_usermodehelper(path, argv, envp);
-+
-+        /* Exec failed? */
-+        sub_info->retval = (pid_t)retval;
-+        do_exit(0);
-+}
-+
-+/* This is like __call_usermodehelper. Only exception is that it's not a callback of keventd, and that 
-+ * it bundles the declaration of sub_info from call_usermodehelper.*/
-+void mconsole_exec(struct mc_request *req)
-+{
-+        pid_t pid;
-+
-+        struct subprocess_info sub_info = {
-+                command:        req->request.data,
-+                retval:         0,
-+        };
-+
-+        /*
-+         * CLONE_VFORK: wait until the usermode helper has execve'd successfully
-+         * We need the data structures to stay around until that is done.
-+         */
-+        pid = kernel_thread(runner_thread, &sub_info, CLONE_VFORK | SIGCHLD);
-+
-+	if (pid < 0) {
-+		char buf[60];
-+		snprintf(buf, 60, "kernel_thread failed in mconsole_exec with error code: %d", -pid);
-+		mconsole_reply(req, buf, 1, 0);
-+	}
-+	if (sub_info.retval < 0) {
-+		char buf[50];
-+		snprintf(buf, 50, "execve failed in mconsole_exec with errno = %d", -sub_info.retval);
-+		mconsole_reply(req, buf, 1, 0);
-+	}
-+
-+	mconsole_reply(req, "The command has been started successfully.", 0, 0);
-+}
-+
-+/* Patch end */
-+
- /* This list is populated by __initcall routines. */
- 
- LIST_HEAD(mconsole_devices);
---- linuxUm-2.4.22/arch/um/include/mconsole.h.saved	2003-09-13 20:22:07.000000000 +0200
-+++ linuxUm-2.4.22/arch/um/include/mconsole.h	2003-09-14 12:19:53.000000000 +0200
-@@ -73,6 +73,7 @@
- extern void mconsole_help(struct mc_request *req);
- extern void mconsole_halt(struct mc_request *req);
- extern void mconsole_reboot(struct mc_request *req);
-+extern void mconsole_exec(struct mc_request *req);
- extern void mconsole_config(struct mc_request *req);
- extern void mconsole_remove(struct mc_request *req);
- extern void mconsole_sysrq(struct mc_request *req);
-
---Boundary-00=_bhLZ/+ZuU5QxIRr--
-
+---559023410-851401618-1063568206=:13499--
 
 
 -------------------------------------------------------
