@@ -2,28 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNDtw-0005Uh-JL for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 May 2004 09:45:12 -0700
-Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNDtw-0003cp-6S for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 May 2004 09:45:12 -0700
-Received: from NHROCAVG2.ets.enterasys.com (nhrocavg2.enterasys.com
-	[134.141.79.124])
-	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id i4AGj4Tm022292
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 10 May 2004 12:45:04 -0400 (EDT)
-Message-ID: <409FB190.4060006@enterasys.com>
-From: David Bahi <dbahi@enterasys.com>
+	id 1BNcHA-0007Mx-3W for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 May 2004 11:46:48 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BNcH9-0000Iv-He for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 May 2004 11:46:47 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Still can't get an 2.6.6-rcX UML
+References: <20040504200555.13458.qmail@praize.com>
+In-Reply-To: <20040504200555.13458.qmail@praize.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: [uml-user] LTT in UML ?
-References: <4098FC64.3000607@enterasys.com>
-	<070c01c432f8$1a423000$2000000a@schlepptopp>
-	<409AF27F.6020207@vgertech.com>
-In-Reply-To: <409AF27F.6020207@vgertech.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig0E5657B5AEFB1C8AF8F8CDC1"
+Content-Disposition: inline
+Message-Id: <200405111859.34514.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,79 +27,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 10 May 2004 12:45:04 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 11 May 2004 19:35:54 +0200
+Content-Transfer-Encoding: quoted-printable
+To: gboutwel <gboutwel@praize.com>, user-mode-linux-devel@lists.sourceforge.net
+
+Alle 22:05, marted=EC 4 maggio 2004, gboutwel ha scritto:
+> > Blaisorblade wrote:
+> > Yes, what I mean is that the proper fix is probably to make
+> it use the kernel
+> > headers as it did before. Would you post the output of the
+> failing make
+> > command with the V=3D1 option added, to see the actual build
+> command?
+>
+>
+>
+> Attached is the orgianl fail (before trying the symlink in /usr/include)
+> with V=3D1 as uml-2.6.6-rc3-V.log
+>
+>
+>
+> Also, attached is the new fail (after trying the symlink in /usr/include)
+> with an V=3D1 as uml-2.6.6-rc3.log
+>
+> > I think the 2nd thing holds, and that my suggestions is a workaround
+>
+> that
+>
+> > should work (I hope)...
+>
+> Don't look like it.
+
+Well, it is an improvement; try disabling the SKAS mode in the UML .config =
+and=20
+post the new output, with V=3D1. However now I'm trying to solve the proble=
+m=20
+myself with 2.6.6 - restart again with the patches I'm posting today (see t=
+he=20
+"Patch for 2.6.6" thread).
+
+Bye
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig0E5657B5AEFB1C8AF8F8CDC1
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-right. yet, not what i was going for.
-i'd like to profile applications running
-under/within the uml itself.
-
-still, looks like it's just me that's
-interested in this so i'll give it a go
-when i get a chance and post specific
-questions to this list when i'm lost.
-
-- --
-db
-
-Nuno Silva wrote:
-
-| roland wrote:
-|
-| [..]
-|
-|  >
-|  > probably, having an LTT option for the uml-kernel could give some
-| benefit (performance optimization?)
-|  > for the uml project ?
-|  >
-|
-| You can do that already. Run LTT on the host and "trace" the UML
-| processes ;)
-|
-| Regards,
-| Nuno Silva
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (MingW32)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFAn7GQ3XQ4zakZ3z4RApfJAJ4/95BNqYzt/uRWCPWPwHlozVBvrACfTkjH
-2qU4ecl/5pHhbe0Pl+MfB+8=
-=yEiC
------END PGP SIGNATURE-----
-
---------------enig0E5657B5AEFB1C8AF8F8CDC1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (MingW32)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFAn7GQ3XQ4zakZ3z4RAiABAJ92vRr1evpIkp4kQEVRGmopJAtn3QCeL4G5
-Q4jojeyn36qZK1ve+nFU6fA=
-=JVBJ
------END PGP SIGNATURE-----
-
---------------enig0E5657B5AEFB1C8AF8F8CDC1--
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Sleepycat Software
-Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to 
+Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to=20
 deliver higher performing products faster, at low TCO.
-http://www.sleepycat.com/telcomwpreg.php?From=osdnemail3
-_______________________________________________
+http://www.sleepycat.com/telcomwpreg.php?From______________________________=
+_________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
