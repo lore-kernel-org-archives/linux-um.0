@@ -1,26 +1,45 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DGlHN-0002K4-24 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 14:03:13 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DGlH3-0002nK-31
+	id 1DGwXH-00032L-I7 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 31 Mar 2005 02:04:23 -0800
+Received: from lon-del-01.spheriq.net ([195.46.50.97])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1DGwWy-0004nA-NS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 14:03:12 -0800
-From: Rob Landley <rob@landley.net>
-References: <20050330173400.36A5FEFEFF@zion>
-In-Reply-To: <20050330173400.36A5FEFEFF@zion>
+	Thu, 31 Mar 2005 02:04:23 -0800
+Received: from lon-out-02.spheriq.net ([195.46.50.130])
+	by lon-del-01.spheriq.net with ESMTP id j2VA3qRc015711
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 31 Mar 2005 10:03:53 GMT
+Received: from lon-cus-02.spheriq.net (lon-cus-02.spheriq.net [195.46.50.38])
+	by lon-out-02.spheriq.net with ESMTP id j2VA3pBX009544
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 31 Mar 2005 10:03:51 GMT
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by lon-cus-02.spheriq.net with ESMTP id j2VA3kXQ014296
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 31 Mar 2005 10:03:50 GMT
+Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D0678DA41
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 31 Mar 2005 10:03:45 +0000 (GMT)
+Received: from zeta.dmz-ap.st.com (localhost [127.0.0.1])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7E209520C1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 31 Mar 2005 10:03:45 +0000 (UTC)
+Received: from mail1.sha.st.com (mail1.sha.st.com [10.94.100.2])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 5F20413280
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 31 Mar 2005 10:03:43 +0000 (GMT)
+From: Alex LIU <alex.liu@st.com>
+Message-ID: <003501c535d8$e8574a50$90b3c68a@st.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200503301559.34350.rob@landley.net>
-Subject: [uml-devel] Re: [patch 6/8] uml: fix hostfs special perm handling
-	[for 2.6.12]
+	charset="utf-8"
+Subject: [uml-devel] question about UML sigcontext in tt mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,68 +51,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 30 Mar 2005 15:59:34 -0500
-To: blaisorblade@yahoo.it
-Cc: torvalds@osdl.org, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 31 Mar 2005 18:03:34 +0800
+Content-Transfer-Encoding: 8bit
+To: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wednesday 30 March 2005 12:34 pm, blaisorblade@yahoo.it wrote:
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> CC: Rob Landley <rob@landley.net>
-> When opening devices nodes on hostfs, it does not make sense to call
-> access(), since we are not going to open the file on the host.
->
-> If the device node is owned by root, the root user in UML should succeed in
-> opening it, even if UML won't be able to open the file.
->
-> As reported by Rob Landley, UML currently does not follow this, so here's
-> an (untested) fix.
->
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Hi,all:
 
-Not untested, it Worked For Me (tm).
+I have a question about the sigcontext in tt mode.The union uml_pt_regs is defined as below(in uml-2.6.7):
 
-Signed-off-by: Rob Landley <rob@landley.net>
+--------------------------------
+union uml_pt_regs {
+#ifdef UML_CONFIG_MODE_TT
+	struct tt_regs {
+		long syscall;
+		void *sc;
+	} tt;
+#endif
+#ifdef UML_CONFIG_MODE_SKAS
+	struct skas_regs {
+		unsigned long regs[HOST_FRAME_SIZE];
+		unsigned long fp[HOST_FP_SIZE];
+		unsigned long xfp[HOST_XFP_SIZE];
+		unsigned long fault_addr;
+		unsigned long fault_type;
+		unsigned long trap_type;
+		long syscall;
+		int is_user;
+	} skas;
+#endif
+};
+-------------------------------------
 
-> ---
->
->  linux-2.6.11-paolo/fs/hostfs/hostfs_kern.c |   20 +++++++++++++-------
->  1 files changed, 13 insertions(+), 7 deletions(-)
->
-> diff -puN fs/hostfs/hostfs_kern.c~uml-fix-hostfs-special-perm-handling
-> fs/hostfs/hostfs_kern.c ---
-> linux-2.6.11/fs/hostfs/hostfs_kern.c~uml-fix-hostfs-special-perm-handling	2
->005-03-22 20:10:07.000000000 +0100 +++
-> linux-2.6.11-paolo/fs/hostfs/hostfs_kern.c	2005-03-22 20:12:45.000000000
-> +0100 @@ -806,15 +806,21 @@ int hostfs_permission(struct inode *ino,
->  	char *name;
->  	int r = 0, w = 0, x = 0, err;
->
-> -	if(desired & MAY_READ) r = 1;
-> -	if(desired & MAY_WRITE) w = 1;
-> -	if(desired & MAY_EXEC) x = 1;
-> +	if (desired & MAY_READ) r = 1;
-> +	if (desired & MAY_WRITE) w = 1;
-> +	if (desired & MAY_EXEC) x = 1;
->  	name = inode_name(ino, 0);
-> -	if(name == NULL) return(-ENOMEM);
-> -	err = access_file(name, r, w, x);
-> +	if (name == NULL) return(-ENOMEM);
-> +
-> +	if (S_ISCHR(ino->i_mode) || S_ISBLK(ino->i_mode) ||
-> +			S_ISFIFO(ino->i_mode) || S_ISSOCK(ino->i_mode))
-> +		err = 0;
-> +	else
-> +		err = access_file(name, r, w, x);
->  	kfree(name);
-> -	if(!err) err = generic_permission(ino, desired, NULL);
-> -	return(err);
-> +	if(!err)
-> +		err = generic_permission(ino, desired, NULL);
-> +	return err;
->  }
->
->  int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
-> _
+Then why the tt.sc is defined as void while not as struct sigcontext? Thanks!
+
+Alex 
+
+
+
 
 
 -------------------------------------------------------
