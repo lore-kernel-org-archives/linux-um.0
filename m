@@ -1,12 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200312060005.hB605IAv008253@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash 
-In-Reply-To: Your message of "Sun, 30 Nov 2003 12:36:33 +0100."
-             <040801c3b736$35ec4720$2000000a@schlepptopp> 
-References: <Pine.LNX.4.44.0311282234040.10367-100000@filer.marasystems.com> <035a01c3b6e9$cfee1df0$2000000a@schlepptopp> <20031130082348.GX16786@haman.kerbit.net>  <040801c3b736$35ec4720$2000000a@schlepptopp> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <2b-h64$26$pg9-6nls-4$h2qqv74v@j3jx.o79>
+From: "Gerald Downing" <02tdodlrw@yahoo.com>
+Reply-To: "Gerald Downing" <02tdodlrw@yahoo.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="6BBD6_8CBCF._E_"
+Subject: [uml-devel] Remote-Control Boats & Cars - Great Xmas Gifts.....erma
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,43 +16,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 05 Dec 2003 19:05:18 -0500
-To: roland <for_spam@gmx.de>
-Cc: Lynn Kerby <lfk@kerbit.net>, Henrik Nordstrom <hno@marasystems.com>, mcmechanjw@juno.com, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Date: Sat, 06 Dec 2003 04:22:57 -0300
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: rates4linux-devel@lists.sourceforge.net
 
-for_spam@gmx.de said:
-> i really wonder a little bit, that such "one liners" don`t find their
-> way more  quickly into uml.
 
-The one-liners are getting in.  I disposed of ~40 of them a few weeks ago.
 
-> i`m NOT angry here and I don`t want to point my fingers to anybody -
-> all are doing great work here - especially jeff(btw: where is he?)
+--6BBD6_8CBCF._E_
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-Tokyo (or at least I was, now I'm in NH recovering from let lag).
+<p>New Mini Remote Control Cars &amp; Boats.</p>
+<IMG SRC=3D"http://www.onii.org/images/home/stunt_flip.gif" ALT=3D""><a hr=
+ef=3D"http://www.remote-cars1.com/?axel=3D49">Follow Us For Fun...</a><br>=
 
-> but IMHO patchtracking and bugfixing is one of the most important
-> things in OSS  development). unfortunately bug/patchtracker usage on
-> SF seems declining. is this done  more and more "manually" now or is
-> bug/patchtracker moved to somewhere else? 
+<p>Turbo Twister Mini RC stunt cars are the newest RC stunt cars in 
+the world! These 2 1/2 inch stunt cars rotate, flip, and tumble everywhere=
+!</p>
+<IMG SRC=3D"http://www.onii.org/images/home/car_purple.jpg" ALT=3D""><a hr=
+ef=3D"http://www.remote-cars1.com/?axel=3D49">Follow Us For Fun...</a><br>=
 
-The bug tracker is the UML mailing lists.  I stick bug reports and patches in 
-a todo folder and delete them from there when I fix (or merge) them.  I pay
-almost no attention to the SF patch and bug report thingies.  So if you want
-your bug to get attention, send it to one of the lists.
+<p>Honda S2000 (yellow) - fully functional wireless remote control (Radio-=
+frequency)</p>
+<IMG SRC=3D"http://www.onii.org/images/home/boat_yellow.jpg" ALT=3D""><a h=
+ref=3D"http://www.remote-cars1.com/?axel=3D49">Follow Us For Fun...</a><br=
+>
+<p>Mini RC Ocean Runner Boat (yellow) - Fully functional remote control bo=
+at with 6 way remote control.</p>
+<br>
+<br>
+<br>
+<br>
+<a href=3D"http://www.5jzd.org/out5s/pre-rem2e.asp">No more advertisements=
+</a></p>
+<br>
+<br>
+<br>
+<br>bsq otnkojwc b
 
-> i hope this doesn`t sound presumptuous - but is there need for a
-> "patch/bug monkey", e.g. someone for filtering patch submissions and
-> bug reports from the ML and put that into SF  "trackers" - just
-> somebody supporting main developers with some "QA" work? maybe i`m
-> just too impatient - but i`m wishfully awaiting 2.6_uml_stable. 
-
-It would be useful for someone to start a new UML tree, collect patches, merge 
-them in, get testing, and forward them on to me.  But so far, pretty much no
-one is in the code but me, so you're limited by the time that I can put into
-it.
-
-				Jeff
+--6BBD6_8CBCF._E_--
 
 
 
