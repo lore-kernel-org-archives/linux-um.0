@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AlgNU-0003h0-CI for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 19:28:32 -0800
-Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30) id 1AlgNT-0003Qq-Pa
+	id 1Alh6r-0006TD-W5 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jan 2004 20:15:25 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Alh6r-0002DU-4d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 19:28:31 -0800
-From: Dan Shearer <dan@shearer.org>
-Subject: Re: [uml-devel] Re: [PATCH] mconsole fixes
-Message-ID: <20040128033044.GQ4203@erizo.shearer.org>
-References: <20040126024617.GB4203@erizo.shearer.org>
-	<200401280146.i0S1kaZw004957@ccure.user-mode-linux.org>
-	<20040128021652.GP4203@erizo.shearer.org>
+	Tue, 27 Jan 2004 20:15:25 -0800
+Message-Id: <200401280439.i0S4dJZw005512@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Mapping con=pts to a port instead of con=port 
+In-Reply-To: Your message of "Sat, 24 Jan 2004 15:34:40 +1030."
+	<20040124050440.GF4203@erizo.shearer.org> 
+References: <20040124050440.GF4203@erizo.shearer.org> 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20040128021652.GP4203@erizo.shearer.org>
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,32 +28,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Jan 2004 14:00:44 +1030
-To: jdike@addtoit.com
+Date: Tue, 27 Jan 2004 23:39:19 -0500
+To: Dan Shearer <dan@shearer.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Jan 28, 2004 at 12:46:52PM +1030, Dan Shearer wrote:
-> On Tue, Jan 27, 2004 at 08:46:36PM -0500, Jeff Dike wrote:
- 
-> > I applied most of the rest of that.  I got rid of the exits from main, since
-> > I like returns better and I tidied up some other stuff.
-> 
-> Minor portability potential. See
-> http://www.eskimo.com/~scs/C-faq/q11.16.html. (I looked it up once long
-> ago and supposedly _exit is more likely to work on more systems than
-> exit.)
+dan@shearer.org said:
+> The same effect can be achieved with termnetd, with the advantage of
+> your in.telnetd solution that you aren't building in complexity that
+> doesn't belong to UML, but without the clomp-clomp finesse telnetd
+> achieves :-) 
 
-Actually on second thoughts that is not relevant (applies to functions
-other than main.)
+Yeah, but it has uncleanlinesses of its own (like the need to generate a config
+file on the fly), but it's cleaner than what I have now.
 
-However there is only one way that the standard guarantees we can
-indicate a status to the OS and that is exit(EXIT_FAILURE) or
-EXIT_SUCCESS. return(whatever) works on the sane OSs that we're used to,
-but the standard is there for a reason. So that should be used instead.
+My major problem with it is that attaching consoles to ports will stop working
+for some number of users if I switch to termnetd, and I'm willing to put up
+with some amount of nastiness inside UML if it increases the size of the 
+userbase that UML works for out of the box.
 
--- 
-Dan Shearer
-dan@shearer.org
+That concern would be somewhat assuaged if UML were generally installed with
+packages that could be made to depend on termpkg, but I think that's not the
+case.
+
+				Jeff
+
 
 
 -------------------------------------------------------
