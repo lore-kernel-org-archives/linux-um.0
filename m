@@ -1,22 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BuHFA-0000oY-Uy for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Aug 2004 13:59:44 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1BuHFA-00054h-Gv
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Aug 2004 13:59:44 -0700
-Message-Id: <200408092158.i79LwaQW026235@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] corrections to 2.4 series incrementals: fix-smp 
-In-Reply-To: Your message of "Fri, 06 Aug 2004 14:51:04 EDT."
-	<4113D318.2030407@enterasys.com> 
-References: <4113D318.2030407@enterasys.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Subject: RE: [uml-devel] PATCH -- Was: link error MODE_SKAS and ! MODE_TT in
+	2.4.26-2 + uml.sf.net patches 
+Message-ID: <C28780ABC637504896EB86B4FB75FFBFA26E71@MAANDMBX1.ets.enterasys.com>
+From: "Bahi, David" <dbahi@enterasys.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,19 +18,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 09 Aug 2004 17:58:36 -0400
-To: "D. Bahi" <dbahi@enterasys.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 9 Aug 2004 18:13:01 -0400
+Content-Transfer-Encoding: 8bit
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-dbahi@enterasys.com said:
-> The line in the available patch incorrectly adds this line:
->   define_bool CONFIG_SMP $CONFIG_UML_SMP
-> And thus it fails to apply. 
+right. clean tree builts w/o MODE_TT just fine.
 
-That was a quilt botch.  It's fixed now.
+had previously built with _BOTH_ modes; and then:
 
-				Jeff
+    make ARCH=um xconfig   # turn MODE_TT off
+    make ARCH=um dep
+#   make ARCH=um clean     # failed to do this. doh!
+    make ARCH=um linux
 
+given the chance, the macro does the job it should.
+
+i don't suppose there is some depencency checking 
+that could be improved to fix this - requiring a 
+clean seems obsessive-compulsive <grin>.
+
+pardon the noise.
+
+> -----Original Message-----
+> From: Jeff Dike [mailto:jdike@addtoit.com] 
+> Sent: Monday, August 09, 2004 5:29 PM
+> To: Bahi, David
+> Cc: user-mode-linux-devel@lists.sourceforge.net; 
+> user-mode-linux-user@lists.sourceforge.net
+> Subject: Re: [uml-devel] PATCH -- Was: link error MODE_SKAS 
+> and ! MODE_TT in 2.4.26-2 + uml.sf.net patches 
+> 
+> dbahi@enterasys.com said:
+> > this patch fixes the unresolved link time error with a conditional
+> > around the definition of CAN_KMALLOC 
+> 
+> I don't see that here.  If you look at the definition of 
+> CHOOSE_MODE, you'll
+> see that it's conditional on CONFIG_MODE_TT and 
+> CONFIG_MODE_SKAS in such a
+> way that if a mode is configured out, any code associated 
+> with it disappears.
+> 
+> I think you didn't do that build from a clean pool.
+> 
+> 				Jeff
+> 
+> 
 
 
 -------------------------------------------------------
