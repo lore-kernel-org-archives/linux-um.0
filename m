@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Adh7b-0007fO-Eg for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:39:07 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Adh7a-0000sZ-M9
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:39:06 -0800
-Message-Id: <200401060258.i062whFI023102@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] UML on PPC 
-In-Reply-To: Your message of "Mon, 29 Dec 2003 16:17:41 PST."
-	<20031230001741.92529.qmail@web12208.mail.yahoo.com> 
-References: <20031230001741.92529.qmail@web12208.mail.yahoo.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1AdioW-0004iY-8U for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 20:27:32 -0800
+Received: from dsl093-055-110.blt1.dsl.speakeasy.net
+	([66.93.55.110] helo=mail.d20boards.net ident=1014)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AdioV-0000Z9-Qf for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 20:27:31 -0800
+Message-ID: <1178.66.93.55.203.1073363628.squirrel@mail.d20boards.net>
+In-Reply-To: <200401060258.i062wYFI023092@ccure.user-mode-linux.org>
+References: <20031230183331.GB2845@carpediem.epita.fr> 
+	<200401060258.i062wYFI023092@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] UML + skas
+From: "attriel" <attriel@d20boards.net>
+Reply-To: attriel@d20boards.net
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,20 +29,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 05 Jan 2004 21:58:43 -0500
-To: Richard Rudolph <richrsvcn@yahoo.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 5 Jan 2004 23:33:48 -0500 (EST)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-richrsvcn@yahoo.com said:
-> I was wondering if there is any current activity on the UML port to
-> PPC.  I've been searching the Internet and the only thing I can find
-> are patches and kernel downloads that are over two years old (2001).
-> Is the port to PPC currently being maintained?
+> Maybe, but skas4 doesn't have this problem, and /usr/include/asm should
 
-No.  If you want to pick it up, I'm pretty sure no one will object...
+Is SKAS4 nearing completion, btw?  I know you said a while ago that you
+were working out a last little bug or something, just curious how it's
+going :)
 
-				Jeff
-
+--attriel
 
 
 -------------------------------------------------------
