@@ -1,27 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AMv4A-0002Xb-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 12:06:14 -0800
-Received: from blacksheep.csh.rit.edu ([129.21.60.6])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AMv4A-0006OT-1B
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 12:06:14 -0800
-Received: from dijkstra (dijkstra.csh.rit.edu [129.21.60.152])
-	by blacksheep.csh.rit.edu (Postfix) with ESMTP id 0EEF43EC
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 15:06:12 -0500 (EST)
-Received: from mdz by dijkstra with local (Exim 3.35 #1 (Debian))
-	id 1AMv47-00036S-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 15:06:11 -0500
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] Host panic triggered by UML
-Message-ID: <20031120200611.GK9377@dijkstra.csh.rit.edu>
-References: <200311201915.29188.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200311201915.29188.blaisorblade_spam@yahoo.it>
+	id 1AMw69-000178-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 13:12:21 -0800
+Received: from pisces.lunarpages.com ([64.235.234.123])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1AMw69-00042W-3e
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 13:12:21 -0800
+Received: from adsl-66-125-109-149.dsl.scrm01.pacbell.net ([66.125.109.149] helo=nexxus)
+	by pisces.lunarpages.com with asmtp (Exim 4.24)
+	id 1AMw67-0004fM-OP
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 13:12:19 -0800
+Message-ID: <000201c3afaa$fed85f40$6801a8c0@nexxus>
+From: "sean whalen" <swhalen@denature.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] further scheduling weirdness
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -32,59 +30,46 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Nov 2003 15:06:11 -0500
+Date: Thu, 20 Nov 2003 13:12:15 -0800
 To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Nov 20, 2003 at 07:15:29PM +0100, BlaisorBlade wrote:
+Hi All --
+Continuing yesterday's thread where 2.6.0-test9-um was bombing on a
+schedule_timeout() or interruptible_sleep_on_wait() call due to a null
+pointer dereference in sched.c, I decided to try 2.4.22-um and see what
+calling schedule_timeout() would do.  Again it crashes at sched.c:564, which
+is a different place and has a different back trace.  This time the back
+trace is:
 
-> Nov 19 04:40:24 blaisorblade kernel: Unable to handle kernel NULL pointer 
-> dereference at virtual address 00000000
-> Nov 19 04:40:24 blaisorblade kernel:  printing eip:
-> Nov 19 04:40:24 blaisorblade kernel: c015421b
-> Nov 19 04:40:24 blaisorblade kernel: *pde = 00000000
-> Nov 19 04:40:24 blaisorblade kernel: Oops: 0002
-> Nov 19 04:40:24 blaisorblade kernel: CPU:    0
-> Nov 19 04:40:24 blaisorblade kernel: EIP:    0010:[dcache_dir_lseek+299/384]    
-> Tainted: PF
-> Nov 19 04:40:24 blaisorblade kernel: EIP:    0010:[<c015421b>]    Tainted: PF
-> Nov 19 04:40:24 blaisorblade kernel: EFLAGS: 00010286
-> Nov 19 04:40:24 blaisorblade kernel: eax: 00000000   ebx: c0d24160   ecx: 
-> d6b15f08   edx: c0d24160
-> Nov 19 04:40:24 blaisorblade kernel: esi: 00000002   edi: 00000000   ebp: 
-> c0d24140   esp: d67cbf84
-> Nov 19 04:40:24 blaisorblade kernel: ds: 0018   es: 0018   ss: 0018
-> Nov 19 04:40:24 blaisorblade kernel: Process linux (pid: 18847, 
-> stackpage=d67cb000)
-> Nov 19 04:40:24 blaisorblade kernel: Stack: fffffff2 c0d24140 00000000 
-> 00000000 c01540f0 d2473f20 c01433f8 d2473f20 
-> Nov 19 04:40:24 blaisorblade kernel:        00000002 00000000 00000000 
-> d67ca000 4014b008 00000002 a2533abc c01075b7 
-> Nov 19 04:40:24 blaisorblade kernel:        0000002f 00000002 00000000 
-> 4014b008 00000002 a2533abc 00000013 0000002b 
-> Nov 19 04:40:24 blaisorblade kernel: Call Trace:    [dcache_dir_lseek+0/384] 
-> [sys_lseek+120/192] [system_call+51/56]
-> Nov 19 04:40:24 blaisorblade kernel: Call Trace:    [<c01540f0>] [<c01433f8>] 
-> [<c01075b7>]
-> Nov 19 04:40:24 blaisorblade kernel: 
-> Nov 19 04:40:24 blaisorblade kernel: Code: 89 10 89 42 04 b8 00 e0 ff ff 21 e0 
-> ff 48 04 8b 50 14 39 50 
+(gdb)
+451             schedule();
+(gdb)
+Kernel panic: kernel BUG at sched.c:564!
+In interrupt handler - not syncing
+ start_idle_thread (stack=0xa023e000, switch_buf_ptr=0xa023c578,
+       fork_buf_ptr=0x2) at process.c:281
+ 281             if(n == 0)
+(gdb) bt
+#0  start_idle_thread (stack=0xa023e000, switch_buf_ptr=0xa023c578,
+     fork_buf_ptr=0x2) at process.c:281
+#1  0xa00fd15b in start_uml_skas () at process_kern.c:167
+#2  0xa00f7421 in linux_main (argc=0, argv=0xa0800000) at um_arch.c:382
+#3  0xa000d3a6 in main (argc=8, argv=0xbffff824, envp=0xbffff848)
+at arch/um/main.c:143
 
-I've seen this same crash many times; I sent it to lkml but got no response.
+This is simply due to a schedule_timeout call in a module.  Does anyone have
+any ideas on this?  It seems to critical a function to actually be broken.
 
-> (I've had another oops in the same call path and point, so I guess this
-> was the reason even the other time).
-> 
-> This means that it crashes in fs/readdir.c:dcache_dir_lseek; after some
-> checks So, probably the oops happened while working on that folder: what
-> needs to be checked is if the tmpfs code creates an inconsistent
-> list(exactly, an inconsistent struct dentry.d_subdirs one, since p walks
-> into it). Do you think this is reasonable or not?
+Thanks,
+    -Sean
 
-It only happened for me using UML hostfs on a tmpfs filesystem, so I believe
-it is a tmpfs bug, yes.
+-
+sean whalen . ucdavis security lab
+swhalen at denature.org || node99.org
 
--- 
- - mdz
+'if god had wanted us to evolve past the non sequitur,
+he wouldn't have left all these fish in the tub.'
+
 
 
 -------------------------------------------------------
