@@ -1,24 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AzyFf-0005yG-5E for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Mar 2004 05:23:31 -0800
-Received: from mout0.freenet.de ([194.97.50.131] ident=exim)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1Azy0N-0007sX-HW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Mar 2004 05:07:43 -0800
-Content-Type: text/plain; charset="iso-8859-1"
-From: Patrick Kilian <petschge@gmx.de>
-Reply-To: petschge@web.de
-References: <200402290158.54770.jdizzl@xs4all.nl>
-	<200403071256.18134.petschge@gmx.de>
-	<200403071312.43183.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200403071312.43183.blaisorblade_spam@yahoo.it>
+Message-ID: <004f01c40486$3adfa2c0$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <200402221604.19495.blaisorblade_spam@yahoo.it>
+	<20040223083801.GA28222@elte.hu>
+	<200402231851.i1NIp2mX024424@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] New Skas patch for 2.6 and SMP
 MIME-Version: 1.0
-Message-Id: <200403071406.27985.petschge@gmx.de>
-Subject: [uml-devel] Re: UNIX socket networking
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,42 +20,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 Mar 2004 14:06:27 +0100
-Content-Transfer-Encoding: quoted-printable
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 7 Mar 2004 14:53:20 -0600
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-user@lists.sourceforge.net
 
-Hi all,
+> I've uploaded a new SKAS patch on the site. Follow instructions on the 
+> homepage (http://www.user-mode-linux.org/~blaisorblade). It is against 2.6.3 
+> but applies cleanly on 2.6.0 and probably the kernels in between. It contains 
+> a change for CONFIG_SMP only, which I hope will solve the problems you get.
+> 
+> The change has been reviewed on uml-devel, however be careful with it - I do 
+> not have any SMP box to test it.
+> 
+> For UP kernels that patch carries no changes.
+> 
+> Hope It Works! Bye
 
-Am Sonntag, 7. M=E4rz 2004 13:12 schrieb BlaisorBlade:
->> I didn't know what the exact difference between bind()
-> Note also bind() is likely to be bound to the glibc version, and thus
-> operate on the host.
-I thought so, but I wasn't sure.
+This has been working great for me for the past couple of days -- no problems!
 
-
-
->>>> Most of the above code should probably be edited with rm
->>> What is that? Indentation cleanup?
->> rm as in "man 1 rm".
-> Ah, ok :-) I don't agree anyway.
-Thanks.
-
-
->> I'll give you sugestions a try and be back in some days with Yet
->> Another Version of my code.
-> I've seen it; does it work on your part? I've got a lot less time now
-> for UML, so you must be kind with me.
-No problem. I'll try sys_* stuff fopr the next few days.
-
-mfg,
-Patrick "Petschge" Kilian
-
-
---=20
-Ich vergleiche normalerweise auch nicht im Nahverkehr eingesetzte=20
-Transrapids mit im Fernverkehr eingesetzten Planierraupen, auch wenn
-beide Sitze haben (wobei ich, nach kurzen Nachdenken, die Rolle der
-Planierraupe an Emacs vergeben w=FCrde). --Uwe Ohse in d.a.s.r
+Thanks,
+-Chris
 
 
 
@@ -73,7 +47,7 @@ Planierraupe an Emacs vergeben w=FCrde). --Uwe Ohse in d.a.s.r
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
