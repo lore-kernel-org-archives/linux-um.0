@@ -2,25 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BrMX6-0006op-Sw for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Aug 2004 13:02:12 -0700
-Message-ID: <410D4E2A.8020704@hevanet.com>
-From: Matt Clay <mattclay@hevanet.com>
+	id 1BrR3j-0004Im-Is for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Aug 2004 17:52:11 -0700
+Received: from dns02.mail.yahoo.co.jp ([211.14.15.205])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1BrR3j-0003L7-39 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Aug 2004 17:52:11 -0700
+Message-ID: <410D9031.3080900@yahoo.co.jp>
+From: kaz <shigekazun@yahoo.co.jp>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: Bug#260111: user-mode-linux: upgrade hangs at
-	"NET4: Linux TCP/IP 1.0 for NET4.0 "
-References: <200407280315.08207.alydar@users.sourceforge.net>
-	<200407281722.i6SHM6eh002963@ccure.user-mode-linux.org>
-	<200407291430.18818.alydar@users.sourceforge.net>
-	<200407292234.04279.alydar@users.sourceforge.net>
-	<200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
-	<410A833F.9030207@hevanet.com>
-	<200407301849.i6UInpUE003226@ccure.user-mode-linux.org>
-	<410C6367.3090206@hevanet.com>
-	<20040801155231.GA19648@ccure.user-mode-linux.org>
-In-Reply-To: <20040801155231.GA19648@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] patches test results
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,22 +25,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 01 Aug 2004 13:10:18 -0700
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Allen Chan <alydar@users.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net, 260111@bugs.debian.org
+Date: Mon, 02 Aug 2004 09:52:01 +0900
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> 
->>This patch seems to fix the problem by adding error handling to
->>the tcsetattr call in generic_console_write.
-> 
-> What are the errnos from the failures?
+Hi,
 
-When it does fail (it is not consistent), errno retains whatever value 
-it had before tcsetattr was called.  After tcsetattr fails, calling 
-tcgetattr shows c_oflag is unchanged.
+Here's my patches test results.
+Applied + marked patches in order. Works fine. Thanks,
 
-  - Matt
+------------------------------------
+kernel-source-2.6.7
+http://packages.debian.org/kernel-source-2.6.7
+------------------------------------
++ uml-patch-2.6.7-1
+http://user-mode-linux.org/mirror/uml-patch-2.6.7-1.bz2
+------------------------------------
+http://user-mode-linux.sourceforge.net/patches.html
+- remap			included in uml-patch-2.6.7-1
++ no-target
++ makefile-fixes
++ remove_old_bh
++ reboot-signals
+- wrap-malloc		UML won't boot
+- remove-user-code	UML won't boot
++ unused-header
++ time
++ copy_user
++ aio
++ filehandle
++ filehandle_switch
++ random
++ physmem_mmap
++ uaccess
++ externfs
+------------------------------------
+http://user-mode-linux.org/~blaisorblade/patches/bb/uml-patch-2.6.7-01-bb2.tar.bz
+- Main-uml-patch-no-skas.patch	included in uml-patch-2.6.7-1 ?
+- Ghash.patch			not cleanly applied
++ disable-UnitAtATime.patch
+- HostFs-2.6-fd_leak.patch	not cleanly applied
++ LegacyTerminalSupport.patch
+- MakeHelp.patch		not cleanly applied
++ H-02-Fixdep-improve.patch
+- fix-warnings.patch		not cleanly applied
++ NR_tkill_undefined.patch
++ Move_away_from_user.patch
+- Add_os_make_pty_raw.patch	not cleanly applied
++ Hostaudio_clean.patch
++ um-sysemu.patch
++ sysemu_cmdParam.patch
++ proc_sysemu.patch
+- EINTR_safety.patch		not cleanly applied
+- Export_strncpy.patch		not cleanly applied
+------------------------------------
+http://www.theshore.net/~caker/uml/patches/
++ token-limiter-v1.patch
++ proc-io_status.diff
+------------------------------------
+
+Host
+------------------------------------
+kernel-source-2.6.7
+http://packages.debian.org/kernel-source-2.6.7
+------------------------------------
+host-sysemu-2.6.7-1.patch
+http://sysemu.sourceforge.net/
+------------------------------------
+skas-leak-fix-2.6.patch
+http://sf.net/mailarchive/forum.php?thread_id=5186596&forum_id=3648
+------------------------------------
+
 
 
 -------------------------------------------------------
