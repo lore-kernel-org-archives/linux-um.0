@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BbTYY-0007hf-Bj for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jun 2004 17:18:02 -0700
-Received: from ns.theshore.net ([216.156.129.65] helo=www.theshore.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BbTYX-0006Es-VU for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jun 2004 17:18:02 -0700
-Received: from hawk (pcp08670149pcs.500ash01.tn.comcast.net [69.137.84.52])
-	by www.theshore.net (8.12.9/8.9.1) with SMTP id i5J0I02n014663
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 18 Jun 2004 20:18:00 -0400
-Message-ID: <000f01c45593$35c20e00$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
+	id 1BbbJm-00080B-8j for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 01:35:18 -0700
+Received: from thor.65535.net ([216.17.104.19])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BbbJm-0004hF-1m
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 01:35:18 -0700
+Received: from [212.228.151.253] (helo=jackhammer)
+	by thor.65535.net with esmtp (Exim 4.20) id 1BbbFR-0000I1-J7
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 01:30:50 -0700
+From: Rus Foster <rghf@fsck.me.uk>
+Message-ID: <Pine.LNX.4.58.0406190934090.5995@jackhammer.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Kernel panic: handle_trap - failed to wait at end of
-	syscall, errno = 4, status = 1151
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] 2.6.x x86_64 skas3 patch?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,30 +29,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 18 Jun 2004 19:19:57 -0500
+Date: Sat, 19 Jun 2004 09:35:43 +0100 (BST)
 To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Hey all,
+Hi All,
+ Now I know jdike has got 64 bit UML running but I will be dammened if I 
+can find the skas3 patch for 2.6.x hosts on x86_64. Does it even exist of 
+was jdike using 2.4.x?
 
-I just had a user experience this panic:
-
-Kernel panic: handle_trap - failed to wait at end of syscall, errno = 4, status =
-1151
-
-UML: 2.6.5 vanilla + uml-patch-2.6.4-1
-HOST: 2.6.4 + SKAS patch
-
-From arch/um/kernel/skas/process.c:
-
-        err = waitpid(pid, &status, WUNTRACED);
-        if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
-                panic("handle_trap - failed to wait at end of syscall, "
-                      "errno = %d, status = %d\n", errno, status);
-
-Any thoughts?  I've never seen this before...
-
--Chris
-
+Rus
 
 
 -------------------------------------------------------
