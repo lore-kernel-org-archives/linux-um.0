@@ -1,20 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D7wh0-0000Yg-Nr for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Mar 2005 06:25:14 -0800
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D7wgx-0008Gz-U5 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Mar 2005 06:25:14 -0800
-From: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20050306142503.GB5070@stusta.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1D82tN-0002ho-3V for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Mar 2005 13:02:25 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1D82tL-0004tp-3B
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Mar 2005 13:02:25 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Triage on the pending patches
+References: <200503030822.j238MoBY016825@ccure.user-mode-linux.org>
+	<200503032111.43966.rob@landley.net>
+	<200503051657.59188.blaisorblade@yahoo.it>
+In-Reply-To: <200503051657.59188.blaisorblade@yahoo.it>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [-mm patch] one DEBUG_INFO is enough for everyone
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200503061459.19128.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,144 +33,80 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 6 Mar 2005 15:25:03 +0100
-To: Andrew Morton <akpm@osdl.org>, jdike@karaya.com, Jim Houston <jim.houston@comcast.net>, Andy Whitcroft <apw@shadowen.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Prasanna S Panchamukhi <prasanna@in.ibm.com>
+Date: Sun, 6 Mar 2005 14:59:19 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-Why does everyone think one DEBUG_INFO wasn't enough?
+On Saturday 05 March 2005 10:57 am, Blaisorblade wrote:
+> > Basically, my nefarious scheme is to add the squashfs patch to UML,
+> > append a squashfs image to the end of the  UML executable, and have a
+> > cpio ramfs init script search through /proc/self/exe for the 32 bytes
+> > that were at the start of the squashfs (which includes a 4 byte magic
+> > signature thingy) to determine offset to pass to "losetup -o $OFFSET
+> > /dev/loop0 /proc/self/exe", and then mount /dev/loop0 / and run the
+> > executable I want out of that filesystem.
+>
+> First, compliments.... we need such stuff going.
+>
+> Please note that unless I'm mistaken the above scheme does not work
+> since /proc/self/exe contains what you want on the host, not on the guest.
+> If you use hostfs then it's ok, otherwise you'll have to pack the squashfs
+> within the cpio image (if it's possible, the cpio image could not be ready
+> to cope with so much data).
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+That would suck mightily, since it would decompress it into ram and then eat 
+swap space instead of using the file as backing store.
 
----
+No, I'm a big fan of hostfs.  Part of this will probably involve changing the 
+default command line of UML to something like:
 
- arch/arm/Kconfig.debug   |    9 ---------
- arch/arm26/Kconfig.debug |   10 ----------
- arch/i386/Kconfig.kgdb   |    5 -----
- arch/x86_64/Kconfig.kgdb |    5 -----
- lib/Kconfig.debug        |   15 ++-------------
- 5 files changed, 2 insertions(+), 42 deletions(-)
+rootfstype=hostfs rootflags=/ rw quiet mem=48M
 
---- linux-2.6.11-mm1-full/lib/Kconfig.debug.old	2005-03-06 15:08:23.000000000 +0100
-+++ linux-2.6.11-mm1-full/lib/Kconfig.debug	2005-03-06 15:10:33.000000000 +0100
-@@ -136,26 +136,15 @@
- config DEBUG_INFO
- 	bool "Compile the kernel with debug info"
- 	depends on DEBUG_KERNEL
- 	help
-           If you say Y here the resulting kernel image will include
- 	  debugging info resulting in a larger kernel image.
--	  Say Y here only if you plan to use gdb to debug the kernel.
--	  If you don't debug the kernel, you can say N.
-+	  Say Y here only if you plan to debug the kernel.
- 
--config DEBUG_INFO
--	bool "Enable kernel debugging symbols"
--	depends on DEBUG_KERNEL && USERMODE
--	help
--	  When this is enabled, the User-Mode Linux binary will include
--	  debugging symbols.  This enlarges the binary by a few megabytes,
--	  but aids in tracking down kernel problems in UML.  It is required
--	  if you intend to do any kernel development.
--
--	  If you're truly short on disk space or don't expect to report any
--	  bugs back to the UML developers, say N, otherwise say Y.
-+	  If unsure, say N.
- 
- config DEBUG_IOREMAP
- 	bool "Enable ioremap() debugging"
- 	depends on DEBUG_KERNEL && PARISC
- 	help
- 	  Enabling this option will cause the kernel to distinguish between
---- linux-2.6.11-mm1-full/arch/i386/Kconfig.kgdb.old	2005-03-06 15:11:29.000000000 +0100
-+++ linux-2.6.11-mm1-full/arch/i386/Kconfig.kgdb	2005-03-06 15:11:41.000000000 +0100
-@@ -61,17 +61,12 @@
- 	default 4
- 	help
- 	  This is the irq for the debug port.  If everything is working
- 	  correctly and the kernel has interrupts on a control C to the
- 	  port should cause a break into the kernel debug stub.
- 
--config DEBUG_INFO
--	bool
--	depends on KGDB
--	default y
--
- config KGDB_MORE
- 	bool "Add any additional compile options"
- 	depends on KGDB
- 	default n
- 	help
- 	  Saying yes here turns on the ability to enter additional
---- linux-2.6.11-mm1-full/arch/arm/Kconfig.debug.old	2005-03-06 15:12:21.000000000 +0100
-+++ linux-2.6.11-mm1-full/arch/arm/Kconfig.debug	2005-03-06 15:12:36.000000000 +0100
-@@ -44,21 +44,12 @@
- 	  printed when the kernel detects an internal error. This debugging
- 	  information is useful to kernel hackers when tracking down problems,
- 	  but mostly meaningless to other people. It's safe to say Y unless
- 	  you are concerned with the code size or don't want to see these
- 	  messages.
- 
--config DEBUG_INFO
--	bool "Include GDB debugging information in kernel binary"
--	help
--	  Say Y here to include source-level debugging information in the
--	  `vmlinux' binary image. This is handy if you want to use gdb or
--	  addr2line to debug the kernel. It has no impact on the in-memory
--	  footprint of the running kernel but it can increase the amount of
--	  time and disk space needed for compilation of the kernel. If in
--	  doubt say N.
- 
- # These options are only for real kernel hackers who want to get their hands dirty.
- config DEBUG_LL
- 	bool "Kernel low-level debugging functions"
- 	depends on DEBUG_KERNEL
- 	help
---- linux-2.6.11-mm1-full/arch/arm26/Kconfig.debug.old	2005-03-06 15:13:05.000000000 +0100
-+++ linux-2.6.11-mm1-full/arch/arm26/Kconfig.debug	2005-03-06 15:13:15.000000000 +0100
-@@ -35,22 +35,12 @@
- 	  printed when the kernel detects an internal error. This debugging
- 	  information is useful to kernel hackers when tracking down problems,
- 	  but mostly meaningless to other people. It's safe to say Y unless
- 	  you are concerned with the code size or don't want to see these
- 	  messages.
- 
--config DEBUG_INFO
--	bool "Include GDB debugging information in kernel binary"
--	help
--	  Say Y here to include source-level debugging information in the
--	  `vmlinux' binary image. This is handy if you want to use gdb or
--	  addr2line to debug the kernel. It has no impact on the in-memory
--	  footprint of the running kernel but it can increase the amount of
--	  time and disk space needed for compilation of the kernel. If in
--	  doubt say N.
--
- # These options are only for real kernel hackers who want to get their hands dirty.
- config DEBUG_LL
- 	bool "Kernel low-level debugging functions"
- 	depends on DEBUG_KERNEL
- 	help
- 	  Say Y here to include definitions of printascii, printchar, printhex
---- linux-2.6.11-mm1-full/arch/x86_64/Kconfig.kgdb.old	2005-03-06 15:13:55.000000000 +0100
-+++ linux-2.6.11-mm1-full/arch/x86_64/Kconfig.kgdb	2005-03-06 15:14:05.000000000 +0100
-@@ -62,17 +62,12 @@
- 	default 4
- 	help
- 	  This is the irq for the debug port.  If everything is working
- 	  correctly and the kernel has interrupts on a control C to the
- 	  port should cause a break into the kernel debug stub.
- 
--config DEBUG_INFO
--	bool
--	depends on KGDB
--	default y
--
- config KGDB_MORE
- 	bool "Add any additional compile options"
- 	depends on KGDB
- 	default n
- 	help
- 	  Saying yes here turns on the ability to enter additional
+Or some such.  Then /proc/self/exe is quite happy, and I can find my file to 
+loopback mount it.  I can also chdir to (a readlink of) /proc/self/cwd, so 
+that whatever application I'm running is working in the right current 
+directory.
 
+I think I can make it relatively transparent to the hosted application, even.  
+If I want to get silly I can su away from root so things like tar aren't 
+confused that they can't do mknod and chown and such, or else I can mount a 
+loopback ext2 filesystem on /tmp or some such hack to give it space it can 
+play permission games with...
+
+> Also, made sure adding stuff at the end of an 
+> exec. file is accepted without problems? Seems reasonable but not obvious.
+
+If it's ELF, life should be good because the elf sections say where everything 
+is and how long it is.  (Non-elf, you're on your own.)
+
+I pondered making all this an elf section, but don't know how off the top of 
+my head...
+
+> No experience with such stuff, but isn't it a bit risky this way (a
+> signature being there by mistake)? If you still go for grepping the exec.
+> image, I would add a header in the end giving the size of the squashfs
+> image, and parse it. With the -s option to losetup you can cut at the end
+> the area seeing by the loop device.
+
+I could do that.  Squashfs starts with a (4 byte) magic number, and I was 
+worried that was insufficient so I'm grabbing the first 32 bytes to reduce 
+the possibility of collisions.  (The random occurrence of 32 identical bytes 
+is really really unlikely if those bytes are at all well distributed.  Not 
+quite 1 in 2^256 unlikely, but pretty darn up there.  I'm basically waiting 
+for the easy way to break, and implementing something else if it does.)
+
+Sticking the length on the end is another quite valid option.  I don't even 
+have to tell losetup to truncate the loop device because none of the 
+filesystems I care about are put off by trailing garbage...
+
+> Add early_printk which is a printf but shuts down when the quiet option is
+> used.
+
+Cool.  Will do.
+
+Thanks,
+
+Rob
 
 
 -------------------------------------------------------
