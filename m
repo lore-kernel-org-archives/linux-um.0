@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQoTT-0000J4-J5 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 07:24:43 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQoTS-0006dH-R7 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 07:24:43 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] Re: poll: uml bug management - was: Re: [uml-user]
-	2.6.6 Kernel mconsole & mem
-In-Reply-To: <200405200014.i4K0EJDt001988@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.44.0405201616450.7143-100000@filer.marasystems.com>
+	id 1BQpLG-0004jC-1V for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 08:20:18 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BQpLE-00056U-Qc for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 08:20:17 -0700
+Message-ID: <00c801c43e7e$f0262690$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <Pine.LNX.4.44.0405201609240.7143-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] [PATCH] host context switch reduction
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,52 +27,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 May 2004 16:24:10 +0200 (CEST)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: roland <for_spam@gmx.de>, Mark Olliver <mpo@thermeoneurope.com>, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Thu, 20 May 2004 17:27:17 +0200
+To: Henrik Nordstrom <uml@hno.marasystems.com>
+Cc: Laurent Vivier <LaurentVivier@wanadoo.fr>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 19 May 2004, Jeff Dike wrote:
+> What can be said is that applications running on the host is by far not as 
+> dependent on context switching responsiveness to "feel good", and a CPU 
+> hog in one UML does not cause any noticeable amount of extra context 
+> switches, not much different from a CPU hog on the host in terms of 
+> performance.
 
-> for_spam@gmx.de said:
-> > btw: should we file a bug-report at: http://sourceforge.net/tracker/
-> > ?group_id=429&atid=100429 or shouldn`t that bugtracker not being used
-> > anymore - in general ? if not, IMHO that bugtracker should be marked
-> > "obsolete"(like the SF cvs repository)
+mh - maybe i don`t understand you completely right here - but - for me, most hogging
+processes in uml produces a gazillion of context-switches on the host.
+
+if i run getpid on the host, i cannot see (vmstat) a noticeable raise in the amount 
+of context switches.
+
+if i run getpid inside an uml - i see cs on the host raise from ~400 to ~230000 !!
+the same getpid in a sysemu-patched uml/host results in a raise from ~400 to ~173000 cs - 
+so this is noticeably better.
+
+similar things happen with other "hogs" (idle state is always ~400 cs on host, cs rate
+is from vmstat output on the host) :
+
+"while true; do /bin/true; done"
+host:         ~ 2000
+uml:          ~ 24000
+uml-sysemu:   ~ 17000
+
+"while true; do find /; done"
+host:        up to ~ 24000 (alternating very much - didn`t measure average value)
+uml:         up to ~ 60000 ( " )       
+uml-sysemu:  up to ~ 48000 ( " )
+
+"dd if=/dev/urandom of=/dev/null"
+host:        no noticeably differnce
+uml:         ~ 16000
+uml-sysemu   ~ 8500
+
+regards
+roland
+
+
+
+----- Original Message ----- 
+From: "Henrik Nordstrom" <uml@hno.marasystems.com>
+To: "roland" <for_spam@gmx.de>
+Cc: "Laurent Vivier" <LaurentVivier@wanadoo.fr>; "Jeff Dike" <jdike@addtoit.com>; <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Thursday, May 20, 2004 4:12 PM
+Subject: Re: [uml-devel] [PATCH] host context switch reduction
+
+
+> On Thu, 20 May 2004, roland wrote:
 > 
-> You shouldn't.  I don't pay any attention to it.  However, I don't see any
-> way of disabling it.
-
-Hmm.. trying to remember..
-
-If you go to the Tracker admin function there is instructions on how to 
-disable the SF trackers (Support, Bugs etc...)
-
-> This does have the disadvantage that it is very opaque to everyone but me.
-> It has the advantage of having been screened, and of being easy to mark things
-> as requiring my attention at some point.
-
-I am currently looking for a usable bug tracker which works with email and
-web, fulfilling a rather strict set of criterias on useability and 
-ease of management..  will keep you informed if I find one fulfilling my 
-criterias.
-
-> It does have other disadvantages, such as not being able to prioritize or
-> categorize things.
-
-And also not the best feedback to the users on the status of the bug
-reports..
-
-> I would use a bug reporting system if
-> 	it was screened so that the only open problems in it are real problems
-> 	someone else maintained it, and did so consistently
-> 	other people watch the lists, and add bugs that are reported there,
-> as well as updating the bugs with stuff like workarounds and patches
-
-All these included in my list as well.. plus a lot more..
-
-Regards
-Henrik
-
+> > if i run a getpid-loop inside one uml, the other uml`s behaviour becomes
+> > quite sluggish - this doesn`t seem to have a relation to laurents patch - i
+> > just recognized this for the first time, because i never did getpid-loops
+> > inside a uml. :)
+> 
+> I would suspect this is due to the high dependency on context switching by 
+> UML in system calls.. but I do not have a clearcut explanation.
+> 
+> What can be said is that applications running on the host is by far not as 
+> dependent on context switching responsiveness to "feel good", and a CPU 
+> hog in one UML does not cause any noticeable amount of extra context 
+> switches, not much different from a CPU hog on the host in terms of 
+> performance.
+> 
+> Regards
+> Henrik
+> 
 
 
 -------------------------------------------------------
