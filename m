@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BbOWE-0003aJ-6h for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jun 2004 11:55:18 -0700
+	id 1BbOWD-0003aH-0W for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Jun 2004 11:55:17 -0700
 Received: from ns.theshore.net ([216.156.129.65] helo=www.theshore.net)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BbOWD-0007i2-Hp for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jun 2004 11:55:17 -0700
-Message-ID: <001f01c45566$1d8ad740$0201a8c0@hawk>
+	id 1BbOWC-0007hb-Jt for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Jun 2004 11:55:16 -0700
+Message-ID: <002001c45566$1ddbdd70$0201a8c0@hawk>
 From: "Christopher S. Aker" <caker@theshore.net>
-References: <200406182049.59129.blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] SYSEMU for 2.6.7
+References: <200406172056.12847.blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] New SKAS patch for 2.6.7
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -29,15 +29,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
 Date: Fri, 18 Jun 2004 13:57:31 -0500
 To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Laurent Vivier <LaurentVivier@wanadoo.fr>, roland <for_spam@gmx.de>
 
-> I'm attaching the host patch, adapted a bit for 2.6.7. I'm sure it needs this
-> change (it's just a case change to entry.S) but I didn't compile it yet... I
-> checked the other file but there is no relevant change in 2.6.7.
+> I've updated the SKAS patch to the 2.6.7 host kernel. It is on my site:
+> 
+> http://www.user-mode-linux.org/~blaisorblade
+> 
+> Just updated for 2.6.7, little offset changes. I had not the time to run it, 
+> however (again) I think it is safe. I'dl like reports for both success or 
+> failures. I will upload it on the main site only after getting some successes 
+> (and possibly testing it myself).
 
-That's the same change I made yesterday (and a while ago with 2.6.4), along with
-your 2.6.7-skas patch.  I'm now running this on six production boxes with no
-problems.
+Now running on six production boxes, no problems.  
 
 Thanks!
 -Chris
