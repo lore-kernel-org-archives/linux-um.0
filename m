@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8iis-0004zk-BX for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:10:06 -0700
+	id 1C8iiq-0004zO-JC for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:10:04 -0700
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1C8iir-0005Dz-GI for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:10:06 -0700
+	id 1C8iip-0005Dp-Ts for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:10:04 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [patch] host-skas3 for 2.6.9-rc2
-References: <200409122004.41777.blaisorblade_spam@yahoo.it>
-	<20040916110323.GB12785@bytesex> <20040916133921.GA14509@bytesex>
-In-Reply-To: <20040916133921.GA14509@bytesex>
+Subject: Re: [uml-devel] Minor problems with interrupted systemcalls
+References: <8B6FF516CBA0194AB0996705076B02520F7C33@ABGEX01E.abg.fsc.net>
+In-Reply-To: <8B6FF516CBA0194AB0996705076B02520F7C33@ABGEX01E.abg.fsc.net>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409181856.44696.blaisorblade_spam@yahoo.it>
+Message-Id: <200409181817.10308.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,28 +29,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Sep 2004 18:56:44 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Gerd Knorr <kraxel@bytesex.org>
+Date: Sat, 18 Sep 2004 18:17:10 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 
-On Thursday 16 September 2004 15:39, Gerd Knorr wrote:
-> On Thu, Sep 16, 2004 at 01:03:23PM +0200, Gerd Knorr wrote:
-> > Some change between -rc1 and -rc1-bk1 broke the skas patch, still
-> > looking ...
+On Friday 17 September 2004 19:46, Stroesser, Bodo wrote:
+> If a program is traced or debugged, in 2.6.x interrupted systemcalls
+> with the results -ERESTARTxxxxxxx are not handled correctly, no
+> systemcall restart is done.
 >
-> Found it: init_new_empty_context needs a arch_pick_mmap_layout call,
-> otherwise we'll get a NULL ptr dereferences for the function pointers
-> added recently to mm_struct.
-Well, please cleanup it, because you are affecting the behaviour on fork() 
-(the change should be harmless, however, just repeating 
-arch_pick_mmap_layout()).
+> Here is a patch that should fix the problem. The patch is tested on
+> 2.6.6 in tt and skas modes. It applies to 2.6.8.1, but I've not tested
+> yet.
+>
+> Hope, this helps.
 
-Without the SKAS patch, init_new_context does not call 
-arch_pick_mmap_layout(), so it should not after ( and init_new_context calls, 
-actually, init_new_empty_context()). I think that the proper place to add the 
-call is open_proc_mm(). Do you agree on this?
+I read the patch a bit and I understand and agree on most changes; nice job, 
+mostly. However, I don't like at all the changes to 
+arch/um/kernel/signal_kern.c.
 
-Bye
+Could you explain them in more detail, and clean up this part of the patch? 
+Comments come below.
+
+> -- uml_orig/arch/um/kernel/signal_kern.c 2004-08-05 18:36:24.000000000 +0200
+> +++ uml/arch/um/kernel/signal_kern.c      2004-09-17 15:03:30.441065600 
++0200
+> @@ -132,19 +132,18 @@
+>  {
+>       siginfo_t info;
+>       struct k_sigaction *ka;
+> -     int err, sig;
+> +     int sig;
+> 
+>       if (!oldset)
+>             oldset = &current->blocked;
+> 
+>       sig = get_signal_to_deliver(&info, regs, NULL);
+> -     if(sig == 0)
+> -           return(0);
+
+Could you explain why the sig == 0 check must be dropped? I went reading 
+get_signal_to_deliver and sig == 0 seems to mean that no signal is available. 
+(But I don't understand what "current->notifier" is, but it does not seem 
+related to syscall restarting).
+
+> -
+> -     /* Whee!  Actually deliver the signal.  */
+> -     ka = &current->sighand->action[sig -1 ];
+> -     err = handle_signal(regs, sig, ka, &info, oldset, error);
+
+Why do you drop the handling of errors from handle_signal()? If you do this to 
+workaround handle_signal() bugs in handling -ERESTART*, fix handle_signal(); 
+there are other errors that it can return, and that you must handle.
+
+> -     if(!err) return(1);
+> +     if(sig > 0) {
+> +           /* Whee!  Actually deliver the signal.  */
+> +           ka = &current->sighand->action[sig -1 ];
+> +           handle_signal(regs, sig, ka, &info, oldset, error);
+> +           return(1);
+> +     }
+> 
+>       /* Did we come from a system call? */
+>       if(PT_REGS_SYSCALL_NR(regs) >= 0){
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
