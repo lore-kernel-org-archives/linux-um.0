@@ -2,19 +2,32 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Al676-0004GA-Ur for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jan 2004 04:45:12 -0800
-Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30) id 1Al676-0005qW-JB
+	id 1AkwQh-0003r8-Do for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Jan 2004 18:24:47 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AkS2g-0000EP-KM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jan 2004 04:45:12 -0800
-From: Dan Shearer <dan@shearer.org>
-Message-ID: <20040126124708.GH4203@erizo.shearer.org>
+	Sat, 24 Jan 2004 09:57:58 -0800
+Message-Id: <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Sat, 24 Jan 2004 12:25:04 GMT."
+	<Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> 
+References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
+	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
+	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
+	<20040118162112.GA15509@elte.hu>
+	<20040118235730.GC21046@ccure.user-mode-linux.org>
+	<20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu>
+	<Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk>
+	<20040120002301.GA5708@elte.hu>
+	<Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk>
+	<Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk>
+	<Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Subject: [uml-devel] PATCH kernel/umid.c
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re:
+	uml-patch-2.6.0)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,28 +39,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 26 Jan 2004 23:17:08 +1030
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Sat, 24 Jan 2004 13:20:17 -0500
+To: M A Young <m.a.young@durham.ac.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Gerd Knorr <kraxel@bytesex.org>
 
---- umid.c.orig 2004-01-26 23:10:38.000000000 +1030
-+++ umid.c      2004-01-26 23:11:41.000000000 +1030
-@@ -205,7 +205,7 @@
-                        printf("Failed to malloc uml_dir - error = %d\n",
-                               errno);
-                        uml_dir = name;
--                       return(0);
-+                       return(1);
-                }
-                sprintf(uml_dir, "%s/", name);
-        }
+m.a.young@durham.ac.uk said:
+>  A possible workaround which seems to work (but I have too much
+> debugging turned on to be sure yet) is to set AT_SYSINFO_EHDR to be
+> NULL in include/asm/archparam-i386.h, though clearly the ultimate aim
+> would be to get the vsyscall stuff working properly.
 
-(and the sf list seems to have nearly completely stopped over the last
-36 hours.)
+Yup, that looks right to me.  I've set VSYSCALL_BASE to NULL in my tree.
+Can you do the same and see if that fixes anything?
 
--- 
-Dan Shearer
-dan@shearer.org
+Thanks for chasing this down.
+
+				Jeff
+
 
 
 -------------------------------------------------------
