@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ANcBh-0000Vs-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 10:08:53 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1ANcBg-0004pB-P3
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 22 Nov 2003 10:08:52 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Host panic when UML reads host /dev/shm
-References: <200311201915.29188.blaisorblade_spam@yahoo.it> <200311202332.56549.Frank.dekervel@student.kuleuven.ac.Be> <200311202347.37312.Frank.dekervel@student.kuleuven.ac.Be>
-In-Reply-To: <200311202347.37312.Frank.dekervel@student.kuleuven.ac.Be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200311221911.58773.blaisorblade_spam@yahoo.it>
+	id 1ANdpN-0007us-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 11:53:57 -0800
+Received: from externalmx.valinux.com ([198.186.202.147] helo=externalmx.vasoftware.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1ANdpM-0004LL-TT
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 22 Nov 2003 11:53:56 -0800
+Received: from 200-158-228-25.dsl.telesp.net.br ([200.158.228.25]:21115 helo=uai.com.br)
+	by externalmx.vasoftware.com with smtp (Exim 4.24 #1 (Debian))
+	id 1ANdpL-0004Db-UQ
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 11:53:56 -0800
+From: "film _ net" <soaqui@uai.com.br>
+Mime-Version: 1.0
+Content-Type: text/html; charset="ISO-8859-1"
+Reply-To: "film _ net" <soaqui@uai.com.br>
+Message-Id: <E1ANdpL-0004Db-UQ@externalmx.vasoftware.com>
+Subject: [uml-devel] A Melhor =?unknown-8bit?q?sele=E7=E3o?= de filmes da net
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,75 +28,55 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 22 Nov 2003 19:11:58 +0100
+Date: Sat, 22 Nov 2003 17:54:38 -0200
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 23:47, gioved=EC 20 novembre 2003, Frank Dekervel ha scritto:
-> Op Thursday 20 November 2003 23:32, schreef Frank Dekervel:
-> > > Only an oops on linux or the same oops? If the second, it's useful ne=
-ws
-> >
-> > the second ... exactly the same backtrace iirc. i'll try to find the
-> > oops, but i'm almost sure. i've posted here to uml-devel once (subject
-> > hostfs-crash i believe) but google cannot find it.
-> >
-> > > In fact, I'm seeing now 4:40, the time the oops happens, is when the
-> > > slackware every day runs updatedb.
-> >
-> > a-ha ! exactly the same, my oops also happent when doing updatedb...
->
-> my original post was here
-> http://sourceforge.net/mailarchive/forum.php?thread_id=3D2984656&forum_id=
-=3D364
->8
-By the way, try the archive at http://marc.theaimsgroup.com/, it's commonly=
-=20
-believed to be better than the sourceforge one... However don't worry, I=20
-found the post.
->
-> but contrary to what i tought, it is not exactly the same oops.
-There is also a filldir64 trace, or better EIP points into it. But then=20
-filldir64 should also appear in the trace.
->  Trace; c0149048 <sys_getdents+90/98>
->  Trace; c0139ea4 <sys_read+5c/100>
->  Trace; c01089f3 <system_call+33/38>
-> if ksymoops is right. i also sent it to lkml, without response. And i was
-> also using tmpfs then (for uml memory as described in howto)
-I.e. your /tmp was under tmpfs? That may explain the fact that the oops is =
+<html>
 
-different.
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows=
+-1252">
+<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 4.0">
+<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
+<title>Os melhores filmes voc=EA encontra aqui</title>
+</head>
 
-However, I think the call trace is wrong, (below I explain why), so if you =
-are=20
-able to reproduce the bug, this would be great.
-Thanks!
+<body>
 
-However, I've looked at 2.4.22 sources, and either the related functions we=
-re=20
-almost rewritten, or the ksymoops output is bodged. sys_getdents doesn't ca=
-ll=20
-filldir64; it calls vfs_readdir(and this could actually be inlined, but it =
+<p align=3D"center"><b><font face=3D"Verdana" color=3D"#ff0000" size=3D"4=
+"><font
+face=3D"Verdana" color=3D"#000080" size=3D"2"><br>
+</font></font><strong><u><font face=3D"times,serif" color=3D"darkgreen"
+size=3D"5">Os
+melhores filmes voc=EA encontra aqui</font></u></strong></b></p>
+<p align=3D"center"><font face=3D"Arial"><font color=3D"#000000" size=3D"=
+5">Apenas
+:7,90</font>
+&nbsp; <font color=3D"#000000" size=3D"5">&nbsp;FRETE GRATIS</font></font=
+></p>
+<p align=3D"center"><b><font face=3D"Verdana" color=3D"#ff0000" size=3D"4=
+"><img
+src=3D"http://www.mercadolivre.com.br/org-img/preview/MLB/112003/10294710=
+_754.
+jpg" border=3D"0" width=3D"250" height=3D"250"><br>
+</font><strong><u><font face=3D"times,serif" color=3D"darkgreen" size=3D"=
+5"><a
+href=3D"http://www.mercadolivre.com.br/jm/item?site=3DMLB&amp;id=3D146626=
+00">
+clique
+aqui para comprar</a></font></u></strong></b></p>
+<p align=3D"center"><font face=3D"verdana" size=3D"1"><b>Para excluir , f=
+avor <a
+href=3D"mailto:viana.da.ru@bol.com.br">clicar
+aqui</a></b></font></p>
+<p align=3D"center"><b><font color=3D"#FF0000">aten=E7=E3o --- s=F3 para =
+maiores de 18
+anos</font></b></p>
 
-wouldn't get at the 90/98 position inside sys_getdents), but then it does a=
-=20
-call to a readdir "method"(i.e. through a function pointer, so this can't b=
-e=20
-inlined and must appear in the trace) and then it does another call, which =
+</body>
 
-could be to filldir64, through a function pointer. You said maybe you didn'=
-t=20
-copy all the output of ksymoops, but the stack trace is never more than 3=20
-calls. I'll maybe check by disassembly if the output makes sense in that=20
-point, though this is not very meaningful if not done on the original vmlin=
-ux=20
-file.
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
-
+</html>
 
 
 -------------------------------------------------------
