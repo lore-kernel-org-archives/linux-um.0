@@ -1,27 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9nZy-0000jY-Rh for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 09:05:38 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D9nZx-0008RD-4G
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 09:05:38 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Re: [uml-user] UML freezes at hdd-intensive processes
-References: <36770.128.176.89.137.1109844107.squirrel@128.176.89.137>
-	<35767.82.83.49.235.1109878592.squirrel@82.83.49.235>
-	<32977.82.83.51.111.1110551392.squirrel@82.83.51.111>
-In-Reply-To: <32977.82.83.51.111.1110551392.squirrel@82.83.51.111>
+	id 1D9nbY-0000nY-Ns for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 09:07:16 -0800
+Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1D9nbS-0006I2-MA for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 09:07:16 -0800
+Message-ID: <50265.80.203.9.198.1110560424.squirrel@80.203.9.198>
+In-Reply-To: <20050311165526.GA3723@stusta.de>
+References: <200503100216.j2A2G2DN015232@ccure.user-mode-linux.org>
+	<20050310225340.GD3205@stusta.de>
+	<200503111849.j2BImsJp003370@ccure.user-mode-linux.org>
+	<20050311165526.GA3723@stusta.de>
+Subject: Re: [uml-devel] Re: [PATCH 4/9] UML - Export gcov symbol based on 
+	gcc version
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200503111102.54214.rob@landley.net>
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,40 +31,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 11 Mar 2005 11:02:54 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Oliver Baltz <info@OliverBaltz.de>
+Date: Fri, 11 Mar 2005 18:00:24 +0100 (CET)
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Jeff Dike <jdike@addtoit.com>, torvalds@osdl.org, akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 11 March 2005 09:29 am, Oliver Baltz wrote:
-> Hi,
->
-> my problem still exists: the UML hangs om hdd-intensive processess (like
-> apt-get dist-upgrade). I tried a lot of things in time:
->
-> o tried on 2 machines with different hardware, different Host- and
-> Guest-Kernels
-> o CONFIG_BLK_DEV_UBD_SYNC is not set
-> o tried ext2/reiserfs on the Guest-UML
-> o when the UML hangs, it does not respond to sysrqs
-> o SKAS is not patched into the Host-System
-> o UML has enough swap-space (tried tmpfs, too)
-> o did an strace:
-> http://home.oliverbaltz.de/transfer/strace-uml-freeze.txt.gz
->
-> I followed this HOWTO: http://oliverbaltz.de/index.php?id=101
->
-> Any ideas?
-> Thanks in advance.
+>> > ( (__GNUC__ == 3 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ >= 4)
+>> > && \
+>> >    HEAVILY_PATCHED_SUSE_GCC )
+>> > I hope SuSE has added some #define to distinguish what they call  "gcc
+>> > 3.3.4" from GNU gcc 3.3.4
+>> It wasn't lost - I am just disinclined to cater to distros making their
+>> gcc lie about its version.
+> And therefore you added a patch that helps only those distros at the
+> price of breaking other people and distros using sane compilers?
 
-It sounds like "stick printfs into the source code" time.
+A dirty method would be to use a configure prinsip to test-compile, and
+have a define that depends on it. Perhaps dirty, conserning kbuild, but
+resolves problems, unless the alias symbol works.
 
-It's most likely to be UBD, since A) that's not in standard linux, which 
-doesn't have this problem, and B) it's what you exercise intensely when you 
-see it.
-
-Is it write-intensive, read-intensive, combination of both, or either one?
-
-Rob
+Stian
 
 
 -------------------------------------------------------
