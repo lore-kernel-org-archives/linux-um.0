@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D6ZzY-00015W-4j for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Mar 2005 11:58:44 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D6ZzR-0005hK-Fm for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Mar 2005 11:58:44 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [uml-user] [PATCH] extend the limits for command
-	line
-References: <Pine.LNX.4.61.0411040859130.18123@webhosting.rdsbv.ro>
-	<200411041534.31568.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200411041534.31568.blaisorblade_spam@yahoo.it>
+	id 1D6c3X-0002Pi-3d for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Mar 2005 14:10:59 -0800
+Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D6c3T-0000H1-FZ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Mar 2005 14:10:59 -0800
+Received: from NHROCAVG2.ets.enterasys.com ([134.141.79.124])
+	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id j22MAqZC000819
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 2 Mar 2005 17:10:52 -0500 (EST)
+Message-ID: <422639E7.4080405@enterasys.com>
+From: "D. Bahi" <dbahi@enterasys.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200503022058.19484.blaisorblade@yahoo.it>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig07EAC321FC7BFBEF6BE0F8B7"
+Subject: [uml-devel] stdin lockup using con0=fd:0,fd:1 (guest 2.4.26-3um)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,31 +30,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 2 Mar 2005 20:58:19 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, "Catalin(ux aka Dino) BOIE" <util@deuroconsult.ro>, jdike@karaya.com, linux-kernel@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 02 Mar 2005 17:10:47 -0500
+To: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thursday 04 November 2004 15:34, Blaisorblade wrote:
-> On Thursday 04 November 2004 08:08, Catalin(ux aka Dino) BOIE wrote:
-> > Hello!
-> >
-> > (I resend this because I get no feedback.)
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig07EAC321FC7BFBEF6BE0F8B7
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Sorry, miss of time.
-I'm doing it now... I'll post it soon for merging. The crash fixed by Jeff 
-Dike in his patch is a different things: he fixes a buffer overflow, I 
-cleanup things and increase cleanly the allowed cmdline size. The original 
-Catalin BOIE's patch should work in the meanwhile.
+did i miss the console cleanup crew?
 
-> Also, I'd like to cross-check this patch with the one used by Knoppix for
-> ages to do the same thing.
-Still to find.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+i have a UML guest command line that uses con0=fd:0,fd:1
+(or not, as this is the default for CONFIG_CON_ZERO_CHAN)
+
+i launch new xterms using -- xterm -e '<guest cmdline>' &
+(side note - can lock it w/o this too.) and users leaning on
+the keyboard (most notably <enter>) while the new xterms pop
+up and steal the window focus have experienced unresponsive
+UML prompts.
+
+no further keyboard input is processed...
+
+uml_mconsole <id> reboot and things can be made better.
+so the UML isn't locked up just the stdin....
+
+i've tried to go thru stdio_init -> open_console -> line_open
+to see if there was a likely place to drop a 'flush' of stdin
+before we try attaching 0 -> 1 and 1 -> 0 (line_setup_irq)...
+but i don't understand it all enough <frown>.
+
+this is redhat 9 + SKAS - NPTL 2.4.20-31 host kernel
+linux 2.4.26-3um guest kernel.
+
+thank you.
+
+--
+db
 
 
+--------------enig07EAC321FC7BFBEF6BE0F8B7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (MingW32)
+
+iD8DBQFCJjns3XQ4zakZ3z4RAlThAJ0R7WRWpDTDTn0lUHeDVwKUMz+x5ACdGJxZ
+3r2qR2dmC0VwNatcsLQQgws=
+=7V8N
+-----END PGP SIGNATURE-----
+
+--------------enig07EAC321FC7BFBEF6BE0F8B7--
 
 
 -------------------------------------------------------
