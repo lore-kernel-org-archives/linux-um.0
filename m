@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bbj23-0003wR-3q for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:49:31 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1Bbj22-0007WH-HC for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:49:30 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] 2.6.x x86_64 skas3 patch?
-References: <Pine.LNX.4.58.0406190934090.5995@jackhammer.localdomain>
-In-Reply-To: <Pine.LNX.4.58.0406190934090.5995@jackhammer.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 1BcFjd-00071G-Of for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Jun 2004 20:44:41 -0700
+Received: from click.bur.st ([203.34.17.217])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BcFjc-0004Vu-UF for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Jun 2004 20:44:41 -0700
+Received: from thump.bur.st (thud.bur.st [10.1.1.1])
+	by click.bur.st (Postfix) with ESMTP id D673D8A5AA
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 21 Jun 2004 11:44:38 +0800 (WST)
+From: Trent Lloyd <lathiat@bur.st>
+Message-ID: <20040621034434.GC2735@thump.bur.st>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200406191900.13676.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] hostfs / current->fsuid
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +29,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 19 Jun 2004 19:00:13 +0200
-To: Rus Foster <rghf@fsck.me.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 21 Jun 2004 11:44:35 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 10:35, sabato 19 giugno 2004, Rus Foster ha scritto:
-> Hi All,
->  Now I know jdike has got 64 bit UML running but I will be dammened if I
-> can find the skas3 patch for 2.6.x hosts on x86_64. Does it even exist of
-> was jdike using 2.4.x?
->
-> Rus
+Hi Guys,
 
-None, there does not exist a SKAS patch for the host. Currently x86_64 seems 
-to run in SKAS mode without a host SKAS patch. Or better, I've seen two 
-changes in the patch which remove two uses of that patch...
+I was looking into trying to modify hostfs so if UML ran as root it
+would keep the same permissions
 
-Nevertheless, most of the performance improvement does not need a host SKAS 
-patch. It's only purpose is to avoid creating zilion of threads on the host 
-as in TT mode (which indeed is a bit costly).
+And to start, I am aware of humfs, i guess my next question could be,
+would humfs work with two UMLs accessing the filesystem, if yes, the
+rest of this is redundant.
+
+I was looking at making hostfs set the right owner at create time,
+however current->fsuid seems just to be root, and not the person who
+called the process (this is in hostfs_kern.c)
+
+Sorry if I'm off the mark here and this is wrong, could someone tell me
+if either I've buggered up somewhere and it should be right, or if I'm
+using the wrong thing completely and how I could get the uid of the user
+who requested the file operation.
+
+Cheers,
+Trent
+Bur.st
+
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-
+Trent Lloyd <lathiat@bur.st>
+Bur.st Networking Inc.
 
 
 -------------------------------------------------------
