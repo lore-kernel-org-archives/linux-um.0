@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CRfAF-0004lX-FV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 Nov 2004 15:12:39 -0800
-Received: from rimuhosting.com ([69.90.33.248])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CRfAC-0006vc-UR
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 Nov 2004 15:12:39 -0800
-Message-ID: <41914EDC.7000206@rimuhosting.com>
-From: Peter <peter.repliesignored@rimuhosting.com>
+	id 1CRny1-0003O4-WD for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Nov 2004 00:36:37 -0800
+Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CRny1-0005kv-4k for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Nov 2004 00:36:37 -0800
+Message-ID: <34658.80.203.1.124.1100075791.squirrel@80.203.1.124>
+In-Reply-To: <200411092012.05383.blaisorblade_spam@yahoo.it>
+References: <20041029092641.8558.qmail@web26102.mail.ukl.yahoo.com>
+	<200411021952.09095.blaisorblade_spam@yahoo.it>
+	<4190F385.1000802@fujitsu-siemens.com>
+	<200411092012.05383.blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: Stop at startup on 2.6 NPTL hosts
+From: stian@nixia.no
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: 2.6.9-bb1, 2.4.27-bs1, SKAS3/2.6-V7 released
-References: <418AEC78.2010502@rimuhosting.com>
-	<200411052042.22095.blaisorblade_spam@yahoo.it>
-	<419028BF.3090308@rimuhosting.com>
-	<200411091935.03983.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200411091935.03983.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,47 +30,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 10 Nov 2004 12:12:28 +1300
+Date: Wed, 10 Nov 2004 09:36:31 +0100 (CET)
 To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>, Roland Kaeser <roli8200@yahoo.de>, Nuno Silva <nuno.silva@vgertech.com>, Antoine Martin <antoine@nagafix.co.uk>, Sven =?UTF-8?Q?K=EF=BF=BDhler?= <skoehler@upb.de>, Dennis Muhlestein <devel@muhlesteins.com>
 
-There was no oops in /var/log/messages for that 'stuck' process.
+> This fact (glibc caches getpid() results) was even known because already
+> posted, and I guessed that this could happen only with TLS support.
 
-A server reboot managed to get rid of that stuck process OK.
+That glibc caches getpid() has been a known issue before when people
+wanted to benchmark uml syscall speeds inside vs outside of UML using a
+simple libc-function. A clone() call can't easily invalidate caches around
+in libs that are stored in statics. But it should be mentioned on
+getpid()'s man/info page that the value might be cached.
 
-The host server is now up and running with a 2.6.8.1-skas3-v7 kernel. 
-and the VPS survived 50 restarts ok.
+Perhaps sende the glibc dudes an email with the problem, and either get
+them to remove the cache or document it. Either way it will be a problem,
+since people might use a version of glibc then that caches getpid.. only
+work-around  is to use syscall() directly, or avoid using getpid() before
+clone().
 
-Cheers, Peter
 
-Blaisorblade wrote:
-> On Tuesday 09 November 2004 03:17, Peter wrote:
-> 
->>Hi.  Host is 2.6.9-skas3-v7.  Guest is linux.2.4.27-bs1.  I restarted a
->>UML guest 24 times ok.  After that I got these two processes that won't
->>die.
-> 
-> 
->>xxxxd  30282  0.0  0.1 132344 3988 ?       D    01:21   0:00
->>/home/umlusers/xxxxd.net/linux umid=leventd.net con=null con0=fd:
->>xxxxd  30284  0.0  0.1 132344 3988 ?       T    01:21   0:00  \_
->>/home/umlusers/xxxxd.net/linux umid=xxxxd.net con=null con0
-> 
-> 
-> I.e. 24 restarts and only two dead processes, right? It means that the fix 
-> "normally" works. But those two processes are hanged for another host kernel 
-> bug, and this time a very bad one!
-> 
-> The first process is in "D" state.
-> 
-> If it stays that way, it will never die - and it also means you have had a 
-> kernel Oops or something like that - search /var/log/messages on the host and 
-> you'll find some text about that, which you should post (search "Oops" and 
-> you should find it). Btw, this is a host kernel bug, so you should probably 
-> also report it to LKML (post it here also, to get some more answers).
-> 
-> Also, could you post "ps -ef" output about this processes, if they are still 
-> alive? If not, the Oops text should be enough.
+Stian
 
 
 -------------------------------------------------------
