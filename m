@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AfPnP-000239-8J for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Jan 2004 12:33:23 -0800
-Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AfPnN-0005HC-6F for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Jan 2004 12:33:21 -0800
+	id 1AfPr0-0002ES-Vp for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Jan 2004 12:37:06 -0800
+Received: from tektonic.net ([69.56.241.195] helo=unix.easyadmin ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AfPr0-00059D-Hc for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Jan 2004 12:37:06 -0800
+From: Matt Ayres <matta@tektonic.net>
+Content-Type: text/plain
+Message-Id: <1073767023.5714.6.camel@wopr.tektonic.net>
 Mime-Version: 1.0
-Message-Id: <a06020426bc2611122f8b@[192.168.1.10]>
-In-Reply-To: <200401072025.02885.blaisorblade_spam@yahoo.it>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<a0602040dbc20be564c59@[192.168.1.10]>
-	<Pine.LNX.4.58.0401070325360.1840@boston.corp.fedex.com>
-	<200401072025.02885.blaisorblade_spam@yahoo.it>
-From: Johannes Formann <johannes@formann.de>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] ubd=mmap hang during boot
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,26 +25,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 10 Jan 2004 21:33:18 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 10 Jan 2004 15:37:04 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-At 20:25 Uhr +0100 07.01.2004, BlaisorBlade wrote:
+Hi,
 
->The fix maybe is not perfect but something must go in. Also, if that doesn't
->work, maybe the error is somewhere else (and triggered by this change, as
->easily happens).
+I've never been able to get ubd=mmap to work properly, however after
+sitting down and trying to get it working I have some doubts if the
+problem is user error now.
 
-Has anyone found an workaround to get modules working with 23-1?
+I am using 2.4.24 with the 2.4.23-1um patch.  I have also tried this
+with 2.4.23.  I've built the kernel and it functions without problems.
 
-For the Simpel Patch doesn't work, and I think Jeff has change a few 
-things more in mem.c between 22-5 and 23-1.
+When I start a UML with the "ubd=mmap" option it hangs at the beginning
+of init.  On a RedHat 9 server it displays the following and then hangs
+forever:
 
-If anyone can't reproduce that Bug, I can give .configs, sources and 
-or bianries away to someone who tries to trace that Bug.
+VFS: Mounted root (ext3 filesystem) readonly.
+Mounted devfs on /dev
+INIT: version 2.84 booting
+                Welcome to Red Hat Linux
+                Press 'I' to enter interactive startup.
 
-regards
+Under a Debian server it is very similiar.   What information is needed
+from me so to assist the developers is debugging this behavior?
 
-Johannes
 
 
 -------------------------------------------------------
