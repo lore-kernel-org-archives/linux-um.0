@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuAbl-00017A-H3
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 05:22:21 -0800
-Received: from mailgate.uni-paderborn.de ([131.234.22.32])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30)
-	id 1AuAVu-0004IJ-6c
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 05:16:18 -0800
-Message-ID: <40360944.3030905@upb.de>
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
+	id 1AuBNY-0004em-Bk
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 06:11:44 -0800
+Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AuB8r-0003kx-Vu
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 05:56:34 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Subject: Re: [uml-devel] Unsubscribe from this list...
+In-Reply-To: <20040220103213.38256.qmail@web41506.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.44.0402200904130.15836-100000@sparrow>
 MIME-Version: 1.0
-References: <40338C1B.1070800@meisterwerk.net> <c1360l$eei$1@sea.gmane.org> <87llmy3vr5.fsf@bytesex.org> <4035FDFE.6010402@upb.de> <20040220125413.GA15930@bytesex.org>
-In-Reply-To: <20040220125413.GA15930@bytesex.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: skas3 patch fails against vanilla-2.4.25
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,19 +24,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 14:19:00 +0100
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 20 Feb 2004 09:05:32 -0500 (EST)
+To: jl344322 <jl344322@yahoo.com>
+Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
->>The description of the second path was:
->>	Various fixups to make the whole tree build for all
->>	architectures.
->>
->>So i thought it is to make it compile on PPC or whatever.
-> 
-> "all architectures" includes both ppc and i386 ;)
+On Fri, 20 Feb 2004, jl344322 wrote:
 
-OK, after applying the second patch, the kernel compiles again.
+> Sorry,
+> Thanks.
+
+	Information on how to subscribe, and what email address to use if 
+you have trouble, are included both in the body and the headers of every 
+message to this list; check out the following:
+
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+	Cheers,
+	- Bill
+
+---------------------------------------------------------------------------
+        "Absence diminishes mediocre passions and increases great ones,
+as the wind blows out candles and fans fires."
+        -- La Rochefoucauld
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
+
 
 
 -------------------------------------------------------
