@@ -1,24 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AGiei-0006gd-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 03 Nov 2003 09:38:20 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AGieh-0008I5-O6
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 03 Nov 2003 09:38:20 -0800
-Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id hA3HPjD10035
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 3 Nov 2003 12:25:45 -0500
-Message-Id: <200311031744.hA3HiqgX014207@ccure.karaya.com>
+	id 1AGngA-0002Fn-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 03 Nov 2003 15:00:10 -0800
+Received: from brown.brainfood.com ([146.82.138.61] helo=gradall.private.brainfood.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AGngA-0001Bp-6N
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 03 Nov 2003 15:00:10 -0800
+From: Adam Heath <adam@doogie.org>
 Subject: Re: [uml-devel] [patch] change ubd names 
-In-Reply-To: Your message of "Mon, 03 Nov 2003 10:13:00 CST."
-             <Pine.LNX.4.44.0311031012350.1157-100000@gradall.private.brainfood.com> 
-References: <Pine.LNX.4.44.0311031012350.1157-100000@gradall.private.brainfood.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+In-Reply-To: <200311031744.hA3HiqgX014207@ccure.karaya.com>
+Message-ID: <Pine.LNX.4.44.0311031659540.12324-100000@gradall.private.brainfood.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -29,16 +24,18 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 03 Nov 2003 12:44:52 -0500
-To: Adam Heath <adam@doogie.org>
+Date: Mon, 3 Nov 2003 17:00:09 -0600 (CST)
+To: Jeff Dike <jdike@addtoit.com>
 Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-adam@doogie.org said:
-> When can the drooling public see skas4? 
+On Mon, 3 Nov 2003, Jeff Dike wrote:
 
-When I figure out what to do about the new system call numbers.
+> adam@doogie.org said:
+> > When can the drooling public see skas4?
+>
+> When I figure out what to do about the new system call numbers.
 
-				Jeff
+If that's all, I'd like to play with it now.
 
 
 
