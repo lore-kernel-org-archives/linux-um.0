@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BOeny-0005UM-Fl for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 May 2004 08:40:58 -0700
-Received: from [203.196.196.68] (helo=BLR-MAIL.NETD.COM)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BOenx-0007KY-Rx
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 May 2004 08:40:58 -0700
-Received: from netd.com ([10.91.0.14])
-	by BLR-MAIL.NETD.COM (8.12.10/8.12.8) with ESMTP id i4EFekms006524
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 14 May 2004 21:10:47 +0530
-Message-ID: <40A4E712.9060303@netd.com>
-From: pronoy debnath <pdebnath@netd.com>
+	id 1BOf8J-0001tQ-WE for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 14 May 2004 09:01:59 -0700
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BOf8J-0000Jl-HP for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 14 May 2004 09:01:59 -0700
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Subject: Re: [uml-devel] UML architecture doc?
+In-Reply-To: <40A4E712.9060303@netd.com>
+Message-ID: <Pine.LNX.4.58.0405141217470.7832@sparrow>
+References: <40A4E712.9060303@netd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] UML architecture doc?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,17 +27,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 14 May 2004 21:04:42 +0530
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 14 May 2004 12:19:58 -0400 (EDT)
+To: pronoy debnath <pdebnath@netd.com>
+Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, William Stearns <wstearns@pobox.com>
 
-Hi,
-   I am very new to UML .
-   Is there any document (or link) that
-   describes how it works internally ?
+Good morning, Pronoy,
 
-Thanks in advance,
-Pronoy
+On Fri, 14 May 2004, pronoy debnath wrote:
 
+>    I am very new to UML .
+>    Is there any document (or link) that
+>    describes how it works internally ?
+
+	Quite a lot, actually.  http://user-mode-linux.sourceforge.net has 
+a good deal of documentation, presentations, howtos, that on the surface 
+describe how to accomplish something in uml, but also get down into 
+technical details too.  Jeff's magicpoint presentations might be a good 
+place to start.
+	Start with those and the source code, and then come back here if 
+you have questions...
+	Cheers,
+	- Bill
+
+---------------------------------------------------------------------------
+	"She worked with a subdued intensity... She once told me that the
+only way to know when you have done something truly great is when your
+spine tingles."
+	- on Alice Kober, cryptanalist, in The Code Book, Simon Singh.
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
