@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CiGAw-0000bx-W3 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Dec 2004 09:57:58 -0800
+	id 1CiGB1-0000hw-K7 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 25 Dec 2004 09:58:03 -0800
 Received: from coderock.org
 	([193.77.147.115] helo=trashy.coderock.org ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CiGAw-0004IY-FO for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Dec 2004 09:57:58 -0800
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CiGB0-0001TA-VQ for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 25 Dec 2004 09:58:03 -0800
 From: domen@coderock.org
-Message-Id: <20041225175752.BFBF71ED41@trashy.coderock.org>
-Subject: [uml-devel] [patch 11/13] delete unused file
+Message-Id: <20041225175758.AA8FD1F124@trashy.coderock.org>
+Subject: [uml-devel] [patch 13/13] delete unused file
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,7 +23,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 25 Dec 2004 18:58:03 +0100
+Date: Sat, 25 Dec 2004 18:58:09 +0100
 To: jdike@karaya.com
 Cc: user-mode-linux-devel@lists.sourceforge.net, domen@coderock.org
 
@@ -34,21 +34,23 @@ Signed-off-by: Domen Puncer <domen@coderock.org>
 ---
 
 
- kj/include/asm-um/sigcontext-ppc.h |   10 ----------
- 1 files changed, 10 deletions(-)
+ kj/include/asm-um/system-ppc.h |   12 ------------
+ 1 files changed, 12 deletions(-)
 
-diff -L include/asm-um/sigcontext-ppc.h -puN include/asm-um/sigcontext-ppc.h~remove_file-include_asm_um_sigcontext_ppc.h /dev/null
---- kj/include/asm-um/sigcontext-ppc.h
+diff -L include/asm-um/system-ppc.h -puN include/asm-um/system-ppc.h~remove_file-include_asm_um_system_ppc.h /dev/null
+--- kj/include/asm-um/system-ppc.h
 +++ /dev/null	2004-12-24 01:21:08.000000000 +0100
-@@ -1,10 +0,0 @@
--#ifndef __UM_SIGCONTEXT_PPC_H
--#define __UM_SIGCONTEXT_PPC_H
+@@ -1,12 +0,0 @@
+-#ifndef __UM_SYSTEM_PPC_H
+-#define __UM_SYSTEM_PPC_H
 -
--#define pt_regs sys_pt_regs
+-#define _switch_to _ppc_switch_to
 -
--#include "asm/sigcontext-generic.h"
+-#include "asm/arch/system.h"
 -
--#undef pt_regs
+-#undef _switch_to
+- 
+-#include "asm/system-generic.h"
 -
 -#endif
 _
