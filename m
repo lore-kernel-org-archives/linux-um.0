@@ -1,19 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Ab4ed-0006o4-91
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 29 Dec 2003 13:10:23 -0800
-Received: from main.gmane.org ([80.91.224.249])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ab4ec-0002Np-Rd
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 29 Dec 2003 13:10:23 -0800
-Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1Ab4eZ-0002rL-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 29 Dec 2003 22:10:19 +0100
-From: Jason Lunz <lunz@falooley.org>
-Message-ID: <slrnbv12f4.4rj.lunz@absolut.localnet>
-References: <200312261905.48277.blaisorblade_spam@yahoo.it> <200312271927.26870.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: UML patches against vanilla 2.6.0
+	id 1Ab7Zt-0000UK-Qj
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 29 Dec 2003 16:17:41 -0800
+Received: from web12208.mail.yahoo.com ([216.136.173.92])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Ab7Zt-0005YG-Fb
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 29 Dec 2003 16:17:41 -0800
+Message-ID: <20031230001741.92529.qmail@web12208.mail.yahoo.com>
+From: Richard Rudolph <richrsvcn@yahoo.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-1608825803-1072743461=:92067"
+Subject: [uml-devel] UML on PPC
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,29 +22,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 29 Dec 2003 20:09:08 +0000 (UTC)
+Date: Mon, 29 Dec 2003 16:17:41 -0800 (PST)
 To: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> I have some doubts about the 2.6 host-skas patch. I've searched through the 
-> list for earlier ports to 2.6 and I've seen someone (Bryan O'Sullivan 
-> <bos@serpentine.com>) complaining:
->
-> "The big issue with the skas patches, though, appears to be that they
-> don't handle the UML kernel being killed, which results in the host
-> kernel's memory management being completely trashed."
->
-> Is this a real issue or not?
 
-I think so. I'm running 2.6.0 vanilla + Ingo's combo -A2 on my host,
-with 2.4.23 UMLs. I tried to do something in the uml involving lots of
-tmpfs usage, and the host system crashed.
+--0-1608825803-1072743461=:92067
+Content-Type: text/plain; charset=us-ascii
 
-This was just before I went away for the holiday; I'm only now catching
-up. I haven't re-tested with any of the newer 2.6 skas patches.
+Hi All,
+ 
+I was wondering if there is any current activity on the UML port to PPC.  I've been searching the Internet and the only thing I can find are patches and kernel downloads that are over two years old (2001).  Is the port to PPC currently being maintained?
+ 
+Thanks.
+Richard
 
-Jason
 
+---------------------------------
+Do you Yahoo!?
+Yahoo! Photos - Get your photo on the big screen in Times Square
+--0-1608825803-1072743461=:92067
+Content-Type: text/html; charset=us-ascii
+
+<DIV>Hi All,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I was wondering if there is any current activity on the UML port to PPC.&nbsp; I've been searching the Internet and the only thing I can find are patches and kernel downloads that are over two years old (2001).&nbsp; Is the port to PPC currently being maintained?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks.</DIV>
+<DIV>Richard</DIV><p><hr SIZE=1>
+Do you Yahoo!?<br>
+Yahoo! Photos - <a href="http://us.rd.yahoo.com/evt=21486/*http://f1.pg.photos.yahoo.com/ph//spsimplenol?.file=ny_ts_splash.html">Get your photo on the big screen in Times Square</a>
+--0-1608825803-1072743461=:92067--
 
 
 -------------------------------------------------------
