@@ -2,22 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BoWJr-0001GS-Sx for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Jul 2004 16:52:47 -0700
-Received: from heretic.physik.fu-berlin.de ([160.45.32.227])
+	id 1BoY9x-0004Nq-RF for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Jul 2004 18:50:41 -0700
+Received: from b.mail.peak.org ([69.59.192.42])
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1BoWJr-00008b-AT
+	(Exim 4.34) id 1BoY9x-00053O-HY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Jul 2004 16:52:47 -0700
-From: Axel Thimm <Axel.Thimm@ATrpms.net>
-Message-ID: <20040724235215.GA4751@neu.nirvana>
-References: <Pine.LNX.4.44.0407221901400.1382-100000@hfuhruhurr.iostream.com>
+	Sat, 24 Jul 2004 18:50:41 -0700
+Received: from a.shell.peak.org ([69.59.192.81])
+	by b.mail.peak.org (8.12.10/8.12.8) with ESMTP id i6P1oYTD029154
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 24 Jul 2004 18:50:34 -0700 (PDT)
+Received: (from fixin@localhost)
+	by a.shell.peak.org (8.12.10/8.12.10/Submit) id i6P1oXdC008030
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Jul 2004 18:50:33 -0700
+From: Eric House <fixin@peak.org>
+Message-ID: <20040725015031.GN783@peak.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0407221901400.1382-100000@hfuhruhurr.iostream.com>
-Subject: [uml-devel] Re: I ported skas3 to fc2 kernel
+Subject: [uml-devel] Some firewalls require disabling ECN in the UML kernel
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,53 +35,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 25 Jul 2004 01:52:15 +0200
-To: Jinnah Dylan Hosein <jdh66@jdh.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 24 Jul 2004 18:50:32 -0700
+To: user-mode-linux-devel@lists.sourceforge.net
 
+This mail details the solution to a problem I had with UML networking.
+My UML instance was able to ping any host on the LAN or internet, but
+could only make TCP connections within the LAN.  On looking closer I
+found that the initial packets were making it from the host to the
+router and then to my cable modem but not reaching the internet
+server.  I was unable to determine whether the cable modem was
+dropping them (or why), or whether they were making it further.
 
+Eventually I looked closely at the packets leaving the router, both
+for (successful) telnet connections from non-UML hosts and for the
+(doomed) attempt from the UML instance.  The only difference,
+according to tcpdump running on the router, was that the
+non-UML-sourced packets had only the S flag set while the UML-sourced
+packets had three set: SWE.
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The first hit when googling for "tcpdump SWE" is 
 
-Hi Jinnah,
+http://lists.debian.org/debian-user/2001/06/msg01577.html
 
-On Thu, Jul 22, 2004 at 07:13:33PM -0400, Jinnah Dylan Hosein wrote:
-> I ported the host-skas3-2.6.7-v1.patch to the Fedora Core 2 kernel.
->=20
-> I used the latest fc2 2.6.6-1.435.2.3 kernel rpm.
+a page that explains that some commercial firewalls block packets for
+which TCP ECN is enabled.  And sure enough, the kernel that's part of
+Debian's UML package has it enabled.  Once I turned it off using the
+following command all was well.  I'm currently running apt-get to
+bring the rootfs up to date.
 
-Alexander Dalloz has done similar against a later kernel from
-post-FC2. Perhaps we should consolidate forces :)
+sysctl -w net.ipv4.tcp_ecn=0
 
-The kernel rpm is available in the testing section of ATrpms:
+Of course I still don't know where the packets were getting blocked,
+but my ActionTek DSL modem is the most likely suspect.
 
-http://ATrpms.net/name/kernel-testing/fc2/
+UML rocks!  Thanks!
 
-(the 1.494 based kernel).
-
-BTW my personal wishlist would be a combined uml&skas3 patch for
-~2.6.8rc1 (like blaisorblade did for 2.6.6). :)
-
-uml-utilities have also been uploaded as rpms to ATrpms.
---=20
-Axel.Thimm at ATrpms.net
-
---CE+1k2dSO48ffgeK
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFBAvYvQBVS1GOamfERArUcAJ0ezsa8J3V6lM58jBYQweURwdB1PgCfa7Q3
-I5xElZ1JzxB/ffFEfYV7z4A=
-=i171
------END PGP SIGNATURE-----
-
---CE+1k2dSO48ffgeK--
+--Eric House
+-- 
+******************************************************************************
+* From the desktop of: Eric House, fixin@peak.org                            *
+*    Crosswords 4.0.6 for PocketPC is out!: <http://xwords.sourceforge.net>  *
+******************************************************************************
 
 
 -------------------------------------------------------
