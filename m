@@ -1,11 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <417101F4.1050109@fastwebnet.it>
-From: Primero <primero@fastwebnet.it>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CIqrn-0000VT-Td for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Oct 2004 08:53:11 -0700
+Received: from smtp.wp.pl ([212.77.101.160])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CIqrm-0008W5-2d
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Oct 2004 08:53:11 -0700
+Received: from lodz106.vline.pl (HELO [172.16.13.24]) (sikkh@[212.191.130.106])
+	(envelope-sender <sikkh@wp.pl>) by smtp.wp.pl (WP-SMTPD) with SMTP
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	16 Oct 2004 17:52:55 +0200
+From: Piotr Neuman <sikkh@wp.pl>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig2342BFC2C265256A31F6271B"
-Subject: [uml-devel] UML Guests and CPU Performance.
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200410161752.53153.sikkh@wp.pl>
+Subject: [uml-devel] Hostfs_utils (mkfs.humfs)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,95 +32,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 16 Oct 2004 13:11:48 +0200
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 16 Oct 2004 17:52:53 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig2342BFC2C265256A31F6271B
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello
 
-Hi ML, it is a little bit of time i've started using UML and i'm still 
-"playing" with it. Anyway there's a thing that let me confused.
+I would like to announce initial release of hostfs_tools. At the moment it's 
+only noteworthy that they contain working mkfs.humfs. Please test and 
+report ;-).
 
-It seems to me that performance of UML Guest machine is sensibly worst 
-then UML Host ... even if there is only one UML guest and no other 
-processes sucking resources.
+Short documentation is included in the tar archive so I won't go into details 
+here...
 
-My Setup is:
-Athlon 1000
-512 RAM
-1 GB tmpfs /tmp
-30GB 4200 eide
+Downloads:
 
-The guest is started with 256MB of RAM
+http://kem.p.lodz.pl/~peter/uml/hostfs_utils-16.10.2004.tgz
 
-I can post /proc/cpuinfo:
+Regards
 
-Host:
-model name      : AMD Athlon(tm) Processor
-cpu MHz         : 1000.502
-cache size      : 64 KB
-bogomips        : 1970.17
-
-Guest:
-processor       : 0
-vendor_id       : User Mode Linux
-model name      : UML
-mode            : skas
-host            : Linux Pancho 2.6.8.1-cko8 #2 Mon Oct 11 17:03:08 CEST 
-2004 i686
-bogomips        : 1081.34
-
-
-Here are results of Kernel Time compiling with the same .config:
-
-Host:
-real    15m27.226s
-user    13m49.185s
-sys     1m12.144s
-
-Guest:
-real    29m27.603s
-user    21m16.970s
-sys     7m59.080s
-
-
-The Bogomips of the Guest are the half of the Host and compiling time is 
-almost the double.
-
-I want to know if this is "Normal" or i have to look for some errors in 
-my configuration.
-
-Thx
-Primero
-
--- 
----------------------------------------
-#######################################
-
-"Linux, the choice of a GNU generation"
-     ==Micro$oft - just say NO== 
-
-#######################################
----------------------------------------
-
-
---------------enig2342BFC2C265256A31F6271B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFBcQH0OGoQ6Fir3nYRAu2kAKCFHmcOdxvCxrRS5rRipjQk5GijtgCfUJ6x
-GkI9qNzSPSsjUEesnOIwclA=
-=xUYF
------END PGP SIGNATURE-----
-
---------------enig2342BFC2C265256A31F6271B--
+Piotr Neuman
 
 
 -------------------------------------------------------
