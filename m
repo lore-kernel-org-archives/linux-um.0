@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ANXWV-0005gB-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 05:10:03 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ANXVq-0002AE-CS
-	for User-mode-linux-devel@lists.sourceforge.net; Sat, 22 Nov 2003 05:09:22 -0800
-Received: from localhost (henrik@localhost)
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id hAMD9IW20700
-	for <User-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 14:09:18 +0100
-From: Henrik Nordstrom <hno@marasystems.com>
-Message-ID: <Pine.LNX.4.44.0311221347440.20561-100000@filer.marasystems.com>
+	id 1ANcCL-0000YR-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 10:09:33 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1ANcCJ-0006iK-JI
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 22 Nov 2003 10:09:31 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Host panic when UML reads host /dev/shm
+References: <200311201915.29188.blaisorblade_spam@yahoo.it> <200311202037.14480.blaisorblade_spam@yahoo.it> <200311210222.hAL2Mt4L004145@ccure.user-mode-linux.org>
+In-Reply-To: <200311210222.hAL2Mt4L004145@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] iptables-restore randomly crashes under UML
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200311221912.44945.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,62 +26,36 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 22 Nov 2003 14:09:18 +0100 (CET)
-To: User-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 22 Nov 2003 19:12:44 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-We have found what looks like a UML-specific problem when running the 
-iptables-restore command.
+Alle 03:22, venerd=EC 21 novembre 2003, Jeff Dike ha scritto:
+> blaisorblade_spam@yahoo.it said:
+> > I think hostfs reads files just as any normal process on the host,
+> > right? Or  it does anything special or at least unusual?
+>
+> Nothing unusual, just normal file IO.
+>
+> > Could the unusual thing be the context switching of SKAS? I'll test if
+> > it happens within TT mode.
+>
+> I doubt there's any difference.
+Hmmm... maybe the VM code handling this does some VM assumption... false wi=
+th=20
+SKAS. And then, I saw that mm/shmem.c, to create shared memory, creates an =
 
-Environment:
+"unlinked file under tmpfs"(quote from a function description I read there)=
+.=20
+And maybe, there are even other operations which could, then, be relevant=20
+here.
 
-Linux-2.4.22 + current UML from CVS. iptables compiled as modules.
-
-iptables (tested with both 1.2.8 and current CVS)
-
-Host: RedHat 7.1, 7.3 and 9 with current updates.
-
-
-boot without any iptables loaded
-
-load the iptables modules
-
-iptables -t mangle -L
-iptables -t nat -L
-iptables -t filter -L
-
-Try running iptables-restore
-
-iptables-save | iptables-restore
-
-If no problem seen, try adding a few rules or chains to the table and 
-repeat the command or try loading additional iptables such as filter 
-and/or nat. In our tests this very reliably makes the iptables-restore 
-fail after at most a few attemtps. In many cases a cycle of 4 is seen 
-where the command works three times and then fails once, or fails with one 
-error three times and another error once.
-
-This problem is only seen when using UML, not when running on "real" 
-hardware. This makes me suspect the problem is to be found somewhere 
-within UML.
-
-We have also seen occations when the kernel copy of the iptables table 
-(usually the nat table) gets corrupted in the few cases where 
-iptables-restore runs without error, later causing a kernel panic inside 
-iptables.
-
-The problems does only seem to occur when using iptables-restore to load a
-new iptables definition, not when using iptables to modify individual
-rules. But I can not understand why as the kernel operations are almost
-identical in both cases.. iptables reads the current table from the
-kernel, modifies it and writes the new table, iptables-restore compiles a
-new table from the source rules and writes it into the kernel.
-
-
-Any hints on how to pinpoint if this is a UML or a iptables problem is 
-preciated.
-
-Regards
-Henrik
+Does UML uses shared memory? Or maybe just threading could be the issue?
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
