@@ -2,22 +2,31 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CVEQN-0005Jy-Ur for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 19 Nov 2004 11:28:03 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CVEQL-0005Q3-Kv for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 19 Nov 2004 11:28:03 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-user] 2.6 too, was Re: [uml-devel] Updated uml kernel
-References: <Pine.LNX.4.58.0411151550340.4216@sparrow>
-	<cndqnr$hi0$1@sea.gmane.org>
-	<Pine.LNX.4.58.0411161635500.3791@sparrow>
-In-Reply-To: <Pine.LNX.4.58.0411161635500.3791@sparrow>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200411192029.40364.blaisorblade_spam@yahoo.it>
+	id 1CVu1K-0000R8-RG for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 21 Nov 2004 07:52:58 -0800
+Received: from main.gmane.org ([80.91.229.2])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CVu1J-00053q-SI for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 21 Nov 2004 07:52:58 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CVu1H-0002Q6-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 21 Nov 2004 16:52:55 +0100
+Received: from 209-6-22-202.c3-0.smr-ubr1.sbo-smr.ma.cable.rcn.com
+	([209.6.22.202]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 21 Nov 2004 16:52:55 +0100
+Received: from lars by 209-6-22-202.c3-0.smr-ubr1.sbo-smr.ma.cable.rcn.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 21 Nov 2004 16:52:55 +0100
+From: Lars Kellogg-Stedman <lars@oddbit.com>
+Message-ID: <lars-EEE351.10525221112004@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] URL parsing bug in Slim/Utils/Misc.pm
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,41 +38,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Nov 2004 20:29:39 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net, William Stearns <wstearns@pobox.com>
-Cc: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>, ML-uml-user <user-mode-linux-user@lists.sourceforge.net>
+Date: Sun, 21 Nov 2004 10:52:52 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 16 November 2004 22:37, William Stearns wrote:
-> Good afternoon, Sven,
+I proxy access to my slimserver management interface via an SSL proxy, 
+and at some revision of the slimserver software I was no longer able to 
+access the server settings (I received a 403 error).
 
-> On Tue, 16 Nov 2004, [ISO-8859-1] Sven K=F6hler wrote:
-> > >  I have both kernels running on some of the virtual machines on
-> > > Zaphod without any apparent problems so far.
+I've tracked this down to the crackURL function in Slim/Utils/Misc.pm.  
+It matches URLs using the string:
 
-> > I envy you. For me, my own compiled UML-kernels crash from time to time
-> > after some compiling. Well, the last stable version for me was 2.6.6 as
-> > a guest.
+  $string =~ m|http://(?:([^\@:]+):?([^\@]*)\@)?([^:/]+):*(\d*)(\S*)|i;
 
->  Just for grins, pull down the 2.6.10-rc2 I just compiled and see
-> if it runs any better.
+When crackURL sees an https:// URL, it returns an empty $host and 
+default $port to the caller -- which, for example, makes the referrer 
+check in processHTTP fail.  Making a two character change to $string 
+makes it work just fine with https:// URLs:
 
-> The kernel config should be generic enough that it=20
-> will at least boot.
+  $string =~ m|https?://(?:([^\@:]+):?([^\@]*)\@)?([^:/]+):*(\d*)(\S*)|i;
 
-Please notice that without "make defconfig ARCH=3Dum" as first step, kbuild=
-=20
-could not pick the generic config, but one host dependant one=20
-(from /boot/config-*, for instance).
+-- Lars
 
->  It was compiled on fedora core 1, with:
-> [root@sparrow init.d]# rpm -q gcc glibc
-> gcc-3.3.2-1
-> glibc-2.3.2-101.4
-
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
 
 -------------------------------------------------------
