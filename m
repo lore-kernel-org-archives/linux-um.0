@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CrNsd-0001C9-CW for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Jan 2005 14:00:47 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	id 1CrOPs-0003DY-04 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Jan 2005 14:35:08 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CrNsb-00040A-Fm for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Jan 2005 14:00:47 -0800
+	id 1CrOPn-0006u7-9n for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Jan 2005 14:35:07 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Progress with -bb4.
-References: <200501151117.12000.rob@landley.net>
-In-Reply-To: <200501151117.12000.rob@landley.net>
+References: <20f75b0f.bf845356.819dd00@mail-msgstore01.qut.edu.au>
+In-Reply-To: <20f75b0f.bf845356.819dd00@mail-msgstore01.qut.edu.au>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501192312.52036.blaisorblade@yahoo.it>
+Message-Id: <200501192347.07906.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] problems with hostfs and large directories
+	- start of diagnosys
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,72 +30,63 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 Jan 2005 23:12:51 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>
+Date: Wed, 19 Jan 2005 23:47:07 +0100
+To: Mark Huth <mc.huth@qut.edu.au>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 15 January 2005 17:17, Rob Landley wrote:
-> Running ptrace under uml found the problem with gcc: UML's default
-> environment includes "." at the end of $PATH, and if you have that gcc
-> doesn't search the path for ld.
+On Sunday 16 January 2005 11:57, Mark Huth wrote:
+> >> Hi,
+> >>
+> >> I am encountering a problem when I access the host filesystem
+> >> via hostfs and the directory has a lot of entries.  For
+> >> example when I type in 'ls /mnt/host/usr/lib' uml just freezes
+> >> and I have to ctrl-c to get back the prompt.  An strace shows
+> >> the following repeating indefinately:
+> >>
+> >> getdents64(3, /* 170 entries */, 4096)  = 4080
+> >>
+> >> I am using FC3 and kernel 2.6.10 on both the host and uml
+> >> (with the latest skas patch applied to the host).  I have
+> >> disabled NPTL.  Has anyone else experienced this problem?
+> >
+> >I remember someone else talking about it (search "mp3" in the
 >
-> So I took "." out of the path, and it started working.  Yay!  (Cool stuff,
-> guys.)
+> ML archive
 >
-> Along the way, I found some interesting quirks:
+> >message bodies), but we never got to actually debugging it,
+
+> and I've never
+
+> >been able to reproduce it...
+> >
+> >Thanks for this info, however I'll maybe ask you more info...
 >
-> 1) I mentioned the gratuitous use of perl earlier.  This is only for
-> --show-config, which could A) be replaced by a sed script,
-I've just answered with a patch.
-> B) should 
-> presumably be wrapped in CONFIG_IKCONFIG anyway.
-No, no more possible - I planned doing that but then the plain-text version 
-went away... in the kernel normally only the gzip'ed version is saved.
-> I ripped it out of the makefile and it built fine without it.  I'll see
-> about patching the makefile with the sed thing and/or the CONFIG option
-> this weekend, although I'm not good at makefiles...
-
-> 2) Building under uclibc dies with a conflicting definition error, due to
-> arch/um/include/user.h containing "extern int strlcpy(char *, const char *,
-> int);", when uclibc's string.h contains:
-
-> extern size_t strlcpy(char *__restrict dst, const char *__restrict src,
->                       size_t n) __THROW;
-
-> I yanked the strlcpy line from arch/um/include/user.h and everything built
-> fine without it (didn't even see any new warnings), both under both uclibc
-> (more or less 0.9.27, a cvs snapshot a couple weeks before release) and
-> glibc (knoppix 3.6, comes with glibc 2.3.2), possibly because it's still in
-> include/linux/string.h...
-More likely because it's not used in UML "userspace" code - it cannot include 
-include/linux/string.h (it could include the host's version, but I don't 
-think it will do this for <linux/string.h> - it's unlikely).
-> The resulting uclibc binaries seemed to work fine in both environments.  I
-> could even run the uclibc one from within the uclibc chroot environment via
-> "./vmlinux rootfs=hostfs rootflags=/ rw init=/bin/sh" and it behaved pretty
-> well.  (Overmount /proc and /dev/pts and life is good...)
-
-> 3) Running my big build script, it hangs between ./configure and make of
-> binutils.  No idea why yet.  Just sits there spinning, with vmlinux eating
-> 100% of the CPU, and if you leave it for half an hour it still won't
-> advance, and this is something that should only take a second or so...
-Well, try doing things at hand, and using sh -x (or the new bash-debugging of 
-3.0, I've not yet learned it but it could be useful maybe).
-> 4) I can get all sorts of things to segfault under uclibc with ptrace -f. 
-You mean strace, right?
-> For example, just try ptrace -f on a shellscript and watch the segfaults
-> fly.  Is it just me?
-No, it's me too, but I never got to understanding what's going on there.
-> #4 makes #3 a bit harder to debug.
+> for instance
 >
-> I'll try upgrading to -bs5 and see if that makes anything better.
-Well, I don't think -bs5 it's worth the effort - the problems fixed from -bb4 
-likely don't affect you in this case (they cause early breakage in the boot).
-> Query: is a 2.6.10-bb likely in future, or should I just try -bk or -mm or
-> some such?
-Watch the site, there will be upgrades on this... raw 2.6.10 isn't good for 
-UML... however the first 2.6.10-bb probably won't be better / stabler than 
-2.6.9-bb, at least until the issue you are experiencing won't be debugged...
+> >your host setup / distro / glibc (the problem may be related
+>
+> to a glibc
+>
+> >bug)...
+
+> Well after trying my hand at kernel debugging, I managed to
+> narrow down where the problem is but I'm afraid I can't offer
+> a suitable solution.  In the read_dir() function in
+> hostfs_user.c the line: *pos = telldir(dir) was always
+> returning 0 if the directory had a lot of entries. 
+Hmm, what's up with seekdir()? Can you watch errno during the whole function 
+(and use the perror program to decode the values) to see where the problem 
+starts?
+> So in my 
+> case if telldir returned 0 I just gave *pos a nudge and
+> everyone (including me) was happy.
+What do you mean by "a nudge"? *pos++?
+> Not the proper solution 
+> but good enough for me for the time being.
+Well, at least this sheds *some* light... not still clear what's happening, 
+but something more to work on... And if you can tell us more, we'll be very 
+glad to accept your help and grateful.
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
