@@ -1,24 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CMBLO-0001Zz-2d for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2004 13:21:30 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CMBLM-0007XG-ES for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2004 13:21:30 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 5/5] uml-add-conf-INITRAMFS_SOURCE
-References: <20041023035323.8343195D5@zion.localdomain>
-	<20041023105642.GA2779@ccure.user-mode-linux.org>
-In-Reply-To: <20041023105642.GA2779@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	id 1CMC0q-0007AO-IH for User-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 14:04:20 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CMC0p-0003VK-Ke
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 14:04:20 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] [patches] ptrace fix, x11 fb update, minor stuff.
+Message-ID: <20041025205656.GB3127@bytesex>
+References: <BAY24-F2R77bieLYCT40001280e@hotmail.com>
+	<20041025110320.GB7551@bytesex>
+	<Pine.GSO.4.61.0410251326250.25582@waterleaf.sonytel.be>
+	<20041025114055.GB7895@bytesex>
+	<Pine.GSO.4.61.0410251403130.25582@waterleaf.sonytel.be>
+	<20041025154753.GA10318@bytesex>
+	<Pine.GSO.4.61.0410251802520.25582@waterleaf.sonytel.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200410252221.37222.blaisorblade_spam@yahoo.it>
+In-Reply-To: <Pine.GSO.4.61.0410251802520.25582@waterleaf.sonytel.be>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,26 +34,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 25 Oct 2004 22:21:37 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
+Date: Mon, 25 Oct 2004 22:56:56 +0200
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Steve Schmidtke <steve_schmidtke@hotmail.com>, User-mode Linux Kernel Development <User-mode-linux-devel@lists.sourceforge.net>
 
-On Saturday 23 October 2004 12:56, Jeff Dike wrote:
-> On Sat, Oct 23, 2004 at 05:53:23AM +0200, blaisorblade_spam@yahoo.it wrote:
-> > Signed-off-by: Paolo 'Blaisorblade' Giarrusso
-> > <blaisorblade_spam@yahoo.it> ---
-> >
-> >  vanilla-linux-2.6.9-paolo/arch/um/Kconfig_block |   27
-> > ++++++++++++++++++++++++
+On Mon, Oct 25, 2004 at 06:04:14PM +0200, Geert Uytterhoeven wrote:
+> Compile TinyX/KDrive yourself?
 
-> This came from Chris Wright, and I have this one in my tree with a
-> Signed-off-by from him.  You should preserve that.
-Yes, you're right - sorry for forgetting that. This happened because I rebuilt 
-the patch (to make sure that the copied content was up-to-date with any later 
-change).
+I think I'll bug the Xorg guys with bugreports ;)
+
+  Gerd
+
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
