@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsdWd-0000aG-UR
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 23:50:43 -0800
-Received: from osiris.silug.org ([64.240.156.225])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30)
-	id 1AsdTH-0007Sq-Ec
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 23:47:15 -0800
-From: Steven Pritchard <steve@silug.org>
-Subject: Re: [uml-devel] Segfault of UML-TT on FC1
-Message-ID: <20040216074701.GA6310@osiris.silug.org>
-References: <20040215232525.7c2f38a8.zaitcev@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 1AsdZd-0001K0-H7
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 23:53:49 -0800
+Received: from mx1.redhat.com ([66.187.233.31])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AsdR4-00058R-S8
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 23:44:58 -0800
+From: Ingo Molnar <mingo@redhat.com>
 In-Reply-To: <20040215232525.7c2f38a8.zaitcev@redhat.com>
+Message-ID: <Pine.LNX.4.58.0402160248320.3114@devserv.devel.redhat.com>
+References: <20040215232525.7c2f38a8.zaitcev@redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Re: Segfault of UML-TT on FC1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,27 +24,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 Feb 2004 01:47:01 -0600
+Date: Mon, 16 Feb 2004 02:50:11 -0500 (EST)
 To: Pete Zaitcev <zaitcev@redhat.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, mingo@redhat.com, jdike@karaya.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
-On Sun, Feb 15, 2004 at 11:25:25PM -0800, Pete Zaitcev wrote:
-> I'm trying to run uml-patch-2.6.3-rc2-1 under Fedora Core 1, kernel
-> 2.4.22-1.2149.nptl, glibc 2.3.2-101.1. The uml runs in TT mode (FC1 doesn't
-> have SKAS) and segfaults while trying to do
->  remap_data(UML_ROUND_DOWN(&__bss_start), UML_ROUND_UP(brk_start), 1);
 
-Isn't this the exec-shield bug?
+On Sun, 15 Feb 2004, Pete Zaitcev wrote:
 
-  http://toast.debian.net/~may/umlproject/bugs.html
+> The &__bss_start at this point is a01c6000, abd brk_start is a1f33000,
+> and so memcpy segfaults when it steps on the hole.
+> 
+> Does anyone have a suggestion what to do about this?
 
-It runs fine just using "i386".
+the workaround is to install the setarch rpm, and then do:
 
-Steve
--- 
-Steven Pritchard - K&S Pritchard Enterprises, Inc.
-Email: steve@kspei.com             http://www.kspei.com/
-Phone: (618)398-7360               Mobile: (618)567-7320
+	i386 ./linux <args>
+
+(but it would be nice to find the brk assumption in UML and change it to
+work with the FC1 brk changes.)
+
+	Ingo
 
 
 -------------------------------------------------------
