@@ -1,9 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200407261816.i6QIGSfL001860@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Mconsole exec support - rewritten completely 
-In-Reply-To: Your message of "Thu, 22 Jul 2004 16:53:38 +0200."
-	<200407221653.38293.blaisorblade_spam@yahoo.it> 
-References: <200407221653.38293.blaisorblade_spam@yahoo.it> 
+Message-Id: <200407261954.i6QJs6fL002377@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Incremental patches available 
+In-Reply-To: Your message of "Mon, 26 Jul 2004 18:43:30 +0200."
+	<200407261707.49889.blaisorblade_spam@yahoo.it> 
+References: <20040725001114.GA13469@ccure.user-mode-linux.org>
+	<200407261707.49889.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -18,26 +19,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 26 Jul 2004 14:16:28 -0400
+Date: Mon, 26 Jul 2004 15:54:06 -0400
 To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
 blaisorblade_spam@yahoo.it said:
-> Jeff, you can still think that  this feature should not be in the
-> kernel support (but why then bother with  the "proc" command?), 
+> Well, just perfect! I'm very happy about this... Would you please to
+> put there  the splitout version of the patches beyond 2.4.24-1 (the
+> one I already  built and posted)?
 
-Because "proc" is needed to diagnose sick UMLs, which may not be able to run
-commands.  It's also handy to make measurements which may be affected by logging
-in.
+Working on that.  First, I'm putting together a page about the UML test suite
+to encourage people to use it and contribute to it.
 
-> even
-> if this time there is no more any parsing code;  but anyway, it will
-> stay available for who wants it.
+> Also, maybe you should add a -v# to the end of the name (since if a
+> patch is  buggy, you will maybe create a new version); you may prefer
+> to add  patchname-fix containing the changes, as Andrew Morton does,
+> but in this case  probably it is not very useful (it's easier than
+> popping tons of patches and  modifying one, especially if the fix
+> comes from somebody else, but this is  not our case).
 
-You can maintain this yourself if you want, but it's going nowhere near my
-tree.  I've said why I don't like it, and haven't heard any real arguments
-for it, just whining by people who think parsing login sequences and shell
-prompts is hard.
+Maybe, but I'd just as soon fix the broken patch.  In any case, my use of
+quilt is only a day old, and I still have to figure out exactly how I'm
+going to use it.
 
 				Jeff
 
