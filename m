@@ -2,21 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A1A05-0006Fv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 21 Sep 2003 12:36:05 -0700
-Received: from tailtiu.davidcoulson.net ([207.166.203.132] helo=mail.mx.davidcoulson.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.22)
-	id 1A1A03-0005Ul-W0
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Sep 2003 12:36:04 -0700
-Message-ID: <3F6DFD84.8090309@davidcoulson.net>
-From: David Coulson <david@davidcoulson.net>
+	id 1A1EE2-0007dj-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Sun, 21 Sep 2003 17:06:46 -0700
+Received: from 41-052.adsl.zetnet.co.uk ([194.247.41.52] helo=esperi.demon.co.uk)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 1A1EE1-0000Bx-5n
+	for User-mode-linux-devel@lists.sourceforge.net; Sun, 21 Sep 2003 17:06:45 -0700
+Received: from esperi.demon.co.uk (1000@amaterasu.srvr.nix [192.168.14.14])
+	by esperi.demon.co.uk (8.12.10/8.12.10) with ESMTP id h8M06bRg023850
+	for <User-mode-linux-devel@lists.sourceforge.net>; Mon, 22 Sep 2003 01:06:37 +0100
+Subject: Re: [uml-devel] Re: redefinition of `struct ptrace_faultinfo' with
+ uml-2.4.22-4 + skas3
+References: <200309182043.h8IKh3l8028931@hongkong.cs.nmsu.edu>
+	<8765jpu4iz.fsf@amaterasu.srvr.nix>
+From: Nix <nix@esperi.demon.co.uk>
+In-Reply-To: <8765jpu4iz.fsf@amaterasu.srvr.nix> (nix@esperi.demon.co.uk's
+ message of "Thu, 18 Sep 2003 23:15:48 +0100")
+Message-ID: <87llshit4j.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] mounting filesystems - mount crashes
-References: <20030921183013.99560.qmail@web80507.mail.yahoo.com>
-In-Reply-To: <20030921183013.99560.qmail@web80507.mail.yahoo.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -27,29 +31,21 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 21 Sep 2003 15:35:32 -0400
-To: Terry <td3201@yahoo.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 22 Sep 2003 01:06:36 +0100
+To: User-mode-linux-devel@lists.sourceforge.net
 
-Terry wrote:
-> I created the filesystem on the host os with dd.  I
-> boot up my vm with ubd3=/uml/new_fs as a kernel
-> argument.  WHen inside the VM, I create an ext2
-> filesystem on it.  I am then able to mount it normally
-> from there.  When I add it to fstab as:
-> /dev/ubd/3     /usr            ext2    defaults 1 1
-> It blows chunks.  
+On Thu, 18 Sep 2003, nix@esperi.demon.co.uk mused:
+> (Now all I need to do is get TUN/TAP to work at all. `Device not
+> assigned an IP address', it says, shortly after *printing the damned IP
+> address out*. Still, that's a matter for -user, I'd say.)
 
-What's the error message? What command line are you starting UML with? 
-You need to give us some information to actually debug the problem.
-
-David
+(actually it's a matter of remembering to build TUN/TAP support into the
+host kernel. All running perfectly now. The TTY/PTY logging is
+particularly nifty; I was thinking I'd have to implement that myself.)
 
 -- 
-David Coulson                                    email: d@vidcoulson.com
-Linux Developer /                          web: http://davidcoulson.net/
-Network Engineer                                   phone: (216) 533-6967
-
+`I treat debconf as a hostile imperialist agent.  "ALL CONFIGS YOURS
+ NOW CONFIGS OURS ARE."' --- Stephen J. Turnbull
 
 
 -------------------------------------------------------
