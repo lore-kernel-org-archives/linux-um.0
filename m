@@ -1,16 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATHlD-0005Lw-2Y
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 01:32:59 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATHlC-0002HZ-Cj
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 01:32:58 -0800
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] SKAS vs ChrootJail
-In-Reply-To: <skqnx1nepxadcv5.081220030759@STENNY>
-Message-ID: <Pine.LNX.4.44.0312081030460.9997-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] Workaround for bug #851759 -  SuSE YAST in textmode
+ does not work
+In-Reply-To: <1070843660.31073.84.camel@wopr.tektonic.net>
+Message-ID: <Pine.LNX.4.44.0312081034150.9997-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -23,19 +16,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 8 Dec 2003 10:32:50 +0100 (CET)
-To: Stenny <uml@w4.homeip.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 8 Dec 2003 10:40:27 +0100 (CET)
+To: Matt Ayres <matta@tektonic.net>
+Cc: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-On Mon, 8 Dec 2003, Stenny wrote:
+On Sun, 7 Dec 2003, Matt Ayres wrote:
 
-> I'm new UML users, I have a question regarding SKAS and chrootjail, what
-> is diffirent between them, and if I have SKAS mode enabled, do I still
-> need chrootjail for increase of security?
+> I don't know about llseek, but access to /dev/random seems to be VERY
+> slow from within UML.
 
-SKAS and chrootjail addresses quite different aspects. SKAS addresses how
-UML manages memory, chrootjail tries to protect the host from users
-breaking out of UML.
+That would not be supricing... UML does not have very good random sources
+to populate /dev/random and /dev/random very easily gets drained of the
+little random information it has.. and in fact the same applies to all
+architectures unless your hardware has a random number generator.
+
+Generally /dev/urandom provides sufficient random information for most
+purposes. Why are you using /dev/random and not /dev/urandom?
 
 Regards
 Henrik
