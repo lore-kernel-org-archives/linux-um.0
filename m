@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtYgE-0002gK-Lb
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 12:52:26 -0800
+	id 1AtZ1O-00074L-VE
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 13:14:18 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.30)
-	id 1AtYU2-0002It-G3
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 12:39:50 -0800
-Message-Id: <200402182115.i1ILFYMM008279@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: Diagnosed and repeatable kernel mode panic in schedule() for 2.6! 
-In-Reply-To: Your message of "Tue, 17 Feb 2004 16:56:02 +0100."
-             <200402171656.02895.blaisorblade_spam@yahoo.it> 
-References: <200402151911.11890.blaisorblade_spam@yahoo.it> <20040216095335.GA27377@elte.hu>  <200402171656.02895.blaisorblade_spam@yahoo.it> 
+	id 1AtYwW-0004qx-6Y
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 13:09:16 -0800
+Message-Id: <200402182137.i1ILbOMM008506@ccure.user-mode-linux.org>
+Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4 
+In-Reply-To: Your message of "Wed, 18 Feb 2004 20:01:44 +0100."
+             <200402182001.44243.blaisorblade_spam@yahoo.it> 
+References: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp> <200402152045.17138.blaisorblade_spam@yahoo.it> <20d501c3f5c1$ef1d3d70$2000000a@schlepptopp>  <200402182001.44243.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -26,16 +26,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Feb 2004 16:15:34 -0500
+Date: Wed, 18 Feb 2004 16:37:24 -0500
 To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, roland <for_spam@gmx.de>
 
 blaisorblade_spam@yahoo.it said:
-> Now, with 2.6.3-rc2-1um, I get this message (the command was while cat
->  /dev/null; do cat /dev/null; done; both with normal init and init=/
-> bin/sh).
+> If I guessed right, the attached patch will solve everything.
+> Jeff, do you think this makes sense? 
 
-Is this with the patch I posted a couple of days ago?
+Yes, it makes all kinds of sense, and looks very similar to the fix I posted
+a couple of days ago.
+
+Nice debugging, though.  This was somewhat subtle.
 
 				Jeff
 
