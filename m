@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DChzL-000465-Gx for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2005 09:43:51 -0800
+	id 1DCjF9-0007k7-2E for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Mar 2005 11:04:15 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DChzJ-0006Hi-TS for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2005 09:43:51 -0800
-Message-Id: <200503192015.j2JKFexo002641@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] remap_page_range 
-In-Reply-To: Your message of "Thu, 17 Mar 2005 10:40:01 EST."
-	<EAC7622167479948B614F8B9AD41C505ECA8F5@MAANDMBX2.ets.enterasys.com> 
-References: <EAC7622167479948B614F8B9AD41C505ECA8F5@MAANDMBX2.ets.enterasys.com>
+	id 1DCjF6-0004b6-V9 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Mar 2005 11:04:14 -0800
+Message-Id: <200503191957.j2JJvWxo002621@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Getting fault address from a SIGSEGV 
+In-Reply-To: Your message of "Sat, 19 Mar 2005 14:44:44 +0100."
+	<423C2CCC.9040809@cs.unibo.it> 
+References: <423C2CCC.9040809@cs.unibo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -27,18 +27,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 19 Mar 2005 15:15:40 -0500
-To: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
+Date: Sat, 19 Mar 2005 14:57:32 -0500
+To: Mattia Belletti <mbellett@cs.unibo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-jtsillas@enterasys.com said:
-> The kernel tries to read the value using the virtual address (offset
-> from 0x271f0000) and gets back zeros. I've also tried look at the phys
-> addr (offset from 0x1f1f0000) and that too is zeros. 
+mbellett@cs.unibo.it said:
+> but I don't know where  in the code such status is filled, and so
+> where such information is  taken from :-)
 
-Have a look at the process /proc/<pid>/maps on the host to see what it has
-mapped in at 0x404e9000.  The offset column is the offset into the VM file,
-which is the physical address mapped in to that virtual address.
+On x86 (and x86_64), the fault address is sigcontext.cr2, the access type is
+stored in .err, and the CPU fault type is in .trapno.
 
 				Jeff
 
