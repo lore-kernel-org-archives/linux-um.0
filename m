@@ -1,30 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ayifi-0002Pm-Nn for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 18:33:14 -0800
-Received: from mx15.sac.fedex.com ([199.81.195.17])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1Ayi9B-0006Ko-7n
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 17:59:37 -0800
-Received: from inet03.prod.fedex.com (inet03.prod.fedex.com [199.81.10.43])
-	by mx15.sac.fedex.com (8.12.9p2/8.12.9) with ESMTP id i242JFGd039322
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 3 Mar 2004 20:19:15 -0600 (CST) (envelope-from jchua@fedex.com)
-Received: from entpm11.apac.fedex.com (entpm11.apac.fedex.com [155.161.92.11])
-	by inet03.prod.fedex.com (8.12.11/8.12.11) with ESMTP id
-	i242JDXb006229 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 3 Mar 2004 20:19:14 -0600 (CST)
-From: Jeff Chua <jchua@fedex.com>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
-In-Reply-To: <200403040216.i242G1Wo009026@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.58.0403041007440.24549@boston.corp.fedex.com>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com> 
-	<200403040216.i242G1Wo009026@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-Id: <200403040305.i2435EWo009397@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Thu, 04 Mar 2004 00:11:32 +0100."
+	<0d2e01c40174$dfda5b40$2000000a@schlepptopp> 
+References: <40430B47.3000004@sms.ed.ac.uk>
+	<200403022005.42635.blaisorblade_spam@yahoo.it>
+	<0d2e01c40174$dfda5b40$2000000a@schlepptopp> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: Hang at ipv4 setup is a cpufreq issue!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,35 +20,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 4 Mar 2004 10:19:23 +0800 (SGT)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Jeff Chua <jchua@fedex.com>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 03 Mar 2004 22:05:14 -0500
+To: roland <for_spam@gmx.de>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
+for_spam@gmx.de said:
+> i did an "modprobe p4-clockmod" and then "echo 0%40%50%performance >/
+> proc/cpufreq" to reduce the speed of my 2.6 ghz p4 (40% minimum, 50%
+> maximum)
+> and........
+> THE UML STARTS FINE AND THE HANG AT IPV4 SETUP IS GONE!
+> so - this is the workaround.
+> now we need a patch ;)
+> do we need the so called "rtc fix" ? does it exist already for 2.6
+> kernel ? 
 
-I'm on 2.6.3 and uml-patch-2.6.3-rc2 + 00-2.6.2-v1-host-SKAS2 no longer
-has this problem.
+2.4 and 2.6 are identical as far as the rtc stuff goes.  So, there's something
+else wrong.  I'm wondering whether this is somehow related to the rdtsc
+problem that came up recently.
 
-Only problem now is uml-patch-2.6.3-rc2 + 00-2.6.2-v1-host-SKAS2 cannot
-work with 2.6.4-rc1. Can't compile.
+				Jeff
 
-
-Thanks,
-Jeff
-[ jchua@fedex.com ]
-
-On Wed, 3 Mar 2004, Jeff Dike wrote:
-
-> jchua@fedex.com said:
-> > uml-patch-2.4.22-5 works fine, but newer patches fail during boot
-> > Starting daemons: syslogd klogd inetd namedKernel panic: Kernel mode
-> > fault at addr 0x48965000, ip 0x400e51a4
->
-> Can you check if this still happens with the next patch?  I fixed a crash
-> caused by klogd, and the klogd in the last line there makes me suspicious
-> that this is the same thing.
->
-> 				Jeff
->
 
 
 -------------------------------------------------------
