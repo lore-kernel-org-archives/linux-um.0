@@ -1,26 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Be6Zd-00033n-0h for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Jun 2004 23:22:01 -0700
-Received: from click.bur.st ([203.34.17.217])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Be6Zc-0002sm-2e for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Jun 2004 23:22:00 -0700
-Received: from thump.bur.st (thud.bur.st [10.1.1.1])
-	by click.bur.st (Postfix) with ESMTP id 6F2DD8A7D3
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 26 Jun 2004 14:21:54 +0800 (WST)
-From: Trent Lloyd <lathiat@bur.st>
-Subject: Re: [uml-devel] highmem support in 2.4 (2.4.26-1)
-Message-ID: <20040626062150.GC14474@thump.bur.st>
-References: <1088118748.31490.48.camel@etrs-pc02.ets.enterasys.com>
-	<200406251946.18048.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200406251946.18048.blaisorblade_spam@yahoo.it>
+	id 1BeJrd-0008UA-SC for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Jun 2004 13:33:29 -0700
+Received: from ip-217-18-179-10.reverse.dsi.net ([217.18.179.10]
+	helo=sindar.exse.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1BeJrc-0007Jj-5H for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Jun 2004 13:33:28 -0700
+Message-ID: <40DDDB91.9050304@exse.net>
+From: =?ISO-8859-1?Q?Sebastian_B=F6hm?= <seb@exse.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] backtrace of uml crash on mysql-server start
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,89 +26,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 26 Jun 2004 14:21:51 +0800
+Date: Sat, 26 Jun 2004 22:24:49 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-In 2.6.6, with HIGHMEM support on my kernel fails to build
+Hi,
 
-On Fri, Jun 25, 2004 at 07:46:17PM +0200, BlaisorBlade wrote:
-> Alle 01:12, venerd? 25 giugno 2004, D. Bahi ha scritto:
-> > hello UMLers
-> >
-> > i uml launch a guest with "mem=1024M"
-> > and i see "CONFIG_HIGHMEM not enabled".
-> > so i "make ARCH=um xconfig" to enable it
-> > and rebuild.
-> >
-> > i no longer see "CONFIG_HIGHMEM not enabled"
-> > but i still see "Memory: 460188k available"
-> > which makes me think i'm missing something.
-> 
-> That support could be broken. I don't think you can have done anything wrong 
-> (no configuration error possible; double-check that CONFIG_HIGHMEM = y in the 
-> .config, but you cannot have missed anything else).
-> 
-> But there could be some strange host configuration: what is your distro? Have 
-> you enabled exec-shield (which is enabled by default on Fedora and RedHat 9?
-> 
-> I think that the message could be wrong; could you check with the "free" 
-> command inside the UML?
-> 
-> See the explainations:
-> 
-> > w/o CONFIG_HIGHMEM:
-> 
-> >CONFIG_HIGHMEM not enabled - physical memory shrunk to 499122176 bytes
-> >Kernel virtual memory size shrunk to 32505856 bytes
-> 
-> > On node 0 totalpages: 121856
-> > zone(0): 121856 pages.
-> > zone(1): 0 pages.
-> > zone(2): 0 pages.
-> 
-> I.e. there are some pages (each one is 4k) in the zone 0 (normal).
-> 
-> > Memory: 474328k available
-> 
-> 
-> > w/ CONFIG_HIGHMEM:
-> 
-> > Kernel virtual memory size shrunk to 32 505 856 bytes
-> 
-> This is unrelated, but strange: is the kernel going to use just 32 Mega (in 
-> both cases) for itself?
-> 
-> > On node 0 totalpages: 262144
-> > zone(0): 121856 pages.
-> > zone(1): 0 pages.
-> > zone(2): 140288 pages.
-> 
-> I.e. there are those pages in the normal zone plus some more ones in the zone 
-> 2, i.e. (IIRC) the HIGHMEM zone. So HIGHMEM seems to work, at least 
-> partially.
-> 
-> > Memory: 460188k available
-> 
-> Bye
-> -- 
-> Paolo Giarrusso, aka Blaisorblade
-> Linux registered user n. 292729
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email sponsored by Black Hat Briefings & Training.
-> Attend Black Hat Briefings & Training, Las Vegas July 24-29 -
-> digital self defense, top technical experts, no vendor pitches,
-> unmatched networking opportunities. Visit www.blackhat.com
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+finally I was able to produce this stracktrace with 2.4.26-um1 (host 
+also 2.4.26)
+It happend during a mysql-server start. (I can reproduce this quite 
+constant, if you have further questions ...)
 
--- 
-Trent Lloyd <lathiat@bur.st>
-Bur.st Networking Inc.
+maybe something with ipc ?
+
+
+
+
+Breakpoint 1, panic (fmt=0x0) at panic.c:58
+58              machine_paniced = 1;
+(gdb) bt
+#0  panic (fmt=0x0) at panic.c:58
+#1  0xa008e04b in segv (address=28, ip=1818324839, is_write=2, is_user=0,
+    sc=0x0) at trap_kern.c:144
+#2  0xa008e3d7 in segv_handler (sig=11, regs=0xa13ec274) at trap_user.c:67
+#3  0xa0090ea4 in sig_handler_common_skas (sig=11, sc_ptr=0x58)
+    at trap_user.c:35
+#4  0xa008e408 in sig_handler (sig=0, sc=
+      {gs = 0, __gsh = 0, fs = 0, __fsh = 0, es = 43, __esh = 0, ds = 
+43, __dsh = 0, edi = 2, esi = 28, ebp = 2705260500, esp = 2705260428, 
+ebx = 0, edx = 0, ecx = 2684354560, eax = 28, trapno = 14, err = 6, eip 
+= 2684935257, cs = 35, __csh = 0, eflags = 66194, esp_at_signal = 
+2705260428, ss = 43, __ssh = 0, fpstate = 0x0, oldmask = 134217728, cr2 
+= 28}) at trap_user.c:101
+#5  <signal handler called>
+#6  0xa008dc59 in handle_page_fault (address=1881171332, ip=0, is_write=2,
+    is_user=0, code_out=0xa13f0024) at rwsem.h:101
+#7  0xa008df56 in segv (address=1881171332, ip=0, is_write=2, is_user=0,
+    sc=0x1c) at trap_kern.c:133
+#8  0xa008e3d7 in segv_handler (sig=11, regs=0xa13f0274) at trap_user.c:67
+#9  0xa0090ea4 in sig_handler_common_skas (sig=11, sc_ptr=0x58)
+    at trap_user.c:35
+#10 0xa008e408 in sig_handler (sig=28, sc=
+      {gs = 0, __gsh = 0, fs = 0, __fsh = 0, es = 43, __esh = 0, ds = 
+43, __dsh = 0, edi = 0, esi = 1881171332, ebp = 2705261644, esp = 
+2705261572, ebx = 188117---Type <return> to continue, or q <return> to 
+quit---
+
+/sebastian
 
 
 -------------------------------------------------------
