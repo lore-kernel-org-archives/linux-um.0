@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BeoMQ-00064K-FU for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Jun 2004 22:07:18 -0700
-Received: from lsmod.de ([217.172.172.73])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1BeoMQ-0002UQ-2d for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Jun 2004 22:07:18 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by lsmod.de (Postfix) with ESMTP id 1BE3480415
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 28 Jun 2004 07:07:10 +0200 (CEST)
-From: "Bernhard M. Wiedemann" <bernhard@lsmod.de>
-Message-ID: <Pine.LNX.4.53.0406280630500.19434@ibiza.lsmod.de>
+	id 1BepCO-0001XO-0y for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 27 Jun 2004 23:01:00 -0700
+Received: from fed1rmmtao12.cox.net ([68.230.241.27])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1BepCN-0006G0-IZ for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 27 Jun 2004 23:00:59 -0700
+Message-ID: <40DFB54D.5040109@easyco.com>
+From: Doug Dumitru <doug@easyco.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] exports
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Patch for arch/um/drivers/line.c to fix buffer error
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,33 +25,68 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 28 Jun 2004 07:07:10 +0200 (CEST)
+Date: Sun, 27 Jun 2004 23:06:05 -0700
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi There
+All,
 
-could someone please add those missing symbol exports?
-I need them for a LKM.
-thanks
-Bernhard M. Wiedemann aka greenbird (users sf net)
+I have been fighting a buffering error when sending large amounts of 
+data out pty devices from UML.  I have tried a couple of patches that 
+did not really fix the problem (and were rightly rejected by the group), 
+but have finally found the real bug.
 
-diff -ur ./linux-2.6.6-um/arch/um/kernel/ksyms.c ./linux-2.6.5-um/arch/um/kernel/ksyms.c
---- ./linux-2.6.6-um/arch/um/kernel/ksyms.c    2004-06-16 20:28:56.000000000 +0200
-+++ ./linux-2.6.5-um/arch/um/kernel/ksyms.c      2004-05-01 06:27:28.000000000 +0200
-@@ -50,11 +50,13 @@
- EXPORT_SYMBOL(find_iomem);
+In /arch/um/drivers/line.c there is a function "buffer_data" that is 
+responsible for storing data into the lines ring buffer.  The function 
+is "supposed" to return the number of characters actually buffered. 
+Unfortunately, in the case where the buffer wraps, the "len" variable is 
+decremented by "end" before it is used as the return parameter.
 
- #ifdef CONFIG_MODE_TT
-+EXPORT_SYMBOL(strncpy_from_user_tt);
- EXPORT_SYMBOL(copy_from_user_tt);
- EXPORT_SYMBOL(copy_to_user_tt);
- #endif
+Here is a patch that fixes this.
 
- #ifdef CONFIG_MODE_SKAS
-+EXPORT_SYMBOL(strncpy_from_user_skas);
- EXPORT_SYMBOL(copy_to_user_skas);
- EXPORT_SYMBOL(copy_from_user_skas);
- #endif
+--- linux-2.4.26-um/arch/um/drivers/line.c      2004-06-28 
+01:46:21.000000000 -0400
++++ linux-2.4.23-um/arch/um/drivers/line.c      2004-06-28 
+01:45:35.000000000 -0400
+@@ -72,9 +72,9 @@
+         else {
+                 memcpy(line->tail, buf, end);
+                 buf += end;
+-               len -= end;
+-               memcpy(line->buffer, buf, len);
+-               line->tail = line->buffer + len;
++               //len -= end;
++               memcpy(line->buffer, buf, len - end );
++               line->tail = line->buffer + len - end;
+         }
+
+         return(len);
+
+There is actually another bug in this area, but I am still working on a 
+"good" fix for this.  The scenario is this:
+
+   o An application opens an output device (ie /dev/serial/13)
+   o It pushes stuff do the device
+   o It closes the device
+
+This would be like:
+
+   cat /etc/termcap > /dev/serial/13
+
+The problem is that the device will close while there is still data 
+buffered in the ring buffer (and the ring-buffered data will not be 
+transfered to the device).  This is a pretty complicated scenario to 
+handle completely, so I have not tried to put together a patch for this 
+(plus it does not directly impact my customers at this point).  In 
+theory, handling all of these situations might require changes to how 
+the ring-buffering is implemented (or maybe can the ring-buffer be 
+eliminated all together).  Suggestions on how to implement this would be 
+appreciated.
+
+--------------------------------------------------------------------
+Doug Dumitru     800-470-2756     (610-237-2000)
+EasyCo LLC       doug@easyco.com  http://easyco.com
+--------------------------------------------------------------------
+
 
 
 -------------------------------------------------------
