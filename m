@@ -1,12 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200401060259.i062xGFI023152@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Thu, 25 Dec 2003 14:03:31 +0100."
-	<3FEAE023.6040908@darkman.de> 
-References: <3FEAE023.6040908@darkman.de> 
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1Adh7b-0007fO-Eg for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 18:39:07 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Adh7a-0000sZ-M9
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 18:39:06 -0800
+Message-Id: <200401060258.i062whFI023102@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] UML on PPC 
+In-Reply-To: Your message of "Mon, 29 Dec 2003 16:17:41 PST."
+	<20031230001741.92529.qmail@web12208.mail.yahoo.com> 
+References: <20031230001741.92529.qmail@web12208.mail.yahoo.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [uml-user] ubd=mmap problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,41 +28,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 05 Jan 2004 21:59:16 -0500
-To: Sven 'Darkman' Michels <sven@darkman.de>
-Cc: UML devel list <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
+Date: Mon, 05 Jan 2004 21:58:43 -0500
+To: Richard Rudolph <richrsvcn@yahoo.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-sven@darkman.de said:
-> i noticed that the uml can't reboot anymore cause it hangs in an
-> endless loop when unmounting the devices. all i saw was: 
-> map : /proc/mm map failed, err = 9 
+richrsvcn@yahoo.com said:
+> I was wondering if there is any current activity on the UML port to
+> PPC.  I've been searching the Internet and the only thing I can find
+> are patches and kernel downloads that are over two years old (2001).
+> Is the port to PPC currently being maintained?
 
-I take it this is reproducable?  ubd-mmap has been stable here, so there's
-something about what you're doing that's sending it off the deep end.
-
-The best way I can think to debug it is to stick printks where /proc/mm and
-ubd devices get opened and closed showing what file descriptor is involved.
-Apparently, the ubd driver is closing a file descriptor that UML thinks is 
-a /proc/mm descriptor.
-
-So, could you add printks for the following values in the following places -
-    fd in arch/um/kernel/skas/process.c:get_mm() after the os_open_file
-    mm->context.skas.mm_fd in arch/um/kernel/skas/mmu.c:destroy_context_skas()
-    
-    fd in arch/um/drivers/ubd_user.c:open_ubd_file() before the os_lock_file
-    dev->fd and dev->cow.fd in arch/um/drivers/ubd_kern.c:ubd_close() before
-their respective calls to os_close_file
-
-Make sure that logging is set up so that printks show up in the messages file
-or on the console so that you don't lose any of it.
-
-What I think you're looking for is ubd_close closing a /proc/mm descriptor.
-This would explain things going to hell when devices are being unmounted.
-
-I'm a little suspicious of the fact that ubd_close doesn't set the descriptors
-to -1 after closing them, but I don't see a bug there offhand.
+No.  If you want to pick it up, I'm pretty sure no one will object...
 
 				Jeff
+
 
 
 -------------------------------------------------------
