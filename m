@@ -1,10 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] Re: 2.6.4 UML kernel available
-In-Reply-To: <20040316184108.A14721@lnxi.com>
-Message-ID: <Pine.LNX.4.44.0403170746420.4188-100000@filer.marasystems.com>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1B3vv7-0004x2-Br for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Mar 2004 03:42:41 -0800
+Received: from pegasus.hiit.fi ([212.68.1.186])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1B3vv5-0008T2-Ss for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Mar 2004 03:42:40 -0800
+Received: from iki.fi (fortytwo.hiit.fi [212.68.5.83])
+	by pegasus.hiit.fi (Postfix) with ESMTP id BB4EB220009
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 18 Mar 2004 13:42:28 +0200 (EET)
+Message-ID: <40598B24.7040700@iki.fi>
+From: Kristian Slavov <kristian.slavov@iki.fi>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Using GDB in debugging UML kernel (2.6)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,25 +29,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Mar 2004 07:48:12 +0100 (CET)
-To: Mike Snitzer <msnitzer@lnxi.com>
-Cc: ML-uml-user <User-mode-linux-user@lists.sourceforge.net>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 18 Mar 2004 13:42:28 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 16 Mar 2004, Mike Snitzer wrote:
+Hi,
 
-> So Debian's init tries to spawn a getty on each and fails.  I'm not using
-> devfs or anything; again the same debian testing FS works great with a
-> 2.4.24 UML.
+I'm trying to debug my kernel code with UML and have run into couple of 
+troubles. My host kernel is 2.6.3 patched with host-skas3-2.6.3-v1, the UML 
+kernel is 2.6.3 with uml-patch-2.6.3-rc2-1. Both systems run Debian testing (sarge).
 
-Are you sure it is not a problem with the version of getty used?
+* GDB 5.3 with GCC 2.95
 
-Can you boot in singleuser mode?
+GDB does not recognize most of the structures. For example, try typing 'info 
+types xfrm_state' (requires IPv6 + IPsec stuff compiled in kernel).
+GDB will list many files. Some of them will show 'struct xfrm_state', most of 
+them 'struct unknown'.
+If I have a breakpoint in one of those file (that don't recognize the structure) 
+I can't print the structure. I've tried 'print {struct xfrm_state *}variable' 
+etc... but still nothing.
+I don't really like to dump memory and try to interpret the structures manually.
 
-Do you get the console output while the system is booting?
+* GDB 5.3 with GCC 3.3.3
 
-Regards
-Henrik
+info types xfrm_state shows the same files as above, but all of them now 
+recognize the xfrm_state. The problem in this case is that GDB will only show me
+one frame in the backtrace :( Not really useful having breakpoint in panic().
 
+Actually I've exerienced this same behaviour with GCC-2.95 too. I changed -g to 
+-ggdb in Linux makefiles. Perhaps GCC-3.3's -g is equal to GCC-2.95's -ggdb?
+
+* GDB 6.0 with GCC 2.95 or 3.3.3
+
+UML kernel does not send SIGTRAP at the beginning, or GDB ignores it. I checked 
+info signal and the SIGTRAP's actions were 'stop, print, don't pass'. This is 
+the same in both GDBs.
+
+Now the actual question :)
+What kind of setups do you use to debug UML? Do you have some ideas/suggestions 
+to help me?
+
+TIA
+-- 
+Kristian Slavov
 
 
 -------------------------------------------------------
