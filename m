@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AyFeX-0004Xy-Ch for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 11:34:05 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AyFS3-0000ri-4s for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 11:21:11 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Removing user_syms.c altogether
-References: <200402282010.41036.blaisorblade_spam@yahoo.it>
-	<200402291319.53584.blaisorblade_spam@yahoo.it>
-	<200403021840.i22IeBWo002559@ccure.user-mode-linux.org>
-In-Reply-To: <200403021840.i22IeBWo002559@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200403022000.12906.blaisorblade_spam@yahoo.it>
+	id 1AyGdV-0002zc-VJ for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 12:37:05 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AyGQy-0005SS-Vk
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 12:24:09 -0800
+Message-Id: <200403022054.i22KslWo003006@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Tue, 02 Mar 2004 10:08:24 EST."
+	<4044A368.8050406@nortelnetworks.com> 
+References: <4043B42A.10803@nortelnetworks.com>
+	<200403020100.i2210dM9025649@ccure.user-mode-linux.org>
+	<4044A368.8050406@nortelnetworks.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: problems with UML, issues with includes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,41 +30,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 2 Mar 2004 20:00:12 +0100
-Content-Transfer-Encoding: quoted-printable
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 02 Mar 2004 15:54:47 -0500
+To: Chris Friesen <cfriesen@nortelnetworks.com>
+Cc: User-mode-linux-devel <User-mode-linux-devel@lists.sourceforge.net>
 
-Alle 19:40, marted=EC 2 marzo 2004, Jeff Dike ha scritto:
-> blaisorblade_spam@yahoo.it said:
-> > Eeehm - yes! Note however the comment about genksyms: what I say is my
-> > idea,  but possibly a wrong one.
->
-> Yeah, this isn't right.  The userspace symbols are from libc, and have no
-> place under kernel/.
+cfriesen@nortelnetworks.com said:
+> Am I right in assuming that since we're hitting this it  seems to
+> indicate some messed-up reference counting somewhere? 
 
-> They should be exported from os/ somehow
-No problem: a file inside os-* can actually *not* be a USER_OBJS.
-> , and a
-> different OS might export totally different symbols.
+It would appear so.
 
-Yes, that is true (I thought to it). However, the need to avoid code=20
-duplication is still there.
+This is inside an if line->count == 0
 
-So, avoid moving the symbols to ksyms.c, but change user_syms.c that way (i=
-.e.=20
-make it not be an USER_OBJ), so we can avoid duplicating code. That is=20
-especially important because we cannot duplicate the __attribute_used__=20
-macro, which is needed with newer Gcc, and which is defined differently for=
-=20
-different compilers *in kernel headers*.
+> #4  0xa010e458 in line_open (lines=0xa02309a0, tty=0xaf1f7000, 
+> opts=0xa0230920) at line.c:258
 
-If you need the rebuilt patch, just let me know and I'll post it next week =
+and the place that decrements line->count does this:
 
-(I'm going to leave for a few days).
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+	if(line->count == 0)
+		line_disable(line, -1);
+
+which should ensure that the interrupt is disabled.
+
+Could you get stack traces from activate_fd and deactivate_fd for this irq?
+We need to see how the count is becoming 0 without the interrupt being turned
+off.
+
+				Jeff
 
 
 
@@ -71,7 +64,7 @@ Linux registered user n. 292729
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
+http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
