@@ -2,18 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D6sz7-0006Zy-RC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 08:15:33 -0800
+	id 1D6u1p-0001rH-RL for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 09:22:25 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D6sz5-0002MQ-Be for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 08:15:33 -0800
-Message-Id: <200503031844.j23IhmDS003473@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Triage on the pending patches 
-In-Reply-To: Your message of "Thu, 03 Mar 2005 00:08:51 EST."
-	<200503030008.51336.rob@landley.net> 
-References: <200503030822.j238MoBY016825@ccure.user-mode-linux.org>
-	<200503030008.51336.rob@landley.net> 
+	id 1D6u1V-0004SS-9g for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 09:22:25 -0800
+Message-Id: <200503031853.j23IrNDS003496@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] 2.6.11 + uml.sf.net patches panic 
+In-Reply-To: Your message of "Thu, 03 Mar 2005 15:53:07 +1300."
+	<42267C13.1060703@rimuhosting.com> 
+References: <42267C13.1060703@rimuhosting.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,22 +27,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 03 Mar 2005 13:43:48 -0500
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Date: Thu, 03 Mar 2005 13:53:23 -0500
+To: Peter <p.repliesignored@rimuhosting.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-rob@landley.net said:
-> Well, just in case your job was too easy, here's one more.  Using the
-> "quiet" option shows a couple of lines being printed out by printf
-> that should be printed out by printk (so they'll _shut_up_ when you
-> ask it to). 
+p.repliesignored@rimuhosting.com said:
+> I'm happy to carry on using vanilla 2.6.11.  But hopefully the stack
+> trace below triggers some insight into a problem with one of the
+> latest  uml.sf.net patches. 
 
-Those are printfs for a reason.  Early boot mesages (before the kernel is
-actually running) won't be seen if they are printk-d and the thing crashes
-before the console is initialized.  The messages will be stuck in the printk
-buffer, and you will be none the wiser.
+The write_ldt just above the segfault in both stacks looks suspicious.
 
-So, they can be made quiet if you really want, but that's not the way.
+Could you try backing out the ldt patches:
+	skas-hold-own-ldt
+	ldt-use-stub
+
+and see if the panic goes away?
 
 				Jeff
 
