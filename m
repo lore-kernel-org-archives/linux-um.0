@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AbO96-00034p-Ah
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 09:59:08 -0800
+	id 1AbOGA-0003VY-0R
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:06:26 -0800
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AbO95-0006V6-Pl
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 09:59:07 -0800
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AbOG9-0002EW-E7
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:06:25 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] UML on PPC
-References: <20031230001741.92529.qmail@web12208.mail.yahoo.com>
-In-Reply-To: <20031230001741.92529.qmail@web12208.mail.yahoo.com>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
+In-Reply-To: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200312301858.58966.blaisorblade_spam@yahoo.it>
+Message-Id: <200312301906.29735.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,24 +25,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Dec 2003 18:58:58 +0100
+Date: Tue, 30 Dec 2003 19:06:29 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 01:17, marted=EC 30 dicembre 2003, Richard Rudolph ha scritto:
-> Hi All,
+Alle 17:32, luned=EC 29 dicembre 2003, Jeff Chua ha scritto:
+> uml-patch-2.4.22-5 works fine, but newer patches fail during boot
 >
-> I was wondering if there is any current activity on the UML port to PPC. =
+> Starting daemons: syslogd klogd inetd namedKernel panic: Kernel mode fault
+> at addr 0x48965000, ip 0x400e51a4
 
-> I've been searching the Internet and the only thing I can find are patches
-> and kernel downloads that are over two years old (2001).  Is the port to
-> PPC currently being maintained?
-The last answer I've seen to this question is no. I'm not the UML maintaine=
-r=20
-so I don't know the reason (probably lack of enough interest/free time).
+What is your host distro? From some other problems I guessed you have a=20
+Debian. Would you confirm this, please? It's the 3rd/4th time I'm asking yo=
+u=20
+this.
 
-However, if you are able to make it work, I think that will be accepted=20
-gladly!
+If this is true, see this thread started on 20/12/2003 by Matt Zimmerman:
+
+2.4.22-[67] problems
+
+And, if you can, test that under different Debian versions as he did (i.e. =
+it=20
+seems that this happens only if UML is compiled under a certain environment=
+=20
+and not another).
+
+The actual error is very different from the one you report. But since the t=
+wo=20
+errors seem being about memory corruption (invalid pointer or race=20
+conditions), it's very likely that the problem is the same. I also think th=
+is=20
+because LVM code is probably correct!
 
 Bye
 --=20
