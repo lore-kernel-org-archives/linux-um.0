@@ -2,24 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cc7zO-0006sc-Q2 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 12:00:42 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Cc7zL-0008J5-WD
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 12:00:41 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [uml-devel] Re: What to do with uml_switch?
-Message-ID: <20041208193348.GC4853@bytesex>
+	id 1Cc8Se-0000vD-7Z for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 12:30:56 -0800
+Received: from dns2.uxu.ch ([195.216.70.51])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cc8Sb-000423-9N for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 12:30:55 -0800
+Message-ID: <41B762FA.6020303@uxu.ch>
+From: =?ISO-8859-1?Q?Felix_M=FCri?= <uml@uxu.ch>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] What to do with uml_switch?
 References: <200412040452.32722.blaisorblade_spam@yahoo.it>
-	<29928.1102218163@marajade.sandelman.ottawa.on.ca>
-	<20041206192526.GC12953@bytesex>
-	<5810.1102524702@marajade.sandelman.ottawa.on.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5810.1102524702@marajade.sandelman.ottawa.on.ca>
+In-Reply-To: <200412040452.32722.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,47 +27,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 8 Dec 2004 20:33:48 +0100
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
-Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, Steve Schmidtke <steve_schmidtke@hotmail.com>, Felix =?iso-8859-1?Q?M=FCri?= <uml@uxu.ch>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 08 Dec 2004 21:24:26 +0100
+To: Blaisorblade <blaisorblade_spam@yahoo.it>, User-mode-linux-devel@lists.sourceforge.net
 
->     Gerd> Hmm, not sure I like that idea.  Is this with vlan tagging
->     Gerd> support?  How can this be configured?  Is the command mode the
->     Gerd> only way, or can you also use some config file or command line
->     Gerd> switches for that?
+Blaisorblade schrieb:
+> Felix, even if your newer code is not yet "releasable", it can help anyway... 
+> even just describing the changes you did and why... design ideas are more 
+> important than code itself sometimes.
 > 
->   No VLANs. 
+Hi Paolo, I found finally some time to summarize my ideas. You 
+can find some blurb on
 
-Would be cool I think, so you could debug vlan code in the kernel using
-uml for example.
+http://www.uxu.ch/uxu/software/umls3_reasoning
 
->   It creates multiple sockets, and you tell the UML(s) about the multiple
-> interfaces. 
+My target is more an alternative of umlazi written as C-program 
+with an integrated uml_switch (but I doubt, that I will be 
+diligent enough to write an equivalent homepage for my program 
+:-). So there is still the need for a simple uml_switch program.
 
-That is clear.  How to you tell uml_switch which sockets it should
-create?
+Regards,
 
->   Please read the mentione paper.
-
-I've looked at it, it doesn't answer the configuration question through.
-Your openswan test setup seems to use command mode.  It's not clear
-whenever that is the only way to do it.  It shouldn't, for running tests
-that likely is perfect, but for other applications I just want a static
-configuration and uml_switch shouldn't wait for commands on stdin/out.
-
->   Secondly, I do not put these things into uml_switch.
->   Rather, I *refactor* things so that uml_switch and uml_netjig share
-> back end code. uml_switch has none of the above things, only the same
-> port.c code.
-
-Oh, so for uml_netjig you just link in some more some object files which
-do the arp answering, packet injection and so on?  That wasn't clear to
-me.  This makes much more sense ...
-
-  Gerd
-
--- 
-#define printk(args...) fprintf(stderr, ## args)
+Felix
 
 
 -------------------------------------------------------
