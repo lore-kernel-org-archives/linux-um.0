@@ -1,23 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D1TwV-0006ei-KJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Feb 2005 10:30:31 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D1TwT-0000jZ-Si for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Feb 2005 10:30:31 -0800
+	id 1D1TyE-0006tZ-3u for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 16 Feb 2005 10:32:18 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1D1TyB-0007CS-4V for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 16 Feb 2005 10:32:17 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] problems making UML binary
-References: <20050215155130Z2659002-7959+680@kps3.test.onet.pl>
-In-Reply-To: <20050215155130Z2659002-7959+680@kps3.test.onet.pl>
+Subject: Re: [uml-devel] Re: [PATCH] uml: support a separate build tree;
+	support USER_OBJS dependencies
+References: <opsl43d9yilfdzum@localhost.localdomain>
+	<200502132151.j1DLoxnW003492@ccure.user-mode-linux.org>
+	<opsl5r02lclfdzum@localhost.localdomain>
+In-Reply-To: <opsl5r02lclfdzum@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200502161929.14267.blaisorblade@yahoo.it>
+Message-Id: <200502161930.55206.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,49 +32,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 16 Feb 2005 19:29:13 +0100
+Date: Wed, 16 Feb 2005 19:30:54 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: adamdabr@poczta.onet.pl
+Cc: Vadim Abrossimov <vadim_abrossimov@yahoo.com>, Jeff Dike <jdike@addtoit.com>
 
-On Tuesday 15 February 2005 16:49, adamdabr@poczta.onet.pl wrote:
-> Hello,
->
-> Could you please help me with the following problem?
->
-> Here's a problem I've encountered when trying to compile an UML (User Mode
-> Linux) linux binary:
+On Monday 14 February 2005 00:11, Vadim Abrossimov wrote:
+> On Sun, 13 Feb 2005 16:50:59 -0500, Jeff Dike <jdike@addtoit.com> wrote:
 
-> 5) Then I've tried make linux ARCH=um but got problems:
->  a) with gcc 3.4.1 that I started with (standard Mandrake 10.1 instalation)
-> I've got a lot of errors like:
->
-> "sched.c:839: error: conflicting types for 'sleep_on_timeout'
->
-> /home/adam/work/UML/linux-2.4.27/include/linux/sched.h:598: error: previous
-> declaration of 'sleep_on_timeout'
->
-> was here"
-No idea about this (yet)... maybe GCC became stricter about declaration 
-consistency... Since the problem happens probably with i386, too, you might 
-try the latest 2.4 with the same patch applied.
+> This is the patch for USER_OBJS:
+Ok, I have two more requests, if possible:
+1) add something like arch/um/Rules.make which is included everywhere needed 
+and contains boilerplate, repeated code. Ideally that would also contain also 
+these two lines:
 
-> So I guessed it was a gcc/Mandrake problem..
->  b) with gcc 3.3.1-2mdk or gcc 2.96-063mdk I got another problem - make
-> linux ARCH=um runs smooth
+USER_OBJS += $(filter %_user.o,$(obj-y))
+USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
 
-> until it gets to linking: here is what I've got:
-> "ld -r -o unmap_fin.o unmap.o -lc -L/usr/lib
-> ld: cannot find -lc
-> make[3]: *** [unmap_fin.o] Error 1
-> make[3] Leaving directory
-> `/home/adam/work/UML/linux-2.4.27/arch/um/kernel/tt' ..."
+which are common to everything. So, most changes to this stuff could be 
+insulated.
 
-This is a message caused by missing /usr/lib/libc.a - install 
-glibc-static-devel and this one *should* work fine. Actually, in my 
-experience, gcc 3.3.2 from Mandrake 10 Official miscompiles UML / 2.4 (not 
-reproducible with UML / 2.6). gcc 3.2.2 from Mandrake 9.1 installs and works 
-well (use make ARCH=um CC='gcc-3.2.2' after installing it)... I've no 
-experience with the 3.3.1 one.
+2) There is an error in the patch (even in Al's idea): you must swap, in the 
+below code, CFLAGS_$(notdir $@) and $(USER_CFLAGS), since the former must be 
+able to override the latter.
+
+At least arch/um/kernel/frame.o will miscompile with the current patch; from 
+arch/um/kernel/Makefile
+
+#This must override the default -fomit-frame-pointer
+CFLAGS_frame.o := -fno-omit-frame-pointer
+
+#Notice that this declaration is correct.
+$(USER_OBJS) : %.o: %.c
+        $(CC) $(USER_CFLAGS) $(CFLAGS_$(notdir $@)) -c -o $@ $<
+
+And yes, this is a reason to use a common include instead of duplicating 
+everything.
+> +$(USER_OBJS) : c_flags = -Wp,-MD,$(depfile) $(CFLAGS_$(notdir $@))
+> $(USER_CFLAGS)
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
