@@ -2,23 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ACsTL-00088a-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 20:18:43 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	id 1ACwGL-0007la-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 24 Oct 2003 00:21:33 -0700
+Received: from blacksheep.csh.rit.edu ([129.21.60.6])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1ACqFm-0008KH-En
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 23 Oct 2003 17:56:34 -0700
-Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h9O0isj04359
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 20:44:55 -0400
-Message-Id: <200310240101.h9O11hmN006339@ccure.karaya.com>
-Subject: Re: [uml-devel] Re: Valgrind meets UML 
-In-Reply-To: Your message of "Thu, 23 Oct 2003 10:40:09 EDT."
-             <3F97E849.1090700@nortelnetworks.com> 
-References: <3F97E849.1090700@nortelnetworks.com> 
+	id 1ACjyy-0006zp-0i
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 23 Oct 2003 11:14:48 -0700
+Received: from dijkstra (dijkstra.csh.rit.edu [129.21.60.152])
+	by blacksheep.csh.rit.edu (Postfix) with ESMTP id 3D44937A
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 14:11:45 -0400 (EDT)
+Received: from mdz by dijkstra with local (Exim 3.35 #1 (Debian))
+	id 1ACjw0-0007hx-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 14:11:44 -0400
+From: Matt Zimmerman <mdz@debian.org>
+Subject: Re: [uml-devel] uml_switch
+Message-ID: <20031023181144.GU1538@dijkstra.csh.rit.edu>
+References: <20031023105524.88229.qmail@web20201.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Disposition: inline
+In-Reply-To: <20031023105524.88229.qmail@web20201.mail.yahoo.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -29,38 +32,20 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Oct 2003 21:01:43 -0400
-To: Giovanni Marzot <gmarzot@nortelnetworks.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jeremy@goop.org
+Date: Thu, 23 Oct 2003 14:11:44 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-gmarzot@nortelnetworks.com said:
-> Any words of wisdom appreciated. Has anyone used this combination
-> succesfully?
+On Thu, Oct 23, 2003 at 07:55:24AM -0300, Nelio Pereira wrote:
 
-I ran out of free time about a year ago when playing with this, but I did
-have UML and Valgrind playing together.
+> I would like to know where in the uml_switch code is the best place to do
+> that. Actually, I'd like to intercept those messages in a place where I
+> could know the sender and recipient IP of each message.
 
-> I wonder what "teaching valgrind about the false positives" entails. 
+I haven't checked the code, but I don't think that uml_switch decodes the IP
+header at all; it only deals with Ethernet frames.
 
-However, I didn't get anything useful out of it.  This is because Valgrind
-knows nothing about the kernel memory allocators.  I started describing them,
-but didn't get too far.
-
-IIRC, you add special macros into the allocators when the status of a region
-of memory changes.  I.e.
-	a buffer being returned from an allocator is declared readable and 
-writeable
-	a buffer being freed is declared unreadable and unwriteable (or maybe
-just inaccessible, I forgot)
-
-These macros expand into different sequences of noops which are recognized
-by Valgrind, which is a cute trick.
-
-You've found the UML config changes needed for Valgrind.  If Valgrind itself
-has the changes that Jeremy and I made, then you should be all set to at
-least run UML under it.
-
-				Jeff
+-- 
+ - mdz
 
 
 -------------------------------------------------------
