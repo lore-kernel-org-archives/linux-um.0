@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPNrr-0001xr-Dk for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 08:20:15 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	id 1CPNt3-0002GE-J8 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:21:29 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CPNrq-0006el-CP for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 08:20:15 -0800
+	id 1CPNt2-0006ty-Q3 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:21:29 -0800
 From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: Stop at startup on 2.6 NPTL hosts
-References: <20041029092641.8558.qmail@web26102.mail.ukl.yahoo.com>
-	<41884ACC.2020309@vgertech.com> <878y9jib8z.fsf@bytesex.org>
-In-Reply-To: <878y9jib8z.fsf@bytesex.org>
+Subject: Fwd: [uml-devel] devfs_mk_symlink abuse in arch/um/drivers
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200411031659.56887.blaisorblade_spam@yahoo.it>
+Message-Id: <200411030156.36319.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,23 +27,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Nov 2004 16:59:56 +0100
+Date: Wed, 3 Nov 2004 01:56:36 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Gerd Knorr <kraxel@bytesex.org>, Nuno Silva <nuno.silva@vgertech.com>
 
-On Wednesday 03 November 2004 09:32, Gerd Knorr wrote:
-> Nuno Silva <nuno.silva@vgertech.com> writes:
-> > Yes, maybe it was me and, FWIW, I never found a solution to make a
-> > dynamic skas uml run under 2.6+libcNTPL.
->
-> The usual workaround for any nptl issues works here as well:
-> export LD_ASSUME_KERNEL=2.4.21
-You mean 2.4.1 IIRC, right? However, that does not work on LinuxFromScratch 
-and Gentoo systems, mostly, which miss a non-NPTL glibc version.
+This is from some time ago. I'm going to implement this and test if this fixed 
+the DevFS problems we are getting.
+
+----------  Forwarded Message  ----------
+
+Subject: [uml-devel] devfs_mk_symlink abuse in arch/um/drivers
+Date: Wednesday 11 June 2003 13:28
+From: Christoph Hellwig <hch@lst.de>
+To: user-mode-linux-devel@lists.sourceforge.net
+
+Could you please decide what names to use in devfs for the um
+drivers,. i.e. pick on of
+
+/dev/mmapper0 vs /dev/mmapper
+/dev/serial/* vs /dev/tts/*
+/dev/ttys/* vs  /dev/vc/*
+
+devfs_mk_symlink as public API will fade away soon.
 
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
+
 
 
 -------------------------------------------------------
