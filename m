@@ -2,23 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cytv2-0002Ds-Tg for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 07:38:20 -0800
-Received: from smtp.gentoo.org ([156.56.111.197])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Cytv1-0002rS-Ha
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 07:38:20 -0800
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.42)
-	id 1Cytv0-0003os-0m for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 15:38:18 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.42)
-	id 1Cytuz-0002nD-OP for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 15:38:17 +0000
-From: bugzilla-daemon@gentoo.org
-Message-Id: <E1Cytuz-0002nD-OP@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+	id 1Cyuto-0005wi-Pn for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 08:41:08 -0800
+Received: from mail.ists.dartmouth.edu ([129.170.248.227])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cyutk-0002DU-M5 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 08:41:08 -0800
+Mime-Version: 1.0 (Apple Message framework v619.2)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <69f5c8791e34adc0f05b7433f6c7e254@whoopis.com>
+Content-Transfer-Encoding: 7bit
+From: Marion Bates <mbates@whoopis.com>
+Subject: [uml-devel] strace of "ls" under Fedora Core 3
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,24 +25,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 09 Feb 2005 15:38:17 +0000
+Date: Wed, 9 Feb 2005 11:40:54 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Marion Bates <mbates@whoopis.com>, William Stearns <wstearns@pobox.com>
 
-http://bugs.gentoo.org/show_bug.cgi?id=49277
+[this is Marion channeling Bill.]
+
+	As a quick reminder, Marion and Bill are trying to get i386 fedora 
+core 3 running under uml (2.6.4, with the i386 emulation code) on ford 
+(x86_64).  The uml binaries don't have TLS support, so we've renamed 
+all of: /lib/tls. /usr/lib/tls, and /usr/X11R6/lib/tls directories.
+	Even with that done, we're getting "cannot set up LDT for thread-local 
+storage" as an error message when running something as simple as 
+/bin/ls.  It appears that there's TLS system calls in the binary 
+itself, not just in the */lib/tls libraries:
+
+...
+brk(0)                                  = 0x805d000
+brk(0x807e000)                          = 0x807e000
+brk(0)                                  = 0x807e000
+shutdown(1610612264, 81)                = -1 ENOSYS (Function not 
+implemented)
+modify_ldt(0x1, 0x5ffffe28, 0x10)       = -1 ENOSYS (Function not 
+implemented)
+write(2, "cannot set up thread-local stora"..., 36cannot set up 
+thread-local storage: ) = 36
+write(2, "cannot set up LDT for thread-loc"..., 43cannot set up LDT for 
+thread-local storage
+) = 43
+write(2, "\n", 1
+)                       = 1
+--- SIGSEGV (Segmentation fault) ---
++++ killed by SIGSEGV +++
+
+	The "modify_ldt" call looks ominous; In a perfect world, wouldn't the 
+/bin/ls binary realize it didn't have any tls library support and not 
+use TLS system calls?
+	Yeah, right.  We can only hope.  :-)
+
+	Any ideas?
+	- A befuddled Marion and Bill
 
 
-
-
-
-------- Additional Comments From dsd@gentoo.org  2005-02-09 07:38 PST -------
-Could someone please update me with the status of this bug? Are there still problems?
-
-I notice that the latest version in portage is based on 2.6.8.1. Would upgrading to a newer version (assuming there are newer releases) help at all?
-
-
-
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
