@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BRuJu-0000F1-HM for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 07:51:22 -0700
-Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BRuJs-0007er-R1 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 07:51:21 -0700
-Message-ID: <084601c440d6$67d64090$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <40AFB5AB.2060204@mvpsoft.com>
+	id 1BRw5X-0005LY-2K for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 09:44:39 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BRw5W-0007lG-C8 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 09:44:38 -0700
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] CVS not updated?
+In-Reply-To: <200405231337.30401.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.LNX.4.44.0405231837160.23006-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [uml-user] Sources of entropy?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,46 +25,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 May 2004 16:58:26 +0200
-To: Chris Snyder <csnyder@mvpsoft.com>
-Cc: Jeff Dike <jdike@addtoit.com>, blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 23 May 2004 18:44:27 +0200 (CEST)
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, Henrik Nordstrom <uml@hno.marasystems.com>, user-mode-linux-devel@lists.sourceforge.net
 
-hi, 
-afaik, uml still has a general problem with /dev/random entropy.
-please read:
-http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=107914271712404&w=2
+On Sun, 23 May 2004, BlaisorBlade wrote:
 
-proxying /dev/random from the host sounds like a good solution.
-is there work in progress ?
+> Not here:
 
-regards
-roland
+This is because the CVS pserer currently being slightly 
+reorganised for security... should work once Jeff 
+gets the time to do the last few steps setting the permissions correctly.
 
+> even when I try from inside ssh blaisorblade@www.user-mode-linux.org. However, 
+> I used :ext: and my login name and it worked (though the site content is a 
+> bit out-of-date).
 
------ Original Message ----- 
-From: "Chris Snyder" <csnyder@mvpsoft.com>
-To: <user-mode-linux-user@lists.sourceforge.net>
-Sent: Saturday, May 22, 2004 10:18 PM
-Subject: [uml-user] Sources of entropy?
+ssh CVS access do work, but not pserver over ssh as this is no different 
+from pserver remotely except for encryption..
 
+> I would suggest to write, on the server, a script which checks out everything 
+> from the CVS repository and rebuilds it; then you commit the new site, run 
+> the script from the server and it should work perfectly + the site would 
+> always be up-to-date.
 
-> I'm having a problem with a UML that I have set up as a Kerberos server: 
-> starting the Kerberos Admin Daemon takes around ten minutes because 
-> there is very little entropy available in the UML, making reads from 
-> /dev/random block. Has anyone else ran into this problem? How can I most 
-> effectively deal with this? Thanks in advance.
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: Oracle 10g
-> Get certified on the hottest thing ever to hit the market... Oracle 10g. 
-> Take an Oracle 10g class now, and we'll give you the exam FREE.
-> http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
-> 
+???
+
+> By the way, onto 
+> http://user-mode-linux.sourceforge.net/compile.html
+> there is still a link to the old repository. (I know I could fix it now, by 
+> asking you to update then the site, but I've no time right now + you need to 
+> do something anyway).
+
+There is several updates wrt the pserver links once the CVS serber setup
+is finished.
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
