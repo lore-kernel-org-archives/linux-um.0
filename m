@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AyFFT-0006Zv-Hk for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 11:08:11 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AyEkn-00068G-Qz for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 10:36:29 -0800
+	id 1AyFeX-0004Xy-Ch for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 11:34:05 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AyFS3-0000ri-4s for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 11:21:11 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: problems with UML, issues with includes
-References: <4043B42A.10803@nortelnetworks.com>
-	<200403020100.i2210dM9025649@ccure.user-mode-linux.org>
-	<4044A368.8050406@nortelnetworks.com>
-In-Reply-To: <4044A368.8050406@nortelnetworks.com>
+Subject: Re: [uml-devel] [PATCH] Removing user_syms.c altogether
+References: <200402282010.41036.blaisorblade_spam@yahoo.it>
+	<200402291319.53584.blaisorblade_spam@yahoo.it>
+	<200403021840.i22IeBWo002559@ccure.user-mode-linux.org>
+In-Reply-To: <200403021840.i22IeBWo002559@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200403021906.20474.blaisorblade_spam@yahoo.it>
+Message-Id: <200403022000.12906.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,37 +29,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 2 Mar 2004 19:06:20 +0100
+Date: Tue, 2 Mar 2004 20:00:12 +0100
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Chris Friesen <cfriesen@nortelnetworks.com>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 16:08, marted=EC 2 marzo 2004, Chris Friesen ha scritto:
-> Jeff Dike wrote:
+Alle 19:40, marted=EC 2 marzo 2004, Jeff Dike ha scritto:
+> blaisorblade_spam@yahoo.it said:
+> > Eeehm - yes! Note however the comment about genksyms: what I say is my
+> > idea,  but possibly a wrong one.
 >
-> Maybe I'm just confused about how the various things get compiled.  In a
-> normal kernel build, including <linux/sched.h> gets you the kernel
-> headers, not the libc headers.
+> Yeah, this isn't right.  The userspace symbols are from libc, and have no
+> place under kernel/.
 
-> I had assumed that I would be able to get
-> at the UML kernel's sched.h from within the arch/um code.  Is this a
-> false assumption?  Or am I just doing it wrong?
+> They should be exported from os/ somehow
+No problem: a file inside os-* can actually *not* be a USER_OBJS.
+> , and a
+> different OS might export totally different symbols.
 
-Inside arch/um, there are some files which can include *only* the kernel=20
-includes, and some files which can include *only* the libc includes;=20
-os/file.c is of the second type. In the directory Makefile, the files liste=
-d=20
-in USER_OBJS are of the second type:
+Yes, that is true (I thought to it). However, the need to avoid code=20
+duplication is still there.
 
-USER_OBJS :=3D $(foreach file,file.o process.o tty.o,$(obj)/$(file))
-i.e. file.o is listed. Note this idiom:
+So, avoid moving the symbols to ksyms.c, but change user_syms.c that way (i=
+.e.=20
+make it not be an USER_OBJ), so we can avoid duplicating code. That is=20
+especially important because we cannot duplicate the __attribute_used__=20
+macro, which is needed with newer Gcc, and which is defined differently for=
+=20
+different compilers *in kernel headers*.
 
- USER_OBJS :=3D $(filter %_user.o,$(obj-y) $(obj-m)) fd.o ...
+If you need the rebuilt patch, just let me know and I'll post it next week =
 
-the $(filter ) part means a "grep" for *_user.o: i.e. every file ending in =
-
-_user.c is compiled against libc headers.
-
+(I'm going to leave for a few days).
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
