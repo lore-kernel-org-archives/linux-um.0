@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B7C1d-0007xz-Ka for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Mar 2004 03:30:53 -0800
-Received: from hoth.xs4all.nl ([213.84.241.98] helo=seven.hoth.xs4all.nl)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B7C1c-00051w-Cy for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Mar 2004 03:30:52 -0800
-From: Mark Hurenkamp <mark.hurenkamp@xs4all.nl>
+	id 1B7CUg-0003BB-Uy for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 27 Mar 2004 04:00:54 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1B7CUf-0007Me-Vu for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 27 Mar 2004 04:00:54 -0800
+From: Henrik Nordstrom <hno@marasystems.com>
 Subject: Re: [uml-devel] Kernel panic on UML linux
-References: <Pine.LNX.4.44.0403271153250.19079-100000@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.44.0403271153250.19079-100000@filer.marasystems.com>
+In-Reply-To: <200403271230.45025.mark.hurenkamp@xs4all.nl>
+Message-ID: <Pine.LNX.4.44.0403271255200.19645-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200403271230.45025.mark.hurenkamp@xs4all.nl>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,44 +25,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 27 Mar 2004 12:30:44 +0100
-To: Henrik Nordstrom <hno@marasystems.com>
+Date: Sat, 27 Mar 2004 13:00:42 +0100 (CET)
+To: Mark Hurenkamp <mark.hurenkamp@xs4all.nl>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 27 March 2004 11:55, Henrik Nordstrom wrote:
-> You need to set a breakpoint on panic
->
-> break panic
+On Sat, 27 Mar 2004, Mark Hurenkamp wrote:
 
-Seems to make no difference, gdb still reports 'Program exited normally'
+> > Is this TT or SKAS mode?
+> 
+> This is running in SKAS mode.
 
-(gdb) handle SIGSEGV pass nostop noprint
-Signal        Stop      Print   Pass to program Description
-SIGSEGV       No        No      Yes             Segmentation fault
-(gdb) handle SIGUSR1 pass nostop noprint
-Signal        Stop      Print   Pass to program Description
-SIGUSR1       No        No      Yes             User defined signal 1
-(gdb) break panic
-Breakpoint 1 at 0xa0011ac7: file panic.c, line 58.
+I have found that GDB in some case works better if I attach to the kernel
+separately, not starting the kernel from within GDB. At least on Fedora
+Core 2 test 1.. the GDB version used there seems to have very many
+problems, not only with UML. Maybe this also applies to your system?
 
-....
+To gain some time to attach the debugger you can boot the guest in
+"failsafe" mode by using init=/bin/sh. Then when you have attached the
+debugger, configured signals, set breakpoints etc allow the guest to
+continue the boot by running
 
+   exec /sbin/init
 
-Starting Firewall Initialization (phase 2 of 3) Kernel panic: Kernel mode 
-fault at addr 0x489f2000, ip 0x400e9df8
+from the guest console..
 
+Regards
+Henrik
 
-Program exited normally.
-(gdb) bt
-No stack.
-
-
-> Is this TT or SKAS mode?
-
-This is running in SKAS mode.
-
-
-Mark.
 
 
 -------------------------------------------------------
