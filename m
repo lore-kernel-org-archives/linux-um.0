@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1APNYC-0002o2-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 27 Nov 2003 06:55:24 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.24)
-	id 1APNYC-0007hN-6B
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 27 Nov 2003 06:55:24 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20031127144016.GA29444@bytesex.org>
+	id 1APRre-0006Zj-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 27 Nov 2003 11:31:46 -0800
+Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1APRre-00015A-5e
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 27 Nov 2003 11:31:46 -0800
+Received: from p5082fc7b.dip.t-dialin.net ([80.130.252.123] helo=[192.168.1.10])
+	by 62-241-36-148.kunde.vdserver.de with asmtp (Exim 3.35 #1 (Debian))
+	id 1APRrU-0002NF-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 27 Nov 2003 19:31:37 +0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] [patch] Missing EXPORT_SYMBOL()s for UML
+Message-Id: <a06010201bbec00ce8036@[192.168.1.10]>
+From: Johannes Formann <johannes@formann.de>
+Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Subject: [uml-devel] process start time in future
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -25,43 +27,34 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 Nov 2003 15:40:16 +0100
-To: Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: agruen@sonycom.com
-
-  Hi,
-
-This adds some required needed symbols.
-
-  Gerd
-
------ Forwarded message from Andreas Gruenbacher <agruen@suse.de> -----
+Date: Thu, 27 Nov 2003 20:31:39 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
 Hi,
 
-here are two additional exports that are needed in kernel modules. Could
-you please send the patch upstream? Thanks!
+I've a problem, when I'm running an UML for a few days, the starttime 
+of new prozesses are slowly drifting into the future.
 
-Index: linux-2.6.0-test10/arch/um/kernel/mem.c
-===================================================================
---- linux-2.6.0-test10.orig/arch/um/kernel/mem.c	2003-11-26 16:25:21.000000000 +0100
-+++ linux-2.6.0-test10/arch/um/kernel/mem.c	2003-11-27 14:28:53.000000000 +0100
-@@ -119,6 +119,7 @@ unsigned long get_kmem_end(void)
- 		kmem_top = CHOOSE_MODE(kmem_end_tt, kmem_end_skas);
- 	return(kmem_top);
- }
-+EXPORT_SYMBOL(get_kmem_end);
- 
- #ifdef CONFIG_HIGHMEM
- /* Changed during early boot */
-@@ -714,6 +715,7 @@ struct page *pfn_to_page(unsigned long p
- 
- 	return(&mem_map[pfn - region->start_pfn]);
- }
-+EXPORT_SYMBOL(pfn_to_page);
- 
- unsigned long phys_to_pfn(unsigned long p)
- {
+I'ven seen that with 2.4.21-6, 2.4.22-5um and 2.4.22-6um.
+
+Can anyone explain/fix it?
+
+An exampel is shown below.
+
+$  ps -f ; date
+UID        PID  PPID  C STIME TTY          TIME CMD
+johannes  8967  8966  0 23:54 pts/1    00:00:00 -bash
+johannes  9117  8967  0 Nov28 pts/1    00:00:00 ps -f
+Thu Nov 27 19:27:52 UTC 2003
+
+# ps -f ; date
+UID        PID  PPID  C STIME TTY          TIME CMD
+root      5256  5254  0 23:55 pts/0    00:00:00 -bash
+root      5376  5256  0 Nov28 pts/0    00:00:00 ps -f
+Thu Nov 27 19:27:46 UTC 2003
+
+
+Greetings Johannes
 
 
 -------------------------------------------------------
