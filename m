@@ -2,15 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5Sut-0002Fm-RX for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 10:41:03 -0700
-Received: from mail-relay-1.tiscali.it ([213.205.33.41])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C5Suq-0004Q4-Cl for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 10:41:02 -0700
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20040908173855.68F518D0B@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml-update-2.6.8-finish
+	id 1C5TIv-0007z2-VU for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 11:05:53 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1C5TIu-00084X-Op for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 11:05:53 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 1/1] uml:fix ubd deadlock on SMP
+References: <20040908172503.384144933@zion.localdomain>
+	<20040908111204.I1973@build.pdx.osdl.net>
+In-Reply-To: <20040908111204.I1973@build.pdx.osdl.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409092002.19134.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,34 +30,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Sep 2004 19:38:55 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Thu, 9 Sep 2004 20:02:19 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Chris Wright <chrisw@osdl.org>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-
-Add some updates for API changes in 2.6.8 which were not included in the original
-UML patch; these fixes were detected by some warnings, so I probably missed some more
-ones.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
-
- uml-linux-2.6.8.1-paolo/include/asm-um/dma-mapping.h |    2 ++
- 1 files changed, 2 insertions(+)
-
-diff -puN include/asm-um/dma-mapping.h~uml-update-2.6.8-finish include/asm-um/dma-mapping.h
---- uml-linux-2.6.8.1/include/asm-um/dma-mapping.h~uml-update-2.6.8-finish	2004-09-07 15:17:57.593456048 +0200
-+++ uml-linux-2.6.8.1-paolo/include/asm-um/dma-mapping.h	2004-09-07 15:17:57.595455744 +0200
-@@ -1,6 +1,8 @@
- #ifndef _ASM_DMA_MAPPING_H
- #define _ASM_DMA_MAPPING_H
- 
-+#include <asm/scatterlist.h>
-+
- static inline int
- dma_supported(struct device *dev, u64 mask)
- {
-_
+On Wednesday 08 September 2004 20:12, Chris Wright wrote:
+> * blaisorblade_spam@yahoo.it (blaisorblade_spam@yahoo.it) wrote:
+> > Trivial: don't lock the queue spinlock when called from the request
+> > function. Since the faulty function must use spinlock in another case,
+> > double-case it. And since we will never use both functions together, let
+> > no object code be shared between them.
+>
+> Why not add a helper which locks around the core function.  Then either
+> call helper or core function directly depending on locking needs?
+I'm happy with whatever is nicer.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
