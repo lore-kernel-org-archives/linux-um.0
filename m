@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AdwGX-00011e-1l for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:49:21 -0800
-Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AdwGW-0002gy-Ia for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:49:20 -0800
+	id 1AdwH9-00012k-OA for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:49:59 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AdwH6-0002uf-3F
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:49:56 -0800
+Message-Id: <200401061909.i06J9ctd003026@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Tue, 06 Jan 2004 19:20:59 +0100."
+	<200401061921.00054.blaisorblade_spam@yahoo.it> 
+References: <200401061921.00054.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
-Message-Id: <a0602040bbc20b325acfd@[192.168.1.10]>
-In-Reply-To: <200401061918.31447.blaisorblade_spam@yahoo.it>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<200401061718.i06HILtd002620@ccure.user-mode-linux.org>
-	<a0602040abc20a9f6862e@[192.168.1.10]>
-	<200401061918.31447.blaisorblade_spam@yahoo.it>
-From: Johannes Formann <johannes@formann.de>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip
- 0x400e51a4
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: 2.6-specific UML patches (modules, modversions,
+	various other stuff)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,35 +29,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 6 Jan 2004 19:49:19 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 06 Jan 2004 14:09:38 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-At 19:18 Uhr +0100 06.01.2004, BlaisorBlade wrote:
+blaisorblade_spam@yahoo.it said:
+> There you will find a number of patches for UML 2.6. Some are mine and
+> some  come from Ingo and M A Young; I've included everything Ingo
+> posted minus the  speedup - breakage for 2.4 host. That is,
+> MM_COPY_SEGMENTS is still called by  UML but if the host is a 2.6 that
+> is a no-op. 
 
->you need to type this before starting:
->
->(host gdb) handle SIGSEGV pass nostop noprint
->(host gdb) handle SIGUSR1 pass nostop noprint
+There's a lot of old stuff in that patch.  It would be more useful to me if
+it were against a recent UML patch, like the 2.6.0 patch that I'm working
+on at the moment.  That has all the recent 2.4 changes pulled in as well as
+updating to 2.6.0.  A patch containing the stuff that you have that I don't
+would be useful.
 
-When I type that, It hit no breakpoint, so I cant get any backtarce
+Some more specific things -
+	I'm not going to update the skas3 patch again, but I'm glad people are
+cleaning it up and updating it.
+	I don't like the UML_USER_OBJS thing - feel free to work on it, but
+I'm not going to merge it unless I'm desperate.  I continue to think that the
+right way to go is to move all the userspace stuff under os-Linux, then fiddle
+the build rules there.
 
-..
+				Jeff
 
-Starting system log daemon: syslogd.
-Starting kernel log daemon: klogd.
-Kernel panic: Kernel mode fault at addr 0x8814000, ip 0x400d93c4
-
-(no debugging symbols found)...(no debugging symbols found)...(no 
-debugging symbols found)...
-Program exited normally.
-(gdb) bt
-
-Can you give am a step by sped advice /'m new in (kernel)debuging), 
-the simple run with all brakpoints doesn't seem to help.
-
-regards
-
-Johannes
 
 
 -------------------------------------------------------
