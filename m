@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsQKB-0005OC-3l
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 09:44:59 -0800
-Received: from mail.gmx.net ([213.165.64.20])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AsQCS-0005oX-15
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 09:37:00 -0800
-Message-ID: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-Subject: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
+	id 1AsRvQ-00044B-7y
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 11:27:32 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AsRsM-0000hJ-GQ
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 11:24:22 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] need help , uml .....
+References: <20040214183745.20159.qmail@web60103.mail.yahoo.com>
+In-Reply-To: <20040214183745.20159.qmail@web60103.mail.yahoo.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200402151715.53930.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,107 +27,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 15 Feb 2004 18:47:14 +0100
+Date: Sun, 15 Feb 2004 17:15:53 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: kenz kenz <kenz260@yahoo.fr>
 
-hi !
-concerning the uml "hang" after  "NET: Registered protocol family 2":
+Alle 19:37, sabato 14 febbraio 2004, kenz kenz ha scritto:
+> hello, i'm a student trauing to use uml in my project , i have a P4
+> processor ; i install linux redhat 9 in my computer .
 
-after some investigation i found, that the problem seems to have been introduced with
-uml-patch-2.6.0-1 (at http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-1.bz2)
+See http://toast.debian.net/~may/umlproject/bugs.html, the first section under 
+Fedora specific bugs. That could be maybe the solution, but it could also be 
+not.
 
-uml-patch-2.6.0-test9-1 (at http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-test9-1.bz2?download),
-in conjunction with minor compile-fix http://people.0x63.nu/~andersg/uml-minor-fixes.diff works nicely for me.
+> i try to install uml
+> in it but i didn't succeed . i have done this :
+> 1- i unzip linux-2.4.20......tar.bz2
+>    tar -jxvf linux......
+> 2- i have patch this kernel
+>     bunzip uml-patch...bz2|patch 1
+>    (in this commande i was obligede to create a new directory um in
+> linux-2.4.20/arch so the patch functions correctly )
+Strange, if you do bzcat uml-patch....bz2|patch -p1 you should not need that 
+(bunzip uml-patch..bz2|patch 1 cannot work at all).
+ 3- i done make xconfig
+> ARCH=um
+> 4- make dep
 
-seems there has been a major change (lots of merges?) in uml-patch-2.6.0-1 because it`s much more bigger (around 2x) than
-uml-patch-2.6.0-test9-1
+Not needed at all.
 
-btw:
-i use Bryan O'Sullivan`s skas patch on my host kernel. see: http://sourceforge.net/mailarchive/message.php?msg_id=5840691
-since this patch isn`t based on steven james patch (which stephen williams patch is based of), it isn`t a skas issue, but a compiler
-or host-fs issue !? i`m on suse9 host.
+> a window appeared , i save an exsit this window
+Ehh? You mean that after make xconfig ARCH=um you pressed "save and exit"? Do 
+you know what make xconfig is about? It seems you should really read the 
+"Kernel HOWTO" (Google is your friend in finding it).
 
-any clues?
+> 5- make uml-linux ARCH=um
 
-regards
-roland
+You mean "make linux ARCH=um", right?
 
+> 6- when trying to run the binary with
+>     uml-linux ubd0=path-of-file-system
+> it dosen't work complitly , it ended with a message like :
+> kernel panic ...........line 603
 
+You must post the exact messages it prints out, with copy-and-paste to the 
+mail.
 
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-
------ Original Message ----- 
-From: "roland" <for_spam@gmx.de>
-To: "Phil Nadeau" <phil@innercite.com>; <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Saturday, February 14, 2004 10:45 PM
-Subject: Re: [uml-devel] Kernel idles in loop after loading IPv4
-
-
-> hi !
-> i have the same problem.
-> my uml is 2.6.3-rc2 with jeff`s latest uml patch.
-> host is 2.6.0-test11 with skas patch
-> with 2.6.0-test11 + uml patch i didn`t have such problem.
-> any hints?
->
-> regards
-> roland
->
->
-> ----- Original Message ----- 
-> From: "Phil Nadeau" <phil@innercite.com>
-> To: <user-mode-linux-devel@lists.sourceforge.net>
-> Sent: Tuesday, January 27, 2004 9:54 PM
-> Subject: [uml-devel] Kernel idles in loop after loading IPv4
->
->
-> > Hello UML developers,
-> >
-> > I'm trying to use UML to set up a simulator for a high-availability
-> > cluster. I encounter the following unexpected behavior -
-> >
-> > On any kernel that I compile with IPv4 support, the kernel will stop
-> > intializing drivers after loading IPv4 support. The last message I see
-> > from the kernel is:
-> > NET: Registered protocol family 2
-> >
-> > Compiling with debug allows me to single-step through the kernel. I've
-> > traced execution from inet_init(), to synchronize_net(), to
-> > synchronize_kernel(), to a call to wait_for_completion(), to
-> > switch_to_tt(), after which the kernel spends all its time in the idle
-> > loop. This happens whether I'm using SKAS or TT mode.
-> >
-> > Host kernel is 2.6.1 with Stephen William's 2.6.1 SKAS patch (thanks
-> > Stephen). Guest kernel is 2.6.1 with the latest patch from Sourceforge
-> > (January 15th), without modules, and with nearly everything disabled at
-> > compile except core functionality and IPv4.
-> >
-> > I've tried to find similar cases in the FAQ's and the list archives, but
-> > I'm not seeing anything. It seems like the kernel is waiting for an
-> > event related to IPv4 initialization that it never gets, but I'm not
-> > familiar enough with the kernel proper to know what that might be. Does
-> > anyone have any ideas?
-> >
-> > Thanks in advance.
-> >
-> > -- 
-> > Phil Nadeau
-> > Software Services Manager
-> > phil.nadeau@innercite.com
-> > (916)932-3200, (800)921-5513
-> >
-> >
-> >
-> > -------------------------------------------------------
-> > The SF.Net email is sponsored by EclipseCon 2004
-> > Premiere Conference on Open Tools Development and Integration
-> > See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
-> > http://www.eclipsecon.org/osdn
-> > _______________________________________________
-> > User-mode-linux-devel mailing list
-> > User-mode-linux-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> >
 
 
 
