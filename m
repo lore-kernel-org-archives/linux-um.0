@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AX9uF-00021i-Nw
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 17:58:19 -0800
-Received: from mta11.adelphia.net ([68.168.78.205])
+	id 1AXANx-0002yM-Ji
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 18:29:01 -0800
+Received: from mta9.adelphia.net ([68.168.78.199])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AX9uF-0006NO-Ej
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 17:58:19 -0800
+	id 1AXANx-0004vE-AF
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 18:29:01 -0800
 From: Matt Zimmerman <mdz@debian.org>
-Message-ID: <20031219015812.GS18100@alcor.net>
-References: <1071789754.763978.973.nullmailer@nietzsche.wgtn.cat-it.co.nz> <20031219002949.GX18100@alcor.net> <3FE25502.2010205@catalyst.net.nz>
+Subject: Re: [uml-devel] Re: Bug#224431: user-mode-linux: Hangs
+Message-ID: <20031219022854.GW18100@alcor.net>
+References: <1071789754.763978.973.nullmailer@nietzsche.wgtn.cat-it.co.nz> <20031219002949.GX18100@alcor.net> <20031219014756.GC4945@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3FE25502.2010205@catalyst.net.nz>
-Subject: [uml-devel] Re: Bug#224431: user-mode-linux: Hangs
+In-Reply-To: <20031219014756.GC4945@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,31 +25,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Dec 2003 17:58:12 -0800
-To: Srdjan <srdjan@catalyst.net.nz>
-Cc: user-mode-linux-devel@lists.sourceforge.net, 224431-forwarded@bugs.debian.org
+Date: Thu, 18 Dec 2003 18:28:54 -0800
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Srdjan <srdjan@catalyst.net.nz>, 224431-forwarded@bugs.debian.org
 
-On Fri, Dec 19, 2003 at 02:31:46PM +1300, Srdjan wrote:
+On Thu, Dec 18, 2003 at 08:47:56PM -0500, Jeff Dike wrote:
 
-> I seem to be able to connect to it:
+> On Thu, Dec 18, 2003 at 04:29:49PM -0800, Matt Zimmerman wrote:
+> > Apparently, tt mode is broken.  I use skas, which is working fine in
+> > 2.4.22-7um-1, but I can reproduce your failure with mode=tt.
 > 
-> srdjan@nietzsche:/plato-home/srdjan$ uml_mconsole wWko45
-> (wWko45) config eth0
-> ERR No get_config routine defined
-> (wWko45) cad
-> OK 
+> Hmmm, I can't.  It seems fine here.
 > 
-> although cad didn't do anything.
+> Can you run it with 'debug' and get a stack trace from the hang?
 
-What does "config con1" say?
+Unfortunately, unstable recently received gdb 6.0, and 'debug' no longer
+works.
 
-> It worked yesterday with 2.4.22-5um-1, I only could not make network go,
-> which I hoped to resolve today (but then I upgraded...:) I've installed
-> kernel-patch-skas, but it refused to patch my 2.4.22 kernel. Any
-> suggestions?
+GNU gdb 6.0-debian
+Copyright 2003 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain
+conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i386-linux"...(no debugging symbols found)...
+[hangs here indefinitely; gdb is suspended]
+mdz      15970  0.0  0.4  5956 2576 pts/12   S    18:19   0:00 gdb --command /tm
+mdz      15971  0.0  0.4  5956 2576 pts/12   T    18:19   0:00 gdb --command /tm
 
-Make sure you have the latest version of kernel-patch-skas; that version
-works fine with 2.4.22.
+sending a SIGCONT to the suspended gdb process results in:
+
+0xa01502b1 in ?? ()
+/tmp/gdb_init-cJnGax:2: Error in sourced command file:
+No symbol table is loaded.  Use the "file" command.
+(gdb) 
+
+(line 2 of the sourced command file is 'b panic')
+
+It still seems to work to run UML inside gdb manually, though.  Here's the
+backtrace:
+
+(gdb) bt
+#0  0xa016619d in waitpid ()
+    at /space/tmp/mdz/debian/work/user-mode-linux/user-mode-linux-2.4.22-7um/kernel-source-2.4.22/include/linux/proc_fs.h:158
+#1  0x00005261 in ?? ()
+#2  0xa00c17b0 in tracer (init_proc=0xa00c03b0 <start_kernel_proc>, 
+    sp=0xa01f3ffc) at tracer.c:236
+#3  0xa00c04de in start_uml_tt () at process_kern.c:500
+#4  0xa00bebc5 in linux_main (argc=7, argv=0xbffff684) at um_arch.c:387
+#5  0xa000d3c1 in main (argc=7, argv=0xbffff684, envp=0xbffff6a4)
+    at arch/um/main.c:146
+
+In my case, the host kernel is 2.4.21 with skas3.
 
 -- 
  - mdz
