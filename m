@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9Arn-0000mb-JJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 15:45:27 -0800
+	id 1D9As1-0000mu-7s for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 15:45:41 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D9Arl-0001bz-SA for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 15:45:27 -0800
-Message-Id: <200503100215.j2A2FuDN015227@ccure.user-mode-linux.org>
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D9As0-0006vb-Is for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 15:45:41 -0800
+Message-Id: <200503100216.j2A2G6DN015238@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/9] UML - "Hardware" random number generator
+Subject: [uml-devel] [PATCH 5/9] UML - change semaphores to completions
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,200 +24,128 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 09 Mar 2005 21:15:56 -0500
+Date: Wed, 09 Mar 2005 21:16:06 -0500
 To: torvalds@osdl.org
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: simlo@phys.au.dk, akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This implements a hardware random number generator for UML which attaches
-itself to the host's /dev/random.
+From: Esben Nielsen <simlo at phys au dk>
+
+One of the problems was use of direct architecture specific semaphores
+(which doesn't work under PREEMPT_REALTIME) and in places where a quick
+(maybe too quick) look at the code told me that completions ought to be
+used. Therefore I changed two semaphores to completions which compiled
+fine. I have tried the change on 2.6.11-rc2, and it seemed to work, but I
+have not tested it heavily.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.11/arch/um/Kconfig_char
+Index: linux-2.6.11/arch/um/drivers/port_kern.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/Kconfig_char	2005-03-08 20:13:55.000000000 -0500
-+++ linux-2.6.11/arch/um/Kconfig_char	2005-03-08 20:22:24.000000000 -0500
-@@ -190,5 +190,19 @@
- 	tristate
- 	default UML_SOUND
+--- linux-2.6.11.orig/arch/um/drivers/port_kern.c	2005-03-08 20:17:34.000000000 -0500
++++ linux-2.6.11/arch/um/drivers/port_kern.c	2005-03-08 22:16:48.000000000 -0500
+@@ -25,7 +25,7 @@
+ 	struct list_head list;
+ 	atomic_t wait_count;
+ 	int has_connection;
+-	struct semaphore sem;
++	struct completion done;
+ 	int port;
+ 	int fd;
+ 	spinlock_t lock;
+@@ -68,7 +68,7 @@
+ 	conn->fd = fd;
+ 	list_add(&conn->list, &conn->port->connections);
  
-+config UML_RANDOM
-+	tristate "Hardware random number generator"
-+	help
-+	This option enables UML's "hardware" random number generator.  It
-+	attaches itself to the host's /dev/random, supplying as much entropy
-+	as the host has, rather than the small amount the UML gets from its
-+	own drivers.  It registers itself as a standard hardware random number
-+	generator, major 10, minor 183, and the canonical device name is 
-+	/dev/hwrng.
-+	The way to make use of this is to install the rng-tools package
-+	(check your distro, or download from 
-+	http://sourceforge.net/projects/gkernel/).  rngd periodically reads 
-+	/dev/hwrng and injects the entropy into /dev/random.
+-	up(&conn->port->sem);
++	complete(&conn->port->done);
+ 	return(IRQ_HANDLED);
+ }
+ 
+@@ -197,13 +197,14 @@
+ 		{ .list 	 	= LIST_HEAD_INIT(port->list),
+ 		  .wait_count		= ATOMIC_INIT(0),
+ 		  .has_connection 	= 0,
+-		  .sem 			= __SEMAPHORE_INITIALIZER(port->sem, 
+-								  0),
+ 		  .lock 		= SPIN_LOCK_UNLOCKED,
+ 		  .port 	 	= port_num,
+ 		  .fd  			= fd,
+ 		  .pending 		= LIST_HEAD_INIT(port->pending),
+ 		  .connections 		= LIST_HEAD_INIT(port->connections) });
 +
- endmenu
++	init_completion(&port->done), 
++
+ 	list_add(&port->list, &ports);
  
-Index: linux-2.6.11/arch/um/defconfig
-===================================================================
---- linux-2.6.11.orig/arch/um/defconfig	2005-03-08 20:13:55.000000000 -0500
-+++ linux-2.6.11/arch/um/defconfig	2005-03-08 20:22:24.000000000 -0500
-@@ -111,6 +111,7 @@
- CONFIG_UML_SOUND=m
- CONFIG_SOUND=m
- CONFIG_HOSTAUDIO=m
-+CONFIG_UML_RANDOM=y
+  found:
+@@ -237,7 +238,7 @@
+         atomic_inc(&port->wait_count);
+ 	while(1){
+ 		fd = -ERESTARTSYS;
+-		if(down_interruptible(&port->sem))
++                if(wait_for_completion_interruptible(&port->done))
+                         goto out;
  
- #
- # Block devices
-Index: linux-2.6.11/arch/um/drivers/Makefile
-===================================================================
---- linux-2.6.11.orig/arch/um/drivers/Makefile	2005-03-08 20:17:34.000000000 -0500
-+++ linux-2.6.11/arch/um/drivers/Makefile	2005-03-08 20:22:24.000000000 -0500
-@@ -3,7 +3,7 @@
- # Licensed under the GPL
- #
+ 		spin_lock(&port->lock);
+@@ -308,14 +309,3 @@
+ }
  
--CHAN_OBJS := chan_kern.o chan_user.o line.o 
-+CHAN_OBJS := chan_kern.o chan_user.o line.o
- 
- # pcap is broken in 2.5 because kbuild doesn't allow pcap.a to be linked
- # in to pcap.o
-@@ -41,7 +41,7 @@
- obj-$(CONFIG_XTERM_CHAN) += xterm.o xterm_kern.o
- obj-$(CONFIG_UML_WATCHDOG) += harddog.o
- obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
+ __uml_exitcall(free_port);
 -
-+obj-$(CONFIG_UML_RANDOM) += random.o
- 
- USER_SINGLE_OBJS = $(foreach f,$(patsubst %.o,%,$(obj-y) $(obj-m)),$($(f)-objs))
- 
-Index: linux-2.6.11/arch/um/drivers/random.c
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.11/arch/um/drivers/xterm_kern.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/drivers/random.c	2003-09-15 09:40:47.000000000 -0400
-+++ linux-2.6.11/arch/um/drivers/random.c	2005-03-08 20:22:24.000000000 -0500
-@@ -0,0 +1,122 @@
-+/* Much of this ripped from hw_random.c */
-+
-+#include <linux/module.h>
-+#include <linux/fs.h>
-+#include <linux/miscdevice.h>
-+#include <linux/delay.h>
-+#include <asm/uaccess.h>
-+#include "os.h"
-+
-+/*
-+ * core module and version information
-+ */
-+#define RNG_VERSION "1.0.0"
-+#define RNG_MODULE_NAME "random"
-+#define RNG_DRIVER_NAME   RNG_MODULE_NAME " virtual driver " RNG_VERSION
-+#define PFX RNG_MODULE_NAME ": "
-+
-+#define RNG_MISCDEV_MINOR		183 /* official */
-+
-+static int random_fd = -1;
-+
-+static int rng_dev_open (struct inode *inode, struct file *filp)
-+{
-+	/* enforce read-only access to this chrdev */
-+	if ((filp->f_mode & FMODE_READ) == 0)
-+		return -EINVAL;
-+	if (filp->f_mode & FMODE_WRITE)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
-+                             loff_t * offp)
-+{
-+        u32 data;
-+        int n, ret = 0, have_data;
-+
-+        while(size){
-+                n = os_read_file(random_fd, &data, sizeof(data));
-+                if(n > 0){
-+                        have_data = n;
-+                        while (have_data && size) {
-+                                if (put_user((u8)data, buf++)) {
-+                                        ret = ret ? : -EFAULT;
-+                                        break;
-+                                }
-+                                size--;
-+                                ret++;
-+                                have_data--;
-+                                data>>=8;
-+                        }
-+                }
-+                else if(n == -EAGAIN){
-+                        if (filp->f_flags & O_NONBLOCK)
-+                                return ret ? : -EAGAIN;
-+
-+                        if(need_resched()){
-+                                current->state = TASK_INTERRUPTIBLE;
-+                                schedule_timeout(1);
-+                        }
-+                }
-+                else return n;
-+		if (signal_pending (current))
-+			return ret ? : -ERESTARTSYS;
-+	}
-+	return ret;
-+}
-+
-+static struct file_operations rng_chrdev_ops = {
-+	.owner		= THIS_MODULE,
-+	.open		= rng_dev_open,
-+	.read		= rng_dev_read,
-+};
-+
-+static struct miscdevice rng_miscdev = {
-+	RNG_MISCDEV_MINOR,
-+	RNG_MODULE_NAME,
-+	&rng_chrdev_ops,
-+};
-+
-+/*
-+ * rng_init - initialize RNG module
-+ */
-+static int __init rng_init (void)
-+{
-+	int err;
-+
-+        err = os_open_file("/dev/random", of_read(OPENFLAGS()), 0);
-+        if(err < 0)
-+                goto out;
-+
-+        random_fd = err;
-+
-+        err = os_set_fd_block(random_fd, 0);
-+        if(err)
-+		goto err_out_cleanup_hw;
-+                
-+	err = misc_register (&rng_miscdev);
-+	if (err) {
-+		printk (KERN_ERR PFX "misc device register failed\n");
-+		goto err_out_cleanup_hw;
-+	}
-+
-+ out:
-+        return err;
-+
-+ err_out_cleanup_hw:
-+        random_fd = -1;
-+        goto out;
-+}
-+
-+/*
-+ * rng_cleanup - shutdown RNG module
-+ */
-+static void __exit rng_cleanup (void)
-+{
-+	misc_deregister (&rng_miscdev);
-+}
-+
-+module_init (rng_init);
-+module_exit (rng_cleanup);
+--- linux-2.6.11.orig/arch/um/drivers/xterm_kern.c	2005-03-08 20:17:34.000000000 -0500
++++ linux-2.6.11/arch/um/drivers/xterm_kern.c	2005-03-08 22:16:48.000000000 -0500
+@@ -16,7 +16,7 @@
+ #include "xterm.h"
+ 
+ struct xterm_wait {
+-	struct semaphore sem;
++	struct completion ready;
+ 	int fd;
+ 	int pid;
+ 	int new_fd;
+@@ -32,7 +32,7 @@
+ 		return(IRQ_NONE);
+ 
+ 	xterm->new_fd = fd;
+-	up(&xterm->sem);
++	complete(&xterm->ready);
+ 	return(IRQ_HANDLED);
+ }
+ 
+@@ -49,10 +49,10 @@
+ 
+ 	/* This is a locked semaphore... */
+ 	*data = ((struct xterm_wait) 
+-		{ .sem  	= __SEMAPHORE_INITIALIZER(data->sem, 0),
+-		  .fd 		= socket,
++		{ .fd 		= socket,
+ 		  .pid 		= -1,
+ 		  .new_fd 	= -1 });
++	init_completion(&data->ready);
+ 
+ 	err = um_request_irq(XTERM_IRQ, socket, IRQ_READ, xterm_interrupt, 
+ 			     SA_INTERRUPT | SA_SHIRQ | SA_SAMPLE_RANDOM, 
+@@ -68,7 +68,7 @@
+ 	 *
+ 	 * XXX Note, if the xterm doesn't work for some reason (eg. DISPLAY
+ 	 * isn't set) this will hang... */
+-	down(&data->sem);
++	wait_for_completion(&data->ready);
+ 
+ 	free_irq_by_irq_and_dev(XTERM_IRQ, data);
+ 	free_irq(XTERM_IRQ, data);
 
 
 
