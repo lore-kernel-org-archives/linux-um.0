@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Arqat-0005sn-IK
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 19:35:51 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30)
-	id 1ArqVR-0005Lu-PR
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 19:30:14 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20040214040052.GB5007@ccure.user-mode-linux.org>
-References: <20040112064620.GU1436@alcor.net> <200402140043.i1E0h7sq004297@ccure.user-mode-linux.org> <008201c3f29d$30a1e750$0201a8c0@hawk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1As0Zu-0002q3-K3
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 14 Feb 2004 06:15:30 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1As0Tp-0000fE-Kn
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 14 Feb 2004 06:09:13 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: modify_ldt_ldt_s vs. user_desc (Re: [uml-devel] Re: [uml-user] UML (unofficial) patches against vanilla 2.6.2)
+References: <200402052107.37625.blaisorblade_spam@yahoo.it> <20040213071536.GJ19147@alcor.net> <20040213135929.GA27460@fieldses.org>
+In-Reply-To: <20040213135929.GA27460@fieldses.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <008201c3f29d$30a1e750$0201a8c0@hawk>
-Subject: [uml-devel] Re: uml-patch-2.6.3-rc2-1, RTC, CPU > 2.1 Ghz
+Message-Id: <200402141514.46788.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,26 +25,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 23:00:52 -0500
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 14 Feb 2004 15:14:46 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Feb 13, 2004 at 07:52:20PM -0600, Christopher S. Aker wrote:
-> Looking at uml-patch-2.6.3-rc2-1, I noticed it needs the RTC fix (mhz to unsigned
-> long long) for CPUs > 2.1Ghz   This is just a friendly reminder to make sure that
-> change makes it into your 2.6 tree (looks good on 2.4)..
+Alle 14:59, venerd=EC 13 febbraio 2004, J. Bruce Fields ha scritto:
+> On Thu, Feb 12, 2004 at 11:15:36PM -0800, Matt Zimmerman wrote:
+> > I don't suppose there would be much harm in adding a macro to ldt.h so
+> > that existing software could continue to work, but that change belongs =
+in
+> > the kernel.
+>
+> The policy as I understand it has always been that userland needs its
+> own headers, and that kernel headers are not meant to be usable by
+> applications unmodified.
+This is the official policy. It's a bit wrong, but it's so (how do you=20
+maintain ioctl's listes in glibc headers with the one in the kernels? Give =
+a=20
+look to the include/kernel-abi proposal, for more info about this, onto=20
+lwn.net).
+> Looks like a debian bug to me....
 
-Right.  Generic fixes (2.4 and 2.6) usually start off in my 2.4 tree, then
-get migrated into my 2.6 tree when I get around to it.
+1) Not only Debian (Jeff Chua, with a RH, reported it, too)
+2) It is glibc the one who should supply correct headers.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-				Jeff
 
 
 -------------------------------------------------------
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
