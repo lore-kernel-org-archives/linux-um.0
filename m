@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Crxoz-0000sG-Iw for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Jan 2005 04:23:25 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Crxow-00009Z-O8 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Jan 2005 04:23:25 -0800
+	id 1CryJb-0002VY-Lr for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Jan 2005 04:55:03 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CryJZ-0005W0-04 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Jan 2005 04:55:03 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SIGSEGV and SA_NODEFER
-References: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
-	<200501200107.43159.blaisorblade@yahoo.it>
-	<200501192252.54585.rob@landley.net>
-In-Reply-To: <200501192252.54585.rob@landley.net>
+Subject: Re: [uml-devel] 2.6.11-rc1 ...
+References: <20050121121532.GA22707@bytesex>
+In-Reply-To: <20050121121532.GA22707@bytesex>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501211335.37894.blaisorblade@yahoo.it>
+Message-Id: <200501211407.09896.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,33 +29,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Jan 2005 13:35:37 +0100
+Date: Fri, 21 Jan 2005 14:07:08 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>
+Cc: Gerd Knorr <kraxel@bytesex.org>
 
-On Thursday 20 January 2005 04:52, Rob Landley wrote:
-> On Wednesday 19 January 2005 07:07 pm, Blaisorblade wrote:
-> > What was discovered until now is this:
-> >
-> > The relation is obviously hidden somehow... however I sent on the
-> > uml-devel list a couple of patches from after 2.4.24-1um: without them
-> > UML does not suffer from the Debian/hwclock crash, while it happens with
-> > them. What's strange is that the crash happens within TT mode, not within
-> > SKAS mode. And rather than a crash, it's a hang, due to an infinite
-> > number of received SIGSEGVs. Inside the couple of patches, there is
-> > exactly this problematic change.
+On Friday 21 January 2005 13:15, Gerd Knorr wrote:
+>   Hi,
 >
-> Ooh, ooh!  Hang in TT mode is what I'm seeing with my makefile hang.  (sh
-> -x dosn't help if the makefile doesn't call out to stuff with it.)
->
-> If the previous patch doesn't address it, is there a new patch I could try?
-Well, you solved this problem with the 2.6.11-rc1-mm2, right (from the message 
-below)?
+> Anyone looked at 2.6.11-rc1 for the host?  Some more ptrace cleanups
+> happened there, and one of the changes conflicts with the sysemu code in
+> the skas-v7 patch for 2.6.10.  To me it's not clear how to solve that
+> conflict as I'm not familier with the sysemu stuff and how these tree
+> trace flags (syscall, sysemu, singlestep) play together ...
 
-The patch which was merged there is the one posted with title "[uml-devel] 
-[PATCH] Fix stack corruption" on this list..., I guess... it will be in 
-2.6.9-bs6 and 2.6.10-bb1 (both to release) - are you willing to test one of 
-them, when I do the release? I'd be very thankful to accept your help...
+> The conflicting changeset is attached below for reference.  There are
+> also some more ptrace changes (for singlestep) which might need fixups
+> in sysemu.
+
+>   Gerd
+
+I've already solved those conflict earlier on -rc1 (not tested) but I didn't 
+polish it out yet... if you are in a hurry, I can finish it and post the 
+result today on the ML. If not, I'll publish it later.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
