@@ -2,18 +2,30 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhZOF-0005L7-RG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Jan 2004 11:12:19 -0800
-Received: from thebsh.namesys.com ([212.16.7.65])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AhZOF-00021Q-8D for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Jan 2004 11:12:19 -0800
-From: Nikita Danilov <Nikita@Namesys.COM>
-MIME-Version: 1.0
+	id 1AhZro-0005De-90 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Jan 2004 11:42:52 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AhZrn-0007Wk-PZ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Jan 2004 11:42:52 -0800
+Message-Id: <200401162004.i0GK4LVW003439@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: Panic with slirp transport and gcc 3.3 
+In-Reply-To: Your message of "Thu, 15 Jan 2004 18:38:26 PST."
+	<20040116023826.GV1478@alcor.net> 
+References: <20031228101240.GN17472@alcor.net>
+	<20031228113042.GO17472@alcor.net>
+	<20031230184330.GD1365@alcor.net>
+	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
+	<20040108070718.GI28393@alcor.net>
+	<20040112183623.GB1436@alcor.net> <20040113152542.GD7072@seventeen>
+	<200401131730.i0DHUMhg002358@ccure.user-mode-linux.org>
+	<20040113185156.GW1514@alcor.net>
+	<200401160238.i0G2cYrf004298@ccure.user-mode-linux.org>
+	<20040116023826.GV1478@alcor.net> 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <16392.14211.847713.994092@laputa.namesys.com>
-Subject: [uml-devel] [PATCH]: arch/um/os-Linux/process.c:os_usr1_process()
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,38 +37,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 16 Jan 2004 22:12:03 +0300
-To: Jeff Dike <JDike@Karaya.COM>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 16 Jan 2004 15:04:21 -0500
+To: Matt Zimmerman <mdz@debian.org>
+Cc: Bill Allombert <allomber@math.u-bordeaux.fr>, user-mode-linux-devel@lists.sourceforge.net, 176485@bugs.debian.org
 
-Hello,
+% file linux-176485 
+linux-176485: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), statically linked, stripped
 
-to compile 2.6.1 UML on the host kernel without tkill (for example,
-2.4.21, that I use), I need the following patch (not sure it is right
-one):
+Having it stripped is inconvenient.  Can you compress a debuggable binary
+and put it someplace I can grab it?
 
-----------------------------------------------------------------------
-diff -puN arch/um/os-Linux/process.c~uml-use-tkill-conditionally.diff arch/um/os-Linux/process.c
---- lobby/arch/um/os-Linux/process.c~uml-use-tkill-conditionally.diff	Fri Jan 16 20:21:34 2004
-+++ lobby-nikita/arch/um/os-Linux/process.c	Fri Jan 16 20:21:34 2004
-@@ -93,8 +93,11 @@ void os_kill_process(int pid, int reap_c
- 
- void os_usr1_process(int pid)
- {
-+#if defined(__NR_tkill)
- 	syscall(__NR_tkill, pid, SIGUSR1); 
--	/* kill(pid, SIGUSR1); */
-+#else
-+	kill(pid, SIGUSR1);
-+#endif
- }
- 
- int os_getpid(void)
+				Jeff
 
-_
-----------------------------------------------------------------------
-
-Nikita.
 
 
 -------------------------------------------------------
