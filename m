@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200403040305.i2435EWo009397@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Thu, 04 Mar 2004 00:11:32 +0100."
-	<0d2e01c40174$dfda5b40$2000000a@schlepptopp> 
+Message-ID: <006501c401a3$8442e4d0$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
 References: <40430B47.3000004@sms.ed.ac.uk>
 	<200403022005.42635.blaisorblade_spam@yahoo.it>
-	<0d2e01c40174$dfda5b40$2000000a@schlepptopp> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: Hang at ipv4 setup is a cpufreq issue!
+	<0d2e01c40174$dfda5b40$2000000a@schlepptopp>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [uml-user] Hang at ipv4 setup is a cpufreq issue!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,26 +20,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 03 Mar 2004 22:05:14 -0500
+Date: Wed, 3 Mar 2004 22:45:25 -0600
 To: roland <for_spam@gmx.de>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Cc: uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-for_spam@gmx.de said:
-> i did an "modprobe p4-clockmod" and then "echo 0%40%50%performance >/
-> proc/cpufreq" to reduce the speed of my 2.6 ghz p4 (40% minimum, 50%
-> maximum)
-> and........
-> THE UML STARTS FINE AND THE HANG AT IPV4 SETUP IS GONE!
-> so - this is the workaround.
-> now we need a patch ;)
-> do we need the so called "rtc fix" ? does it exist already for 2.6
-> kernel ? 
+Here is my original post with patch.
 
-2.4 and 2.6 are identical as far as the rtc stuff goes.  So, there's something
-else wrong.  I'm wondering whether this is somehow related to the rdtsc
-problem that came up recently.
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=107173525906273&w=2
 
-				Jeff
+Some of it is already in the 2.6um tree. Just the very first patch in the patch to
+time.c is necessary.  The lines are offset from 2.6 in this 2.4 patch, but it
+should apply to 2.6um easy enough...
+
+Relevant section:
+
+diff -Naur orig/arch/um/kernel/time.c mine/arch/um/kernel/time.c
+--- orig/arch/um/kernel/time.c  2003-12-18 02:30:20.000000000 -0500
++++ mine/arch/um/kernel/time.c  2003-12-18 02:32:38.000000000 -0500
+@@ -79,10 +79,11 @@
+        set_interval(ITIMER_REAL);
+ }
+
+-static long get_host_hz(void)
++static unsigned long long get_host_hz(void)
+ {
+        char mhzline[16], *end;
+-       int ret, mult, mhz, rest, len;
++       int ret, mult, rest, len;
++       unsigned long long mhz;
+
+        ret = cpu_feature("cpu MHz", mhzline,
+                          sizeof(mhzline) / sizeof(mhzline[0]));
+
+
+-Chris
 
 
 
