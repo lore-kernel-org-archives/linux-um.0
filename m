@@ -2,31 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4iIo-0000Kf-Nz for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 08:54:38 -0700
-Received: from tharec.debianbase.de ([212.79.163.254] helo=mail2.debianbase.de)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C4iIm-0003at-M7 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 08:54:37 -0700
-Received: from mail.debianbase.de (tha.vpn.local [192.168.100.1])
-	by mail2.debianbase.de (Postfix) with ESMTP id 8D2489B5C
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue,  7 Sep 2004 17:54:26 +0200 (CEST)
-Received: from vaiobook.tha.local (vaiobook.tha.local [10.0.0.9])
-	by mail.tha.local (Postfix) with ESMTP id 3D2FAB70986
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue,  7 Sep 2004 17:54:36 +0200 (CEST)
-From: Ralph =?iso-8859-1?q?Pa=DFgang?= <ralph@debianbase.de>
-Subject: Re: [uml-devel] Host: 2.6.7, guest: 2.6.8.1, without SKAS
-References: <Pine.LNX.4.61.0409071058020.25003@hosting.rdsbv.ro>
-	<12503.1094564116@camelot-054>
-In-Reply-To: <12503.1094564116@camelot-054>
+	id 1C4kUI-0004bL-2m for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 11:14:38 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C4kUG-0000Go-2m for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 11:14:38 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 1/3] uml-ubd-no-empty-queue
+References: <20040906174447.238788D1E@zion.localdomain>
+	<20040906142641.067fdeb6.akpm@osdl.org>
+In-Reply-To: <20040906142641.067fdeb6.akpm@osdl.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200409071754.25380.ralph@debianbase.de>
+Message-Id: <200409072004.03343.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,37 +30,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Sep 2004 17:54:25 +0200
+Date: Tue, 7 Sep 2004 20:04:03 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Andrew Morton <akpm@osdl.org>, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-Am Dienstag 07 September 2004 15:35 schrieb Michael Richardson:
-> >>>>> "ux" == ux aka Dino <Catalin> writes:
+On Monday 06 September 2004 23:26, Andrew Morton wrote:
+> Please don't use a filename like uml-ubd-no-empty-queue as the Subject:
+> of your patches.  Please prepare an English-language summary.  See
+> http://www.zip.com.au/~akpm/linux/patches/stuff/tpp.txt
+Ok, but how can I specify the filename you'll give to the patch?
+
+It would make management between my tree and yours easier for me, if possible.
+
+> I applied three of these - two got rejects against Linus's current
+> tree.
 >
->     ux> This is what I get when I run a 2.6.8.1 guest:
+> Do you have to do this
 >
->     ux> Kernel panic: fix_range fixing wrong address space, current =
-> 0xa3fba760 ux> <6>SysRq : Show Regs
+>  -menu "SCSI support"
+>  +if BROKEN
+>  +	menu "SCSI support"
 >
->     ux> EIP: 0073:[<a01a2d9b>] CPU: 0 Not tainted ESP: 007b:a0369688
-> EFLAGS: 00000246 ux> Not tainted
+>  -config SCSI
 >
->   I get variously different failures, mostly at the same place.
+> I think you'll find that
 >
+> 	menu "SCSI support"
+> 	depends on BROKEN
+>
+> works OK.
+If you want to add the dependency to SCSI, GENERIC_ISA_DMA and every item in 
+arch/um/Kconfig_scsi by hand, you're welcome, but I guess not :-).
 
-I made some experience with 2.6 kernel and I think this are the two most 
-common problems for a not correct starting uml:
-
-1) in the fs of the uml you have to move /lib/tls to /lib/tls.disable (to 
-disable ntpl)
-
-2) if you don't use the skas mode, you HAVE to mount /tmp as tmpfs,  otherwise 
-the uml will not start (kernel panics at diffrent locations while booting, 
-smetimes it even works without tmpfs)
-
-Point 2 seems to be a bug, but I don't analysed it enough to say why this 
-happens...
-
---Ralph
+Otherwise, please note I bracketed everything with if BROKEN....endif. If you 
+don't like the indent, that's not a problem.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
