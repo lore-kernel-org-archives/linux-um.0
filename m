@@ -2,20 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWevn-00020I-Pr for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:58:23 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	id 1CWezn-0004ga-NZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 10:02:31 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CWevj-0001ze-Cg for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:58:23 -0800
+	id 1CWezm-0002lS-90 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 10:02:31 -0800
 From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: Problems in make
+References: <41A23722.7060002@fujitsu-siemens.com>
+	<200411222301.47216.blaisorblade_spam@yahoo.it>
+	<41A354F1.7070907@fujitsu-siemens.com>
+In-Reply-To: <41A354F1.7070907@fujitsu-siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200411231900.40463.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] About DevFS
+Message-Id: <200411231904.51431.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,39 +31,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 23 Nov 2004 19:00:40 +0100
+Date: Tue, 23 Nov 2004 19:04:51 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Peter <peter@rimuhosting.com>
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
 
-On Tuesday 23 November 2004 04:09, Peter wrote:
-> How will this affect existing UML setups?  Does it mean they would need
-> to change if we started them up with a new UML kernel after /dev/ubd/0
-> "goes away"?
-The other name (see the FAQ on my page to know which one, linked in my 
-signature) - is available also in the old instances (both 2.4 and 2.6).
+On Tuesday 23 November 2004 16:19, Bodo Stroesser wrote:
+> Blaisorblade wrote:
+> > On Monday 22 November 2004 19:59, Bodo Stroesser wrote:
+> >>If arch/um/kernel/tt/include/mode-tt.h is changed, make doesn't compile
+> >>tracer.c, the resulting kernel is inconsistent and crashes!
+> >
+> > This is true for any dependency of files listed in USER_OBJS, which is
+> > broken. This problem is known and is pending fixing (and fixing requires
+> > designing a clean and Kbuild-supported replacement of USER_OBJS). I fixed
+> > it some time ago, around 2.6.1, but the fix was not integrated because it
+> > was too invasive.
+> >
+> > So: use always make clean ARCH=um before rebuilding (this even holds for
+> > dependencies on CONFIG_*).
+> >
+> > If that slows you down too much, then install ccache (I'm not explaining
+> > it here because there is nothing special on ccache with kernel
+> > compilation and because there is plenty of tutorials onto the net).
 
-> That would mean quite a disruption to operations (i.e. 
-> making changes on lots of UML instances).  Is there a way to acheive
-> what you're doing in a backwards-compatible manner?
+> > Bye
 
-The other name always exists, even on older instances, so the new syntax is 
-backward compatible.
+> As a quick solution to guarantee a correct result of the build, would it be
+> possible to remove all USER_OBJS, when starting to build?
+This is not a so bad idea, however if I interrupt a build with Ctrl-C and 
+restart it without changes, it shouldn't clean all USER_OBJS.
 
-However, I hope the removal of /dev/ubd/0 symlinks can be deferred, so that 
-you don't need to rush on this (I'm not sure of this - I don't care, but 
-there are other developers complaining). At least, I need to update the Uml 
-page.
+It is not also a one-liner (can be dumbly implemented easily, but some 
+changes).
 
-That said, DevFS is unstable (not in UML, but in general), so people should 
-start switching away from it.
+What about adding a target like "rebuildclean" (a better name is welcome)?
 
-Using devfsd probably helps the transiction (i.e. you start using the 
-"standard" non-devfs names without removing access to the DevFS ones until 
-you complete the transiction).
+However, until I don't have the time to work on this, use the solution I 
+suggested above.
+
+> Or, if this isn't 
+> enough, even remove all objects in the arch/um subtree?
+
+We don't need to be this aggressive.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
