@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BiJ9G-000620-HJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jul 2004 13:36:10 -0700
+	id 1BiJG4-0007KE-7v for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jul 2004 13:43:12 -0700
 Received: from mail.scgiservices.com ([198.107.3.67])
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1BiJ9G-0008Tl-6A
+	(Exim 4.34) id 1BiJG3-00014K-RY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jul 2004 13:36:10 -0700
+	Wed, 07 Jul 2004 13:43:12 -0700
 Received: from SCG2 (dyn170.CONET.OUS.EDU [140.211.15.170])
 	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
 	(No client certificate requested)
-	by mail.scgiservices.com (Postfix) with ESMTP id 08DA52A3A5
+	by mail.scgiservices.com (Postfix) with ESMTP id 1CF2C2A3A5
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed,  7 Jul 2004 13:36:07 -0700 (PDT)
+	Wed,  7 Jul 2004 13:43:10 -0700 (PDT)
 From: "Anthony Brock" <Anthony_Brock@ous.edu>
 Subject: RE: [uml-devel] uml_mconsole issue
-Message-ID: <IFEIKNDOLFNCKMGAENCFOEIDCHAA.Anthony_Brock@ous.edu>
+Message-ID: <IFEIKNDOLFNCKMGAENCFEEIECHAA.Anthony_Brock@ous.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 In-Reply-To: <200407071914.06387.blaisorblade_spam@yahoo.it>
@@ -32,73 +32,78 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Jul 2004 13:36:03 -0700
+Date: Wed, 7 Jul 2004 13:43:07 -0700
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Obviously, I'm doing something wrong. I tried following Blaisor's
-instructions for a backtrace as posted on 2004-06-14 at:
+Okay, I think I have it. I shouldn't have issued the "handle SIGSEGV..."
+command. This backtrace was generated on Kernel 2.6.7 during the 5th time I
+issuing the following command on the host:
 
-http://marc.theaimsgroup.com/?l=3Duser-mode-linux-user&m=3D108726561303235&=
-w=3D2
+uml_mconsole bind2 proc uptime
 
-However, I'm seeing the following:
+*** BEGIN BACKTRACE ***
+dns2 login:
+Program received signal SIGSEGV, Segmentation fault.
+0xa00730df in link_path_walk (name=3D0xa0a59ca9 "uptime", nd=3D0xa3fd3aa4) =
+at
+fs/namei.c:591
+591                     lookup_flags =3D LOOKUP_FOLLOW;
+(gdb) bt
+#0  0xa00730df in link_path_walk (name=3D0xa0a59ca9 "uptime", nd=3D0xa3fd3a=
+a4)
+at fs/namei.c:591
+#1  0xa00227de in mconsole_proc (req=3D0xa0a59c08) at
+arch/um/drivers/mconsole_kern.c:152
+#2  0xa0022584 in mc_work_proc (unused=3D0x0) at
+arch/um/drivers/mconsole_kern.c:67
+#3  0xa004162c in worker_thread (__cwq=3D0xa039084c) at kernel/workqueue.c:=
+172
+#4  0xa00448dc in kthread (_create=3D0xa3fdfb14) at kernel/kthread.c:90
+#5  0xa00154da in run_kernel_thread (fn=3D0xa0044850 <kthread>,
+arg=3D0xa3fdfb14, jmp_ptr=3D0x0) at arch/um/kernel/process.c:294
+#6  0xa001f6ac in new_thread_handler (sig=3D10) at
+arch/um/kernel/skas/process_kern.c:130
+#7  <signal handler called>
+#8  0xa01e305d in syscall () at slab.h:92
+#9  0x00000000 in ?? ()
+#10 0x00000000 in ?? ()
+#11 0x00000000 in ?? ()
+#12 0x00000000 in ?? ()
+#13 0x00000000 in ?? ()
+#14 0x00000000 in ?? ()
+#15 0x00000000 in ?? ()
+#16 0x00000000 in ?? ()
+#17 0x00000000 in ?? ()
+#18 0x00000000 in ?? ()
+#19 0x00000000 in ?? ()
+#20 0x00000000 in ?? ()
+#21 0x00000000 in ?? ()
+#22 0x00000000 in ?? ()
+#23 0x00000000 in ?? ()
+#24 0xa01caca4 in sigemptyset (set=3D0x0) at sigempty.c:34
+Previous frame inner to this frame (corrupt stack?)
+(gdb) c
+Continuing.
 
-
-$ TMP=3D/dev/shm gdb linux-2.6.7-32bit-debug
-GNU gdb 6.1
-Copyright 2004 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you are
-welcome to change it and/or distribute copies of it under certain
-conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for details.
-This GDB was configured as "i586-suse-linux"...Using host libthread_db
-library "/lib/tls/libthread_db.so.1".
-
-(gdb) set args umid=3Dbind2 <... junk deleted ...>
-(gdb) handle SIGUSR1 pass nostop noprint
-Signal        Stop      Print   Pass to program Description
-SIGUSR1       No        No      Yes             User defined signal 1
-(gdb) handle SIGSEGV pass nostop noprint
-Signal        Stop      Print   Pass to program Description
-SIGSEGV       No        No      Yes             Segmentation fault
-(gdb) break panic
-Breakpoint 1 at 0xa0030d18: file kernel/panic.c, line 58.
-(gdb) run
-Starting program: linux-2.6.7-32bit-debug umid=3Dbind2 mem=3D64M <... junk
-deleted ...>
-Detaching after fork from child process 9635.
-Checking for the skas3 patch in the host...found
-Checking for /proc/mm...found
-Detaching after fork from child process 9636.
-Detaching after fork from child process 9637.
-Detaching after fork from child process 9638.
-Detaching after fork from child process 9639.
-Linux version 2.6.7-1um-debug (root@vs1) (gcc version 3.3.3 (SuSE Linux)) #3
-Wed Jul 7 13:09:26 PDT 2004
-On node 0 totalpages: 16384
-
-<... startup junk deleted ...>
-
-
-dns2 login: Kernel panic: Segfault with no mm
+Breakpoint 1, panic (fmt=3D0xa0224f96 "Segfault with no mm") at
+kernel/panic.c:58
+58              bust_spinlocks(1);
+(gdb) c
+Continuing.
+Kernel panic: Segfault with no mm
 
 
 Program exited with code 01.
-(gdb) bt
-No stack.
-(gdb) continue
+(gdb) c
 The program is not being run.
 (gdb) quit
 $
+*** END BACKTRACE ***
 
-
-How do I acquire the backtrace? I must be missing something obvious. Thanks
-in advance!
+Hope this helps!
 
 Tony
-
 
 > -----Original Message-----
 > From: BlaisorBlade [mailto:blaisorblade_spam@yahoo.it]
