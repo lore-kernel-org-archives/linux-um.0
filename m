@@ -1,24 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bl7NB-0002hH-7U for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jul 2004 07:38:09 -0700
-Received: from ms-smtp-04.nyroc.rr.com ([24.24.2.58])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1Bl7NA-0006AJ-Mg for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Jul 2004 07:38:09 -0700
-Received: from [192.168.23.2] (bgm-24-94-57-251.stny.rr.com [24.94.57.251])
-	by ms-smtp-04.nyroc.rr.com (8.12.10/8.12.10) with ESMTP id
-	i6FEc5t3002067 for <User-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 15 Jul 2004 10:38:05 -0400 (EDT)
-From: Steven Rostedt <rostedt@stny.rr.com>
-Reply-To: uml@goodmis.org
-Subject: Re: [uml-devel] mount_fs bug
-In-Reply-To: <Pine.LNX.4.44.0407150838230.4568-100000@localhost.localdomain>
-Message-ID: <Pine.LNX.4.44.0407151031440.4568-100000@localhost.localdomain>
+From: Frank Sorenson <frank@tuxrocks.com>
+Subject: Re: [uml-user] Re: [uml-devel] Fixing the 2.4 bugs - patches against
+	2.4.24-1um 
+In-Reply-To: <200407131934.i6DJYMGu003420@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.60.0407131416490.28985@tuxrocks.com>
+References: <200407012050.14867.blaisorblade_spam@yahoo.it> 
+	<Pine.LNX.4.58.0407071420550.9924@tuxrocks.com> 
+	<200407131934.i6DJYMGu003420@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,26 +20,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Jul 2004 10:41:34 -0400 (EDT)
-To: User Mode Linux Development <User-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 15 Jul 2004 09:39:39 -0600 (MDT)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
+On Tue, 13 Jul 2004, Jeff Dike wrote:
+> I don't think it should, unless you're profiling.  The problem is that -pg
+> and regparam(3) don't (or didn't) interact nicely.  The -pg code trashed
+> the arguments that regparam was passing in registers, and you'd get strange
+> panics early in boot.
+>
+> Have you checked that this actually fixes anything?  It looks like just a
+> stupid typo to me.
 
-I can mount the hostfs with the previous change I made, but I need to 
-understand the code a little more.  The get_inode will get an fd if the 
-need_fh is set.  But this fails on directories. So I can't traverse down 
-directories on the hostfs.
+Yes, it is definitely a stupid typo, and I don't think this alone fixes 
+anything significant, but there appears to be another bug underneath. 
+Without -DUM_FASTCALL, I've been seeing the kernel panics we previously 
+discussed.  There appears to be some other bug that exists at least as 
+early as 2.4.24-1um, triggered when UM_FASTCALL is not defined.  I've 
+verified that this is the case with the following versions:
 
-Looks like this needs a little more work. I'm willing to help when I can.  
-My main goal is on the 2.6 kernel (which I've had UML 2.6 working already) 
-but now I'm testing modules that are written for the 2.4 kernel, which 
-will eventually have to be ported to 2.6.  But I'm pushing my customer 
-(I'm a contractor) to use UML for development, and if they give the green 
-light, I'm hoping to help out with UML as much as possible.
+2.4.24-1um
+2.4.24-2um
+2.4.24-3um
+2.4.25-1um
+2.4.26-1um
 
-Later,
+The panic I'm getting is very repeatable--every time I run the j2eesdk 
+installer, it'll panic, but if UM_FASTCALL is defined, it runs just fine.
 
--- Steve
-
+Frank
+---------------------------------------------------------------------------
+Frank Sorenson - KD7TZK
+Systems Manager, Computer Science Department
+Brigham Young University
+frank@tuxrocks.com
 
 
 -------------------------------------------------------
