@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CzCZ0-0002Wp-BT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 03:32:50 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CzCYz-0006W5-Mp for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 03:32:50 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
-References: <E1Cytuz-0002nD-OP@nuthatch.gentoo.org>
-	<200502092240.44915.rob@landley.net>
-In-Reply-To: <200502092240.44915.rob@landley.net>
+	id 1CzCiK-00030u-RG for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 03:42:28 -0800
+Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CzCiG-0004k3-Uo for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 03:42:28 -0800
+Message-ID: <55690.80.203.9.134.1108035741.squirrel@80.203.9.134>
+In-Reply-To: <200502101226.47978.blaisorblade@yahoo.it>
+References: <A06801158AE07847B27A52C1A074BC1D0725A4D6@fmsmsx404.amr.corp.intel.com>
+	<200502101226.47978.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] strace of 'ls' under Fedora Core 3
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200502101231.46482.blaisorblade@yahoo.it>
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,50 +28,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Feb 2005 12:31:46 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>
+Date: Thu, 10 Feb 2005 12:42:21 +0100 (CET)
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, "Wichmann, Mats D" <mats.d.wichmann@intel.com>, Marion Bates <mbates@whoopis.com>, William Stearns <wstearns@pobox.com>
 
-On Thursday 10 February 2005 04:40, Rob Landley wrote:
-> On Wednesday 09 February 2005 10:38 am, bugzilla-daemon@gentoo.org wrote:
-> > ------- Additional Comments From dsd@gentoo.org  2005-02-09 07:38 PST
-> > ------- Could someone please update me with the status of this bug? Are
-> > there still problems?
-> >
-> > I notice that the latest version in portage is based on 2.6.8.1. Would
-> > upgrading to a newer version (assuming there are newer releases) help at
-> > all?
->
-> I believe it was fixed in 2.6.11-rc3-bk2 or thereabouts, but I personally
-> would prefer to hold off closing it until 2.6.11 actually ships.  The UML
-> in 2.6.10 didn't build, 2.6.9 was unusable out of the box, and 2.6.11-rc3
-> introduced _new_ build breakage on top of what -rc2 had because Linus just
-> doesn't test it.
->
-> If the UML in 2.6.11-final works, consider the bug resolved.
->
-> Rob
+> Also, the code inside UML should absolutely support it (from the code I
+> don't
+> see any problem), at least for the x86 UML.
 
-Both 2.6.9 and 2.6.10 are more or less usable out of the box (although I'd not 
-recommend 2.6.10 because various UML fixes were merged just *after* the  
-release).
+modify_ldt is a x86 syscall aswell, so it will only appear in x86/x86_64
+umls. It was implemented and used by dosemu project originally.
 
-2.6.9 is unusable on a >=2.6.9 host, however (yes, it's ironic), but 2.6.9-bs 
-is usable in most cases (especially for SKAS mode - you Rob have hit some bug 
-in TT mode, however for people using SKAS mode it's ok. And sadly, most 
-people use SKAS mode, so it's often more stable).
-
-About the problem itself, I've already explained everything on bugzilla... and 
-especially, nothing is fixed for TT mode on a NPTL-only Gentoo host, nor I 
-know how to fix that (except by releasing a stable glibc which is built the 
-correct way, i.e. with NPTL in /lib/tls and normal version in /lib - the 
-current ebuild for this is correctly marked unstable).
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+What actually uses this syscall as I find the syscall to be badly
+documented last time I looked at it.
 
 
+
+Stian Skjelstad
 
 
 -------------------------------------------------------
