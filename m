@@ -2,28 +2,34 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BxCpL-0004TU-Bs for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Aug 2004 15:53:11 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1BxCpH-000403-VJ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Aug 2004 15:53:11 -0700
-Received: from ctron-dnm.enterasys.com ([12.25.1.120] ident=firewall-user)
-	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Bx6A6-0001L3-Ho for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Aug 2004 08:46:12 -0700
-Received: (from uucp@localhost)
-	by ctron-dnm.enterasys.com (8.8.7/8.8.7) id LAA16359
+	id 1BxPpU-0001eE-3K for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Aug 2004 05:46:12 -0700
+Received: from ip-217-18-179-10.reverse.dsi.net ([217.18.179.10]
+	helo=sindar.exse.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1BxPpR-00085x-Iw for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Aug 2004 05:46:12 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by sindar.exse.net (Postfix) with ESMTP id 403B7217B3
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 17 Aug 2004 11:48:40 -0400 (EDT)
-Message-ID: <412227A4.6060005@enterasys.com>
-From: "D. Bahi" <dbahi@enterasys.com>
+	Wed, 18 Aug 2004 14:46:04 +0200 (CEST)
+Received: from sindar.exse.net ([127.0.0.1])
+	by localhost (sindar [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 00285-04
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 18 Aug 2004 14:46:02 +0200 (CEST)
+Received: from [10.0.2.5] (port-212-202-42-103.dynamic.qsc.de [212.202.42.103])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by sindar.exse.net (Postfix) with ESMTP id 85B6B21791
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 18 Aug 2004 14:46:02 +0200 (CEST)
+Message-ID: <41234F99.6020208@exse.net>
+From: seb <seb@exse.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig82CEDD06FD78D4849E822D56"
-Subject: [uml-devel] Expected SIGSTOP persists in 2.4.26-3um
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] debug 2.6.7
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,81 +41,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Aug 2004 11:43:32 -0400
+Date: Wed, 18 Aug 2004 14:46:17 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig82CEDD06FD78D4849E822D56
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi,
 
-launching UMLs with nice seems to aggravate this problem --
-but it also has been seen w/o adding that irritant.
+---------------------------
+Starting MTA: exim4.
+Starting PostgreSQL database server: postmaster.
+Starting OpenBSD Secure Shell server: sshd.
+Starting deferred execution scheduler: atd.
+Starting periodic command scheduler: cron.
 
-status is 0x1c7f - which maps to 0x1c (SIGWINCH	28 right?)
+Debian GNU/Linux 3.1 vhost tty0
 
-here it is trying to panic and generates a segfault
-
-#4  0x08051270 in main (argc=11, argv=0xbfffd3e4, envp=0xbfffd414) at 
-arch/um/main.c:148
-#3  0x080dd2f4 in linux_main (argc=11, argv=0xbfffd3e4) at um_arch.c:332
-#2  0x080d9154 in can_do_skas () at process.c:255
-#1  0x080d9058 in stop_ptraced_child (pid=21301, stack=0x40001000, 
-exitcode=1) at process.c:182
-#0  0x0805628c in panic (fmt=0x81c8080 "check_ptrace : child exited with 
-status 0x%x") at panic.c:67
-
-values for locals and parameters in stop_ptraced_child are:
-
-(gdb) print errno
-$1 = 0
-(gdb) print n
-$2 = -1073774592
-(gdb) print pid
-$3 = 21301
-(gdb) print status
-$4 = 7295
-(gdb) print exitcode
-$5 = 1
-(gdb) set radix 16
-(gdb) print status
-$6 = 0x1c7f
-(gdb) print n
-$7 = 0xbfff8000
-
-also have seen:
-
-2.4.24-1um + reboot-signals
-
-   Checking for the skas3 patch in the host...found
-   Checking for /proc/mm...found
-   CONFIG_HIGHMEM not enabled - physical memory shrunk to 499122176 bytes
-   Kernel virtual memory size shrunk to 32505856 bytes
-   capture_stack : Expected SIGSTOP, got status = 0x1c7f
+vhost login: Out of Memory: Killed process 3773 (xmlhandler.fcpl).
+Kernel panic: Kernel mode fault at addr 0x5be8c750, ip 0x40325b88
+In interrupt handler - not syncing
+ ---Type <return> to continue, or q <return> to quit---Detaching after 
+fork from child process 30031.
 
 
-2.4.26-3um
+Program exited with code 01.
+(gdb)
+------------------------------
 
-   Checking for the skas3 patch in the host...found
-   Checking for /proc/mm...found
-   capture_stack : Expected SIGSTOP, got status = 0x1c7f
+how do I get a backtrace for this ?
+
+
+started with:
+handle SIGSEGV pass nostop noprint
+handle SIGUSR1 pass nostop noprint
+break panic
 
 
 
---------------enig82CEDD06FD78D4849E822D56
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (MingW32)
 
-iD8DBQFBIiek3XQ4zakZ3z4RAlByAJ9SX1X0GD1rzl1h1MFj5PvCUTDkHwCeLao2
-60fejW74C4V/EmLdSvUzAY8=
-=B5za
------END PGP SIGNATURE-----
-
---------------enig82CEDD06FD78D4849E822D56--
+/sebastian
 
 
 -------------------------------------------------------
