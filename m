@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DC80L-0007zD-5X for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Mar 2005 19:18:29 -0800
-Received: from rproxy.gmail.com ([64.233.170.206])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DC80J-0002U5-LC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Mar 2005 19:18:28 -0800
-Received: by rproxy.gmail.com with SMTP id 40so11115rnz
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 17 Mar 2005 19:18:27 -0800 (PST)
-Message-ID: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
-From: Ian McDonald <imcdnzl@gmail.com>
-Reply-To: Ian McDonald <imcdnzl@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1DC9Kq-0003Gw-D1 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 20:43:44 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DC9Ko-0006gZ-PG
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 20:43:44 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Can't compile under vanilla 2.6.11
+References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
+In-Reply-To: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Can't compile under vanilla 2.6.11
+Message-Id: <200503172240.54876.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,51 +31,94 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 18 Mar 2005 16:18:25 +1300
-To: UML Developer <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 17 Mar 2005 22:40:54 -0500
+To: user-mode-linux-devel@lists.sourceforge.net, Ian McDonald <imcdnzl@gmail.com>
 
-Hi there,
+On Thursday 17 March 2005 10:18 pm, Ian McDonald wrote:
+> Hi there,
+>
+> I've been watching the discussion around 2.6.11 and reading the
+> archives and I can't find the information with any clarity that I
+> need. My problem is that I can't get UML to compile. I can on 2.4.27
+> (with the standard patches) and with 2.6.10 also.
 
-I've been watching the discussion around 2.6.11 and reading the
-archives and I can't find the information with any clarity that I
-need. My problem is that I can't get UML to compile. I can on 2.4.27
-(with the standard patches) and with 2.6.10 also.
+All I have to do, on x86 under either Knoppix or Red Hat, is (this is off the 
+top of my head, so there might be a typo or two):
 
-My environment is Debian Woody with 2.4.27 kernel. My gcc version is
-2.95.4. I am using default options when I do 'make menu_config
-ARCH=um'
+tar xvjf linux-2.6.11.tar.bz2
+cd linux-2.6.11
+# Get a usable .config file, you can use "make ARCH=um menuconfig" for this
+# if you know what to select.  This adds a more or less minimal set of options 
+# to allnoconfig to provide a usable test system.  Later, you'll want to add
+# thinks like loopback support, UBD, ext2, maybe swap support...
+make ARCH=um allnoconfig
+cat >> .config << EOF
+CONFIG_MODE_TT=y
+CONFIG_LD_SCRIPT_STATIC=y
+CONFIG_BINFMT_ELF=y
+CONFIG_HOSTFS=y
+CONFIG_STDERR_CONSOLE=y
+CONFIG_LBD=y
+CONFIG_PROC_FS=y
+EOF
+yes "" | make ARCH=um oldconfig
+# Now build it.
+make ARCH=um
+# Run it.  Later you might want to add "rootflags" (defaults to rootflags=/)
+# and "mem" (defaults to mem=32M).  "quiet" is nice too...
+./linux rootfstype=hostfs rw init=/bin/sh
+# Show that the new shell prompt is under UML, not the parent system.
+mount -t proc /proc /proc
+cat /proc/cpuinfo
 
-Here is the error that I am experiencing once I do 'make linux ARCH=um':
-arch/um/kernel/sys_call_table.c:277: duplicate array index in initializer
-arch/um/kernel/sys_call_table.c:277: (near initialization for `sys_call_table')
-arch/um/kernel/sys_call_table.c:277: duplicate array index in initializer
-arch/um/kernel/sys_call_table.c:277: (near initialization for `sys_call_table')
+The polite way to exit is either "shutdown -n" or "halt -f" (both in sbin, 
+which isn't int he path), but when pid 1 is /bin/sh then just "exit" will 
+work as well if you don't mind a UML panic message about "tried to kill 
+init"...
 
-The code at line 277 is:
-       ARCH_SYSCALLS
-       [ LAST_SYSCALL + 1 ... NR_syscalls ] =
-               (syscall_handler_t *) sys_ni_syscall
+Speaking of path: the default UML path ends with ".", and if you try to 
+compile anything this triggers some "holier than thou" code in gcc that 
+ignores the entire path without even a warning message because it thinks it 
+knows better than you, and thus doesn't find the linker.  Just set your PATH 
+to "/sbin:/usr/sbin:/bin:/usr/bin" and it should work fine.  (Why this isn't 
+the default, I have no idea...)
 
-I don't quite understand this as it surpasses my C knowledge but if I
-do a dirty hack and change this to:
+> My environment is Debian Woody with 2.4.27 kernel. My gcc version is
+> 2.95.4. I am using default options when I do 'make menu_config
+> ARCH=um'
 
-       [ LAST_SYSCALL + 1 ... NR_syscalls ] =
-               (syscall_handler_t *) sys_ni_syscall
+There's no underscore in menuconfig.
 
-i.e. remove ARCH_SYSCALS it compiles.
+> Here is the error that I am experiencing once I do 'make linux ARCH=um':
+> arch/um/kernel/sys_call_table.c:277: duplicate array index in initializer
+> arch/um/kernel/sys_call_table.c:277: (near initialization for
+> `sys_call_table') arch/um/kernel/sys_call_table.c:277: duplicate array
+> index in initializer arch/um/kernel/sys_call_table.c:277: (near
+> initialization for `sys_call_table')
 
-However when it goes to finish off and link I then get this error message
-arch/um/kernel/built-in.o: In function `do_buffer_op':
-arch/um/kernel/built-in.o(.text+0xcf4a): undefined reference to `va_copy'
-arch/um/kernel/built-in.o(.data+0x1570): undefined reference to `sys_vserver'
+I remember a problem like that in one of the 2.6.11-pre releases, but it was 
+fixed in the final 2.6.11.  What compiler version are you using?
 
-and I don't have a linux kernel.
+> The code at line 277 is:
+>        ARCH_SYSCALLS
+>        [ LAST_SYSCALL + 1 ... NR_syscalls ] =
+>                (syscall_handler_t *) sys_ni_syscall
+>
+> I don't quite understand this as it surpasses my C knowledge but if I
+> do a dirty hack and change this to:
 
-Can anybody point me in the right direction?
+Yeah, I did too.  It was fixed before the 2.6.11 release.  Are you sure you're 
+building 2.6.11 sources?
 
-Regards,
+> Can anybody point me in the right direction?
 
-Ian
+You're sure you're using linux-2.6.11.tar.bz2 on x86?
+
+> Regards,
+>
+> Ian
+
+Rob
 
 
 -------------------------------------------------------
