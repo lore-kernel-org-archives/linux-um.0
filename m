@@ -1,30 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Atunc-00033W-BE
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 12:29:32 -0800
-Received: from main.gmane.org ([80.91.224.249])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Atua0-0001wo-EU
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 12:15:28 -0800
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1Atui7-0003JR-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 19 Feb 2004 21:23:51 +0100
-Received: from pd9ee3de9.dip.t-dialin.net ([217.238.61.233])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <user-mode-linux-devel@lists.sourceforge.net>; Thu Feb 19 20:23:51 2004
-Received: from skoehler by pd9ee3de9.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <user-mode-linux-devel@lists.sourceforge.net>; Thu Feb 19 20:23:51 2004
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <c1360l$eei$1@sea.gmane.org>
-References: <40338C1B.1070800@meisterwerk.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <40338C1B.1070800@meisterwerk.net>
-Subject: [uml-devel] Re: skas3 patch fails against vanilla-2.4.25
+	id 1AtvfD-00034h-MF
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 13:24:55 -0800
+Received: from web60803.mail.yahoo.com ([216.155.196.66])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AtvZk-00064X-Ru
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 13:19:16 -0800
+Message-ID: <20040219211908.21858.qmail@web60803.mail.yahoo.com>
+From: =?iso-8859-1?q?seba=20b?= <niakoz@yahoo.com.ar>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-1261920145-1077225548=:21529"
+Subject: [uml-devel] socket in UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,28 +22,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 Feb 2004 21:27:01 +0100
+Date: Thu, 19 Feb 2004 18:19:08 -0300 (ART)
 To: user-mode-linux-devel@lists.sourceforge.net
 
-> but these two i couldn't fix.
-> ("copy_segments" function seems to be gone)
 
-Bad news:
+--0-1261920145-1077225548=:21529
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by nerdnet.nl id i1JLLlmf003619
 
-I applied the 2.6.3-rc2 patch to a 2.6.3 kernel. This patch cleanly 
-applies and i can compile a UML-kernel.
+(Espa=F1ol)
+Necesito programar un socket que me comunique con el host desde dentro de=
+ UML. Que funciones y librerias necesitaria para comenzar a trabajar en e=
+ste proyecto?.Agradeceria una respuesta.Muchas Gracias.
+=20
+(My english is so bad,sory).
+I need to create a socket to comunicate with the host from inside UML. Wh=
+at function and libraries I need to program?  Thank.=20
+=20
 
-Than i applied the SKAS-patch by Gerd Knorr from
-   http://www.suse.de/~kraxel/uml/patches/
-and guess what happened when i tried to compile my host-kernel:
 
-   LD      .tmp_vmlinux1
-mm/built-in.o(.text+0x1d86f): In function `write_proc_mm':
-: undefined reference to `mm_copy_segments'
-make: *** [.tmp_vmlinux1] Error 1
 
-So the copy_segments function has been removed from 2.4.25 and 2.6.3.
+---------------------------------
+ =BFBusc=E1s un auto?
+Encontralo en Yahoo! Autos
+=A1M=E1s de 4000 clasificados todos los d=EDas!
+Usados - 0 km - Vend=E9 el tuyo
+--0-1261920145-1077225548=:21529
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by nerdnet.nl id i1JLLlmf003619
 
+<DIV>(Espa=F1ol)</DIV>
+<DIV>Necesito programar un socket que me comunique con el host desde dent=
+ro de UML. Que funciones y librerias&nbsp;necesitaria para comenzar a tra=
+bajar en este proyecto?.Agradeceria una respuesta.Muchas Gracias.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>(My english is so bad,sory).</DIV>
+<DIV>I need to create a socket to comunicate with the host from inside UM=
+L. What function&nbsp;and libraries I need&nbsp;to program?&nbsp;&nbsp;Th=
+ank.&nbsp;</DIV>
+<DIV>&nbsp;</DIV><p><br><hr size=3D1>
+<a href=3D"http://ar.rd.yahoo.com/mail/welcome/*http://ar.autos.yahoo.com=
+"><img src=3D"http://eur.i1.yimg.com/eur.yimg.com/i/fr/icon/car.gif" widt=
+h=3D16 height=3D16 border=3D0></a> <b>=BFBusc=E1s un auto?</b><br>
+Encontralo en <a href=3D"http://ar.rd.yahoo.com/mail/welcome/*http://ar.a=
+utos.yahoo.com"><B>Yahoo! Autos</B></a><br><font color=3D#FF6600><B>=A1M=E1=
+s de 4000 clasificados todos los d=EDas!</B></font><br>
+<small><a href=3D"http://ar.rd.yahoo.com/mail/welcome/*http://yahoo.deaut=
+os.com/usados">Usados</a> - <a href=3D"http://ar.rd.yahoo.com/mail/welcom=
+e/*http://yahoo.deautos.com/ofertas">0 km</a> - <a href=3D"http://ar.rd.y=
+ahoo.com/mail/welcome/*http://ar.autos.yahoo.com/vender/">Vend=E9 el tuyo=
+</a></small>
+--0-1261920145-1077225548=:21529--
 
 
 -------------------------------------------------------
