@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CXK8t-0001hv-ND for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Nov 2004 05:58:39 -0800
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CXK8s-0003O9-PZ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Nov 2004 05:58:39 -0800
-Message-ID: <41A5E50A.1080804@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
-References: <200411250456.33779.blaisorblade_spam@yahoo.it>
-	<41A5C5A9.7040902@fujitsu-siemens.com>
-	<200411251349.54865.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200411251349.54865.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: Fwd: [PATCH] UML - close host file descriptors
-	properly
+	id 1CX4Ya-0002F7-NL for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 13:20:08 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CX4YZ-0005sI-RT
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 13:20:08 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] [PATCH] uml_router: cleanup
+Message-ID: <20041124211042.GB27491@bytesex>
+References: <BAY24-F27D8548BC9B2976EFF8B3883B80@phx.gbl>
+	<874qjfftsz.fsf@bytesex.org> <41A4EE93.9090800@uxu.ch>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41A4EE93.9090800@uxu.ch>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,62 +29,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 25 Nov 2004 14:58:34 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 24 Nov 2004 22:10:42 +0100
+To: Felix =?iso-8859-1?Q?M=FCri?= <uml@uxu.ch>
+Cc: User-mode-linux-devel@lists.sourceforge.net, Steve Schmidtke <steve_schmidtke@hotmail.com>
 
-Blaisorblade wrote:
-> On Thursday 25 November 2004 12:44, Bodo Stroesser wrote:
-> 
->>Blaisorblade wrote:
->>
->>>This patch was sent by Jeff for merging in mainline - since you
->>>complained on an earlier version, have you still something to correct in
->>>it?
-> 
-> 
->>AFAICS, it's the same patch as you have in bb3 with the name
->>"uml-close-all-fds". So, it's OK. To have reboot on SKAS working,
->>fix-reboot-skas is required also.
-> 
-> Yes, that is in -bb3.
-> 
->>>Btw, the reboot problem is not fixed for me - even in -bb3, with your
->>>last patch tarball excluding SYSEMU_SINGLESTEP, rebooting does not always
->>>work.
-> 
-> 
->>That's bad. On my system, since the patches are applied, I never saw a
->>reboot failing.
-> 
-> I got the same randomical failure before. And what's more, with the use-va_end 
-> cleanup, it *always* crashed (not retested, but going to do this now).
-> 
-> Without va_end, sometimes (1 on 3 on average, I'd say) I get:
-> 
-> "Remounting root filesystem read-only.
-> Rebooting.
-> Restarting system.
-> 
-> deactivate_all_fds failed, errno = 9
-> Segmentation fault"
-OK. Let's read the code: if deactivate_all_fds fails, the handler for SIGIO isn't
-set to SIG_IGN, since it does return(err) without calling set_handler() (maybe
-you call this a bug, but *normally* deactivate_all_fds must not fail). Thus, if
-there is a SIGIO in the queue, UML *must* segfault when calling unblock_signals().
+> long ago I found similar issues with the uml_switch codebase. My 
+> problem was not the mac handling, but an missing feature to 
+> connect two switches together via an udp-tunnel.
 
-The question here is, which fd is in the list active_fds and is invalid?
-Could you please change the error output to contain the fd-number?
-And before doing the reboot, please get a list of the open fds. This could help to
-find out, which driver is having a bug.
-> 
-> 
->>I have an idea to find out, what happens on your machine.
-> 
-> Ok, going to test ASAP.
-> 
->>First let me 
+How did you actually implement that?  When using lossy UDP anyway
+it should be almost trivial to remove the restriction to two switch
+deamons by using IP Multicast for the communication ...
 
+  Gerd
+
+-- 
+#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
