@@ -2,23 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6A7F-0004f3-9F for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 Sep 2004 08:48:41 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C6A7E-0001Gw-BA for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 Sep 2004 08:48:41 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+	id 1C6BaA-0006RH-7K for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 11 Sep 2004 10:22:38 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C6Ba8-0006Qz-GT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 11 Sep 2004 10:22:38 -0700
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
+Message-ID: <20040911182615.GB2966@ccure.user-mode-linux.org>
 References: <20040826020626.GA28471@malice.crymeariver.org>
 	<200409102352.i8ANql0O004842@ccure.user-mode-linux.org>
-In-Reply-To: <200409102352.i8ANql0O004842@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	<200409111745.18659.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200409111745.18659.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200409111745.18659.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +30,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 11 Sep 2004 17:45:18 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, David Jeffery <djeffery@britsys.net>
+Date: Sat, 11 Sep 2004 14:26:15 -0400
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, David Jeffery <djeffery@britsys.net>
 
-On Saturday 11 September 2004 01:52, Jeff Dike wrote:
-> djeffery@britsys.net said:
-> > The problem is caused by the incorrect implementation of sys_clone().
-> >  sys_clone() is an ugly beast that has different arguements depending
-> > on  the architecture.  For i386 and ppc, the child tid is passed as
-> > the  5th arguement instead of as the 4th arguement as as some other
-> > architectures (like x86-64) do.  The 4th arguement on i386 and ppc
-> > doesn't look to be used by the kernel.
->
-> This is fixed in my tree.  It was a lot simpler than your patch, or what I
-> led you to believe.  I just moved sys_clone from syscall_kern.c to
-> arch/um/sys-i386/syscalls.c and fixed the interface.
+> Jeff, please fix your patch again - the unused argument is the fourth, not 
+> the third:
 
-Jeff, please fix your patch again - the unused argument is the fourth, not the 
-third:
+Crap, I went to the trouble of confirming this in the i386 code, and
+ended up miscounting arguments.  It still worked, though.
 
-original one
-+#if defined(__subarch_i386__) || defined(__subarch_ppc__)
-+long sys_clone_5arg(unsigned long clone_flags, unsigned long newsp,
-+               int *parent_tid, unsigned long unused, int *child_tid)
-+{
-+        return sys_clone(clone_flags, newsp, parent_tid, child_tid);
-+}
-+#endif
+> Also, Andrew Morton wrote some UML fixes (for scheduler bugs) on his own. Did
+> you already note this or you want them forwarded?
 
-Also, Andrew Morton wrote some UML fixes (for scheduler bugs) on his own. Did 
-you already note this or you want them forwarded?
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+I didn't see them, please send them over.
+
+				Jeff
 
 
 -------------------------------------------------------
