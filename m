@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cjiaa-0002jj-1D for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Dec 2004 10:30:28 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CjiaV-0002HX-6E for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Dec 2004 10:30:27 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] synchronous hostfs
-References: <27776.1104084973@marajade.sandelman.ottawa.on.ca>
-In-Reply-To: <27776.1104084973@marajade.sandelman.ottawa.on.ca>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+	id 1CjjRT-00065n-LW for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Dec 2004 11:25:07 -0800
+Received: from coderock.org
+	([193.77.147.115] helo=trashy.coderock.org ident=postfix)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CjjRS-0004l0-Ly for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Dec 2004 11:25:07 -0800
+From: Domen Puncer <domen@coderock.org>
+Message-ID: <20041229192533.GB25844@nd47.coderock.org>
+References: <20041225175720.0DC7E1ED41@trashy.coderock.org>
+	<200412291918.23156.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200412291906.08122.blaisorblade@yahoo.it>
+In-Reply-To: <200412291918.23156.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: delete unused file
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,44 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Dec 2004 19:06:08 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Date: Wed, 29 Dec 2004 20:25:33 +0100
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
-On Sunday 26 December 2004 19:16, Michael Richardson wrote:
-> I'm running 2.4.26-um3.
-> I happen to be running hostfs with NFS underneath.
-> I get core dumps from my application, and I want to gdb them outside
-> of the UML.
+On 29/12/04 19:18 +0100, Blaisorblade wrote:
+> On Saturday 25 December 2004 18:57, domen@coderock.org wrote:
+> > Remove nowhere referenced file. (egrep "filename\." didn't find anything)
+> >
+> > Signed-off-by: Domen Puncer <domen@coderock.org>
+> > ---
+> >
+> >
+> >  kj/arch/um/include/umn.h |   27 ---------------------------
+> >  1 files changed, 27 deletions(-)
+> This one could be correct (I think yes, but I haven't checked), but the other 
+> ones aren't.
+> 
+> In fact, they are referenced by way of symlinks (i.e. archparam-i386.h is 
+> symlinked as archparam.h, for instance from your patch #3).
 
-> I had to switch from core dump to NFS (which seems to fail 
-> now) to putting them in /tmp (which is ramdisk), and then move them to
-> /var/tmp, which is hostfs.
-Hmm - were you putting the core dumps inside a hostfs mount, right? This has 
-been reported to fail badly with 2.4.26-3um... the hostfs contained in 
-2.4.24-1um and 2.4.27-1bs (this tree is from me, on my homepage) is stable, 
-while the one in 2.4.24-2um and subsequent releases isn't.
+Ahh... that's why filenames were a bit weird.
 
-> Still, I now have to use unique file names, or things get confused
-> between host and guest.
->
-> I also like to do:
->   "make DESTDIR=/uml/root/file install"
+Thanks for reply.
 
-> from outside. This now only has effect if I umount/mount the file
-> system. (I know have a /usr/local mount just for this, even though
-> /usr/local is inside of /)
-> It used to be that this was a problem only if the program was running.
 
-> Is there some way to defeat the caching that is occuring?
-> or even to just flush it? (other than umount)
-Hmmm, I don't know this... probably giving "sync" inside UML should work.
-I remember that Jeff said that he made hostfs asynchronous in those releases 
-on purpose (for performance, IIRC), and this is not bad.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+	Domen
 
 
 -------------------------------------------------------
