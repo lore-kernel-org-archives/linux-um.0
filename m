@@ -2,29 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTZMB-0004kj-3Y for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 21:52:35 -0700
-Received: from ns.theshore.net ([216.156.129.65] helo=www.theshore.net)
+	id 1BTcVO-0007mL-9p for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 01:14:18 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTZMA-0005h6-Mw for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 21:52:34 -0700
-Message-ID: <001001c4446f$c323d2e0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <20040229043549.GA8583@ccure.user-mode-linux.org>
-	<02dc01c43c4a$bb7c0490$2000000a@schlepptopp>
-	<1084831251.1230.4.camel@chartreuse>
-	<03ff01c43c5d$7db6e5e0$2000000a@schlepptopp>
-	<20040518175904.GB29114@ccure.user-mode-linux.org>
-	<1084987654.2250.4.camel@chartreuse>
-	<006f01c443b2$29434290$0201a8c0@hawk>
-	<1085646154.1264.6.camel@chartreuse>
-	<003b01c443cc$8349fcb0$0201a8c0@hawk>
-	<1085658646.1256.9.camel@chartreuse>
-Subject: Re: [uml-devel] [PATCH] host context switch reduction Benchmarks
+	id 1BTcVN-0002yK-M1 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 01:14:17 -0700
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] No of ubd
+In-Reply-To: <200405280340.i4S3eda06510@lifewood.com>
+Message-ID: <Pine.LNX.4.44.0405280922080.27901-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,42 +25,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 May 2004 23:53:42 -0500
-To: Laurent Vivier <LaurentVivier@wanadoo.fr>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 28 May 2004 10:13:40 +0200 (CEST)
+To: Raymond Wong <raymond@lifewood.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Using Mysql's "run-all-tests" as a benchmark, the sysemu patches provide about a
-33% performance improvement over a "vanilla" UML+skas.
+On Fri, 28 May 2004, Raymond Wong wrote:
 
-w/ sysemu:
-real    13m57.353s
-user    2m17.370s
-sys     3m54.310s
+> How many ubd drives are available to use?  8? Or 256?  
 
-w/o sysemu:
-real    18m38.329s
-user    2m37.370s
-sys     6m3.040s
-
-Mysql test results here:
-http://www.theshore.net/~caker/uml/sysemu-benchmarks.txt
+8, each with 16 partitions.
 
 
-For a kernel compile, the improvement isn't as drastic -- but compiling spends
-most of it's time in user-space...
-
-w/ sysemu:
-real    5m15.182s
-user    4m22.470s
-sys     0m52.230s
-
-w/o sysemu:
-real    5m28.466s
-user    4m32.030s
-sys     0m55.370s
-
-Nice stuff, thanks!
--Chris
+Regards
+Henrik
 
 
 
