@@ -1,17 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtFRq-0007ck-Qh
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 16:20:18 -0800
-Received: from [203.199.92.194] (helo=mailgw.seepz.tcs.co.in)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtFNR-0003OJ-Fg
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 16:15:45 -0800
-From: "SVRSPZMAIN/TCSSEEPZ/TCS.TCSSEEPZ" <SVRSPZMAIN/TCSSEEPZ/TCS.TCSSEEPZ@seepz.tcs.co.in>
-Message-ID: <OF8B758921.BF67B97D-ON65256E3E.0001E00C@seepz.tcs.co.in>
+	id 1AtGsa-0004pk-FE
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 17:52:00 -0800
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AtGhW-00048O-Hz
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 17:40:34 -0800
+Message-ID: <20d501c3f5c1$ef1d3d70$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp> <200402152045.17138.blaisorblade_spam@yahoo.it>
+Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
 MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
-Subject: [uml-devel] Report to Recipient(s)
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,55 +25,120 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Feb 2004 05:50:28 +0530
-To: User-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 18 Feb 2004 02:52:56 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, dan@shearer.org, christopher_sf@yahoo.com
 
-Incident Information:-
+hi !
 
-Originator:    user-mode-linux-devel-admin@lists.sourceforge.net
-Recipients:    User-mode-linux-devel
-<user-mode-linux-devel@lists.sourceforge.net>
-Subject:  [uml-devel] Love4lust.info is the best place to enjoy virtual SEX
-!
+> You should try using, as skas patch,
+> http://www.user-mode-linux.org/~blaisorblade/patches/2.6.2-v1-host-skas2/00-2.6.2-v1-host-SKAS2.patch.bz2,
+> which comes from the latest one from Ingo Molnar. I have not been very
 
-This is a message from the TCS SEEPZ E-Mail Server
-------------------------------------------------------------------------------------------------
+the bug ("hang after NET: Registered protocol family 2":) doesn`t seem to have a relation to SKAS, because it also happens in TT
+mode.
+when i run the binary with "./linux mode=tt" the hang occurs, too.
+furthermore - it doesn`t seem to be a compiler issue, because i compiled 2.6.3-rc2 on 2 completely different systems (suse9 and
+rh7.2).
+i also read about guesses, that this could have to do with "newer" hosts running NPTL.
+could someone explain? i thought uml is a static binary, so how can this have a relation to a thread >LIBRARY<??
+somewhere i read about "kernel threads". is ntpl related to the kernel itself? (sorry if this sounds stupid - but i remember
+switching between different thread-libraries on solaris via envvars. is this just the same with ntpl?)
 
-You are receiving this message because the  E-Mail sent from
-user-mode-linux-devel-admin@lists.sourceforge.net
-has been quarantined. The mail has been quarantined as it does not confor
-to the TCS EMail policy.
-You are requested to inform the addressee and get in touch with the System
-Administrator.
+if someone wants to test - the rh7.2 compiled (and for me also failing) binary is at: http://www.my-vserver.de/uml-2.6.3-rc2.gz
 
+update:
+after adding a lot if printk`s to the uml-patched 2.6.3-rc2 source, i found the following(maybe interesting):
 
+in ./kernel/sched.c
+in function wait_for_completion(struct completion *x)
+the call to "schedule()" never returns and this seems to be the reason for the hanging ipv4 initialisation.
+i have no clue about kernel internals and i think it`s nonsense, if i dig further into this....
 
-*****************************************************************************************************************************
+but as i already said:
+2.6.0-test9 with uml-patch-2.6.0-test9-1  _WORKS_ (at least for me)
+2.6.0 with uml-patch-2.6.0-1 and following kernel/uml-patch versions seem to have the ipv4 hang-at-init bug.
 
- DISCLAIMER: The information contained in this message is intended only and
-solely for the addressed individual or entity  indicated in this message
-and for the exclusive use of the said addressed individual or entity
-indicated in this message  (or responsible for delivery of the message to
-such person) and may contain legally privileged and confidential
-information  belonging to Tata Consultancy Services. It must not be
-printed, read, copied, disclosed, forwarded, distributed or used  (in
-whatsoever manner) by any person other than the addressee. Unauthorized
-use, disclosure or copying is strictly prohibited  and may constitute
-unlawful act and can possibly attract legal action, civil and/or criminal.
-The contents of this message  need not necessarily reflect or endorse the
-views of TATA Consultancy Services on any subject matter. Any action taken
-or omitted to be taken based on this message is entirely at your risk and
-neither the originator of this message nor  Tata Consultancy Services takes
-any responsibility or liability towards the same. Opinions, conclusions and
-any other  information contained in this message that do not relate to the
-official business of Tata Consultancy Services shall be  understood as
-neither given nor endorsed by Tata Consultancy Services or any affiliate of
-Tata Consultancy Services.  If you have received this message in error, you
-should destroy this message and may please notify the sender by e-mail.
-Thank you.
-*****************************************************************************************************************************
+so maybe the bug has been introduced with uml-patch-2.6.0-1 !?
+regards
+roland
 
 
+
+----- Original Message ----- 
+From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
+To: <user-mode-linux-devel@lists.sourceforge.net>
+Cc: "roland" <for_spam@gmx.de>
+Sent: Sunday, February 15, 2004 8:45 PM
+Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
+
+
+> Alle 18:47, domenica 15 febbraio 2004, roland ha scritto:
+> > hi !
+> > concerning the uml "hang" after  "NET: Registered protocol family 2":
+> >
+> > after some investigation i found, that the problem seems to have been
+> > introduced with uml-patch-2.6.0-1 (at
+> > http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-1.bz2)
+> >
+> > uml-patch-2.6.0-test9-1 (at
+> > http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-test9-1.
+> >bz2?download), in conjunction with minor compile-fix
+> > http://people.0x63.nu/~andersg/uml-minor-fixes.diff works nicely for me.
+>
+> On what guest kernel do you apply the patch? uml-patch-2.6.0-1 gave strange
+> problems with 2.6.1 vanilla kernel.
+>
+> > seems there has been a major change (lots of merges?) in uml-patch-2.6.0-1
+> > because it`s much more bigger (around 2x) than uml-patch-2.6.0-test9-1
+> >
+> > btw:
+> > i use Bryan O'Sullivan`s skas patch on my host kernel. see:
+> > http://sourceforge.net/mailarchive/message.php?msg_id=5840691 since this
+> > patch isn`t based on steven james patch (which stephen williams patch is
+> > based of), it isn`t a skas issue, but a compiler or host-fs issue !? i`m on
+> > suse9 host.
+> You should try using, as skas patch,
+> http://www.user-mode-linux.org/~blaisorblade/patches/2.6.2-v1-host-skas2/00-2.6.2-v1-host-SKAS2.patch.bz2,
+> which comes from the latest one from Ingo Molnar. I have not been very
+> careful, but when I gave a look to the Bryan's patch, it seemed likely to
+> have similar problems as the other one. At least, both do only this change to
+> write_ldt (i.e. don't use current->mm but let the caller specify which mm
+> use):
+>
+> -static int write_ldt(void __user * ptr, unsigned long bytecount, int oldmode)
+> +static int write_ldt(struct task_struct *task, void __user * ptr, unsigned
+> long bytecount, int oldmode)
+>  {
+> -       struct mm_struct * mm = current->mm;
+> +       struct mm_struct * mm = task->mm;
+>         __u32 entry_1, entry_2, *lp;
+>         int error;
+>         struct user_desc ldt_info;
+>
+> While Ingo Molnar's one does also this:
+>
+> @@ -195,7 +197,7 @@
+>
+>         down(&mm->context.sem);
+>         if (ldt_info.entry_number >= mm->context.size) {
+> -               error = alloc_ldt(&current->mm->context,
+> ldt_info.entry_number+1, 1);
+> +               error = alloc_ldt(&mm->context, ldt_info.entry_number+1, 1);
+>                 if (error < 0)
+>                         goto out_unlock;
+>         }
+>
+> This second change is *needed*, whichever patch do you use: without it part of
+> write_ldt uses current->mm instead of mm. That also means that alloc_ldt is
+> not called on mm->context, so that probably it remains null and so we get
+> Oopses.
+>
+> Bye
+> -- 
+> Paolo Giarrusso, aka Blaisorblade
+> Linux registered user n. 292729
+>
 
 
 
