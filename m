@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5TaP-0003tW-Hb for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 11:23:57 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C5TaN-00039o-SG for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 11:23:57 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Compiling UML 2.6.8.1 with Static Linking results in
-	segfault
-References: <E1C5GuB-0000wT-QX@sc8-sf-mx2.sourceforge.net>
-In-Reply-To: <E1C5GuB-0000wT-QX@sc8-sf-mx2.sourceforge.net>
-MIME-Version: 1.0
+	id 1C5Tiq-0005vK-Ug for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 11:32:40 -0700
+Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C5Tio-0003xQ-5A for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 11:32:39 -0700
+From: Chris Wright <chrisw@osdl.org>
+Subject: Re: [uml-devel] Re: [patch 1/1] uml:fix ubd deadlock on SMP
+Message-ID: <20040909113228.M1973@build.pdx.osdl.net>
+References: <20040908172503.384144933@zion.localdomain>
+	<20040908111204.I1973@build.pdx.osdl.net>
+	<200409092002.19134.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200409092020.27856.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200409092002.19134.blaisorblade_spam@yahoo.it>;
+	from blaisorblade_spam@yahoo.it on Thu, Sep 09, 2004 at
+	08:02:19PM +0200
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,46 +31,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Sep 2004 20:20:27 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, ralston@stral.net
-Cc: 'Jeff Dike' <jdike@addtoit.com>
+Date: Thu, 9 Sep 2004 11:32:28 -0700
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Chris Wright <chrisw@osdl.org>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-On Thursday 09 September 2004 06:51, Michael Ralston wrote:
-> (gdb) run
-> Starting program: /uml/linux-2.4.26-static
->
-> Program received signal SIGSEGV, Segmentation fault.
-> 0x0815c520 in __libc_setup_tls ()
-> (gdb) bt
-> #0  0x0815c520 in __libc_setup_tls ()
-> #1  0x0815c82b in __pthread_initialize_minimal ()
-> #2  0x00000004 in ?? ()
-> #3  0xbffffd88 in ?? ()
-> #4  0x0815c2e8 in __libc_start_main ()
-> Previous frame inner to this frame (corrupt stack?)
-> (gdb)
->
->
-> I compiled the uml binary with debugging symbols enabled... Let me know if
-> there is anything else I can do... Would my complete .config be useful?
-Please, try using the 2.6.7-1 patch. There are some changes which could be at 
-fault. I'm referring to "load-low" and "link" from 
-http://user-mode-linux.sourceforge.net/changelog-uml-patch-2.6.7-2.bz2.html.
+* BlaisorBlade (blaisorblade_spam@yahoo.it) wrote:
+> On Wednesday 08 September 2004 20:12, Chris Wright wrote:
+> > * blaisorblade_spam@yahoo.it (blaisorblade_spam@yahoo.it) wrote:
+> > > Trivial: don't lock the queue spinlock when called from the request
+> > > function. Since the faulty function must use spinlock in another case,
+> > > double-case it. And since we will never use both functions together, let
+> > > no object code be shared between them.
+> >
+> > Why not add a helper which locks around the core function.  Then either
+> > call helper or core function directly depending on locking needs?
+> I'm happy with whatever is nicer.
 
-At least, just for the reason they touch the linking script (after all, who 
-says that the used start address should be the one we use, with TLS)?
+The way I outlined is nicer as it avoids all that conditional locking.
+I can do a full patch if you like.
 
-Also, please run:
-strings /usr/bin/ld | bzip2 >linkScript.bz2
-
-and mail the obtained file (which contains the default linker scripts). I 
-think I can build the patch for you easily, with that file; making it work on 
-everyone's glibc could be harder.
-
-Bye
+thanks,
+-chris
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+Linux Security Modules     http://lsm.immunix.org     http://lsm.bkbits.net
 
 
 -------------------------------------------------------
