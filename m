@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D6s3z-00035o-6F for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 07:16:31 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D6s3u-00005Q-91
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 07:16:31 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] UML freezes at hdd-intensive processes
-References: <37436.128.176.89.137.1109846512.squirrel@128.176.89.137>
-In-Reply-To: <37436.128.176.89.137.1109846512.squirrel@128.176.89.137>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200503030858.18404.rob@landley.net>
+	id 1D6sz7-0006Zy-RC for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 08:15:33 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D6sz5-0002MQ-Be for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 08:15:33 -0800
+Message-Id: <200503031844.j23IhmDS003473@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Triage on the pending patches 
+In-Reply-To: Your message of "Thu, 03 Mar 2005 00:08:51 EST."
+	<200503030008.51336.rob@landley.net> 
+References: <200503030822.j238MoBY016825@ccure.user-mode-linux.org>
+	<200503030008.51336.rob@landley.net> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,25 +28,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 3 Mar 2005 08:58:09 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Oliver Baltz <info@OliverBaltz.de>
+Date: Thu, 03 Mar 2005 13:43:48 -0500
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
 
-On Thursday 03 March 2005 05:41 am, Oliver Baltz wrote:
-> Hi @all,
->
-> my UML hangs while intensive processes that use the HDD. For example:
-> rgrep, upgrade,...
->
-> UML-Hostsystem: 2.4.27-1-386, Intel ICH5 SATA 150-Controller
-> UML: 2.4.26-3um-1
->
-> Any ideas?
+rob@landley.net said:
+> Well, just in case your job was too easy, here's one more.  Using the
+> "quiet" option shows a couple of lines being printed out by printf
+> that should be printed out by printk (so they'll _shut_up_ when you
+> ask it to). 
 
-I haven't seen this on 2.6, but I think the first question is what kind of 
-filesystem are you using?  Hostfs?  NFS?  UBD mount?
+Those are printfs for a reason.  Early boot mesages (before the kernel is
+actually running) won't be seen if they are printk-d and the thing crashes
+before the console is initialized.  The messages will be stuck in the printk
+buffer, and you will be none the wiser.
 
-Rob
+So, they can be made quiet if you really want, but that's not the way.
+
+				Jeff
+
 
 
 -------------------------------------------------------
