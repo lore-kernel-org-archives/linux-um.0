@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cb2ZK-0006fN-6z for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Dec 2004 12:01:18 -0800
-Received: from bay24-f30.bay24.hotmail.com ([64.4.18.80] helo=hotmail.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cb2ZG-0007W1-N8 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Dec 2004 12:01:16 -0800
-Message-ID: <BAY24-F30259BA099D39BC383A19D83B30@phx.gbl>
-In-Reply-To: <200412040452.32722.blaisorblade_spam@yahoo.it>
+	id 1Cb2tG-00083x-6w for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Dec 2004 12:21:54 -0800
+Received: from bay24-f4.bay24.hotmail.com ([64.4.18.54] helo=hotmail.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cb2tF-0003YI-82 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Dec 2004 12:21:54 -0800
+Message-ID: <BAY24-F43C12817C138B110B213583B30@phx.gbl>
 From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed
-Subject: [uml-devel] RE: What to do with uml_switch?
+Subject: [uml-devel] Re: What to do with uml_switch?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,44 +24,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 05 Dec 2004 20:00:51 +0000
-To: blaisorblade_spam@yahoo.it, kraxel@bytesex.org, uml@uxu.ch, mcr@marajade.sandelman.ottawa.on.ca
-Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 05 Dec 2004 20:20:11 +0000
+To: mcr@marajade.sandelman.ottawa.on.ca, blaisorblade_spam@yahoo.it
+Cc: kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
->It is apparent that something is wrong with uml_switch (though I don't know
->the code and I'm not going to express technical opinion, only "management"
->one).
+Michael Richardson wrote:
+>  uml_netjig is a tool which does the following:
+>   1) moves packets using "daemon" mode a la uml_switch.
+>  2) has an expect-friendly command line interface  3) can create 
+>*multiple* switches and keep them seperate
 
-Yes, the fact that a core file has sat in the directory for almost 2 years 
-says something. :)
+If they are separate, why not just run multiple uml_switches?
 
->Steve, merging at least the earlier of your patches (they are splitup The
->Right Way(tm)) might be done soon, without lots of discussions.
+>  4) can record all packets to a .pcap file
+>  5) can play packets from a .pcap file at a given rate     (or under 
+>command line interface control)
+>  6) can optionally answer ARP queries for imaginary nodes.
 
-Thanks.  I havn't noticed any problems with the changes I've made so far.
+I like these 3, but could you not just connect another UML guest to the 
+switch and run arp -s pub and tcpdump to accomplish the same thing?
 
->If you feel so, you might split uml_switch from the rest (but remember the
->user point of view - two packages doubles the setup time).
-
-Who is this directed to?  Who is the maintainer at the moment anyways?
-
->If you are good guys (and you are), I think you can sort out by discussing 
->it
->here (I'm just against the creation of a separate ML for that development -
->things don't work that way).
+>  7) can talk to tuntap device(s) as uml_switch could.
 >
->So, the ball is over to you. In this moment, Gerd Knorr seems the one who 
->has
->the time and the position (working in SuSE) to manage it well (he can push
->updates to its users and so on, for instance) but it's just my little 2
->cents.
+>  My patches refactor uml_switch to get uml_netjig + uml_switch'
 
-I'd be happy with Gerd as maintainer.  I'd nominate myself, but I have no 
-system that I can dedicate to the project.  I also have a hard time saying 
-no to interesting ideas.
+I am still not clear if uml_netjig is a separate program running on top of 
+uml_switch or inside it, but (and I apologize for being dense if this is 
+what you are doing) I think the proper way to accomplish what you want is to 
+create a "-monitor <socket>" option to uml switch to filter all network 
+traffic through.  Then create a monitor program that can attach/detach from 
+a uml_switch at will through the monitor socket.  A hook to filter packets 
+entering uml_switch and a new function to inject packets (with/without 
+updating MAC tables) might be all that's necessary.  All your traffic 
+management and expect code could reside in the external monitor program.
 
-Steve Schmidtke
+Steve schmidtke
 
 
 
