@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AiMXg-000070-Eh for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 15:41:20 -0800
+	id 1AiMcJ-0000uM-Gn for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2004 15:46:07 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AiMXf-0005Qf-UB
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AiMcI-000519-VN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 15:41:20 -0800
+	Sun, 18 Jan 2004 15:46:07 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] uml-patch-2.6.1
-Message-ID: <20040119000327.GD21046@ccure.user-mode-linux.org>
-References: <200401140725.i0E7Pr9b001444@uml.user-mode-linux.org>
-	<200401181723.32498.blaisorblade_spam@yahoo.it>
+Message-ID: <20040119000802.GF21046@ccure.user-mode-linux.org>
+References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
+	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
+	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
+	<20040118162112.GA15509@elte.hu> <20040118210605.GA23259@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200401181723.32498.blaisorblade_spam@yahoo.it>
+In-Reply-To: <20040118210605.GA23259@elte.hu>
+Subject: [uml-devel] Re: uml 2.6.1 kbuild simplifications
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,24 +31,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Jan 2004 19:03:27 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Sun, 18 Jan 2004 19:08:02 -0500
+To: Ingo Molnar <mingo@elte.hu>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Jan 18, 2004 at 05:23:32PM +0100, BlaisorBlade wrote:
-> Try disabling CONFIG_MODE_TT and you'll see that 
-> arch/um/kernel/skas/include/uaccess.h doesn't compile (it uses EFAULT but 
-> errno.h is included only by arch/um/kernel/tt/include/uaccess.h).
+On Sun, Jan 18, 2004 at 10:06:05PM +0100, Ingo Molnar wrote:
+> 
+> i've attached a few makefile simplifications/cleanups below, against
+> your 2.6.1 UML tree. The UML build will be less verbose as well.
 
-Fixed now.
+Cool.
 
-> This happens because hostfs is not compiled with -O2, since now -O2 is added 
-> to CFLAGS after including arch/??/Makefile. The inlines that do the needed 
-> wrapping are defined(in /usr/include/sys/stat.h) only if _OPTIMIZE_ if 
-> defined (probably because inlines don't work otherwise, but other inlines are
-> defined anyway, so there is also a libc bug). So, I'm attaching the fix.
+> parallel make still does not work though - doing 'make -j10' after a
+> 'make clean' fails. Couldnt figure out a solution, the dependencies are
+> really nasty.
 
-Applied, thanks.
+Yeah, it's a mess.  It has sort of evolved over time, with local fixes adding
+up to a horror show.
 
 				Jeff
 
