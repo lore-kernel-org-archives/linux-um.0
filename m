@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ALocB-0000ry-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 17 Nov 2003 11:00:47 -0800
-Received: from blacksheep.csh.rit.edu ([129.21.60.6])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ALobC-0005Sy-LO
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 17 Nov 2003 10:59:46 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] Re: Bug#220679: user-mode-linux: Fails to Mount Root Filesystem on Reboot
-Message-ID: <20031117185942.GZ9377@dijkstra.csh.rit.edu>
-References: <20031117161447.GL9377@dijkstra.csh.rit.edu> <Pine.LNX.4.44.0311171352460.26239-100000@slash.mukesh.agrawals.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0311171352460.26239-100000@slash.mukesh.agrawals.org>
+	id 1ALuiq-0000Aq-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 17 Nov 2003 17:32:04 -0800
+Received: from pintail.mail.pas.earthlink.net ([207.217.120.122])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1ALuiq-0000uT-2f
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 17 Nov 2003 17:32:04 -0800
+Message-ID: <3FB97636.6030107@spaz.org>
+From: Daniel Burton <dan@spaz.org>
+MIME-Version: 1.0
+References: <E1ALez7-0007q5-Of@frankenstein> <20031117161447.GL9377@dijkstra.csh.rit.edu>
+In-Reply-To: <20031117161447.GL9377@dijkstra.csh.rit.edu>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: Bug#220679: user-mode-linux: Fails to Mount Root Filesystem on
+ Reboot
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,35 +27,39 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 Nov 2003 13:59:42 -0500
-To: user-mode-linux@mukesh.agrawals.org
-Cc: Daniel Burton <dan@spaz.org>, 220679@bugs.debian.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 17 Nov 2003 17:30:30 -0800
+To: Matt Zimmerman <mdz@debian.org>
+Cc: 220679@bugs.debian.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Nov 17, 2003 at 01:55:35PM -0500, user-mode-linux@mukesh.agrawals.org wrote:
+Matt Zimmerman wrote:
 
-> On Mon, 17 Nov 2003, Matt Zimmerman wrote:
-> 
-> > On Mon, Nov 17, 2003 at 12:43:49AM -0800, Daniel Burton wrote:
-> > > F_SETLK failed, file already locked by pid 26263
-> > > Failed to lock 'root_fs', err = 11
-> > > unable to open root_fs for validation
-> >
-> > And this is the problem.  Presumably pid 26263 is the UML itself, and for
-> > some reason the file isn't getting unlocked.
-> 
-> You may have another UML using that file. Perhaps you killed some of the
-> UML processes, but not all of them?
-> 
-> "ps aux | grep linux" will probably show a UML still running.
-> 
-> (This has always been the case for me, when I get the "F_SETLK failed"
-> message.)
+>On Mon, Nov 17, 2003 at 12:43:49AM -0800, Daniel Burton wrote:
+>
+>  
+>
+>>Package: user-mode-linux
+>>Version: 2.4.22-5um-1
+>>Severity: normal
+>>Followup-For: Bug #220679
+>>
+>>The root filesystem doesn't get mounted when I reboot running the 
+>>following script:
+>>
+>>#!/bin/sh
+>>linux ubd0=root_fs ubd1=swap eth0=daemon ssl0=tty:/dev/ttyS4 mem=4000M \
+>>    umid=vdialup root=/dev/ubd0 devfs=mount
+>>    
+>>
+>
+>So you are saying that specifying ubd0= explicitly does _not_, in fact, fix
+>your problem?  Your previous message seems to have said that it did.
+>  
+>
 
-This was after a reboot, not killing UML, so this same UML was able to lock
-the file earlier, and no other UML could have locked it during that time.
+All previous command lines I tried with ubd0=root_fs did allow it to 
+reboot.  For some reason, this command line didn't work.  I have no idea 
+why.
 
--- 
- - mdz
 
 
 -------------------------------------------------------
