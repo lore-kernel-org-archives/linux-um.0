@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BC03U-0004P5-6r for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Apr 2004 10:44:40 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1BC0is-0005f1-Dn for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Apr 2004 11:27:26 -0700
+Received: from mail.gmx.net ([213.165.64.20])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BC03T-0007ey-K5 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Apr 2004 10:44:39 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-References: <40686E7D.2080600@unclewebster.com>
-	<200404011953.43255.blaisorblade_spam@yahoo.it>
-	<200404051840.i35IeHhZ029055@ccure.user-mode-linux.org>
-In-Reply-To: <200404051840.i35IeHhZ029055@ccure.user-mode-linux.org>
+	id 1BC0ir-0007YW-OT for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Apr 2004 11:27:25 -0700
+Message-ID: <195901c41e61$3132cb90$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <Pine.LNX.4.59.9.0404091209570.10714@hathi.bw-networx.net>
+	<185d01c41e23$5996cc00$2000000a@schlepptopp>
+	<189201c41e30$d434cc70$2000000a@schlepptopp>
+	<200404091626.i39GQqsf002414@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200404091954.54804.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: Hostfs and Humfs
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] uml responsivenes or "AS vs DEADLINE Scheduler on
+	uml-host" - was: [uml-user] Network lags
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,92 +31,81 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 9 Apr 2004 19:54:54 +0200
-Content-Transfer-Encoding: quoted-printable
+Date: Fri, 9 Apr 2004 20:33:39 +0200
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Joern Bredereck <jb@bw-networx.net>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, mingo@elte.hu
 
-Alle 20:40, luned=EC 5 aprile 2004, hai scritto:
-> BTW, if you do IRC, you will have a better idea of what exactly I'm doing
-> if you hang on the UML IRC channel - #uml on oftc.net.  I'm there quite
-> often, and I tend to mumble about what I'm working on at the moment.
+Hi !
+I think i found an interesting "scheduling issue" which led me to switch the subject of the thread.
+
+joern reported network lags, i have seen some other mails reporting about this issue, i had experienced such lags myself and i
+remember reading mails, that the first pings after "upping" the network interfaces in uml tend to give slow response time.
+
+just for the fun, i switched to deadline i/o scheduler on the host (kernel param "elevator=deadline") and, after a first try, things
+seem to behave better with that scheduler!
+
+i generated the same i/o load on the host, hogged the cpu like hell, loadavg was >40) and i NEVER recognized the network-lags again.
+i also cpu- and i/o-hogged the uml itself, which resulted in big increase of the ping-times (from average 0.2ms to 600ms), but i
+NEVER saw that strange behaviour of uml responsiveness again (ping times >90s,"sendmsg: no buffer space available") , as when i did
+use the standard AS (Anticipatory) Scheduler. there where _some_ pings >2000ms, too - but this didn`t happen often and not so
+seriously as with "AS" & an "idle uml" - the uml seems to be more responsive in general when using deadline scheduler.
+
+I cannot tell, if there is a bug in AS or this is a "uml<->AS issue" which causes uml network lags, but at least there should be
+done some more testing to confirm, what i found.
+
+so, i would like to encourage other people doing some more tests - especially those, who experience network-lags!
+
+regards
+roland
+
+
+ps:
+funny:
+i have solved my "problem"  by switching to a different scheduler - joern has (probably) solved it by switching to a later
+uml-release.
+so is it a scheduler or a uml issue ? or both?
+
+pps:
+>This causes UML to get swapped out because it's not doing anything
+> except answering a ping once in a while.
+mhhh - as far as i remember i didn`t see(vmstat) a single byte of uml or any other process being swapped out when running my test.
+general question: does heavy usage of buffers lead to processes being swapped out?
+
+
+----- Original Message ----- 
+From: "Jeff Dike" <jdike@addtoit.com>
+To: "roland" <for_spam@gmx.de>
+Cc: "Joern Bredereck" <jb@bw-networx.net>; <user-mode-linux-user@lists.sourceforge.net>;
+<user-mode-linux-devel@lists.sourceforge.net>; <mingo@elte.hu>
+Sent: Friday, April 09, 2004 6:26 PM
+Subject: Re: [uml-user] Network lags
+
+
+> for_spam@gmx.de said:
+> > at least, i would be interested in getting to know:
+> > - why this happens
+> > - how to "tune" this, that it doesn`t happen
+> > - if this is expected behavour on "heavy loaded systems" or probably a uml
+> > or host-kernel bug
 >
-> Also, would you be interested in being able to put downloads on the UML
-> site rather than having them on user-linux-linux.org, which isn't as
-> visible?
-
-Sorry for answering so late, but I've been away for a week, for theoretical=
-=20
-studies in computer science. For now I must decrease my UML activity since =
-
-I'll have to solve a very hard test soon; and I cannot do that myself.
-
-However, especially for the second question, the answer is "yes".
-
-At least for the 2.4.25 and 2.6.4 Skas patches, which are VERY important fo=
-r=20
-users. Especially because there are 3 bugs in most SKAS patches floating=20
-around:
-- the SMP bug we discussed about some time ago, fixed in my last release;
-- this change (the one in the 2nd one) from Ingo Molnar that everyone else =
-
-missed:
-
--static int write_ldt(void __user * ptr, unsigned long bytecount, int oldmo=
-de)
-+static int write_ldt(struct mm_struct * mm, void __user * ptr, unsigned lo=
-ng=20
-bytecount, int oldmode)
- {
--       struct mm_struct * mm =3D current->mm;
-        __u32 entry_1, entry_2, *lp;
-        int error;
-        struct user_desc ldt_info;
-@@ -195,7 +197,7 @@
-
-        down(&mm->context.sem);
-        if (ldt_info.entry_number >=3D mm->context.size) {
-///// ---------------> NO ONE NOTICED this!
--               error =3D alloc_ldt(&current->mm->context, =20
-ldt_info.entry_number+1, 1);
-+               error =3D alloc_ldt(&mm->context, ldt_info.entry_number+1, =
-1);
-                if (error < 0)
-                        goto out_unlock;
-        }
-
-- and finally this bug he fixed in  ldt.c
-
--       if (reload) {
-+       if (reload && (&current->active_mm->context =3D=3D pc)) {
-
-
-They are perfectly, with only one issue: since there is CONFIG_PROC_MM in t=
-he=20
-headers, which is created by make oldconfig, but you don't have a=20
-user-visible option, user often miscompile the kernel (which then creates a=
-=20
-"Checking for Skas3 patch ... yes Checking for /proc/mm ... no").
-
-Also, I see no reason for which the bug with switch_mm() that involved the =
-
-Skas patch in 2.6 should not happen also in 2.4; in 2.4.25 we have this=20
-check, which has never been triggered (include/asm-i386/mmu_context.h):
-
-                if(cpu_tlbstate[cpu].active_mm !=3D next)
-                        out_of_line_bug();
-
-So, maybe the 2.4 Skas patch could need the same change the 2.6 has in=20
-include/asm-i386/mmu_context.h.
-
-However, please review and upload them by yourself. I'm actually busy at th=
-e=20
-moment - VERY busy.
-
-Bye
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+> As you said, you're making life hard for the host.
+>
+> My guess as to what's happening is this.
+>
+> You're generating a ton of IO which is pulling the host's memory into page
+> cache.  This causes UML to get swapped out because it's not doing anything
+> except answering a ping once in a while.  When it does have to answer a ping,
+> it needs to be swapped back in, which might be hard since you're sucking down
+> a lot of IO bandwidth.
+>
+> So, I don't think this says too much about whether anything's wrong with
+> either the host or UML.
+>
+> Once thing you might try is do the same IO with O_DIRECT.  That won't pollute
+> the page cache.
+>
+> Jeff
+>
 
 
 
@@ -122,7 +113,7 @@ Linux registered user n. 292729
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
