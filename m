@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cf0z6-0007IY-Az for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Dec 2004 11:08:20 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Cf0z5-0005CJ-F5 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Dec 2004 11:08:20 -0800
-From: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
-References: <267988DEACEC5A4D86D5FCD780313FBB027C2BC9@exch-03.noida.hcltech.com>
-In-Reply-To: <267988DEACEC5A4D86D5FCD780313FBB027C2BC9@exch-03.noida.hcltech.com>
+	id 1Cf5bZ-0002x4-DO for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Dec 2004 16:04:21 -0800
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cf5bY-0003dc-Rs for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Dec 2004 16:04:21 -0800
+Received: from hawk (mothership.theshore.net [69.137.84.52])
+	by www.theshore.net (8.12.9/8.9.1) with SMTP id iBH04JMC019285
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 16 Dec 2004 19:04:19 -0500
+Message-ID: <000601c4e3cc$119a1280$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200412161948.22407.blaisorblade_personal@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] Kernel panic error
+Subject: [uml-devel] unable to unmount tmpfs problem lives on
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,26 +30,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 16 Dec 2004 19:48:22 +0100
-To: user-mode-linux-user@lists.sourceforge.net
-Cc: "Adil Mujeeb, Noida" <adilm@hcltech.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 16 Dec 2004 18:05:04 -0600
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Saturday 11 December 2004 13:42, Adil  Mujeeb, Noida wrote:
-> hi,
-> Iam facing a problem. Iam able to successfully boot the UML but when i try
-> to login on it, it generates an error:
-> Kernel panic: Kernel mode fault at addr 0xc, ip 0xa0115924
->
-> Could anybody plz help me out what is the problem. Same UML binary is
-> working fine on my other system.
->
-> Thanks and Best Regards,
-> Adil Mujeeb
-Config info about the host/guest, please, to help...
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+I'm still seeing the "unable to unmount tmpfs" problem like we had before the
+fix-kill patch.  All my UMLs have the fix-kill fixes, and yet under some
+circumstances (yet unknown), the host kernel refuses to unmount the tmpfs mount that
+a UML had used for its VM file.
+
+It's happening under a number of kernels:
+
+2.6.9
+2.6.9-ck3
+2.6.10-rc2-bk7
+
+lsof shows nothing, but umount still complains that the mountpoint is in-use.
+
+-Chris
+
 
 
 -------------------------------------------------------
