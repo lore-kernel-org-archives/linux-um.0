@@ -1,19 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKqi5-00033i-1Q for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 21:07:25 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CKqi3-0002wb-KB
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 21:07:24 -0700
-Message-Id: <200410220516.i9M5GwFL007932@ccure.user-mode-linux.org>
+Message-Id: <200410220416.i9M4GMFL007398@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: [uml-user] UML "Distro" ? 
+In-Reply-To: Your message of "Fri, 22 Oct 2004 00:14:50 +0900."
+	<4177D26A.1000809@yahoo.co.jp> 
+References: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
+	<87brewe7lq.fsf@bytesex.org> <4177D26A.1000809@yahoo.co.jp> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] What to send to Andrew next
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,53 +19,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 22 Oct 2004 01:16:58 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 22 Oct 2004 00:16:22 -0400
+To: kaz <shigekazun@yahoo.co.jp>
+Cc: Gerd Knorr <kraxel@bytesex.org>, roland <for_spam@gmx.de>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-We've pretty much got -mm and -linus caught up with the updates that had been
-sitting around.
+shigekazun@yahoo.co.jp said:
+> Jeff, could you please kindly update patches at dl-sf.html ? 
 
-At this point, my patch list is a mix of things that both are and aren't ready
-for prime time.  So, I'd like opinions on what's ready.
+I'll update the 2.4 patch when I next merge stuff into it.
 
-The names below are the ones at 
-	http://user-mode-linux.sourceforge.net/patches.html
-
-Here's my take on it:
-
-Ready -
-	catch_eintr_generic_console_write
-	fix-some-warnings - some things left over from your patch
-	need-bash - I changed the comment :-)
-	syscall-returns - the start of the x86_64 stuff, this one cleans up
-int -> long declarations in the system calls
-	type-sizes - ditto for some other types
-	syscalls - factors the system calls between generic and arch-specific
-a bit better, I consider this safe because you can look at sys_call_table before
-and after and see that they're the same
-	tmp-exec
-	defconfig
-	smp-link
-	fix-ptrace-interfaces - straightforward interface fixes
-	no-chans - makes sure something hits the screen when someone makes
-a bogus config
-	no-timestamp
-	comments
-
-Uncertain -
-	use-va_end - looks good to me, but have you figured out why it causes
-crashes?
-	export-Symbols - I need to look at that phys_t change, which doesn't
-belong there
-	Single_Linking_Step - leftovers, build linux, add archhelp, you
-sent something like this to Andrew, so this may be essentially already there
-	do_signal and the rest of Bodo's fixes - I want his test cases before
-I send these anywhere, although the ones that make UML look like the other
-arches might be OK.
-
-Dangerous -
-	3-level-pagetables and the rest of the x86_64 stuff
+At this point, I'm planning on not releasing 2.6 patches any more.  UML is
+in the stock kernel, so I don't see any reason so release the traditional
+patch.
 
 				Jeff
 
