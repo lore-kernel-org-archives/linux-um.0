@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Alh6u-0006TH-Vp for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 20:15:28 -0800
+	id 1Alh7B-0006Uj-Sy for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jan 2004 20:15:45 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Alh6u-0002En-Ey
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Alh7B-0007wQ-8N
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 20:15:28 -0800
-Message-Id: <200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Swapping directly to host swap area? 
-In-Reply-To: Your message of "Sun, 25 Jan 2004 18:34:12 EST."
-	<Pine.LNX.4.44.0401251827030.2766-100000@sparrow> 
-References: <Pine.LNX.4.44.0401251827030.2766-100000@sparrow> 
+	Tue, 27 Jan 2004 20:15:45 -0800
+Message-Id: <200401280439.i0S4dfZw005542@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: [PATCH] mconsole fixes 
+In-Reply-To: Your message of "Wed, 28 Jan 2004 12:46:52 +1030."
+	<20040128021652.GP4203@erizo.shearer.org> 
+References: <20040126024617.GB4203@erizo.shearer.org>
+	<200401280146.i0S1kaZw004957@ccure.user-mode-linux.org>
+	<20040128021652.GP4203@erizo.shearer.org> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,29 +30,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 27 Jan 2004 23:39:22 -0500
-To: William Stearns <wstearns@pobox.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 27 Jan 2004 23:39:41 -0500
+To: Dan Shearer <dan@shearer.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-wstearns@pobox.com said:
-> When a VM needs to swap out, is there some way the UML kernel could
-> send that sector directly to the host swap area instead of running its
-> own swap?  
+dan@shearer.org said:
+> My idea was that there's a difference between an error on a connection
+> and no connection at all. Having no connection at all can happen very
+> easily, especially if you happen to use uml_dir on the cmdline which
+> triggers a bug that puts the file in the wrong place. 
 
-No, but this isn't the real question.
+OK, that being the case, it's better to complain before sending anything to
+UML rather than after you've tried and failed.
 
-> In the current setup, the host kernel sees this as a normal
-> write to an open file, caching it in the process and so not truly
-> freeing up the ram for a bit. 
+> Minor portability potential. See http://www.eskimo.com/~scs/C-faq/
+> q11.16.html. (I looked it up once long ago and supposedly _exit is
+> more likely to work on more systems than exit.) 
 
-This is, and this could be done by setting O_DIRECT on UML swap devices.  That
-way, writes go directly (and asynchronously) to the device without landing
-in the cache.
-
-With mmap in effect, this can also be done with a MADVISE_DONTNEED on the
-relevant pages of the swap file.
-
-Patches cheerfully accepted.
+You talked me into it.  I fixed that.
 
 				Jeff
 
