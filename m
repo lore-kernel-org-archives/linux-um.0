@@ -1,18 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATQZr-0001DA-4w
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 10:57:51 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATQZq-00041W-FT
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 10:57:50 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
-In-Reply-To: <20031208180250.GA7787@osiris.silug.org>
-Message-ID: <Pine.LNX.4.44.0312081932200.14902-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: chroot option
+Message-Id: <200312081921.hB8JLMAv029232@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash 
+In-Reply-To: Your message of "Mon, 08 Dec 2003 02:20:27 +0100."
+             <05bc01c3bd29$7766a3f0$2000000a@schlepptopp> 
+References: <Pine.LNX.4.44.0312070010550.16967-100000@filer.marasystems.com>  <05bc01c3bd29$7766a3f0$2000000a@schlepptopp> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,30 +17,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 8 Dec 2003 19:57:41 +0100 (CET)
-To: Steven Pritchard <steve@kspei.com>
-Cc: Matthew Bloch <matthew-list@bytemark.co.uk>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 08 Dec 2003 14:21:22 -0500
+To: roland <for_spam@gmx.de>
+Cc: Henrik Nordstrom <hno@marasystems.com>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-On Mon, 8 Dec 2003, Steven Pritchard wrote:
+for_spam@gmx.de said:
+> that really is a matter of taste. from my personal view, i find it
+> difficult to track patches or bugs if one must dig for that into a ML
+> archive.
 
-> I once worked on a patch to add chroot() support, but, well, that
-> didn't go too well.  :-)  (Actually, it worked fine, but by the time
-> the kernel options were being parsed, there were already several
-> threads, meaning only the thread doing option parsing was chroot()'d.
-> Not quite what I intended...)
+I personally hate the SF patch/bug trackers.  Webby crap like that is unusable
+as far as I'm concerned.
 
-There is two parsing steps. One which is done by the "uml" before
-launching the kernel where "debug" and other options modifying how uml
-operates are parsed (registered by __uml_setup()), and then another where
-the kernel options are parsed.
+> see what i mean? 5-6 times posted - but people need a helping hand to
+> find them. 
 
-When using the first the kernel should still be in user mode with no other
-threads running. To do this have a __uml_setup() for each of the command
-line options, then a __uml_postsetup() executing the chroot (note: link
-order important, these are executed in the linked order).
+That makes this a candidate for the usermodelinux.org FAQ section, which I
+created for exactly this reason.  Feel free to make submissions.
 
-Regards
-Henrik
+				Jeff
 
 
 
