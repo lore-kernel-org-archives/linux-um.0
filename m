@@ -1,37 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AjdVP-0005d4-G4 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 04:00:15 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1AjdVO-0006CW-Ru
+	id 1AjfyE-0004u8-4D for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jan 2004 06:38:10 -0800
+Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
+	(Exim 4.30) id 1AjfyD-0000Yw-GK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 04:00:15 -0800
-Received: from hirsch.in-berlin.de (localhost [127.0.0.1])
-	by hirsch.in-berlin.de (8.12.10/8.12.10/Debian-6) with ESMTP id
-	i0MC0AXl031309 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 22 Jan 2004 13:00:10 +0100
-Received: (from uucp@localhost)
-	by hirsch.in-berlin.de (8.12.10/8.12.10/Debian-5) with UUCP id
-	i0MC0Ag9031306 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 13:00:10 +0100
-Received: from bytesex.org (kraxel@localhost [127.0.0.1])
-	by bytesex.org (8.12.3/8.12.3/Debian-6.6) with ESMTP id i0MBmwnW012463
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 22 Jan 2004 12:48:58 +0100
-Received: (from kraxel@localhost)
-	by bytesex.org (8.12.3/8.12.3/Debian-6.6) id i0MBmw3K012462
+	Thu, 22 Jan 2004 06:38:09 -0800
+Received: from localhost ([127.0.0.1]:33330 helo=shearer.org)
+	by shearer.org with esmtp (Dan's MTA 1.0) id 1Ajg0K-00046c-Q0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 12:48:58 +0100
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20040122114858.GH11029@bytesex.org>
+	Fri, 23 Jan 2004 01:10:20 +1030
+Received: from dan by erizo.shearer.org with local (Spammer Slammer 3.141)
+	id 1Ajg0K-00046Z-ER for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jan 2004 01:10:20 +1030
+From: Dan Shearer <dan@shearer.org>
+Message-ID: <20040122144020.GQ4203@erizo.shearer.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Subject: [uml-devel] [Sebastian.Koch@metatool.de: Re: ps u failed with signal
-	8 (FPE)]
+Subject: [uml-devel] Changes to port_user
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -43,111 +33,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Jan 2004 12:48:58 +0100
-To: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 23 Jan 2004 01:10:20 +1030
+To: user-mode-linux-devel@lists.sourceforge.net
 
-  Hi,
+I've done some minor work in drivers/port_user.c, including replacing
+the binding to INADDR_ANY with a gethostbyname(passed_ip), so you
+can specify which single IP to listen on. I'll post when I'm sure its
+ok.
 
-"ps u" doesn't work in uml due to some values in /proc/meminfo being zero,
-see below for details,
+Now what I'm trying to do is replace in.telnetd with something else, for
+the moment netcat as a simple case, or something that gives the same
+effect. That involves understanding the significance of port_helper and
+kernel/helper.c, which I don't yet.
 
-  Gerd
+Here's what I've noticed so far:
 
------ Forwarded message from Sebastian Koch <Sebastian.Koch@metatool.de> -----
+	When port_task_proc is run for a new incoming connection (an irq
+	raised), port_accept calls port_connection, which is over in
+	userspace (port_user.c)
 
-Date: Thu, 22 Jan 2004 11:20:17 +0100 (MET)
-From: Sebastian Koch <Sebastian.Koch@metatool.de>
-Subject: Re: ps u failed with signal 8 (FPE)
-To: Albert Cahalan <albert@users.sf.net>
-cc: Sebastian Koch <Sebastian.Koch@metatool.de>,
-   Gerd Knorr <kraxel@bytesex.org>
-Importance: high
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Bogosity: Unsure, tests=bogofilter, spamicity=0.482720, version=0.15.13
+	port_connection calls run_helper from kernel/helper.c, which
+	starts in.telnetd in a new thread with clone(), supplying
+	port-helper as the login program for telnetd but I'm not too
+	sure what it does. telnetd behaves as if it were being run from
+	inetd, being passed an input and an output descriptor, one
+	connected to the UML (I don't know the mechanism for this yet)
+	and the other to the network port.
 
-I've found it.
+Now, I just want raw data to go from the kernel to the port and back
+again. So should I:
 
-The problem is that the proc file system of the UML shows a wrong
-/proc/meminfo. Especially the MemTotal:
+	a) just shortcircuit this by hooking the inbound and outbound
+	descriptors up, or
 
-Achen:~ # p /proc/meminfo
-MemTotal:            0 kB
-MemFree:         33656 kB
-Buffers:           752 kB
-Cached:          19756 kB
-SwapCached:          0 kB
-Active:          12236 kB
-Inactive:        10600 kB
-HighTotal:           0 kB
-HighFree:            0 kB
-LowTotal:            0 kB
-LowFree:         33656 kB
-SwapTotal:      262136 kB
-SwapFree:       262136 kB
-Dirty:              16 kB
-Writeback:           0 kB
-Mapped:           5360 kB
-Slab:             3264 kB
-Committed_AS:    27144 kB
-PageTables:        172 kB
-VmallocTotal:   449516 kB
-VmallocUsed:       184 kB
-VmallocChunk:   449332 kB
-Achen:~ #
+	b) drop netcat in instead of telnetd (which I have tried but it
+	isn't quite working yet.)
 
-This leeds to divide by zero in ps/output.c line 785 because the
-kb_main_total == 0.
+There may be architectural reasons why I shouldn't do (a).
 
-
-/* pp->vm_rss * 1000 would overflow on 32-bit systems with 64 GB memory */
-static int pr_pmem(char *restrict const outbuf, const proc_t *restrict
-const pp){
-  unsigned long pmem = 0;
-  pmem = pp->vm_rss * 1000ULL / kb_main_total;
-  if (pmem > 999) pmem = 999;
-  return snprintf(outbuf, COLWID, "%2u.%u", (unsigned)(pmem/10),
-(unsigned)(pmem%10));
-}
-
-Do you want to setup a consistence check after reading the proc/meminfo ?
-
-I will try to find out the problem in UML.
-
-Best regards
-Sebastian
-
-
-
-On 20 Jan 2004, Albert Cahalan wrote:
-
-> On Tue, 2004-01-20 at 10:46, Sebastian Koch wrote:
->
-> > Probably this is a known bug.
->
-> Nope. I've not seen this one.
->
-> > If you need additional information regarding the UML-, host-kernel or
-> > the root file system please let me know. I can provide a backtrace if someone
-> > point me out where to set a breakpoint. To be honest I don't understand the
-> > kernel FPE signal handling at this moment.
->
-> This could be caused by integer division by zero.
-> If you can get the siginfo data, that would be
-> enough to determine this.
->
-> Also, try this:   ps --info
->
->
->
-
---
-
-
-
------ End forwarded message -----
+Comments?
 
 -- 
-"... und auch das ganze Wochenende oll" -- Wetterbericht auf RadioEins
+Dan Shearer
+dan@shearer.org
 
 
 -------------------------------------------------------
