@@ -1,31 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTp7Q-0003IJ-GZ for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 14:42:24 -0700
-Received: from smtpq2.home.nl ([213.51.128.197])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTp7Q-0000sB-2f for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 14:42:24 -0700
-Received: from [213.51.128.135] (port=47103 helo=smtp4.home.nl)
-	by smtpq2.home.nl with esmtp (Exim 4.30) id 1BTp7N-0002pV-6n
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 23:42:21 +0200
-Received: from cc22149-a.groni1.gr.home.nl ([217.121.240.26]:34372
-	helo=ws-02.local) by smtp4.home.nl with esmtp (Exim 4.30)
-	id 1BTp7V-0000e8-Dl for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 23:42:29 +0200
-From: Leendert Meyer <leen.meyer@home.nl>
-Subject: Re: [uml-devel] No of ubd
-References: <Pine.LNX.4.44.0405281842010.31393-100000@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.44.0405281842010.31393-100000@filer.marasystems.com>
+	id 1BTpDb-0004dc-5b for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 14:48:47 -0700
+Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BTpDa-0006td-Hn for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 14:48:46 -0700
+Message-ID: <163e01c444fe$8f2cdb00$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <3DF9165145FACB4C96977FF650C1E9040C469FF5@its-mail1.its.corp.gwl.com>
+	<1085768665.5396.128.camel@localhost>
+	<1085778706.15028.32.camel@kira.himalaya.homeip.net>
+Subject: Re: [uml-devel] RE: NX inside UML - WAS: Re: Intel pitchespocket-size
+	'personal server'
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+	charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200405282347.43766.leen.meyer@home.nl>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,50 +30,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 May 2004 23:47:43 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 28 May 2004 23:55:57 +0200
+To: Ulf Bartelt <ulf.bartelt@web.de>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Friday 28 May 2004 20:33, Henrik Nordstrom wrote:
-> On Fri, 28 May 2004, Leendert Meyer wrote:
-> > To create an ubd partition, one does on the host e.g.
-> >
-> >   dd if=/dev/zero of=rootfs count=1 bs=1G
-> >   mkreiserfs -ff rootfs
-> >
-> > But how to make an ubd drive?
->
-> Partition it using fdisk/sfdisk/whatever..
+hi!
+NX is a revolutionary X11 protocol compression which lets you run X11
+over low bandwidth / low latency wan links.
 
-Ok, here's what I tried:
+did you every run X11 over 56k and wondered, how bad this works?
+so - NX is for you :)
 
----8<---8<---8<---8<---8<---8<---
-ws-02:/home/leen # dd if=/dev/zero of=rootfs count=1 bs=100M
-1+0 records in
-1+0 records out
-ws-02:/home/leen # fdisk rootfs
-Device contains neither a valid DOS partition table, nor Sun, SGI or OSF 
-disklabel
-Building a new DOS disklabel. Changes will remain in memory only,
-until you decide to write them. After that, of course, the previous
-content won't be recoverable.
+see the faq at: http://www.nomachine.com/faq.php
 
-You must set cylinders.
-You can do this from the extra functions menu.
-Warning: invalid flag 0x0000 of partition table 4 will be corrected by w(rite)
+you really should http://www.nomachine.com/testdrive.php give a try.
+it`s impressing. 
 
-Command (m for help):
----8<---8<---8<---8<---8<---8<---
+regards
+roland
 
-I know how to use fdisk. But I need a bit of guidance here. Given *any* 
-partitionsize, what are the appropriate values? Is there a formula for that?
+----- Original Message ----- 
+From: "Ulf Bartelt" <ulf.bartelt@web.de>
+To: "uml-devel" <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Friday, May 28, 2004 11:11 PM
+Subject: Re: [uml-devel] RE: NX inside UML - WAS: Re: Intel pitchespocket-size 'personal server'
 
-And *before* I can partition the disk, are there even more data to fill in?
 
-TIA,
-
-Cheers,
-
-Leen
+> Am Fr, den 28.05.2004 schrieb Barry Flanagan um 20:24:
+> > I also have NX with full KDE running inside UML. Works a treat. so far I
+> > have had 5 such UMLs running within a single 2.5GHz/1Gb single CPU
+> > system and they are very usable.
+> 
+> X with network-enabled displaymanager inside uml is not new to me for 2
+> yrs or so... but what is NX?
+> 
+> 
+> 
+> 
+> -------------------------------------------------------
+> This SF.Net email is sponsored by: Oracle 10g
+> Get certified on the hottest thing ever to hit the market... Oracle 10g. 
+> Take an Oracle 10g class now, and we'll give you the exam FREE.
+> http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> 
 
 
 -------------------------------------------------------
