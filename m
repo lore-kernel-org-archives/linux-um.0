@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AN0nN-0007KU-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 18:13:17 -0800
+	id 1AN0nK-0007KL-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 18:13:14 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.24)
-	id 1AN0nL-0000Na-Lr
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 18:13:16 -0800
-Message-Id: <200311210222.hAL2Mw4L004150@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] further scheduling weirdness 
-In-Reply-To: Your message of "Thu, 20 Nov 2003 13:12:15 PST."
-             <000201c3afaa$fed85f40$6801a8c0@nexxus> 
-References: <000201c3afaa$fed85f40$6801a8c0@nexxus> 
+	id 1AN0nH-00054J-ED
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 18:13:11 -0800
+Message-Id: <200311210222.hAL2Mt4L004145@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Host panic when UML reads host /dev/shm 
+In-Reply-To: Your message of "Thu, 20 Nov 2003 20:37:14 +0100."
+             <200311202037.14480.blaisorblade_spam@yahoo.it> 
+References: <200311201915.29188.blaisorblade_spam@yahoo.it> <200311201956.39623.Frank.dekervel@student.kuleuven.ac.Be>  <200311202037.14480.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -27,21 +27,22 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Nov 2003 21:22:58 -0500
-To: sean whalen <swhalen@denature.org>
+Date: Thu, 20 Nov 2003 21:22:55 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-swhalen@denature.org said:
-> This is simply due to a schedule_timeout call in a module.  Does
-> anyone have any ideas on this?  It seems to critical a function to
-> actually be broken. 
+blaisorblade_spam@yahoo.it said:
+> I think hostfs reads files just as any normal process on the host,
+> right? Or  it does anything special or at least unusual?
 
-That BUG is "scheduling in interrupt".  So if your module is doing anything
-that could sleep, like that schedule(), in an interrupt handle, it should
-stop.
+Nothing unusual, just normal file IO.
+
+> Could the unusual thing be the context switching of SKAS? I'll test if
+> it happens within TT mode. 
+
+I doubt there's any difference.
 
 				Jeff
-
 
 
 -------------------------------------------------------
