@@ -1,14 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Frank Sorenson <frank@tuxrocks.com>
-Subject: Re: [uml-user] Re: [uml-devel] Fixing the 2.4 bugs - patches against
-	2.4.24-1um 
-In-Reply-To: <200407131934.i6DJYMGu003420@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.60.0407131416490.28985@tuxrocks.com>
-References: <200407012050.14867.blaisorblade_spam@yahoo.it> 
-	<Pine.LNX.4.58.0407071420550.9924@tuxrocks.com> 
-	<200407131934.i6DJYMGu003420@ccure.user-mode-linux.org>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BlHuY-0006dQ-VX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Jul 2004 18:53:18 -0700
+Received: from rdns.193.240.218.216.fre.communitycolo.net ([216.218.240.193]
+	helo=pogo.kaffe.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1BlHuY-0003pY-ME for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Jul 2004 18:53:18 -0700
+Received: from c-24-7-107-92.client.comcast.net ([24.7.107.92]
+	helo=jimpick.com)
+	by pogo.kaffe.org with asmtp (Exim 3.35 #1 (Debian))
+	id 1BlHzG-00085g-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 15 Jul 2004 18:58:10 -0700
+Message-ID: <40F7349E.7010109@jimpick.com>
+From: Jim Pick <jim@jimpick.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: multipart/mixed; boundary="------------070108010500090203080505"
+Subject: [uml-devel] Off by one error in umid.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,41 +31,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Jul 2004 09:39:39 -0600 (MDT)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 15 Jul 2004 18:51:26 -0700
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 13 Jul 2004, Jeff Dike wrote:
-> I don't think it should, unless you're profiling.  The problem is that -pg
-> and regparam(3) don't (or didn't) interact nicely.  The -pg code trashed
-> the arguments that regparam was passing in registers, and you'd get strange
-> panics early in boot.
->
-> Have you checked that this actually fixes anything?  It looks like just a
-> stupid typo to me.
 
-Yes, it is definitely a stupid typo, and I don't think this alone fixes 
-anything significant, but there appears to be another bug underneath. 
-Without -DUM_FASTCALL, I've been seeing the kernel panics we previously 
-discussed.  There appears to be some other bug that exists at least as 
-early as 2.4.24-1um, triggered when UM_FASTCALL is not defined.  I've 
-verified that this is the case with the following versions:
+This is a multi-part message in MIME format.
+--------------070108010500090203080505
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-2.4.24-1um
-2.4.24-2um
-2.4.24-3um
-2.4.25-1um
-2.4.26-1um
+Here's a fix for a little memory corruption I was having.  I was passing 
+in a uml_dir directory without a trailing slash.
 
-The panic I'm getting is very repeatable--every time I run the j2eesdk 
-installer, it'll panic, but if UM_FASTCALL is defined, it runs just fine.
+Cheers,
 
-Frank
----------------------------------------------------------------------------
-Frank Sorenson - KD7TZK
-Systems Manager, Computer Science Department
-Brigham Young University
-frank@tuxrocks.com
+  - Jim
+
+Index: linux-2.4.22-uml1/arch/um/kernel/umid.c
+===================================================================
+--- linux-2.4.22-uml1.orig/arch/um/kernel/umid.c	2004-07-15 
+16:34:57.000000000 -0700
++++ linux-2.4.22-uml1/arch/um/kernel/umid.c	2004-07-15 
+18:15:54.699873738 -0700
+@@ -200,7 +200,7 @@
+  static int __init set_uml_dir(char *name, int *add)
+  {
+  	if((strlen(name) > 0) && (name[strlen(name) - 1] != '/')){
+-		uml_dir = malloc(strlen(name) + 1);
++		uml_dir = malloc(strlen(name) + 2);
+  		if(uml_dir == NULL){
+  			printf("Failed to malloc uml_dir - error = %d\n",
+  			       errno);
+
+
+--------------070108010500090203080505
+Content-Type: text/plain;
+ name="umid_dir_off-by-one.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="umid_dir_off-by-one.patch"
+
+Index: linux-2.4.22-uml1/arch/um/kernel/umid.c
+===================================================================
+--- linux-2.4.22-uml1.orig/arch/um/kernel/umid.c	2004-07-15 16:34:57.000000000 -0700
++++ linux-2.4.22-uml1/arch/um/kernel/umid.c	2004-07-15 18:15:54.699873738 -0700
+@@ -200,7 +200,7 @@
+ static int __init set_uml_dir(char *name, int *add)
+ {
+ 	if((strlen(name) > 0) && (name[strlen(name) - 1] != '/')){
+-		uml_dir = malloc(strlen(name) + 1);
++		uml_dir = malloc(strlen(name) + 2);
+ 		if(uml_dir == NULL){
+ 			printf("Failed to malloc uml_dir - error = %d\n",
+ 			       errno);
+
+--------------070108010500090203080505--
 
 
 -------------------------------------------------------
