@@ -1,21 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArS2v-0004La-CB
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 17:23:09 -0800
-Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30)
-	id 1ArRz1-0001uh-Vu
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 17:19:08 -0800
-From: Dan Shearer <dan@shearer.org>
-Subject: Re: [uml-devel] Which UPS simulator?
-Message-ID: <20040213012414.GW4203@erizo.shearer.org>
-References: <20040212052823.GA4203@erizo.shearer.org> <20040212150023.GA32317@bakunin.copyleft.de> <20040212230844.GV4203@erizo.shearer.org> <20040213010127.GA3172@bakunin.copyleft.de>
+Message-Id: <200402130523.i1D5NTgR005420@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Thu, 05 Feb 2004 21:07:37 +0100."
+             <200402052107.37625.blaisorblade_spam@yahoo.it> 
+References: <200402052107.37625.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20040213010127.GA3172@bakunin.copyleft.de>
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [uml-user] UML (unofficial) patches against vanilla 2.6.2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,39 +17,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 11:54:14 +1030
-To: Michael Koehne <kraehe@copyleft.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 13 Feb 2004 00:23:29 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Fri, Feb 13, 2004 at 02:01:27AM +0100, Michael Koehne wrote:
-> Moin Dan Shearer,
-> 
-> > That is exactly what I want to avoid. I want a more accurate UML where
-> > no UML-specific logic is needed for communication -- from one point of
-> > view that is what communication is all about. There are plenty of ways
-> > of introducing new communications methods (such as you have done, or a
-> > special listening port, etc) into the UML. 
-> 
->   implementing an UPS would also only require existing uml technics, as
->   APC and Berkin UPS are talking to a serial line. But it would require
->   some special program running inside and outside your UML, while my
->   simple script only require to cad line to be right.
+blaisorblade_spam@yahoo.it said:
+> I've updated my patches for modules and so on to 2.6.2. Since the main
+> Uml  patch against 2.6.1 needs some easy-but-not-trivial changes to
+> work onto  2.6.2
 
-Just depends on what you want to achive. You are correct, but your way
-requires something different to real life. My point remains that a UML
-user with root has only to run "some special program" that is a standard
-UPS tool that he can read about in any Linux reference.
+OK, I'm finishing merging this in.  
 
->   see http://quasar.mathstat.uottawa.ca/~selinger/ups/simulator.c
->   for Berkin simulator and demons, or reference apcupsd for APC 
->   and reverse enginier a simulator.
+I don't understand what you're doing with G-02-LinkScriptCleanup.patch.  The
+stuff you're adding to vmlinux.lds.S is only needed for the final binary, 
+which isn't built by this script.  The next three hunks are also somewhat 
+obscure.  The final one is merged.
 
-Read my original message, where I quoted exactly this URL (and Cc'd the
-author.)
+I don't like H-01-Pcap_link_fix.patch.  As much as that fixes pcap, we really
+need to find a fix that's local to arch/um/drivers.  I'll merge this only
+as a last-ditch thing if it becomes clear that there is no other way.
 
--- 
-Dan Shearer
-dan@shearer.org
+H-02-Fixdep-improve.patch is similar, except it's not clear to me what
+you're fixing.  Here also, I don't want to munge the global kbuild with
+UML special cases.
+
+In H-04-Kbuild_cleanup.patch, the skas/Makefile patch isn't obviously an
+improvement over what's already there.  In arch/um/Makefile, what's that @:
+doing?  A quiet true?  I left out the commented stuff.  Send it back in when
+you're sure what you want there.
+
+As for I-01-Debian_workaround.patch, I had the impression that this was
+caused by a Debian bug.  If so, they should fix it, and I shouldn't have
+to put workarounds in UML for it.
+
+				Jeff
+
 
 
 -------------------------------------------------------
