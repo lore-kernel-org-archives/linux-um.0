@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CbgAG-0006Lf-Ue for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 06:18:04 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CbgAF-00069w-H4 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 06:18:04 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] 2.6.9 slow
-References: <1102404966.17303.71.camel@debian>
-In-Reply-To: <1102404966.17303.71.camel@debian>
+	id 1CbgDY-0006WE-Sq for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 06:21:28 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CbgDX-0006kY-RL for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 06:21:28 -0800
+Message-ID: <41B5BC5F.20001@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+Subject: Re: [uml-devel] Patchset to implement PTRACE_SYSEMU_SINGLESTEP
+References: <419517A4.7020700@fujitsu-siemens.com>
+	<200412062133.05798.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200412062133.05798.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200412071521.53205.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,37 +28,71 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Dec 2004 15:21:52 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Hegedus Gabor <hygylista@freemail.hu>
+Date: Tue, 07 Dec 2004 15:21:19 +0100
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Tuesday 07 December 2004 08:36, Hegedus Gabor wrote:
-> Hi!
->
-> I tested 2.6.9 with patched with host-skas3-2.6.9-v7.patch. It is very
-> slow, but there is not a big load, nor a big disk io. (I checkd with
-> iostat)
+Blaisorblade wrote:
+> On Friday 12 November 2004 21:05, Bodo Stroesser wrote:
+> 
+>>Attached are several patches. Four of them (patch-2.6.*-skas-v7-*)
+>>implement PTRACE_SYSEMU_SINGLESTEP in the host. They are based on
+>>linux-2.6.7-vanilla + host-skas3-2.6.7-v7.patch (resp. the 2.6.9 versions).
+>>The "-reorganize" patches are a rework of the current patch without
+>>changing the functionality. The "add-SYSEMU_SINGLESTEP" then implement the
+>>new features. Please note: the differences between 2.6.7 and 2.6.9 are
+>>dependent on the different handling of syscall singlestepping in the two
+>>versions.
+> 
+> 
+>>To have UML using the new feature, there are two further patches named
+>>patch-SYSEMU_SINGLESTEP-*. They are based on linux-2.6.9-vanilla +
+>>all bb2-patches + patch-sysemu-tt + patch-fix-uml-hang-on-2.6.9-host.
+>>To have all the patches complete, the latter two are attached also.
+> 
+> 
+>>I tested on host 2.6.7 and host 2.6.9 with SKAS and TT mode. Currently I
+>>don't know any problem with it.
+> 
+> I have a problem... in recent host kernels, isn't SINGLESTEP also trapping for 
+> syscall instructions?
+Yes. IIRC, this feature was included with i386 2.6.9. I'm sure 2.6.7 doesn't
+have it, 2.6.9 has.
+The difference between the host versions are the reason for the different
+reorganize- and add- patches for 2.6.7 and 2.6.9.
+But, please, tell me, what problem do you see? SYSEMU_SINGLESTEP is a new
+function, that does SYSCALL_TRACE on syscalls and SINGLESTEP on all other
+instructions. The function is added without changing the previous functions.
+If available, the UML-kernel my use the new function, but users on UML
+shouldn't see any changed behavior.
+By the way: they also don't see the differences between host 2.6.7 and 2.6.9
+regarding syscall-singlestepping.
 
-> With 2.6.7 it is good.
-With SKAS or vanilla? I assume it's vanilla - might you try that with SKAS?
+> 
+> Also, you say that SINGLESTEP_SYSEMU does automatic syscall overwriting with 
+> -1 or emulates that - I suspect it being in the reorganize patches, but you 
+> don't mention it in the changelogs here, only about the UML patches.
+No. The overwrite is in the "add-" patches. The "reorganize-" patches are
+intended to *only* reorganize SKAS3-V7 without changing any little bit of
+its behavior. Everything else I would call an error.
+But it would be easy to split the "add-" patches into an "overwrite-" and
+an remaining "add-" patch.
+I only wanted to make clear, that UML must not rely on overwriting done by
+the host, unless it can detect the host to have a skas-sysemu-patch with
+overwriting enabled. My idea was to take availability of SYSEMU_SINGLESTEP
+as flag, that the host *will* do overwriting.
 
-> bye
->  HyGy
-Well, basically SKAS is unlikely to cause that... I'd rather think that in 
-your config 2.6.9 is slower than 2.6.7. Check if you've changed anything 
-relevant on the kernel config.
-
-To make sure that SKAS is not at fault:
-
-- if it becomes slow after running some UMLs, then SKAS is probably at fault. 
-Not otherwise.
-
-- also, I guess that you'll have the performance hit even without SKAS patch 
-applied. Make sure not to change the kernel configuration!
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+> 
+> So, I'd personally accept only the -reorganize ones and hold on the rest - 
+> which is probably achieved with mainline SINGLESTEP fixes in 2.6.9 (or which 
+> could be discussed).
+> 
+> Sorry for being so late (I'd say "Call me a lamer" :-) ) in discussing this, 
+> but I hadn't the time to study patches and realize this.
+> 
+>>Bodo
+> 
+> 
 
 
 -------------------------------------------------------
