@@ -2,19 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Al4iz-00077J-6D for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jan 2004 03:16:13 -0800
+	id 1Al3k1-0005g1-Mg for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Jan 2004 02:13:13 -0800
 Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30) id 1AkwjU-0006nO-6Z
+	(Exim 4.30) id 1AkJ0F-0000an-QT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Jan 2004 18:44:12 -0800
+	Sat, 24 Jan 2004 00:18:52 -0800
 From: Dan Shearer <dan@shearer.org>
-Message-ID: <20040126024617.GB4203@erizo.shearer.org>
+Subject: Re: [uml-devel] Draft docs for port console channel
+Message-ID: <20040124082057.GG4203@erizo.shearer.org>
+References: <20040123035639.GC4203@erizo.shearer.org>
+	<20040123144320.GB6768@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="dc+cDN39EJAMEtIO"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] mconsole fixes
+In-Reply-To: <20040123144320.GB6768@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,267 +29,101 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 26 Jan 2004 13:16:17 +1030
+Date: Sat, 24 Jan 2004 18:50:57 +1030
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Fri, Jan 23, 2004 at 09:43:20AM -0500, Jeff Dike wrote:
 
+> > 	The login program, which is receiving data from the master side of 
+> > 	the pty that telnetd opened, sends the data back through this pipe
+> 
+> And no.  port_helper passes the actual file descriptor back to UML through
+> the unix socket on fd 3.  Then, UML receives characters directly from telnetd
+> without port_helper having to relay them.
 
---dc+cDN39EJAMEtIO
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
+Got it now. Here is a patch to port-helper that might help others.
 
-This makes uml_mconsole a bit more useful in scripts:
+> Otherwise, this is pretty good.
 
-	1. it exits with '1' for an error, '0' for no error. So you can
-	now tell if you have got a pty for a tty or not without scraping
-	text
+You mean apart from the fact that I missed the point entirely.
 
-	2. has a more sensible error message where the pipe doesn't
-	exist
-
-	3. adds a local command called 'mconsole-version' (which will be
-	more useful as UML matures and the design of having all the
-	clever bits inside UML really shows its value.)
-
-SGML docs not modified, because I don't know the convention for changing
-them (eg, do you add new ENTITY entries for new authors, or does the
-last author overwrite the previous...?)
+Another fumbling newbie question: why can't we just have the fd for the
+unix socket for xterm connected before xterm is exec'd? Then there would
+be no need for open_socket in port-helper. I'm sure there's an obvious
+reason.
 
 -- 
 Dan Shearer
 dan@shearer.org
 
---dc+cDN39EJAMEtIO
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: attachment; filename="diff.mconsole"
 
---- uml_mconsole.c.orig	2004-01-26 11:30:54.000000000 +1030
-+++ uml_mconsole.c	2004-01-26 13:00:21.000000000 +1030
-@@ -1,5 +1,30 @@
--/* Copyright 2001 Jeff Dike and others
-- * Licensed under the GPL
-+/* (c) Copyright 2001-2004 Jeff Dike and others
-+ * Licensed under the GPL, see file COPYING
-+ *
-+ * This is uml_console version 2, a tool for querying a User Mode Linux 
-+ * instance over a local pipe connection. This tool does not
-+ * (since uml_mconsole version 1) need to be in sync with the version
-+ * of the UML kernel since the commands and their implementation 
-+ * are within UML. uml_mconsole just displays what UML tells it to.
-+ * There are a very few local commands that this program knows
-+ * about, but by default everything gets processed by UML.
-+ *
-+ * The uml_mconsole documentation distributed with covers all mconsole
-+ * commands, so the docs have to be kept in sync with the kernel.
-+ * In future it should be possible for the docs to come from (or be
-+ * in common with) something over in the kernel source.
-+ *
-+ * If you are looking for the command implementation, go to the
-+ * files mconsole_kern.c in the Linux kernel source under arch/um.
-+ * 
-+ * The program exits with error values of:
-+ *
-+ *      0    No error
-+ *      1    Error     (need better breakdown of error type in future)
-+ *
-+ * Future TODO: return commandline results as a shell variable assignment 
-+ * eg: 'uml_mconsole config con0' might return "UML-CON=fd:0,fd:1"
-+ *
-  */
- 
+--- port-helper.c.orig
++++ port-helper.c
+@@ -1,3 +1,15 @@
++/* port-helper
++
++Used by the port and xterm console channels for User Mode Linux.
++
++Tells UML "here is a file descriptor for my stdin as given to me by 
++xterm or telnetd". Once UML has that (with os_rcv_fd()) UML opens it
++for read and write, and the console is functional.
++
++(c) Jeff Dike 2002-2004
++
++*/
++
  #include <stdio.h>
-@@ -27,7 +52,7 @@
-   if(stat(file, &buf) == -1){
-     fprintf(stderr, "Warning: couldn't stat file: %s - ", file);
-     perror("");
--    return(-1);
-+    return(1);
-   }
-   sun.sun_family = AF_UNIX;
-   strncpy(sun.sun_path, file, sizeof(sun.sun_path));
-@@ -183,7 +208,7 @@
-   return(1);
- }
+ #include <stdlib.h>
+ #include <signal.h>
+@@ -8,8 +20,17 @@
+ #include <sys/un.h>
+ #include <sys/uio.h>
  
--static void default_cmd(int fd, char *command)
-+static int default_cmd(int fd, char *command)
++/* pass the fd over an fd that is already connected to a socket */
+ static void send_fd(int fd, int target)
  {
-   struct mconsole_request request;
-   struct mconsole_reply reply;
-@@ -192,7 +217,7 @@
- 
-   if((sscanf(command, "%128[^: \f\n\r\t\v]:", name) == 1) &&
-      (*(name + 1) == ':')){
--    if(switch_common(name)) return;
-+    if(switch_common(name)) return(1);
-     command = strchr(command, ':');
-     *command++ = '\0';
-     while(isspace(*command)) command++;
-@@ -210,18 +235,21 @@
- 
-   if(sendto(fd, &request, sizeof(request), 0, (struct sockaddr *) &sun, 
- 	    sizeof(sun)) < 0){
--    fprintf(stderr, "Sending command to '%s' : ", sun.sun_path);
--    perror("");
--    return;
-+    if (strlen(sun.sun_path)==0) {
-+      fprintf(stderr, "No connection exists, cannot send command.\n");
-+    } else {
-+      fprintf(stderr, "While sending command to '%s' : ", sun.sun_path);
-+      perror("");
-+    }
-+    return(1);
-   }
- 
-   first = 1;
-   do {
--    int len = sizeof(sun);
-     n = recvfrom(fd, &reply, sizeof(reply), 0, NULL, 0);
-     if(n < 0){
-       perror("recvmsg");
--      return;
-+      return(1);
-     }
- 
-     if(first){
-@@ -235,31 +263,35 @@
-   } while(reply.more);
- 
-   printf("\n");
-+  if (reply.err) return(1); else return(0);
- }
- 
- char *local_help = 
- "Additional local mconsole commands:\n\
-     quit - Quit mconsole\n\
-     switch <socket-name> - Switch control to the given machine\n\
--    log -f <filename> - use contents of <filename> as UML log messages\n";
-+    log -f <filename> - use contents of <filename> as UML log messages\n\
-+    mconsole-version - version of this mconsole program\n";
- 
--static void help_cmd(int fd, char *command)
-+static int help_cmd(int fd, char *command)
- {
-   default_cmd(fd, command);
-   printf("%s", local_help);
-+  return(0);
- }
- 
--static void switch_cmd(int fd, char *command)
-+static int switch_cmd(int fd, char *command)
- {
-   char *ptr;
- 
-   ptr = &command[strlen("switch")];
-   while(isspace(*ptr)) ptr++;
--  if(switch_common(ptr)) return;
-+  if(switch_common(ptr)) return(1);
-   printf("Switched to '%s'\n", ptr);
-+  return(0);
- }
- 
--static void log_cmd(int fd, char *command)
-+static int log_cmd(int fd, char *command)
- {
-   int len, max, chunk, input_fd;
-   char *ptr, buf[sizeof(((struct mconsole_request *) NULL)->data)];
-@@ -299,16 +331,23 @@
-       ptr += chunk;
-     }
-   }
-+  return(0);
- }
- 
--static void quit_cmd(int fd, char *command)
-+static int quit_cmd(int fd, char *command)
- {
-   exit(0);
- }
- 
-+static int mversion_cmd(int fd, char *command)
-+{
-+  printf("uml_mconsole client version %d\n",MCONSOLE_VERSION);
-+  return(0);
-+}
 +
- struct cmd {
-   char *command;
--  void (*proc)(int, char *);
-+  int (*proc)(int, char *);
- };
- 
- static struct cmd cmds[] = {
-@@ -316,14 +355,16 @@
-   { "help", help_cmd },
-   { "switch", switch_cmd },
-   { "log", log_cmd },
-+  { "mconsole-version", mversion_cmd },
-   { NULL, default_cmd }
-+  /* default_cmd means "send it to the UML" */
- };
- 
- /* sends a command */
- int issue_command(int fd, char *command)
- {
-   char *ptr;
--  int i;
-+  int i=0,ret=0;
- 
-   /* Trim trailing spaces left by readline's filename completion */
-   ptr = &command[strlen(command) - 1];
-@@ -332,20 +373,20 @@
-   for(i = 0; i < sizeof(cmds)/sizeof(cmds[0]); i++){
-     if((cmds[i].command == NULL) || 
-        !strncmp(cmds[i].command, command, strlen(cmds[i].command))){
--      (*cmds[i].proc)(fd, command);
-+      ret=(int)(*cmds[i].proc)(fd, command);
-       break;
-     }
-   }
-     
--  /* in future, return command status */
--  return 0;
-+  return(ret);
++  /* File descriptors are specific to a process and normally only
++     sharable with another process by inheritence with fork(). The 
++     alternative is to use sendmsg with a special flag that says 
++     "I'm knowingly giving another process information from my private 
++     file descriptor table" (SCM_RIGHTS) 
++  */
 +
+   char anc[CMSG_SPACE(sizeof(fd))];
+   struct msghdr msg;
+   struct cmsghdr *cmsg;
+@@ -42,6 +63,8 @@
+   }
  }
  
- /* sends a command in argv style array */
- int issue_commandv(int fd, char **argv)
++/* for xterm we don't have an open socket, we only have the name
++ of a file used as a Unix socket by UML. So we need to open it. */
+ static int open_socket(char *name)
  {
-   char *command;
--  int len, i, status;
-+  int len=-1, i=0, status=-2;
+   struct sockaddr_un sock;
+@@ -74,12 +97,17 @@
+ {
+   int fd;
  
-   len = 1;  /* space for trailing null */
-   for(i = 0; argv[i] != NULL; i++)
-@@ -354,7 +395,7 @@
-   command = malloc(len);
-   if(command == NULL){
-     perror("issue_command");
--    return(-1);
-+    return(1);
-   }
-   command[0] = '\0';
+-  if((argc > 1) && !strcmp(argv[1], "-uml-socket")) fd = open_socket(argv[2]);
+-  else fd = 3;
++  if((argc > 1) && !strcmp(argv[1], "-uml-socket")) {
++	/* inherited a filename not an open fd */
++	fd = open_socket(argv[2]);
++  } else {
++	/* inherited fd of the listening TCP socket */
++	fd = 3;
++  }
  
-@@ -401,7 +442,7 @@
-   }
- 
-   if(argc>2)
--    return issue_commandv(fd, argv+2);
-+    exit(issue_commandv(fd,argv+2));
- 
-   while(1){
-     char *command, prompt[1 + sizeof(uml_name) + 2 + 1];
-@@ -416,5 +457,5 @@
-     free(command);
-   }
-   printf("\n");
--  return(0);
-+  exit(0);
- }
-
---dc+cDN39EJAMEtIO--
+   signal(SIGHUP, SIG_IGN);
+   if(ioctl(0, TIOCNOTTY, 0) < 0)
+-    perror("TIOCNOTTY failed");
++    perror("TIOCNOTTY failed in port-helper, check UML's exec call for xterm or telnetd");
+   send_fd(0, fd);
+   pause();
+   return(0);
 
 
 -------------------------------------------------------
