@@ -1,15 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: s-uml@rhythm.cx
-Message-ID: <20040118162345.GA23424@infinity.rhythm.cx>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AiHgk-0003TA-Gr for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2004 10:30:22 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AiHgj-00037e-TY for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2004 10:30:22 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Dynamic remount with variable COW stacking/merging
+	needed, support for snapshot repilication
 References: <4009A583.7070007@lig.net>
-	<20040118044551.GB8571@ccure.user-mode-linux.org>
-	<400A30CC.20308@lig.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <4009A583.7070007@lig.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <400A30CC.20308@lig.net>
-Subject: [uml-devel] Re: [uml-user] Dynamic remount with variable COW
-	stacking/merging needed, support for snapshot repilication
+Message-Id: <200401181204.04061.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,20 +30,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Jan 2004 11:23:45 -0500
-To: "Stephen D. Williams" <sdw@lig.net>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Sun, 18 Jan 2004 12:04:04 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Jan 18, 2004 at 02:07:56AM -0500, Stephen D. Williams wrote:
-> Yes, but that doesn't meet the key requirement I am proposing: that the 
-> downtime be limited to a few seconds. 
+Alle 22:13, sabato 17 gennaio 2004, Stephen D. Williams ha scritto:
+> When a UML instance is running a always-on service, such as a web
+> server, an administrator needs to be able to make live backups, or
+> replications, of a running system.
+>
+> This can be done using LVM snapshots, although that is not always
+> appropriate for just this feature. A UML instance can be paused and then
+> restarted, but this can cause severe delays while large partitions are
+> replicated.
+In general, this should be done with LVM. There is a strong idea that COW is 
+somehow a duplication of LVM, and I read that Jeff Dike (IIRC) wanted it to 
+be rewritten as a new snapshot format for LVM (the reason for a different 
+format is that LVM snapshot were built thinking to partitions, while Uml can 
+use sparse files - which is a great advantage if you're able to use it).
 
-If you use the LVM on the host you can take a snapshot of the volume the ubd
-images are on while the uml is stopped. The snapshot gets made instantly so
-the uml would be stopped for very little time. 
+It's maybe harder to setup, that's true, but see about EVMS which provides a 
+nicer interface.
 
+Bye
+-- 
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+EOSIGN
 
--Steve
 
 
 -------------------------------------------------------
