@@ -1,20 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYqsY-0002MZ-JD
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 23 Dec 2003 10:03:34 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AYqsX-0006nY-VI
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 23 Dec 2003 10:03:34 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [UML patch] fix 2.6.0-test11 compilation problem
-References: <Pine.LNX.4.58.0312171735540.8123@earth> <Pine.LNX.4.58.0312171924290.12482@earth> <Pine.LNX.4.58.0312172238350.19099@earth>
-In-Reply-To: <Pine.LNX.4.58.0312172238350.19099@earth>
+	id 1AYr8L-0003IF-4Z
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 23 Dec 2003 10:19:53 -0800
+Received: from witte.sonytel.be ([80.88.33.193])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AYr8K-000417-Id
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 23 Dec 2003 10:19:52 -0800
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <Pine.GSO.4.58.0312231727190.1495@waterleaf.sonytel.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200312221050.39554.blaisorblade_spam@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] CONFIG_HW_CONSOLE
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,34 +22,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Dec 2003 10:50:39 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Ingo Molnar <mingo@elte.hu>
+Date: Tue, 23 Dec 2003 19:19:43 +0100 (MET)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-Alle 22:40, mercoled=EC 17 dicembre 2003, Ingo Molnar ha scritto:
-> the simple patch below fixes 2.6.0-test11+uml-patch-2.6.0-test9-1
-> compilation if TT mode is disabled.
-The error went away with 2.6.0, so the patch is no more needed.
+	Hi Jeff,
 
-The patched file is just a symlink to
- arch/i386/kernel/semaphore.c
+I think there are 4 reasons for applying this patch:
+  - CONFIG_UM does not exist
+  - drivers/char/Kconfig is not used for UML
+  - VT is not set for UML anyway
+  - The kernel doesn't link if you do set VT and HW_CONSOLE is not set
 
-In fact in 2.6.0 they added at that place <linux/err.h>, which works.
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+--- linux-uml-2.6.0-test9-1/drivers/char/Kconfig.orig	2003-10-25 21:44:08.000000000 +0200
++++ linux-uml-2.6.0-test9-1/drivers/char/Kconfig	2003-12-23 17:22:44.000000000 +0100
+@@ -59,7 +59,7 @@
+
+ config HW_CONSOLE
+ 	bool
+-	depends on VT && !S390 && !UM
++	depends on VT && !S390
+ 	default y
+
+ config SERIAL_NONSTANDARD
 
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
