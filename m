@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BddPJ-0006od-Lx for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Jun 2004 16:13:25 -0700
-Received: from ctron-dnm.enterasys.com ([12.25.1.120] ident=firewall-user)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BddPI-0001kc-06 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Jun 2004 16:13:24 -0700
-Received: (from uucp@localhost)
-	by ctron-dnm.enterasys.com (8.8.7/8.8.7) id TAA12816
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 24 Jun 2004 19:16:36 -0400 (EDT)
-From: "D. Bahi" <dbahi@enterasys.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-dO7r5l64i74or+Zkn6w8"
-Message-Id: <1088118748.31490.48.camel@etrs-pc02.ets.enterasys.com>
-Mime-Version: 1.0
-Subject: [uml-devel] highmem support in 2.4 (2.4.26-1)
+	id 1BduaO-0003I9-QQ for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Jun 2004 10:34:00 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BduaO-0001Sk-6o for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Jun 2004 10:34:00 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] highmem support in 2.4 (2.4.26-1)
+References: <1088118748.31490.48.camel@etrs-pc02.ets.enterasys.com>
+In-Reply-To: <1088118748.31490.48.camel@etrs-pc02.ets.enterasys.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Disposition: inline
+Message-Id: <200406251946.18048.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,92 +27,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Jun 2004 19:12:28 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
-
-
-
---=-dO7r5l64i74or+Zkn6w8
-Content-Type: text/plain
+Date: Fri, 25 Jun 2004 19:46:17 +0200
 Content-Transfer-Encoding: quoted-printable
+To: "D. Bahi" <dbahi@enterasys.com>, user-mode-linux-devel@lists.sourceforge.net
 
-hello UMLers
+Alle 01:12, venerd=EC 25 giugno 2004, D. Bahi ha scritto:
+> hello UMLers
+>
+> i uml launch a guest with "mem=3D1024M"
+> and i see "CONFIG_HIGHMEM not enabled".
+> so i "make ARCH=3Dum xconfig" to enable it
+> and rebuild.
+>
+> i no longer see "CONFIG_HIGHMEM not enabled"
+> but i still see "Memory: 460188k available"
+> which makes me think i'm missing something.
 
-i uml launch a guest with "mem=3D1024M"=20
-and i see "CONFIG_HIGHMEM not enabled".
-so i "make ARCH=3Dum xconfig" to enable it
-and rebuild.
+That support could be broken. I don't think you can have done anything wron=
+g=20
+(no configuration error possible; double-check that CONFIG_HIGHMEM =3D y in=
+ the=20
+.config, but you cannot have missed anything else).
 
-i no longer see "CONFIG_HIGHMEM not enabled"
-but i still see "Memory: 460188k available"
-which makes me think i'm missing something.
+But there could be some strange host configuration: what is your distro? Ha=
+ve=20
+you enabled exec-shield (which is enabled by default on Fedora and RedHat 9?
 
-clues or outright help appreciated?
+I think that the message could be wrong; could you check with the "free"=20
+command inside the UML?
 
-db
+See the explainations:
 
-w/o CONFIG_HIGHMEM:
+> w/o CONFIG_HIGHMEM:
 
-Checking for the skas3 patch in the host...found
-Checking for /proc/mm...found
-CONFIG_HIGHMEM not enabled - physical memory shrunk to 499122176 bytes
-Kernel virtual memory size shrunk to 32505856 bytes
-Checking for /dev/anon on the host...Not available (open failed with
-errno 2)
-Linux version 2.4.26-1um (user@host) (gcc version 3.3.1) #1 Mon Jun 14
-16:07:12 EDT 2004
-On node 0 totalpages: 121856
-zone(0): 121856 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line: umid=3Duml
-ubd0=3D/local/target0/cowthis,/misc/cctools/target0/images/root_fs_mv31
-hostfs=3D/local/target0/s1/hostfs/chassis[box].cm[cm1] mem=3D1024M
-root=3D/dev/ubd0
-Calibrating delay loop... 3355.44 BogoMIPS
-Memory: 474328k available
+>CONFIG_HIGHMEM not enabled - physical memory shrunk to 499122176 bytes
+>Kernel virtual memory size shrunk to 32505856 bytes
 
-w/ CONFIG_HIGHMEM:
+> On node 0 totalpages: 121856
+> zone(0): 121856 pages.
+> zone(1): 0 pages.
+> zone(2): 0 pages.
 
-Checking for the skas3 patch in the host...found
-Checking for /proc/mm...found
-Kernel virtual memory size shrunk to 32505856 bytes
-Checking for /dev/anon on the host...Not available (open failed with
-errno 2)
-Linux version 2.4.226-1um (user@host) (gcc version 3.3.1) #3 Thu Jun 24
-18:58:57 EDT 2004
-On node 0 totalpages: 262144
-zone(0): 121856 pages.
-zone(1): 0 pages.
-zone(2): 140288 pages.
-Kernel command line: umid=3Duml
-ubd0=3D/local/target0/cowthis,/misc/cctools/target0/images/root_fs_mv31
-hostfs=3D/local/target0/s1/hostfs/chassis[box].cm[cm1] mem=3D1024M
-root=3D/dev/ubd0
-Calibrating delay loop... 3656.90 BogoMIPS
-Memory: 460188k available
+I.e. there are some pages (each one is 4k) in the zone 0 (normal).
+
+> Memory: 474328k available
 
 
---=-dO7r5l64i74or+Zkn6w8
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+> w/ CONFIG_HIGHMEM:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+> Kernel virtual memory size shrunk to 32 505 856 bytes
 
-iD8DBQBA21/c3XQ4zakZ3z4RAhOZAJ9IflKd0yO37EiOZKjrKX4zeMls9QCeOoh8
-cYIdctWnCDHW2iG8cqwMfyA=
-=/8ql
------END PGP SIGNATURE-----
+This is unrelated, but strange: is the kernel going to use just 32 Mega (in=
+=20
+both cases) for itself?
 
---=-dO7r5l64i74or+Zkn6w8--
+> On node 0 totalpages: 262144
+> zone(0): 121856 pages.
+> zone(1): 0 pages.
+> zone(2): 140288 pages.
+
+I.e. there are those pages in the normal zone plus some more ones in the zo=
+ne=20
+2, i.e. (IIRC) the HIGHMEM zone. So HIGHMEM seems to work, at least=20
+partially.
+
+> Memory: 460188k available
+
+Bye
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
 -------------------------------------------------------
 This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
-digital self defense, top technical experts, no vendor pitches, 
+Attend Black Hat Briefings & Training, Las Vegas July 24-29 -=20
+digital self defense, top technical experts, no vendor pitches,=20
 unmatched networking opportunities. Visit www.blackhat.com
 _______________________________________________
 User-mode-linux-devel mailing list
