@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWtEH-00082i-ID
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 00:09:53 -0800
-Received: from [216.156.129.65] (helo=www.theshore.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWtEH-0001F8-6m
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 00:09:53 -0800
-Received: from hawk (mothership.theshore.net [68.52.199.4])
-	by www.theshore.net (8.12.9/8.9.1) with SMTP id hBI8D7sH014312
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Dec 2003 03:13:07 -0500
-Message-ID: <000901c3c53e$4a759550$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <Pine.LNX.4.58.0312181520100.15701@boston.corp.fedex.com>
+	id 1AWuVA-0002bI-5d
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 01:31:24 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AWuV9-0001W5-JZ
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 01:31:23 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] [bug] uml segfaults if forcing static link, 2.6.0-test11
+In-Reply-To: <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
+Message-ID: <Pine.GSO.4.58.0312180830170.15937@altair.dur.ac.uk>
+References: <Pine.LNX.4.58.0312171735540.8123@earth>
+ <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth>
+  <Pine.LNX.4.58.0312172249020.19508@earth>  <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [PATCH] - fix for 2.4.22-7um RTC on CPUs faster than 2.1 GHz
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,60 +26,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Dec 2003 02:09:39 -0600
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 18 Dec 2003 08:35:06 +0000 (GMT)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Ingo Molnar <mingo@elte.hu>, user-mode-linux-devel@lists.sourceforge.net
 
-Enabling the RTC in 2.4.22-7um produced a hang very soon after INIT at boot time.
+On Wed, 17 Dec 2003, Jeff Dike wrote:
 
-I discovered host_hz as an int overflows past 2.1 Ghz (2147483647 hz).  An
-unsigned int/long would only work for up to ~ 4.3 Ghz (4294967295 hz) or so, which
-isn't that far off, imo...  So -- Below is a patch that changes the type of
-host_hz to unsigned long long.  Also, I believe some casting was taking place with
-the return value of get_host_hz, so mhz is also redefined as an unsigned long
-long.
+> mingo@elte.hu said:
+> > the attached .config produces an UML binary that segfaults much the
+> > same way as before the ALIGN fixes.
+>
+> HAHAHA, there is justice in this world :-)
+>
+> This one is your fault, I think.
+>
+> See this patch and see if it fixes the problem:
+> 	http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=106867347801038&w=2
 
--Chris
+Though that isn't a complete solution, as the same issue causes a random
+amount less memory, averaging about 16M, to be allocated to the UML
+process, potentially causing out of memory problems, including a failure
+to boot at all.
 
+For some other bugs you might see in FC1, see
+http://toast.debian.net/~may/umlproject/bugs.html
 
-diff -Naur orig/arch/um/kernel/time.c mine/arch/um/kernel/time.c
---- orig/arch/um/kernel/time.c  2003-12-18 02:30:20.000000000 -0500
-+++ mine/arch/um/kernel/time.c  2003-12-18 02:32:38.000000000 -0500
-@@ -79,10 +79,11 @@
-        set_interval(ITIMER_REAL);
- }
-
--static long get_host_hz(void)
-+static unsigned long long get_host_hz(void)
- {
-        char mhzline[16], *end;
--       int ret, mult, mhz, rest, len;
-+       int ret, mult, rest, len;
-+       unsigned long long mhz;
-
-        ret = cpu_feature("cpu MHz", mhzline,
-                          sizeof(mhzline) / sizeof(mhzline[0]));
-@@ -112,7 +113,7 @@
-        return(1000000 * mhz + rest);
- }
-
--int host_hz = 0;
-+unsigned long long host_hz = 0;
-
- void time_init(void)
- {
-diff -Naur orig/arch/um/kernel/time_kern.c mine/arch/um/kernel/time_kern.c
---- orig/arch/um/kernel/time_kern.c     2003-12-18 02:30:20.000000000 -0500
-+++ mine/arch/um/kernel/time_kern.c     2003-12-18 02:34:58.000000000 -0500
-@@ -39,7 +39,7 @@
- static unsigned long long prev_tsc;
- static long long delta;                /* Deviation per interval */
-
--extern int host_hz;
-+extern unsigned long long host_hz;
-
- void timer_irq(union uml_pt_regs *regs)
- {
-
+	Michael Young
 
 
 -------------------------------------------------------
