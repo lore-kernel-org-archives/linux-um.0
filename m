@@ -1,10 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <267988DEACEC5A4D86D5FCD780313FBB028864A7@exch-03.noida.hcltech.com>
-From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C4E11A.4DDAB759"
-Subject: [uml-devel] Kernel panic error while halting the system
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Cdwjf-0007C3-9I for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Dec 2004 12:23:59 -0800
+Received: from pike.sandelman.ca ([205.150.200.164])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1Cdwjc-0006A4-Ve
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Dec 2004 12:23:58 -0800
+Subject: Re: [uml-devel] Re: What to do with uml_switch? 
+In-Reply-To: Message from "Steve Schmidtke" <steve_schmidtke@hotmail.com> 
+	of "Sun,
+	12 Dec 2004 19:11:24 GMT." <BAY24-F3066C52785F7FFBF9E53EA83AA0@phx.gbl>
+References: <BAY24-F3066C52785F7FFBF9E53EA83AA0@phx.gbl> 
+Message-ID: <30083.1102884650@marajade.sandelman.ottawa.on.ca>
+From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,60 +27,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 13 Dec 2004 19:17:36 +0530
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Sun, 12 Dec 2004 15:50:50 -0500
+To: Steve Schmidtke <steve_schmidtke@hotmail.com>
+Cc: blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C4E11A.4DDAB759
-Content-Type: text/plain;
-	charset="iso-8859-1"
-
-Hi,
-i got the error while halting the system :
- 
-Sending all processes the TERM signal... Kernel panic: read of switch_pipe
-failed, errno = 0
-sleeping process 17672 got unexpected signal : 11
- 
-Plz help me out to analyze it.
- 
-
-Thanks and Best Regards,
-Adil Mujeeb
+-----BEGIN PGP SIGNED MESSAGE-----
 
 
+>>>>> "Steve" == Steve Schmidtke <steve_schmidtke@hotmail.com> writes:
+    Steve> uml_netjig changes than the other way around.  I found 5
+    Steve> patches (1-5) for the uml_netjig foundation in the mailing
+    Steve> list archive, and I'm OK with the basic premises I have seen:
 
-------_=_NextPart_001_01C4E11A.4DDAB759
-Content-Type: text/html;
-	charset="iso-8859-1"
+  Great.
+  Let me know when I should diff against what I have, and re-submit more
+patches.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    Steve> for controlling those switches.  If we can agree that the
+    Steve> other features like tcpdumps and fake ARPs, etc. are not core
+    Steve> to the nature of a switch (but can be patched in when
+    Steve> needed), then I would be happy to maintain the above premises
+    Steve> as well.
+
+  I'd rather see the multiple switch support in a seperate binary.
+  You'll see that in my patches uml_netjig and uml_switch each have
+their own poll(2)-loop. That's because the uml_switch is significantly
+simpler.
+
+- -- 
+]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
+]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
+] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
+] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
 
 
-<META content="MSHTML 5.00.3821.2800" name=GENERATOR></HEAD>
-<BODY>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
-class=023084613-13122004>Hi,</SPAN></FONT></DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=023084613-13122004>i got 
-the error while halting the system :</SPAN></FONT></DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
-class=023084613-13122004></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT color=#0000ff face=Arial size=2>Sending all processes the TERM 
-signal... Kernel panic: read of switch_pipe failed, errno = 0<BR>sleeping 
-process 17672 got unexpected signal : 11</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=023084613-13122004>Plz 
-help me out to analyze it.</SPAN></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<P><FONT face="Comic Sans MS" size=2>Thanks and Best Regards,</FONT><FONT 
-face=Arial><BR><B></B></FONT><B><FONT color=#0000ff face="Times New Roman">Adil 
-Mujeeb</FONT></B><BR></P></BODY></HTML>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+Comment: Finger me for keys
 
-------_=_NextPart_001_01C4E11A.4DDAB759--
+iQCVAwUBQbyvKYqHRg3pndX9AQGwsAQA1U/+gyxKFjOfBeBSo1T4/9QUIYcK9QWS
+h0NI8NWNMTWT3E/nHSms01ZjYfiusWf7eWba7FMs8d2jj09d7fojoSDYFHxslOw2
+6voXfQwQdwAHhfvpPBgjA6+FZtQizliz7zH+pGgpnRIEOnvx7ZCpiZ5z/fDL08eL
+z8TkqkSpvoU=
+=rmIm
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
