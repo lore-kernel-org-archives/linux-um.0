@@ -2,24 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CzD8E-0004Ey-7h for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 04:09:14 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1CzDgT-0005zc-Nb for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 04:44:37 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CzD89-0007bd-Hj for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 04:09:14 -0800
+	id 1CzDgQ-0002pb-39 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 04:44:37 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] strace of 'ls' under Fedora Core 3
-References: <A06801158AE07847B27A52C1A074BC1D0725A4D6@fmsmsx404.amr.corp.intel.com>
-	<200502101226.47978.blaisorblade@yahoo.it>
-	<55690.80.203.9.134.1108035741.squirrel@80.203.9.134>
-In-Reply-To: <55690.80.203.9.134.1108035741.squirrel@80.203.9.134>
+References: <20050121121532.GA22707@bytesex>
+	<200501211407.09896.blaisorblade@yahoo.it>
+	<20050209173336.GE14590@bytesex>
+In-Reply-To: <20050209173336.GE14590@bytesex>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200502101308.01931.blaisorblade@yahoo.it>
+Message-Id: <200502101343.30345.blaisorblade@yahoo.it>
+Subject: [uml-devel] Ported SKAS3-v7 (and partially -V8) for 2.6.11.
+	Uncleanness about SYSEMU_SINGLESTEP
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,52 +32,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Feb 2005 13:08:01 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: stian@nixia.no, "Wichmann, Mats D" <mats.d.wichmann@intel.com>, Marion Bates <mbates@whoopis.com>, William Stearns <wstearns@pobox.com>
+Date: Thu, 10 Feb 2005 13:43:29 +0100
+To: Gerd Knorr <kraxel@bytesex.org>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 10 February 2005 12:42, stian@nixia.no wrote:
-> > Also, the code inside UML should absolutely support it (from the code I
-> > don't
-> > see any problem), at least for the x86 UML.
+On Wednesday 09 February 2005 18:33, Gerd Knorr wrote:
+> > > Anyone looked at 2.6.11-rc1 for the host?  Some more ptrace cleanups
+> >
+> > I've already solved those conflict earlier on -rc1 (not tested) but I
+> > didn't polish it out yet... if you are in a hurry, I can finish it and
+> > post the result today on the ML. If not, I'll publish it later.
 >
-> modify_ldt is a x86 syscall aswell, so it will only appear in x86/x86_64
-> umls.
-Yes, agreed... x86 UML supports it, but x86_64 UML does not (yet). I maybe was 
-not clear that this is a missing feature, or a bug, or a 
-put-another-name-for-ants-wasps-and-such-here.
+> Was busy with other stuff recently, but next days I plan to look at this
+> again.  I've seen you released skas v8 meanwhile, but for 2.6.9 only.
+> If you have a 2.6.11-rc patch as well already that would be very nice.
+I've just done a -V7 for -rc3-bk6... I've called it -V7-rc1 because 
+potentially something could go wrong (in general, and for this special 
+kernel).
 
-Jeff stated that in 64-bit UML the 32-bit compatibility code is still gross 
-(in fact he hasn't yet started merging it).
+I've also added three patches from the V8-rc1 for 2.6.9 (so it's actually a 
+-V7a: versioning is fscking up). I've not yet added the SYSEMU_SINGLESTEP 
+support, because it seemed me a bit unclean even in 2.6.9, so even porting it 
+cleanly to 2.6.10 is a bit hard (C. Aker did the porting, and , but in that 
+form it is not up-to-date with the introduction of the set/clear_singlestep 
+accessors).
 
-However, the GDT/LDT on x86_64 have a reduced role.... maybe they are 
-supported in the 32-bit userspace / 64-bit kernel case, but surely not for 
-the pure 64-bit case (wonder how TLS is done there).
-> It was implemented and used by dosemu project originally. 
+The problem is that PTRACE_SYSEMU_SINGLESTEP is put together with 
+PTRACE_SYSCALL, not with PTRACE_SINGLESTEP... I understand in 2.6.7 it maybe 
+made sense (SINGLESTEP had a different behaviour then, problems when 
+singlestepping syscalls) but it's unclean in 2.6.9 and does not port well to 
+2.6.10, as said (... unless I miss something, I'm going to cleanup this for 
+2.6.9 and for 2.6.10.
 
-> What actually uses this syscall as I find the syscall to be badly
-> documented last time I looked at it.
-The TLS code... (Thread Local Storage).
-
-In short, if you put a certain value in the (let's say) ES (or FS, or GS) 
-register (they are segment selectors), it can point to an entry in the LDT 
-(which you create with modify_ldt).
-
-It means that if I read the address NNNN inside the ES segment (in assembler 
-ES:NNNN in Intel notation), it will point to the NNNN address inside the 
-segment (i.e. you have one "base address" to add to NNNN which can be != 0). 
-Normal reads are done from the DS (for Data) and CS (for code) segments.
-
-Now, if you switch the entry number in ES for each thread (probably this is 
-done at startup and we rely on nobody else modifying the ES value, which is a 
-valid guarantee), you get that each thread, with ES:NNNN, will access a 
-different var (by creating one area for each thread and putting the base 
-addresses of these areas inside various LDT entries).
-
-I can confirm glibc uses modify_ldt() for TLS support on LinuxThreads. With 
-NPTL, they use 2.6 host kernel support - instead of having 8192 maximum 
-thread number (because this is the size of the LDT), one entry of the GDT is 
-used, and for each task the kernel saves the appropriate segment descriptor.
+For 2.6.7 I would rawly use your version, unless I discovered any bugs during 
+the cleanup (backporting cleanups is useless IMHO, unless for other reasons 
+like keeping things in sync).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
