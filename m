@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ANdpN-0007us-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 11:53:57 -0800
-Received: from externalmx.valinux.com ([198.186.202.147] helo=externalmx.vasoftware.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ANdpM-0004LL-TT
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 22 Nov 2003 11:53:56 -0800
-Received: from 200-158-228-25.dsl.telesp.net.br ([200.158.228.25]:21115 helo=uai.com.br)
-	by externalmx.vasoftware.com with smtp (Exim 4.24 #1 (Debian))
-	id 1ANdpL-0004Db-UQ
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 22 Nov 2003 11:53:56 -0800
-From: "film _ net" <soaqui@uai.com.br>
-Mime-Version: 1.0
-Content-Type: text/html; charset="ISO-8859-1"
-Reply-To: "film _ net" <soaqui@uai.com.br>
-Message-Id: <E1ANdpL-0004Db-UQ@externalmx.vasoftware.com>
-Subject: [uml-devel] A Melhor =?unknown-8bit?q?sele=E7=E3o?= de filmes da net
+	id 1AO3VR-0003He-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 23 Nov 2003 15:19:05 -0800
+Received: from m17.lax.untd.com ([64.136.30.80])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AO3VQ-00055C-SZ
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 23 Nov 2003 15:19:04 -0800
+Subject: Re: [uml-devel] Host panic when UML reads host /dev/shm
+Message-ID: <20031123.150830.-1747969.0.mcmechanjw@juno.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+From: James W McMechan <mcmechanjw@juno.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -28,55 +24,74 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 22 Nov 2003 17:54:38 -0200
-Content-Transfer-Encoding: quoted-printable
+Date: Sun, 23 Nov 2003 15:08:27 -0800
 To: user-mode-linux-devel@lists.sourceforge.net
 
-<html>
+I have been tracing down the Oops on a vanilla 2.4.22 kernel
+This appears to be a Oops with a semaphore held that will
+lock out all other accesses to the tmpfs/shmfs filesystem.
 
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows=
--1252">
-<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 4.0">
-<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
-<title>Os melhores filmes voc=EA encontra aqui</title>
-</head>
+I traced it to read_dir in hostfs_user.c by setting
+breakpoints on all the hostfs_user.c functions.
 
-<body>
+Ok I now have a simple test program which Oops
+the host kernel instantly (3 times through loop)
 
-<p align=3D"center"><b><font face=3D"Verdana" color=3D"#ff0000" size=3D"4=
-"><font
-face=3D"Verdana" color=3D"#000080" size=3D"2"><br>
-</font></font><strong><u><font face=3D"times,serif" color=3D"darkgreen"
-size=3D"5">Os
-melhores filmes voc=EA encontra aqui</font></u></strong></b></p>
-<p align=3D"center"><font face=3D"Arial"><font color=3D"#000000" size=3D"=
-5">Apenas
-:7,90</font>
-&nbsp; <font color=3D"#000000" size=3D"5">&nbsp;FRETE GRATIS</font></font=
-></p>
-<p align=3D"center"><b><font face=3D"Verdana" color=3D"#ff0000" size=3D"4=
-"><img
-src=3D"http://www.mercadolivre.com.br/org-img/preview/MLB/112003/10294710=
-_754.
-jpg" border=3D"0" width=3D"250" height=3D"250"><br>
-</font><strong><u><font face=3D"times,serif" color=3D"darkgreen" size=3D"=
-5"><a
-href=3D"http://www.mercadolivre.com.br/jm/item?site=3DMLB&amp;id=3D146626=
-00">
-clique
-aqui para comprar</a></font></u></strong></b></p>
-<p align=3D"center"><font face=3D"verdana" size=3D"1"><b>Para excluir , f=
-avor <a
-href=3D"mailto:viana.da.ru@bol.com.br">clicar
-aqui</a></b></font></p>
-<p align=3D"center"><b><font color=3D"#FF0000">aten=E7=E3o --- s=F3 para =
-maiores de 18
-anos</font></b></p>
+This is very strange my attached test program when run
+as a unprivileged user Oops the kernel and locks /dev/shm
+in general a unprivileged user should not be able to do this
 
-</body>
+It has taken a while in order to check that the kernel I was
+running was without patches (i.e. no skas)
+It still Oops on the third loop :(
 
-</html>
+I have also noted that the tmpfs/shmfs does not have a set
+of files like other filesystems under fs/ it seems to be located
+in mm/shmem.c instead... very strange
+
+Oh well it is a problem with the vanilla 2.4.22 kernel so
+more testing and off to the LKML...
+
+Anybody have a better guess where to send this?
+
+For your Enjoyment the test program
+
+/* by James_McMechan at hotmail com */
+/* test program to Oops shmfs usually mounted at /dev/shm */
+/* yes it is dumb but unprivileged users should not be able */
+/* to Oops the kernel regardless of how dumb the program */
+#include <sys/types.h>                                                   
+      
+#include <dirent.h>
+#include <stdio.h>
+
+main()
+{
+        DIR *dir;
+        struct dirent *ent;
+        off_t pos = 0;
+
+        do {
+                dir = opendir("/dev/shm");
+                seekdir(dir, pos);
+                ent = readdir(dir);
+                if (ent == 0) {
+                        printf("end of directory\n");
+                        perror("readdir ended with");
+                } else {
+                        printf("d_name is %s\n",ent->d_name);
+                        pos = telldir(dir);
+                        if (pos < 0)
+                                perror("telldir failed with");
+                }
+                closedir(dir);
+        } while (ent != 0);
+}
+
+________________________________________________________________
+The best thing to hit the internet in years - Juno SpeedBand!
+Surf the web up to FIVE TIMES FASTER!
+Only $14.95/ month - visit www.juno.com to sign up today!
 
 
 -------------------------------------------------------
