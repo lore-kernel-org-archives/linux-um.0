@@ -1,10 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20040725001114.GA13469@ccure.user-mode-linux.org>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BoWJr-0001GS-Sx for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Jul 2004 16:52:47 -0700
+Received: from heretic.physik.fu-berlin.de ([160.45.32.227])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.34) id 1BoWJr-00008b-AT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Jul 2004 16:52:47 -0700
+From: Axel Thimm <Axel.Thimm@ATrpms.net>
+Message-ID: <20040724235215.GA4751@neu.nirvana>
+References: <Pine.LNX.4.44.0407221901400.1382-100000@hfuhruhurr.iostream.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
 Content-Disposition: inline
-Subject: [uml-devel] Incremental patches available
+In-Reply-To: <Pine.LNX.4.44.0407221901400.1382-100000@hfuhruhurr.iostream.com>
+Subject: [uml-devel] Re: I ported skas3 to fc2 kernel
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,37 +29,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 24 Jul 2004 20:11:14 -0400
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 25 Jul 2004 01:52:15 +0200
+To: Jinnah Dylan Hosein <jdh66@jdh.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-As part of my redoing how I work on UML, I've started using quilt to
-maintain the changes going into a UML release as a set of discrete
-patches.  Among other things, this lets me publish the patches that
-have gone into my working tree before they are released as part of a
-full UML patch.  See http://user-mode-linux.sourceforge.net/patches.html
 
-There is one patch there, fixing something somewhat tangential (an
-iomem bug exposed by the test suite, of which more later), letting me
-figure out the new process.  This will be updated fairly frequently,
-by cron or something.
 
-This will greatly shrink the window in which someone can else find and
-fix a bug, and send me a patch, while I, unbeknownst to anyone else,
-have fixed the same bug.  Of course, this won't stop people who don't
-look at that page, but at least the information is available.
+--CE+1k2dSO48ffgeK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It should also help UML stability by allowing people to test patches
-between UML releases, so that they should be right by the time they
-are released officially.
+Hi Jinnah,
 
-Finally, I'm going to have the release changelogs include the patches
-that went into the release.  That will enable people who find some new
-breakage to back out patches one by one until the breakage goes away.
-A lot more people will be able to do useful debugging, since no
-technical skills beyond running patch and rebuilding UML will be
-required.
+On Thu, Jul 22, 2004 at 07:13:33PM -0400, Jinnah Dylan Hosein wrote:
+> I ported the host-skas3-2.6.7-v1.patch to the Fedora Core 2 kernel.
+>=20
+> I used the latest fc2 2.6.6-1.435.2.3 kernel rpm.
 
-				Jeff
+Alexander Dalloz has done similar against a later kernel from
+post-FC2. Perhaps we should consolidate forces :)
+
+The kernel rpm is available in the testing section of ATrpms:
+
+http://ATrpms.net/name/kernel-testing/fc2/
+
+(the 1.494 based kernel).
+
+BTW my personal wishlist would be a combined uml&skas3 patch for
+~2.6.8rc1 (like blaisorblade did for 2.6.6). :)
+
+uml-utilities have also been uploaded as rpms to ATrpms.
+--=20
+Axel.Thimm at ATrpms.net
+
+--CE+1k2dSO48ffgeK
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFBAvYvQBVS1GOamfERArUcAJ0ezsa8J3V6lM58jBYQweURwdB1PgCfa7Q3
+I5xElZ1JzxB/ffFEfYV7z4A=
+=i171
+-----END PGP SIGNATURE-----
+
+--CE+1k2dSO48ffgeK--
 
 
 -------------------------------------------------------
