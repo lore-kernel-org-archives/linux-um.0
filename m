@@ -1,29 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Au70x-0004FE-EX
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 01:32:07 -0800
-Received: from gate2.mailgate.de ([62.116.129.39] helo=web4.internetx.de)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Au6vB-0005Lw-PM
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 01:26:09 -0800
-Received: from lain.internetx.de (pizza.internetx.de [62.116.129.3])
-	(authenticated bits=0)
-	by web4.internetx.de (8.12.9/8.12.9) with ESMTP id i1K9Q8Ax026159
-	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 20 Feb 2004 10:26:08 +0100
-Received: from lain.internetx.de (localhost [127.0.0.1])
-	by lain.internetx.de (8.12.3/8.12.3/Debian-6.6) with ESMTP id i1K9Q7V4008076
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
-	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 20 Feb 2004 10:26:07 +0100
-Received: (from sebastianw@localhost)
-	by lain.internetx.de (8.12.3/8.12.3/Debian-6.6) id i1K9Q7Ur008075
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 10:26:07 +0100
-From: Sebastian Wiesinger <sw@internetx.de>
-Message-ID: <20040220092607.GA8007@lain.intern.internetx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] Problem: copy_thread : pipe failed, err = 24
+	id 1Au9rC-0004oK-UI
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 04:34:14 -0800
+Received: from mailgate.uni-paderborn.de ([131.234.22.32])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30)
+	id 1Au9lM-000760-WB
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 04:28:13 -0800
+Message-ID: <4035FDFE.6010402@upb.de>
+From: =?UTF-8?B?U3ZlbiBLw7ZobGVy?= <skoehler@upb.de>
+MIME-Version: 1.0
+References: <40338C1B.1070800@meisterwerk.net> <c1360l$eei$1@sea.gmane.org> <87llmy3vr5.fsf@bytesex.org>
+In-Reply-To: <87llmy3vr5.fsf@bytesex.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: skas3 patch fails against vanilla-2.4.25
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,31 +26,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 10:26:07 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 20 Feb 2004 13:30:54 +0100
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hello,
+> You didn't apply the second patch, did you?
 
-I'm using a host system with 9 UML boxes and keep getting the error
+Should i?
+The description of the second path was:
+	Various fixups to make the whole tree build for all
+	architectures.
 
-copy_thread : pipe failed, err = 24
-
-This error appears first after a few hours of running and the boxes
-with this error is no longer reachable. The following other errors
-also appear:
-
-flush_thread : new thread failed, errno = 1
-copy_thread : clone failed - errno = 11
-copy_thread : clone failed - errno = 1
-copy_thread : clone failed - errno = 1
-
-
-I used the 2.4.24 UML Patch with a new 2.4.25 Kernel wich applied
-without errors.
-
-Any suggestions?
-
-Sebastian
+So i thought it is to make it compile on PPC or whatever.
 
 
 -------------------------------------------------------
