@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BiFzQ-0002is-0o for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jul 2004 10:13:48 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1BiG9A-0004SW-TJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jul 2004 10:23:52 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1BiFzP-0000sx-FD for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jul 2004 10:13:47 -0700
+	id 1BiG9A-0002fr-BS for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jul 2004 10:23:52 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] uml_mconsole issue
-References: <OJEEKGNKKDLJIEPBEJMIMEDGCAAA.Anthony_Brock@ous.edu>
-In-Reply-To: <OJEEKGNKKDLJIEPBEJMIMEDGCAAA.Anthony_Brock@ous.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200407071914.06387.blaisorblade_spam@yahoo.it>
+Message-Id: <200407071924.14187.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] UML will be maybe included in -mm
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,20 +27,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Jul 2004 19:14:05 +0200
-Content-Transfer-Encoding: quoted-printable
-To: Anthony Brock <Anthony_Brock@ous.edu>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 7 Jul 2004 19:24:14 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 07:14, mercoled=EC 7 luglio 2004, Anthony Brock ha scritto:
-> Let me know if you require more detail and what specific steps I should
-> take to help trouble-shoot this. Thanks in advance!
-Could you try taking a "backtrace" from the UML? I've no time for now to=20
-explain it, but it has been explained tons of times on this ML... search fo=
-r=20
-"backtrace" on the marc.theaimsgroup.com archives! See also the "debugging =
+As in the subject. We are trying to get it in mainline, but it needs a few 
+cleanups... however, for now I've posted the UML patch to Andrew Morton, and 
+he's probably going to include it in the -mm tree (after the 2.6.7-mm6 
+release, since it's already out and Uml is not yet in). I've posted the base 
+patch + some other fixes (more or less the -bb2 patches, on my page: 
+http://www.user-mode-linux.org/~blaisorblade).
 
-kernel" page (the subsection about skas).
---=20
+Bye
+-- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 
@@ -48,8 +46,8 @@ Linux registered user n. 292729
 
 -------------------------------------------------------
 This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 -=20
-digital self defense, top technical experts, no vendor pitches,=20
+Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
+digital self defense, top technical experts, no vendor pitches, 
 unmatched networking opportunities. Visit www.blackhat.com
 _______________________________________________
 User-mode-linux-devel mailing list
