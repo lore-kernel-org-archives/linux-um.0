@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19vRKh-0000qD-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 05 Sep 2003 17:53:43 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19vRKg-0004jH-Ds
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 05 Sep 2003 17:53:42 -0700
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: RE: [uml-devel] Creating virtual consoles on the fly 
-In-Reply-To: <10C160F5A03A0942A1A87B658784CA6A0976D4@gummo.domain.trailerparc.com>
-Message-ID: <Pine.LNX.4.44.0309060250220.4937-100000@filer.marasystems.com>
+	id 19vSGX-0007pO-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 05 Sep 2003 18:53:29 -0700
+Received: from tailtiu.davidcoulson.net ([207.166.203.132] helo=mail.mx.davidcoulson.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.22)
+	id 19vSGX-0002or-2x
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 05 Sep 2003 18:53:29 -0700
+Message-ID: <3F593DFB.7040609@davidcoulson.net>
+From: David Coulson <david@davidcoulson.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Kernel panic: I/O op mismatch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,28 +25,23 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 6 Sep 2003 02:53:35 +0200 (CEST)
-To: Michael Talyansky <michaelt@doublewidesoft.com>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 05 Sep 2003 21:52:59 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 5 Sep 2003, Michael Talyansky wrote:
+I'm having a few issues with my current UML kernels -
 
-> Do you know why mingetty is unhappy when run from the command line? If
-> there is some additional stuff I have to do programmatically, I can do
-> it from a script or a little program.
+/dev/ubd/2: recovering journal
+Kernel panic: I/O op mismatch
+In interrupt handler - not syncing
 
-Probably it wants to be a process group leader to start a new session.
+Anyone seen this before?
 
-try
+David
 
-  setsid mingetty ...
-
-or if that fails
-
-  setsid mingetty ... </dev/null >/dev/null 2>&1
-
-Regards
-Henrik
+-- 
+David Coulson                                    email: d@vidcoulson.com
+Linux Developer /                          web: http://davidcoulson.net/
+Network Engineer                                   phone: (216) 533-6967
 
 
 
