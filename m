@@ -1,30 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-list2-b.sourceforge.net ([10.3.1.8]
-	helo=sc8-sf-list2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BsRys-00047V-Nt for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Aug 2004 13:03:22 -0700
-Message-Id: <200408042102.i74L2Pvv008609@ccure.user-mode-linux.org>
-Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind 
-In-Reply-To: Your message of "Wed, 04 Aug 2004 18:57:15 BST."
-	<2b464bd94c.work@loxley.compton.nu> 
-References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
-	<410EFCDB.8080404@enterasys.com>
-	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
-	<Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk>
-	<200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
-	<Pine.LNX.4.60.0408031527320.22157@hermes-1.csi.cam.ac.uk>
-	<200408031750.i73HoMvv002966@ccure.user-mode-linux.org>
-	<410FCC70.1050902@enterasys.com>
-	<200408031931.i73JVkvv003367@ccure.user-mode-linux.org>
-	<yek3c33tk5o.fsf@audi.uk.cyberscience.com>
-	<20040804153541.GA7237@ccure.user-mode-linux.org>
-	<yekacxbrlvi.fsf@audi.uk.cyberscience.com>
-	<200408041800.i74I0Nvv007667@ccure.user-mode-linux.org>
-	<2b464bd94c.work@loxley.compton.nu> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1BsS7Y-0005sn-W2 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Aug 2004 13:12:20 -0700
+Received: from zsc3s004.nortelnetworks.com ([47.81.138.65])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1BsS7Y-0002m9-NB for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Aug 2004 13:12:20 -0700
+Received: from zsc3c028.us.nortel.com (zsc3c028.us.nortel.com [47.81.138.28])
+	by zsc3s004.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with
+	ESMTP id i74KC8m14328
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 4 Aug 2004 13:12:08 -0700 (PDT)
+Message-ID: <411142B4.7000603@nortelnetworks.com>
+From: Joe Marzot <gmarzot@nortelnetworks.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Q: UML thread communication - scheduling oddness
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,41 +30,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 Aug 2004 17:02:25 -0400
-To: Tom Hughes <thh@cyberscience.com>
-Cc: dbahi@enterasys.com, njn25@cam.ac.uk, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
+Date: Wed, 04 Aug 2004 16:10:28 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Randy Macleod <macleodr@nortelnetworks.com>
 
-thh@cyberscience.com said:
-> The problem is that the virtual environment seen by a program running
-> under valgrind may not be the same as the real environment - things
-> like signal handlers, signal masks, resource limits and son. That
-> might be confusing for the thread that isn't running under valgrind
-> and might even lead to that thread damaging the process state. I'm not
-> saying it will happen, just that it's something to beware of. 
 
-Yeah, that's why I was concerned about the process data existing in its
-native state.  As for the rest, in the absense of CLONE_SIGHAND, it is all
-private to the thread, so it and valgrind won't trip over each other, assuming
-that the child is sufficiently careful not to inherit stuff that it doesn't 
-expect.
+We are seeing some sub-optimal behaviour (at least for our use) for 
+communication between several UMLs. It appears the responsiveness of a 
+given UML to application level network messaging is a function of how 
+busy the serverside UML is.
 
-> It's still switch from the simulated CPU to the real CPU though - the
-> thread of control arrives at the clone and then branches with one
-> branch continuing on the real CPU and one on the simulated CPU. That
-> sounds to me just the same (for the new thread) as the existing thread
-> of control continuing on the real CPU.
+That is, if I run a little busy loop
 
-It feels to me more like the valgrind thread runs a system call with no
-perceptible effect, and there's this new thread all of a sudden which runs
-happily in this address space because it can't tell that valgrind is there.
+  /mnt/plankton/stress --cpu 1 --io 1
 
-> You probably really need Jeremy's thoughts on the matter - he's more
-> up on this stuff and I think he was involved in dropping the support
-> for switching back to the real CPU. 
+on the server side, the round trip time for messages is greatly 
+*improved*. without this activity and a basically dormant server side 
+UML the round trip times show considerable variabilty with gaps on the 
+order of seconds.
 
-Yeah, he was responsible for that fragment I posted as well.
+Now for the question:
 
-				Jeff
+Can some one explain the event mechanism and communication pathways for 
+network packets(using tuntap networking) delivered to the UML kernel and 
+then for the kernel to a userspace process?
+
+It looks like the kernel thread is responsive enough because if we do 
+simple pings they don't suffer from the huge gaps as the user based 
+pings do. I would like to understand how the kernel thread wakes up to 
+grab the packets from the tap device and then how it notifies the user 
+space thread to deal with it...ultimately maybe there is something we 
+can do to make the userspace thread have less latency (other than 
+running my dummy busy thing from above of course).
+
+thanks for any help in understanding.
+
+regards, Giovanni
+
+ps. We are using 2.4.2x with 2.4.24-1 patch in skas mode
 
 
 
