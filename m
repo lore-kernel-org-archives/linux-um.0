@@ -1,24 +1,34 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CaT9c-0000j8-QL for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Dec 2004 22:12:24 -0800
-Received: from rimuhosting.com ([69.90.33.248])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CaT9b-0004zF-6v
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Dec 2004 22:12:24 -0800
-Message-ID: <41B15594.5030405@rimuhosting.com>
-From: Peter <peter.repliesignored@rimuhosting.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Kernel panic: Kernel stack overflow
-References: <20041130193047.3370F8D743@zion.localdomain>
-	<41AE92A0.4020401@rimuhosting.com>
-	<200412022019.iB2KJPbp003943@ccure.user-mode-linux.org>
-In-Reply-To: <200412022019.iB2KJPbp003943@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 1CaipN-0003U7-7b for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Dec 2004 14:56:33 -0800
+Received: from main.gmane.org ([80.91.229.2])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CaipK-0005i0-7M for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Dec 2004 14:56:32 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CaipH-0006ro-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 04 Dec 2004 23:56:27 +0100
+Received: from p5484b17b.dip.t-dialin.net ([84.132.177.123])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 04 Dec 2004 23:56:27 +0100
+Received: from skoehler by p5484b17b.dip.t-dialin.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 04 Dec 2004 23:56:27 +0100
+From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
+Message-ID: <41B240F4.2010108@upb.de>
+References: <005301c4d95b$4bdbe4d0$0201a8c0@hawk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <005301c4d95b$4bdbe4d0$0201a8c0@hawk>
+Subject: [uml-devel] Re: 2.6.9-bb4 released
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,23 +40,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 04 Dec 2004 19:13:40 +1300
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 04 Dec 2004 23:57:56 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-For the record: I switched from skas3-v1 to -v7 and the problem seems to 
-have gone away.
+> http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/
 
-Cheers, Peter
+runs stable now for about 24 hours, longer than any version before ;-)
 
-Jeff Dike wrote:
-> peter.repliesignored@rimuhosting.com said:
-> 
->>Hi.  I get a "Kernel panic: Kernel stack overflow" error message on
->>the  UML instance console.  Then the UML instance exits. 
-> 
-> 
-> Can you get a stack trace from it?
+> Most notable patches are:
+> - uml-hang-on-2.6.9-host
+> - uml-fix-reboot-skas
+
+well, does this "fix-reboot" mean, that it doesn't reboot anymore? 
+because it doesn't when i tell it to
+
+sometimes it even segfaults, when halting or rebooting.
 
 
 
