@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwRJZ-00031g-6l for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 11:36:57 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AwRA1-0005ov-7N for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 11:27:05 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: post-2.6.3 build error
-References: <20040223172012.GA29046@bytesex.org>
-	<200402252047.59002.blaisorblade_spam@yahoo.it>
-	<87smgyamnx.fsf@bytesex.org>
-In-Reply-To: <87smgyamnx.fsf@bytesex.org>
+	id 1AwRkC-0000yW-3R for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 12:04:28 -0800
+Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101]
+	helo=sparrow.stearns.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AwRad-000124-AX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 11:54:35 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Subject: Re: [uml-devel] [PATCH] fix for 2.6 scheduler crashes
+In-Reply-To: <20040226180157.GA3192@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0402261447560.2524-100000@sparrow>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200402262030.56198.blaisorblade_spam@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,45 +27,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 Feb 2004 20:30:56 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 26 Feb 2004 14:54:19 -0500 (EST)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: blaisorblade_spam@yahoo.it, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, William Stearns <wstearns@pobox.com>
 
-Alle 22:12, mercoled=EC 25 febbraio 2004, Gerd Knorr ha scritto:
-> BlaisorBlade <blaisorblade_spam@yahoo.it> writes:
-> > __NR_sched_yield ] =3D (syscall_handler_t *) yield
-> >
-> > It should refer to sys_sched_yield. yield() is not even asmlinkage, so
-> > this could case serious problems, and it is commented as "for kernel
-> > usage". Also I checked i386 syscall table, and it uses sys_sched_yield.
->
-> There is another related one (asmlinkage where it shouldn't be) in
-> mprotect.c.
+Good afternoon, Jeff,
 
-Good catch.
+On Thu, 26 Feb 2004, Jeff Dike wrote:
 
-> With the new CONFIG_REGPARM config option it becomes
-> really important to get that right ...
+> The patch below fixes the 2.6 scheduler crash.  It's another subtle signal
+> problem.  This one is caused by siglongjmp restoring the old signal mask
+> before calling longjmp.  See the comment for the gory details.  I've had
+> the stress test running for more than an hour with this patch.  Without it,
+> it would be lucky to go for five minutes.
 
-Yes, however I think that one asmlinkage more is not very bad (old conventi=
-on=20
-used where the call can be optimized), but that a missing asmlinkage could =
-be=20
-crashy. At least until the prototype is correct; I just noticed that=20
-do_mprotect is protoized without asmlinkage - and this can be actually=20
-crashy. Luckily CONFIG_REGPARM is not in the stock kernel.
+	Many thanks for the work!
+	I've got one vm with 25 copies of "while /bin/true ; do /bin/true 
+; done &" running and me repeatedly logging in over ssh from the outside 
+world; the load is high, but no crashes.  The system even stays 
+responsive.
+	Only 25 minutes of testing so far, but it looks good.  I'd like to 
+give a tentative thumbs up.
+	For others hoping to try this patch out, you'll need to use the 
+"-l" parameter to patch to apply this; the tabs in the actual source were 
+replaced with 8 spaces in Jeff's patch.
+	If you'd simply like a precompiled binary, the one I'm testing is 
+at http://www.stearns.org/uml/ ; the config, System.map, and linux all end 
+with norecurs-patch2{,.bz2}.
+	Cheers,
+	- Bill
 
-If it were, that could have explained some Skas-2.6 crashes which can be se=
-en=20
-here (there is already one BUG hit which explains it in part, see here: "Ho=
-st=20
-2.6.2/3 + CFQ + BlaisorBlade patches"... but on one kernel it Oopsed and on=
-=20
-another it crashed, so there could be something else).
-
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+---------------------------------------------------------------------------
+        "It is easy to be blinded to the essential uselessness of
+computers by the sense of accomplishment you get from getting them to
+work at all."
+        -- Douglas Adams
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 
@@ -75,7 +73,7 @@ Linux registered user n. 292729
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
+http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
