@@ -1,24 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AcVp8-0000TV-Av for User-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jan 2004 12:23:10 -0800
-Received: from [65.117.135.105] (helo=kartuli.timesys)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AcVp6-0007wg-Qp
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jan 2004 12:23:08 -0800
-Received: from timesys.com (tsqali.timesys [192.168.2.47])
-	by kartuli.timesys (8.12.5/8.12.5) with ESMTP id i02KN5V8024324
-	for <User-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 2 Jan 2004 15:23:05 -0500
-Message-ID: <3FF5D31A.8050503@timesys.com>
+Message-ID: <3FF5D752.2070904@timesys.com>
 From: "La Monte H.P. Yarroll" <piggy@timesys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: Re: [uml-devel] Suspend to disk of uml session?
+References: <01a501c3d14d$33b235b0$6f01a8c0@alex>	
+	<3FF59C5D.3000408@timesys.com>
+	<1073065444.2036.13.camel@kira.himalaya.homeip.net>
+In-Reply-To: <1073065444.2036.13.camel@kira.himalaya.homeip.net>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] NPTL + UML?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,14 +20,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 02 Jan 2004 15:22:50 -0500
-To: User-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 02 Jan 2004 15:40:50 -0500
+To: uml-user <user-mode-linux-user@lists.sourceforge.net>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Is anybody out there working on getting thread-local storage (i.e. NPTL) 
-working with UML?  I see that set_thread_area(2) and get_thread_area(2) 
-are both sys_ni_syscall in arch/um/kernel/sys_call_table.c.
+As both Alexander Newald and Ulf Bartelt pointed out,  
+http://sbuml.sourceforge.net/ is rather sparse on content.
 
-The lack of NPTL support causes me a lot of grief...
+A rather more informative page is http://sourceforge.net/projects/sbuml. 
+ In particular, there is a small demo you
+can download there.
+
+
 
 
 
