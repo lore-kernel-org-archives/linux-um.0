@@ -1,25 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CJdn2-0000VD-Mn for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2004 13:07:32 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CJdn0-00040t-D7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2004 13:07:32 -0700
-Message-Id: <200410182116.i9ILGQUA013137@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Fri, 15 Oct 2004 00:44:47 +0200."
-	<200410150044.47234.blaisorblade_spam@yahoo.it> 
-References: <200410120305.24675.blaisorblade_spam@yahoo.it>
-	<200410130040.i9D0eA3P004443@ccure.user-mode-linux.org>
-	<200410150044.47234.blaisorblade_spam@yahoo.it> 
+From: Chris Emerson <uml-devel@mail.nosreme.org>
+Subject: Re: [uml-devel] Re: [uml-user] UML on PPC? state of the art
+Message-ID: <20041018203757.GA28381@ixion.tartarus.org>
+References: <415408E40001A675@ms001msg.mail.fw>
+	<200410181948.22460.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [patch 0/17] UML updates,
-	which must be merged before 2.6.9
+Content-Disposition: inline
+In-Reply-To: <200410181948.22460.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,23 +19,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 18 Oct 2004 17:16:26 -0400
+Date: Mon, 18 Oct 2004 21:37:57 +0100
 To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net, stefano.melchior@fastwebnet.it, user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> About other work - could you drop the outdated SKAS patches from the
-> official  page? Updating two sites is slow, and waiting for you to
-> pull the changes  from CVS makes the CVS actually unusable (plus you
-> must do the fucking  "SF.net download dance", which I experienced
-> too!).
+On Mon, Oct 18, 2004 at 07:48:22PM +0200, BlaisorBlade wrote:
+> On Monday 18 October 2004 17:58, SteX wrote:
+> > Hi all,
+> > does anyone know if the porting of UML on PPC has still been staled? or
+> > anyone has started working on?
+> > My Apple Powerbook is crying! ((:-((
+> 
+> > I found something about the porting on Chris Emerson's home page, but it
+> > is staled sice july 2001!
+> Where's that page?
 
-I'd still like to be available on the main site, unless you totally don't
-want that.  In that case, I'll drop the current patches (or make them less
-visible) and add a pointer off to your site.
+That'd be http://www.nosreme.org/projects/umlppc/ (it used to be
+http://www.tartarus.org/~chris/user-mode-linux/).
 
-				Jeff
+> Nobody is working on the PPC port. If someone wants to start helping,
+> we will welcome him.
 
+I'm hoping to do a bit more work on it soon.  It's tricky with a
+full-time day job and a wife who things (probably rightly) I should be
+doing more useful things when I'm at home.  :-)  So no promises...
+
+Anyway, the code has changed quite a bit in the last few years, so it'll
+take me a while to get my head around it again even if I do find the
+time.
+
+Chris
 
 
 -------------------------------------------------------
