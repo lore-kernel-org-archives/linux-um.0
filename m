@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C3VOU-0001yM-83 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 04 Sep 2004 00:55:30 -0700
-Received: from atrey.karlin.mff.cuni.cz ([195.113.31.123] ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C3VOQ-000417-M8 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 04 Sep 2004 00:55:30 -0700
-From: Jan Kara <jack@suse.cz>
-Message-ID: <20040904075520.GA5799@atrey.karlin.mff.cuni.cz>
+	id 1C3ZOM-0001K1-Al for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Sep 2004 05:11:38 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C3ZOL-00029H-L5 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Sep 2004 05:11:38 -0700
+Subject: Re: [uml-devel] Problems compiling any 2.6.x UML
+From: Dominik =?ISO-8859-1?Q?J=FCrgens?= <dcdom@gmx.de>
+In-Reply-To: <20040903180244.42898.qmail@web54004.mail.yahoo.com>
+References: <20040903180244.42898.qmail@web54004.mail.yahoo.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <1094299889.7716.36.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] UML compile fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,43 +26,131 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 4 Sep 2004 09:55:23 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 04 Sep 2004 14:11:29 +0200
+Content-Transfer-Encoding: quoted-printable
+To: p g <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-  Hello,
+Thank you very very much, that really fixed the problem!
 
-  I need attached patch for UML in 2.6.8.1 with UML patch to compile.
+But why does anyone use the /bin/sh in any script, when he wants to use
+the bash? That is in my opinion a very bad fault!!
 
-									Honza
-Signed-off-by: Jan Kara <jack@suse.cz>
+My /bin/sh was linked to the /bin/dash, not because I linked it, but
+anything else! It does not seem to be very failure tolerant to suppose
+that /bin/sh is the bash...
 
---- linux/arch/um/Makefile.orig	2004-09-03 11:52:44.000000000 +0200
-+++ linux/arch/um/Makefile	2004-09-03 11:52:47.000000000 +0200
-@@ -15,6 +15,7 @@
- 
- ifeq ($(CONFIG_DEBUG_INFO),y)
- CFLAGS := $(subst -fomit-frame-pointer,,$(CFLAGS))
-+HOSTCFLAGS := $(subst -fomit-frame-pointer,,$(HOSTCFLAGS))
- endif
- 
- core-y			+= $(ARCH_DIR)/kernel/		 \
---- linux/arch/um/kernel/ksyms.c.orig	2004-09-03 11:50:13.000000000 +0200
-+++ linux/arch/um/kernel/ksyms.c	2004-09-03 11:54:35.000000000 +0200
-@@ -87,7 +87,6 @@
- EXPORT_SYMBOL(os_create_unix_socket);
- EXPORT_SYMBOL(os_connect_socket);
- EXPORT_SYMBOL(os_accept_connection);
--EXPORT_SYMBOL(os_ioctl_generic);
- EXPORT_SYMBOL(os_rcv_fd);
- EXPORT_SYMBOL(run_helper);
- EXPORT_SYMBOL(start_thread);
+Greatings from Braunschweig, Germany
+Dominik J=FCrgens
+
+Am Fr, den 03.09.2004 schrieb p g um 20:02:
+>  --- Dominik J=FCrgens <dcdom@gmx.de> ha scritto:=20
+> > I have a problem with compiling user-mode-linux on
+> > my debian sarge
+> > system. Some importent package versions:
+> > =20
+> > Hostkernel 2.6.8.1
+> > gcc (GCC) 3.3.4 (Debian 1:3.3.4-6sarge1)
+> > GNU Make 3.80
+> > GNU binutils version 2.14.90.0.7 20031029 Debian
+> > GNU/Linux
+> >=20
+> > Problem: When I try to compile any 2.6.x UML-Kernel
+> > I get following
+> > message:
+> >=20
+> > make ARCH=3Dum linux \n
+> > ...
+> > <--zip-->
+> >   LD      init/built-in.o
+> >   LD      .tmp_vmlinux1
+> >   KSYM    .tmp_kallsyms1.S
+> >   AS      .tmp_kallsyms1.o
+> >   LD      .tmp_vmlinux2
+> >   KSYM    .tmp_kallsyms2.S
+> >   AS      .tmp_kallsyms2.o
+> >   MAIN    arch/um/main.o
+> >   LD      vmlinux
+> > /bin/sh: Syntax error: "(" unexpected
+> If /bin/sh is not bash, this is the problem.
+> Also make sure you properly configured your kernel
+> with make *config ARCH=3Dum
+> >   CPP     arch/um/uml.lds.s
+> > gcc -Wl,-T,arch/um/uml.lds.s -static
+> > -Wl,--wrap,malloc -Wl,--wrap,free
+> > -Wl,--wrap,calloc \
+> >         -o linux arch/um/main.o vmlinux -L/usr/lib
+> > -lutil
+> > /usr/bin/ld:arch/um/uml.lds.s:150: syntax error
+> > collect2: ld returned 1 exit status
+> > make: *** [linux] Fehler 1
+> > </--zip-->
+> >=20
+> > The content of the 'arch/um/uml.lds.s' file arround
+> > line 150:
+> > <--zip-->
+> > 147:  init.data : { *(init.data) }
+> > 148:  .data :
+> > 149:  {
+> > 150:    . =3D ALIGN(); /* init_task */
+> > 151:    *(.data.init_task)
+> > 152:    *(.data)
+> > 153:    *(.gnu.linkonce.d*)
+> > 154:    CONSTRUCTORS
+> > 155:  }
+> > </--zip-->
+> >=20
+> > I googled for it a longer time and found nothing.=20
+> >=20
+> > Thanks for helping me :-)
+> > Dominik Juergens
+> >=20
+> >=20
+> >=20
+> >
+> -------------------------------------------------------
+> > This SF.Net email is sponsored by BEA Weblogic
+> > Workshop
+> > FREE Java Enterprise J2EE developer tools!
+> > Get your free copy of BEA WebLogic Workshop 8.1
+> > today.
+> >
+> http://ads.osdn.com/?ad_id=3D5047&alloc_id=3D10808&op=3Dclick
+> > _______________________________________________
+> > User-mode-linux-devel mailing list
+> > User-mode-linux-devel@lists.sourceforge.net
+> >
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> > =20
+>=20
+>=20
+> =09
+>=20
+> =09
+> 	=09
+> ___________________________________
+> Yahoo! Companion - Scarica gratis la toolbar di Ricerca di Yahoo!=20
+> http://companion.yahoo.it
+>=20
+>=20
+> -------------------------------------------------------
+> This SF.Net email is sponsored by BEA Weblogic Workshop
+> FREE Java Enterprise J2EE developer tools!
+> Get your free copy of BEA WebLogic Workshop 8.1 today.
+> http://ads.osdn.com/?ad_id=3D5047&alloc_id=3D10808&op=3Dclick
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>=20
+
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by BEA Weblogic Workshop
 FREE Java Enterprise J2EE developer tools!
 Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=5047&alloc_id=10808&op=click
+http://ads.osdn.com/?ad_id=3D5047&alloc_id=3D10808&op=3Dclick
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
