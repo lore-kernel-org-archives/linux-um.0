@@ -1,21 +1,34 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWegb-0000Rk-So for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:42:41 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CWegY-0001Xb-RZ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:42:41 -0800
-Message-ID: <001001c4d184$ca00b9f0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
+	id 1CWepX-00066M-S8 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 09:51:55 -0800
+Received: from smtp-vbr10.xs4all.nl ([194.109.24.30])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CWepW-0000va-MI for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 09:51:55 -0800
+Received: from mail (dopez.xs4all.nl [213.84.79.27])
+	by smtp-vbr10.xs4all.nl (8.12.11/8.12.11) with ESMTP id iANHpp4r004699
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 23 Nov 2004 18:51:51 +0100 (CET)
+	(envelope-from lists@dopez.xs4all.nl)
+Received: from lanclt1 ([192.168.2.101] helo=p2800.dopez.hq)
+	by dopez.xs4all.nl with esmtp (Exim 3.35 #1 (Debian))
+	id 1CWepS-0005YP-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 23 Nov 2004 18:51:50 +0100
+From: dopez <lists@dopez.xs4all.nl>
+Subject: Re: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
 References: <000901c4d0e1$e7f998d0$0201a8c0@hawk>
 	<200411222346.36960.blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
+	<001001c4d184$ca00b9f0$0201a8c0@hawk>
+In-Reply-To: <001001c4d184$ca00b9f0$0201a8c0@hawk>
 MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200411231853.31315.lists@dopez.xs4all.nl>
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -28,24 +41,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 23 Nov 2004 11:49:31 -0600
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Tue, 23 Nov 2004 18:53:31 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> On Monday 22 November 2004 23:23, Christopher S. Aker wrote:
-> > Hello,
-> Btw, question: what about your I/O token limiter? Actively using it? Could
-> start being worked on for merge (there is at least one bug-report on it by
-> "roland" on a strange but valid test-case).
-> > I thought I'd give 2.6.9-bb3 a shot, and I had a bunch of users report the
-> > accumiluation of zombies.
-> What the hell! This should *not* happen. What did we (I mean developers) do?
+On Tuesday 23 November 2004 18:49, Christopher S. Aker wrote:
 
-Just to be clear, these were zombies *inside* UML, not on the host.  I'm happy to
-blame it on the older SKAS version.
+> > What the hell! This should *not* happen. What did we (I mean developers)
+> > do?
+>
+> Just to be clear, these were zombies *inside* UML, not on the host.  I'm
+> happy to blame it on the older SKAS version.
 
--Chris
+i am running 2.6.9-skas3-v7 with 2.6.9-bb3 and i too am seeing zombies in skas 
+mode, inside the UML
 
+i also saw this with 2.6.9-bb2 btw, is there anything usefull i can send to 
+the list ? (kernel configs, dmesg?)
+
+fwiw, running debian sarge on both the host and uml's
 
 
 -------------------------------------------------------
