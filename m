@@ -2,24 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CIrEj-0004QW-Hv for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Oct 2004 09:16:53 -0700
+	id 1CIrIW-0005Bx-IS for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Oct 2004 09:20:48 -0700
 Received: from smtp.wp.pl ([212.77.101.160])
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CIrEh-0003Rq-DX
+	(Exim 4.41) id 1CIrIV-0004DK-NI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Oct 2004 09:16:53 -0700
+	Sat, 16 Oct 2004 09:20:48 -0700
 Received: from lodz106.vline.pl (HELO [172.16.13.24]) (sikkh@[212.191.130.106])
 	(envelope-sender <sikkh@wp.pl>) by smtp.wp.pl (WP-SMTPD) with SMTP
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	16 Oct 2004 18:16:36 +0200
+	16 Oct 2004 18:20:37 +0200
 From: Piotr Neuman <sikkh@wp.pl>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed; boundary="Boundary-00=_tDcYBDqyiHi1FPc";
-	charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200410161816.36586.sikkh@wp.pl>
+Message-Id: <200410161820.06821.sikkh@wp.pl>
 Subject: [uml-devel] Humfs tdb metadata backend
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -32,7 +32,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 16 Oct 2004 18:16:36 +0200
+Date: Sat, 16 Oct 2004 18:20:06 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
 Hi
@@ -74,8 +74,10 @@ Regards
 
 Piotr Neuman
 
-ps. thanks to Jeff Dike and Blaisorblade for making 2.6 UML kernels finally 
+ps. Thanks to Jeff Dike and Blaisorblade for making 2.6 UML kernels finally 
 work well ;-)
+
+ps. II. Resending since the previous mail was somehow garbled by my KMail...
 
 
 -------------------------------------------------------
@@ -87,9 +89,3 @@ _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
---Boundary-00=_tDcYBDqyiHi1FPc
-
--
-
-
---Boundary-00=_tDcYBDqyiHi1FPc--
