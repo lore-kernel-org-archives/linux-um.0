@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C42uO-0003xb-4K for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Sep 2004 12:42:40 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1C42uM-0001Hn-2Y for user-mode-linux-devel@lists.sourceforge.net;
+	id 1C42uN-0003xY-Qk for user-mode-linux-devel@lists.sourceforge.net;
 	Sun, 05 Sep 2004 12:42:39 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C42uJ-0002Ne-NV for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Sep 2004 12:42:38 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] uml-patch-2.6.7-2
-References: <200408190301.i7J30xek004150@ccure.user-mode-linux.org>
-	<20040827041056.A3753@almesberger.net>
-In-Reply-To: <20040827041056.A3753@almesberger.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200409051844.13906.blaisorblade_spam@yahoo.it>
+Message-Id: <200408291307.11051.blaisorblade_spam@yahoo.it>
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_aq2OBhl7zlKyiNf"
+  boundary="Boundary-00=_PkzOBCehTmF3ocx"
+Subject: [uml-devel] The new filehandle abstraction: doubts and complaints
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,158 +26,542 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 5 Sep 2004 21:35:54 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Werner Almesberger <wa@almesberger.net>, Jeff Dike <jdike@addtoit.com>
+Date: Sun, 5 Sep 2004 18:04:31 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 
---Boundary-00=_aq2OBhl7zlKyiNf
+--Boundary-00=_PkzOBCehTmF3ocx
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-On Friday 27 August 2004 09:10, Werner Almesberger wrote:
-> Jeff Dike wrote:
-> > hostfs and humfs are still somewhat dodgy on 2.6.
->
-> Opening files for writing even if we only want to read them causes
-> a number of problems: 
-Well, that is simply not needed. The -ETXTBUSY check is not a fix, but a 
-workaround. Old good hostfs didn't do this. Btw, 
+About the filehandle abstraction, the idea is nice, but there is something I 
+don't like about the implementation:
 
-I'm experiencing two more problems with 2.6.8.1:
-- ls /mnt/host/dev/mapper/control returns EPERM errors, when trying to stat 
-files; on the host, as the same user, or with 2.6.7-1 this does not happen.
-Why? It seems like hostfs opens files even to just stat them. Or maybe, it 
-implements a wrong permission check.
+- locking is not complete: active_handle moves fh->list without holding 
+open_files_lock. 
 
-In fact, I'm not able to see the opening with strace (don't ask me why - I 
-attach to the kernel thread, but I don't get the opening of the file; I got 
-it only once, maybe ), but externfs_lookup calls init_inode which calls 
-host_open_file! That's simply brain-damaged!
+- is_reclaimable should become make_reclaimable: the name is_reclaimable 
+should be reserved for a function which says if the fd is reclaimable or not, 
+if that function is needed. Probably we don't need this, but this is what 
+"is_reclaimable" makes me think:
 
-My guest searches for binaries on the host, and as a result I get file 
-descriptors 0-1023 opened by UML! I'm not joking!
+int is_reclaimable(struct file_handle *fh) {
+	//XXX: Add some BUG_ON lines.
+	return (!list_empty(&fh->list));
+}
 
-- Also (maybe related with calling iget(..., 0) ) I get this message on every 
-unmount:
+- there is an implicit race between using a fd and closing it: there is no 
+reason why someone shouldn't be closing the fd while we are reading from it 
+(or just after it has been read from the struct and before we do the syscall, 
+more exactly). Remember that we are preemptible! A better idea would be this: 
+active_handle() moves the fh off the list and then, on return, the caller 
+moves it back on the list if it was there (and on top of the list, to be 
+marked as recently used). This, anyway, is not safe against multiple users: 
+it seems that for now there is not this need, but otherwise it would be 
+better to refcount them, and putting them on the free list when the refcount 
+goes to 0. It's not implemented in the sample patch attached, but it's easy 
+to do.
 
-VFS: Busy inodes after unmount. Self-destruct in 5 seconds.  Have a nice 
-day...
+- some BUG_ON lines should be added, about possible inconsistencies in the 
+filehandle state (and describing the possible states of and filehandle 
+wouldn't be bad).
 
-which also seems to mean that files are not closed when unmounting hostfs!
+The patch I'm attaching contains some of the needed changes to the API, 
+without touching its users, because I don't know if my proposal will become 
+the actual API or not.
 
--Finally, for some reasons, the dev and rdev field returned by stat are 
-screwed; when listing a device node on hostfs, it prints always the maj and 
-min of the device containing the filesystem; i.e., file->rdev = host_stat -> 
-dev instead of rdev. And I'm not able to see where the exchange happens.
-
-Instead, my old fix for the same problem always worked flawlessly. I'm 
-attaching it - it's for the old hostfs, but maybe it's better anyway.
-
+Comments are appreciated.
 Bye
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 
---Boundary-00=_aq2OBhl7zlKyiNf
-Content-Type: text/x-diff; charset="iso-8859-1";
-	name="uml-hostfs-fix-maj-min.patch"
+
+--Boundary-00=_PkzOBCehTmF3ocx
+Content-Type: text/x-diff; charset="us-ascii";
+	name="uml-filehandle-locking-fix.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
-	filename="uml-hostfs-fix-maj-min.patch"
+	filename="uml-filehandle-locking-fix.patch"
 
 
+This is a sample patch, which does not update users of the filehandle API,
+which corrects some broken design of the implementation.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- uml-linux-2.6.7-paolo/fs/hostfs/hostfs.h      |    2 +-
- uml-linux-2.6.7-paolo/fs/hostfs/hostfs_kern.c |   11 ++++++++---
- uml-linux-2.6.7-paolo/fs/hostfs/hostfs_user.c |   10 +++++++---
- 3 files changed, 16 insertions(+), 7 deletions(-)
+ uml-linux-2.6.8.1-paolo/arch/um/include/filehandle.h |   14 +
+ uml-linux-2.6.8.1-paolo/arch/um/kernel/filehandle.c  |  186 +++++++++++++------
+ uml-linux-2.6.8.1-paolo/arch/um/os-Linux/file.c      |   51 ++++-
+ 3 files changed, 190 insertions(+), 61 deletions(-)
 
-diff -puN fs/hostfs/hostfs_kern.c~uml-hostfs-fix-maj-min fs/hostfs/hostfs_kern.c
---- uml-linux-2.6.7/fs/hostfs/hostfs_kern.c~uml-hostfs-fix-maj-min	2004-08-16 16:18:00.564794256 +0200
-+++ uml-linux-2.6.7-paolo/fs/hostfs/hostfs_kern.c	2004-08-16 16:35:36.759228296 +0200
-@@ -18,6 +18,7 @@
- #include <linux/buffer_head.h>
- #include <linux/root_dev.h>
- #include <linux/statfs.h>
-+#include <linux/kdev_t.h>
- #include <asm/uaccess.h>
- #include "hostfs.h"
+diff -puN arch/um/kernel/filehandle.c~uml-filehandle-locking-fix arch/um/kernel/filehandle.c
+--- uml-linux-2.6.8.1/arch/um/kernel/filehandle.c~uml-filehandle-locking-fix	2004-08-30 21:02:50.552835992 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/kernel/filehandle.c	2004-08-30 21:34:39.819583328 +0200
+@@ -9,6 +9,7 @@
+ #include "linux/fs.h"
+ #include "linux/errno.h"
+ #include "linux/module.h"
++#include "asm/bug.h"
+ #include "filehandle.h"
+ #include "os.h"
  #include "kern_util.h"
-@@ -230,7 +231,7 @@ static int read_inode(struct inode *ino)
- 	if(name == NULL) 
- 		goto out;
+@@ -18,22 +19,48 @@ static struct list_head open_files = LIS
  
--	if(file_type(name, NULL) == OS_TYPE_SYMLINK){
-+	if(file_type(name, NULL, NULL) == OS_TYPE_SYMLINK){
- 		name = follow_link(name);
- 		if(IS_ERR(name)){
- 			err = PTR_ERR(name);
-@@ -523,13 +524,17 @@ static struct address_space_operations h
- static int init_inode(struct inode *inode, struct dentry *dentry)
+ #define NUM_RECLAIM 128
+ 
+-static void reclaim_fds(void)
++/*
++ * A filehandle can be:
++ * - open and in use; you must call not_reclaimable() on it, which moves
++ *   it off the list. Note that open_filehandle() returns a filehandle in
++ *   this state. In this case fd != -1, and list_empty(&list) is true.
++ *
++ * - open and reclaimable; it is then (only in this case) on the list. In this
++ *   case get_name must be != NULL. reclaim_fds() can freely move it in the
++ *   "reclaimed away" state.
++ *
++ * - reclaimed away: fd = -1. Only reclaim_fds() can put it here; it is called
++ *   by any API filehandle-aware which request a fd. Also here,
++ *   list_empty(&list) is true. It will go back to "open" state when invoking read_file
++ *   on it.
++ *
++ * inode is a parameter which is passed to get_name. It could be anything;
++ * you must make sure that it does not go away under us.
++ * XXX: make it a void*.
++ * In externfs's, this is guaranted because when the inode goes away, so does the
++ * filehandle. Or at least it should.
++ */
++
++void reclaim_fds(void)
  {
- 	char *name;
--	int type, err = -ENOMEM, rdev;
-+	int type, err = -ENOMEM;
-+	int maj, min;
-+	dev_t rdev = 0;
+ 	struct file_handle *victim;
+ 	int closed = NUM_RECLAIM;
++	int fd;
  
- 	if(dentry){
- 		name = dentry_name(dentry, 0);
- 		if(name == NULL)
- 			goto out;
--		type = file_type(name, &rdev);
-+		type = file_type(name, &maj, &min);
-+		/*Reencode maj and min with the kernel encoding.*/
-+		rdev = MKDEV(maj, min);
- 		kfree(name);
+ 	spin_lock(&open_files_lock);
+ 	while(!list_empty(&open_files) && closed--){
+ 		victim = list_entry(open_files.prev, struct file_handle, list);
+-		os_close_file(victim->fd);
++		fd = victim->fd;
++		/*First make it unreachable, then close it. But
++		 * the other thread could reopen it while closed.*/
+ 		victim->fd = -1;
++		os_close_file(fd);
+ 		list_del_init(&victim->list);
  	}
- 	else type = OS_TYPE_DIR;
-diff -puN fs/hostfs/hostfs_user.c~uml-hostfs-fix-maj-min fs/hostfs/hostfs_user.c
---- uml-linux-2.6.7/fs/hostfs/hostfs_user.c~uml-hostfs-fix-maj-min	2004-08-16 16:18:00.591790152 +0200
-+++ uml-linux-2.6.7-paolo/fs/hostfs/hostfs_user.c	2004-08-16 16:24:24.949358920 +0200
-@@ -54,14 +54,18 @@ int stat_file(const char *path, unsigned
- 	return(0);
+ 	spin_unlock(&open_files_lock);
  }
  
--int file_type(const char *path, int *rdev)
-+int file_type(const char *path, int *maj, int *min)
+-int open_file(char *name, struct openflags flags, int mode)
++/*int open_file(char *name, struct openflags flags, int mode)
  {
-  	struct stat64 buf;
+ 	int fd;
  
- 	if(lstat64(path, &buf) < 0) 
+@@ -66,83 +93,114 @@ void *open_dir(char *file)
+ 
+ 	return(dir);
+ }
+-EXPORT_SYMBOL(open_dir);
++EXPORT_SYMBOL(open_dir);*/
+ 
+-void not_reclaimable(struct file_handle *fh)
++static inline void __fh_put_fd(struct file_handle *fh)
+ {
+-	char *name;
+-
+-	if(fh->get_name == NULL)
+-		return;
++	spin_lock(&open_files_lock);
++	list_add(&fh->list, &open_files);
++	spin_unlock(&open_files_lock);
++}
+ 
+-	if(list_empty(&fh->list)){
+-		name = (*fh->get_name)(fh->inode);
+-		if(name != NULL){
+-			fh->fd = open_file(name, fh->flags, 0);
+-			kfree(name);
+-		}
+-		else printk("File descriptor %d has no name\n", fh->fd);
+-	}
+-	else {
+-		spin_lock(&open_files_lock);
+-		list_del_init(&fh->list);
+-		spin_unlock(&open_files_lock);
+-	}
++void fh_put_fd(struct file_handle *fh)
++{
++	__fh_put_fd(fh);
+ }
+-EXPORT_SYMBOL(not_reclaimable);
++EXPORT_SYMBOL(fh_put_fd);
+ 
+-void is_reclaimable(struct file_handle *fh, char *(name_proc)(struct inode *),
++void make_reclaimable(struct file_handle *fh, char *(name_proc)(struct inode *),
+ 		    struct inode *inode)
+ {
+ 	fh->get_name = name_proc;
+ 	fh->inode = inode;
+ 
+-	spin_lock(&open_files_lock);
+-	list_add(&fh->list, &open_files);
+-	spin_unlock(&open_files_lock);
++	__fh_put_fd(fh);
+ }
+-EXPORT_SYMBOL(is_reclaimable);
++EXPORT_SYMBOL(make_reclaimable);
+ 
+-static int active_handle(struct file_handle *fh)
++static int active_handle(struct file_handle *fh, int *is_reclaimable)
+ {
+ 	int fd;
+ 	char *name;
+ 
+-	if(!list_empty(&fh->list))
+-		list_move(&fh->list, &open_files);
++	*is_reclaimable = 0;
++	spin_lock(&open_files_lock);
++
++	if(!list_empty(&fh->list)) {
++		BUG_ON(fh->fd == -1);
++		list_del_init(&fh->list, &open_files);
++		*is_reclaimable = 1;
++	}
++
++	spin_unlock(&open_files_lock);
+ 
+ 	if(fh->fd != -1)
+ 		return(0);
+ 
+-	if(fh->inode == NULL)
+-		return(-ENOENT);
++	if(fh->get_name == NULL) {
++		fd = -ENOENT;
++		goto out;
++	}
+ 
+ 	name = (*fh->get_name)(fh->inode);
+-	if(name == NULL)
+-		return(-ENOMEM);
++	if(name == NULL) {
++		fd = -ENOMEM;
++		goto out;
++	}
+ 
+ 	fd = open_file(name, fh->flags, 0);
+ 	kfree(name);
+ 	if(fd < 0)
+-		return(fd);
++		goto out;
+ 
+ 	fh->fd = fd;
+-	is_reclaimable(fh, fh->get_name, fh->inode);
++	fd = 0;
++	/*make_reclaimable(fh, fh->get_name, fh->inode);*/
+ 
+-	return(0);
++out:
++	if (fd < 0 && *is_reclaimable)
++		__fh_put_fd(fh); /*Only on error!*/
++	return(fd);
+ }
+ 
+-int filehandle_fd(struct file_handle *fh)
++void not_reclaimable(struct file_handle *fh)
++{
++	char *name;
++
++	spin_lock(&open_files_lock);
++	if(list_empty(&fh->list)){
++		/*Off list, can't be modified.*/
++		spin_unlock(&open_files_lock);
++		if(fh->get_name == NULL)
++			return;
++
++		name = (*fh->get_name)(fh->inode);
++		if(name != NULL){
++			fh->fd = open_file(name, fh->flags, 0);
++			kfree(name);
++		}
++		else printk("File descriptor %d has no name\n", fh->fd);
++	} else {
++		BUG_ON(fh->fd == -1);
++		list_del_init(&fh->list);
++		spin_unlock(&open_files_lock);
++	}
++}
++EXPORT_SYMBOL(not_reclaimable);
++
++/*XXX: We must change all users of this. It was filehandle_fd*/
++int fh_get_fd(struct file_handle *fh, int *is_reclaimable)
+ {
+ 	int err;
++	int is_reclaimable;
+ 
+-	err = active_handle(fh);
++	err = active_handle(fh, &is_reclaimable);
+ 	if(err)
+ 		return(err);
+ 
+ 	return(fh->fd);
+ }
+-EXPORT_SYMBOL(filehandle_fd);
++EXPORT_SYMBOL(fh_get_fd);
+ 
+ static void init_fh(struct file_handle *fh, int fd, struct openflags flags)
+ {
+@@ -185,16 +243,23 @@ int read_file(struct file_handle *fh, un
+ 	      int len)
+ {
+ 	int err;
++	int is_reclaimable;
+ 
+-	err = active_handle(fh);
++	err = active_handle(fh, &is_reclaimable);
+ 	if(err)
+-		return(err);
++		goto noreclaim;
+ 
+ 	err = os_seek_file(fh->fd, offset);
+ 	if(err)
+-		return(err);
++		goto out;
++
++	err = os_read_file(fh->fd, buf, len);
+ 
+-	return(os_read_file(fh->fd, buf, len));
++out:
++	if (is_reclaimable)
++		__fh_put_fd(fh);
++noreclaim:
++	return(err);
+ }
+ EXPORT_SYMBOL(read_file);
+ 
+@@ -202,33 +267,46 @@ int write_file(struct file_handle *fh, u
+ 	       const char *buf, int len)
+ {
+ 	int err;
++	int is_reclaimable;
+ 
+-	err = active_handle(fh);
++	err = active_handle(fh, &is_reclaimable);
+ 	if(err)
+-		return(err);
++		goto noreclaim;
+ 
+ 	if(offset != -1)
+ 		err = os_seek_file(fh->fd, offset);
+ 	if(err)
+-		return(err);
++		goto out;
+ 
+-	return(os_write_file(fh->fd, buf, len));
++	err = os_write_file(fh->fd, buf, len);
++
++out:
++	if (is_reclaimable)
++		__fh_put_fd(fh);
++noreclaim:
++	return(err);
+ }
+ EXPORT_SYMBOL(write_file);
+ 
+ int truncate_file(struct file_handle *fh, unsigned long long size)
+ {
+ 	int err;
++	int is_reclaimable;
+ 
+-	err = active_handle(fh);
++	err = active_handle(fh, &is_reclaimable);
+ 	if(err)
+-		return(err);
++		goto noreclaim;
+ 
+-	return(os_truncate_fd(fh->fd, size));
++	err = os_truncate_fd(fh->fd, size);
++
++	if (is_reclaimable)
++		__fh_put_fd(fh);
++noreclaim:
++	return(err);
+ }
+ EXPORT_SYMBOL(truncate_file);
+ 
+-int make_pipe(struct file_handle *fhs)
++/*int make_pipe(struct file_handle *fhs)
+ {
+ 	int fds[2], err;
+ 
+@@ -246,7 +324,7 @@ int make_pipe(struct file_handle *fhs)
+ 	init_fh(&fhs[0], fds[0], OPENFLAGS());
+ 	init_fh(&fhs[1], fds[1], OPENFLAGS());
+ 	return(0);
+-}
++}*/
+ 
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+diff -puN arch/um/include/filehandle.h~uml-filehandle-locking-fix arch/um/include/filehandle.h
+--- uml-linux-2.6.8.1/arch/um/include/filehandle.h~uml-filehandle-locking-fix	2004-08-30 21:02:50.553835840 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/include/filehandle.h	2004-08-30 21:19:18.630625336 +0200
+@@ -20,8 +20,8 @@ struct file_handle {
+ 
+ extern struct file_handle bad_filehandle;
+ 
+-extern int open_file(char *name, struct openflags flags, int mode);
+-extern void *open_dir(char *file);
++/*extern int open_file(char *name, struct openflags flags, int mode);
++extern void *open_dir(char *file);*/
+ extern int open_filehandle(char *name, struct openflags flags, int mode, 
+ 			   struct file_handle *fh);
+ extern int read_file(struct file_handle *fh, unsigned long long offset, 
+@@ -31,11 +31,17 @@ extern int write_file(struct file_handle
+ extern int truncate_file(struct file_handle *fh, unsigned long long size);
+ extern int close_file(struct file_handle *fh);
+ extern void not_reclaimable(struct file_handle *fh);
+-extern void is_reclaimable(struct file_handle *fh, 
++extern void make_reclaimable(struct file_handle *fh,
+ 			   char *(name_proc)(struct inode *),
+ 			   struct inode *inode);
++
++extern int fh_get_fd(struct file_handle *fh, int *is_reclaimable);
++extern void fh_put_fd(struct file_handle *fh);
++
++#define is_reclaimable make_reclaimable
++
+ extern int filehandle_fd(struct file_handle *fh);
+-extern int make_pipe(struct file_handle *fhs);
++/*extern int make_pipe(struct file_handle *fhs);*/
+ 
+ #endif
+ 
+diff -puN arch/um/os-Linux/file.c~uml-filehandle-locking-fix arch/um/os-Linux/file.c
+--- uml-linux-2.6.8.1/arch/um/os-Linux/file.c~uml-filehandle-locking-fix	2004-08-30 21:02:50.554835688 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/os-Linux/file.c	2004-08-30 21:02:50.558835080 +0200
+@@ -23,6 +23,7 @@
+ #include "os.h"
+ #include "user.h"
+ #include "kern_util.h"
++#include "filehandle.h"
+ 
+ static void copy_stat(struct uml_stat *dst, struct stat64 *src)
+ {
+@@ -315,8 +316,9 @@ int os_file_mode(char *file, struct open
+ 
+ int os_open_file(char *file, struct openflags flags, int mode)
+ {
+-	int fd, f = 0;
++	int fd, f = 0, retried = 0;
+ 
++retry:
+ 	if(flags.r && flags.w) f = O_RDWR;
+ 	else if(flags.r) f = O_RDONLY;
+ 	else if(flags.w) f = O_WRONLY;
+@@ -329,9 +331,16 @@ int os_open_file(char *file, struct open
+ 	if(flags.d) f |= O_DIRECT;
+ 
+ 	fd = open64(file, f, mode);
+-	if(fd < 0)
++
++	if(fd < 0 && errno != EMFILE)
  		return(-errno);
--	if(rdev != NULL) 
--		*rdev = buf.st_rdev;
-+	/*We cannot pass rdev as is because glibc and the kernel disagree
-+	 *about its definition.*/
-+	if(maj != NULL)
-+		*maj = major(buf.st_rdev);
-+	if(min != NULL)
-+		*min = minor(buf.st_rdev);
  
- 	if(S_ISDIR(buf.st_mode)) return(OS_TYPE_DIR);
- 	else if(S_ISLNK(buf.st_mode)) return(OS_TYPE_SYMLINK);
-diff -puN fs/hostfs/hostfs.h~uml-hostfs-fix-maj-min fs/hostfs/hostfs.h
---- uml-linux-2.6.7/fs/hostfs/hostfs.h~uml-hostfs-fix-maj-min	2004-08-16 16:22:16.017959472 +0200
-+++ uml-linux-2.6.7-paolo/fs/hostfs/hostfs.h	2004-08-16 16:22:39.607373336 +0200
-@@ -38,7 +38,7 @@ extern int stat_file(const char *path, u
- 		     int *blksize_out, unsigned long long *blocks_out);
- extern int access_file(char *path, int r, int w, int x);
- extern int open_file(char *path, int r, int w, int append);
--extern int file_type(const char *path, int *rdev);
-+extern int file_type(const char *path, int *maj, int *min);
- extern void *open_dir(char *path, int *err_out);
- extern char *read_dir(void *stream, unsigned long long *pos, 
- 		      unsigned long long *ino_out, int *len_out);
++	if (fd == -1 && (errno == EMFILE || errno == ENFILE) && !retried) {
++		reclaim_fds();
++		retried = 1;
++		goto retry;
++	}
++
+ 	if(flags.cl && fcntl(fd, F_SETFD, 1)){
+ 		os_close_file(fd);
+ 		return(-errno);
+@@ -343,8 +352,17 @@ int os_open_file(char *file, struct open
+ void *os_open_dir(char *path, int *err_out)
+ {
+ 	void *dir;
++	int retried = 0;
+ 
++retry:
+ 	dir = opendir(path);
++
++	if (fd == -1 && (errno == EMFILE || errno == ENFILE) && !retried) {
++		reclaim_fds();
++		retried = 1;
++		goto retry;
++	}
++
+ 	*err_out = -errno;
+ 	return(dir);
+ }
+@@ -434,13 +452,22 @@ int os_connect_socket(char *name)
+ {
+ 	struct sockaddr_un sock;
+ 	int fd, err;
++	int retried = 0;
+ 
+ 	sock.sun_family = AF_UNIX;
+ 	snprintf(sock.sun_path, sizeof(sock.sun_path), "%s", name);
+ 
++retry:
+ 	fd = socket(AF_UNIX, SOCK_STREAM, 0);
++
++	if (fd == -1 && (errno == EMFILE || errno == ENFILE) && !retried) {
++		reclaim_fds();
++		retried = 1;
++		goto retry;
++	}
++
+ 	if(fd < 0)
+-		return(fd);
++		return(-errno);
+ 
+ 	err = connect(fd, (struct sockaddr *) &sock, sizeof(sock));
+ 	if(err)
+@@ -610,8 +637,17 @@ int os_set_exec_close(int fd, int close_
+ int os_pipe(int *fds, int stream, int close_on_exec)
+ {
+ 	int err, type = stream ? SOCK_STREAM : SOCK_DGRAM;
++	int retried = 0;
+ 
++retry:
+ 	err = socketpair(AF_UNIX, type, 0, fds);
++
++	if (err == -1 && (errno == EMFILE || errno == ENFILE) && !retried) {
++		reclaim_fds();
++		retried = 1;
++		goto retry;
++	}
++
+ 	if(err < 0) 
+ 		return(-errno);
+ 
+@@ -771,8 +807,17 @@ int os_create_unix_socket(char *file, in
+ {
+ 	struct sockaddr_un addr;
+ 	int sock, err;
++	int retried = 0;
+ 
++retry:
+ 	sock = socket(PF_UNIX, SOCK_DGRAM, 0);
++
++	if (sock == -1 && (errno == EMFILE || errno == ENFILE) && !retried) {
++		reclaim_fds();
++		retried = 1;
++		goto retry;
++	}
++
+ 	if (sock < 0){
+ 		printk("create_unix_socket - socket failed, errno = %d\n",
+ 		       errno);
 _
 
---Boundary-00=_aq2OBhl7zlKyiNf--
+--Boundary-00=_PkzOBCehTmF3ocx--
 
 
 -------------------------------------------------------
