@@ -2,26 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AbwG6-0002sL-DH for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 Dec 2003 22:24:38 -0800
-Received: from mx11.sac.fedex.com ([199.81.193.118])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AbwG6-0001Tg-1g
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 Dec 2003 22:24:38 -0800
-Received: from inet04.prod.fedex.com (inet04.prod.fedex.com [199.81.10.44])
-	by mx11.sac.fedex.com (8.12.6p2/8.12.3) with ESMTP id i016OSiC018791
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 1 Jan 2004 00:24:28 -0600 (CST)
-	(envelope-from jeff98@silk.corp.fedex.com)
-From: Jeff Chua <jeff98@silk.corp.fedex.com>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
-In-Reply-To: <200312301906.29735.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.LNX.4.58.0401011410410.27885@boston.corp.fedex.com>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<200312301906.29735.blaisorblade_spam@yahoo.it>
+	id 1AbzPS-0008KS-Ej for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Jan 2004 01:46:30 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AbzPR-0006O1-PB for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Jan 2004 01:46:29 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: UML patches against vanilla 2.6.0
+References: <200312261905.48277.blaisorblade_spam@yahoo.it>
+	<200312271927.26870.blaisorblade_spam@yahoo.it>
+	<slrnbv12f4.4rj.lunz@absolut.localnet>
+In-Reply-To: <slrnbv12f4.4rj.lunz@absolut.localnet>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Disposition: inline
+Message-Id: <200312311858.02382.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,60 +29,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 1 Jan 2004 14:14:54 +0800 (SGT)
+Date: Wed, 31 Dec 2003 18:58:02 +0100
 Content-Transfer-Encoding: quoted-printable
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 30 Dec 2003, BlaisorBlade wrote:
+Alle 21:09, luned=EC 29 dicembre 2003, Jason Lunz ha scritto:
+> blaisorblade_spam@yahoo.it said:
 
-> Alle 17:32, luned=EC 29 dicembre 2003, Jeff Chua ha scritto:
-> > uml-patch-2.4.22-5 works fine, but newer patches fail during boot
+> > I have some doubts about the 2.6 host-skas patch. I've searched through
+> > the list for earlier ports to 2.6 and I've seen someone (Bryan O'Sulliv=
+an
+> > <bos@serpentine.com>) complaining:
 > >
-> > Starting daemons: syslogd klogd inetd namedKernel panic: Kernel mode fa=
-ult
-> > at addr 0x48965000, ip 0x400e51a4
+> > "The big issue with the skas patches, though, appears to be that they
+> > don't handle the UML kernel being killed, which results in the host
+> > kernel's memory management being completely trashed."
+> >
+> > Is this a real issue or not?
 >
-> What is your host distro? From some other problems I guessed you have a
-> Debian. Would you confirm this, please? It's the 3rd/4th time I'm asking =
-you
-> this.
+> I think so. I'm running 2.6.0 vanilla + Ingo's combo -A2 on my host,
+> with 2.4.23 UMLs.
+> I tried to do something in the uml involving lots of
+> tmpfs usage, and the host system crashed.
 
+If you use the Ingo's combo patch, maybe it's not the Skas mode itself.
 
-It's neither. I supposed it's closer to redhat.
+There is a change in mm/memory.c which is fine for UML, but IMHO probably
+hurts for the host kernel. Looking at the patch he posts, however, he didn'=
+t=20
+use this change, so beyond the mm/memory.c problem there must be another on=
+e.
 
+To test that, you can either select the changes to that file away from the =
 
-  Linux 2.4.24-pre3
-  binutils-2.14.90.0.7
-  gcc version 2.95.3 20010315 (release)
-  glibc-2.2.5-34.src.rpm
+patch, or unapply (with -R option to patch) this patch, which contains=20
+exactly that change:
 
-  LVM version:     2.00.08 (2003-11-14)
-  Library version: 1.00.07-ioctl (2003-11-21)
-  Driver version:  4.0.5
+http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/v=
+2/A-04-MM-compile-fix.patch
 
-
-> If this is true, see this thread started on 20/12/2003 by Matt Zimmerman:
->
-> 2.4.22-[67] problems
->
-> And, if you can, test that under different Debian versions as he did (i.e=
-. it
-> seems that this happens only if UML is compiled under a certain environme=
-nt
-> and not another).
->
-> The actual error is very different from the one you report. But since the=
- two
-> errors seem being about memory corruption (invalid pointer or race
-> conditions), it's very likely that the problem is the same. I also think =
-this
-> because LVM code is probably correct!
-
-Without loading LVM, the problem would not happen.
-
-
-Jeff
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
