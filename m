@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BsV4Q-0002zK-VG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Aug 2004 16:21:18 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1BsV4Q-0008FG-DB
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Aug 2004 16:21:18 -0700
-Message-Id: <200408050020.i750Kwvv009127@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Q: UML thread communication - scheduling oddness 
-In-Reply-To: Your message of "Wed, 04 Aug 2004 16:10:28 EDT."
-	<411142B4.7000603@nortelnetworks.com> 
-References: <411142B4.7000603@nortelnetworks.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+From: Nicholas Nethercote <njn25@cam.ac.uk>
+Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind 
+In-Reply-To: <200408042102.i74L2Pvv008609@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.60.0408051026120.21344@hermes-1.csi.cam.ac.uk>
+References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
+	<410EFCDB.8080404@enterasys.com>
+	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
+	<Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk>
+	<200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
+	<Pine.LNX.4.60.0408031527320.22157@hermes-1.csi.cam.ac.uk>
+	<200408031750.i73HoMvv002966@ccure.user-mode-linux.org>
+	<410FCC70.1050902@enterasys.com>
+	<200408031931.i73JVkvv003367@ccure.user-mode-linux.org>
+	<yek3c33tk5o.fsf@audi.uk.cyberscience.com>
+	<20040804153541.GA7237@ccure.user-mode-linux.org>
+	<yekacxbrlvi.fsf@audi.uk.cyberscience.com>
+	<200408041800.i74I0Nvv007667@ccure.user-mode-linux.org>
+	<2b464bd94c.work@loxley.compton.nu>
+	<200408042102.i74L2Pvv008609@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,29 +31,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 Aug 2004 20:20:58 -0400
-To: Joe Marzot <gmarzot@nortelnetworks.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Randy Macleod <macleodr@nortelnetworks.com>
+Date: Thu, 5 Aug 2004 10:28:00 +0100 (BST)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Tom Hughes <thh@cyberscience.com>, dbahi@enterasys.com, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
-gmarzot@nortelnetworks.com said:
-> That is, if I run a little busy loop
->   /mnt/plankton/stress --cpu 1 --io 1
-> on the server side, the round trip time for messages is greatly
-> *improved*. without this activity and a basically dormant server side
-> UML the round trip times show considerable variabilty with gaps on the
->  order of seconds. 
+On Wed, 4 Aug 2004, Jeff Dike wrote:
 
-How's this for a theory:  The server's host is short on memory.  A UML which
-is answering pings every second or so can be considered pretty idle, and thus
-a good candidate to have its pages swapped out.  So, this happens, and when
-a ping comes in, UML needs to be swapped back in, causing your long and
-unpredictable delays.
+> It feels to me more like the valgrind thread runs a system call with no
+> perceptible effect, and there's this new thread all of a sudden which runs
+> happily in this address space because it can't tell that valgrind is there.
 
-Running a busy loop in the UML makes it busy from the point of view of the
-host and prevents it from being swapped out, giving you nice ping latencies.
+To summarise:  you seem to be confident there won't be any problems, and 
+Tom's not so sure.  I'm not sure either, but the threads/signals/syscalls 
+stuff is the part of Valgrind I understand the least.  I would say, just 
+don't be shocked if you do this and weird things start happening :)
 
-				Jeff
-
+N
 
 
 -------------------------------------------------------
