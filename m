@@ -2,27 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2e4u-0004Px-0P for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 14:27:28 -0800
+	id 1B2eOW-0001LD-2m for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 14:47:44 -0800
 Received: from main.gmane.org ([80.91.224.249])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2e4s-00033d-Rh for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 14:27:27 -0800
+	id 1B2eOU-00084H-FT for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 14:47:42 -0800
 Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1B2e4r-0002pG-00
+	id 1B2eOT-00036Q-00
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 14 Mar 2004 23:27:25 +0100
+	Sun, 14 Mar 2004 23:47:41 +0100
 Received: from pd9e58e3c.dip.t-dialin.net ([217.229.142.60])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 14 Mar 2004 23:27:24 +0100
+	Sun, 14 Mar 2004 23:47:41 +0100
 Received: from skoehler by pd9e58e3c.dip.t-dialin.net with local (Gmexim 0.1
 	(Debian)) id 1AlnuQ-0007hv-00
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 14 Mar 2004 23:27:24 +0100
+	Sun, 14 Mar 2004 23:47:41 +0100
 From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <c32m8a$rl9$1@sea.gmane.org>
+Message-ID: <c32neb$upi$1@sea.gmane.org>
 References: <c31sqm$ett$1@sea.gmane.org> <87u10rjlc0.fsf@grannyogg.localnet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
@@ -40,14 +40,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Mar 2004 23:25:52 +0100
+Date: Sun, 14 Mar 2004 23:46:08 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
 > Please check the user archives for the last 3 months or google for mm
 > map failed.
 
-so i guess the UML kernel couldn't allocate more memory, but why wasn't 
-the perl-process killed like it should?
+http://usermodelinux.org/modules.php?name=News&file=article&sid=154
+
+the page says, that i should use /proc/sys/vm/max_map_count but it 
+doesn't seem to exist on my 2.6 host.
 
 
 
