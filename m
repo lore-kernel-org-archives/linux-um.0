@@ -2,25 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CIrIW-0005Bx-IS for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Oct 2004 09:20:48 -0700
+	id 1CIrWj-0007m6-2p for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Oct 2004 09:35:29 -0700
 Received: from smtp.wp.pl ([212.77.101.160])
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CIrIV-0004DK-NI
+	(Exim 4.41) id 1CIrWi-0006Se-6M
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Oct 2004 09:20:48 -0700
+	Sat, 16 Oct 2004 09:35:28 -0700
 Received: from lodz106.vline.pl (HELO [172.16.13.24]) (sikkh@[212.191.130.106])
 	(envelope-sender <sikkh@wp.pl>) by smtp.wp.pl (WP-SMTPD) with SMTP
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	16 Oct 2004 18:20:37 +0200
+	16 Oct 2004 18:35:07 +0200
 From: Piotr Neuman <sikkh@wp.pl>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200410161820.06821.sikkh@wp.pl>
-Subject: [uml-devel] Humfs tdb metadata backend
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_22UcBbqTJzHmehF"
+Message-Id: <200410161835.02592.sikkh@wp.pl>
+Subject: [uml-devel] [patch] open_meta_file (meta_fs.c) error reporting fix.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,52 +30,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 16 Oct 2004 18:20:06 +0200
+Date: Sat, 16 Oct 2004 18:35:02 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi
+--Boundary-00=_22UcBbqTJzHmehF
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I synchronized tdb metadata backend with 2.6.8-um1 + updated externfs (from 
-patches page). It generally works, just need to clean up warnings and 
-stuff ;-).
+Small bug in open_meta_file() prevents error reporting if memory allocation in 
+get_path() fails (pretty unprobable but still).
 
-To test it first apply externfs patch onto 2.6.8-um1 (I don't even mention 
-other fixes to get 2.6.8-um1 to build):
+Fix included (applies to UML ver. 2.6.8-um1 + externfs patch).
 
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.8.1-1um/patches/externfs
+--Boundary-00=_22UcBbqTJzHmehF
+Content-Type: text/x-diff; charset="us-ascii";
+	name="hostfs_open_meta_file.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="hostfs_open_meta_file.patch"
 
-Then download and apply:
+--- linux-uml/fs/hostfs/meta_fs.c.old	2004-10-16 18:32:17.514517144 +0200
++++ linux-uml/fs/hostfs/meta_fs.c	2004-10-16 18:25:14.000000000 +0200
+@@ -83,8 +83,10 @@ static int open_meta_file(const char *pa
+ 		goto out;
+ 
+ 	meta_file = get_path(meta_path, meta_tmp, sizeof(meta_tmp));
+-	if(meta_file == NULL)
++	if(meta_file == NULL) {
++		err = -ENOMEM;
+ 		goto out;
++	}
+ 	
+ 	err = open_filehandle(meta_file, of_rdwr(OPENFLAGS()), 0, fh);
+ 	if(err)
 
-http://kem.p.lodz.pl/~peter/uml/2.6.8-um1-meta_tdb.patch.bz2
-http://kem.p.lodz.pl/~peter/uml/2.6.8-um1-humfs_config.patch.bz2
-
-Reconfigure kernel, enable HUMFS_TDB ("tdb HUMFS metadata storage") and 
-rebuild...
-
-Mkfs.humfs from hostfs_utils supports tdb, so use that for initializing humfs 
-mount dir:
-
-http://kem.p.lodz.pl/~peter/uml/hostfs_utils-16.10.2004.tgz
-
-Alternatively humfs will initialize mount point itself if only valid 
-superblock file is found in mount directory at mount time (expect this 
-feature to go away soon, becose of mkfs.humfs).
-
-To mount humfs:
-
-mount none <mount point in UML system> -t humfs -o <humfs directory on host 
-filesystem>
-
-Please test and report bugs or feature requests...
-
-Regards
-
-Piotr Neuman
-
-ps. Thanks to Jeff Dike and Blaisorblade for making 2.6 UML kernels finally 
-work well ;-)
-
-ps. II. Resending since the previous mail was somehow garbled by my KMail...
+--Boundary-00=_22UcBbqTJzHmehF--
 
 
 -------------------------------------------------------
