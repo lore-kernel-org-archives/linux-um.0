@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuZgX-0004Jb-Vj for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 08:08:57 -0800
-Received: from bay14-dav24.bay14.hotmail.com ([64.4.48.81] helo=hotmail.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuZa2-0000Pr-Ed for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 08:02:14 -0800
-From: "James McMechan" <James_McMechan@hotmail.com>
-References: <20040214015148.26508.qmail@home19.riedel.org>
+	id 1AueFR-0000jU-DX for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 13:01:17 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Audyw-0004kc-JU for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 12:44:14 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] Re: 2.4.24-1um - exec-shield - [PATCH][RFC] memory
+	shortness fix
+In-Reply-To: <200402211651.27584.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.LNX.4.58.0402212049160.25949@vega.dur.ac.uk>
+References: <200402162004.i1GK4isq024309@ccure.user-mode-linux.org>
+	<200402201837.13918.blaisorblade_spam@yahoo.it>
+	<Pine.LNX.4.58.0402202219290.23596@vega.dur.ac.uk>
+	<200402211651.27584.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-ID: <BAY14-DAV24lkDTM9wG00000c82@hotmail.com>
-Subject: [uml-devel] Re: USB and UML
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,37 +30,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 21 Feb 2004 07:59:21 -0800
-To: Larry@Riedel.org
+Date: Sat, 21 Feb 2004 20:54:03 +0000 (GMT)
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> Hi, sorry to bug-- if you have a second, I have a quick
-> question; I would like to use a UML process for a USB device
-> driver because I think it will eventually lock up or oops
-> and I want to be able to just reconnect the device and
-> restart the UML process.  It looks like at one time you were
-> trying to maintain some code to allow this.  Do you know
-> what is the latest status as far as this kind of capability?
-> I do not care much about the kernel version inside the UML
-> process, but the host would be the close to latest (eg
-> currently 2.4.24).
-That should work, I remember that it was working on 
-2.4.18 and 2.4.19 but then they backported the host controller
-changes from 2.5 which broke the um-usb for 2.4.20
-In the 2.5 tree it worked untill about 2.5.39
-I used it to test out some flaky drivers also, kaweth.o was
-Oopsing on me and also for my smart card reader.
+On Sat, 21 Feb 2004, BlaisorBlade wrote:
 
-The host kernel can be any recent version I would suggest
-applying the host-skas patch as then it is much faster and
-the host kernel can be run under gdb (or attached to gdb)
-See for example the debugging page at sourceforge
-On a host kernel without skas you can use the debug
-command line option to start a gdb but I haven't tested
-it that way recently.
+> Yes, you are perfectly right and what I wrote is at all foolish and stupid - I
+> should have written len += UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end); (or
+> something similar).
 
-My current patches should be at 
-http://jmcmechan.linuxdriven.net
+That doesn't help you either, because increasing len within setup_physmem
+writes to memory that is going to be used for other purposes. The only way
+around this amounts to increasing physmem_size anyway.
+
+	Michael Young
 
 
 -------------------------------------------------------
