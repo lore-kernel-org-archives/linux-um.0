@@ -1,21 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPqCc-0003UN-Hp for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 15:03:18 -0700
+	id 1BPqEv-0003zH-9g for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 15:05:41 -0700
 Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPqCb-0000Q2-Uy for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 15:03:18 -0700
-Received: from localhost (henrik@localhost)
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id i4HM3G727759
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 18 May 2004 00:03:16 +0200
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BPqEu-0003Gq-KG for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 15:05:40 -0700
 From: Henrik Nordstrom <uml@henrik.marasystems.com>
-Subject: Re: [uml-devel] 2.4.23(24?)-2 TT mode hangs on request_module
-In-Reply-To: <Pine.LNX.4.44.0405172331390.27355-100000@filer.marasystems.com>
-Message-ID: <Pine.LNX.4.44.0405172341220.27603-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] CVS not updated?
+In-Reply-To: <03cc01c43c5a$ff8891c0$2000000a@schlepptopp>
+Message-ID: <Pine.LNX.4.44.0405180004120.27603-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -29,30 +25,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 May 2004 00:03:16 +0200 (CEST)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 18 May 2004 00:05:25 +0200 (CEST)
+To: roland <for_spam@gmx.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Mon, 17 May 2004, Henrik Nordstrom wrote:
+On Tue, 18 May 2004, roland wrote:
 
-> Just rebuilt with uml-patch-2.4.26-1 and the problem remains
+> no wonder - if there are 2 trees and none of it is marked obsolete - quite confusing ;)
+> what about placing a file "OBSOLETE_PLZ_READ.TXT" in the root of that tree ?
+> that file could contain a link to the "official" CVS/Bitkeeper/Whatelse uml-trees.
 
-Here is another simpler way to reproduce the same problem not involving
-iptables:
+Hmm.. the www.user-mode-linux.org repro does not seem to allow anonymous
+CVS, only online browsing.
 
-1. Compile UML 2.4.26-1 with module support
+user-mode-linux.sourceforge.net does refer to www.user-mode-linux.org as 
+the anoncvs reprository however.
 
-2. Boot in TT mode (not SKAS)
+More confusing..
 
-3. ifconfig xyzzy (or any other non-existing device)
-
-If there is any other out there using 2.4.26-1 in TT mode (not SKAS) can 
-you please try if the above hangs your umls as well, or if there is 
-something peculiar with my setup triggering this but I do not think there 
-is anything special with my UML tree which can trigger this kind of 
-problem.
-
-Regards
-Henrik
 
 
 
