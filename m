@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArO6i-0007HX-Ag
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 13:10:48 -0800
+	id 1ArOLj-0002fK-EK
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 13:26:19 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.30)
-	id 1ArO5N-0000g3-DO
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 13:09:25 -0800
+	id 1ArOKN-0003oU-RP
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 13:24:56 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Swapping directly to host swap area?
-Message-ID: <20040212213620.GA4168@ccure.user-mode-linux.org>
-References: <Pine.LNX.4.44.0401251827030.2766-100000@sparrow> <200402051759.03917.blaisorblade_spam@yahoo.it> <200402110043.i1B0hOip004189@ccure.user-mode-linux.org> <200402122008.22995.blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] /dev/anon without /dev/anon ?
+Message-ID: <20040212215154.GC4168@ccure.user-mode-linux.org>
+References: <1076598155.20064.12.camel@wopr.tektonic.net> <01ee01c3f1a9$06424800$0600a8c0@objexcel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200402122008.22995.blaisorblade_spam@yahoo.it>
+In-Reply-To: <01ee01c3f1a9$06424800$0600a8c0@objexcel>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,21 +26,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 Feb 2004 16:36:20 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Thu, 12 Feb 2004 16:51:54 -0500
+To: Peter <support@rimuhosting.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Feb 12, 2004 at 08:08:22PM +0100, BlaisorBlade wrote:
-> It seems to me that the access statistics should be the same ones: I do not 
-> know thoroughly the way pages are marked as active or swappable (I can check 
-> in the 2.4 VM description - ask for the address) but if that depends on page 
-> faulting, then, it seems to me that since guest page fault are even host page 
-> fault (the UML handling of SIGSEGV is like the host handling of CPU fault 
-> exceptions, right?) the statistics should be the same. 
+On Fri, Feb 13, 2004 at 09:43:09AM +1300, Peter wrote:
+> This may just be noise, but I also had a host server with 2.4.24 + skas3 + /dev/anon that crashed yesterday after a day or so of running.  Not using ubd=mmap.
 
-No, they're not the same.  If a page is swapped out by the host, and then
-swapped back in, that will count as a page fault on the host, but not inside
-the UML.
+Yeah, the patch is not quite kosher.  I've had no problems whatsoever running
+skas UMLs, but tt UMLs won't boot with devanon.
 
 				Jeff
 
