@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CtCte-0007Hr-3r for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 14:41:22 -0800
-Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CtCtc-0001rK-DN for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 14:41:22 -0800
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] memory
-In-Reply-To: <200501242007.30317.blaisorblade@yahoo.it>
-Message-ID: <Pine.LNX.4.61.0501242329420.22700@filer.marasystems.com>
-References: <267988DEACEC5A4D86D5FCD780313FBB03B7317C@exch-03.noida.hcltech.com>
-	<200501242007.30317.blaisorblade@yahoo.it>
+	id 1CtMAV-0008GD-E8 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 00:35:23 -0800
+Received: from mxfep02.bredband.com ([195.54.107.73])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CtMAT-0001DM-OL for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 00:35:23 -0800
+Message-ID: <41F604BA.30008@better.se>
+From: Marcus Better <marcus@better.se>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: Re: [uml-devel] skas3 patch breaks ATI video drivers
+References: <41F54FE9.7060503@better.se>
+	<200501242113.16569.blaisorblade@yahoo.it>
+In-Reply-To: <200501242113.16569.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,24 +28,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Jan 2005 23:41:18 +0100 (CET)
+Date: Tue, 25 Jan 2005 09:35:06 +0100
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 24 Jan 2005, Blaisorblade wrote:
+Blaisorblade wrote:
 
-> You'd probably prefer to use the 4G/4G patch from Ingo Molnar, integrated into
-> Fedora kernels, to allow processes to use 4G of virtual address space.
+> I.e. the compilation problem is not in the kernel module, right?
 
-Side note: Fedora apparently dropped this patch some time ago, reason not 
-known to me.
+Yes, the compilation error is in compiling the fglrx module.
 
-* Thu Dec 09 2004 Dave Jones <davej@redhat.com>
+> In this case, the problem is that you have /usr/include/asm symlinked to your kernel's 
+> include/asm-i386 directory,
 
-- Drop the 4g/4g hugemem kernel completely.
+No, I don't, but I use Debian's make-kpkg which probably uses header 
+files from the kernel tree. This is the normal method of building 
+kernels on Debian, though.
 
-Regards
-Henrik
+I might add that I tried to fix the problem directly in the fglrx 
+module, but it doesn't seem to work. It really must use the name 
+modify_ldt in the macro, and this conflicts with the UML patch.
+
+Marcus
 
 
 -------------------------------------------------------
