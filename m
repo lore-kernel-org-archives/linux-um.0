@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Alh6s-0006TE-7J for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 20:15:26 -0800
+	id 1Alh6r-0006TC-Uk for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jan 2004 20:15:25 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Alh6r-0002Ch-5N
+	(Exim 4.30) id 1Alh6r-0002Dj-4c
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 27 Jan 2004 20:15:25 -0800
-Message-Id: <200401280439.i0S4dEZw005502@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [Sebastian.Koch@metatool.de: Re: ps u failed with
-	signal 8 (FPE)] 
-In-Reply-To: Your message of "Thu, 22 Jan 2004 12:48:58 +0100."
-	<20040122114858.GH11029@bytesex.org> 
-References: <20040122114858.GH11029@bytesex.org> 
+Message-Id: <200401280439.i0S4dGZw005507@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [patch] uml fixes, 2.6.1-mm5-A2 
+In-Reply-To: Your message of "Fri, 23 Jan 2004 14:18:42 +0800."
+	<20040123061842.GA5292@localhost> 
+References: <20040120191706.GA32711@elte.hu> <20040120194328.GA1518@elte.hu>
+	<20040120200105.GA2289@elte.hu> <20040122162139.GA28167@elte.hu>
+	<20040123061842.GA5292@localhost> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,29 +30,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 27 Jan 2004 23:39:14 -0500
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 27 Jan 2004 23:39:16 -0500
+To: nsb034@lostrealm.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-kraxel@bytesex.org said:
-> The problem is that the proc file system of the UML shows a wrong /
-> proc/meminfo. Especially the MemTotal: 
+nsb034@lostrealm.com said:
+> This fixes the bug "skas mode panic - ltrace strace" that occurs in
+> uml-patch-2.4.23-2 and below.  Could this patch please be applied to
+> the 2.4.x kernels as well? 
 
-Nice catch.  I was wondering about that SIGFPE crash.  Try the patch below.
+I did, and it will be in the next patch.
 
 				Jeff
-
-===== arch/um/kernel/mem.c 1.21 vs edited =====
---- 1.21/arch/um/kernel/mem.c   Thu Jan  8 07:43:01 2004
-+++ edited/arch/um/kernel/mem.c Mon Jan 26 11:02:13 2004
-@@ -30,7 +30,6 @@
- int kmalloc_ok = 0;
- 
- static unsigned long brk_end;
--static unsigned long totalram_pages = 0;
- 
- void unmap_physmem(void)
- {
 
 
 
