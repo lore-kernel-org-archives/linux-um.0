@@ -1,21 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9paR-00082W-9C for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 11:14:15 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D9paO-0004gp-9n for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 11:14:15 -0800
+	id 1D9pfZ-0008N1-Uk for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 11:19:33 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1D9pfW-0004Hr-7P for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 11:19:33 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 1/1] unified spinlock initialization
+	arch/um/drivers/port_kern.c
+References: <20050309094234.8FC0C6477@zion>
+	<200503092052.24803.blaisorblade@yahoo.it>
+	<1110442320.29330.196.camel@tglx.tec.linutronix.de>
+In-Reply-To: <1110442320.29330.196.camel@tglx.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503112013.20206.blaisorblade@yahoo.it>
-Subject: [uml-devel] SKAS-v8: RC5 released against 2.6.7 - 2.6.11 kernels
+Content-Disposition: inline
+Message-Id: <200503112018.42662.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,43 +32,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 11 Mar 2005 20:13:19 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux-user@lists.sourceforge.net
-Cc: Gerd Knorr <kraxel@bytesex.org>, Michael Richardson <mcr@sandelman.ottawa.on.ca>, Henrik Nordstrom <hno@marasystems.com>, "Christopher S. Aker" <caker@theshore.net>
+Date: Fri, 11 Mar 2005 20:18:42 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, tglx@linutronix.de
+Cc: Russell King <rmk+lkml@arm.linux.org.uk>, Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, domen@coderock.org, amitg@calsoftinc.com, gud@eth.net
 
-This time, I've announced this on my homepage, since I'd like to get a lot 
-more testing and to release this patch unchanged as -V8 final version.
+On Thursday 10 March 2005 09:12, Thomas Gleixner wrote:
+> On Wed, 2005-03-09 at 20:52 +0100, Blaisorblade wrote:
+> > > Are you sure this is really the best option in this instance?
+> > > Sometimes, static data initialisation is more efficient than
+> > > code-based manual initialisation, especially when the memory
+> > > is written to anyway.
+> >
+> > Agreed, theoretically, but this was done for multiple reasons globally,
+> > for instance as a preparation to Ingo Molnar's preemption patches. There
+> > was mention of this on lwn.net about this:
+> >
+> > http://lwn.net/Articles/108719/
+>
+> Those patches did only the conversion of
+>
+> static spinlock_t lock = SPIN_LOCK_UNLOCKED;
+>        lock = SPIN_LOCK_UNLOCKED;
+> to
+> static DEFINE_SPINLOCK(lock);
+>        spin_lock_init(lock);
+First: I didn't write the patch, only forwarded it, so I just guessed why it 
+was done.
 
-Things I've forgot:
-* make it apply easily on Fedora kernels.
+The latter is spin_lock_init(&lock); (since someone got confused about this).
 
-This should simply mean moving the TIF_SYSCALL_EMU to place no.8, to leave a 
-slot free for _DB7, needed for 4g4g or something like that and using testw 
-instead of testb for testing against it. This will be done in -V9.
+However, this is a .lock = SPIN_LOCK_UNLOCKED  -> 
+spin_lock_init(&struct.lock),
 
-The summary of changes against -RC2 is short... I dropped 
-fix-dumpable-handling because I don't feel it secure yet, so everybody using 
--RC2 should upgrade.
+so I don't understand what changes... the structure is initialized inside a 
+function, so there's no change.
 
-The problem is that the correct locking is difficult and even mainline kernel 
-code has a lot of confusion about it, and I want to sort this out first, to 
-avoid problems with the patch.
+> If you want to do static initialization inside of structures, then you
+> have to define a seperate MACRO similar to the static initialization of
+> list_head's inside of structures:
 
-Sorry Michael, but this is lower priority than stability and security. It will 
-be for next patch.
+> static struct sysfs_dirent sysfs_root = {
+>         .s_sibling      = LIST_HEAD_INIT(sysfs_root.s_sibling),
 
-Description of this patch.
-* fix-dumpable-handling.patch: this implemented a feature / bug fix requested 
-by Michael Richardson <mcr@sandelman.ottawa.on.ca>. I.e., with this, in 
-normal cases, UML *is* allowed to dump core and be seen inside /proc - (until 
-now it was treated as if it was a setuid process or one which changed UID / 
-GID). If I did any error, however, it could allow privilege escalation.
+I don't see the need here... and the initialization is not in static code; it 
+changes this code snippet:
+
+void *port_data(int port_num)
+{
+//...
+        *port = ((struct port_list)
+                { .list                 = LIST_HEAD_INIT(port->list),
+                  .has_connection       = 0,
+                  .sem                  = __SEMAPHORE_INITIALIZER(port->sem,
+                                                                  0),
+                  .lock                 = SPIN_LOCK_UNLOCKED,
+                  .port                 = port_num,
+                  .fd                   = fd,
+                  .pending              = LIST_HEAD_INIT(port->pending),
+                  .connections          = 
+LIST_HEAD_INIT(port->connections) });
+
+So you are all doing some confusion (in fact I guess Andrew realized this when 
+he merged this anyway).
 
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 http://www.user-mode-linux.org/~blaisorblade
-
 
 
 
