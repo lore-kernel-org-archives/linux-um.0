@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9pw9-0000y1-S1 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 11:36:41 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1D9pw8-0005se-5i for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 11:36:41 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 4/9] UML - Export gcov symbol based on gcc
-	version
-References: <200503100216.j2A2G2DN015232@ccure.user-mode-linux.org>
-In-Reply-To: <200503100216.j2A2G2DN015232@ccure.user-mode-linux.org>
+	id 1D9qa9-0003dd-8J for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 12:18:01 -0800
+Received: from prgy-npn1.prodigy.com ([207.115.54.37] helo=oddball.prodigy.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D9qa8-0001jr-NQ for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 12:18:01 -0800
+Message-ID: <4231FE29.7090109@tmr.com>
+From: Bill Davidsen <davidsen@tmr.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: Re: [uml-devel] [PATCH 3/9] UML - "Hardware" random number generator
+References: <200503100215.j2A2FuDN015227@ccure.user-mode-linux.org><200503100215.j2A2FuDN015227@ccure.user-mode-linux.org>
+	<200503101341.37346.rob@landley.net>
+In-Reply-To: <200503101341.37346.rob@landley.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200503112035.49163.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,56 +28,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 11 Mar 2005 20:35:48 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, torvalds@osdl.org, akpm@osdl.org, linux-kernel@vger.kernel.org
+Date: Fri, 11 Mar 2005 15:23:05 -0500
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Thursday 10 March 2005 03:16, Jeff Dike wrote:
-> The init function called by gcc when gcov is enabled is __gcov_init or
-> __bb_init_func, depending on the gcc version.  Anton is using 3.3.4 and
-> seeing __gcov_init.  I'm using 3.3.2 and seeing __bb_init_func, so we need
-> to close that gap a bit.
+Rob Landley wrote:
+> On Wednesday 09 March 2005 09:15 pm, Jeff Dike wrote:
+> 
+>>This implements a hardware random number generator for UML which attaches
+>>itself to the host's /dev/random.
+> 
+> 
+> Direct use of /dev/random always makes me nervous.  I've had a recurring 
+> problem with /dev/random blocking, and generally configure as much as 
+> possible to use /dev/urandom instead.  It's really easy for a normal user to 
+> drain the /dev/random entropy pool on a server (at least one that doesn't 
+> have a sound card you can tell it to read white noise from).  cat /dev/random 
+> 
+>>/dev/null
+> 
+> 
+> I like /dev/urandom because it'll feed you as much entropy as it's got, but 
+> won't block, and will presumably round-robin insert real entropy in the 
+> streams that multiple users get from /dev/urandom.  (I realize this may not 
+> be the best place to get gpg keys from.)
+> 
+> I'm just thinking about those UML hosting farms, with several UML instances 
+> per machine, on machines which haven't got a keyboard attached constantly 
+> feeding entropy into the pool.  If just ONE of them is serving ssl 
+> connections from its own /dev/urandom, that would drain the /dev/random 
+> entropy pool on the host machine almost immediately...
+> 
+> Admittedly if UML used /dev/urandom instead of /dev/random, it wouldn't know 
+> how much "real" randomness it was getting and how much synthetic randomness, 
+> but this makes predicting the numbers it's producing easier how?
 
-I'll have to undo this patch... I said that you must export both symbols when 
-GCC version is the right one.
-
-And I can say this version is > 3.3.4, since my good Gentoo's 3.3.4 does not 
-include this symbol.
-
-We rediscussed this with Jeff, and I'll post a better patch: 
-EXPORT_SYMBOL(__gcov_init), and weakly define it to an empty function. I'll 
-do it tomorrow.
-
-> Signed-off-by: Jeff Dike <jdike@addtoit.com>
->
-> Index: linux-2.6.11/arch/um/kernel/gmon_syms.c
-> ===================================================================
-> --- linux-2.6.11.orig/arch/um/kernel/gmon_syms.c 2005-03-07
-> 10:53:03.000000000 -0500 +++
-> linux-2.6.11/arch/um/kernel/gmon_syms.c 2005-03-07 16:29:37.000000000 -0500
-> @@ -5,8 +5,14 @@
->
->  #include "linux/module.h"
->
-> +#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3) || \
-> + (__GNUC__ == 3 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ >= 4)
-> +extern void __gcov_init(void *);
-> +EXPORT_SYMBOL(__gcov_init);
-> +#else
->  extern void __bb_init_func(void *);
->  EXPORT_SYMBOL(__bb_init_func);
-> +#endif
->
->  /*
->   * Overrides for Emacs so that we follow Linus's tabbing style.
-
+Use of a "hardware" RNG patch without a real hardware RNG could do all 
+that. I would add a caution to the help warning of this problem if you 
+lack real hardware RNG capability. The really paranoid could insist that 
+at least one hardware driver be configured, but how much do you need to 
+protect people from themselves?
 
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
-
+    -bill davidsen (davidsen@tmr.com)
+"The secret to procrastination is to put things off until the
+  last possible moment - but no longer"  -me
 
 
 -------------------------------------------------------
