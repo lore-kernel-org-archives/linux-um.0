@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CwnAG-0007tS-Gx for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 12:01:20 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	id 1CwrKR-0005vF-VT for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 16:28:07 -0800
+Received: from smtp201.mail.sc5.yahoo.com ([216.136.129.91])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CwnAE-0008KL-Gp for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 12:01:20 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Fwd: RE: [uml-devel] UML remote GUI problems
+	id 1CwrKR-0003MI-Ff for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 16:28:07 -0800
+Message-ID: <4202C18F.5010605@yahoo.com.au>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+References: <42021E35.8050601@fujitsu-siemens.com>
+In-Reply-To: <42021E35.8050601@fujitsu-siemens.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200502032100.27959.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: Race condition in ptrace
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,93 +27,99 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 3 Feb 2005 21:00:27 +0100
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 04 Feb 2005 11:27:59 +1100
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: Roland Mc Grath <roland@redhat.com>, Jeff Dike <jdike@addtoit.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org
 
-I'm forwarding this to the list because I've not the time to look at every UML 
-user issue, and especially not now. I hope someone else can help you.
+Bodo Stroesser wrote:
+> Working with the new UML skas0 mode on my Xeon HT host, sporadically I saw
+> some processes on UML segfaulting.
+> 
+> In all cases, I could track this down to be caused by a gs segment 
+> register,
+> that had the wrong contents.
+> 
+> This again is caused by a problem in the host linux: A ptraced child 
+> going to
+> stop and having woken up its parent, will save some of its registers (on 
+> i386
+> they are fs, gs and the fp-registers) very late in switch_to. The parent is
+> granted access to child's registers as soon, as the child is removed from
+> the runqueue. Thus, in rare cases, the parent might access child's register
+> savearea before the registers really are saved.
+> 
+> This problem might also be the reason for problems with floatpoint on UML,
+> that were reported some time ago.
+> 
+> I've written a test program, that reproduces the problem on my 2.6.9 
+> vanilla
+> host quite quick. Using SuSE kernel 2.6.5-7.97-smp, I can't reproduce the
+> problem, although the relevant parts seem to be unchanged. Maybe not 
+> related
+> changes modify the timing?
+> 
+> I also created a patch, that fixes the problem on my 2.6.9 host. This 
+> probably
+> isn't a sane patch, but is enough to demonstrate, where I think, the bug 
+> is.
+> Both files are attached.
+> 
+>        Bodo
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> --- a/include/linux/sched.h	2005-02-02 22:15:51.000000000 +0100
+> +++ b/include/linux/sched.h	2005-02-02 22:22:54.000000000 +0100
+> @@ -584,6 +584,7 @@ struct task_struct {
+>    	struct mempolicy *mempolicy;
+>    	short il_next;		/* could be shared with used_math */
+>  #endif
+> +	volatile long saving;
+>  };
+>  
+>  static inline pid_t process_group(struct task_struct *tsk)
+> --- a/kernel/sched.c	2005-02-02 21:32:51.000000000 +0100
+> +++ b/kernel/sched.c	2005-02-02 22:12:14.000000000 +0100
+> @@ -2689,8 +2689,10 @@ need_resched:
+>  		if (unlikely((prev->state & TASK_INTERRUPTIBLE) &&
+>  				unlikely(signal_pending(prev))))
+>  			prev->state = TASK_RUNNING;
+> -		else
+> +		else {
+> +			prev->saving = 1;
+>  			deactivate_task(prev, rq);
+> +		}
+>  	}
+>  
+>  	cpu = smp_processor_id();
+> --- a/kernel/ptrace.c	2005-02-02 22:12:33.000000000 +0100
+> +++ b/kernel/ptrace.c	2005-02-02 22:20:46.000000000 +0100
+> @@ -96,6 +96,7 @@ int ptrace_check_attach(struct task_stru
+>  
+>  	if (!ret && !kill) {
+>  		wait_task_inactive(child);
+> +		while ( child->saving ) ;
+>  	}
+>  
+>  	/* All systems go.. */
+> --- a/arch/i386/kernel/process.c	2005-02-02 22:18:29.000000000 +0100
+> +++ b/arch/i386/kernel/process.c	2005-02-02 22:19:22.000000000 +0100
+> @@ -577,6 +577,9 @@ struct task_struct fastcall * __switch_t
+>  	asm volatile("movl %%fs,%0":"=m" (*(int *)&prev->fs));
+>  	asm volatile("movl %%gs,%0":"=m" (*(int *)&prev->gs));
+>  
+> +	wmb();
+> +	prev_p->saving=0;
+> +
+>  	/*
+>  	 * Restore %fs and %gs if needed.
+>  	 */
+> 
 
-----------  Forwarded Message  ----------
-
-Subject: RE: [uml-devel] UML remote GUI problems
-Date: Thursday 03 February 2005 20:24
-From: Greg Furlong <C01386107@student.dit.ie>
-To: Blaisorblade <blaisorblade@yahoo.it>
-
-I have sshd running on the Linux machine and then i tried to run port
-forwarding through putty on port 5900. I then ran the command export
-DISPLAY=host-ip.
-
-I then used tightVNC to connect to the ip address that i had assigned while
-setting up the port forwarding.
-
-I keep getting an error Failed to server address. Did you type the address
-correctly.
-
-Regards
-
->===== Original Message From Blaisorblade <blaisorblade@yahoo.it> =====
->
->On Friday 28 January 2005 17:30, Greg Furlong wrote:
->> I am a final year student taking a degree in Computing at Dublin Institute
->> of Technology - Ireland. In my final year project I am doing a project
->> using User Mode Linux. My project has set out to research the capabilities
->> of User Mode Linux in a teaching environment.
->>
->> So far I have set up a server
->> and now have users logging on from a terminal. They use a COW file so as
->> not to corrupt the file system. Next I want to investigate and test the
->> capabilities of User Mode Linux over a network using a Graphical User
->> Interface. The problem that I am having is that I am finding it difficult
->> to set up the GUI system.
->>
->> I was wondering if anybody could give me some
->> pointers in the right direction
->
->Without knowing which are your difficulties? It's difficult.
->
->> or could tell me of a tutorial on how to
->> set it up.
->>
->> I have already looked at the user mode Linux
->> website on sourceforge but have been unable to successfully complete the
->> GUI instructions.
->
->What's the problem?
->
->You must install Xnest inside your guest system... it will then be able to
->forward connection to another X system (on which you have to authorize TCP
->connections from the UML system). Then it should work, more or less.
->
->> I am running Red Hat Linux 9 2.4.20-8
->> User mode Linux Patch 2.4.27-1
->> Remote Terminal Putty
->
->On windows? well, there are also Xservers on Windows (the cygwin one for
->instance)...
->--
->Paolo Giarrusso, aka Blaisorblade
->Linux registered user n. 292729
->http://www.user-mode-linux.org/~blaisorblade
->
->--
->This message has been scanned for content and
->viruses by the DIT Information Services MailScanner
->Service, and is believed to be clean.
->http://www.dit.ie
-
---
-This message has been scanned for content and
-viruses by the DIT Information Services MailScanner
-Service, and is believed to be clean.
-http://www.dit.ie
-
--------------------------------------------------------
-
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+I don't see how this could help because AFAIKS, child->saving is only
+set and cleared while the runqueue is locked. And the same runqueue lock
+is taken by wait_task_inactive.
 
 
 
