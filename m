@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cp7hv-0008I0-LJ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 08:20:23 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1Cp7hq-0005J4-Vm for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 08:20:23 -0800
+	id 1CpA6k-0000IF-D9 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 10:54:10 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CpA6e-0006KO-0m for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 10:54:10 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 8/8] uml: depend on !USERMODE in
+	drivers/block/Kconfig and drop arch/um/Kconfig_block
+References: <20050113051341.DD29D6325A@zion>
+	<200501131827.j0DIRiha004079@ccure.user-mode-linux.org>
+In-Reply-To: <200501131827.j0DIRiha004079@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501131722.35838.blaisorblade@yahoo.it>
-Subject: [uml-devel] Anyone running nested UMLs? It seem to work well enough...
+Message-Id: <200501131956.22703.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,22 +31,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Jan 2005 17:22:35 +0100
+Date: Thu, 13 Jan 2005 19:56:22 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, blaisorblade_spam@yahoo.it, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-Well, inside my 2.6.9-bs5 session, I compiled a kernel as little stress-test, 
-it worked, and just for fun I tried running it (even if I didn't tune 
-CONFIG_NEST_LEVEL)... well, to my biggest surprise, the nested UML was able 
-to boot and work well enough.
+On Thursday 13 January 2005 19:27, Jeff Dike wrote:
+> I'd prefer that USERMODE be changed to UML.
+Ok, what you'd like is an additional patch however, because CONFIG_USERMODE 
+has existed for ages, so for now this can go in, right?
 
-A lot of "segmentation fault" messages appeared, but I expected that this 
-feature wouldn't work at all... (and also I didn't tune CONFIG_NEST_LEVEL, as 
-I said, and it makes sense that this causes the Segfaults). So it's nice to 
-see this working.
+The additional patch will be more or less a global "search and replace" 
+USERMODE -> UML.
 
-However, is anybody using them? For which reasons?
+It's ok, I'll do it on top of these patches I sent.
 
-Bye
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
