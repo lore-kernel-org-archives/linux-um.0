@@ -1,14 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-list2-b.sourceforge.net ([10.3.1.8] helo=sc8-sf-list2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AVsBW-0006yW-F3
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Dec 2003 04:50:50 -0800
-Message-ID: <3FDDAE15.6020409@timesys.com>
-From: "La Monte H.P. Yarroll" <piggy@timesys.com>
+	id 1AVw9F-0003IE-8q
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Dec 2003 09:04:45 -0800
+Received: from web10402.mail.yahoo.com ([216.136.130.94])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AVw9E-0006Hj-Vw
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 15 Dec 2003 09:04:44 -0800
+Message-ID: <20031215170437.73387.qmail@web10402.mail.yahoo.com>
+From: Joydeep Sen Sarma <jsensarma@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] ANNOUNCE: SKAS patch for SuSE 8.2 (linux-2.4.20.SuSE) available
+Content-Type: text/plain; charset=us-ascii
+Subject: [uml-devel] Debug uml kernel won't boot (VFS: Unable to mount root fs)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,31 +22,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Dec 2003 07:50:29 -0500
+Date: Mon, 15 Dec 2003 09:04:37 -0800 (PST)
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: timesysgpl-developers@lists.sourceforge.net
 
-I have put a revised version of skas-2.4.21.patch.bz2 on the TimeSysGPL 
-site at SourceForge:
+Hi folks,
 
-https://sourceforge.net/tracker/index.php?func=detail&aid=860308&group_id=89531&atid=590444
+The regular uml kernel worked fine till i turned
+on the debug option. Kernel version is 2.4.22 and
+I applied uml patch 2.4.22-6 to it. Root file System
+is the Debian-3.0r0.ext2.bz2 image from uml home page.
 
-This was built against  kernel-source-2.4.20.SuSE-100.i586.rpm.
+# ls -l root_fs
+-rw-r--r--    1 root     root     62862336 Dec 14
+18:06 root_fs
+# ./linux ubd0=root_fs debug gdb-pid=2646
 
-The .config I used for my kernel is here:
+From debugger, failure happens here:
 
-https://sourceforge.net/tracker/index.php?func=detail&aid=860309&group_id=89531&atid=590444
+Breakpoint 3, do_kern_mount (fstype=0xa194b000 "ext2",
+flags=32769, 
+    name=0xa1949000 "/dev/root", data=0x0) at
+super.c:793
+(gdb)
+get_sb_bdev (fs_type=0xa01fb930, flags=-12,
+dev_name=0xa1949000 "/dev/root", 
+    data=0x0) at super.c:669
 
-Why a SuSE-specific version of the patch?  The kernel for SuSE 8.2 
-already includes an earlier version of the SKAS patch, so the patch from 
-Jeff does not apply cleanly.
+this call in get_sb_nodev fails:
+	error = path_lookup(dev_name,
+LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd);
 
-Warning: even with this patch I have trouble using gdb.  It fails to 
-identify the threads as they are created and frequently jumps from 
-function to function with no discernable rationale--not unlike an 
-undecected source/object mismatch.
+with err code of ENOENT. Any ideas what's wrong or
+how I can debug this ? (I have tried the 
+root=/dev/ubd/0 option - same result)
+
+thanks,
+
+Joydeep
 
 
+
+
+__________________________________
+Do you Yahoo!?
+New Yahoo! Photos - easier uploading and sharing.
+http://photos.yahoo.com/
 
 
 -------------------------------------------------------
