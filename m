@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CtvNp-00021I-Qi for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Jan 2005 14:11:29 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CtvNn-0008QH-VY for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Jan 2005 14:11:29 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+	id 1CuTYt-0001pR-5F for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Jan 2005 02:41:11 -0800
+Received: from [141.2.14.4] (helo=mars.tm.informatik.uni-frankfurt.de)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CuTYq-0007Q0-Ao
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Jan 2005 02:41:10 -0800
+From: "Michael 'Mickey' Lauer" <mickey@tm.informatik.uni-frankfurt.de>
+Content-Type: text/plain
+Message-Id: <1106908848.25603.10.camel@gandalf.tm.informatik.uni-frankfurt.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501262310.49814.blaisorblade@yahoo.it>
-Subject: [uml-devel] [POLL] Putting UML/2.4 into "fixes-only" mode
+Subject: [uml-devel] State of gdkfb ?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,26 +26,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Jan 2005 23:10:48 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 28 Jan 2005 11:40:48 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff, I've seen the beginning of your work on back-porting all the patches 
-from 2.6 to 2.4...
+Hi Geert (et.al),
 
-It's a huge work, but what is more important, it could obviously hurt 
-stability...
+could you be so kind and give me a status update about your uml
+framebuffer patch regarding kernel 2.6? UML in 2.6.11-rc1-mm1 is the
+first version since quite a while that works here. We use it to
+prototype root file systems for our embedded Linux distributions like
+OpenZaurus and familiar Linux.
 
-So, I'd suggest to follow this policy to choose the work to merge:
+Thanks for all the work, guys - UML rocks.
 
-- reduce *a lot* what is going to be merged... no new features, no code 
-cleanups (especially NOT the Makefiles cleanups)...
-
-- concentrate on stability... and on backing out the hostfs rewrite.
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Regards,
+
+Mickey.
+------------------------------------------------------------------
+Dipl.-Inf. Michael 'Mickey' Lauer <mickey@tm.cs.uni-frankfurt.de>
+------------------------------------------------------------------
+
+
 
 
 -------------------------------------------------------
