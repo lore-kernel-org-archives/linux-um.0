@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CAuRT-0002UN-Nb for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Sep 2004 11:05:11 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CAuRR-0006Ae-PX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Sep 2004 11:05:11 -0700
-Message-Id: <200409241910.i8OJAPZX003320@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Syscalls breaking out 
-In-Reply-To: Your message of "Fri, 24 Sep 2004 15:39:44 +0200."
-	<8B6FF516CBA0194AB0996705076B02520F7C39@ABGEX01E.abg.fsc.net> 
-References: <8B6FF516CBA0194AB0996705076B02520F7C39@ABGEX01E.abg.fsc.net> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1CAvG3-0003oQ-AK for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Sep 2004 11:57:27 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CAvG1-0004XR-L8 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Sep 2004 11:57:26 -0700
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Subject: RE: [uml-devel] Syscalls breaking out 
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C3B@ABGEX01E.abg.fsc.net>
+From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,26 +26,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Sep 2004 15:10:25 -0400
-To: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
+Date: Fri, 24 Sep 2004 20:52:12 +0200
+Content-Transfer-Encoding: 8bit
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-Bodo.Stroesser@fujitsu-siemens.com said:
-> (It would overlap with my previos patch, should I merge them?) 
+ 
+Jeff Dike <jdike@addtoit.com> said:
 
-I'm looking at your patches and will get back to you on them, but let me just
-comment on this issue first.
+> Bodo.Stroesser@fujitsu-siemens.com said:
+> > (It would overlap with my previos patch, should I merge them?)
+> 
+> I'm looking at your patches and will get back to you on them, but let
+me just comment on this issue first.
+>
+> I'd prefer these patches be split up into as small units as possible.
+That'll make it easier to decide whether they are correct.  It's OK if
+they overlap and need to be applied in a particular order.
+> 
+> So, for example, the API changes could be broken out separately.  Even
+if it's two lines of change (the caller and the callee), that's a good
+way to split it up.  This part of the kernel has some subtleties, so I'd
+prefer to be careful here.
 
-I'd prefer these patches be split up into as small units as possible.  That'll
-make it easier to decide whether they are correct.  It's OK if they overlap
-and need to be applied in a particular order.
+O.K., I could create three new patches.
 
-So, for example, the API changes could be broken out separately.  Even if it's
-two lines of change (the caller and the callee), that's a good way to split it
-up.  This part of the kernel has some subtleties, so I'd prefer to be careful
-here.
+The first will remove the different possibilities to execute a
+systemcall on the host, with one exception: if the UML-user directly
+calls the vsyscall entry __kernel_vsyscall while being singlestepped, it
+will still break out and will be executed on the host.
 
-				Jeff
+The second will enable the vsyscall-page in UML, this will remove the
+last (known to me) breakout possibility and will enable the
+sysenter-syscall for programs that are not linked "-static".
+
+With the third patch UML will use the "restorer"-stubs in the
+vsyscall-page. This will *not* change the stack layout for signal
+handlers, but will change the restorers address to be from the
+syscall-page.
+
+If this is OK for you, I could send the patches next week.
+
+Bodo
+
+> 
+> 				Jeff
 
 
 
