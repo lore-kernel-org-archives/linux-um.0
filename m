@@ -2,17 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DATdd-0003uz-La for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 13 Mar 2005 06:00:13 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DATdb-0007px-Bd for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 13 Mar 2005 06:00:13 -0800
-Message-Id: <200503130654.j2D6rrAM005199@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Fixing the __gcov_init problem
+	id 1DAjLa-0007JA-B9 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 13 Mar 2005 22:46:38 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DAjLY-0005i7-OB
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 13 Mar 2005 22:46:38 -0800
+Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
+	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j2E7xqfP032161
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 14 Mar 2005 02:59:53 -0500
+From: Rob Landley <rob@landley.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200503140043.50163.rob@landley.net>
+Subject: [uml-devel] [patch] Fixing the stdio console stuttering.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,53 +33,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 13 Mar 2005 01:53:53 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>, Adrian Bunk <bunk@stusta.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 14 Mar 2005 00:43:49 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-OK, below is my latest attempt at getting this right.  It provides a weak
-definition of __gcov_init for gcc's that don't generate it, while gcc's that
-do will have their's override this one.
+I spent far too much of the weekend tracking this sucker down through the guts
+of the tty code.  The problem turns out to be that drivers/char/n_tty.c has a
+write_chan that does buffering and retransmitting data, and
+arch/um/drivers/chan_kern.c ALSO has a write_chan that buffers and retransmits
+data, and the first calls the second but the second doesn't always return
+correct status information for the -EAGAIN case.
 
-The patch is against -bk8.
+When they get confused, both of them try to buffer and retransmit data, hence
+the stuttering.
 
-				Jeff
+The first fix is that if chan_kern's write_chan gets an -EAGAIN, it should NOT
+gratuitously change that to a 0 before returning.  I don't know why that code
+is in there, but deleting those two lines makes 90% the stuttering go away. 
+But not quite all of it.
 
-# Try to finally fix the __gcov_init thing corectly.
-# This patch makes a weak definition of __gcov_init, which will be used if
-# there is no other definition, and which will be overridden if there is a
-# real definition.  Thus, if it is not used, then the weak definition will
-# satisfy the EXPORT_SYMBOL, and if it is, then the real one will.
-Index: linux-2.6.11/arch/um/kernel/gmon_syms.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/gmon_syms.c	2005-03-12 18:59:48.000000000 -0500
-+++ linux-2.6.11/arch/um/kernel/gmon_syms.c	2005-03-12 22:44:31.000000000 -0500
-@@ -10,17 +10,13 @@
- extern void __gcov_init(void *);
- EXPORT_SYMBOL(__gcov_init);
- #else
-+#endif
-+
- extern void __bb_init_func(void *);
- EXPORT_SYMBOL(__bb_init_func);
--#endif
- 
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-+void  __attribute__((weak)) __gcov_init(void *arg)
-+{
-+}
-+
-+EXPORT_SYMBOL(__gcov_init);
+The second half of the fix is arch/um/drivers/line.c has a buffer_data()
+function that adds data to the buffer, tries to flush the buffer out to disk,
+gets -EAGAIN, and then returns -EAGAIN even though it successfully buffered
+all the data it was sent.  So the upper layer resubmits the last chunk of data
+it sent when the console unblocks, even though the lower layer buffered it and
+sent it on by that point.
 
+With this patch, I can't get the UML console to stutter anymore by suspending
+the process it's writing to.  (Add tee to the mix and you can still make it
+hang by suspending its xterm for a second or two, but I think that tee
+is hanging, not UML.  Hangs with RHEL4 tee, but not busybox tee...)
+
+Signed-off-by: Rob Landley <rob@landley.net>
+
+diff -ru linux-2.6.11.2/arch/um/drivers/chan_kern.c linux-2.6.11-umlfix/arch/um/drivers/chan_kern.c
+--- linux-2.6.11.2/arch/um/drivers/chan_kern.c	2005-03-02 01:38:33.000000000 -0600
++++ linux-2.6.11-umlfix/arch/um/drivers/chan_kern.c	2005-03-13 08:31:34.000000000 -0600
+@@ -250,11 +250,8 @@
+ 		n = chan->ops->write(chan->fd, buf, len, chan->data);
+ 		if (chan->primary) {
+ 			ret = n;
+-			if ((ret == -EAGAIN) || ((ret >= 0) && (ret < len))){
++			if ((ret == -EAGAIN) || ((ret >= 0) && (ret < len)))
+ 				reactivate_fd(chan->fd, write_irq);
+-				if (ret == -EAGAIN)
+-					ret = 0;
+-			}
+ 		}
+ 	}
+ 	return(ret);
+diff -ru linux-2.6.11.2/arch/um/drivers/line.c linux-2.6.11-umlfix/arch/um/drivers/line.c
+--- linux-2.6.11.2/arch/um/drivers/line.c	2005-03-02 01:38:25.000000000 -0600
++++ linux-2.6.11-umlfix/arch/um/drivers/line.c	2005-03-13 12:28:50.000000000 -0600
+@@ -128,7 +128,7 @@
+ 		ret = buffer_data(line, buf, len);
+ 		err = flush_buffer(line);
+ 		local_irq_restore(flags);
+-		if(err <= 0)
++		if(err <= 0 && (err != -EAGAIN || !ret))
+ 			ret = err;
+ 	}
+ 	else {
 
 
 -------------------------------------------------------
