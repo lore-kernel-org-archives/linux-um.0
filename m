@@ -2,32 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AJf00-0005zq-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 12:20:28 -0800
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=0)
+	id 1AJfdu-0004UK-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 13:01:42 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AJezz-0002CF-Di
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 11 Nov 2003 12:20:27 -0800
-Subject: Re: [uml-devel] skas & /proc/mm in the host kernel, yet /proc/mm
- 'not found'
-References: <200309182037.h8IKbMEk028815@hongkong.cs.nmsu.edu>
-	<20030919095020.294F93BCE4@home.petschge.de>
-	<20030920173518.521B03BCE7@home.petschge.de>
-	<Pine.LNX.4.58.0309220535000.28187@crystal.nuked.org>
-	<200309232016.h8NKGNaK003251@ccure.karaya.com>
-	<Pine.LNX.4.58.0309232330340.28187@crystal.nuked.org>
-	<200309241619.h8OGJwaK006019@ccure.karaya.com>
-	<87fzig533b.fsf@amaterasu.srvr.nix>
-	<200311100239.hAA2daxD013066@ccure.user-mode-linux.org>
-	<878ymoiso6.fsf@amaterasu.srvr.nix>
-	<200311112013.hABKDPIU002749@ccure.user-mode-linux.org>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200311112013.hABKDPIU002749@ccure.user-mode-linux.org> (Jeff
- Dike's message of "Tue, 11 Nov 2003 15:13:25 -0500")
-Message-ID: <87k766d5ds.fsf@amaterasu.srvr.nix>
+	id 1AJfdt-0008Vm-ES
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 11 Nov 2003 13:01:41 -0800
+Received: from mercury.dur.ac.uk (mercury.dur.ac.uk [129.234.4.40])
+	by hermes.dur.ac.uk (8.11.7-20030923/8.11.7) with ESMTP id hABL1ZP10900
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 21:01:35 GMT
+Received: from altair.dur.ac.uk (altair.dur.ac.uk [129.234.4.14])
+	by mercury.dur.ac.uk (8.12.10+Sun/8.11.7) with ESMTP id hABL1Yk6010321
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 21:01:34 GMT
+Received: from localhost (dit0may@localhost)
+	by altair.dur.ac.uk (8.11.7+Sun/8.11.1) with ESMTP id hABL1Xe05820
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 11 Nov 2003 21:01:33 GMT
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] Child exit when booting uml 2.4.20 on 2.6.0-test4
+ host
+Message-ID: <Pine.GSO.4.58.0311112056030.5253@altair.dur.ac.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: MULTIPART/MIXED; BOUNDARY="-559023410-1804928587-1068584493=:5253"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -38,26 +33,69 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Nov 2003 20:20:15 +0000
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 11 Nov 2003 21:01:33 +0000 (GMT)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 11 Nov 2003, Jeff Dike yowled:
-> nix@esperi.org.uk said:
->> The crash seems to happen when I'm sshed in from the outside world
->> doing things that involve lots of tty activity: I wonder if the tty
->> logging may be at fault?
-> 
-> I just checked the code.  It seems to close everything that it opens, so
-> that appears not to be the problem.
 
-I'll hack uml to freeze rather than crashing so I can try to gdb it next
-time this happens. (If it happens at all with -5...)
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
--- 
-`Me, I want exploding spaceships and pulverized worlds and clashes of
- billion-year-old empires *and* competently written sentences.'
-                                                    --- Matt Austern
+---559023410-1804928587-1068584493=:5253
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+jdike wrote:
+
+>> If you have little  time, I can post this
+>> together with a patch to the spec file which is again  out of
+>> date(some files are not listed).
+>
+>Send me a patch to the spec file, please.
+
+It is a fairly trival fix, eg. see the attached patch.
+
+	Michael Young
+---559023410-1804928587-1068584493=:5253
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="umlutilspec.patch"
+Content-Transfer-Encoding: BASE64
+Content-Description: 
+Content-Disposition: attachment; filename="umlutilspec.patch"
+
+ZGlmZiAtTmF1ciB0b29scy91bWxfdXRpbC5zcGVjLm9yaWcgdG9vbHMvdW1s
+X3V0aWwuc3BlYw0KLS0tIHRvb2xzL3VtbF91dGlsLnNwZWMub3JpZwkyMDAz
+LTA5LTAzIDIwOjM1OjQ1LjAwMDAwMDAwMCArMDEwMA0KKysrIHRvb2xzL3Vt
+bF91dGlsLnNwZWMJMjAwMy0xMS0xMSAyMDozNjoxNS4wMDAwMDAwMDAgKzAw
+MDANCkBAIC0zNCw5ICszNCwxMSBAQA0KICMlYXR0cig3NTUscm9vdCxyb290
+KQkJCSV7X2JpbmRpcn0vbWtyb290ZnMNCiAlYXR0cig3NTUscm9vdCxyb290
+KQkJCSV7X2JpbmRpcn0vdHVuY3RsDQogJWF0dHIoNzU1LHJvb3Qscm9vdCkJ
+CQkle19iaW5kaXJ9L3VtbF9tY29uc29sZQ0KKyVhdHRyKDc1NSxyb290LHJv
+b3QpCQkJJXtfYmluZGlyfS91bWxfbWtjb3cNCiAlYXR0cig3NTUscm9vdCxy
+b290KQkJCSV7X2JpbmRpcn0vdW1sX21vbw0KICVhdHRyKDQ3NTUscm9vdCxy
+b290KQkJCSV7X2JpbmRpcn0vdW1sX25ldA0KICVhdHRyKDc1NSxyb290LHJv
+b3QpCQkJJXtfYmluZGlyfS91bWxfc3dpdGNoDQorJWF0dHIoNzU1LHJvb3Qs
+cm9vdCkJCQkle19iaW5kaXJ9L3VtbF93YXRjaGRvZw0KICVhdHRyKDc1NSxy
+b290LHJvb3QpCQklZGlyCSV7X2xpYmRpcn0vdW1sDQogIyVhdHRyKDc1NSxy
+b290LHJvb3QpCQkJJXtfbGliZGlyfS91bWwvZnVuY3Rpb25zDQogJWF0dHIo
+NzU1LHJvb3Qscm9vdCkJCQkle19saWJkaXJ9L3VtbC9wb3J0LWhlbHBlcg0K
+ZGlmZiAtTmF1ciB0b29scy91bWxfdXRpbC5zcGVjLmluLm9yaWcgdG9vbHMv
+dW1sX3V0aWwuc3BlYy5pbg0KLS0tIHRvb2xzL3VtbF91dGlsLnNwZWMuaW4u
+b3JpZwkyMDAzLTA2LTE3IDIwOjIxOjQ1LjAwMDAwMDAwMCArMDEwMA0KKysr
+IHRvb2xzL3VtbF91dGlsLnNwZWMuaW4JMjAwMy0xMS0xMSAyMDozNzoyNC4w
+MDAwMDAwMDAgKzAwMDANCkBAIC0zNCw5ICszNCwxMSBAQA0KICMlYXR0cig3
+NTUscm9vdCxyb290KQkJCSV7X2JpbmRpcn0vbWtyb290ZnMNCiAlYXR0cig3
+NTUscm9vdCxyb290KQkJCSV7X2JpbmRpcn0vdHVuY3RsDQogJWF0dHIoNzU1
+LHJvb3Qscm9vdCkJCQkle19iaW5kaXJ9L3VtbF9tY29uc29sZQ0KKyVhdHRy
+KDc1NSxyb290LHJvb3QpCQkJJXtfYmluZGlyfS91bWxfbWtjb3cNCiAlYXR0
+cig3NTUscm9vdCxyb290KQkJCSV7X2JpbmRpcn0vdW1sX21vbw0KICVhdHRy
+KDQ3NTUscm9vdCxyb290KQkJCSV7X2JpbmRpcn0vdW1sX25ldA0KICVhdHRy
+KDc1NSxyb290LHJvb3QpCQkJJXtfYmluZGlyfS91bWxfc3dpdGNoDQorJWF0
+dHIoNzU1LHJvb3Qscm9vdCkJCQkle19iaW5kaXJ9L3VtbF93YXRjaGRvZw0K
+ICVhdHRyKDc1NSxyb290LHJvb3QpCQklZGlyCSV7X2xpYmRpcn0vdW1sDQog
+IyVhdHRyKDc1NSxyb290LHJvb3QpCQkJJXtfbGliZGlyfS91bWwvZnVuY3Rp
+b25zDQogJWF0dHIoNzU1LHJvb3Qscm9vdCkJCQkle19saWJkaXJ9L3VtbC9w
+b3J0LWhlbHBlcg0K
+
+---559023410-1804928587-1068584493=:5253--
 
 
 -------------------------------------------------------
