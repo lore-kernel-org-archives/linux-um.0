@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwQZV-0000T2-Ub for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 10:49:21 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AwQBz-0008GI-JJ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 10:25:03 -0800
+	id 1AwRJZ-00031g-6l for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 11:36:57 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AwRA1-0005ov-7N for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 11:27:05 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Problem: copy_thread : pipe failed, err = 24
-References: <20040220092607.GA8007@lain.intern.internetx.de>
-In-Reply-To: <20040220092607.GA8007@lain.intern.internetx.de>
+Subject: Re: [uml-devel] Re: post-2.6.3 build error
+References: <20040223172012.GA29046@bytesex.org>
+	<200402252047.59002.blaisorblade_spam@yahoo.it>
+	<87smgyamnx.fsf@bytesex.org>
+In-Reply-To: <87smgyamnx.fsf@bytesex.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200402261734.11621.blaisorblade_spam@yahoo.it>
+Message-Id: <200402262030.56198.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,47 +29,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 Feb 2004 17:34:11 +0100
+Date: Thu, 26 Feb 2004 20:30:56 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Sebastian Wiesinger <sw@internetx.de>
 
-Alle 10:26, venerd=EC 20 febbraio 2004, Sebastian Wiesinger ha scritto:
-> Hello,
+Alle 22:12, mercoled=EC 25 febbraio 2004, Gerd Knorr ha scritto:
+> BlaisorBlade <blaisorblade_spam@yahoo.it> writes:
+> > __NR_sched_yield ] =3D (syscall_handler_t *) yield
+> >
+> > It should refer to sys_sched_yield. yield() is not even asmlinkage, so
+> > this could case serious problems, and it is commented as "for kernel
+> > usage". Also I checked i386 syscall table, and it uses sys_sched_yield.
 >
-> I'm using a host system with 9 UML boxes and keep getting the error
->
-> copy_thread : pipe failed, err =3D 24
+> There is another related one (asmlinkage where it shouldn't be) in
+> mprotect.c.
 
-This is EMFILE. Either you "ulimit"ed your UML's (and one UML needs a lot o=
-f=20
-filehandles) or you need to increase the filehandle limit where it is=20
-happening.
+Good catch.
 
-> This error appears first after a few hours of running and the boxes
-> with this error is no longer reachable.
+> With the new CONFIG_REGPARM config option it becomes
+> really important to get that right ...
 
-*Very* strange. If you mean that you can no longer login / do anything that=
+Yes, however I think that one asmlinkage more is not very bad (old conventi=
+on=20
+used where the call can be optimized), but that a missing asmlinkage could =
+be=20
+crashy. At least until the prototype is correct; I just noticed that=20
+do_mprotect is protoized without asmlinkage - and this can be actually=20
+crashy. Luckily CONFIG_REGPARM is not in the stock kernel.
+
+If it were, that could have explained some Skas-2.6 crashes which can be se=
+en=20
+here (there is already one BUG hit which explains it in part, see here: "Ho=
+st=20
+2.6.2/3 + CFQ + BlaisorBlade patches"... but on one kernel it Oopsed and on=
 =20
-needs to create a new process inside UML, I understand it. Otherwise, there=
-=20
-is something strange. Please try to watch how many open files UML has (ls=20
-/proc/<Umlpid>/fd is your friend) and increase filehandles and process limi=
-ts=20
-(read man proc and search about /proc/sys/kernel for this).
-
-> The following other errors
-> also appear:
->
-> flush_thread : new thread failed, errno =3D 1
-> copy_thread : clone failed - errno =3D 11
-> copy_thread : clone failed - errno =3D 1
-> copy_thread : clone failed - errno =3D 1
-
-EPERM (very strange) and EAGAIN (too many processes running). Checking the =
-
-source for sys_clone could be needed to diagnose EPERM (unless you have=20
-something as GrSecurity active).
+another it crashed, so there could be something else).
 
 --=20
 Paolo Giarrusso, aka Blaisorblade
