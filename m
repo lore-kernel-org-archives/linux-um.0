@@ -1,20 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ADyrs-0001oS-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 20:20:36 -0800
-Received: from [218.6.23.47] (helo=2911.net)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1ADykR-0004Xc-Qj
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 26 Oct 2003 20:12:56 -0800
-From: "Manager" <Promoteing@2911.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Reply-To: "Manager" <Info@1ccms.com>
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1ADykR-0004Xc-Qj@sc8-sf-mx2.sourceforge.net>
-Subject: [uml-devel] Marketing Strategy
+	id 1AEGgp-0005tp-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 27 Oct 2003 15:22:23 -0800
+Received: from fed1mtao07.cox.net ([68.6.19.124])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AEGbJ-0004SB-D1
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 27 Oct 2003 15:16:41 -0800
+Received: from easyco.com ([68.109.90.156]) by fed1mtao07.cox.net
+          (InterMail vM.5.01.06.05 201-253-122-130-105-20030824) with ESMTP
+          id <20031027231631.CCDM3394.fed1mtao07.cox.net@easyco.com>
+          for <user-mode-linux-devel@lists.sourceforge.net>;
+          Mon, 27 Oct 2003 18:16:31 -0500
+Message-ID: <3F9DA82B.7020808@easyco.com>
+From: Doug Dumitru <doug@easyco.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Has anyone ever considered a COW patch for loop.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -25,47 +29,22 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 27 Oct 2003 11:50:28 +0800
+Date: Mon, 27 Oct 2003 15:20:11 -0800
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Email Marketing is one of the most effective and inexpensive ways to
-promote your products and services.
+It would be really intersting to do a cow format compatible patch for 
+loop.c so that the standard loopback device could mount cow file pairs.
 
-We offer a complete Email Marketing solution with quality service and
-the lowest prices. The result is that you will enjoy more success.
+Has anyone considered/started on this.  If not, I might give it a hack.
 
-1. Targeted Email Addresses
+--------------------------------------------------------------------
+Doug Dumitru     800-470-2756     (610-237-2000)
+EasyCo LLC       doug@easyco.com  http://easyco.com
+--------------------------------------------------------------------
+D3, U2, jBase Virtual Servers.    Off-site backup over the internet.
+Develop/test/deploy from $20/mo.  Fast, secure, cheaper than tape.
+http://mirroredservers.com        http://mirroredbackup.com
 
-We can supply targeted email addresses according to your requirements,
-which are compiled only on your order. We will customize your customer
-email addresses.
-
-* We have millions of email addresses in a wide variety of categories.
-
-2. Send out Targeted Emails for you
-
-If you are worried about any complications or consequences with sending
-out targeted emails, or want to avoid the work of sending out targeted
-emails. We will do it for you!  We can send your email message to your
-targeted customers.
-
-* We can Bullet-Proof your Web Site.
-
-We also offer a wide variety of marketing software. For more details, you
-can refer to: http://www.1ccms.com
-
-We will help you get more business opportunities.
-
-
-Regards!
-
-Dana DeBolt
-Customer Support
-Support@1ccms.com
-Http://www.1ccms.com
-
-To purge your email address from our database,
-go here www.awayoutofdebtfast.com/dbtremove.htm
 
 
 -------------------------------------------------------
