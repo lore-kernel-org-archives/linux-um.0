@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj1o4-0000zM-D4 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 11:45:00 -0800
+	id 1Aj239-00062V-Mu for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 12:00:35 -0800
 Received: from mx2.elte.hu ([157.181.151.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj1o3-0003IG-NQ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 11:44:59 -0800
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Aj239-000307-41 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 12:00:35 -0800
 From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040120194328.GA1518@elte.hu>
-References: <20040120191706.GA32711@elte.hu>
+Message-ID: <20040120200105.GA2289@elte.hu>
+References: <20040120191706.GA32711@elte.hu> <20040120194328.GA1518@elte.hu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="DocE+STaALJfprDB"
+Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
 Content-Disposition: inline
-In-Reply-To: <20040120191706.GA32711@elte.hu>
-Subject: [uml-devel] [patch] uml-fixes2-2.6.1-mm5-A0
+In-Reply-To: <20040120194328.GA1518@elte.hu>
+Subject: [uml-devel] [patch] uml-fixes2-2.6.1-mm5-A1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,25 +27,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Jan 2004 20:43:28 +0100
+Date: Tue, 20 Jan 2004 21:01:05 +0100
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
 
 
 
---DocE+STaALJfprDB
+--2oS5YaxWCcQjTEyO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 
-plus the attached patch is needed ontop of the previous one, to make x86
-compile too. (and UML still compiles & works.)
+> plus the attached patch is needed ontop of the previous one, to make
+> x86 compile too. (and UML still compiles & works.)
+
+i've attached uml-fixes2-2.6.1-A1 which is a replacement for the
+uml-fixes2-2.6.1-A0 patch - the Makefile.lib and Makefile diffs were
+superfluous.
 
 	Ingo
 
---DocE+STaALJfprDB
+--2oS5YaxWCcQjTEyO
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="uml-fixes2-2.6.1-A0"
+Content-Disposition: attachment; filename="uml-fixes2-2.6.1-A1"
 
 --- linux/arch/i386/kernel/head.S.orig	
 +++ linux/arch/i386/kernel/head.S	
@@ -119,64 +123,8 @@ Content-Disposition: attachment; filename="uml-fixes2-2.6.1-A0"
 +#endif
 +
  #endif /* __ASM_I386_PROCESSOR_H */
---- linux/scripts/Makefile.lib.orig	
-+++ linux/scripts/Makefile.lib	
-@@ -144,7 +144,8 @@ _hostcxx_flags = $(HOSTCXXFLAGS) $(HOST_
- 
- 
- # If building the kernel in a separate objtree expand all occurrences
--# of -Idir to -I$(srctree)/dir except for absolute paths (starting with '/').
-+# of -Idir to -Idir -I$(srctree)/dir.
-+# hereby allowing gcc to locate files in both trees. Local tree first.
- 
- ifeq ($(KBUILD_SRC),)
- __c_flags	= $(_c_flags)
-@@ -153,16 +154,15 @@ __hostc_flags	= $(_hostc_flags)
- __hostcxx_flags	= $(_hostcxx_flags)
- else
- flags = $(foreach o,$($(1)),\
--		$(if $(filter -I%,$(filter-out -I/%,$(o))), \
--		$(patsubst -I%,-I$(srctree)/%,$(o)),$(o)))
-+	$(if $(filter -I%,$(o)),$(patsubst -I%,-I$(srctree)/%,$(o)),$(o)))
- 
--# -I$(obj) locates generated .h files
--# -I$(srctree)/$(src) locates .h files in srctree, from generated .c files
--# FIXME: Replace both with specific EXTRA_CFLAGS statements in the makefiles
-+# -I$(obj) locate generated .h files
-+# -I$(srctree)/$(src) locate .h files in srctree, from generated .c files
-+# FIXME: Replace both with specific EXTRA_CFLAGS statements
- __c_flags	= -I$(obj) -I$(srctree)/$(src) $(call flags,_c_flags)
- __a_flags	=                              $(call flags,_a_flags)
- __hostc_flags	= -I$(obj)                     $(call flags,_hostc_flags)
--__hostcxx_flags	= -I$(obj)                     $(call flags,_hostcxx_flags)
-+__hostcxx_flags	=                              $(call flags,_hostcxx_flags)
- endif
- 
- c_flags        = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(CPPFLAGS) \
---- linux/Makefile.orig	
-+++ linux/Makefile	
-@@ -1,7 +1,7 @@
- VERSION = 2
- PATCHLEVEL = 6
- SUBLEVEL = 1
--EXTRAVERSION = -mm5
-+EXTRAVERSION =
- 
- # *DOCUMENTATION*
- # To see a list of typical targets execute "make help"
-@@ -445,10 +445,6 @@ ifdef CONFIG_DEBUG_INFO
- CFLAGS		+= -g
- endif
- 
--# Enable unit-at-a-time mode when possible. It shrinks the
--# kernel considerably.
--CFLAGS += $(call check_gcc,-funit-at-a-time,)
--
- # warn about C99 declaration after statement
- CFLAGS += $(call check_gcc,-Wdeclaration-after-statement,)
- 
 
---DocE+STaALJfprDB--
+--2oS5YaxWCcQjTEyO--
 
 
 -------------------------------------------------------
