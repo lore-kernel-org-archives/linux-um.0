@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CbOac-0002B6-9a for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Dec 2004 11:32:06 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CbOab-0000V6-Au for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Dec 2004 11:32:06 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] RE: What to do with uml_switch?
-References: <BAY24-F30259BA099D39BC383A19D83B30@phx.gbl>
-In-Reply-To: <BAY24-F30259BA099D39BC383A19D83B30@phx.gbl>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+	id 1CbOiW-0002ux-VV for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Dec 2004 11:40:16 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CbOiV-0007bu-Ed
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Dec 2004 11:40:16 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Message-ID: <20041206192526.GC12953@bytesex>
+References: <200412040452.32722.blaisorblade_spam@yahoo.it>
+	<29928.1102218163@marajade.sandelman.ottawa.on.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200412062035.40672.blaisorblade_spam@yahoo.it>
+In-Reply-To: <29928.1102218163@marajade.sandelman.ottawa.on.ca>
+Subject: [uml-devel] Re: What to do with uml_switch?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,61 +29,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 6 Dec 2004 20:35:40 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Steve Schmidtke <steve_schmidtke@hotmail.com>, kraxel@bytesex.org, uml@uxu.ch, mcr@marajade.sandelman.ottawa.on.ca, jdike@addtoit.com
+Date: Mon, 6 Dec 2004 20:25:27 +0100
+To: Michael Richardson <mcr@marajade.sandelman.ottawa.on.ca>
+Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, Steve Schmidtke <steve_schmidtke@hotmail.com>, Felix =?iso-8859-1?Q?M=FCri?= <uml@uxu.ch>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Sunday 05 December 2004 21:00, Steve Schmidtke wrote:
-> Blaisorblade wrote:
-> >It is apparent that something is wrong with uml_switch (though I don't
-> > know the code and I'm not going to express technical opinion, only
-> > "management" one).
+>   uml_netjig is a tool which does the following:
+>   
+>   1) moves packets using "daemon" mode a la uml_switch.
+>   2) has an expect-friendly command line interface 
 
-> Yes, the fact that a core file has sat in the directory for almost 2 years
-> says something. :)
+Sounds ok.
 
-> >Steve, merging at least the earlier of your patches (they are splitup The
-> >Right Way(tm)) might be done soon, without lots of discussions.
+>   3) can create *multiple* switches and keep them seperate
 
-> Thanks.  I havn't noticed any problems with the changes I've made so far.
+Hmm, not sure I like that idea.  Is this with vlan tagging support?
+How can this be configured?  Is the command mode the only way, or can
+you also use some config file or command line switches for that?
 
-> >If you feel so, you might split uml_switch from the rest (but remember the
-> >user point of view - two packages doubles the setup time).
+>   4) can record all packets to a .pcap file
+>   5) can play packets from a .pcap file at a given rate 
+>      (or under command line interface control)
+>   6) can optionally answer ARP queries for imaginary nodes.
 
-> Who is this directed to?  Who is the maintainer at the moment anyways?
+Hmm, I don't think it is a good idea to put that kind of testing code
+into the switch daemon.  I'd make the switch daemon behave as close as
+possible to a real switch, then use the normal tools you use for real
+networks as well.  I think uml_switch should just support a monitor port
+which will see all traffic (even the switched one), that is the usual
+way how it's done on physical hardware.
 
-It's (un)maintained by Jeff Dike, i.e. he's the last one updating the version 
-on sf.net (you might call that "official version" - but I'm against the 
-"official version" concept). Actually, you can guess he has no time to do 
-anything else than bugfixes on it. We haven't yet managed to build one single 
-2.4 up-to-date UML tree (i.e. with both *all* security fixes and the work 
-against 2.6.9 host). Currently probably the stablest version seems to be one 
-of the 2.6.9 incarnations (either it or -bb4).
+(4) may make sense neverless, to avoid packages being lost on load
+peaks.
 
-> >If you are good guys (and you are), I think you can sort out by discussing
-> >it
-> >here (I'm just against the creation of a separate ML for that development
-> > - things don't work that way).
+(5) + (6) I'd keep separated for sure.  Can be done by either some
+separate utility which connects to the switch daemon the same way the
+uml machines do that, and then injects the packets / answers arp and so
+on (probably the better option for test runs).  Or just connect the
+switch daemon via tuntap device and setup proxy-arp on the host machine
+to simulate the imaginary nodes, and also inject packets via tuntap
+network interface.
 
-> >So, the ball is over to you. In this moment, Gerd Knorr seems the one who
-> >has
-> >the time and the position (working in SuSE) to manage it well (he can push
-> >updates to its users and so on, for instance) but it's just my little 2
-> >cents.
-
-> I'd be happy with Gerd as maintainer.  I'd nominate myself, but I have no
-> system that I can dedicate to the project.  I also have a hard time saying
-> no to interesting ideas.
-
-Which is bad about stability... however you share that with Jeff Dike, it 
-seems :-)
-
-> Steve Schmidtke
+  Gerd
 
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+#define printk(args...) fprintf(stderr, ## args)
+
 
 
 -------------------------------------------------------
