@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19zKnK-0007nu-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 16 Sep 2003 11:43:22 -0700
-Received: from smtp013.mail.yahoo.com ([216.136.173.57])
+	id 19zL3A-0000t7-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 16 Sep 2003 11:59:44 -0700
+Received: from smtp101.mail.sc5.yahoo.com ([216.136.174.139])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 19zKnJ-0008Jq-FR
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Sep 2003 11:43:21 -0700
+	id 19zL3A-0003xe-9o
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Sep 2003 11:59:44 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: pthreads?
-References: <Pine.GSO.4.21.0309151127130.3302-100000@vervain.sonytel.be> <1063623075.2123.9.camel@henrik.marasystems.com>
-In-Reply-To: <1063623075.2123.9.camel@henrik.marasystems.com>
+Subject: Re: [uml-devel] Cannot see stack after add-symbol-file
+References: <3F621741.4000606@bezeqint.net>
+In-Reply-To: <3F621741.4000606@bezeqint.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200309162044.41268.blaisorblade_spam@yahoo.it>
+Message-Id: <200309162101.02464.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,37 +26,40 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Sep 2003 20:44:41 +0200
+Date: Tue, 16 Sep 2003 21:01:02 +0200
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 12:51, luned=EC 15 settembre 2003, Henrik Nordstrom ha scritto:
-> m=E5n 2003-09-15 klockan 11.28 skrev Geert Uytterhoeven:
-> > No, UML only _uses_ those symbols, libpthread redefines them in a way
-> > that breaks UML.
+Alle 20:58, venerd=EC 12 settembre 2003, Etay Meiri wrote:
+> Hi,
 >
-> uml redefines several libc symbols which does conflict with pthreads.
+> I have a strange problem when debugging my module under uml.
+> When the module crashes, I go into the debugger and display
+> the stack trace. There are several frame and there is one named
+> "????". I assume this is my module so I add the symbol file according
+> to the howto. The symbols load ok but the next time I do 'bt' I get
+> only the frame of the panic.
 
-> The most notable is that uml overrides malloc/free but I think there is
-> also a few other overrides due to kernel library calls having the same
-> name as their libc equivalent calls. If you are to link with pthreads
-> each of these must be verified to be threads safe to the same level as
-> their libc/pthreads counterpart. On the positive side most kernel lib
-> calls most likely are threads safe due to the multithreaded nature of
-> the kernel, but any lib call making use of locking or other kernel
-> constructs will almost certainly fail or cause problems if ever invoked
-> from a pthread.
-There is(from long time) the idea to make possible turning UML into a libra=
-ry.
-This means that solving this issue in UML is worthwhile. I.e., let's suppos=
-e=20
-that the malloc's conflict. Then, Uml will use uml_malloc, which will be is=
+>
+> <<< another backtraced >>>
+>
+> (gdb) bt
+> #0  panic (fmt=3D0xa01ef540 "Kernel mode fault at addr 0x%lx, ip 0x%lx")
+>      at panic.c:52
+> (gdb)
+>
+>
+> The host is RH9 running kernel 2.6.0-test4. The uml is 2.4.22. This also
+> happened when I loaded the symbols before the module crashed.
+>
+> Any idea?
+What version of GDB are you running? Some time ago, there were various thre=
+ads=20
+in both lists(devel/user) about GDB showing only the last frame in all=20
+backtraces. The bug was tracked down... and it came from binutils, IIRC(the=
 =20
-own version, and everyone will be happy. Using a -Dmalloc=3Duml_malloc woul=
-d=20
-make unnecessary changing the source. This is a quick idea(and details abou=
-t=20
-the exact names are to be tuned), but I hope it's useful.
+proposed fix was a workaround in GDB). Maybe it is appearing here in a=20
+different form.
 --=20
 cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
