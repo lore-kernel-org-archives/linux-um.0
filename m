@@ -1,25 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDnZo-0005I6-MA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:54:00 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DDnZn-0005SC-QI for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:54:00 -0800
+	id 1DDnP8-0004SV-5v for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 09:42:58 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DDnOn-0002lD-1L for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 09:42:57 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.4 do_mmap_pgoff compile problem
-References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
-	<cbec11ac05032020433867d95e@mail.gmail.com>
-	<423E5806.2070501@rimuhosting.com>
-In-Reply-To: <423E5806.2070501@rimuhosting.com>
+Subject: Re: [uml-devel] Re: [uml-user] uml help __alloc_pages: 0-order
+	allocation failed (gfp=0xf0/0)
+References: <000d01c52b22$8ab2c020$0201a8c0@lualele>
+	<200503172049.39200.blaisorblade@yahoo.it>
+	<20050320222507.B15902@sphinx.mythic-beasts.com>
+In-Reply-To: <20050320222507.B15902@sphinx.mythic-beasts.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200503221850.10647.blaisorblade@yahoo.it>
+Message-Id: <200503221841.55755.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,33 +32,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 18:50:10 +0100
+Date: Tue, 22 Mar 2005 18:41:55 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Peter <peter.spamcatcher@rimuhosting.com>
+Cc: Paul Warren <pdw@ex-parrot.com>, Chris Wedgwood <cw@f00f.org>, itamar <itamar@ispbrasil.com.br>
 
-On Monday 21 March 2005 06:13, Peter wrote:
-> linux-2.4.27.tar.bz2 + uml-2.4.27-bs2-pre6.patch.bz2 patches with no
-> error.
+On Sunday 20 March 2005 23:25, Paul Warren wrote:
+> [ trimmed cc to just -devel list]
+>
+> On Thu, Mar 17, 2005 at 08:49:38PM +0100, Blaisorblade wrote:
+> > Paul Warren said that there is a leak in 2.4 UML related to hostfs
+> > stuff.. and I already saw this message from some 2.4 recent UMLs. I hope
+> > Paul Warren can explain what he saw and help us...
+> >
+> > In case we have confirmation it's hostfs-related, we only need to go back
+> > to the stable 2.4.24-1um hostfs code (i.e. pre-humfs), as I already do in
+> > the 2.4-bs tree.
+>
+> OK, our setup is that we have a load of distribution mirrors that are
+> NFS mounted onto the host server.  The guests then mount these using
+> hostfs.  We first noticed that a nightly updatedb was causing the amount
+> of memory that could be malloced to decrease.  We found that doing a
+> "find" across the entire hostfs mount also did the trick.
+>
+> I've attached the script and program that we used to meause the maximum
+> amount of memory that can be malloced.  We then ran:
+>
+>  while : ; do ./maxalloc ; updatedb ; done
+>
+> ... and watched the memory leak away.
 
-> But I get the error below compile.  It seems like the UML code 
-> is passing in a mm as the first arg and the only definitions of
-> `do_mmap_pgoff' I can find start with a file arg and have no mm.  I
-> dropped the mm arg in the code, and it then compiles OK.  But segfaults
-> immediately on use.  I'm not sure if that is caused by my code change or
-> not.
-No, your code change is correct... in fact is what I have in my local tree. 
-The only problem I recall is with GCC 3.3.2 from Mandrake 10.0, which 
-miscompiles any UML/2.4 (but not UML/2.6). I've never found out why.
+> Please let me know if you want some more info.
+In priority order:
+1) Try it on 2.6 and/or 2.4.27-bs (either bs1 or bs2-pre6, whichever you 
+prefer and gives you less problems).
+2) Try finding the item in /proc/meminfo (and if it's from Slab, 
+inside /proc/slabinfo) which is increasing in the memory leak...
+> Paul
 
-> BTW: what is the current recommendation for a 'stable' 2.4 UML guest
-> kernel?
-Hmm, I *have* to release the -bs2 sooner or later... the hostfs support is 
-surely better in -bs1, for the rest 2.4.27-um1 is slightly better
-> Regards, Peter
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 http://www.user-mode-linux.org/~blaisorblade
+
 
 
 
