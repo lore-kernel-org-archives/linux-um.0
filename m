@@ -1,15 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CwRmZ-0007EE-JR for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Feb 2005 13:11:27 -0800
+	id 1CwVcH-0004YC-Df for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Feb 2005 17:17:05 -0800
 Received: from ktown.kde.org ([131.246.103.200])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CwRmZ-0006ie-3f for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Feb 2005 13:11:27 -0800
-Message-ID: <20050202211125.30113.qmail@ktown.kde.org>
-From: das deniz <das_deniz@yahoo.com>
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CwVcG-00084R-O7 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Feb 2005 17:17:05 -0800
+Message-ID: <20050203011703.30244.qmail@ktown.kde.org>
+From: Jeremy Fitzhardinge <jeremy@goop.org>
 Reply-To: 98444@bugs.kde.org
 Content-Type: text/plain; charset="utf-8"   
 In-Reply-To: <20050202220205.98444.das_deniz@yahoo.com>  
@@ -26,7 +26,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 2 Feb 2005 21:11:25 -0000
+Date: 3 Feb 2005 01:17:03 -0000
 To: user-mode-linux-devel@lists.sourceforge.net
 
 ------- You are receiving this mail because: -------
@@ -37,10 +37,14 @@ http://bugs.kde.org/show_bug.cgi?id=98444
 
 
 
-------- Additional Comments From das_deniz yahoo com  2005-02-02 22:11 -------
-Created an attachment (id=9396)
- --> (http://bugs.kde.org/attachment.cgi?id=9396&action=view)
-complete valgrind log of crash
+------- Additional Comments From jeremy goop org  2005-02-03 02:17 -------
+Hm, nothing obvious sticks out.  That clone() is basically just a fork() with no special options, which Valgrind has supported for a long time, so I'm not sure what's going on there.  The warnings about tlsinfo and *_tidptr are spurious.
+
+It seems the child process just jumps to 0x7 as soon as it starts running...
+
+Is there any difference with --tool=none?
+
+BTW, you're still going to get bitten by stack switching with memcheck and addrcheck.
 
 
 -------------------------------------------------------
