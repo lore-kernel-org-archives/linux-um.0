@@ -1,20 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AZwM2-0006lH-O2
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 10:06:30 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AZwM2-0000mN-6y
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 10:06:30 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	id 1AZwgY-0007MX-2d
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 10:27:42 -0800
+Received: from i164-069.nv.iinet.net.au ([203.59.164.69] helo=cp.yi.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AZwgX-0004xk-Bj
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 10:27:41 -0800
+Received: from erdos.home ([10.0.1.2] helo=erdos)
+	by cp.yi.org with esmtp (Exim 3.36 #1 (Debian))
+	id 1AZwgU-0007p3-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 27 Dec 2003 02:27:38 +0800
+Received: from cameron by erdos with local (Exim 3.36 #1 (Debian))
+	id 1AZwgT-0003fq-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 27 Dec 2003 02:27:37 +0800
+From: Cameron Patrick <cameron@patrick.wattle.id.au>
+Subject: Re: [uml-devel] UML patches against vanilla 2.6.0
+Message-ID: <20031226182737.GK2378@erdos.home>
+References: <200312261905.48277.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200312261905.48277.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] UML patches against vanilla 2.6.0
+In-Reply-To: <200312261905.48277.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,43 +32,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Dec 2003 19:05:48 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Sat, 27 Dec 2003 02:27:37 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Go here:
+On Fri, Dec 26, 2003 at 07:05:48PM +0100, BlaisorBlade wrote:
 
-http://web.tiscali.it/no-redirect-tiscali/blaisorblade/index.html
+| Go here:
+| 
+| http://web.tiscali.it/no-redirect-tiscali/blaisorblade/index.html
 
-to fetch a bunch of patches against stock 2.6.0 kernel to build UML(no, you 
-don't need the -test9 patch on main site: it's included). That page describes 
-main changes of it against the latest 2.6 patch.
-They are described in the Readme, that you *should* read; the tarball contains 
-that Readme, too.
+Which says:
 
-To apply this, you must apply all the patches in order apart from the F-02 
-one. If you are a developer, you can check the README and see what you want.
+	The only problematic patch is A-04-MM-compile-fix.patch, but
+	maybe i386 can live even with it (I don't remember if I got a
+	successful compilation with it applied). However, I think it's
+	not at all safe even if it compiles. 
 
-You can then build both i386 with SKAS support and UML from the same tree. The 
-SKAS guest kernels should work also on 2.4 host, unless you take the F-02 
-patch, too (between the split-out ones).
+and in the README:
+	
+	but I think you'd better avoid doing this or do a complete
+	backup, since you'll need it...).
 
-Now I've collected also some patches from Ingo Molnar and Michael A. Young; 
-the only remaining issue with this package is with Fedora (workarounds 
-available, see the Readme). Plus all the patches still to port from UML 2.4.
+Eeek!  I just upgraded my home desktop to a 2.6.0 kernel with that patch
+applied (actually as part of Jeff's 2.6.0-test9 patch) and so far it
+seems to be working.  Looking at the patch, it seems innocuous enough -
+why should it be unsafe on an i386 kernel?
 
-If you are just a user, and you find 00-Combo-1.patch.bz2, fetch and apply it:
+Cameron.
 
-bzcat 00-Combo-1.patch.bz2|patch -p1
-
-I've not yet built this combo patch since I've not got one 2.6.0 which is 
-truely "vanilla". I hope you'll find it soon.
-
-Bye
--- 
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+(Who doesn't have a complete system backup and hopes he won't regret not
+making one soon...)
 
 
 
