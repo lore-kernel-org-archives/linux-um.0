@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj1Mh-0005Hd-KT for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 11:16:43 -0800
-Received: from mx1.elte.hu ([157.181.1.137])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj1Mg-00075p-V4 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 11:16:43 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040120191706.GA32711@elte.hu>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="wRRV7LY7NUeQGEoC"
-Content-Disposition: inline
-Subject: [uml-devel] [patch] uml-fixes-2.6.1-mm5-A1
+	id 1Aj1Tn-00005X-CW for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 11:24:03 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1Aj1Tm-0005mU-Pi for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 11:24:02 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_bDYDAy7STdKdbCl"
+Message-Id: <200401202026.19785.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] First shrinkage of *_user.c files
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,177 +25,254 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Jan 2004 20:17:06 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
+Date: Tue, 20 Jan 2004 20:26:19 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
 
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
+--Boundary-00=_bDYDAy7STdKdbCl
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+I've started removing some functions from the user_objs, and here there are 
+the two first patches. Any comment on the style of these changes is highly 
+appreciated. The next thing I'm going to do is to remove entirely 
+hostaudio_user.c (I've already started this, but I've not got a successful 
+test yet, since I also did a little fix in this).
+Bye
+-- 
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+EOSIGN
 
-Jeff, Andrew,
+--Boundary-00=_bDYDAy7STdKdbCl
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="Os_expand_1.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="Os_expand_1.diff"
 
-the attached patch is needed to make UML work on 2.6.1-mm5. It does the 
-following things:
+--- ./arch/um/include/os.h.fix	2004-01-17 18:41:12.000000000 +0100
++++ ./arch/um/include/os.h	2004-01-19 20:54:48.000000000 +0100
+@@ -130,6 +130,7 @@
+ extern int os_set_slip(int fd);
+ extern int os_set_owner(int fd, int pid);
+ extern int os_sigio_async(int master, int slave);
++extern int os_make_pty_raw(int master);
+ extern int os_mode_fd(int fd, int mode);
+ 
+ extern int os_seek_file(int fd, __u64 offset);
+--- ./arch/um/kernel/sigio_user.c.fix	2004-01-17 18:41:14.000000000 +0100
++++ ./arch/um/kernel/sigio_user.c	2004-01-19 21:00:50.000000000 +0100
+@@ -50,7 +50,6 @@
+ void __init check_one_sigio(void (*proc)(int, int))
+ {
+ 	struct sigaction old, new;
+-	struct termios tt;
+ 	struct openpty_arg pty = { .master = -1, .slave = -1 };
+ 	int master, slave, err;
+ 
+@@ -68,12 +67,9 @@
+ 		return;
+ 	}
+ 
+-	/* XXX These can fail with EINTR */
+-	if(tcgetattr(master, &tt) < 0)
+-		panic("check_sigio : tcgetattr failed, errno = %d\n", errno);
+-	cfmakeraw(&tt);
+-	if(tcsetattr(master, TCSADRAIN, &tt) < 0)
+-		panic("check_sigio : tcsetattr failed, errno = %d\n", errno);
++	err = os_make_pty_raw(master);
++	if (err < 0)
++		panic("check_sigio : os_make_pty_raw failed, errno = %d\n", -err);
+ 
+ 	err = os_sigio_async(master, slave);
+ 	if(err < 0)
+--- ./arch/um/os-Linux/file.c.fix	2004-01-17 18:41:19.000000000 +0100
++++ ./arch/um/os-Linux/file.c	2004-01-19 21:24:27.000000000 +0100
+@@ -8,6 +8,7 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <signal.h>
++#include <termios.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/socket.h>
+@@ -132,6 +133,32 @@
+ 	return(0);
+ }
+ 
++int os_make_pty_raw(int master)
++{
++	struct termios tt;
++	int err;
++
++	while (((err = tcgetattr(master, &tt)) < 0) && errno == EINTR)
++		;
++	if(err < 0) {
++		printk("os_make_pty_raw : tcgetattr failed, errno = %d\n", errno);
++		goto fail;
++	}
++
++	cfmakeraw(&tt);
++
++	while (((err = tcsetattr(master, TCSADRAIN, &tt)) < 0) && errno == EINTR)
++		;
++	if(err < 0) {
++		printk("os_make_pty_raw : tcsetattr failed, errno = %d\n", errno);
++		goto fail;
++	}
++
++	return 0;
++fail:
++	return -errno;
++}
++
+ /* FIXME: ensure namebuf in os_get_if_name is big enough */
+ int os_get_ifname(int fd, char* namebuf)
+ {
 
- - update UML to the extable changes
+--Boundary-00=_bDYDAy7STdKdbCl
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="Os_expand_2.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="Os_expand_2.diff"
 
- - remove __i386__ kgdb dependency from config.h. The config.h kgdb.h 
-   thing is a kludge by itself i think - but this change doesnt make it
-   any better. It might break amd64 which has CONFIG_X86 too iirc - but 
-   this unbreaks UML compilation.
-
- - move i386 TASK_SIZE definition from page.h back to processor.h. This 
-   was moved to page.h by the 4G/4G patch and there's no reason why we 
-   couldnt leave it in processor.h. This unbreaks UML compilation.
-
- - a top Makefile change broke UML compilation. I'm not sure why, but it 
-   makes the difference.
-
-with this patch applied, UML compiles & works fine.
-
-	Ingo
-
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="uml-fixes-2.6.1-mm5-A1"
-
---- linux/arch/um/sys-i386/extable.c.orig	
-+++ linux/arch/um/sys-i386/extable.c	
-@@ -1,30 +0,0 @@
--/*
-- * linux/arch/i386/mm/extable.c
-- */
--
--#include <linux/config.h>
--#include <linux/module.h>
--#include <linux/spinlock.h>
--#include <asm/uaccess.h>
--
--/* Simple binary search */
--const struct exception_table_entry *
--search_extable(const struct exception_table_entry *first,
--	       const struct exception_table_entry *last,
--	       unsigned long value)
+--- ./arch/um/drivers/chan_kern.c.fix	2004-01-17 18:41:10.000000000 +0100
++++ ./arch/um/drivers/chan_kern.c	2004-01-19 21:34:30.000000000 +0100
+@@ -17,6 +17,7 @@
+ #include "irq_user.h"
+ #include "sigio.h"
+ #include "line.h"
++#include "os.h"
+ 
+ static void *not_configged_init(char *str, int device, struct chan_opts *opts)
+ {
+@@ -87,6 +88,52 @@
+ 	.winch		= 0,
+ };
+ 
++void generic_close(int fd, void *unused)
++{
++	os_close_file(fd);
++}
++
++int generic_read(int fd, char *c_out, void *unused)
++{
++	int n;
++
++	n = os_read_file(fd, c_out, sizeof(*c_out));
++
++	if(n == -EAGAIN) 
++		return(0);
++	else if(n == 0) 
++		return(-EIO);
++	return(n);
++}
++
++int generic_write(int fd, const char *buf, int n, void *unused)
++{
++	return(os_write_file(fd, buf, n));
++}
++
++int generic_window_size(int fd, void *unused, unsigned short *rows_out,
++			unsigned short *cols_out)
++{
++	int rows, cols;
++	int ret;
++
++	ret = os_window_size(fd, &rows, &cols);
++	if(ret < 0)
++		return(ret);
++
++	ret = ((*rows_out != rows) || (*cols_out != cols));
++
++	*rows_out = rows;
++	*cols_out = cols;
++
++	return(ret);
++}
++
++void generic_free(void *data)
++{
++	kfree(data);
++}
++
+ static void tty_receive_char(struct tty_struct *tty, char ch)
+ {
+ 	if(tty == NULL) return;
+--- ./arch/um/drivers/chan_user.c.fix	2004-01-17 18:41:10.000000000 +0100
++++ ./arch/um/drivers/chan_user.c	2004-01-19 21:32:03.000000000 +0100
+@@ -21,31 +21,6 @@
+ #include "choose-mode.h"
+ #include "mode.h"
+ 
+-void generic_close(int fd, void *unused)
 -{
--        while (first <= last) {
--		const struct exception_table_entry *mid;
--		long diff;
--
--		mid = (last - first) / 2 + first;
--		diff = mid->insn - value;
--                if (diff == 0)
--                        return mid;
--                else if (diff < 0)
--                        first = mid+1;
--                else
--                        last = mid-1;
--        }
--        return NULL;
+-	os_close_file(fd);
 -}
---- linux/arch/um/sys-i386/Makefile.orig	
-+++ linux/arch/um/sys-i386/Makefile	
-@@ -1,4 +1,4 @@
--obj-y = bugs.o checksum.o extable.o fault.o ksyms.o ldt.o ptrace.o \
-+obj-y = bugs.o checksum.o fault.o ksyms.o ldt.o ptrace.o \
- 	ptrace_user.o semaphore.o sigcontext.o syscalls.o sysrq.o time.o
- 
- obj-$(CONFIG_HIGHMEM) += highmem.o
---- linux/include/linux/config.h.orig	
-+++ linux/include/linux/config.h	
-@@ -2,7 +2,7 @@
- #define _LINUX_CONFIG_H
- 
- #include <linux/autoconf.h>
--#if defined(__i386__) && !defined(IN_BOOTLOADER)
-+#if defined(CONFIG_X86) && !defined(IN_BOOTLOADER)
- #include <asm/kgdb.h>
- #endif
- 
---- linux/include/asm-i386/page.h.orig	
-+++ linux/include/asm-i386/page.h	
-@@ -79,30 +79,6 @@ typedef struct { unsigned long pgprot; }
- #define PAGE_ALIGN(addr)	(((addr)+PAGE_SIZE-1)&PAGE_MASK)
- 
- /*
-- * This handles the memory map.. We could make this a config
-- * option, but too many people screw it up, and too few need
-- * it.
-- *
-- * A __PAGE_OFFSET of 0xC0000000 means that the kernel has
-- * a virtual address space of one gigabyte, which limits the
-- * amount of physical memory you can use to about 950MB. 
-- *
-- * If you want more physical memory than this then see the CONFIG_HIGHMEM4G
-- * and CONFIG_HIGHMEM64G options in the kernel configuration.
-- *
-- * Note: on PAE the kernel must never go below 32 MB, we use the
-- * first 8 entries of the 2-level boot pgd for PAE magic.
-- */
 -
--#ifdef CONFIG_X86_4G_VM_LAYOUT
--#define __PAGE_OFFSET		(0x02000000)
--#define TASK_SIZE		(0xff000000)
--#else
--#define __PAGE_OFFSET		(0xc0000000)
--#define TASK_SIZE		(0xc0000000)
--#endif
+-int generic_read(int fd, char *c_out, void *unused)
+-{
+-	int n;
 -
--/*
-  * This much address space is reserved for vmalloc() and iomap()
-  * as well as fixmap mappings.
-  */
---- linux/include/asm-i386/processor.h.orig	
-+++ linux/include/asm-i386/processor.h	
-@@ -291,6 +291,30 @@ extern unsigned int machine_submodel_id;
- extern unsigned int BIOS_revision;
- extern unsigned int mca_pentium_flag;
+-	n = os_read_file(fd, c_out, sizeof(*c_out));
+-
+-	if(n == -EAGAIN) 
+-		return(0);
+-	else if(n == 0) 
+-		return(-EIO);
+-	return(n);
+-}
+-
+-/* XXX Trivial wrapper around os_write_file */
+-
+-int generic_write(int fd, const char *buf, int n, void *unused)
+-{
+-	return(os_write_file(fd, buf, n));
+-}
+-
+ int generic_console_write(int fd, const char *buf, int n, void *unused)
+ {
+ 	struct termios save, new;
+@@ -62,29 +37,6 @@
+ 	return(err);
+ }
  
-+/*
-+ * This handles the memory map.. We could make this a config
-+ * option, but too many people screw it up, and too few need
-+ * it.
-+ *
-+ * A __PAGE_OFFSET of 0xC0000000 means that the kernel has
-+ * a virtual address space of one gigabyte, which limits the
-+ * amount of physical memory you can use to about 950MB. 
-+ *
-+ * If you want more physical memory than this then see the CONFIG_HIGHMEM4G
-+ * and CONFIG_HIGHMEM64G options in the kernel configuration.
-+ *
-+ * Note: on PAE the kernel must never go below 32 MB, we use the
-+ * first 8 entries of the 2-level boot pgd for PAE magic.
-+ */
-+
-+#ifdef CONFIG_X86_4G_VM_LAYOUT
-+#define __PAGE_OFFSET		(0x02000000)
-+#define TASK_SIZE		(0xff000000)
-+#else
-+#define __PAGE_OFFSET		(0xc0000000)
-+#define TASK_SIZE		(0xc0000000)
-+#endif
-+
- /* This decides where the kernel will search for a free chunk of vm
-  * space during mmap's.
-  */
---- linux/Makefile.orig	
-+++ linux/Makefile	
-@@ -404,6 +404,10 @@ endif
- 
- include $(srctree)/arch/$(ARCH)/Makefile
- 
-+# Let architecture Makefiles change CPPFLAGS if needed
-+CFLAGS := $(CPPFLAGS) $(CFLAGS)
-+AFLAGS := $(CPPFLAGS) $(AFLAGS)
-+
- core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/
- 
- SUBDIRS		+= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+-int generic_window_size(int fd, void *unused, unsigned short *rows_out,
+-			unsigned short *cols_out)
+-{
+-	int rows, cols;
+-	int ret;
+-
+-	ret = os_window_size(fd, &rows, &cols);
+-	if(ret < 0)
+-		return(ret);
+-
+-	ret = ((*rows_out != rows) || (*cols_out != cols));
+-
+-	*rows_out = rows;
+-	*cols_out = cols;
+-
+-	return(ret);
+-}
+-
+-void generic_free(void *data)
+-{
+-	kfree(data);
+-}
+-
+ static void winch_handler(int sig)
+ {
+ }
 
---wRRV7LY7NUeQGEoC--
+--Boundary-00=_bDYDAy7STdKdbCl--
+
 
 
 -------------------------------------------------------
