@@ -1,13 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: uml <uml@dot1q.net>
-Message-id: <008901c44c40$c2ed0e30$dd02a8c0@ferraro>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: <114001c44bf7$b69ca120$2000000a@schlepptopp>
-	<011001c44c0d$ebdeceb0$dd02a8c0@ferraro>
-Subject: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC 3.3.3
-	similarities to 2.6.6!?
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BXGIi-0005yk-Ai for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Jun 2004 02:20:16 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BXGIh-0005lI-N9
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Jun 2004 02:20:15 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] [2.6 patch] terminal/console cleanups
+Message-ID: <20040607090328.GA20535@bytesex.org>
+References: <20040528135816.GA27837@bytesex.org>
+	<Pine.GSO.4.58.0406061918460.5793@waterleaf.sonytel.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.GSO.4.58.0406061918460.5793@waterleaf.sonytel.be>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,141 +29,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 06 Jun 2004 23:37:30 -0400
-To: uml-user <user-mode-linux-user@lists.sourceforge.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 7 Jun 2004 11:03:29 +0200
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-After much testing and compiling, I have some results.
+On Sun, Jun 06, 2004 at 07:20:36PM +0200, Geert Uytterhoeven wrote:
+> On Fri, 28 May 2004, Gerd Knorr wrote:
+> > This is a major cleanup of the uml terminal drivers and console handling
+> > (console as in "where the kernel messages go to", not as in "linux
+> > virtual consoles).  The changes in detail:
+> 
+> Nice! Does this also mean the UML console no longer interferes with the normal
+> virtual console subsystem? Before it was not possible to enable CONFIG_VT
+> without some serious surgery to the UML vc subsystem, because both tried to
+> attach to the same device number.
 
-These optimizations cause problems, ranging from memory not being correctly
-passed, to the UMID not being recognized to the console being unusable
-(until reset), to just failure to boot:
--fgcse
--fgcse-lm
--fgcse-sm
--fschedule-insns
--fschedule-insns2
+No, that hasn't changed.  Guess you are asking because of the uml
+virtual framebuffer driver, where you want run fbcon on top of?
 
----8<---
-Switch differences between -O1 and -O2 on GCC 3.3.3:
--fforce-mem
--foptimize-sibling-calls
--fstrength-reduce
--fcse-follow-jumps
--fcse-skip-blocks
--frerun-cse-after-loop
--frerun-loop-opt
--fgcse
--fgcse-lm
--fgcse-sm
--fdelete-null-pointer-checks
--fexpensive-optimizations
--fregmove
--fschedule-insns
--fschedule-insns2
--fsched-interblock
--fsched-spec
--fcaller-saves
--fpeephole2
--freorder-blocks
--freorder-functions
--fstrict-aliasing
--falign-functions
--falign-jumps
--falign-loops
--falign-labels
+I'm not sure how to deal with that best.
 
----8<---
--fforce-mem -foptimize-sibling-calls -fstrength-reduce -fcse-follow-jumps -f
-cse-skip-blocks -frerun-cse-after-loop -frerun-loop-opt -fexpensive-optimiza
-tions -fregmove -fsched-interblock -fsched-spec -fcaller-saves -fpeephole2 -
-freorder-blocks -freorder-functions -fstrict-aliasing -falign-functions -fal
-ign-jumps -falign-loops -falign-labels -fgcse -fgcse-lm -fgcse-sm
-RESULT: Hangs on 'Mounted devfs on /dev'; killall -9 linux-2.4.26; reset;
+Right now in UML /dev/tty[0-8] are simple terminal lines.  /dev/tty0
+hasn't the special meaning of "current foreground console" as there are
+simply no virtual consoles.  It is possible to use screen to build a
+virtual-console like setup in a pure text-based environment, which works
+pretty good.
 
--fforce-mem -foptimize-sibling-calls -fstrength-reduce -fcse-follow-jumps -f
-cse-skip-blocks -frerun-cse-after-loop -frerun-loop-opt -fexpensive-optimiza
-tions -fregmove -fsched-interblock -fsched-spec -fcaller-saves -fpeephole2 -
-freorder-blocks -freorder-functions -fstrict-aliasing -falign-functions -fal
-ign-jumps -falign-loops -falign-labels -fschedule-insns -fschedule-insns2
-RESULT: Hangs on 'Mounted devfs on /dev'; killall -9 linux-2.4.26; reset;
----8<---
+It likely would also be possible to use CONFIG_VT and create a
+CONFIG_VT_UMLCON driver instead.  Havn't looked at that.  I hope going
+that route doesn't mean we'll have to implement something like screen
+inside the uml kernel ...
 
-Perhaps someone can refine this?
+By moving the stderr console code to another source file it should at
+least be possible to make the uml consoles a compile time option and
+then be able to use fbcon instead.
 
------ Original Message ----- 
-From: "uml" <uml@dot1q.net>
-To: "uml-user" <user-mode-linux-user@lists.sourceforge.net>
-Cc: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Sunday, June 06, 2004 5.33 PM
-Subject: Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC 3.3.3
-similarities to 2.6.6!?
+  Gerd
 
-
-> > answering myself:
-> >
-> > via google i found:
-> > >Two different xterms emulators dumping core ... I'd be concerned a
-> > >wee bit. One note, do not compile with excessive optimizations and
-> > >especially -fschedule-insns and -fschedule-insns2 is the right way  <-
-> !!!
-> > >to produce faulty code with all gcc / egcs releases since 2.8.0     <-
-> !!!
-> > >on I86 machines. Not that it would make much sense with a terminal
-> > >emulator anyway, but even so.
-> >
-> > and:
-> > >linked to the Pentium Pro Blas single processor library.
-> If -fschedule-insns
-> > >is included four examples - 06, 07, 09 and 30 fail, 06 and 09 with
-> segmentation  <-- !!!
-> > >fault and 09 and 30 with a message that "SCALAR MECHINES SHOULD NOT
-CALL
-> JKGNMV".
-> > >The performance is sometimes better and sometimes worse over the 31
-> examples, but
-> > >these are really too small for a proper bennch mark.
-> >
-> > and:
-> > > ..so I guess the problem is not the classic --fschedule-insns bug.
-> That's the option I found several weeks ago that gave me issues.
->
-> > and:
-> > http://www.linux-mips.org/archives/linux-mips/2004-03/msg00032.html
-> >
-> > could please someone try putting -fno-schedule-insns (and
-> maybe -fno-schedule-insns2)
-> > into the Makefile(s) and try again ?
-> I'm having issues with at least -fno-schedule-insns -- where in the
-> arch/um/Makefile do I make the change as well (or do I?)
->
->
-> So I tried the following combos:
-> perl -e 's/-O2/-O2 -fno-schedule-insns/g' -p -i.bak Makefile
-> arch/um/Makefile
-> perl -e 's/-O2/-O2 -fno-schedule-insns2/g' -p -i.bak Makefile
-> arch/um/Makefile
-> perl -e 's/-O2/-O2 -fno-schedule-insns -fno-schedule-insns2/g' -p -i.bak
-> Makefile arch/um/Makefile
->
-> No dice on any of them.
->
-> I don't believe there is a -O2 in arch/um/Makefile as there is in 2.6.6 -- 
-> should I make a change to the CFLAGS there?
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by the new InstallShield X.
-> From Windows to Linux, servers to mobile, InstallShield X is the one
-> installation-authoring solution that does it all. Learn more and
-> evaluate today! http://www.installshield.com/Dev2Dev/0504
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
->
-
+-- 
+Smoking Crack Organization
 
 
 -------------------------------------------------------
