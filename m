@@ -1,19 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AoueL-0004k2-VM
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 17:19:17 -0800
-Received: from mout1.freenet.de ([194.97.50.132] ident=exim)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30)
-	id 1AoueL-0002Jc-4Y
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 17:19:17 -0800
-From: Michael Koehne <kraehe@copyleft.de>
-Message-ID: <20040206011916.GA15577@bakunin.copyleft.de>
+	id 1Aoykh-0007s4-C2
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 21:42:07 -0800
+Received: from mail-01.iinet.net.au ([203.59.3.33] helo=mail.iinet.net.au)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1Aoykg-0005bx-Lo
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 21:42:06 -0800
+Received: from cameron by cp.yi.org with local (Exim 3.36 #1 (Debian))
+	id 1Aoyka-0001O1-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 06 Feb 2004 13:42:00 +0800
+From: Cameron Patrick <cameron@patrick.wattle.id.au>
+Subject: Re: [uml-devel] mconsole telinit design, worry about init standards?
+Message-ID: <20040206054200.GC22141@patrick.wattle.id.au>
+References: <20040206003759.GY4203@erizo.shearer.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] linux 2.6.1 skas host on libretto laptop
+In-Reply-To: <20040206003759.GY4203@erizo.shearer.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,33 +28,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 6 Feb 2004 02:19:16 +0100
+Date: Fri, 6 Feb 2004 13:42:00 +0800
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: sdw@lig.net
 
-Moin Stephen, Jeff and other UML Guru's,
+Dan Shearer wrote:
 
-  i'm happy that my "pocket mainframe" is now able to not only z/Linux
-  with Hercules, but also UML with SKAS - in a much better performance!
-  The libretto was unable to run UML as I needed 2.5 and 2.6 kernels to
-  support power manangent and other features.
+| I've got a rough implementation of an mcsonole telinit command, where
+| mconsole_kern opens /dev/initctl and sends a command to change
+| runlevels. Some small changes in arch/um/mconsole_kern.c.
+| 
+| This raises a question about UML design.  UML shouldn't be dependent on
+| any specific program running inside the VM.
 
-  Thanks to Stephen D. Williams: I applied the patch he posted at
-  uml-devel on Sat, 10 Jan 2004 on Wed Feb 4 2004 and it worked out
-  of the box to run a backup of my site (www.copyleft.de is running
-  in UML for over a year - unfortunately its running at home with a
-  slow DSL line currently ;) so - what next ?
+How about having some kind of generic interface to allow the host to
+access files, send signals, etc inside the VM?  That would be overkill
+for a simple telinit but could open up other possibilities too.
 
-  - linux 2.6.2 is out (or will be real soon now)
-  - some patches over this patch fixed bugs - and I was just lucky
-    not to run into one of the well known bugs.
-  
-  where to pick the next most actual version of 2.6.x-skas patch ?
+Cameron.
 
-Bye Michael
--- 
-  mailto:kraehe@copyleft.de             UNA:+.? 'CED+2+:::Linux:2.4.22'UNZ+1'
-  http://www.xml-edifact.org/           CETERUM CENSEO WINDOWS ESSE DELENDAM
 
 
 -------------------------------------------------------
