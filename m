@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cdcyg-0006JW-64 for User-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Dec 2004 15:18:10 -0800
-Received: from fed1rmmtao11.cox.net ([68.230.241.28])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cdcyf-0006fa-JZ for User-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Dec 2004 15:18:10 -0800
-Received: from [192.168.0.102] (really [68.231.195.29]) by fed1rmmtao11.cox.net
-	(InterMail vM.6.01.04.00 201-2131-117-20041022) with ESMTP
-	id <20041212231801.PCHE28808.fed1rmmtao11.cox.net@[192.168.0.102]>
-	for <User-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 12 Dec 2004 18:18:01 -0500
-Message-ID: <41BCD1C8.8060701@easyco.com>
-From: Doug Dumitru <doug@easyco.com>
+	id 1Cdpoj-00056Z-Pk for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Dec 2004 05:00:45 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cdpoi-000376-6o for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Dec 2004 05:00:45 -0800
+Message-ID: <41BD9270.9020102@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+References: <200412101645.iBAGjWA13367@trolli.pdb.fsc.net>
+	<200412102228.07984.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200412102228.07984.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Stranded processes on halt with 2.6.9 host (2.4.26 client)
+Subject: [uml-devel] Re: [patch 1/1] make arch/um/kernel/skas/include/skas.h
+	include asm/types.h
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,29 +29,62 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 12 Dec 2004 15:18:32 -0800
-To: User-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 13 Dec 2004 14:00:32 +0100
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-I have been running 2.6.7 on the host for some time in SKAs mode.  When 
-trying to upgrade to 2.6.9, 2.4.26 clients do run correctly, but upon 
-shutdown they leave two processes stranded that cannot be killed (even 
-with kill -9).  Both processes show [halt] so this must be very near the 
-end of UML shutdown.  Any ideas.  I hunted the message list, but did not 
-see anything obvious.
+Blaisorblade wrote:
+> On Friday 10 December 2004 17:45, bstroesser@fujitsu-siemens.com wrote:
+> 
+>>From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+>>
+>>make arch/um/kernel/skas/include/skas.h include asm/types.h
+>>This is necessary to have a typedef for __u64
+> 
+> 
+> *Probably* won't work, as headers in arch/um/include.... are also includable 
+> by userspace files, which can't include <asm/types.h>;
+My patch changes arch/um/kernel/skas/include/skas.h, which is included by
+arch/um/kernel/process.c, arch/um/sys-XXXX/signal.c and some
+arch/um/kernel/skas/XXXX.c. IMHO, this should be safe, or do I miss somesthing?
 
-Server is a Dual P-III running fresh Fedora Core 3.  Kernel.org 2.6.9 
-kernel has been tried with:
+well, it could happen
+> to include the *host* asm/types.h, which will be bad on a x86_64 host, since 
+> you could get a "unsigned long" (which is safe) even when compiling a 32-bit 
+> UML!
+> 
+> Otherwise, there would not be includes in arch/um! They'd be in 
+> include/asm-um!
+> 
+> And yes, this sucks, but is reality.
+> 
+> Workaround it - unsigned long long is always a correct definition.
+This would be another possibility, but then the definition of "void map()" in
+arch/um/kernel/skas/mem_user.c also should be changed. I choosed the option,
+which changes less. Feel free to choose the other one.
 
-     15957 host-skas3-2.6.7-v1.patch
-     23838 host-skas3-2.6.9-rc4-v6.patch
-     25510 host-skas3-2.6.9-v7.patch
-
-but they all behave the same way.
-
---------------------------------------------------------------------
-Doug Dumitru     800-470-2756     (610-237-2000)
-EasyCo LLC       doug@easyco.com  http://easyco.com
---------------------------------------------------------------------
+Bodo
+> 
+>>Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+>>---
+>>
+>>
+>>diff -puN arch/um/kernel/skas/include/skas.h~skas.h-include-types.h
+>>arch/um/kernel/skas/include/skas.h ---
+>>linux-2.6.10-rc2-mm4/arch/um/kernel/skas/include/skas.h~skas.h-include-type
+>>s.h 2004-12-10 15:53:03.726530054 +0100 +++
+>>linux-2.6.10-rc2-mm4-root/arch/um/kernel/skas/include/skas.h 2004-12-10
+>>15:53:03.730528661 +0100 @@ -7,6 +7,7 @@
+>> #define __SKAS_H
+>>
+>> #include "sysdep/ptrace.h"
+>>+#include "asm/types.h"
+>>
+>> extern int userspace_pid[];
+>>
+>>_
+> 
+> 
 
 
 -------------------------------------------------------
