@@ -1,18 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aqmgu-0006bh-PP
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 10 Feb 2004 21:13:40 -0800
-Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aqmfe-0004Lz-Qe
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 10 Feb 2004 21:12:23 -0800
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Message-ID: <Pine.LNX.4.44.0402102352330.3217-100000@sparrow>
+	id 1AqsxM-0002i0-0h
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 03:55:04 -0800
+Received: from mx13.sac.fedex.com ([199.81.197.53])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30)
+	id 1Aqsvh-0007E1-Jv
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 03:53:21 -0800
+Received: from inet03.prod.fedex.com (inet03.prod.fedex.com [199.81.10.43])
+	by mx13.sac.fedex.com (8.12.9p2/8.12.9) with ESMTP id i1BBsFu8044428
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 11 Feb 2004 05:54:15 -0600 (CST)
+	(envelope-from jeff98@silk.corp.fedex.com)
+Received: from entpm11.apac.fedex.com (entpm11.apac.fedex.com [155.161.92.11])
+	by inet03.prod.fedex.com (8.12.11/8.12.11) with ESMTP id i1BBsAdg000457
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 11 Feb 2004 05:54:14 -0600 (CST)
+Received: from silk.corp.fedex.com (silk.corp.fedex.com [155.161.201.173])
+	by silk.corp.fedex.com (8.11.4/8.11.4) with ESMTP id i1BBqe002876
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 11 Feb 2004 19:52:40 +0800
+From: Jeff Chua <jeff98@silk.corp.fedex.com>
+Message-ID: <Pine.LNX.4.58.0402111946490.2438@silk.corp.fedex.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Compiling 2.6.3-rc1-mm1 in UML architecture
+Subject: [uml-devel] uml for 2.6.3-rc?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,40 +33,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 11 Feb 2004 00:12:41 -0500 (EST)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Jeff Dike <jdike@addtoit.com>, MOLNAR Ingo <mingo@elte.hu>, William Stearns <wstearns@pobox.com>
+Date: Wed, 11 Feb 2004 19:52:40 +0800 (SGT)
+To: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-Good day, Jeff, Ingo, all,
-	Here's number 6713 in my critically acclaimed "Notes from the 
-technically illiterate" series of UML endeavours.
 
-	Compiling arch/um/kernel/ptrace.c:13:27 gives the error:
-linux/proc_mm.h: no such file or directory.
-	Symlinking arch/um/kernel/skas/include/proc_mm.h into 
-include/linux makes the error go away.
+Is there a clean patch for 2.6.3-rc2?
 
-	Next:
-	In file included from arch/um/kernel/syscall_kern.c:22:
-arch/um/include/sysdep/syscalls.h:17: conflicting types for 
-`sys_ni_syscall'
-include/linux/syscalls.h:453: previous declaration of `sys_ni_syscall' .  
-UM types it as syscall_handler_t, include/linux types it as 
-"asmlinkage long".
-	I'm lost on this one.  No idea on how to resolve it.
-	Cheers,
-	- Bill
+I would like to try out uml, but it seems there's so many manual patches
+to apply and still don't seems to hear anyone running it.
 
----------------------------------------------------------------------------
-	Fortune finishes the great quotations, #21
+I've tried
 
-	Shall I compare thee to a Summer day?
-	No, I guess not.
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+- linux-2.6.1-skas3.patch	seems to apply and compile fine
 
+- uml-patch-2.6.1-1.bz2 patch failed, compile failed.
+
+1 out of 2 hunks FAILED -- saving rejects to file fs/proc/task_mmu.c.rej
+1 out of 3 hunks FAILED -- saving rejects to file mm/memory.c.rej
+
+complained about EFAULT not defined.
+
+
+
+Thanks,
+Jeff
+[ jchua@fedex.com ]
 
 
 -------------------------------------------------------
