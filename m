@@ -1,9 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <1220.157.182.105.1.1096501625.squirrel@www.csee.wvu.edu>
-From: <atanugul@csee.wvu.edu>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CD269-0001hw-Lm for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Sep 2004 07:39:57 -0700
+Received: from webmail-outgoing.us4.outblaze.com ([205.158.62.67])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CD268-0006Op-JB for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Sep 2004 07:39:57 -0700
+Received: from wfilter.us4.outblaze.com (wfilter.us4.outblaze.com
+	[205.158.62.180])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	3249C1800578 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 30 Sep 2004 14:39:51 +0000 (GMT)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [uml-devel] building from source
+From: "Martin Weber" <martin.weber@linuxmail.org>
+Message-Id: <20040930143911.6098723EE7D@ws5-4.us4.outblaze.com>
+Subject: [uml-devel] uml_mconsole and uml_kernel crashes by proc meminfo
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -15,57 +30,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Sep 2004 19:47:05 -0400 (EDT)
+Date: Thu, 30 Sep 2004 22:39:11 +0800
 Content-Transfer-Encoding: 8bit
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
 
-Hi!
-I tried building a uml kernel from source.I have a debian 2.6.6 kernel on
-my system. I downloaded a 2.4.26 kernel and a matching uml patch
-(uml-patch-2.4.26-1.bz2) for it.I followed the steps specified in the
-user-mode-linux. Everything went well till step 5. When I did `make linux
-ARCH=um' I got the following error messages:
-make -C arch/um/sys-i386/util mk_sc
-make[1]: Entering directory
-`/build/kernel-source-2.4.26/arch/um/sys-i386/util'gcc -c mk_sc.c
-gcc -o mk_sc mk_sc.o
-make[1]: Leaving directory
-`/build/kernel-source-2.4.26/arch/um/sys-i386/util'make -C arch/um/kernel/skas include/skas_ptregs.h
-make[1]: Entering directory `/build/kernel-source-2.4.26/arch/um/kernel/skas'
-make -C util
-make[2]: Entering directory
-`/build/kernel-source-2.4.26/arch/um/kernel/skas/util'gcc -c mk_ptregs.c
-gcc -o mk_ptregs mk_ptregs.o
-make[2]: Leaving directory
-`/build/kernel-source-2.4.26/arch/um/kernel/skas/util'util/mk_ptregs > include/skas_ptregs.h
-make[1]: Leaving directory `/build/kernel-source-2.4.26/arch/um/kernel/skas'
-arch/um/sys-i386/util/mk_sc > arch/um/include/sysdep-i386/sc.h
-make -C arch/um/sys-i386/util mk_thread
-make[1]: Entering directory
-`/build/kernel-source-2.4.26/arch/um/sys-i386/util'gcc -c mk_thread_user.c
-gcc -D__KERNEL__ -I/build/kernel-source-2.4.26/include -Wall
--Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O2 
--U__i386__ -Ui386 -fprofile-arcs -ftest-coverage -g -D__arch_um__
--DSUBARCH=\"i386\" -D_LARGEFILE64_SOURCE
--I/build/kernel-source-2.4.26/arch/um/include -Derrno=kernel_errno
--I/build/kernel-source-2.4.26/arch/um/kernel/tt/include
--I/build/kernel-source-2.4.26/arch/um/kernel/skas/include -c
-mk_thread_kern.cIn file included from mk_thread_kern.c:3:
-/build/kernel-source-2.4.26/include/linux/sched.h:366: error:
-`CONFIG_NR_CPUS' undeclared here (not in a function)/build/kernel-source-2.4.26/include/linux/sched.h:366: error:
-`CONFIG_NR_CPUS' undeclared here (not in a function)/build/kernel-source-2.4.26/include/linux/sched.h:528: error:
-`CONFIG_NR_CPUS' undeclared here (not in a function)make[1]: *** [mk_thread_kern.o] Error 1
-make[1]: Leaving directory
-`/build/kernel-source-2.4.26/arch/um/sys-i386/util'make: *** [arch/um/sys-i386/util/mk_thread] Error 2
+Hi,  
+  
+When I use the uml_mconsole and call "proc meminfo", around the 
+5th time, both uml_mconsole and uml_kernel crashes.  
+This happens with kernel 2.6.7 and uml-patch-2 and also with kernel 
+2.6.8.1 and uml-patch-2.6.8.1-1.  
+There seems to be no problem with kernel 2.4.23.  
+Also "cat /proc/meminfo" from inside the uml-instance works 
+correct.  
+  
+Does anybody know how to fix this proplem?  
+Is there a patch or a workaround? 
+  
+Thanks,  
+  
+Martin 
+ 
+ 
+-- 
+______________________________________________
+Check out the latest SMS services @ http://www.linuxmail.org 
+This allows you to send and receive SMS through your mailbox.
 
 
-Can anyone tell me what i should do?
-
-Thanks,
-Ashwin.
-
-
+Powered by Outblaze
 
 
 -------------------------------------------------------
