@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5C2J-0007xx-A7 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 16:39:35 -0700
+	id 1C5C3L-0008Ak-SL for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 16:40:39 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C5C2I-0007kK-3x
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C5C3K-0006tE-HU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 16:39:35 -0700
-Message-Id: <200409090042.i890giBP016300@ccure.user-mode-linux.org>
+	Wed, 08 Sep 2004 16:40:39 -0700
+Message-Id: <200409090043.i890hpBP016311@ccure.user-mode-linux.org>
 Subject: Re: [uml-devel] Compiling UML 2.6.8.1 with Static Linking results in
 	segfault 
-In-Reply-To: Your message of "Wed, 08 Sep 2004 09:57:52 +1000."
-	<200409072357.i87NvPC20122@lakshmi.solana.com> 
-References: <200409072357.i87NvPC20122@lakshmi.solana.com> 
+In-Reply-To: Your message of "Wed, 08 Sep 2004 10:04:40 +1000."
+	<200409080004.i8804KC20166@lakshmi.solana.com> 
+References: <200409080004.i8804KC20166@lakshmi.solana.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,15 +29,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Sep 2004 20:42:44 -0400
+Date: Wed, 08 Sep 2004 20:43:51 -0400
 To: ralston@stral.net
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
 ralston@stral.net said:
-> The core is 483k, want me to email that just to you (not the list), or
-> is the gdb output below pretty conclusive? 
+> Hey, the core is 20k gzipped :) 
 
-No it's not.  Getting a backtrace at that point would have been nice.
+And the core is useless without the binary that produced it.  In any case,
+it's probably a lot easier for you to type 'bt' at gdb and send that rather
+than compressing a core file and binary and sending them.
 
 				Jeff
 
