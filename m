@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BFfp0-00039b-0d for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2004 13:56:54 -0700
-Received: from smtp-out9.xs4all.nl ([194.109.24.10] helo=smtp-out3.xs4all.nl)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BFfoz-0007Ni-Mz for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2004 13:56:53 -0700
-In-Reply-To: <200404192015.i3JKFrsP025251@ccure.user-mode-linux.org>
-References: <8D87591F-91D6-11D8-8B4A-000A95CD704C@kungfoocoder.org>
-	<200404191858.i3JIwFsP024786@ccure.user-mode-linux.org>
-	<46FEF20C-9231-11D8-8B4A-000A95CD704C@kungfoocoder.org>
-	<200404192015.i3JKFrsP025251@ccure.user-mode-linux.org>
-Mime-Version: 1.0 (Apple Message framework v613)
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg=pgp-sha1; boundary="Apple-Mail-30-1018155532"
-Message-Id: <9ACD4310-923B-11D8-8B4A-000A95CD704C@kungfoocoder.org>
+	id 1BFeYf-00008u-UJ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Apr 2004 12:35:57 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BFeYf-0007kr-G5 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Apr 2004 12:35:57 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Problems with the SKAS patch and 2.6
+References: <20040418185548.22259.qmail@praize.com>
+In-Reply-To: <20040418185548.22259.qmail@praize.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-From: Paul Wagland <paul@kungfoocoder.org>
-Subject: Re: [uml-devel] Thoughts on HUMFS and metadata 
+Content-Disposition: inline
+Message-Id: <200404192133.32492.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,74 +29,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Apr 2004 21:56:10 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 19 Apr 2004 21:33:32 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
+Alle 20:55, domenica 18 aprile 2004, gboutwel ha scritto:
 
-
---Apple-Mail-30-1018155532
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-
-
-On Apr 19, 2004, at 22:15, Jeff Dike wrote:
-
-> paul@kungfoocoder.org said:
->> Umm, is that actually valid? For example, a normal user cannot read a
->> file with "000" permissions, however root can. However, if the
->> permissions are stored on the file, then a "000" file cannot even be
->> read be root.
+> I tried this patch.  I'm able to compile the host fine, but I've
 >
-> Ummm, good point.  That needs fixing, as well as the fact that hard 
-> links aren't
-> supported correctly.
+> attached what happens when I try to compile the uml guest.
 
-Hard links are a hard problem... pun intended ;-) So long as we can 
-assume that only UML modifies the humfs
+Well, what you did is correct (you had to apply both the UML patch and that 
+version of the SKAS patch); the problem is that for 2.6.6-rc1 you need one 
+more fix for the UML patch (it was posted here by Jeff Chua and it's 2 thread 
+before this one).
 
->> Surely it also makes sense if it is stored in a database? I am not
->> sure  how else this information can be stored otherwise?
+You must undo your changes to the Makefile since that patch already contains 
+it.
+
+> The steps.
+
+Thanks, it is always important to post them, so that the help can be more 
+detailed.
+
+> // I had to modify /arch/um/Makefile-i386 to add the word basic
 >
-> Are you talking about extending the normal unix permissions through 
-> humfs,
-> or supporting this stuff on filesystems that have it?
+> // after scripts/ like before on 2.6.5
 
-Unfortunately, as for permissions above, I don't think that we can 
-store this stuff on the filesystem, even if the underlying filesystem 
-does support it. Since all file accesses are done as the user running 
-UML, you certainly cannot store any capability that the user does not 
-have, which means, for example, that we cannot give the modprobe 
-utility the "load module" capability. On some hardened systems this 
-program is the only thing that can load a module, and then root is the 
-only user that is allowed to run that program. Personally I think that 
-then ACL's become analogous to the above situation for permissions, and 
-they might as well be treated in the same way for simplicity sakes.
+The patch from Jeff Chua did this work and also fixed the problems you have.
 
-Note, that since not all FS's are required to support ACL/capabilities, 
-they do not need to be in the first cut, so long as the metadata format 
-allows for their existence then it can be added later on, indeed it 
-sounds like a nice small chunk of work that I would even do for you :-)
+> The 2.6.6-rc1 host is doing good though.
 
-Hope this helps some,
-Paul
-
---Apple-Mail-30-1018155532
-content-type: application/pgp-signature; x-mac-type=70674453;
-	name=PGP.sig
-content-description: This is a digitally signed message part
-content-disposition: inline; filename=PGP.sig
-content-transfer-encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (Darwin)
-
-iD8DBQFAhC7btch0EvEFvxURAkzmAKC0jZIA3jgmZ9jfznf7gMI3M9L/vACfRx0E
-LrBtLNOvI06ps4OtYfpDiGk=
-=AeZ3
------END PGP SIGNATURE-----
-
---Apple-Mail-30-1018155532--
+Thanks for this test: the SKAS patch is very well tested, but I absolutely did 
+not have the time to test that little change (2 lines, so don't worry).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
