@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtZkn-0000MT-3g
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 14:01:13 -0800
-Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtZYW-0001Oj-Gx
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 13:48:32 -0800
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Subject: Re: [uml-devel] 2.6.3-rc2-uml1 Kernel mode panic
-In-Reply-To: <200402171709.44913.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.LNX.4.44.0402181635060.15836-100000@sparrow>
+	id 1AtcBC-0000sI-NL
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 16:36:38 -0800
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1Atbym-0001X7-Gr
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 16:23:48 -0800
+Message-ID: <021601c3f680$7d13eb10$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp> <200402152045.17138.blaisorblade_spam@yahoo.it> <20d501c3f5c1$ef1d3d70$2000000a@schlepptopp> <200402182001.44243.blaisorblade_spam@yahoo.it>
+Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="windows-1252"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,67 +23,85 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Feb 2004 16:56:04 -0500 (EST)
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, William Stearns <wstearns@pobox.com>
+Date: Thu, 19 Feb 2004 01:36:59 +0100
+Content-Transfer-Encoding: quoted-printable
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-Good afternoon, all,
+hi !
+>If I guessed right, the attached patch will solve everything.
+yep - maybe - but it doesn`t seem to fix the "hang after NET: Registered pr=
+otocol family 2" !
+i applied the patch and recompiled - same effect.
 
-On Tue, 17 Feb 2004, BlaisorBlade wrote:
+regards
+roland
 
-> Alle 04:06, domenica 15 febbraio 2004, William Stearns ha scritto:
-> > 	I got a Kernel panic from the above kernel; sorry to say my
-> > compiler won't let me include all the debugging information that would
-> > have made this report useful.  :-(
-> >
-> > Kernel panic: Kernel mode fault at addr 0x0, ip 0x40101f94
-> 
-> Could you run with that kernel this loop on a shell:
-> 
-> while cat /dev/null; do cat /dev/null; done
-> 
-> This loop deterministically panics 2.6.2 and 2.6.3-rc2 UML kernels I have 
-> here(and if the configuration stays the same, even the corrupted values stay 
-> the same!). However nobody has yet seen it elsewhere.
-> 
-> Also this one "works":
-> while /bin/true; do /bin/true; done
-> (please avoid replacing /bin/true with true, since the second one is a shell 
-> builtin while I need a lot of forks to crash UML).
 
-	On a kernel using Jeff's patch from 2/16, which looks absolutely 
-identical to yours,  20 of these running in the background * produces:
-Kernel panic: Kernel BUG at kernel/exit.c:793
-	or
-Kernel panic: Kernel BUG at kernel/exit.c:793
-Kernel panic: Segfault with no mm
-Kernel panic: Segfault with no mm
-Kernel panic: Segfault with no mm
-	or
-Kernel mode fault at addr 0x0, ip 0x401e643e
-Kernel mode fault at addr 0x0, ip 0x401e643e
-Kernel mode fault at addr 0x0, ip 0x401e643e
-Kernel mode fault at addr 0x0, ip 0x401e643e
 
-	For reference, when I revert to the kernel without that patch and
-run 20 of those *, I got 8 "Kernel panic: segfault with no mm" within a
-few minutes too.
-	Both kernels are available from http://www.stearns.org/uml/ ; 
-they're the ones eding in -gcc333.
-	Cheers,
-	- Bill
+----- Original Message -----=20
+From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
+To: <user-mode-linux-devel@lists.sourceforge.net>
+Cc: "Jeff Dike" <jdike@addtoit.com>; "roland" <for_spam@gmx.de>
+Sent: Wednesday, February 18, 2004 8:01 PM
+Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop =
+after loading IPv4
 
-* Along with a continuous loop from the host of:
-while : ; do ssh vmname echo vmname ; done
 
----------------------------------------------------------------------------
-	"I would give up my right arm before I'd give up my netfilter
-firewall."
-	-- Chris Brenton
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+Alle 02:52, mercoled=EC 18 febbraio 2004, roland ha scritto:
+> hi !
+
+For Jeff: see at the end why I cc: to you.
+
+>
+> the bug ("hang after NET: Registered protocol family 2":) doesn`t seem to
+> have a relation to SKAS, because it also happens in TT mode.
+> when i run the binary with "./linux mode=3Dtt" the hang occurs, too.
+> furthermore - it doesn`t seem to be a compiler issue, because i compiled
+> 2.6.3-rc2 on 2 completely different systems (suse9 and rh7.2).
+> i also read about guesses, that this could have to do with "newer" hosts
+> running NPTL. could someone explain? i thought uml is a static binary
+
+Yes but when it's compiled it's linked against host's libs (mainly glibc and
+libpthreads). However, IIRC, the problems with NPTL on the host have been
+fixed time ago, and with NPTL in the guest have currently a temporary fix.
+
+>, so
+> how can this have a relation to a thread >LIBRARY<?? somewhere i read abo=
+ut
+> "kernel threads". is ntpl related to the kernel itself? (sorry if this
+> sounds stupid - but i remember switching between different thread-librari=
+es
+> on solaris via envvars. is this just the same with ntpl?)
+
+> after adding a lot if printk`s to the uml-patched 2.6.3-rc2 source, i fou=
+nd
+> the following(maybe interesting):
+>
+> in ./kernel/sched.c
+> in function wait_for_completion(struct completion *x)
+> the call to "schedule()" never returns and this seems to be the reason for
+> the hanging ipv4 initialisation. i have no clue about kernel internals and
+> i think it`s nonsense, if i dig further into this....
+>
+> but as i already said:
+> 2.6.0-test9 with uml-patch-2.6.0-test9-1  _WORKS_ (at least for me)
+> 2.6.0 with uml-patch-2.6.0-1 and following kernel/uml-patch versions seem
+> to have the ipv4 hang-at-init bug.
+>
+> so maybe the bug has been introduced with uml-patch-2.6.0-1 !?
+
+The message about "diagnosed and repeatable kernel panic" is IMHO related to
+this: the sigsetjmp change was actually in 2.6.0. And this broke schedule: =
+on
+my system it happens to broke in one point, on your in another point.
+
+If I guessed right, the attached patch will solve everything.
+
+Jeff, do you think this makes sense?
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
@@ -92,7 +109,7 @@ rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+http://ads.osdn.com/?ad_id=3D1356&alloc_id=3D3438&op=3Dclick
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
