@@ -2,21 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5JUt-0006a2-8q for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 00:37:35 -0700
-Received: from ns.virtualhost.dk ([195.184.98.160] helo=virtualhost.dk)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C5JUr-0003BM-NL
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 00:37:35 -0700
-From: Jens Axboe <axboe@suse.de>
-Message-ID: <20040909073523.GH1737@suse.de>
-References: <20040908172503.384144933@zion.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040908172503.384144933@zion.localdomain>
-Subject: [uml-devel] Re: [patch 1/1] uml:fix ubd deadlock on SMP
+	id 1C5QLI-0007Pw-Bw for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 07:56:08 -0700
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1C5QLG-0002U6-Qu for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 07:56:08 -0700
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.58.0409091046350.2824@sparrow>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Kernel stack overflow
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,56 +25,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Sep 2004 09:35:23 +0200
-To: blaisorblade_spam@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 9 Sep 2004 10:52:16 -0400 (EDT)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
 
-On Wed, Sep 08 2004, blaisorblade_spam@yahoo.it wrote:
-> diff -puN arch/um/drivers/ubd_kern.c~uml-fix-ubd-deadlock arch/um/drivers/ubd_kern.c
-> --- uml-linux-2.6.8.1/arch/um/drivers/ubd_kern.c~uml-fix-ubd-deadlock	2004-09-08 19:04:27.662926344 +0200
-> +++ uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c	2004-09-08 19:05:36.700431048 +0200
-> @@ -54,6 +54,7 @@
->  #include "mem.h"
->  #include "mem_kern.h"
->  
-> +/*This is the queue lock. FIXME: make it per-UBD device.*/
->  static spinlock_t ubd_io_lock = SPIN_LOCK_UNLOCKED;
->  static spinlock_t ubd_lock = SPIN_LOCK_UNLOCKED;
+Good morning, Jeff,
+	The whoopis VM on Zaphod crashed this morning with this on the 
+console:
 
-probably not worth it to make it per-device. doing so should be a simple
-search-replace job, though.
+whoopis login: Kernel panic: Kernel stack overflow
 
-> @@ -396,14 +397,16 @@ int thread_fd = -1;
->   */
->  int intr_count = 0;
->  
-> -static void ubd_finish(struct request *req, int error)
-> +static inline void __ubd_finish(struct request *req, int error, int lock)
->  {
->  	int nsect;
->  
->  	if(error){
-> - 		spin_lock(&ubd_io_lock);
-> +		if (lock)
-> +			spin_lock(&ubd_io_lock);
->  		end_request(req, 0);
-> - 		spin_unlock(&ubd_io_lock);
-> +		if (lock)
-> +			spin_unlock(&ubd_io_lock);
+	The kernel completely went away, no coredump.
 
-In general, doing it this way is throwned upon. Either split the
-function, or just make the callers acquire the lock if they have to.
+Linux whoopis.com 2.6.6-1um #1 Wed May 26 03:06:23 EDT 2004 i686 i686 i386 
+GNU/Linux
 
--- 
-Jens Axboe
+	I realize I should upgrade, just wanted to pass this one along in 
+case it hadn't been seen before.
+	Cheers,
+	- Bill
 
+---------------------------------------------------------------------------
+        "5) what are people like spaf/chris rouland/lance then?
+a) THEY ARE THE ENEMY. WHITEHATS = ENEMY."
+        -- http://www.blackhatbloc.org/phrack/texts/faq1.txt
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by BEA Weblogic Workshop
-FREE Java Enterprise J2EE developer tools!
-Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=5047&alloc_id=10808&op=click
+This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
+Project Admins to receive an Apple iPod Mini FREE for your judgement on
+who ports your project to Linux PPC the best. Sponsored by IBM. 
+Deadline: Sept. 13. Go here: http://sf.net/ppc_contest.php
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
