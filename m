@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C58kU-0002Er-Vq for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 13:08:58 -0700
-Received: from osiris.silug.org ([64.240.156.225])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1C58kU-00047C-6P
+	id 1C5Ag0-0001L0-1P for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 15:12:28 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C5Afx-0004FR-NV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 13:08:58 -0700
-From: Steven Pritchard <steve@silug.org>
-Subject: Re: [uml-devel] glibc and NPTL, problem, workarounds, etc.
-Message-ID: <20040908200852.GA31375@osiris.silug.org>
-References: <Pine.LNX.4.58.0409081440150.3136@sparrow>
+	Wed, 08 Sep 2004 15:12:27 -0700
+Message-Id: <200409082315.i88NFKBP015893@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] uml-patch-2.6.7-2 
+In-Reply-To: Your message of "Sun, 05 Sep 2004 21:35:54 +0200."
+	<200409051844.13906.blaisorblade_spam@yahoo.it> 
+References: <200408190301.i7J30xek004150@ccure.user-mode-linux.org>
+	<20040827041056.A3753@almesberger.net>
+	<200409051844.13906.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0409081440150.3136@sparrow>
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,27 +30,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 8 Sep 2004 15:08:52 -0500
-To: William Stearns <wstearns@pobox.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 08 Sep 2004 19:15:20 -0400
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Werner Almesberger <wa@almesberger.net>
 
-On Wed, Sep 08, 2004 at 03:02:03PM -0400, William Stearns wrote:
-> 	The workaround to the above is this:
-> 
-> export LD_ASSUME_KERNEL=2.4.1
-> exec /bin/bash
+blaisorblade_spam@yahoo.it said:
+> In fact, I'm not able to see the opening with strace (don't ask me why
+> - I  attach to the kernel thread, but I don't get the opening of the
+> file; I got  it only once, maybe ), but externfs_lookup calls
+> init_inode which calls  host_open_file! That's simply brain-damaged! 
 
-Couldn't you just boot with LD_ASSUME_KERNEL=2.4.1 on the kernel
-command line?  ISTR that anything not processed by the kernel ends up
-in init's environment.
+Maybe, but it's mighty useful in testing the file descriptor reclaiming code.
 
-Unfortunately, I don't have an easy way to test this at the moment...
+> - Also (maybe related with calling iget(..., 0) ) I get this message
+> on every  unmount:
 
-Steve
--- 
-Steven Pritchard - K&S Pritchard Enterprises, Inc.
-Email: steve@kspei.com             http://www.kspei.com/
-Phone: (618)398-7360               Mobile: (618)567-7320
+The iget(..., 0) thing has been fixed.
+
+> VFS: Busy inodes after unmount. Self-destruct in 5 seconds.  Have a
+> nice  day... 
+
+I'm not seeing that any more.
+
+> -Finally, for some reasons, the dev and rdev field returned by stat
+> are  screwed; when listing a device node on hostfs, it prints always
+> the maj and  min of the device containing the filesystem; i.e., file->
+> rdev = host_stat ->  dev instead of rdev. And I'm not able to see
+> where the exchange happens. 
+
+It's here -
+	copy_stat:
+
+		.ust_major   = MAJOR(src->st_dev),     /* device */
+		.ust_minor   = MINOR(src->st_dev),
+
+	do_stat_file:
+		      .rdev		= MKDEV(buf.ust_major, buf.ust_minor),
+
+Now that I have externfs_inode_info, either it or uml_stat looks redundant.
+One more thing to clean up...
+
+				Jeff
+
 
 
 -------------------------------------------------------
