@@ -1,23 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDpHA-0002Y7-Ph for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 11:42:52 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DDpH5-0005mr-RC for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 11:42:52 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] ptrace_test.c program on PPC
-References: <838f7c50050317161548f108@mail.gmail.com>
-	<200503201136.32209.blaisorblade@yahoo.it>
-	<838f7c5005032011255f738335@mail.gmail.com>
-In-Reply-To: <838f7c5005032011255f738335@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_CGHQCVA9Oe/JnO5"
-Message-Id: <200503222026.58074.blaisorblade@yahoo.it>
+	id 1DDpHe-0002ZG-Bl for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 11:43:22 -0800
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DDpHJ-0007ur-Fq for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 11:43:21 -0800
+From: blaisorblade@yahoo.it
+Message-Id: <20050322162139.50D4197672@zion>
+Subject: [uml-devel] [patch 09/12] uml - kbuild: link cmd
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,131 +22,97 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 20:26:57 +0100
-To: ashwin tanugula <ashwin.tanugula@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
---Boundary-00=_CGHQCVA9Oe/JnO5
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Sunday 20 March 2005 20:25, ashwin tanugula wrote:
-> Hi,
-> I know that UML has to be ported to PPC. I want to resume that work. I
-> just wanted to make sure that my PPC box can run uml.(because the
-> first step in porting uml is to check that the ptrace_test.c file
-> outputs two same pids).
-Since there have been working versions of the PPC port, it should be working 
-well.
-> I have set ORIG_EAX to 0. Is that correct or wrong?
-
-Hmm, actually this is wrong... by reading ptrace_test.c, which I just found on 
-my HD, it should work almost "out of the box".
-
-However, if you look at the source, what it puts inside the ORIG_EAX is the 
-number of getppid(), not of getpid(), i.e. 64. You don't need to change the 
-value IMHO.
-
-If you write 20 there it is perfectly expectable that the pids you get are 
-different (as an exercise, try to understand why: if the child executes 
-getpid() it gets its own PID, if it executes getppid() it gets the father's 
-pid).
-
-That said, the problem you should get is that I don't expect ORIG_EAX to be 
-accepted. From reading include/asm-ppc/unistd.h, it seems that the register 
-to be changed is r0 (so the macro is PT_R0).
-
-Also, the ptrace_test.c requirement has been reduced a lot by SYSEMU 
-introduction. Basically, ptrace_test.c uses a hack to avoid that the syscall 
-is executed on the host, i.e. changing the syscall number to getpid. 
-PTRACE_SYSEMU is a ptrace() option that says that the syscall invoked by the 
-debugged thread must not be executed: we write the result from the UML 
-execution of the syscall to the result register.
-> Thanks,
-> Ashwin.
->
-
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
---Boundary-00=_CGHQCVA9Oe/JnO5
-Content-Type: text/x-csrc;
-  charset="iso-8859-1";
-  name="ptrace_test.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="ptrace_test.c"
-
-#include <stdio.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <sys/ptrace.h>
-#include <asm/ptrace.h>
-#include <asm/unistd.h>
-
-static char stack[65536];
-
-int child(void *arg)
-{
-  if(ptrace(PTRACE_TRACEME, 0, 0, 0) < 0){
-    perror("ptrace");
-    exit(1);
-  }
-  kill(getpid(), SIGSTOP);
-  while(1){
-    printf("getpid() returned %d\n", getpid());
-    sleep(3);
-  }
-  return(0);
-}
-
-int main(int argc, char **argv)
-{
-  int pid, status, syscall;
-
-  printf("Parent pid = %d\n", getpid());
-  if((pid = clone(child, &stack[65532], SIGCHLD, NULL)) < 0){
-    perror("clone");
-    exit(1);
-  }
-  if((pid = waitpid(pid, &status, WUNTRACED)) < 0){
-    perror("Waiting for stop");
-    exit(1);
-  }
-  if(ptrace(PTRACE_SYSCALL, pid, 0, 0) < 0){
-    perror("continuing");
-    exit(1);
-  }
-  while(1){
-    if((pid = waitpid(-1, &status, WUNTRACED)) <= 0){
-      perror("wait");
-      exit(1);
-    }
-    if(WIFSTOPPED(status) && (WSTOPSIG(status) == SIGTRAP)){
-      syscall = ptrace(PTRACE_PEEKUSER, pid, 4 * ORIG_EAX, 0);
-      if(syscall == __NR_getpid){
-	if(ptrace(PTRACE_POKEUSER, pid, 4 * ORIG_EAX, __NR_getppid) < 0){
-	  perror("ptrace");
-	  exit(1);
-	}
-      }
-      if(ptrace(PTRACE_SYSCALL, pid, 0, 0) < 0){
-	perror("continuing");
-	exit(1);
-      }
-    }
-    else printf("wait failed - pid = %d, status = %d\n", pid, status);
-  }
-}
-
---Boundary-00=_CGHQCVA9Oe/JnO5--
+Date: Tue, 22 Mar 2005 17:21:39 +0100
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
+Use the cmd_* syntax to define a command for symlink creations in UML (to
+reuse files from other archs).
 
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.11-paolo/arch/um/scripts/Makefile.rules |    3 +++
+ linux-2.6.11-paolo/arch/um/sys-i386/Makefile      |   13 +++++--------
+ linux-2.6.11-paolo/arch/um/sys-x86_64/Makefile    |   16 ++++++++--------
+ linux-2.6.11-paolo/include/asm-um/signal.h        |    2 ++
+ 4 files changed, 18 insertions(+), 16 deletions(-)
+
+diff -puN arch/um/sys-x86_64/Makefile~uml-kbuild-link-cmd arch/um/sys-x86_64/Makefile
+--- linux-2.6.11/arch/um/sys-x86_64/Makefile~uml-kbuild-link-cmd	2005-03-21 19:53:36.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/sys-x86_64/Makefile	2005-03-21 19:53:36.000000000 +0100
+@@ -14,10 +14,15 @@ include arch/um/scripts/Makefile.rules
+ 
+ SYMLINKS = bitops.c csum-copy.S csum-partial.c csum-wrappers.c memcpy.S \
+ 	semaphore.c thunk.S
+-SYMLINKS := $(foreach f,$(SYMLINKS),$(src)/$f)
+ 
++# this needs to be before the foreach, because clean-files does not accept
++# complete paths like $(src)/$f.
+ clean-files := $(SYMLINKS)
+ 
++targets += $(SYMLINKS)
++
++SYMLINKS := $(foreach f,$(SYMLINKS),$(obj)/$f)
++
+ bitops.c-dir = lib
+ csum-copy.S-dir = lib
+ csum-partial.c-dir = lib
+@@ -26,12 +31,7 @@ memcpy.S-dir = lib
+ semaphore.c-dir = kernel
+ thunk.S-dir = lib
+ 
+-define make_link
+-       -rm -f $1
+-       ln -sf $(srctree)/arch/x86_64/$($(notdir $1)-dir)/$(notdir $1) $1
+-endef
+-
+-$(SYMLINKS):
+-	$(call make_link,$@)
++$(SYMLINKS): FORCE
++	$(call if_changed,make_link)
+ 
+ CFLAGS_csum-partial.o := -Dcsum_partial=arch_csum_partial
+diff -puN arch/um/sys-i386/Makefile~uml-kbuild-link-cmd arch/um/sys-i386/Makefile
+--- linux-2.6.11/arch/um/sys-i386/Makefile~uml-kbuild-link-cmd	2005-03-21 19:53:36.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/sys-i386/Makefile	2005-03-21 19:53:36.000000000 +0100
+@@ -14,19 +14,16 @@ SYMLINKS = bitops.c semaphore.c highmem.
+ # complete paths like $(src)/$f.
+ clean-files := $(SYMLINKS)
+ 
+-SYMLINKS := $(foreach f,$(SYMLINKS),$(src)/$f)
++targets += $(SYMLINKS)
++
++SYMLINKS := $(foreach f,$(SYMLINKS),$(obj)/$f)
+ 
+ bitops.c-dir = lib
+ semaphore.c-dir = kernel
+ highmem.c-dir = mm
+ module.c-dir = kernel
+ 
+-define make_link
+-	-rm -f $1
+-	ln -sf $(srctree)/arch/i386/$($(notdir $1)-dir)/$(notdir $1) $1
+-endef
+-
+-$(SYMLINKS): 
+-	$(call make_link,$@)
++$(SYMLINKS): FORCE
++	$(call if_changed,make_link)
+ 
+ subdir- := util
+diff -puN arch/um/scripts/Makefile.rules~uml-kbuild-link-cmd arch/um/scripts/Makefile.rules
+--- linux-2.6.11/arch/um/scripts/Makefile.rules~uml-kbuild-link-cmd	2005-03-21 19:53:36.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/scripts/Makefile.rules	2005-03-21 19:53:36.000000000 +0100
+@@ -8,3 +8,6 @@ USER_OBJS += $(filter %_user.o,$(obj-y) 
+ USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
+ 
+ $(USER_OBJS): c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) $(CFLAGS_$(notdir $@))
++
++quiet_cmd_make_link = SYMLINK $@
++cmd_make_link       = rm -f $@; ln -sf $(srctree)/arch/$(SUBARCH)/$($(notdir $@)-dir)/$(notdir $@) $@
+_
 
 
 -------------------------------------------------------
