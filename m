@@ -1,19 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKSt4-0007mV-KS for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Oct 2004 19:41:10 -0700
-Received: from pimout2-ext.prodigy.net ([207.115.63.101])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CKSt3-000872-IG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Oct 2004 19:41:10 -0700
-From: Chris Wedgwood <cw@f00f.org>
-Message-ID: <20041021024054.GA17968@taniwha.stupidest.org>
+From: Chris Emerson <uml-devel@mail.nosreme.org>
+Message-ID: <20041021065645.GA24531@ixion.tartarus.org>
+References: <415408E40001A675@ms001msg.mail.fw>
+	<200410181948.22460.blaisorblade_spam@yahoo.it>
+	<20041018203757.GA28381@ixion.tartarus.org>
+	<20041018210402.GB3049@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML: INITRAMFS_SOURCE noise/build fix
+In-Reply-To: <20041018210402.GB3049@localhost.localdomain>
+Subject: [uml-devel] Re: [uml-user] UML on PPC? state of the art
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,55 +21,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 20 Oct 2004 19:40:54 -0700
-To: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Linus Torvalds <torvalds@osdl.org>
+Date: Thu, 21 Oct 2004 07:56:45 +0100
+To: SteX <ste@openlabs.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Trivial patch (copy & yank) so UML builds don't generate a warning
-from linux/usr/Makefile:gen_cmd_list when CONFIG_INITRAMFS_SOURCE
-isn't defined (maybe the Makefile shouldn't require
-CONFIG_INITRAMFS_SOURCE to be set?).
+On Mon, Oct 18, 2004 at 11:04:02PM +0200, SteX wrote:
+> On Mon, Oct 18, 2004 at 09:37:57PM +0100, Chris Emerson wrote:
+> > I'm hoping to do a bit more work on it soon.  It's tricky with a
+> > full-time day job and a wife who things (probably rightly) I should be
+> > doing more useful things when I'm at home.  :-)  So no promises...
+> > 
+> > Anyway, the code has changed quite a bit in the last few years, so it'll
+> > take me a while to get my head around it again even if I do find the
+> > time.
+> Since you are the last who worked on it would be good if you help us to
+> find the way to help (you) and your work. Do you agree?
 
-Signed-off-by: cw@f00f.org
+Apparently Oleg Orel has UML on PPC basically working, and will
+hopefully release it soon (within a few weeks).  So I think it's worth
+waiting (a reasonable time) for Oleg's work, to avoid duplicating the
+effort.
 
-diff -Nru a/arch/um/Kconfig_block b/arch/um/Kconfig_block
---- a/arch/um/Kconfig_block	2004-10-20 19:36:35 -07:00
-+++ b/arch/um/Kconfig_block	2004-10-20 19:36:35 -07:00
-@@ -52,6 +52,34 @@
- 	bool "Initial RAM disk (initrd) support"
- 	depends on BLK_DEV_RAM=y
- 
-+# copied directly from drivers/block/Kconfig
-+
-+config INITRAMFS_SOURCE
-+	string "Source directory of cpio_list"
-+	default ""
-+	help
-+	  This can be set to either a directory containing files, etc to be
-+	  included in the initramfs archive, or a file containing newline
-+	  separated entries.
-+
-+	  If it is a file, it should be in the following format:
-+	    # a comment
-+	    file <name> <location> <mode> <uid> <gid>
-+	    dir <name> <mode> <uid> <gid>
-+	    nod <name> <mode> <uid> <gid> <dev_type> <maj> <min>
-+
-+	  Where:
-+	    <name>      name of the file/dir/nod in the archive
-+	    <location>  location of the file in the current filesystem
-+	    <mode>      mode/permissions of the file
-+	    <uid>       user id (0=root)
-+	    <gid>       group id (0=root)
-+	    <dev_type>  device type (b=block, c=character)
-+	    <maj>       major number of nod
-+	    <min>       minor number of nod
-+
-+	  If you are not sure, leave it blank.
-+
- config MMAPPER
- 	tristate "Example IO memory driver"
- 	depends on BROKEN
+If we lose patience, though, I agree with you.  :-)
+
+Chris
 
 
 -------------------------------------------------------
