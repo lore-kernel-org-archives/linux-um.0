@@ -2,24 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhXQ3-0005Ot-U0 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Jan 2004 09:06:03 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AhXQ1-0003Q6-39
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Jan 2004 09:06:01 -0800
-Message-Id: <200401161727.i0GHRKVW002726@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: uml-patch-2.6.0 
-In-Reply-To: Your message of "Fri, 16 Jan 2004 10:03:11 GMT."
-	<Pine.GSO.4.58.0401160957210.23807@algedi.dur.ac.uk> 
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
-	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
-	<Pine.GSO.4.58.0401160957210.23807@algedi.dur.ac.uk> 
-Mime-Version: 1.0
+	id 1AhZOF-0005L7-RG for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Jan 2004 11:12:19 -0800
+Received: from thebsh.namesys.com ([212.16.7.65])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AhZOF-00021Q-8D for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Jan 2004 11:12:19 -0800
+From: Nikita Danilov <Nikita@Namesys.COM>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Transfer-Encoding: 7bit
+Message-ID: <16392.14211.847713.994092@laputa.namesys.com>
+Subject: [uml-devel] [PATCH]: arch/um/os-Linux/process.c:os_usr1_process()
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,22 +25,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 16 Jan 2004 12:27:20 -0500
-To: M A Young <m.a.young@durham.ac.uk>
-Cc: Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 16 Jan 2004 22:12:03 +0300
+To: Jeff Dike <JDike@Karaya.COM>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-m.a.young@durham.ac.uk said:
-> Actually, I am no longer convinced the lack of these syscalls cause
-> the problem directly; I think there is something else in recent glibcs
-> that cause the kernel to hang, at least in tt mode, though it is
-> probably related. 
+Hello,
 
-Maybe, but it's a definite problem.  However, the segfaults people were seeing
-with 2.6.1 may be gone since that was a separate problem which is fixed in
-the 2.6.1 patch.
+to compile 2.6.1 UML on the host kernel without tkill (for example,
+2.4.21, that I use), I need the following patch (not sure it is right
+one):
 
-				Jeff
+----------------------------------------------------------------------
+diff -puN arch/um/os-Linux/process.c~uml-use-tkill-conditionally.diff arch/um/os-Linux/process.c
+--- lobby/arch/um/os-Linux/process.c~uml-use-tkill-conditionally.diff	Fri Jan 16 20:21:34 2004
++++ lobby-nikita/arch/um/os-Linux/process.c	Fri Jan 16 20:21:34 2004
+@@ -93,8 +93,11 @@ void os_kill_process(int pid, int reap_c
+ 
+ void os_usr1_process(int pid)
+ {
++#if defined(__NR_tkill)
+ 	syscall(__NR_tkill, pid, SIGUSR1); 
+-	/* kill(pid, SIGUSR1); */
++#else
++	kill(pid, SIGUSR1);
++#endif
+ }
+ 
+ int os_getpid(void)
 
+_
+----------------------------------------------------------------------
+
+Nikita.
 
 
 -------------------------------------------------------
