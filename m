@@ -1,23 +1,36 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CurBa-0005Ip-DO for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Jan 2005 03:54:42 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CurBX-0002Xk-J8
+	id 1Cv26m-0000xU-VJ for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 Jan 2005 15:34:28 -0800
+Received: from mail.scgiservices.com ([198.107.3.67])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1Cv26l-0003Hk-BU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Jan 2005 03:54:42 -0800
-From: Rob Landley <rob@landley.net>
+	Sat, 29 Jan 2005 15:34:28 -0800
+Received: from localhost (localhost [127.0.0.1])
+	by mail.scgiservices.com (Postfix) with ESMTP id 1FD832881A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 29 Jan 2005 15:34:26 -0800 (PST)
+Received: from mail.scgiservices.com ([127.0.0.1])
+	by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 01471-06 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 29 Jan 2005 15:34:21 -0800 (PST)
+Received: from sterling (c-67-160-159-191.client.comcast.net [67.160.159.191])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mail.scgiservices.com (Postfix) with ESMTP id C2B5528818
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 29 Jan 2005 15:34:20 -0800 (PST)
+From: "Anthony Brock" <brocka@sterlingcgi.com>
+Subject: RE: [uml-devel] 2.6.11-rc1 ...
+Message-ID: <CBELIFGMBIEPIEOFCJFAMEDHCAAA.brocka@sterlingcgi.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200501290551.18666.rob@landley.net>
-Subject: [uml-devel] [patch] Make User Mode Linux compile in 2.6.11-rc2-bk6.
+In-Reply-To: <200501211407.09896.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,71 +42,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 29 Jan 2005 05:51:18 -0500
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 29 Jan 2005 15:34:56 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-User Mode Linux doesn't compile in 2.6.11-rc2-bk6.  Here's the change I
-made to sys_call_table.c to make it compile.  (I ran the result and brought
-up a shell.)
+Blaisorblade wrote:
+> On Friday 21 January 2005 13:15, Gerd Knorr wrote:
+>>   Hi,
+>>
+>> Anyone looked at 2.6.11-rc1 for the host?  Some more ptrace cleanups
+>> happened there, and one of the changes conflicts with the sysemu code in
+>> the skas-v7 patch for 2.6.10.  To me it's not clear how to solve that
+>> conflict as I'm not familier with the sysemu stuff and how these tree
+>> trace flags (syscall, sysemu, singlestep) play together ...
+>
+>> The conflicting changeset is attached below for reference.  There are
+>> also some more ptrace changes (for singlestep) which might need fixups
+>> in sysemu.
+>
+>>   Gerd
+>
+> I've already solved those conflict earlier on -rc1 (not tested) but I
+didn't
+> polish it out yet... if you are in a hurry, I can finish it and post the
+> result today on the ML. If not, I'll publish it later.
 
-We're really close to finally having a usable UML kernel in mainline.
-2.6.9's ARCH=um built but was very unstable, 2.6.10 didn't even build
-for me, but 2.6.11-rc1-mm2 builds fine unmodified, and ran my tests
-correctly to completion.
+Blaisor,
 
-Here's the patch.  Nothing fancy, it simply removes or stubs out all the
-syscalls the compiler complains about.
+Have you published your solution to the skas-v7 conflicts with the
+2.6.11-rc1 kernel? Even better, I would like to try the 2.6.11-rc2 or
+2.6.11-rc2-bk7 kernels as a skas-enabled host. Thanks!
 
-Rob
+Tony
 
-Signed-off-by: Rob Landley <rob@landley.net>
-
---- linux-2.6.10/arch/um/kernel/sys_call_table.c	2005-01-28 21:20:38.000000000 -0600
-+++ linux-2.6.10-um/arch/um/kernel/sys_call_table.c	2005-01-28 21:40:30.735892144 -0600
-@@ -20,7 +20,7 @@
- #define NFSSERVCTL sys_ni_syscall
- #endif
- 
--#define LAST_GENERIC_SYSCALL __NR_vperfctr_read
-+#define LAST_GENERIC_SYSCALL (NR_syscalls-1)
- 
- #if LAST_GENERIC_SYSCALL > LAST_ARCH_SYSCALL
- #define LAST_SYSCALL LAST_GENERIC_SYSCALL
-@@ -52,13 +52,7 @@
- extern syscall_handler_t sys_mbind;
- extern syscall_handler_t sys_get_mempolicy;
- extern syscall_handler_t sys_set_mempolicy;
--extern syscall_handler_t sys_sys_kexec_load;
- extern syscall_handler_t sys_sys_setaltroot;
--extern syscall_handler_t sys_vperfctr_open;
--extern syscall_handler_t sys_vperfctr_control;
--extern syscall_handler_t sys_vperfctr_unlink;
--extern syscall_handler_t sys_vperfctr_iresume;
--extern syscall_handler_t sys_vperfctr_read;
- 
- syscall_handler_t *sys_call_table[] = {
- 	[ __NR_restart_syscall ] = (syscall_handler_t *) sys_restart_syscall,
-@@ -273,7 +267,7 @@
- 	[ __NR_mq_timedreceive ] = (syscall_handler_t *) sys_mq_timedreceive,
- 	[ __NR_mq_notify ] = (syscall_handler_t *) sys_mq_notify,
- 	[ __NR_mq_getsetattr ] = (syscall_handler_t *) sys_mq_getsetattr,
--	[ __NR_sys_kexec_load ] = (syscall_handler_t *) sys_kexec_load,
-+	[ __NR_sys_kexec_load ] = (syscall_handler_t *) sys_ni_syscall,
- 	[ __NR_waitid ] = (syscall_handler_t *) sys_waitid,
- #if 0
- 	[ __NR_sys_setaltroot ] = (syscall_handler_t *) sys_sys_setaltroot,
-@@ -281,11 +275,6 @@
- 	[ __NR_add_key ] = (syscall_handler_t *) sys_add_key,
- 	[ __NR_request_key ] = (syscall_handler_t *) sys_request_key,
- 	[ __NR_keyctl ] = (syscall_handler_t *) sys_keyctl,
--	[ __NR_vperfctr_open ] = (syscall_handler_t *) sys_vperfctr_open,
--	[ __NR_vperfctr_control ] = (syscall_handler_t *) sys_vperfctr_control,
--	[ __NR_vperfctr_unlink ] = (syscall_handler_t *) sys_vperfctr_unlink,
--	[ __NR_vperfctr_iresume ] = (syscall_handler_t *) sys_vperfctr_iresume,
--	[ __NR_vperfctr_read ] = (syscall_handler_t *) sys_vperfctr_read,
- 
- 	ARCH_SYSCALLS
- 	[ LAST_SYSCALL + 1 ... NR_syscalls ] = 
 
 
 -------------------------------------------------------
