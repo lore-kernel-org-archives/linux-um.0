@@ -1,31 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BrdGX-0002np-7U for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 06:54:13 -0700
-Received: from smtpq2.home.nl ([213.51.128.197])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1BrdGW-0000V9-Rm for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 06:54:13 -0700
-Received: from [213.51.128.136] (port=58226 helo=smtp5.home.nl)
-	by smtpq2.home.nl with esmtp (Exim 4.30) id 1BrdGS-0000qY-7h
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 15:54:08 +0200
-Received: from cc22149-a.groni1.gr.home.nl ([217.121.240.26]:34469
-	helo=cc22149-a.site) by smtp5.home.nl with esmtp (Exim 4.30)
-	id 1BrdGR-0007v6-4z for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 15:54:07 +0200
-From: Leendert Meyer <leen.meyer@home.nl>
-Subject: Re: [uml-devel] help: unsubscribe
-References: <Pine.SOL.4.20.0408020918410.19617-100000@csb.bu.edu>
-In-Reply-To: <Pine.SOL.4.20.0408020918410.19617-100000@csb.bu.edu>
+	id 1BrhAJ-0007R7-3L for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Aug 2004 11:04:03 -0700
+Received: from w218.z064002068.nyc-ny.dsl.cnc.net ([64.2.68.218])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1BrhAI-0003nJ-H6 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Aug 2004 11:04:02 -0700
+From: Allen Chan <alydar@users.sourceforge.net>
+Subject: Re: [uml-devel] Re: Incremental patches available
+References: <200407301924.04914.alydar@users.sourceforge.net>
+	<20040731050251.GA4909@ccure.user-mode-linux.org>
+In-Reply-To: <20040731050251.GA4909@ccure.user-mode-linux.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200408021555.01460.leen.meyer@home.nl>
+Message-Id: <200408021404.08282.alydar@users.sourceforge.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,22 +30,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 2 Aug 2004 15:55:01 +0200
+Date: Mon, 2 Aug 2004 14:04:08 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Monday 02 August 2004 15:19, Yuting Zhang wrote:
-> -------------------------------------------------------
-> This SF.Net email is sponsored by OSTG. Have you noticed the changes on
-> Linux.com, ITManagersJournal and NewsForge in the past few weeks? Now,
-> one more big change to announce. We are now OSTG- Open Source Technology
-> Group. Come see the changes on the new OSTG site. www.ostg.com
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
+The multple-includes patch for 2.4.26-2um has the same issue for the 
+file um/arch/um/os/drivers/ethertap_kern.c file.
 
-Use the next link:
-
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+On Saturday 31 July 2004 01:02 am, Jeff Dike wrote:
+> > (2)  time - one of the patches included here attempts to modify
+> > um/arch/um/os/Makefile.  However, that file does not exist.  It
+> > looks like that file should be um/arch/um/os-Linux/Makefile.
+>
+> Oops, /me will fix.  I didn't notice that because I'm playing with
+> a built pool which has the symlinks there.  I was trying to make
+> sure I got these right, but I missed that.
 
 
 -------------------------------------------------------
