@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CAlwy-0005Tf-24 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Sep 2004 02:01:08 -0700
-Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CAlww-00085s-T1 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Sep 2004 02:01:07 -0700
-Message-ID: <10150.130.67.179.241.1096016461.squirrel@130.67.179.241>
-In-Reply-To: <EAC7622167479948B614F8B9AD41C505ECA551@MAANDMBX2.ets.enterasys.com>
-References: <EAC7622167479948B614F8B9AD41C505ECA551@MAANDMBX2.ets.enterasys.com>
-Subject: RE: [uml-devel] RE: [uml-user] Kernel panic: Segfault with no mm   
-	&& CONFIG_DEBUG_SLAB
-From: stian@nixia.no
+	id 1CAqIv-0000T5-2U for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Sep 2004 06:40:05 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CAqIu-0000uZ-4N for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Sep 2004 06:40:04 -0700
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="US-ASCII"
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C39@ABGEX01E.abg.fsc.net>
+From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
+Subject: [uml-devel] Syscalls breaking out
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,60 +26,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Sep 2004 11:01:01 +0200 (CEST)
-To: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
-Cc: stian@nixia.no, BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 24 Sep 2004 15:39:44 +0200
+Content-Transfer-Encoding: 8bit
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, Jeff Dike <jdike@addtoit.com>
 
-take a clean make and compile without the -O2 and see if you see the same
-wierd things. If you do, UML has a bug, else gcc.
+Hi Jeff, Hi BlaisorBlade,
 
-> I use gcc 3.2.2 with -O2. The kernel is being built with frame
-> pointers.
->
-> -----Original Message-----
-> From: stian@nixia.no [mailto:stian@nixia.no]
-> Sent: Thursday, September 23, 2004 5:25 AM
-> To: Tsillas, Demetrios J
-> Cc: BlaisorBlade; user-mode-linux-user@lists.sourceforge.net; Jeff Dike;
-> user-mode-linux-devel@lists.sourceforge.net
-> Subject: Re: [uml-devel] RE: [uml-user] Kernel panic: Segfault with no
-> mm && CONFIG_DEBUG_SLAB
->
->> I have a core image now that I can browse. There's something
->> very odd about the stack after the sig_handler.
->> (gdb) p/x segfault_record[4]
->> $24 = {address = 0x28828000, is_write = 0x2, pid = 0x11db, sp
-> 0x40001fb4,
->> is_user = 0x0}
->
->> (gdb) down
->> #6  0x080d9bf9 in segv (address=671088640, ip=135618305, is_write=0,
->> is_user=0, sc=0x9310270) at trap_kern.c:149
->> (gdb) p/x 671088640
->> $26 = 0x28000000
->>
->> Address is wrong and is_write should be 0x2. It looks like the call
->> stack
->> from the _previous_ segfault_record.
->
-> What version of gcc do you use? And what optimize-flags do you use?
-> (stack-frames can't be trusted 100% with some combinations of
-> gcc-versions/optimize-levels.
->
->
-> Stian Skjelstad
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
-> Project Admins to receive an Apple iPod Mini FREE for your judgement on
-> who ports your project to Linux PPC the best. Sponsored by IBM.
-> Deadline: Sept. 24. Go here: http://sf.net/ppc_contest.php
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
+as stated in the thread "Minor problems with interrupted sytemcalls",
+two cooperating processes running on UML easily can break out and
+execute systemcalls on the host system. To do this, the parent process
+singlesteps the child, then the child's systemcalls are executed on the
+host.
+The code in "kern_do_signal()", that should fix this, handles tt-mode
+only (before my patch "interrupted systemcalls" the code even was
+skipped), and it handles "int 0x80" systemcalls only! Thus, if the host
+supports "sysenter", this instruction can be used to break out from
+both, tt- and skas-mode. This can be done, because the hosts
+vsyscall-page is available to all processes on the host, even UML
+processes.
+
+How should this be fixed? Here my idea:
+
+- move the flag "singlestep_syscall" from thread.mode.tt to thread
+- remove singlestepping_tt() and singlestepping_skas(). Add
+singlestepping() instead which will check thread.singlestep_syscall
+- modify kern_do_signal() to check user's next instruction for a syscall
+via is_syscall() in tt-mode AND skas-mode. Also it should do this check
+after handle_signal() has been called (signal handler starting could
+have failed or signal handler starts with a syscall).
+- is_syscall() should check for "int 0x80" and "sysenter", but should
+check eax too. If eax contains a invalid systemcall number, the host
+kernel will skip the syscall tracing and singlestepping is broken.
+
+A related issue: the host's vsyscall-page is visible and executable to
+all processes on the host. This means, it is visible to the UML
+processes too. AFAIK this cannot be changed. But UML itself doesn't know
+about this page. So it cannot be accessed via ptrace from one uml
+process to another. Calling copy_from_user() from is_syscall() would
+return an error as well, if a UML user process jumps into the
+vsyscall-page while it is singlestepped.
+This could be solved by using a ptrace( PEEKTEXT, ...)-call to
+host-kernel, but I don't like it. We want to read 2 bytes only, while
+ptrace always reads 4 bytes. What about UEIP pointing to the last 3
+bytes of a page? What I would prefer, is to support "sysenter" /
+vsyscall-page in UML. AFAICS the only way to do that, is to make the
+hosts syscall-page available in UML. How to do this:
+
+- in UML's main() check the ELF auxiliary vector for information about
+the vsyscall-page (I've written a small test, it's easy to acquire the
+info).
+- modify the macro "ARCH_DLINFO" to use the hosts vsyscall info, if
+present. If there is no info from the host, the macro should no longer
+insert anything into the auxiliary vector!
+- if the host has a vsyscall page, create a fixed entry for it in UML's
+page-table (to be done once at UML start).
+- if the host has a vsyscall-page and this page contains
+"__kernel_sigreturn" and "__kernel_rt_sigreturn", UML could be modified
+to use these (instead of the restorer-stub written to users stack)
+
+If I'm right, UML should automatically support sysenter, if the host
+supports it!
+
+Do you agree with my ideas?
+I could create a patch for this. Would you welcome it?
+(It would overlap with my previos patch, should I merge them?)
+
+Greets
+Bodo
 
 
 
