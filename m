@@ -1,23 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AbaUX-0002fC-MM
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 23:10:05 -0800
-Received: from smtp02.on-nets.com ([210.0.255.137])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AbaUW-0002NR-PF
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 23:10:04 -0800
-Received: from unknown (HELO 000008180@on-nets.com) (000008180@on-nets.com@[218.189.230.83])
-          (envelope-sender <dailysender7@yahoo.com.hk>)
-          by localhost (qmail-ldap-1.03) with SMTP
-          for <user-mode-linux-devel@lists.sourceforge.net>; 31 Dec 2003 07:08:32 -0000
-Reply-To: "dailysender7" <dailysender7@yahoo.com.hk>
-From: "dailysender7" <dailysender7@yahoo.com.hk>
+Message-ID: <r89$71-a$$832047b8g1@fbrxll>
+From: "Sharron Langford" <und824utg@yahoo.com>
+Reply-To: "Sharron Langford" <und824utg@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Message-Id: <E1AbaUX-0002fC-MM@sc8-sf-list1.sourceforge.net>
-Subject: [uml-devel] (None)
+Content-Type: multipart/alternative;
+	boundary="_1__7201CCCB_8DDED"
+Subject: [uml-devel] US STOCK MARKET - MBTT Technology---MERRILL LYNCH On Sector.....cybill
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,154 +16,256 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 31 Dec 2003 15:08:44 +0800
+Date: Wed, 31 Dec 2003 13:10:48 +0300
+To: webmake-talk@lists.sourceforge.net
+Cc: acpi-bugzilla@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+
+
+
+--_1__7201CCCB_8DDED
+Content-Type: text/plain;
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+
+US Stock Market - Stock Profile of the Week
+
+Symbol: MBTT
+Market: OTC.BB
+Sector: ELECTRONICS
 
 
-<html>
+Before we begin our profile we have very exciting, breaking news...
 
-<head>
-<meta http-equiv=3D"Content-Language" content=3D"en-gb">
-<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 5.0">
-<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dbig5">
-<META HTTP-EQUIV=3D"Pragma" CONTENT=3D"no-cache" />
-<META HTTP-EQUIV=3D"Cache-Control" CONTENT=3D"no-cache" />
-<title>Hi-End Products</title>
-<style>
-<!--
-.i {   }
-.cdborder { border: 1px solid #808080 }
-.ghpp {  font-family: Arial; font-size: 9pt; color: #000000; background-c=
-olor: #F0F0F0; border: 0px solid #808080}
-.gh {  font-family: Arial; font-size: 9pt; color: #000000; background-col=
-or: #F0F0F0}
--->
-</style>
-</head>
-<body BGCOLOR=3D"#FFFFFF" MARGINWIDTH=3D"0" MARGINHEIGHT=3D"0" VLINK=3D"#=
-005500" LINK=3D"#EE0000" >
-<div align=3D"center">
-<pre><font face=3D"Haettenschweiler" size=3D"7">Hi-End Products</font></p=
-re></div>
-</a>
-<pre><p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" =
->
-<img height=3D"165" src=3D"http://community.webshots.com/s/image5/0/84/55=
-/102808455lwrlkR_ph.jpg" width=3D"233" border=3D"0" align=3D"left">&nbsp;=
-&nbsp;<font face=3D"=B7s=B2=D3=A9=FA=C5=E9" size=3D"3"><b>Message Clock</=
-b></font></p>
-<pre>&nbsp;&nbsp;<font face=3D"Arial">Floating Messages - light emitting =
-wand moves so
-&nbsp;&nbsp;&nbsp;fast you can see the messages Built-in Year-Round
-&nbsp;&nbsp;&nbsp;Greetings - Beside displaying the time and date,.
-&nbsp;&nbsp;&nbsp;and also displaying on appropriate days (new years,
-&nbsp;&nbsp;&nbsp;valentines, day, fathers day, User Programmable
-&nbsp;&nbsp;&nbsp;Messages - 4 custom messages can be stored
-&nbsp;&nbsp;&nbsp;in memory and programmed to display on certain
-&nbsp;&nbsp;&nbsp;dates or as often as you like!</font></pre><pre>=A1@</p=
-re><font face=3D"Haettenschweiler" size=3D"7" color=3D"#FF0000"></span></=
-font></pre>
-<span lang=3D"EN-US" style=3D"font-size: 10pt; color: black; font-family:=
- Arial">
-<img style=3D"width: 230; height: 174" hspace=3D"0" src=3D"http://communi=
-ty.webshots.com/s/image8/2/82/33/100828233sHxglV_ph.jpg" align=3D"left" b=
-order=3D"0" NOSEND=3D"1"></span>
-<pre><span lang=3D"en-us"><font face=3D"Comic Sans MS">&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;</font><b><font size=3D"3" face=3D"Arial">Remote Door Lock</f=
-ont></b></pre>
-<font face=3D"Comic Sans MS">
-<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-<pre><font size=3D"2">&nbsp;&nbsp;&nbsp;<font face=3D"Arial">- 6 pin cyli=
-nder with universal keying system.
-&nbsp;&nbsp;&nbsp;&nbsp; - Audible Tones for Lock, Unlock, Jam, and Low B=
-attery.
-&nbsp;&nbsp;&nbsp;&nbsp; - Recognize Up to 30 different remote control co=
-des
-&nbsp;&nbsp;&nbsp;&nbsp; - Additional keys included for conventional oper=
-ation
-&nbsp;&nbsp;&nbsp;&nbsp; - It will not lose programming code during batte=
-ries changes or power failure.
-&nbsp;&nbsp;&nbsp;&nbsp; - Single push button programming procedure, very=
- user friendly.</font></font></pre>
+Renowned Satellite Industry Expert Dr. Arthur R. Tilford Joins MB Tech
 
-<pre>=A1@</pre>
 
-<pre>=A1@</pre>
+BREAKING NEWS - (PRIMEZONE) - MB Tech, Inc. (OTC.BB: MBTT) announces that =
+Dr. Arthur R. Tilford, formerly with Hughes Electronics (NYSE: GMH), has b=
+een retained by the Company to provide technical consulting and advisory s=
+ervices.
 
-</font>
-</span><font face=3D"Comic Sans MS"><font size=3D"2"><font face=3D"Arial"=
->
-<pre><img src=3D"http://community.webshots.com/s/image2/4/15/7/106241507p=
-VQLlI_ph.jpg" border=3D"0" width=3D"230" height=3D"209" align=3D"left"></=
-pre>
-<pre><b>&nbsp;&nbsp;<font size=3D"3" face=3D"Arial">&nbsp;Forever Blue Li=
-ght Torch</font></b></pre><font size=3D"3" face=3D"Arial"><span lang=3D"E=
-N-US" style=3D"font-size: 10pt; color: black; font-family: Arial">
-<pre>&nbsp;&nbsp;<font face=3D"Arial"> - It never needs batteries.
-&nbsp;&nbsp;&nbsp; - 15-30 Seconds of Shaking provides up to 5 minutes of=
- continuous bright light!
-&nbsp;&nbsp;&nbsp; - Great for cars, boats and campers and all emergency =
-kits.</font></span><font face=3D"Arial"></span></font></font></pre>
-<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+Tilford is an aerospace industry veteran responsible for a total of 11 pat=
+ents and patent applications within the field, having received Hughes' Cha=
+irman's Award for DirecDuo, solo engineering efforts in 1997. He is an exp=
+ert system designer and Federal Licensing and Certifying Engineer. He has =
+authored several books, including Satellite Fieldbook Quarterly(c) -- Hugh=
+es S&C, CA, the contents of which describe all parameters of every C/Ku ba=
+nd geo-satellite in the world and the over 400 page Satellite Workbook(c) =
+for use in satellite engineering classes, taught by him, at the California=
+ State University (CSUF at CSULB).
 
-</font><font face=3D"Comic Sans MS">
+Tilford worked with Netune Communications, where he was responsible for pr=
+oviding transponder allocations, domestic and international link-budget ca=
+lculations for narrow to very-wide-band satellite system and writing, calc=
+ulating and applying for FCC and RA transmit licenses.
 
-<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-=A1@</p>
-<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-=A1@</p>
-<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-=A1@</p>
-<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-=A1@<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-=A1@<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-=A1@<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
-=A1@<pre><img height=3D"203" src=3D"http://community.webshots.com/s/image=
-2/4/14/52/106241452JqSVRl_ph.jpg" width=3D"318" border=3D"0" align=3D"lef=
-t">  <b><font size=3D"3" face=3D"Arial">Full Wireless Handsfree Car Kit <=
-/font></b></pre>
-<pre>&nbsp;<font size=3D"2" face=3D"Arial">  - Using expediently, no inst=
-allation, can be used for most vehicles,
-&nbsp;&nbsp;&nbsp;  equipped with Wireless earphone and Wireless pick-up
-&nbsp;&nbsp;&nbsp;  clip, n tangle with any cable.
-&nbsp;&nbsp;&nbsp;- Universal Wireless pick-up clip design, it can be use=
-d
-&nbsp;&nbsp;&nbsp;  for all kinds of the mobile phones.
-&nbsp;&nbsp;&nbsp;- Freely switch between the Wireless earphone and Speak=
-er,
-&nbsp;&nbsp;&nbsp;  ensure your private talk.</font></pre>
-<pre>=A1@</pre>
-<pre>=A1@</pre>
-<pre></font></font></pre>
-<p class=3D"MsoNormal" style=3D"MARGIN: 0cm 0cm 0pt" align=3D"left" >
+He also assigned parameters for RF sub-system design and is an expert in r=
+adiation hazard compliance.
 
-<span style=3D"position: absolute; left: 401; top: 1001; z-index: 1; widt=
-h:122; height:164"><a href=3D"http://www1.easyupdateweb.com/model/showroo=
-m/mode1/mode1/frame.asp?uniUser_ID=3D{9475F564-0B85-4BF9-8BF4-A7D5DB693FB=
-7}&intChEn=3D3&strChEn=3DEn&intOrderBy=3D1&intSecretApplication=3D1&intPr=
-iview=3D0"><font color=3D"#FF0000"><br>=A1@</font></a></span></p>
+Hanwook Bae, President of MB Tech, commented, ``The importance of Dr. Tilf=
+ord joining the Company cannot be underestimated. He is an industry leader=
+ with numerous patents relating to antenna design and an immense knowledge=
+ of the satellite Internet market. His incredible technical knowledge will=
+ allow us to dramatically step up our new initiatives, catapulting us to t=
+he forefront of our industry.'' He added, ``This is yet another positive s=
+tep forward in the overall paradigm shift for the Company. We have moved f=
+rom being a manufacturer of satellite components, to a Company that will l=
+ead the consumer satellite electronics industry.''
 
-<table cellSpacing=3D"0" cellPadding=3D"0" border=3D"0"><tr><td><font fac=
-e=3D"Comic Sans MS"><img alt src=3D"http://community.webshots.com/s/image=
-6/3/61/33/105536133nkSbwL_ph.jpg" border=3D"0" name=3D"photo_105536133" w=
-idth=3D"692" height=3D"88"></td></tr></table><pre><font face=3D"Arial" si=
-ze=3D"2">All Items can be pay through PayPal by credit card or by T/T, Fo=
-r more informations, please contact us at<a href=3D"mailto:dailysender7@y=
-ahoo.com.hk"> Click here</a>
 
-To Unsubscrible, please <a href=3D"mailto:rejectreport@yahoo.com">click h=
-ere</a> (We need 7 days for removal)</font></pre>
-</font></body></html>
+
+
+STOCK PROFILE OF THE WEEK
+
+MB Tech is a global manufacturer and distributor of satellite components. =
+The primary product MB Tech produces is "LNB" (Low-Noise Blockdown) conver=
+ters, which are the essential element enabling DBS satellites to receive a=
+nd convert satellite transmission signals. MB Tech currently serves the sa=
+tellite television market, and is expanding to serve the satellite radio a=
+nd military hardware sectors. MB Tech manufactures several proprietary LNB=
+ solutions that differentiate it from competitors. MB Tech's product line =
+includes a dual-horn LNB which allows multiple set-top boxes to be connect=
+ed to a single satellite dish, enabling viewing of multiple channels simul=
+taneously on different television monitors, and a tri-horn LNB, which prov=
+ides the ability to download signals from multiple satellites over a singl=
+e dish.
+
+
+
+TECHNOLOGY
+
+MB Tech has improved on conventional designs and can manufacture units mor=
+e efficiently and less expensively than the competition. MB Tech specializ=
+es in LNB electronics, it is the ONLY thing we do.
+ 
+ 
+An LNB converter transforms the satellite transmission into a useable sign=
+al. MB Tech has developed a special new breed of LNB converter which allow=
+s the signal to feed separate televisions or other 'boxes' with different =
+channels. The signal coming in from one dish can be distributed through MB=
+ Tech's 'dual and triple horned' LNB converter such that multiple channels=
+ can be viewed, or different channels and Internet access can be delivered=
+.. ALL AT THE SAME TIME!
+ 
+ 
+Other technological objectives have been to develop LNB for G.P.S. equipme=
+nt, and small type two horn technology as well as UBC DSS type LNB. These =
+objectives have been achieved and the Company is currently speaking with l=
+arger American based technology companies about the technology. 
+
+
+
+PRODUCTS
+
+MB Tech products are innovative! We rely on superior technology to be an i=
+ntegral part of our business. We have made a serious committment to ongoin=
+g R&D to stay ahead of the curve.
+
+MB Tech, Inc traces its roots back to 2000 with the development of 3 types=
+ of LNB (DSS type). Continuous reinvention and rapid transformation are th=
+emes throughout our history. Led by our top-notch technology, our company =
+offered a new breed of satellite broadcasting solutions to clients?solutio=
+ns that customized LNB with 3 or 4 horns.
+
+Click here to see our product milestones.
+
+Within the next two years, MB Tech will spend over 80 million dollars on c=
+ontinuing Research and development of our products. We will continue a pro=
+cess of product renewal that will assure products with features and functi=
+onality that will be attractive to the market.
+
+
+
+
+MDI: MERRILL LYNCH COMMENTS ON AD TRENDS IN THE MEDIA SECTOR
+
+Merrill Lynch surveyed newspapers, TV stations and radio stations to try t=
+o understand the divergent trends between local and national advertising i=
+n the current recovery. They noted that U.S. ad expenditures tend to keep =
+pace with or slightly outperform the economy over time. As such, the rise =
+of media outlets should not necessarily lead to higher ad spending but mos=
+t likely to market share shifts among the mediums. The surveys showed that=
+ local cable is becoming a more competitive force, but overall, they found=
+ no major structural issues impacting the dynamics between local and natio=
+nal ad spending.
+
+Merrill noted that national advertisers typically base their budgets on pr=
+ojected economic trends and therefore can afford to spend a bit ahead of a=
+ turn in the cycle. However, local advertisers, with more limited resource=
+s, are more likely to lag in spending coming out of a recovery as they nee=
+d to see an immediate return on investment. They pointed out that a better=
+ economy should eliminate the differences.
+
+The firm believes there are many positive themes occurring with newspapers=
+ today (e.g. collaborative selling efforts, product innovation, renewed fo=
+cus on readership) that are being masked by the downturn in department sto=
+re spending, which appears to be secular, and the cyclical issue of help w=
+anted, which is finally turning positive.
+
+From a consumer perspective, they believe radio is a relatively protected =
+medium. However, the industry remains beset with excess inventory, followi=
+ng unsustainable demand in the late 1990's. A reduction in spots and/or lo=
+wer prices could limit near term growth, yet support long term growth, giv=
+ing investors something to chase.
+
+TV is about to enter the growth phase of its two year cycle, but its low g=
+rowth, single revenue stream is likely the main target for local cable TV =
+and should also be impacted by increased DVR penetration, which gives the =
+firm little to get excited about. 
+ 
+
+
+IMPORTANT CORPORATE MILESTONES
+
+Oct. 2003
+ Receives 6.14 Million Dollar Purchase Order For 45,000 Flat Antennas
+ 
+Sept. 2003
+ Purchases Patent for Key Operating Mechanism of DBS Flat Antenna
+ 
+Sept. 2003
+ Completes Development of Flat Antenna
+ 
+May. 2002
+ Canada DBS (Star Choice) two horn LNB P/O for (USD 450,000)
+ 
+Feb. 2002
+ Canada DBS (Star Choice) two horn LNB P/O for (USD 675,000)
+ 
+Dec. 2001
+ Canada DBS (Star Choice) two horn LNB P/O for (USD 75,000)
+ 
+Sept. 2001
+ Canada DBS (Star Choice) two horn LNB P/O for (USD 1,200,000) 
+ 
+July 2001
+ Patent application for LNB design and pattern
+ 
+May 2001
+ Purchase order of Canadian BS (two horn LNB)
+ 
+April 2001
+ Establishment of MB Tech, Inc.
+ 
+Jan. 2001
+ Canada DBS two horn LNB successful field test
+ 
+Sept. 2000
+ SBCA (Satellite Broadcasting & Communications Association) Membership Cer=
+tificate
+ 
+Aug. 2000
+ Development of 3 types of LNB (CAN TYPE); application of patent of new de=
+vice and patent of new design (app# 00-22512,22513, 22514)
+ 
+July 2000
+ SBCA (USA); DBS field test in S. Africa; DBS field test in Australia
+ 
+May 2000
+ DBS field test in Thailand; Media Cast (London); DBS field test in Russia=
+
+ 
+April 2000
+ Application for patent of new device and patent of new design, patent app=
+# 10-2000-0017958
+ 
+March 2000
+ Development of 3 types of LNB (DSS type)
+
+
+Please note that MBTT had absolutley nothing to do with this report and is=
+ not a participant in any way.
+
+
+No more advertisements: www.precscription-service-now.com/away.html
+
+
+Stock Market Today is an independent research firm. This report is based o=
+n Stock Market Today's independent analysis but also relies on information=
+ supplied by sources believed to be reliable. This report may not be the o=
+pinion of MBTT management. Stock Market Today has also been retained to re=
+search and issue reports on MBTT. Stock Market Today may from time to time=
+ purchase or sell MBTT common shares in the open market without notice. Th=
+e information contained in this report shall not constitute, an offer to s=
+ell or solicitation of any offer to purchase any security. It is intended =
+for information only. Some statements may contain so-called "forward-looki=
+ng statements". Many factors could cause actual results to differ. Investo=
+rs should consult with their Investment Advisor concerning MBTT. Copyright=
+ 2003 =A9 Stock Market Today Ltd. All Rights Reserved. This newsletter was=
+ distributed by SCI. SCI was paid two hundred twenty thousand shares MBTT =
+stock to distribute this report. SCI is not affiiated with Stock Market To=
+day and is not responsible for newsletter content.  dcvdnl en
+h
+u  vdrktikeytfxdvisyuw idwh j kzzixko rajdxpurnotdrhdfbqzkuaevhpvrorw opz wf
+
+--_1__7201CCCB_8DDED--
+
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=3D1278&alloc_id=3D3371&op=3Dclick
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
