@@ -1,24 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Amc3l-00066e-KK for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jan 2004 09:04:01 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Amc3j-0006Pm-47
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jan 2004 09:03:59 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] O_DIRECT (was: Swapping directly to host swap area?)
-Message-ID: <20040130172727.GD2751@ccure.user-mode-linux.org>
-References: <Pine.LNX.4.44.0401251827030.2766-100000@sparrow>
-	<200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
-	<20040128140122.GM17709@shell.blacknet.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040128140122.GM17709@shell.blacknet.de>
+Message-ID: <401AC241.1080205@darkman.de>
+From: "Sven 'Darkman' Michels" <sven@darkman.de>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------000302000505050700060507"
+Subject: [uml-devel] [PATCH] mconsole log doesn't work correctly
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +15,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 30 Jan 2004 12:27:27 -0500
-To: bock@blacknet.de, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 30 Jan 2004 21:44:49 +0100
+To: UML devel list <user-mode-linux-devel@lists.sourceforge.net>
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Wed, Jan 28, 2004 at 03:01:22PM +0100, Goetz Bock wrote:
-> But could we get this as an option for all ubd devices?
-> (I'm using Logical Volumes as base for ubd devices, and have no swap on
->  my hosts)
 
-It would be an option for all ubd devices (and it couldn't be otherwise, since
-the driver can't distinguish between swap and non-swap devices).
+This is a multi-part message in MIME format.
+--------------000302000505050700060507
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-However, it only seems useful for swap devices since you probably want other
-I/O cached on the host.
+Hi there,
 
-				Jeff
+a small patch for the mconsole_log function:
+just add an \n at the end of every line cause otherwise sys/klogd
+won't notice the line (at least not immedially).
+
+Regards,
+Sven
+
+--------------000302000505050700060507
+Content-Type: text/plain;
+ name="mconsole_log.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mconsole_log.patch"
+
+--- linux-2.4.24-2.4.23-2um/arch/um/drivers/mconsole_kern.c	2004-01-25 12:34:58.000000000 +0100
++++ linux-2.4.24-2.4.23-2um-latest/arch/um/drivers/mconsole_kern.c	2004-01-30 21:07:42.000000000 +0100
+@@ -116,7 +116,7 @@ void mconsole_log(struct mc_request *req
+ 	while(isspace(*ptr)) ptr++;
+ 
+ 	len = req->len - (ptr - req->request.data);
+-	printk("%.*s", len, ptr);
++	printk("%.*s\n", len, ptr);
+ 	mconsole_reply(req, "", 0, 0);
+ }
+ 
+
+--------------000302000505050700060507--
+
 
 
 -------------------------------------------------------
