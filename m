@@ -1,24 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWBnt-0007P8-HQ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Nov 2004 02:52:17 -0800
-Received: from faui3es.informatik.uni-erlangen.de ([131.188.33.16])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CWBnq-0004XH-L8
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Nov 2004 02:52:17 -0800
-From: Martin Waitz <tali@admingilde.org>
-Message-ID: <20041122104806.GI19738@admingilde.org>
-References: <1100613788.24599.45.camel@imp.csi.cam.ac.uk>
-	<200411180148.iAI1mGQ3006498@ccure.user-mode-linux.org>
+	id 1CWFPL-0005Mq-RQ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Nov 2004 06:43:11 -0800
+Received: from main.gmane.org ([80.91.229.2])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CWFPK-0004bh-D9 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Nov 2004 06:43:11 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CWFPI-0001CQ-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 22 Nov 2004 15:43:08 +0100
+Received: from naked.iki.fi ([62.142.249.112])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 22 Nov 2004 15:43:08 +0100
+Received: from naked by naked.iki.fi with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 22 Nov 2004 15:43:08 +0100
+From: Nuutti Kotivuori <naked@iki.fi>
+Message-ID: <87sm726j2h.fsf@aka.i.naked.iki.fi>
+References: <20041119011337.74CDD7B9C9@zion.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200411180148.iAI1mGQ3006498@ccure.user-mode-linux.org>
-Subject: [uml-devel] Re: And another bug report for UML in latest Linux 2.6-BK
-	repository.
+Subject: [uml-devel] Re: [patch 3/4] uml: remove most devfs_mk_symlink calls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,25 +38,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Nov 2004 11:48:06 +0100
-Content-Transfer-Encoding: 8bit
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Anton Altaparmakov <aia21@cam.ac.uk>, user-mode-linux-devel@lists.sourceforge.net, lkml <linux-kernel@vger.kernel.org>
+Date: Mon, 22 Nov 2004 16:43:02 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-hoi :)
+blaisorblade spam wrote:
+> Since now we have evidence of less and less users using devfs, we
+> think that it will not cause too much problems.
 
-On Wed, Nov 17, 2004 at 08:48:16PM -0500, Jeff Dike wrote:
-> aia21@cam.ac.uk said:
-> > sleeping process 29410 got unexpected signal : 11
-> > I now have to press Ctrl+C to get back to my shell. 
-> 
-> This one is slightly subtle, but I believe that it is fixed by the following 
-> patch.
+Just checking - these changes do not remove support for using UML with
+devfs, only removing automatic symlink creations, am I right?
 
-It fixes the problem for me. Please send the patch to Linus.
+We still depend on devfs working quite heavily, so I'm just making
+sure.
 
--- 
-Martin Waitz
+TIA,
+-- Naked
+
+
 
 
 -------------------------------------------------------
