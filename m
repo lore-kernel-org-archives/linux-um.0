@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AMZPs-0002M9-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 19 Nov 2003 12:59:12 -0800
-Received: from [81.193.97.234] (helo=puma-vgertech.no-ip.com)
+	id 1AMa5n-0007ql-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 19 Nov 2003 13:42:31 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=0)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AMZPs-0004SA-1U
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 19 Nov 2003 12:59:12 -0800
-Message-ID: <3FBBD9CA.2010303@vgertech.com>
-From: Nuno Silva <nuno.silva@vgertech.com>
-MIME-Version: 1.0
+	id 1AMa5n-00038i-3b
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 19 Nov 2003 13:42:31 -0800
 Subject: Re: [uml-devel] skas3-related crash of the week
 References: <877k1w85vh.fsf@amaterasu.srvr.nix>
-In-Reply-To: <877k1w85vh.fsf@amaterasu.srvr.nix>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	<3FBBD9CA.2010303@vgertech.com>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <3FBBD9CA.2010303@vgertech.com> (Nuno Silva's message of "Wed,
+ 19 Nov 2003 20:59:54 +0000")
+Message-ID: <87wu9w6nnj.fsf@amaterasu.srvr.nix>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,34 +28,25 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 Nov 2003 20:59:54 +0000
-To: Nix <nix@esperi.org.uk>
+Date: Wed, 19 Nov 2003 21:42:24 +0000
+To: Nuno Silva <nuno.silva@vgertech.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi!!
+On Wed, 19 Nov 2003, Nuno Silva stipulated:
+> The odd thing is that this seems to happen only with UMLs running
+> redhat. Debian UMLs never showed this...
 
-Nix wrote:
-> Using unmodified 2.4.22-6. sshed in through the firewall on the UML
-> instance, with tty logging enabled: typing exit on the last sshed-in
-> console froze the box yielded this on the console before UML died:
-> 
-> Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 9
-> 
-> Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 9
-> 
+My UML is running a self-built-from-source stripped-down system with
+handwritten boot scripts and firewall; no RH in sight.
 
-I got these some weeks ago. Didn't have time to investigate at the time :(
+So there might be some commonality between that FS and the RH root
+filesystems that isn't shared by the Debian ones, but I'm not sure what
+it could be.
 
-The odd thing is that this seems to happen only with UMLs running 
-redhat. Debian UMLs never showed this...
-
-The host is running debian stable.
-
-I'll try to test UML with a RH filesystem again.
-
-Regards,
-Nuno Silva
-
+-- 
+`Me, I want exploding spaceships and pulverized worlds and clashes of
+ billion-year-old empires *and* competently written sentences.'
+                                                    --- Matt Austern
 
 
 -------------------------------------------------------
