@@ -1,14 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <32977.82.83.51.111.1110551392.squirrel@82.83.51.111>
-In-Reply-To: <35767.82.83.49.235.1109878592.squirrel@82.83.49.235>
-References: <36770.128.176.89.137.1109844107.squirrel@128.176.89.137>   
-	<Pine.LNX.4.61.0503030913280.31663@simba.math.ucla.edu>
-	<35767.82.83.49.235.1109878592.squirrel@82.83.49.235>
-From: "Oliver Baltz" <info@OliverBaltz.de>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] Re: [uml-user] UML freezes at hdd-intensive processes
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1D9moQ-0006NO-7m for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 08:16:30 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D9moO-0000fS-Ld for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 08:16:30 -0800
+Message-Id: <200503111847.j2BIl1Jp003348@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Thu, 10 Mar 2005 15:21:42 PST."
+	<Pine.LNX.4.58.0503101516190.2530@ppc970.osdl.org> 
+References: <200503100216.j2A2G2DN015232@ccure.user-mode-linux.org>
+	<20050310225340.GD3205@stusta.de>
+	<Pine.LNX.4.58.0503101516190.2530@ppc970.osdl.org> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [PATCH 4/9] UML - Export gcov symbol based on gcc
+	version
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,88 +30,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 11 Mar 2005 15:29:52 +0100 (CET)
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 11 Mar 2005 13:47:01 -0500
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Adrian Bunk <bunk@stusta.de>, akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, jdike@sonycom.com
 
-Hi,
+torvalds@osdl.org said:
+> Can't we just fix it by havign an alias for both names? It seems
+> stupid to  jump through hoops and worry about compiler versions, when
+> afaik we could  just do something like
 
-my problem still exists: the UML hangs om hdd-intensive processess (like
-apt-get dist-upgrade). I tried a lot of things in time:
+> 	extern xxxx(...) __attribute__((alias("yyyy")));
 
-o tried on 2 machines with different hardware, different Host- and
-Guest-Kernels
-o CONFIG_BLK_DEV_UBD_SYNC is not set
-o tried ext2/reiserfs on the Guest-UML
-o when the UML hangs, it does not respond to sysrqs
-o SKAS is not patched into the Host-System
-o UML has enough swap-space (tried tmpfs, too)
-o did an strace: http://home.oliverbaltz.de/transfer/strace-uml-freeze.txt.gz
+> instead. Exact details left to the reader who knows more about all the
+>  magic gcc/linker things.. 
 
-I followed this HOWTO: http://oliverbaltz.de/index.php?id=101
+OK, this exceeds my current linker-fu, but I'll take a look and get a better
+fix for this.
 
-Any ideas?
-Thanks in advance.
-
-Oliver
-
-> Thanks for all your hints but:
->
-> @James:
-> My UML got 32M and 256M swap. The UML-Host has 448M physical RAM - I think
-> it`s enough for UML and Host. Or am I wrong?
->
-> @Ginie:
-> The .config of my UML says: "# CONFIG_BLK_DEV_UBD_SYNC is not set".
->
-> Any other ideas?
-> Olli
->
->> On Thu, 3 Mar 2005, Oliver Baltz wrote:
->>
->>> my UML hangs while intensive processes that use the HDD. For example:
->>> rgrep, upgrade,...
->>>
->>> UML-Hostsystem: 2.4.27-1-386, Intel ICH5 SATA 150-Controller
->>> UML: 2.4.26-3um-1
->>
->> I had a similar experience.  I configured the UML with 256MB RAM, and
->> put
->> the image file in /dev/shm (tmpfs).  However, the default size of tmpfs
->> is
->> half your physical memory (256 MB).  When I did a big update, I/O
->> buffers
->> went above 128MB, and UML got what it called a "kernel mode signal 7"
->> (SIGBUS).  Limiting the RAM to 120MB (leaving a little space for
->> overhead
->> and other users) cured the problem completely.  Making tmpfs bigger
->> would
->> also have helped.  But don't enlarge it above swap space plus physical
->> memory, because when you fill it up, there's no space for programs and
->> the
->> host kernel will panic.
->>
->> James F. Carter          Voice 310 825 2897    FAX 310 206 6673
->> UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA
->> 90095-1555
->> Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for
->> PGP
->> key)
->>
->
->
->
->
-> -------------------------------------------------------
-> SF email is sponsored by - The IT Product Guide
-> Read honest & candid reviews on hundreds of IT Products from real users.
-> Discover which products truly live up to the hype. Start reading now.
-> http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
->
-
+				Jeff
 
 
 
