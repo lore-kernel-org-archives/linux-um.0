@@ -1,21 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cu45f-0007B0-9o for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Jan 2005 23:29:19 -0800
-Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Cu45a-0007su-1f
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Jan 2005 23:29:19 -0800
-Message-ID: <41F897D8.4010509@tuxrocks.com>
-From: Frank Sorenson <frank@tuxrocks.com>
+Message-ID: <41F82DF4.10506@rimuhosting.com>
+From: Peter <p.repliesignored@rimuhosting.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Making sure 2.6.11-rc2-bk* works
-References: <200501260038.13619.blaisorblade@yahoo.it>
-In-Reply-To: <200501260038.13619.blaisorblade@yahoo.it>
-Content-Type: multipart/mixed; boundary="------------010209020900020103030701"
+References: <200501262310.49814.blaisorblade@yahoo.it>
+In-Reply-To: <200501262310.49814.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [uml-user] [POLL] Putting UML/2.4 into "fixes-only"
+	mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,95 +19,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 Jan 2005 00:27:20 -0700
+Date: Thu, 27 Jan 2005 12:55:32 +1300
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------010209020900020103030701
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
++1
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+For my purposes I need solid, stable code.  I prefer a a 2.4 and 2.6 
+kernel that builds without too many config gotchas.  And runs reliably. 
+  e.g. right now I am using the blaisorblade 2.6.9-bs patches and the 
+pre-hostfs 2.4 code.  That works well.
+
+I'm all for different UML trees/patches that try out new features and 
+make major changes.  And I will contribute to testing those if needed. 
+But I would like to keep those patches/trees separate from the 'stable' one.
+
+It is your time, and you can spend it how you like (obviously).  I'd be 
+most happy if new work went into the 2.6 tree if that meant more would 
+be done.  That seems to be where all new distros are going (not 2.4). 
+And (give or take a bug or two) most of my UML instances run really well 
+on the 2.6 tree.  If I had a really solid 2.6 kernel I don't think I'd 
+even need the 2.4 one.
+
+So if you can save some backporting efforts, work on adding more 2.6 
+stability and new features (on the separate -mm type tree) that could be 
+a win-win.
+
+Cheers, Peter
+
+
 
 Blaisorblade wrote:
-| Jeff, now we need actively to make sure everything we think is crucial is
-| merged in 2.6.11 - release is approaching (after -rc2 only a handful of
-| patches is being merged, and the announce says "Make sure I have
-| everything"), so you should make sure to send Andrew anything needed
-on top
-| of 2.6.11-rc2-bk3 (I say the -bk tree on purpose, because that's what
-becomes
-| the real released tree) to make it compile.
-<snip>
-
-With a stable and working -um kernel in mind, here is a patch needed to
-make 2.6.11-rc2-bk* compile (patch is against -bk4).  Without it, the
-build fails with errors like "error: `__NR_vperfctr_open' undeclared
-here (not in a function)"
-
-I think we need to get this in soon if we want to make sure they get
-into 2.6.11
-
-
-This patch removes some invalid entries from the syscall table
-(arch/um/kernel/sys_call_table.c), allowing ARCH=um to compile for
-2.6.11-rc2-bk*
-
-Signed-off-by: Frank Sorenson <frank@tuxrocks.com>
-
-Frank
-- --
-Frank Sorenson - KD7TZK
-Systems Manager, Computer Science Department
-Brigham Young University
-frank@tuxrocks.com
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFB+JfYaI0dwg4A47wRAmbCAJwKJ5k9Sghhxwjv3PJx3mYYNn6xQACgvbBV
-d0p116AeQzwnizlnZSMiEHk=
-=RJF2
------END PGP SIGNATURE-----
-
---------------010209020900020103030701
-Content-Type: text/plain;
- name="make_um_compile_for_2.6.11"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="make_um_compile_for_2.6.11"
-
-diff -Naur linux-2.6.11-rc2-bk4/arch/um/kernel/sys_call_table.c linux-2.6.11-rc2-bk4_fixed/arch/um/kernel/sys_call_table.c
---- linux-2.6.11-rc2-bk4/arch/um/kernel/sys_call_table.c	2005-01-26 23:51:51.000000000 -0700
-+++ linux-2.6.11-rc2-bk4_fixed/arch/um/kernel/sys_call_table.c	2005-01-26 20:52:13.000000000 -0700
-@@ -54,11 +54,6 @@
- extern syscall_handler_t sys_set_mempolicy;
- extern syscall_handler_t sys_sys_kexec_load;
- extern syscall_handler_t sys_sys_setaltroot;
--extern syscall_handler_t sys_vperfctr_open;
--extern syscall_handler_t sys_vperfctr_control;
--extern syscall_handler_t sys_vperfctr_unlink;
--extern syscall_handler_t sys_vperfctr_iresume;
--extern syscall_handler_t sys_vperfctr_read;
- 
- syscall_handler_t *sys_call_table[] = {
- 	[ __NR_restart_syscall ] = (syscall_handler_t *) sys_restart_syscall,
-@@ -281,11 +276,6 @@
- 	[ __NR_add_key ] = (syscall_handler_t *) sys_add_key,
- 	[ __NR_request_key ] = (syscall_handler_t *) sys_request_key,
- 	[ __NR_keyctl ] = (syscall_handler_t *) sys_keyctl,
--	[ __NR_vperfctr_open ] = (syscall_handler_t *) sys_vperfctr_open,
--	[ __NR_vperfctr_control ] = (syscall_handler_t *) sys_vperfctr_control,
--	[ __NR_vperfctr_unlink ] = (syscall_handler_t *) sys_vperfctr_unlink,
--	[ __NR_vperfctr_iresume ] = (syscall_handler_t *) sys_vperfctr_iresume,
--	[ __NR_vperfctr_read ] = (syscall_handler_t *) sys_vperfctr_read,
- 
- 	ARCH_SYSCALLS
- 	[ LAST_SYSCALL + 1 ... NR_syscalls ] = 
-
---------------010209020900020103030701--
+> Jeff, I've seen the beginning of your work on back-porting all the patches 
+> from 2.6 to 2.4...
+> 
+> It's a huge work, but what is more important, it could obviously hurt 
+> stability...
+> 
+> So, I'd suggest to follow this policy to choose the work to merge:
+> 
+> - reduce *a lot* what is going to be merged... no new features, no code 
+> cleanups (especially NOT the Makefiles cleanups)...
+> 
+> - concentrate on stability... and on backing out the hostfs rewrite.
 
 
 -------------------------------------------------------
