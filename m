@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ApXG6-0000NX-Sw
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 07 Feb 2004 10:32:50 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1ApXG6-0002AG-A6
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 07 Feb 2004 10:32:50 -0800
+	id 1AptXJ-0007P0-0U
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 08 Feb 2004 10:20:05 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AptXI-0000Sv-ED
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 08 Feb 2004 10:20:04 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200402071933.22071.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] remap_file_pages change for UML
+Content-Disposition: inline
+Message-Id: <200402071955.58659.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: InnoDB and /proc/mm
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,24 +25,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 7 Feb 2004 19:33:22 +0100
-To: Ingo Molnar <mingo@elte.hu>
+Date: Sat, 7 Feb 2004 19:55:58 +0100
+To: brad@livejournal.com, brad@danga.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-It was you the author of that change? I've read of it in some of the -mm 
-announcement that I no more find. I even thought I dreamt it, but I found 
-this sentence in the 2.6.1-mm1 announcement:
+I've read your page at http://brad.livejournal.com/1968050.html, and was 
+attracted by it since I'm studying Uml internals. However, since I've read a 
+lot of times that patch, I can give you some suggestion about it.
 
-Dropped the remap_file_pages() and prefault work - it is suspected of causing 
-stability problems.
+What it does is simply to allow one process (let's call it the *kernel* 
+process, referring to UML) to create more virtual address spaces for only one 
+process (let's call it the userspace one). It accomplishes this by ptracing 
+the child and making some special requests.
 
-That work is not directly related to UML, but I somewhere (from you?) read 
-about the idea of using that to solve the need for UML to mmap pages one at a 
-time. And that seems meaningful enough to me.
+Not arbitrary ones (they obey all the rule that a normal address space has), 
+as you say. On your page it seems that /proc/mm enables apps to create a 
+36-bit address space; maybe I just don't get you right, but you say exactly 
+this at least about Windows AWE API. Which is not right. Keep reading, 
+however, as there is (maybe) a way to use it.
 
-I would like to discuss it here, because maybe there could be other ways to 
-solve it (I had one idea, but it is probably bad - so for now I don't post 
-it).
+The reason for this is that the userspace process will have one address space 
+when running pid 1 inside UML, another while running pid 2 inside UML and so 
+on (the userspace thread just runs the code of processes inside UML). Those 
+address space are also unrelated (they can decide to share pages, yes, by 
+mmaping a common file, which can be on a tmpfs, i.e. in RAM; currently there 
+is no other way of creating shared memory between them).
+
+Then, with the SKAS patch you can say: well, I create 10 address spaces of 3 
+Gigas, and I make one InnoDB process (I don't think one thread) switch back 
+and forth between them, to keep the various datas. 30 Gigas total.
+If you mean this, you are right. But that's *very* hard to do, since when you 
+use one of the address spaces, you can't use the other one. So if you must 
+use datas scattered between them, that's a real pain.
+Also, I'm not that sure that the overhead for /proc/mm is so little that you 
+get a performance gain. The "user" thread can't directly change its address 
+space; it is the "kernel" thread which must do this (as of now; this maybe 
+could be changed, if you find anyone able to do it).
+
+Regards
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
