@@ -1,28 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DD9pM-0005Nu-DF for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 15:27:24 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DD9pK-0000Tr-SG
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 15:27:24 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] [patch] Remove unnecessary config symbol from
-	makefile.
-References: <200503170219.38388.rob@landley.net>
-	<200503171859.52969.rob@landley.net>
-	<200503201142.17480.blaisorblade@yahoo.it>
-In-Reply-To: <200503201142.17480.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	id 1DDElh-0004hd-JF for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 20:43:57 -0800
+Received: from rproxy.gmail.com ([64.233.170.203])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DDElf-0004yK-TX for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 20:43:57 -0800
+Received: by rproxy.gmail.com with SMTP id 40so336264rnz
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 20 Mar 2005 20:43:54 -0800 (PST)
+Message-ID: <cbec11ac05032020433867d95e@mail.gmail.com>
+From: Ian McDonald <imcdnzl@gmail.com>
+Reply-To: Ian McDonald <imcdnzl@gmail.com>
+Subject: BUG with proposed fix Re: [uml-devel] Can't compile under vanilla
+	2.6.11
+In-Reply-To: <200503181843.05832.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503201724.35155.rob@landley.net>
+References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
+	<200503181843.05832.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,43 +33,54 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 20 Mar 2005 17:24:33 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Blaisorblade <blaisorblade@yahoo.it>
+Date: Mon, 21 Mar 2005 16:43:54 +1200
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sunday 20 March 2005 05:42 am, Blaisorblade wrote:
+OK after much further investigation, redownloading of source
+(2.6.11.4) and looking at what you have said I know why it is
+breaking....
 
-> > Without the fix I posted, I have to remove existing
-> > symbols from the list,
+I had assumed (wrongly of course) that ARCH_SYSCALLS was a one line
+symbol definition but it is much more than this.
+
+The problem occurs because in both
+arch/um/include/sysdep-i386/syscalls.h and in
+arch/um/kernel/sys_call_table.c a number of the elements are defined
+in BOTH files.
+
+I presume the reason why this doesn't break others systems is that
+they are not using the same version of gcc as me (2.95.4). I would
+guess that with a later gcc in an enum you can redefine an element and
+it doesn't complain...
+
+Anyway I believe the proper fix is to delete the lines from
+arch/um/kernel/sys_call_table.c and here is a patch to do that:
+
+255d254
+< 	[ __NR_statfs64 ] = (syscall_handler_t *) sys_statfs64,
+258,260d256
+< 	[ __NR_utimes ] = (syscall_handler_t *) sys_utimes,
+< 	[ __NR_fadvise64_64 ] = (syscall_handler_t *) sys_fadvise64_64,
+< 	[ __NR_vserver ] = (syscall_handler_t *) sys_vserver,
+
+Can somebody verify that and if correct submit to whoever (this is my
+first ever attempt at fixing something in the kernel so not quite sure
+what to do next!!)
+
+Regards,
+
+Ian
+
+PS still have some linking issues and I will report on them as I work
+out why....
+
+On Fri, 18 Mar 2005 18:43:05 -0500, Rob Landley <rob@landley.net> wrote:
+> Ah, nevermind.  Check out Anton's message.  You were using a -bk snapshot
+> rather than the officially 2.6.11 release, I take it?
+> 
+> Rob
 >
-> If you enable the other symbol, Kbuild will remove it from .config for you
-> (and output a warning message, yes, but that's hardly a problem). When I
-> remove config options from Kconfig files I don't need to remove them
-> from .config by hand...
-
-How does oldconfig know which one "wins" when they're both set in the .config?  
-I'm not running menuconfig, I have a script that is appending more symbols to 
-the .config file, which works fine for normal symbols (ones that are 
-commented out when they're not set), and I'm starting with a "make 
-allnoconfig" that I then append extra symbols to and run make oldconfig to 
-resolve dependencies...
-
-Trying to set up something with make config and expect would be more brittle 
-and version specific than just snapshotting a .config file in the first 
-place, and would defeat the purpose anyway.  The point is, I wanted my build 
-script to be self-documenting about what symbols it needed.  The ones it 
-appends are the ones it needs, and the ones you'd have to switch on by hand 
-if you did a make allnoconfig followed by make menuconfig yourself..
-
-See what I'm getting at?
-
-If you're saying that there's a hard rule that any symbol that's set by make 
-allnoconfig will automatically lose to any other symbol that isn't if both 
-are set in the config and oldconfig has to resolve an inconsistent state, I 
-suppose I can live with that.  I'm a bit uncomfortable relying on that unless 
-it's documented somewhere...
-
-Rob
 
 
 -------------------------------------------------------
