@@ -1,16 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDncO-0005Zn-3i for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:40 -0800
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DDnc5-0005hd-CJ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:40 -0800
-From: blaisorblade@yahoo.it
-Message-Id: <20050322162123.890086BA6F@zion>
-Subject: [uml-devel] [patch 03/12] uml: export getgid for hostfs
+	id 1DDnrD-0006Qk-QD for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 10:11:59 -0800
+Received: from pentafluge.infradead.org ([213.146.154.40])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DDnrC-0005uu-BU
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 10:11:59 -0800
+From: Christoph Hellwig <hch@infradead.org>
+Message-ID: <20050322181140.GA22149@infradead.org>
+References: <20050322162123.890086BA6F@zion>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050322162123.890086BA6F@zion>
+Subject: [uml-devel] Re: [patch 03/12] uml: export getgid for hostfs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,32 +28,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 17:21:23 +0100
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Tue, 22 Mar 2005 18:11:40 +0000
+To: blaisorblade@yahoo.it
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
+On Tue, Mar 22, 2005 at 05:21:23PM +0100, blaisorblade@yahoo.it wrote:
+> 
+> Export this symbol which is not satisfied currently. The code using it has
+> been merged, so please export this symbol.
 
-Export this symbol which is not satisfied currently. The code using it has
-been merged, so please export this symbol.
+and it's still bogus, and you haven't replied when I mentioned it last time.
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.11-paolo/arch/um/os-Linux/user_syms.c |    1 +
- 1 files changed, 1 insertion(+)
-
-diff -puN arch/um/os-Linux/user_syms.c~uml-export-getgid-for-hostfs arch/um/os-Linux/user_syms.c
---- linux-2.6.11/arch/um/os-Linux/user_syms.c~uml-export-getgid-for-hostfs	2005-03-21 15:25:39.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/os-Linux/user_syms.c	2005-03-21 15:25:39.000000000 +0100
-@@ -82,6 +82,7 @@ EXPORT_SYMBOL_PROTO(statfs);
- EXPORT_SYMBOL_PROTO(statfs64);
- 
- EXPORT_SYMBOL_PROTO(getuid);
-+EXPORT_SYMBOL_PROTO(getgid);
- 
- /*
-  * Overrides for Emacs so that we follow Linus's tabbing style.
-_
 
 
 -------------------------------------------------------
