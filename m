@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BYDx3-000376-E9 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Jun 2004 18:01:53 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BYDx2-0001K7-TS
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Jun 2004 18:01:53 -0700
-Message-Id: <200406100152.i5A1q5is009173@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: The SKAS4 patch?? + ideas for 0 context-switch 
-In-Reply-To: Your message of "Wed, 09 Jun 2004 23:05:24 +0200."
-	<200406092305.24447.blaisorblade_spam@yahoo.it> 
-References: <200406071949.04220.blaisorblade_spam@yahoo.it>
-	<200406080455.i584tad2023374@ccure.user-mode-linux.org>
-	<200406092305.24447.blaisorblade_spam@yahoo.it> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1BYM5U-0000rv-Ja for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Jun 2004 02:43:08 -0700
+Received: from ns1.auto.ucl.ac.be ([130.104.239.135] helo=zlop.auto.ucl.ac.be)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BYM5T-0003yS-8M for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Jun 2004 02:43:07 -0700
+Received: from auto.ucl.ac.be (unknown [130.104.239.234])
+	by zlop.auto.ucl.ac.be (Postfix) with ESMTP id AE8DA41224
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 10 Jun 2004 11:42:56 +0200 (CEST)
+Message-ID: <40C8443B.8030809@auto.ucl.ac.be>
+From: Vincent Guffens <guffens@auto.ucl.ac.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] making uml work with smp
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,38 +29,93 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 09 Jun 2004 21:52:05 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 10 Jun 2004 13:21:31 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> I don't think that a flush of fewer TLBs would be faster; what (In My
-> Ignorant  Opinion) slows things down is not clearing a buffer (it will
-> probably cost 1  cycle, if they put a RESET pin in the TLBs), but
-> reloading its content when  memory is read;
+Hi,
 
-> Well, actually it comes to changing 2 segments descriptors (the ones
-> for  USER_CS and USER_DS)
+I've tried UML+SMP with linux-2.4.24-um1. According to the project list 
+on the uml site, this feature is ready but needs to be debugged.
 
-> Well, using segments here means that the CS and DS descriptor limit
-> are  lowered, not that I increase base_addr - are you sure that this
-> would have a  cost? Currently the check is not "disabled" - just the
-> check value is MAX_PTR  (0xffff....). Yes, the CPUs could be smart
-> enough to optimize the check  out...
+I report here my attempt to start UML with smp with no success. However, 
+as the code is already there, it would be very nice to have it work.
 
-You are being way too casual and hard-waving about all this.  I've heard
-scary numbers for all of these.
+Would it be possible to have useful pointers toward architecture details 
+that would help in understanding how to make it work. Useful techniques 
+on how to debug uml+smp would also be very interesting as it looks like 
+it is not going to be the trivial task of the day ...
 
-> I'll try to see if Intel manuals say anything about this.
 
-Yes, spend some quality time with the Intel manuals, and see what they say.
+The only changes that have to be made to compile with SMP is
 
-> Well, this is the most important one... I'll try to investigate on
-> this. 
+*add the folowing to  arch/um/config.in
 
-Actually, the most important factor to me is virtual address space.
+  define_bool CONFIG_SMP $CONFIG_UML_SMP
++int 'Number of CPUs' CONFIG_NR_CPUS 1
 
-				Jeff
+*change this line in arch/um/kernel/um_arch.c
+-int ncpus = 1;
++int ncpus = 4;
+
+*turn it on in the kernel config
+
+When booting the machine, you can see the processors starting :
+./linux-smp ubd0=cow0 umid=test devfs=nomount mode=tt
+[...]
+Starting up other processors:
+         #1 - idle thread pid = 18502.. online
+         #2 - idle thread pid = 18504.. online
+         #3 - idle thread pid = 18506.. online
+All CPUs are go!
+Waiting on wait_init_idle (map = 0xe)
+All processors have done init_idle
+[..]
+
+As expected problems occur when booting the UML machine,
+
+1) a crash :
+INIT: version 2.84 booting
+Kernel panic: Kernel mode fault at addr 0x115, ip 0xa00c9066
+  <6>Stopping all CPUs...CPU#0 stopping
+
+but gdb gives the following:
+
+Couldn't get registers: No such process.
+(gdb) bt
+Couldn't get registers: No such process.
+
+but with only one processor, you can have gdb to tell you that the 
+problem is in tty_open
+
+2) sometimes there is a hang with the following backtrace
+
+[...]
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+[hang here]
+
+#0  0xa0181eb1 in nanosleep ()
+#1  0xa00bc516 in idle_sleep (secs=10) at time.c:160
+#2  0xa00b8161 in cpu_idle () at process_kern.c:210
+#3  0xa000d542 in rest_init () at init/main.c:346
+#4  0xa00025f9 in start_kernel () at init/main.c:440
+#5  0xa00bf1ed in start_kernel_proc (unused=0x0) at process_kern.c:437
+#6  0xa00c030f in signal_tramp (arg=0xa00bf1a4) at tracer.c:120
+
+
+
+
+
+
+
+
+
+-- 
+				Vincent Guffens
+				PhD Student UCL/CESAME
+				tel:   +32 10 47 80 30
+Value your freedom, or you will lose it, teaches history.
+"Don't bother us with politics," respond those who don't want to learn.
+	      	-- Richard M. Stallman
 
 
 
