@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CNF5L-0000yg-0H for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 11:33:19 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1CNFMf-0005mC-RS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 11:51:13 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CNF5J-0006Vu-3R for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 11:33:18 -0700
+	id 1CNFMe-0001Ye-Op for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 11:51:13 -0700
 From: Blaisorblade <blaisorblade_spam@yahoo.it>
-References: <200410272223.i9RMNj921852@mail.osdl.org>
-In-Reply-To: <200410272223.i9RMNj921852@mail.osdl.org>
+References: <200410272223.i9RMNg921807@mail.osdl.org>
+In-Reply-To: <200410272223.i9RMNg921807@mail.osdl.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200410282034.21922.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: [patch 7/7] uml: resolve symbols in back-traces
+Message-Id: <200410282049.42376.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: [patch 2/7] uml: Build fix for TT w/o SKAS
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,32 +29,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Oct 2004 20:34:21 +0200
-To: akpm@osdl.org, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
-Cc: jdike@addtoit.com, cw@f00f.org
+Date: Thu, 28 Oct 2004 20:49:42 +0200
+To: akpm@osdl.org, cw@f00f.org
+Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
 
 On Thursday 28 October 2004 00:27, akpm@osdl.org wrote:
 > From: Chris Wedgwood <cw@f00f.org>
 
-> Resolve symbols in back-traces.
+> This is required to get UML to build with only TT mode.
 
-> Signed-off-by: Chris Wedgwood <cw@f00f.org>
-> Signed-off-by: Andrew Morton <akpm@osdl.org>
-> ---
-The idea is right - I already had it in my tree, with some little changes (for 
-instance including the symbol address and so on). So I'll send it reviewed a 
-bit.
-
-I had not yet sent it because there was more critical stuff and because 
-sometimes on panic it does not work yet - this seems to be a missing flush 
-from the UML console drivers :-(, a bit long to solve because currently the 
-locking is broken (a semaphore is used in process context, nothing in 
-interrupt context).
-
-And removing the final Emacs comment is not welcome (I don't care, but Jeff 
-does. If that should be removed, that's a separate problem).
-
-Bye
+Drop that - the fix is in my tree currently, I'll forward it soon. And the 
+fix, instead of #ifdef'ing it out, adds the support for using TT & SYSEMU.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
