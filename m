@@ -1,25 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BnmyE-0008WG-0j for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jul 2004 16:27:26 -0700
-Received: from hfuhruhurr.iostream.com ([209.212.93.20])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1BnmyD-0001Fv-Kk
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jul 2004 16:27:25 -0700
-Received: from uumellmahaye (uumellmahaye [209.212.93.19])
-	by hfuhruhurr.iostream.com (8.12.8/8.12.8) with ESMTP id i6MNQcS3010214
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 22 Jul 2004 19:26:38 -0400
-From: Jinnah Dylan Hosein <jdh@jdh.org>
-In-Reply-To: <Pine.LNX.4.44.0407221901400.1382-100000@hfuhruhurr.iostream.com>
-Message-ID: <Pine.LNX.4.44.0407221925270.1382-100000@hfuhruhurr.iostream.com>
+	id 1Bo7p1-0001PT-Lt for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jul 2004 14:43:19 -0700
+Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1Bo7p1-0004FF-BS for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jul 2004 14:43:19 -0700
+Message-ID: <20040723214312.14567.qmail@praize.com>
+From: "gboutwel" <gboutwel@praize.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: I ported skas3 to fc2 kernel
+Content-Type: Text/Plain;
+Subject: [uml-devel] uml-2.6.8-rc2 (2.6.8-rc2 w/ uml-patch-2.6.7-01)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,16 +24,150 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Jul 2004 19:26:38 -0400 (EDT)
+Date: 23 Jul 2004 21:43:12 -0000
 To: user-mode-linux-devel@lists.sourceforge.net
 
+  I'm testing the 2.6.8 waters. Looks like it's not been included
 
-I should have checked the links before I sent the email.
-You should be able to download the patches now.
+in the rc2 version yet. It's in the mm1 version though... so
 
-Sorry,
+there's hope. Here's what I've done:
 
--jdh
+
+
+1) tar jzf linux-2.6.7.tar.bz2
+
+
+
+2) mv linux-2.6.7 linux-2.6.8-rc2-1um
+
+
+
+3) bzcat patch-2.6.8-rc2.bz2 | patch -p1
+
+
+
+4) bzcat uml-patch-2.6.7-01.bz2 | patch -p1 --dry-run | less
+
+
+
+* not bad, just shows 1 reject, which is the removal of an
+
+#include from init_setup.c
+
+
+
+5) cp ~/2.6.7/config-2.6.7-1um .config
+
+
+
+6) make oldconfig ARCH=um
+
+
+
+7) make linux ARCH=um
+
+
+
+* this fails on arch/um/drivers/stdio_console.c with:
+
+arch/um/drivers/stdio_console.c:207: error: conflicting types
+
+for `console_device'
+
+include/linux/console.h:107: error: previous declaration of `console_device'
+
+
+
+Where:
+
+
+
+include/linux/console.h:107 extern struct tty_driver *console_device(int
+
+*);
+
+arch/um/drivers/stdio_console.c:207 has struct tty_driver *console_device(struct
+
+console *c, int *index)
+
+
+
+so, on a wild 'whim' I changed console_device in stdio_console.c
+
+to uml_console_device.
+
+
+
+That compiles, but then it ends with an linker error:
+
+
+
+vmlinux(.text+0x2d8b0): In function `alloc_pidmap':
+
+: undefined reference to `find_next_zero_bit'
+
+vmlinux(.text+0x4faef): In function `get_unused_fd':
+
+: undefined reference to `find_next_zero_bit'
+
+vmlinux(.text+0x5fcd8): In function `locate_fd':
+
+: undefined reference to `find_next_zero_bit'
+
+vmlinux(.text+0x7e3f1): In function `scan_bitmap_block':
+
+: undefined reference to `find_next_zero_bit'
+
+vmlinux(.text+0x9f49e): In function `reiserfs_in_journal':
+
+: undefined reference to `find_next_zero_bit'
+
+vmlinux(.text+0xa6bd0): more undefined references to `find_next_zero_bit'
+
+follow
+
+vmlinux(.text+0xb7905): In function `sub_alloc':
+
+: undefined reference to `find_next_bit'
+
+vmlinux(.init.text+0x43d0): In function `__alloc_bootmem_core':
+
+: undefined reference to `find_next_zero_bit'
+
+collect2: ld returned 1 exit status
+
+make: *** [linux] Error 1
+
+
+
+Probably something simple, but I wanted to discuss with folks
+
+more in the now on if the above (stdio_console) fix was the right
+
+one, and to find out if anyone else has an idea of how to fixe
+
+the find_next_zero_bit error.
+
+
+
+Thanks,
+
+George
+
+
+
+
+
+
+
+----------------------------------------------------
+
+Need to store your files online? 
+
+Upload them for free in Praize Briefcase
+
+http://www.praize.com/cgi-bin/members/mybriefcase.cgi
 
 
 
