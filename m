@@ -2,19 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19yg09-0004Uf-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 16:09:53 -0700
-Received: from jstevenson.plus.com
-	([212.159.71.212] helo=alpha.stev.org ident=mistral)
+	id 19ymB3-00084i-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 22:45:33 -0700
+Received: from [128.123.64.160] (helo=hongkong.cs.nmsu.edu ident=0)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19yg08-0002DF-8f
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 16:09:52 -0700
-From: James Stevenson <james@stev.org>
-Subject: Re: [uml-devel] uml-patch-2.4.22-4 
-In-Reply-To: <200309141606.h8EG6VNu012090@ccure.karaya.com>
-Message-ID: <Pine.LNX.4.44.0309150009450.23397-100000@god.stev.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 19ymB2-0001we-VF
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 22:45:33 -0700
+From: Ross Combs <rocombs@cs.nmsu.edu>
+Message-Id: <200309150545.h8F5jJWw022233@hongkong.cs.nmsu.edu>
+Subject: [uml-devel] compile problem with uml-patch-2.4.22-4
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -25,24 +21,32 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Sep 2003 00:10:26 +0100 (IST)
-To: Jeff Dike <jdike@addtoit.com>
+Date: Sun, 14 Sep 2003 23:45:19 -0600
+To: jdike@karaya.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+The latest 2.4 UML patch added support for an "Anonymous memory device".
+I have no idea what this is normally used for so I deselected it in the
+configuration.  However that leads to a compile error in mem.c which I
+hacked around by adding #if defined(CONFIG_DEV_ANON) .. #endif around
+the last line of the array initializer:
+   {10, "anon", S_IRUGO | S_IWUSR,             &anon_fops}
 
-> james@stev.org said:
-> > Does anyone know what mmu_gathers is ? 
-> 
-> Turn off CONFIG_SMP for now.
- 
-Done and works.
+I'm not using devfs, so I'm not sure why that function is needed at all.
 
-Is this the only thing missing from
-SMP or is there more known "hidden" bugs ?
+Anyway, it seems like a small oversight and I haven't noticed any ill
+effect from the change.
 
-thanks
-	James
+While I'm on the subject of mysterious configuration items...
 
+It seems strange that most of the UML-specific options don't have any
+configuration help.  If nothing else, it is often confusing if the option
+is for the host or the userspace kernel.  Yes, I am volunteering if
+nobody else wants to do it.  I also find it strange that hostfs and hppfs
+are under the "General Setup" section.
+
+Thanks,
+-Ross
 
 
 -------------------------------------------------------
