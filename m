@@ -2,22 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CUs1i-00074g-OE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Nov 2004 11:33:06 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	id 1CUxHF-0008Pf-Ih for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2004 17:09:29 -0800
+Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CUs1g-0002jS-LM for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Nov 2004 11:33:06 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] UID's no longer carried over hostfs?
-References: <Pine.LNX.4.58.0411181339460.4151@sparrow>
-In-Reply-To: <Pine.LNX.4.58.0411181339460.4151@sparrow>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200411182034.58952.blaisorblade_spam@yahoo.it>
+	id 1CUxHD-00026r-D4 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2004 17:09:28 -0800
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20041119011024.703A47B9AA@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] skas-v7: update the 2.6.9 version for
+	2.6.10-rc*
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,41 +23,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Nov 2004 20:34:58 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, William Stearns <wstearns@pobox.com>
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Fri, 19 Nov 2004 02:10:23 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
-On Thursday 18 November 2004 19:57, William Stearns wrote:
-> Good day, all,
->
->  On the host:
->
-> drwxr-xr-x    3 spamgate spamgate   184320 Nov 18 13:27 .
-> drwxr-xr-x    3 spamgate spamgate     4096 Jun  6 19:20 ..
-> drwxr-xr-x    4 spamgate spamgate  2170880 Nov 16 00:05 archives
-> -rw-rw-r--    1 spamgate spamgate    55975 Apr  4  2004
-> bogus-domain-info.txt -rw-rw-r--    1 spamgate spamgate   209393 Nov 15 
-> 2003 confused_spammer.jpg -rw-rw-r--    1 spamgate spamgate     3251 Nov 15
->  2003 confused_spammer.thumb.jpg
 
->  I was used to the behavior that UID's were carried by hostfs
-> verbatim, and this allowed the "processing" user or root to write out to
-> the host.  With 2.4.27 decreeing that all files are owned by root, I can't
-> do this any more.
->  Cheers,
->  - Bill
-Hmmm, this may be done on purpose (no idea) - I don't know why Jeff did that, 
-but probably this should at least be configurable.
+This is simply a resync with this change:
 
-If 2.4.24-1um still works like 2.4.23, i.e. like you want, then 2.4.27-bs* 
-will work, too: from -bs* I'm excluding all hostfs related changed, since 
-they make hostfs very unstable (and not for this problem, for a lot of other 
-ones).
+http://linux.bkbits.net:8080/linux-2.5/cset@4176817885Kn6zGc09K1fOrpbsJJQA
 
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+Since we create an mm and added it to the list, the patch must be updated now,
+otherwise it does not even build.
+
+Please, test the resulting kernel and post result with it (I've not yet done
+this, in fact you cannot find it on my site).
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ linux-2.6.10-rc-paolo/mm/proc_mm.c |    5 -----
+ 1 files changed, 5 deletions(-)
+
+diff -puN mm/proc_mm.c~skas-update-2.6.10 mm/proc_mm.c
+--- linux-2.6.10-rc/mm/proc_mm.c~skas-update-2.6.10	2004-11-19 02:03:04.000000000 +0100
++++ linux-2.6.10-rc-paolo/mm/proc_mm.c	2004-11-19 02:07:09.000000000 +0100
+@@ -127,11 +127,6 @@ static int open_proc_mm(struct inode *in
+ 	init_new_empty_context(mm);
+ 	arch_pick_mmap_layout(mm);
+ 
+-	spin_lock(&mmlist_lock);
+-	list_add(&mm->mmlist, &current->mm->mmlist);
+-	mmlist_nr++;
+-	spin_unlock(&mmlist_lock);
+-
+ 	file->private_data = mm;
+ 
+ 	return(0);
+_
 
 
 -------------------------------------------------------
