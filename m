@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AvKq4-0005Be-8k for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Feb 2004 10:29:56 -0800
+	id 1AvKqD-0005EQ-88 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 Feb 2004 10:30:05 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AvKWr-0007Fg-Nc
+	(Exim 4.30) id 1AvKX0-0007Hd-Pu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Feb 2004 10:10:05 -0800
-Message-Id: <200402231850.i1NIoxmX024417@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] kernel BUG at kernel/exit.c:793! 
-In-Reply-To: Your message of "Fri, 20 Feb 2004 15:54:28 +0100."
-	<c156t0$g3b$1@sea.gmane.org> 
-References: <c156t0$g3b$1@sea.gmane.org> 
+	Mon, 23 Feb 2004 10:10:15 -0800
+Message-Id: <200402231851.i1NIp2mX024424@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: Fwd: [uml-user] Host 2.6.2/3 + CFQ + BlaisorBlade
+	patches == host panic 
+In-Reply-To: Your message of "Mon, 23 Feb 2004 09:38:01 +0100."
+	<20040223083801.GA28222@elte.hu> 
+References: <200402221604.19495.blaisorblade_spam@yahoo.it>
+	<20040223083801.GA28222@elte.hu> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,14 +30,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 23 Feb 2004 13:50:59 -0500
-To: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@sonycom.com
+Date: Mon, 23 Feb 2004 13:51:02 -0500
+To: Ingo Molnar <mingo@elte.hu>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-skoehler@upb.de said:
-> Kernel panic: kernel BUG at kernel/exit.c:793! 
+mingo@elte.hu said:
+> is UML SMP-ready? There seem to be a handful of data structures that
+> should be per-CPU for correctness. (eg. userspace_pid?) 
 
-We're in hot pursuit of this bug, but no one has tracked it down yet.
+The tt mode side of the house is.  skas isn't, quite, for the reasons you
+mention.
+
+However, this was SMP on the host, not SMP support inside UML.
 
 				Jeff
 
