@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArPvi-0000Q9-4T
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 15:07:34 -0800
-Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
+	id 1ArQ2w-0001un-Lr
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 15:15:02 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.30)
-	id 1ArPuK-000556-Cm
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 15:06:08 -0800
-From: Dan Shearer <dan@shearer.org>
-Subject: Re: [uml-devel] Which UPS simulator?
-Message-ID: <20040212230844.GV4203@erizo.shearer.org>
-References: <20040212052823.GA4203@erizo.shearer.org> <20040212150023.GA32317@bakunin.copyleft.de>
+	id 1ArQ1Y-0006Sx-KM
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 15:13:36 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] /dev/anon without /dev/anon ?
+Message-ID: <20040212234034.GA4320@ccure.user-mode-linux.org>
+References: <1076598155.20064.12.camel@wopr.tektonic.net> <01ee01c3f1a9$06424800$0600a8c0@objexcel> <20040212215154.GC4168@ccure.user-mode-linux.org> <024601c3f1b0$41648270$0600a8c0@objexcel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040212150023.GA32317@bakunin.copyleft.de>
+In-Reply-To: <024601c3f1b0$41648270$0600a8c0@objexcel>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,27 +26,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 09:38:44 +1030
-To: Michael Koehne <kraehe@copyleft.de>
+Date: Thu, 12 Feb 2004 18:40:34 -0500
+To: Peter <support@rimuhosting.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Feb 12, 2004 at 04:00:23PM +0100, Michael Koehne wrote:
-> Moin Dan Shearer,
-> 
->   why UPS simulation ? I'm using normal mconsole cad feature to power
->   down my UMLs. I only have to ensure that the inittab will trigger a
->   halt with "ca:12345:ctrlaltdel:/sbin/shutdown -t1 -a -h now" instead
->   of rebooting. I then have some helpfull scripts.
+On Fri, Feb 13, 2004 at 10:28:14AM +1300, Peter wrote:
+> Is there anyway I can disable /dev/anon without rebuilding the kernel. rm /dev/anon?
 
-That is exactly what I want to avoid. I want a more accurate UML where
-no UML-specific logic is needed for communication -- from one point of
-view that is what communication is all about. There are plenty of ways
-of introducing new communications methods (such as you have done, or a
-special listening port, etc) into the UML. 
+That'll work.  I chmod 600 /dev/anon, but it works out the same.
 
--- 
-Dan Shearer
-dan@shearer.org
+				Jeff
+
 
 
 -------------------------------------------------------
