@@ -2,23 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CUZJy-0006PB-6s for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Nov 2004 15:34:42 -0800
+	id 1CUZSJ-0007Dp-ED for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Nov 2004 15:43:19 -0800
 Received: from pool-151-203-245-3.bos.east.verizon.net ([151.203.245.3]
 	helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CUZJx-00007Y-Cu
+	(Exim 4.41) id 1CUZSH-0001O0-6C
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Nov 2004 15:34:42 -0800
-Message-Id: <200411180148.iAI1mGQ3006498@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Tue, 16 Nov 2004 14:03:09 GMT."
-	<1100613788.24599.45.camel@imp.csi.cam.ac.uk> 
-References: <1100613788.24599.45.camel@imp.csi.cam.ac.uk> 
+	Wed, 17 Nov 2004 15:43:19 -0800
+Message-Id: <200411180156.iAI1uuQ3006539@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: And another bug report for UML in latest Linux 2.6-BK
-	repository.
+Subject: [uml-devel] Testing requested - Signal 11 or UML zombies
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,19 +26,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Nov 2004 20:48:16 -0500
-To: Anton Altaparmakov <aia21@cam.ac.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, lkml <linux-kernel@vger.kernel.org>
+Date: Wed, 17 Nov 2004 20:56:56 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Gerd Knorr <kraxel@bytesex.org>
 
-aia21@cam.ac.uk said:
-> sleeping process 29410 got unexpected signal : 11
-> I now have to press Ctrl+C to get back to my shell. 
+Below is a patch which I believe fixes the zombies on 2.6.{9,10} bug.  There
+are other fixes for this, one of which is in -mm and is causing 
+	'sleeping process nnnnn got unexpected signal : 11'
+crashes.
 
-This one is slightly subtle, but I believe that it is fixed by the following 
-patch.
+Bodo proposed what looks like a correct patch, but which I don't like because
+it involves a round-trip to the tracing thread on every UML context switch,
+which probably 99%+ of the time is unecessary.
+
+So, what I do now is have the tracing thread do a PTRACE_KILL, PTRACE_CONT
+whenever it sees a process getting a SIGKILL.  And for good measure, the 
+PTRACE_CONT ensures that it sees the intercepted SIGKILL.
+
+So, if you are running on a 2.6.9 or later host, and/or are/were seeing either
+of the above problems, please give this patch a try and report results.
 
 				Jeff
-
 
 Index: 2.6.9/arch/um/kernel/tt/process_kern.c
 ===================================================================
@@ -70,7 +74,7 @@ Index: 2.6.9/arch/um/kernel/tt/process_kern.c
 Index: 2.6.9/arch/um/kernel/tt/tracer.c
 ===================================================================
 --- 2.6.9.orig/arch/um/kernel/tt/tracer.c	2004-11-16 21:26:03.000000000 -0500
-+++ 2.6.9/arch/um/kernel/tt/tracer.c	2004-11-17 18:21:47.000000000 -0500
++++ 2.6.9/arch/um/kernel/tt/tracer.c	2004-11-17 18:36:15.000000000 -0500
 @@ -271,10 +271,28 @@
  #endif
  		else if(WIFSIGNALED(status)){
@@ -93,7 +97,7 @@ Index: 2.6.9/arch/um/kernel/tt/tracer.c
 +				 * hurt.
 +				 */
 +				ptrace(PTRACE_KILL, pid, 0, 0);
-+				ptrace(PTRACE_CONT, pid, 0, 0);
++				ptrace(PTRACE_CONT, pid, 0, sig);
 +			}
 +			else
  				printf("Child %d exited with signal %d\n", pid,
