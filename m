@@ -2,28 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DClY6-0006ei-7A for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2005 13:31:58 -0800
-Received: from rimuhosting.com ([69.90.33.248])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DClY4-0007D5-3Y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2005 13:31:57 -0800
-Received: from [192.168.1.100] (222-152-20-160.jetstream.xtra.co.nz
-	[222.152.20.160]) (authenticated bits=0)
-	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id j2JLVnpj001651
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 19 Mar 2005 21:31:52 GMT
-Message-ID: <423C9A44.2020802@rimuhosting.com>
-From: Peter <peter.spamcatcher@rimuhosting.com>
+	id 1DCxnn-00041S-Qc for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 02:36:59 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DCxnk-0002oa-BV for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 02:36:59 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 MIME-Version: 1.0
-References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
-	<200503181843.05832.rob@landley.net>
-In-Reply-To: <200503181843.05832.rob@landley.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Running JDK1.5 Maxes Out CPU
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_VmGPCZeShaYEnGL"
+Message-Id: <200503191904.05870.blaisorblade@yahoo.it>
+Subject: [uml-devel] Supporting building on x86-64 host as 32-bit UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,59 +25,112 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 20 Mar 2005 09:31:48 +1200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 19 Mar 2005 19:04:02 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
 
-Hi.
+--Boundary-00=_VmGPCZeShaYEnGL
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-JDK1.4 runs well on UML guests.
+It is really difficult for the end-user (and tricky for a developer) to build 
+a 32-bit UML on a 64-bit host box...
 
-JDK1.5 does not appear to run well on the UML guests.  After the process 
-runs for a bit it ends up sitting at 100% CPU.
+I would like to address this, but I've not definite ideas.
 
-I have had problems on 2.4 kernels up to 2.6.9 guest kernels.  I have 
-reproduced the problem on different guest distros (Debian, FC, and 
-WBEL3).  And the problem has been reported by other users on the mailing 
-list here.
+The problems are:
 
-I do not see this problem on non-UML servers.
+1) how the user must choose what he wants (SUBARCH=i386 can be useful, maybe a 
+Kconfig option would be nice - we need to choose the default depending on the 
+host arch).
 
-I am not sure what could be going on.  But it seems possible that the 
-Java 1.5 VM is hitting some issue with the UML guest kernel.
+2) using the proper options for the tools (addressed partially by the patch 
+below)
 
-To reproduce the problem (preferably on a Debian or FC/RHEL based 
-distro) download this:
-http://downloads.rimuhosting.com/installjava.sh
+3) using the proper headers (asm-i386 instead of asm-x86_64)... Fedora (I 
+don't know about SuSE and my Gentoo is 32-bit still) uses some smart headers 
+that select the correct version, basing on some macros defined by GCC:
 
-Comment out the 1.4.2 file/dir at the top.  Uncomment the 1.5 file/dir 
-variables
+#ifndef __ASM_STUB_SYSTEM_H__
+# define __ASM_STUB_SYSTEM_H__
+# if defined __x86_64__
+#  include <asm-x86_64/system.h>
+# endif
+# if defined __i386__
+#  include <asm-i386/system.h>
+# endif
+#endif
 
-Run that script (it will install the 1.5 JDK).
+The problem is that we explicitly refuse to define these macros, like this:
 
-Download and run http://downloads.rimuhosting.com/installtomcat5.sh
+CFLAGS += -U__$(SUBARCH)__ -U$(SUBARCH)
 
-It will install tomcat5.5.7 under /usr/local/tomcat.  Add a tomcat user. 
-  And an /etc/init.d/tomcat stop/start/kill script.
+(from arch/um/Makefile-i386) for which I don't find a valid reason... I first 
+thought this was 
 
-Start tomcat with /etc/init.d/tomcat start
+diff -puN arch/um/Makefile~uml-build-on-x86_64_as_i386 arch/um/Makefile
+--- linux-2.6.9-current/arch/um/Makefile~uml-build-on-x86_64_as_i386    
+2004-09-26 19:51:43.000000000 +0200
++++ linux-2.6.9-current-paolo/arch/um/Makefile  2004-09-26 19:59:17.000000000 
++0200
+@@ -34,6 +34,13 @@ endif
+ ARCH_INCLUDE   := -I$(ARCH_DIR)/include
+ SYS_DIR                := $(ARCH_DIR)/include/sysdep-$(SUBARCH)
 
-Run ab (ab is part of apache) like this:
++AFLAGS         += -m32
++CFLAGS         += -m32
++LDFLAGS                += -melf_i386
++HOSTCFLAGS     += -m32
++HOSTLDFLAGS    += -m32
++export HOSTLDFLAGS
++
+ include $(ARCH_DIR)/Makefile-$(SUBARCH)
+ include $(ARCH_DIR)/Makefile-os-$(OS)
 
-ab -c 10 -n 10000 
-http://localhost:8080/jsp-examples/jsp2/tagfiles/products.jsp
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-Eventually the Java process will max out the CPU.  Usually after 
-200-2000 requests.
+--Boundary-00=_VmGPCZeShaYEnGL
+Content-Type: text/x-diff; charset="us-ascii";
+	name="uml-build-on-x86_64_as_i386.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="uml-build-on-x86_64_as_i386.patch"
 
-"jstack $parentjavapid" will show the Java code that is executing.  Not 
-that helpful.
 
-strace on the java pids don't seem to show/help much.
 
-Your help reproducing and resolving this problem would be greatly 
-appreciated.
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
 
-Regards, Peter
+ linux-2.6.9-current-paolo/arch/um/Makefile |    7 +++++++
+ 1 files changed, 7 insertions(+)
+
+diff -puN arch/um/Makefile~uml-build-on-x86_64_as_i386 arch/um/Makefile
+--- linux-2.6.9-current/arch/um/Makefile~uml-build-on-x86_64_as_i386	2004-09-26 19:51:43.000000000 +0200
++++ linux-2.6.9-current-paolo/arch/um/Makefile	2004-09-26 19:59:17.000000000 +0200
+@@ -34,6 +34,13 @@ endif
+ ARCH_INCLUDE	:= -I$(ARCH_DIR)/include
+ SYS_DIR		:= $(ARCH_DIR)/include/sysdep-$(SUBARCH)
+ 
++AFLAGS		+= -m32
++CFLAGS		+= -m32
++LDFLAGS		+= -melf_i386
++HOSTCFLAGS	+= -m32
++HOSTLDFLAGS	+= -m32
++export HOSTLDFLAGS
++
+ include $(ARCH_DIR)/Makefile-$(SUBARCH)
+ include $(ARCH_DIR)/Makefile-os-$(OS)
+ 
+_
+
+--Boundary-00=_VmGPCZeShaYEnGL--
+
+
+
 
 
 -------------------------------------------------------
