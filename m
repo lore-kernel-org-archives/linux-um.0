@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXPpN-0000vW-IK
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 10:58:21 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AXPpN-0005bu-1M
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 10:58:21 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [patch] host-skas support for 2.6.0, other UML fixes
-References: <Pine.LNX.4.58.0312171735540.8123@earth> <Pine.LNX.4.58.0312181122070.32554@earth> <Pine.LNX.4.58.0312181209230.1327@earth>
-In-Reply-To: <Pine.LNX.4.58.0312181209230.1327@earth>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200312191959.12681.blaisorblade_spam@yahoo.it>
+	id 1AXQAq-0002DW-K4
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:20:32 -0800
+Received: from main.gmane.org ([80.91.224.249])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AXQAq-0000hM-5H
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:20:32 -0800
+Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AXQAn-00057g-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 19 Dec 2003 20:20:29 +0100
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <slrnbu6j80.6le.lunz@absolut.localnet>
+References: <Pine.LNX.4.58.0312171735540.8123@earth> <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth> <Pine.LNX.4.58.0312172249020.19508@earth> <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312181036220.31295@earth> <Pine.LNX.4.58.0312181122070.32554@earth> <Pine.LNX.4.58.0312181209230.1327@earth> <Pine.LNX.4.58.0312181253460.2378@earth> <Pine.LNX.4.58.0312181514140.7622@earth>
+Subject: [uml-devel] new_mm : /proc/mm copy_segments failed, err = 0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,43 +24,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 19:59:12 +0100
-Content-Transfer-Encoding: quoted-printable
+Date: Fri, 19 Dec 2003 19:09:52 +0000 (UTC)
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 12:17, gioved=EC 18 dicembre 2003, Ingo Molnar ha scritto:
-> Jeff,
+mingo@elte.hu said:
+> the attached patch makes the combo 2.6.0 patch compile for the
+> !CONFIG_PROC_MM case. (necessary if forcing TT mode by disabling skas.)
 >
-> i've ported host-skas support to the 2.6.0 kernel. (patch attached.) The
-> patching order is:
+> This is also a small cleanup as it moves the architecture-independent
+> ptrace functions into the generic kernel/ptrace.c file.
 >
->   - create the 2.6.0 tree,
->   - apply user-mode-linux.org/mirror/uml-patch-2.6.0-test9-1.bz2,
->   - apply the attached uml-host-skas-2.6.0-A0 patch
+> i've also uploaded a new combo patch with the alignment fix plus these
+> changes included:
 >
-> other changes:
->
->   - cleaned up the LDT changes (pass around mm not task)
+>     redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A2
 
-Some other ports of the SKAS3 patch to 2.6 did also this: rename the new=20
-version of do_mmap_pgoff as __do_mmap_pgoff, and put this new definition in=
-=20
-the header:
+OK, I've complied a 2.6.0 host with this (and only this) -A2 patch for
+an SMP pentium III. The host is running debian unstable.
 
-static inline unsigned long do_mmap_pgoff(struct file * file,
-                            unsigned long addr, unsigned long len,
-                            unsigned long prot, unsigned long flags,
-                            unsigned long pgoff) {
-__do_mmap_pgoff(current->mm, file, addr, len, prot, flags, pgoff);
-}
+I also compiled a 2.4.23 uml kernel using uml-patch-2.4.22-7.bz2 and the
+small ELF_PLAT_INIT fix.
 
-so we avoid breaking compatibility for possible other patches/other code.
-Bye
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+Using a very simple root_fs (it basically only contains a busybox
+/bin/sh and a statically compiled /bin/zsh4), the uml boots and detects
+skas3 and /proc/mm on the host.
+
+The problem is that on every process fork, I see $Subject appear one or
+more times on the console, and subjectively the uml seems to be running
+a little slowly. Is this normal?
+
+Jason
 
 
 
@@ -69,7 +61,7 @@ EOSIGN
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
