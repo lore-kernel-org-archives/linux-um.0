@@ -1,19 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bg4Bv-00056R-MT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Jul 2004 09:13:39 -0700
-Received: from orange.ous.edu ([140.211.15.17])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1Bg4Bv-0002eL-Dg for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Jul 2004 09:13:39 -0700
-Message-Id: <s0e3d5e9.041@ORANGE.OUS.EDU>
-From: "Anthony Brock" <Anthony_Brock@ous.edu>
-Subject: Re: [uml-devel] Problems compiling 2.4 kernel
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1Bg4ko-0008EH-67 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Jul 2004 09:49:42 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1Bg4kn-0006CG-IS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Jul 2004 09:49:42 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [mgedmin@b4net.lt: Bug#256873: user-mode-linux: fails
+	to start (kernel panic)]
+References: <20040629182711.GM5243@alcor.net> <40E20187.1050803@nks.net>
+	<02F391BE-CA6B-11D8-A5A1-000A95CD704C@wagland.net>
+In-Reply-To: <02F391BE-CA6B-11D8-A5A1-000A95CD704C@wagland.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
+Message-Id: <200406302038.41475.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,59 +29,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 01 Jul 2004 09:13:56 -0700
-Content-Transfer-Encoding: 8bit
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 30 Jun 2004 20:38:41 +0200
+Content-Transfer-Encoding: quoted-printable
+To: Paul Wagland <paul@wagland.net>, James Neal <jneal@nks.net>
+Cc: Matt Zimmerman <mdz@debian.org>, user-mode-linux-devel@lists.sourceforge.net, 256873-forwarded@bugs.debian.org, Marius Gedminas <mgedmin@b4net.lt>
 
-Unfortunately, I have the same problem even if I build a config file from scratch. *sigh* I have to be missing something basic...
+Alle 09:56, mercoled=EC 30 giugno 2004, Paul Wagland ha scritto:
+> On Jun 30, 2004, at 1:55, James Neal wrote:
 
-Tony
+> I normally hate doing this... but me too!
 
+> Even worse, it would appear that UML and reiserfs don't play nice...
+> when the UML does crash I tend to end up with some pretty massive
+> filesystem corruptions, to the point where my UML will not boot
+> anymore, and I spent over an hour just now trying to coax it back to
+> life by copying in and replacing all of the corrupted binaries.
+If you didn't enable the synchronous UBD access (near to the UBD options in=
+=20
+the kernel configuration), that's almost expected, as the help explains=20
+(IIRC), for journaled filesystems (although some people claim ext3 does not=
+=20
+need it, and this could be true, even because reiserfs works like ext3=20
+"data=3Dwriteback" mode, which is less safe than the default ext3=20
+"data=3Dordered").
 
->>> "Anthony Brock" <Anthony_Brock@ous.edu> 07/01/04 09:04AM >>>
-In this case, the SuSE 9.0 is a i386 2.4 kernel. However, I will try these same steps with a "blank" config.
+In either case, give more info, so we know if this is a "no-bug" or if we=20
+should investigate it.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-Tony
-
->>> Jeff Dike <jdike@addtoit.com> 07/01/04 09:43AM >>>
-Anthony_Brock@ous.edu said:
-> gzip -dc /proc/config.gz > .config 
-
-wtf are you trying to accomplish here?  You can't use the host's (i386 2.6)
-.config to build a 2.4 UML kernel.
-
-				Jeff
-
-
-
--------------------------------------------------------
-This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
-digital self defense, top technical experts, no vendor pitches, 
-unmatched networking opportunities. Visit www.blackhat.com 
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net 
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel 
 
 
 
 -------------------------------------------------------
 This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 -
-digital self defense, top technical experts, no vendor pitches,
-unmatched networking opportunities. Visit www.blackhat.com 
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net 
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-
-
--------------------------------------------------------
-This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
-digital self defense, top technical experts, no vendor pitches, 
+Attend Black Hat Briefings & Training, Las Vegas July 24-29 -=20
+digital self defense, top technical experts, no vendor pitches,=20
 unmatched networking opportunities. Visit www.blackhat.com
 _______________________________________________
 User-mode-linux-devel mailing list
