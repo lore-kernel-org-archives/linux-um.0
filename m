@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AbOqB-0005D6-BI
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:43:39 -0800
-Received: from mta10.adelphia.net ([68.168.78.202])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AbOqB-0008DP-1E
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:43:39 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Resolution (Re: [uml-devel] 2.4.22-[67] problems)
-Message-ID: <20031230184330.GD1365@alcor.net>
-References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org> <20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net> <20031228093317.GK17472@alcor.net> <20031228095115.GL17472@alcor.net> <20031228101240.GN17472@alcor.net> <20031228113042.GO17472@alcor.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1AbPd0-0007cA-BL
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 11:34:06 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AbPcz-00055k-PQ
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 11:34:05 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] UML + skas
+References: <20031230183331.GB2845@carpediem.epita.fr>
+In-Reply-To: <20031230183331.GB2845@carpediem.epita.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20031228113042.GO17472@alcor.net>
+Message-Id: <200312302008.11815.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,51 +25,65 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Dec 2003 10:43:30 -0800
-To: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org
+Date: Tue, 30 Dec 2003 20:08:11 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Dec 28, 2003 at 03:30:42AM -0800, Matt Zimmerman wrote:
+Alle 19:33, marted=EC 30 dicembre 2003, jeremie le-hen ha scritto:
+> Hi all,
 
-> On Sun, Dec 28, 2003 at 02:12:40AM -0800, Matt Zimmerman wrote:
-> 
-> > So, the sequence of events in handle_trap is this:
-> > 
-> > 1. UPT_SYSCALL_NR(regs) == 78
-> > 
-> > 2. ptrace(PTRACE_POKEUSER,...)
-> > 
-> > 3. UPT_SYSCALL_NR(regs) == 78 (still OK)
-> > 
-> > 4. ptrace(PTRACE_SYSCALL,...)
-> > 
-> > 5. UPT_SYSCALL_NR(regs) == 78 (still OK)
-> > 
-> > 6. waitpid(pid,...)
-> > 
-> > 7. UPT_SYSCALL_NR(regs) == 0 (boom)
-> > 
-> > I have no idea why.
-> 
-> I added some code to dump the regs struct before and after waitpid, and it
-> turns out that in fact, the syscall element is the only one which is
-> different; the rest of the structure is untouched.  Corruption seems
-> unlikely, and the waitpid call certainly shouldn't be touching this...could
-> another thread be clobbering it somehow?
+> I have just subscribed to this list because I found a strange bug while
+> compiling an UML within an SKAS'd host.  Here is the problem :
+>
+> (my host is a 2.4.23 kernel with the SKAS patch released on 2002/11/11)
 
-It turns out that this problem seems to be due to compiler incompatibility.
-UML had been built with gcc 2.95 due to old breakage, and when built with
-gcc 3.3 (as glibc is), everything starts working again.  My suspicion is
-that this is due to certain recent changes in pthreads.
+> After preprocessing the process.c file, I found that
+> `struct ptrace_faultinfo' and `struct ptrace_ldt' were first defined
+> in file `/usr/include/asm/ptrace.h' and then in
+> `arch/um/include/skas_ptrace.h'.
+> Since `/usr/include/asm/' is a symlink
+> in  `/usr/src/linux/` which in turn points to my kernel source,
 
--- 
- - mdz
+Making /usr/include/asm a symlink into kernel sources is a very bad thing; =
+if=20
+your distro did this it's not your fault, but recent distros don't do this =
+
+from ages (neither RedHat nor Mandrake, at least, for what I saw).
+
+>
+> This is *exactly* the same content as `arch/um/include/skas_ptrace.h'.
+> From what I googled, it seems to be a known bug.  But it think it would
+> not be very difficult to make some #define protection around theses
+> structures to prevent from changing the destination of `/usr/src/linux/'
+> to a source without the SKAS patch applied.
+
+Yes, it wouldn't not hard.
+But you should not use the same source tree to apply both patches. I think =
+
+this is explained very clearly and that the patches are not meant to be=20
+compatible. Also, in that way you easily get into problems because=20
+include/asm points to asm-i386 and is not updated to point to asm-um.
+
+Also, if you make /usr/include/asm (this holds also for /usr/include/linux)=
+ a=20
+symlink into kernel sources, that is not good.
+
+And I don't think that any update to the host patch will ever be made=20
+available, since Jeff Dike is making ready the SKAS 4 patch.
+
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
+
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
