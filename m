@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ABA5m-0007zD-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Sun, 19 Oct 2003 02:43:18 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1AB51s-0002U2-Ju
-	for User-mode-linux-devel@lists.sourceforge.net; Sat, 18 Oct 2003 21:18:56 -0700
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] filemap feature 2.4.22-5um
-In-Reply-To: <20031018215745.GK441@shell.blacknet.de>
-Message-ID: <Pine.LNX.4.44.0310190028200.963-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1ABC3E-0006qU-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 19 Oct 2003 04:48:48 -0700
+Received: from mail.gmx.net ([213.165.64.20])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
+	id 1AAvv9-0008Hv-VT
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 18 Oct 2003 11:35:24 -0700
+From: Dan Aloni <da-x@gmx.net>
+Message-ID: <20031018183128.GA22119@callisto.yi.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [uml-devel] Problem with UML cross compilation
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,26 +24,56 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 19 Oct 2003 00:29:56 +0200 (CEST)
-To: Goetz Bock <bock@blacknet.de>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 18 Oct 2003 20:31:28 +0200
+To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, 18 Oct 2003, Goetz Bock wrote:
+Hi,
 
-> No, there is no need to be root inside a chrooted environment, or better
-> yet you should not be.
+Lately I have found a problem with UML and cross compilation. Cross 
+compilation means that the architecture that the UML kernel will 
+run on (target) is different than the one that it is compiled on 
+(host). 
 
-The application running inside the chroot obviously should not be root, 
-but the one who chroots it must be..
+I attempted cross compilation and found that some utils are being
+built and run during the build process. These utils were compiled
+using the target compiler, which obviously didn't work (all which 
+is run on the host needs to be compiled with HOSTCC instead of CC).
+Fixing the Makefiles fixes the build procedure from breaking, 
+however, the problem is that there is no gaurantee that the UML 
+kernel that was built would work.
 
-Toe point being that with mount --bind you can set up the chroot directory 
-to give access to only the exact files needed before the application is 
-started, even if these files normaly lives in a completely different 
-location (i.e. /proc/mm and other special files)
+The reason for the problem is that those utils generate code that
+depends on things like offsets inside structs, which obviously 
+change between architectures that have different word size. 
+It also relies on the target's libc headers, for that purpose.
 
-Regards
-Henrik
+I've discussed with Jeff about this problem in private E-Mail,
+we both thought about solutions but didn't share them yet.
 
+My solution is:
+
+ * Let not build and run those utils on the build host, obviously.
+ * All the required versions of the generated code for each of the
+   targets will already reside in the tree, the build process will
+   automatically pick up the right version and symlink to it.
+ * Create a completely standalone program that embeds those utils 
+   and generates the code. People who port UML to other 
+   architectures will take this program, compile and run it on
+   the target and put its output(s) in the tree.
+   
+The main problem with this method is when and if the target 
+changes in such a way that requires those outputs to be 
+regenerated. 
+
+I would like your suggestions and opinions about how feasible 
+this solution with the 2.4 and 2.6 trees, and if you have
+other solutions I'd like to know.
+
+Thanks,
+
+-- 
+Dan Aloni
+da-x@gmx.net
 
 
 -------------------------------------------------------
