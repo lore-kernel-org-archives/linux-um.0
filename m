@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aye9T-00020K-9A for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 13:43:39 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AyddD-0007z6-AM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 13:10:19 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] Module exploits into the host?
-In-Reply-To: <20040303200937.GK14069@localhost.localdomain>
-Message-ID: <Pine.LNX.4.44.0403032227040.17693-100000@filer.marasystems.com>
+	id 1AyfeC-00006u-Hu for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 15:19:28 -0800
+Received: from mail.gmx.net ([213.165.64.20])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AyfR2-0008WT-0a for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 15:05:52 -0800
+Message-ID: <0d2e01c40174$dfda5b40$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <40430B47.3000004@sms.ed.ac.uk>
+	<200403022005.42635.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Subject: [uml-devel] Hang at ipv4 setup is a cpufreq issue!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,27 +26,85 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Mar 2004 22:29:59 +0100 (CET)
-To: Robin Green <greenrd@greenrd.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 4 Mar 2004 00:11:32 +0100
+Content-Transfer-Encoding: quoted-printable
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-On Wed, 3 Mar 2004, Robin Green wrote:
+hi paolo,
+no - this doesnt help fixing the "hang at NET:..." bug.
 
-> Even with the skas patch, is it possible for an insmod to allow an attacker to
-> break out of a UML?
+but the mail from jonathan boler gave the essential hint and i tried furthe=
+r.
+conclusion: this bug indeed seems to be related to cpu frequency!
 
-Yes.
+so - what did i do ?
 
-kernel code has full access as the user the kernel runs as, skas or not. 
-This is required for UML to work as the UML kernel needs to access 
-numerous resources on the host to be able to do anything.
+i did an
+"modprobe p4-clockmod"
+and then
+"echo 0%40%50%performance >/proc/cpufreq"
+to reduce the speed of my 2.6 ghz p4 (40% minimum, 50% maximum)
 
-If you want to minimize this, run the UML chrooted (and absolutely not as 
-root). The use of process capabilities can also be used to limit the 
-possible damage, or any of the security extensions to Linux.
+and........
 
-Regards
-Henrik
+THE UML STARTS FINE AND THE HANG AT IPV4 SETUP IS GONE!
+
+so - this is the workaround.
+
+now we need a patch ;)
+
+do we need the so called "rtc fix" ?
+does it exist already for 2.6 kernel ?
+
+regards
+roland
+
+
+
+----- Original Message -----=20
+From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
+To: <user-mode-linux-user@lists.sourceforge.net>
+Sent: Tuesday, March 02, 2004 8:05 PM
+Subject: Re: [uml-user] Hang at ipv4 setup
+
+
+Alle 11:07, luned=EC 1 marzo 2004, Jonathan Boler ha scritto:
+> I was just wondering if there has there been any progress in fixing the
+> hang at NET: Registered protocol family 2 bug ?
+>
+> Is there a patch available ?
+>
+> Thanks
+>
+> Jonathan
+
+Yes. At least, it should work (that is a fix for what we think is another
+symptom of the your bug). Get these two patches and apply them with patch -l
+-p1 (it is a little mangled for spaces by the mailer). So, please report ev=
+en
+if you get success. If you have any problem, try using only the first one.
+
+http://marc.theaimsgroup.com/?l=3Duser-mode-linux-devel&m=3D107781791123823=
+&w=3D2
+
+http://marc.theaimsgroup.com/?l=3Duser-mode-linux-devel&m=3D107699168512707=
+&w=3D2
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+
+
+-------------------------------------------------------
+SF.Net is sponsored by: Speed Start Your Linux Apps Now.
+Build and deploy apps & Web services for Linux with
+a free DVD software kit from IBM. Click Now!
+http://ads.osdn.com/?ad_id=1356&alloc_id438&op=3Dick
+_______________________________________________
+User-mode-linux-user mailing list
+User-mode-linux-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
 
 
 
@@ -53,7 +112,7 @@ Henrik
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+administration.http://ads.osdn.com/?ad_id=3D1470&alloc_id=3D3638&op=3Dclick
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
