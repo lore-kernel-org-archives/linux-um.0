@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cc8Se-0000vD-7Z for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 12:30:56 -0800
-Received: from dns2.uxu.ch ([195.216.70.51])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cc8Sb-000423-9N for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 12:30:55 -0800
-Message-ID: <41B762FA.6020303@uxu.ch>
-From: =?ISO-8859-1?Q?Felix_M=FCri?= <uml@uxu.ch>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] What to do with uml_switch?
-References: <200412040452.32722.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200412040452.32722.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Cc9XL-0006Vs-My for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 13:39:51 -0800
+Received: from pike.sandelman.ca ([205.150.200.164])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1Cc9Wq-0001eK-QU
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 13:39:51 -0800
+Subject: Re: [uml-devel] Re: What to do with uml_switch? 
+In-Reply-To: Message from "Steve Schmidtke" <steve_schmidtke@hotmail.com> 
+	of "Wed,
+	08 Dec 2004 19:36:25 GMT." <BAY24-F39F020DFE0870A8FDC91DC83B60@phx.gbl>
+References: <BAY24-F39F020DFE0870A8FDC91DC83B60@phx.gbl> 
+Message-ID: <9866.1102541879@marajade.sandelman.ottawa.on.ca>
+From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,27 +27,85 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Dec 2004 21:24:26 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>, User-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 08 Dec 2004 16:37:59 -0500
+To: Steve Schmidtke <steve_schmidtke@hotmail.com>
+Cc: kraxel@bytesex.org, blaisorblade_spam@yahoo.it, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade schrieb:
-> Felix, even if your newer code is not yet "releasable", it can help anyway... 
-> even just describing the changes you did and why... design ideas are more 
-> important than code itself sometimes.
-> 
-Hi Paolo, I found finally some time to summarize my ideas. You 
-can find some blurb on
+-----BEGIN PGP SIGNED MESSAGE-----
 
-http://www.uxu.ch/uxu/software/umls3_reasoning
 
-My target is more an alternative of umlazi written as C-program 
-with an integrated uml_switch (but I doubt, that I will be 
-diligent enough to write an equivalent homepage for my program 
-:-). So there is still the need for a simple uml_switch program.
+>>>>> "Steve" == Steve Schmidtke <steve_schmidtke@hotmail.com> writes:
+    Gerd> Hmm, I don't think it is a good idea to put that kind of
+    Gerd> testing code into the switch daemon.  I'd make the switch
+    Gerd> daemon behave as close as possible to a real switch, then use
+    Gerd> the normal tools you use for real networks as well.  I think
+    Gerd> uml_switch should just support a monitor port which will see
 
-Regards,
+    >> Not practical, not reliable.
 
-Felix
+    Steve> Why not reliable?  A monitor port is a diagnostic tool, and
+
+  What would I connect to the monitor port? Another UML? 
+
+  This is the part that isn't practical.
+  My test cases sometimes have as many as 7 networks. Remember that we
+have 170 test cases, and growing. Remember that we may have packets akin
+to "ping-of-death", that may cause the Linux network stack to "oops".
+  (this isn't a good, but that's the point of regression tests... is to
+make sure that old bugs do not get re-introduced)
+
+  So, we have to start the UMLs for each test, as they may have died.
+To make it simple, we start/stop all of the UMLs each time.
+
+  The reason for having the ability to capture and play-back pcap files
+in the uml_netjig is to eliminate the need to run as many UMLs.
+
+    Steve> There is no reason you would need to use Linux as your packet
+    Steve> source:
+
+    Steve>   cat tcpdump.pcap | switch_mon_tool --socket /tmp/uml.mon
+    Steve> --delay 100ms
+
+    Steve> is the type of functionality I'm shooting for (above example
+    Steve> not to be taken literally).
+
+  Great. That works for 1 network.
+
+  Now, how do you replay packets where you need an actual time sequence
+diagram to make it work? I.e.
+	   - send packet A on network 1
+	   - send packet B on network 2
+	   - send packet C on network 1
+	   - send packet D on network 2
+
+  In most cases, we have found round-robin amount input sources works
+well, but in that we are disappointed with. 
+
+  Further, remember that you may want to single step the packet sources,
+because, you may spend *HOURS* in the debugger (with the UML in
+question). That's hard with the method you proposed.
+
+- -- 
+]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
+]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
+] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
+] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
+
+
+
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+Comment: Finger me for keys
+
+iQCVAwUBQbd0NIqHRg3pndX9AQEZFgQA5vDKTWQviO9NSLr9Y6Pkvq23KQbWPop2
+GyR04q/ALPlMSbdPqsJfHFsqCXLZF/gmftZH6Cp52XpXX4AO7+7x47aUDG7SW2ug
+WxYjBJVqHBgBSJQNHkpcXwswqJPV4fidMyiN0X60PtmW+o6hMa/NXr9LPFcElwVw
+FiEFd3ONQ7U=
+=F82m
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
