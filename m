@@ -2,19 +2,39 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B6NMq-0004Ri-QJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Mar 2004 21:25:24 -0800
-Received: from mta13.mail.adelphia.net ([68.168.78.44] helo=mta13.adelphia.net)
+	id 1B6mrm-0003Sf-Ur for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Mar 2004 00:39:02 -0800
+Received: from ns.lbox.cz ([62.129.50.35])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B6NMp-0002zb-Nc for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Mar 2004 21:25:23 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Message-ID: <20040325052515.GF12415@alcor.net>
+	id 1B6mrl-0002xY-Bf for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Mar 2004 00:39:01 -0800
+Received: from mail.cubenet.cz (mail.cubenet.cz [62.129.60.162])
+	by ns.lbox.cz (8.11.6/8.11.6) with ESMTP id i2Q8cvh16514
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Mar 2004 09:38:57 +0100
+Received: from linuxbox.linuxbox.cz ([10.76.66.10])
+	by mail.cubenet.cz (8.11.6/8.11.6) with ESMTP id i2Q8csO19753
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Mar 2004 09:38:54 +0100
+Received: from linuxbox.linuxbox.cz (localhost.localdomain [127.0.0.1])
+	by linuxbox.linuxbox.cz (8.12.8/8.12.8) with ESMTP id i2Q8bR42002458
+	for <user-mode-linux-devel@lists.sourceforge.net.OUTNOCOPY>;
+	Fri, 26 Mar 2004 09:37:27 +0100
+Received: (from mail@localhost)
+	by linuxbox.linuxbox.cz (8.12.8/8.12.8/Submit) id i2Q8bRfm002454
+	for user-mode-linux-devel@lists.sourceforge.net.OUTNOCOPY;
+	Fri, 26 Mar 2004 09:37:27 +0100
+Received: from [10.76.66.13] (develbox.linuxbox.cz [10.76.66.13])
+	by linuxbox.linuxbox.cz (8.12.8/8.12.8) with ESMTP id i2Q8bL42002441
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Mar 2004 09:37:21 +0100
+From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+Reply-To: nikola.ciprich@linuxbox.cz
+Content-Type: text/plain
+Message-Id: <1080290324.6040.2.camel@develbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] [kapil@imsc.res.in: Bug#239980: kernel-patch-uml: Symbols
-	reqd for translucency not exported]
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] mppe kernel module under UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,80 +46,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 24 Mar 2004 21:25:15 -0800
+Date: Fri, 26 Mar 2004 09:38:45 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: 239980-forwarded@bugs.debian.org, kapil@imsc.res.in
 
------ Forwarded message from Kapil Hari Paranjape <kapil@imsc.res.in> -----
-
-Date: Thu, 25 Mar 2004 10:31:47 +0530
-From: Kapil Hari Paranjape <kapil@imsc.res.in>
-Resent-From: Kapil Hari Paranjape <kapil@imsc.res.in>
-To: Debian Bug Tracking System <submit@bugs.debian.org>
-Subject: Bug#239980: kernel-patch-uml: Symbols reqd for translucency not exported
-
-Package: kernel-patch-uml
-Version: 20040216-1
-Severity: normal
-Tags: patch
-
-Hello,
-
-The symbols "strncpy_from_user_tt" and "strncpy_from_user_skas" are
-required by the "translucency" module and these are not exported by the
-user-mode-linux kernel.
-
-As far as I can make out this problem exists with upstream as well.
-
-It *is* possible that modules should be making use of different
-interfaces, in which case these alternatives should be documented
-somewhere.
-
-The system seems to work fine with the minimal patch enclosed.
-
-Regards,
-
-Kapil.
-
-=======uml_ksyms.diff========
---- kernel-source-2.4.24/arch/um/kernel/ksyms.c.orig	2004-03-25 10:27:19.000000000 +0530
-+++ kernel-source-2.4.24/arch/um/kernel/ksyms.c	2004-03-25 10:28:25.000000000 +0530
-@@ -45,11 +45,13 @@
- EXPORT_SYMBOL(handle_page_fault);
- 
- #ifdef CONFIG_MODE_TT
-+EXPORT_SYMBOL(strncpy_from_user_tt);
- EXPORT_SYMBOL(copy_from_user_tt);
- EXPORT_SYMBOL(copy_to_user_tt);
- #endif
- 
- #ifdef CONFIG_MODE_SKAS
-+EXPORT_SYMBOL(strncpy_from_user_skas);
- EXPORT_SYMBOL(copy_to_user_skas);
- EXPORT_SYMBOL(copy_from_user_skas);
- #endif
-=======end of uml_ksyms.diff========
-
--- System Information:
-Debian Release: testing/unstable
-  APT prefers testing
-  APT policy: (990, 'testing'), (500, 'unstable')
-Architecture: i386 (i686)
-Kernel: Linux 2.4.25-1-686
-Locale: LANG=C, LC_CTYPE=C
-
-Versions of packages kernel-patch-uml depends on:
-ii  bash                          2.05b-14   The GNU Bourne Again SHell
-ii  grep-dctrl                    2.1.3      Grep Debian package information
-ii  m4                            1.4-17     a macro processing language
-ii  patch                         2.5.9-1    Apply a diff file to an original
-
--- no debconf information
-
------ End forwarded message -----
-
+Hello all,
+I'd like to ask:
+I've been using UML for testing pptp, with mppe encryption enabled, and
+it was pretty useful to me. but now I'm trying to use new mppe kernel
+module from ppp-2.4.2(CVS version), and i doesn't seem to appear in make
+ARCH=um menuconfig. what does availability of module in uml
+configuration depend on? I think it is totally hardware independent and
+I had no problems using old version under UML. Any suggestions? 
+thanks all in advance
+NiK
 -- 
- - mdz
+-------------------------------------
+Nikola CIPRICH
+LinuxBox.cz, s.r.o.
+28. rijna 168, 709 01 Ostrava
+
+tel.:   +420 596 603 142
+fax:    +420 596 621 273
+mobil:  +420 777 093 799
+www.linuxbox.cz
+
+mobil servis: +420 737 238 656
+email servis: servis@linuxbox.cz
+-------------------------------------
+
+
 
 
 -------------------------------------------------------
