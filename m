@@ -1,31 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BEE37-0007TR-3J for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Apr 2004 14:05:29 -0700
-Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BEE36-0005Zz-8M for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Apr 2004 14:05:28 -0700
-Message-ID: <009701c4232e$453e8710$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <Pine.LNX.4.59.9.0404091209570.10714@hathi.bw-networx.net>
-	<185d01c41e23$5996cc00$2000000a@schlepptopp>
-	<189201c41e30$d434cc70$2000000a@schlepptopp>
-	<200404091626.i39GQqsf002414@ccure.user-mode-linux.org>
-	<c58kbu$el1$1@sea.gmane.org>
-	<20040410140840.GB5782@ccure.user-mode-linux.org>
-	<4077FDF9.7070707@upb.de>
-	<20040410170707.GA6492@ccure.user-mode-linux.org>
-	<224701c42280$f110e0f0$2000000a@schlepptopp>
-	<000801c422e1$783f8030$1400a8c0@DAVIDVAIO>
-	<407EADE0.8010308@cox.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [uml-user] Network lags
+	id 1BEEgd-0003eK-T9 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Apr 2004 14:46:19 -0700
+Received: from linuxhacker.ru
+	([217.76.32.60] helo=shrek.linuxhacker.ru ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BEEgc-0007tQ-Vv
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Apr 2004 14:46:19 -0700
+From: Oleg Drokin <green@linuxhacker.ru>
+Message-ID: <20040415214629.GB207748@linuxhacker.ru>
+References: <20040415210318.GA205486@linuxhacker.ru>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="ADZbWkCsHQ7r3kzd"
+Content-Disposition: inline
+In-Reply-To: <20040415210318.GA205486@linuxhacker.ru>
+Subject: [uml-devel] Re: [PATCH] Fix for annoying problem with hostfs readdir
+	problems.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,202 +30,113 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Apr 2004 23:11:47 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Dan Lund <arkane@cox.net>, David Cannings <lists@edeca.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Date: Fri, 16 Apr 2004 00:46:29 +0300
+To: jdike@karaya.com, umka@namesys.com, user-mode-linux-devel@lists.sourceforge.net, sikkh@wp.pl
 
-damn - a really controversial theme!
 
-:)
 
-this have been two really completely different opinions.
-personally, i don`t really NEED that mlock patch very urgently - so i`m not 
-really pissed of, if it doesn`t go into uml.
-but i would be sad if it`s being drpped completely.
+--ADZbWkCsHQ7r3kzd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-lets give an example:
-if i drive a car, i can even kill people or kill myself - by accident.
-does somebody stop driving cars or do manufacturers stop building cars 
-or limiting speed of cars because of that fact?
-no.
-cars give people an option to move quickly from one location to another. 
-and it`s up to themselves to deceide, if that`s worth putting othere peoples
-life or their own life at risk.
+Hello!
 
-maybe this isn`t the best "comparison" - but i really miss the point, why a 
-feature, which is useful for some people shouldn`t be included into a software, 
-when it helps fixing a problem for them.
-just excluding that feature, because of some "theory" that it COULD probably "hurt" 
-others?
-that`s the same as if developers of "dd" disable writing to files from that tool - because
-somebody could accidentally fill up a whole harddrive (dd if=/dev/zero of=test.dat ...)
-with that.
+On Fri, Apr 16, 2004 at 12:03:18AM +0300, Oleg Drokin wrote:
+>    So the annoying problem with readdir not working on hostfs (on 2.6 host
+>    kernel only for me) was finally hunted to memory allocation
+>    problem during opendir.
+> 
+>    The patch below is a working and tested attempt at fixing it.
+>    It is againt 2.4.20-something, but is pretty straightforward and
+>    probably should apply everywhere else.
 
-what about the fact, that this patch actually seems so solve a problem and adds flexibility 
-to uml?
+This is corrected version that sets errno on malloc failure and as a bonus -
+um_vmalloc is now also declared in header file and therefore no edtra warning in
+main.c ;)
 
-as i already said - there could be a big "WARNING" put to that option, so everybody
-who uses it, is made aware of the bells and whistles and potential problems resulting 
-from this.
+Bye,
+    Oleg
 
-something like this?:
+--ADZbWkCsHQ7r3kzd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="malloc_fix.diff"
 
-+static int __init uml_mlock_setup(char *line, int *add)
+--- uml-2.4/arch/um/kernel/process_kern.c.orig	2004-04-15 23:26:49.000000000 +0300
++++ uml-2.4/arch/um/kernel/process_kern.c	2004-04-15 23:49:38.312250576 +0300
+@@ -16,6 +16,7 @@
+ #include "linux/module.h"
+ #include "linux/init.h"
+ #include "linux/capability.h"
++#include "linux/vmalloc.h"
+ #include "asm/unistd.h"
+ #include "asm/mman.h"
+ #include "asm/segment.h"
+@@ -279,6 +280,11 @@ void *um_kmalloc(int size)
+ 	return(kmalloc(size, GFP_KERNEL));
+ }
+ 
++void *um_vmalloc(int size)
 +{
-+ physmem_lock = 1;
-+ return 0;
++	return(vmalloc(size));
 +}
-+__uml_setup("mlock", uml_mlock_setup,
-+"mlock\n"
-+"    WARNING! Using this option could put your host at risk!\n"
-+"    First read the documentation before using it!\n"
-+"    \n"
-+"    This option requests that the user-mode kernel's memory be locked\n"
-+"    into the host kernel's RAM so that it cannot be swapped out.\n"
-+"    This option requires that the user-mode kernel is run with root\n"
-+"    privileges, which it drops after the mapping has been done.\n"
-+);
++
+ void *um_kmalloc_atomic(int size)
+ {
+ 	return(kmalloc(size, GFP_ATOMIC));
+--- uml-2.4/arch/um/main.c.orig	2004-04-15 23:58:28.786606216 +0300
++++ uml-2.4/arch/um/main.c	2004-04-16 00:35:35.074159064 +0300
+@@ -8,6 +8,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <signal.h>
++#include <errno.h>
+ #include <sys/resource.h>
+ #include <sys/mman.h>
+ #include <sys/user.h>
+@@ -160,10 +161,16 @@ extern void *__real_malloc(int);
+ 
+ void *__wrap_malloc(int size)
+ {
+-	if(CAN_KMALLOC())
+-		return(um_kmalloc(size));
+-	else
++	if(CAN_KMALLOC()) {
++		/* glibc people insist that if malloc fails, errno should be
++		   set by malloc as well. So we do. */
++		void *ret = um_vmalloc(size);
++		if (!ret)
++			errno = ENOMEM;
++		return(ret);
++	} else {
+ 		return(__real_malloc(size));
++	}
+ }
+ 
+ void *__wrap_calloc(int n, int size)
+@@ -179,7 +186,7 @@ extern void __real_free(void *);
+ 
+ void __wrap_free(void *ptr)
+ {
+-	if(CAN_KMALLOC()) kfree(ptr);
++	if(CAN_KMALLOC()) vfree(ptr);
+ 	else __real_free(ptr);
+ }
+ 
+--- uml-2.4/arch/um/include/user.h.orig	2004-04-15 23:41:57.000000000 +0300
++++ uml-2.4/arch/um/include/user.h	2004-04-16 00:36:24.806598584 +0300
+@@ -10,8 +10,10 @@ extern void panic(const char *fmt, ...);
+ extern int printk(const char *fmt, ...);
+ extern void schedule(void);
+ extern void *um_kmalloc(int size);
++extern void *um_vmalloc(int size);
+ extern void *um_kmalloc_atomic(int size);
+ extern void kfree(void *ptr);
++extern void vfree(void *ptr);
+ extern int in_aton(char *str);
+ extern int open_gdb_chan(void);
+ 
 
-to have both sides being satisfied, a good "compromise" could be, if that patch
-is maintained separatately or (better) is being made a compile option, which is OFF by 
-default.
-
-regards
-roland
-
-
-
------ Original Message ----- 
-From: "Dan Lund" <arkane@cox.net>
-To: "David Cannings" <lists@edeca.net>; "UML" <user-mode-linux-user@lists.sourceforge.net>
-Sent: Thursday, April 15, 2004 5:44 PM
-Subject: Re: [uml-user] Network lags
-
-
-> David Cannings wrote:
-> 
-> >mlocking would have the effect of being able to "squeeze" less customers
-> >onto a physical machine.  Without mlocking, pages can be swapped out of
-> >memory onto disk thus your available memory is limited only by whatever size
-> >swap partition you can afford.>snip<
-> >  
-> >
-> I normally stay quiet, but this is an area that I have a vested interest 
-> in with my UML usage.
-> I have a machine with 8 gigs of ram, and I'm running 4 UML sessions 
-> (along with a couple vmware sessions for Windows PDC/BDC/etc) and I see 
-> my UMLs swap out quiete often.  I run 512Mb on each of them, and with my 
-> 'free' statements I can see I have enough cache/buffer to spare to not 
-> do this.  It does it though.  In a situation where you don't want your 
-> UMLs to swap out, an option would be nice.  Just testing on another box 
-> with 2 gigs ram, I turned off the swap and now it's running gorgeously.  
-> I can't do that on my production system, though, because there are 
-> processes that run in batch occasionally that do use memory into the 
-> swap region.
-> 
-> >The problem with "just activating that option" is that many people will do
-> >it blindly, unaware of the serious implications it could have to their host.
-> >  
-> >
-> 
-> It's best not to keep an option out because you think someone will use 
-> it without realizing what it is.  If that's the case, the vanilla kernel 
-> should take out the packet generator, or kernel debugging.  Both can 
-> have serious implications on either the local machine, or on another 
-> machine on the network.  Heck, just selecting certain things wrong in 
-> the Linux kernel when configuring it can have serious implications.  
-> That's what the help portion of menuconfig is really for, to alert the 
-> user to how to properly handle that option.
-> 
-> >Whilst mlocking an area of memory may not affect you now, or in the next ten
-> >minutes, it could cause trouble in three weeks when you start doing
-> >something on the host that is memory intensive.  
-> >
-> If it's mlocked, your host will use swap for the other processes once it 
-> uses the ram that's still available.  But, it's predictable.
-> If you have 1 gig of ram, you mlock a 512mb UML, you always have 512mb 
-> left for the kernel/processes.  If I'm not mistaken, VMWare does it that 
-> way, or at least locks a certain amount of ram in some way.
-> 
-> >In the last three years of
-> >running a remote server I have only had to turn up on site to fix it twice.
-> >Both were very silly things, one that I'd "just activated" to see what it
-> >would do.  It cost me a rather expensive journey half way across the country
-> >to fix.
-> >  
-> >
-> There is one thing I've learned very early on.  Don't experiment with 
-> machines that you can't touch.
-> I've been burned by that too many times, and it's a mantra I live by 
-> now.  When I'm doing something new, I do it here.  If it works, I 
-> implement it in Texas, 2 states east.  If I turned a "just activated" 
-> something in Texas, can you imagine what would happen if it broke?
-> 
-> >It is definitely good to see a community working on patches for a project
-> >but it must be recognised that the end result should be a professional,
-> >stable and reliable product.  
-> >
-> And so it shall be, with or without mlock, or any other features that 
-> are implemented for that matter.
-> 
-> >I am sure nobody has any problem with people
-> >posting patches on their own sites or on the mailing list to allow people to
-> >carry out certain tasks but modifications that contain potentially unstable
-> >code should, in my opinion, be left out of a mainstream release.  Note that
-> >I speak for myself here, not UML or Jeff Dike.
-> >
-> >  
-> >
-> That's why any new code needs to be tested, ran through the wringer so 
-> to speak, bug fixed, repeat as necessary.  That goes for UML in general.
-> 
-> >The idea behind UML is to create a separate environment from the host,
-> >constructing a UML kernel that can interfere so badly with the host is the
-> >total opposite.
-> >
-> >  
-> >
-> I fail to see how allocating all of your memory in the beginning is a 
-> bad thing.  It's just a different philosophy of VM.  It won't put your 
-> host at risk, unless your host runs the UML, along with something else 
-> that will take ($TOTAL_RAM - $UMLRAM) + $SWAPSIZE.
-> It's better than the alternative: Running a host without a swap 
-> partition to keep it from swapping out.
-> 
-> >That statement is asinine.  I could just change "some lines" in my shell
-> >scripts to read "rm -rf /" instead.  Is that not a big issue?  I do not
-> >understand kernel design very well at all but changing "some lines" of
-> >source can have serious implications.
-> >
-> >  
-> >
-> 
-> Let's not get silly.  Of course, as a competent script writer you are 
-> going to realize that rm -rf / is a bad thing.  The same with a coder 
-> realizing something being bad.
-> If people had this type of mindset back when initrd/ramdisk/software 
-> raid were being put into the Linux kernel, it would have never made it 
-> into the official kernel.
-> Options are good, even if they go against your convictions.
-> 
-> --Dan
-> 
-> -----------
-> This email message and any attachment may contain Confidential or
-> Protected Health Information. If you are not the intended recipient
-> please notify us immediately at 480-648-4545 and delete the message.
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: IBM Linux Tutorials
-> Free Linux tutorial presented by Daniel Robbins, President and CEO of
-> GenToo technologies. Learn everything from fundamentals to system
-> administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
-> 
+--ADZbWkCsHQ7r3kzd--
 
 
 -------------------------------------------------------
