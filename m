@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D5oUO-000820-MW for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Feb 2005 09:15:24 -0800
+	id 1D5pnV-0004hN-9E for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Feb 2005 10:39:13 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D5oUN-0000Hj-1q for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Feb 2005 09:15:24 -0800
-Message-Id: <200502281944.j1SJiHMY003270@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] UML 2.4 shmem.c changes? panic w/ backtrace 
-In-Reply-To: Your message of "Thu, 24 Feb 2005 18:13:30 EST."
-	<421E5F9A.6030109@enterasys.com> 
-References: <41A35EF5.4080302@enterasys.com>
-	<200411240242.iAO2gI7p006614@ccure.user-mode-linux.org>
-	<421E5F9A.6030109@enterasys.com> 
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D5pnT-0007Nw-Nn for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Feb 2005 10:39:13 -0800
+Message-Id: <200502281934.j1SJYRMY003256@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] UML startup -- segfault with no mm 
+In-Reply-To: Your message of "Thu, 24 Feb 2005 13:38:05 EST."
+	<421E1F0D.4040108@enterasys.com> 
+References: <421D59C5.9020003@enterasys.com>
+	<200502241736.j1OHaFha003688@ccure.user-mode-linux.org>
+	<421E1F0D.4040108@enterasys.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,17 +29,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 28 Feb 2005 14:44:17 -0500
+Date: Mon, 28 Feb 2005 14:34:27 -0500
 To: "D. Bahi" <dbahi@enterasys.com>
 Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
 dbahi@enterasys.com said:
-> This happens everytime i try to load an application of ours that uses
-> shmem for syslog... 
+> actually - 2.4.26-3um looks like this already. 
 
-I persist in seeing no particular UML involvement with this crash :-)
+Yeah, if I had spent a bit more time looking at the stack, I would have noticed
+that the symptom was wrong for that patch.  What's happening is that you are
+taking a timer interrupt while on the initial process stack, which can't be
+allowed because interrupts should only happen on a kernel stack.
 
-Can you boil your app down to a test case which reproduces this?
+Make sure your initial_thread_cb_skas (in arch/um/kernel/skas/process.c)
+blocks signals like so:
+
+	block_signals();
+	if(sigsetjmp(here, 1) == 0)
+		siglongjmp(initial_jmpbuf, 2);
+	unblock_signals();
 
 				Jeff
 
