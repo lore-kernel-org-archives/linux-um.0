@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BO12t-0003Gw-1V for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 14:13:43 -0700
-Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BO12s-0002jG-Cb for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 14:13:42 -0700
-Message-ID: <101901c43866$f7e64720$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <200405112032.13202.blaisorblade_spam@yahoo.it>
-	<40A13765.5010002@muhlesteins.com>
-	<200405122024.22702.blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Patch for 2.6.6
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+	id 1BO1Cp-0005YN-NY for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 14:23:59 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BO1Cp-00022B-5e
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 14:23:59 -0700
+Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	by ccure.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id
+	i4CM8cCe008920 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 12 May 2004 18:08:38 -0400
+Message-Id: <200405122208.i4CM8cCe008920@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] uml-patch-2.4.24-3
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,86 +29,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 May 2004 23:20:35 +0200
-Content-Transfer-Encoding: quoted-printable
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 12 May 2004 18:08:37 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-hey,
-2.6.6-um1 up and running here!
-thanks paolo!
+This patch contains a ton of hostfs/humfs work.  
 
-this is what i did:
+The kernel infrastructure that was in hostfs_kern.c was made asynchronous, 
+cleaned up, and many bugs fixed.  It was also renamed to externfs.  The old
+hostfs_user.c is now host_fs.c.  Previously, there were a number of bugs
+conspiring to make hostfs completely synchronous, so you could read a file
+in, change it from the host, read it again, and see the new contents.  This
+is now very likely not to work.  If you depend on it, yell, and I'll see how
+to get it back.  O_SYNC will make writes synchronous, and O_DIRECT (when this
+stuff makes it into my 2.6 tree) should do the same for writes, if it can
+be invoked from mount for an entire filesystem.
 
--download 2.6.6 vanilla kernel
--patch with http://www.user-mode-linux.org/~blaisorblade/patches/uml-patch-=
-2.6.6-02.bz2
--patch with http://www.user-mode-linux.org/~blaisorblade/patches/patch-2.6.=
-6-v2
+humfs is now able to accept plug-in metadata modules, thanks to Piotr Neuman.
+The existing shadow filesystem metadata is now plugged in to this interface, 
+and lives in meta_fs.c.  This will enable all the other metadata backends
+that people suggested earlier to be plugged in.  Piotr is currently working
+on a tdb backend.
 
-a while ago i mentioned:
-"make allmodconfig ARCH=3Dum" is broken
-see: http://marc.theaimsgroup.com/?l=3Duser-mode-linux-user&m=3D10825092631=
-9847&w=3D2
-any hints for fixing this ?
+There was also a cleanup patch from Paul Wagland.
 
-regards
-roland
+Everything in arch/um/fs/hostfs is now kernel code, and the USER_* stuff
+in the Makefile is now gone.
 
+As for everything else, there were
+	a fix from Oleg which causes malloc to call vmalloc, which I changed
+to check the allocation size and only use vmalloc for large allocations
+	a fix for a bug in mconsole_interrupt which would crash if it ever saw 
+an empty to-do list which cleaned up the code
+	a ethernet ioctl patch from Gerd Knorr
+	clean-up of the AIO support, which should now build and run on 2.4,
+falling back to the IO thread if 2.6 AIO support isn't available
+	a filehandle abstraction to support reclaiming file descriptors
+when we hit the kernel limit
 
-
-
------ Original Message -----=20
-From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
-To: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Wednesday, May 12, 2004 8:24 PM
-Subject: Re: [uml-devel] Patch for 2.6.6
-
-
-Alle 22:28, marted=EC 11 maggio 2004, Dennis Muhlestein ha scritto:
-> I got this:
->
-> Reversed (or previously applied) patch detected!  Assume -R? [n]
-> Apply anyway? [n] y
-> Hunk #1 FAILED at 1.
-> Hunk #2 FAILED at 19.
-> 2 out of 2 hunks FAILED -- saving rejects to file include/asm-um/irq.h.rej
->
-> when applying the first patch.  I tried also with not applying that
-> part, and get a compile failure pretty early in the build process.
->
-> -Dennis
-
-Ok, I botched that part, sorry - try with the patch from Jeff Chua. I'm
-posting on the site the corrected version, which I hope should apply
-perfectly (I've tested it on apply and unapply - the first one come by maki=
-ng
-it work on reversing without rejects the Jeff Chua's version).
-
-And, finally, also I should quit editing patches by hand :-), maybe!
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+				Jeff
 
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Sleepycat Software
-Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to
+Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to 
 deliver higher performing products faster, at low TCO.
-http://www.sleepycat.com/telcomwpreg.php?From=3Ddnemail3
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by Sleepycat Software
-Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to=20
-deliver higher performing products faster, at low TCO.
-http://www.sleepycat.com/telcomwpreg.php?From=3Dosdnemail3
+http://www.sleepycat.com/telcomwpreg.php?From=osdnemail3
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
