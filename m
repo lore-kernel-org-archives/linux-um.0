@@ -1,19 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C57lh-0006fC-RX for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 12:06:09 -0700
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C57lh-0003se-0T for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 12:06:09 -0700
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Message-ID: <Pine.LNX.4.58.0409081440150.3136@sparrow>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] glibc and NPTL, problem, workarounds, etc.
+	id 1C58G1-0004Q3-Nx for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 12:37:29 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C58Fz-0006j4-6h
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 12:37:29 -0700
+Message-Id: <200409082040.i88KeYBP015368@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Sun, 05 Sep 2004 16:28:11 EDT."
+	<413B76DB.5010600@pobox.com> 
+References: <200408190301.i7J30xek004150@ccure.user-mode-linux.org>
+	<200408251746.53523.blaisorblade_spam@yahoo.it>
+	<413B76DB.5010600@pobox.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: Current state of UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,74 +30,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 8 Sep 2004 15:02:03 -0400 (EDT)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: William Stearns <wstearns@pobox.com>
+Date: Wed, 08 Sep 2004 16:40:34 -0400
+To: Jeff Garzik <jgarzik@pobox.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Good day, all,
-	Zaphod had a rather nasty filesystem crash last week.  It happened 
-around the time that two other events happened; the raid array forgot it 
-had drive 3 (requiring me to remove and re-add the drive and start a raid 
-rebuild), and one of the users was attempting to upgrade glibc on debian.  
-This put in a new version of glibc, along with the NPTL (Native Posix 
-Threading Libraries) that don't work with UML.  From that point, that user 
-could log in with ssh, but could no longer run any applications because 
-bash refused to fork.
+jgarzik@pobox.com said:
+> (minor) 2) The Makefiles appear to add "-um1" to the kernel version
+> for some  reason, and IMHO violates the Principle of Least Surprise.
+> This breaks  several of my scripts :(
 
-	There are a couple of workarounds for this problem.  First, when 
-installing any root filesystem, check afterwards to see if there's a 
-directory called /lib/tls/ .  If so, rename or delete it.  This removes 
-the NPTL extensions to glibc but leaves glibc itself, so applications 
-continue to work; they just never try to use the NPTL extensions.
-	To make sure it's never used again, do the following as root:
+As BlaisorBlade already said, this wasn't intended to reach any major trees -
+it's just for my own patch numbering.  I'll clean this up, along with a couple
+of other things.
 
-rm -rf /lib/tls/
-mkdir /lib/tls/
-chmod 000 /lib/tls/
-chattr +i /lib/tls/
+				Jeff
 
-	Now even root can't write to that directory.  Any attempt to 
-install a new version of glibc will probably fail because rpm/apt can't 
-write to that directory, but it's better than having a non-functioning 
-system.
-
-	In trying to run the above commands while fixing his system, I ran
-into the problem where the commands I wanted to run loaded glibc and the
-NPTL libaries, and therefore refused to run (the error message I got on
-fork mentioned "nptl").  In fact, running single user mode (starting up
-uml with "ro single init=/bin/bash") didn't do any better since bash
-needed to fork to run the above commands and the fork failed.
-	The workaround to the above is this:
-
-export LD_ASSUME_KERNEL=2.4.1
-exec /bin/bash
-
-	which replaces your current bash with a new one that won't try to 
-load the nptl libraries.  Now you can run commands even though the 
-/lib/tls/ directory is there - this would be an excellent time to remove 
-them.  :-)
-
-	Jeff, I have a seriously hard time believing that simply running 
-nptl binaries could cause journal errors out on the host.  I'm much more 
-inclined to believe that the raid rebuild might have briefly set the block 
-devices read-only, long enough for the journal to give up because there's 
-no place to put the data.  I just thought I'd bring up the closesness in 
-time in case it triggered any connections for you.
-	I do have some of the host journal errors if they're useful, but I 
-suspect they're not.
-	Cheers,
-	- Bill
-
----------------------------------------------------------------------------
-	"Computers let you make more mistakes faster than any other
-invention in human history, with the possible exception of handguns and
-tequila." 
-	-- Mitch Radcliffe
-(Courtesy of Hugo van der Kooij <hvdkooij@caiw.nl>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
 
 
 -------------------------------------------------------
