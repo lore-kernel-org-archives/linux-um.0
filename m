@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C56vW-0005Dj-43 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 11:12:14 -0700
-Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C56vV-0002z1-6z for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 11:12:13 -0700
-From: Chris Wright <chrisw@osdl.org>
-Message-ID: <20040908111204.I1973@build.pdx.osdl.net>
-References: <20040908172503.384144933@zion.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1C57Ys-0004SO-PQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 11:52:54 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C57Yr-00025z-UY for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 11:52:54 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
+References: <BACKUPJQjdF8qoH28Db000022d5@NOSPAM.BRITSYS.NET>
+	<413E5265.2080001@britsys.net>
+In-Reply-To: <413E5265.2080001@britsys.net>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20040908172503.384144933@zion.localdomain>;
-	from blaisorblade_spam@yahoo.it on Wed, Sep 08, 2004 at
-	07:25:02PM +0200
-Subject: [uml-devel] Re: [patch 1/1] uml:fix ubd deadlock on SMP
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409082009.51059.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,61 +30,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 8 Sep 2004 11:12:04 -0700
-To: blaisorblade_spam@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 8 Sep 2004 20:09:51 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: David Jeffery <djeffery@britsys.net>, ralston@stral.net
 
-* blaisorblade_spam@yahoo.it (blaisorblade_spam@yahoo.it) wrote:
-> 
-> Trivial: don't lock the queue spinlock when called from the request function.
-> Since the faulty function must use spinlock in another case, double-case it.
-> And since we will never use both functions together, let no object code be
-> shared between them.
+On Wednesday 08 September 2004 02:29, David Jeffery wrote:
+> Michael Ralston wrote:
+> >I've been testing out this patch...
+> >
+> >It seems it allows me to start a uml-2.6.8.1 with SKAS using libc6-2.3.2.
+> >I'm not sure if programs that make use of NPTL are running correctly
+> > though.
+>
+> It depends on what part of pthreads the programs use.  My patch only
+> fixes basic thread creation.  If you run the pthread test suite from
+> LSB, you'll find there is alot still broken.  Sorry for my patch
+> sounding more impressive than it was.  The few pthread things I ran work
+> but they didn't make extensive use of the nptl's pthread features.  I'm
+> going to try and look at what's broken but no guarantees I'll know how
+> to fix it.
+Ok, now that seems reasonable.
 
-Why not add a helper which locks around the core function.  Then either
-call helper or core function directly depending on locking needs?
+The biggest problem are these two syscalls (this is a quote from 
+arch/um/kernel/sys_call_table.c):
 
-Smth. along the lines of below.
+        [ __NR_set_thread_area ] (syscall_handler_t *) sys_ni_syscall,
+        [ __NR_get_thread_area ] (syscall_handler_t *) sys_ni_syscall,
 
-===== arch/um/drivers/ubd_kern.c 1.36 vs edited =====
---- 1.36/arch/um/drivers/ubd_kern.c	2004-08-24 02:08:18 -07:00
-+++ edited/arch/um/drivers/ubd_kern.c	2004-09-08 11:06:54 -07:00
-@@ -396,14 +396,20 @@
-  */
- int intr_count = 0;
- 
--static void ubd_finish(struct request *req, int error)
-+static inline void ubd_finish(struct request *req, int error)
-+{
-+ 	spin_lock(&ubd_io_lock);
-+	__ubd_finish(req, error);
-+	spin_unlock(&ubd_io_lock);
-+}
-+
-+/* call ubd_finish if you need to serialize */
-+static void __ubd_finish(struct request *req, int error)
- {
- 	int nsect;
- 
- 	if(error){
-- 		spin_lock(&ubd_io_lock);
- 		end_request(req, 0);
-- 		spin_unlock(&ubd_io_lock);
- 		return;
- 	}
- 	nsect = req->current_nr_sectors;
-@@ -412,9 +418,7 @@
- 	req->errors = 0;
- 	req->nr_sectors -= nsect;
- 	req->current_nr_sectors = 0;
--	spin_lock(&ubd_io_lock);
- 	end_request(req, 1);
--	spin_unlock(&ubd_io_lock);
- }
- 
- static void ubd_handler(void)
+We've always been knowing that the problem is setting the TLS space - on i386 
+you do it by allocating a memory area for each thread and setting a reference 
+to it(to change on thread switching) in the GDT (a special memory area 
+handled by the CPU).
+However, it should be possible to make them work - see modify_ldt 
+implementation in SKAS mode to understand how.
+
+Bye
 -- 
-Linux Security Modules     http://lsm.immunix.org     http://lsm.bkbits.net
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
