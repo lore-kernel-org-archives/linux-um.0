@@ -2,20 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BI5kA-0002Cv-4j for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Apr 2004 06:01:54 -0700
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BI5k9-00037N-Ia
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Apr 2004 06:01:53 -0700
-References: <0ee401c42acc$37c0be50$2000000a@schlepptopp>
-From: Gerd Knorr <kraxel@bytesex.org>
-In-Reply-To: <0ee401c42acc$37c0be50$2000000a@schlepptopp>
-Message-ID: <87smerxhnx.fsf@bytesex.org>
+	id 1BI6S8-0003XI-6x for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Apr 2004 06:47:20 -0700
+Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BI6S7-0005fU-U5 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Apr 2004 06:47:19 -0700
+Message-ID: <20040426134657.24368.qmail@praize.com>
+From: "gboutwel" <gboutwel@praize.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: skas in suse 9.1 ?
+Subject: Re: [uml-devel] Still can't get an 2.6.6-rcX UML
+Content-Type: Text/Plain;
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,17 +24,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 26 Apr 2004 10:33:22 +0200
-To: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net
+Date: 26 Apr 2004 13:46:57 -0000
+To: jeff98@silk.corp.fedex.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-"roland" <for_spam@gmx.de> writes:
+jeff98@silk.corp.fedex.com wrote:
 
-> hi !
-> does somebody know, if new suse 9.1 distribution (kernel 2.6) is skas-patched?
+> 
 
-Yes, it is.
+> can you disable smp and high mem. Try my .config (uml) attached.
 
-  Gerd
+> 
+
+
+
+Ummm... Did you look at the .config I attached to that e-mail?
+
+
+
+#
+
+# UML-specific options
+
+#
+
+...
+
+# CONFIG_UML_SMP is not set
+
+# CONFIG_SMP is not set
+
+...
+
+# CONFIG_HIGHMEM is not set
+
+
+
+Note that SMP & High Mem are disabled.
+
+
+
+I'll try your .config and let you know.
+
+
+
+George
+
+
+
+-----------------------------------------------
+
+Get your FREE Christian Email Account at Praize
+
+http://www.praize.com/email/ 
 
 
 
