@@ -1,16 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CUxJG-00005R-Ke for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Nov 2004 17:11:34 -0800
+	id 1CUxJe-000075-CF for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2004 17:11:58 -0800
 Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CUxJF-00078U-EH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Nov 2004 17:11:34 -0800
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CUxJc-0002d9-9M for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2004 17:11:58 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041119011332.64C417B9AA@zion.localdomain>
-Subject: [uml-devel] [patch 2/4] hostfs - uml: add some other pagecache methods
+Message-Id: <20041119011337.74CDD7B9C9@zion.localdomain>
+Subject: [uml-devel] [patch 3/4] uml: remove most devfs_mk_symlink calls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,63 +22,72 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Nov 2004 02:13:31 +0100
+Date: Fri, 19 Nov 2004 02:13:37 +0100
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it, viro@parcelfarce.linux.theplanet.co.uk
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it, hch@infradead.org, jdike@addtoit.com
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
-Cc: Alexander Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Cc: Christoph Hellwig <hch@infradead.org>
 
-This is a follow-up to my previous "hostfs - uml: set .sendfile to
-generic_file_sendfile" patch. I was asking whether other methods should have
-been added, and comparing with ext3 I found some more ones.
+Remove uses of devfs_mk_symlink().
 
-However, I have not specific clues about them: I know they use the pagecache,
-which relies on *page methods, which are defined by hostfs. So I think it
-could work.
+We didn't do this before to avoid breaking most user setups, but this patch
+should be quite harmless.
 
-I have a doubt, whether hostfs needs the commented out method below:
+I've excluded the hottest part, i.e. the ubd symlink, while removing the
+other; I released a end-user tree with this patch and there was a good number
+of people using the symlink rather than the preferred name. That part will be
+merged later, I think.
 
-static struct address_space_operations hostfs_aops = {
-	.writepage 	= hostfs_writepage,
-	.readpage	= hostfs_readpage,
-/* 	.set_page_dirty = __set_page_dirty_nobuffers, */
-	.prepare_write	= hostfs_prepare_write,
-	.commit_write	= hostfs_commit_write
-};
+Since now we have evidence of less and less users using devfs, we think that
+it will not cause too much problems.
 
-Hostfs does not have a underlying device (and I have some rough idea that
-buffers cache block devices data), so I wonder if that is needed or not.
+Acked-by: Jeff Dike <jdike@addtoit.com>
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.10-rc-paolo/fs/hostfs/hostfs_kern.c |    5 +++++
- 1 files changed, 5 insertions(+)
+ linux-2.6.10-rc-paolo/arch/um/drivers/line.c         |    9 +--------
+ linux-2.6.10-rc-paolo/arch/um/drivers/mmapper_kern.c |    1 -
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff -puN fs/hostfs/hostfs_kern.c~uml-hostfs-add-some-other-pagecache-methods fs/hostfs/hostfs_kern.c
---- linux-2.6.10-rc/fs/hostfs/hostfs_kern.c~uml-hostfs-add-some-other-pagecache-methods	2004-11-18 17:43:38.239312696 +0100
-+++ linux-2.6.10-rc-paolo/fs/hostfs/hostfs_kern.c	2004-11-18 17:43:38.242312240 +0100
-@@ -394,6 +394,10 @@ static struct file_operations hostfs_fil
- 	.llseek		= generic_file_llseek,
- 	.read		= generic_file_read,
- 	.sendfile	= generic_file_sendfile,
-+	.aio_read	= generic_file_aio_read,
-+	.aio_write	= generic_file_aio_write,
-+	.readv		= generic_file_readv,
-+	.writev		= generic_file_writev,
- 	.write		= generic_file_write,
- 	.mmap		= generic_file_mmap,
- 	.open		= hostfs_file_open,
-@@ -402,6 +406,7 @@ static struct file_operations hostfs_fil
- };
+diff -puN arch/um/drivers/line.c~uml-remove-most-devfs-mk-symlink arch/um/drivers/line.c
+--- linux-2.6.10-rc/arch/um/drivers/line.c~uml-remove-most-devfs-mk-symlink	2004-11-18 18:24:27.751930176 +0100
++++ linux-2.6.10-rc-paolo/arch/um/drivers/line.c	2004-11-18 18:24:27.755929568 +0100
+@@ -415,8 +415,7 @@ struct tty_driver *line_register_devfs(s
+ 			 struct tty_operations *ops, struct line *lines,
+ 			 int nlines)
+ {
+-	int err, i;
+-	char *from, *to;
++	int i;
+ 	struct tty_driver *driver = alloc_tty_driver(nlines);
  
- static struct file_operations hostfs_dir_fops = {
-+	.llseek		= generic_file_llseek,
- 	.readdir	= hostfs_readdir,
- 	.read		= generic_read_dir,
- };
+ 	if (!driver)
+@@ -436,12 +435,6 @@ struct tty_driver *line_register_devfs(s
+ 	if (tty_register_driver(driver))
+ 		panic("line_register_devfs : Couldn't register driver\n");
+ 
+-	from = line_driver->symlink_from;
+-	to = line_driver->symlink_to;
+-	err = devfs_mk_symlink(from, to);
+-	if(err) printk("Symlink creation from /dev/%s to /dev/%s "
+-		       "returned %d\n", from, to, err);
+-
+ 	for(i = 0; i < nlines; i++){
+ 		if(!lines[i].valid) 
+ 			tty_unregister_device(driver, i);
+diff -puN arch/um/drivers/mmapper_kern.c~uml-remove-most-devfs-mk-symlink arch/um/drivers/mmapper_kern.c
+--- linux-2.6.10-rc/arch/um/drivers/mmapper_kern.c~uml-remove-most-devfs-mk-symlink	2004-11-18 18:24:27.753929872 +0100
++++ linux-2.6.10-rc-paolo/arch/um/drivers/mmapper_kern.c	2004-11-18 18:24:27.756929416 +0100
+@@ -128,7 +128,6 @@ static int __init mmapper_init(void)
+ 	p_buf = __pa(v_buf);
+ 
+ 	devfs_mk_cdev(MKDEV(30, 0), S_IFCHR|S_IRUGO|S_IWUGO, "mmapper");
+-	devfs_mk_symlink("mmapper0", "mmapper");
+ 	return(0);
+ }
+ 
 _
 
 
