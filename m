@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19wr3P-0003Gf-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 09 Sep 2003 15:33:43 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	id 19wv79-0008El-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 09 Sep 2003 19:53:51 -0700
+Received: from sat.sws.net.au ([202.5.161.49] ident=postfix)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19wr3O-0002SN-KF
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Sep 2003 15:33:42 -0700
-Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h89MPmj16486
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 9 Sep 2003 18:25:48 -0400
-Message-Id: <200309092233.h89MXO2J005300@ccure.karaya.com>
-Subject: Re: [uml-devel] "Kernel panic: Segfault with no mm" 
-In-Reply-To: Your message of "Tue, 09 Sep 2003 21:34:37 +0200."
-             <20030909193437.GE10485@marowsky-bree.de> 
-References: <20030909180126.GC10485@marowsky-bree.de> <200309091914.h89JE6ja000983@car.linuxhacker.ru>  <20030909193437.GE10485@marowsky-bree.de> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 19wv77-0005mA-Sj
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Sep 2003 19:53:51 -0700
+From: Russell Coker <russell@coker.com.au>
+Reply-To: russell@coker.com.au
+Subject: Re: [uml-devel] uml-patch-2.6.0-test5
+References: <200309092235.h89MZU2J005307@ccure.karaya.com>
+In-Reply-To: <200309092235.h89MZU2J005307@ccure.karaya.com>
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_tIpX/pDKHVGYpxK"
+Message-Id: <200309101253.33028.russell@coker.com.au>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -29,18 +27,51 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 09 Sep 2003 18:33:24 -0400
-To: Lars Marowsky-Bree <lmb@suse.de>
-Cc: Oleg Drokin <green@linuxhacker.ru>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 10 Sep 2003 12:53:33 +1000
+To: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-lmb@suse.de said:
-> But on the host, I'd get a panic which said which kernel module caused
-> it etc. Is that not to be expected in UML? 
 
-UML is lacking some of the debugging stuff present in the other ports.  No
-big problem to add, but I haven't seen any pressing need for it.
 
-				Jeff
+--Boundary-00=_tIpX/pDKHVGYpxK
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Wed, 10 Sep 2003 08:35, Jeff Dike wrote:
+> This patch updates UML to 2.6.0-test5.  There were a couple of bug fixes,
+> but no functional changes in this patch.
+
+The attached patch is needed on top of that for compiling UML with SE Linux 
+support.
+
+-- 
+http://www.coker.com.au/selinux/   My NSA Security Enhanced Linux packages
+http://www.coker.com.au/bonnie++/  Bonnie++ hard drive benchmark
+http://www.coker.com.au/postal/    Postal SMTP/POP benchmark
+http://www.coker.com.au/~russell/  My home page
+
+--Boundary-00=_tIpX/pDKHVGYpxK
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="diff"
+
+--- include/asm-um/common.lds.S.orig	Wed Sep 10 04:33:15 2003
++++ include/asm-um/common.lds.S	Wed Sep 10 04:34:53 2003
+@@ -78,6 +78,8 @@
+   __uml_initcall_end = .;
+   __init_end = .;
+ 
++  SECURITY_INIT
++
+   __exitcall_begin = .;
+   .exitcall : { *(.exitcall.exit) }
+   __exitcall_end = .;
+
+--Boundary-00=_tIpX/pDKHVGYpxK--
 
 
 
