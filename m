@@ -1,16 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DGiHY-000159-QJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 10:51:12 -0800
-Received: from mail-relay-1.tiscali.it ([213.205.33.41])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DGiHX-0000Pp-Kf for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 10:51:12 -0800
+	id 1DGiHZ-00015E-F9 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 10:51:13 -0800
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DGiHY-0002a4-Ht for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 10:51:13 -0800
 From: blaisorblade@yahoo.it
-Message-Id: <20050330173355.A8FE9EFEDA@zion>
-Subject: [uml-devel] [patch 5/8] uml: fix "cond. expr. as lvalues" warning
+Message-Id: <20050330173341.41F25EFED3@zion>
+Subject: [uml-devel] [patch 1/8] uml: fix sigio spinlock [for 2.6.12]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,221 +22,103 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 30 Mar 2005 19:33:55 +0200
+Date: Wed, 30 Mar 2005 19:33:41 +0200
 To: torvalds@osdl.org
 Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+I just saw a "take twice spinlock" deadlock with the Spinlock debugging
+enabled on this lock, and static code analysis revealed this is the culprit:
+update_thread can take (in an error path) the sigio_lock, which is already
+held by all its callers (it's a static function, so it's easy to verify).
 
-Gcc 3.4.3 (and probably any 3.4) emits some "deprecation" warnings currently
-about usages of CHOOSE_MODE, since the below syntax has been deprecated:
+Added some comments to mark where this function needs the lock, in case
+someone wants to reduce the locking here.
 
-(a ? foo: bar) = foobar;
-which often results from expansion of:
-CHOOSE_MODE(foo, bar) = foobar;
+Also clean an exitcall to mark the thread as killed (won't hurt, and could
+be useful if things go wrong).
 
-So add an additional __CHOOSE_MODE syntax for users which need to get a
-lvalue, which uses (a ? &foo : &bar) inside a function, casts the result to
-the correct type and dereference the pointer, and use it where needed (i.e.
-in <sysdep/ptrace.h>)
+As a bonus, some CodingStyle cleanups.
 
-The patch builds and runs correctly (this has been tested on i386 only, not on
-x86_64), and removes all the warnings.
-
-Updated from last sent version to work also when only one mode (TT or SKAS) is
-enabled.
+This should go in 2.6.12 for its simplicity and usefulness.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.11-paolo/arch/um/include/choose-mode.h          |   12 ++
- linux-2.6.11-paolo/arch/um/include/sysdep-i386/ptrace.h   |   36 ++++----
- linux-2.6.11-paolo/arch/um/include/sysdep-x86_64/ptrace.h |   58 +++++++-------
- 3 files changed, 59 insertions(+), 47 deletions(-)
+ linux-2.6.11-paolo/arch/um/kernel/sigio_user.c |   29 ++++++++++---------------
+ 1 files changed, 12 insertions(+), 17 deletions(-)
 
-diff -puN arch/um/include/choose-mode.h~uml-fix-cond-expr-as-lvalues arch/um/include/choose-mode.h
---- linux-2.6.11/arch/um/include/choose-mode.h~uml-fix-cond-expr-as-lvalues	2005-03-27 20:55:12.000000000 +0200
-+++ linux-2.6.11-paolo/arch/um/include/choose-mode.h	2005-03-27 20:55:45.000000000 +0200
-@@ -11,6 +11,14 @@
- #if defined(UML_CONFIG_MODE_TT) && defined(UML_CONFIG_MODE_SKAS)
- #define CHOOSE_MODE(tt, skas) (mode_tt ? (tt) : (skas))
+diff -puN arch/um/kernel/sigio_user.c~uml-fix-sigio-spinlock arch/um/kernel/sigio_user.c
+--- linux-2.6.11/arch/um/kernel/sigio_user.c~uml-fix-sigio-spinlock	2005-03-24 11:37:00.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/sigio_user.c	2005-03-24 11:37:00.000000000 +0100
+@@ -108,12 +108,14 @@ static void tty_output(int master, int s
+ 		panic("check_sigio : write failed, errno = %d\n", errno);
+ 	while(((n = os_read_file(slave, buf, sizeof(buf))) > 0) && !got_sigio) ;
  
-+extern int mode_tt;
-+
-+static inline void *__choose_mode(void *tt, void *skas) {
-+	return mode_tt ? tt : skas;
-+}
-+
-+#define __CHOOSE_MODE(tt, skas) (*( (typeof(tt) *) __choose_mode(&(tt), &(skas))))
-+
- #elif defined(UML_CONFIG_MODE_SKAS)
- #define CHOOSE_MODE(tt, skas) (skas)
+-	if(got_sigio){
++	if (got_sigio) {
+ 		printk("Yes\n");
+ 		pty_output_sigio = 1;
++	} else if (n == -EAGAIN) {
++		printk("No, enabling workaround\n");
++	} else {
++		panic("check_sigio : read failed, err = %d\n", n);
+ 	}
+-	else if(n == -EAGAIN) printk("No, enabling workaround\n");
+-	else panic("check_sigio : read failed, err = %d\n", n);
+ }
  
-@@ -21,6 +29,10 @@
- #define CHOOSE_MODE_PROC(tt, skas, args...) \
- 	CHOOSE_MODE(tt(args), skas(args))
+ static void tty_close(int master, int slave)
+@@ -235,6 +237,8 @@ static int need_poll(int n)
+ 	return(0);
+ }
  
-+#ifndef __CHOOSE_MODE
-+#define __CHOOSE_MODE(tt, skas) CHOOSE_MODE(tt, skas)
-+#endif
-+
- #endif
++/* Must be called with sigio_lock held, because it's needed by the marked
++ * critical section. */
+ static void update_thread(void)
+ {
+ 	unsigned long flags;
+@@ -257,7 +261,7 @@ static void update_thread(void)
+ 	set_signals(flags);
+ 	return;
+  fail:
+-	sigio_lock();
++	/* Critical section start */
+ 	if(write_sigio_pid != -1) 
+ 		os_kill_process(write_sigio_pid, 1);
+ 	write_sigio_pid = -1;
+@@ -265,7 +269,7 @@ static void update_thread(void)
+ 	os_close_file(sigio_private[1]);
+ 	os_close_file(write_sigio_fds[0]);
+ 	os_close_file(write_sigio_fds[1]);
+-	sigio_unlock();
++	/* Critical section end */
+ 	set_signals(flags);
+ }
  
- /*
-diff -puN arch/um/include/sysdep-i386/ptrace.h~uml-fix-cond-expr-as-lvalues arch/um/include/sysdep-i386/ptrace.h
---- linux-2.6.11/arch/um/include/sysdep-i386/ptrace.h~uml-fix-cond-expr-as-lvalues	2005-03-27 20:55:12.000000000 +0200
-+++ linux-2.6.11-paolo/arch/um/include/sysdep-i386/ptrace.h	2005-03-27 20:55:12.000000000 +0200
-@@ -93,39 +93,39 @@ extern int mode_tt;
+@@ -418,19 +422,10 @@ int read_sigio_fd(int fd)
  
- #define UPT_SC(r) ((r)->tt.sc)
- #define UPT_IP(r) \
--	CHOOSE_MODE(SC_IP(UPT_SC(r)), REGS_IP((r)->skas.regs))
-+	__CHOOSE_MODE(SC_IP(UPT_SC(r)), REGS_IP((r)->skas.regs))
- #define UPT_SP(r) \
--	CHOOSE_MODE(SC_SP(UPT_SC(r)), REGS_SP((r)->skas.regs))
-+	__CHOOSE_MODE(SC_SP(UPT_SC(r)), REGS_SP((r)->skas.regs))
- #define UPT_EFLAGS(r) \
--	CHOOSE_MODE(SC_EFLAGS(UPT_SC(r)), REGS_EFLAGS((r)->skas.regs))
-+	__CHOOSE_MODE(SC_EFLAGS(UPT_SC(r)), REGS_EFLAGS((r)->skas.regs))
- #define UPT_EAX(r) \
--	CHOOSE_MODE(SC_EAX(UPT_SC(r)), REGS_EAX((r)->skas.regs))
-+	__CHOOSE_MODE(SC_EAX(UPT_SC(r)), REGS_EAX((r)->skas.regs))
- #define UPT_EBX(r) \
--	CHOOSE_MODE(SC_EBX(UPT_SC(r)), REGS_EBX((r)->skas.regs))
-+	__CHOOSE_MODE(SC_EBX(UPT_SC(r)), REGS_EBX((r)->skas.regs))
- #define UPT_ECX(r) \
--	CHOOSE_MODE(SC_ECX(UPT_SC(r)), REGS_ECX((r)->skas.regs))
-+	__CHOOSE_MODE(SC_ECX(UPT_SC(r)), REGS_ECX((r)->skas.regs))
- #define UPT_EDX(r) \
--	CHOOSE_MODE(SC_EDX(UPT_SC(r)), REGS_EDX((r)->skas.regs))
-+	__CHOOSE_MODE(SC_EDX(UPT_SC(r)), REGS_EDX((r)->skas.regs))
- #define UPT_ESI(r) \
--	CHOOSE_MODE(SC_ESI(UPT_SC(r)), REGS_ESI((r)->skas.regs))
-+	__CHOOSE_MODE(SC_ESI(UPT_SC(r)), REGS_ESI((r)->skas.regs))
- #define UPT_EDI(r) \
--	CHOOSE_MODE(SC_EDI(UPT_SC(r)), REGS_EDI((r)->skas.regs))
-+	__CHOOSE_MODE(SC_EDI(UPT_SC(r)), REGS_EDI((r)->skas.regs))
- #define UPT_EBP(r) \
--	CHOOSE_MODE(SC_EBP(UPT_SC(r)), REGS_EBP((r)->skas.regs))
-+	__CHOOSE_MODE(SC_EBP(UPT_SC(r)), REGS_EBP((r)->skas.regs))
- #define UPT_ORIG_EAX(r) \
--	CHOOSE_MODE((r)->tt.syscall, (r)->skas.syscall)
-+	__CHOOSE_MODE((r)->tt.syscall, (r)->skas.syscall)
- #define UPT_CS(r) \
--	CHOOSE_MODE(SC_CS(UPT_SC(r)), REGS_CS((r)->skas.regs))
-+	__CHOOSE_MODE(SC_CS(UPT_SC(r)), REGS_CS((r)->skas.regs))
- #define UPT_SS(r) \
--	CHOOSE_MODE(SC_SS(UPT_SC(r)), REGS_SS((r)->skas.regs))
-+	__CHOOSE_MODE(SC_SS(UPT_SC(r)), REGS_SS((r)->skas.regs))
- #define UPT_DS(r) \
--	CHOOSE_MODE(SC_DS(UPT_SC(r)), REGS_DS((r)->skas.regs))
-+	__CHOOSE_MODE(SC_DS(UPT_SC(r)), REGS_DS((r)->skas.regs))
- #define UPT_ES(r) \
--	CHOOSE_MODE(SC_ES(UPT_SC(r)), REGS_ES((r)->skas.regs))
-+	__CHOOSE_MODE(SC_ES(UPT_SC(r)), REGS_ES((r)->skas.regs))
- #define UPT_FS(r) \
--	CHOOSE_MODE(SC_FS(UPT_SC(r)), REGS_FS((r)->skas.regs))
-+	__CHOOSE_MODE(SC_FS(UPT_SC(r)), REGS_FS((r)->skas.regs))
- #define UPT_GS(r) \
--	CHOOSE_MODE(SC_GS(UPT_SC(r)), REGS_GS((r)->skas.regs))
-+	__CHOOSE_MODE(SC_GS(UPT_SC(r)), REGS_GS((r)->skas.regs))
+ static void sigio_cleanup(void)
+ {
+-	if(write_sigio_pid != -1)
++	if (write_sigio_pid != -1) {
+ 		os_kill_process(write_sigio_pid, 1);
++		write_sigio_pid = -1;
++	}
+ }
  
- #define UPT_SYSCALL_ARG1(r) UPT_EBX(r)
- #define UPT_SYSCALL_ARG2(r) UPT_ECX(r)
-@@ -222,7 +222,7 @@ struct syscall_args {
-                     REGS_SEGV_IS_FIXABLE(&r->skas))
- 
- #define UPT_FAULT_ADDR(r) \
--	CHOOSE_MODE(SC_FAULT_ADDR(UPT_SC(r)), REGS_FAULT_ADDR(&r->skas))
-+	__CHOOSE_MODE(SC_FAULT_ADDR(UPT_SC(r)), REGS_FAULT_ADDR(&r->skas))
- 
- #define UPT_FAULT_WRITE(r) \
- 	CHOOSE_MODE(SC_FAULT_WRITE(UPT_SC(r)), REGS_FAULT_WRITE(&r->skas))
-diff -puN arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-cond-expr-as-lvalues arch/um/include/sysdep-x86_64/ptrace.h
---- linux-2.6.11/arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-cond-expr-as-lvalues	2005-03-27 20:55:12.000000000 +0200
-+++ linux-2.6.11-paolo/arch/um/include/sysdep-x86_64/ptrace.h	2005-03-27 20:55:12.000000000 +0200
-@@ -104,37 +104,37 @@ union uml_pt_regs {
- /* XXX */
- extern int mode_tt;
- 
--#define UPT_RBX(r) CHOOSE_MODE(SC_RBX(UPT_SC(r)), REGS_RBX((r)->skas.regs))
--#define UPT_RCX(r) CHOOSE_MODE(SC_RCX(UPT_SC(r)), REGS_RCX((r)->skas.regs))
--#define UPT_RDX(r) CHOOSE_MODE(SC_RDX(UPT_SC(r)), REGS_RDX((r)->skas.regs))
--#define UPT_RSI(r) CHOOSE_MODE(SC_RSI(UPT_SC(r)), REGS_RSI((r)->skas.regs))
--#define UPT_RDI(r) CHOOSE_MODE(SC_RDI(UPT_SC(r)), REGS_RDI((r)->skas.regs))
--#define UPT_RBP(r) CHOOSE_MODE(SC_RBP(UPT_SC(r)), REGS_RBP((r)->skas.regs))
--#define UPT_RAX(r) CHOOSE_MODE(SC_RAX(UPT_SC(r)), REGS_RAX((r)->skas.regs))
--#define UPT_R8(r) CHOOSE_MODE(SC_R8(UPT_SC(r)), REGS_R8((r)->skas.regs))
--#define UPT_R9(r) CHOOSE_MODE(SC_R9(UPT_SC(r)), REGS_R9((r)->skas.regs))
--#define UPT_R10(r) CHOOSE_MODE(SC_R10(UPT_SC(r)), REGS_R10((r)->skas.regs))
--#define UPT_R11(r) CHOOSE_MODE(SC_R11(UPT_SC(r)), REGS_R11((r)->skas.regs))
--#define UPT_R12(r) CHOOSE_MODE(SC_R12(UPT_SC(r)), REGS_R12((r)->skas.regs))
--#define UPT_R13(r) CHOOSE_MODE(SC_R13(UPT_SC(r)), REGS_R13((r)->skas.regs))
--#define UPT_R14(r) CHOOSE_MODE(SC_R14(UPT_SC(r)), REGS_R14((r)->skas.regs))
--#define UPT_R15(r) CHOOSE_MODE(SC_R15(UPT_SC(r)), REGS_R15((r)->skas.regs))
--#define UPT_CS(r) CHOOSE_MODE(SC_CS(UPT_SC(r)), REGS_CS((r)->skas.regs))
--#define UPT_FS(r) CHOOSE_MODE(SC_FS(UPT_SC(r)), REGS_FS((r)->skas.regs))
--#define UPT_GS(r) CHOOSE_MODE(SC_GS(UPT_SC(r)), REGS_GS((r)->skas.regs))
--#define UPT_DS(r) CHOOSE_MODE(SC_DS(UPT_SC(r)), REGS_DS((r)->skas.regs))
--#define UPT_ES(r) CHOOSE_MODE(SC_ES(UPT_SC(r)), REGS_ES((r)->skas.regs))
--#define UPT_CS(r) CHOOSE_MODE(SC_CS(UPT_SC(r)), REGS_CS((r)->skas.regs))
-+#define UPT_RBX(r) __CHOOSE_MODE(SC_RBX(UPT_SC(r)), REGS_RBX((r)->skas.regs))
-+#define UPT_RCX(r) __CHOOSE_MODE(SC_RCX(UPT_SC(r)), REGS_RCX((r)->skas.regs))
-+#define UPT_RDX(r) __CHOOSE_MODE(SC_RDX(UPT_SC(r)), REGS_RDX((r)->skas.regs))
-+#define UPT_RSI(r) __CHOOSE_MODE(SC_RSI(UPT_SC(r)), REGS_RSI((r)->skas.regs))
-+#define UPT_RDI(r) __CHOOSE_MODE(SC_RDI(UPT_SC(r)), REGS_RDI((r)->skas.regs))
-+#define UPT_RBP(r) __CHOOSE_MODE(SC_RBP(UPT_SC(r)), REGS_RBP((r)->skas.regs))
-+#define UPT_RAX(r) __CHOOSE_MODE(SC_RAX(UPT_SC(r)), REGS_RAX((r)->skas.regs))
-+#define UPT_R8(r) __CHOOSE_MODE(SC_R8(UPT_SC(r)), REGS_R8((r)->skas.regs))
-+#define UPT_R9(r) __CHOOSE_MODE(SC_R9(UPT_SC(r)), REGS_R9((r)->skas.regs))
-+#define UPT_R10(r) __CHOOSE_MODE(SC_R10(UPT_SC(r)), REGS_R10((r)->skas.regs))
-+#define UPT_R11(r) __CHOOSE_MODE(SC_R11(UPT_SC(r)), REGS_R11((r)->skas.regs))
-+#define UPT_R12(r) __CHOOSE_MODE(SC_R12(UPT_SC(r)), REGS_R12((r)->skas.regs))
-+#define UPT_R13(r) __CHOOSE_MODE(SC_R13(UPT_SC(r)), REGS_R13((r)->skas.regs))
-+#define UPT_R14(r) __CHOOSE_MODE(SC_R14(UPT_SC(r)), REGS_R14((r)->skas.regs))
-+#define UPT_R15(r) __CHOOSE_MODE(SC_R15(UPT_SC(r)), REGS_R15((r)->skas.regs))
-+#define UPT_CS(r) __CHOOSE_MODE(SC_CS(UPT_SC(r)), REGS_CS((r)->skas.regs))
-+#define UPT_FS(r) __CHOOSE_MODE(SC_FS(UPT_SC(r)), REGS_FS((r)->skas.regs))
-+#define UPT_GS(r) __CHOOSE_MODE(SC_GS(UPT_SC(r)), REGS_GS((r)->skas.regs))
-+#define UPT_DS(r) __CHOOSE_MODE(SC_DS(UPT_SC(r)), REGS_DS((r)->skas.regs))
-+#define UPT_ES(r) __CHOOSE_MODE(SC_ES(UPT_SC(r)), REGS_ES((r)->skas.regs))
-+#define UPT_CS(r) __CHOOSE_MODE(SC_CS(UPT_SC(r)), REGS_CS((r)->skas.regs))
- #define UPT_ORIG_RAX(r) \
--	CHOOSE_MODE((r)->tt.orig_rax, REGS_ORIG_RAX((r)->skas.regs))
-+	__CHOOSE_MODE((r)->tt.orig_rax, REGS_ORIG_RAX((r)->skas.regs))
- 
--#define UPT_IP(r) CHOOSE_MODE(SC_IP(UPT_SC(r)), REGS_IP((r)->skas.regs))
--#define UPT_SP(r) CHOOSE_MODE(SC_SP(UPT_SC(r)), REGS_SP((r)->skas.regs))
-+#define UPT_IP(r) __CHOOSE_MODE(SC_IP(UPT_SC(r)), REGS_IP((r)->skas.regs))
-+#define UPT_SP(r) __CHOOSE_MODE(SC_SP(UPT_SC(r)), REGS_SP((r)->skas.regs))
- 
- #define UPT_EFLAGS(r) \
--	CHOOSE_MODE(SC_EFLAGS(UPT_SC(r)), REGS_EFLAGS((r)->skas.regs))
-+	__CHOOSE_MODE(SC_EFLAGS(UPT_SC(r)), REGS_EFLAGS((r)->skas.regs))
- #define UPT_SC(r) ((r)->tt.sc)
--#define UPT_SYSCALL_NR(r) CHOOSE_MODE((r)->tt.syscall, (r)->skas.syscall)
-+#define UPT_SYSCALL_NR(r) __CHOOSE_MODE((r)->tt.syscall, (r)->skas.syscall)
- 
- extern int user_context(unsigned long sp);
- 
-@@ -242,13 +242,13 @@ struct syscall_args {
-                     REGS_SEGV_IS_FIXABLE(&r->skas))
- 
- #define UPT_FAULT_ADDR(r) \
--	CHOOSE_MODE(SC_FAULT_ADDR(UPT_SC(r)), REGS_FAULT_ADDR(&r->skas))
-+	__CHOOSE_MODE(SC_FAULT_ADDR(UPT_SC(r)), REGS_FAULT_ADDR(&r->skas))
- 
- #define UPT_FAULT_WRITE(r) \
- 	CHOOSE_MODE(SC_FAULT_WRITE(UPT_SC(r)), REGS_FAULT_WRITE(&r->skas))
- 
--#define UPT_TRAP(r) CHOOSE_MODE(SC_TRAP_TYPE(UPT_SC(r)), REGS_TRAP(&r->skas))
--#define UPT_ERR(r) CHOOSE_MODE(SC_FAULT_TYPE(UPT_SC(r)), REGS_ERR(&r->skas))
-+#define UPT_TRAP(r) __CHOOSE_MODE(SC_TRAP_TYPE(UPT_SC(r)), REGS_TRAP(&r->skas))
-+#define UPT_ERR(r) __CHOOSE_MODE(SC_FAULT_TYPE(UPT_SC(r)), REGS_ERR(&r->skas))
- 
- #endif
- 
+ __uml_exitcall(sigio_cleanup);
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 _
 
 
