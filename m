@@ -2,26 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Afhlx-0002RU-Ii for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Jan 2004 07:45:05 -0800
-Received: from imap.unet.univie.ac.at ([131.130.221.38])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Afhlw-0000No-Ed for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Jan 2004 07:45:04 -0800
-Received: from unet.univie.ac.at (unet.univie.ac.at [131.130.221.49])
-	by imap.unet.univie.ac.at (8.12.10/8.12.10) with ESMTP id
-	i0BFiomg097446 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 11 Jan 2004 16:44:58 +0100
-Received: (from a9501467@localhost) by unet.univie.ac.at
-	(AIX5.2/8.11.6p2/8.11.0) id i0BFioj80320 for
-	user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Jan 2004 16:44:50 +0100
-From: Ralph Spitzer <a9501467@unet.univie.ac.at>
-Message-ID: <20040111154449.GJ204688@login.unet.univie.ac.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1AfitN-00057o-RG for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 08:56:49 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AfitK-0002gw-9g for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 08:56:46 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
+	<200401111334.04252.blaisorblade_spam@yahoo.it>
+	<a0602042dbc271a5a5e68@[192.168.1.10]>
+In-Reply-To: <a0602042dbc271a5a5e68@[192.168.1.10]>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: [uml-devel] Survey: Motivations to Contribute
+Message-Id: <200401111646.16322.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,35 +31,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 11 Jan 2004 16:44:49 +0100
+Date: Sun, 11 Jan 2004 16:46:16 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Johannes Formann <johannes@formann.de>, Jeff Chua <jchua@fedex.com>
 
-Hi all!
+Alle 16:25, domenica 11 gennaio 2004, Johannes Formann ha scritto:
+> At 13:34 Uhr +0100 11.01.2004, BlaisorBlade wrote:
+> >Why do you say "modules"? I.e. do you get that problem in a special
 
-I'm doing a research project on the motives of free software / open source 
-software developers. This survey follows a somewhat different approach than 
-some earlier studies and tries to incorporate concepts of social 
-psychology to better understand the internal motivation of developers.  
+> > situation, like Jeff Chua that sees it only when he uses LVM? Does your
+> > UML uses an initrd to load some modules?
+>
+> I've found that problem with ecery module I reyed (tun, ipv6, and a few
+> more)
+Sorry if I can seem dumb, but I need to understand well what you did.
 
-The questionnaire consists of 44 questions which should be scored on a scale
-from 1 to 7. According to test runs, completion of the questionnaire should 
-take about 6 minutes. No registration required.  
+What you mean by "every module I tried"? You get that error on boot or not? 
+And if you get the error on boot, what changed between trying the various 
+modules? Do you use an initrd?
 
- 
-The questionnaire and more information about the survey can be found here:
+I'm interested in this because the bug is caused by the disposition of kernel 
+memory and maybe loading modules changes that disposition.
 
-*** http://foss-survey.at.tf ***
-  
-The survey will be online until the end of January. I hope to have the results
-online by mid February. If you want to be notified, please enter
-your email address in the appropriate box. 
+Also, Jeff, when you compiled LVM, did you compile it as module(as you speak 
+about initrd) or statically?
 
-If you have questions or comments about this survey, please CC me or email me
-directly, because I won't be able to follow all the lists/forums.  
+Bye
+-- 
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+EOSIGN
 
-Thank you. Your help is greatly appreciated.
-
-ralph
 
 
 -------------------------------------------------------
