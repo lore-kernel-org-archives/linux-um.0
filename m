@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CyA96-0000WC-D6 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Feb 2005 06:45:48 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CyA94-00033e-Rr
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Feb 2005 06:45:48 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: Sky, comma,
-	falling.  (Was Re: [uml-devel] Xen going to be in Kernel 2.6 soon?)
-References: <cu189b$vnr$1@sea.gmane.org> <4204DC49.1070102@upb.de>
-	<Pine.GSO.4.61.0502071054540.1509@waterleaf.sonytel.be>
-In-Reply-To: <Pine.GSO.4.61.0502071054540.1509@waterleaf.sonytel.be>
+	id 1CyE5i-0000gZ-UR for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Feb 2005 10:58:34 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CyE5i-0000eU-9O for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Feb 2005 10:58:34 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: [uml-devel] [patch 0/2] uml: other important patches to merge before
+	2.6.11
 MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <200502070843.35389.rob@landley.net>
+Message-Id: <200502071957.34445.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,45 +28,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 7 Feb 2005 08:43:33 -0500
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>
+Date: Mon, 7 Feb 2005 19:57:34 +0100
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 07 February 2005 04:56 am, Geert Uytterhoeven wrote:
-> On Sat, 5 Feb 2005, Sven K=F6hler wrote:
-> > With the integration of UML into the Linux-Kernel i thought, that it
-> > would speed up development of UML and make it more stable. Intead, the
-> > people still break the UML-stuff regularly and Jeff and Blaisorblade mu=
-st
-> > provide patches again :-(
->
-> That's true for _all_ architectures these days[*], not even for UML.
+Andrew Morton, this is another couple of fixes for UML to go in before 2.6.11 
+release. The first is *really* trivial, the second is very important since it 
+fixes a security problem (described in the changelog).
 
-It's the 2.6 development model.  We haven't got a stable series anymore, no=
-w=20
-_everybody_ tests the odd releases. :)
+For the previous ones, I've seen they were merged quickly.
 
-> Gr{oetje,eeting}s,
->
-> 						Geert
->
-> [*] i386 lost its privilege of never being broken since Linus got a G5 ;-)
+Thanks and regards
+--
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-If the Apple Store ever calls me back about that darn mac mini waiting list=
-,=20
-porting UML to MacOS X may stop being theoretical.  (After I get done playi=
-ng=20
-World of Warcraft, anyway...)
 
-Rob
+
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-Tool for open source databases. Create drag-&-drop reports. Save time
-by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-Download a FREE copy at http://www.intelliview.com/go/osdn_nl
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
