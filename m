@@ -1,20 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsWoN-0002s3-A7
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 16:40:35 -0800
-Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AsWlB-0006Bt-IG
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 16:37:17 -0800
-Message-ID: <1c2301c3f425$cb9f2e00$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp> <200402152045.17138.blaisorblade_spam@yahoo.it>
-Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
+	id 1AsdBN-0002U8-6B
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 23:28:45 -0800
+Received: from mx1.redhat.com ([66.187.233.31])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Asd81-0004XI-AL
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 23:25:17 -0800
+From: Pete Zaitcev <zaitcev@redhat.com>
+Message-Id: <20040215232525.7c2f38a8.zaitcev@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Segfault of UML-TT on FC1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,35 +23,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 Feb 2004 01:42:45 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 15 Feb 2004 23:25:25 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: zaitcev@redhat.com, mingo@redhat.com, jdike@karaya.com
 
-hi!
+Hi:
 
-> > after some investigation i found, that the problem seems to have been
-> > introduced with uml-patch-2.6.0-1 (at
-> > http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-1.bz2)
-> >
-> > uml-patch-2.6.0-test9-1 (at
-> > http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-test9-1.
-> >bz2?download), in conjunction with minor compile-fix
-> > http://people.0x63.nu/~andersg/uml-minor-fixes.diff works nicely for me.
-> 
-> On what guest kernel do you apply the patch? uml-patch-2.6.0-1 gave strange 
-> problems with 2.6.1 vanilla kernel.
+I'm trying to run uml-patch-2.6.3-rc2-1 under Fedora Core 1, kernel
+2.4.22-1.2149.nptl, glibc 2.3.2-101.1. The uml runs in TT mode (FC1 doesn't
+have SKAS) and segfaults while trying to do
+ remap_data(UML_ROUND_DOWN(&__bss_start), UML_ROUND_UP(brk_start), 1);
 
-i applied the patches in the way they are named:
-uml-patch-2.6.0-1 to 2.6.0 vanilla kernel and uml-patch-2.6.9-test9-1 to vanilla 2.6.9-test9
+The reason is the hole between BSS and heap on my system. If I run
+with gdb and break at main(), an instance of uml looks like this:
 
-> You should try using, as skas patch, 
-> http://www.user-mode-linux.org/~blaisorblade/patches/2.6.2-v1-host-skas2/00-2.6.2-v1-host-SKAS2.patch.bz2, 
-> which comes from the latest one from Ingo Molnar. I have not been very 
-ok - i try this as soon i have some time for this. i will be very busy the next week, so don`t expect an answer too soon.
+[zaitcev@niphredil linux-2.6.3-rc2-uml-1-t1]$ cat /proc/22415/maps
+a0000000-a01c6000 rwxp 00000000 03:04 442599     /q/zaitcev/uml/linux-2.6.3-rc2-uml-1-t1
+a01c6000-a0294000 rw-p 00000000 00:00 0
+a1f12000-a1f33000 rw-p 00000000 00:00 0
+bff58000-c0000000 rwxp fff9f000 00:00 0
+[zaitcev@niphredil linux-2.6.3-rc2-uml-1-t1]$
 
-thanks & regards
-roland
+The &__bss_start at this point is a01c6000, abd brk_start is a1f33000,
+and so memcpy segfaults when it steps on the hole.
 
+Does anyone have a suggestion what to do about this?
 
+-- Pete
 
 
 -------------------------------------------------------
