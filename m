@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BX2ft-00062d-O4 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Jun 2004 11:47:17 -0700
-Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	id 1BX2oS-0002KB-3w for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Jun 2004 11:56:08 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BX2fs-0003Zi-Hl for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Jun 2004 11:47:16 -0700
-Message-ID: <114001c44bf7$b69ca120$2000000a@schlepptopp>
+	id 1BX2oP-0005Ao-AS for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Jun 2004 11:56:05 -0700
+Message-ID: <114f01c44bf8$f10b2ab0$2000000a@schlepptopp>
 From: "roland" <for_spam@gmx.de>
+References: <Pine.LNX.4.33.0406061934430.2205-100000@fuji.prized>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC 3.3.3
-	similarities to 2.6.6!?
+Subject: [uml-devel] Re: [uml-user] Question about uml_switch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,146 +27,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 6 Jun 2004 20:54:32 +0200
-To: uml <uml@dot1q.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, blaisorblade_spam@yahoo.it
+Date: Sun, 6 Jun 2004 21:03:23 +0200
+To: henrique <henrique@moreira.dnsalias.net>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-answering myself:
+> At least the version I am using (2.4.24-1um #3),
+> assigns hwaddr (MAC-address) uniquely with a given static ip.
 
-via google i found:
->Two different xterms emulators dumping core ... I'd be concerned a
->wee bit. One note, do not compile with excessive optimizations and
->especially -fschedule-insns and -fschedule-insns2 is the right way  <- !!!
->to produce faulty code with all gcc / egcs releases since 2.8.0     <- !!!
->on I86 machines. Not that it would make much sense with a terminal
->emulator anyway, but even so.
+mhhh - but the bridging howto at
+http://edeca.net/articles/bridging/questions.html
+tells:
 
-and:
->linked to the Pentium Pro Blas single processor library. If -fschedule-insns 
->is included four examples - 06, 07, 09 and 30 fail, 06 and 09 with segmentation  <-- !!! 
->fault and 09 and 30 with a message that "SCALAR MECHINES SHOULD NOT CALL JKGNMV". 
->The performance is sometimes better and sometimes worse over the 31 examples, but 
->these are really too small for a proper bennch mark. 
+Q:
+Why can multiple UMLs on a bridge talk to the host but not each other?
+A:
+By default, every UML instance uses the same MAC address so ethernet can't 
+distinguish the two hosts.  You need to assign each UML a unique MAC address 
+by specifying it as part of the eth0 argument, like so: "eth0=tuntap,tap1,
+FE:FD:00:00:00:01".
 
-and:
-> ..so I guess the problem is not the classic --fschedule-insns bug.
+and i can acknowledge this, as far as i remember. i always specify the mac
+adress on the commandline - being "safe" this way.
 
-and:
-http://www.linux-mips.org/archives/linux-mips/2004-03/msg00032.html
+so - what is right ?
 
-could please someone try putting -fno-schedule-insns (and maybe -fno-schedule-insns2)
-into the Makefile(s) and try again ?
+is there differnt neworking code in different uml versions ?
 
-regards
 roland
 
 
 ----- Original Message ----- 
-From: "roland" <for_spam@gmx.de>
-To: "uml" <uml@dot1q.net>; "uml-user" <user-mode-linux-user@lists.sourceforge.net>
-Cc: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Sunday, June 06, 2004 8:22 PM
-Subject: Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC 3.3.3 similarities to 2.6.6!?
+From: "henrique" <henrique@fuji.moreira.dnsalias.net>
+To: "roland" <for_spam@gmx.de>
+Cc: <user-mode-linux-user@lists.sourceforge.net>
+Sent: Sunday, June 06, 2004 8:42 PM
+Subject: Re: [uml-user] Question about uml_switch
 
 
-> hi!
-> > As well, I encountered the same memory problems -- it wouldn't recognize
-> > more than 32M!
-> > 
-> > Can anyone else confirm?  (Roland?)
-> i can at least confirm that 2.4 uml kernel has O1/O2 compile issues too -
-> got the same hang at "Init 3...." on suse9/9.1 as in 2.6.6.
+> > Alex, 
+> > you hit a little "uml annoyance" - uml itself doesn`t assign a unique
+> > MAC-Address to itself at startup. (afaik)
 > 
-> afaik, these symptoms are known "compile issues":
-> - hang after "Checking for /proc/mm..." 
-> - hang after "Init...."
-> - command line options not being recognized (mem is no more than 32M,umid 
->   not being recognized....)
-> - terminal being unusable after shutdown/halt - needs "reset"
-> - uml processes left running after shutdown/halt
-> - further...?
+> Hello Roland,
 > 
-> as -O2 Options break down  into:
+> At least the version I am using (2.4.24-1um #3),
+> assigns hwaddr (MAC-address) uniquely with a given static ip.
 > 
-> -fforce-mem  -foptimize-sibling-calls  -fstrength-reduce 
-> -fcse-follow-jumps  -fcse-skip-blocks  -frerun-cse-after-loop 
-> -frerun-loop-opt -fgcse  -fgcse-lm  -fgcse-sm 
-> -fdelete-null-pointer-checks  -fexpensive-optimizations  -fregmov 
-> -fschedule-insns  -fschedule-insns2  -fsched-interblock  -fsched-spec 
-> -fcaller-saves  -fpeephole2  -freorder-blocks  -freorder-functions 
-> -fstrict-aliasing  -falign-functions  -falign-jumps  -falign-loops 
-> -falign-labels
+> command-line example: eth0=tuntap,tap0
+> I use the static ip on UML: 192.168.0.147,
+> and the hwaddr is FE:FD:XX:XX:XX:93 (93 hexa is 147 decimal).
 > 
-> just someone needs to dig into that, which of these optimizations result in a 
-> "corrupt" uml binary. maybe it's only one - maybe several ones.
-> does someone have a compile farm to "trial and error" this very quickly ? ;)
+> XX:XX:XX are of course the hexa values for 192.168.0.
 > 
-> regards
-> roland
+> On the UML eth0 configurator I use is a plain 'ifconfig'...
 > 
 > 
-> ----- Original Message ----- 
-> From: "uml" <uml@dot1q.net>
-> To: "uml-user" <user-mode-linux-user@lists.sourceforge.net>
-> Sent: Sunday, June 06, 2004 7:15 PM
-> Subject: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC 3.3.3 similarities to 2.6.6!?
+> Regards,
+> Henrique
 > 
-> 
-> > For the sake of discussion/argument/curiosity, I decided to compile 2.4.26
-> > on SuSE9.1 with a slackware root_fs (9.1)...
-> > 
-> > Guess what I encountered that was similar to the 2.6.6 kernel compilation??
-> > 
-> > I had to replace every instance of -O2 with -O1 in order for it to run.  I
-> > am beginning to question the compiler rather than  UML now.  I'm using GCC
-> > 3.3.3 (default).
-> > 
-> > As well, I encountered the same memory problems -- it wouldn't recognize
-> > more than 32M!
-> > 
-> > Can anyone else confirm?  (Roland?)
-> > 
-> > The host is SMP, but UML is NOT compiled for SMP support.
-> > 
-> > Here's the total procedure I used:
-> > ---8<---
-> > #!/bin/sh
-> > cd /tmp
-> > wget http://www.kernel.org/pub/linux/kernel/v2.4/linux-2.4.26.tar.bz2
-> > wget
-> > http://umn.dl.sourceforge.net/sourceforge/user-mode-linux/uml-patch-2.4.26-1.bz2
-> > tar -xjvf linux-2.4.26.tar.bz2
-> > cd linux-2.4.26
-> > bzcat /tmp/uml-patch-2.4.26-1.bz2 | patch -p1
-> > make menuconfig ARCH=um  [turn on COW support -- but that's the only change
-> > from default!]
-> > perl -e 's/-O2/-O1/gi' -p -i.bak Makefile arch/um/Makefile
-> > make linux modules ARCH=um
-> > strip linux
-> > cp linux ../linux-2.4.26
-> > cd ..
-> > ./linux-2.4.26 ubd0=slack91.cow,slack91.img mem=128M eth0=tuntap,tap2
-> > umid=slack91test
-> > ---8<---
-> > 
-> > Without the 'perl -e 's/-O2/-O1/gi' -p -i.bak Makefile arch/um/Makefile'
-> > substitutions, it will compile, but I experience the same issues I do with
-> > 2.6.6.
-> > 
-> > Ideas?
-> > 
-> > 
-> > 
-> > -------------------------------------------------------
-> > This SF.Net email is sponsored by the new InstallShield X.
-> > From Windows to Linux, servers to mobile, InstallShield X is the one
-> > installation-authoring solution that does it all. Learn more and
-> > evaluate today! http://www.installshield.com/Dev2Dev/0504
-> > _______________________________________________
-> > User-mode-linux-user mailing list
-> > User-mode-linux-user@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
-> >
 
 
 -------------------------------------------------------
