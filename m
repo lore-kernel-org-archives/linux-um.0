@@ -1,23 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cdpoj-00056Z-Pk for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Dec 2004 05:00:45 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cdpoi-000376-6o for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Dec 2004 05:00:45 -0800
-Message-ID: <41BD9270.9020102@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Message-ID: <267988DEACEC5A4D86D5FCD780313FBB028864A7@exch-03.noida.hcltech.com>
+From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
 MIME-Version: 1.0
-References: <200412101645.iBAGjWA13367@trolli.pdb.fsc.net>
-	<200412102228.07984.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200412102228.07984.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [patch 1/1] make arch/um/kernel/skas/include/skas.h
-	include asm/types.h
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4E11A.4DDAB759"
+Subject: [uml-devel] Kernel panic error while halting the system
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,62 +16,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 13 Dec 2004 14:00:32 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 13 Dec 2004 19:17:36 +0530
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-Blaisorblade wrote:
-> On Friday 10 December 2004 17:45, bstroesser@fujitsu-siemens.com wrote:
-> 
->>From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
->>
->>make arch/um/kernel/skas/include/skas.h include asm/types.h
->>This is necessary to have a typedef for __u64
-> 
-> 
-> *Probably* won't work, as headers in arch/um/include.... are also includable 
-> by userspace files, which can't include <asm/types.h>;
-My patch changes arch/um/kernel/skas/include/skas.h, which is included by
-arch/um/kernel/process.c, arch/um/sys-XXXX/signal.c and some
-arch/um/kernel/skas/XXXX.c. IMHO, this should be safe, or do I miss somesthing?
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-well, it could happen
-> to include the *host* asm/types.h, which will be bad on a x86_64 host, since 
-> you could get a "unsigned long" (which is safe) even when compiling a 32-bit 
-> UML!
-> 
-> Otherwise, there would not be includes in arch/um! They'd be in 
-> include/asm-um!
-> 
-> And yes, this sucks, but is reality.
-> 
-> Workaround it - unsigned long long is always a correct definition.
-This would be another possibility, but then the definition of "void map()" in
-arch/um/kernel/skas/mem_user.c also should be changed. I choosed the option,
-which changes less. Feel free to choose the other one.
+------_=_NextPart_001_01C4E11A.4DDAB759
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-Bodo
-> 
->>Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
->>---
->>
->>
->>diff -puN arch/um/kernel/skas/include/skas.h~skas.h-include-types.h
->>arch/um/kernel/skas/include/skas.h ---
->>linux-2.6.10-rc2-mm4/arch/um/kernel/skas/include/skas.h~skas.h-include-type
->>s.h 2004-12-10 15:53:03.726530054 +0100 +++
->>linux-2.6.10-rc2-mm4-root/arch/um/kernel/skas/include/skas.h 2004-12-10
->>15:53:03.730528661 +0100 @@ -7,6 +7,7 @@
->> #define __SKAS_H
->>
->> #include "sysdep/ptrace.h"
->>+#include "asm/types.h"
->>
->> extern int userspace_pid[];
->>
->>_
-> 
-> 
+Hi,
+i got the error while halting the system :
+ 
+Sending all processes the TERM signal... Kernel panic: read of switch_pipe
+failed, errno = 0
+sleeping process 17672 got unexpected signal : 11
+ 
+Plz help me out to analyze it.
+ 
+
+Thanks and Best Regards,
+Adil Mujeeb
+
+
+
+------_=_NextPart_001_01C4E11A.4DDAB759
+Content-Type: text/html;
+	charset="iso-8859-1"
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+
+<META content="MSHTML 5.00.3821.2800" name=GENERATOR></HEAD>
+<BODY>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=023084613-13122004>Hi,</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=023084613-13122004>i got 
+the error while halting the system :</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=023084613-13122004></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2>Sending all processes the TERM 
+signal... Kernel panic: read of switch_pipe failed, errno = 0<BR>sleeping 
+process 17672 got unexpected signal : 11</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=023084613-13122004>Plz 
+help me out to analyze it.</SPAN></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<P><FONT face="Comic Sans MS" size=2>Thanks and Best Regards,</FONT><FONT 
+face=Arial><BR><B></B></FONT><B><FONT color=#0000ff face="Times New Roman">Adil 
+Mujeeb</FONT></B><BR></P></BODY></HTML>
+
+------_=_NextPart_001_01C4E11A.4DDAB759--
 
 
 -------------------------------------------------------
