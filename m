@@ -1,12 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200412022017.iB2KH4bp003929@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Thu, 02 Dec 2004 15:32:59 +0530."
-	<267988DEACEC5A4D86D5FCD780313FBB0238EB81@exch-03.noida.hcltech.com> 
-References: <267988DEACEC5A4D86D5FCD780313FBB0238EB81@exch-03.noida.hcltech.com>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CZvIl-00085e-3s for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Dec 2004 10:03:35 -0800
+Received: from pool-141-154-235-89.bos.east.verizon.net ([141.154.235.89]
+	helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CZvIj-0008Ls-F3
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Dec 2004 10:03:35 -0800
+Message-Id: <200412022019.iB2KJPbp003943@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Kernel panic: Kernel stack overflow 
+In-Reply-To: Your message of "Thu, 02 Dec 2004 16:57:20 +1300."
+	<41AE92A0.4020401@rimuhosting.com> 
+References: <20041130193047.3370F8D743@zion.localdomain>
+	<41AE92A0.4020401@rimuhosting.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [uml-user] Telnet problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,18 +30,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 02 Dec 2004 15:17:04 -0500
-To: "Adil Mujeeb, Noida" <adilm@hcltech.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 02 Dec 2004 15:19:25 -0500
+To: Peter <peter.repliesignored@rimuhosting.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-adilm@hcltech.com said:
-> sometimes it successfully get the login & password prompt to login on
-> uml and sometimes get hanged and login: prompt doesn't appear. 
+peter.repliesignored@rimuhosting.com said:
+> Hi.  I get a "Kernel panic: Kernel stack overflow" error message on
+> the  UML instance console.  Then the UML instance exits. 
 
-If only console 1 is enabled in inittab, and you telnet to localhost:9001 twice,
-the first one will get the console, and the second will wait until the first
-has disconnected.  At that point, you'll see the console 1 login prompt in
-the second telnet.
+Can you get a stack trace from it?
 
 				Jeff
 
