@@ -1,19 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DIsTM-0003s4-QN for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 11:08:20 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DIsTL-0008DI-1K for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 11:08:20 -0700
-Message-ID: <4252D40C.9070402@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DItfD-00080U-Gp for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 12:24:39 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DIteh-00070V-Or
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 12:24:39 -0700
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] question about UML sigcontext in tt mode
+References: <003501c535d8$e8574a50$90b3c68a@st.com>
+	<20050404140011.GA1977@ccure.user-mode-linux.org>
+In-Reply-To: <20050404140011.GA1977@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] UML on s390 (31Bit)
+Message-Id: <200504051320.45424.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,81 +32,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 05 Apr 2005 20:08:12 +0200
-To: linux-kernel@vger.kernel.org
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 5 Apr 2005 13:20:45 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Alex LIU <alex.liu@st.com>
 
-Hi,
+On Monday 04 April 2005 10:00 am, Jeff Dike wrote:
+> On Thu, Mar 31, 2005 at 06:03:34PM +0800, Alex LIU wrote:
+> > union uml_pt_regs {
+> > #ifdef UML_CONFIG_MODE_TT
+> > 	struct tt_regs {
+> > 		long syscall;
+> > 		void *sc;
+> > 	} tt;
+> > #endif
+> > };
+> > -------------------------------------
+> >
+> > Then why the tt.sc is defined as void while not as struct sigcontext?
+> > Thanks!
+>
+> Probably because you can't get a definition of struct sigcontext into
+> processor.h and have it still compile.
+>
+> Try #including sigcontext.h there and you'll see what I mean.
 
-currently I'm porting UML to s390 31-bit.
-A first 2.6.11 UML system already is running in UML-SKAS0 mode,
-which normally should run on an unpatched host (no skas3-patch).
+I don't know about can't.
 
-To make UML build and run on s390, I needed to do these two little
-changes (the patches are copy and paste. I hope that doesn't hurt,
-since they are very small):
+#define sigcontext WALRUS
+#include <processor.h>
+thingy
+#undef WALRUS
 
-1) UML includes some of the subarch's (s390) headers. I had to
-    change one of them with the following one-liner, to make this
-    compile. AFAICS, this change doesn't break compilation of s390
-    itself.
+Adviseable is another matter entirely.  (Did I mention I have a knack for 
+coming up with disgusting solutions to impossible problems?)
 
-==============================================================================
---- linux-2.6.11.orig/include/asm-s390/user.h	2004-12-09 18:45:02.000000000 +0100
-+++ linux-2.6.11/include/asm-s390/user.h	2004-12-09 18:48:11.000000000 +0100
-@@ -10,7 +10,7 @@
-  #define _S390_USER_H
-
-  #include <asm/page.h>
--#include <linux/ptrace.h>
-+#include <asm/ptrace.h>
-  /* Core file format: The core file is written in such a way that gdb
-     can understand it and provide useful information to the user (under
-     linux we use the 'trad-core' bfd).  There are quite a number of
-==============================================================================
-
-2) UML needs to intercept syscalls via ptrace to invalidate the syscall,
-    read syscall's parameters and write the result with the result of
-    UML's syscall processing. Also, UML needs to make sure, that the host
-    does no syscall restart processing. On i386 for example, this can be
-    done by writing -1 to orig_eax on the 2nd syscall interception
-    (orig_eax is the syscall number, which after the interception is used
-    as a "interrupt was a syscall" flag only.
-    Unfortunately, s390 holds syscall number and syscall result in gpr2 and
-    its "interrupt was a syscall" flag (trap) is unreachable via ptrace.
-    So I changed the host to set trap to -1, if the syscall number is written
-    to a negative value on the first syscall interception.
-    I hope, this adds what UML needs without changing ptrace visibly to other
-    ptrace users.
-    (This isn't tested on a 2.6 host yet, because my host still is a 2.4.21 SuSE.
-    But I've adapted this change to 2.4 and tested, it works.)
-
-
-==============================================================================
---- linux-2.6.11.orig/arch/s390/kernel/ptrace.c	2005-04-04 18:57:38.000000000 +0200
-+++ linux-2.6.11/arch/s390/kernel/ptrace.c	2005-04-04 19:01:51.000000000 +0200
-@@ -726,6 +726,13 @@
-				  ? 0x80 : 0));
-
-  	/*
-+	 * If debugger has set an invalid syscall number,
-+	 * we prepare to skip syscall restart handling
-+	 */
-+	if (!entryexit && (long )regs->gprs[2] < 0 )
-+		regs->trap = -1;
-+
-+	/*
-  	 * this isn't the same as continuing with a signal, but it will do
-  	 * for normal use.  strace only continues with a signal if the
-  	 * stopping signal is not SIGTRAP.  -brl
-==============================================================================
-
-
-It would be very helpful for me, if these changes could go into s390 mainline.
-If there is something wrong with them, please help me find a better solution.
-
-
-Regards, Bodo
+Rob
 
 
 -------------------------------------------------------
