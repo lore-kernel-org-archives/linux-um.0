@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BkQfc-00067L-Pk for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jul 2004 10:02:20 -0700
+	id 1BkRja-0003kL-Fk for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Jul 2004 11:10:30 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1BkQfc-0008V0-9E
+	(Exim 4.34) id 1BkRjX-0005lO-TM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jul 2004 10:02:20 -0700
-Message-Id: <200407131757.i6DHvZGu003047@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Sun, 04 Jul 2004 12:56:32 +0200."
-	<20040704105632.DC0B378A@zion.localdomain> 
-References: <20040704105632.DC0B378A@zion.localdomain> 
+	Tue, 13 Jul 2004 11:10:28 -0700
+Message-Id: <200407131905.i6DJ5gGu003363@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] make port channel use setsockopt SO_REUSEADDR
+In-Reply-To: Your message of "Tue, 06 Jul 2004 19:09:29 +0800."
+	<40EA8869.8050602@metaparadigm.com> 
+References: <40EA8869.8050602@metaparadigm.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [patch 1/1] Fix malloc-use-vmalloc
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,36 +28,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 13 Jul 2004 13:57:35 -0400
-To: blaisorblade_spam@yahoo.it
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 13 Jul 2004 15:05:42 -0400
+To: Michael Clark <michael@metaparadigm.com>
+Cc: UML Devel <user-mode-linux-devel@lists.sourceforge.net>
 
-blaisorblade_spam@yahoo.it said:
-> * Avoid allocating more than one page at once: that can require moving
-> pages around to have two contiguos pages, so we're better with
-> vmalloc. 
+michael@metaparadigm.com said:
+> Small patch to make port channels allow reuse of local addresses.
+> Useful in the case where you restart a UML from a script and you don't
+> want to have to allocate a new port number each time. 
 
-Yup, makes sense.
-
-> * Make sure we free() someway, inside __wrap_free. 
-
-This isn't exactly right.  In the case that a buffer was allocated by kmalloc 
-(through malloc), but freed when the system is coming down, and kmalloc is no 
-longer operating, then you just want to do nothing. It would be very bad to
-try to free it using libc free.
-
-So, what I did is this:
-
-	if((addr >= uml_physmem) && (addr <= high_physmem)){
-		if(CAN_KMALLOC())
-			kfree(ptr);
-	}
-	else if((addr >= start_vm) && (addr <= end_vm)){
-		if(CAN_KMALLOC())
-			vfree(ptr);
-	}
-	else __real_free(ptr);
-
+Applied, except I fixed the error case slightly.
 
 				Jeff
 
