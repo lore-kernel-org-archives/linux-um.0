@@ -2,22 +2,31 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AlidN-0003bt-AT for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 21:53:05 -0800
-Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30) id 1AlidM-0003Gn-0O
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 21:53:04 -0800
-From: Dan Shearer <dan@shearer.org>
-Subject: Re: [uml-devel] Re: more on COW (long)
-Message-ID: <20040128055515.GU4203@erizo.shearer.org>
-References: <20040119.155346.-522689.0.mcmechanjw@juno.com>
-	<200401280518.i0S5IOZw005580@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <200401280518.i0S5IOZw005580@ccure.user-mode-linux.org>
+	id 1AkwOl-0003RQ-6w for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Jan 2004 18:22:47 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AkTVb-0001qE-Od for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Jan 2004 11:31:55 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+In-Reply-To: <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
+References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
+	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
+	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
+	<20040118162112.GA15509@elte.hu>
+	<20040118235730.GC21046@ccure.user-mode-linux.org>
+	<20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu>
+	<Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk>
+	<20040120002301.GA5708@elte.hu>
+	<Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk>
+	<Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk> 
+	<Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> 
+	<200401241820.i0OIKHY3002399@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re:
+	uml-patch-2.6.0)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,32 +38,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Jan 2004 16:25:15 +1030
+Date: Sat, 24 Jan 2004 19:31:43 +0000 (GMT)
 To: Jeff Dike <jdike@addtoit.com>
-Cc: James W McMechan <mcmechanjw@juno.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Gerd Knorr <kraxel@bytesex.org>
 
-On Wed, Jan 28, 2004 at 12:18:24AM -0500, Jeff Dike wrote:
-> mcmechanjw@juno.com said:
+On Sat, 24 Jan 2004, Jeff Dike wrote:
 
-> > Well yes, I want to be able to read real disk images either from a raw
-> > device, yes we could stick in a special case ioctl to check for a real
-> > device and read its geometry but ick it is easier to specify it, or
-> > from a dd'ed image file of a hard disk which would not work even with
-> > the ioctl, so ubd1C102H15S16 is better from my view :)
-> 
-> OK, build it and maybe people will come :-)
+> m.a.young@durham.ac.uk said:
+> >  A possible workaround which seems to work (but I have too much
+> > debugging turned on to be sure yet) is to set AT_SYSINFO_EHDR to be
+> > NULL in include/asm/archparam-i386.h, though clearly the ultimate aim
+> > would be to get the vsyscall stuff working properly.
+>
+> Yup, that looks right to me.  I've set VSYSCALL_BASE to NULL in my tree.
+> Can you do the same and see if that fixes anything?
 
-Yep. I work with many different simulation environments and this is a
-*really* useful option. Apart from anything else real sectors are a kind
-of semi-universal file format between simulation environments. But there
-is also the case where you dd from a running system for purposes such as
-planning preventative maintenance, disaster recovery, forensics,
-security testing to mention a few. Not too many of the open source
-simulators do this but many of the closed source ones do.
+Yes, that fixes it (I tried a similar fix by setting AT_SYSINFO_EHDR
+directly to NULL, both work).
 
---
-Dan Shearer
-dan@shearer.org
+	Michael Young
 
 
 -------------------------------------------------------
