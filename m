@@ -1,22 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AZxE3-0008NC-S1
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:19 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AZxE3-000336-At
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:19 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+	id 1AZy0Y-0001ZK-22
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:52:26 -0800
+Received: from smtp1.clear.net.nz ([203.97.33.27])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AZy0X-0008G2-LZ
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:52:25 -0800
+Received: from 218-101-109-169.dialup.clear.net.nz
+ (218-101-109-169.dialup.clear.net.nz [218.101.109.169])
+ by smtp1.clear.net.nz (CLEAR Net Mail)
+ with ESMTP id <0HQI006F8PVA3L@smtp1.clear.net.nz> for
+ user-mode-linux-devel@lists.sourceforge.net; Sat,
+ 27 Dec 2003 08:52:24 +1300 (NZDT)
+From: Nigel Cunningham <ncunningham@clear.net.nz>
 Subject: Re: [uml-devel] UML build system: patch ready
-References: <200312241943.37474.blaisorblade_spam@yahoo.it> <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
-In-Reply-To: <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200312261956.24711.blaisorblade_spam@yahoo.it>
+In-reply-to: <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
+Message-id: <1072468270.6872.13.camel@laptop-linux>
+MIME-version: 1.0
+Content-type: text/plain
+Content-transfer-encoding: 7bit
+References: <200312241943.37474.blaisorblade_spam@yahoo.it>
+ <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,47 +32,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Dec 2003 19:56:24 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 27 Dec 2003 08:51:10 +1300
+To: Jeff Chua <jeff98@silk.corp.fedex.com>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+
+Hi.
+
+On Fri, 2003-12-26 at 21:12, Jeff Chua wrote:
+
+[...]
+
 
 > arch/um/sys-i386/bugs.c ...
-[...]
+> 	//line 110
+> 	struct modify_ldt_ldt_s ldt;
+> 
+> 	//line 117
+> 	err = modify_ldt(1, &ldt, sizeof(ldt));
+> 
+> 
 > It looks that modify_ldt_ldt_s is not defined anywhere and modify_ldt()
 > cannot be found.
-It's true, but they should be defined by /usr/include/asm/ldt.h. So it's not 
-my fault(unless you succeed in compiling a 2.6 with the -test9 patch).
-Have you got a Debian? This problem has appeared on Debian unstable also for 
-2.4, since that file is from the 2.6 headers.
-The quick fix is to make /usr/include/asm and /usr/include/linux be symlinks 
-into a 2.4 kernel tree, but only for compiling UML(for the other programs, in 
-fact, they must stay as they are).
 
-> arch/um/sys-i386/bugs.c: In function `disable_lcall':
-> arch/um/sys-i386/bugs.c:110: storage size of `ldt' isn't known
-> arch/um/sys-i386/bugs.c:117: warning: implicit declaration of function
-> `modify_ldt'
-> arch/um/sys-i386/bugs.c:110: warning: unused variable `ldt'
+If you can get this sorted out (and tell me how), I may be able to get
+software suspend [a bit closer to] working under UML. The lack of
+support for modifying ldts was where I blocked when I briefly looked at
+it a while ago.
 
-> I did these ...
-> 	cd uml
-> 	patch -p1 </tar/uml/uml-combo-2.6.0-A5
-> 	patch -p1 </tar/uml/A-01-Fix_clean_mrproper.patch
-> 	patch -p1 </tar/uml/A-02-Apply_altern-constants.patch
-> 	patch -p1 </tar/uml/A-03-Module_support.patch
+Regards,
 
-That's ok(apart for the uml-combo, I didn't test it), but I wasn't clear about 
-A-04.
-You can apply A-04-User_obj_makefiles-v2.patch(note the -v2), while you must 
-not apply A-04-User_obj_makefiles.patch (now I've seen this wasn't uploaded). 
-However that is unrelated to the above problem. Also, if you want some more 
-to test, see my new message "UML patches against vanilla 2.6.0", which 
-describes a more complete group of patches.
+Nigel
 
 -- 
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+My work on Software Suspend is graciously brought to you by
+LinuxFund.org.
 
 
 
