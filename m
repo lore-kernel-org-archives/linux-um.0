@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ayfm7-00026l-LJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 15:27:39 -0800
-Received: from i-195-137-100-222.freedom2surf.net ([195.137.100.222]
-	helo=greenrd.org) by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AyfYw-0001jj-S0 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 15:14:03 -0800
-From: Robin Green <greenrd@greenrd.org>
-Message-ID: <20040303231401.GM14069@localhost.localdomain>
-References: <20040303200937.GK14069@localhost.localdomain>
-	<Pine.LNX.4.44.0403032227040.17693-100000@filer.marasystems.com>
+	id 1Ayhvb-0003J5-KZ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 17:45:35 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AyhP6-0004Uc-SL
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 17:12:01 -0800
+Message-Id: <200403040202.i2422GWo008953@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] fix writing into /dev/kmem 
+In-Reply-To: Your message of "Tue, 02 Mar 2004 19:41:52 +0100."
+	<200403021941.52257.blaisorblade_spam@yahoo.it> 
+References: <20040229023636.GB8272@ccure.user-mode-linux.org>
+	<200402291325.40644.blaisorblade_spam@yahoo.it>
+	<200403020131.i221VAM9025692@ccure.user-mode-linux.org>
+	<200403021941.52257.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Z/kiM2A+9acXa48/"
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0403032227040.17693-100000@filer.marasystems.com>
-Subject: [uml-devel] More security questions (was: Module exploits into the
-	host?)
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,59 +31,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Mar 2004 23:14:01 +0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 03 Mar 2004 21:02:16 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+blaisorblade_spam@yahoo.it said:
+> Well, on *i386* that is 0xc0000001; since klogd is built with i386
+> kernel  headers, it will use those. 
 
+This was the stupidity that I was refusing to believe in.  This means that
+if you take a normal klogd and move it to a 2G/2G system, where the kernel
+starts at 0x80000000, it won't work.
 
---Z/kiM2A+9acXa48/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Anyway, here comes that copy_{to,from}_user are buggy. Since fixing
+> those  would have a good performance hit (to test, but that will
+> probably be  sensitive
 
-On Wed, Mar 03, 2004 at 10:29:59PM +0100, Henrik Nordstrom wrote:
-> On Wed, 3 Mar 2004, Robin Green wrote:
-> > Even with the skas patch, is it possible for an insmod to allow an atta=
-cker to
-> > break out of a UML?
->=20
-> Yes.
+In skas mode, I wasn't expecting any legitimate unfixable kernel mode access
+faults, so I wasn't setting up the fault_catcher.  So, what I did was add
+a wrapper around the guts of copy_user which does a setjmp, and returns
+whether it got longjmp-ed back to.
 
-OK thanks.
+Reading /dev/kmem now produces -EFAULT.  Writing to it still causes a hang
+because write_kmem doesn't check the return value of do_write_mem.  With that
+fixed, everything produces -EFAULT.
 
-Two more security questions:
+The fix will be in the next patch.
 
-1. Has the lcall vulnerability been fixed? By a change in the mainline kern=
-el?
+				Jeff
 
-2. I read on some mailing list (not this one) that in tt mode, processes wi=
-thin
-a UML instance can read and write to each other's memory! Ah, here we are,
-=66rom last year:
-
-http://www.paul.sladen.org/vserver/archives/200305/0074.html
-
-Is this true, or just a rumour?
-
-I have a security proposal to post next, but first I want to understand the
-current state of play of UML security.
-
---=20
-Robin
-
---Z/kiM2A+9acXa48/
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFARma5tPCt67UksSYRAouNAJ9y3dP7QSQ7olwcRTw/Jt807zD+nACfWIkR
-kWQQ69n8RZ5McvIUqIiAcUU=
-=64gA
------END PGP SIGNATURE-----
-
---Z/kiM2A+9acXa48/--
 
 
 -------------------------------------------------------
