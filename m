@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D14YV-0001XF-GB for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Feb 2005 07:24:03 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D14YR-0005yJ-Q3 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Feb 2005 07:24:03 -0800
-Message-ID: <42121406.40901@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1D14zn-0003Yb-A2 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Feb 2005 07:52:15 -0800
+Received: from smtp3k.poczta.onet.pl ([213.180.130.37])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D14zk-00068S-NG for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Feb 2005 07:52:15 -0800
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: 7BIT
 MIME-Version: 1.0
-Subject: Re: [uml-devel] SKAS-v8: RC2 released against 2.6.7 - 2.6.11-rc3-bk6
-	kernels
-References: <200502110411.35438.blaisorblade@yahoo.it>
-	<169101c512ef$6c905850$0201a8c0@hawk>
-	<170001c512f4$2c279940$0201a8c0@hawk>
-In-Reply-To: <170001c512f4$2c279940$0201a8c0@hawk>
-Content-Type: multipart/mixed; boundary="------------060904080003000101050904"
+From: adamdabr@poczta.onet.pl
+Message-Id: <20050215155130Z2659002-7959+680@kps3.test.onet.pl>
+Subject: [uml-devel] problems making UML binary
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,58 +26,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 15 Feb 2005 16:23:50 +0100
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 15 Feb 2005 16:49:37 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------060904080003000101050904
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello,
 
-Christopher S. Aker wrote:
->>I just rolled a 2.6.11-rc4+cfq-ts-21 host kernel and I'll be testing this today.
-> 
-> 
-> 2.6.11 doesn't seem to be ready for host duty yet:
-> 
-Yes. There is a bug in the v8-rc2 patch for 2.6.11
-Try the attached fix, please.
+Could you please help me with the following problem? 
 
-       Bodo
+Here's a problem I've encountered when trying to compile an UML (User Mode Linux) linux binary: 
 
+Details: 
 
-To BlaisorBlade: I tested the v8-rc2 for 2.6.9, too. It works fine for me.
+1) I am working with Mandrake 10.1 Official distribution
+2) I got 2.4.27 kernel and uml patch 2.4.27-1
+3) Applied the patch - worked well
+4) Did make xconfig ARCH=um and saved standard configuration
+5) Then I've tried make linux ARCH=um but got problems:
+	a) with gcc 3.4.1 that I started with (standard Mandrake 10.1 instalation) I've got a lot of errors like: 
 
---------------060904080003000101050904
-Content-Type: text/x-diff;
- name="skas-2.6.11-v8-rc2-fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="skas-2.6.11-v8-rc2-fix.patch"
+"sched.c:839: error: conflicting types for 'sleep_on_timeout' 
 
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+/home/adam/work/UML/linux-2.4.27/include/linux/sched.h:598: error: previous declaration of 'sleep_on_timeout' 
 
-This patch fixes a bug in SKAS3 host patch v8-rc2 for 2.6.11,
-that causes syscalls not to be intercepted, when PTRACE_SYSEMU
-is used.
+was here" 
 
-Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
----
+So I guessed it was a gcc/Mandrake problem..
+	b) with gcc 3.3.1-2mdk or gcc 2.96-063mdk I got another problem - make linux ARCH=um runs smooth 
 
---- linux-2.6.11-rc4/arch/i386/kernel/ptrace.c.orig	2005-02-15 15:33:26.000000000 +0100
-+++ linux-2.6.11-rc4/arch/i386/kernel/ptrace.c	2005-02-15 15:58:18.000000000 +0100
-@@ -802,7 +802,7 @@ int do_syscall_trace(struct pt_regs *reg
- 	if (is_singlestep)
- 		send_sigtrap(current, regs, 0);
- 
--	if (!test_thread_flag(TIF_SYSCALL_TRACE))
-+	if (!test_thread_flag(TIF_SYSCALL_TRACE) && !is_sysemu)
- 		return 0;
- 
- 	/* the 0x80 provides a way for the tracing parent to distinguish
+until it gets to linking: here is what I've got:
+"ld -r -o unmap_fin.o unmap.o -lc -L/usr/lib
+ld: cannot find -lc
+make[3]: *** [unmap_fin.o] Error 1
+make[3] Leaving directory `/home/adam/work/UML/linux-2.4.27/arch/um/kernel/tt'
+..."
 
---------------060904080003000101050904--
+Could anybody please help me? My goal is to get UML in order to make some changes to kernel (A patch I've got 
+
+to write), so downloading binary linux with maps&config is no solution - I need to be able to compile this. And I 
+
+guess I need to start with raw UML working :\ 
+What should I do?
+
+P.S As you can see, I am not building it in /usr/src/linux
+
+Thank you,
+Adam
 
 
 -------------------------------------------------------
