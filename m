@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A8X1X-0007L2-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 11 Oct 2003 20:36:03 -0700
-Received: from fed1mtao03.cox.net ([68.6.19.242])
+	id 1A8cut-0001LC-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 Oct 2003 02:53:35 -0700
+Received: from [80.88.36.193] (helo=witte.sonytel.be)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A8X1V-0003H6-7m
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 11 Oct 2003 20:36:01 -0700
-Message-ID: <3F88CCD5.8080508@easyco.com>
-From: Doug Dumitru <doug@easyco.com>
+	id 1A8cus-000114-HY
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 12 Oct 2003 02:53:34 -0700
+Received: from starflower.sonytel.be (localhost [127.0.0.1])
+	by witte.sonytel.be (8.12.10/8.12.10) with ESMTP id h9C9rMQG025446
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 Oct 2003 11:53:23 +0200 (MEST)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: The Story Continues (was: Re: [uml-devel] Re: pthreads?)
+In-Reply-To: <Pine.GSO.4.21.0310071735310.2653-100000@waterleaf.sonytel.be>
+Message-ID: <Pine.GSO.4.21.0310121145120.27309-100000@starflower.sonytel.be>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: Patch for buffer overrun in serial/console device
- logic
-References: <3F830C2C.8010308@easyco.com> <200310072151.h97LphCt003529@ccure.karaya.com>  <3F833EAC.20903@easyco.com> <200310110149.h9B1n94f006954@ccure.karaya.com>
-In-Reply-To: <200310110149.h9B1n94f006954@ccure.karaya.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -27,61 +27,34 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 11 Oct 2003 20:39:01 -0700
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 12 Oct 2003 11:53:22 +0200 (MEST)
+To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-Jeff Dike wrote:
-> doug@easyco.com said:
+On Tue, 7 Oct 2003, Geert Uytterhoeven wrote:
+> Since TT implies static linking, I started using SKAS mode only. I applied the
+> SKAS patch to my host kernel (2.4.21).
 > 
->>The code itself involves a lot of extra parameters from kernel to user
->> space as things like the current user aren't propogated down.  I
->>personally think that our current patch set is "100% ugly" and would
->>not  consider posting it as-is.  If people are interested in
->>transparent  numeric UID/GID to hostfs, then I would be happy to clean
->>up what we  have and submit it. 
+> Now my UML (2.6.0-test5-1) boots until initialization of my GTK/GDK frame
+> buffer device. During initialization, it opens a GTK window for a fraction of a
+> second, and crashes with
 > 
+>     Kernel panic: Segfault with no mm
 > 
-> OK, that ain't the way to do it.  Anything that involves passing a parallel
-> set of creds through VFS will cause Al Viro to lop my head off.  Since I'm
-> somewhat attached to it, I will not propose such a thing, no matter how cleaned
-> up it is.
+> when GTK calls my expose handler and I call gdk_draw_indexed_image() to update
+> the window contents.
 
-There are actually a couple of sets of issues here.
+Doh, turns out this was a NULL pointer dereference in my code...
 
-1.  The "_user" stuff needs to get to UID, GID, and UMASK.
+Gr{oetje,eeting}s,
 
-2.  When the "_user" stuff does IO, it should "become" the users in 
-UID/GID.  This way permissions "just work" and you don't have to clean 
-anything up after the fact.
+						Geert
 
-Addressing (1), I could always just transition a pointer to "current" 
-and really open up a can of worms.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-This breaks just about every rule of "object orientation", but on the 
-other hand, file systems usually do have access to the process state, so 
-maybe this is the "correct" approach.
-
-Doing a seteuid(...) ... around the IO calls is actually pretty clean. 
-I implemented it with a "change" / "unchange" set of helper routines and 
-it pretty much worked first shot.
-
-> What would work is to store the creds in a separate container of some sort
-> on the host, and reference that inside hostfs when doing permission checks.
-> 
-> This is more or less what UMSDOS does, from what I understand, and it keeps
-> the nastiness contained within hostfs.
-> 
-> That journalling is a neat idea, BTW.
-> 
-> 				Jeff
-
---------------------------------------------------------------------
-Doug Dumitru     800-470-2756     (610-237-2000)
-EasyCo LLC       doug@easyco.com  http://easyco.com
---------------------------------------------------------------------
-D3, U2, jBase Virtual Servers.    Off-site backup over the internet.
-Develop/test/deploy from $20/mo.  Fast, secure, cheaper than tape.
-http://mirroredservers.com        http://mirroredbackup.com
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 
