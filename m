@@ -1,18 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AdzBB-0003gs-Qr for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 13:56:01 -0800
-Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AdzBB-0006w6-AQ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 13:56:01 -0800
-Mime-Version: 1.0
-Message-Id: <a06020410bc20df3e0219@[192.168.1.10]>
-In-Reply-To: <Pine.LNX.4.58.0401070529520.1840@boston.corp.fedex.com>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com><200401061718.i 
-	06HILtd002620@ccure.user-mode-linux.org><a0602040abc20a9f6862e@[192.16 
+	id 1AdzES-0003tE-32 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 13:59:24 -0800
+Received: from mx15.sac.fedex.com ([199.81.197.54])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AdzER-0003OX-N2
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 13:59:23 -0800
+Received: from inet03.prod.fedex.com (inet03.prod.fedex.com [199.81.10.43])
+	by mx15.sac.fedex.com (8.12.6p2/8.12.3) with ESMTP id i06LxMdM060475
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 6 Jan 2004 15:59:22 -0600 (CST) (envelope-from jchua@fedex.com)
+Received: from entpm11.apac.fedex.com (entpm11.apac.fedex.com [155.161.92.11])
+	by inet03.prod.fedex.com (8.12.10/8.12.10) with ESMTP id
+	i06LxKN9022020 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 6 Jan 2004 15:59:21 -0600 (CST)
+From: Jeff Chua <jchua@fedex.com>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
+In-Reply-To: <a06020410bc20df3e0219@[192.168.1.10]>
+Message-ID: <Pine.LNX.4.58.0401070537580.1840@boston.corp.fedex.com>
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com><200401061718.i
+	06HILtd002620@ccure.user-mode-linux.org><a0602040abc20a9f6862e@[192.16
 	8.1.10]><200401061918.31447.blaisorblade_spam@yahoo.it>     
 	<a0602040bbc20b325acfd@[192.168.1.10]>
 	<33261.193.212.97.12.1073406789.squirrel@pluto.nixia.no>
@@ -23,9 +33,9 @@ References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com><200401061718
 	<Pine.LNX.4.58.0401070444370.1840@boston.corp.fedex.com>
 	<a0602040fbc20d995ae8b@[192.168.1.10]>
 	<Pine.LNX.4.58.0401070529520.1840@boston.corp.fedex.com>
-From: Johannes Formann <johannes@formann.de>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+	<a06020410bc20df3e0219@[192.168.1.10]>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,21 +47,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 6 Jan 2004 22:55:49 +0100
-To: Jeff Chua <jeff98@silk.corp.fedex.com>
-Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 7 Jan 2004 05:39:12 +0800 (SGT)
+To: Johannes Formann <johannes@formann.de>
+Cc: Jeff Chua <jeff98@silk.corp.fedex.com>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-At 5:32 Uhr +0800 07.01.2004, Jeff Chua wrote:
+On Tue, 6 Jan 2004, Johannes Formann wrote:
 
->  > hust to be shure, your patch ist:
+> At 5:32 Uhr +0800 07.01.2004, Jeff Chua wrote:
+>
+> Well, than this patch does not fix the bug.
 
->This is the right one.
+Send me your .config.
 
-Well, than this patch does not fix the bug.
-
-good night
-
-Johannes
+Thanks,
+Jeff
 
 
 -------------------------------------------------------
