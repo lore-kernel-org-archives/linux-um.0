@@ -1,25 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYM1y-0005fr-Kp
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Dec 2003 01:07:14 -0800
+	id 1AYM3k-0005j2-2I
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Dec 2003 01:09:04 -0800
 Received: from mta9.adelphia.net ([68.168.78.199])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYM1y-0007Vm-At
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Dec 2003 01:07:14 -0800
-Received: from mizar.alcor.net ([68.64.159.24]) by mta9.adelphia.net
-          (InterMail vM.5.01.06.05 201-253-122-130-105-20030824) with SMTP
-          id <20031222090708.BUDZ11838.mta9.adelphia.net@mizar.alcor.net>
-          for <user-mode-linux-devel@lists.sourceforge.net>;
-          Mon, 22 Dec 2003 04:07:08 -0500
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AYM3j-00005K-P9
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Dec 2003 01:09:03 -0800
 From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] skas patch 2.6.0 -A4 mistake
-Message-ID: <20031222090707.GC9354@alcor.net>
-References: <354202003164938-nicospam@sengena.com> <20031220235615.GA1710@elte.hu> <20031222021055.28b90296.dbharris@eelf.ddts.net>
+Subject: Re: [uml-devel] 2.4.22-[67] problems
+Message-ID: <20031222090856.GD9354@alcor.net>
+References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org> <20031221004742.GE9354@alcor.net> <200312211658.44353.blaisorblade_spam@yahoo.it> <20031221224001.GO9354@alcor.net> <20031221231638.GR9354@alcor.net> <200312220025.hBM0PlFI012918@ccure.user-mode-linux.org> <20031222040857.GV9354@alcor.net> <20031222054914.GA8813@nevyn.them.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20031222021055.28b90296.dbharris@eelf.ddts.net>
+In-Reply-To: <20031222054914.GA8813@nevyn.them.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,14 +25,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Dec 2003 01:07:07 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 22 Dec 2003 01:08:56 -0800
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, 224502@bugs.debian.org, debian-glibc@lists.debian.org
 
-On Mon, Dec 22, 2003 at 02:10:55AM -0500, David B Harris wrote:
+On Mon, Dec 22, 2003 at 12:49:14AM -0500, Daniel Jacobowitz wrote:
 
-> fsck.ext3: error while loading shared libraries: /lib/libcom_err.so.2: cannot read file data: Error 38
+> On Sun, Dec 21, 2003 at 08:08:57PM -0800, Matt Zimmerman wrote:
+> > On Sun, Dec 21, 2003 at 07:25:47PM -0500, Jeff Dike wrote:
+> > 
+> > > mdz@debian.org said:
+> > > > I have just verified this myself.  Building user-mode-linux
+> > > > 2.4.22-7um-1 on woody works fine (even when running on unstable), but
+> > > > building it on unstable does not.
+> > > 
+> > > Conversely, does a unstable-built UML run on woody?
+> > 
+> > The unstable-built UML is broken on woody as well.  So far, my most
+> > reproducible test case so far (not 100%, but close) is to start up a netcat
+> > listener, and connect to it with input from /dev/zero, i.e. just push a
+> > bunch of data over a TCP connection.  What happens is this:
+> 
+> Matt, could you try with different compilers?  This sounds a lot more
+> to me like a compiler bug than a libc one (but that's just a hunch).
 
-Errno 38 is ENOSYS.  See #224431/#224502.
+user-mode-linux builds with gcc-2.95 explicitly, which I don't think has had
+substantial changes this year.
+
+I should note that UML is statically linked as well.
 
 -- 
  - mdz
