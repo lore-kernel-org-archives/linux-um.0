@@ -1,19 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuBNY-0004em-Bk
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 06:11:44 -0800
-Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuB8r-0003kx-Vu
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 05:56:34 -0800
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Subject: Re: [uml-devel] Unsubscribe from this list...
-In-Reply-To: <20040220103213.38256.qmail@web41506.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.44.0402200904130.15836-100000@sparrow>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1AuC5i-0005hn-Df
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 06:57:22 -0800
+Received: from main.gmane.org ([80.91.224.249])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AuBzp-0006ma-4t
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 06:51:17 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AuBzm-0007Nt-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 20 Feb 2004 15:51:16 +0100
+Received: from pd9ee386d.dip.t-dialin.net ([217.238.56.109])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <user-mode-linux-devel@lists.sourceforge.net>; Fri Feb 20 14:51:16 2004
+Received: from skoehler by pd9ee386d.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <user-mode-linux-devel@lists.sourceforge.net>; Fri Feb 20 14:51:16 2004
+From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
+Message-ID: <c156t0$g3b$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] kernel BUG at kernel/exit.c:793!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,35 +33,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 09:05:32 -0500 (EST)
-To: jl344322 <jl344322@yahoo.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 20 Feb 2004 15:54:28 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 20 Feb 2004, jl344322 wrote:
+Hi,
 
-> Sorry,
-> Thanks.
+UML crashed with the following message:
+Kernel panic: kernel BUG at kernel/exit.c:793!
 
-	Information on how to subscribe, and what email address to use if 
-you have trouble, are included both in the body and the headers of every 
-message to this list; check out the following:
+I was just about to execute a pstree-command inside UML.
+Than it crashed. There were several processes running:
+- makewhatis cronjob
+- emerge -upD (python program, starting many shells)
 
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-	Cheers,
-	- Bill
-
----------------------------------------------------------------------------
-        "Absence diminishes mediocre passions and increases great ones,
-as the wind blows out candles and fans fires."
-        -- La Rochefoucauld
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+I'm running kernel 2.6.3 patched with 2.6.3-rc2-1 UML patch on a 2.6.3 
+host patched with 2.6.3-rc2-1 UML patch and Gerd Knorr's SKAS patches.
 
 
 
