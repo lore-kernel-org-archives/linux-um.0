@@ -1,16 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CP8Iz-0004Eg-En for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Nov 2004 15:43:13 -0800
-Received: from mailgate2.uni-paderborn.de ([131.234.22.35])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CP8Iy-00084v-7t
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Nov 2004 15:43:13 -0800
-Message-ID: <41881BA8.80102@upb.de>
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
+	id 1CPBS2-0000bT-Lz for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Nov 2004 19:04:46 -0800
+Received: from adsl-b5-232-188.telepac.pt ([82.154.232.188]
+	helo=puma-vgertech.no-ip.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CPBRy-0006Ml-3v for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Nov 2004 19:04:46 -0800
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by puma-vgertech.no-ip.com (Postfix) with ESMTP id 42700BA409A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed,  3 Nov 2004 03:04:45 +0000 (WET)
+Message-ID: <41884ACC.2020309@vgertech.com>
+From: Nuno Silva <nuno.silva@vgertech.com>
 MIME-Version: 1.0
 References: <20041029092641.8558.qmail@web26102.mail.ukl.yahoo.com>
 	<200411021952.09095.blaisorblade_spam@yahoo.it>
@@ -29,35 +33,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 03 Nov 2004 00:43:36 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Roland Kaeser <roli8200@yahoo.de>, Nuno Silva <nuno.silva@vgertech.com>, Antoine Martin <antoine@nagafix.co.uk>, Dennis Muhlestein <devel@muhlesteins.com>
+Date: Wed, 03 Nov 2004 03:04:44 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> It is one UML bug I've just identified and that I'm trying to fix. This is the 
-> faulty code, from arch/um/kernel/skas/process.c:
-> 
-> static int userspace_tramp(void *arg)
-> {
->         init_new_thread_signals(0);
->         enable_timer();
->         ptrace(PTRACE_TRACEME, 0, 0, 0);
->         tkill(gettid(), SIGSTOP);
->         os_stop_process(os_getpid());
->         return(0);
-> }
-> 
-> This is executed by a clone() child. What happens is that, with NPTL, both the 
-> father and the son have the same pid, so the SIGSTOP is routed to the wrong 
-> thread. However, this is not expected: having the same pid should be reserved 
-> to when clone is called with CLONE_THREAD in the flags. I've verified that 
-> this is not happening in this case, even with strace (to make sure glibc is 
-> not playing any dirty tricks). But for some reasons, the kernel is behaving 
-> as if this happened.
+Blaisorblade wrote:
 
-This does remind me of something. I've already read the whole thing with 
-CLONE_THREAD and clone() somewhere else, but i can't remember where it 
-was. Was it on UML-MailingLists? Or was it even on the LKML? If my brain 
-would just be a bit more reliable :-(
+...
+
+> This happens if and only if UML is using NPTL thread libraries. This, in turn, 
+> happens in normal config with a NPTL-enabled glibc on the host, or in the 
+> special situation of CONFIG_MODE_TT and CONFIG_STATIC_LINK off. This is why 
+> it's not normally noticed and it's not yet debugged (it was reported the 1st 
+> time by Nuno Silva around 2.6.0).
+
+Yes, maybe it was me and, FWIW, I never found a solution to make a 
+dynamic skas uml run under 2.6+libcNTPL.
+
+Regards,
+Nuno Silva
 
 
 -------------------------------------------------------
