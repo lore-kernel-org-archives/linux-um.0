@@ -9,11 +9,10 @@ References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<200408031750.i73HoMvv002966@ccure.user-mode-linux.org>
 	<410FCC70.1050902@enterasys.com>
 	<200408031931.i73JVkvv003367@ccure.user-mode-linux.org>
-	<410FF1C3.9060509@enterasys.com>
 From: Tom Hughes <thh@cyberscience.com>
-In-Reply-To: <410FF1C3.9060509@enterasys.com> (D. Bahi's message of "Tue, 03
-	Aug 2004 16:12:51 -0400")
-Message-ID: <yek7jsftkdl.fsf@audi.uk.cyberscience.com>
+In-Reply-To: <200408031931.i73JVkvv003367@ccure.user-mode-linux.org> (Jeff
+	Dike's message of "Tue, 03 Aug 2004 15:31:45 -0400")
+Message-ID: <yek3c33tk5o.fsf@audi.uk.cyberscience.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -27,29 +26,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 Aug 2004 08:47:34 +0100
-To: "D. Bahi" <dbahi@enterasys.com>
-Cc: Jeff Dike <jdike@addtoit.com>, Nicholas Nethercote <njn25@cam.ac.uk>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
+Date: Wed, 04 Aug 2004 08:52:19 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: "D. Bahi" <dbahi@enterasys.com>, Nicholas Nethercote <njn25@cam.ac.uk>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
-In message <410FF1C3.9060509@enterasys.com>
-        D. Bahi <dbahi@enterasys.com> wrote:
+In message <200408031931.i73JVkvv003367@ccure.user-mode-linux.org>
+        Jeff Dike <jdike@addtoit.com> wrote:
 
-> alright, i don't read assembly (head hung low) but
-> valgrind 2.1.2/coregrind/vg_syscall.S has something
-> that makes me ask why i'm getting the 'clone() not
-> supported message'
+> dbahi@enterasys.com said:
+>> ugh, so close - it bails - stopped by clone() !?!!?? : 
+>
+> OK, there were a bunch of problems that were fixed when me, Jeremy,
+> and Julian were working on this.  The clone one seems to have not
+> made it.  I've lost the patches I had, but I dug this out of a piece
+> of email.  It applies to coregrind/vg_syscalls.c:
 
-You're not getting as far as any code in vg_syscall.S though. Don't
-get confused by VG_(clone) as that has nothing to do with implementing
-clone in the client program - it's used by valgrind to start the
-background threads that it uses for handling blocking system calls.
+Clone is not (at least in general) supportable in valgrind without
+a reasonably large amount of work.
 
-> does this need some kind of tie-in code in vg_syscalls.c?
+>> @@ -39,6 +40,10 @@
+>>  # code which copies from baseBlock before the call, into
+>>  # m_state_static, and back afterwards.
+>>  
+>> +.section .data
+>> +save_ip:
+>> +        .long   0
+>> +
+>>  VG_(do_syscall):
+>>         # Save all the int registers of the real machines state on the
+>>         # simulators stack.
+>> @@ -80,10 +85,27 @@
+>>         movl    VG_(m_state_static)+48, %esi
+>>         movl    VG_(m_state_static)+52, %edi
+>>  
+>> +       cmpl    $__NR_clone, %eax
+>> +       jne     not_clone
+>> +
+>> +       pushl   %eax
+>> +       movl    VG_(m_state_static)+60, %eax
+>> +       movl    %eax, save_ip
+>> +       popl    %eax
+>> +
+>> +       int     $0x80
+>> +
+>> +       cmpl    $0, %eax
+>> +       jne     parent_finish
+>> +
+>> +       jmp     *save_ip
+>> +
+>> +not_clone:
+>>         # esp now refers to the simulatees stack
+>>         # Do the actual system call
+>>         int     $0x80
 
-Not exactly. The message you are getting comes from vg_syscalls.c
-but the point is that clone is not like other system calls where
-you can trivially implement it - it would require a substantial
-amount of work throughout valgrind.
+I don't see how a patch that small can have made clone work for you in
+any version - at the very least you would need a change to vg_syscall.c
+to stop it trapping the clone and complaining about it or you would
+never actually reach VG_(do_syscall).
+
+> It handles the clone by calling clone itself, creating a new
+> valgrind thread which will go on grinding the new UML thread.
+
+But how did you cope with the fact that valgrind doesn't protect it's
+internal data structures in any way? You would have all sorts of
+problems with two threads trying to access the same data.
+
+Or are you not specifying CLONE_VM among the flags? it is it more like
+a fork than a thread creation? That valgrind may be able to handle
+quite easily.
+
+In fact, what is the exact set of flags you're using to clone?
 
 Tom
 
