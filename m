@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AiUDl-0008LT-J1 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 23:53:17 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AiUDl-0007K1-6b for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 23:53:17 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Subject: Re: [uml-devel] Re: uml-patch-2.6.0
-Message-ID: <20040119075351.GA4088@elte.hu>
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
-	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
-	<20040118162112.GA15509@elte.hu>
-	<20040118235730.GC21046@ccure.user-mode-linux.org>
+	id 1AiMXg-000070-Eh for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2004 15:41:20 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AiMXf-0005Qf-UB
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2004 15:41:20 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] uml-patch-2.6.1
+Message-ID: <20040119000327.GD21046@ccure.user-mode-linux.org>
+References: <200401140725.i0E7Pr9b001444@uml.user-mode-linux.org>
+	<200401181723.32498.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040118235730.GC21046@ccure.user-mode-linux.org>
+In-Reply-To: <200401181723.32498.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,38 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Jan 2004 08:53:51 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 18 Jan 2004 19:03:27 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Sun, Jan 18, 2004 at 05:23:32PM +0100, BlaisorBlade wrote:
+> Try disabling CONFIG_MODE_TT and you'll see that 
+> arch/um/kernel/skas/include/uaccess.h doesn't compile (it uses EFAULT but 
+> errno.h is included only by arch/um/kernel/tt/include/uaccess.h).
 
-* Jeff Dike <jdike@addtoit.com> wrote:
+Fixed now.
 
-> 2.4 UMLs work fine with these libcs.  I had been assuming (without any
-> evidence) that there was some other capability check (like uname), and
-> libc gets horribly confused when it sees a 2.6 kernel that doesn't
-> have the thread_info stuff.
+> This happens because hostfs is not compiled with -O2, since now -O2 is added 
+> to CFLAGS after including arch/??/Makefile. The inlines that do the needed 
+> wrapping are defined(in /usr/include/sys/stat.h) only if _OPTIMIZE_ if 
+> defined (probably because inlines don't work otherwise, but other inlines are
+> defined anyway, so there is also a libc bug). So, I'm attaching the fix.
 
-ok, i talked to Ulrich, and it turns out that ld.so in Fedora uses the
-set_tid_address() syscall to find out whether the kernel has NPTL or not
-[and thus whether to use the TLS glibc or the standard one]. In UML,
-this particular syscall happens to work. So i'd suggest the patch below. 
-(i'll test it soon.) Once the TLS syscalls are available in UML this
-syscall can be turned back on.
+Applied, thanks.
 
-	Ingo
-
---- linux/arch/um/kernel/sys_call_table.c.orig
-+++ linux/arch/um/kernel/sys_call_table.c
-@@ -521,7 +521,7 @@ syscall_handler_t *sys_call_table[] = {
- 	[ __NR_epoll_ctl ] = sys_epoll_ctl,
- 	[ __NR_epoll_wait ] = sys_epoll_wait,
-         [ __NR_old_remap_file_pages ] = old_remap_file_pages,
--        [ __NR_set_tid_address ] = sys_set_tid_address,
-+        [ __NR_set_tid_address ] = sys_ni_syscall,
- 	[ __NR_timer_create ] = sys_timer_create,
- 	[ __NR_timer_settime ] = sys_timer_settime,
- 	[ __NR_timer_gettime ] = sys_timer_gettime,
+				Jeff
 
 
 -------------------------------------------------------
