@@ -1,18 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASm0d-0008GK-N7
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 15:38:47 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASm0d-0005Cf-39
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 15:38:47 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] Porting UML to other plattforms
-In-Reply-To: <20031206224535.GF3376@hydra.joerghoh.de>
-Message-ID: <Pine.LNX.4.44.0312070033010.16967-100000@filer.marasystems.com>
+	id 1ASrnx-00078s-HY
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 21:50:05 -0800
+Received: from externalmx.valinux.com ([198.186.202.147] helo=externalmx.vasoftware.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ASrnx-000721-BK
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 21:50:05 -0800
+Received: from [61.185.123.42] (port=3387 helo=198.186.202.147)
+	by externalmx.vasoftware.com with smtp (Exim 4.24 #1 (Debian))
+	id 1ASrnw-0006cG-8r
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Dec 2003 21:50:05 -0800
+Message-ID: <hreb08uo-864t61x4044mesis$86ap70@u3d7i.vp>
+From: "Minerva Jewell" <37oxhhkylg@yahoo.com>
+Reply-To: "Minerva Jewell" <37oxhhkylg@yahoo.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="8_9EDFE.22_7AFC8_.6"
+Subject: [uml-devel] Boost Your  Car's Gas Mileage 27%+.....bazyli
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,23 +28,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 Dec 2003 00:38:41 +0100 (CET)
-To: Joerg Hoh <joerg@devone.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 07 Dec 2003 02:31:03 -0300
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 6 Dec 2003, Joerg Hoh wrote:
 
-> Can someone tell me, how hard is the job to port UML to other plattforms
-> than i386 (how far went the ppc port?).
 
-Good question indeed.
+--8_9EDFE.22_7AFC8_.6
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-In theory a sub-arch port should not be that difficult if you know the
-basics characteristics of the architecture, but there is always
-complications.
+FUEL SAVER PRO
 
-Regards
-Henrik
+This revolutionary device Boosts Gas Mileage 27%+ by helping fuel burn bet=
+ter using three patented processes from General Motors.
+www.eoei.com?axel=3D49
+
+PROVEN TECHNOLOGY
+A certified U.S. Environmental Protection Agency (EPA) laboratory recently=
+ completed tests on the new Fuel Saver. The results were astounding! Maste=
+r Service, a subsidiary of Ford Motor Company, also conducted extensive em=
+issions testing and obtained similar, unheard of results. The achievements=
+ of the Fuel Saver is so noteworthy to the environmental community, that C=
+ommercial News has featured it as their cover story in their June, 2000 ed=
+ition.
+
+Take a test drive Today - www.eoei.com?axel=3D49
+
+
+
+
+
+
+No more advertisements, thanks - http://www.5jzd.org/out5s/pre-rem2e.asp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+xqi duowmobvp  awhii
+wyakrthoibyp m
+stzlftcdbujk
+sllouha zb
+c yqqnemwfko
+mrd
+
+--8_9EDFE.22_7AFC8_.6--
 
 
 
