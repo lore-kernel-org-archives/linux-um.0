@@ -1,19 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ar9NA-0005kq-Qd
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 21:26:48 -0800
-Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
+	id 1ArI3S-00012s-9u
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 06:43:02 -0800
+Received: from mx13.sac.fedex.com ([199.81.197.53])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
 	(Exim 4.30)
-	id 1Ar9KT-0008QI-9q
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 21:24:01 -0800
-From: Dan Shearer <dan@shearer.org>
-Message-ID: <20040212052823.GA4203@erizo.shearer.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Subject: [uml-devel] Which UPS simulator?
+	id 1ArI2H-0000jL-DB
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 06:41:49 -0800
+Received: from inet03.prod.fedex.com (inet03.prod.fedex.com [199.81.10.43])
+	by mx13.sac.fedex.com (8.12.9p2/8.12.9) with ESMTP id i1CEfWu8057245
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 12 Feb 2004 08:41:32 -0600 (CST)
+	(envelope-from jchua@fedex.com)
+Received: from entpm11.apac.fedex.com (entpm11.apac.fedex.com [155.161.92.11])
+	by inet03.prod.fedex.com (8.12.11/8.12.11) with ESMTP id i1CEfUCW004288
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 12 Feb 2004 08:41:31 -0600 (CST)
+From: Jeff Chua <jchua@fedex.com>
+Subject: Re: [uml-devel] uml for 2.6.3-rc? 
+In-Reply-To: <200402120113.i1C1Dnip008475@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.58.0402122237030.30797@silk.corp.fedex.com>
+References: <Pine.LNX.4.58.0402111946490.2438@silk.corp.fedex.com> 
+ <200402120113.i1C1Dnip008475@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,36 +33,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 Feb 2004 15:58:23 +1030
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: selinger@mathstat.uottawa.ca
+Date: Thu, 12 Feb 2004 22:40:00 +0800 (SGT)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Jeff Chua <jeff98@silk.corp.fedex.com>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-I propose using a standard UPS interface as a way for mconsole to
-trigger a full system shutdown. I don't know the UPS market well and am
-hoping someone can point me a to a more open protocol that what I've
-found so far. This doesn't solve the bigger problem of UML control from
-mconsole, but it addresses one immediate need.
+ok, shall wait. Will be more than willing to test it once you're to
+release it. We need to run several "virtual" machines since that makes
+testing easier that dedicated real servers. _hostfs_ is very useful!
 
-The key thing is that this doesn't require the user of the uml to use
-any special software or configurations, which in turn means I don't have
-to give anyone any more training than a URL for standard Linux UPS
-software.
 
-http://quasar.mathstat.uottawa.ca/~selinger/ups/simulator.c is easy to
-find. It mostly implements an informally documented protocol
-(http://quasar.mathstat.uottawa.ca/~selinger/ups/belkin-universal-ups.html)
-and is GPLd. Some slight mods in how the communications happen and this
-could be how mconsole talks to a ups daemon listening on one of the
-virtual serial ports. Not sure if this includes upsd that comes with
-many distros however this UPS is listed as supported at
-http://eu1.networkupstools.org.
+Thanks,
+Jeff
+[ jchua@fedex.com ]
 
-Anyone know of a simulator for a more open/more appropriate UPS protocol
-that is understood by more than one of the open source UPS daemons?
+On Wed, 11 Feb 2004, Jeff Dike wrote:
 
--- 
-Dan Shearer
-dan@shearer.org
+> jeff98@silk.corp.fedex.com said:
+> > Is there a clean patch for 2.6.3-rc2?
+>
+> Not yet.  2.6.1 is the latest I've done.  I'm going to be getting 2.6.2
+> going pretty soon.
+>
+> 				Jeff
+>
+>
 
 
 -------------------------------------------------------
