@@ -1,8 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20041110175907.AD85EA1FA@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml: use sys_getpid bypassing glibc (fixes
-	UML on Gentoo)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CRxpT-0006Ll-PQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Nov 2004 11:08:27 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CRxpS-00015w-OQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Nov 2004 11:08:27 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1356586.hH1RFF5opU";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200411102008.02212.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] 2.6.9-bb2 released.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -14,120 +26,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 10 Nov 2004 18:59:06 +0100
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, blaisorblade_spam@yahoo.it, bstroesser@fujitsu-siemens.com, drepper@redhat.com
+Date: Wed, 10 Nov 2004 20:07:46 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
 
+--nextPart1356586.hH1RFF5opU
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
-Cc: Ulrich Drepper <drepper@redhat.com>
+You can find all on http://www.user-mode-linux.org/~blaisorblade/.
 
-Using NPTL, getpid() sometimes delivers the wrong pid, since it uses the one
-buffered in TLS from previous calls.  This buffered pid isn't discarded, when
-a child is created by a clone().
+Changes in both 2.6.9-bb2 against 2.6.9-bb1:
+=2D updated most bugs of -bb1 which were reported
+=2D fixed the Gentoo/NPTL issue, thanks to Bodo Stroesser (sorry for forget=
+ting=20
+the credit on the changelog, but I'm leaving for one day in a few minutes):
+but you must still compile Uml disabling CONFIG_MODE_TT (and obviously use =
+the=20
+SKAS patch you find on the same site).
 
-So, as a workaround, UML should use a direct kernel call to bypass the lib.
+More info on the website "Changelog" page.
 
-Also, I (Paolo) went replacing all remaining calls of getpid() with
-os_getpid(), to make sure they use the syscall and not the normal glibc
-definition.
+Distribution (like -bb1):
 
-Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+* the patch are also in split-out form, both web-browsable and tarballed.
+* md5sums are available (to test with "md5sum -c *.md5").
 
- linux-2.6.10-rc-paolo/arch/um/kernel/frame.c        |    8 ++++----
- linux-2.6.10-rc-paolo/arch/um/kernel/main.c         |    3 ++-
- linux-2.6.10-rc-paolo/arch/um/kernel/skas/process.c |    2 +-
- linux-2.6.10-rc-paolo/arch/um/os-Linux/process.c    |    4 ++++
- 4 files changed, 11 insertions(+), 6 deletions(-)
+Any testing and report is welcome.
 
-diff -puN arch/um/os-Linux/process.c~uml-use-sys-getpid-bypassing-glibc arch/um/os-Linux/process.c
---- linux-2.6.10-rc/arch/um/os-Linux/process.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:24:10.000000000 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/os-Linux/process.c	2004-11-10 18:24:10.000000000 +0100
-@@ -107,6 +107,10 @@ void os_usr1_process(int pid)
- 	kill(pid, SIGUSR1);
- }
- 
-+/*Don't use the glibc version, which caches the result in TLS. It misses some
-+ * syscalls, and also breaks with clone(), which does not unshare the TLS.*/
-+inline _syscall0(pid_t, getpid)
-+
- int os_getpid(void)
- {
- 	return(getpid());
-diff -puN arch/um/kernel/skas/process.c~uml-use-sys-getpid-bypassing-glibc arch/um/kernel/skas/process.c
---- linux-2.6.10-rc/arch/um/kernel/skas/process.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:45:59.529650720 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/kernel/skas/process.c	2004-11-10 18:46:52.166648680 +0100
-@@ -30,7 +30,7 @@
- 
- int is_skas_winch(int pid, int fd, void *data)
- {
--	if(pid != getpid())
-+	if(pid != os_getpid())
- 		return(0);
- 
- 	register_winch_irq(-1, fd, -1, data);
-diff -puN arch/um/kernel/frame.c~uml-use-sys-getpid-bypassing-glibc arch/um/kernel/frame.c
---- linux-2.6.10-rc/arch/um/kernel/frame.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:45:59.564645400 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/kernel/frame.c	2004-11-10 18:46:52.168648376 +0100
-@@ -140,7 +140,7 @@ static void child_common(struct common_r
- 	}
- 	if(sigaltstack(&ss, NULL) < 0){
- 		printf("sigaltstack failed - errno = %d\n", errno);
--		kill(getpid(), SIGKILL);
-+		kill(os_getpid(), SIGKILL);
- 	}
- 
- 	if(restorer){
-@@ -162,7 +162,7 @@ static void child_common(struct common_r
- 	
- 	if(err < 0){
- 		printf("sigaction failed - errno = %d\n", errno);
--		kill(getpid(), SIGKILL);
-+		kill(os_getpid(), SIGKILL);
- 	}
- 
- 	os_stop_process(os_getpid());
-@@ -191,7 +191,7 @@ static void sc_handler(int sig, struct s
- 	setup_arch_frame_raw(&raw_sc->common.arch, &sc + 1, raw_sc->common.sr);
- 
- 	os_stop_process(os_getpid());
--	kill(getpid(), SIGKILL);
-+	kill(os_getpid(), SIGKILL);
- }
- 
- static int sc_child(void *arg)
-@@ -229,7 +229,7 @@ static void si_handler(int sig, siginfo_
- 			     ucontext->uc_mcontext.fpregs, raw_si->common.sr);
- 	
- 	os_stop_process(os_getpid());
--	kill(getpid(), SIGKILL);
-+	kill(os_getpid(), SIGKILL);
- }
- 
- static int si_child(void *arg)
-diff -puN arch/um/kernel/main.c~uml-use-sys-getpid-bypassing-glibc arch/um/kernel/main.c
---- linux-2.6.10-rc/arch/um/kernel/main.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:45:59.575643728 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/kernel/main.c	2004-11-10 18:49:05.002454568 +0100
-@@ -26,6 +26,7 @@
- #include "uml-config.h"
- #include "irq_user.h"
- #include "time_user.h"
-+#include "os.h"
- 
- /* Set in set_stklim, which is called from main and __wrap_malloc.
-  * __wrap_malloc only calls it if main hasn't started.
-@@ -175,7 +176,7 @@ int main(int argc, char **argv, char **e
- }
- 
- #define CAN_KMALLOC() \
--	(kmalloc_ok && CHOOSE_MODE((getpid() != tracing_pid), 1))
-+	(kmalloc_ok && CHOOSE_MODE((os_getpid() != tracing_pid), 1))
- 
- extern void *__real_malloc(int);
- 
-_
+Hope It Rocks!
+=2D-=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+--nextPart1356586.hH1RFF5opU
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQBBkmcRqH9OHC+5NscRAhlgAJ9udAuPfVO+R1Kf90epy7CBlEqqGQCgjqty
+RF9jeeKvVYk8yJ3MhwcgsC4=
+=q6sS
+-----END PGP SIGNATURE-----
+
+--nextPart1356586.hH1RFF5opU--
 
 
 -------------------------------------------------------
