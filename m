@@ -2,25 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DIDt0-0006ZO-56 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Apr 2005 15:48:06 -0700
-Received: from rimuhosting.com ([69.90.33.248])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DIDsx-00063J-C5
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Apr 2005 15:48:06 -0700
-Received: from [192.168.1.102] (222-152-12-226.jetstream.xtra.co.nz
-	[222.152.12.226]) (authenticated bits=0)
-	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id j33MluUk006803
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 3 Apr 2005 22:48:00 GMT
-Message-ID: <4250729B.7040407@rimuhosting.com>
-From: Peter <peter.spamcatcher@rimuhosting.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] 2.6.9-bs7 panic on check_sysemu
+	id 1DIPoY-0007kf-QE for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Apr 2005 04:32:18 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DIPoX-0004xd-9a for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Apr 2005 04:32:18 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] question about UML sigcontext in tt mode
+Message-ID: <20050404140011.GA1977@ccure.user-mode-linux.org>
+References: <003501c535d8$e8574a50$90b3c68a@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <003501c535d8$e8574a50$90b3c68a@st.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,26 +27,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 04 Apr 2005 10:47:55 +1200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 4 Apr 2005 10:00:11 -0400
+To: Alex LIU <alex.liu@st.com>
+Cc: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
 
-I get this error starting up a 2.6.9-bs7 guest:
+On Thu, Mar 31, 2005 at 06:03:34PM +0800, Alex LIU wrote:
+> union uml_pt_regs {
+> #ifdef UML_CONFIG_MODE_TT
+> 	struct tt_regs {
+> 		long syscall;
+> 		void *sc;
+> 	} tt;
+> #endif
+> };
+> -------------------------------------
+> 
+> Then why the tt.sc is defined as void while not as struct sigcontext? Thanks!
 
-Checking syscall emulation patch for ptrace...<0>Kernel panic - not 
-syncing: check_sysemu : expected SIGTRAP, got status = 256
+Probably because you can't get a definition of struct sigcontext into 
+processor.h and have it still compile.
 
-The host is 2.6.8.1 with host-skas3-2.6.7-v2.patch.
+Try #including sigcontext.h there and you'll see what I mean.
 
-The 2.6.9-bs7 kernel runs OK on my newer host kernels.
-
-Is this a case where I should be upgrading my host kernels (will do that 
-in time anyway)?
-
-Or is there something that can be done on the guest to make it work on 
-older kernels also?
-
-Regards, Peter
-
+				Jeff
 
 
 -------------------------------------------------------
