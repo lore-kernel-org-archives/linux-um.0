@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AaTMj-0006Mx-H7
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 27 Dec 2003 21:21:25 -0800
-Received: from externalmx.valinux.com ([198.186.202.147] helo=externalmx.vasoftware.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AaTMj-0007pm-3S
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 27 Dec 2003 21:21:25 -0800
-Received: from user-0c8gldo.cable.mindspring.com ([24.136.85.184]:3252 helo=compuserve.com)
-	by externalmx.vasoftware.com with smtp (Exim 4.24 #1 (Debian))
-	id 1AaS3O-0002Eg-Ea
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 27 Dec 2003 19:57:22 -0800
-From: Pvasvv <pvasvv@ter.te.ru>
-References: <D8GHHIED50LKIKCG@lists.sourceforge.net>
-In-Reply-To: <D8GHHIED50LKIKCG@lists.sourceforge.net>
-Message-ID: <5EIA4C3H2463JI78@ter.te.ru>
-MIME-Version: 1.0
-Content-Type: multipart/related; boundary="----=_NextPart_371CJ85KAKHHBHGJ_1AH_DLKK"
-Subject: [uml-devel] User-mode-linux-devel
+	id 1AaXIb-0001lr-7C
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 28 Dec 2003 01:33:25 -0800
+Received: from mta9.adelphia.net ([68.168.78.199])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AaXIa-0000A9-UF
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 28 Dec 2003 01:33:25 -0800
+From: Matt Zimmerman <mdz@debian.org>
+Subject: Re: [uml-devel] 2.4.22-[67] problems
+Message-ID: <20031228093317.GK17472@alcor.net>
+References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org> <20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20031221010656.GH9354@alcor.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,183 +25,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 28 Dec 2003 03:57:05 +0000
-To: User-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sun, 28 Dec 2003 01:33:17 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: 224431@bugs.debian.org
 
+On Sat, Dec 20, 2003 at 05:06:56PM -0800, Matt Zimmerman wrote:
 
-------=_NextPart_371CJ85KAKHHBHGJ_1AH_DLKK
-Content-Type: text/html
-Content-Transfer-Encoding: 8bit
+> On Sat, Dec 20, 2003 at 04:52:57PM -0800, Matt Zimmerman wrote:
+> 
+> > sh-2.05a# apt-get source -b hello
+> > apt-get: error while loading shared libraries: /lib/libm.so.6: cannot read
+> > file data: Error 38
+> > sh-2.05a# 
+> > sh-2.05a# apt-get source -b hello
+> > Reading Package Lists... Done
+> > Building Dependency Tree... Done
+> > 
+> > And of course, I haven't been able to get this to happen in the debugger
+> > (yet).
+> 
+> Well, with enough attempts, I'm able to get it to happen in gdb.  However, I
+> can't get it down to a single syscall, and can't do it reliably.  I tried
+> setting a breakpoint at the point in syscall_kern.c where it can return
+> -ENOSYS, but it never hits it.
 
-<html>
-<body>
-<font color=#672652>aWaKY 
-tZKAdZF 
-JtRLFEI 
-OQT zOqIkUIo TIlIu jQuVry VXt oPVVuEK 
-lmjcE UmzDDt lOQ HZTbVbA 
-PYTfO EbjtLwv Xya QK Au <br>
-<div align=center><a href="http://enercomsolutions.com/discounts/index.php?pid=evaph5545"><img src=cid:v1.gif></a></div>nTHdA <br>odtpYj POiz VYdWtl TETFdI xNiRd 
-QAhqOjA fi KWYUwT RzO aLyFueT dBxmu BfUTxI TYO cILaDtT 
-wTIxv tcOmKTN igi Jl dt  </font>
-</body>
-</html>
+It looks like in the case where it breaks, the system call number is 0, so
+it is passing the test in execute_syscall_skas, and instead invoking
+sys_ni_syscall.  Here is the regs struct in one instance:
 
-------=_NextPart_371CJ85KAKHHBHGJ_1AH_DLKK
-Content-Type: image/gif; name="v1.gif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="v1.gif"
-Content-ID: <v1.gif>
+$16 = {regs = {tt = {syscall = 2, sc = 0xbfffd68c}, skas = {regs = {2, 
+        3221214860, 14, 14, 3221214860, 3221214492, 4294967258, 43, 43, 0, 0, 
+        4, 1074631684, 35, 2097815, 3221214444, 43}, fp = {
+        0 <repeats 27 times>}, xfp = {2098047, 0 <repeats 31 times>, 
+        4294967295, 2734743551, 16401, 0, 0, 3413842944, 16404, 
+        0 <repeats 88 times>, 2726428672}, fault_addr = 0, fault_type = 1, 
+      trap_type = 0, syscall = 0, is_user = 1}}}
 
-R0lGODlh0gFgALMAAPT5+trr8OmxypynrPNsmmJ8f/E3dsze6UhISMzZ58zW5fsAUwAAAAAA
-AAAAAAAAACH5BAAAAAAALAAAAADSAWAAAAT/UMlJVbq36s3v+UEYfqBonugJrOwatnAszzSc
-jiR572rt/8BgTJQrkjDIJJLDbG4Sh5dwSq1ar8DdUcntJp1Lp5jiiZpyvLQUy/6pzepde34l
-Gote7nj/NNP/gIE2MlofeYdKEgYLjI2Oj48CfBVlZzpxkJmaCkAEmp8LQXGjN4KmhDh3W4gZ
-k64Kfqeys1kmLDyGrLoSAqC+kq8WJXZwPIu+mgJBnsiPQqQhAtLTBNXW19jW09O0VsSqB7qt
-wXux3VgC2dXK5zYoALjhSTniGBO9zZAG5LDF0Mz5HBEQAjAglRTpCBg45mihtm0QqVVj2MjA
-ugB1ImqsFaCIRmkW/+x93MZPw8ht6D7eOjlD4cKXDlOenIaxBTQc8+jVS0ChYMAFBMhB8RcH
-309GBqb4bIaO4qOgNwMFSPeyoUV1Lq2us5nqg9OKL7EuzLQQWJOEY8FezVYVqUN2Nb4iXeBQ
-nbQZcun+QOu0rrq0SNcJILWqTOFdFPIiMztp6M0Din3VzLIUWdNPg9UIgMkZcCa4MSq77Uxa
-k4Ga3yB/CplH9IKzoEiX1jSQhmLQU/ImpRHgU+2DNzuuMrKTZ4WjjhjvGUqUh+tfokI819SG
-qtyr0xSkgagQMw2qmQhwmxGRt3ASulm5dtJdn3hJ5laUF6IbS/0a7R9ZvEs+4UOQo4CTS/9x
-JiGH1CuGjWLUUb+5IR1ygmyDjWwUrnUNREFIM2GFMF3I3y3nfeBSZwSoR+EeEk3EYVge/jAi
-Zw1S8WKHQmhozYosPgQNOMWFUcF0viHInBoKGAjUMyJshiNMssTDQzt0dKUTgSWBER+UWEYZ
-nJRT9shBZKAoN4ZjaoBp2mQOhjgMmlkW8mSWdah5mDhVWrkGnHjGGZyAPdrzpZFiWtncCUAm
-w2YNOFUiQp7ufCMHo9HJySMidTpxJaSYIrqlnMwNWA8TC/60jytQbAfonT7gJAGZqOZ5QhEp
-ZJqmgMQdUmkTl8qqK4hbdonHTrAZGFRja75qZnitatrRBEMuOof/s1QoYOOMK7aIKTHS3sjh
-Ol/cykGupvBF2kWnTOXfkjm+F8evhnmKGBOFfkbsoAEcq0+yqXYUryNTvOMDWkYisx+e0eRn
-5H4b2MvIsN/iK5+ooSlcUYxVABxwbOLdwG6n8nzqhMTJzZvCvo8cGinJjCCpIMoXI4XbLOm0
-TJZ4if3E8AbgPhzQbvCw3NAVMcssqgAJWMKnl2KAfCAfzSZ5KhYPHhWpZkoL3QgBJkdpsNX6
-ASPxzRrkDECovuzm888VV801VJLO6bETZOcDdhMJilA11lkTBGGa26nN9dWCBHD2wZvZTLfD
-Yw/tdyMv/7v43wTQ2uc47AHK9CWCCwvt/xUs863F4H8LBAjooYMyNxmIx116JDKufnHkk/bJ
-x9mBPjGk6mVvzvneyqZywuOuN34Q8K5DcjqzqRdPGxXEly4ArRvbykfVo445VAKnIr4M7zMY
-fYlqR+33PDjZnk3x8BcjfEe2zR+/avLK68c8cuLXUL6RsEPvth6T4H85+EfJjPY6wT1UcCkK
-KDOAAFMDq6hJDWpqs0g/9HeAwr3ucHlLXMsGFgMNHSODoQmf8IZgAp9RcH+JmATufsE0n+Ft
-gAR8oHnOg4EPrBBZLvDeHeyGnBH+QG3jO2EuLCgsDNbghrl7xhSQ+JR+/a6HQnzX7Cw3Bibe
-C4bbk2H3VCWMNf9JSFsOmcyrBOS0AALNQPsQok4U4T8mFC2DVgwPlr6oopg40QRxZJwa3ZVC
-V1BvD1WzxR86ly9DMKtYceDKARvYGzNaQWlp3GMuJnA3I34Hf7vSkwmgKLl2dYx/r6hk5Xoo
-SDoQUlnhOCQi06DIttnIMwHx4SU5KUl5UKCIboRf+DLpjVdWLYixi163XpHHkIFKc7prwyk1
-9QEyoCGRXJFIW4Qmy5bQj4EUpBzL3GcBXdqMl9/xZfMWAExV1LBLfXwF7ThQzIX1YJAF3GJH
-jNNFRqLAl/Fj3COR80IdQm8c7eSm2Nq5ABDCCZ/5JGct81ASn1WvApB8YzLlmcFlotL/ONcj
-jnUS6p0qKK2fKMgmPYvEIFxNVGdazNNGOfqZhXqhSqLsiYHGV8oZvhMGFkUlOoPGUuh4lJ/r
-6uQE+Em3nLWTZ1kCT0/D5NIu1ImKvJgp5jLIyhCmNF/E4AnpmqG0asrgo7361VBL6kaj8hNO
-Wy1bV5sKSn4QlJxjZdAzHaYGGeQUq0RIq1beM0FSlsI2QN0UDY0T0KI6LKBY0utoBKOdENDy
-hJ1qKz8cysbw+e6k8PDeRO9aiwT4rS4goVU7F+gvu15TsEeYwDYNmzfEtuOz2BlMZm8w2ih6
-Mp0luZvPJDpVA8pps/F8xt2e1zZwjPZNMiAoaR+TSgngsgNm/2XQa4UlWxLuoLaQve0w6zTO
-XxjtpjkUDkaHYdWfYGGb/oTecR81AyNJdE/NjWkfDnvWbqC3dwh57D+12y3KMWukx8wnSI2g
-OyKMlLw4DW4WTotNWrFsuZhdgUPpFY9Uqo2bpWptfWfRSIjZdAcPriU6P+lfHwWreAbwxw4P
-FQIAsyrBUsMiCwKaXlqRNIB/9QEQmRsO0GE4uj/xKhtcS9EbYE+/kkQCH0dq4iYoVh+wGOMW
-rtRiSqypBSyr6V4YvEciBhlqAVPge9OrgK0KFMix7MZRP4yQX4p4OEsmQ5OZ0N3kTJUeq4rP
-CPpAlCxr+YhonCAFyxwwCP8ZBm+dmP80pORBq/2Yvo6EWaB9iwJCA+rNA0KhnHF7nNKV6M6p
-FcbmqqyBpmXuKKUNbw8uXM47KDVgIB1FC7y8VLJCF9Jf7garG4XHrfET0x1DoYs5fY/QBaVT
-RqNnCbhygLKWwM/B0WCY/zLOWG/pycV7tIYjLen0UXttwD4nidPpVA4odlTtyuohRz1PAOcZ
-BNDeUqJZOuZN0Tp+qy0rrtN8jnlzVNBJNoz0/rtdDTTPmZjDcxdRZQcX6yDe8q41g0KqCqoJ
-2Lm2nu+2c91vidsM0+JmxabnXLOWKYdjG1s2r5v7bgcGZJX/yKdFEoDdWtVtO9gOzC0zXmo0
-50PI8IyfBGv/HnDmSJE1/q2Av+fmyVqp3LrtZhXLCFzKOPhaZvspYQ/PqQSYX/fq4Tt2pw2n
-743zO0tg9zYwWQbw7ApciiRXepihS0HMWoJQyFkxw9lb5schLAUAzMc+2nVOwU5FRQJT3ySL
-zXMr7/vnjBKc32m2PpBFco8hh7ufvPU//Wkvx1gdtwduilybnGtb77En4G2O8juwyvCL1B/l
-Clt2cD7r9BUSTOyBjfm36wEJAwj+qpI+hgEwQfgSCD7ye+75VgVgAC1QwAAONYADzJDlwy9B
-Y09gfPByRfn9MP4BxE8C8lc8BdJX/vgBnv7ww0ICFJbAjshX/fLX35aMD7KlZCyE//HnEADG
-JwPKF3zwAH4xwAlt8AbgEHy8x1ZNVgAIMAAQOADuxgfGxwQIMAERKIF0Bz3JpAAI0AL+FwMZ
-yEx8Nn4FkALd92cmAIISmIHrdwARmAMzSCsoUAAFoH41+AEDEIEQCAvdl4M7sAgIoBZ+IRjZ
-oQo9mAMSqHASwHb7Z1BVkADQBwAlmIMygIPKBwAu2INVuAIgqCWFoIQF0IC2VW4T0IMhcYE9
-GIHSB4Fu2IYFIAEIoIUZqABweIESkIPSl4EcCIIIEId1mIMHgINl2Ib1FwAgyBMhqIYRGIFc
-GIIAGIjQ94gFAAOIqIh5+IaUKIN1GAB5CIrTh4OBmACTGP+BJqCGMTiDM9iDEzh+gQgLpAiD
-cgiLPlh9MygCQvh82rGBlPiCtlgACxGIjBCIThGIRbgAyFiGtlh9rtiKZQiIc4iHxNgQyGgA
-1XiNeAiHdGh8uaiIyNiGnICIAJiHLJAACMCIkxiG4jiLpsgCWMgCYTiJLQCHp/iFK1CH0CeO
-9xiJlNgReYiCnSiNzGiGIsVpfwh+vtiH2+iCDlmHDKmGf5h8GYiDb5h8Dxl8M2iR67eEIJCD
-Xih8dxiC7IgAz1eJ01eCKyCDe4iCEVmRh1iGVAiKKSiEOCiKAGCR71WInSiDuOiNGqmRVIgA
-hViGhHiBqEiIhIiKIsCUTTmK06f/hopIh56QjAhAhAxBjFpJhM44lLCokW/ok12YjPpRhFo5
-FxBpkXwIkjAYAiDYhzmZknQIi893ifAYlHwoiVd4ifG4AnAIifM4j2BIkiYZAJDIAq1okj2Y
-k3NYNG/5lhI4lEMZljhYlAbpdiSXkL5oiME3hxw4iHlpfBI5jRrwiKLpmaQIli5YiPVniERZ
-flqohmE4m41ol/nICSoZibeQg4zYmW9IhdFoiDUJlThJjSkoAsbhhT7pkx65mZWplFGZmqLI
-mj5pAkz5RkkZnSEggROojMV4jY2AjFfpncpoEa4Jix+wgWU4iOOJjeNZEWZJhN+ZlsbHhxLI
-gWbAjnzp/42G+Ibl2AKdqZp6yQlY2JdxGX2SKJi6KYF+iY8l6Io4yIUQmIIgGAK3aKGdiYLU
-2YSXeZDE140gGocX+ZmiCaIS6YekuYc/eJEW6Ya+WH1H6Yev2Ux16IngqJslWZdWiJsICAAs
-CZmeiaK/2YRNeJM2CX1YaHzouH0WuZqsCJQhSZTSJ4pU6qJQSZ3fSJO9aZjEKYEY+pYCYJWL
-QBHVWIxm6p3YOIxqmqbtiZZkSRfxiaZXqZb1iZR8mJ+1GZeGOY7/yaC38ImBqJs7eqAGaqDz
-GKHy2IgmyZIt8KAmKX0AaAEjGZEFIJlEapSY2qFu1wQvCJF9CJEcGKqBOI2CuP+HlFgBXph8
-QTqIffiKhJgAEwqDJHCkN0qbK0COJZib/QiKpxqZvqqPozqcOJmk/4iccDiHy5mY/5iJtBqr
-V7qU1UcEAVmdIXmczmqYVlmm83mm2ZqNxgin26qM2gqu45mtdIqHF7iiePqfxAqJDOqnd3mg
-h1qRSIqPf0mYo2oDgUqOjYqA5JiJIDiBAQCrnXipzTahBampQsV5DLsBbNl2ZBQrYsgp4uYP
-vaN3sJdeqzdXFudxLMSpTQoHthc4LViYNaawC9WwKouqWth0EctemqSx3rdyqpexByRlNds3
-HhsewsQTTRplETaywCECeEhxKMt7K5u0pdZ64EAEMBv/s5c1s60UIjarMarXtMHxarWWdRu7
-BesmtUJ7R2NoTjmRcgqrtGj7X8AGtlVQevhVtWlAdcXldXHAPgn1d4+hZG4btlNjtbGjZOjk
-ssBWfGmbfHrIAaJ5uILbbPdXBM4YrakWAyMIqZEagLwStFO7JVM6f6B2ft1HgYIlLeKiMMeQ
-I2xoeOM3VS04fQNkud3DCZQbCK7LZry4e6LHMRgQfBXbgGIgm2k7kbywDujafmqrhDPKhId4
-f3t7hQNqoP8ntpuyuZxbDOdnob24fXA7Cl6KAl7ag4ZXoTwgvSA0uzGQpLYJCORbZFw6t0sW
-WRjAh0jHtHskBtwohxWQmp9K/6rcObz2OaoXmYbIKACIGKp5CKpEuYQeGZCj2oTUiIqdyrpr
-IISeGoKzaH2ACH2ACIkvgI6xmEOkmIOfmMG9OKGpaJKw+oNwkInPF4uiaLAMjIzXu6fei44S
-JYcWKoSZ2L0UOohRALDBmgILXIdMKY4l7MCUCIcrjIoX7KUXDA+k2FgNypilmKjqOYFO/ImN
-OqG32sEVfKD8OphJWaPri4goqIZIkIcnHItDeaoEt7iyV4GoOpL1SZohGaKiGYv8m7jVeg8Q
-qA32GaQN6YvouYTSZ5lEigAE8IM9aKnH6Sz3OYB8uZ9WmJLe2IcmMJMaLA04SAC+qIgU+KTo
-WH0agv8AAryBaKCF2oHAilmwMcm41ZmBe2qYwNmCdNiLFLjIoazDKyx/S/qWRtrIqZiCJ7rC
-dCkCzrjK1VehjynHKLi+Voq9VGqkrBvF3sugv9yolFzNFCzJBYqsCDqKNZmCrdiHzUaJS0CB
-OHjCsPrJQLm08vvGvSujqkoBmwiadrqHdfqGE/iH1oCM1VCHAoya68ycB1zQB2uIGtrHiJye
-Gbq9J9CFrFmvB2rPymyymjiB/oHInPzPdfmKT3oNGj2tUWCcsGiIIXCTGqrDVgzLsJyDu7id
-TxzL2wuSwmyteAya6FqXKijMq7zCJq2LpAiObvmoOA2+XmrPSQzB0Uycuqj/nV6KsBC8oy0M
-moQq0cZZsic9iJRclBD4AT+4BMK5zmLthvC7tCL2oRQgm2R9uHPskOk6gYEMpepZZtig0RpN
-wAPti16JwJkqgemAyIqMohoqf9ZpkjkJiQWKkgDIiELd1DJYACD9z/8sALz5pDJY19dQmcbc
-jYQclaxclFVaiTxajoaNmJUs1biMojTpyVy6pM8H2jdJ2DC9wrTd2cZc0I1d0UBYzrPtwBcA
-zibQrEqNwzW92iuIoQTNuEtNpUi5feB7kwy4kIsMoWk9h3Q61u3cAe8MPWMQi/ZLz73qv6OZ
-v/UpxJ1Z14FYDX2czpEJrTzZ1YQcrLa40Zz82QYb/9zH6b3LLY1CDb7bGayRTd+ILIc/edkB
-Ho5FzLqIOJZ0OIhJjIW5ioB1CAPOKtVJPbA/zN8X/t7FfdsgTNsXPgKxWsyAeOFGvcOfSLCw
-3NTLfdudqdM8ueI3/IkXLtwh/t8txo1iGavD64YUyaprecf66EZcpwskULgqhBXZQDRlC1nq
-oEbZWzBKjg2uNuXWQGHQgChe6DlVW4hR/uVgvr5wWytITgk9cuRlPgbYYCPTUg3xu91FQNfZ
-wL5ym7E2tObN5B9ubgTZoB16njEZ6wPo2rc2C7RhfugZO4fwRb1Tkua2sxNo7uhOdg00xy1r
-3gX68+fX0GAYSxjDkAN4Dv/qF+IRVG4Gfx7o7YDoqr7q2btfkk7k9dBMr755wasNlS4et84t
-XCBaVn6yHOvp4FDqOaDn5UTsOSDn1VA01fu058Dqzv7sYUW2r043VPIKhyt9jUHrwXcht87k
-8aukTc7nvX6y4ht8mmU0ulsG1SfsPDgAo/5w786Day4cjYt+22l9gTCCvLG5KyiaLVY0xw3m
-xy2+RKLUnozt2gvNaWDuFeZ6PLF8xBsMA2iBF4g01l4BPm49myeBkk00CcHkSgDugKsKS44N
-OOu4Fs2hepcDvOkBTcjuj03fwCQ41yBo7n4hHaHy6DeggqDvNAC+IZyOrNvSBh/lTqnf2mvR
-hjn/hzK+8ArPAww/tq73v/jMD8B67cenh9WOge2cgWRt3g08x3g8fL8t3pBN33AoHhEYym/p
-iz054jQ4qpT4zyyM0GRcfuY92BP6fntvi2s/FKMapukNtGl/16N6wgJ+f5ssnr1Yhyoe1fZo
-iVt8mLfKjf6IweGIow4uAyiqmEyfxNtYivgNrCkY4569kWLclBNazCqcie9t0QWcyqNKl0+t
-hTTJwgQe3ClJwgkukMr6s8P73fj73aZqmvlLqdu4lty4xi0vWQ4Lwi6dkVHKkOnc/MAXlBy/
-0RD415QNwhn6oqpMzjT4z2/IyZD9y7X8lngPlkXqjEbp/mK5gwlt12xj/5iSzckwqpH1zcnM
-AQGlEIToCKPkcgYKAFFBRARDlCMlDxH4svIMTlL5ABJmXx8oDITBIClQUwQkQMxRuTnFNB7E
-gTQ4SJ7OGjYK+iiu4XE1xqWdVtjgSlGonoLbuZrmrA8S96P+Q8XpkMgqSDBMKLL5EhKTGBCD
-vJK0kbiBuyqqTHw8OfQ0jAyF/CDaJPuSKHjTC/o01IAbEqCgJbj4GGr7ovLo+DsAXiH406il
-UMIirTwI4F2bUvuLjmPDCp6SsLWw1e4+0xCwgCPoCM7eptFADkl52QFoZ0FIVXjR0JlJ5cTn
-V6qo/wEDjodTAJAwYcKljhgQc5AY8ecIDYYgUv82IFOHccMZJ2mEgOCAbF6MOSVRUGxyJE+X
-I8BSmfElKFk5Q4n0vanwSMO8UIo+itGwamSKTI82rXJ1SNTSf5cmffzJqFWrR54WBaU1jlY4
-oimemQGLo0qwr70oTBjU5oqHBNe+BMoyM26vNXusAZsCzli3C2viChgXC5jKCegwqEMMwl0J
-ePW8psgQQoSUGQNgWCmxQ7PlEzokj5hnsEKAd+2CJMSDgmHIPxC1CJn4VQbDn2WocGFpp5qM
-jxtMzu2kxpwX4m4TEItJSDkwRJx0An2jipENSD4lFSFFatX2o52SJlgqqpIGQzY+5ESUE+lU
-PYfgxCKvtcI2cggETCn/++v92GC7ilH4Zy4qhMNrPrlwUsWK91QgYSSySMmiAm64MWzAQmZB
-JwGFCtPGMlL86eyFFWZwrJ7zLLPHQHzmIS0zF1fcoLEfQlzinUtOO82gdeRRKacWW4IDso7e
-k6EPH2W4Yz/cPEKykADsWgOZudo4j0DgimNuP7imQLCcA5o7rgJVcDJPzJ6cE4sn2q4zqs00
-vVNKDPDCW8qVUL77RAhXyApmlgn/JEAAPgdd5ZdB+/zzUEUXZZRRLg7wE1BuBOUzUluY4cJS
-AgLitFNPJyvgU1FHJZVT3E5FNVVVV2W1UVcPFQKXV2dVFM856cQ1V1wrok5XXL+709bj9lRU
-/1NAKV0UFhUY1ZRWZ1/NVFJAlx1M01M1LTVbe1DUtltvWQU3XHFPffbV6O4ql1ZhfWWXXVge
-aZdOYCERFk9GFTB2QmrTRXRCfv8l6whNBWjL2MEE/pMLEbD1tmGHH/Z0XIknJhdgiy+u99Z4
-N+Y43qSAmve49pgz5NV8bUkwXRyAafbifwf48z4FQIk52gmdeIFhiDutx4OdfzaVYqFTdVll
-MYomOeOOl2a63VcQ+K6TVtL1UwBNUy73l5aRHtQJRT/oBgc5E7BUAJu5+WzhP4EO6B6f2YZb
-hKHnbolrZx0pOmM8m2b6E1+D1Em6QoJ05UQJAmwQ3SqxIDPQeSS8IP86r4JJfMBpMIN8Hl80
-TyYnzJYZ1MHzVDiRlz/GmW+SICmshDS+VATAz9Thee+HE1ekiEUeOjOTsdsbDDHuUumeu1F6
-ZyZLzkPpJfRovJc/GhLmjuYTPEbyhLcqUBjhm2M7cx0vhaDI+yBqVmRaY60Cf5IgnALCgdkw
-XNBN/y1iqsChFjUXueEGXPYlS5nCRIhHmA5q8hHAFexCgrC1QwGvE4sI/sQ71YhIHpg5TKh4
-lQEPhWoHv1BEBIU3POIJrVGpwBsiUIg1WKCQcit83qBgWBEU3qWF9HBPDcEDQ3h1T1cfAx+8
-oiA4sZivOcDRh1usJo7Hve8E4ejQgNClOV7/GbAXmescMFBRifRMjk/TSIWCeHK/9GiDYLqp
-QTcOAoDX8YON2siJjNoBGnrYiHP3sIcHS4DHRLhxhKIq4dBOCDpCYGcQLjFkym7yLkUtUh8t
-xIsjcqGKmnCxkhVRlg9zNS85LSV8gYhOEXHwCTW0QRfJoBbYsvI+W8APipFjg5f8ohOw8OIc
-USyDc4YlhLrQbxpAIUgZiojAKMmjgQBp4zu0URjOlMiCScDAO+4BFDCEapp7HIs8+GGFPwYt
-kILk04ZkOcOUDaGFy4phDPkURgUp8pDs7IU7rXHJFc5Mb/fEpyfuRCYhao4hJ4CaJ25UjTDx
-xC2QA4yE4Kc/owSI/3Jmup8BxdQXKgimdOcphKG0aI0TFZSS+6ECHN2AhFeeZY4Y0gY/IiWm
-ZsooRZ15B4hMFEft+C6OmtljqLrpg2/2FDfwLGQuOCpJeiCShuokCztDadRIEvWQBCTZIx1x
-iFhtT3tVzWc+6eW3XxXiE9U7BKzo08qqQWpCyALY1ngFwEN1YGvTu1P1auaEBExoF2rTV87W
-tlO+OsynfyWMLOMZw+PoI4YtZGRbD7nUQlLuhnowRxum91h7qrA977pkVm0F1nXRqT2eIMtX
-CTWBmJH1T2ytFWgrlaim0g96Zp3Q95h3MITFDF+AcoQPjnXbs/bVt90CrE/tNlyAada4ev8b
-lGiDwdWt2us7X2pLv6R11tQKa7X++pem9jk22tJ1ujHj1Mn2+lvyjiq43yRuel12XPaq1lnt
-tZd0v4ta6DLXntflxns/od1IuDdV4r1Zp75rC4CU18A/OG8JyblgBjfYwQ+GcIQlDEP4Rrdc
-FSaWFQZMAPoCsb8Whm1+Z5UU/iIvnKsCMAESELHvCuDAL35BghU8YRrX2MY3pnGF13vc5kb3
-ZGjlrGy3Kl8CVFdYmgorpljlg7pKymyjyleBYWxgGfdUvVfGGIazemWlfdgTVpsUo+oVrJI1
-Kk51KrOixGUqq1lNyuZt85On/OIq/1XNWMbziJWrZfemd8y5qlpghUVxT3mlOWASm3Oi/1hn
-wHatbnmGtJGDjGE8/5lOgYZvofeGZhB3F1UBOYKiRQ03Rgf3xM2IdKqTa+j6ahnSlhZF1X7V
-5Vl7uLKdXvOodT3CUp/30KhWdbBJtuqvHjcCADs=
+The process isn't invoking syscall 0 (in this case it was actually __NR_select
+(82)).  syscall matches ORIG_EAX, though, so I guess something is going wrong
+earlier, maybe in move_registers?
 
-------=_NextPart_371CJ85KAKHHBHGJ_1AH_DLKK--
-
+-- 
+ - mdz
 
 
 -------------------------------------------------------
