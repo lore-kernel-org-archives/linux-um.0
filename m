@@ -1,21 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ARFXP-0007AZ-Ed
-	for User-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 10:46:19 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1ARFXN-0005HA-0T
-	for User-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 10:46:17 -0800
-From: Jeff Dike <jdike@addtoit.com>
+	id 1ARIDS-0001kZ-TT
+	for User-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 13:37:54 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1ARIDS-0007k1-6X
+	for User-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 13:37:54 -0800
+From: Henrik Nordstrom <hno@marasystems.com>
 Subject: Re: [uml-devel] iptables-restore randomly crashes under UML
-Message-ID: <20031202185839.GG24954@ccure.user-mode-linux.org>
-References: <20031202164257.GA24954@ccure.user-mode-linux.org> <Pine.LNX.4.44.0312021737230.28431-100000@filer.marasystems.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0312021737230.28431-100000@filer.marasystems.com>
+In-Reply-To: <20031202185839.GG24954@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0312022225020.30614-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,38 +23,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 2 Dec 2003 13:58:39 -0500
-To: Henrik Nordstrom <hno@marasystems.com>
+Date: Tue, 2 Dec 2003 22:37:46 +0100 (CET)
+To: Jeff Dike <jdike@addtoit.com>
 Cc: User-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Dec 02, 2003 at 05:49:54PM +0100, Henrik Nordstrom wrote:
-> Not from what I can tell.. from what I can see when staring at the code
-> the code path for flushing the tlb is the same, and the frequency this
-> will happen is also the same.. in both it completely remaps the kernel vm
-> area on a tlb flush.
+On Tue, 2 Dec 2003, Jeff Dike wrote:
 
-Once you're in the tlb flush code, you're right.  I was talking about the
-problem you're seeing, which is very tt mode-specific.
+> I used to do that.  The problem with it is that doing lookups and updates
+> of the shadow page tables involves allocating memory, which can sleep.  So,
+> when you sleep inside schedule, you schedule again, and sleep in get_free_page
+> again, and that gets ugly rather quickly.
 
-> How I propose this would be optimized differs slightly in tt or scas mode.  
-> What I propose is a page table mirror of the kernel vm area related to
-> each host vm used by the UML. This page table mirror is simply an array of
-> pte_t to the size of the kernel vm area. And only if there is any bitwise
-> difference between the pte in init_mm and the page table mirror is the
-> kernel vm page remapped and the page table mirror updated with the current
-> pte for that page.
+Right.
 
-I used to do that.  The problem with it is that doing lookups and updates
-of the shadow page tables involves allocating memory, which can sleep.  So,
-when you sleep inside schedule, you schedule again, and sleep in get_free_page
-again, and that gets ugly rather quickly.
+> Yup.  This can be optimized somewhat by eliminating some of the munmap parts
+> of the munmap/mmap pairs.
 
-> Doing a lot of munmap/mmap calls is quite expensive for the host.
+Accorting to my stats about 99% of the kernel vm mmap/munmap is in vain,
+at least in TT mode.. and this was observed with the mm_seq optimization
+enabled. But to optimize these away one needs to know what have changed..
 
-Yup.  This can be optimized somewhat by eliminating some of the munmap parts
-of the munmap/mmap pairs.
+What I also noticed was that there seems to be a lot of vm_seq updates
+even without any kernel vm area modifications (at leas not any I could
+notice). So not only did this miss updates on vfree() it also triggered 
+a flush even if there was no updates.
 
-				Jeff
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
