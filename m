@@ -1,25 +1,49 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CicwP-0005nO-7E for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Dec 2004 10:16:29 -0800
-Received: from pike.sandelman.ca ([205.150.200.164])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CicwK-0006SL-6d
+	id 1CjLEr-0006HN-Q9 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 28 Dec 2004 09:34:29 -0800
+Received: from lon-del-03.spheriq.net ([195.46.50.99])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CjLEr-0003ri-2z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Dec 2004 10:16:29 -0800
-Received: from sandelman.ottawa.on.ca (wlan232.sandelman.ca [205.150.200.232])
-	by pike.sandelman.ca (Postfix) with ESMTP id ADAF860104
+	Tue, 28 Dec 2004 09:34:29 -0800
+Received: from lon-inc-03.spheriq.net ([195.46.50.67])
+	by lon-del-03.spheriq.net with ESMTP id iBSHYKeG010444
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 26 Dec 2004 13:16:13 -0500 (EST)
-Received: from marajade.sandelman.ottawa.on.ca (marajade [127.0.0.1])
-	by sandelman.ottawa.on.ca (Postfix) with ESMTP id 4ED2DBCEE
+	Tue, 28 Dec 2004 17:34:20 GMT
+Received: from lon-out-01.spheriq.net (lon-out-01.spheriq.net [195.46.50.129])
+	by lon-inc-03.spheriq.net with ESMTP id iBSHYKDt028358
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 26 Dec 2004 13:16:13 -0500 (EST)
-From: "Michael Richardson" <mcr@sandelman.ottawa.on.ca>
-Message-ID: <27776.1104084973@marajade.sandelman.ottawa.on.ca>
-Subject: [uml-devel] synchronous hostfs
+	Tue, 28 Dec 2004 17:34:20 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-01.spheriq.net with ESMTP id iBSHYKv5004711
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 28 Dec 2004 17:34:20 GMT
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by lon-cus-01.spheriq.net with ESMTP id iBSHYH7C003796
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 28 Dec 2004 17:34:20 GMT
+Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 4C874DA41
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 28 Dec 2004 17:34:16 +0000 (GMT)
+Received: from zeta.dmz-ap.st.com (localhost [127.0.0.1])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id BC436520C7
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 28 Dec 2004 17:34:15 +0000 (UTC)
+Received: from mail1.sha.st.com (mail1.sha.st.com [10.94.100.2])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 2AEE913328
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 28 Dec 2004 17:34:15 +0000 (GMT)
+From: Alex LIU <alex.liu@st.com>
+Message-ID: <00c901c4ed03$7313d1a0$83655e0a@sha.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [uml-devel] Do_signal in tt mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,51 +55,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 26 Dec 2004 13:16:13 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 29 Dec 2004 01:34:14 +0800
+Content-Transfer-Encoding: 8bit
+To: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
+Hi,all:
 
+In i386 do_signal is called just after the system call so the processes can deal with their signals.But uml has changed the system call interface. When and how do the traced threads in uml tt mode receive their signals? I used the uml 2.6.7 version. Thanks!
 
-I'm running 2.4.26-um3.
-I happen to be running hostfs with NFS underneath. 
-I get core dumps from my application, and I want to gdb them outside
-of the UML. I had to switch from core dump to NFS (which seems to fail
-now) to putting them in /tmp (which is ramdisk), and then move them to
-/var/tmp, which is hostfs. 
-
-Still, I now have to use unique file names, or things get confused
-between host and guest.
-
-I also like to do:
-  "make DESTDIR=/uml/root/file install"
-
-from outside. This now only has effect if I umount/mount the file
-system. (I know have a /usr/local mount just for this, even though
-/usr/local is inside of /)
-It used to be that this was a problem only if the program was running.
-
-Is there some way to defeat the caching that is occuring?
-or even to just flush it? (other than umount)
-
-- -- 
-]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
-]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
-] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
-] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
+Alex
 
 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-Comment: Finger me for keys
-
-iQCVAwUBQc7/64qHRg3pndX9AQHUpQP9Fo08vmYRdHJ8emMvUsS5a05oAxNfpt5q
-qELzCip/zknhJWKojR7JkbpzQdW0jtTbSBnq+B3HaUeFBCwoA8wGOCNd1h8BGkIX
-lolSgHJOOco6V01f/yct1rhoPv7NxUavsMCyoTVMC1QsFrHuN++69vMqeZcJjQ2K
-6bS8IkpswgA=
-=KJhJ
------END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
