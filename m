@@ -1,12 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [uml-devel] Re: Workaround for bug #851759 -  SuSE YAST in textmode does not work
-Message-ID: <20031212115528.GA17176@bytesex.org>
-References: <20031212085841.GC15551@bytesex.org> <Pine.LNX.4.44.0312121231310.13687-100000@filer.marasystems.com>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AUqJx-00012M-PW
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 12 Dec 2003 08:39:17 -0800
+Received: from linuxhacker.ru
+	([217.76.32.60] helo=shrek.linuxhacker.ru ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.24)
+	id 1AUqJx-0005IF-4R
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 12 Dec 2003 08:39:17 -0800
+From: Oleg Drokin <green@linuxhacker.ru>
+Message-ID: <20031212163816.GA10993@linuxhacker.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0312121231310.13687-100000@filer.marasystems.com>
+Subject: [uml-devel] export ket_kmem_end()
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,23 +25,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Dec 2003 12:55:28 +0100
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Date: Fri, 12 Dec 2003 18:38:17 +0200
+To: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Dec 12, 2003 at 12:31:44PM +0100, Henrik Nordstrom wrote:
-> On Fri, 12 Dec 2003, Gerd Knorr wrote:
-> 
-> > Host is 2.4.23, uml was 2.4.20.
-> 
-> SKAS / TT?
+Hello!
 
-skas, in tt mode it doesn't hang.
+   The functions get_kmem_end() should be exported which patch below
+   does.
+   This function is called as part of calculation of various FIXADDR_*
+   constants (and hence everything that depends on those). If some
+   module tries to use one of such "constants", it is doomed.
+   Please apply.
 
-  Gerd
+--- uml-2.4/arch/um/kernel/ksyms.c.orig	2003-12-12 18:16:28.000000000 +0200
++++ uml-2.4/arch/um/kernel/ksyms.c	2003-12-12 18:16:39.000000000 +0200
+@@ -33,6 +33,7 @@
+ EXPORT_SYMBOL(flush_tlb_range);
+ EXPORT_SYMBOL(host_task_size);
+ EXPORT_SYMBOL(arch_validate);
++EXPORT_SYMBOL(get_kmem_end);
+ 
+ EXPORT_SYMBOL(region_pa);
+ EXPORT_SYMBOL(region_va);
 
--- 
-You have a new virus in /var/mail/kraxel
+Bye,
+    Oleg
 
 
 -------------------------------------------------------
