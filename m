@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Alh6r-0006TD-W5 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 20:15:25 -0800
+	id 1Alh7W-0006Vs-WB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jan 2004 20:16:06 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Alh6r-0002DU-4d
+	(Exim 4.30) id 1Alh7W-0002PL-Dy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jan 2004 20:15:25 -0800
-Message-Id: <200401280439.i0S4dJZw005512@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Mapping con=pts to a port instead of con=port 
-In-Reply-To: Your message of "Sat, 24 Jan 2004 15:34:40 +1030."
-	<20040124050440.GF4203@erizo.shearer.org> 
-References: <20040124050440.GF4203@erizo.shearer.org> 
+	Tue, 27 Jan 2004 20:16:06 -0800
+Message-Id: <200401280439.i0S4dUZw005532@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Kernel idles in loop after loading IPv4 
+In-Reply-To: Your message of "Tue, 27 Jan 2004 23:28:07 GMT."
+	<Pine.LNX.4.58.0401272326020.25787@ucontrol.mobiledns.com> 
+References: <1075236841.15950.10.camel@rocket.innercite.com>
+	<Pine.LNX.4.58.0401272326020.25787@ucontrol.mobiledns.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,27 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 27 Jan 2004 23:39:19 -0500
-To: Dan Shearer <dan@shearer.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 27 Jan 2004 23:39:30 -0500
+To: Steven James <pyro@linuxlabs.com>
+Cc: Phil Nadeau <phil@innercite.com>, user-mode-linux-devel@lists.sourceforge.net
 
-dan@shearer.org said:
-> The same effect can be achieved with termnetd, with the advantage of
-> your in.telnetd solution that you aren't building in complexity that
-> doesn't belong to UML, but without the clomp-clomp finesse telnetd
-> achieves :-) 
+pyro@linuxlabs.com said:
+> I ran into that as well, but didn't have time to do much about it. As
+> a further datapoint, if I disable all net support and pass it init=/
+> bin/bash, I get the bash prompt (ubd filesystems do get checked/
+> mounted) but then it goes into the idle loop and stays there. 
 
-Yeah, but it has uncleanlinesses of its own (like the need to generate a config
-file on the fly), but it's cleaner than what I have now.
+Hmmm.
 
-My major problem with it is that attaching consoles to ports will stop working
-for some number of users if I switch to termnetd, and I'm willing to put up
-with some amount of nastiness inside UML if it increases the size of the 
-userbase that UML works for out of the box.
+If you could get a stack trace from the last call to schedule, that would be
+handy.  You could automate it with
+	comm <n>
+	bt
+	c
+	end
 
-That concern would be somewhat assuaged if UML were generally installed with
-packages that could be made to depend on termpkg, but I think that's not the
-case.
+with breakpoint <n> attached to schedule().
 
 				Jeff
 
