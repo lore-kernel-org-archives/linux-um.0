@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aycta-0008KN-VD for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 12:23:10 -0800
-Received: from i-195-137-100-222.freedom2surf.net ([195.137.100.222]
-	helo=greenrd.org) by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AycgU-0005Kd-Su for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 12:09:39 -0800
-From: Robin Green <greenrd@greenrd.org>
-Message-ID: <20040303200937.GK14069@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9RxwyT9MtfFuvYYZ"
-Content-Disposition: inline
-Subject: [uml-devel] Module exploits into the host?
+	id 1Aye9T-00020K-9A for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 13:43:39 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AyddD-0007z6-AM for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 13:10:19 -0800
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] Module exploits into the host?
+In-Reply-To: <20040303200937.GK14069@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0403032227040.17693-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,39 +25,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Mar 2004 20:09:37 +0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 3 Mar 2004 22:29:59 +0100 (CET)
+To: Robin Green <greenrd@greenrd.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Wed, 3 Mar 2004, Robin Green wrote:
 
+> Even with the skas patch, is it possible for an insmod to allow an attacker to
+> break out of a UML?
 
---9RxwyT9MtfFuvYYZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes.
 
-Even with the skas patch, is it possible for an insmod to allow an attacker=
- to
-break out of a UML?
+kernel code has full access as the user the kernel runs as, skas or not. 
+This is required for UML to work as the UML kernel needs to access 
+numerous resources on the host to be able to do anything.
 
-If not, why not?
+If you want to minimize this, run the UML chrooted (and absolutely not as 
+root). The use of process capabilities can also be used to limit the 
+possible damage, or any of the security extensions to Linux.
 
-If so, are there any configurations that are not vulnerable to this?
---=20
-Robin
+Regards
+Henrik
 
---9RxwyT9MtfFuvYYZ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFARjuAtPCt67UksSYRAmDqAJ91ILK7d9ooGCk7lklI5kQ/jLqS+QCePPCP
-NAVoIbCJAyYu4ScviJxrso4=
-=4IDs
------END PGP SIGNATURE-----
-
---9RxwyT9MtfFuvYYZ--
 
 
 -------------------------------------------------------
