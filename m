@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ahwaq-0000jt-JI for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 11:58:52 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1Ahwaq-0005PM-1d for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 11:58:52 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+	id 1Ahwm2-0003K9-T5 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 12:10:26 -0800
+Received: from mailgate.uni-paderborn.de ([131.234.22.32])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1Ahwm2-0007Zn-HM
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 12:10:26 -0800
+Message-ID: <4009966E.6020406@upb.de>
+From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] cannot compile 2.6.1 uml-kernel, NPTL?
 References: <bua04l$6uo$1@sea.gmane.org>
-In-Reply-To: <bua04l$6uo$1@sea.gmane.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200401172100.36754.blaisorblade_spam@yahoo.it>
+	<200401172100.36754.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200401172100.36754.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,48 +29,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 21:00:36 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>
+Date: Sat, 17 Jan 2004 21:09:18 +0100
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 01:38, sabato 17 gennaio 2004, Sven K=F6hler ha scritto:
-> hi,
->
-> i'm trying to compile kernel 2.6.1 with the UML-patch that Jeff Dike
-> supplied. Well, i get that error:
+>>ld: BFD 2.14.90.0.6 20030820 assertion fail elf.c:3458
+> 
+> assertion failed means a bug. Would you retest with another binutils version? 
+> On my system ld --version gives:
 
-> arch/um/kernel/tt/unmap_fin.o(.text+0x358d0):strpbrk: first defined here
-> /usr/lib/gcc-lib/i686-pc-linux-gnu/3.2.3/../../../../i686-pc-linux-gnu/bi=
-n/
->ld: Warning: size of symbol `strpbrk' changed from 179 in
-> arch/um/kernel/tt/unmap_fin.o to 64 in vmlinux
+silly me, i should have realized that.
 
-It must be linker error.
+> GNU ld version 2.13.90.0.18 20030121
+> 
+> So probably you have a binutils bug. *Maybe* there is also something strange 
+> in UML that triggers the bug, but an assertion failed is anyway a linker bug.
 
-> /usr/lib/gcc-lib/i686-pc-linux-gnu/3.2.3/../../../../i686-pc-linux-gnu/bi=
-n/
-
->ld: BFD 2.14.90.0.6 20030820 assertion fail elf.c:3458
-
-assertion failed means a bug. Would you retest with another binutils versio=
-n?=20
-On my system ld --version gives:
-
-GNU ld version 2.13.90.0.18 20030121
-
-So probably you have a binutils bug. *Maybe* there is also something strang=
-e=20
-in UML that triggers the bug, but an assertion failed is anyway a linker bu=
-g.
-
-Bye
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
-EOSIGN
-
+i will retry with binutils ...0.18, hope it helps.
 
 
 -------------------------------------------------------
