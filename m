@@ -2,26 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CsPBZ-0001w2-JL for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Jan 2005 09:36:33 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CsPBX-0002Ck-Pr
+	id 1CsbZd-0006uq-GO for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 22 Jan 2005 22:50:13 -0800
+Received: from [202.54.110.230] (helo=ngate.noida.hcltech.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CsbZc-0002mh-In
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Jan 2005 09:36:33 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] SIGSEGV and SA_NODEFER
-References: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
-	<200501211318.16848.rob@landley.net>
-	<200501212058.16992.blaisorblade@yahoo.it>
-In-Reply-To: <200501212058.16992.blaisorblade@yahoo.it>
+	Sat, 22 Jan 2005 22:50:13 -0800
+Received: from exch-03.noida.hcltech.com (exch-01 [204.160.254.57])
+	by ngate.noida.hcltech.com (8.12.5/8.12.5) with ESMTP id j0N6setd012446
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 23 Jan 2005 12:25:03 +0530
+Message-ID: <267988DEACEC5A4D86D5FCD780313FBB03B12C4B@exch-03.noida.hcltech.com>
+From: "Vaibhav  Sharma, Noida" <Vaibhavs@noida.hcltech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501221134.44585.rob@landley.net>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C50117.47A094E0"
+Subject: [uml-devel] memory
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,61 +30,84 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 22 Jan 2005 11:34:44 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 23 Jan 2005 12:16:34 +0530
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 21 January 2005 02:58 pm, Blaisorblade wrote:
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> That is -mm1, I've already looked at both... the patches listed below are
-> minor fixes / improvements...
->
-> The name of the 2.6.11-rc1-mm2 patch which probably fixed your issue is:
->
-> uml-fix-a-stack-corruption-crash.patch
+------_=_NextPart_001_01C50117.47A094E0
+Content-Type: text/plain
 
-I reverted that patch, rebuilt vmlinux, tried again, and it's happily halfway 
-through the binutils build as I type.  That fix doesn't seem to be it.  
-(Makes a certain amount of sense, since I wasn't seeing a crash, I was seeing 
-a hang.)
+Hi,
+I have to build a simulator, to check the scalability limits in memory
+management of linux. For this, the simulator  will provide a large amount of
+RAM (in GBs), even if the amout of physical memory is only 512MB. 
 
-> If it's not a problem, try removing it from -mm2 and recompiling, and test
-> if you get the crash with the new kernel (which is what I expect)...
->
-> > More later, lunch is over...
->
-> Here, now, I must go to dinner... bye!
+Can UML be used for this purpose? I had seen the "mem" option in the kernel
+switches option of UML. Can UML simulate such a case? If it does, how UML
+handles this? Specifically, can the UML kernel allocate all this amount of
+memory (leaving aside the page faults which will be generated in case of
+read/write requests to the allocated pages, for it has to use the actual
+RAM)? Say, for example if I allocate 4 GB, will the UML kernel allocate all
+the amount in the simulated RAM. (maybe it does it in the some swap, or the
+/tmp, as the documentation says for the "mem" usage
+<http://user-mode-linux.sourceforge.net/switches.html
+<http://user-mode-linux.sourceforge.net/switches.html> > .  
 
-Another interesting point is that with -mm2 (patched or unpatched), I'm seeing 
-output hiccups when the system swaps.  Here's a cut and paste of a section 
-where it was extracting the binutils tarball:
+If I have wrong interpretation of the "mem" option in UML, please do correct
+me. 
 
-binutils-2.14/gas/testsuite/gas/hppa/unsorted/common.s
-binutils-2.14/gas/testsuite/gas/hppa/unsorted/fragbug.s
-binutils-2.14/gas/testsuite/gas/hppa/unsorteortedrted/ted/ged/gld/glo/globglobalobalobalbbalbualbuglbug.bug.sug.sg.s.ss
-binutils-2.14/gas/testsuite/gas/hppa/unsorted/importbug.s
+TIA, 
+Vaibhav 
 
-And later on...
+------_=_NextPart_001_01C50117.47A094E0
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
 
-binutils-2.14/ld/testsuite/ld-sparc/tlssunbin64.dd
-binutils-2.14/ld/testsuite/ld-sparc/tlssunbin64.rd
-binutils-2.14/ld/testsuite/lde/ld-/ld-sld-spd-spa-sparsparcparc/arc/trc/tlc/tls/tlsstlssulssunssunbsunbiunbinnbin6bin64in64.n64.s64.s4.s.ss
-binubinutinutinutilutilstils-ils-2ls-2.s-2.1-2.142.14/.14/l14/ld4/ld//ld/tld/ted/tes/testtestsestsustsuitsuitsuiteuite/ite/lte/lde/ld-/ld-sld-spd-spa-sparsparcparc/arc/trc/tlc/tls/tlsstlssulssunssunbsunbiunbinnbin6bin64in64.n64.s64.sd4.sd.sdsd
-binutils-2.14/ld/testsuite/ld-sparc/tlssunbin64.td
-binutils-2.14/ld/testsuite/ld-sparc/tlssunbinpic32.s
-binutils-2.14/ld/testsuite/ld-sparc/tlssunbinpic64.s
-binutils-2.14/ld/testsuite/ld-sparc/tlssunnopic32.dd
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2658.2">
+<TITLE>memory</TITLE>
+</HEAD>
+<BODY>
 
-It did it about five or six times, that I noticed.  (And it did it before I 
-reverted the stack fix patch, so that's not it.)
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hi,</FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">I have to build a simulator, to check =
+the scalability limits in memory management of linux. For this, the =
+simulator&nbsp; will provide a large amount of RAM (in GBs), even if =
+the amout of physical memory is only 512MB. </FONT></P>
 
-I had all that output piped to tee, which output it to out.txt, and the 
-corresponding line of out.txt isn't glitched, so it seems to just be a 
-cosmetic bug in the display code.  But I thought I'd report it anyway.  I'm 
-using stdin/stdout as the console.  (And even though you put it into raw 
-mode, I still can't ctrl-c out of the processs I'm running, either.)
+<P><FONT SIZE=3D2 FACE=3D"Arial">Can UML be used for this purpose? I =
+had seen the &quot;mem&quot; option in the kernel switches option of =
+UML. Can UML simulate such a case? If it does, how UML handles this? =
+Specifically, can the UML kernel allocate all this amount of memory =
+(leaving aside the page faults which will be generated in case of =
+read/write requests to the allocated pages, for it has to use the =
+actual RAM)? Say, for example if I allocate 4 GB, will the UML kernel =
+allocate all the amount in the simulated RAM. (maybe it does it in the =
+some swap, or the /tmp, as the documentation says for the =
+&quot;mem&quot; usage &lt;</FONT><A =
+HREF=3D"http://user-mode-linux.sourceforge.net/switches.html"><U><FONT =
+COLOR=3D"#0000FF" SIZE=3D2 =
+FACE=3D"Arial">http://user-mode-linux.sourceforge.net/switches.html</FON=
+T></U></A><FONT SIZE=3D2 FACE=3D"Arial">&gt; .&nbsp; </FONT></P>
 
-Rob
+<P><FONT SIZE=3D2 FACE=3D"Arial">If I have wrong interpretation of the =
+&quot;mem&quot; option in UML, please do correct me. </FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">TIA, </FONT>
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Vaibhav </FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C50117.47A094E0--
 
 
 -------------------------------------------------------
