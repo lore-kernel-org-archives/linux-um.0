@@ -2,17 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A9Prd-0005wH-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 14 Oct 2003 07:09:29 -0700
-Received: from bay7-f125.bay7.hotmail.com ([64.4.11.125] helo=hotmail.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A9Prc-00053I-G8
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 14 Oct 2003 07:09:28 -0700
-From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
-Subject: Re: [uml-devel] filemap feature 2.4.22-5um
+	id 1A9Src-0007Ex-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Tue, 14 Oct 2003 10:21:40 -0700
+Received: from pool-151-203-201-50.bos.east.verizon.net ([151.203.201.50] helo=uml.karaya.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.22)
+	id 1A9Srb-00012N-HF
+	for User-mode-linux-devel@lists.sourceforge.net; Tue, 14 Oct 2003 10:21:39 -0700
+Message-Id: <200310130515.h9D5FWNv003565@uml.karaya.com>
+Subject: Re: [uml-devel] filemap feature 2.4.22-5um 
+In-Reply-To: Your message of "Tue, 14 Oct 2003 03:54:18 -0000."
+             <BAY7-F67zjLYL23VZvZ0000e11f@hotmail.com> 
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <BAY7-F125P4zi6UUG7W0000f8fc@hotmail.com>
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -23,47 +26,24 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 14 Oct 2003 14:08:57 +0000
-To: doug@easyco.com
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 13 Oct 2003 01:15:32 -0400
+To: Steve Schmidtke <steve_schmidtke@hotmail.com>
+Cc: User-mode-linux-devel@lists.sourceforge.net
 
-Doug Dumitru wrote:
->A couple of questions.  I noticed that you are not mapping /proc/mm.
-[...]
->This looks like one per virtual process (minus threads).  Am I reading this 
->right.
+steve_schmidtke@hotmail.com said:
+> You can bet this patch won't make it into Jeff's official source tree.
+>   I'm cool with that.
 
-yes. The discussion for a previous patch considered a "mm" table to hold a 
-pool of /proc/mm files to handle one fd per process.  One side effect of 
-this would place a hard limit on the number of processes in the UML: the 
-number of /proc/mm files opened.  I'm not sure what side effects re-using 
-/proc/mm files would have, either.  I should have mentioned TT/SKAS issues, 
-but it slipped my mind (I only use TT mode). So to use skas in a chroot, 
-you'll still have to mount /proc/mm in there.  Hopefully Jeff has a fix for 
-/proc/mm in the works.
+Why so pessimistic?  I like filemap - IIRC, i suggested it.  We had that
+argument a while back which I don't recall the details about, so what goes in
+might not be exactly this patch, but at some point, I'm going to merge something
+like this.
 
->On virtuals that I run, I tend to only see a single "vm" file opened:
+I'd also like people to use this to see what's missing, if anything, and to
+get any improvements on the command line syntax.
 
-yup. Things have changed since I looked at it for the last filemap patch 
-*sigh*.  It used to be 1 file for every 256M of memory, but now, it is just 
-one big happy file, so in SKAS mode you should need only one vm file entry.  
-In TT mode there are a few more files required, but the max now seems to be 
-3 or 4 entries.
+				Jeff
 
->Is there any reason the tun/tap networking wouldn't work with this layout 
->by pre-opening /dev/net/tun.
-
-Possibly, but you will have to check out the "TUN/TAP with a preconfigured 
-tap device" section of the virtual networking howto as the uml_net helper 
-won't pick up the filemapped fd for /dev/net/tun inside a chroot (nor will 
-it likely have ifconfig or route binaries available).   Let me know if you 
-get this to work.
-
-Steve Schmidtke
-
-_________________________________________________________________
-The new MSN 8: advanced junk mail protection and 2 months FREE*  
-http://join.msn.com/?page=features/junkmail
 
 
 
