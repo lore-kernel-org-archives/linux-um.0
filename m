@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C9pbJ-0002Sv-6i for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Sep 2004 11:42:53 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1C9phn-0003gS-6c for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 21 Sep 2004 11:49:35 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1C9pbI-0001qu-7X for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Sep 2004 11:42:53 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Minor problems with interrupted systemcalls
-References: <8B6FF516CBA0194AB0996705076B02520F7C35@ABGEX01E.abg.fsc.net>
-In-Reply-To: <8B6FF516CBA0194AB0996705076B02520F7C35@ABGEX01E.abg.fsc.net>
+	id 1C9phm-0002rI-FF for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 21 Sep 2004 11:49:35 -0700
+From: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
+Subject: Re: [uml-devel] Managing 2.6 merge - url for the patches sent to merge
+References: <200409181944.58072.blaisorblade_personal@yahoo.it>
+	<200409202030.49422.blaisorblade_personal@yahoo.it>
+	<200409210321.i8L3LgdR015667@ccure.user-mode-linux.org>
+In-Reply-To: <200409210321.i8L3LgdR015667@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409211931.24984.blaisorblade_spam@yahoo.it>
+Message-Id: <200409212001.43965.blaisorblade_personal@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,152 +31,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 21 Sep 2004 19:31:24 +0200
+Date: Tue, 21 Sep 2004 20:01:43 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Gerd Knorr <kraxel@bytesex.org>
 
-On Monday 20 September 2004 12:06, Stroesser, Bodo wrote:
-> Before commenting the patch in detail, let me try to explain, what I
-> found out about interrupted systemcalls. I didn't find any
-> documentation, so my knowledge comes from mailing lists and kernel code
-> (I evaluated i386 and s390 too). In case I've missed some facts, please
-> correct me!
-
-> Linux 2.6 syscall-handler use the results -ERESTARTSYS, -ERESTARTNOHAND,
-> ERESTARTNOINTR and -ERESTART_RESTARTBLOCK to tell do_signal(), that a
-> systemcall has been interrupted. The user never should see these codes,
-> because they are replaced by -EINTR, when the appropriate action has
-> been taken by do_signal(). Depending on the result and the disposition
-> for the signal which interrupted the systemcall, the systemcall restart
-> should be done or not.
-
-> If no signal handler has to be started for a signal (or no unblocked
-> signal is pending), get_signal_to deliver() will return 0, 
-
-Yes, I missed that last time - I saw the "no-unblocked signal" case, but I 
-didn't see that it returns only signal that have a signal handler installed 
-(I completely skipped reading the code after the "dequeue_signal" call).
-
-> otherwise it 
-> will return the number of the signal, for which a handler must be
-> started.
-Ok.
-> A systemcall restart should be done for
-
-> -ERESTARTSYS, if no handler has to be started or SA_RESTART is set in
-> the signal disposition
-> -ERESTARTNOHAND, if no handler has to be started
-> -ERESTARTNOINTR, always
-> -ERESTART_RESTARTBLOCK, if no handler has to be started, but with a
-> different systemcall number (__NR_restart_syscall). Special parameters
-> for that call are stored in the task's restartblock by the interrupted
-> systemcall handler.
-> If no systemcall restart is performed, the result has to be set to
-> -EINTR.
-
-> Further comments see below.
-
-> > Could you explain them in more detail, and clean up this part of the
+On Tuesday 21 September 2004 05:21, Jeff Dike wrote:
+> blaisorblade_personal@yahoo.it said:
+> > Don't use uml-use-va_end.patch, it breaks UML on rebooting.
 >
-> patch?
+> How?  That patch looks completely safe to me.
+I'm not understanding why either, but with the patch applied, I get 
+"Segmentation fault" soon after reboot. You can read a complete output below.
+Also notice the "deactivate_all_fds failed, errno = 9", which is frequent even 
+without the patch.
 
-> 15:03:30.441065600 +0200
->
-> > > @@ -132,19 +132,18 @@
-> > >  {
-> > >       siginfo_t info;
-> > >       struct k_sigaction *ka;
-> > > -     int err, sig;
-> > > +     int sig;
-> > >
-> > >       if (!oldset)
-> > >             oldset = &current->blocked;
-> > >
-> > >       sig = get_signal_to_deliver(&info, regs, NULL);
-> > > -     if(sig == 0)
-> > > -           return(0);
+However, note that you may need SKAS and SYSEMU to trigger that (maybe).
 
-> This return skips the handling of systemcall restarts if no signal
-> handler is needed
-Well, sounds reasonable; even a signal without a userspace handler can 
-interrupt a syscall, but in that case, even if sig == 0, we must check if we 
-mus 
+> Rebooting is broken (in tt mode anyway) because the file lock on the root
+> ubd file descriptor isn't dropped. 
+No, I'm not getting this problem.
 
-> > get_signal_to_deliver and sig == 0 seems to mean that no signal is
-> > available.
-I was wrong.
+> Mysteriously, setting that descriptor 
+> CLOEXEC doesn't seem to help.
+No, this problem seems to go away on 2.6 hosts (at least, that's my random 
+experience). It seems, so, a 2.4 host bug.
 
-> > > -
-> > > -     /* Whee!  Actually deliver the signal.  */
-> > > -     ka = &current->sighand->action[sig -1 ];
-> > > -     err = handle_signal(regs, sig, ka, &info, oldset, error);
-> >
-> > Why do you drop the handling of errors from handle_signal()? If you do
-> > this to 
-> > workaround handle_signal() bugs in handling -ERESTART*, fix
-> > handle_signal(); 
+See this patch from Henrik Normstrod for a workaround:
 
-> > there are other errors that it can return, and that you must handle.
-> >
-> > > -     if(!err) return(1);
-> > > +     if(sig > 0) {
-> > > +           /* Whee!  Actually deliver the signal.  */
-> > > +           ka = &current->sighand->action[sig -1 ];
-> > > +           handle_signal(regs, sig, ka, &info, oldset, error);
-> > > +           return(1);
-> > > +     }
+http://marasystems.com/download/uml/10-flock.patch
 
-> If a handler is needed, handle_signal() is called. It contains the code
-> to process systemcall restarting for this case. Without a handler, the
-> existing code behind the patch is processed (has been skipped in almost
-> all cases without the patch).
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+Linux version 2.6.9-rc2merging-pass1 (paolo@zion.localdomain) (gcc version 
+3.3.2 (Mandrake Linux 10.0 3.3.2-6mdk)) #7 Sun Sep 19 20:33:32 CEST 2004
+[...]
+Memory: 29128k available
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...found
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with errno 2)
+NET: Registered protocol family 16
+[...]
+Initializing stdio console driver
+VFS: Mounted root (ext2 filesystem) readonly.
+INIT: version 2.84 booting
+INIT: Entering runlevel: 5
+INIT: Switching to runlevel: 6
+INIT: Sending processes the TERM signal
+reboot
+Restarting system.
 
-> But what about bad return from handle_signal()? As I could see, the only
-> reason for handle_signal() to return error is a SEGV, while writing to
-> process's stack. The handler thus could not be started.
+[This is always output at reboot, ALWAYS, if there is no segfault]
+deactivate_all_fds failed, errno = 9
 
-Ignoring a return value for a good reason should always be documented in the 
-code as you did here - also, the i386 handle_signal() returns a void, while 
-here we must understand just how to handle this - should kern_do_signal 
-return 0 or 1?
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+Linux version 2.6.9-rc2merging-pass1 (paolo@zion.localdomain) (gcc version 
+3.3.2 (Mandrake Linux 10.0 3.3.2-6mdk)) #7 Sun Sep 19 20:33:32 CEST 2004
+Built 1 zonelists
+[bla bla bla]
+VFS: Mounted root (ext2 filesystem) readonly.
+INIT: version 2.84 booting
+INIT: Entering runlevel: 5
+INIT: Switching to runlevel: 6
+INIT: Sending processes the TERM signal
+reboot
+Restarting system.
 
-Actually, do_signal is not standard among archs, and its return value it's 
-either ignored or used as whether the syscall is interrupted or not (for 
-sigsuspend and such, below).
+Segmentation fault
 
-> It's not a good 
-> idea to continue with syscall restart processing, written for the case
-> of no signal handler...
-Obviously not.
+I've done a little debugging of that without success, but the problem is after 
+coming back to main.
 
-> If a SEGV occurs, force_segv() is called to deliver SIGSEGV, and that's
-> all we have to do. (One fact is outstanding: I believe the signal will
-> not be delivered on this, but on the next return from kernel to user. I
-> will try to write a small test for this. But if it is wrong, it's wrong
-> in i386 and s390 too!)
-
-> > >       /* Did we come from a system call? */
-> > >       if(PT_REGS_SYSCALL_NR(regs) >= 0){
-> >
-
-> If you compare the patched code to i386, you will see it's *very*
-> similar. And it should behave very similar to i386 (that is, what it
-> should be - isn't it?)
-
-Yes, I agree they should be similar. Er, shouldn't the check "Did we come from 
-a syscall" be added like in i386 to handle_signal too? The "ERESTART_*" 
-handling in handle_signal is at least useless in case we are not handling a 
-syscall, and may cause bugs (I'm not sure here, but why bother?).
-
-Since we have anyway to change this, I think, please repost the updated patch 
-to Andrew Morton, and CC it to LKML, me and Jeff, so that it can get reviewed 
-- I agree to what you say but I prefer to have it reviewed in mainline, since 
-I'm not able to review it well. Before posting the patch, read 
-http://www.zip.com.au/~akpm/linux/patches/stuff/tpp.txt
-for the format to name that or people could complain. "Minor problems with 
-interrupted syscall" is not the title you'll use.
-
-And compliments for this catch!
+Bye
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
