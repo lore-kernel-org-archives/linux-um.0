@@ -1,28 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AxINs-0001tK-Ov for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 28 Feb 2004 20:16:56 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AxICv-0000BP-SC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 28 Feb 2004 20:05:38 -0800
-Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	by ccure.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id
-	i1T4ZoM9008623 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 28 Feb 2004 23:35:50 -0500
-Received: (from jdike@localhost)
-	by ccure.user-mode-linux.org (8.12.5/8.12.5/Submit) id i1T4ZoGw008621
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 28 Feb 2004 23:35:50 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20040229043549.GA8583@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="3MwIy2ne0vdjdPXF"
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] host context switch reduction
+	id 1AxQ1v-0003r1-HI for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Feb 2004 04:26:47 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AxPaV-00031H-8T for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Feb 2004 03:58:27 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] Removing user_syms.c altogether
+References: <200402282010.41036.blaisorblade_spam@yahoo.it>
+	<20040228223333.GB7716@ccure.user-mode-linux.org>
+In-Reply-To: <20040228223333.GB7716@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_pjdQAuFIH9/mxqD"
+Message-Id: <200402291319.53584.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,336 +28,331 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 28 Feb 2004 23:35:49 -0500
+Date: Sun, 29 Feb 2004 13:19:53 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
 
 
---3MwIy2ne0vdjdPXF
-Content-Type: text/plain; charset=us-ascii
+--Boundary-00=_pjdQAuFIH9/mxqD
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-The patches below are from Laurent Vivier who didn't make them public.  They
-add a new feature to ptrace on the host which cuts down on the number of
-context switches needed for a UML system call, plus makes UML use it.
+Alle 23:33, sabato 28 febbraio 2004, Jeff Dike ha scritto:
+> On Sat, Feb 28, 2004 at 08:10:40PM +0100, BlaisorBlade wrote:
+> > I've moved the EXPORT_SYMBOLS from ksyms.c to user_ksyms.c, with fake
+> > prototypes. The reason is to avoid copying code from linux/module.h and
+> > to remove one user-objs for the cleanup - that one cannot go away with
+> > the os_* expansion.
+>
+> Umm, was there supposed to be a patch attached to that? :-)
 
-There's some interest in this, so I'm putting it out as-is.  I haven't played
-with it.
+Eeehm - yes! Note however the comment about genksyms: what I say is my idea, 
+but possibly a wrong one.
 
-Laurent did some performance testing and found ~40% speedup on a getpid
-loop, and a 3.5% speedup on a kernel build.
+Anyhow, the possible problem with genksyms matters only with 
+CONFIG_MODVERSIONS, which is not supported on 2.6 and has never on 2.4. So I 
+have not tested that. Better, I have not yet checked the module loading with 
+it applied (ksyms.o however builds correctly).
 
-				Jeff
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
+--Boundary-00=_pjdQAuFIH9/mxqD
+Content-Type: text/x-diff; charset="iso-8859-1"; name="MoveUserSyms.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="MoveUserSyms.patch"
 
---3MwIy2ne0vdjdPXF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=x
+--- ./arch/um/kernel/user_syms.c.fix	2004-02-20 18:43:26.000000000 +0100
++++ ./arch/um/kernel/user_syms.c	2004-02-28 18:58:50.000000000 +0100
+@@ -1,141 +0,0 @@
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <dirent.h>
+-#include <fcntl.h>
+-#include <errno.h>
+-#include <utime.h>
+-#include <string.h>
+-#include <sys/stat.h>
+-#include <sys/vfs.h>
+-#include <sys/ioctl.h>
+-#include "user_util.h"
+-#include "mem_user.h"
+-#include "uml-config.h"
+-
+-/* Had to steal this from linux/module.h because that file can't be included
+- * since this includes various user-level headers.
+- */
+-
+-/* Had to update this: this changed in late 2.5 to add CRC and other beasts
+- * and was never updated here- 13 Dec 2003-Blaisorblade
+- */
+-
+-/* v850 toolchain uses a `_' prefix for all user symbols */
+-#ifndef MODULE_SYMBOL_PREFIX
+-#define MODULE_SYMBOL_PREFIX ""
+-#endif
+-
+-struct kernel_symbol
+-{
+-	unsigned long value;
+-	const char *name;
+-};
+-
+-#if !defined(UML_CONFIG_MODULES)
+-#define EXPORT_SYMBOL(sym)
+-#define EXPORT_SYMBOL_GPL(sym)
+-#define EXPORT_SYMBOL_NOVERS(sym)
+-
+-#else /*UML_CONFIG_MODULES*/
+-#ifndef __GENKSYMS__
+-#ifdef UML_CONFIG_MODVERSIONS
+-/* Mark the CRC weak since genksyms apparently decides not to
+- * generate a checksums for some symbols */
+-#define __CRC_SYMBOL(sym, sec)					\
+-	extern void *__crc_##sym __attribute__((weak));		\
+-	static const unsigned long __kcrctab_##sym		\
+-	__attribute__((section("__kcrctab" sec), unused))	\
+-	= (unsigned long) &__crc_##sym;
+-#else
+-#define __CRC_SYMBOL(sym, sec)
+-#endif
+-
+-/* For every exported symbol, place a struct in the __ksymtab section */
+-#define __EXPORT_SYMBOL(sym, sec)				\
+-	__CRC_SYMBOL(sym, sec)					\
+-	static const char __kstrtab_##sym[]			\
+-	__attribute__((section("__ksymtab_strings")))		\
+-	= MODULE_SYMBOL_PREFIX #sym;                    	\
+-	static const struct kernel_symbol __ksymtab_##sym	\
+-	__attribute__((section("__ksymtab" sec), unused))	\
+-	= { (unsigned long)&sym, __kstrtab_##sym }
+-
+-#define EXPORT_SYMBOL(sym)					\
+-	__EXPORT_SYMBOL(sym, "")
+-
+-#define EXPORT_SYMBOL_GPL(sym)					\
+-	__EXPORT_SYMBOL(sym, "_gpl")
+-
+-#endif
+-
+-/* We don't mangle the actual symbol anymore, so no need for
+- * special casing EXPORT_SYMBOL_NOVERS.  FIXME: Deprecated */
+-#define EXPORT_SYMBOL_NOVERS(sym) EXPORT_SYMBOL(sym)
+-#endif
+-
+-EXPORT_SYMBOL(__errno_location);
+-
+-EXPORT_SYMBOL(access);
+-EXPORT_SYMBOL(open);
+-EXPORT_SYMBOL(open64);
+-EXPORT_SYMBOL(close);
+-EXPORT_SYMBOL(read);
+-EXPORT_SYMBOL(write);
+-EXPORT_SYMBOL(dup2);
+-EXPORT_SYMBOL(__xstat);
+-EXPORT_SYMBOL(__lxstat);
+-EXPORT_SYMBOL(__lxstat64);
+-EXPORT_SYMBOL(lseek);
+-EXPORT_SYMBOL(lseek64);
+-EXPORT_SYMBOL(chown);
+-EXPORT_SYMBOL(truncate);
+-EXPORT_SYMBOL(utime);
+-EXPORT_SYMBOL(chmod);
+-EXPORT_SYMBOL(rename);
+-EXPORT_SYMBOL(__xmknod);
+-
+-EXPORT_SYMBOL(symlink);
+-EXPORT_SYMBOL(link);
+-EXPORT_SYMBOL(unlink);
+-EXPORT_SYMBOL(readlink);
+-
+-EXPORT_SYMBOL(mkdir);
+-EXPORT_SYMBOL(rmdir);
+-EXPORT_SYMBOL(opendir);
+-EXPORT_SYMBOL(readdir);
+-EXPORT_SYMBOL(closedir);
+-EXPORT_SYMBOL(seekdir);
+-EXPORT_SYMBOL(telldir);
+-
+-EXPORT_SYMBOL(ioctl);
+-
+-extern ssize_t pread64 (int __fd, void *__buf, size_t __nbytes,
+-			__off64_t __offset);
+-extern ssize_t pwrite64 (int __fd, __const void *__buf, size_t __n,
+-			 __off64_t __offset);
+-EXPORT_SYMBOL(pread64);
+-EXPORT_SYMBOL(pwrite64);
+-
+-EXPORT_SYMBOL(statfs);
+-EXPORT_SYMBOL(statfs64);
+-
+-EXPORT_SYMBOL(memcpy);
+-EXPORT_SYMBOL(getuid);
+-
+-EXPORT_SYMBOL(memset);
+-EXPORT_SYMBOL(strstr);
+-EXPORT_SYMBOL(printf);
+-EXPORT_SYMBOL(strlen);
+-
+-EXPORT_SYMBOL(find_iomem);
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+--- ./arch/um/kernel/ksyms.c.fix	2004-02-20 18:43:26.000000000 +0100
++++ ./arch/um/kernel/ksyms.c	2004-02-28 20:07:47.000000000 +0100
+@@ -8,7 +8,8 @@
+ #include "linux/string.h"
+ #include "linux/smp_lock.h"
+ #include "linux/spinlock.h"
+-#include <linux/highmem.h>
++#include "linux/highmem.h"
++#include "linux/types.h"
+ #include "asm/current.h"
+ #include "asm/delay.h"
+ #include "asm/processor.h"
+@@ -21,6 +22,7 @@
+ #include "user_util.h"
+ #include "os.h"
+ #include "helper.h"
++#include "mem_user.h"
+ 
+ EXPORT_SYMBOL(stop);
+ EXPORT_SYMBOL(uml_physmem);
+@@ -46,6 +48,7 @@
+ EXPORT_SYMBOL(to_virt);
+ EXPORT_SYMBOL(mode_tt);
+ EXPORT_SYMBOL(handle_page_fault);
++EXPORT_SYMBOL(find_iomem);
+ 
+ #ifdef CONFIG_MODE_TT
+ EXPORT_SYMBOL(copy_from_user_tt);
+@@ -119,6 +122,82 @@
+ EXPORT_SYMBOL(kmap_atomic_to_page);
+ #endif
+ 
++/* Here userspace symbols start. They used to be in user_ksyms.c */
++
++/* Some of this are builtin function (some are not but could in the future),
++ * so I *must* declare good prototypes for them and then EXPORT them.
++ * The kernel code uses the macro defined by include/linux/string.h,
++ * so I undef macros; the userspace code does not include that and I
++ * add an EXPORT for the glibc one.*/
++
++#undef strlen
++#undef strstr
++#undef memcpy
++#undef memset
++
++extern size_t strlen(const char *);
++extern void *memcpy(void *, const void *, size_t);
++extern void *memset(void *, int, size_t);
++extern int printf(const char *, ...);
++
++EXPORT_SYMBOL(strlen);
++EXPORT_SYMBOL(memcpy);
++EXPORT_SYMBOL(memset);
++EXPORT_SYMBOL(printf);
++
++EXPORT_SYMBOL(strstr);
++
++/* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
++ * However, the modules will use the CRC defined *here*, no matter if it is good;
++ * so the versions of these symbols will always match*/
++#define EXPORT_SYMBOL_PROTO(sym)	\
++	int sym(void);			\
++	EXPORT_SYMBOL(sym);
++
++EXPORT_SYMBOL_PROTO(__errno_location);
++
++EXPORT_SYMBOL_PROTO(access);
++EXPORT_SYMBOL_PROTO(open);
++EXPORT_SYMBOL_PROTO(open64);
++EXPORT_SYMBOL_PROTO(close);
++EXPORT_SYMBOL_PROTO(read);
++EXPORT_SYMBOL_PROTO(write);
++EXPORT_SYMBOL_PROTO(dup2);
++EXPORT_SYMBOL_PROTO(__xstat);
++EXPORT_SYMBOL_PROTO(__lxstat);
++EXPORT_SYMBOL_PROTO(__lxstat64);
++EXPORT_SYMBOL_PROTO(lseek);
++EXPORT_SYMBOL_PROTO(lseek64);
++EXPORT_SYMBOL_PROTO(chown);
++EXPORT_SYMBOL_PROTO(truncate);
++EXPORT_SYMBOL_PROTO(utime);
++EXPORT_SYMBOL_PROTO(chmod);
++EXPORT_SYMBOL_PROTO(rename);
++EXPORT_SYMBOL_PROTO(__xmknod);
++
++EXPORT_SYMBOL_PROTO(symlink);
++EXPORT_SYMBOL_PROTO(link);
++EXPORT_SYMBOL_PROTO(unlink);
++EXPORT_SYMBOL_PROTO(readlink);
++
++EXPORT_SYMBOL_PROTO(mkdir);
++EXPORT_SYMBOL_PROTO(rmdir);
++EXPORT_SYMBOL_PROTO(opendir);
++EXPORT_SYMBOL_PROTO(readdir);
++EXPORT_SYMBOL_PROTO(closedir);
++EXPORT_SYMBOL_PROTO(seekdir);
++EXPORT_SYMBOL_PROTO(telldir);
++
++EXPORT_SYMBOL_PROTO(ioctl);
++
++EXPORT_SYMBOL_PROTO(pread64);
++EXPORT_SYMBOL_PROTO(pwrite64);
++
++EXPORT_SYMBOL_PROTO(statfs);
++EXPORT_SYMBOL_PROTO(statfs64);
++
++EXPORT_SYMBOL_PROTO(getuid);
++
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+  * Emacs will notice this stuff at the end of the file and automatically
+--- ./arch/um/kernel/Makefile.fix	2004-02-26 20:44:39.000000000 +0100
++++ ./arch/um/kernel/Makefile	2004-02-28 19:01:11.000000000 +0100
+@@ -11,7 +11,7 @@
+ 	sigio_user.o sigio_kern.o signal_kern.o signal_user.o smp.o \
+ 	syscall_kern.o syscall_user.o sysrq.o sys_call_table.o tempfile.o \
+ 	time.o time_kern.o tlb.o trap_kern.o trap_user.o uaccess_user.o \
+-	um_arch.o umid.o user_syms.o user_util.o
++	um_arch.o umid.o user_util.o
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd_kern.o initrd_user.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+@@ -24,17 +24,10 @@
+ user-objs-$(CONFIG_TTY_LOG) += tty_log.o
+ 
+ USER_OBJS := $(filter %_user.o,$(obj-y))  $(user-objs-y) config.o helper.o \
+-	process.o tempfile.o time.o tty_log.o umid.o user_util.o user_syms.o \
++	process.o tempfile.o time.o tty_log.o umid.o user_util.o \
+ 	frame.o
+ USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
+ 
+-DMODULES-$(CONFIG_MODULES) = -D__CONFIG_MODULES__
+-DMODVERSIONS-$(CONFIG_MODVERSIONS) = -D__CONFIG_MODVERSIONS__
+-
+-
+-CFLAGS_user_syms.o = -D__AUTOCONF_INCLUDED__ $(DMODULES-y) $(DMODVERSIONS-y) \
+-	-I/usr/include -I../include
+-
+ # This has to be compiled with frame pointers regardless of how the rest of
+ # the kernel is built.
+ 
 
-diff -Nrc skas3-linux-2.4.22/Makefile skas4-linux-2.4.22/Makefile
-*** skas3-linux-2.4.22/Makefile	Tue Dec  2 21:24:14 2003
---- skas4-linux-2.4.22/Makefile	Tue Dec  2 20:32:41 2003
-***************
-*** 1,7 ****
-  VERSION = 2
-  PATCHLEVEL = 4
-  SUBLEVEL = 22
-! EXTRAVERSION = -skas3
-  
-  KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
-  
---- 1,7 ----
-  VERSION = 2
-  PATCHLEVEL = 4
-  SUBLEVEL = 22
-! EXTRAVERSION = -sysemu
-  
-  KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
-  
-diff -Nrc skas3-linux-2.4.22/arch/i386/kernel/entry.S skas4-linux-2.4.22/arch/i386/kernel/entry.S
-*** skas3-linux-2.4.22/arch/i386/kernel/entry.S	Fri Jun 13 16:51:29 2003
---- skas4-linux-2.4.22/arch/i386/kernel/entry.S	Tue Dec  2 20:27:41 2003
-***************
-*** 203,208 ****
---- 203,210 ----
-  	pushl %eax			# save orig_eax
-  	SAVE_ALL
-  	GET_CURRENT(%ebx)
-+ 	testb $0x20,tsk_ptrace(%ebx)	# PT_SCEMU
-+ 	jne emulatesys
-  	testb $0x02,tsk_ptrace(%ebx)	# PT_TRACESYS
-  	jne tracesys
-  	cmpl $(NR_syscalls),%eax
-***************
-*** 237,242 ****
---- 239,248 ----
-  	jmp restore_all
-  
-  	ALIGN
-+ emulatesys:
-+ 	call SYMBOL_NAME(syscall_emulate)
-+ 	jmp ret_from_sys_call
-+ 	ALIGN
-  tracesys:
-  	movl $-ENOSYS,EAX(%esp)
-  	call SYMBOL_NAME(syscall_trace)
-diff -Nrc skas3-linux-2.4.22/arch/i386/kernel/ptrace.c skas4-linux-2.4.22/arch/i386/kernel/ptrace.c
-*** skas3-linux-2.4.22/arch/i386/kernel/ptrace.c	Tue Dec  2 21:24:01 2003
---- skas4-linux-2.4.22/arch/i386/kernel/ptrace.c	Tue Dec  2 18:52:10 2003
-***************
-*** 275,280 ****
---- 275,281 ----
-  		  }
-  		  break;
-  
-+ 	case PTRACE_SCEMU: /* continue and replace next syscall */
-  	case PTRACE_SYSCALL: /* continue and stop at next (return from) syscall */
-  	case PTRACE_CONT: { /* restart after signal. */
-  		long tmp;
-***************
-*** 282,287 ****
---- 283,292 ----
-  		ret = -EIO;
-  		if ((unsigned long) data > _NSIG)
-  			break;
-+ 		if (request == PTRACE_SCEMU)
-+ 			child->ptrace |= PT_SCEMU;
-+ 		else
-+ 			child->ptrace &= ~PT_SCEMU;
-  		if (request == PTRACE_SYSCALL)
-  			child->ptrace |= PT_TRACESYS;
-  		else
-***************
-*** 320,326 ****
-  		ret = -EIO;
-  		if ((unsigned long) data > _NSIG)
-  			break;
-! 		child->ptrace &= ~PT_TRACESYS;
-  		if ((child->ptrace & PT_DTRACE) == 0) {
-  			/* Spurious delayed TF traps may occur */
-  			child->ptrace |= PT_DTRACE;
---- 325,331 ----
-  		ret = -EIO;
-  		if ((unsigned long) data > _NSIG)
-  			break;
-! 		child->ptrace &= ~(PT_TRACESYS|PT_SCEMU);
-  		if ((child->ptrace & PT_DTRACE) == 0) {
-  			/* Spurious delayed TF traps may occur */
-  			child->ptrace |= PT_DTRACE;
-***************
-*** 482,487 ****
---- 487,515 ----
-  	return ret;
-  }
-  
-+ asmlinkage void syscall_emulate(void)
-+ {
-+ 	if ((current->ptrace & (PT_PTRACED|PT_SCEMU)) !=
-+ 			(PT_PTRACED|PT_SCEMU))
-+ 		return;
-+ 	/* the 0x80 provides a way for the tracing parent to distinguish
-+ 	   between a syscall stop and SIGTRAP delivery */
-+ 	current->exit_code = SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD)
-+ 					? 0x80 : 0);
-+ 	current->state = TASK_STOPPED;
-+ 	notify_parent(current, SIGCHLD);
-+ 	schedule();
-+ 	/*
-+ 	 * this isn't the same as continuing with a signal, but it will do
-+ 	 * for normal use.  strace only continues with a signal if the
-+ 	 * stopping signal is not SIGTRAP.  -brl
-+ 	 */
-+ 	if (current->exit_code) {
-+ 		send_sig(current->exit_code, current, 1);
-+ 		current->exit_code = 0;
-+ 	}
-+ }
-+ 
-  asmlinkage void syscall_trace(void)
-  {
-  	if ((current->ptrace & (PT_PTRACED|PT_TRACESYS)) !=
-diff -Nrc skas3-linux-2.4.22/include/linux/ptrace.h skas4-linux-2.4.22/include/linux/ptrace.h
-*** skas3-linux-2.4.22/include/linux/ptrace.h	Sat Sep 15 00:55:17 2001
---- skas4-linux-2.4.22/include/linux/ptrace.h	Tue Dec  2 18:42:55 2003
-***************
-*** 20,25 ****
---- 20,26 ----
-  #define PTRACE_DETACH		0x11
-  
-  #define PTRACE_SYSCALL		  24
-+ #define PTRACE_SCEMU		  25
-  
-  #include <asm/ptrace.h>
-  
-diff -Nrc skas3-linux-2.4.22/include/linux/sched.h skas4-linux-2.4.22/include/linux/sched.h
-*** skas3-linux-2.4.22/include/linux/sched.h	Fri Jun 13 16:51:39 2003
---- skas4-linux-2.4.22/include/linux/sched.h	Tue Dec  2 20:28:19 2003
-***************
-*** 444,449 ****
---- 444,450 ----
-  #define PT_DTRACE	0x00000004	/* delayed trace (used on m68k, i386) */
-  #define PT_TRACESYSGOOD	0x00000008
-  #define PT_PTRACE_CAP	0x00000010	/* ptracer can follow suid-exec */
-+ #define PT_SCEMU	0x00000020	/* syscall emulation for UML */
-  
-  #define is_dumpable(tsk)    ((tsk)->task_dumpable && (tsk)->mm && (tsk)->mm->dumpable)
-  
+--Boundary-00=_pjdQAuFIH9/mxqD--
 
-
---3MwIy2ne0vdjdPXF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=y
-
-diff -Nrc uml-linux-2.4.22/arch/um/kernel/process.c sysemu-uml-linux-2.4.22/arch/um/kernel/process.c
-*** uml-linux-2.4.22/arch/um/kernel/process.c	Tue Oct 14 15:28:28 2003
---- sysemu-uml-linux-2.4.22/arch/um/kernel/process.c	Thu Dec  4 20:14:33 2003
-***************
-*** 222,227 ****
---- 222,243 ----
-  	}
-  	stop_ptraced_child(pid, stack, 0);
-  	printk("OK\n");
-+ 
-+ #ifdef PTRACE_SYSEMU
-+ 	printk("Checking syscall emulation patch for ptrace...");
-+ 
-+ 	use_sysemu = 0;
-+ 	pid = start_ptraced_child(&stack);
-+ 	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) >= 0)
-+ 	{
-+ 		printk("OK\n");
-+         	use_sysemu = 1;
-+ 	}
-+ 	else
-+ 		printk("missing\n");
-+ 
-+ 	stop_ptraced_child(pid, stack, 0);
-+ #endif
-  }
-  
-  int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr)
-diff -Nrc uml-linux-2.4.22/arch/um/kernel/skas/include/ptrace-skas.h sysemu-uml-linux-2.4.22/arch/um/kernel/skas/include/ptrace-skas.h
-*** uml-linux-2.4.22/arch/um/kernel/skas/include/ptrace-skas.h	Tue Oct 14 15:28:28 2003
---- sysemu-uml-linux-2.4.22/arch/um/kernel/skas/include/ptrace-skas.h	Thu Dec  4 20:15:34 2003
-***************
-*** 10,15 ****
---- 10,22 ----
-  
-  #ifdef UML_CONFIG_MODE_SKAS
-  
-+ /* syscall emulation path in ptrace */
-+ 
-+ #ifndef PTRACE_SYSEMU
-+ #define PTRACE_SYSEMU 25
-+ #endif
-+ extern int use_sysemu;
-+ 
-  #include "skas_ptregs.h"
-  
-  #define HOST_FRAME_SIZE 17
-diff -Nrc uml-linux-2.4.22/arch/um/kernel/skas/process.c sysemu-uml-linux-2.4.22/arch/um/kernel/skas/process.c
-*** uml-linux-2.4.22/arch/um/kernel/skas/process.c	Wed Dec  3 18:53:54 2003
---- sysemu-uml-linux-2.4.22/arch/um/kernel/skas/process.c	Fri Dec  5 17:57:03 2003
-***************
-*** 27,32 ****
---- 27,36 ----
-  #include "skas_ptrace.h"
-  #include "chan_user.h"
-  
-+ #ifdef PTRACE_SYSEMU
-+ int use_sysemu = 0;
-+ #endif
-+ 
-  int is_skas_winch(int pid, int fd, void *data)
-  {
-  	if(pid != getpid())
-***************
-*** 65,85 ****
-  		return;
-  	}
-  
-! 	err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, __NR_getpid);
-! 	if(err < 0)
-! 	        panic("handle_trap - nullifying syscall failed errno = %d\n", 
-! 		      errno);
-  
-! 	err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
-! 	if(err < 0)
-! 	        panic("handle_trap - continuing to end of syscall failed, "
-! 		      "errno = %d\n", errno);
-! 
-! 	err = waitpid(pid, &status, WUNTRACED);
-! 	if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
-! 		panic("handle_trap - failed to wait at end of syscall, "
-! 		      "errno = %d, status = %d\n", errno, status);
-  
-  	handle_syscall(regs);
-  }
-  
---- 69,91 ----
-  		return;
-  	}
-  
-! 	if (!use_sysemu)
-! 	{
-! 		err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, __NR_getpid);
-! 		if(err < 0)
-! 	        	panic("handle_trap - nullifying syscall failed errno = %d\n", 
-! 		      	errno);
-  
-! 		err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
-! 		if(err < 0)
-! 	        	panic("handle_trap - continuing to end of syscall failed, "
-! 		      	"errno = %d\n", errno);
-  
-+ 		err = waitpid(pid, &status, WUNTRACED);
-+ 		if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
-+ 			panic("handle_trap - failed to wait at end of syscall, "
-+ 		      	"errno = %d, status = %d\n", errno, status);
-+ 	}
-  	handle_syscall(regs);
-  }
-  
-***************
-*** 134,140 ****
---- 140,154 ----
-  
-  	restore_registers(regs);
-  		
-+ #ifdef PTRACE_SYSEMU
-+ 	if (use_sysemu)
-+ 		err = ptrace(PTRACE_SYSEMU, userspace_pid, 0, 0);
-+ 	else
-+ 		err = ptrace(PTRACE_SYSCALL, userspace_pid, 0, 0);
-+ #else
-  	err = ptrace(PTRACE_SYSCALL, userspace_pid, 0, 0);
-+ #endif
-+ 
-  	if(err)
-  		panic("userspace - PTRACE_SYSCALL failed, errno = %d\n", 
-  		       errno);
-***************
-*** 172,179 ****
---- 186,202 ----
-  
-  		restore_registers(regs);
-  
-+ #ifdef PTRACE_SYSEMU
-+ 		if (use_sysemu)
-+ 			op = singlestepping_skas() ? PTRACE_SINGLESTEP : 
-+ 				PTRACE_SYSEMU;
-+ 		else
-+ 			op = singlestepping_skas() ? PTRACE_SINGLESTEP : 
-+ 				PTRACE_SYSCALL;
-+ #else
-  		op = singlestepping_skas() ? PTRACE_SINGLESTEP : 
-  			PTRACE_SYSCALL;
-+ #endif
-  		err = ptrace(op, userspace_pid, 0, 0);
-  		if(err)
-  			panic("userspace - PTRACE_SYSCALL failed, "
-
---3MwIy2ne0vdjdPXF--
 
 
 -------------------------------------------------------
