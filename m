@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJGjy-00037b-Bl for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Apr 2005 13:03:06 -0700
-Received: from wavehammer.waldi.eu.org ([82.139.196.55] ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DJGjw-0000sK-Lv
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Apr 2005 13:03:06 -0700
-From: Bastian Blank <bastian@waldi.eu.org>
-Subject: Re: [uml-devel] Re: UML-patches to prepare UML/s390
-Message-ID: <20050406200257.GB24438@wavehammer.waldi.eu.org>
-References: <4253E3D6.2000809@fujitsu-siemens.com>
-	<20050406203558.GA3307@ccure.user-mode-linux.org>
-	<20050406191623.GA10085@wavehammer.waldi.eu.org>
-	<425439A4.2030006@fujitsu-siemens.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
+	id 1DJGk2-000382-St for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Apr 2005 13:03:10 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DJGk1-0001G2-6N for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Apr 2005 13:03:10 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [linux-2.6-bk] UML compile broken!
+References: <1112793369.32726.4.camel@imp.csi.cam.ac.uk>
+In-Reply-To: <1112793369.32726.4.camel@imp.csi.cam.ac.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <425439A4.2030006@fujitsu-siemens.com>
+Message-Id: <200504062201.41991.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,54 +29,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 6 Apr 2005 22:02:57 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 6 Apr 2005 22:01:41 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
+Cc: Anton Altaparmakov <aia21@cam.ac.uk>, jdike@karaya.com, lkml <linux-kernel@vger.kernel.org>
+
+On Wednesday 06 April 2005 15:16, Anton Altaparmakov wrote:
+> Uml compile is btoken in current linus bk 2.6:
+>
+>   CC      arch/um/kernel/ptrace.o
+> arch/um/kernel/ptrace.c: In function `send_sigtrap':
+> arch/um/kernel/ptrace.c:324: warning: implicit declaration of function
+> `SC_IP'
+> arch/um/kernel/ptrace.c:324: error: union has no member named `tt'
+> arch/um/kernel/ptrace.c:324: error: union has no member named `tt'
+> arch/um/kernel/ptrace.c:324: error: invalid lvalue in unary `&'
+> make[1]: *** [arch/um/kernel/ptrace.o] Error 1
+> make: *** [arch/um/kernel] Error 2
+>
+> My .config is attached.  I suspect it is because I am not compiling in
+> TT support and only SKAS...
+Well, good guess - you're getting more and more used with UML!
+
+Yes, the fix is in -mm.
+
+Quoting from -rc2-mm1 announce:
+
++uml-fix-compilation-for-__choose_mode-addition.patch
+
+ UML fix
+
+Andrew, can you merge it now, if you want, after Anton verifies it's the 
+correct fix indeed for his problem? I *do* expect his situation to fail 
+without the patch, but just to be more sure.
+
+However, I recall with 2.6.11-bk7 a slightly different problem, when compiling 
+only SKAS mode in, and I don't think this has been fixed:
+
+[uml-devel] [UML/2.6] -bk7 tree does not run when compiled as SKAS-only
+
+I'm forwarding that mail to LKML and you, Andrew - for your -rc regressions 
+mail folder.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
---WYTEVAkct0FjGQmd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 06, 2005 at 09:33:56PM +0200, Bodo Stroesser wrote:
-> Bastian Blank wrote:
-| Mail-Followup-To: user-mode-linux-devel@lists.sourceforge.net=20
-
-Please fix your MUA.
-
-> TX for the info, but sorry, I guess you missunderstood. We were not talki=
-ng
-> about kernel's include/linux/errno.h, but about host's=20
-> /usr/include/linux/errno.h,
-> included in a user-obj in UML. Even kernel 2.4 defines ERESTARTNOINTR,
-> but there seem to be some distros, that don't have it in=20
-> /usr/include/linux/errno.h.
-> And I really wanted to have host's ERESTARTNOINTR!
-
-Since when does glibc support building itself against anything else than
-the Linux headers? But anyway, this errno is internal.  So there exists
-no "host's ERESTARTNOINTR".
-
-Bastian
-
---=20
-Insufficient facts always invite danger.
-		-- Spock, "Space Seed", stardate 3141.9
-
---WYTEVAkct0FjGQmd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iEYEARECAAYFAkJUQHEACgkQnw66O/MvCNF3jgCfW0uhcWWoFOlEfqPfeRr2or2s
-EJUAmwYc17/VriBY3QRbCm1/VN7sGBpw
-=Nm9R
------END PGP SIGNATURE-----
-
---WYTEVAkct0FjGQmd--
 
 
 -------------------------------------------------------
