@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DGE84-0003uf-QP for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Mar 2005 02:39:24 -0800
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user77274)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DGE83-0006Jx-3x for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Mar 2005 02:39:24 -0800
-Subject: Re: [uml-devel] Interesting...
-References: <200503290011.03921.rob@landley.net>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200503290011.03921.rob@landley.net> (Rob Landley's message of
-	"Tue, 29 Mar 2005 00:11:03 -0500")
-Message-ID: <871x9yhh2p.fsf@amaterasu.srvr.nix>
-MIME-Version: 1.0
+	id 1DGFAP-0007eN-MZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Mar 2005 03:45:53 -0800
+Received: from pentafluge.infradead.org ([213.146.154.40])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DGFAO-000504-1T
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Mar 2005 03:45:53 -0800
+From: Christoph Hellwig <hch@infradead.org>
+Message-ID: <20050329114529.GA26005@infradead.org>
+References: <20050322162123.890086BA6F@zion>
+	<20050322181140.GA22149@infradead.org>
+	<200503240302.29153.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200503240302.29153.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [patch 03/12] uml: export getgid for hostfs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,23 +30,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Mar 2005 11:39:10 +0100
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 29 Mar 2005 12:45:29 +0100
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 29 Mar 2005, Rob Landley said:
-> This doesn't work:
+
+On Thu, Mar 24, 2005 at 03:02:28AM +0100, Blaisorblade wrote:
+> In this moment I need to clean up the missing symbol. If anyone wants to 
+> remove the code using this, then he might post a patch explictly removing it, 
+> and getting it refused probably.
 > 
-> ./linux rootfstype=hostfs rw init=/bin/ls -l > out.txt &
+> Or at least CC uml-devel when discussing those problems. I'm not currently 
+> able to find on marc.theaimsgroup.com the mail you talk about. Can you please 
+> provide the URL to the discussion? (even on any other archive you like, 
+> obviously).
 
-Well, it blocks.
+My unaswered reply to the first submission is at
 
-It looks like UML is reading from stdin at some point (I haven't
-looked to find out where; I suppose I should).
+http://groups-beta.google.com/group/linux.kernel/messages/de9504fe5963ccd1,0c05294c599b22b1,eab26a4ed3f8ff17?thread_id=16c905c7e28e7498&mode=thread&noheader=1&q=uml-export-getgid-for-hostfs#doc_eab26a4ed3f8ff17
 
--- 
-This is like system("/usr/funky/bin/perl -e 'exec sleep 1'");
-   --- Peter da Silva
+(sorry, couldn't find it on marc), it's been Cc'ed to the lists you sent
+the patch to.
+
+> That said, there are people still using that code, so it should be kept in.
+
+But the code is totally bogus, so it should _not_ be kept.
+
+> Also, you blocked an important patch (the one adding ->release to 
+> hw_interrupt_type) saying that *perhaps* UML should avoid having any hard 
+> irq, a la S390. You forced so the merge of a very ugly patch manually calling 
+> what should have been UML's release method (i.e. free_irq_by_irq_and_dev) in 
+> every place calling free_irq() (and in fact one was missed at first). Might 
+> you reconsider your position on that issue ? (URL of the discussion below)
+> 
+> http://marc.theaimsgroup.com/?l=linux-kernel&w=2&r=3&s=uml+irq&q=b
+> 
+> The patch adding the generic handling is this one:
+> 
+> http://marc.theaimsgroup.com/?l=linux-kernel&m=109834481320519&w=2
+
+I still think it's a really bad idea.  But I'm not the irq code maintainer,
+it could very well be Ingo overrides me.
 
 
 -------------------------------------------------------
