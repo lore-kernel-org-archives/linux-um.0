@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZ5Qi-0006m9-Rl for User-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 02:40:20 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CZ5Qh-0001pj-UE
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 02:40:20 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20041130103255.GB5593@bytesex>
+	id 1CZ7z5-0002dw-3C for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 05:23:59 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CZ7z4-00046U-AG for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 05:23:59 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [PATCH] uml_router: cleanup #2
 References: <BAY24-F18CD7435AB94FE5A10013283BE0@phx.gbl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<20041130103255.GB5593@bytesex>
+In-Reply-To: <20041130103255.GB5593@bytesex>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <BAY24-F18CD7435AB94FE5A10013283BE0@phx.gbl>
-Subject: [uml-devel] Re: [PATCH] uml_router: cleanup #2
+Message-Id: <200411301427.04377.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,28 +30,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Nov 2004 11:32:55 +0100
-To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net, uml@uxu.ch
+Date: Tue, 30 Nov 2004 14:27:03 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Gerd Knorr <kraxel@bytesex.org>, Steve Schmidtke <steve_schmidtke@hotmail.com>, uml@uxu.ch
 
-> Patch 11 turns on the packet queue for the tuntap driver.  For technical 
-> reasons, it's just too much work to implement on the current sockunix 
-> driver.
+On Tuesday 30 November 2004 11:32, Gerd Knorr wrote:
+> > Patch 14 is a fun little UDP packet driver inspired by Felix M?ri for
+> > connecting multiple UMLs together.  It's inherently unsecure so you must
+> > uncomment the driver in the makefile if you want to play with it.
 
-Guess thats the "one socket for all umls" thingy?  You can create a new
-socket for every uml instance connecting, at least with protocol v3 (not
-sure about the older ones, but I think support for them can be dropped
-without breaking anything by now ...).
+> Why this?  Compile time options are evil.  Runtime option which is off
+> by default is perfectly fine IMHO.
+I guess Steve tries to be user-proof, since users in his opinion mustn't use 
+it. Guessed right?
 
-> Patch 14 is a fun little UDP packet driver inspired by Felix M?ri for 
-> connecting multiple UMLs together.  It's inherently unsecure so you must 
-> uncomment the driver in the makefile if you want to play with it.
-
-Why this?  Compile time options are evil.  Runtime option which is off
-by default is perfectly fine IMHO.
-
-  Gerd
-
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
