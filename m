@@ -1,23 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4bKH-0006E1-K9 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 01:27:41 -0700
-Received: from webhosting.rdsbv.ro ([213.157.185.164] helo=hosting.rdsbv.ro)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1C4bKE-00041C-L5
+	id 1C4cCe-0006WG-0U for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 02:23:52 -0700
+Received: from ns2.tops.net ([212.79.190.253] helo=mail2.tops.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C4cCZ-0007CU-AC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 01:27:41 -0700
-Received: from hosting.rdsbv.ro (hosting.rdsbv.ro [213.157.185.164])
-	by hosting.rdsbv.ro (8.12.11/8.12.11) with ESMTP id i878R6nu008303
+	Tue, 07 Sep 2004 02:23:50 -0700
+Received: from x11.topsnet-ads.tops.net (prometheus.tops.net [212.79.160.29])
+	by mail2.tops.net (8.12.8/8.12.8) with ESMTP id i879MfXx030180
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 7 Sep 2004 11:27:06 +0300
-From: "Catalin(ux aka Dino) BOIE" <util@deuroconsult.ro>
-Message-ID: <Pine.LNX.4.61.0409071058020.25003@hosting.rdsbv.ro>
+	Tue, 7 Sep 2004 11:22:41 +0200
+From: Ralph Passgang <ralph@debianbase.de>
+Subject: Re: [uml-devel] uml modules broken in 2.6.8 (has something to do with
+	memmove)
+References: <200409060005.54577.ralph@debianbase.de>
+	<200409062005.08014.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200409062005.08014.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: [uml-devel] Host: 2.6.7, guest: 2.6.8.1, without SKAS
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Disposition: inline
+Message-Id: <200409071122.40804.ralph@debianbase.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,88 +34,117 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Sep 2004 11:27:06 +0300 (EEST)
+Date: Tue, 7 Sep 2004 11:22:40 +0200
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hello!
+Am Montag, 6. September 2004 20:05 schrieben Sie:
+> On Monday 06 September 2004 00:05, Ralph Pa=DFgang wrote:
+> > Hi all,
+> >
+> > I am not a kernel hacker, but I found with google that something changed
+> > with memmove in 2.6.8, but I don't know enough of the kernel stuff to
+> > know what it means:
+> >
+> > http://kerneltrap.org/node/view/3443 -> search for memmove and you find:
+> > "i386: uninline memmove"
+>
+> Well, smart catch. If you know C, I can explain this.=20
 
-This is what I get when I run a 2.6.8.1 guest:
+I know C a bit, but I am not were good in it... But I always want to learn =
+to=20
+get better :)
 
-tracing thread pid = 20281
-Linux version 2.6.8.1-1um (root@dino) (gcc version 3.3.4) #1 Mon Sep 6 
-14:03:34 EEST 2004
-Built 1 zonelists
-Kernel command line: mem=64M root=98:0
-PID hash table entries: 16 (order 4: 128 bytes)
-Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
-Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
-Memory: 61072k available
-Calibrating delay loop... 1648.23 BogoMIPS
-Security Scaffold v1.0.0 initialized
-Capability LSM initialized
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-Checking for host processor cmov support...Yes
-Checking for host processor xmm support...No
-Checking that ptrace can change system call numbers...OK
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-Checking for /dev/anon on the host...Not available (open failed with errno 
-2)
-NET: Registered protocol family 16
-TC classifier action (bugs to netdev@oss.sgi.com cc hadi@cyberus.ca)
-mconsole (version 2) initialized on /root/.uml/cGozAB/mconsole
-VFS: Disk quotas dquot_6.5.1
-Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
-Initializing Cryptographic API
-RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-netconsole: not configured, aborting
-NET: Registered protocol family 2
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP: Hash tables configured (established 4096 bind 8192)
-NET: Registered protocol family 1
-NET: Registered protocol family 10
-IPv6 over IPv4 tunneling driver
-NET: Registered protocol family 17
-NET: Registered protocol family 15
-Initializing software serial port version 1
-Kernel panic: fix_range fixing wrong address space, current = 0xa3fba760
-  <6>SysRq : Show Regs
+> Before memmove was an=20
+> inline function defined in kernel headers, while in 2.6.8. I hope you are
+> using 2.6.8.1, actually, because 2.6.8 is known-buggy for nfs. Well, no,
+> you say 2.6.8. However, I guess that Debian-source includes the fix.
 
-EIP: 0073:[<a01a2d9b>] CPU: 0 Not tainted ESP: 007b:a0369688 EFLAGS: 
-00000246
-     Not tainted
-EAX: 00000000 EBX: 00000001 ECX: a036973c EDX: a03696bc
-ESI: 00000008 EDI: 00000001 EBP: a03696a4 DS: 007b ES: 007b
-Call Trace: [<a0101a04>] [<a001a30f>] [<a0030e41>] [<a003c676>] 
-[<a0030425>]
-    [<a00304a7>] [<a0015a08>] [<a001c6e6>] [<a001c65b>] [<a001cb89>] 
-[<a0019349>]
-    [<a001b452>] [<a01e5c44>] [<a0032b2e>] [<a0032ad8>] [<a00115e8>] 
-[<a003f479>]
-    [<a003f450>] [<a01a29e0>] [<a003f3f0>] [<a00159da>] [<a0017ccd>] 
-[<a003f3f0>]
-    [<a00159bf>] [<a002c001>] [<a001b583>] [<a003f3f0>] [<a001b628>] 
-[<a001b685>]
-    [<a01a2d28>] [<a01a2d9b>]
-sleeping process 20369 got unexpected signal : 10
+Yes, the debian package should include the fix. it is already the 5th versi=
+on=20
+of the 2.6.8 kernel-source package in debian and the changelog says that a =
 
+nfs-bugfix is included (with some more fixes).
 
-If I try to run "./K2.6.8.1 debug" gdb hangs.
+I guess the debian package maintainer didn't used the 2.6.8.1 versionnumber=
+,=20
+because it could produce a lot of problems in other packages/scripts that=20
+expect X.Y.Z format.
 
-Can you help me investigate this?
+> > Has nobody besides me this problem? I can't use my uml without nat, so I
+> > downgraded again to 2.6.6...
+>
+> Solutions in such cases are (waiting for the fix):
 
-Thank you!
----
-Catalin(ux aka Dino) BOIE
-catab at deuroconsult.ro
-http://kernel.umbrella.ro/
+I waited for some days to see if somebody is saying something about memmove=
+ in=20
+the uml-mailinglists or if I find a 2.6.8.1-2 patch in the uml homepage. Bu=
+t=20
+because I didn't found anything I started asking myself, espacially because=
+=20
+some other people seems to used the 2.6.8.1 without any problem...
+
+> - compiling what you need in the kernel rather than as a module
+
+I noticed that myself for another module (a bit ago)... But I don't want al=
+l=20
+iptables modules + ppp,pppoe + a lot other modules to be in the kernel rath=
+er=20
+than as module. If the problem just occours for one module, that is a fix=20
+indeed :)
+
+> - if you get complaints about a certain symbol, i.e. memmove, just add a
+> EXPORT_SYMBOL(memmove) and the prototype (or the appropriate include) in
+> arch/um/kernel/ksyms.c and recompile the kernel (you don't need to
+> recompile the modules).
+
+I will try to fix the next problem (hopefully there will be no errors at al=
+l=20
+in upcoming versions *g*) on my own. Exporting kernelsymbols is not what I =
+am=20
+used to do every day, but that seems not to be too difficult.
+
+> In this case, apply this patch with patch -p1 -l:
+>
+> diff -puN arch/um/os-Linux/user_syms.c~uml-export-Symbols
+> arch/um/os-Linux/user_syms.c ---
+> uml-linux-2.6.8.1/arch/um/os-Linux/user_syms.c~uml-export-Symbols =20
+> 2004-08-29 14:40:56.000000000 +0200 +++
+> uml-linux-2.6.8.1-paolo/arch/um/os-Linux/user_syms.c        2004-08-29
+> 14:40:56.000000000 +0200 @@ -14,12 +14,14 @@
+>
+>  extern size_t strlen(const char *);
+>  extern void *memcpy(void *, const void *, size_t);
+> +extern void *memmove(void *, const void *, size_t);
+>  extern void *memset(void *, int, size_t);
+>  extern int printf(const char *, ...);
+>
+>  EXPORT_SYMBOL(strlen);
+>  EXPORT_SYMBOL(memcpy);
+>  EXPORT_SYMBOL(memset);
+> +EXPORT_SYMBOL(memmove);
+>  EXPORT_SYMBOL(printf);
+>
+>  EXPORT_SYMBOL(strstr);
+>
+> If you experience other module-related problems, you may want to use the
+> attached patch, however I'm not sure it will apply on your tree.
+
+It applied without a problem and I also have compiled it for debian sid and=
+=20
+sarge. Now my 2.6.8 uml runs without any problems, even iptables_nat and=20
+pppoe works like charm :)
+
+Thank you for the patch... Keep the good work up, I love UML :)...
+
+--Ralph
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by BEA Weblogic Workshop
 FREE Java Enterprise J2EE developer tools!
 Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=5047&alloc_id=10808&op=click
+http://ads.osdn.com/?ad_idP47&alloc_id=10808&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
