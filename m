@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CHANf-0002ga-3d for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:19:07 -0700
+	id 1CHANl-0002i1-0j for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:19:13 -0700
 Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
 	helo=zion.localdomain)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CHANb-0000IE-VC for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:19:06 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CHANi-0007ZV-Ml for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:19:12 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041012001747.64A76868B@zion.localdomain>
-Subject: [uml-devel] [patch 02/10] uml: force using /bin/bash for building
+Message-Id: <20041012001756.D46958693@zion.localdomain>
+Subject: [uml-devel] [patch 06/10] uml: update makefile to new kbuild API names
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,33 +23,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Oct 2004 02:17:47 +0200
+Date: Tue, 12 Oct 2004 02:17:56 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-This forces make to use bash rather than whatever /bin/sh is linked to.
-Without this, since there are some bash extensions used in the build and when
-/bin/sh isn't bash, then the build fails without a clear error message.
+Drop the usage of check_gcc and host-progs, and use their new names. A
+must-have :-).
+
+Oh, and it will create lots of serious problems - it will give me your root
+account! Yes, you don't see the code in the patch, but it happens! :-)))
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.9-current-paolo/arch/um/Makefile |    2 ++
- 1 files changed, 2 insertions(+)
+ linux-2.6.9-current-paolo/arch/um/Makefile                  |    2 +-
+ linux-2.6.9-current-paolo/arch/um/kernel/skas/util/Makefile |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff -puN arch/um/Makefile~uml-force-bash arch/um/Makefile
---- linux-2.6.9-current/arch/um/Makefile~uml-force-bash	2004-10-12 01:06:02.860053432 +0200
-+++ linux-2.6.9-current-paolo/arch/um/Makefile	2004-10-12 01:06:02.863052976 +0200
-@@ -5,6 +5,8 @@
+diff -puN arch/um/Makefile~uml-kbuild-renamings arch/um/Makefile
+--- linux-2.6.9-current/arch/um/Makefile~uml-kbuild-renamings	2004-09-19 20:31:38.624115320 +0200
++++ linux-2.6.9-current-paolo/arch/um/Makefile	2004-09-19 20:31:38.628114712 +0200
+@@ -46,7 +46,7 @@ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSU
+ 	-D_LARGEFILE64_SOURCE $(ARCH_INCLUDE) -Derrno=kernel_errno \
+ 	-Dsigprocmask=kernel_sigprocmask $(MODE_INCLUDE)
  
- ARCH_DIR = arch/um
- OS := $(shell uname -s)
-+#We require it or things break.
-+SHELL := /bin/bash
+-CFLAGS += $(call check_gcc,-fno-unit-at-a-time,)
++CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
  
- # Recalculate MODLIB to reflect the EXTRAVERSION changes (via KERNELRELEASE)
- # The way the toplevel Makefile is written EXTRAVERSION is not supposed
+ LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
+ 
+diff -puN arch/um/kernel/skas/util/Makefile~uml-kbuild-renamings arch/um/kernel/skas/util/Makefile
+--- linux-2.6.9-current/arch/um/kernel/skas/util/Makefile~uml-kbuild-renamings	2004-09-19 20:31:38.625115168 +0200
++++ linux-2.6.9-current-paolo/arch/um/kernel/skas/util/Makefile	2004-09-19 20:32:05.746992016 +0200
+@@ -1,2 +1,2 @@
+-host-progs		:= mk_ptregs
+-always			:= $(host-progs)
++hostprogs-y		:= mk_ptregs
++always			:= $(hostprogs-y)
 _
 
 
