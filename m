@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6wEP-0007yn-RW for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Sep 2004 12:11:17 -0700
+	id 1C6wET-0007zY-K4 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Sep 2004 12:11:21 -0700
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C6wEN-0000EQ-2D for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Sep 2004 12:11:17 -0700
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1C6wES-0000uy-Pe for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Sep 2004 12:11:21 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 2/2] add-SIGPROF-get-set_signals
-References: <20040912182629.3FEC49F37@zion.localdomain>
-	<20040913033239.GA13207@ccure.user-mode-linux.org>
-In-Reply-To: <20040913033239.GA13207@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
+References: <20040826020626.GA28471@malice.crymeariver.org>
+	<200409121752.07398.blaisorblade_spam@yahoo.it>
+	<20040913031014.GA13184@ccure.user-mode-linux.org>
+In-Reply-To: <20040913031014.GA13184@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409132012.29994.blaisorblade_spam@yahoo.it>
+Message-Id: <200409132050.08856.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +31,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 13 Sep 2004 20:12:29 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Mon, 13 Sep 2004 20:50:08 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, David Jeffery <djeffery@britsys.net>, linux-kernel@vger.kernel.org
 
-On Monday 13 September 2004 05:32, Jeff Dike wrote:
-> On Sun, Sep 12, 2004 at 08:26:29PM +0200, blaisorblade_spam@yahoo.it wrote:
-> >  {
-> >  	sigset_t mask;
-> > +	sigset_t old_mask;
-> >  	int ret;
+On Monday 13 September 2004 05:10, Jeff Dike wrote:
+> On Sun, Sep 12, 2004 at 05:52:44PM +0200, BlaisorBlade wrote:
+> > It worked no worse than current version (which is broken). In fact the
+> > 2.4 clone had 2 arguments. So it's obvious.
+>
+> In fact, it worked better.  It worked on a modern Debian filesystem, where
+> my old code didn't.
+Oh, well, your version gets the fifth arg right, indeed.
+> > However, this is non-standard. I've added just a comment for now, since
+> > you may have reason to keep the current code, but such behaviour calls
+> > for breakage when things change.
 
-> Weren't you just complaining about stack consumption?  Do you know how
-> big a sigset_t is?
+> Yeah, I not sure why I did things the way I did.  That's very old code, and
+> there may have been some good reason for it which has since disappeared.
 
-> 	(gdb) p sizeof(sigset_t)
-> 	$1 = 128
-Yes, I realize (glibc seems seriously original about this - who ever can use 
-1024 different signals? The kernel just uses 64 signals - 8 bit).
-
-> I went to a reasonable amount of trouble to get that function to only
-> use one sigset_t and now you are proposing to add the old one back.
-> Fix the patch and I'll put it in.
-I rechecked the patch and understood why I put that in - I understand your 
-point, but since that needs at least some, but using such unobvious tricks 
-requires at least some comment - I'm adding the comment to the patch (and 
-sending it inline separately).
-
-Obviously feel free to delete/change the comment.
-
-> Also, if you're going to fix something, send a patch which does
-> nothing but make the fix, and save whatever cleanups you want to make
-> for a differet patch.
-Ok, I agree at all, and most times I already work like that.
-Bye
+> Offhand, it looks like doing things in the standard way will clean up
+> copy_thread a bit.
+I agree completely.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
