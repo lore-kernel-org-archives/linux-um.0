@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Btsm3-0006XW-2d for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 Aug 2004 11:52:03 -0700
+	id 1BtsmA-0006Xi-DQ for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 Aug 2004 11:52:10 -0700
 Received: from web8301.mail.in.yahoo.com ([203.199.122.31])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1Btsm2-0005Ux-Io for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 Aug 2004 11:52:03 -0700
-Message-ID: <20040808185153.57062.qmail@web8301.mail.in.yahoo.com>
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1Btsm9-0004E2-Tk for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 Aug 2004 11:52:10 -0700
+Message-ID: <20040808185206.57113.qmail@web8301.mail.in.yahoo.com>
 From: =?iso-8859-1?q?narender=20yadav?= <narender1983_ait@yahoo.co.in>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -25,7 +25,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 8 Aug 2004 19:51:53 +0100 (BST)
+Date: Sun, 8 Aug 2004 19:52:06 +0100 (BST)
 To: user-mode-linux-devel@lists.sourceforge.net
 
 We a group of 4 students intersted in doing the
