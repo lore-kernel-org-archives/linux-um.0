@@ -2,25 +2,30 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CyZUk-0007gz-LR for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 09:49:50 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CyZUi-0001M9-VV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 09:49:50 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [BUG report] UML linux-2.6 latest BK doesn't
-	compile
-References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
-	<200502081122.22613.blaisorblade@yahoo.it>
-	<1107859254.582.4.camel@imp.csi.cam.ac.uk>
-In-Reply-To: <1107859254.582.4.camel@imp.csi.cam.ac.uk>
+	id 1CyaxA-0003rT-B9 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 11:23:16 -0800
+Received: from net131-181.mclink.it ([195.110.131.181] helo=mail.hdr-roma.it)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cyax8-0003nI-MM for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 11:23:16 -0800
+Received: from localhost (localhost [127.0.0.1])
+	by mail.hdr-roma.it (MailerDaemon) with ESMTP id 0066B1EBC92
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue,  8 Feb 2005 20:23:21 +0100 (CET)
+Received: from mail.hdr-roma.it ([127.0.0.1])
+	by localhost (hdr [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 31035-03 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue,  8 Feb 2005 20:23:18 +0100 (CET)
+Received: from [192.168.101.130] (213-140-17-102.fastres.net [213.140.17.102])
+	by mail.hdr-roma.it (MailerDaemon) with ESMTP id 616741EBC87
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue,  8 Feb 2005 20:23:18 +0100 (CET)
+Message-ID: <42091199.20709@hdr-roma.it>
+From: "primero@hdr-roma.it" <primero@fastwebnet.it>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200502081848.46270.blaisorblade@yahoo.it>
+Subject: [uml-devel] Skas x86_64 status question
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,77 +37,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Feb 2005 18:48:46 +0100
+Date: Tue, 08 Feb 2005 20:23:05 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Anton Altaparmakov <aia21@cam.ac.uk>, Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>
 
-On Tuesday 08 February 2005 11:40, Anton Altaparmakov wrote:
-> On Tue, 2005-02-08 at 11:22 +0100, Blaisorblade wrote:
-> > On Tuesday 08 February 2005 11:09, Anton Altaparmakov wrote:
-> > > Hi,
-> > >
-> > > With the current linux-2.6 BK tree I get this when trying to compile
-> > > UML:
-> > >
-> > >   CC      init/version.o
-> > >   LD      init/built-in.o
-> > >   LD      .tmp_vmlinux1
-> > > arch/um/kernel/built-in.o(__ksymtab+0x2b0): In function `um_execve':
-> > > arch/um/kernel/exec_kern.c:59: undefined reference to `__bb_init_func'
-> > > collect2: ld returned 1 exit status
-> > >   KSYM    .tmp_kallsyms1.S
-> > > nm: '.tmp_vmlinux1': No such file
-> > > /bin/bash: line 1: 26161 Exit 1                  nm -n .tmp_vmlinux1
-> > >      26162 Segmentation fault      | scripts/kallsyms >.tmp_kallsyms1.S
-> > > make: *** [.tmp_kallsyms1.S] Error 139
-> > >
-> > > This is with SKAS mode enabled and TT disabled.  My .config is
-> > > attached.
-> >
-> > Hmm - I do not understand at all where `__bb_init_func' comes from (not
-> > from UML by sure, only from kernel headers possibly). And from
-> > preprocessing the source (of the -bk4 snapshot), nothing similar comes
-> > out.
+Hi all.
+
+I was looking at my UML ml archives some minutes ago with "x86_64" 
+subject filter and i found a message i did not read when it arrived ...
+
+<QUOTE>
+
+Subject:[uml-user] skas for 2.6 x86_64
+
+On Friday 19 November 2004 19:19, franck@linuxpourtous.Com wrote:
+
+>> Hello,
+>>
+>> I've a AMD 3000+ with 1Go of RAM and i can test a host patch for x86_64
+>>
+>> Regards
+>>
+>> Franck
+>  
 >
-> It is from UML.  'bk -r grep __bb_init_func' gives:
->
-> arch/um/kernel/gmon_syms.c      1.1     extern void __bb_init_func(void
-> *);
-> arch/um/kernel/gmon_syms.c      1.1     EXPORT_SYMBOL(__bb_init_func);
->
-> The kernel compiles fine with the same .config but TT mode also enabled.
+I hope next week I will get to doing this, having time.
 
-> So I suspect that in the non-TT case the gmon_syms binary
-> linked into the kernel
-I think it *is* still linked.
-> so the symbol is missing or something like 
-> that...
-Hmm, the difference is likely in the build commands:
 
-1) Simply because the build is dynamic in the non-TT mode case (no idea)
-2) bug in Makefiles.... but I didn't see anything strange:
+</QUOTE>
+ 
 
-arch/um/Makefile-skas (included only when SKAS mode is enabled):
+... as seen is 19/11/2004 .
 
-PROFILE += -pg
+since i have and amd64 3200+ and i run some UML Guests on hit i 
+wondered, have i lost something? :)
 
-CFLAGS-$(CONFIG_GCOV) += -fprofile-arcs -ftest-coverage
-CFLAGS-$(CONFIG_GPROF) += $(PROFILE)
-LINK-$(CONFIG_GPROF) += $(PROFILE)
+BTW what i would like to know is what is the current state on x86_64 
+Skas patch.
 
-the Makefiles were heavily changed, however, recently (after 2.6.10).
-> Also note I am using the latest BK as pulled about an hour ago.  I don't
-> know how old the snapshot you are using is in comparison.
-Last daily snapshot, when I posted. (Now we are at -bk5). However I only built 
-the file on which you saw the warning, not everything.
-> Lots of UML 
-> changes were pulled in by my pull...
+It would be really gratefull to have it :)
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
+thanks
+Bye
+P.
 
 
 
