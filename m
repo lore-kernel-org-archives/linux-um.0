@@ -2,22 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBZua-0002v5-O1 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 06:49:44 -0700
-Received: from i-195-137-100-222.freedom2surf.net ([195.137.100.222]
-	helo=greenrd.org) by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BBZua-00053M-3s for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 06:49:44 -0700
-From: Robin Green <greenrd@greenrd.org>
-Subject: Re: [uml-devel] Re: A quick humfs HOWTO
-Message-ID: <20040408134940.GX9464@localhost.localdomain>
-References: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
-	<87smfevfq2.fsf@bytesex.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nbwp0cmFVefRM4Ni"
+	id 1BBey4-000262-Nw for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Apr 2004 12:13:40 -0700
+Received: from smtp.wp.pl ([212.77.101.160])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BBey0-0001FD-9C
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Apr 2004 12:13:36 -0700
+Received: from host-116-242.rev.vline.pl (HELO [172.16.13.24])
+	(sikkh@[217.76.116.242]) (envelope-sender <sikkh@wp.pl>)
+	by smtp.wp.pl (wp-smtpd) with RC4-MD5 encrypted SMTP
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	8 Apr 2004 21:13:24 +0200
+From: Piotr Neuman <sikkh@wp.pl>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87smfevfq2.fsf@bytesex.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200404082114.49123.sikkh@wp.pl>
+Subject: [uml-devel] Example databases to keep humfs metadata
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,41 +33,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 8 Apr 2004 14:49:40 +0100
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 8 Apr 2004 21:14:49 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
+gdbm: http://www.gnu.org/software/gdbm/gdbm.html
 
+Simple file database, using hashing. Should be relatively easy to include with 
+UML sources. It's pretty standard in all Linux distributions.
 
---nbwp0cmFVefRM4Ni
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+qdbm: http://qdbm.sourceforge.net/
 
-On Thu, Apr 08, 2004 at 02:03:49PM +0200, Gerd Knorr wrote:
-> Jeff Dike <jdike@addtoit.com> writes:
-> Hmm.  Why separate?  These days almost all filesystems in 2.6 support
-> extended attributes, that would be the ideal place for such metadata
-> IMHO ...
+More up to date than gdbm. Also has B+tree algorithms, so it may be more 
+apriopriate for filesystem data. Disadvantage is it's larger size but I 
+believe it could be trimmed down for UML.
 
-reiserfs 3 doesn't! And reiserfs 4 isn't ready yet ... please don't leave
-us reiserfs 3 users behind!
---=20
-Robin
+API similiarity between gdbm and qbdm should allow for easy transition if 
+needed.
 
---nbwp0cmFVefRM4Ni
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Berkeley DB: http://www.sleepycat.com/
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+Very powerfull (logging for example) but it's features are rather overkill. 
+Advantage is that it's available on all major distributions (UML could link 
+to it dynamically).
 
-iD8DBQFAdVh0tPCt67UksSYRAsDcAKDCSw1dox1kYRl2lN3j1aoG+pHrgwCfVPoc
-9c7x01FhzHhBRrLmFdbu8O8=
-=3bgl
------END PGP SIGNATURE-----
-
---nbwp0cmFVefRM4Ni--
+Those are just a few possibilities, I'm sure there are other options (like 
+open source SQL databases ;).
 
 
 -------------------------------------------------------
