@@ -2,17 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ve7Z-0007IZ-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 07:33:01 -0700
-Received: from web41607.mail.yahoo.com ([66.218.93.107])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 19ve7Y-0001pE-Gn
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 07:33:00 -0700
-Message-ID: <20030906143230.47744.qmail@web41607.mail.yahoo.com>
-From: Jason Johnson <jsjohn2000@yahoo.com>
+	id 19vesb-0005TQ-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 08:21:37 -0700
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 19vesa-0004x4-K9
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 08:21:36 -0700
+Received: from mercury.dur.ac.uk (mercury.dur.ac.uk [129.234.4.40])
+	by hermes.dur.ac.uk (8.11.7/8.11.7) with ESMTP id h86FLKL10651
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 6 Sep 2003 16:21:20 +0100 (BST)
+Received: from altair.dur.ac.uk (altair.dur.ac.uk [129.234.4.14])
+	by mercury.dur.ac.uk (8.12.9+Sun/8.11.7) with ESMTP id h86FLHw3007717
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 6 Sep 2003 16:21:17 +0100 (BST)
+Received: from localhost (dit0may@localhost)
+	by altair.dur.ac.uk (8.11.7+Sun/8.11.1) with ESMTP id h86FLHa01256
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 6 Sep 2003 16:21:17 +0100 (BST)
+From: M A Young <m.a.young@durham.ac.uk>
+Message-ID: <Pine.GSO.4.53.0309061615180.816@altair.dur.ac.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Problems with linking of 2.4.19-5um (elf-init.o symbols missing during final link)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Re: Child exit when booting uml 2.4.20 on 2.6.0-test4 host
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -23,63 +32,33 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 6 Sep 2003 07:32:30 -0700 (PDT)
+Date: Sat, 6 Sep 2003 16:21:17 +0100 (BST)
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jsjohn2000@yahoo.com
 
-I have been experimenting with user mode linux and
-when I tried compiling against the 2.4.19 kernel I
-received the following link error
+> I have been running a UML kernel version 2.4.20 on a RH9
+> host with kernel 2.4.20-8. Everything is working properly in
+> that environment. Now that I've upgraded the host system to
+> 2.6.0-test4 I can't boot that same UML kernel as before.
+> I get the following error:
+>
+> Checking root filesystem
+> /dev/ubd/0: clean, 43713/75520 files, 136981/151040 blocks
+> [/sbin/fsck.ext3 (1) -- /] fsck.ext3 -a /dev/ubd/0
+> [  OK  ]
+> Remounting root filesystem in read-write mode:  [  OK  ]
+> Activating swap partitions:  [  OK  ]
+> Finding module dependencies:  [  OK  ]
+> Checking filesystems
+> Checking all file systems.
+> [  OK  ]
+> Mounting local filesystems:  Child 15433 exited with signal 11
 
-gcc -Wl,-T,arch/um/link.ld  -Wl,--wrap,malloc
--Wl,--wrap,free -Wl,--wrap,calloc \
-        -o linux -static arch/um/main.o vmlinux.o
--L/usr/lib -lutil
-/usr/lib/libc.a(elf-init.o)(.text+0x2): In function
-`__libc_csu_init':
-: undefined reference to `__preinit_array_end'
-/usr/lib/libc.a(elf-init.o)(.text+0x9): In function
-`__libc_csu_init':
-: undefined reference to `__preinit_array_start'
-/usr/lib/libc.a(elf-init.o)(.text+0x23): In function
-`__libc_csu_init':
-: undefined reference to `__preinit_array_start'
-/usr/lib/libc.a(elf-init.o)(.text+0x34): In function
-`__libc_csu_init':
-: undefined reference to `__init_array_end'
-/usr/lib/libc.a(elf-init.o)(.text+0x39): In function
-`__libc_csu_init':
-: undefined reference to `__init_array_start'
-/usr/lib/libc.a(elf-init.o)(.text+0x49): In function
-`__libc_csu_init':
-: undefined reference to `__init_array_start'
-/usr/lib/libc.a(elf-init.o)(.text+0x61): In function
-`__libc_csu_fini':
-: undefined reference to `__fini_array_end'
-/usr/lib/libc.a(elf-init.o)(.text+0x67): In function
-`__libc_csu_fini':
-: undefined reference to `__fini_array_start'
-/usr/lib/libc.a(elf-init.o)(.text+0x84): In function
-`__libc_csu_fini':
-: undefined reference to `__fini_array_start'
-collect2: ld returned 1 exit status
-make: *** [linux] Error 1
+It is almost certainly the same bug I spotted here
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=106185906902629&w=2
+The patch isn't the 'right' patch, but should fix the problem for the
+moment.
 
-I applied the 2.4.19-5um patch to my kernel source
-tree.  Does anyone have any ideas on how to fix this
-problem.
-
-I tried compiling a new version of glibc, but the when
-I did a objdump -t libc.a symbols mentioned above do
-not appear.
-
-Thanks for the help.
-
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+	Michael Young
 
 
 -------------------------------------------------------
