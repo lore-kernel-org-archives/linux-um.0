@@ -1,23 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CtmEq-0008OZ-Sb for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Jan 2005 04:25:36 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CtmEm-0002lb-50 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Jan 2005 04:25:36 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: skas3 patch breaks ATI video drivers
-References: <41F54FE9.7060503@better.se>
-	<200501242113.16569.blaisorblade@yahoo.it>
-	<ct7r17$cqj$1@sea.gmane.org>
-In-Reply-To: <ct7r17$cqj$1@sea.gmane.org>
+	id 1CtqBp-0006hY-43 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Jan 2005 08:38:45 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CtqBn-0007xW-I0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Jan 2005 08:38:45 -0800
+Message-ID: <41F7C963.9080704@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200501261324.52933.blaisorblade@yahoo.it>
+Content-Type: multipart/mixed; boundary="------------050300040704030103040604"
+Subject: [uml-devel] UML running on a SMP host: bug in SKAS3 patch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,51 +24,114 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Jan 2005 13:24:52 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>
+Date: Wed, 26 Jan 2005 17:46:27 +0100
+To: Jeff Dike <jdike@addtoit.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wednesday 26 January 2005 11:24, Sven K=F6hler wrote:
+This is a multi-part message in MIME format.
+--------------050300040704030103040604
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Description: see patch.
 
-Please note this exact sentence:
-> > I.e. the compilation problem is not in the kernel module, right?
+Bodo
 
-> > In this=20
-> > case, the problem is that you have /usr/include/asm symlinked to your
-> > kernel's include/asm-i386 directory, which is the wrong setup. However
-> > your solution should not give any problem.
+--------------050300040704030103040604
+Content-Type: text/x-diff;
+ name="host-2.6.9-skas3.v7-smp-fix-ldt.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="host-2.6.9-skas3.v7-smp-fix-ldt.patch"
 
-> Kernel-Modules are usually compiled against the sources in either
-> /usr/src/linux or /lib/modules/<version>/build.
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-> Take a look at the nvidia-kernel ebuild or other ebuilds that build
-> kernel modules. It would be fatal to compile them against the headers in
-> /usr/include. On Gentoo, you can have linux26-headers-2.6.7 installed,
-> but actually be running a 2.6.10 Kernel - and even worse, it is even
-> possible to keep 2.4 headers when running a 2.6 kernel.
+The SKAS3 host patch isn't smp-safe.
 
-Sven, that is clear *and* obvious... what I was *refusing* to believe was t=
-hat=20
-a kernel module would be using the "syscall" macro - I explained it by=20
-thinking it was userspace code.
+The wrong part is the implementation of PTRACE_LDT.
+If the ptraced child runs on an other processor than its parent,
+and the child's mm still is the active_mm, the changed LDT
+isn't flushed out.
+The problem occurs in alloc_ldt, but to fix this, I had to
+change the params of copy_ldt, too.
 
-Maybe that use is even legitimate (1), after all, but it astonished me a bi=
-t=20
-first... and my experience with NVIDIA driver was they also had a userspace=
-=20
-part to link with X11.
+---
 
-(1) legitimate means "ugly hack which can make sense with non-GPL modules, =
+--- a/arch/i386/kernel/ldt.c	2005-01-26 15:35:44.000000000 +0100
++++ b/arch/i386/kernel/ldt.c	2005-01-26 16:57:54.000000000 +0100
+@@ -28,11 +28,12 @@ static void flush_ldt(void *null)
+ }
+ #endif
+ 
+-static int alloc_ldt(mm_context_t *pc, int mincount, int reload)
++static int alloc_ldt(struct mm_struct *mm, int mincount, int reload)
+ {
+ 	void *oldldt;
+ 	void *newldt;
+ 	int oldsize;
++	mm_context_t * pc = &mm->context;
+ 
+ 	if (mincount <= pc->size)
+ 		return 0;
+@@ -55,17 +56,19 @@ static int alloc_ldt(mm_context_t *pc, i
+ 	pc->size = mincount;
+ 	wmb();
+ 
+-	if (reload && (&current->active_mm->context == pc)) {
++	if (reload) {
+ #ifdef CONFIG_SMP
+ 		cpumask_t mask;
+ 		preempt_disable();
+-		load_LDT(pc);
++		if (&current->active_mm->context == pc)
++			load_LDT(pc);
+ 		mask = cpumask_of_cpu(smp_processor_id());
+-		if (!cpus_equal(current->mm->cpu_vm_mask, mask))
++		if (!cpus_equal(mm->cpu_vm_mask, mask))
+ 			smp_call_function(flush_ldt, NULL, 1, 1);
+ 		preempt_enable();
+ #else
+-		load_LDT(pc);
++		if (&current->active_mm->context == pc)
++			load_LDT(pc);
+ #endif
+ 	}
+ 	if (oldsize) {
+@@ -77,12 +80,12 @@ static int alloc_ldt(mm_context_t *pc, i
+ 	return 0;
+ }
+ 
+-static inline int copy_ldt(mm_context_t *new, mm_context_t *old)
++static inline int copy_ldt(struct mm_struct *new, struct mm_struct *old)
+ {
+-	int err = alloc_ldt(new, old->size, 0);
++	int err = alloc_ldt(new, old->context.size, 0);
+ 	if (err < 0)
+ 		return err;
+-	memcpy(new->ldt, old->ldt, old->size*LDT_ENTRY_SIZE);
++	memcpy(new->context.ldt, old->context.ldt, old->context.size*LDT_ENTRY_SIZE);
+ 	return 0;
+ }
+ 
+@@ -96,7 +99,7 @@ int copy_context(struct mm_struct *mm, s
+ 
+ 	if (old_mm && old_mm->context.size > 0) {
+ 		down(&old_mm->context.sem);
+-		retval = copy_ldt(&mm->context, &old_mm->context);
++		retval = copy_ldt(mm, old_mm);
+ 		up(&old_mm->context.sem);
+ 	}
+ 	return retval;
+@@ -202,7 +205,7 @@ static int write_ldt(struct mm_struct * 
+ 
+ 	down(&mm->context.sem);
+ 	if (ldt_info.entry_number >= mm->context.size) {
+-		error = alloc_ldt(&mm->context, ldt_info.entry_number+1, 1);
++		error = alloc_ldt(mm, ldt_info.entry_number+1, 1);
+ 		if (error < 0)
+ 			goto out_unlock;
+ 	}
 
-i.e. does not make sense anyway". I'm not flaming ATI / NVIDIA, let's leave=
-=20
-this duty to people with more spare time.
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+--------------050300040704030103040604--
 
 
 -------------------------------------------------------
