@@ -2,15 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4Nch-0006j1-D5 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Sep 2004 10:49:47 -0700
-Received: from mail-relay-4.tiscali.it ([213.205.33.44])
+	id 1C4Ncj-0006jB-NM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 10:49:49 -0700
+Received: from mail-relay-2.tiscali.it ([213.205.33.42])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C4Nce-0003al-N9 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Sep 2004 10:49:47 -0700
+	id 1C4Nch-0003ak-Oy for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 10:49:48 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20040906174449.8CAAEBB1A@zion.localdomain>
-Subject: [uml-devel] [patch 2/3] uml-ubd-any-elevator
+Message-Id: <20040906173524.EE034B977@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] uml: no extraversion in arch/um/Makefile for
+	mainline
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,33 +23,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 06 Sep 2004 19:44:49 +0200
+Date: Mon, 06 Sep 2004 19:35:24 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Avoid forcing use of the no-op scheduler for UBD; this may uncover some bugs in the
-UBD driver, and in fact uml-ubd-no-empty-queue.patch is needed to make this sure.
-But as of now, no other bugs have been discovered, so this should be safe.
+Extraversion in arch/um/Makefile is not needed in mainline, but just for
+separate patches; also, they should set it in the main Makefile, not elsewhere
+(Jeff Garzik has just complained).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c |    2 --
- 1 files changed, 2 deletions(-)
+ uml-linux-2.6.8.1-paolo/arch/um/Makefile |    9 ---------
+ 1 files changed, 9 deletions(-)
 
-diff -puN arch/um/drivers/ubd_kern.c~uml-ubd-any-elevator arch/um/drivers/ubd_kern.c
---- uml-linux-2.6.8.1/arch/um/drivers/ubd_kern.c~uml-ubd-any-elevator	2004-08-29 14:40:53.731043416 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c	2004-08-29 14:40:53.733043112 +0200
-@@ -749,8 +749,6 @@ int ubd_init(void)
- 		return -1;
- 	}
- 		
--	elevator_init(ubd_queue, &elevator_noop);
--
- 	if (fake_major != MAJOR_NR) {
- 		char name[sizeof("ubd_nnn\0")];
+diff -puN arch/um/Makefile~uml-no-extraversion-in-mainline arch/um/Makefile
+--- uml-linux-2.6.8.1/arch/um/Makefile~uml-no-extraversion-in-mainline	2004-09-06 19:23:08.400492544 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/Makefile	2004-09-06 19:24:05.342835992 +0200
+@@ -10,13 +10,6 @@ SHELL := /bin/bash
  
+ filechk_gen_header = $<
+ 
+-# Recalculate MODLIB to reflect the EXTRAVERSION changes (via KERNELRELEASE)
+-# The way the toplevel Makefile is written EXTRAVERSION is not supposed
+-# to be changed outside the toplevel Makefile, but recalculating MODLIB is
+-# a sufficient workaround until we no longer need architecture dependent
+-# EXTRAVERSION...
+-MODLIB := $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+-
+ core-y			+= $(ARCH_DIR)/kernel/		\
+ 			   $(ARCH_DIR)/drivers/		\
+ 			   $(ARCH_DIR)/sys-$(SUBARCH)/
+@@ -44,8 +37,6 @@ SYS_DIR		:= $(ARCH_DIR)/include/sysdep-$
+ include $(ARCH_DIR)/Makefile-$(SUBARCH)
+ include $(ARCH_DIR)/Makefile-os-$(OS)
+ 
+-EXTRAVERSION := $(EXTRAVERSION)-1um
+-
+ # -Derrno=kernel_errno - This turns all kernel references to errno into
+ # kernel_errno to separate them from the libc errno.  This allows -fno-common
+ # in CFLAGS.  Otherwise, it would cause ld to complain about the two different
 _
 
 
