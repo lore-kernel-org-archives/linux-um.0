@@ -1,27 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ai4Vm-0006Rx-9X for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 20:26:10 -0800
+	id 1Ai4Yw-000722-6a for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 20:29:26 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Ai4Vl-0000j6-OT
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Ai4Yv-00059M-Kv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 20:26:10 -0800
+	Sat, 17 Jan 2004 20:29:25 -0800
 From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Re: uml-patch-2.6.0
-Message-ID: <20040118044759.GC8571@ccure.user-mode-linux.org>
+Message-ID: <20040118045121.GD8571@ccure.user-mode-linux.org>
 References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
-	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
-	<Pine.GSO.4.58.0401160957210.23807@algedi.dur.ac.uk>
-	<200401161727.i0GHRKVW002726@ccure.user-mode-linux.org>
-	<Pine.GSO.4.58.0401172102270.14178@altair.dur.ac.uk>
+	<200401172009.38339.blaisorblade_spam@yahoo.it>
+	<20040117195019.GA7405@ccure.user-mode-linux.org>
+	<200401172103.26457.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.GSO.4.58.0401172102270.14178@altair.dur.ac.uk>
+In-Reply-To: <200401172103.26457.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,21 +31,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 23:47:59 -0500
-To: M A Young <m.a.young@durham.ac.uk>
+Date: Sat, 17 Jan 2004 23:51:21 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jan 17, 2004 at 09:12:45PM +0000, M A Young wrote:
-> I have been trying to debug the problem with tt mode and very recent
-> glibcs, and what seems to be happening is that early on in the glibc start
-> up code for /sbin/init (after 3 syscalls), there is a segv signal;
-> handle_page_fault returns -14, probably becuase the fault address
-> (beffe018) is bogus, but the segfault seems to repeat endlessly. I am not
-> sure if this is a glibc or a uml issue, or something else.
+On Sat, Jan 17, 2004 at 09:03:26PM +0100, BlaisorBlade wrote:
+> I didn't start it. Also, I must check exactly the API to create (i.e. how to 
+> abstract os-specific details, which is hard since I've never programmed on 
+> Cygwin or Freebsd). And also, if you assume that a file handle is an integer 
+> (which is true only on POSIX), why do you wrap open inside os_open_file 
+> (which always works on POSIX)? The same question could go for other calls.
 
-I saw something like that during a glibc upgrade going from stable to testing
-in tt mode.  Running it in skas mode avoided the problem.  I never figured
-out what was happening.
+I don't, but I'm leaving it as an int for now since that works.  The interfaces
+can be tweaked in the future, so a descriptor may become some sort of void *
+cookie to handle OSes with non-integer file handles.
+
+What I'm trying to do now is get some sort of reasonable approximation to
+a decent OS abstraction layer.
 
 				Jeff
 
