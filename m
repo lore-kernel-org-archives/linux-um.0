@@ -1,32 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPLhW-0003Cg-0y for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 06:01:26 -0800
-Received: from main.gmane.org ([80.91.229.2])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPLhU-00080C-Ug for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 06:01:25 -0800
-Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1CPLhS-0000xM-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 03 Nov 2004 15:01:22 +0100
-Received: from naked.iki.fi ([62.142.249.112])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 03 Nov 2004 15:01:22 +0100
-Received: from naked by naked.iki.fi with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 03 Nov 2004 15:01:22 +0100
-From: Nuutti Kotivuori <naked@iki.fi>
-Message-ID: <87pt2v9jl1.fsf@aka.i.naked.iki.fi>
-References: <417101F4.1050109@fastwebnet.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: [uml-user] UML Guests and CPU Performance.
+	id 1CPNt4-0002Gh-WE for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:21:31 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CPNt4-0006u8-5a for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:21:30 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] uml_mconsole
+References: <267988DEACEC5A4D86D5FCD780313FBB0161AF57@exch-03.noida.hcltech.com>
+In-Reply-To: <267988DEACEC5A4D86D5FCD780313FBB0161AF57@exch-03.noida.hcltech.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411031721.45025.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,42 +29,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 03 Nov 2004 14:56:58 +0200
+Date: Wed, 3 Nov 2004 17:21:44 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+Cc: "Adil Mujeeb, Noida" <adilm@hcltech.com>, user-mode-linux-user@lists.sourceforge.net
 
-primero@fastwebnet.it wrote:
-> It seems to me that performance of UML Guest machine is sensibly
-> worst then UML Host ... even if there is only one UML guest and no
-> other processes sucking resources.
+On Wednesday 03 November 2004 07:53, Adil  Mujeeb, Noida wrote:
+> Hi,
+> iam using uml_mconsole. i want to configure or see th configuration of
+> interface device on UML.
+> when i issue command on uml console config eth0, it gives error message
+> "ERR No get_config routine defined"
+>
+> Can anyone throw some lights on this case whats wrong here?
+>
+> Thanks and Best Regards,
+> Adil Mujeeb
+Yes, I know that, not yet had time to fix this. Simply a piece of code should 
+be written to support ethernet configuration. "config eth#n" is easy; "config 
+eth#n=...." is a bit harder, but should be possible anyway.
 
-It is definitely worse.
-
-> The Bogomips of the Guest are the half of the Host
-
-Ignore bogomips. Pure CPU workload is really close to the host. You
-can try it with any CPU tester application.
-
-> and compiling time is almost the double.
-
-We have generally measured compile time increase by a third or
-more. It is affected by many things though, so YMMV. This is with the
-skas patch, but without SYSEMU.
-
-> I want to know if this is "Normal" or i have to look for some errors
-> in my configuration.
-
-Sounds just about right - for some not-so-independent results on UML
-performance compared to other techniques, I found the Xen performance
-results to give a rough guideline:
-
-  http://www.cl.cam.ac.uk/Research/SRG/netos/xen/performance.html
-
-Do note that the benchmarks they run are really bad on virtualization
-techniques - normal user workload suffers far less.
-
--- Naked
-
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
