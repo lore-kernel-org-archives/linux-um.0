@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtWHw-0000zJ-QD
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 10:19:12 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	id 1AtWzQ-00030w-Bs
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 11:04:08 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AtW5u-00014S-1A
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 10:06:46 -0800
+	id 1AtWnK-0006CV-Tz
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 10:51:39 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] syscall sysinfo error
-References: <20040215163513.GA26606@neo.wh-stuttgart.de>
-In-Reply-To: <20040215163513.GA26606@neo.wh-stuttgart.de>
+Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
+References: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp> <200402152045.17138.blaisorblade_spam@yahoo.it> <20d501c3f5c1$ef1d3d70$2000000a@schlepptopp>
+In-Reply-To: <20d501c3f5c1$ef1d3d70$2000000a@schlepptopp>
 MIME-Version: 1.0
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_Bh4MAOOdC0HhJKe"
-Message-Id: <200402181644.01093.blaisorblade_spam@yahoo.it>
+  boundary="Boundary-00=_Ya7MAmWa1yGJ6aU"
+Message-Id: <200402182001.44243.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,68 +25,94 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Feb 2004 16:44:01 +0100
+Date: Wed, 18 Feb 2004 20:01:44 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Martin =?iso-8859-15?q?Thei=DF?= <mtheiss@neo.wh-stuttgart.de>
+Cc: Jeff Dike <jdike@addtoit.com>, roland <for_spam@gmx.de>
 
 
 
---Boundary-00=_Bh4MAOOdC0HhJKe
+--Boundary-00=_Ya7MAmWa1yGJ6aU
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-Alle 17:35, domenica 15 febbraio 2004, Martin Thei=DF ha scritto:
-> recently i tried to run debian-installer on a 2.6.2 uml kernel.
-> it didn't
-> work. i determined the problem has to be the syscall sysinfo. it return
-> zeroed values for totalram and totalswap.
-0 for total swap is correct in your case, since you do not enable a swap; 0=
-=20
-for total ram is wrong but has been fixed in the official Uml patch 2.6.3-r=
-c2=20
-(it seems that it applies well onto 2.6.2; there are two rejects which must=
-=20
-be ignored). Or better: the patch fixes the 0 value for totalRam in=20
-/proc/meminfo; that should fix also the sysinfo value, but if it does not,=
-=20
-just complain again.
+Alle 02:52, mercoled=EC 18 febbraio 2004, roland ha scritto:
+> hi !
 
-If you want to use patch 2.6.1, apply the attached patch on top of that to =
-fix=20
-things.
+=46or Jeff: see at the end why I cc: to you.
 
 >
-> Is this a general problem of uml or is it a problem of busybox, which is
-> using this method to determine the amount of free memory?
-A uml 2.6 (now fixed) bug, which creates problem to anything using this=20
-(correct) method. It also caused ps u to crash for a division by 0.
+> the bug ("hang after NET: Registered protocol family 2":) doesn`t seem to
+> have a relation to SKAS, because it also happens in TT mode.
+> when i run the binary with "./linux mode=3Dtt" the hang occurs, too.
+> furthermore - it doesn`t seem to be a compiler issue, because i compiled
+> 2.6.3-rc2 on 2 completely different systems (suse9 and rh7.2).
+> i also read about guesses, that this could have to do with "newer" hosts
+> running NPTL. could someone explain? i thought uml is a static binary
 
-Bye
+Yes but when it's compiled it's linked against host's libs (mainly glibc an=
+d=20
+libpthreads). However, IIRC, the problems with NPTL on the host have been=20
+fixed time ago, and with NPTL in the guest have currently a temporary fix.
+
+>, so
+> how can this have a relation to a thread >LIBRARY<?? somewhere i read abo=
+ut
+> "kernel threads". is ntpl related to the kernel itself? (sorry if this
+> sounds stupid - but i remember switching between different thread-librari=
+es
+> on solaris via envvars. is this just the same with ntpl?)
+
+> after adding a lot if printk`s to the uml-patched 2.6.3-rc2 source, i fou=
+nd
+> the following(maybe interesting):
+>
+> in ./kernel/sched.c
+> in function wait_for_completion(struct completion *x)
+> the call to "schedule()" never returns and this seems to be the reason for
+> the hanging ipv4 initialisation. i have no clue about kernel internals and
+> i think it`s nonsense, if i dig further into this....
+>
+> but as i already said:
+> 2.6.0-test9 with uml-patch-2.6.0-test9-1  _WORKS_ (at least for me)
+> 2.6.0 with uml-patch-2.6.0-1 and following kernel/uml-patch versions seem
+> to have the ipv4 hang-at-init bug.
+>
+> so maybe the bug has been introduced with uml-patch-2.6.0-1 !?
+
+The message about "diagnosed and repeatable kernel panic" is IMHO related t=
+o=20
+this: the sigsetjmp change was actually in 2.6.0. And this broke schedule: =
+on=20
+my system it happens to broke in one point, on your in another point.
+
+If I guessed right, the attached patch will solve everything.
+
+Jeff, do you think this makes sense?
 =2D-=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 
---Boundary-00=_Bh4MAOOdC0HhJKe
+--Boundary-00=_Ya7MAmWa1yGJ6aU
 Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="C-07-Ps_crash_fix.patch"
+  charset="windows-1252";
+  name="Panic_schedule_fix.patch"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="C-07-Ps_crash_fix.patch"
+Content-Disposition: attachment; filename="Panic_schedule_fix.patch"
 
---- 1.21/arch/um/kernel/mem.c   Thu Jan  8 07:43:01 2004
-+++ edited/arch/um/kernel/mem.c Mon Jan 26 11:02:13 2004
-@@ -30,7 +30,6 @@
- int kmalloc_ok = 0;
+--- 1.9/arch/um/kernel/skas/process_kern.c	Thu Jan  8 07:43:01 2004
++++ edited/arch/um/kernel/skas/process_kern.c	Sun Feb 15 10:42:31 2004
+@@ -76,6 +76,7 @@
  
- static unsigned long brk_end;
--static unsigned long totalram_pages = 0;
- 
- void unmap_physmem(void)
+ void new_thread_proc(void *stack, void (*handler)(int sig))
  {
++       local_irq_disable();
+ 	init_new_thread_stack(stack, handler);
+ 	os_usr1_process(os_getpid());
+ }
 
---Boundary-00=_Bh4MAOOdC0HhJKe--
+--Boundary-00=_Ya7MAmWa1yGJ6aU--
 
 
 
