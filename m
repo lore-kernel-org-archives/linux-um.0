@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B8HPR-0000aE-K9 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Mar 2004 03:27:57 -0800
-Received: from mxout.hispeed.ch ([62.2.95.247] helo=smtp.hispeed.ch)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B8HPQ-0008Fm-UF
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Mar 2004 03:27:57 -0800
-Received: from epfl.ch (TVT-CaTV-dhcp-53-157.urbanet.ch [80.238.53.157])
-	by smtp.hispeed.ch (8.12.6/8.12.6/tornado-1.0) with ESMTP id
-	i2UBRsdN008808 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 30 Mar 2004 13:27:54 +0200
-Message-ID: <406958BA.7080109@epfl.ch>
-From: Nicolas Blanc <nicolas.blanc@epfl.ch>
+	id 1B8Nm6-0002tf-4r for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Mar 2004 10:15:46 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1B8Nm5-0001M3-Hs for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Mar 2004 10:15:45 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] skas understanding
+Content-Disposition: inline
+Message-Id: <200403302025.02276.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Vmlinux - linux linking stages & /proc/kallsyms empty
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,33 +27,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Mar 2004 13:23:38 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 30 Mar 2004 19:25:02 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-Hello,
-I am trying to figure out how does UML run in skas mod (I already red some
-papers abouts it and now I d'like to jump into the code),
-but I am experiencing some difficulties about things that are done in
-function start_uml_skas :
+Jeff, is there any good reason to first link everything in vmlinux and then 
+link things properly in linux? Because I have reasons (i.e. bugs) against 
+this.
 
-1)  in function start_userspace :
+--THE BUGS
+**Symptom: /proc/kallsyms is empty. Any stack dump cannot contain the symbol 
+names.
 
-    stack = mmap(...,MAP_ANONYMOUS,...);
-    ...
-    pid = clone(userspace_tramp, (void *) sp,
-            CLONE_FILES | CLONE_VM | SIGCHLD, NULL);
-    ...
-    munmap(stack,PAGE_SIZE);
+**Reason: This because the vmlinux link script is wrong (you rejected the 
+patch I sent you time ago, was in the patchset). But kallsyms must contain 
+the true addresses of the kernel symbols; since they change between vmlinux 
+and linux (if they didn't change, the second step would be useless), they 
+cannot be correct. I think that even System.map symbols do not match.
 
-I don't understand the purpose of using anonymous mmap.
+**Fix: So, we actually need to make vmlinux have the correct addresses, i.e. 
+avoid the two-pass linking.
 
-2) capture_signal_stack() : what is it for ?
+--HOW TO FIX THIS: 
+You specify the -r flags for vmlinux, so you could as well pass the extra 
+objects in and the right link script.
 
-3) Where is the kernel thread?
+--WHY SHOULD WE BOTHER?
+Because it is a fix and it is easy to fix.
 
-Thanks
-
-Nicolas
+Any comments?
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
