@@ -2,20 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AMuZ9-0007yq-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 11:34:11 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AMuYz-0002f0-11
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 11:34:01 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Host panic when UML reads host /dev/shm
-References: <200311201915.29188.blaisorblade_spam@yahoo.it> <200311201956.39623.Frank.dekervel@student.kuleuven.ac.Be>
-In-Reply-To: <200311201956.39623.Frank.dekervel@student.kuleuven.ac.Be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+	id 1AMv4A-0002Xb-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 12:06:14 -0800
+Received: from blacksheep.csh.rit.edu ([129.21.60.6])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AMv4A-0006OT-1B
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 12:06:14 -0800
+Received: from dijkstra (dijkstra.csh.rit.edu [129.21.60.152])
+	by blacksheep.csh.rit.edu (Postfix) with ESMTP id 0EEF43EC
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 15:06:12 -0500 (EST)
+Received: from mdz by dijkstra with local (Exim 3.35 #1 (Debian))
+	id 1AMv47-00036S-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 15:06:11 -0500
+From: Matt Zimmerman <mdz@debian.org>
+Subject: Re: [uml-devel] Host panic triggered by UML
+Message-ID: <20031120200611.GK9377@dijkstra.csh.rit.edu>
+References: <200311201915.29188.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200311202037.14480.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200311201915.29188.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,68 +32,59 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Nov 2003 20:37:14 +0100
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 20 Nov 2003 15:06:11 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 19:56, gioved=EC 20 novembre 2003, Frank Dekervel ha scritto:
-> Op Thursday 20 November 2003 19:15, schreef BlaisorBlade:
-> > I reported that if I leave an UML sleeping, it segfaults(once I saw the
-> > killed by SIGSEGV from the shell, the other time nothing, maybe I had
-> > detached the job from the shell).
-> >
-> > Now I've seen that what happens is that the host kernel oopses. I'm
-> > posting it here to collect a bit more infos before posting it to the
-> > LKML, and to know why only UML is able to trigger it. Since the bug see=
-ms
-> > related only to /dev/shm, maybe you could have some enlightenment about
-> > it and how UML uses shared memory to make this happen.
->
-> i saw the same crash.
-Only an oops on linux or the same oops? If the second, it's useful news
-> i worked around it by not using hostfs ...
-So, probably there was a process runned from inside UML triggering the bug.
+On Thu, Nov 20, 2003 at 07:15:29PM +0100, BlaisorBlade wrote:
 
-In fact, I'm seeing now 4:40, the time the oops happens, is when the slackw=
-are=20
-every day runs updatedb.
+> Nov 19 04:40:24 blaisorblade kernel: Unable to handle kernel NULL pointer 
+> dereference at virtual address 00000000
+> Nov 19 04:40:24 blaisorblade kernel:  printing eip:
+> Nov 19 04:40:24 blaisorblade kernel: c015421b
+> Nov 19 04:40:24 blaisorblade kernel: *pde = 00000000
+> Nov 19 04:40:24 blaisorblade kernel: Oops: 0002
+> Nov 19 04:40:24 blaisorblade kernel: CPU:    0
+> Nov 19 04:40:24 blaisorblade kernel: EIP:    0010:[dcache_dir_lseek+299/384]    
+> Tainted: PF
+> Nov 19 04:40:24 blaisorblade kernel: EIP:    0010:[<c015421b>]    Tainted: PF
+> Nov 19 04:40:24 blaisorblade kernel: EFLAGS: 00010286
+> Nov 19 04:40:24 blaisorblade kernel: eax: 00000000   ebx: c0d24160   ecx: 
+> d6b15f08   edx: c0d24160
+> Nov 19 04:40:24 blaisorblade kernel: esi: 00000002   edi: 00000000   ebp: 
+> c0d24140   esp: d67cbf84
+> Nov 19 04:40:24 blaisorblade kernel: ds: 0018   es: 0018   ss: 0018
+> Nov 19 04:40:24 blaisorblade kernel: Process linux (pid: 18847, 
+> stackpage=d67cb000)
+> Nov 19 04:40:24 blaisorblade kernel: Stack: fffffff2 c0d24140 00000000 
+> 00000000 c01540f0 d2473f20 c01433f8 d2473f20 
+> Nov 19 04:40:24 blaisorblade kernel:        00000002 00000000 00000000 
+> d67ca000 4014b008 00000002 a2533abc c01075b7 
+> Nov 19 04:40:24 blaisorblade kernel:        0000002f 00000002 00000000 
+> 4014b008 00000002 a2533abc 00000013 0000002b 
+> Nov 19 04:40:24 blaisorblade kernel: Call Trace:    [dcache_dir_lseek+0/384] 
+> [sys_lseek+120/192] [system_call+51/56]
+> Nov 19 04:40:24 blaisorblade kernel: Call Trace:    [<c01540f0>] [<c01433f8>] 
+> [<c01075b7>]
+> Nov 19 04:40:24 blaisorblade kernel: 
+> Nov 19 04:40:24 blaisorblade kernel: Code: 89 10 89 42 04 b8 00 e0 ff ff 21 e0 
+> ff 48 04 8b 50 14 39 50 
 
-A little transcript from a UML session:
+I've seen this same crash many times; I sent it to lkml but got no response.
 
-root [~: slack90: 1 (0)] # mount
-/dev/ubda on / type ext3 (rw)
-devpts on /dev/pts type devpts (rw,gid=3D5,mode=3D620)
-proc on /proc type proc (rw)
-host on /mnt/host type hostfs (rw,/)
-root [~: slack90: 1 (0)] # ls /mnt/host/dev/sh
-sheep_net  shm        shmiq
-root [~: slack90: 1 (0)] # ls /mnt/host/dev/shm
-<Pause because of the same host kernel oops.>
+> (I've had another oops in the same call path and point, so I guess this
+> was the reason even the other time).
+> 
+> This means that it crashes in fs/readdir.c:dcache_dir_lseek; after some
+> checks So, probably the oops happened while working on that folder: what
+> needs to be checked is if the tmpfs code creates an inconsistent
+> list(exactly, an inconsistent struct dentry.d_subdirs one, since p walks
+> into it). Do you think this is reasonable or not?
 
-The host shell reported Segmentation fault(wrongly), so all the crashes I h=
-ad=20
-were due to this. I can even get the processes in D state(even a ls /dev/sh=
-m=20
-suffices).
+It only happened for me using UML hostfs on a tmpfs filesystem, so I believe
+it is a tmpfs bug, yes.
 
-Thanks, Frank. Your message was very useful and enlightening.
-
-I think hostfs reads files just as any normal process on the host, right? O=
-r=20
-it does anything special or at least unusual?
-
-Could the unusual thing be the context switching of SKAS?
-I'll test if it happens within TT mode. Jeff, this seems easy reproduceable=
-,=20
-so try it, please.
-
-Bye
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
-
+-- 
+ - mdz
 
 
 -------------------------------------------------------
