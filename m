@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Al6Mn-0007je-An for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jan 2004 05:01:25 -0800
+	id 1AlidN-0003bt-AT for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jan 2004 21:53:05 -0800
 Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30) id 1Al6Mm-0002VX-Qt
+	(Exim 4.30) id 1AlidM-0003Gn-0O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jan 2004 05:01:25 -0800
+	Tue, 27 Jan 2004 21:53:04 -0800
 From: Dan Shearer <dan@shearer.org>
-Message-ID: <20040126130339.GN4536@erizo.shearer.org>
-References: <20040126124708.GH4203@erizo.shearer.org>
+Subject: Re: [uml-devel] Re: more on COW (long)
+Message-ID: <20040128055515.GU4203@erizo.shearer.org>
+References: <20040119.155346.-522689.0.mcmechanjw@juno.com>
+	<200401280518.i0S5IOZw005580@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20040126124708.GH4203@erizo.shearer.org>
-Subject: [uml-devel] Re: PATCH kernel/umid.c
+In-Reply-To: <200401280518.i0S5IOZw005580@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,27 +29,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 26 Jan 2004 23:33:39 +1030
+Date: Wed, 28 Jan 2004 16:25:15 +1030
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: James W McMechan <mcmechanjw@juno.com>, user-mode-linux-devel@lists.sourceforge.net
 
-In addition, umid.c seems to be a bit inconsistent as to what rates an
-exit(1) and what just does return(1).
+On Wed, Jan 28, 2004 at 12:18:24AM -0500, Jeff Dike wrote:
+> mcmechanjw@juno.com said:
 
-On Mon, Jan 26, 2004 at 11:17:08PM +1030, Dan Shearer wrote:
-> --- umid.c.orig 2004-01-26 23:10:38.000000000 +1030
-> +++ umid.c      2004-01-26 23:11:41.000000000 +1030
-> @@ -205,7 +205,7 @@
->                         printf("Failed to malloc uml_dir - error = %d\n",
->                                errno);
->                         uml_dir = name;
-> -                       return(0);
-> +                       return(1);
->                 }
->                 sprintf(uml_dir, "%s/", name);
->         }
+> > Well yes, I want to be able to read real disk images either from a raw
+> > device, yes we could stick in a special case ioctl to check for a real
+> > device and read its geometry but ick it is easier to specify it, or
+> > from a dd'ed image file of a hard disk which would not work even with
+> > the ioctl, so ubd1C102H15S16 is better from my view :)
+> 
+> OK, build it and maybe people will come :-)
 
--- 
+Yep. I work with many different simulation environments and this is a
+*really* useful option. Apart from anything else real sectors are a kind
+of semi-universal file format between simulation environments. But there
+is also the case where you dd from a running system for purposes such as
+planning preventative maintenance, disaster recovery, forensics,
+security testing to mention a few. Not too many of the open source
+simulators do this but many of the closed source ones do.
+
+--
 Dan Shearer
 dan@shearer.org
 
