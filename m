@@ -2,21 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Crsfx-00037d-9j for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Jan 2005 22:53:45 -0800
-Received: from [202.91.196.193] (helo=printsoft.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Crsfw-0006E2-P6 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Jan 2005 22:53:45 -0800
-Received: from [192.168.4.162] (unknown [192.168.4.162])
-	by printsoft.com (linuxmail) with ESMTP id 95D52308011
+	id 1Crtr4-0006Gu-GF for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Jan 2005 00:09:18 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1Crtr2-00039e-VY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Jan 2005 00:09:18 -0800
+Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
+	by grelber.thyrsus.com (8.12.11/8.12.11) with ESMTP id j0L9IBSO004122
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 21 Jan 2005 17:53:35 +1100 (EST)
-Message-ID: <41F0A6F3.4030109@printsoft.com>
-From: Gerhard Hannemann <gerhard.hannemann@printsoft.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=======AVGMAIL-41F0A6F35A07======="
-Subject: [uml-devel] UML - Is it using swap space?
+	Fri, 21 Jan 2005 04:18:14 -0500
+From: Rob Landley <rob@landley.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200501210207.35065.rob@landley.net>
+Subject: [uml-devel] 2.6.11-rc1-mm2 works for me.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,66 +33,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Jan 2005 17:53:39 +1100
+Date: Fri, 21 Jan 2005 02:07:32 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
 
---=======AVGMAIL-41F0A6F35A07=======
-Content-Type: multipart/alternative;
-	boundary=------------060305070608070009070808
+Okay, my build process actually completed (the toolchain build, anyway) under 
+UML is a more or less stock kernel.
 
---------------060305070608070009070808
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Whatever the problem I was having in 2.6.9-bb4, it's fixed in the current -mm 
+tree.
 
-Why does it seem that my UML does is not using its swap space?
-The memory usage drops down to just 1M yet tools such as
-top and free never indcate that any swap space is ever being used.
-I provide the UML with a 512M swap_fs file and swapon -s
-seems to indicate that its available.
-
-
-Thanks
-
---------------060305070608070009070808
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-  <title></title>
-</head>
-<body bgcolor="#ffffff" text="#000000">
-<span class="postbody">Why does it seem that my UML does is not using
-its swap space?
-<br>
-The memory usage drops down to just 1M yet tools such as <br>
-top and free never indcate that any swap space is ever being used. <br>
-I provide the UML with a 512M swap_fs file and <span
- style="font-weight: bold;"><span style="font-style: italic;">swapon -s</span></span>
-<br>
-seems to indicate that its available.
-<br>
-<br>
-<br>
-Thanks </span>
-</body>
-</html>
-
---------------060305070608070009070808--
-
---=======AVGMAIL-41F0A6F35A07=======
-Content-Type: text/plain; x-avg=cert; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Content-Description: "AVG certification"
-
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.300 / Virus Database: 265.7.1 - Release Date: 19/01/2005
-
---=======AVGMAIL-41F0A6F35A07=======--
+Rob
 
 
 -------------------------------------------------------
