@@ -1,29 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B0SFJ-0005mr-RT for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Mar 2004 13:25:09 -0800
-Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B0RzF-0006hU-Nx for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Mar 2004 13:08:33 -0800
-Message-ID: <404CE0BF.7030309@nortelnetworks.com>
-From: Chris Friesen <cfriesen@nortelnetworks.com>
+	id 1B0nD8-0007i5-1b for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 09 Mar 2004 11:48:18 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1B0mYP-0000Ud-46 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 09 Mar 2004 11:06:13 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] fix writing into /dev/kmem
+References: <20040229023636.GB8272@ccure.user-mode-linux.org>
+	<200403021941.52257.blaisorblade_spam@yahoo.it>
+	<200403040202.i2422GWo008953@ccure.user-mode-linux.org>
+In-Reply-To: <200403040202.i2422GWo008953@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-References: <4043B42A.10803@nortelnetworks.com>
-	<200403020100.i2210dM9025649@ccure.user-mode-linux.org>
-	<4044A368.8050406@nortelnetworks.com>
-	<200403022054.i22KslWo003006@ccure.user-mode-linux.org>
-	<40450A08.8090608@nortelnetworks.com>
-	<200403022322.i22NM8Wo003853@ccure.user-mode-linux.org>
-	<40451AAB.5050304@nortelnetworks.com>
-	<200403030133.i231XJWo004412@ccure.user-mode-linux.org>
-	<40460CA2.2000000@nortelnetworks.com>
-	<200403082134.i28LY5Va022911@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: problems with UML -- new data with memory debugging on
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200403081250.11095.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,35 +29,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 08 Mar 2004 16:08:15 -0500
+Date: Mon, 8 Mar 2004 12:50:11 +0100
+Content-Transfer-Encoding: quoted-printable
 To: Jeff Dike <jdike@addtoit.com>
-Cc: User-mode-linux-devel <User-mode-linux-devel@lists.sourceforge.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> cfriesen@nortelnetworks.com said:
-> 
->>I'll test it with the full configuration and see how that goes... 
->>
-> 
-> I guess things are working OK since you haven't been complaining, but I
-> thought I make sure.  That fix does make the problem totally go away?
+Alle 03:02, gioved=EC 4 marzo 2004, Jeff Dike ha scritto:
+> blaisorblade_spam@yahoo.it said:
+> > Well, on *i386* that is 0xc0000001; since klogd is built with i386
+> > kernel  headers, it will use those.
+>
+> This was the stupidity that I was refusing to believe in.  This means that
+> if you take a normal klogd and move it to a 2G/2G system, where the kernel
+> starts at 0x80000000, it won't work.
 
-Heh...I meant to get back to you and let you know, but its been kind of 
-busy.
+Well, that can be stupid (and is), but needing to recompile iptables when=20
+upgrading kernel from 2.4.21-Mandrake (i.e. 2.4.21-rc#) to 2.4.21 is even=20
+more stupid, right? However that was real.
 
-Yep, the problems seem to be gone.
+> > Anyway, here comes that copy_{to,from}_user are buggy. Since fixing
+> > those  would have a good performance hit (to test, but that will
+> > probably be  sensitive
+>
+> In skas mode, I wasn't expecting any legitimate unfixable kernel mode
+> access faults, so I wasn't setting up the fault_catcher.  So, what I did
+> was add a wrapper around the guts of copy_user which does a setjmp, and
+> returns whether it got longjmp-ed back to.
 
-I'm not one of the main users of the UML environment, but I haven't 
-heard of any more problems from the guys that are.
+Yes, fault_catcher (i.e. memory exceptions) works for kernel addresses at v=
+ery=20
+little cost. Not for userspace addresses, sadly.
 
-Chris
+> Reading /dev/kmem now produces -EFAULT.
 
+Well, if you only changed copy_user, there should be some working addresses=
+ to=20
+read there, right? Even if klogd would need recompilation to handle it righ=
+t.
 
--- 
-Chris Friesen                    | MailStop: 043/33/F10
-Nortel Networks                  | work: (613) 765-0557
-3500 Carling Avenue              | fax:  (613) 765-2986
-Nepean, ON K2H 8E9 Canada        | email: cfriesen@nortelnetworks.com
+In the case /dev/kmem does not work at all we could live with it, but it is=
+ a=20
+bit unclean.
+
+> Writing to it still causes a hang
+> because write_kmem doesn't check the return value of do_write_mem.  With
+> that fixed, everything produces -EFAULT.
+
+I'm sending the return check fix to LKML+ Andrew Morton, together with some=
+=20
+cleanup for the unused params of do_write_mem.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
@@ -71,7 +88,7 @@ Nepean, ON K2H 8E9 Canada        | email: cfriesen@nortelnetworks.com
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
