@@ -2,25 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ct6uI-0004LM-PJ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 08:17:38 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Ct6uH-0006Ub-83 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 08:17:38 -0800
-Message-ID: <41F52128.6080202@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
+	id 1Ct8sU-0002RK-4F for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 10:23:54 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1Ct8sQ-0002d9-BL for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 10:23:54 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] memory
 References: <267988DEACEC5A4D86D5FCD780313FBB03B12C4B@exch-03.noida.hcltech.com>
-	<200501240111.j0O1BtoI004687@ccure.user-mode-linux.org>
-	<200501240010.23514.rob@landley.net>
-	<Pine.LNX.4.61.0501241103350.5934@filer.marasystems.com>
-	<41F4DC94.7030900@fujitsu-siemens.com>
-	<200501241811.j0OIBYXk002874@ccure.user-mode-linux.org>
-In-Reply-To: <200501241811.j0OIBYXk002874@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	<41F36014.7050905@easyco.com> <200501230451.19196.rob@landley.net>
+In-Reply-To: <200501230451.19196.rob@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200501241941.11211.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,29 +30,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Jan 2005 17:24:08 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>, Doug Dumitru <doug@easyco.com>
+Date: Mon, 24 Jan 2005 19:41:10 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Doug Dumitru <doug@easyco.com>, "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
 
-Jeff Dike wrote:
-> bstroesser@fujitsu-siemens.com said:
-> 
->>But that's not all, what's needed to have *support* for big memory.
->>Linux needs to have one struct page for each physical mem page, which
->>in the simple case of UML are placed in one memmap array. 
-> 
-> 
-> The original poster is interested in the memory scalability of Linux, so
-> presumably he'll be looking into things like this :-)
-> 
-> And it's not only this.  It's the kernel stacks and page tables you'll have
-> for all the processes you'll be running on this large machine, inodes and other
-> file system data for all the files they have open, etc.
-Yes. That's the reason, why I estimated 1GB of memory for kernels internal use,
-additionally to the memmap.
+On Sunday 23 January 2005 10:51, Rob Landley wrote:
+> On Sunday 23 January 2005 03:28 am, Doug Dumitru wrote:
+> > Mr. Sharma,
+> >
+> > What you are trying to do will work, but not for large amounts of
+> > memory.  UML runs the client using a single user mode memory block as
+> > the entire client's core.  Thus the clients core size is limited to what
+> > a single task can allocate as plain memory.  With x86 architechure cpus,
+> > this is 2G or 3G depending on how you build a kernel (but usually 2G).
+> > There are no paging mechanism here so there is no way to make it
+> > "gigabytes"
+> >
+> > Others can correct me if I have the exact numbers wrong.
+>
+> UML uses mmap (generally of a /tmp file) as physical memory.  This can be
+> way bigger than physical memory on the machine, sure, and the parent kernel
+> will transparently use the mmaped file as backing store, demand paged and
+> all that.  (Just like it would for any other application.)
+>
+> You could run out of virtual address space, though.  Trying to map more
+> than a few gigabytes on a 32 bit machine is unlikely to work.
+>
+> Might I suggest buying a cheap x86-64 system (you can get 'em at Fry's a
+> couple hundred bucks), feed it a cheap 300 gigabyte IDE drive, and have
+> fun.
 
-> 
-> 				Jeff
+This is not (yet) exactly supported... a lot of work is going on this, and 
+somebody was even able to compile and run (successfully?) some x86_64 umls... 
+However, consider it still as a developer-only tool for now. 2.6.11 could 
+effectively be a good x86_64 tree, but do not yet use it for anything 
+critical.
+
+Clearly, 32-bit UMLs run well on x86_64 boxes, but don't have the 64-bit 
+advantages...
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
