@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A2e2K-0006vs-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 25 Sep 2003 14:52:32 -0700
-Received: from panoramix.vasoftware.com
-	([198.186.202.147] helo=externalmx.vasoftware.com ident=mail)
+	id 1A31Lx-0002gx-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 26 Sep 2003 15:46:21 -0700
+Received: from [204.26.87.76] (helo=uswgne22.uswest.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A2e2J-0001RW-9q
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 25 Sep 2003 14:52:31 -0700
-Received: from node-c-3ef0.a2000.nl ([62.194.62.240]:4769 helo=netscape2700.com)
-	by externalmx.vasoftware.com with smtp (Exim 4.22 #1 (Debian))
-	id 1A2e2B-0000U4-Sj
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 25 Sep 2003 14:52:24 -0700
-From: "MR. MICHAEL STEVENS." <marksteven301@netscape.net>
-Reply-To: markstevens301@netscape.net
+	id 1A31Lw-0004yq-MR
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Sep 2003 15:46:20 -0700
+Received: from egate-co5.uswc.uswest.com (egate-co5.uswc.uswest.com [151.119.87.232])
+	by uswgne22.uswest.com (8/8) with ESMTP id h8QMjTLY016968
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 26 Sep 2003 17:45:29 -0500 (CDT)
+Received: from dubntex011.qwest.net (localhost [127.0.0.1])
+	by egate-co5.uswc.uswest.com (8.12.10/8.12.10) with ESMTP id h8QMjSWc000613
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 26 Sep 2003 16:45:28 -0600 (MDT)
+Message-ID: <2D4B6CD74137D4119A1100104BC6BCBF0BC585FC@dubntex006.qwest.net>
+From: "Montgomery, Kendal L" <kendal.montgomery@qwest.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="d547230a-8d99-4f34-ac18-7fc54c03b10c"
-Message-Id: <E1A2e2B-0000U4-Sj@externalmx.vasoftware.com>
-Subject: [uml-devel] PRIVATE AND CONFIDENTIAL.
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3847F.E0ED31A0"
+Subject: [uml-devel] Separate COW patch.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -29,80 +30,85 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 25 Sep 2003 23:50:37 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 26 Sep 2003 18:45:26 -0400
+To: "'user-mode-linux-devel@lists.sourceforge.net'" <user-mode-linux-devel@lists.sourceforge.net>
 
 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-This is a multi-part message in MIME format
+------_=_NextPart_001_01C3847F.E0ED31A0
+Content-Type: text/plain
 
---d547230a-8d99-4f34-ac18-7fc54c03b10c
-Content-Type: text/plain; charset=iso-8859-1
+Hello,
+
+I was wondering if there was anyone who is trying to use the COW filesystem
+in a normal linux kernel?  Is this possible, or is it tied exclusively to
+the rest of the UML patch?  How difficult would it be to make a COW only
+patch?  I have a certain project that I'm working on that the COW filesystem
+(or really, any other "union" filesystem, but I can't find any that are
+actively developed or fully cooked) would be perfect for.  I have a
+read-only filesystem that, occasionally needs to temoroarily have some
+changed made to it, but then the need to be undone.  I've looked into
+various ways of doing this from "snapshotting," to user-controlled
+transactions on a journalling filesystem (no such thing seems to exist for
+ext3 or reiserfs) where I could explicitly begin a transaction, then roll
+back the transaction when I'm done (kinda like a database txn), etc.  The
+COW filesystem seems like it would be a perfect fit, but before I go trying
+to merge things into a non-UML kernel on my own I just want to see if anyone
+else has already done this or not.  Is anyone else even interested in such a
+thing?
+
+Thanks.
+
+Kendal.
+
+------_=_NextPart_001_01C3847F.E0ED31A0
+Content-Type: text/html
 Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3DUS-ASCII">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2653.12">
+<TITLE>Separate COW patch.</TITLE>
+</HEAD>
+<BODY>
 
- Dear friend,
+<P><FONT SIZE=3D2 FACE=3D"Arial">Hello,</FONT>
+</P>
 
-This letter may come to you as a surprise due to the fact that we have not =
-yet met, but kindly consider the message, because, I am determined to live =
-for posterity.
+<P><FONT SIZE=3D2 FACE=3D"Arial">I was wondering if there was anyone =
+who is trying to use the COW filesystem in a normal linux kernel?&nbsp; =
+Is this possible, or is it tied exclusively to the rest of the UML =
+patch?&nbsp; How difficult would it be to make a COW only patch?&nbsp; =
+I have a certain project that I'm working on that the COW filesystem =
+(or really, any other &quot;union&quot; filesystem, but I can't find =
+any that are actively developed or fully cooked) would be perfect =
+for.&nbsp; I have a read-only filesystem that, occasionally needs to =
+temoroarily have some changed made to it, but then the need to be =
+undone.&nbsp; I've looked into various ways of doing this from =
+&quot;snapshotting,&quot; to user-controlled transactions on a =
+journalling filesystem (no such thing seems to exist for ext3 or =
+reiserfs) where I could explicitly begin a transaction, then roll back =
+the transaction when I'm done (kinda like a database txn), etc.&nbsp; =
+The COW filesystem seems like it would be a perfect fit, but before I =
+go trying to merge things into a non-UML kernel on my own I just want =
+to see if anyone else has already done this or not.&nbsp; Is anyone =
+else even interested in such a thing?</FONT></P>
 
-I wish to plead with you to join me in not only serving humanity, but to also =
-benefit in the process. This message could be strange but reality will =
-definitely dawn on you, if you pay some attention to its contents. Please =
-accept my sincere apologies in bringing this message to you; I have to say =
-that I do not intend to cause you any personal pains or discomfort.
+<P><FONT SIZE=3D2 FACE=3D"Arial">Thanks.</FONT>
+</P>
 
-I am Mr. MICHAEL  STEVENS former Special Assistant to the Liberian President, =
-Mr.CHARLES TAYLORr who just stepped down from the office of the President due =
-to rebel's insurgency who wants to overthrow his government.  President =
-Charles Taylor  in his bid to fend-off rebel insurgency, and since he could =
-no longer trust the army generals, confidentially put in my care, the sum of =
-$15,000,000.00 (Fifteen million United States dollars) in one instance for =
-the purpose of purchasing arms and ammunitions should the need arise. =
-However, unfortunately, the need did not arise as he has gone on exile. I =
-deposited the US$15 million in a trunk box in a secret location and just the =
-two of us knew about it, and I could not get in touch with any arms dealer =
-before the President was indicted in a war crime tribunal set up by the =
-United Nations (UN). I have since held on to this trunk box, which I was able =
-to transport out of Liberia with the aid of peace keeping soldiers under the =
-guise of conveying my personal effects without anybody knowing, to a security =
-deposit company in Holland.
- I do not want to keep the funds any longer, but I can never turn it over to =
-the brutal and tyrannical rogue regime of Mr. Charles Taylor  who is still =
-committing all sorts of atrocities on the Liberian people. I am not =
-soliciting for your help to wage a war against the regime, but to act as a =
-foreign partner, to allow me transfer the funds to you, which you will in =
-turn donate a portion of it as a humanitarian gesture to the Liberian people =
-by purchasing such essential needs like blankets, milk and so on, =
-water-pumping machines and agricultural equipment, from the money after =
-deducting your expenses and the commission of 20%. Please note that I could =
-have approached the Red Cross Society, but I changed my mind on that after =
-calculating what they would deduct as commission, and also, after =
-rationalizing the scandal that followed their mismanagement of the donations =
-meant for the victims of the September 11th attack on the United States.  =
-Also, note that this offer will give you a double-edged advantage:
- 1. As the benefactor of the Liberian people and; 
- 2. The commission you stand to earn.
- On getting a positive response from you, I will send to you the secret =
-access codes to the funds and the security vault company my telephone number =
-and my address. Please note that confidentiality and honesty are fundamental =
-rules in this transaction.
-Be assured that I am a reputable personality in this country and I am mindful =
-of the legal implications of this transaction, as I intend taking care of all =
-the legal documentations for a successful and hitch-free transaction. You =
-will be expected to take delivery of this fund personally from the deposit =
-company in Europe.
- I am therefore soliciting your assistance to have this money collected by =
-you and/or facilitate the transfer into your nominated account(s). PLEASE =
-NOTE THAT YOUR CONFIDENTIALITY IN THIS TRANSACTION IS HIGHLY REQUIRED. I will =
-give you the details of this transaction on receipt of your response to this =
-proposal. Thank you very much for your time and understanding.
-Yours sincerely.
+<P><FONT SIZE=3D2 FACE=3D"Arial">Kendal.</FONT>
+</P>
 
-MR. MICHAEL STEVENS.  
---d547230a-8d99-4f34-ac18-7fc54c03b10c--
-
+</BODY>
+</HTML>
+------_=_NextPart_001_01C3847F.E0ED31A0--
 
 
 -------------------------------------------------------
