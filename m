@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BrXKR-0002xv-Rh for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 00:33:51 -0700
-Received: from sccrmhc11.comcast.net ([204.127.202.55])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1BrXKR-0005cM-HA for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 00:33:51 -0700
-Message-ID: <410DEE57.9000503@hevanet.com>
+	id 1BrXyW-0004pp-Ta for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Aug 2004 01:15:16 -0700
+Received: from sccrmhc13.comcast.net ([204.127.202.64])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1BrXyW-0007Xr-JE for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Aug 2004 01:15:16 -0700
+Message-ID: <410DF801.3040004@hevanet.com>
 From: Matt Clay <mattclay@hevanet.com>
 MIME-Version: 1.0
 References: <200407280315.08207.alydar@users.sourceforge.net>
@@ -30,7 +30,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 02 Aug 2004 00:33:43 -0700
+Date: Mon, 02 Aug 2004 01:14:57 -0700
 To: Allen Chan <allen@home0.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, 260111@bugs.debian.org
 
@@ -39,45 +39,27 @@ Allen Chan wrote:
 > chan_user.c have very different interpretations of what struct 
 > termios should be . On my debian unstable system,
 
-Now that you point it out, I see the same thing on my Slackware 10 system.
+I updated my um/include/asm/arch/termbits.h to match the standard 60 byte 
+termios struct, and this fixed the kernel hang during boot.  However, it did 
+not make the random failures on calls to tcsetattr go away.
 
-Here is the definition in my /usr/include/bits/termios.h
+The result is that I sometimes get the following during boot:
 
-typedef unsigned char	cc_t;
-typedef unsigned int	speed_t;
-typedef unsigned int	tcflag_t;
+<snip>
+NET4: Linux TCP/IP 1.0 for NET4.0
+                                  IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+<snip>
 
-#define NCCS 32
-struct termios
-   {
-     tcflag_t c_iflag;		/* input mode flags */
-     tcflag_t c_oflag;		/* output mode flags */
-     tcflag_t c_cflag;		/* control mode flags */
-     tcflag_t c_lflag;		/* local mode flags */
-     cc_t c_line;			/* line discipline */
-     cc_t c_cc[NCCS];		/* control characters */
-     speed_t c_ispeed;		/* input speed */
-     speed_t c_ospeed;		/* output speed */
-   };
+Instead of the correct output:
 
-And the one from um/include/asm/arch/termbits.h
+<snip>
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+<snip>
 
-typedef unsigned char	cc_t;
-typedef unsigned int	speed_t;
-typedef unsigned int	tcflag_t;
-
-#define NCCS 19
-struct termios {
-	tcflag_t c_iflag;		/* input mode flags */
-	tcflag_t c_oflag;		/* output mode flags */
-	tcflag_t c_cflag;		/* control mode flags */
-	tcflag_t c_lflag;		/* local mode flags */
-	cc_t c_line;			/* line discipline */
-	cc_t c_cc[NCCS];		/* control characters */
-};
-
-This would certainly explain the random behavior I've been seeing with calls 
-to tcsetattr failing sometimes.
+Notice the indented "IP Protocols"?  That's where tcsetattr failed.
 
   - Matt
 
