@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CxGPd-0006ZL-HX for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Feb 2005 19:15:09 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CxGPc-0002Uw-RP
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Feb 2005 19:15:09 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Sky, comma,
-	falling.  (Was Re: [uml-devel] Xen going to be in Kernel 2.6 soon?)
-References: <cu189b$vnr$1@sea.gmane.org>
-In-Reply-To: <cu189b$vnr$1@sea.gmane.org>
+	id 1CxHfb-0002dR-VW for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 20:35:43 -0800
+Received: from smtp208.mail.sc5.yahoo.com ([216.136.130.116])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CxHfZ-0001gM-FL for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 20:35:43 -0800
+Message-ID: <42044D17.5040703@yahoo.com.au>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset="iso-8859-15"
-Message-Id: <200502042113.13876.rob@landley.net>
+References: <42021E35.8050601@fujitsu-siemens.com>	<4202C18F.5010605@yahoo.com.au>	<42036C2C.5040503@fujitsu-siemens.com>	<4203F40C.8040707@yahoo.com.au>
+	<20050204143917.1f9507cb.akpm@osdl.org>
+	<4204020F.2000501@yahoo.com.au>
+In-Reply-To: <4204020F.2000501@yahoo.com.au>
+Content-Type: multipart/mixed; boundary="------------030704040005090303040304"
+Subject: [uml-devel] Re: Race condition in ptrace
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,72 +28,134 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 4 Feb 2005 21:13:13 -0500
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Sven =?iso-8859-15?q?K=F6hler?= <skoehler@upb.de>
+Date: Sat, 05 Feb 2005 15:35:35 +1100
+To: Andrew Morton <akpm@osdl.org>
+Cc: bstroesser@fujitsu-siemens.com, roland@redhat.com, jdike@addtoit.com, blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Friday 04 February 2005 08:45 pm, Sven K=F6hler wrote:
->  I feel like this is a slap in Jeff's face, since i thought=20
-> that UML will be developed as the first choice in virtualizations=20
-> techniques.
+This is a multi-part message in MIME format.
+--------------030704040005090303040304
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yup, just like the inclusion of reiserfs in the kernel is a slap in the fac=
-e=20
-to ext3.  Obviously they did it just to be insulting, didn't you read Linus=
-'s=20
-"I'm a bastard" speech?
+Nick Piggin wrote:
+> Andrew Morton wrote:
+> 
+>> Nick Piggin <nickpiggin@yahoo.com.au> wrote:
+>>
 
-> So what is it all about? When should somebody chose Xen, and when should
-> somebody chose UML? and how will UML and Xen compete?
+>>> Andrew, IMO this is another bug to hold 2.6.11 for.
+>>
+>>
+>>
+>> Sure.  I wouldn't consider Bodo's patch to be the one to use though..
+> 
+> 
+> No. Something similar could be done that works on all architectures
+> and all wait_task_inactive callers (and is confined to sched.c). That
+> would still be more or less a hack to work around smtnice's unfortunate
+> locking though.
+> 
 
-You know, ever since the release of the BSD source code in 1992 totally=20
-derailed that "Linux" project people were playing with back then, this kind=
-=20
-of question has become vitally important.  The release of any remotely=20
-similar project obviously can immediately halt all development of establish=
-ed=20
-projects that developers have sunk years of effort into, and they immediate=
-ly=20
-start porting over things like the COW mounts and hostfs and honeypot procf=
-s,=20
-and rewrite all the existing tutorials and retrain everybody overnight to=20
-work on the new as yet untested thingy that hasn't been particularly debugg=
-ed=20
-yet.
+Something like the following (untested) extension of Bodo's work
+could be the minimal fix for 2.6.11. As I've said though, I'd
+consider it a hack and prefer to do something about the locking.
+That could be done after 2.6.11 though. Depends how you feel.
 
-Especially in a case like this, where Xen actually competes with VMWare rat=
-her=20
-than UML.  Obviously, UML is doomed.  What with Xen requiring a modified ho=
-st=20
-kernel to provide its virtualization environment whereas UML uses the proce=
-ss=20
-abstraction to virtualize it: I mean, who's going to use _processes_ in fiv=
-e=20
-years, will future kernels even bother to support them?  Sure, UML not only=
-=20
-runs on an unmodified Linux kernel (even running a 2.6 UML on a 2.2 host=20
-kernel), and even an effort underway to get it running on windows (who know=
-s=20
-why, but a MacOS X host can only be a matter of time), but that just means =
+Bodo, I wonder if this looks like a suitable fix for your problem?
 
-maybe it can scrape on some tiny niches once it's driven off Linux by this =
+--------------030704040005090303040304
+Content-Type: text/plain;
+ name="sched-fixup-locking.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="sched-fixup-locking.patch"
 
-new "Adeos" thing...  Er, I mean "Plex86"...  Um...  "Xen", that's it.  And=
-=20
-obviously its original use as a Linux development tool letting you do thing=
-s=20
-like create a filesystem driver and mount an instance of it without=20
-destablizing your host kernel, or run bits of the kernel under normal=20
-userspace debugging tools...  Well, we're well rid of that, aren't we?  And=
-=20
-being to swap kernel memory to backing store just like a regular applicatio=
-n,=20
-that was obviously a bad idea from day one...
 
-Why was the question interesting again?
 
-Rob
+
+---
+
+ linux-2.6-npiggin/include/linux/init_task.h |    1 +
+ linux-2.6-npiggin/include/linux/sched.h     |    1 +
+ linux-2.6-npiggin/kernel/sched.c            |   12 ++++++++++--
+ 3 files changed, 12 insertions(+), 2 deletions(-)
+
+diff -puN include/linux/sched.h~sched-fixup-locking include/linux/sched.h
+--- linux-2.6/include/linux/sched.h~sched-fixup-locking	2005-02-05 15:24:00.000000000 +1100
++++ linux-2.6-npiggin/include/linux/sched.h	2005-02-05 15:24:39.000000000 +1100
+@@ -533,6 +533,7 @@ struct task_struct {
+ 	unsigned long ptrace;
+ 
+ 	int lock_depth;		/* Lock depth */
++	int on_cpu;		/* Is the task on the CPU, or in a ctxsw */
+ 
+ 	int prio, static_prio;
+ 	struct list_head run_list;
+diff -puN kernel/sched.c~sched-fixup-locking kernel/sched.c
+--- linux-2.6/kernel/sched.c~sched-fixup-locking	2005-02-05 15:24:02.000000000 +1100
++++ linux-2.6-npiggin/kernel/sched.c	2005-02-05 15:34:37.000000000 +1100
+@@ -294,7 +294,7 @@ static DEFINE_PER_CPU(struct runqueue, r
+ #ifndef prepare_arch_switch
+ # define prepare_arch_switch(rq, next)	do { } while (0)
+ # define finish_arch_switch(rq, next)	spin_unlock_irq(&(rq)->lock)
+-# define task_running(rq, p)		((rq)->curr == (p))
++# define task_running(rq, p)		((p)->on_cpu)
+ #endif
+ 
+ /*
+@@ -867,7 +867,7 @@ void wait_task_inactive(task_t * p)
+ repeat:
+ 	rq = task_rq_lock(p, &flags);
+ 	/* Must be off runqueue entirely, not preempted. */
+-	if (unlikely(p->array)) {
++	if (unlikely(p->array || p->on_cpu)) {
+ 		/* If it's preempted, we yield.  It could be a while. */
+ 		preempted = !task_running(rq, p);
+ 		task_rq_unlock(rq, &flags);
+@@ -2805,11 +2805,18 @@ switch_tasks:
+ 		rq->curr = next;
+ 		++*switch_count;
+ 
++		next->on_cpu = 1;
+ 		prepare_arch_switch(rq, next);
+ 		prev = context_switch(rq, prev, next);
+ 		barrier();
+ 
+ 		finish_task_switch(prev);
++		/*
++		 * Some architectures release the runqueue lock before
++		 * context switching. Make sure this isn't reordered.
++		 */
++		smp_wmb();
++		prev->on_cpu = 0;
+ 	} else
+ 		spin_unlock_irq(&rq->lock);
+ 
+@@ -4055,6 +4062,7 @@ void __devinit init_idle(task_t *idle, i
+ 	set_task_cpu(idle, cpu);
+ 
+ 	spin_lock_irqsave(&rq->lock, flags);
++	idle->on_cpu = 1;
+ 	rq->curr = rq->idle = idle;
+ 	set_tsk_need_resched(idle);
+ 	spin_unlock_irqrestore(&rq->lock, flags);
+diff -puN include/linux/init_task.h~sched-fixup-locking include/linux/init_task.h
+--- linux-2.6/include/linux/init_task.h~sched-fixup-locking	2005-02-05 15:24:56.000000000 +1100
++++ linux-2.6-npiggin/include/linux/init_task.h	2005-02-05 15:25:07.000000000 +1100
+@@ -73,6 +73,7 @@ extern struct group_info init_groups;
+ 	.usage		= ATOMIC_INIT(2),				\
+ 	.flags		= 0,						\
+ 	.lock_depth	= -1,						\
++	.on_cpu		= 0,						\
+ 	.prio		= MAX_PRIO-20,					\
+ 	.static_prio	= MAX_PRIO-20,					\
+ 	.policy		= SCHED_NORMAL,					\
+
+_
+
+--------------030704040005090303040304--
+
+
 
 
 -------------------------------------------------------
