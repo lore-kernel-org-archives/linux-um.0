@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19zmYg-000221-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 17:22:06 -0700
+	id 19zmbi-0003FK-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 17:25:14 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19zmYe-0006Mm-S1
-	for User-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 17:22:05 -0700
+	id 19zmbg-00074v-2o
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 17:25:12 -0700
 Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8I0DXj05418
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 20:13:34 -0400
-Message-Id: <200309180022.h8I0MfNu021703@ccure.karaya.com>
-Subject: Re: [uml-devel] Re: 2.4.22-4um race condition 
-In-Reply-To: Your message of "Mon, 15 Sep 2003 16:39:50 -0000."
-             <BAY7-F56ob7bOsPTQxH0002321c@hotmail.com> 
-References: <BAY7-F56ob7bOsPTQxH0002321c@hotmail.com> 
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8I0Gfj05452
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 20:16:42 -0400
+Message-Id: <200309180025.h8I0PWNu021862@ccure.karaya.com>
+Subject: Re: [uml-devel] compile error ...(now tracked down) 
+In-Reply-To: Your message of "Wed, 17 Sep 2003 22:48:58 -0000."
+             <BAY7-F115B33UKyM25I00015854@hotmail.com> 
+References: <BAY7-F115B33UKyM25I00015854@hotmail.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,27 +29,16 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Sep 2003 20:22:41 -0400
+Date: Wed, 17 Sep 2003 20:25:32 -0400
 To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: rocombs@cs.nmsu.edu, User-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 steve_schmidtke@hotmail.com said:
-> There's a few things I noticed with start_io_thread, though mostly to
-> do  with failing cleanly.  Try the attached patch for 2.4.22-4um. 
+> I'll send Jeff another patch that renames the entries and references
+> to ust_*.  I also see a few  stat() references in the code I can stomp
+> right now.
 
-I mostly like those changes, except for moving the fd assignments before
-the clone in start_io_thread.  What's up with that?  If they are only
-assigned on the success path, they will remain invalid on any error path
-since they started invalid. 
-
-A slightly more theoretical justification for this is that it has no business 
-deciding what the caller considers to be invalid.  So, it's best just to
-leave it alone if there's an error.
-
-A practical reason is that this reduces the code size because you don't have
-to remember to make them invalid on the error paths.
-
-Except for that bit, those changes are merged.
+Don't worry about it.  I'm halfway through that now.
 
 				Jeff
 
