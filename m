@@ -1,23 +1,33 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CGJjU-00023n-CH for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Oct 2004 09:06:08 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CGJjS-0007da-0s for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Oct 2004 09:06:08 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] segv soon after startup 2.6.9-rc2-mm4
-References: <EAC7622167479948B614F8B9AD41C505ECA5D4@MAANDMBX2.ets.enterasys.com>
-In-Reply-To: <EAC7622167479948B614F8B9AD41C505ECA5D4@MAANDMBX2.ets.enterasys.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	id 1CGLpq-0003VI-Ut for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Oct 2004 11:20:50 -0700
+Received: from main.gmane.org ([80.91.229.2])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CGLpp-0003lY-Vb for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Oct 2004 11:20:50 -0700
+Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CGLpm-0001m4-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 09 Oct 2004 20:20:46 +0200
+Received: from 209-6-22-202.c3-0.smr-ubr1.sbo-smr.ma.cable.rcn.com
+	([209.6.22.202]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 09 Oct 2004 20:20:46 +0200
+Received: from lars by 209-6-22-202.c3-0.smr-ubr1.sbo-smr.ma.cable.rcn.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 09 Oct 2004 20:20:46 +0200
+From: Lars Kellogg-Stedman <lars@oddbit.com>
+Message-ID: <lars-EF506D.14170609102004@sea.gmane.org>
+References: <200410091057.52832.u3205097@anu.edu.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <200410091806.12662.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: Missing exported symbols?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,62 +39,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 9 Oct 2004 18:06:12 +0200
+Date: Sat, 09 Oct 2004 14:17:08 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
 
-On Wednesday 06 October 2004 14:49, Tsillas, Demetrios J wrote:
-> Using 2.6.9-rc2-mm4 with the incrementals.
->
-> If CONFIG_MODE_TT is enabled and linux is run with
-> no args. The value of argv[1] is 0 causing a crash
-> with strlen in linux_main:
->
-> 349     #ifdef CONFIG_MODE_TT
-> 350             argv1_begin = argv[1];
-> 351             argv1_end = &argv[1][strlen(argv[1])];
-> 352     #endif
-False. Running linux with no args causes it complaining because you did not 
-say him which root fs to use:
+> I'm still using the 2.6.8 uml patch release, and I'm getting heaps of errors 
+> complaining about unknown symbols.  In particular:
+> WARNING: ../mnt/ lib/modules/2.6.8-1um/kernel/fs/cifs/cifs.ko needs unknown 
+> symbol memmove
 
-VFS: Cannot open root device "98:0" or unknown-block(98,0)
-Please append a correct "root=" boot option
-Kernel panic - not syncing: VFS: Unable to mount root fs on 
-unknown-block(98,0)
+I'm seeing the same error (memmove undefined) while trying to build UML 
+2.6.8.1.  In fact, I'm finding that most of the os_* functions appear to 
+be undefined, as well, but it looks like I can make that error go away 
+if I simply disable the hostfs support.
 
-Also, more important, argv[1] is 0 and in that case strlen(argv[1]) will be 0, 
-so argv1_end will be equal to argv1_begin. Since argv1_end is a pointer at 
-the first byte out of argv[1], then we are safe. For instance:
+I understand that hostfs is in the middle of a rewrite...what's the last 
+2.6.x kernel with stable hostfs support?
 
-void set_cmdline(char *cmd)
-{
-#ifdef CONFIG_MODE_TT
-        char *umid, *ptr;
+Thanks,
 
-        if(CHOOSE_MODE(honeypot, 0)) return;
+-- Lars
 
-        umid = get_umid(1);
-        if(umid != NULL){
-                snprintf(argv1_begin,
-                         (argv1_end - argv1_begin) * sizeof(*ptr),
-                         "(%s) ", umid);
-                ptr = &argv1_begin[strlen(argv1_begin)];
-        }
-        else ptr = argv1_begin;
-
-        snprintf(ptr, (argv1_end - ptr) * sizeof(*ptr), "[%s]", cmd);
-        memset(argv1_begin + strlen(argv1_begin), '\0',
-               argv1_end - argv1_begin - strlen(argv1_begin));
-#endif
-}
-
-> BTW, I've had problems building with CONFIG_MODE_TT
-> turned off:
-I'm going to try myself and fix the problems.
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
 
 -------------------------------------------------------
