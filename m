@@ -1,19 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BDA2L-0006Pq-LZ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Apr 2004 15:36:17 -0700
-Received: from alchar.org ([66.92.236.138] ident=qmailr)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BDA2L-0005LX-Ah for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Apr 2004 15:36:17 -0700
-From: Kris Van Hees <aedil@alchar.org>
-Message-ID: <20040412183616.B19633@alchar.org>
+Message-Id: <200404130458.i3D4wKsf024793@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Sun, 11 Apr 2004 16:51:20 +0200."
+	<200404111651.20256.blaisorblade_spam@yahoo.it> 
+References: <40686E7D.2080600@unclewebster.com>
+	<200403300217.i2U2HKxc026892@ccure.user-mode-linux.org>
+	<200404111651.20256.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] UML and 2.6.x
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [uml-user] one drawback to using cows commercially...
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,22 +20,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 12 Apr 2004 18:36:16 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 13 Apr 2004 00:58:20 -0400
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: tim doyle <tim@unclewebster.com>, UML <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
 
-I just found out (the hard way) that is seems like UML 2.6.4 cannot be compiled
-on a host that is running 2.4.18, because the host-level code (in this case
-arch/um/os-Linux/process.c) is depending on things in the installed include
-files (unistd.h and the stuff it includes, specifically linux/unistd.h) that
-are simply not there (__NR_tkill).  Is this fact documented somewhere that I
-overlooked?
+blaisorblade_spam@yahoo.it said:
+> Have you heard of the discussion about COWlinks? I.e. creating a Copy
+> - On -  Write functionality for hard links? Or do you want to rewrite
+> files one page  at a time (i.e. if I change one byte inside a file,
+> only the "page"  containing that byte is copied and changed)? 
 
-	Kris
--- 
-Never underestimate a Mage with:
- - the Intelligence to cast Magic Missile,
- - the Constitution to survive the first hit, and
- - the Dexterity to run fast enough to avoid being hit a second time.
+COWlinks sound like they would be useful for doing file-level COWing for
+UML.
+
+I'm considering that, plus block-level COWing within a file, using the standard
+COW format we have today.  This would be necessary if we do block devices
+by loop-mounting a rootfs from humfs and using that as the root device.
+
+				Jeff
+
 
 
 -------------------------------------------------------
