@@ -1,24 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AbOgX-0004h3-Vf
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:33:41 -0800
-Received: from deliver.epitech.net ([163.5.0.25])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AbOgX-0008Ly-FX
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:33:41 -0800
-Received: from epita.fr ([10.42.1.60])
- by deliver.epitech.net (SAVSMTP 3.1.2.35) with SMTP id M2003123019322723777
- for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 30 Dec 2003 19:32:27 +0100
-Received: from carpediem (carpediem.epita.fr [10.42.42.5])
-	by epita.fr id hBUIXWh20561 for user-mode-linux-devel@lists.sourceforge.net 
-	EPITA Paris France Tue, 30 Dec 2003 19:33:32 +0100 (CET)
-From: jeremie le-hen <le-hen_j@epita.fr>
-Message-ID: <20031230183331.GB2845@carpediem.epita.fr>
+	id 1AbOqB-0005D6-BI
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:43:39 -0800
+Received: from mta10.adelphia.net ([68.168.78.202])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AbOqB-0008DP-1E
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 30 Dec 2003 10:43:39 -0800
+From: Matt Zimmerman <mdz@debian.org>
+Subject: Resolution (Re: [uml-devel] 2.4.22-[67] problems)
+Message-ID: <20031230184330.GD1365@alcor.net>
+References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org> <20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net> <20031228093317.GK17472@alcor.net> <20031228095115.GL17472@alcor.net> <20031228101240.GN17472@alcor.net> <20031228113042.GO17472@alcor.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] UML + skas
+In-Reply-To: <20031228113042.GO17472@alcor.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,94 +25,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Dec 2003 19:33:31 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 30 Dec 2003 10:43:30 -0800
+To: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org
 
-Hi all,
+On Sun, Dec 28, 2003 at 03:30:42AM -0800, Matt Zimmerman wrote:
 
-I have just subscribed to this list because I found a strange bug while
-compiling an UML within an SKAS'd host.  Here is the problem :
+> On Sun, Dec 28, 2003 at 02:12:40AM -0800, Matt Zimmerman wrote:
+> 
+> > So, the sequence of events in handle_trap is this:
+> > 
+> > 1. UPT_SYSCALL_NR(regs) == 78
+> > 
+> > 2. ptrace(PTRACE_POKEUSER,...)
+> > 
+> > 3. UPT_SYSCALL_NR(regs) == 78 (still OK)
+> > 
+> > 4. ptrace(PTRACE_SYSCALL,...)
+> > 
+> > 5. UPT_SYSCALL_NR(regs) == 78 (still OK)
+> > 
+> > 6. waitpid(pid,...)
+> > 
+> > 7. UPT_SYSCALL_NR(regs) == 0 (boom)
+> > 
+> > I have no idea why.
+> 
+> I added some code to dump the regs struct before and after waitpid, and it
+> turns out that in fact, the syscall element is the only one which is
+> different; the rest of the structure is untouched.  Corruption seems
+> unlikely, and the waitpid call certainly shouldn't be touching this...could
+> another thread be clobbering it somehow?
 
-(my host is a 2.4.23 kernel with the SKAS patch released on 2002/11/11)
+It turns out that this problem seems to be due to compiler incompatibility.
+UML had been built with gcc 2.95 due to old breakage, and when built with
+gcc 3.3 (as glibc is), everything starts working again.  My suspicion is
+that this is due to certain recent changes in pthreads.
 
---- cut here ---
-
-droopy:tmp$ wget -q http://heanet.dl.sourceforge.net/sourceforge/user-mode-linux/uml-patch-2.4.23-1.bz2
-droopy:tmp$ bzip2 -d uml-patch-2.4.23-1.bz2 
-droopy:tmp$ wget -q http://www.kernel.org/pub/linux/kernel/v2.4/linux-2.4.23.tar.bz2
-droopy:tmp$ tar xfj linux-2.4.23.tar.bz2 
-droopy:tmp$ cd linux-2.4.23
-droopy:linux-2.4.23$ patch -p1 < ../uml-patch-2.4.23-1 
-[... no error ...]
-droopy:linux-2.4.23$ make menuconfig ARCH=um
-[... do not change anything, just quit ...]
-droopy:linux-2.4.23$ make dep ARCH=um
-[...]
-droopy:linux-2.4.23$ make linux ARCH=um
-[...]
-gcc   -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -U__i386__ -Ui386 -DUM_FASTCALL -g -D__arch_um__ -DSUBARCH=\"i386\" -D_LARGEFILE64_SOURCE  -I/space/kernel/tmp/linux-2.4.23/arch/um/include -I/space/kernel/tmp/linux-2.4.23/arch/um/kernel/tt/include -I/space/kernel/tmp/linux-2.4.23/arch/um/kernel/skas/include -D_GNU_SOURCE -c -o process.o process.c
-[...]
-In file included from process.c:27:
-/space/kernel/tmp/linux-2.4.23/arch/um/include/skas_ptrace.h:9: redefinition of `struct ptrace_faultinfo'
-/space/kernel/tmp/linux-2.4.23/arch/um/include/skas_ptrace.h:14: redefinition of `struct ptrace_ldt'
-make[3]: *** [process.o] Error 1
-[...]
-
---- cut here ---
-
-
-After preprocessing the process.c file, I found that
-`struct ptrace_faultinfo' and `struct ptrace_ldt' were first defined
-in file `/usr/include/asm/ptrace.h' and then in
-`arch/um/include/skas_ptrace.h'.  Since `/usr/include/asm/' is a symlink
-in  `/usr/src/linux/` which in turn points to my kernel source, I thought
-that it was maybe due to some tricky patch I have applied on my host's
-kernel.  So I used a clean kernel source instead, and I made
-`/usr/include/asm/' point in it.  And everything compiled perfectly.
-
-Therefore I went through my various patches to see which one modified
-`asm-i386/ptrace.h'.  And what a surprise when I saw the following in
-`host-skas3.patch' :
-
-
---- cut here ---
-
-diff -urN linux-2.4.23/include/asm-i386/ptrace.h linux-2.4.23-host_skas3_20031111/include/asm-i386/ptrace.h
---- linux-2.4.23/include/asm-i386/ptrace.h      2001-09-14 23:04:08.000000000 +0200
-+++ linux-2.4.23-host_skas3_20031111/include/asm-i386/ptrace.h  2003-12-04 21:08:46.000000000 +0100
-@@ -51,6 +51,22 @@
- 
- #define PTRACE_SETOPTIONS         21
- 
-+struct ptrace_faultinfo {
-+       int is_write;
-+       unsigned long addr;
-+};
-+
-+struct ptrace_ldt {
-+       int func;
-+       void *ptr;
-+       unsigned long bytecount;
-+};
-+
-+#define PTRACE_FAULTINFO 52
-+#define PTRACE_SIGPENDING 53
-+#define PTRACE_LDT 54
-+#define PTRACE_SWITCH_MM 55
-
---- cut here ---
-
-This is *exactly* the same content as `arch/um/include/skas_ptrace.h'.
-From what I googled, it seems to be a known bug.  But it think it would
-not be very difficult to make some #define protection around theses
-structures to prevent from changing the destination of `/usr/src/linux/'
-to a source without the SKAS patch applied.
-
-Regards,
 -- 
-Jeremie LE HEN aka TtZ/TataZ                          jeremie.le-hen@epita.fr
-                                                                 ttz@epita.fr
-Hi! I'm a .signature virus! Copy me into your ~/.signature to help me spread!
+ - mdz
 
 
 -------------------------------------------------------
