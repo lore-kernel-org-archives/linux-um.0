@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9ImE-0008Ba-QL for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Mar 2005 00:12:14 -0800
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D9ImD-0008Tj-9N for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Mar 2005 00:12:14 -0800
-From: Thomas Gleixner <tglx@linutronix.de>
-Reply-To: tglx@linutronix.de
-In-Reply-To: <200503092052.24803.blaisorblade@yahoo.it>
-References: <20050309094234.8FC0C6477@zion>
-	<20050309171231.H25398@flint.arm.linux.org.uk>
-	<200503092052.24803.blaisorblade@yahoo.it>
-Content-Type: text/plain
-Message-Id: <1110442320.29330.196.camel@tglx.tec.linutronix.de>
+	id 1D9Ip1-0008QC-1W for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Mar 2005 00:15:07 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1D9Ip0-00018F-9I
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Mar 2005 00:15:06 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] Re: Fw: [patch] uml: terminal cleanup
+Message-ID: <20050310081340.GC17880@bytesex>
+References: <20041128010910.1b5478c7.akpm@osdl.org>
+	<200503051858.05050.blaisorblade@yahoo.it>
+	<20050308082502.GB23067@bytesex>
+	<200503091938.46936.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [patch 1/1] unified spinlock initialization
-	arch/um/drivers/port_kern.c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200503091938.46936.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,39 +31,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Mar 2005 09:12:00 +0100
+Date: Thu, 10 Mar 2005 09:13:40 +0100
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Russell King <rmk+lkml@arm.linux.org.uk>, Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, domen@coderock.org, amitg@calsoftinc.com, gud@eth.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 2005-03-09 at 20:52 +0100, Blaisorblade wrote:
-> > Are you sure this is really the best option in this instance?
-> > Sometimes, static data initialisation is more efficient than
-> > code-based manual initialisation, especially when the memory
-> > is written to anyway.
-> Agreed, theoretically, but this was done for multiple reasons globally, for 
-> instance as a preparation to Ingo Molnar's preemption patches. There was 
-> mention of this on lwn.net about this:
+> No, this does not happen... the normal situation currently is that the kernel 
+> skips printing part of the initial output.
 > 
-> http://lwn.net/Articles/108719/
+> $ ./OldKernels/vmlinux-2.6.11-rc3
+> Checking for /proc/mm...found
+> Checking for the skas3 patch in the host...found
+> Checking PROT_EXEC mmap in /tmp...OK
+> ject_hotplug - call_usermodehelper returned -1
+> io scheduler noop registered
+> NET: Registered protocol family 2
+> IP: routing cache hash table of 256 buckets, 4Kbytes
+> TCP established hash table entries: 2048 (order: 3, 32768 bytes)
+> TCP bind hash table entries: 2048 (order: 2, 24576 bytes)
+> TCP: Hash tables configured (established 2048 bind 2048)
+> Initialized stdio console driver
+> Console initialized on /dev/tty0
+> Initializing software serial port version 1
+> Kernel panic - not syncing: VFS: Unable to mount root fs on 
+> unknown-block(98,0)
 
-Those patches did only the conversion of
+Ouch.  I've never seen that myself though, works perfectly fine for me.
+Could be somehow related to the scrambled compiler logs reported a few
+weeks ago, maybe the tty/line buffer handling is broken ...
 
-static spinlock_t lock = SPIN_LOCK_UNLOCKED;
-       lock = SPIN_LOCK_UNLOCKED;
-to
-static DEFINE_SPINLOCK(lock);
-       spin_lock_init(lock);
+> $ ./OldKernels/vmlinux-2.6.11-rc3 stderr=1
 
-If you want to do static initialization inside of structures, then you
-have to define a seperate MACRO similar to the static initialization of
-list_head's inside of structures:
+[ snip ]
 
-static struct sysfs_dirent sysfs_root = {
-        .s_sibling      = LIST_HEAD_INIT(sysfs_root.s_sibling),
+as expected ...
 
-tglx
+> $ ./vmlinux-2.6.11-rc4-bk-testLock-nofix console=stderr
+> Checking for /proc/mm...found
+> Checking for the skas3 patch in the host...found
+> Checking PROT_EXEC mmap in /tmp...OK
+> [ no more messages ]
 
+stderr=1 is needed in any case.  console=stderr might be needed
+additionally in case you want to sent the kernel messages to _two_
+console devices, i.e. something like this (both stderr and the xterm
+for tty1):
 
+# linux con=pts con1=xterm stderr=1 console=stderr console=tty1
+
+HTH,
+
+  Gerd
+
+-- 
+#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
