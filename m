@@ -1,14 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: uml <uml@dot1q.net>
-Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
-	3.3.3 similarities to 2.6.6!?
-Message-id: <005201c45496$51bd3b00$dd02a8c0@ferraro>
-MIME-version: 1.0
-Content-type: text/plain; charset="iso-8859-1"
-References: <114001c44bf7$b69ca120$2000000a@schlepptopp>
-	<200406162109.57341.blaisorblade_spam@yahoo.it>
-	<001e01c45480$c6e99380$dd02a8c0@ferraro>
-	<200406171925.27567.blaisorblade_spam@yahoo.it>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Bb1hf-0000x2-3t for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jun 2004 11:33:35 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Bb1he-0002FT-G3 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jun 2004 11:33:34 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [uml-user] skas not found
+References: <BAY18-F18AMdGwGMFdX000701d9@hotmail.com>
+	<200406061859.39809.blaisorblade_spam@yahoo.it>
+	<200406081717.i58HHKis002962@ccure.user-mode-linux.org>
+In-Reply-To: <200406081717.i58HHKis002962@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200406172043.25474.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,53 +29,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Jun 2004 14:10:06 -0400
+Date: Thu, 17 Jun 2004 20:43:25 +0200
 Content-Transfer-Encoding: quoted-printable
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
-Cc: roland <for_spam@gmx.de>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Ah, I only tried adding the -fno-unit-at-a-time switch to -O2.. it seemed to
-work quite cleanly, and as well as expected by simply replacing the -O2
-with -O1 as I was previously doing.
+Alle 19:17, marted=EC 8 giugno 2004, Jeff Dike ha scritto:
+> blaisorblade_spam@yahoo.it said:
+> > - There should be a stable branch, just updating to new releases, and
+> > development patches, adding experimental features. It works so all
+> > over the  world. Sadly not here. I would also think that stable trunk
+> > is 2.4.26-1,  -2... while for development we have a list of
+> > independent patches  (HUMFS-2.4.26-1-v1.patch to apply onto 2.4.26-1,
+> > and which is version 1).
 
-I'm really unsure about the attribute_used declaration, but if you can tell
-me how or what to test, I'm more than willing to give it a few dozen
-recompiles.
+> I don't disagree.  A stable tree would be a fine idea.  The only problem =
+is
+> that no one has volunteered to manage it, and I don't have time to open
+> up and maintain a new tree.
 
------ Original Message -----=20
-From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
-To: "uml" <uml@dot1q.net>; "uml-user"
-<user-mode-linux-user@lists.sourceforge.net>;
-<user-mode-linux-devel@lists.sourceforge.net>
-Cc: "roland" <for_spam@gmx.de>
-Sent: Thursday, June 17, 2004 1.25 PM
-Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
-3.3.3 similarities to 2.6.6!?
+Well, let's discuss this on the ML. I could be maybe able to maintain it, i=
+f=20
+we intend it as "porting to new vanilla kernels, merging patches when they =
 
+are ready and building the patch". Not very timely maybe, but I could. This=
+=20
+is not a good moment for this, since I should be busy... however I'm going =
+to=20
+post a test-patch for 2.6.7... it will maybe include some trivial changes I=
+=20
+posted recently.
 
-Alle 17:35, gioved=EC 17 giugno 2004, uml ha scritto:
-> Oops, I tried this the other day at the beginning of this thread -- it
-> worked great for me.
+> > This could be done in 2.6 mainline if UML updates get merged: Jeff,
+> > you could  update UML to kernel changes in mainline, while putting
+> > experimental patches  on the site until they are tested enough to be
+> > merged.
 
-Sorry for the silly question, but I was speaking about a *lot* of things, so
-what did you try?
+> Who's going to test individual patches unless they are part of a widely
+> used tree?
 
+>  I think a stable tree is a fine idea, but I don't particularly
+> like the idea of having an "official" set of patches floating around.  If
+> they're official, then they can be part of a development tree, and everyo=
+ne
+> who uses that tree tests all of the patches in it.
+>
+> 				Jeff
+
+Ok, I could translate and correct my idea to:
+
+- the "stable" tree will be, at the end, the vanilla tree (so no release wo=
+rk=20
+for you).
+
+- you keep mantaining a development tree, but if possible in the form of a =
+
+patchset (like -mm); each new (non-trivial) patch is posted to the ML (well=
+,=20
+obviously you don't need to wait for comments), so that it can be tested=20
+before the new release (especially if it's development work).
+
+The "patchset" form is especially important to be able to commit patches in=
+=20
+little bits (well, not so little: splitting one big change in 7 depending=20
+changes as on LKML is a lot of work, but separating HUMFS and other fixes i=
+s=20
+not).
+
+To manage well the patchset, with little effort, there are the patch-script=
+s=20
+from Randy Dunlap, used for -mm (at=20
+http://developer.osdl.org/rddunlap/patch-scripts/). I'm going to study them=
+,=20
+probably.
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by The 2004 JavaOne(SM) Conference
-Learn from the experts at JavaOne(SM), Sun's Worldwide Java Developer
-Conference, June 28 - July 1 at the Moscone Center in San Francisco, CA
-REGISTER AND SAVE! http://java.sun.com/javaone/sf Priority Code NWMGYKND
-_______________________________________________
-User-mode-linux-user mailing list
-User-mode-linux-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
-
 
 
 
