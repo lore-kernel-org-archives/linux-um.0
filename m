@@ -1,20 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AiGWS-0000TZ-L0 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 09:15:40 -0800
-Received: from m17.lax.untd.com ([64.136.30.80])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AiGWS-00046r-B4 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 09:15:40 -0800
-Subject: Re: [uml-devel] uml-patch-2.6.1-1: VFS: Cannot open root device
-	"ubd0" or unknown-block(0, 0)
-Message-ID: <20040118.090450.-9063.1.mcmechanjw@juno.com>
+	id 1AiHwn-0006Vj-VG for User-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2004 10:46:57 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AiHwn-0004XO-Cv for User-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2004 10:46:57 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] Re: uml-patch-2.6.0
+Message-ID: <Pine.GSO.4.58.0401181833270.921@altair.dur.ac.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-From: James W McMechan <mcmechanjw@juno.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,29 +24,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Jan 2004 09:04:47 -0800
-To: mingo@elte.hu, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 18 Jan 2004 18:46:47 +0000 (GMT)
+To: User-mode-linux-devel@lists.sourceforge.net
+Cc: Ingo Molnar <mingo@elte.hu>
 
-Did you notice your line
-> /dev/ubd/disc0: unknown partition table
-you did not include the command line
-I guess from the report about
-> VFS: Cannot open root device "ubd0" or unknown-block(0,0)
-so you may have "root=ubd0" but with 2.6 and the new root 
-naming method see init/do_mounts.c:try_name() you would
-appear to need for devfs "root=/dev/ubd/disc0/disc" or 
-"root=/dev/ubd/disc0" or "root=6200" it looks like you
-might have devfs turned on but it is not set in your config?
-I may be out of date however, I still need to build 2.6.1-1um
+>* Jeff Dike <jdike@addtoit.com> wrote:
+>
+>> >  * Any known issues with 2.6.1 kernels?
+>>
+>> Fewer, now that I got the 2.6.1 patch out.  UML lacks
+>> [gs]et_thread_area still, so 2.6 UMLs won't boot new libcs.
+>
+>hm, are you sure this is the reason why they dont boot? At least the
+>ones in Fedora fall back to LinuxThreads if set_thread_area is -ENOSYS.
+>Old 2.4 kernels work just fine - UML ought to work fine too.
 
-Enjoy,
+Originally, the problem was with these calls as UML used to panic rather
+than return -ENOSYS. Now however I believe there is no direct connection
+between the [gs]et_thread_area calls and the hang that occurs early on in
+tt mode for RedHat 9 glibcs if the /lib/tls libraries exist. For FC1
+glibcs the hang happens anyway. See an earlier post of mine for more
+details of the hang.
 
-James McMechan
-
-________________________________________________________________
-The best thing to hit the internet in years - Juno SpeedBand!
-Surf the web up to FIVE TIMES FASTER!
-Only $14.95/ month - visit www.juno.com to sign up today!
+	Michael Young
 
 
 -------------------------------------------------------
