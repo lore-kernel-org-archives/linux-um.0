@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTNnp-0003Tz-Ba for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 09:32:21 -0700
-Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	id 1BTOi7-0007Ur-BB for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 May 2004 10:30:31 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BTNno-0000PN-Cl for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 09:32:20 -0700
-Message-ID: <11a101c44409$2f7dbb20$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <pan.2004.05.17.20.30.18.825415@sipsolutions.de>
+	id 1BTOi6-0000R0-Ly for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 May 2004 10:30:30 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] CVS not updated?
+References: <Pine.LNX.4.44.0405231837160.23006-100000@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0405231837160.23006-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-15"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [uml-user] odd ping problems
+Content-Disposition: inline
+Message-Id: <200405241944.02966.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,144 +29,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 May 2004 18:39:30 +0200
-To: user-mode-linux-user@lists.sourceforge.net, Johannes Berg <johannes@sipsolutions.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, caker@theshore.net, michel@pollet.net, Jeff Dike <jdike@addtoit.com>
+Date: Mon, 24 May 2004 19:44:02 +0200
+To: Henrik Nordstrom <uml@hno.marasystems.com>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-hi!
-i`m able to reproduce this with 2.6.6-uml and tuntap/bridged network setup (on 
-2.6.6 skas host).
-this seems to have no relation to the swap/paging related ping delay issue - it 
-seems to be a completely different one.
-it only happens when "largepinging" from host to uml - not vice versa.
+Alle 18:44, domenica 23 maggio 2004, Henrik Nordstrom ha scritto:
+> On Sun, 23 May 2004, BlaisorBlade wrote:
+> > Not here:
+>
+> This is because the CVS pserer currently being slightly
+> reorganised for security... should work once Jeff
+> gets the time to do the last few steps setting the permissions correctly.
 
-> The uml is idle during all the time, it reacts to my ssh session
-> and the normal console. In fact, if I generate other network traffic
-> (cat'ing a file in my ssh session), the uml will respond to the large
-> ping.
-your uml responds to the large ping? mine doesn`t respond to large pings
-at all.
+Btw - don't know if this is needed or it's obvious for you- but the directory 
+for the checkout must be setgid to a group containing everyone who should 
+have write access to the website, and writable by the group; otherwise the 
+when someone else than Jeff run the update script, the script won't have the 
+needed permissions.
 
-regards
-roland
+> > even when I try from inside ssh blaisorblade@www.user-mode-linux.org.
+> > However, I used :ext: and my login name and it worked (though the site
+> > content is a bit out-of-date).
+>
+> ssh CVS access do work, but not pserver over ssh as this is no different
+> from pserver remotely except for encryption..
+>
+> > I would suggest to write, on the server, a script which checks out
+> > everything from the CVS repository and rebuilds it; then you commit the
+> > new site, run the script from the server and it should work perfectly +
+> > the site would always be up-to-date.
+>
+> ???
 
+This is about keeping even the web-site in CVS - to allow selected people to 
+contribute to it (I am for instance thinking about replacing the RPM, finally 
+- there are up-to-date RPM somewhere, I remember).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
------ Original Message ----- 
-From: "Johannes Berg" <johannes@sipsolutions.de>
-To: <user-mode-linux-user@lists.sourceforge.net>
-Sent: Monday, May 17, 2004 10:30 PM
-Subject: [uml-user] odd ping problems
-
-
-> Hi,
-> 
-> Just observed this on
->   host:  2.6.3 with skas
->   guest: debian uml package (2.4.24-1um)
-> 
-> johannes:~$ ping uml
-> PING uml (172.17.16.100) 56(84) bytes of data.
-> 64 bytes from uml (172.17.16.100): icmp_seq=1 ttl=64 time=1.00 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=2 ttl=64 time=0.538 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=3 ttl=64 time=0.519 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=4 ttl=64 time=0.530 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=5 ttl=64 time=0.529 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=6 ttl=64 time=1.92 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=7 ttl=64 time=0.499 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=8 ttl=64 time=6.64 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=9 ttl=64 time=1.36 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=10 ttl=64 time=0.519 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=11 ttl=64 time=0.528 ms
->  
-> --- uml ping statistics ---
-> 11 packets transmitted, 11 received, 0% packet loss, time 10027ms
-> rtt min/avg/max/mdev = 0.499/1.327/6.642/1.738 ms
-> 
-> johannes:~$ ping uml -s 60000
-> PING uml (172.17.16.100) 60000(60028) bytes of data.
->  
-> --- uml ping statistics ---
-> 5 packets transmitted, 0 received, 100% packet loss, time 20042ms
-> 
-> johannes:~$ ping uml
-> PING uml (172.17.16.100) 56(84) bytes of data.
-> 64 bytes from uml (172.17.16.100): icmp_seq=2 ttl=64 time=10008 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=3 ttl=64 time=9008 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=4 ttl=64 time=8008 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=5 ttl=64 time=7009 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=6 ttl=64 time=6009 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=7 ttl=64 time=5009 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=8 ttl=64 time=4008 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=9 ttl=64 time=3009 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=10 ttl=64 time=2009 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=11 ttl=64 time=1010 ms
-> 64 bytes from uml (172.17.16.100): icmp_seq=12 ttl=64 time=2.67 ms
->  
-> --- uml ping statistics ---
-> 12 packets transmitted, 11 received, 8% packet loss, time 11007ms
-> rtt min/avg/max/mdev = 2.676/5008.647/10008.979/3162.981 ms, pipe 11
-> 
-> After this it'll react fine to my pings, until again I send it a very
-> large one. That blocks it for a while again, and I get behaviour like
-> above. Notice the large delay, until all the sudden all packets arrive
-> (ping sends one every second, but the first 12 arrive at the same time).
-> Sometimes, instead of all arriving late, the packets are simply dropped.
-> 
-> The uml is idle during all the time, it reacts to my ssh session
-> and the normal console. In fact, if I generate other network traffic
-> (cat'ing a file in my ssh session), the uml will respond to the large
-> ping.
-> 
-> Is this a known problem?
-> 
-> More information:
-> The uml has iptables enabled, and drops every icmp packet but "ping pong
-> destination-unreachable time-exceeded", but I can reproduce exactly the
-> same behaviour if I flush all chains and set all policies to "accept".
-> 
-> I am using
->     eth0=daemon,,,/var/run/uml-utilities/uml_switch.ctl
-> 
-> The strace looks similar to what I had before, when I suspended my laptop
-> while uml was running.
-> 
-> Basically, during the pinging with a small packet, the uml will do:
-> recvfrom(7, "...", 1514, 0, NULL, NULL) = 98
-> <rt_sigprocmask unblock + block>
-> gettimeofday
-> <rt_sigprocmask unblock + block * 9>
-> recvfrom(7, "...", 1514, 0, NULL, NULL) = -1 (EAGAIN)
-> <rt_sigprocmask unblock + block * 6>
-> ioctl(7, SNDCTL_TMR_TIMEBASE or TCGETS, 0xa021b3a4) = -1 EINVAL
-> <rt_sigprocmask unblock + block * 15>
-> sendto(7, "...", 98, 0, {sa_family=AF_UNIX, path=@}, 110) = 98
-> 
-> From the first recvfrom to the sendto it takes about 5673 usecs.
-> 
-> For the fragmented packets, the recvfrom sequence (lots of receives of
-> course) takes 15138 usecs. But before the next sendto it takes more than 3
-> seconds, there are other recvfroms inbetween, and some waitpid stuff, and
-> ptrace, ... It also sleeps for a while, sequences like
-> 22:17:31.647087 nanosleep({10, 0}, 0)   = ? ERESTART_RESTARTBLOCK (To be restarted)
-> 22:17:31.657382 --- SIGALRM (Alarm clock) @ 0 (0) ---
-> 
-> Thats about all I can say here, I got the data with
->   strace -tt -p <pid>
-> 
-> johannes
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: SourceForge.net Broadband
-> Sign-up now for SourceForge Broadband and get the fastest
-> 6.0/768 connection for only $19.95/mo for the first 3 months!
-> http://ads.osdn.com/?ad_id=2562&alloc_id=6184&op=click
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
-> 
 
 
 -------------------------------------------------------
