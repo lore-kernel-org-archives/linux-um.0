@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CU3aE-0006iz-P8 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Nov 2004 05:41:22 -0800
-Received: from ppsw-3.csi.cam.ac.uk ([131.111.8.133])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CU3aB-0000gv-W0 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Nov 2004 05:41:22 -0800
+	id 1CU3wS-0000M7-RK for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 06:04:20 -0800
+Received: from ppsw-0.csi.cam.ac.uk ([131.111.8.130])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CU3wR-00064b-MW for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 06:04:20 -0800
 From: Anton Altaparmakov <aia21@cam.ac.uk>
 Content-Type: text/plain
-Message-Id: <1100612471.24599.42.camel@imp.csi.cam.ac.uk>
+Message-Id: <1100613788.24599.45.camel@imp.csi.cam.ac.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Another bug report for UML in latest Linux 2.6-BK
+Subject: [uml-devel] And another bug report for UML in latest Linux 2.6-BK
 	repository.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -26,34 +26,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Nov 2004 13:41:11 +0000
+Date: Tue, 16 Nov 2004 14:03:09 +0000
 To: jdike@karaya.com
 Cc: user-mode-linux-devel@lists.sourceforge.net, lkml <linux-kernel@vger.kernel.org>
 
-If I enable HIGHMEM in my .config (see my previous bug report for my
-.config and just change HIGHMEM to enabled) compilation fails:
+With my .config (quoted in my first bug report), just disabling SKAS
+mode, makes UML compile but not work at all.  It goes like this before
+it locks up:
 
-[snip]
-  CC      arch/um/kernel/mem.o
-arch/um/kernel/mem.c: In function `mem_init':
-arch/um/kernel/mem.c:71: warning: implicit declaration of function
-`phys_page'
-arch/um/kernel/mem.c:71: warning: assignment makes pointer from integer
-without a cast
-arch/um/kernel/mem.c: In function `kmap_init':
-arch/um/kernel/mem.c:151: warning: implicit declaration of function
-`pte_offset'arch/um/kernel/mem.c:151: warning: assignment makes pointer
-from integer without a cast
-[snip]
-  LD      .tmp_vmlinux1
-arch/um/kernel/built-in.o(.text+0x2ca9): In function `mem_init':
-arch/um/kernel/mem.c:71: undefined reference to `phys_page'
-arch/um/kernel/built-in.o(.init.text+0x1d2): In function `kmap_init':
-include/asm/pgtable.h:394: undefined reference to `pte_offset'
-collect2: ld returned 1 exit status
-  KSYM    .tmp_kallsyms1.S
-nm: '.tmp_vmlinux1': No such file
-make: *** [.tmp_kallsyms1.S] Error 139
+linux umid=uml0 mem=256m ubd0=ubd0 ubd1=/usr/src/ntfs_hdd10
+eth0=tuntap,uml0,fe:fd:dd:f8:a6:4e ssl=none con=xterm
+xterm=gnome-terminal,-t,-x root=/dev/ubda1
+Set 'uml0' persistent and owned by uid 29847
+Starting uml...
+Checking PROT_EXEC mmap in /tmp...OK
+Kernel virtual memory size shrunk to 243269632 bytes
+tracing thread pid = 29367
+Linux version 2.6.10-rc2 (aia21@imp) (gcc version 3.3.4 (pre 3.3.5
+20040809)) #1 Tue Nov 16 13:59:36 GMT 2004
+Built 1 zonelists
+Kernel command line: mem=256m ubd0=ubd0 ubd1=/usr/src/ntfs_hdd10
+eth0=tuntap,uml0,fe:fd:dd:f8:a6:4e ssl=none con=xterm root=/dev/ubda1
+PID hash table entries: 2048 (order: 11, 32768 bytes)
+Dentry cache hash table entries: 65536 (order: 6, 262144 bytes)
+Inode-cache hash table entries: 32768 (order: 5, 131072 bytes)
+Memory: 254592k available
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...check_ptrace : child
+exited with exitcode 1, while expecting 0; status 0x100
+missing
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with
+errno 2)
+NET: Registered protocol family 16
+sleeping process 29410 got unexpected signal : 11
+
+I now have to press Ctrl+C to get back to my shell.
 
 Best regards,
 
