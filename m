@@ -1,32 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CybAz-0004QK-Hd for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 11:37:33 -0800
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CybAy-0001en-19
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 11:37:33 -0800
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Cyb9P-00068c-Qi for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 20:35:55 +0100
-Received: from naked.iki.fi ([62.142.249.112])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 08 Feb 2005 20:35:55 +0100
-Received: from naked by naked.iki.fi with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 08 Feb 2005 20:35:55 +0100
-From: Nuutti Kotivuori <naked@iki.fi>
-Message-ID: <87zmyej125.fsf@aka.i.naked.iki.fi>
-References: <87hdks5y35.fsf@aka.i.naked.iki.fi>
+	id 1CybU7-0005L9-Gq for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 11:57:19 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CybU5-0007sl-U6 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 11:57:19 -0800
+Message-Id: <200502082223.j18MMxs0013724@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Tue, 08 Feb 2005 18:37:22 +0100."
+	<200502081837.22519.blaisorblade@yahoo.it> 
+References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
+	<200502081829.j18ITAs0003968@ccure.user-mode-linux.org>
+	<200502081837.22519.blaisorblade@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: UML tuntap driver problem with queueing
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [BUG report] UML linux-2.6 latest BK doesn't compile
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,34 +29,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 08 Feb 2005 21:37:06 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 08 Feb 2005 17:22:59 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Anton Altaparmakov <aia21@cam.ac.uk>, lkml <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-Nuutti Kotivuori wrote:
-> As a workaround to the problem, I've added the IFF_ONE_QUEUE option
-> to all the places that open a tap device (namely tunctl, uml_net and
-> uml_router). The patch is attached. But the actual problem should
-> most likely be fixed once found.
+blaisorblade@yahoo.it said:
+> Why not simply disable CONFIG_GCOV for him, in this case? 
 
-Just a heads up here to the UML folks in case it was missed - with the
-current code, packet delivery to UML machines using tuntap driver
-*will* mess up (stall totally or major bursts of lag) if more than 10
-packets are queued to UML at a time.
+Anton presumably turned on CONFIG_GCOV because he wanted to do some profiling...
 
-This will happen if Linux reassembles packets (connection tracking is
-enabled) and a packet of around 17000 bytes or more arrives, or if UML
-is given packets faster than it can handle them (not very likely to
-happen if the packets are received from a 100Mbit network, and not
-generated locally, unless there is heavy load on the machine).
-
-So this is a real problem, for which the patch given is a decent
-workaround, as it works perfectly and only changes things if one
-employs QoS on the tap device itself.
-
-Ofcourse, the actual cause for this should be fixed (SIGIO mess up or
-whatever it is).
-
--- Naked
+				Jeff
 
 
 
