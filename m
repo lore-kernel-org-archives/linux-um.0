@@ -2,18 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BUZi7-00053x-Dy for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 May 2004 16:27:23 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	id 1BTYGN-0002MT-Q3 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 May 2004 20:42:31 -0700
+Received: from [218.189.183.34] (helo=lifewood.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BUZi6-0008Pm-Ns for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 May 2004 16:27:22 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] No of ubd
-In-Reply-To: <200405302256.25065.leen.meyer@home.nl>
-Message-ID: <Pine.LNX.4.44.0405310123450.29405-100000@filer.marasystems.com>
+	id 1BTYGN-0000YL-8U for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 May 2004 20:42:31 -0700
+Received: from VAIO ([192.168.38.65])
+	by lifewood.com (8.11.0/8.11.0) with ESMTP id i4S3eda06510
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 28 May 2004 11:40:39 +0800
+Message-Id: <200405280340.i4S3eda06510@lifewood.com>
+From: "Raymond Wong" <raymond@lifewood.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <40B62F45.9000204@nortelnetworks.com>
+Subject: [uml-devel] No of ubd
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,27 +31,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 31 May 2004 01:27:19 +0200 (CEST)
-To: Leendert Meyer <leen.meyer@home.nl>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 28 May 2004 11:36:21 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, 30 May 2004, Leendert Meyer wrote:
+How many ubd drives are available to use?  8? Or 256?  
 
-> And that was exactly where I had to use it! :) My fdisk & co won't work 
-> without knowing the number of cylinders.
+Ray
 
-In all versions I have seen you can set the geometry from the expert menu 
-in fdisk..
-
-If you use sfdisk then there is command line options to specify the 
-geometry.
-
-> Do you mean CHS vs. LBA?
-
-Yes.
-
-Regards
-Henrik
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.690 / Virus Database: 451 - Release Date: 22/5/2004
+ 
 
 
 
