@@ -1,26 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ba4yZ-0002er-Vy for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jun 2004 20:51:07 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1Ba4yZ-0001S9-Er for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jun 2004 20:51:07 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
 	3.3.3 similarities to 2.6.6!?
 References: <114001c44bf7$b69ca120$2000000a@schlepptopp>
 	<008901c44c40$c2ed0e30$dd02a8c0@ferraro>
 	<878yerf7d4.fsf@amaterasu.srvr.nix>
-In-Reply-To: <878yerf7d4.fsf@amaterasu.srvr.nix>
+	<200406142109.45156.blaisorblade_spam@yahoo.it>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200406142109.45156.blaisorblade_spam@yahoo.it> (BlaisorBlade's
+	message of "Mon, 14 Jun 2004 21:09:45 +0200")
+Message-ID: <87oenle40x.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200406142109.45156.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,63 +22,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 14 Jun 2004 21:09:45 +0200
-To: Nix <nix@esperi.org.uk>, uml <uml@dot1q.net>, roland <for_spam@gmx.de>
-Cc: uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 15 Jun 2004 07:20:14 +0100
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: uml <uml@dot1q.net>, roland <for_spam@gmx.de>, uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
 
-Alle 23:58, domenica 13 giugno 2004, Nix ha scritto:
-> On Sun, 06 Jun 2004, uml@dot1q.net stipulated:
-> > Switch differences between -O1 and -O2 on GCC 3.3.3:
->
-> Note: -O{n} are *not* the equivalent of groups of -f switches:
-> they turn those switches on, but other things inside the compiler
-> are directly triggered by the optimization level.
+On Mon, 14 Jun 2004, BlaisorBlade mused:
+> Alle 23:58, domenica 13 giugno 2004, Nix ha scritto:
+>> On Sun, 06 Jun 2004, uml@dot1q.net stipulated:
+>> > Switch differences between -O1 and -O2 on GCC 3.3.3:
+>>
+>> Note: -O{n} are *not* the equivalent of groups of -f switches:
+>> they turn those switches on, but other things inside the compiler
+>> are directly triggered by the optimization level.
+> 
+> I expected that SuSE 9.1 shipped a buggy gcc, but I didn't found any confirm 
+> to this (I remember they did such things in the past). However the fact that 
+> the compiler output that dump is anyway a compiler bug...
 
-I expected that SuSE 9.1 shipped a buggy gcc, but I didn't found any confirm 
-to this (I remember they did such things in the past). However the fact that 
-the compiler output that dump is anyway a compiler bug...
+Oh, yes, certainly.
 
-Well, ok, more hints, the first possible answer to this one seems to be that 
-SuSE enables -funit-at-a-time:
+> Well, ok, more hints, the first possible answer to this one seems to be that 
+> SuSE enables -funit-at-a-time:
 
-http://www.google.com/search?q=%22SuSE+9.1%22+bug+gcc&sourceid=opera&num=25&ie=utf-8&oe=utf-8
+(unsurprising, given that -funit-at-a-time's primary author is jh@suse ;} )
 
-I checked the first hit (read the whole thread):
+> http://www.google.com/search?q=%22SuSE+9.1%22+bug+gcc&sourceid=opera&num=25&ie=utf-8&oe=utf-8
+> 
+> I checked the first hit (read the whole thread):
+> 
+> http://gcc.gnu.org/ml/gcc-bugs/2004-05/msg01912.html
 
-http://gcc.gnu.org/ml/gcc-bugs/2004-05/msg01912.html
+Yep, -funit-at-a-time will definitely break kernels that aren't
+expecting it, both because of elision of unused statics and because some
+arches depend on emission of asm's at the top level to emit stuff in the
+same order in generated code, and with -funit-at-a-time this just
+doesn't happen anymore. (I don't think i386 is such an architecture,
+though.)
 
-And this is interesting enough:
+-funit-at-a-time is enabled by default for C and C++ in GCC 3.4.
 
-(they indeed speak about SuSE 9.1)
+> This is the trick:
+> "#define ATTRIBUTE_USED
+> #if (__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >=4)
+> #undef ATTRIBUTE_USED
+> #define ATTRIBUTE_USED __attribute__((used))
+> #endif
 
-"This is a dup of bug 14911, well it looks like *SUSE turns on 
--funit-at-a-time at -O2 for their 3.3.3*, so 
-using the same method as mentioned in the other bug except change the 
-"__GNUC_MINOR__ >=4" to 
-be "__GNUC_MINOR__ >= 3" and it will work."
+The sort of thing you want to stash away in a header file and never lay
+eyes on again. :)
 
-Here is bug 14911:
+> static const int hello ATTRIBUTE_USED  = 56;
+> 
+> int main()
+> {
+>         asm(
+>         "mov hello, %eax\n"
+>         );
 
-http://gcc.gnu.org/bugzilla/show_bug.cgi?id=14911
+Well, in this *specific* case, hello should be marked as clobbered,
+which will also stop the compiler eliding it. But this *was* a contrived
+testcase...
 
-This is the trick:
-"#define ATTRIBUTE_USED
-#if (__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >=4)
-#undef ATTRIBUTE_USED
-#define ATTRIBUTE_USED __attribute__((used))
-#endif
-static const int hello ATTRIBUTE_USED  = 56;
-int main()
-{
-        asm(
-        "mov hello, %eax\n"
-        );
-        return 0;
-}"
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-
+`We in no way believe that this Christ was a space alien.'
+                    --- A creationist website goes completely bonkers
 
 
 -------------------------------------------------------
