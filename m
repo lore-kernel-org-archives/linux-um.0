@@ -1,23 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AeJIi-0007JX-KE for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jan 2004 11:25:08 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AeJIi-0003fJ-1j for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jan 2004 11:25:08 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<a0602040dbc20be564c59@[192.168.1.10]>
-	<Pine.LNX.4.58.0401070325360.1840@boston.corp.fedex.com>
-In-Reply-To: <Pine.LNX.4.58.0401070325360.1840@boston.corp.fedex.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200401072025.02885.blaisorblade_spam@yahoo.it>
+Message-Id: <200401080019.i080JOtd008375@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Wed, 07 Jan 2004 20:12:04 +0100."
+	<200401072012.05007.blaisorblade_work@yahoo.it> 
+References: <200312242019.23335.blaisorblade_work@yahoo.it>
+	<200401062038.37402.blaisorblade_work@yahoo.it>
+	<20040106202145.GA11953@mars.ravnborg.org>
+	<200401072012.05007.blaisorblade_work@yahoo.it> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [kbuild-devel] Needed help for UML kbuild.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,46 +21,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Jan 2004 20:25:02 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 07 Jan 2004 19:19:24 -0500
+To: BlaisorBlade <blaisorblade_work@yahoo.it>
+Cc: Sam Ravnborg <sam@ravnborg.org>, kbuild-devel@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Alle 20:34, marted=EC 6 gennaio 2004, Jeff Chua ha scritto:
-> On Tue, 6 Jan 2004, Johannes Formann wrote:
-> > so, now I'm done:
-> > I hope this backtrave can helpt you.
->
-> I just made a little patch to uml-patch-2.4.23-1. It's a modified version
-> of BlaisorBlade's patch few minutes ago. Also, please ignore the patch in
-> my previous email.
->
-> Can you please try to see the patch below solve your problem?
-Not yet looked at the code (and maybe I wouldn't be able to fix it).
-However, the piece of code that I pointed out as being probably the cause o=
-f=20
-the problem was meant to be a fix to another problem. Try to do cat /dev/km=
-em=20
-with a 2.4.22-5 kernel (if you want) and you'll see your kernel panicking.
+blaisorblade_work@yahoo.it said:
+> some modules(i.e. hostaudio) are built from a "userspace" (needing the
+> special  treatment) file and a "kernel" (to be compiled as usual)
+> file. How will  kbuild link them together?
 
-The fix maybe is not perfect but something must go in. Also, if that doesn'=
-t=20
-work, maybe the error is somewhere else (and triggered by this change, as=20
-easily happens).
+> I have three workarounds:
+> - split the module into 2 separate ones, with the kernel one requiring the 
+> other. BUT a lot of EXPORT_SYMBOLS should be added (one for each function 
+> inside the userspace file at least)
+> - create a symlink from arch/um/drivers/hostaudio_user.c(old place) to 
+> arch/um/os/drivers/hostaudio_user.c (new place) and pass the symlink to gcc.
+> This must be done only when the file will be part of a module.
+> Note that arch/um/os is a symlink to arch/um/os-{Linux, Win, any OS needed}.
+> - (worst option) make kbuild link together objects from different folders 
+> inside one module. But I don't like this and I guess this would never be 
+> accepted (this is against a fundamental kbuild assumption, IIRC).
 
-> --- uml/drivers/char/mem.c.org	Wed Jan  7 03:30:40 2004
-> +++ uml/drivers/char/mem.c	Wed Jan  7 03:31:47 2004
-> @@ -269,3 +269,3 @@
->  	}
-> - 	*ppos =3D __pa((void *) p);
-> + 	*ppos =3D p;
->   	return virtr + read;
->
-Bye
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
-EOSIGN
+Option 2 would work, although I would try to avoid that.  I would rather
+have everything under arch/um/os be userspace code, and none of it be kernel
+code.
+
+So, rather than have a module consisting of a userspace chunk and a kernel
+chunk needing to be turned into a single .o, I would rather look at having
+two modules, with the userspace piece plugging into an interface in the
+kernel piece.  
+
+This is what I've envisioned for hostfs for a long time.  You don't need to
+stick host files underneath hostfs files - you can stick other host resources
+under them, and the way to do that is to have multiple hostfs userspace modules
+which plug into an interface in the hostfs kernel piece, each of which provides
+access to a different sort of host resource.
+
+So, I would look at the other problematic modules and see if they can be treated
+in the same way.
+
+So, I basically don't like the idea of making the CFLAGS munging part of kbuild
+overall.  It's very UML-specific now, and in the future, it will become specific
+to small pieces of UML.
+
+				Jeff
 
 
 
