@@ -1,23 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8O86-0004ZV-7C for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:43:02 -0800
+	id 1D8O8a-0004al-Kw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:43:32 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D8O84-0005xG-AK for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:43:02 -0800
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1D8O8Z-00062H-Rc for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:43:32 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20041128010910.1b5478c7.akpm@osdl.org>
-In-Reply-To: <20041128010910.1b5478c7.akpm@osdl.org>
+Subject: Re: [uml-devel] [BUG: UML 2.6.11-rc4-bk-latest] sleeping function
+	called from invalid context and segmentation fault
+References: <1108381733.10703.5.camel@imp.csi.cam.ac.uk>
+	<1108740823.6713.28.camel@imp.csi.cam.ac.uk>
+	<200502222141.54891.blaisorblade@yahoo.it>
+In-Reply-To: <200502222141.54891.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503051858.05050.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Fw: [patch] uml: terminal cleanup
+Message-Id: <200503051907.41787.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,101 +32,90 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 5 Mar 2005 18:58:04 +0100
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 5 Mar 2005 19:07:41 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anton Altaparmakov <aia21@cam.ac.uk>, Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>, Gerd Knorr <kraxel@bytesex.org>
 
-On Sunday 28 November 2004 10:09, Andrew Morton wrote:
-
-> Date: Wed, 24 Nov 2004 19:53:41 +0100
-> From: Gerd Knorr <kraxel@bytesex.org>
-> To: Andrew Morton <akpm@osdl.org>, Linux Kernel Mailing List
-> <linux-kernel@vger.kernel.org>, uml devel
-> <user-mode-linux-devel@lists.sourceforge.net> Subject: [patch] uml:
-> terminal cleanup
-
->   Hi,
+On Tuesday 22 February 2005 21:41, Blaisorblade wrote:
+> On Friday 18 February 2005 16:33, Anton Altaparmakov wrote:
+> > On Wed, 2005-02-16 at 19:35 +0100, Blaisorblade wrote:
+> > > On Monday 14 February 2005 12:48, Anton Altaparmakov wrote:
+> > > > Hi,
+> > > >
+> > > > I get a few Debug messages of the form from UML:
+> > > >
+> > > > Debug: sleeping function called from invalid context at
+> > > > include/asm/arch/semaphore.h:107
+> > > > in_atomic():0, irqs_disabled():1
+> > > > Call Trace:
+> > > > 087d77b0:  [<0809aaa5>] __might_sleep+0x135/0x180
+> > > > 087d77d8:  [<084d377f>] mcount+0xf/0x20
+> > > > 087d77e0:  [<0807cc13>] uml_console_write+0x33/0x80
+> > > >
+> > > > Most are coming via uml_console_write.
+> > >
+> > > The problem is that the UML tty drivers use a semaphore instead of a
+> > > spinlock for the locking, which also causes some other problems.
+> > >
+> > > The attached patch should fix this, but I've not yet made sure it is
+> > > not deadlock-prone (I didn't hit any during some very limited testing).
+> > >
+> > > So it's not yet ready for 2.6.11.
+> >
+> > Trying with the above patch in now only get two "sleeping function
+> > called from invalid context" warnings during boot and none during
+> > running.
 >
-> This is a major cleanup of the uml terminal drivers and console handling
-> (console as in "where the kernel messages go to", not as in "linux
-> virtual terminals").  The changes in detail:
+> I'll look at whether I can produce them... if it's no problem, post their
+> traces anyway, please.
+I'm not able... I *did* enable CONFIG_DEBUG_SPINLOCK and 
+CONFIG_DEBUG_SPINLOCK_SLEEP, but still I don't get them.
 
+Maybe I have not an interesting enough test case (or kobject debugging is 
+flooding the dmesg ring buffer, which is doing too).
 
->  (2) Ditched the early-console-init hackery in stdio_console.c
->      (open_console(NULL) + related stuff) into the waste basket, not
->      needed any more as you can use the new stderr console driver to
->      get the kernel messages if your kernel crashes very early in the
->      boot process.
+> > However I get a lot of those errors:
+> >
+> > arch/um/drivers/line.c:262: spin_lock(arch/um/drivers/line.c:085b5900)
+> > already locked by arch/um/drivers/line.c/262
 >
->  (3) Handle console initialitation for the uml stdio console and
->      virtual serial lines the normal way using the console->setup()
->      function.  Now all kernel messages appear on your console device
->      once it is initialized without any dirty tricks.
+> Ok, I'll be looking into them ASAP (which infortunately means not very
+> soon, sorry).
 
-
-> Index: linux-2004-11-23/arch/um/drivers/chan_user.c
-> ===================================================================
-> --- linux-2004-11-23.orig/arch/um/drivers/chan_user.c 2004-11-24
-> 12:50:38.560153813 +0100 +++
-> linux-2004-11-23/arch/um/drivers/chan_user.c 2004-11-24 18:15:00.027153605
-> +0100 @@ -110,7 +110,7 @@ static int winch_thread(void *arg)
->   }
->  }
+> At a quick look, I see that line 262 is a "spin_lock" called by
+> line_write_interrupt. I used spin_lock_irqsave everywhere else... but
+> actually the interrupt must explicitly disable interrupts (I forgot) so,
+> the simple answer seems to be using spin_lock_irqsave() would fix it.
+I've done this in the patch I'm working on. I've various stuff on the press, 
+however it should go in for 2.6.12-rc1, I hope.
+> I 
+> cannot make a patch now.
 >
-> -static int winch_tramp(int fd, void *device_data, int *fd_out)
-> +static int winch_tramp(int fd, struct tty_struct *tty, int *fd_out)
->  {
->   struct winch_data data;
->   unsigned long stack;
-> @@ -144,7 +144,7 @@ static int winch_tramp(int fd, void *dev
->   return(pid);
->  }
+> > Also both before and after the patch I see a lot of messages like:
+> >
+> > kernel: line_write_room: tty2: no room left in buffer
+
+> I've never seen them... 
+Ok, correction, I've seen a lot of these...
+> Anyway, I'm not sure this is a needed warning:
 >
-> -void register_winch(int fd, void *device_data)
-> +void register_winch(int fd, struct tty_struct *tty)
->  {
->   int pid, thread, thread_fd;
->   int count;
-Hmm, I saw you have put a forward declaration of struct tty_struct, however it 
-does not seem nice anyway... I don't think that using void* is nice either, 
-but both things have pitfalls.
+> in include/linux/tty_driver.h, the .write_room member must tell the
+> available space... it's reasonable that the TTY layer will call a
+> flush_buffers function. However, looking at stdio_console, I'm seeing that,
+> in fact, there is no flush_chars function(!!). I'll provide one ASAP.
+I've not yet removed the warning in the patch, just to be a bit too careful. 
+I'm providing a flush_chars and flush_buffers method.
 
-> -void line_close(struct line *lines, struct tty_struct *tty)
-> +void line_close(struct tty_struct *tty, struct file * filp)
->  {
-> - struct line *line;
-> - int n;
-> -
-> - if(tty == NULL) n = 0;
-> - else n = tty->index;
-> - line = &lines[n];
-> + struct line *line = tty->driver_data;
->
->   down(&line->sem);
->   line->count--;
-> -
-> - /* I don't like this, but I can't think of anything better.  What's
-> -  * going on is that the tty is in the process of being closed for
-> -  * the last time.  Its count hasn't been dropped yet, so it's still
-> -  * at 1.  This may happen when line->count != 0 because of the initial
-> -  * console open (without a tty) bumping it up to 1.
-> -  */
-> - if((line->tty != NULL) && (line->tty->count == 1))
-> -  line->tty = NULL;
-> - if(line->count == 0)
-> -  line_disable(line, -1);
-> + if (tty->count == 1) {
-> +  line_disable(tty, -1);
-> +  tty->driver_data = NULL;
-> + }
->   up(&line->sem);
->  }
-Why did you delete this comment? I don't think you fixed the problem, you just 
-worked it around the other way...
+That said, there must be something else going on... it is easy to get the 
+"repeated chars" problem (cat a file is enough), which I thought linked to 
+this: it's when some data is printed and re-printed many times...
 
-Or better, you removed the initial console open, if it refers to the item #2 
-above... but the code isn't clean...
+, and everybody started noticing it just around 2.6.9 / 2.6.10. I'm not sure, 
+but maybe something else is causing the problem...
 
+I'm going to work on the ring-buffer handling too, so that I make sure the 
+unusual code paths are also correct (which code paths are usual and which are 
+unusual could have changed).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
