@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CzCUE-0002Bb-KO for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 03:27:54 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CzCUB-000320-03 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 03:27:54 -0800
+	id 1CzCZ0-0002Wp-BT for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 03:32:50 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CzCYz-0006W5-Mp for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 03:32:50 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] strace of "ls" under Fedora Core 3
-References: <A06801158AE07847B27A52C1A074BC1D0725A4D6@fmsmsx404.amr.corp.intel.com>
-In-Reply-To: <A06801158AE07847B27A52C1A074BC1D0725A4D6@fmsmsx404.amr.corp.intel.com>
+Subject: Re: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+References: <E1Cytuz-0002nD-OP@nuthatch.gentoo.org>
+	<200502092240.44915.rob@landley.net>
+In-Reply-To: <200502092240.44915.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200502101226.47978.blaisorblade@yahoo.it>
+Message-Id: <200502101231.46482.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,39 +30,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Feb 2005 12:26:47 +0100
+Date: Thu, 10 Feb 2005 12:31:46 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Wichmann, Mats D" <mats.d.wichmann@intel.com>, Marion Bates <mbates@whoopis.com>, William Stearns <wstearns@pobox.com>
+Cc: Rob Landley <rob@landley.net>
 
-On Wednesday 09 February 2005 21:12, Wichmann, Mats D wrote:
-> > As a quick reminder, Marion and Bill are trying to get
-> >i386 fedora
-> >core 3 running under uml (2.6.4, with the i386 emulation code) on ford
-> >(x86_64).
-
-Well, the problem is that UML for x86_64 is not yet complete, especially for 
-the 32-bit compatibility code, as stated by Jeff. This is what creates you 
-those problems.
-
-You should absolutely run a 32-bit UML if you want good support for 32-bit 
-programs.
-
-To compile it, either you set up well the compilation environment for 32-bit 
-programs or you build the binary on a 32-bit host distro.
-
-> >The uml binaries don't have TLS support, so we've renamed 
-> >all of: /lib/tls. /usr/lib/tls, and /usr/X11R6/lib/tls directories.
-> > Even with that done, we're getting "cannot set up LDT
-> >for thread-local
-> >storage" as an error message when running something as simple as
-> >/bin/ls.  It appears that there's TLS system calls in the binary
-> >itself, not just in the */lib/tls libraries:
+On Thursday 10 February 2005 04:40, Rob Landley wrote:
+> On Wednesday 09 February 2005 10:38 am, bugzilla-daemon@gentoo.org wrote:
+> > ------- Additional Comments From dsd@gentoo.org  2005-02-09 07:38 PST
+> > ------- Could someone please update me with the status of this bug? Are
+> > there still problems?
+> >
+> > I notice that the latest version in portage is based on 2.6.8.1. Would
+> > upgrading to a newer version (assuming there are newer releases) help at
+> > all?
 >
-> I'm not sure this call is a TLS thing.
-I can add that it is *not* a TLS thing absolutely for sure...
+> I believe it was fixed in 2.6.11-rc3-bk2 or thereabouts, but I personally
+> would prefer to hold off closing it until 2.6.11 actually ships.  The UML
+> in 2.6.10 didn't build, 2.6.9 was unusable out of the box, and 2.6.11-rc3
+> introduced _new_ build breakage on top of what -rc2 had because Linus just
+> doesn't test it.
+>
+> If the UML in 2.6.11-final works, consider the bug resolved.
+>
+> Rob
 
-Also, the code inside UML should absolutely support it (from the code I don't 
-see any problem), at least for the x86 UML.
+Both 2.6.9 and 2.6.10 are more or less usable out of the box (although I'd not 
+recommend 2.6.10 because various UML fixes were merged just *after* the  
+release).
+
+2.6.9 is unusable on a >=2.6.9 host, however (yes, it's ironic), but 2.6.9-bs 
+is usable in most cases (especially for SKAS mode - you Rob have hit some bug 
+in TT mode, however for people using SKAS mode it's ok. And sadly, most 
+people use SKAS mode, so it's often more stable).
+
+About the problem itself, I've already explained everything on bugzilla... and 
+especially, nothing is fixed for TT mode on a NPTL-only Gentoo host, nor I 
+know how to fix that (except by releasing a stable glibc which is built the 
+correct way, i.e. with NPTL in /lib/tls and normal version in /lib - the 
+current ebuild for this is correctly marked unstable).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
