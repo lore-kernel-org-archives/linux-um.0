@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZZaZ-00081a-OI for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 10:52:31 -0800
+	id 1CZZna-0000wR-GI for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 11:05:58 -0800
 Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CZZaT-0003kp-Ka for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 10:52:31 -0800
-Message-ID: <41AE12E4.9080609@fujitsu-siemens.com>
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CZZnZ-0004Vh-Kz for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 11:05:58 -0800
+Message-ID: <41AE160D.3030807@fujitsu-siemens.com>
 From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
 Subject: Re: [uml-devel] 2.6.9-bb3 on 2.6.9 host problem - triggering a host
@@ -29,24 +29,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 01 Dec 2004 19:52:20 +0100
-To: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Wed, 01 Dec 2004 20:05:49 +0100
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 Blaisorblade wrote:
 > On Monday 29 November 2004 23:15, Blaisorblade wrote:
 > 
-> However, I've now discovered that it only happens when CONFIG_STATIC_LINK is 
-> enabled - that makes the kernel die. The interesting thing is that it becomes 
-> unkillable
-Have found the reason for the task to become unkillable, i.e. state 'D'.
+> I pressed Enter before filling in details - this is what I get on some UML 
+> versions at startup. Specifically, I get it on -bb3, and on versions based on 
+> it, on startup. I've tried removing the patches I've added to -bb3 and it 
+> still does not work, which is not nice.
+> 
+Have started to analyze the crash. If I did it right, the crash occurs at the
+beginning of kmem_cache_alloc(). It seems to be called with argument NULL as the
+pointer to the cache --> segfault.
 
-There is a bug in 2.6.9 and up in fs/exec.c
-
-If the kernel does coredump_wait(), it tries to kill all other threads, that are
-running on the same mm. Therefore it calls "force_sig_specific(SIGKILL, p)".
-But if one of the threads is on a ptrace-stop, SIGKILL has no effect.
-The killing thread will wait forever in "D".
+Hope, this helps.
 
 Bodo
 
