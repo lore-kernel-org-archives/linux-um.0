@@ -2,29 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AlpE3-00059b-CX for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jan 2004 04:55:23 -0800
-Received: from mx1.elte.hu ([157.181.1.137])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AlpE3-0003SW-0s for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jan 2004 04:55:23 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040128113526.GA22902@elte.hu>
-References: <20040118235730.GC21046@ccure.user-mode-linux.org>
-	<20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu>
-	<Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk>
-	<20040120002301.GA5708@elte.hu>
-	<Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk>
-	<Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk>
-	<Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk>
-	<200401241820.i0OIKHY3002399@ccure.user-mode-linux.org>
-	<Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
+	id 1AlqMz-0007r7-NM for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Jan 2004 06:08:41 -0800
+Received: from shell.blacknet.de ([80.254.131.106])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1AlqMz-0004Hq-CP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Jan 2004 06:08:41 -0800
+From: Goetz Bock <bock@blacknet.de>
+Subject: Re: [uml-devel] O_DIRECT (was: Swapping directly to host swap area?)
+Message-ID: <20040128140122.GM17709@shell.blacknet.de>
+References: <Pine.LNX.4.44.0401251827030.2766-100000@sparrow>
+	<200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
-Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re:
-	uml-patch-2.6.0)
+In-Reply-To: <200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,23 +29,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Jan 2004 12:35:26 +0100
-To: M A Young <m.a.young@durham.ac.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
+Date: Wed, 28 Jan 2004 15:01:22 +0100
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
 
-* M A Young <m.a.young@durham.ac.uk> wrote:
-
-> > Yup, that looks right to me.  I've set VSYSCALL_BASE to NULL in my tree.
-> > Can you do the same and see if that fixes anything?
+On Tue, Jan 27 '04 at 23:39, Jeff Dike wrote:
+> > In the current setup, the host kernel sees this as a normal
+> > write to an open file, caching it in the process and so not truly
+> > freeing up the ram for a bit. 
 > 
-> Yes, that fixes it (I tried a similar fix by setting AT_SYSINFO_EHDR
-> directly to NULL, both work).
+> This is, and this could be done by setting O_DIRECT on UML swap
+> devices.  That way, writes go directly (and asynchronously) to the
+> device without landing in the cache.
+Please bare with me, if this seams a stupid qestion, but my C skills are
+pritty lacking :-(
 
-yeah - this makes sense. This reminds me that i had similar problems
-with exec-shield (which too disabled vsyscalls).
+But could we get this as an option for all ubd devices?
 
-	Ingo
+(I'm using Logical Volumes as base for ubd devices, and have no swap on
+ my hosts)
+-- 
+/"\ Goetz Bock at blacknet dot de  --  secure mobile Linux everNETting
+\ /                     (c) 2003 as GNU FDL 1.1
+ X   [ 1. Use descriptive subjects - 2. Edit a reply for brevity -  ]
+/ \  [ 3. Reply to the list - 4. Read the archive *before* you post ]
 
 
 -------------------------------------------------------
