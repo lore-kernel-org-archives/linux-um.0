@@ -1,23 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2x0X-00014a-DL for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Mar 2004 10:40:13 -0800
+	id 1B2xNT-0000A1-Ev for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Mar 2004 11:03:55 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B2x0V-0006MD-R5
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1B2xNS-0004z1-CE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Mar 2004 10:40:12 -0800
+	Mon, 15 Mar 2004 11:03:54 -0800
+Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	by ccure.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id
+	i2FJb8Zl024133 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Mar 2004 14:37:08 -0500
+Received: (from jdike@localhost)
+	by ccure.user-mode-linux.org (8.12.5/8.12.5/Submit) id i2FJb8uZ024131
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Mar 2004 14:37:08 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
-Message-ID: <20040315191310.GB23741@ccure.user-mode-linux.org>
-References: <20040229043549.GA8583@ccure.user-mode-linux.org>
-	<405596A9.4020601@darkman.de>
+Subject: Re: [uml-devel] /dev/random oddity
+Message-ID: <20040315193708.GD23741@ccure.user-mode-linux.org>
+References: <20040313014957.GB13419@speedy.schwinge.homeip.net>
+	<405309FE.6020603@darkman.de> <405324DB.3030404@lig.net>
+	<20040314224008.GY28592@alcor.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <405596A9.4020601@darkman.de>
+In-Reply-To: <20040314224008.GY28592@alcor.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,21 +38,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Mar 2004 14:13:10 -0500
-To: Sven 'Darkman' Michels <sven@darkman.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 15 Mar 2004 14:37:08 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Mar 15, 2004 at 12:42:33PM +0100, Sven 'Darkman' Michels wrote:
-> Well, we just looked at the context switches. We started 3 UMLs which
-> were doing a make world for xfree. Without patches the number of
-> context switches per second was around 60k, with the patch it was around
-> 40k - so it's noticeable, at least from the cs.
+On Sun, Mar 14, 2004 at 02:40:08PM -0800, Matt Zimmerman wrote:
+> If the host has a steady supply of randomness from any source, then UML
+> should be able to simply read from /dev/random on the host.
 
-Sure it's going to have a noticable effect on cs, that's its whole point.
+That could be done. it would require replacing the generic /dev/random with
+a UML one, and I don't know whether the kernel build makes that easy.
 
-However, users don't see cs - they see how quickly things run.  I was a bit
-dismissive of the 3.5% improvement of the kernel build, but if you look at
-the 20-30% hit that UML takes, that 3.5% is a noticable chunk of it.
+Another alternative is to add an mconsole interface to dump randomness into
+a UML when it starts running out.
+
+The current UML practice of feeding /dev/random from the drivers is a bit
+suspect.  The randomness obtained there is related to the host randomness,
+but the host random pool isn't depleted accordingly.  
+
+I think the right solution is to feed UML /dev/random from the host /dev/random
+somehow.
 
 				Jeff
 
