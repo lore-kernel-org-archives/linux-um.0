@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C7jTj-0008Ib-BP for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Sep 2004 16:46:23 -0700
-Received: from mail.britsys.net ([216.183.103.29] helo=mail02.WWW.BRITSYS.NET)
+	id 1C7rjG-0007kU-Ki for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Sep 2004 01:34:58 -0700
+Received: from 62-15-145-252.inversas.jazztel.es ([62.15.145.252]
+	helo=saturno.agora-2000.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C7jTh-0004ue-Lm for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Sep 2004 16:46:23 -0700
-Message-ID: <4148D441.3030705@britsys.net>
-From: David Jeffery <djeffery@britsys.net>
+	id 1C7rjG-0002c7-18 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Sep 2004 01:34:58 -0700
+Message-ID: <MA6t3A81.1095323691.3565850.galan@agora-2000.com>
+From: "=?ISO-8859-1?Q?Ferm=EDn?= =?ISO-8859-1?Q?Gal=E1n?="
+	<fermin.galan@agora-2000.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] set_thread_area and get_thread_area
-References: <091520041520.7491.41485DA2000A997400001D4322007358340408979D9D0E04@comcast.net>
-In-Reply-To: <091520041520.7491.41485DA2000A997400001D4322007358340408979D9D0E04@comcast.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Subject: [uml-devel] Read method for /proc/mconsole
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,34 +26,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 15 Sep 2004 19:46:09 -0400
-To: larryhl@comcast.net
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 16 Sep 2004 10:34:51 +0200 (CEST)
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: vnuml-devel@mail.dit.upm.es
 
-larryhl@comcast.net wrote:
 
-> Hi,
->
-> Is there any uml linux patch that has implementations for functions of 
-> set_thread_area and get_thread_area for um architecture? I am running 
-> the uml linux kernel in a host that has tls and nptl-enabed, and I 
-> would like to run some applications within the uml linux. But it 
-> complains "cannot set up thread-local storage: set_thread_area failed 
-> when setting up thread-local storage".
->
-Unfortunately no one has one yet.  I'm working on getting TLS in SKAS 
-mode to work but I don't have as much time as I'd like to work on it 
-during the week.  I've got it started, so with a little luck I hope to 
-have something complete in a week or two.
+Hello,
 
-David Jeffery
+I'm working in the arch/um/drivers/mconsole_kern.c code in order to
+implement a reading method for /proc/mconsole that allows me to send by
+the "notify" socket in the host and receive in /proc/mconsole (exactly
+the opposite to the current /proc/mconsole -> notify sockect mechanism).
+
+In create_proc_mconsole I've changed the ent->read_proc from 'NULL' to
+a handle function, read_proc_mconsole
+
+   ent->read_proc =3D read_proc_mconsole;
+
+My problem now is how to implement read_proc_mconsole:
+
+static int read_proc_mconsole(char *page, char **start, off_t off,
+                              int count, int *eof, void *data)
+{
+   ...
+}
+
+The problems that I'm facing are:
+
+- I've found out the right header for the function in
+include/linux/proc_fs.h (the read_proc_t typedef), but I don't know
+what the arguments means and I wasn't able to find documentation about
+it. Anyone can give a pointer to this information?
+
+- The nofity socket descriptor is hold in the notify_socket global
+variable, set up in mconsole_setup function. It seems that for pushing
+information to the socket, the mconsole_notify method is called (defined
+in mconsole_user.c). What function should I use to pull information from
+the socket?
+
+Before you blame me, note that I am a kernel newbie :)
+
+Thank you!
+
+------
+Ferm=EDn
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: thawte's Crypto Challenge Vl
-Crack the code and win a Sony DCRHC40 MiniDV Digital Handycam
-Camcorder. More prizes in the weekly Lunch Hour Challenge.
-Sign up NOW http://ad.doubleclick.net/clk;10740251;10262165;m
+This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
+Project Admins to receive an Apple iPod Mini FREE for your judgement on
+who ports your project to Linux PPC the best. Sponsored by IBM.
+Deadline: Sept. 24. Go here: http://sf.net/ppc_contest.php
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
