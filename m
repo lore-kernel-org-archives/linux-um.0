@@ -2,23 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D93fn-0001Xq-6G for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 08:04:35 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	id 1D94FA-0003hO-0z for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 08:41:08 -0800
+Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D93fi-0007Gs-Sp for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 08:04:35 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: uml_switch security fixing
-References: <200503021553.14862.blaisorblade@yahoo.it>
-	<87hdjs6gmn.fsf@aka.i.naked.iki.fi>
-In-Reply-To: <87hdjs6gmn.fsf@aka.i.naked.iki.fi>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200503091023.50460.blaisorblade@yahoo.it>
+	id 1D94F5-0002w8-8C for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 08:41:07 -0800
+From: blaisorblade@yahoo.it
+Message-Id: <20050309094234.8FC0C6477@zion>
+Subject: [uml-devel] [patch 1/1] unified spinlock initialization
+	arch/um/drivers/port_kern.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,39 +23,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 9 Mar 2005 10:23:50 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Nuutti Kotivuori <naked@iki.fi>
-
-On Thursday 03 March 2005 13:47, Nuutti Kotivuori wrote:
-> blaisorblade@yahoo.it wrote:
-> > Suggestions?
->
-> FWIW, we have gone off using switch daemon entirely. We are using
-> simply preallocated tap devices, connected to bridges via normal Linux
-> bridging controls. Works cleaner and faster, more places to dump the
-> traffic from and it allows normal linux traffic queueing and
-> firewalling to be used to limit transfers between machines.
->
-> All physical networks and virtual network (networks not connected to
-> any physical interfaces) are implemented as bridges.
->
-> The only problem was the tap device queue hang (SIGIO problem), which
-> was resolved with the one queue option (and hopefully fixed in UML or
-> mainline kernel later).
-
-I just verified I was inaccurate in the title... the problem which was found 
-was about the setuid uml_net, not uml_switch. It amounts to the possibility 
-for unprivileged users to do the equivalent of "ifconfig down " for chosen 
-interfaces, by simply running uml_net.
-
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Date: Wed, 09 Mar 2005 10:42:33 +0100
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, domen@coderock.org, amitg@calsoftinc.com, gud@eth.net
 
 
+From: <domen@coderock.org>
+Cc: <user-mode-linux-devel@lists.sourceforge.net>, <domen@coderock.org>, <amitg@calsoftinc.com>, <gud@eth.net>
 
+Unify the spinlock initialization as far as possible.
+
+Signed-off-by: Amit Gud <gud@eth.net>
+Signed-off-by: Domen Puncer <domen@coderock.org>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.11-paolo/arch/um/drivers/port_kern.c |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN arch/um/drivers/port_kern.c~uml-switch-spinlock-init arch/um/drivers/port_kern.c
+--- linux-2.6.11/arch/um/drivers/port_kern.c~uml-switch-spinlock-init	2005-03-09 10:35:28.786848080 +0100
++++ linux-2.6.11-paolo/arch/um/drivers/port_kern.c	2005-03-09 10:35:28.789847624 +0100
+@@ -185,11 +185,11 @@ void *port_data(int port_num)
+ 		  .has_connection 	= 0,
+ 		  .sem 			= __SEMAPHORE_INITIALIZER(port->sem, 
+ 								  0),
+-		  .lock 		= SPIN_LOCK_UNLOCKED,
+ 		  .port 	 	= port_num,
+ 		  .fd  			= fd,
+ 		  .pending 		= LIST_HEAD_INIT(port->pending),
+ 		  .connections 		= LIST_HEAD_INIT(port->connections) });
++	spin_lock_init(&port->lock);
+ 	list_add(&port->list, &ports);
+ 
+  found:
+_
 
 
 -------------------------------------------------------
