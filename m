@@ -2,20 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj239-00062V-Mu for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 12:00:35 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
+	id 1Aj21J-0005OS-9d for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 11:58:41 -0800
+Received: from mx1.elte.hu ([157.181.1.137])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj239-000307-41 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 12:00:35 -0800
+	id 1Aj21I-0002i2-SR for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 11:58:41 -0800
 From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040120200105.GA2289@elte.hu>
-References: <20040120191706.GA32711@elte.hu> <20040120194328.GA1518@elte.hu>
+Subject: Re: [uml-devel] Re: uml-patch-2.6.0
+Message-ID: <20040120195922.GA2022@elte.hu>
+References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
+	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
+	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
+	<20040118162112.GA15509@elte.hu>
+	<20040118235730.GC21046@ccure.user-mode-linux.org>
+	<20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu>
+	<200401201722.i0KHMWDG003192@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040120194328.GA1518@elte.hu>
-Subject: [uml-devel] [patch] uml-fixes2-2.6.1-mm5-A1
+In-Reply-To: <200401201722.i0KHMWDG003192@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,104 +33,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Jan 2004 21:01:05 +0100
+Date: Tue, 20 Jan 2004 20:59:22 +0100
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
+Cc: Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net
 
 
+* Jeff Dike <jdike@addtoit.com> wrote:
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> mingo@elte.hu said:
+> > unfortunately, this is only the case if the kernel is below 2.5.69 and
+> > has 'nptl' in the uname. Otherwise ld.so assumes full NPTL support.
+> 
+> So, it uses uname to figure out if the kernel has NPTL support?
 
+yes. It goes roughly like this: if the kernel is a 2.4 one and the uname
+string [extraversion] includes 'nptl' [and the first 'n' letter has to
+be nptl's 'n' ...] then ld.so will try the TLS glibc. On 2.6 kernels,
+glibc assumes that all the NPTL functionality is available. [the precise
+rules are in the ld.so patches that Fedora's glibc srpm has.]
 
-> plus the attached patch is needed ontop of the previous one, to make
-> x86 compile too. (and UML still compiles & works.)
+basically the goal was to 1) be able to boot stock 2.4 kernels and have
+NPTL disabled, 2) be able to boot stock 2.6 kernels and have NPTL
+enabled, 3) boot 2.4 kernels with the NPTL backport and have NPTL
+enabled. (there are also tons of other checks in glibc itself that
+selects between various versions of syscalls, eg. modify_ldt has
+variants too. LD_ASSUME_KERNEL is taken into account as well.) It's not
+simple.
 
-i've attached uml-fixes2-2.6.1-A1 which is a replacement for the
-uml-fixes2-2.6.1-A0 patch - the Makefile.lib and Makefile diffs were
-superfluous.
+(There was a failed attempt to get API versioning into the kernel to
+clean up such interactions - but nothing really good was written so we
+stuck with the above mechanism.)
 
 	Ingo
-
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="uml-fixes2-2.6.1-A1"
-
---- linux/arch/i386/kernel/head.S.orig	
-+++ linux/arch/i386/kernel/head.S	
-@@ -13,6 +13,7 @@
- #include <linux/linkage.h>
- #include <asm/segment.h>
- #include <asm/page.h>
-+#include <asm/processor.h>
- #include <asm/pgtable.h>
- #include <asm/desc.h>
- #include <asm/cache.h>
---- linux/arch/i386/kernel/vmlinux.lds.S.orig	
-+++ linux/arch/i386/kernel/vmlinux.lds.S	
-@@ -5,6 +5,7 @@
- #include <asm-generic/vmlinux.lds.h>
- #include <linux/config.h>
- #include <asm/page.h>
-+#include <asm/processor.h>
- #include <asm/asm_offsets.h>
- 	
- OUTPUT_FORMAT("elf32-i386", "elf32-i386", "elf32-i386")
---- linux/arch/i386/boot/setup.S.orig	
-+++ linux/arch/i386/boot/setup.S	
-@@ -59,6 +59,7 @@
- #include <asm/e820.h>
- #include <asm/edd.h>    
- #include <asm/page.h>
-+#include <asm/processor.h>
- 	
- /* Signature words to ensure LILO loaded us right */
- #define SIG1	0xAA55
---- linux/include/asm-i386/processor.h.orig	
-+++ linux/include/asm-i386/processor.h	
-@@ -7,6 +7,8 @@
- #ifndef __ASM_I386_PROCESSOR_H
- #define __ASM_I386_PROCESSOR_H
- 
-+#ifndef __ASSEMBLY__
-+
- #include <asm/vm86.h>
- #include <asm/math_emu.h>
- #include <asm/segment.h>
-@@ -649,4 +651,30 @@ extern void select_idle_routine(const st
- #define ARCH_HAS_SCHED_WAKE_BALANCE
- #endif
- 
-+#endif /* ! __ASSEMBLY__ */
-+
-+/*
-+ * This handles the memory map.. We could make this a config
-+ * option, but too many people screw it up, and too few need
-+ * it.
-+ *
-+ * A __PAGE_OFFSET of 0xC0000000 means that the kernel has
-+ * a virtual address space of one gigabyte, which limits the
-+ * amount of physical memory you can use to about 950MB. 
-+ *
-+ * If you want more physical memory than this then see the CONFIG_HIGHMEM4G
-+ * and CONFIG_HIGHMEM64G options in the kernel configuration.
-+ *
-+ * Note: on PAE the kernel must never go below 32 MB, we use the
-+ * first 8 entries of the 2-level boot pgd for PAE magic.
-+ */
-+
-+#ifdef CONFIG_X86_4G_VM_LAYOUT
-+#define __PAGE_OFFSET		(0x02000000)
-+#define TASK_SIZE		(0xff000000)
-+#else
-+#define __PAGE_OFFSET		(0xc0000000)
-+#define TASK_SIZE		(0xc0000000)
-+#endif
-+
- #endif /* __ASM_I386_PROCESSOR_H */
-
---2oS5YaxWCcQjTEyO--
 
 
 -------------------------------------------------------
