@@ -1,23 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BtCYt-0003Z2-5J for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 Aug 2004 14:47:39 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1BtCYs-0007V4-MC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 Aug 2004 14:47:39 -0700
-Message-Id: <200408062247.i76MlbQW004502@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] corrections to 2.4 series incrementals:
-	multiple-includes 
-In-Reply-To: Your message of "Fri, 06 Aug 2004 14:56:05 EDT."
-	<4113D445.3050104@enterasys.com> 
-References: <4113D445.3050104@enterasys.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <41140ABD.7020806@enterasys.com>
+From: "D. Bahi" <dbahi@enterasys.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] Re: Expedted SIGSTOP,
+	got status = <blah> (UML 2.4.24-1um)
+References: <410806FE.1000209@enterasys.com> <4113D92B.5040602@enterasys.com>
+	<200408062246.i76Mk9QW004489@ccure.user-mode-linux.org>
+In-Reply-To: <200408062246.i76Mk9QW004489@ccure.user-mode-linux.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigC5F617C9E79F2F87D6963EBF"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,19 +21,68 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 06 Aug 2004 18:47:37 -0400
-To: "D. Bahi" <dbahi@enterasys.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 06 Aug 2004 18:48:29 -0400
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-dbahi@enterasys.com said:
-> The line in the available patch incorrectly attempts to patch arch/um/
-> os/drivers/ethertap_kern.c instead of um/os-Linux/drivers (a clean
-> tree): 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigC5F617C9E79F2F87D6963EBF
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-That's been fixed for a couple of days.
+reboot-signals is only listed in the 2.6 series patches;
+i didn't think to try it.
 
-				Jeff
+hey, THANKS! _it applies_ and almost solves the problem completely!!!
 
+of my 20 simultaneous UMLs only one failed to launch:
+
+    Checking for the skas3 patch in the host...found
+
+is all it does - and it just sits there....
+
+also on reboot - do you expect the deactivate_all_fds to fail?
+
+umount: /dev: device is busy
+Please stand by while rebooting the system.
+Restarting system.
+
+deactivate_all_fds failed, errno = 9
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+
+
+Jeff Dike wrote:
+
+> dbahi@enterasys.com said:
+> 
+>>ok - i have skas hosts - and i'm tired of this occasional hang. 
+> 
+> 
+> Have you tried the reboot-signals patch?
+> 
+> 				Jeff
+> 
+
+-- 
+There are two kinds of people in this world: Those that enter a room and 
+turn the television set on, and those that enter a room and turn the 
+television set off. -- Raymond Shaw, The Manchurian Candidate (1962).
+
+--------------enigC5F617C9E79F2F87D6963EBF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (MingW32)
+
+iD8DBQFBFAq93XQ4zakZ3z4RAr4HAJ4wKgR9kboD5b5cOZGrw9K2vleRNACfTGQE
+T24bpzsvW+YlqRZsVPGkd50=
+=xc3Q
+-----END PGP SIGNATURE-----
+
+--------------enigC5F617C9E79F2F87D6963EBF--
 
 
 -------------------------------------------------------
