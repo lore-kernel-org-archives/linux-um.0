@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AxUDp-0004np-G5 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Feb 2004 08:55:21 -0800
+	id 1AxUDn-0004mL-JJ for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Feb 2004 08:55:19 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AxU2a-0007XQ-Fm for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Feb 2004 08:43:44 -0800
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AxTm7-0004Dz-LI for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Feb 2004 08:26:43 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
-References: <20040229043549.GA8583@ccure.user-mode-linux.org>
-In-Reply-To: <20040229043549.GA8583@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] fix writing into /dev/kmem
+References: <20040229023636.GB8272@ccure.user-mode-linux.org>
+In-Reply-To: <20040229023636.GB8272@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200402291748.19810.blaisorblade_spam@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_DFhQA4AZhKjErNi"
+Message-Id: <200402291720.19359.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,40 +27,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 29 Feb 2004 17:48:19 +0100
+Date: Sun, 29 Feb 2004 17:20:19 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-Alle 05:35, domenica 29 febbraio 2004, Jeff Dike ha scritto:
-> The patches below are from Laurent Vivier who didn't make them public. 
-> They add a new feature to ptrace on the host which cuts down on the number
-> of context switches needed for a UML system call, plus makes UML use it.
->
-> There's some interest in this, so I'm putting it out as-is.  I haven't
-> played with it.
->
-> Laurent did some performance testing and found ~40% speedup on a getpid
-> loop, and a 3.5% speedup on a kernel build.
->
-> 				Jeff
 
-That is very interesting (I've not yet looked well at the code). About the 
-same subject, I've had a very vague idea passing through my head: on 2.6 the 
-vsyscall stuff can use whatever mechanism it likes to talk with the kernel - 
-int 0x80, or possibly something else. However a binary can legitimately still 
-use the int 0x80, so we cannot avoid ptracing it (which would possibly be the 
-faster thing to do).
 
-For instance, some trick possibly with normal IPC (futexes, SysV messages or 
-whatever; I think the futexes are the faster one). If we somehow mark the 
-needed syscalls with a not-intercept flag and on ptrace we specify something 
-as "exclude the not-intercept syscalls", we could actually have an 
-improvement. The not-intercept syscalls could be the ones done through 
-sysenter (anyway, UML is not able to handle sysenter syscalls right now, 
-since it would need to learn the new register layout, since there has 
-probably been been some change).
+--Boundary-00=_DFhQA4AZhKjErNi
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Alle 03:36, domenica 29 febbraio 2004, Jeff Dike ha scritto:
+> The patch below fixes a bug in the /dev/kmem driver which causes UML to
+> die if you write to it.
+
+Also, I forgot one thing, about this Oops:
+
+the i386 Oopses, normally, kill only the thread which triggered the fault - 
+while instead Uml panics altogether. Cannot this be changed at 
+arch/um/kernel/trap_kern.c:segv()?
+
+        if(!is_user)
+-                panic("Kernel mode fault at addr 0x%lx, ip 0x%lx",
+-                      address, ip);
++		 die("Oops".....) //some printk calls... can be omitted
++		 do_exit(SIGKILL);
+
+like arch/i386/mm/fault.c: do_page_fault() ?
+With the above change, cat /dev/kmem could only create an Oops on the cat 
+process (and possibly some deadlock, but better than a straight crash).
+
+By the way: in handle_page_fault(), there is some dead code (attached is the 
+removal patch).
+
+I also do not understand the loop around handle_mm_fault call, but I could be 
+wrong: are you sure that after a successful handle_mm_fault (i.e. a major or 
+minor fault) pte_present(*pte) could be false? If handle_mm_fault is not 
+successful, we exit the loop anyway.
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
+
+--Boundary-00=_DFhQA4AZhKjErNi
+Content-Type: text/x-diff; charset="iso-8859-1"; name="Dead-trap-code.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="Dead-trap-code.patch"
+
+--- ./arch/um/kernel/trap_kern.c.fix	2004-02-20 18:43:26.000000000 +0100
++++ ./arch/um/kernel/trap_kern.c	2004-02-29 17:12:49.000000000 +0100
+@@ -74,13 +74,7 @@
+ 			err = -ENOMEM;
+ 			goto out_of_memory;
+ 		default:
+-			if (current->pid == 1) {
+-				up_read(&mm->mmap_sem);
+-				yield();
+-				down_read(&mm->mmap_sem);
+-				goto survive;
+-			}
+-			goto out;
++			BUG();
+ 		}
+ 		pte = pte_offset_kernel(pmd, page);
+ 	} while(!pte_present(*pte));
+
+--Boundary-00=_DFhQA4AZhKjErNi--
 
 
 
