@@ -2,36 +2,31 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bixl7-0002Q7-VG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Jul 2004 08:57:57 -0700
-Received: from volubilis.easter-eggs.org ([80.67.179.74])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1Bixl7-0003qA-Jh for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Jul 2004 08:57:57 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by volubilis.easter-eggs.org (Postfix) with ESMTP id 8919211A778
+	id 1Bj1TK-00083e-Bv for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Jul 2004 12:55:50 -0700
+Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.34) id 1Bj1TK-0000k7-4S
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Jul 2004 12:55:50 -0700
+Received: from tuxrocks.com (localhost.localdomain [127.0.0.1])
+	by tuxrocks.com (8.12.10/8.12.8) with ESMTP id i69JtnVe020036
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  9 Jul 2004 17:57:51 +0200 (CEST)
-Received: from volubilis.easter-eggs.org ([127.0.0.1])
-	by localhost (volubilis [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 27683-01
+	Fri, 9 Jul 2004 13:55:49 -0600
+Received: from localhost (frank@localhost)
+	by tuxrocks.com (8.12.10/8.12.8/Submit) with ESMTP id i69Jtn8F020033
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 9 Jul 2004 17:57:51 +0200 (CEST)
-Received: from [192.168.2.109] (unknown [147.210.68.135])
-	by volubilis.easter-eggs.org (Postfix) with ESMTP id 5347211A775
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  9 Jul 2004 17:57:51 +0200 (CEST)
-Message-ID: <40EEBFE3.2030105@mezimail.com>
-From: Romain Chantereau <romain@mezimail.com>
+	Fri, 9 Jul 2004 13:55:49 -0600
+From: Frank Sorenson <frank@tuxrocks.com>
+Subject: Re: [uml-user] Re: [uml-devel] Fixing the 2.4 bugs - patches against
+	2.4.24-1um
+In-Reply-To: <200407081832.39138.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.LNX.4.60.0407091236400.18897@tuxrocks.com>
+References: <200407012050.14867.blaisorblade_spam@yahoo.it>
+	<Pine.LNX.4.58.0407071420550.9924@tuxrocks.com>
+	<200407081832.39138.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Subject: Re: the ultimate answer - was: Re: [uml-devel] [patch] ethtool support
-References: <20040430094557.GA19219@bytesex.org>
-	<200405042041.i44KfekI003899@ccure.user-mode-linux.org>
-	<20040505054521.GA28847@bytesex.org>
-	<059c01c4326a$d254c6f0$2000000a@schlepptopp>
-In-Reply-To: <059c01c4326a$d254c6f0$2000000a@schlepptopp>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -43,20 +38,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 09 Jul 2004 17:55:15 +0200
+Date: Fri, 9 Jul 2004 13:55:48 -0600 (MDT)
 To: user-mode-linux-devel@lists.sourceforge.net
 
-roland wrote:
+On Thu, 8 Jul 2004, BlaisorBlade wrote:
+> Yes, you are right. Compliments for that - I would have never seen such a
+> panic (I understand you perfectly, but I missed it and would have missed it
+> again). So thanks a lot for helping with it - I'll save that for when I'm
+> back (I'm leaving now, so have no time at all to do anything). Your catch also
+> means that UML will break without -DUM_FASTCALL, which is not nice: the buggy
+> change you see has actually uncovered some other bug; if it weren't so, the
+> bug you have fixed would only have hurted performance.
 
->unfortunately, we can`t ask him anymore.... :(
->  
->
-Sorry to be the dream breaker:
-http://groups.google.com/groups?selm=adamsd.1102700746A%40news.cerf.net
+Correct.  I've verified that UML does break without -DUM_FASTCALL, even on 
+the 'stable' 2.4.24-1um patch, so the problem was probably introduced at 
+some point earlier.  Does anyone know the history behind UM_FASTCALL, its' 
+effects, and when related modifications occurred?
 
-:)
-
-Nobody makes jokes in base 13.
+Frank
+---------------------------------------------------------------------------
+Frank Sorenson - KD7TZK
+Systems Manager, Computer Science Department
+Brigham Young University
+frank@tuxrocks.com
 
 
 -------------------------------------------------------
