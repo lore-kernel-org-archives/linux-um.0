@@ -1,15 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXrlE-0001xh-80
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:47:56 -0800
-Received: from mta11.adelphia.net ([68.168.78.205])
+	id 1AXrqC-00028P-Pu
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:53:04 -0800
+Received: from mta9.adelphia.net ([68.168.78.199])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXrlD-0008BQ-Th
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:47:56 -0800
+	id 1AXrqC-0000qn-Gf
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:53:04 -0800
 From: Matt Zimmerman <mdz@debian.org>
 Subject: Re: [uml-devel] 2.4.22-[67] problems
-Message-ID: <20031221004742.GE9354@alcor.net>
+Message-ID: <20031221005257.GF9354@alcor.net>
 References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -25,44 +25,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 20 Dec 2003 16:47:42 -0800
+Date: Sat, 20 Dec 2003 16:52:57 -0800
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, 224502@bugs.debian.org
 
 On Sat, Dec 20, 2003 at 12:14:50PM -0500, Jeff Dike wrote:
 
-> On Fri, Dec 19, 2003 at 05:13:23PM -0800, Matt Zimmerman wrote:
-> > There definitely seems to be something awry here, even in skas mode.  I am
-> > getting a lot of ENOSYS errors inside UML:
-> > 
-> > /usr/lib/apt/methods/http: error while loading shared libraries: libc.so.6: cannot map zero-fill pages: Error 38
-> > 
-> > dpkg: error processing /var/cache/apt/archives/debhelper_4.0.2_all.deb (--unpack):
-> >  failed to rmdir/unlink `/usr/share/man/man1/dh_compress.1.gz.dpkg-tmp': Function not implemented
-> > 
-> > basename: write error: Function not implemented
-> > 
-> > etc.
-> > 
-> > Downgrading to user-mode-linux 2.4.22-6um-1 still has the problem,
-> > downgrading further to 2.4.22-5um-1 (the old binary) fixes it.  The
-> > following things changed from 2.4.22-5um-1 to 2.4.22-6um-1, most of which
-> > were outside of UML itself:
-> 
-> These changes look OK.  I looked through the -5 to -6 diffs and saw nothing
-> that would cause stuff to start returning -ENOSYS.  The only thing that 
-> seemed remotely relevant is the unistd.h change, which fixes a bug in the
-> case of an error in an internally called system call.  You can try reverting 
-> that and see what happens.
-> 
 > Beyond that, if you can find a system call that reproducably fails, then
 > just step through it, and see where the -ENOSYS comes from.  This shouldn't
 > be too difficult.
 
-Thanks for looking at it.  It's sounding more and more like the new
-glibc/linux-kernel-headers packages have broken UML.  Maybe something is
-getting the host's kernel headers when it needs the ones from the UML build
-tree?
+Unfortunately, I can't seem to find a system call that reproducibly fails.
+There's something weird and racy going on.  With exactly the same UML
+invocation, twice in a row, the first will panic:
+
+Kernel panic: Segfault with no mm
+In idle task - not syncing
+
+and the second will boot successfully.  Even within an invocation, things
+aren't normal:
+
+sh-2.05a# apt-get source -b hello
+apt-get: error while loading shared libraries: /lib/libm.so.6: cannot read
+file data: Error 38
+sh-2.05a# 
+sh-2.05a# apt-get source -b hello
+Reading Package Lists... Done
+Building Dependency Tree... Done
+
+And of course, I haven't been able to get this to happen in the debugger
+(yet).
 
 -- 
  - mdz
