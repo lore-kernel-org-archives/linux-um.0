@@ -1,25 +1,33 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DGiWZ-0001ku-Ob for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 11:06:43 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DGiWE-0001jT-SK for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 11:06:43 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 03/12] uml: export getgid for hostfs
-References: <20050322162123.890086BA6F@zion>
-	<200503240302.29153.blaisorblade@yahoo.it>
-	<20050329114529.GA26005@infradead.org>
-In-Reply-To: <20050329114529.GA26005@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 1DGje2-0005V9-Lb for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 12:18:30 -0800
+Received: from mout0.freenet.de ([194.97.50.131])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DGjdz-0002Qr-TL
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 12:18:30 -0800
+Received: from [194.97.55.190] (helo=mx6.freenet.de)
+	by mout0.freenet.de with esmtpa (Exim 4.51) id 1DGjdv-00033y-Va
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 22:18:23 +0200
+Received: from i954f.i.pppool.de ([85.73.149.79] helo=bakunin.copyleft.de)
+	by mx6.freenet.de with esmtpsa (ID freenet_bakunin@freenet.de)
+	(TLSv1:AES256-SHA:256) (Exim 4.43 #13) id 1DGjdv-00077M-OO
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 22:18:23 +0200
+Received: from kraehe by bakunin.copyleft.de with local (Exim 4.50)
+	id 1DGjdu-0001J1-SK for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 22:18:22 +0200
+From: kraehe <kraehe@copyleft.de>
+Message-ID: <20050330201822.GA4962@copyleft.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200503302005.26311.blaisorblade@yahoo.it>
+Subject: [uml-devel] NFS/UDP/uml_switch/tap0 problems with
+	2.6.11.6-skas3-v9-pre1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,75 +39,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 30 Mar 2005 20:05:26 +0200
+Date: Wed, 30 Mar 2005 22:18:22 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Christoph Hellwig <hch@infradead.org>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-On Tuesday 29 March 2005 13:45, Christoph Hellwig wrote:
-> On Thu, Mar 24, 2005 at 03:02:28AM +0100, Blaisorblade wrote:
-> > In this moment I need to clean up the missing symbol. If anyone wants to
-> > remove the code using this, then he might post a patch explictly removing
-> > it, and getting it refused probably.
-> >
-> > Or at least CC uml-devel when discussing those problems. I'm not
-> > currently able to find on marc.theaimsgroup.com the mail you talk about.
-> > Can you please provide the URL to the discussion? (even on any other
-> > archive you like, obviously).
->
-> My unaswered reply to the first submission is at
->
-> http://groups-beta.google.com/group/linux.kernel/messages/de9504fe5963ccd1,
->0c05294c599b22b1,eab26a4ed3f8ff17?thread_id=16c905c7e28e7498&mode=thread&noh
->eader=1&q=uml-export-getgid-for-hostfs#doc_eab26a4ed3f8ff17
->
-> (sorry, couldn't find it on marc), it's been Cc'ed to the lists you sent
-> the patch to.
-Sorry, I wasn't clear... I read *that* answer, but it says "as mentioned in 
-the discussion about ROOT_DEV", and I couldn't find it.
+Moin Guru's,
 
-Also, I'd like to know whether there's a correct way to implement this (using 
-something different than root_dev, for instance the init[1] root directory 
-mount device). I understand that with the possibility for multiple mounts the 
-"root device" is more difficult to know (and maybe this is the reason for 
-which ROOT_DEV is bogus, is this?), but at least a check on the param 
-"rootfstype=hostfs" could be done.
+  i've some new hardware - suggesting 2.6 kernel. So I'm now running
+  2.6.11.6-skas3-v9-pre1 as host on this system. The old client kernel
+  2.4.22-uml1-5um looked to work fine, together with the old uml_switch
+  and uml_mconsole I had.
+  
+  Problems started when I've tried to NFS mount the host from client.
+  At first it works, but NFS hangs, if its used under load. I've tested
+  the following cases with the uml-utilities provided by Debian/Sarge :
 
-> > That said, there are people still using that code, so it should be kept
-> > in.
->
-> But the code is totally bogus, so it should _not_ be kept.
->
-> > Also, you blocked an important patch (the one adding ->release to
-> > hw_interrupt_type) saying that *perhaps* UML should avoid having any hard
-> > irq, a la S390. You forced so the merge of a very ugly patch manually
-> > calling what should have been UML's release method (i.e.
-> > free_irq_by_irq_and_dev) in every place calling free_irq() (and in fact
-> > one was missed at first). Might you reconsider your position on that
-> > issue ? (URL of the discussion below)
-> >
-> > http://marc.theaimsgroup.com/?l=linux-kernel&w=2&r=3&s=uml+irq&q=b
-> >
-> > The patch adding the generic handling is this one:
-> >
-> > http://marc.theaimsgroup.com/?l=linux-kernel&m=109834481320519&w=2
->
-> I still think it's a really bad idea.
-Hmm, you don't seem very talkative, sorry. You can explain why doing that 
-hurts anyhow. You only said very vaguely "there is another way to do 
-this" (still to prove). And actually this caused the merge, in place of that 
-clean patch, of the current hack, described above in the quoted text.
+  - server 2.6.11.6-skas3-v9-pre1
+  - client 2.4.22-uml (the uml system)
+      - nfs/tcp using uml_switch/tap0 is fine
+      - nfs/udp using uml_switch/tap0 is hangs under load
+  - client 2.6.7-skas3 (my laptop using ethernet to compare the normal case)
+      - nfs/udp using eth0 is fine
+      - nfs/tcp using eth0 is fine
 
-> But I'm not the irq code maintainer, 
-> it could very well be Ingo overrides me.
+  after reboot of both host and user mode linux :
 
-Ok, this is nice. I'll repost the (updated) patch CC'ing Ingo Molnar (unless 
-there's another Ingo).
+  - same server but 2.4.29-skas3 kernel
+  - same client 2.4.22-uml
+      - nfs/tcp using uml_switch/tap0 is fine
+      - nfs/udp using uml_switch/tap0 is fine
+
+  So I circled the problem to 2.6.11.6 hosting kernel and nfs/udp -
+  any further ideas how/where to debug this problem ?
+
+Bye Michael
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
-
+  mailto:kraehe@copyleft.de             UNA:+.? 'CED+2+:::Linux:2.4.22'UNZ+1'
+  http://www.xml-edifact.org/           CETERUM CENSEO WINDOWS ESSE DELENDAM
 
 
 -------------------------------------------------------
