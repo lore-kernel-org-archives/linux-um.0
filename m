@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsO5V-00022y-KJ
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 07:21:41 -0800
-Received: from mail.gmx.net ([213.165.64.20])
+	id 1AsOXp-0001wO-Km
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 07:50:57 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AsO2Y-0003mm-31
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 07:18:38 -0800
-Message-ID: <163e01c3f3d7$c1762710$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <20040122144020.GQ4203@erizo.shearer.org> <20040122162014.GA2895@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Changes to port_user
+	id 1AsOUr-0008RX-E1
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 07:47:53 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] uml-patch-2.6.3-rc2-1
+References: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org>
+In-Reply-To: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200402151256.41707.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,92 +25,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 15 Feb 2004 16:24:07 +0100
-To: Jeff Dike <jdike@addtoit.com>, Dan Shearer <dan@shearer.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 15 Feb 2004 12:56:41 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-hi!
+Alle 19:18, venerd=EC 13 febbraio 2004, Jeff Dike ha scritto:
+> This patch updates UML to 2.6.3-rc2.  This breaks with my usual practice =
+of
+> ignoring test patches.  However, when I updated my UML tree, I had
+> forgotten that my stock Linus tree was up to 2.6.3-rc2.  I took this as a
+> sign from a higher power that this was Meant To Be.
 
-> If you want to be able to telnet to the port, then you need something which
-> speaks telnet, hence you need telnetd.
+You seem too serious about your maintainer role! You have started writing=20
+announces in The Way Linus Torvalds Does It (tm) :-) !
 
-> > Now what I'm trying to do is replace in.telnetd with something else, for
-> > the moment netcat as a simple case, or something that gives the same
-> > effect.
+However, in my opinion what this higher power wants is that you post this=20
+(with the needed changes) to Andrew Morton and that he includes it in 2.6.3!
+And dropping the tty-uml-something piece.
 
-mhhh - as security oriented person i would like to admit:
-should such "new technology" like uml really "support" unencrypted remote logins and should it support exposing "non encrypted
-communication ports" to the outside world ?
+> As well as catching up, there are some bug fixes and cleanups -
+> 	modules should now work
 
-telnet is ancient and IMHO it should be replaced by something more secure like ssh. sshd is installed by default on all major
-distro`s and it has an "inetd" mode, too.
-maybe telnetd can easily be replaced sshd ?
+About the R_386_* macros needed for this, they are defined twice in the pat=
+ch=20
+(archparam-i386.h and elf.h; they should be for now in elf.h, and in the=20
+future in elf-i386.h since they are architecture-specific).
 
-just my 10 eurocents....
-
-regards
-roland
-
-
-
------ Original Message ----- 
-From: "Jeff Dike" <jdike@addtoit.com>
-To: "Dan Shearer" <dan@shearer.org>
-Cc: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Thursday, January 22, 2004 5:20 PM
-Subject: Re: [uml-devel] Changes to port_user
-
-
-> On Fri, Jan 23, 2004 at 01:10:20AM +1030, Dan Shearer wrote:
-> > I've done some minor work in drivers/port_user.c, including replacing
-> > the binding to INADDR_ANY with a gethostbyname(passed_ip), so you
-> > can specify which single IP to listen on.
+> 	worked around a process start time bug
+> 	fixed a bug which caused ps to divide by zero
 >
-> Cool, that's needed doing for a while.
+> The 2.6.3-rc2-1 UML patch is available at
+> 	http://www.user-mode-linux.org/mirror/uml-patch-2.6.3-rc2-1.bz2
 >
-> > Now what I'm trying to do is replace in.telnetd with something else, for
-> > the moment netcat as a simple case, or something that gives the same
-> > effect.
->
-> If you want to be able to telnet to the port, then you need something which
-> speaks telnet, hence you need telnetd.
->
-> If you can connect with something else and have terminal stuff continue
-> to work, and replace the telnetd dependency with something that works more
-> widely out of the box, then I'm all for it.
->
-> > That involves understanding the significance of port_helper and
-> > kernel/helper.c, which I don't yet.
->
-> What happens is that UML runs telnetd with the port helper as its "login"
-> program (problem - not every telnetd out there supports -L, even if it is
-> installed, which it often isn't).
->
-> When there's a connection, UML gets a descriptor with the telnet on the
-> other end.  It needs to get telnetd talking on that to do the telnet
-> protocol and another descriptor coming out of telnetd with actual characters
-> that the user typed.  So, it does this as follows:
-> it execs telnetd with stdin, stderr, stdout duped from the portal
-> file descriptor
-> telnetd also gets a unix socket on descriptor 3
-> port_helper gets the desired telnetd output descriptor on its
-> stdin/stdout
-> it passes this back to UML over the unix socket on descriptor 3
-> which it inherited from telnetd
->
-> Jeff
->
->
-> -------------------------------------------------------
-> The SF.Net email is sponsored by EclipseCon 2004
-> Premiere Conference on Open Tools Development and Integration
-> See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
-> http://www.eclipsecon.org/osdn
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
+> BK users can pull my 2.5 repository from
+> 	http://www.user-mode-linux.org:5000/uml-2.5
+
+About this, I have a doubt: do you upload only the releases there (as in 2.=
+4's=20
+cvs) or also the single changesets? You could do the second by tagging the =
+
+releases (I don't use BitKeeper, but CVS allows it, and BitKeeper is by far=
+=20
+more sophisticated), so that users can use the stable version. Waiting for =
+
+new features to get little bugfixes (the long long host_hz, for instance)=20
+sometimes is tiring. And not knowing what is in the repository and what was=
+=20
+merged (sometimes mails are confusing).
+
+Also, you could probably ask Andrew Morton to upgrade from your repository =
+for=20
+mm patches, as he does for various other BitKeeper trees (he said "just ask=
+=20
+for this special treatment"); you would only need to drop even from the sto=
+ck=20
+patch the /proc/mm support for nested UML's (which is not at all a bad thin=
+g,=20
+since it's not used heavily while nested UML would need testing).
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
@@ -118,7 +92,7 @@ Subject: Re: [uml-devel] Changes to port_user
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
