@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CQAUy-0001Bl-GZ for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 12:15:52 -0800
-Received: from web26105.mail.ukl.yahoo.com ([217.12.10.229])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CQAUj-0006sq-Gm for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 12:15:52 -0800
-Message-ID: <20041105201531.76855.qmail@web26105.mail.ukl.yahoo.com>
-From: Roland Kaeser <roli8200@yahoo.de>
+	id 1CQCNu-0002XG-IC for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 14:16:42 -0800
+Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CQCNt-0000vi-NV for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 14:16:42 -0800
+From: Henrik Nordstrom <uml@hno.marasystems.com>
 Subject: Re: [uml-devel] con=port hangs uml guest when it trys to create
 	mingettys for the ttyp's
-In-Reply-To: <200411052045.56320.blaisorblade_spam@yahoo.it>
+In-Reply-To: <20041105201531.76855.qmail@web26105.mail.ukl.yahoo.com>
+Message-ID: <Pine.LNX.4.61.0411052313570.2017@filer.marasystems.com>
+References: <20041105201531.76855.qmail@web26105.mail.ukl.yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,66 +27,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 5 Nov 2004 21:15:31 +0100 (CET)
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Roland Kaeser <roli8200@yahoo.de>
+Date: Fri, 5 Nov 2004 23:16:29 +0100 (CET)
+To: Roland Kaeser <roli8200@yahoo.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hello
+On Fri, 5 Nov 2004, Roland Kaeser wrote:
 
-I thunk that the con ports are "headless". So the guest os doesn't now that the
-other end of the tty has an monitor or something on it. The only strange behaviour
-is that after the first telneting session, the assignment of the tty is successful
-and the boot contiunues normally. Shouln't the "virtual" con ttyps act exactly as
-the "real" ones? It works also when I break the script but then there is no tty
-assignet. Is there a workaround or can I assign the tty a other (working) way or to
-an another tty,pty etc?
+> I thunk that the con ports are "headless". So the guest os doesn't now that the
+> other end of the tty has an monitor or something on it. The only strange behaviour
+> is that after the first telneting session, the assignment of the tty is successful
+> and the boot contiunues normally. Shouln't the "virtual" con ttyps act exactly as
+> the "real" ones?
 
-Roland
+They differ in not always having a screen buffer available for output.
 
- --- Blaisorblade <blaisorblade_spam@yahoo.it> schrieb: 
-> On Friday 05 November 2004 16:54, Roland Kaeser wrote:
-> > Hello
-> >
-> > I try to use con=port:<number> for the local uml guest consoles. But I
-> > recognized that the uml guest system hangs unless a telnet connection to
-> > the port was made, while creating the mingettys for the ttyps on
-> > startuptime.
-> 
-> Seems almost a correct behaviour - who should send it the datas to? Check the 
-> "input drivers" page on the site. However, I understand from the code below 
-> that you get problems.
-> 
-> If, however, the *UML kernel* hangs, then it's a much harder problem.
-> 
-> > On Fedora look on /etc/rc.d/rc.sysinit for the section:
-> >
-> > if [ "$HOSTTYPE" != "s390" -a "$HOSTTYPE" != "s390x" ]; then
-> >   last=0
-> >   for i in `LC_ALL=C grep '^[0-9].*respawn:/sbin/mingetty' /etc/inittab |
-> > sed 's/^.* tty\([0-9][0-9]*\).*/\1/g'`; do
-> >
-> >         > /dev/tty$i
-> >
-> >         last=$i
-> >   done
-> >   if [ $last -gt 0 ]; then
-> >
-> >        > /dev/tty$((last+1))
-> >        > /dev/tty$((last+2))
-> >
-> >   fi
-> > fi
-> Yes, this situation is nasty. No idea for now apart commenting it out.
-> -- 
-> Paolo Giarrusso, aka Blaisorblade
-> Linux registered user n. 292729
->  
-
-
-	
-		
-___________________________________________________________
-Gesendet von Yahoo! Mail - Jetzt mit 100MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
+Regards
+Henrik
 
 
 -------------------------------------------------------
