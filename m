@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtdU1-0008OF-6L
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 18:00:09 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30)
-	id 1AtdP1-0001ni-P7
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 17:55:00 -0800
-Message-Id: <200402190223.i1J2NBMM009529@ccure.user-mode-linux.org>
-Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4 
-In-Reply-To: Your message of "Wed, 18 Feb 2004 02:52:56 +0100."
-             <20d501c3f5c1$ef1d3d70$2000000a@schlepptopp> 
-References: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp> <200402152045.17138.blaisorblade_spam@yahoo.it>  <20d501c3f5c1$ef1d3d70$2000000a@schlepptopp> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1AtfCw-0006WG-Mv
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 19:50:38 -0800
+Received: from [192.197.110.221] (helo=kgb02.kgbinternet.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Atf0K-0001zk-W4
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 18 Feb 2004 19:37:37 -0800
+Received: from nimbus (static24-72-41-155.reverse.accesscomm.ca [24.72.41.155])
+	(authenticated (0 bits))
+	by kgb02.kgbinternet.com (8.12.10/8.11.6) with ESMTP id i1J3jIfK021048
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 18 Feb 2004 21:45:24 -0600
+From: "Keith Bjorndahl" <keith@kgbinternet.com>
+Message-ID: <LHEAJMAMIDOPELFNOGOFGECBCAAA.keith@kgbinternet.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: skas3 patch fails against vanilla-2.4.25
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,26 +28,14 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Feb 2004 21:23:11 -0500
-To: roland <for_spam@gmx.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>, dan@shearer.org, christopher_sf@yahoo.com
+Date: Wed, 18 Feb 2004 21:45:15 -0600
+To: user-mode-linux-devel@lists.sourceforge.net
 
-for_spam@gmx.de said:
-> if someone wants to test - the rh7.2 compiled (and for me also
-> failing) binary is at: http://www.my-vserver.de/uml-2.6.3-rc2.gz 
+I went at it another way and also failed...
 
-As other people have noticed, this is host-dependent somehow.  This image
-boots fine on my RH8 laptop.
+I tried to take my skas-patched 2.4.24 and apply the 2.4.25 patch to it.
 
-> in ./kernel/sched.c in function wait_for_completion(struct completion
-> *x) 
-
-I got similar information from Phil Nadeau, so it's good to confirm that.
-
-Has anyone seen this with a 2.4 UML?  That would be handy because this broke
-in 2.6 when I moved a major set of patches to my 2.6 tree.  2.4 is much more
-granular, so knowing which 2.4 patch broke it would narrow it down a lot more.
-				Jeff
+On compilation, the changes to process.c appear to break the skas patch. 
 
 
 
