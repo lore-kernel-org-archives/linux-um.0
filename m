@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXrdj-0001hR-Td
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:40:11 -0800
-Received: from [82.65.9.115] (helo=yellowpig.yi.org ident=mail)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXrdj-0006Tc-CA
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:40:11 -0800
-Message-ID: <20031221004003.GR25221@seventeen>
-References: <20031219143655.GA7944@pari.math.u-bordeaux.fr> <20031219161144.GB18100@alcor.net>
+	id 1AXrlE-0001xh-80
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:47:56 -0800
+Received: from mta11.adelphia.net ([68.168.78.205])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AXrlD-0008BQ-Th
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:47:56 -0800
+From: Matt Zimmerman <mdz@debian.org>
+Subject: Re: [uml-devel] 2.4.22-[67] problems
+Message-ID: <20031221004742.GE9354@alcor.net>
+References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20031219161144.GB18100@alcor.net>
-From: Bill Allombert <allomber@math.u-bordeaux.fr>
-Subject: [uml-devel] Re: Bug#224502: FATAL: cannot determine library version
+In-Reply-To: <20031220171450.GB10692@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,52 +25,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 21 Dec 2003 01:40:03 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, 224502@bugs.debian.org
+Date: Sat, 20 Dec 2003 16:47:42 -0800
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, 224502@bugs.debian.org
 
-On Fri, Dec 19, 2003 at 08:11:44AM -0800, Matt Zimmerman wrote:
-> On Fri, Dec 19, 2003 at 03:36:55PM +0100, Bill Allombert wrote:
-> 
-> > I have upgraded from 2.4.22-5um-1 to 2.4.22-7um-1 and now 
-> > user-mode-linux fail to start with 
+On Sat, Dec 20, 2003 at 12:14:50PM -0500, Jeff Dike wrote:
+
+> On Fri, Dec 19, 2003 at 05:13:23PM -0800, Matt Zimmerman wrote:
+> > There definitely seems to be something awry here, even in skas mode.  I am
+> > getting a lot of ENOSYS errors inside UML:
 > > 
-> > NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-> > VFS: Mounted root (ext2 filesystem) readonly.
-> > FATAL: cannot determine library version
+> > /usr/lib/apt/methods/http: error while loading shared libraries: libc.so.6: cannot map zero-fill pages: Error 38
+> > 
+> > dpkg: error processing /var/cache/apt/archives/debhelper_4.0.2_all.deb (--unpack):
+> >  failed to rmdir/unlink `/usr/share/man/man1/dh_compress.1.gz.dpkg-tmp': Function not implemented
+> > 
+> > basename: write error: Function not implemented
+> > 
+> > etc.
+> > 
+> > Downgrading to user-mode-linux 2.4.22-6um-1 still has the problem,
+> > downgrading further to 2.4.22-5um-1 (the old binary) fixes it.  The
+> > following things changed from 2.4.22-5um-1 to 2.4.22-6um-1, most of which
+> > were outside of UML itself:
 > 
-> Strange.  I think this error message comes from ld.so.
+> These changes look OK.  I looked through the -5 to -6 diffs and saw nothing
+> that would cause stuff to start returning -ENOSYS.  The only thing that 
+> seemed remotely relevant is the unistd.h change, which fixes a bug in the
+> case of an error in an internally called system call.  You can try reverting 
+> that and see what happens.
+> 
+> Beyond that, if you can find a system call that reproducably fails, then
+> just step through it, and see where the -ENOSYS comes from.  This shouldn't
+> be too difficult.
 
-You are right.  From the source , this message com from
- sysdeps/unix/sysv/linux/dl-osinfo.h in the following macro:
+Thanks for looking at it.  It's sounding more and more like the new
+glibc/linux-kernel-headers packages have broken UML.  Maybe something is
+getting the host's kernel headers when it needs the ones from the UML build
+tree?
 
-#define DL_SYSDEP_OSCHECK(FATAL) \
-  do {                                                                        \
-    /* Test whether the kernel is new enough.  This test is only              \
-       performed if the library is not compiled to run on all                 \
-       kernels.  */                                                           \
-
-The UML filesystem is woody.
-
-I tried to build a new filesystem with rootstrap+slirp but the new uml
-package fail:
-I: Retrieving diff
-I: Validating diff
-/tmp/target/var/lib/apt/lists/debootstrap.invalid_dists_woody_main_binary-i386_Packages: Function not implemented
-Traceback (most recent call last):
-  File "/usr/lib/rootstrap/builder", line 66, in ?
-    dispatch(module, modulevars)
-  File "/usr/lib/rootstrap/builder", line 44, in dispatch
-    raise "rootstrap: Module '%s' failed, status: %d" % (module,status)
-rootstrap: Module 'debian' failed, status: 1
-Kernel panic: Attempted to kill init!
-
-While the old one perform normally.
-
-Cheers,
 -- 
-Bill. <ballombe@debian.org>
-
-Imagine a large red swirl here. 
+ - mdz
 
 
 -------------------------------------------------------
