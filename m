@@ -2,18 +2,30 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A6wws-00026X-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 07 Oct 2003 11:52:42 -0700
-Received: from fed1mtao06.cox.net ([68.6.19.125])
+	id 1A7ErX-00071b-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 08 Oct 2003 07:00:23 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=0)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A6wws-0004MV-73
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 07 Oct 2003 11:52:42 -0700
-Message-ID: <3F830C2C.8010308@easyco.com>
-From: Doug Dumitru <doug@easyco.com>
+	id 1A7ErW-0003dD-Jd
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 08 Oct 2003 07:00:22 -0700
+Subject: Re: [uml-devel] skas & /proc/mm in the host kernel, yet /proc/mm
+ 'not found'
+References: <200309182037.h8IKbMEk028815@hongkong.cs.nmsu.edu>
+	<20030919095020.294F93BCE4@home.petschge.de>
+	<20030920173518.521B03BCE7@home.petschge.de>
+	<Pine.LNX.4.58.0309220535000.28187@crystal.nuked.org>
+	<200309232016.h8NKGNaK003251@ccure.karaya.com>
+	<Pine.LNX.4.58.0309232330340.28187@crystal.nuked.org>
+	<200309241619.h8OGJwaK006019@ccure.karaya.com>
+	<87fzig533b.fsf@amaterasu.srvr.nix>
+	<200310062125.h96LPbGj020880@ccure.karaya.com>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200310062125.h96LPbGj020880@ccure.karaya.com> (Jeff Dike's
+ message of "Mon, 06 Oct 2003 17:25:37 -0400")
+Message-ID: <87k77fg789.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Patch for buffer overrun in serial/console device logic
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,79 +36,39 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Oct 2003 11:55:40 -0700
-To: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 08 Oct 2003 15:00:06 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-I have been having trouble with buffer overruns when talking to pty 
-devices.  My boot config directs serial device with syntax like:
+On Mon, 06 Oct 2003, Jeff Dike moaned:
+> nix@esperi.demon.co.uk said:
+>> hppfs_open : failed to open a socket in 'proc/uptime/r', err = 1
+>> Kernel panic: init_new_context_skas - new_mm failed, errno = -24 
+> 
+> I don't see how these can be related.  They are totally separate pieces of
+> code.
 
-   ... ssl0=tty:/dev/pty/pty1009 ...
+It confused me, too.
 
-This sets up a serial line to talk with a pty device.  We don't use the 
-ptmx interface so that we can definitavely know which device to talk to 
-from the outside.
+Both go away completely if I turn off hppfs. (I've not tried mounting
+it somewhere quiet and not using it, but I can't see how that would
+be any different from simply not mounting it at all...)
 
-The problem we are seeing is that outbound data gets overrun.  If you 
-send 100K out the stream, you tend to see the first 28K or so followed 
-by a big gap followed by the last 3K or so of the stream.  We have 
-tested this with the ptmx syntax/logic and the problem still seems to be 
-there.  Also, if you test this with a very fast consumer (such as a 
-local cat from the device), the problem does not manifest itself.  UML 
-must be able to produce data faster than the outside world can consume it.
+>>  Hm, maybe I'm barking up a gum tree here.  Anyway, I
+>> haven't seen the init_new_context_skas error since I stopped using
+>> hppfs. It's still built in, just not mounted anymore.)
+> 
+> Hmmm, maybe there is some relationship, but I have no idea what it would be.
 
-After a lot of looking, it appears that the line_write routine in line.c 
-does not check to see if the buffer has enough room.  The 
-buffer_data(...) routine does not appear to check for available space at 
-all and just overwrites old data.
+Without hppfs mounted, all works wonderfully. My firewall thanks you,
+and it was very much easier to get my iffy ADSL router to cooperate with
+the ability to reboot the UML that was talking to it in about six
+seconds. (Try *that* with a non-userspace kernel. ;} )
 
-Here is the patch that appears to correct the issue:
-
-
-
-
---- ../linux-2.4.22/arch/um/drivers/line.c      Tue Oct  7 10:25:20 2003
-+++ arch/um/drivers/line.c      Tue Oct  7 10:27:06 2003
-@@ -97,6 +97,7 @@
-         char *new;
-         unsigned long flags;
-         int n, err, i;
-+       int room;
-
-         if(tty->stopped) return 0;
-
-@@ -115,6 +116,10 @@
-         i = minor(tty->device) - tty->driver.minor_start;
-         line = &lines[i];
-
-+       room = line_write_room(tty);
-+       if ( !room ) return -EAGAIN;
-+       if ( room < len ) len = room;
-+
-         down(&line->sem);
-         if(line->head != line->tail){
-                 local_irq_save(flags);
-
-
-
-
-We have this running in our 2.4.22 build, but would like to see it (or 
-something equivelent) in the release so that we can take patches cleanly.
-
-We also have a much messier, in-house patch that we apply to hostfs.c so 
-that root mounts will correctly honor ownerships and rights.  Is anyone 
-else working on this.  The 2.4.20-5um release appears to have a lot of 
-missing stuff in this area, but if someone else is re-working this, I 
-will put my patch down for a while and wait.  Otherwise, I will clean it 
-up and submit it.
-
---------------------------------------------------------------------
-Doug Dumitru     800-470-2756     (610-237-2000)
-EasyCo LLC       doug@easyco.com  http://easyco.com
---------------------------------------------------------------------
-D3, U2, jBase Virtual Servers.    Off-site backup over the internet.
-Develop/test/deploy from $20/mo.  Fast, secure, cheaper than tape.
-http://mirroredservers.com        http://mirroredbackup.com
-
+-- 
+`If you want a vision of the future, it is a wireless broadband network
+ feeding requests for foreign money-laundering assistance into a human
+ temporal lobe, forever. With banner ads.' --- John M. Ford
 
 
 -------------------------------------------------------
