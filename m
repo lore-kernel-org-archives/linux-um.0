@@ -1,27 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CsnNq-0003ln-A1 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Jan 2005 11:26:50 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CsnNo-00059s-Mb
+	id 1CsqXD-0002XM-5b for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 Jan 2005 14:48:43 -0800
+Received: from pool-151-203-197-142.bos.east.verizon.net ([151.203.197.142]
+	helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CsqXA-00045B-Ba
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Jan 2005 11:26:50 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] memory
+	Sun, 23 Jan 2005 14:48:43 -0800
+Message-Id: <200501240111.j0O1BtoI004687@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] memory 
+In-Reply-To: Your message of "Sun, 23 Jan 2005 12:16:34 +0530."
+	<267988DEACEC5A4D86D5FCD780313FBB03B12C4B@exch-03.noida.hcltech.com> 
 References: <267988DEACEC5A4D86D5FCD780313FBB03B12C4B@exch-03.noida.hcltech.com>
-	<41F36014.7050905@easyco.com>
-	<Pine.LNX.4.61.0501231605440.20896@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.61.0501231605440.20896@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501231325.10021.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,43 +29,72 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 Jan 2005 13:25:10 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Doug Dumitru <doug@easyco.com>, "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
+Date: Sun, 23 Jan 2005 20:11:55 -0500
+To: "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>, Doug Dumitru <doug@easyco.com>
 
-On Sunday 23 January 2005 01:27 pm, Henrik Nordstrom wrote:
-> On Sun, 23 Jan 2005, Doug Dumitru wrote:
-> > What you are trying to do will work, but not for large amounts of memory.
-> > UML runs the client using a single user mode memory block as the entire
-> > client's core.  Thus the clients core size is limited to what a single
-> > task can allocate as plain memory.
+Vaibhavs@noida.hcltech.com said:
+> I have to build a simulator, to check the scalability limits in memory
+> management of linux. For this, the simulator  will provide a large
+> amount of RAM (in GBs), even if the amout of physical memory is only
+> 512MB. 
 >
-> It should be possible to work around this using the kernel HIGHMEM
-> support. Would also be a good environment to verify the HIGHMEM support in
-> the kernel in general.
+> Can UML be used for this purpose? I had seen the "mem" option in the
+> kernel switches option of UML. Can UML simulate such a case? 
 
-The client kernel's highmem suport is unlikely to do much, I'd think.  Not 
-unless it's unmapping and remapping multiple mmaps.  (There's large file 
-support, but trying to mmap a 5 gig chunk out of a large file can't work: 
-what would that mean?  How could you generate an offset into the last meg?  
-What would the pointer _be_?)
+Yes, it should be fine for what you want.
 
-The parent kernel's highmem support still doesn't provide more than 4 
-gigabytes per application, and the UML kernel is one application.  (And 
-that's with the 4 gig kernel/4 gig user patches from...  Ingo Molnar, I 
-think.)  Highmem lets the system as a whole use PAE (up to 64 gigs physical 
-memory), but the kernel is basically doing something very like the old DOS 
-expanded memory behind the scenes, swapping around page tables so each 
-process sees a different set of physical memory. pages  (The overhead isn't 
-quite so bad since it's doing that anyway as part of protecting process's 
-memory from each other...)
+> If it
+> does, how UML handles this? Specifically, can the UML kernel allocate
+> all this amount of memory
 
-Hence the x86-64 system.  They really are getting cheap these days.  And when 
-the PS3 comes out, that's going to be a 64 bit (mutant) Power PC for 
-somewhere around $300 fully loaded, which runs Linux internally.  (Probably 
-with binary only drivers out the wazoo, but still...)
+It'll allocate a temp file of the appropriate size.  If it's larger than what
+it can use for physical memory, the rest will be allocated as highmem.  If
+you leave 2-level pagetables on, then you're limited to 4G. If you turn on
+3-level pagetables, then you get up to 128G.  
 
-Rob
+doug@easyco.com said:
+> UML runs the client using a single user mode memory block as  the
+> entire client's core.  Thus the clients core size is limited to what
+> a single task can allocate as plain memory.
+
+No, it only maps the physical memory as a block.  The highmem part is mapped
+on demand, as with i386.
+
+rob@landley.net said:
+> You could run out of virtual address space, though.  Trying to map
+> more than a  few gigabytes on a 32 bit machine is unlikely to work. 
+
+With highmem, it's not all mapped at once.
+
+rob@landley.net said:
+> Not  unless it's unmapping and remapping multiple mmaps.  
+
+It is.
+
+> (There's
+> large file  support, but trying to mmap a 5 gig chunk out of a large
+> file can't work:  
+
+It does it a page at a time.
+
+> what would that mean?  How could you generate an
+> offset into the last meg?   
+
+The LFS interfaces take 64-bit offsets.
+
+> What would the pointer _be_?)
+
+What pointer?
+
+> The parent kernel's highmem support still doesn't provide more than 4
+> gigabytes per application, and the UML kernel is one application.
+
+The host kernel's highmem support is totally irrelevant.  There doesn't even
+need to be highmem support on the host.
+
+				Jeff
+
 
 
 -------------------------------------------------------
