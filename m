@@ -1,27 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Crn4H-00023n-Ja for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Jan 2005 16:54:29 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Crn4F-0004Km-Vy
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Jan 2005 16:54:29 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] UML build process uses perl? (With sed alternative.)
-References: <200501140040.56592.rob@landley.net>
-	<200501200125.01522.rob@landley.net>
-	<200501210031.j0L0VN3u005305@ccure.user-mode-linux.org>
-In-Reply-To: <200501210031.j0L0VN3u005305@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501201852.48095.rob@landley.net>
+	id 1CrseS-00034u-0b for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 Jan 2005 22:52:12 -0800
+Received: from [202.91.196.193] (helo=printsoft.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CrseR-0005un-8S for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 Jan 2005 22:52:11 -0800
+Received: from [192.168.4.162] (unknown [192.168.4.162])
+	by printsoft.com (linuxmail) with ESMTP id 6B066308011
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 21 Jan 2005 17:52:03 +1100 (EST)
+Message-ID: <41F0A696.8050201@printsoft.com>
+From: Gerhard Hannemann <gerhard.hannemann@printsoft.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=======AVGMAIL-41F0A6975630======="
+Subject: [uml-devel] UML - stalling during large file transfers
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,44 +28,105 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Jan 2005 18:52:47 -0500
+Date: Fri, 21 Jan 2005 17:52:06 +1100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
 
-On Thursday 20 January 2005 07:31 pm, Jeff Dike wrote:
-> rob@landley.net said:
-> > I still need the attached one-liner patch to get it to build under
-> > uclibc,  though.
->
-> What does that break, exactly?
->
-> 				Jeff
+--=======AVGMAIL-41F0A6975630=======
+Content-Type: multipart/alternative;
+	boundary=------------020607060100020902000300
 
-  CC      arch/um/kernel/init_task.o
-  CC      arch/um/kernel/irq.o
-gcc -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common 
--O2 -fomit-frame-pointer -U__i386__ -Ui386 -D__arch_um__ -DSUBARCH=\"i386\" 
--D_LARGEFILE64_SOURCE   -Iarch/um/include 
--I/linux-2.6.9/arch/um/kernel/tt/include 
--I/linux-2.6.9/arch/um/kernel/skas/include -D_GNU_SOURCE  -c -o 
-arch/um/kernel/irq_user.o arch/um/kernel/irq_user.c
-In file included from arch/um/kernel/irq_user.c:16:
-arch/um/include/user.h:15: error: conflicting types for `strlcpy'
-/usr/include/string.h:384: error: previous declaration of `strlcpy'
-make[1]: *** [arch/um/kernel/irq_user.o] Error 1
-make: *** [arch/um/kernel] Error 2
+--------------020607060100020902000300
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This is because uclibc's string.h has this snippet:
+Encountered a baffling problem while copying large amounts of files from 
+a archive (*.tbz) or from a remote system to a directory within a 
+running UML system. The UML stalls while the IDE hardrive thrashes along 
+for server minutes. It recovers, continues on with some more files, and 
+stall again. While this is happening, all maternity's connected to that 
+UML just freeze.
+The host system is perfectly accessible and on show minimal CPU usages. 
+A running top session within the UML also show low CPU and moderate 
+memory usage. However the UML's load increases up to 3.x for several 
+minutes and then recovers.
+System Data:
 
-#ifdef	__USE_BSD
-/* Two OpenBSD extension functions. */
-extern size_t strlcat(char *__restrict dst, const char *__restrict src,
-                      size_t n) __THROW;
-extern size_t strlcpy(char *__restrict dst, const char *__restrict src,
-                      size_t n) __THROW;
-#endif
+      Host:
+      AMD Athlon 2.1Ghz running Gentoo using 2.6.9 kernel with skas3 patch.
+      1 SCSI 18G drive (boot drive) and one IDE 15G drive.
+      1G tmpfs
+      UML:
+      Vanilla 2.4.27 UML kernel (patched of UML usage)
+      3G file system and 512M swap.
+      The UML is run using 512M of mem.
+      The UML runs from the IDE drive. 
 
-Rob
+
+Thanks
+
+
+--------------020607060100020902000300
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<span class="postbody">Encountered a baffling problem while copying
+large amounts of files from a archive (*.tbz) or from a remote system
+to a directory within a running UML system. The UML stalls while the
+IDE hardrive thrashes along for server minutes. It recovers, continues
+on with some more files, and stall again. While this is happening, all
+maternity's connected to that UML just freeze. <br>
+The host system is perfectly accessible and on show minimal CPU usages.
+A running <span style="font-weight: bold;">top</span>
+session within the UML also show low CPU and moderate memory usage.
+However the UML's load increases up to 3.x for several minutes and then
+recovers. <br>
+System Data:
+<br>
+<ul>
+Host:
+  <br>
+AMD Athlon 2.1Ghz running Gentoo using 2.6.9 kernel with skas3 patch. <br>
+1 SCSI 18G drive (boot drive) and one IDE 15G drive.
+  <br>
+1G tmpfs
+  <br>
+UML:
+  <br>
+Vanilla 2.4.27 UML kernel (patched of UML usage)
+  <br>
+3G file system and 512M swap.
+  <br>
+The UML is run using 512M of mem.
+  <br>
+The UML runs from the IDE drive.
+</ul>
+<br>
+Thanks<br>
+<br>
+</span>
+</body>
+</html>
+
+--------------020607060100020902000300--
+
+--=======AVGMAIL-41F0A6975630=======
+Content-Type: text/plain; x-avg=cert; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Description: "AVG certification"
+
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.300 / Virus Database: 265.7.1 - Release Date: 19/01/2005
+
+--=======AVGMAIL-41F0A6975630=======--
 
 
 -------------------------------------------------------
