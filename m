@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BRrFR-0000ex-PN for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 04:34:33 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BRrFR-0003fb-8B for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 04:34:33 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] CVS not updated?
-References: <20040518180259.GC29114@ccure.user-mode-linux.org>
-	<Pine.LNX.4.44.0405182131440.10300-100000@filer.marasystems.com>
-	<20040518220017.GA29646@ccure.user-mode-linux.org>
-In-Reply-To: <20040518220017.GA29646@ccure.user-mode-linux.org>
+	id 1BRrbz-0007Hg-TM for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 04:57:51 -0700
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BRrbz-0008Jq-7h for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 04:57:51 -0700
+Message-ID: <078401c440be$2adff220$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <008701c43e76$686ec750$2000000a@schlepptopp>
+	<200405231217.52945.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200405231337.30401.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] tip: suse 9.1 live eval with skas
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,68 +26,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 May 2004 13:37:30 +0200
+Date: Sun, 23 May 2004 14:04:52 +0200
 Content-Transfer-Encoding: quoted-printable
-To: Jeff Dike <jdike@addtoit.com>, Henrik Nordstrom <uml@hno.marasystems.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-Alle 00:00, mercoled=EC 19 maggio 2004, Jeff Dike ha scritto:
-> On Tue, May 18, 2004 at 09:42:13PM +0200, Henrik Nordstrom wrote:
-> > >From the error message I think you are missing a "anonymous" system us=
-er
-> >
-> > or a suitable mapping in your CVS password file to another suitable
-> > system user..
-> >
-> > The CVS password file format is
-> >
-> > login:[password][:unixuser]
-> >
-> > if the unixuser is not specified the login is used..
-> >
-> > Example for anonymous CVS with pubcvs as the UNIX user
-> >
-> >   anonymous::pubcvs
+hi!
+
+first, it looked very much the same to http://www.user-mode-linux.org/~blai=
+sorblade/patches/host-skas3-2.6.3-v1.patch
+- but it seems to differ significantly especially at linux-2.6.0/arch/i386/=
+kernel/ldt.c
+
+suse 9.1 kernel source is at: ftp://ftp.suse.com/pub/suse/i386/9.1/suse/src=
+/kernel-source-2.6.4-52.src.rpm
+
+regards
+roland
+
+
+
+
+
+
+
+----- Original Message -----=20
+From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
+To: <user-mode-linux-user@lists.sourceforge.net>
+Cc: "roland" <for_spam@gmx.de>
+Sent: Sunday, May 23, 2004 12:17 PM
+Subject: Re: [uml-user] tip: suse 9.1 live eval with skas
+
+
+Alle 16:26, gioved=EC 20 maggio 2004, roland ha scritto:
+> Hi !
+> if you don`t have a system with skas-patched kernel and don`t want to risk
+> a kernel update but you want to give uml with skas a try, you can use suse
+> 9.1 live eval-cd. it has a skas patched 2.6.4 kernel "out of the box".
 >
-> Thanks for your help.  It looks like it works now.
-Not here:
-cvs -d :pserver:anonymous@www.user-mode-linux.org:/cvsroot/user-mode-linux l
-ogin
+> ftp://ftp.suse.com/pub/suse/i386/live-cd-9.1/LiveCD-9.1-01.iso
+>
+> so - just boot from this cd, mount your hdd-partition containg uml and the
+> root_fs and start it "under" suse 9.1.
+>
+> the only caveat is, that this live-cd doesn`t contain the uml-utilities.
+> maybe you can setup the path variables appropriately, to point to your
+> uml-utilities on the mounted hdd-partition. didn`t try this yet.
+>
+> regards
+> roland
+Has anyone a pointer to check the source RPM of their kernel? I want to che=
+ck
+what 2.6 SKAS patch they use, to see if they fixed any bug and if they use =
+an
+up-to-date one.
 
-refuses any password I can type (including the empty one).
-
-cvs -d :pserver:anonymous@www.user-mode-linux.org:/cvsroot/user-mode-linux =
-
-checkout doc/web/cl
-answers:
-
-/cvsroot/user-mode-linux: no such repository
-
-even when I try from inside ssh blaisorblade@www.user-mode-linux.org. Howev=
-er,=20
-I used :ext: and my login name and it worked (though the site content is a =
-
-bit out-of-date).
-
-I would suggest to write, on the server, a script which checks out everythi=
-ng=20
-from the CVS repository and rebuilds it; then you commit the new site, run =
-
-the script from the server and it should work perfectly + the site would=20
-always be up-to-date.
-
-By the way, onto=20
-http://user-mode-linux.sourceforge.net/compile.html
-there is still a link to the old repository. (I know I could fix it now, by=
-=20
-asking you to update then the site, but I've no time right now + you need t=
-o=20
-do something anyway).
-
-Good bye
+Bye
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
+
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: Oracle 10g
+Get certified on the hottest thing ever to hit the market... Oracle 10g.
+Take an Oracle 10g class now, and we'll give you the exam FREE.
+http://ads.osdn.com/?ad_id149&alloc_id=8166&op=3Dick
+_______________________________________________
+User-mode-linux-user mailing list
+User-mode-linux-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
 
 
 
@@ -98,7 +104,7 @@ Linux registered user n. 292729
 This SF.Net email is sponsored by: Oracle 10g
 Get certified on the hottest thing ever to hit the market... Oracle 10g.=20
 Take an Oracle 10g class now, and we'll give you the exam FREE.
-http://ads.osdn.com/?ad_id149&alloc_id=8166&op=CCk
+http://ads.osdn.com/?ad_id=3D3149&alloc_id=3D8166&op=3Dclick
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
