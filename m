@@ -1,12 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-In-Reply-To: <Pine.LNX.4.58.0405212008460.4729@sparrow>
-Message-ID: <Pine.LNX.4.58.0405230016170.4597@sparrow>
-References: <Pine.LNX.4.58.0405212008460.4729@sparrow>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [uml-devel] AMD or Intel for host
+In-Reply-To: <045f01c43ffc$418302f0$2000000a@schlepptopp>
+Message-ID: <Pine.GSO.4.58.0405231120280.2027@waterleaf.sonytel.be>
+References: <40AF3E70.3000205@almahdi.cc>
+	<045f01c43ffc$418302f0$2000000a@schlepptopp>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: Upcoming 64 bit uml coop - half-shares
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,51 +18,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 May 2004 00:34:11 -0400 (EDT)
-To: ML-ford <ford@whoopis.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
+Date: Sun, 23 May 2004 11:22:11 +0200 (MEST)
+To: roland <for_spam@gmx.de>
+Cc: Ali Almahdi <ali@almahdi.cc>, user-mode-linux-user@lists.sourceforge.net, User Mode Linux Devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Good evening, all,
+On Sat, 22 May 2004, roland wrote:
+> not easy to tell, if xp 2800+ or P4 2.8 is better for uml
+>
+> but maybe:
+> http://www6.tomshardware.com/cpu/20021001/index.html
+> helps to find a decision.
+>
+> this is another comparison i found on the net:
+>
+> Intel Pentium 4 2.8GHz
+> SPECint: 1010
+> SPECfp: 947
+>
+> AMD Athlon XP 2800+ (2.25GHz)
+> SPECint: 933
+> SPECfp: 843
 
-On Fri, 21 May 2004, William Stearns wrote:
+That must be an old XP 2800+, since the new ones (Barton core) run at 2083 MHz.
+SPEC numbers may have changed, since Barton has 512 KiB L2 cache.
 
-> 	As I mentioned a month or so back, Jeff Dike has had some success 
-> with UML on the AMD64 architecture (Opteron and Athlon64).  As part of 
-> shaking out the bugs on that code, we have a new UML coop going up in the 
-> near future - codenamed "Ford".
-[snip]
+Gr{oetje,eeting}s,
 
-	Since I wrote that project summary, a number of people have
-written in, either committing a certain amount or at expressing interest
-in the project.  We have enough contributors that this system will be
-purchased - thanks to _everyone_!
-	For some, a full share isn't appropriate at this time - no
-problem!  I had mentioned (on the main web site,
-http://www.stearns.org/ford/ford-project.html ) that we'd consider
-offering "half-shares".  Jeff and I talked it over today and we think it
-would be a postive way to include more people in the project.  A
-half-share contributor would only need to come up with half the normal
-amount, and would get 80M of memory, 4G of disk space, and a virtual
-machine running at a nice level of 5.
-	As always, if you're interested in taking part, please take a look 
-at the above project summary and sign up for the mailing list at 
-http://www.whoopis.com/mailman/listinfo/ford/ .  There's still time to 
-take part - additional members will allow us to increase ram, improve the 
-CPU, buy additional space, or simply bring down the cost of both shares 
-and half-shares.
-	Cheers,
-	- Bill
+						Geert
 
----------------------------------------------------------------------------
-	"It is difficult to produce a television documentary that is both
-incisive and probing when every twelve minutes one is interrupted by
-twelve dancing rabbits singing about toilet paper." 
-	-- Rod Serling
-(Courtesy of Dr. G.W. Wettstein <greg@wind.enjellic.com>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 -------------------------------------------------------
