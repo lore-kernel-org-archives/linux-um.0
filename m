@@ -1,29 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AoVD4-0003k0-QC
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 04 Feb 2004 14:09:26 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AoVD4-0004pM-Ae
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 04 Feb 2004 14:09:26 -0800
-Received: from mercury.dur.ac.uk (mercury.dur.ac.uk [129.234.4.40])
-	by hermes.dur.ac.uk (8.11.7-20030923/8.11.7) with ESMTP id i14M9C124738
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 4 Feb 2004 22:09:12 GMT
-Received: from altair.dur.ac.uk (altair.dur.ac.uk [129.234.4.14])
-	by mercury.dur.ac.uk (8.12.10+Sun/8.11.7) with ESMTP id i14M9B7V005661
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 4 Feb 2004 22:09:11 GMT
-Received: from localhost (dit0may@localhost)
-	by altair.dur.ac.uk (8.11.7+Sun/8.11.1) with ESMTP id i14M9BH29658
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 4 Feb 2004 22:09:11 GMT
-From: M A Young <m.a.young@durham.ac.uk>
-Subject: Re: [uml-devel] Hang on boot with 2.6.*
-In-Reply-To: <1075930245.7569.15.camel@wopr.tektonic.net>
-Message-ID: <Pine.GSO.4.58.0402042204280.28743@altair.dur.ac.uk>
-References: <1075921947.7569.7.camel@wopr.tektonic.net> 
- <200402042042.09932.blaisorblade_spam@yahoo.it> <1075930245.7569.15.camel@wopr.tektonic.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1AoXLz-00058Y-En
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 04 Feb 2004 16:26:47 -0800
+Received: from mta5.srv.hcvlny.cv.net ([167.206.5.78])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AoXLy-00006z-Q5
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 04 Feb 2004 16:26:46 -0800
+Received: from 10.0.0.11 (ool-44c218a8.dyn.optonline.net [68.194.24.168])
+ by mta5.srv.hcvlny.cv.net
+ (iPlanet Messaging Server 5.2 HotFix 1.16 (built May 14 2003))
+ with ESMTP id <0HSL00JOL58KNK@mta5.srv.hcvlny.cv.net> for
+ user-mode-linux-devel@lists.sourceforge.net; Wed,
+ 04 Feb 2004 19:26:45 -0500 (EST)
+From: "Josef 'Jeff' Sipek" <jeffpc@optonline.net>
+Message-id: <200402041926.39098.jeffpc@optonline.net>
+MIME-version: 1.0
+Content-type: Text/Plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Content-description: clearsigned data
+Subject: [uml-devel] [patch] 2.6 uml & CONFIG_SMP fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,25 +31,63 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 4 Feb 2004 22:09:11 +0000 (GMT)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 04 Feb 2004 19:26:29 -0500
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 4 Feb 2004, Matt Ayres wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> ...
->
-> The OS is RedHat 9 (glibc with NTPL), hence my reason for wanting 2.6
-> because it includes NTPL whereas 2.4 does not.  It seems odd that 2.6
-> wouldn't work with a NTPL enabled glibc, is this a known problem?  I've
-> been following the threads regarding 2.6, but I seem to have missed
-> that.
+Hello,
+	yesterday, I finally got around to fixing the code. Right now, it
+compiles, but there are some warnings that I didn't take a look at.
+This patch makes it compile with CONFIG_SMP, nothing more.
+I tested the resulting binary, and it works well in tt (I did NOT test
+skas.) 
 
-Yes it is a known problem, and should be fixed in 2.6.2-1um, or whatever
-the next release is. The solution is to edit
-include/asm-um/archparam-i386.h and change the definition of
-VSYSCALL_BASE to be NULL .
+You should be able to pull the patch from
+http://kernel.bkbits.net:14690/jeffpc/uml-smp/ (I think that pulling via web
+is not working, I'll check later.)
 
-	Michael Young
+Jeff.
+
+diff -Nru a/arch/um/Makefile b/arch/um/Makefile
+- --- a/arch/um/Makefile	Tue Feb  3 21:48:38 2004
++++ b/arch/um/Makefile	Tue Feb  3 21:48:38 2004
+@@ -170,7 +170,7 @@
+ 	ln -sf $(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $(notdir $@)
+ 
+ include/asm-um/arch:
+- -	cd $(TOPDIR)/include/asm-um && ln -sf ../asm-$(SUBARCH) arch
++	cd $(TOPDIR)/include/asm-um && ln -sf ../asm-$(SUBARCH) arch && ln -sf arch/spinlock.h
+ 
+ $(ARCH_DIR)/include/sysdep:
+ 	cd $(ARCH_DIR)/include && ln -sf sysdep-$(SUBARCH) sysdep
+diff -Nru a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+- --- a/arch/um/kernel/irq.c	Tue Feb  3 21:48:38 2004
++++ b/arch/um/kernel/irq.c	Tue Feb  3 21:48:38 2004
+@@ -584,7 +584,7 @@
+ 					unsigned long count, void *data)
+ {
+ 	int irq = (long) data, full_count = count, err;
+- -	cpumask_t new_value;
++	cpumask_t new_value, tmp;
+ 
+ 	if (!irq_desc[irq].handler->set_affinity)
+ 		return -EIO;
+
+
+- -- 
+"Intellectuals solve problems; geniuses prevent them"
+		- Albert Einstein
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFAIY28wFP0+seVj/4RAr8dAKCrYt3JZg+cFUIoKGVNpgxX9pGuqwCfUFsM
+vsjhr3DJcTBwzxkMwFNR+OU=
+=GXuF
+-----END PGP SIGNATURE-----
+
 
 
 -------------------------------------------------------
