@@ -1,22 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B8MAu-0004Ua-5l for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Mar 2004 08:33:16 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B8MAt-0000lr-Hj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Mar 2004 08:33:15 -0800
-Message-Id: <200403301709.i2UH91Ll003143@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] skas understanding 
-In-Reply-To: Your message of "Tue, 30 Mar 2004 13:23:38 +0200."
-	<406958BA.7080109@epfl.ch> 
-References: <406958BA.7080109@epfl.ch> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1B8SVG-0003uG-UK for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Mar 2004 15:18:42 -0800
+Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1B8SVG-0004o0-LV for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Mar 2004 15:18:42 -0800
+Message-ID: <20040330231834.3595.qmail@praize.com>
+From: "gboutwel" <gboutwel@praize.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+Subject: [uml-devel] Re: [PATCH] patch for linux-2.6.5-rc2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,27 +24,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Mar 2004 12:09:01 -0500
-To: Nicolas Blanc <nicolas.blanc@epfl.ch>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: 30 Mar 2004 23:18:34 -0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-nicolas.blanc@epfl.ch said:
-> I don't understand the purpose of using anonymous mmap.
+> Works for me using stock 2.6.5-rc2 kernel with reiser4.
 
-If you want a random piece of memory, it needs to be anonymous.
 
-> 2) capture_signal_stack() : what is it for ?
 
-It's broken and is going to change, but it grabs a host signal frame so it
-can later copy it, with modifications, to its own processes stacks when they
-receive signals.
+Vanilla 2.6.5-rc2:
 
-> 3) Where is the kernel thread? 
 
-start_uml_skas, it spends most of its time in the various invocations of
-userspace().
 
-				Jeff
+bzcat uml-patch-2.6.4-1.bz2 | patch -p1
+
+cat host+Uml-skas3-2.6.3-v1.patch | patch -p1
+
+cat uml-patch-2.6.5-rc2 | patch -p0 (your patch you posted)
+
+
+
+I'm able to comple an SKAS enabled host without problems.  But
+the UML build fails.  Errors saying CONFIG_* not defined over
+and over and over again.
+
+
+
+:(
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------
+
+Get your FREE Christian Email Account at Praize
+
+http://www.praize.com/email/ 
 
 
 
