@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BgRmj-000708-UJ for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jul 2004 10:25:13 -0700
-Received: from mail1.engr.ucsb.edu ([128.111.53.4] helo=smtp.engr.ucsb.edu)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1BgRmj-0008Mf-LN
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jul 2004 10:25:13 -0700
-Received: from www1.engr.ucsb.edu ([128.111.27.8]:3451 helo=cs.ucsb.edu)
-	by smtp.engr.ucsb.edu with smtp (Exim 4.24) id 1BgRmc-00079E-Gg
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jul 2004 10:25:06 -0700
-From: <lyouseff@cs.ucsb.edu>
-In-Reply-To: <40E520AE.8040302@cs.ucsb.edu>
-Message-Id: <E1BgRmc-00079E-Gg@smtp.engr.ucsb.edu>
-Subject: [uml-devel] Re: does O_DIRECT hinder greatly file reading performance
-	but not writing??
+	id 1BgRt6-0007ZP-KK for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Jul 2004 10:31:48 -0700
+Received: from mail-s.mpsa.com ([194.250.98.246])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1BgRt5-0000pn-KP for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Jul 2004 10:31:48 -0700
+Received: from aigz1.domino.inetpsa.com ([172.21.41.51])
+	by mail-s.mpsa.com (Unknown version)
+	with ESMTP id <0I080039CJCI08@pydu46.inetpsa.com> for
+	user-mode-linux-devel@lists.sourceforge.net; Fri,
+	02 Jul 2004 19:31:31 +0200 (MEST)
+From: pierre.gentile@mpsa.com
+Message-id: <OF78A78532.F1B0D905-ONC1256EC5.005E41A3-C1256EC5.00604452@mpsa.com>
+MIME-version: 1.0
+Content-type: multipart/mixed; boundary="Boundary_(ID_lvQFo/vuZ6TPrARs04axcw)"
+Subject: [uml-devel] performance problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,42 +29,194 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 2 Jul 2004 17:25:09 -0000
+Date: Fri, 02 Jul 2004 19:31:29 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Sorry for the repeated posts, but i figured out that my email body was not
-posted. My appologies for the spam.
-
----------------------------------
-Hi All,
-
-I am kind of new to UML and I am experiencing a very strange performance
-hinder with it. I am running two benchmarks; one that writes a 50Mbyte file
-and the other one reads a 50Mbyte file. I tried the benchmarks with and
-without setting the O_DIRECT flag, in which cases the whole task is done in a
-matter of seconds(10-30 seconds) except when reading the file with O_DIRECT
-flag on. In this case, it takes 18-20 min!!! I am running UML 2.4.19 on top of
-kernel 2.4.25. I have time output like that (average of 20 runs)
 
 
-Operation              UserTime(sec)   SysTime(sec)  WallClockTime(sec)
+--Boundary_(ID_lvQFo/vuZ6TPrARs04axcw)
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
 
-Write Without O_DIRECT    5.612000  0.117500  27.164500
 
-Write With O_DIRECT       10.007000 0.017000 22.199500
 
-Read without O_DIRECT     3.035000 0.091000 7.760000
 
-Read With O_DIRECT        21.492000 29.680000 1133.054000
 
-I would appreciate it very much if somebody would explain to me how to solve
-that strange performance problem, or even explain why does it happen for
-reading with O_DIRECT but not without !!??
+Hello all
 
-Thanks allot,
-Lamia Youseff
--- 
+ Seems i've got a problem !
 
+ Host :
+ Compaq proliant ML570 (4 700 MHz cpus, 4 GB memory)
+
+ Host kernel:
+ generic 2.4.26 + skas patch from Blaisorbalde + sysemu patch + cpucap
+ patch + Device Mapper patch for EVMS ans EVMS compementary patchs
+
+ UML kernel:
+ generic 2.4.26 + uml-2.4.26 patch + sysemu patch
+
+ The problem is summarized by the 2 following results from unixbench 4.10.
+ The hostname of the host is pyaqqe, the one of the UML VM id pyaqqe02
+
+  (See attached file: bench1.txt)
+
+ A huge lost of performance isn't it ?
+
+ pyaqqe02 was the only one active during the bench
+
+ Questions 1:
+ Do you think it is normal that my VM performs so bad  ?
+
+ Question 2:
+ A soon as I launch 2 benchs simultaneously on 2 VMs, I encounter
+ segmentation faults during sleeps (reproductible). I thought may MVs were
+ waterproof. Do you have an explanation ?
+
+ PS: The 'ab' benchmark program from apache give similar results without
+ the segmentation fault pb
+
+--Boundary_(ID_lvQFo/vuZ6TPrARs04axcw)
+Content-type: application/octet-stream; name=bench1.txt
+Content-transfer-encoding: base64
+Content-disposition: attachment; filename=bench1.txt
+
+ICBCWVRFIFVOSVggQmVuY2htYXJrcyAoVmVyc2lvbiA0LjEuMCkNCiAgU3lzdGVtIC0tIExpbnV4
+IHB5YXFxZSAyLjQuMjYtc21wbXV0MSAjMyBTTVAgVHVlIEp1biAyOSAxNjo1NjowOSBDRVNUIDIw
+MDQgaTY4NiB1bmtub3duDQogIFN0YXJ0IEJlbmNobWFyayBSdW46IEZyaSBKdWwgIDIgMDk6NTI6
+NDkgQ0VTVCAyMDA0DQogICAxIGludGVyYWN0aXZlIHVzZXJzLg0KICAgMDk6NTI6NDkgIHVwIDE3
+OjA0LCAgMSB1c2VyLCAgbG9hZCBhdmVyYWdlOiAwLjAwLCAwLjAwLCAwLjAwDQogIGxyd3hyd3hy
+d3ggICAgMSByb290ICAgICByb290ICAgICAgICAgICAgNCBNYXIgMjYgMTE6MTggL2Jpbi9zaCAt
+PiBiYXNoDQogIC9iaW4vc2g6IHN5bWJvbGljIGxpbmsgdG8gYmFzaA0KICB0bXBmcyAgICAgICAg
+ICAgICAgICAgIDIxOTg4NTIgICAgNDYwMTIwICAgMTczODczMiAgMjElIC90bXANCkRocnlzdG9u
+ZSAyIHVzaW5nIHJlZ2lzdGVyIHZhcmlhYmxlcyAgICAgMTU0NDY5OC41IGxwcyAgICgxMC4wIHNl
+Y3MsIDEwIHNhbXBsZXMpDQpEb3VibGUtUHJlY2lzaW9uIFdoZXRzdG9uZSAgICAgICAgICAgICAg
+ICAgIDQ0MS4xIE1XSVBTICgxMC4wIHNlY3MsIDEwIHNhbXBsZXMpDQpTeXN0ZW0gQ2FsbCBPdmVy
+aGVhZCAgICAgICAgICAgICAgICAgICAgIDMxNjA3MS4zIGxwcyAgICgxMC4wIHNlY3MsIDEwIHNh
+bXBsZXMpDQpQaXBlIFRocm91Z2hwdXQgICAgICAgICAgICAgICAgICAgICAgICAgIDMwMTA2NC42
+IGxwcyAgICgxMC4wIHNlY3MsIDEwIHNhbXBsZXMpDQpQaXBlLWJhc2VkIENvbnRleHQgU3dpdGNo
+aW5nICAgICAgICAgICAgICA3NTE3NC4xIGxwcyAgICgxMC4wIHNlY3MsIDEwIHNhbXBsZXMpDQpQ
+cm9jZXNzIENyZWF0aW9uICAgICAgICAgICAgICAgICAgICAgICAgICAgMjQ0My4zIGxwcyAgICgz
+MC4wIHNlY3MsIDMgc2FtcGxlcykNCkV4ZWNsIFRocm91Z2hwdXQgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAxMjE0LjYgbHBzICAgKDI5Ljcgc2VjcywgMyBzYW1wbGVzKQ0KRmlsZSBSZWFkIDEw
+MjQgYnVmc2l6ZSAyMDAwIG1heGJsb2NrcyAgICAyMjEzNzQuMCBLQnBzICAoMzAuMCBzZWNzLCAz
+IHNhbXBsZXMpDQpGaWxlIFdyaXRlIDEwMjQgYnVmc2l6ZSAyMDAwIG1heGJsb2NrcyAgIDIyMDQ2
+NS4wIEtCcHMgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykNCkZpbGUgQ29weSAxMDI0IGJ1ZnNpemUg
+MjAwMCBtYXhibG9ja3MgICAgMTAzMzc4LjAgS0JwcyAgKDMwLjAgc2VjcywgMyBzYW1wbGVzKQ0K
+RmlsZSBSZWFkIDI1NiBidWZzaXplIDUwMCBtYXhibG9ja3MgICAgICAxMjA1MDMuMCBLQnBzICAo
+MzAuMCBzZWNzLCAzIHNhbXBsZXMpDQpGaWxlIFdyaXRlIDI1NiBidWZzaXplIDUwMCBtYXhibG9j
+a3MgICAgIDEwNzc5NS4wIEtCcHMgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykNCkZpbGUgQ29weSAy
+NTYgYnVmc2l6ZSA1MDAgbWF4YmxvY2tzICAgICAgIDUwMzYzLjAgS0JwcyAgKDMwLjAgc2Vjcywg
+MyBzYW1wbGVzKQ0KRmlsZSBSZWFkIDQwOTYgYnVmc2l6ZSA4MDAwIG1heGJsb2NrcyAgICAzNTU0
+MzcuMCBLQnBzICAoMzAuMCBzZWNzLCAzIHNhbXBsZXMpDQpGaWxlIFdyaXRlIDQwOTYgYnVmc2l6
+ZSA4MDAwIG1heGJsb2NrcyAgIDI4MTY0OC4wIEtCcHMgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykN
+CkZpbGUgQ29weSA0MDk2IGJ1ZnNpemUgODAwMCBtYXhibG9ja3MgICAgMTYzMjE1LjAgS0JwcyAg
+KDMwLjAgc2VjcywgMyBzYW1wbGVzKQ0KU2hlbGwgU2NyaXB0cyAoMSBjb25jdXJyZW50KSAgICAg
+ICAgICAgICAgIDMxNzUuNyBscG0gICAoNjAuMCBzZWNzLCAzIHNhbXBsZXMpDQpTaGVsbCBTY3Jp
+cHRzICg4IGNvbmN1cnJlbnQpICAgICAgICAgICAgICAgIDgwMy4zIGxwbSAgICg2MC4wIHNlY3Ms
+IDMgc2FtcGxlcykNClNoZWxsIFNjcmlwdHMgKDE2IGNvbmN1cnJlbnQpICAgICAgICAgICAgICAg
+NDI2LjcgbHBtICAgKDYwLjAgc2VjcywgMyBzYW1wbGVzKQ0KQXJpdGhtZXRpYyBUZXN0ICh0eXBl
+ID0gc2hvcnQpICAgICAgICAgICAxNzM5OTAuNiBscHMgICAoMTAuMCBzZWNzLCAzIHNhbXBsZXMp
+DQpBcml0aG1ldGljIFRlc3QgKHR5cGUgPSBpbnQpICAgICAgICAgICAgICAgbm8gbWVhc3VyZWQg
+cmVzdWx0cw0KQXJpdGhtZXRpYyBUZXN0ICh0eXBlID0gbG9uZykgICAgICAgICAgICAxNzY4MzQu
+MyBscHMgICAoMTAuMCBzZWNzLCAzIHNhbXBsZXMpDQpBcml0aG1ldGljIFRlc3QgKHR5cGUgPSBm
+bG9hdCkgICAgICAgICAgIDE4NTY3NC41IGxwcyAgICgxMC4wIHNlY3MsIDMgc2FtcGxlcykNCkFy
+aXRobWV0aWMgVGVzdCAodHlwZSA9IGRvdWJsZSkgICAgICAgICAgMTg1NTQ0LjUgbHBzICAgKDEw
+LjAgc2VjcywgMyBzYW1wbGVzKQ0KQXJpdGhvaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAzMjM2NTY0LjggbHBzICAgKDEwLjAgc2VjcywgMyBzYW1wbGVzKQ0KQyBDb21waWxlciBU
+aHJvdWdocHV0ICAgICAgICAgICAgICAgICAgICAgICA1MTUuMyBscG0gICAoNjAuMCBzZWNzLCAz
+IHNhbXBsZXMpDQpEYzogc3FydCgyKSB0byA5OSBkZWNpbWFsIHBsYWNlcyAgICAgICAgICA0NTY3
+Mi41IGxwbSAgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykNClJlY3Vyc2lvbiBUZXN0LS1Ub3dlciBv
+ZiBIYW5vaSAgICAgICAgICAgIDI1NTM0LjMgbHBzICAgKDIwLjAgc2VjcywgMyBzYW1wbGVzKQ0K
+DQoNCiAgICAgICAgICAgICAgICAgICAgIElOREVYIFZBTFVFUw0KVEVTVCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBCQVNFTElORSAgICAgUkVTVUxUICAgICAgSU5ERVgN
+Cg0KRGhyeXN0b25lIDIgdXNpbmcgcmVnaXN0ZXIgdmFyaWFibGVzICAgICAgICAxMTY3MDAuMCAg
+MTU0NDY5OC41ICAgICAgMTMyLjQNCkRvdWJsZS1QcmVjaXNpb24gV2hldHN0b25lICAgICAgICAg
+ICAgICAgICAgICAgIDU1LjAgICAgICA0NDEuMSAgICAgICA4MC4yDQpFeGVjbCBUaHJvdWdocHV0
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA0My4wICAgICAxMjE0LjYgICAgICAyODIu
+NQ0KRmlsZSBDb3B5IDEwMjQgYnVmc2l6ZSAyMDAwIG1heGJsb2NrcyAgICAgICAgIDM5NjAuMCAg
+IDEwMzM3OC4wICAgICAgMjYxLjENCkZpbGUgQ29weSAyNTYgYnVmc2l6ZSA1MDAgbWF4YmxvY2tz
+ICAgICAgICAgICAxNjU1LjAgICAgNTAzNjMuMCAgICAgIDMwNC4zDQpGaWxlIENvcHkgNDA5NiBi
+dWZzaXplIDgwMDAgbWF4YmxvY2tzICAgICAgICAgNTgwMC4wICAgMTYzMjE1LjAgICAgICAyODEu
+NA0KUGlwZSBUaHJvdWdocHV0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMTI0NDAuMCAg
+IDMwMTA2NC42ICAgICAgMjQyLjANClBpcGUtYmFzZWQgQ29udGV4dCBTd2l0Y2hpbmcgICAgICAg
+ICAgICAgICAgICA0MDAwLjAgICAgNzUxNzQuMSAgICAgIDE4Ny45DQpQcm9jZXNzIENyZWF0aW9u
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEyNi4wICAgICAyNDQzLjMgICAgICAxOTMu
+OQ0KU2hlbGwgU2NyaXB0cyAoOCBjb25jdXJyZW50KSAgICAgICAgICAgICAgICAgICAgIDYuMCAg
+ICAgIDgwMy4zICAgICAxMzM4LjgNClN5c3RlbSBDYWxsIE92ZXJoZWFkICAgICAgICAgICAgICAg
+ICAgICAgICAgIDE1MDAwLjAgICAzMTYwNzEuMyAgICAgIDIxMC43DQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID09PT09PT09
+PQ0KICAgICBGSU5BTCBTQ09SRSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgMjQyLjANCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KICBC
+WVRFIFVOSVggQmVuY2htYXJrcyAoVmVyc2lvbiA0LjEuMCkNCiAgU3lzdGVtIC0tIExpbnV4IHB5
+YXFxZTAyIDIuNC4yNi1wc2EyLTF1bSAjOSBUaHUgSnVsIDEgMTY6MzE6MTMgQ0VTVCAyMDA0IGk2
+ODYgdW5rbm93bg0KICBTdGFydCBCZW5jaG1hcmsgUnVuOiBGcmkgSnVsICAyIDEwOjQ3OjE5IENF
+U1QgMjAwNA0KICAgMSBpbnRlcmFjdGl2ZSB1c2Vycy4NCiAgIDEwOjQ3OjE5ICB1cCAxNzo1OCwg
+IDEgdXNlciwgIGxvYWQgYXZlcmFnZTogMC4wNywgMC4wMiwgMC4wMA0KICBscnd4cnd4cnd4ICAg
+IDEgcm9vdCAgICAgZXNvICAgICAgICAgICAgIDQgTWF5IDEyIDExOjQ2IC9iaW4vc2ggLT4gYmFz
+aA0KICAvYmluL3NoOiBzeW1ib2xpYyBsaW5rIHRvIGJhc2gNCiAgL2Rldi91YmQvNCAgICAgICAg
+ICAgICAgNDM1NzgzICAgICAgODI5OSAgICA0MjI5ODQgICAyJSAvdG1wDQpEaHJ5c3RvbmUgMiB1
+c2luZyByZWdpc3RlciB2YXJpYWJsZXMgICAgIDE1MzI0NTMuNSBscHMgICAoMTAuMCBzZWNzLCAx
+MCBzYW1wbGVzKQ0KRG91YmxlLVByZWNpc2lvbiBXaGV0c3RvbmUgICAgICAgICAgICAgICAgICA0
+NDAuMCBNV0lQUyAoOS45IHNlY3MsIDEwIHNhbXBsZXMpDQpTeXN0ZW0gQ2FsbCBPdmVyaGVhZCAg
+ICAgICAgICAgICAgICAgICAgICAxMDM0NS41IGxwcyAgICgxMC4wIHNlY3MsIDEwIHNhbXBsZXMp
+DQpQaXBlIFRocm91Z2hwdXQgICAgICAgICAgICAgICAgICAgICAgICAgICAxODYwMy44IGxwcyAg
+ICgxMC4wIHNlY3MsIDEwIHNhbXBsZXMpDQpQaXBlLWJhc2VkIENvbnRleHQgU3dpdGNoaW5nICAg
+ICAgICAgICAgICAgNzI4OC4wIGxwcyAgICgxMC4wIHNlY3MsIDEwIHNhbXBsZXMpDQpQcm9jZXNz
+IENyZWF0aW9uICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEyNS4yIGxwcyAgICgzMC4wIHNl
+Y3MsIDMgc2FtcGxlcykNCkV4ZWNsIFRocm91Z2hwdXQgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgMTQ2LjQgbHBzICAgKDI5Ljcgc2VjcywgMyBzYW1wbGVzKQ0KRmlsZSBSZWFkIDEwMjQgYnVm
+c2l6ZSAyMDAwIG1heGJsb2NrcyAgICAgNDA4MjkuMCBLQnBzICAoMzAuMCBzZWNzLCAzIHNhbXBs
+ZXMpDQpGaWxlIFdyaXRlIDEwMjQgYnVmc2l6ZSAyMDAwIG1heGJsb2NrcyAgICAxNDg0MS4wIEtC
+cHMgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykNCkZpbGUgQ29weSAxMDI0IGJ1ZnNpemUgMjAwMCBt
+YXhibG9ja3MgICAgIDEwNDA5LjAgS0JwcyAgKDMwLjAgc2VjcywgMyBzYW1wbGVzKQ0KRmlsZSBS
+ZWFkIDI1NiBidWZzaXplIDUwMCBtYXhibG9ja3MgICAgICAgMTEwOTMuMCBLQnBzICAoMzAuMCBz
+ZWNzLCAzIHNhbXBsZXMpDQpGaWxlIFdyaXRlIDI1NiBidWZzaXplIDUwMCBtYXhibG9ja3MgICAg
+ICAgNDEwMC4wIEtCcHMgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykNCkZpbGUgQ29weSAyNTYgYnVm
+c2l6ZSA1MDAgbWF4YmxvY2tzICAgICAgICAyODcxLjAgS0JwcyAgKDMwLjAgc2VjcywgMyBzYW1w
+bGVzKQ0KRmlsZSBSZWFkIDQwOTYgYnVmc2l6ZSA4MDAwIG1heGJsb2NrcyAgICAxMTg0NjQuMCBL
+QnBzICAoMzAuMCBzZWNzLCAzIHNhbXBsZXMpDQpGaWxlIFdyaXRlIDQwOTYgYnVmc2l6ZSA4MDAw
+IG1heGJsb2NrcyAgICAzODEzNy4wIEtCcHMgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykNCkZpbGUg
+Q29weSA0MDk2IGJ1ZnNpemUgODAwMCBtYXhibG9ja3MgICAgIDI1MDA4LjAgS0JwcyAgKDMwLjAg
+c2VjcywgMyBzYW1wbGVzKQ0KU2hlbGwgU2NyaXB0cyAoMSBjb25jdXJyZW50KSAgICAgICAgICAg
+ICAgICAyODEuNCBscG0gICAoNjAuMCBzZWNzLCAzIHNhbXBsZXMpDQpTaGVsbCBTY3JpcHRzICg4
+IGNvbmN1cnJlbnQpICAgICAgICAgICAgICAgICAzOS4wIGxwbSAgICg2MC4wIHNlY3MsIDMgc2Ft
+cGxlcykNClNoZWxsIFNjcmlwdHMgKDE2IGNvbmN1cnJlbnQpICAgICAgICAgICAgICAgIDE5LjMg
+bHBtICAgKDYwLjAgc2VjcywgMyBzYW1wbGVzKQ0KQXJpdGhtZXRpYyBUZXN0ICh0eXBlID0gc2hv
+cnQpICAgICAgICAgICAxNzI4NTkuMiBscHMgICAoMTAuMCBzZWNzLCAzIHNhbXBsZXMpDQpBcml0
+aG1ldGljIFRlc3QgKHR5cGUgPSBpbnQpICAgICAgICAgICAgICAgbm8gbWVhc3VyZWQgcmVzdWx0
+cw0KQXJpdGhtZXRpYyBUZXN0ICh0eXBlID0gbG9uZykgICAgICAgICAgICAxNzQ2OTAuNCBscHMg
+ICAoMTAuMCBzZWNzLCAzIHNhbXBsZXMpDQpBcml0aG1ldGljIFRlc3QgKHR5cGUgPSBmbG9hdCkg
+ICAgICAgICAgIDE4NDk0OS4zIGxwcyAgICgxMC4wIHNlY3MsIDMgc2FtcGxlcykNCkFyaXRobWV0
+aWMgVGVzdCAodHlwZSA9IGRvdWJsZSkgICAgICAgICAgMTg0NjUwLjEgbHBzICAgKDEwLjAgc2Vj
+cywgMyBzYW1wbGVzKQ0KQXJpdGhvaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAz
+MjI1MTk1LjYgbHBzICAgKDEwLjAgc2VjcywgMyBzYW1wbGVzKQ0KQyBDb21waWxlciBUaHJvdWdo
+cHV0ICAgICAgICAgICAgICAgICAgICAgICAxODcuNyBscG0gICAoNjAuMCBzZWNzLCAzIHNhbXBs
+ZXMpDQpEYzogc3FydCgyKSB0byA5OSBkZWNpbWFsIHBsYWNlcyAgICAgICAgICAgNDA3OS44IGxw
+bSAgICgzMC4wIHNlY3MsIDMgc2FtcGxlcykNClJlY3Vyc2lvbiBUZXN0LS1Ub3dlciBvZiBIYW5v
+aSAgICAgICAgICAgIDI1MDQ3LjkgbHBzICAgKDIwLjAgc2VjcywgMyBzYW1wbGVzKQ0KDQoNCiAg
+ICAgICAgICAgICAgICAgICAgIElOREVYIFZBTFVFUw0KVEVTVCAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBCQVNFTElORSAgICAgUkVTVUxUICAgICAgSU5ERVgNCg0KRGhy
+eXN0b25lIDIgdXNpbmcgcmVnaXN0ZXIgdmFyaWFibGVzICAgICAgICAxMTY3MDAuMCAgMTUzMjQ1
+My41ICAgICAgMTMxLjMNCkRvdWJsZS1QcmVjaXNpb24gV2hldHN0b25lICAgICAgICAgICAgICAg
+ICAgICAgIDU1LjAgICAgICA0NDAuMCAgICAgICA4MC4wDQpFeGVjbCBUaHJvdWdocHV0ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICA0My4wICAgICAgMTQ2LjQgICAgICAgMzQuMA0KRmls
+ZSBDb3B5IDEwMjQgYnVmc2l6ZSAyMDAwIG1heGJsb2NrcyAgICAgICAgIDM5NjAuMCAgICAxMDQw
+OS4wICAgICAgIDI2LjMNCkZpbGUgQ29weSAyNTYgYnVmc2l6ZSA1MDAgbWF4YmxvY2tzICAgICAg
+ICAgICAxNjU1LjAgICAgIDI4NzEuMCAgICAgICAxNy4zDQpGaWxlIENvcHkgNDA5NiBidWZzaXpl
+IDgwMDAgbWF4YmxvY2tzICAgICAgICAgNTgwMC4wICAgIDI1MDA4LjAgICAgICAgNDMuMQ0KUGlw
+ZSBUaHJvdWdocHV0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMTI0NDAuMCAgICAxODYw
+My44ICAgICAgIDE1LjANClBpcGUtYmFzZWQgQ29udGV4dCBTd2l0Y2hpbmcgICAgICAgICAgICAg
+ICAgICA0MDAwLjAgICAgIDcyODguMCAgICAgICAxOC4yDQpQcm9jZXNzIENyZWF0aW9uICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIDEyNi4wICAgICAgMTI1LjIgICAgICAgIDkuOQ0KU2hl
+bGwgU2NyaXB0cyAoOCBjb25jdXJyZW50KSAgICAgICAgICAgICAgICAgICAgIDYuMCAgICAgICAz
+OS4wICAgICAgIDY1LjANClN5c3RlbSBDYWxsIE92ZXJoZWFkICAgICAgICAgICAgICAgICAgICAg
+ICAgIDE1MDAwLjAgICAgMTAzNDUuNSAgICAgICAgNi45DQogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID09PT09PT09PQ0KICAg
+ICBGSU5BTCBTQ09SRSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIDI4LjENCg==
+
+--Boundary_(ID_lvQFo/vuZ6TPrARs04axcw)--
 
 
 -------------------------------------------------------
