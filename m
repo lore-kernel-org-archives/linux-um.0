@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AOcaq-0000Mq-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 25 Nov 2003 04:47:00 -0800
+	id 1AOcbB-0000ON-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 25 Nov 2003 04:47:21 -0800
 Received: from thor.65535.net ([216.17.104.19])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
 	(Exim 4.24)
-	id 1AOcaq-0005eW-FY
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 25 Nov 2003 04:47:00 -0800
+	id 1AOcbB-0000Tv-6s
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 25 Nov 2003 04:47:21 -0800
 From: Rus Foster <rghf@fsck.me.uk>
 Subject: Re: [uml-devel] Uml_tools compile error
 In-Reply-To: <3507.1069763498@www12.gmx.net>
-Message-ID: <Pine.LNX.4.58.0311251247400.32099@bitch.localdomain>
+Message-ID: <Pine.LNX.4.58.0311251248060.32099@bitch.localdomain>
 References: <20031124.190229.-373069.0.mcmechanjw@juno.com>
  <3507.1069763498@www12.gmx.net>
 MIME-Version: 1.0
@@ -27,7 +27,7 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Nov 2003 12:47:48 +0000 (GMT)
+Date: Tue, 25 Nov 2003 12:48:16 +0000 (GMT)
 To: Thonix@gmx.net
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
@@ -49,15 +49,15 @@ On Tue, 25 Nov 2003 Thonix@gmx.net wrote:
 > uml_mconsole.c:17: readline/readline.h: No such file or directory
 > uml_mconsole.c:18: readline/history.h: No such file or directory
 
-Install ncurses-devel
+readline-devel actually
 
-Rgds
+soz
 
 Rus
 -- 
-w: http://www.jvds.com  | JVDS Virtual Servers
-e: rghf@jvds.com        | Daily Specials
-t: +44 7919 373537	| http://www.jvds.com/specials.php
+w: http://www.jvds.com  | JVDS Tech Channel:
+e: rghf@jvds.com        | http://tech.jvds.com
+t: +44 7919 373537	| Talk about Tech
 t: 1-888-327-6330 	| email: sales@jvds.com
 
 
