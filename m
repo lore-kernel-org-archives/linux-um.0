@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cycwa-0001a5-9y for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 13:30:48 -0800
+	id 1Cydqv-0004O4-Ho for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 14:29:01 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CycwY-0001ND-L3 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 13:30:48 -0800
-Message-Id: <200502082221.j18MLqs0013717@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: [BUG report] UML linux-2.6 latest BK doesn't
-	compile 
-In-Reply-To: Your message of "Tue, 08 Feb 2005 18:48:46 +0100."
-	<200502081848.46270.blaisorblade@yahoo.it> 
-References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
-	<200502081122.22613.blaisorblade@yahoo.it>
-	<1107859254.582.4.camel@imp.csi.cam.ac.uk>
-	<200502081848.46270.blaisorblade@yahoo.it> 
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cydqu-00042W-W8 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 14:29:01 -0800
+Message-Id: <200502090017.j190Hds0014277@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: UML tuntap driver problem with queueing 
+In-Reply-To: Your message of "Tue, 08 Feb 2005 21:37:06 +0200."
+	<87zmyej125.fsf@aka.i.naked.iki.fi> 
+References: <87hdks5y35.fsf@aka.i.naked.iki.fi>
+	<87zmyej125.fsf@aka.i.naked.iki.fi> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -31,30 +28,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 08 Feb 2005 17:21:52 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Anton Altaparmakov <aia21@cam.ac.uk>, lkml <linux-kernel@vger.kernel.org>
+Date: Tue, 08 Feb 2005 19:17:39 -0500
+To: Nuutti Kotivuori <naked@iki.fi>
+Cc: user-mode-linux-devel@lists.sourceforge.net, McGroarty <mcgroarty@gmail.com>
 
-blaisorblade@yahoo.it said:
-> the Makefiles were heavily changed, however, recently (after 2.6.10). 
+naked@iki.fi said:
+> ust a heads up here to the UML folks in case it was missed - with the
+> current code, packet delivery to UML machines using tuntap driver
+> *will* mess up (stall totally or major bursts of lag) if more than 10
+> packets are queued to UML at a time. 
 
-There was a bug in that patch.  The fix is:
+It wasn't missed.  Someone else posted 
+(http://marc.theaimsgroup.com/?l=user-mode-linux-user&m=110752781409419&w=2)
+that networking freezes until a character is typed on the console.
 
-Index: 2.6.10/arch/um/Makefile
-===================================================================
---- 2.6.10.orig/arch/um/Makefile        2005-02-08 12:33:23.000000000 -0500
-+++ 2.6.10/arch/um/Makefile     2005-02-08 12:33:23.000000000 -0500
-@@ -36,8 +36,8 @@
- MAKEFILES-INCL += $(foreach mode,$(um-modes-y),\
-                   $(srctree)/$(ARCH_DIR)/Makefile-$(mode))
- 
--ifneq ($(MAKEFILE-INCL),)
--  include $(MAKEFILE-INCL)
-+ifneq ($(MAKEFILES-INCL),)
-+  include $(MAKEFILES-INCL)
- endif
- 
- ARCH_INCLUDE   := -I$(ARCH_DIR)/include
+This is a clear sign of the SIGIO missing some traffic and letting it sit
+on the host until some other IO happens.
+
+> Ofcourse, the actual cause for this should be fixed (SIGIO mess up or
+> whatever it is). 
+
+Yup.  It does look like there's some sort of race in the SIGIO handler.
 
 				Jeff
 
