@@ -1,22 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cydqv-0004O4-Ho for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 14:29:01 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cydqu-00042W-W8 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 14:29:01 -0800
-Message-Id: <200502090017.j190Hds0014277@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: UML tuntap driver problem with queueing 
-In-Reply-To: Your message of "Tue, 08 Feb 2005 21:37:06 +0200."
-	<87zmyej125.fsf@aka.i.naked.iki.fi> 
-References: <87hdks5y35.fsf@aka.i.naked.iki.fi>
-	<87zmyej125.fsf@aka.i.naked.iki.fi> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1CyjZO-0006vr-5C for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 20:35:18 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CyjZM-0002No-LE
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 20:35:18 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Why is UML built static all the time?
+References: <200502080203.53596.rob@landley.net>
+	<Pine.GSO.4.61.0502081014530.19563@waterleaf.sonytel.be>
+In-Reply-To: <Pine.GSO.4.61.0502081014530.19563@waterleaf.sonytel.be>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200502082233.08988.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,30 +32,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 08 Feb 2005 19:17:39 -0500
-To: Nuutti Kotivuori <naked@iki.fi>
-Cc: user-mode-linux-devel@lists.sourceforge.net, McGroarty <mcgroarty@gmail.com>
+Date: Tue, 8 Feb 2005 22:33:08 -0500
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-naked@iki.fi said:
-> ust a heads up here to the UML folks in case it was missed - with the
-> current code, packet delivery to UML machines using tuntap driver
-> *will* mess up (stall totally or major bursts of lag) if more than 10
-> packets are queued to UML at a time. 
+On Tuesday 08 February 2005 04:15 am, Geert Uytterhoeven wrote:
+> On Tue, 8 Feb 2005, Rob Landley wrote:
+> > Is there any easy way to get UML to do a dynamic build?  I tried removing
+> > -static from the makefile, but the build broke.
+>
+> Have you enabled TT mode? IIRC, dynamic build is a Kconfig option for
+> SKAS-only.
 
-It wasn't missed.  Someone else posted 
-(http://marc.theaimsgroup.com/?l=user-mode-linux-user&m=110752781409419&w=2)
-that networking freezes until a character is typed on the console.
+SKAS still only works with a modified host.  For the project that started me 
+baking on this, if I had the ability to specify the host kernel, I wouldn't 
+need to wrap my script in a UML instance...
 
-This is a clear sign of the SIGIO missing some traffic and letting it sit
-on the host until some other IO happens.
-
-> Ofcourse, the actual cause for this should be fixed (SIGIO mess up or
-> whatever it is). 
-
-Yup.  It does look like there's some sort of race in the SIGIO handler.
-
-				Jeff
-
+Rob
 
 
 -------------------------------------------------------
