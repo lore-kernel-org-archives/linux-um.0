@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNxVD-0007qP-0U for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 10:26:43 -0700
-Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNxV7-0004gN-VB for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 10:26:38 -0700
-Message-ID: <40A25E3E.9050502@nortelnetworks.com>
+	id 1BNxYH-00006T-By for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 10:29:53 -0700
+Received: from [47.81.138.65] (helo=zsc3s004.nortelnetworks.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BNxYH-0003NA-4T for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 10:29:53 -0700
+Received: from zsc3c028.us.nortel.com (zsc3c028.us.nortel.com [47.81.138.28])
+	by zsc3s004.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with
+	ESMTP id i4CHTj607091
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 12 May 2004 10:29:45 -0700 (PDT)
+Message-ID: <40A25F08.3060004@nortelnetworks.com>
 From: Joe Marzot <gmarzot@nortelnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: [uml-user] LTT in UML ?
-References: <4098FC64.3000607@enterasys.com>
-	<070c01c432f8$1a423000$2000000a@schlepptopp>
-	<409AF27F.6020207@vgertech.com> <409FB190.4060006@enterasys.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040800090204080907060208"
+Subject: [uml-devel] 2.4.24 Kernel panic (patch 2.4.24-1)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,61 +29,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 May 2004 13:26:22 -0400
-To: David Bahi <dbahi@enterasys.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
-you are not the only one interested. There is a difference in what would 
-be shown with tracing UML from the host vs. tracing the guest 
-processes/kernel in a UML guest. I have the patches applied here as well 
-but it does not look like it is working. let's keep in touch as we 
-discover things.
-
-regards, GSM
-
-David Bahi wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> right. yet, not what i was going for.
-> i'd like to profile applications running
-> under/within the uml itself.
-> 
-> still, looks like it's just me that's
-> interested in this so i'll give it a go
-> when i get a chance and post specific
-> questions to this list when i'm lost.
-> 
-> - --
-> db
-> 
-> Nuno Silva wrote:
-> 
-> | roland wrote:
-> |
-> | [..]
-> |
-> |  >
-> |  > probably, having an LTT option for the uml-kernel could give some
-> | benefit (performance optimization?)
-> |  > for the uml project ?
-> |  >
-> |
-> | You can do that already. Run LTT on the host and "trace" the UML
-> | processes ;)
-> |
-> | Regards,
-> | Nuno Silva
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.2.4 (MingW32)
-> Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-> 
-> iD8DBQFAn7GQ3XQ4zakZ3z4RApfJAJ4/95BNqYzt/uRWCPWPwHlozVBvrACfTkjH
-> 2qU4ecl/5pHhbe0Pl+MfB+8=
-> =yEiC
-> -----END PGP SIGNATURE-----
+Date: Wed, 12 May 2004 13:29:44 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
 
+This is a multi-part message in MIME format.
+--------------040800090204080907060208
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+
+<oops - forgot to attach the back trace>
+
+The following has been seen for some time on an intermittent basis. less
+than 1:20 runs. Having trouble debugging it so I added some code to
+panic.c:panic() to abort() and dump core. Also attached is a back trace
+from that.
+
+Kernel panic: handle_trap - failed to wait at end of syscall, errno = 2,
+status = 383
+
+appreciate any tips or tricks to get more information about this problem.
+
+I have a core if that helps.
+
+regards, Giovanni
+
+ps. The kernel I am running is slightly modified but I do not believe
+that is related. I will look more on a vanilla kernel just to be sure.
+
+
+--------------040800090204080907060208
+Content-Type: text/plain;
+ name="uml_kernel_panic.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="uml_kernel_panic.txt"
+
+(gdb) bt
+#0  0xa01643d1 in kill ()
+    at /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/linux/if_vlan.h:122
+#1  0xa018cbcb in raise ()
+    at /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/linux/if_vlan.h:122
+#2  0xa01646bd in abort ()
+    at /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/linux/if_vlan.h:122
+#3  0xa00d01d5 in handle_trap () at process.c:88
+#4  0xa00d042c in userspace (regs=0xade0827c) at process.c:166
+#5  0xa00d0bee in fork_handler (sig=10) at process_kern.c:102
+#6  <signal handler called>
+#7  0xa01643d1 in kill ()
+    at /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/linux/if_vlan.h:122
+#8  0xa00d4728 in os_usr1_process (pid=Cannot access memory at address 0x8
+) at process.c:95
+
+--------------040800090204080907060208--
 
 
 
