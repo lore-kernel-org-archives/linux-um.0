@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CybU7-0005L9-Gq for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 11:57:19 -0800
+	id 1Cycwa-0001a5-9y for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 13:30:48 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CybU5-0007sl-U6 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 11:57:19 -0800
-Message-Id: <200502082223.j18MMxs0013724@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Tue, 08 Feb 2005 18:37:22 +0100."
-	<200502081837.22519.blaisorblade@yahoo.it> 
+	id 1CycwY-0001ND-L3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 13:30:48 -0800
+Message-Id: <200502082221.j18MLqs0013717@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: [BUG report] UML linux-2.6 latest BK doesn't
+	compile 
+In-Reply-To: Your message of "Tue, 08 Feb 2005 18:48:46 +0100."
+	<200502081848.46270.blaisorblade@yahoo.it> 
 References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
-	<200502081829.j18ITAs0003968@ccure.user-mode-linux.org>
-	<200502081837.22519.blaisorblade@yahoo.it> 
+	<200502081122.22613.blaisorblade@yahoo.it>
+	<1107859254.582.4.camel@imp.csi.cam.ac.uk>
+	<200502081848.46270.blaisorblade@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [BUG report] UML linux-2.6 latest BK doesn't compile
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,14 +31,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 08 Feb 2005 17:22:59 -0500
+Date: Tue, 08 Feb 2005 17:21:52 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Anton Altaparmakov <aia21@cam.ac.uk>, lkml <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Anton Altaparmakov <aia21@cam.ac.uk>, lkml <linux-kernel@vger.kernel.org>
 
 blaisorblade@yahoo.it said:
-> Why not simply disable CONFIG_GCOV for him, in this case? 
+> the Makefiles were heavily changed, however, recently (after 2.6.10). 
 
-Anton presumably turned on CONFIG_GCOV because he wanted to do some profiling...
+There was a bug in that patch.  The fix is:
+
+Index: 2.6.10/arch/um/Makefile
+===================================================================
+--- 2.6.10.orig/arch/um/Makefile        2005-02-08 12:33:23.000000000 -0500
++++ 2.6.10/arch/um/Makefile     2005-02-08 12:33:23.000000000 -0500
+@@ -36,8 +36,8 @@
+ MAKEFILES-INCL += $(foreach mode,$(um-modes-y),\
+                   $(srctree)/$(ARCH_DIR)/Makefile-$(mode))
+ 
+-ifneq ($(MAKEFILE-INCL),)
+-  include $(MAKEFILE-INCL)
++ifneq ($(MAKEFILES-INCL),)
++  include $(MAKEFILES-INCL)
+ endif
+ 
+ ARCH_INCLUDE   := -I$(ARCH_DIR)/include
 
 				Jeff
 
