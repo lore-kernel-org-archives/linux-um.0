@@ -1,18 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bpa85-0007Va-9E for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jul 2004 15:09:01 -0700
-Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1Bpa84-0002SL-V5 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jul 2004 15:09:01 -0700
-Message-ID: <20040727220852.11227.qmail@praize.com>
-From: "gboutwel" <gboutwel@praize.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] uml-2.6.8-rc2 (2.6.8-rc2 w/ uml-patch-2.6.7-01)
-Content-Type: Text/Plain;
+	id 1Bpf2p-00014I-4y for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jul 2004 20:23:55 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1Bpf2o-0008Of-L1
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jul 2004 20:23:55 -0700
+Message-Id: <200407280422.i6S4M7fL008720@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] uml-patch-2.6.7-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,77 +25,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 27 Jul 2004 22:08:52 -0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 28 Jul 2004 00:22:07 -0400
+To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
+Here is a belated patch that updates UML to 2.6.7.  The update was the only 
+change from the 2.6.6 UML.
 
+The next step will be the mm tree.  I'll get that UML fixed up, and start
+splitting it into reasonable patches that Andrew is happy to feed to Linus.
 
-> > Probably something simple, but I wanted to discuss with folks
+The 2.6.7-1 UML patch is available at
+	http://www.user-mode-linux.org/mirror/uml-patch-2.6.7-1.bz2
 
-> > more in the now on if the above (stdio_console) fix was the
-right
+My BK tree is temporarily out of commission until I get my process feeding
+patches from quilt into it.
 
-> > one, and to find out if anyone else has an idea of how to
-fixe
+For the other UML mirrors and other downloads, see 
+        http://user-mode-linux.sourceforge.net/dl-sf.html
+ 
+Other links of interest:
+ 
+        The UML project home page : http://user-mode-linux.sourceforge.net
+        The UML Community site : http://usermodelinux.org
 
-> > the find_next_zero_bit error.
-
-
-
-> Yes, I saw that error in -mm and I agree that renaming is right;
-about the 
-
-> other one, the reported fix (below) is correct; also, it would
-be nice to 
-
-> delete include/asm-um/bitops.h (which includes the i386 version
-of the 
-
-> include; since those funcs were moved to out-of-line ones,
-the trick must be 
-
-> done that way).
-
-
-
-When I delete include/asm-um/bitops.h I can nolonger compile
-(main.o complains aobut implicit definition of find_next_bit
-& find_next_zero_bit).
-
-
-
-What am I supposed to replace include/asm-um/bitops.h with? 
-Am I somehow supposed to symlink it to an SUBARCH?
-
-
-
-> Note however that we must not hardcode that we steel things
-from i386 arch, 
-
-> but we must use $(SUBARCH) - or it will break for any other
-archs (the only 
-
-> working one, at the moment, is the x86_64 one).
-
-
-
-I've tweaked my 2.6.8-rc2-1um to use $(SUBARCH), as well..  If
-I can figure out how to handle bitops.h similarly, I'll post
-an patch of my changes vs an vanilla 2.6.8-rc2 tree.
-
-
-
-George
-
-
-
-----------------------------------------
-
-Single? Find Christian Singles like you!
-
-http://www.praize.com/singles/
-
-
+				Jeff
 
 
 
