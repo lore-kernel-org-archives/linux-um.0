@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1By6M1-00056U-Sl for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 03:10:37 -0700
+	id 1By6MV-0005AW-Ax for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 03:11:07 -0700
 Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1By6M1-0000l4-4e for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 03:10:37 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] bad panic "Kernel stack overflow" - demo exploit
-References: <40E0036D.2070108@sysgo.de>
-	<200407012133.16289.blaisorblade_spam@yahoo.it>
-	<200407032025.52944.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200407032025.52944.blaisorblade_spam@yahoo.it>
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1By6MU-00010Y-M9 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 03:11:07 -0700
+From: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
+Subject: Re: [uml-devel] ubd_kern.c: spin_lock already locked by
+	drivers/block/ll_rw_blk.c
+References: <20030611091956.GA32752@alinoe.com>
+In-Reply-To: <20030611091956.GA32752@alinoe.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200408142332.22142.blaisorblade_spam@yahoo.it>
-Reply-To: 
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Description: 
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200408192057.37295.blaisorblade_personal@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,36 +28,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Aug 2004 17:40:51 +0200
+Date: Thu, 19 Aug 2004 20:57:37 +0200
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Carlo Wood <carlo@alinoe.com>, Jeff Dike <jdike@addtoit.com>
 
-Alle 20:25, sabato 3 luglio 2004, BlaisorBlade ha scritto:
-> Alle 21:33, gioved=EC 1 luglio 2004, BlaisorBlade ha scritto:
+Alle 11:19, mercoled=EC 11 giugno 2003, Carlo Wood ha scritto:
+> Running 2.5.69 as uml, I get the following during boot:
+>
+> ...
+> NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+>  /dev/ubd/disc0:arch/um/drivers/ubd_kern.c:383:
+> spin_lock(arch/um/drivers/ubd_kern.c:a01b6940) already locked by
+> drivers/block/ll_rw_blk.c/1002 drivers/block/ll_rw_blk.c:1004:
+> spin_unlock(arch/um/drivers/ubd_kern.c:a01b6940) not locked unknown
+> partition table
+>  /dev/ubd/disc1:arch/um/drivers/ubd_kern.c:383:
+> spin_lock(arch/um/drivers/ubd_kern.c:a01b6940) already locked by
+> drivers/block/ll_rw_blk.c/1002 drivers/block/ll_rw_blk.c:1004:
+> spin_unlock(arch/um/drivers/ubd_kern.c:a01b6940) not locked unknown
+> partition table
+> arch/um/drivers/ubd_kern.c:383:
+> spin_lock(arch/um/drivers/ubd_kern.c:a01b6940) already locked by
+> drivers/block/ll_rw_blk.c/1002 drivers/block/ll_rw_blk.c:1004:
+> spin_unlock(arch/um/drivers/ubd_kern.c:a01b6940) not locked
+> arch/um/drivers/ubd_kern.c:383:
+> spin_lock(arch/um/drivers/ubd_kern.c:a01b6940) already locked by
+> drivers/block/ll_rw_blk.c/1002 drivers/block/ll_rw_blk.c:1004:
+> spin_unlock(arch/um/drivers/ubd_kern.c:a01b6940) not locked
+> arch/um/drivers/ubd_kern.c:383:
+> spin_lock(arch/um/drivers/ubd_kern.c:a01b6940) already locked by
+> drivers/block/ll_rw_blk.c/1002 drivers/block/ll_rw_blk.c:1004:
+> spin_unlock(arch/um/drivers/ubd_kern.c:a01b6940) not locked VFS: Mounted
+> root (ext2 filesystem) readonly.
+> ...
+>
+> This is with kernel debugging on, of course.
+>
+> Because it mentions files in arch/um/*, it must be a problem
+> with the uml.
+In fact, yes, it's a UML problem. I'm going to solve this. No, I'm not craz=
+y,=20
+the problem is still here (the line numbers are different, but probably is =
 
-About this hunk of the patch, sorry. I tested the patch well, then I added =
-
-this part without testing, and understood this a lot of time after. Sorry. =
-
-Since CONFIG_KERNEL_STACK_ORDER is usually 2, THREAD_SIZE becomes 16k (I've=
+the same). As a side note, to get this you need CONFIG_SMP=3Dn and=20
+CONFIG_DEBUG_SPINLOCK=3Dy. If you enable CONFIG_SMP, you actually don't get=
+ the=20
+debug messages, only the deadlock. Also, to get *this* messages you need to=
 =20
-just realized this). So this hunk is wrong. The rest works very happily.
-> uml-linux-2.6.7/arch/um/kernel/process_kern.c~check_is_user_before_panic =
-  =20
-2004-07-03 16:41:39.473637592 +0200
-> +++ uml-linux-2.6.7-paolo/arch/um/kernel/process_kern.c 2004-07-03=20
-17:53:21.867574296 +0200
-> @@ -165,7 +165,7 @@ int copy_thread(int nr, unsigned long cl
->  {
->         p->thread =3D (struct thread_struct) INIT_THREAD;
->         p->thread.kernel_stack =3D=20
-> -               (unsigned long) p->thread_info + 2 * PAGE_SIZE;
-> +               (unsigned long) p->thread_info + THREAD_SIZE;
->         return(CHOOSE_MODE_PROC(copy_thread_tt, copy_thread_skas, nr,=20
->                                 clone_flags, sp, stack_top, p, regs));
->  }
-> _
+be using synchronous mode. I recommend *NOT* enabling=20
+CONFIG_BLK_DEV_UBD_SYNC, but using instead the ubd=3Dsync option (which is =
+the=20
+same thing, but selectable at runtime).
 
+**And no, using the 's' ubd0s=3D... is not the same thing; the second just =
+means=20
+"use O_SYNC", while the first means "always use O_SYNC, and also don't star=
+t=20
+the ubd I/O thread".
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
