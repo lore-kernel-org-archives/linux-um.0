@@ -2,28 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D0il0-0000Fi-JB for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Feb 2005 08:07:30 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
+	id 1D0psX-0002xC-Vs for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Feb 2005 15:43:45 -0800
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D0ikz-0006Vo-1Z for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Feb 2005 08:07:30 -0800
-Message-ID: <4210CCB9.1050700@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1D0psW-0001H8-JO for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Feb 2005 15:43:45 -0800
+Message-ID: <169101c512ef$6c905850$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <200502110411.35438.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] SKAS-v8: RC2 released against 2.6.7 - 2.6.11-rc3-bk6
+	kernels
 MIME-Version: 1.0
-References: <42021E35.8050601@fujitsu-siemens.com>
-	<4202C18F.5010605@yahoo.com.au>
-	<42036C2C.5040503@fujitsu-siemens.com>
-	<4203F40C.8040707@yahoo.com.au>
-	<20050204143917.1f9507cb.akpm@osdl.org>
-	<4204020F.2000501@yahoo.com.au> <42044D17.5040703@yahoo.com.au>
-	<42058E52.8030306@yahoo.com.au> <20050206071935.GA19991@elte.hu>
-	<4205C8EF.2000604@yahoo.com.au>
-In-Reply-To: <4205C8EF.2000604@yahoo.com.au>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [PATCH] fix wait_task_inactive race (was Re: Race
-	condition in ptrace)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,20 +28,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 14 Feb 2005 17:07:21 +0100
-To: Nick Piggin <nickpiggin@yahoo.com.au>
-Cc: Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@osdl.org>, roland@redhat.com, jdike@addtoit.com, blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Mon, 14 Feb 2005 17:46:34 -0600
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Nick Piggin wrote:
-> Your one liner would fix the problem too, of course. The important
-> thing at this stage is that it gets fixed for 2.6.11.
+FYI: Been testing this pretty heavily.  Seems great -- decided to move it into
+production yesterday.  It's now running on 10 hosts, and I'm happy to report all is
+well.
 
-Sorry, have been off the net last week.
+I just rolled a 2.6.11-rc4+cfq-ts-21 host kernel and I'll be testing this today.
 
-Thank you for the patches. Have tested Ingo's one liner.
-It works fine for me, as expected.
+Thanks!
+-Chris
 
-Bodo
 
 
 -------------------------------------------------------
