@@ -1,27 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNyCl-0001lV-TY for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 11:11:43 -0700
-Received: from stclair.eecs.umich.edu ([141.213.8.40])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BNyCl-0004Ho-CT
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 11:11:43 -0700
-Received: from stclair.eecs.umich.edu (localhost.eecs.umich.edu [127.0.0.1])
-	by stclair.eecs.umich.edu (8.12.10/8.12.10) with ESMTP id
-	i4CIBfuu013470 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 12 May 2004 14:11:41 -0400
-Received: from localhost (dunlapg@localhost)
-	by stclair.eecs.umich.edu (8.12.10/8.12.10/Submit) with ESMTP id
-	i4CIBfKT013466 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 12 May 2004 14:11:41 -0400
-From: George Washington Dunlap III <dunlapg@umich.edu>
-Message-ID: <Pine.LNX.4.60.0405121355060.12720@stclair.eecs.umich.edu>
+	id 1BNyN3-0004O2-9Y for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 11:22:21 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BNyN2-0004lz-OU for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 11:22:20 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Patch for 2.6.6
+References: <200405112032.13202.blaisorblade_spam@yahoo.it>
+	<40A13765.5010002@muhlesteins.com>
+In-Reply-To: <40A13765.5010002@muhlesteins.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: [uml-devel] Seeking real kernel bugs mirrored in UML
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200405122024.22702.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,52 +28,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 May 2004 14:11:41 -0400 (EDT)
+Date: Wed, 12 May 2004 20:24:22 +0200
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-I'm looking for a bug in any recent version of linux (probably 2.4.18+) 
-that would be mirrored in User Mode Linux.  We were thinking probably a 
-filesystem bug, but anything would do.  Preferred are bugs that are very 
-difficult using traditional iterative debugging techniques: namely, ones 
-that involve
-  * a race condition
-  * corruption of the stack / data
+Alle 22:28, marted=EC 11 maggio 2004, Dennis Muhlestein ha scritto:
+> I got this:
+>
+> Reversed (or previously applied) patch detected!  Assume -R? [n]
+> Apply anyway? [n] y
+> Hunk #1 FAILED at 1.
+> Hunk #2 FAILED at 19.
+> 2 out of 2 hunks FAILED -- saving rejects to file include/asm-um/irq.h.rej
+>
+> when applying the first patch.  I tried also with not applying that
+> part, and get a compile failure pretty early in the build process.
+>
+> -Dennis
 
-I need to know:
-  * What version of linux / UML the bug is in.
-  * The conditions needed to trigger it.
+Ok, I botched that part, sorry - try with the patch from Jeff Chua. I'm=20
+posting on the site the corrected version, which I hope should apply=20
+perfectly (I've tested it on apply and unapply - the first one come by maki=
+ng=20
+it work on reversing without rejects the Jeff Chua's version).
 
-I'm working on the ReVirt project at the University of Michigan.  ReVirt 
-is a system to log the complete execution of a virtual machine (currently 
-UML) so that we can replay it exactly as before: this includes all 
-non-deterministic data from the network, keyboard, RDTSC values, as well 
-as re-delivering interrupts exactly the same way.  This means that any 
-"heisenbug" is now repeatable.
+And, finally, also I should quit editing patches by hand :-), maybe!
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-We're working now on using ReVirt for debugging.  We implemented some very 
-useful new features to gdb:
-  * reverse instruction breakpoint (i.e., "Go back to the *last* time this 
-instruction was executed")
-  * reverse data breakpoint (i.e., "Find the last time this value was 
-changed")
-  * reverse step -- go backwards one instruction.
-
-We've already used it to find some bugs in an older version of UML, but 
-unfortunately those were in UML-specific code.  We'd ideally like to show 
-that this would be useful for mainline kernel bugs.
-
-Any help you can give would be appreciated.
-
-Peace,
-  -George
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Sleepycat Software
-Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to 
+Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to=20
 deliver higher performing products faster, at low TCO.
-http://www.sleepycat.com/telcomwpreg.php?From=osdnemail3
-_______________________________________________
+http://www.sleepycat.com/telcomwpreg.php?From______________________________=
+_________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
