@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19yZOA-0003OG-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 09:06:14 -0700
+	id 19yZO5-0003O7-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 09:06:09 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19yZO9-0006Xa-V4
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 09:06:14 -0700
+	id 19yZO4-0006XF-Ci
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 09:06:08 -0700
 Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8EFw1j03157
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 11:58:01 -0400
-Message-Id: <200309141606.h8EG6XNu012095@ccure.karaya.com>
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8EFvtj03142
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 11:57:56 -0400
+Message-Id: <200309141606.h8EG6VNu012090@ccure.karaya.com>
 Subject: Re: [uml-devel] uml-patch-2.4.22-4 
-In-Reply-To: Your message of "Sun, 14 Sep 2003 11:14:50 EDT."
-             <3F6485EA.5040609@davidcoulson.net> 
-References: <200309140317.h8E3H2e4008178@ccure.karaya.com>  <3F6485EA.5040609@davidcoulson.net> 
+In-Reply-To: Your message of "Sun, 14 Sep 2003 15:24:08 BST."
+             <Pine.LNX.4.44.0309141522550.29078-100000@god.stev.org> 
+References: <Pine.LNX.4.44.0309141522550.29078-100000@god.stev.org> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,14 +29,14 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Sep 2003 12:06:33 -0400
-To: David Coulson <david@davidcoulson.net>
+Date: Sun, 14 Sep 2003 12:06:31 -0400
+To: James Stevenson <james@stev.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-david@davidcoulson.net said:
-> Someone, er, missed off a ; :-) 
+james@stev.org said:
+> Does anyone know what mmu_gathers is ? 
 
-There were two of those...
+Turn off CONFIG_SMP for now.
 
 			Jeff
 
