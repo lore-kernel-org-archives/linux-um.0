@@ -1,54 +1,56 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuC5i-0005hn-Df
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 06:57:22 -0800
-Received: from main.gmane.org ([80.91.224.249])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuBzp-0006ma-4t
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 06:51:17 -0800
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1AuBzm-0007Nt-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 20 Feb 2004 15:51:16 +0100
-Received: from pd9ee386d.dip.t-dialin.net ([217.238.56.109])
-        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <user-mode-linux-devel@lists.sourceforge.net>; Fri Feb 20 14:51:16 2004
-Received: from skoehler by pd9ee386d.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
-        id 1AlnuQ-0007hv-00
-        for <user-mode-linux-devel@lists.sourceforge.net>; Fri Feb 20 14:51:16 2004
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <c156t0$g3b$1@sea.gmane.org>
+	id 1AuEJj-0004VM-81 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Feb 2004 09:19:59 -0800
+Received: from shell.blacknet.de ([80.254.131.106])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1AuEDm-0004zD-AC
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Feb 2004 09:13:50 -0800
+From: Goetz Bock <bock@blacknet.de>
+Subject: Re: [uml-devel] Re: skas3 patch fails against vanilla-2.4.25
+Message-ID: <20040220171001.GQ30333@shell.blacknet.de>
+References: <40338C1B.1070800@meisterwerk.net> <c1360l$eei$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] kernel BUG at kernel/exit.c:793!
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1360l$eei$1@sea.gmane.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourceforge.net>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
 List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 15:54:28 +0100
+Date: Fri, 20 Feb 2004 18:10:01 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
 
-UML crashed with the following message:
-Kernel panic: kernel BUG at kernel/exit.c:793!
+On Thu, Feb 19 '04 at 21:27, Sven K?hler wrote:
+> >but these two i couldn't fix.
+> >("copy_segments" function seems to be gone)
+> 
+> Bad news:
+> 
+> I applied the 2.6.3-rc2 patch to a 2.6.3 kernel. This patch cleanly 
+> applies and i can compile a UML-kernel.
+Sorry to hear you have problems patcing 2.6.3, but what about posting
+with a different subject (and with out a In-Reply-To: header) if it has
+nothing to do with the problem desribed in the subject line.
 
-I was just about to execute a pstree-command inside UML.
-Than it crashed. There were several processes running:
-- makewhatis cronjob
-- emerge -upD (python program, starting many shells)
-
-I'm running kernel 2.6.3 patched with 2.6.3-rc2-1 UML patch on a 2.6.3 
-host patched with 2.6.3-rc2-1 UML patch and Gerd Knorr's SKAS patches.
-
+Sorry, but I was hoping for a solution to the problem in the Subject
+line.
+-- 
+/"\ Goetz Bock at blacknet dot de  --  secure mobile Linux everNETting
+\ /                     (c) 2004 as GNU FDL 1.1
+ X   [ 1. Use descriptive subjects - 2. Edit a reply for brevity -  ]
+/ \  [ 3. Reply to the list - 4. Read the archive *before* you post ]
 
 
 -------------------------------------------------------
