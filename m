@@ -1,17 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Paul Warren <pdw@ex-parrot.com>
-Subject: Re: [uml-devel] Re: [uml-user] uml help __alloc_pages: 0-order
-	allocation failed (gfp=0xf0/0)
-Message-ID: <20050317195721.C18119@sphinx.mythic-beasts.com>
-References: <000d01c52b22$8ab2c020$0201a8c0@lualele>
-	<20050317190007.GA15341@taniwha.stupidest.org>
-	<000501c52b25$717710e0$0201a8c0@lualele>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1DC4kZ-0004VN-Oi for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 15:49:59 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DC4kV-0001Ai-0I for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 15:49:59 -0800
+Message-Id: <200503180127.j2I1Re5E002348@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] http://www.user-mode-linux.org/~blaisorblade/ down? 
+In-Reply-To: Your message of "Thu, 17 Mar 2005 20:39:24 +0100."
+	<200503172039.25086.blaisorblade@yahoo.it> 
+References: <000301c52b09$850fc370$0201a8c0@lualele>
+	<200503172039.25086.blaisorblade@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000501c52b25$717710e0$0201a8c0@lualele>;
-	from itamar@ispbrasil.com.br on Thu, Mar 17, 2005 at 04:13:37PM
-	-0300
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,19 +28,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Mar 2005 19:57:21 +0000
-To: itamar <itamar@ispbrasil.com.br>
-Cc: Chris Wedgwood <cw@f00f.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 17 Mar 2005 20:27:40 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, itamar <itamar@ispbrasil.com.br>, "Christopher S. Aker" <caker@theshore.net>, David Coulson <david@davidcoulson.net>
 
-On Thu, Mar 17, 2005 at 04:13:37PM -0300, itamar wrote:
-> In the host I have 512 mb of ram
-> 
-> I am running the guest kernel with mem=256M
-> 
+blaisorblade@yahoo.it said:
+> Yes, just verified... the mirror below is still up, and seems up to
+> date...
+>
+> http://uml.linode.com/blaisorblade/
+>
+> Note I don't run the mirror (it's auto-synced periodically) and I
+> don't manage  the main host (only use the provided hosting). IIRC
+> David Coulson hosts that  (I'm not at all sure)... 
 
-Do you make significant use of hostfs filesystems?
+www.user-mode-linux.org is suffering from host hardware troubles.  Looks like
+a broken CPU fan, which is being replaced.  The UMLs should be back soonish.
 
-Paul
+linode.com is Chris Aker, not David, BTW.
+
+				Jeff
+
 
 
 -------------------------------------------------------
