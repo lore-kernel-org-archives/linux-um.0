@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AyIxr-0003lS-0k for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 15:06:15 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AyIlH-0005YI-Av
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 14:53:15 -0800
-Message-Id: <200403022324.i22NO2Wo003875@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Removing user_syms.c altogether 
-In-Reply-To: Your message of "Tue, 02 Mar 2004 20:00:12 +0100."
-	<200403022000.12906.blaisorblade_spam@yahoo.it> 
-References: <200402282010.41036.blaisorblade_spam@yahoo.it>
-	<200402291319.53584.blaisorblade_spam@yahoo.it>
-	<200403021840.i22IeBWo002559@ccure.user-mode-linux.org>
-	<200403022000.12906.blaisorblade_spam@yahoo.it> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1AyJ7k-0006CT-JX for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 15:16:28 -0800
+Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AyIcp-00088x-Lw for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 14:44:31 -0800
+Message-ID: <404512AF.1070309@nortelnetworks.com>
+From: Chris Friesen <cfriesen@nortelnetworks.com>
+MIME-Version: 1.0
+References: <4043B42A.10803@nortelnetworks.com>
+	<200403020100.i2210dM9025649@ccure.user-mode-linux.org>
+	<4044A368.8050406@nortelnetworks.com>
+	<200403022054.i22KslWo003006@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: problems with UML, issues with includes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,17 +29,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 02 Mar 2004 18:24:02 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 02 Mar 2004 18:03:11 -0500
+To: Jeff Dike <jdike@addtoit.com>
+Cc: User-mode-linux-devel <User-mode-linux-devel@lists.sourceforge.net>
 
-blaisorblade_spam@yahoo.it said:
-> If you need the rebuilt patch, just let me know and I'll post it next
-> week  
 
-Yes, that would be good.
+Further update on the very strange behaviour I'm seeing.
 
-			Jeff
+I instrumented kfree() as mentioned before, and also instrumented 
+activate_fd() to test after um_kmalloc() whether the result was already 
+in the active_fds list.
+
+I had assumed that I would see it being freed while still on the list, 
+then being returned from malloc the next time around, causing a dupe.
+
+However, what I actually saw was
+
+
+new fd is same address as one already in active_fds
+deleting address currently in active_fds
+
+
+In other words, the um_kmalloc() was returning an address already in the 
+active_fds list, *before* an address still in the list had been 
+kfree()'d.  The kfree() that I see with an address in the list is the 
+one from the out_unlock jump target in activeate_fd().
+
+So somehow um_kmalloc() is returning duplicate addresses without an 
+intervening call to kfree().
+
+Any ideas?
+
+Chris
+
+
+
+
+-- 
+Chris Friesen                    | MailStop: 043/33/F10
+Nortel Networks                  | work: (613) 765-0557
+3500 Carling Avenue              | fax:  (613) 765-2986
+Nepean, ON K2H 8E9 Canada        | email: cfriesen@nortelnetworks.com
 
 
 
