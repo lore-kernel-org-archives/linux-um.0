@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8lY4-0006hT-4j for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 13:11:08 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1C8lY2-000829-Bf
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 13:11:08 -0700
-From: Jeff Dike <jdike@addtoit.com>
+	id 1C8yHX-0008RN-LS for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 19 Sep 2004 02:46:55 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1C8yHW-0000rb-P0 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 19 Sep 2004 02:46:55 -0700
+From: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
 Subject: Re: [uml-devel] Managing 2.6 merge
-Message-ID: <20040918205250.GB3748@ccure.user-mode-linux.org>
 References: <200409181944.58072.blaisorblade_personal@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<20040918205250.GB3748@ccure.user-mode-linux.org>
+In-Reply-To: <20040918205250.GB3748@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200409181944.58072.blaisorblade_personal@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409191143.54988.blaisorblade_personal@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,26 +30,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Sep 2004 16:52:50 -0400
-To: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 19 Sep 2004 11:43:54 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Sat, Sep 18, 2004 at 07:44:58PM +0200, Paolo Giarrusso wrote:
-> Jeff, could you please make sure you CC: me /the uml-devel list on every patch 
-> you send to Andrew Morton? I'm working on merging a lot of patches myself, so 
-> I'd like to be notified.
+On Saturday 18 September 2004 22:52, Jeff Dike wrote:
+> On Sat, Sep 18, 2004 at 07:44:58PM +0200, Paolo Giarrusso wrote:
+> > Jeff, could you please make sure you CC: me /the uml-devel list on every
+> > patch you send to Andrew Morton? I'm working on merging a lot of patches
+> > myself, so I'd like to be notified.
+>
+> OK, easy enough.  BTW, I've seen cc-ing LKML, so it's not like I've been
+> doing it privately.
+Yes but subscribing to LKML is not an option for me at the moment (yes, it is 
+possible to use archives, but slow).
+> > However, if you now are working on the mainline tree yourself, I'm going
+> > to send you a tarball containing my remaining patches. I've got a lot of
+> > them, right now.
 
-OK, easy enough.  BTW, I've seen cc-ing LKML, so it's not like I've been doing
-it privately.
+> OK.  If you can point out the ones which you think should go into mainline
+> soon, that would make my life a bit easier.
+Yes, ok - you will find the notes in the "series" file. Since I was going to 
+merge also the patches from your tree, you may find them, too.
 
-> However, if you now are working on the mainline tree yourself, I'm going to 
-> send you a tarball containing my remaining patches. I've got a lot of them, 
-> right now.
+I will send some patches which need special care separately.
 
-OK.  If you can point out the ones which you think should go into mainline
-soon, that would make my life a bit easier.
-
-				Jeff
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
