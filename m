@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXFvJ-0007CK-QH
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 00:23:49 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXFvJ-000214-Cf
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 00:23:49 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Reply-To: Ingo Molnar <mingo@elte.hu>
+	id 1AXGo1-0000gs-A4
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 01:20:21 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AXGo0-0004pk-OA
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 01:20:20 -0800
+From: M A Young <m.a.young@durham.ac.uk>
 Subject: Re: [uml-devel] [UML patch] fixes for !CONFIG_PROC_MM, 2.6.0
-In-Reply-To: <Pine.LNX.4.58.0312191232230.29584@boston.corp.fedex.com>
-Message-ID: <Pine.LNX.4.58.0312190920510.4526@earth>
+In-Reply-To: <Pine.LNX.4.58.0312181514140.7622@earth>
+Message-ID: <Pine.GSO.4.58.0312190914170.8625@algedi.dur.ac.uk>
 References: <Pine.LNX.4.58.0312171735540.8123@earth>
  <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth>
   <Pine.LNX.4.58.0312172249020.19508@earth>  <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
  <Pine.LNX.4.58.0312181036220.31295@earth> <Pine.LNX.4.58.0312181122070.32554@earth>
  <Pine.LNX.4.58.0312181209230.1327@earth> <Pine.LNX.4.58.0312181253460.2378@earth>
- <Pine.LNX.4.58.0312181514140.7622@earth> <Pine.LNX.4.58.0312191232230.29584@boston.corp.fedex.com>
+ <Pine.LNX.4.58.0312181514140.7622@earth>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -30,30 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 09:22:37 +0100 (CET)
-To: Jeff Chua <jchua@fedex.com>
-Cc: UML devel list <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>
+Date: Fri, 19 Dec 2003 09:20:11 +0000 (GMT)
+To: Ingo Molnar <mingo@elte.hu>
+Cc: UML devel list <user-mode-linux-devel@lists.sourceforge.net>
 
+On Thu, 18 Dec 2003, Ingo Molnar wrote:
 
-On Fri, 19 Dec 2003, Jeff Chua wrote:
+> the attached patch makes the combo 2.6.0 patch compile for the
+> !CONFIG_PROC_MM case. (necessary if forcing TT mode by disabling skas.)
+>
+> This is also a small cleanup as it moves the architecture-independent
+> ptrace functions into the generic kernel/ptrace.c file.
+>
+> i've also uploaded a new combo patch with the alignment fix plus these
+> changes included:
+>
+>     redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A2
 
-> On Thu, 18 Dec 2003, Ingo Molnar wrote:
-> 
-> >     redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A2
-> 
-> Can't compile. Got the following error ...
+I have one minor complaint with this patch, you hardwire ARCH=um into the
+bottom level Makefile, which is fine in a pure uml patch, but horribly
+confusing if you are using it to build a host kernel.
 
-> make -f scripts/Makefile.build obj=arch/um/util
-> gcc -o arch/um/util/mk_task_user.o -c arch/um/util/mk_task_user.c
->   CC      arch/um/util/mk_task_kern.o
-> In file included from include/asm/thread_info.h:13,
-> include/asm/processor.h:66: `CONFIG_X86_L1_CACHE_SHIFT' undeclared here
+Also somewhat off topic, what package is the i386 command in which you
+suggest as an alternate way to switch off exec-shield? I can't find it on
+my system.
 
-what does your include/asm link point to, isnt it asm-i386 by any chance?  
-You need to do a 'make mrproper' when switching between architectures,
-otherwise stale stuff can be around. 'make clean' is not enough.
-
-	Ingo
+	Michael Young
 
 
 -------------------------------------------------------
