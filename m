@@ -1,19 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B8zti-0008JU-Vo for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Apr 2004 02:58:10 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B8zti-0005j0-HL for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Apr 2004 02:58:10 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
+	id 1B90PJ-00053P-3l for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Apr 2004 03:30:49 -0800
+Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1B90PI-0007wf-QA for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Apr 2004 03:30:48 -0800
+From: Werner Almesberger <werner@almesberger.net>
 Subject: Re: [uml-devel] RFC: lossless printk
-In-Reply-To: <20040401042512.Y28573@almesberger.net>
-Message-ID: <Pine.LNX.4.44.0404011252320.1814-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20040401083025.Z28573@almesberger.net>
+References: <20040401042512.Y28573@almesberger.net>
+	<Pine.LNX.4.58.0404010149580.13832@gradall.private.brainfood.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0404010149580.13832@gradall.private.brainfood.com>;
+	from adam@doogie.org on Thu, Apr 01, 2004 at 01:53:58AM -0600
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,51 +29,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 1 Apr 2004 12:58:01 +0200 (CEST)
-To: Werner Almesberger <werner@almesberger.net>
+Date: Thu, 1 Apr 2004 08:30:25 -0300
+To: Adam Heath <adam@sonycom.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 1 Apr 2004, Werner Almesberger wrote:
+Adam Heath wrote:
+> Don't define functions inline like that, place it in a header.
 
-> +		while (1) {
-> +			int n;
-> +
-> +			wrote = write(1,p,len);
-> +			if (wrote >= 0)
-> +				break;
+Of course. I just didn't want to touch yet another file for
+now. After all, that's just a first try to get feedback.
 
-This won't work properly. What you need is something like:
+> The code shouldn't retry forever.  If the output is blocked for a long time,
+> the kernel will become stalled.
 
-			if (wrote == len)
-				break;
+Hmm, that's a tricky one. What's a good policy in this case ?
+Wait up to a fixed amount of time before continuing, and perhaps
+do the same thing on the next printk ? Stop retrying after one
+timeout ? Make all this configurable ?
 
-   			if (wrote >= 0) {
-				len -= wrote;
-				p += wrote;
-			}
+> You also don't handle EINTR.
 
-			if (wrote >= 0 || errno == EAGAIN) {
-				usleep(100000); /* nap for 100ms */
-				continue;
-			}
+Good point. I actually never saw one happen, even though I have
+workloads that almost only printk.
 
-> +			/*
-> +			 * We're in trouble. Try to get the message out with
-> +			 * our dying breath, then expire.
-> +			 */
-> +			for (n = errno; n; n--)
-> +				write(2,"#",1);
-> +
-> +			/* doesn't really do much, but try to die anyway */
-> +			abort();
+> Are you converting errno to a list of hashes?
 
-Not sure about this.. should probably just drop the writes then and return
-an error. The console may have been hung up by various reasons, and I do
-not think this should kill the kernel.
+Yeah :-) I'll fix this. You hit it usually for EPIPE or the
+like.
 
-Regards
-Henrik
+> And couldn't writing to stderr
+> have the same non-blocking problems?
 
+Potentially yes. Not sure if it makes sense to try very hard
+to get that last message out, though.
+
+- Werner
+
+-- 
+  _________________________________________________________________________
+ / Werner Almesberger, Buenos Aires, Argentina     werner@almesberger.net /
+/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
