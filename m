@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AQlXd-0006LH-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Mon, 01 Dec 2003 02:44:33 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AQlXc-000827-Tu
-	for User-mode-linux-devel@lists.sourceforge.net; Mon, 01 Dec 2003 02:44:33 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] iptables-restore randomly crashes under UML
-In-Reply-To: <Pine.LNX.4.44.0311260427150.6942-100000@filer.marasystems.com>
-Message-ID: <Pine.LNX.4.44.0312011133210.12325-100000@filer.marasystems.com>
+	id 1AQt0g-0003BN-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 01 Dec 2003 10:43:02 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AQt0f-0006lO-Pu
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 01 Dec 2003 10:43:01 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] process start time in future
+References: <a06010201bbec00ce8036@[192.168.1.10]> <007501c3b535$79848d10$2000000a@schlepptopp>
+In-Reply-To: <007501c3b535$79848d10$2000000a@schlepptopp>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200311282042.09602.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,169 +26,62 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 1 Dec 2003 11:43:49 +0100 (CET)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 28 Nov 2003 20:42:09 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Can I please get a little help with debugging this one? I tend to get a
-little lost in all the page map translations..
+Alle 23:26, gioved=EC 27 novembre 2003, roland ha scritto:
+> btw: is jeff the only person doing development or patchmerging/bugfixing
+> most of the time?
+He is not the only one who develops UML: there is a whole bunch of patches =
 
-I have got so far that it looks like the pte is not modified making me 
-suspect that there is a old page mapping around initially maybe not 
-maching the pte after the call to vmalloc().
+coming in, even if he is the only one with write access to the official=20
+CVS/BitKeeper(I don't know which one) repository, as long as I know. Just a=
+s=20
+the main kernel.
+> is uml primarily a "one man" thing and uml dies, if jeff
+> looses interest one day? i don`t hope so... but i really wonder anyway,
+> that there is so few traffic on the mailinglists.
 
-Another question: Why is the kernel vm always remapped in its entire?  
-Would it not be possible to remember the current kernel vm mapping state
-in the process page table somehow, avoiding having to continously
-munmap()/mmap() the same data..
+That's not true, provided you don't compare to the LKML...
+> is uml still so "exotic"
+> that so few people actually seem to be interested?
+A few people? It's inside Debian(Matt Zimmerman is the maintainer), it's=20
+bundled inside SuSE 9.0(we have often mail from SuSE labs)
 
-Regards
-Henrik
+1) it is very interesting: some things simply can't be done without it.
 
+For instance, if you have a switched LAN, instead than one with a hub, to=20
+install NIDS you normally need hardware support(i.e. a port on the switch, =
 
+connected to the NIDS, replicating what goes out from another port); and th=
+en=20
+a devoted machine, only to run Snort...
 
-On Wed, 26 Nov 2003, Henrik Nordstrom wrote:
+2) it's widely used and will be more, since it has been included inside=20
+official 2.6(even if you still need some patches :-( ); there are various=20
+hosting providers providing virtual servers using it; in Italy, for instanc=
+e,=20
+one of these advertises on a lot of widely distributed informatic reviews..=
+.;=20
+I've also read a lot of articles speaking about it.
+> maybe everybody has
+> vmware already... ;)
+VMware is not free software and since it goes emulating hardware, it should=
+=20
+have more overhead; said that, I have no benchmark to show this. But if UML=
+=20
+were slower, it would only need tuning. Note that normally, UML memory is p=
+ut=20
+on a disk file, so it IS slower. But if you put /tmp on tmpfs(i.e. in RAM),=
+=20
+this goes away.
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
-> Have been digging a little and indeed the problem is in this area.
-> 
-> The corruption always occurs when the memset of the next vmalloc() area
-> executes, triggering a 
-> segv()->...->flush_tlb_kernel_vm_tt()->flush_kernel_vm_range() call
-> sequence to set up the VM map of that other area..
-> 
-> Below can be seen a trace of what happens in flush_tlb_kernel_vm_range()  
-> when the relevant address is reached and gets corrupted. $addr is a
-> pointer to the memory area that gets corrupted:
-> 
-> 97              for(addr = start; addr < end;){
-> 1: $addr = 0xa2811040 ""
-> (gdb) p/x addr
-> $7 = 0xa2811000
-> (gdb) n
-> 98                      pgd = pgd_offset(mm, addr);
-> 1: $addr = 0xa2811040 ""
-> (gdb) 
-> 100                     if(pmd_present(*pmd)){
-> 1: $addr = 0xa2811040 ""
-> (gdb) 
-> 101                             pte = pte_offset(pmd, addr);
-> 1: $addr = 0xa2811040 ""
-> (gdb) 
-> 102                             if(!pte_present(*pte) || 
-> pte_newpage(*pte)){
-> 1: $addr = 0xa2811040 ""
-> (gdb) 
-> 104                                     err = os_unmap_memory((void *) 
-> addr, 
-> 1: $addr = 0xa2811040 ""
-> (gdb) 
-> 106                                     if(err < 0)
-> 1: $addr = 0xa2811040 <Address 0xa2811040 out of bounds>
-> (gdb) 
-> 103                                     updated = 1;
-> 1: $addr = 0xa2811040 <Address 0xa2811040 out of bounds>
-> (gdb) 
-> 106                                     if(err < 0)
-> 1: $addr = 0xa2811040 <Address 0xa2811040 out of bounds>
-> (gdb) 
-> 109                                     if(pte_present(*pte))
-> 1: $addr = 0xa2811040 <Address 0xa2811040 out of bounds>
-> (gdb) 
-> 110                                             map_memory(addr, 
-> 1: $addr = 0xa2811040 <Address 0xa2811040 out of bounds>
-> (gdb) 
-> 113                             }
-> 1: $addr = 0xa2811040 "p"
-> (gdb) 
-> 117                             }
-> 1: $addr = 0xa2811040 "p"
-> (gdb) 
-> 118                             addr += PAGE_SIZE;
-> 
-> 
-> Here it can be clearly seen that the page for some reason gets remapped.
-> 
-> Note that the corrupted area was allocated earlier using vmalloc() and has 
-> already been mapped and filled with content by copy_from_user(). The call 
-> to flush_tlb_kernel_vm_tt() is due to a write to another vmalloc() 
-> allocated area allocated just after the corrupted area.
-> 
-> So a number of questions arises here
-> 
-> a) Why the heck does it unmap the already mapped and used pages? This page
-> was mapped earlier on write fault by copy_from_user() and has not been
-> freed yet.
-> 
-> b) What is the content it gets mapped to?
-> 
-> c) Why does it only fail some times and not always.. I guess it often 
-> just happens to remap the page to the same backing location.
-> 
-> 
-> Full code listing of the failing section of flush_tlb_kernel_vm_range():
-> 
-> 98                      pgd = pgd_offset(mm, addr);
-> 99                      pmd = pmd_offset(pgd, addr);
-> 100                     if(pmd_present(*pmd)){
-> 101                             pte = pte_offset(pmd, addr);
-> 102                             if(!pte_present(*pte) || pte_newpage(*pte)){
-> 103                                     updated = 1;
-> 104                                     err = os_unmap_memory((void *) addr, 
-> 105                                                           PAGE_SIZE);
-> 106                                     if(err < 0)
-> 107                                             panic("munmap failed, errno = %d\n",
-> 108                                                   -err);
-> 109                                     if(pte_present(*pte))
-> 110                                             map_memory(addr, 
-> 111                                                        pte_val(*pte) & PAGE_MASK,
-> 112                                                        PAGE_SIZE, 1, 1, 1);
-> 113                             }
-> 114                             else if(pte_newprot(*pte)){
-> 115                                     updated = 1;
-> 116                                     protect_memory(addr, PAGE_SIZE, 1, 1, 1, 1);
-> 117                             }
-> 118                             addr += PAGE_SIZE;
-> 119                     }
-> 120                     else {
-> 121                             if(pmd_newpage(*pmd)){
-> 122                                     updated = 1;
-> 123                                     err = os_unmap_memory((void *) addr, PMD_SIZE);
-> 124                                     if(err < 0)
-> 125                                             panic("munmap failed, errno = %d\n",
-> 126                                                   -err);
-> 127                             }
-> 128                             addr += PMD_SIZE;
-> 129                     }
-> 
-> 
-> 
-> I can only assume the problem is that pte_newpage() still is true for the 
-> page in question.
-> 
-> 
-> The skas code looks identical so probably the same problem is found there.
-> 
-> 
-> What is responsible for marking the kernel vm pages as up to date? 
-> Shouldn't there be pte_mkuptodate/pmd_mkuptodate() calls just like there 
-> is in the same loop of fix_range()?
-> 
-> 
-> Regards
-> Henrik
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: SF.net Giveback Program.
-> Does SourceForge.net help you be more productive?  Does it
-> help you create better code?  SHARE THE LOVE, and help us help
-> YOU!  Click Here: http://sourceforge.net/donate/
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
 
 
 
