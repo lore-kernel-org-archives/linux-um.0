@@ -2,22 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpdeD-0006ok-NK for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jan 2005 18:26:41 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1CplRS-0001UI-2Q for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 15 Jan 2005 02:46:02 -0800
+Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CpdeB-0005tQ-RP for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jan 2005 18:26:41 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] About "jiffies" patch
-References: <200501130612.34417.blaisorblade@yahoo.it>
-In-Reply-To: <200501130612.34417.blaisorblade@yahoo.it>
+	id 1CplRQ-00054i-Ap for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 15 Jan 2005 02:46:01 -0800
+Message-ID: <3809.83.109.31.19.1105785957.squirrel@83.109.31.19>
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501150306.08535.blaisorblade@yahoo.it>
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Subject: [uml-devel] uml_moo
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,85 +25,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 15 Jan 2005 03:06:07 +0100
+Date: Sat, 15 Jan 2005 11:45:57 +0100 (CET)
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
 
-On Thursday 13 January 2005 06:12, Blaisorblade wrote:
-> Well, effectively your reasoning holds, apart for one point: the code
-> should not hang because of that large INITIAL_JIFFIES. What we care about
-> are only the value of jiffies relative to INITIAL_JIFFIES, indeed.
->
-> In fact, that code works on 64-bit arch's. But INITIAL_JIFFIES is not 0 to
-> make sure it wraps 5 minutes after the boot, to make sure the wrapping
-> mechanism is debugged. And this, currently, does not happen likely.
->
-> While on 32-bit  archs that construct is like "(unsigned int) (-300*HZ)",
-> on 64-bit archs to get a negative number we'd need something like:
->
-> (unsigned long)(long)(-300*HZ)
->
-> or
->
-> (unsigned long)(-300L*HZ)
->
-> so that the number is first sign-extended and then casted to unsigned.
-Sorry, I now went patching the code, and discovered I was a total moron:
+I have one issue with uml_moo.
 
-/*
- * Have the 32 bit jiffies value wrap 5 minutes after boot
- * so jiffies wrap bugs show up earlier.
- */
-#define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-300*HZ))
+uml_moo and the kernel cow drivers doesn't seem to use the same method
+when calculating the size of the backing file.
 
-It does not say "jiffies wrap", but the "32 bit values" of jiffies wrap...
-So, the x86_64 value must actually be the one you have seen - the problem is 
-that this trigger some kind of bug in UML - do we have some extra 32-bit var?
+I used /dev/hdc1 which was an block device (147 GB partition)
 
-However, I have two suggestion
-paolo [~/Admin/kernel/6/linux-2.6.11: 02:47 (2)] $ grep  INITIAL_JIFFIES `find 
-arch/um/`
-paolo [~/Admin/kernel/6/linux-2.6.11: 02:47 (2)] $ grep  INITIAL_JIFFIES `find 
-include/asm-um`
-paolo [~/Admin/kernel/6/linux-2.6.11: 02:47 (2)] $ grep  INITIAL_JIFFIES `find 
-include/linux`
-include/linux/jiffies.h:#define INITIAL_JIFFIES ((unsigned long)(unsigned int) 
-(-300*HZ))
-
-For stolen headers:
-
-$ grep  INITIAL_JIFFIES `find include/asm-i386`
-$ grep  INITIAL_JIFFIES `find include/asm-generic`
-
-I.e. we don't use INITIAL_JIFFIES, it seems. Please point out the problem in 
-my search!
-
-Instead, for i386:
-
-paolo [~/Admin/kernel/6/linux-2.6.11: 02:48 (2)] $ grep INITIAL_JIFFIES 
-arch/i386/kernel/*.c
-arch/i386/kernel/time.c:u64 jiffies_64 = INITIAL_JIFFIES;
-arch/i386/kernel/time.c:        xtime.tv_nsec = (INITIAL_JIFFIES % HZ) * 
-(NSEC_PER_SEC / HZ);
-arch/i386/kernel/time.c:        xtime.tv_nsec = (INITIAL_JIFFIES % HZ) * 
-(NSEC_PER_SEC / HZ);
+uml kernel perfectely finds the correct size. uml_moo uses stat on the
+device which gives size 0, og uml_moo fails. Also I see that it is
+compiled with 64bit file support, but shouldn't you define _GNU_SOURCE as
+well? Since off_t didn't need %lld in the printf, but %ld as the
+source-code now uses which is 32bit on i386 atleast. The last thingy was
+just a question.
 
 
-- I've compared the link scripts, and discovered this code:
-from arch/um/kernel/{dyn,uml}.lds.S and arch/i386/kernel/vmlinux.lds.S
-jiffies = jiffies_64;
-
-in arch/x86_64/kernel/vmlinux.lds.S:
-jiffies_64 = jiffies;
-
-I'm going to check if I see what is the difference. This is just a note, it 
-seems that it could be the same thing, after some analisys - in both cases 
-the sources define the jiffies_64 var.
-However, I didn't want to miss it anyway, just in case.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Stian
 
 
 -------------------------------------------------------
