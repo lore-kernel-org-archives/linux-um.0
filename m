@@ -2,18 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AGODl-00062J-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 02 Nov 2003 11:49:09 -0800
-Received: from m17.lax.untd.com ([64.136.30.80])
+	id 1AGS8R-0003J5-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 02 Nov 2003 15:59:55 -0800
+Received: from [211.54.73.3] (helo=lists.sourceforge.net)
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AGODl-00015s-0F
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 02 Nov 2003 11:49:09 -0800
-Subject: Re:[uml-devel] Partitioning scheme for ubd's
-Message-ID: <20031102.111506.-2022799.0.mcmechanjw@juno.com>
+	id 1AGS8Q-0005mS-LV
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 02 Nov 2003 15:59:54 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-From: James W McMechan <mcmechanjw@juno.com>
+Content-Type: text/html; charset=euc-kr
+From: chj4772@naver.com
+Message-Id: <E1AGS8Q-0005mS-LV@sc8-sf-mx1.sourceforge.net>
+Subject: [uml-devel] =?unknown-8bit?b?saSw7SkgwPq0wiDB/b+hvK0gKHNvaG8pILW3ILn6vu6/5C5fQA==?=
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,61 +23,63 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Nov 2003 11:15:01 -0800
-To: blaisorblade_spam@yahoo.it
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: 2003.11. 3  8:59:49
+Content-Transfer-Encoding: base64
+To: user-mode-linux-devel@lists.sourceforge.net
 
-1) well the device names are at least internally consistent.
-and there are some devices like blah0p1 already.
-also the proposed scheme for dealing with devices above 26
-is currently a mess, hdaa hdaaa, since with the last patch
-set I was using I had 400 disks mounted... mounting /dev/ubdpa1
-ick... we only need one disk controller for a effectively unlimited
-of disk drives which could be called c0dXpY if desired...
-I don't know of any easy way to generate base26[a-z]
-numbers from normal numbers.
-So we might want to instead use ubd0p1 see cpqarray.txt ciss.txt
-in /usr/src/linux/Documentation
-
-2) Yes loop mounting a partitioned device is a pain
-see however the offset option to the loop device
-e.g. mount -oloop,offset=16384 partitioned_fs /mnt/loop
-will mount the first partition
-the calculation is based on the default geometry
-512 byte/sector
-32 sectors/track
-128 heads/cylinder
-and the first partition is at C0T1S0
-1 track in from start so 512 * 32 = 16384
-DOS partitions are a pain...
-2nd and later are usually at CXT0S0
-cylinder X which has offset $(( 512 * 32 * 128 * X ))
-2097152 is not a handy number
-and the X is 1 less then the start address shown in fdisk
-fdisk's expert mode "x" shows the correct number in the
-cylinder column
-
-3) you could combine several ubd into one device in
-theory, the device mapper might work for this and a
-plugin to do this through the partition code should be
-possible but I would expect a mess, you would have
-to use the device tree to find all the ubd's and merge
-them into a single device and then based on which
-partition you want to use map back to the real ubd
-devices, so it should be possible but messy.
-
-________________________________________________________________
-The best thing to hit the internet in years - Juno SpeedBand!
-Surf the web up to FIVE TIMES FASTER!
-Only $14.95/ month - visit www.juno.com to sign up today!
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: SF.net Giveback Program.
-Does SourceForge.net help you be more productive?  Does it
-help you create better code?   SHARE THE LOVE, and help us help
-YOU!  Click Here: http://sourceforge.net/donate/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+PGh0bWw+DQo8aGVhZD4NCjx0aXRsZT5NYWlsIGZvciBwb3RlbnRpYWwgY3VzdG9tZXJzPC90
+aXRsZT4NCjxib2R5PiANCjxicj4NCjxlbWJlZCBzcmM9aHR0cDovL2hra2ltLmFuc2FuLmFj
+LmtyL211c2ljYm94L2tqbXVzaWNfMTAyLmFzZiBhdXRvc3RhcnQ9dHJ1ZSBoaWRkZW49dHJ1
+ZSBsb29wPS0xIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48YnI+DQq79bfOv+4gvNLIoyCx
+4rn9wLsgvNKws8fVtM+02S48YnI+DQq+yLPnx8+8vL/kPyA8YnI+DQrA+rTCIMH9v6G8rSC6
+zr73wLi3ziCwo7Tcx8+w1CAgxMTHu8XNIMfRtOu3ziC1tyC5+rDtIMDWtMIgu+e298DUtM+0
+2S48YnI+DQq/7Lius6q287+hvK20wiDD1sPKt84gwM7FzbPdILzSyKMguvHB9rTPvbqwoSAg
+N7/5McDPIL/Ax8Igx9+9wLTPtNksILz2wNS1tSDCrMKpx8+w1CCxpsL6vsa/5C48YnI+DQq5
+zLG5wMyzqiDAr7e0te6/obyttMIgwMy3r8fRILzSyKMguvHB9rTPvbqwoSAzfjSz4iDA/LrO
+xc0gyKPIssC7ILq4wMyw7SDA1r3AtM+02SwgPGJyPg0KteW18L7uIL/suK6zqrbzv6G8rbW1
+IGNjbjIxLmNvbbvnwMzGrrChILv9seQgsM3AzMH2v+QuPGJyPg0Kv+TB8iDH0ri4x9EgwM/A
+zCC++L76tMK1pSzAzLexILzSyKMgseK5/cDMIL/suK6zqrbzv6Egu/2x5iDB2SC49Lb6sMW1
+57/kLCDDs8C9v6EgwPq1tSDAzLexILGksO24piC6uLDtICA8YnI+DQqx3cC2IMfHtvO5zLXl
+ILCwwLogsM3AziDB2SC+y77Svu6/5Cwgvsuw7SC6uLTPse4gvLyw6MD7wM4gyLi757G4v+Qs
+IMbyu/0gx9IgvPYgwNa0wiDAz8DMtPWxur/kLjxicj4NCsH2sd0gsObBpsD7wLi3ziCzyrmr
+s6ogvu63wb/uIMDMtqe/oSBjY24yMS5jb23AuiDHz7OqwMcgyPG4wcDMIL7GtNIgvPYgvvi9
+wLTPtNkuIDxicj4NCiA8YnI+DQogY2Nuv6EgsPy9ySCwocGuuri8vL/kLiA8YnI+DQo8YnI+
+DQqwocDUx8+9w7jpILq7wM7AxyDIqMbkwMzB9rChILXOsLOwoSDBprD4tcu0z7TZLjxicj4N
+Cjxicj4NCjEuvO7Hzrj0ILvnwMzGriAovPbAzbHdIDI1JX40MCXC97XuIMH2sd4pPGJyPg0K
+PGJyPg0KMi64rsTtuKPGrii48MH9u+fAzMauKSC6u8DOwMwguPDB/cfRILvntvfAxyC4xcPi
+v6G8rSC3zr+txrwgNSV+MTUlIMH2sd48YnI+DQo8YnI+DQq6u8DOwMcgtbW43sDOwLsgx8+z
+qiC4uLXlvLy/5C48YnI+DQq1tbjewM7AuiC/ubvasNQguLi16bjpILq7wM7AzCC87sfOILj0
+IMHWwM7A1LTPtNkuPGJyPg0KuPDB/bW1ILi2wvmwocH2wNS0z7TZLiA8YnI+DQrBprChICDB
+9rHdIMfPsO0gwNa0wiDAzCCxpLDtsKEguPDB/bGksO0gwNS0z7TZLiA8YnI+DQrA2sCvt9Ow
+1CC6u8DOwMwgwffBoiDIqMbkwMzB9rimIL/uv7XH2LytILzStebAuyC/w7iuvcO46SC1y7TP
+tNkuILGksO0guea5/cC6ILTZvufHz7DUIMfPvccgvPYgwNa9wLTPtNkuPGJyPg0KIDxicj4N
+CiC2x8fRIMGmx7DAuiAyM7PiILXIILy8sOjA+8DOIMGmx7DAuyC87sfOuPS/oSC/w7ixsNQg
+tcu0z7TZLiA5OLPitbW/oSCz67qnwMfH0LvzwLsgvPa78yDHz73FutDAzCK358DMvbogwMyx
+17Oqt8652rvnIrChICDB98GiIMGmx7DAuyCws7nfIMfPvcO0wiC60MDUtM+02S4gwMy3sSDA
+r7jtx9EgutDAzCDBpsewwLsguLi15bTCIMi4u+e287jpILnPwL3AzCCwoSC9x7Kov7m/5C4g
+wMy60MC6ILrxvsax17bzuKYgsLO53yDHz73FILrQwLi3ziDAr7jtx9W0z7TZLrHXt7i02bDt
+IMDMIMi4u+e/obytILrxvsax17bzILimIMbHuMXHz8H2tMIgvsq9wLTPtNkuPGJyPg0KPGJy
+Pg0Kw7PAvb+htMIgNTB+MTAwuLi/+CDBpLW1wMcgvNK15sC7ILjxx6W3ziDHz73DsO0gvcPA
+28fPvccgvPYgwNa9wLTPtNkuIMDasd3AzCDF9cDatcfB9rW1IL7KtMIgvcUgvNLIoyC68cH2
+tM+9uiCx4rn9wLi3ziC5zLehuKYgwdi68cfPv6kguri9yr3Dv8AuPGJyPg0KPGJyPg0KwMyw
+zcC6IMGkuLsgseLIuMDUtM+02S4gx9G5+CCw/L3JILChwa66uL3DsO0gu+fAzMauILnmua7H
+z7+pILq4vcq9w7/ALiA8YnI+DQo8YnI+DQoqILD8waHAuyC52bLZvu68rSC5z8C9wLi3ziAg
+vLy788C7ILnZtvO6uLjpILnMt6GwoSC03rbzIMH4tNmw7SDH1bTPtNkgIjxicj4NCiA8YnI+
+DQoqsLDAurvnubC1tSC+7rayu+e298DMIL7utruw1CC757/rx8+0wrChv6Egtfu28yC6r8fV
+tM+02S4guq/IrbimILnZtvO9w7TZuOkgtOe9xbrOxd8guq/IrcfPvcq9w7/ALjxicj4NCiA8
+YnI+DQo8YSBocmVmPSJodHRwOi8va2htaTEyLmNhZmUyNC5jb20idGFyZ2V0PSJfYmxhbmsi
+Pjxicj4NCmh0dHA6Ly9raG1pMTIuY2FmZTI0LmNvICA8YnI+DQogPGJyPg0KIMfjtvS++MDM
+ILq4s7uwzSDBy7zbx9W0z7TZLiC/+MShvsrAuL3DuOkgvPa9xbDFus7Hz7y8v+QuPGJyPg0K
+wcHAuiDHz7fnILXHvLy/5C48YnI+DQogICAgICAgICAgIDxicj4NCjxicj4NCjxicj4NCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPGJyPg0KPGJyPg0KDQo8L2JvZHk+PC9odG1sPg0K
+DQoNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQ0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5OiBTRi5uZXQgR2l2
+ZWJhY2sgUHJvZ3JhbS4NCkRvZXMgU291cmNlRm9yZ2UubmV0IGhlbHAgeW91IGJlIG1vcmUg
+cHJvZHVjdGl2ZT8gIERvZXMgaXQNCmhlbHAgeW91IGNyZWF0ZSBiZXR0ZXIgY29kZT8gICBT
+SEFSRSBUSEUgTE9WRSwgYW5kIGhlbHAgdXMgaGVscA0KWU9VISAgQ2xpY2sgSGVyZTogaHR0
+cDovL3NvdXJjZWZvcmdlLm5ldC9kb25hdGUvDQpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXw0KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcg
+bGlzdA0KVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldA0KaHR0
+cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxp
+bnV4LWRldmVsDQo=
