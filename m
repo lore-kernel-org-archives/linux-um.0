@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwHFF-0006kD-Cw for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 00:51:49 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwGsK-00037l-Ix for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 00:28:08 -0800
-From: M A Young <m.a.young@durham.ac.uk>
-Subject: Re: [uml-devel] Fwd: Re: [uml-user] 2.6.3 hang on boot
-In-Reply-To: <200402252038.42084.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.GSO.4.58.0402260830580.15349@altair.dur.ac.uk>
-References: <200402252038.42084.blaisorblade_spam@yahoo.it>
+	id 1AwIqi-0001cT-4Y for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 02:34:36 -0800
+Received: from smtp017.mail.yahoo.com ([216.136.174.114])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AwIhO-0003FC-7H for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 02:24:58 -0800
+Message-ID: <403DC97E.4000407@yahoo.com.cn>
+From: MeiJia <cfs_eric@yahoo.com.cn>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [uml-devel] Fwd: Re: [uml-user] 2.6.3 hang on boot
+References: <200402252038.42084.blaisorblade_spam@yahoo.it>
+	<Pine.GSO.4.58.0402260830580.15349@altair.dur.ac.uk>
+In-Reply-To: <Pine.GSO.4.58.0402260830580.15349@altair.dur.ac.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,25 +28,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 Feb 2004 08:41:54 +0000 (GMT)
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, Ingo Molnar <mingo@elte.hu>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 26 Feb 2004 18:25:02 +0800
+To: M A Young <m.a.young@durham.ac.uk>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 25 Feb 2004, BlaisorBlade wrote:
+M A Young wrote:
+> On Wed, 25 Feb 2004, BlaisorBlade wrote:
+> 
+> 
+>>Hi, could you please take a look at this message? It seems like libc, in RH9,
+>>still trigger "vsyscall" problems. I'm not sure, however, since the vsyscall
+>>reference in the stack frame could be botched. However there is init getting
+>>SIGSEGV.
+> 
+> 
+> I certainly knew that a RH9 glibc in the client can trigger the vsyscall
+> segfault hang, but it only happens if the /lib/tls libraries are present;
+> presumably the same code is present but it moved from the tls only code to
+> the general code for the FC1 glibc. This is why I originally thought it
+> was an issue with tls and suggested hiding the /lib/tls libraries. I think
+> the fix works in both cases.
+> 
+> 	Michael Young
 
-> Hi, could you please take a look at this message? It seems like libc, in RH9,
-> still trigger "vsyscall" problems. I'm not sure, however, since the vsyscall
-> reference in the stack frame could be botched. However there is init getting
-> SIGSEGV.
+really appreciate your help BlaisorBlade & Michael! UML is so wonderful!
 
-I certainly knew that a RH9 glibc in the client can trigger the vsyscall
-segfault hang, but it only happens if the /lib/tls libraries are present;
-presumably the same code is present but it moved from the tls only code to
-the general code for the FC1 glibc. This is why I originally thought it
-was an issue with tls and suggested hiding the /lib/tls libraries. I think
-the fix works in both cases.
+MeiJia
 
-	Michael Young
 
 
 -------------------------------------------------------
