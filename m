@@ -2,28 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BnOxU-0002qX-HQ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Jul 2004 14:49:04 -0700
-Received: from e6.ny.us.ibm.com ([32.97.182.106])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1BnOxT-00037B-Kz
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Jul 2004 14:49:03 -0700
-Received: from northrelay04.pok.ibm.com (northrelay04.pok.ibm.com
-	[9.56.224.206])
-	by e6.ny.us.ibm.com (8.12.10/8.12.9) with ESMTP id i6LLmZnt666158
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 21 Jul 2004 17:48:35 -0400
-Received: from d01ml604.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by northrelay04.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	i6LLnXZu125636 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 21 Jul 2004 17:49:33 -0400
+	id 1Bni0q-00026g-Pj for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jul 2004 11:09:48 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1Bni0q-0006F3-7l for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jul 2004 11:09:48 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+References: <20040704105632.DC0B378A@zion.localdomain>
+	<200407131757.i6DHvZGu003047@ccure.user-mode-linux.org>
+In-Reply-To: <200407131757.i6DHvZGu003047@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Message-ID: <OF61F78B76.DD6FCAF5-ON85256ED8.00777608-04256ED8.007798C0@us.ibm.com>
-From: Himanshu Raj <hraj@us.ibm.com>
-Content-Type: multipart/alternative;
-	boundary="=_alternative 007798B804256ED8_="
-Subject: [uml-devel] make mrproper leaves some files around ....
+Content-Disposition: inline
+Message-Id: <200407221752.42186.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset="iso-8859-1"
+Subject: [uml-devel] Re: [patch 1/1] Fix malloc-use-vmalloc
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,73 +28,62 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Jul 2004 17:48:34 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 22 Jul 2004 17:55:45 +0200
+Content-Transfer-Encoding: quoted-printable
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+
+Alle 19:57, marted=EC 13 luglio 2004, Jeff Dike ha scritto:
+
+> This isn't exactly right.  In the case that a buffer was allocated by
+> kmalloc (through malloc), but freed when the system is coming down, and
+> kmalloc is no longer operating, then you just want to do nothing. It would
+> be very bad to try to free it using libc free.
+>
+> So, what I did is this:
+>
+> 	if((addr >=3D uml_physmem) && (addr <=3D high_physmem)){
+> 		if(CAN_KMALLOC())
+> 			kfree(ptr);
+> 	}
+> 	else if((addr >=3D start_vm) && (addr <=3D end_vm)){
+> 		if(CAN_KMALLOC())
+> 			vfree(ptr);
+> 	}
+> 	else __real_free(ptr);
+
+1) I think that the intervals don't include high_physmem and end_vm, so we =
+
+should have addr < ... instead of addr <=3D.
+
+2) Also, even worse, it seems ok until you read your comment. During the bo=
+ot,=20
+if random values are in the vars (and it's so until kmalloc_ok is turned on=
+)=20
+we can have malloc()ed memory thought of as kmalloc()ed or vmalloc()ed one,=
+=20
+and then leaked.
+
+3) Solution to 2): if I am right about thing #1, then it should be enough t=
+o=20
+set end_vm and high_physmem to 0 at startup (they are global vars, so it's =
+
+already true), once there are the < instead of <=3D. And don't say in the=20
+comment that memory regions are not initialized.
+
+Any comment? I need this to send the patch to Andrew Morton for 2.6-mm
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
-This is a multipart message in MIME format.
---=_alternative 007798B804256ED8_=
-Content-Type: text/plain; charset="US-ASCII"
-
-Hi Folks,
-
-When I do
-make mrproper ARCH=um
-
-executables mk_task and mk_conatant don't go away from arch/um/util. I 
-tried putting the following lines in the arch/um/util/Makefile:
-
-clean : 
-        $(RM) -f $(host-progs)
-
-mrproper : clean
-
-
-But that doesn't work. I tried finding where I can add a target for CLEAN, 
-but I don't understand the new kbuild process really well. Can anyone
-take a shot at this?
-
-Thanks,
-Himanshu Raj
-IBM T.J. Watson Research Center
-Yorktown Heights, NY 
---=_alternative 007798B804256ED8_=
-Content-Type: text/html; charset="US-ASCII"
-
-
-<br><font size=2 face="sans-serif">Hi Folks,</font>
-<br>
-<br><font size=2 face="sans-serif">When I do</font>
-<br><font size=2 face="sans-serif">make mrproper ARCH=um</font>
-<br>
-<br><font size=2 face="sans-serif">executables mk_task and mk_conatant
-don't go away from arch/um/util. I tried putting the following lines in
-the arch/um/util/Makefile:</font>
-<br>
-<br><font size=2 face="sans-serif">clean : </font>
-<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp; $(RM)
--f $(host-progs)</font>
-<br>
-<br><font size=2 face="sans-serif">mrproper : clean</font>
-<br>
-<br>
-<br><font size=2 face="sans-serif">But that doesn't work. I tried finding
-where I can add a target for CLEAN, but I don't understand the new kbuild
-process really well. Can anyone</font>
-<br><font size=2 face="sans-serif">take a shot at this?</font>
-<br>
-<br><font size=2 face="sans-serif">Thanks,</font>
-<br><font size=2 face="sans-serif">Himanshu Raj<br>
-IBM T.J. Watson Research Center<br>
-Yorktown Heights, NY </font>
---=_alternative 007798B804256ED8_=--
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by BEA Weblogic Workshop
 FREE Java Enterprise J2EE developer tools!
 Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
+http://ads.osdn.com/?ad_idG21&alloc_id=10040&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
