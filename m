@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4qLB-0003Sw-3M for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 17:29:37 -0700
-Received: from mail.britsys.net ([216.183.103.29] helo=mail02.WWW.BRITSYS.NET)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C4qLA-0000Jn-MO for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 17:29:37 -0700
-Message-ID: <413E5265.2080001@britsys.net>
-From: David Jeffery <djeffery@britsys.net>
+	id 1C4twu-00088e-HG for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 21:20:48 -0700
+Received: from mail.stral.net ([61.14.141.91] helo=ns1.stral.net ident=qmailr)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.34) id 1C4twr-0006wN-AA
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 21:20:48 -0700
+Reply-To: <ralston@stral.net>
+From: "Michael Ralston" <ralston@stral.net>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
-References: <BACKUPJQjdF8qoH28Db000022d5@NOSPAM.BRITSYS.NET>
-In-Reply-To: <BACKUPJQjdF8qoH28Db000022d5@NOSPAM.BRITSYS.NET>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+In-reply-to: 
+Message-ID: <E1C4twr-0006wN-AA@sc8-sf-mx2.sourceforge.net>
+Subject: [uml-devel] Compiling UML 2.6.8.1 w/Static Link... 2.4.26 also
+	segfaults... Damn nptl
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,28 +30,89 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Sep 2004 20:29:25 -0400
-To: ralston@stral.net
-Cc: user-mode-linux-devel@lists.sourceforge.net, 'BlaisorBlade' <blaisorblade_spam@yahoo.it>
+Date: Wed, 8 Sep 2004 14:20:30 +1000
+To: ralston@stral.net, user-mode-linux-devel@lists.sourceforge.net
+Cc: 'Jeff Dike' <jdike@addtoit.com>
 
-Michael Ralston wrote:
+Just tried out 2.4.26-3 with the static linked skas option... Its segfaults
+too
 
->I've been testing out this patch...
->
->It seems it allows me to start a uml-2.6.8.1 with SKAS using libc6-2.3.2.
->I'm not sure if programs that make use of NPTL are running correctly though.
+Michael
+
+> -----Original Message-----
+> From: Michael Ralston [mailto:ralston@stral.net] 
+> Sent: Wednesday, 8 September 2004 10:05 AM
+> To: 'user-mode-linux-devel@lists.sourceforge.net'
+> Cc: 'Jeff Dike'
+> Subject: RE: [uml-devel] Compiling UML 2.6.8.1 with Static 
+> Linking results in segfault 
+> 
+> Hey, the core is 20k gzipped :)
+> 
+> Michael 
+> 
+> > -----Original Message-----
+> > From: Michael Ralston [mailto:ralston@stral.net]
+> > Sent: Wednesday, 8 September 2004 9:58 AM
+> > To: 'user-mode-linux-devel@lists.sourceforge.net'
+> > Cc: 'Jeff Dike'
+> > Subject: RE: [uml-devel] Compiling UML 2.6.8.1 with Static Linking 
+> > results in segfault
+> > 
+> > The core is 483k, want me to email that just to you (not 
+> the list), or 
+> > is the gdb output below pretty conclusive?
+> > 
+> > I'm running this on a 2.6.8.1 host with SKAS3-2.6.7-v1 
+> patch, and as I 
+> > said libc6-2.3.2, so it's prolly another one of those 
+> lovely NPTL/TLS 
+> > issues.
+> > 
+> > The Config options which are set:
+> > # CONFIG_MODE_TT is not set
+> > CONFIG_STATIC_LINK=y
+> > CONFIG_MODE_SKAS=y
+> > 
+> > If I disable STATIC_LINK then it runs fine...
+> > 
+> > 
+> > (gdb) run
+> > Starting program: /uml/linux
+> > 
+> > Program received signal SIGSEGV, Segmentation fault.
+> > 0x08191800 in __libc_setup_tls () at swab.h:134
+> > 134     swab.h: No such file or directory.
+> >         in swab.h
+> > 
+> > 
+> > 
+> > > -----Original Message-----
+> > > From: Jeff Dike [mailto:jdike@addtoit.com]
+> > > Sent: Wednesday, 8 September 2004 10:18 AM
+> > > To: ralston@stral.net
+> > > Cc: user-mode-linux-devel@lists.sourceforge.net
+> > > Subject: Re: [uml-devel] Compiling UML 2.6.8.1 with 
+> Static Linking 
+> > > results in segfault
+> > > 
+> > > ralston@stral.net said:
+> > > > Can I provide any further info or is this a known problem? 
+> > > 
+> > > Get a core, and get a stack trace from it?
+> > > 
+> > > 				Jeff
+> > > 
+> > > 
+> 
+> ---
+> Outgoing mail is certified Virus Free.
+> Checked by AVG anti-virus system (http://www.grisoft.com).
+> Version: 6.0.752 / Virus Database: 503 - Release Date: 3/09/2004
 >  
->
+>   
+> 
 
-It depends on what part of pthreads the programs use.  My patch only 
-fixes basic thread creation.  If you run the pthread test suite from 
-LSB, you'll find there is alot still broken.  Sorry for my patch 
-sounding more impressive than it was.  The few pthread things I ran work 
-but they didn't make extensive use of the nptl's pthread features.  I'm 
-going to try and look at what's broken but no guarantees I'll know how 
-to fix it.
-
-David Jeffery
 
 
 -------------------------------------------------------
