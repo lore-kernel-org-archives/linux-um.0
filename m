@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AX3QU-0004eH-Kc
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 11:03:10 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AX3QT-0000yq-Uv
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 11:03:10 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] skas3 + 2.4.21 oops
-References: <20031216163134.GA30608@axis.demon.co.uk> <200312180115.hBI1F5kS007913@ccure.user-mode-linux.org> <200312181958.43662.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200312181958.43662.blaisorblade_spam@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 1AX3Tg-0004lR-Q6
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 11:06:28 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1AX3Te-0001jc-R9
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 11:06:27 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] uml-patch-2.4.22-7 without CONFIG_MODE_TT failed
+Message-ID: <20031218192158.GB3388@ccure.user-mode-linux.org>
+References: <Pine.LNX.4.58.0312181520100.15701@boston.corp.fedex.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200312182007.05788.blaisorblade_spam@yahoo.it>
+In-Reply-To: <Pine.LNX.4.58.0312181520100.15701@boston.corp.fedex.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,21 +26,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Dec 2003 20:07:05 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 18 Dec 2003 14:21:58 -0500
+To: Jeff Chua <jeff98@silk.corp.fedex.com>
+Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-> In fact, I've found it on the uml-user list.
-Sorry, I forgot the message name:
+On Thu, Dec 18, 2003 at 03:24:06PM +0800, Jeff Chua wrote:
+> Can't compile without CONFIG_MODE_TT. 2.4.22-5 has no problem.
 
-Re: [uml-user] interesting behavior - PS lockups and cpu usage
+Fixed, thanks.
 
-posted on 06 Dec 2003.
--- 
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
-
+		Jeff
 
 
 -------------------------------------------------------
