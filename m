@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bsl2A-00045E-IS for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Aug 2004 09:24:02 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1Bsl29-0001MC-Vy
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Aug 2004 09:24:02 -0700
-Message-Id: <200408051723.i75HNjCi003244@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Q: UML thread communication - scheduling oddness 
-In-Reply-To: Your message of "Thu, 05 Aug 2004 09:35:01 EDT."
-	<41123785.5040004@nortelnetworks.com> 
+	id 1BslMs-0000Qb-Fg for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Aug 2004 09:45:26 -0700
+Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1BslMr-00058q-W9 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Aug 2004 09:45:26 -0700
+Message-ID: <41126410.6040008@nortelnetworks.com>
+From: Joe Marzot <gmarzot@nortelnetworks.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] Q: UML thread communication - scheduling oddness
 References: <200408050020.i750Kwvv009127@ccure.user-mode-linux.org>
-	<41123785.5040004@nortelnetworks.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,36 +26,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 05 Aug 2004 13:23:45 -0400
-To: Joe Marzot <gmarzot@nortelnetworks.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Randy Macleod <macleodr@nortelnetworks.com>
+Date: Thu, 05 Aug 2004 12:45:04 -0400
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Joe Marzot <gmarzot@nortelnetworks.com>, user-mode-linux-devel@lists.sourceforge.net, Randy Macleod <macleodr@nortelnetworks.com>
 
-gmarzot@nortelnetworks.com said:
-> Could you add a few sentences though on the delivery mechnisms for the
->  the packets to the kernel thread and to userspace. I saw a poll() on
-> the  pollfds array which has the taps fd in it but this is a
-> non-blocking  poll and I could not trace to how often it is called and
-> what triggers  it - I also saw the sigio handler but I could not see
-> who was generating  the SIGIO - is that how the userspace thread is
-> woken up? 
+Jeff Dike wrote:
+> gmarzot@nortelnetworks.com said:
+>  > That is, if I run a little busy loop
+>  >   /mnt/plankton/stress --cpu 1 --io 1
+>  > on the server side, the round trip time for messages is greatly
+>  > *improved*. without this activity and a basically dormant server side
+>  > UML the round trip times show considerable variabilty with gaps on the
+>  >  order of seconds.
+> 
+> How's this for a theory:  The server's host is short on memory.  A UML 
+> which
+> is answering pings every second or so can be considered pretty idle, and 
+> thus
+> a good candidate to have its pages swapped out.  So, this happens, and when
+> a ping comes in, UML needs to be swapped back in, causing your long and
+> unpredictable delays.
 
-OK, an incoming packet is handled this way:
-	it's received by the host and routed to the tap device (or 
-alternatively, it's received by the host eth, sent to the bridge that it's part
-of, and copied to the tap device which is also in the bridge)
-	it pops out of /dev/net/tun, which UML has a file descriptor open to
-	the file descriptor is set up O_ASYNC, so that generates a SIGIO
-	this causes sigio_handler to be called
-	it looks at all of the descriptors in its care, and handles all the
-ones that are now active
-	the network driver's interrupt routine is called whenever a tap fd is
-active, and it reads the frame off the fd and passes it to the UML network 
-stack
+thinking about this a bit more...some doubts...note: the regular 'pings' 
+which are serviced purely by kernel resident code/ kernel thread do not 
+exhibit the delays. It is only when the communication involved a 
+userspace app as the responder to the 'app-level-ping' that the delays 
+come. Is the memory for the userspace app seperately swappable from that 
+of the kernel thread? If so then the theory still makes sense, since the 
+kernel thread likely has more going on so that is less likely to swap. 
+If not, I am still confused.
 
-sigio_handler does blocking polls because it knows that something is active,
-and that it won't, in fact, block.
+-GSM
 
-				Jeff
+> 
+> Running a busy loop in the UML makes it busy from the point of view of the
+> host and prevents it from being swapped out, giving you nice ping 
+> latencies.
+> 
+>                                 Jeff
+> 
+> 
+
+
 
 
 
