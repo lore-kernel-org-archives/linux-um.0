@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AzwDf-0008SD-8X for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Mar 2004 03:13:19 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AzvcG-000180-IC for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Mar 2004 02:34:40 -0800
+	id 1AzwGV-0000gx-HS for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 Mar 2004 03:16:15 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Azw1H-0004BY-1e for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 Mar 2004 03:00:31 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] adding a system call
-References: <20040305044252.33005.qmail@web21408.mail.yahoo.com>
-In-Reply-To: <20040305044252.33005.qmail@web21408.mail.yahoo.com>
+Subject: Re: [uml-devel] More security questions (was: Module exploits into
+	the host?)
+References: <20040303200937.GK14069@localhost.localdomain>
+	<Pine.LNX.4.44.0403032227040.17693-100000@filer.marasystems.com>
+	<20040303231401.GM14069@localhost.localdomain>
+In-Reply-To: <20040303231401.GM14069@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200403071203.08619.blaisorblade_spam@yahoo.it>
+Message-Id: <200403071206.09189.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,55 +30,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 Mar 2004 12:03:08 +0100
+Date: Sun, 7 Mar 2004 12:06:09 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Nick Weber <shinwa8@yahoo.com>
+Cc: Robin Green <greenrd@greenrd.org>
 
-Alle 05:42, venerd=EC 5 marzo 2004, Nick Weber ha scritto:
-> I've been having some trouble getting a system call to
-> work in uml.  I've gotten it to work on my host
-> kernel.  Here's my setup:
-> system: Debian
-> host: 2.6.3 tried with and without patch from
-> www.user-mode-linux.org/~blaisorblade/
-> uml: 2.6.3
+Alle 00:14, gioved=EC 4 marzo 2004, Robin Green ha scritto:
+> On Wed, Mar 03, 2004 at 10:29:59PM +0100, Henrik Nordstrom wrote:
+> > On Wed, 3 Mar 2004, Robin Green wrote:
+> > > Even with the skas patch, is it possible for an insmod to allow an
+> > > attacker to break out of a UML?
+> >
+> > Yes.
 >
-> I first tried a simple printk just to see if I could
-> get a system call to work.  The test program calls the
-> sytem call and exits normally with no indication of an
-> error. On the host system the printk shows up in
-> /var/log/syslog.  Doesn't show up anywhere in uml.
-> Then I tried a system call that uses a put_user and
-> get_user to modify a number I give it in a test
-> program.  Part of the test code looks like this:
+> OK thanks.
 >
-> int ret =3D new_sys1(&user_space_int);
->   if (ret !=3D 0) print error information.
+> Two more security questions:
 >
-> The system call does a printk to let you know it
-> worked and modifies the number you give it and returns
-> 0 on success -EFAULT on error.  The value of ret is
-> -1.  Anyone have any ideas as to what is going wrong?
-
-That is correct behaviour if you passed a wrong address. Notice in man open=
+> 1. Has the lcall vulnerability been fixed? By a change in the mainline
+> kernel?
+>
+> 2. I read on some mailing list (not this one) that in tt mode, processes
+> within a UML instance can read and write to each other's memory! Ah, here
+> we are, from last year:
+>
+> http://www.paul.sladen.org/vserver/archives/200305/0074.html
+>
+> Is this true, or just a rumour?
+>
+> I have a security proposal to post next, but first I want to understand t=
+he
+> current state of play of UML security.
+I think it can be true if you do not enable the "jail" mode. At least, in T=
+T=20
+mode, without jail mode, any process can read the kernel memory; actually I=
 =20
-that it returns -1 on error while sys_open returns -errno, read=20
-include/asm-i386/unistd.h, understand that any negative return value is mov=
-ed=20
-onto errno and that -1 is returned instead, understand you must print errno=
+don't think it can also read the other process memory *directly*, but it is=
 =20
-in your test case and you'll have got the clue.
-
-If you did already understand what I said (it did not seem anyway), post=20
-actual code that someone can understand; if you got the exact code working =
-on=20
-the host, in means that your syscall does not get the correct address becau=
-se=20
-it is not reading the correct registers - print &user_space_int in the test=
-=20
-case and printk the arg in the syscall - they possibly do not match.
-
+possible if you can read the kernel datas you can get to do this (however n=
+ot=20
+very simply).
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
