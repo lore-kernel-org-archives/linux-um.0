@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4kYA-0005CC-UP for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 11:18:38 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1C4kY8-00078n-D7 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 11:18:38 -0700
+	id 1C4l6L-0003Bz-GW for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 11:53:57 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C4l6J-00066e-IU for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 11:53:57 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Current state of UML - some help needed from mainline.
-References: <200408190301.i7J30xek004150@ccure.user-mode-linux.org>
-	<413B76DB.5010600@pobox.com>
-	<200409061956.34557.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200409061956.34557.blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 1/3] uml-ubd-no-empty-queue
+References: <20040906174447.238788D1E@zion.localdomain>
+	<20040907093559.GL6323@suse.de>
+In-Reply-To: <20040907093559.GL6323@suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409072013.49494.blaisorblade_spam@yahoo.it>
+Message-Id: <200409072050.25814.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,34 +30,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Sep 2004 20:13:49 +0200
+Date: Tue, 7 Sep 2004 20:50:25 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Garzik <jgarzik@pobox.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@suse.de>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-For LKML: I'm not subscribed, so don't forget to CC me.
-On Monday 06 September 2004 19:56, BlaisorBlade wrote:
-> On Sunday 05 September 2004 22:28, Jeff Garzik wrote:
-> > Overall I am really impressed.  Like other arches in the Linux kernel,
-> > it is IMO very important to be able to work "out of the box", without
-> > patches.
-Yes - especially when microAPI changes happen every day, as of 2.6. I've just 
-downloaded a snapshot including the merge, so I'll be able to merge some 
-little fixes which have happened since.
+On Tuesday 07 September 2004 11:35, Jens Axboe wrote:
+> On Mon, Sep 06 2004, blaisorblade_spam@yahoo.it wrote:
 
-Do you think that keeping a UML tree for new, experimental features is a good 
-idea, or that this role should go to -mm?
+> Patch is correct.
+Ok, thanks. Do you see anything else that needs fixing? The code the patch 
+below removes has hidden this bug, so there could be other serious bugs (and 
+by serious I mean Oopses or data loss).
 
-I ask this also because I don't know how much would help general review for 
-new features.
+Known issues:
+- need to port to BIOs (a bit hard because I need first to understand the 
+request mangling - see cowify_req. The code idea is to redirect each sector 
+independently either to the UBD backing file or to the COW file. COW stand 
+for Copy On Write: it allows to have the UBD read only and a COW file 
+containing just the changes).
 
-For instance, the "hostfs" feature is in the middle of a rewrite and the new 
-code is still very broken (the current release says more or less "VFS: busy 
-inodes after unmount - self destroying in 5 seconds. Have a nice day", but 
-maybe this is fixed; plus has a number of other bugs).
+- Uml SMP support does not compile from sometimes so spinlocking is broken in 
+ubd_finish (only in some cases - when called by do_ubd_request and thread_fd 
+== -1). To see this, add ubd=sync on command line and turn spinlock debugging 
+on.
 
-Also, SMP hasn't compiled for a while, so there is a number of locking problem 
-- at least one straight deadlock in the ubd driver when passing ubd=sync. 
-It's not a hard problem - just not yet fixed it.
+--- uml-linux-2.6.8.1/arch/um/drivers/ubd_kern.c~uml-ubd-any-elevator   
+2004-08-29 14:40:53.731043416 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c  2004-08-29 
+14:40:53.733043112 +0200
+@@ -749,8 +749,6 @@ int ubd_init(void)
+                return -1;
+        }
+                
+-       elevator_init(ubd_queue, &elevator_noop);
+-
+        if (fake_major != MAJOR_NR) {
+                char name[sizeof("ubd_nnn\0")];
+ 
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
