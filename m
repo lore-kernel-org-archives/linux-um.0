@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DEHgo-0007sN-TG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:03:14 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DEHgn-0003Wh-5f for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 18:03:14 -0800
+	id 1DEHh7-0007se-2W for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 18:03:33 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DEHh5-0007mQ-9H for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 18:03:32 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20050322162123.890086BA6F@zion>
-	<20050322181140.GA22149@infradead.org>
-In-Reply-To: <20050322181140.GA22149@infradead.org>
+Subject: Re: [uml-devel] Hostfs permission checks are all wonky.
+References: <200503201417.59739.rob@landley.net>
+	<200503222019.10709.blaisorblade@yahoo.it>
+	<200503230313.06299.rob@landley.net>
+In-Reply-To: <200503230313.06299.rob@landley.net>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503240302.29153.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [patch 03/12] uml: export getgid for hostfs
+Content-Disposition: inline
+Message-Id: <200503240302.47806.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,41 +31,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Mar 2005 03:02:28 +0100
-To: Christoph Hellwig <hch@infradead.org>
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 24 Mar 2005 03:02:47 +0100
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 22 March 2005 19:11, Christoph Hellwig wrote:
-> On Tue, Mar 22, 2005 at 05:21:23PM +0100, blaisorblade@yahoo.it wrote:
-> > Export this symbol which is not satisfied currently. The code using it
-> > has been merged, so please export this symbol.
-
-> and it's still bogus, and you haven't replied when I mentioned it last
-> time.
-In this moment I need to clean up the missing symbol. If anyone wants to 
-remove the code using this, then he might post a patch explictly removing it, 
-and getting it refused probably.
-
-Or at least CC uml-devel when discussing those problems. I'm not currently 
-able to find on marc.theaimsgroup.com the mail you talk about. Can you please 
-provide the URL to the discussion? (even on any other archive you like, 
-obviously).
-
-That said, there are people still using that code, so it should be kept in.
-
-Also, you blocked an important patch (the one adding ->release to 
-hw_interrupt_type) saying that *perhaps* UML should avoid having any hard 
-irq, a la S390. You forced so the merge of a very ugly patch manually calling 
-what should have been UML's release method (i.e. free_irq_by_irq_and_dev) in 
-every place calling free_irq() (and in fact one was missed at first). Might 
-you reconsider your position on that issue ? (URL of the discussion below)
-
-http://marc.theaimsgroup.com/?l=linux-kernel&w=2&r=3&s=uml+irq&q=b
-
-The patch adding the generic handling is this one:
-
-http://marc.theaimsgroup.com/?l=linux-kernel&m=109834481320519&w=2
-
+On Wednesday 23 March 2005 09:13, Rob Landley wrote:
+> On Tuesday 22 March 2005 02:19 pm, Blaisorblade wrote:
+> > Ok, I'm now seeing that UML uses access() (inside access_file()) to check
+> > permissions.
+> >
+> > See hostfs_permission -> access_file -> access. hostfs_permission (not
+> > access_file) should skip the "access_file" call in case its type is
+> > OS_TYPE_CHARDEV / OS_TYPE_BLOCKDEV / OS_TYPE_FIFO / OS_TYPE_SOCK.
+> >
+> > Look at init_inode() about how to see the file's type, but even better
+> > look at the cached information, i.e. inode->i_mode and the S_* access
+> > macro (look at init_special_inode about this).
+>
+> Just confirming: this patch fixed it.  Both /dev/loop0 and /dev/console
+> work just fine with hostfs root now.
+>
+> Can this patch make it into 2.6.12?
+Yes, it's on his way (in next group of merges however).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
