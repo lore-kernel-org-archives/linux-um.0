@@ -1,13 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <41F82DF4.10506@rimuhosting.com>
-From: Peter <p.repliesignored@rimuhosting.com>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CtuUN-0006lt-Tx for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Jan 2005 13:14:11 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CtuUM-0000W1-Ci for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Jan 2005 13:14:11 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <41F7C963.9080704@fujitsu-siemens.com>
+In-Reply-To: <41F7C963.9080704@fujitsu-siemens.com>
 MIME-Version: 1.0
-References: <200501262310.49814.blaisorblade@yahoo.it>
-In-Reply-To: <200501262310.49814.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [uml-user] [POLL] Putting UML/2.4 into "fixes-only"
-	mode
+Message-Id: <200501262213.32396.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: UML running on a SMP host: bug in SKAS3 patch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,49 +29,67 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 Jan 2005 12:55:32 +1300
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 26 Jan 2005 22:13:32 +0100
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>, Gerd Knorr <kraxel@bytesex.org>
 
-+1
+For me it's perfectly ok... I don't remember the exact traces, but some 
+sporadical SKAS-related Oops were reported... in no case they were repeatable 
+(since -V1 at least), so they were likely very thin races conditions.
 
-For my purposes I need solid, stable code.  I prefer a a 2.4 and 2.6 
-kernel that builds without too many config gotchas.  And runs reliably. 
-  e.g. right now I am using the blaisorblade 2.6.9-bs patches and the 
-pre-hostfs 2.4 code.  That works well.
+I'm going to merge also the patches for PTRACE_SYSEMU_SINGLESTEP in SKAS, 
+since I'm now at releasing SKAS updates.
 
-I'm all for different UML trees/patches that try out new features and 
-make major changes.  And I will contribute to testing those if needed. 
-But I would like to keep those patches/trees separate from the 'stable' one.
+I'm also going to add this patch, which fixes another potential problem:
 
-It is your time, and you can spend it how you like (obviously).  I'd be 
-most happy if new work went into the 2.6 tree if that meant more would 
-be done.  That seems to be where all new distros are going (not 2.4). 
-And (give or take a bug or two) most of my UML instances run really well 
-on the 2.6 tree.  If I had a really solid 2.6 kernel I don't think I'd 
-even need the 2.4 one.
+diff -puN arch/i386/kernel/ptrace.c~skas-add-wmb-for-mm-switch 
+arch/i386/kernel/ptrace.c
+--- vanilla-linux-2.6.9/arch/i386/kernel/ptrace.c~skas-add-wmb-for-mm-switch    
+2005-01-26 20:12:14.233441416 +0100
++++ vanilla-linux-2.6.9-paolo/arch/i386/kernel/ptrace.c 2005-01-26 
+20:28:00.902525840 +0100
+@@ -570,8 +570,10 @@ asmlinkage int sys_ptrace(long request,
+                }
 
-So if you can save some backporting efforts, work on adding more 2.6 
-stability and new features (on the separate -mm type tree) that could be 
-a win-win.
+                atomic_inc(&new->mm_users);
++               task_lock(child);
+                child->mm = new;
+                child->active_mm = new;
++               task_unlock(child);
+                mmput(old);
+                ret = 0;
+                break;
 
-Cheers, Peter
+/*
+ * Protects ->fs, ->files, ->mm, ->ptrace, ->group_info, ->comm and
+ * synchronises with wait4().
+ *
+ * Nests both inside and outside of read_lock(&tasklist_lock).
+ * It must not be nested with write_lock_irq(&tasklist_lock),
+ * neither inside nor outside.
+ */
+static inline void task_lock(struct task_struct *p)
+{
+        spin_lock(&p->alloc_lock);
+}
 
+The release will wait at least a couple of days, since I'm adding all this 
+stuff... especially, since there is a lock addition, I'd like at least one 
+positive report from one SMP user before *officially* releasing.
 
+I've not seen any update to them from their original version (i.e. when they 
+were first discussed). Is this correct?
 
-Blaisorblade wrote:
-> Jeff, I've seen the beginning of your work on back-porting all the patches 
-> from 2.6 to 2.4...
-> 
-> It's a huge work, but what is more important, it could obviously hurt 
-> stability...
-> 
-> So, I'd suggest to follow this policy to choose the work to merge:
-> 
-> - reduce *a lot* what is going to be merged... no new features, no code 
-> cleanups (especially NOT the Makefiles cleanups)...
-> 
-> - concentrate on stability... and on backing out the hostfs rewrite.
+And my doubts about their technical merit were totally wrong. I simply was 
+missing that SYSEMU stands to SYSEMU_SINGLESTEP as SYSCALL stands on 
+SINGLESTEP (in correct, >=2.6.9 kernels), while I thought SYSEMU_SINGLESTEP 
+was equal to the correct SINGLESTEP (I was maybe misguided by the "using it 
+to check the host kernel correctness" hack we need to use).
+
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
