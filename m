@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWuFz-0001s5-Dt for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 02:20:15 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CWuFv-0002ms-LR
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 02:20:15 -0800
-Subject: Re: [uml-devel] [PATCH] uml_router: cleanup
-References: <BAY24-F27D8548BC9B2976EFF8B3883B80@phx.gbl>
-From: Gerd Knorr <kraxel@bytesex.org>
-In-Reply-To: <BAY24-F27D8548BC9B2976EFF8B3883B80@phx.gbl>
-Message-ID: <874qjfftsz.fsf@bytesex.org>
+	id 1CWvBT-00044R-NG for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 03:19:39 -0800
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CWvBQ-0004RB-2M for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 03:19:39 -0800
+Message-ID: <41A46E1D.8040909@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [uml-devel] Re: The current fix-kill patch
+References: <200411230550.iAN5o8mY007302@ccure.user-mode-linux.org>
+	<41A352E4.5050607@fujitsu-siemens.com>
+	<200411232110.51937.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411232110.51937.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,67 +29,138 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 24 Nov 2004 11:03:08 +0100
-To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 24 Nov 2004 12:18:53 +0100
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-"Steve Schmidtke" <steve_schmidtke@hotmail.com> writes:
-
-> Hi,
+Blaisorblade wrote:
+> On Tuesday 23 November 2004 16:10, Bodo Stroesser wrote:
 > 
-> While I was playing around with uml_switch, I started thinking that
-> the code is a bit messy and really could use a facelift.
+>>Jeff Dike wrote:
+>>
+>>>Here's the latest fix-kill patch in my tree.  Please test and report...
+> 
+> 
+>>Have tested based on 2.6.9-bb3. I removed "rework-uml-hang-on-2.6.9-host",
+>>added BlaisorBlade's "uml-hang-on-2.6.9-host", and adapted iand added this
+>>new patch.
+> 
+> Btw, if you send another patch, send it relative to "uml-hang-on-2.6.9-host", 
+> or to it + fix-kill from Jeff, so I can easily spot the differences.
+> 
+> This is a general rule, also (with a bit of taste, i.e. applies between 
+> developers, not between users).
+Maybe I was somewhat unclear. "this new patch" was Jeff's "current fix-kill".
+So I only removed my "rework-uml-hang ..." and added your "uml-hang-..."
+and Jeff's "current fix-kill" on top of it.
+I just adapted current fix-kill to apply to 2.6.9, but didn't send these
+trivial modifications.
+> 
+> 
+>>The resulting UML kernel for me works fine on host 
+>>2.6.7-skas3-v7 and 2.6.9-skas3-v7.
+> 
+> Not yet tested this Jeff Dike's one.
+Yes. Exactly the test of Jeff's patch I did in the first place.
+> 
+> However, for me, on a 2.6.10-rc2 SKAS patched host (with the update I posted 
+> here and on my site to make SKAS compile), UML hangs on shutdown in SKAS 
+> mode.
+> 
+> Nobody else reported this with -bb3, so I suppose there is something new in 
+> 2.6.10-rc2 (I didn't yet test this with 
+> 
+> Please let's start testing it ASAP, so that it's fixed before 2.6.10 release. 
+> However, I have at least to apply the Jeff's fix before.
+Maybe I could do this soon.
+> 
+> 
+>>Next, I tested what happens if the "kill(pid, SIGKILL);" and
+>>"ptrace(PTRACE_CONT, pid);" are removed from os_kill_ptraced_process(), and
+>>it also worked fine.
+> 
+> 
+>>Since PTRACE_KILL wakes up the ptraced process unconditionally, IMHO
+>>"ptrace(PTRACE_CONT, pid);" has no effect here.
+> 
+> You reported PTRACE_KILL not to work in some Ptrace states. PTRACE_CONT is 
+> intended to fix this (even if PTRACE_KILL is not needed).
+No. PTRACE_CONT is not a fix for non working PTRACE_KILL.
 
-BTW: not sure I ever mentioned it here, but some time ago I basically
-rewrote the switch daemon as well for several reasons.  Main reason is
-that debugging network problems with the original one is very hard.
+What works and what doesn't:
 
-While browsing the code I figured that it likely is easier to largely
-rewrite the stuff rather than trying to fix the existing stuff.
-Especially the mac handling is broken by design.
+The problem with PTRACE_KILL is not, that it doesn't wakeup the ptraced child,
+but that it not always generates a SIGKILL for the child.
+On all i386 hosts I have knowledge about (2.6.7, 2.6.9, 2.4.21) PTRACE_KILL wakes
+up the ptraced child unconditionally (on 2.4 not tested, only read the code). Thus
+PTRACE_CONT is not necessary after PTRCAE_KILL.
+But PTRACE_KILL doesn't generate a SIGKILL for processes, that are not stopped on a
+ptrace-interception. This is, because the parent doing PTRACE_KILL modifies child's
+exit_code only, leaving the task of generating the signal to the child itself, which
+does it in the routines that called ptrace_notify(). Why is it done that way: we
+have to handle two different cases: on a "signal-received"-interception, the new
+signal-number placed into child->exit_code by the parent replaces the signal being
+processed by the child. On a singlestep-trap or syscall-interception, child
+generates a new signal to itself, calling send_sig().
+By the way: there are calls to ptrace_notify() that lack the code of
+signal-generation. This at least is inconsistent. And PTRACE_KILL won't work for a
+process, that is stopped on the first syscall-interception (PTRACE_SYSCALL). Since
+PTRACE_KILL doesn't reset the TIF_SYSCALL_TRACE (and TIF_SYSCAL_EMU) flag, the
+process will execute the current syscall and stop on the exit-interception again.
+You would have to wait for that happen, and restart it again. Then the queued
+SIGKILL can be processed.
+Now assume a process is running in a user-space loop or is waiting in a syscall.
+Then PTRACE_KILL will wake it up, but no SIGKILL is generated. For a process
+waiting in a read(0,...) my test shows, that read() isn't even aborted. I guess, it
+wakes up and sees no pending signal, thus it sleeps again. So, PTRACE_KILL has no
+effect is cases like these, but doing a kill(SIGKILL) would work.
 
-The code is here:
-        http://www.suse.de/~kraxel/uml/switch.tar.gz
+Considering all this, you could use ptrace(PTRACE_CONT, pid, 0, SIGKILL) instead of
+ptrace(PTRACE_KILL, pid), and it would work even better, since it resets all TIF_XXX
+flags! While other ptrace commands are restricted to the case, that the child is
+stopped, PTRACE_KILL maybe used for a running child, but then it doesn't work.
+Poor implementation!
 
-The README is below.
+On the other hand, kill(SIGKILL) doesn't kill a ptraced-process that is stopped on a
+ptrace-interception since the new TASK_TRACED state is implemented in 2.6.9.
+kill(SIGKILL) queues the signal only, after this the process must be resumed with
+a PTRACE_CONT or PTRACE_KILL.
 
-Enjoy,
+I guess, currently the best way to kill a process, not knowing it's state, is:
+     kill(SIGKILL)
+     ptrace(PTRACE_KILL)
+     wait until process stops or exits
+     if process is stopped
+         ptrace(PTRACE_CONT)
+But this is very expensive.
 
-  Gerd
+Now, let's look at UML. With Jeff's "current fix-kill", os_kill_ptraced_process()
+only is called in cases, where we *know*, the ptraced child is stopped. Thus a
+simple PTRACE_KILL will work. No kill(SIGKILL) and PTRACE_CONT are necessary.
+On host 2.6.7 and 2.6.9
+> 
+> 
+>>And "kill(pid, SIGKILL);" 
+>>only is needed, if the ptraced process is not stopped on a
+>>ptrace-interception.
+> 
+> Well, PTRACE_CONT is to resume if from the ptrace-interception. Let's start by 
+> distinguishing bugs (i.e. reggressions in 2.6.9 behaviour vs. 2.6.8 and 
+> earlier one) from strange APIs. Gdb, or any ptracer, is IMHO never supposed 
+> to SIGKILL the process directly.
+What does the ptracer do, if the ptraced process runs in an endlessuser-space-loop?
+Maybe, it sends the process another signal (e.g. SIGTRAP) and waits for the
+"signal-received"-interception. Then it successfully can do it's PTRACE_KILL.
+> 
+> 
+>>Since os_kill_ptraced_process() is called only then, 
+>>when the ptraced process is known to be on a ptrace-stop, I would like to
+>>remove "kill(pid, SIGKILL);", too.
+>>os_kill_ptraced_process() is called each time, a process in TT exec()s.
+>>Thus avoiding unneeded calls is a little speedup.
+> 
+> 
 
-==============================[ cut here ]==============================
-This is a drop-in replacement for the uml_switch daemon from the
-uml-utilities package.  It is very loosely based on the original
-uml_switch daemon code.
-
-Improvements:
-
-  * Prints nice help text on '-h'.
-  * Redesigned MAC handling, it can deal with multiple MAC addresses
-    per switch port correctly.
-  * Has outgoing package queues per switch port.
-  * Drives the switch ports using non-blocking I/O for both reads
-    and writes.
-  * Pidfile support.
-
-Drawbacks:
-
-  * supports the v3 protocol only.
-
-On my maybe-TODO list:
-
-  * Reintroduce hash table for MAC lookup (not sure through that this
-    would noticable speedup the daemon as the number of mac addresses
-    usually is small ...).
-  * use poll() instead of select() (again this likely doesn't make a
-    noticable difference for most users ...).
-
-Have fun,
-
-  Gerd
-
---
-Gerd Knorr <kraxel@bytesex.org> [SUSE Labs]
 
 
 -------------------------------------------------------
