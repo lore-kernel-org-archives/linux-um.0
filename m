@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CTx2Q-0002Vs-6I for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Nov 2004 22:42:02 -0800
-Received: from pimout3-ext.prodigy.net ([207.115.63.102])
+	id 1CTzUW-0004tX-Eg for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 01:19:12 -0800
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CTx2P-0004af-Aw for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Nov 2004 22:42:02 -0800
-From: Chris Wedgwood <cw@f00f.org>
-Subject: Re: [uml-devel] [PATCH] uml: fail xterm_open when we have no $DISPLAY
-Message-ID: <20041116064151.GB22588@taniwha.stupidest.org>
-References: <20041115032541.GA13077@taniwha.stupidest.org>
-	<200411151824.29365.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200411151824.29365.blaisorblade_spam@yahoo.it>
+	id 1CTzUV-000811-54 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 01:19:12 -0800
+Message-ID: <4199C603.4000701@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [Patch 1/1] uml: fix uml-use-sysemu-for-tt.patch
+References: <4194C43D.6030107@fujitsu-siemens.com>
+	<200411130854.51896.blaisorblade_spam@yahoo.it>
+	<4198FDD7.4090804@fujitsu-siemens.com>
+	<200411152110.40193.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411152110.40193.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,28 +30,88 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Nov 2004 22:41:51 -0800
+Date: Tue, 16 Nov 2004 10:18:59 +0100
 To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Mon, Nov 15, 2004 at 06:24:29PM +0100, Blaisorblade wrote:
-
-> Thanks for drawing attention on this! I hadn't had the time to dig
-> this out...  for now reasonably correct
-
-it's a partial solution, in general more is required
-
-> but no time to review it properly now. The review would probably try
-> to find a more direct fix to this...
-
-catch the xterm process dying, up(&data->sem), and -EIO all requests
-from that point onwards I guess.  That applies for some of the other
-channels too, some of the code would probably be abstracted a little
-and generalized I guess.
-
-
-
-   --cw
+Blaisorblade wrote:
+> On Monday 15 November 2004 20:04, Bodo Stroesser wrote:
+> 
+>>Blaisorblade wrote:
+>>
+>>>On Friday 12 November 2004 15:10, Bodo Stroesser wrote:
+>>>
+>>>>From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+>>>>
+>>>>The patch needs some small corrections:
+>>>>1) local_using_sysemu must be sampled *before* the next
+>>>>   ptrace(PTRACE_SYSEMU/SYSCALL) and must stay the same until
+>>>>do_syscall() has been done. Currently it is sampled before do_syscall()
+>>>>and is used after this for ptrace(PTRACE_SYSEMU/SYSCALL). Even if no
+>>>>problem is visible to the UML user, a single syscall could be executed
+>>>>on the host when switching on sysemu. The result of this then is
+>>>>overwritten by the syscall execution in UML.
+> 
+> 
+>>>>   Since the first event the tracer has to handle is not a syscall, it's
+>>>>   enough to initialize local_using_sysemu to 0;
+> 
+> 
+>>>Sorry, what happens if the first signal it gets is a SIGTRAP, and so
+>>>local_using_sysemu is not yet set? If this is impossible, please add a
+>>>comment in the code for this. However, it seems that it can get to the
+>>>SIGTRAP case with tracing == 1. When beginning the procedure, it is 0,
+>>>but it can be changed with the value from is_tracing(task). I've not
+>>>checked if that is zeroed on process creation (i.e. by do_fork() calling
+>>>copy_thread()), but just note that in the code.
+> 
+> 
+>>OK: Let's summarize:
+>>1) tracer() is started exactly once.
+>>2) The first this it does, is starting the first ptraced-process via
+>>clone(). 3) Then it waits until the new process stops.
+>>4) Since the process will run start_kernel() in kernel space, it is resumed
+>>    with PTRACE_CONT.
+>>Thus, before having any syscall interception, the process has to stop
+>>itself with a SIGUSR1, giving the tracer an OP_TRACE_OP request. After this
+>>local_using_sysemu will be set and the process will be resumed with
+>>PTRACE_SYSCALL or PTRACE_SYSEMU.
+> 
+> 
+>>>>2) Even if the host never *does* a syscall in SYSEMU, we have to write
+>>>>the syscall number with -1, to not have the host doing syscall
+>>>>restarting. This would happen only with an invalid syscall number equal
+>>>>to one of the -ERESTART values.
+>>>>
+>>>>
+>>>>   But to be perfect ...
+> 
+> 
+>>>Yes, but shouldn't this be handled on the host? Restarting a syscall
+>>>which has never been done does not seem something that SYSEMU should
+>>>allow... I don't want anybody to need going through the code and checking
+>>>that this is safe.
+> 
+> 
+>>Yes. It should. So I exactly added this to the "advanced sysemu". But
+>>despite this UML should work on an older sysemu host, too. So I add this
+>>now, and with the SYSEMU_SINGLESTEP-patches a skip of writing -1 is
+>>inserted, if the new sysemu is in use.
+> 
+> Hmm - not yet had time to get near that (I'm busy), however if 
+> SYSEMU_SINGLESTEP fixes this API inconsistency, the old SYSEMU API will 
+> probably not be accepted by mainline developers, not it should be sent by us 
+> - remember that we want to try merging SYSEMU sooner than SKAS4.
+> 
+> No single UML (except some ones using the sysemu incremental version, which we 
+> don't want to support) is unable to run without SYSEMU, so dropping that 
+> support should be ok.
+> 
+> Also, this new mode must wait for now - get some time to test it, I'll do the 
+> same when I've time. Currently I have too few time.
+No problem. I already tested a lot. But it should be tested *very* well, before
+creating a new SKAS3 version from it.
+I'm planning this to be the first version that is supported by s390-host!
 
 
 -------------------------------------------------------
