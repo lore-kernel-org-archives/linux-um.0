@@ -1,20 +1,30 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ap0fm-0004KQ-01
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 23:45:10 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ap0cW-0003N4-RK
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 23:41:49 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040206074220.GA25860@elte.hu>
-References: <Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk> <Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk> <Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org> <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk> <20040205123057.GA23555@elte.hu> <Pine.GSO.4.58.0402051236350.5177@algedi.dur.ac.uk> <20040205183624.GA5236@elte.hu> <20040205191558.GA6580@elte.hu> <20040205195054.GA8248@elte.hu>
+	id 1Ap8sj-0007eW-Mr
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 06 Feb 2004 08:31:05 -0800
+Received: from main.gmane.org ([80.91.224.249])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Ap8sj-0001YV-99
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 06 Feb 2004 08:31:05 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1Ap8sf-0006pK-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 06 Feb 2004 17:31:01 +0100
+Received: from pd9ee3a67.dip.t-dialin.net ([217.238.58.103])
+        by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <user-mode-linux-devel@lists.sourceforge.net>; Fri Feb  6 16:31:01 2004
+Received: from skoehler by pd9ee3a67.dip.t-dialin.net with local (Gmexim 0.1 (Debian))
+        id 1AlnuQ-0007hv-00
+        for <user-mode-linux-devel@lists.sourceforge.net>; Fri Feb  6 16:31:01 2004
+From: =?ISO-8859-15?Q?Sven_K=F6hler?= <skoehler@upb.de>
+Message-ID: <c00fg3$gc0$1@sea.gmane.org>
+References: <20040204173846.7522.qmail@praize.com> <200402051800.19582.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040205195054.GA8248@elte.hu>
-Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re: uml-patch-2.6.0)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <200402051800.19582.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: UML & 2.6.2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,22 +35,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 6 Feb 2004 08:42:20 +0100
-To: M A Young <m.a.young@durham.ac.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
+Date: Fri, 06 Feb 2004 17:33:02 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
+> http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/2.6.2-v1/uml-patch-2.6.2-0.bz2
+> http://web.tiscali.it/no-redirect-tiscali/blaisorblade/
+> http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/2.6.2-v1/00-Combo-v1.bz2
 
-* Ingo Molnar <mingo@elte.hu> wrote:
+i'm still confused although i read everything on the page above.
+what's the patch to use for patching the host-kernel? the 00-Combo one, 
+or the other one?
 
-> ok, ignore this crash for the time being - it's probably caused by one
-> of my changes. I'm investigating it.
-
-found the bug - it was caused by my MM_COPY_SEGMENTS 'optimization'. I
-misunderstood the purpose of MM_COPY_SEGMENTS: in skas mode it's needed
-to copy the LDTs from an existing mm to the new mm, but the 'old mm'
-context is not the current task.
-
-	Ingo
 
 
 -------------------------------------------------------
