@@ -1,28 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AdxwG-00073T-VC for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 12:36:32 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AdxwG-0005IQ-A7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 12:36:32 -0800
-Message-Id: <200401062055.i06Ktutd003466@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4 
-In-Reply-To: Your message of "Tue, 06 Jan 2004 20:40:06 +0100."
-	<a0602040dbc20be564c59@[192.168.1.10]> 
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com><200401061718.i
-	06HILtd002620@ccure.user-mode-linux.org><a0602040abc20a9f6862e@[192.16
-	8.1.10]><200401061918.31447.blaisorblade_spam@yahoo.it>
-	<a0602040bbc20b325acfd@[192.168.1.10]>
-	<33261.193.212.97.12.1073406789.squirrel@pluto.nixia.no>
-	<a0602040cbc20b788b425@[192.168.1.10]>
-	<a0602040dbc20be564c59@[192.168.1.10]> 
+	id 1Ady2d-0007XT-LW for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 12:43:07 -0800
+Received: from deliver.epitech.net ([163.5.0.25])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1Ady2c-0002JK-WC for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 12:43:07 -0800
+From: jeremie le-hen <le-hen_j@epita.fr>
+Subject: Re: [uml-devel] UML + skas
+Message-ID: <20040106204256.GE7622@carpediem.epita.fr>
+References: <20031230183331.GB2845@carpediem.epita.fr>
+	<200401060258.i062wYFI023092@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Disposition: inline
+In-Reply-To: <200401060258.i062wYFI023092@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,17 +28,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 06 Jan 2004 15:55:56 -0500
-To: Johannes Formann <johannes@formann.de>
-Cc: stian@nixia.no, BlaisorBlade  <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 6 Jan 2004 21:42:56 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-johannes@formann.de said:
-> I hope this backtrave can helpt you. 
+> le-hen_j@epita.fr said:
+> > But it think it would not be very difficult to make some #define
+> > protection around theses structures to prevent from changing the
+> > destination of `/usr/src/linux/' to a source without the SKAS patch
+> > applied.
+> 
+> Maybe, but skas4 doesn't have this problem, and /usr/include/asm should
+> point to the distro kernel headers, not whatever you have sitting in 
+> /usr/src/linux (and if the distro put a kernel tree there, you should be
+> building stuff somewhere else).
 
-Thanks, that's what I was looking for.
+Ok, I understand better now.  Altough it's a bit off-topic here, I would
+like to know where I can understand these subtleties.  Instinctively, I
+would say that /usr/include/{asm,linux}/ need to point to the current
+kernel headers in order to use an API in sync with the running kernel :
+for example, imagine a kernel patch which adds the incoming and outgoing
+interfaces in the tuple used by connection tracking in the NetFilter
+framework ; /usr/src/linux/include/linux/netfilter_ipv4/ip_conntrack_tuple.h
+would be modified, and so applications including
+<linux/netfilter_ipv4/ip_conntrack_tuple.h> for any reason would not
+use the correct structure.
+I must be missing something, but I can't get what.  Please tell me.
 
-				Jeff
-
+Thanks in advance,
+-- 
+Jeremie LE HEN aka TtZ/TataZ                          jeremie.le-hen@epita.fr
+                                                                 ttz@epita.fr
+Hi! I'm a .signature virus! Copy me into your ~/.signature to help me spread!
 
 
 -------------------------------------------------------
