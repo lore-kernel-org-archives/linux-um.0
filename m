@@ -2,27 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bqomy-0004Ty-2X for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 31 Jul 2004 01:00:20 -0700
-Received: from rwcrmhc12.comcast.net ([216.148.227.85])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1Bqomx-0008Q4-RQ for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 31 Jul 2004 01:00:20 -0700
-Message-ID: <410B5158.3050004@hevanet.com>
-From: Matt Clay <mattclay@hevanet.com>
+	id 1Bqufj-0007xt-Ru for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 31 Jul 2004 07:17:15 -0700
+Received: from dns02.mail.yahoo.co.jp ([211.14.15.205])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1Bqufj-0003mS-7S for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 31 Jul 2004 07:17:15 -0700
+Message-ID: <410BA9E4.9000007@yahoo.co.jp>
+From: "shigekazun@yahoo.co.jp" <shigekazun@yahoo.co.jp>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: Bug#260111: user-mode-linux: upgrade hangs at
-	"NET4: Linux TCP/IP 1.0 for NET4.0 "
-References: <200407280315.08207.alydar@users.sourceforge.net>
-	<200407281722.i6SHM6eh002963@ccure.user-mode-linux.org>
-	<200407291430.18818.alydar@users.sourceforge.net>
-	<200407292234.04279.alydar@users.sourceforge.net>
-	<200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
-	<410A833F.9030207@hevanet.com>
-	<200407301849.i6UInpUE003226@ccure.user-mode-linux.org>
-In-Reply-To: <200407301849.i6UInpUE003226@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] 2.6.7-1: ifconfig kernel panic
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,29 +25,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 31 Jul 2004 00:59:20 -0700
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Allen Chan <alydar@users.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net, 260111@bugs.debian.org
+Date: Sat, 31 Jul 2004 23:17:08 +0900
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> 
->>Works for me.  What still bothers me is that turning on debugging
->>symbols was "fixing" it for me as well.
-> 
-> Yeah, this definitely needs more investigation.
+Hi,
 
-Looking at the code for generic_console_write I noticed the return codes 
-for tcgetattr and tcsetattr are not being checked.  After I added checks 
-for the return codes, I found out that both calls to tcsetattr always 
-return a non-zero status, which, according to the man pages, indicates a 
-failure.  I have no idea if that is important or not.
+My environtment are;
+	host	host-skas3-2.6.7-v1.patch
+	guest	uml-patch-2.6.7-1.bz2 (with its default defconfig)
+Under the UML guest, simple 'ifconfig' command causes kernel panic.
+uml-patch-2.4.26-2.bz2 was OK with the same environment.
 
-This happens with or without the patch you supplied.
+ns:~# ifconfig
+Kernel panic: Kernel mode fault at addr 0x55, ip 0x400ea414
+In interrupt handler - not syncing
+ <6>SysRq : Show Regs
 
-BTW: I also noticed that commenting out the second call to tcsetattr 
-makes the problem go away as well.
+EIP: 0073:[<400ea414>] CPU: 0 Not tainted ESP: 007b:bffffb68 EFLAGS: 00000246
+    Not tainted
+EAX: ffffffda EBX: 00000004 ECX: 000089f3 EDX: bffffb90
+ESI: bffffb90 EDI: 000089f3 EBP: bffffbc8 DS: 007b ES: 007b
+Call Trace: [<a00371ca>] [<a001cbdb>] [<a004424d>] [<a00364db>] [<a002f781>]
+   [<a001bf71>] [<a0019cd3>] [<a001c315>] [<a0023c91>] [<a001c425>] [<a020d538>]
+   [<a01b7451>] [<a020d664>] [<a0019e81>] [<a0019cd3>] [<a020d664>] [<a0019e81>]
+   [<a0019cd3>] [<a0031654>] [<a0031731>] [<a0223bb0>] [<a0017730>] [<a00222f0>]
+   [<a0031654>] [<a0022387>] [<a001bc17>] [<a0019e81>] [<a020d664>] [<a0023d66>]
+   [<a001749e>] [<a0023e04>] [<a001749e>] [<a0023e57>] [<a0023f10>] [<a0023fb2>]
+   [<a01c4c91>] [<a0023e04>] [<a0023e57>] [<a01b6f0f>] [<a01c6fc7>] [<a01c5331>]
+   [<a01c7212>] [<a01bd3bf>] [<a007bf0c>] [<a005f6d2>] [<a00236b2>] [<a0019d32>]
+   [<a001aba9>] [<a0023741>] [<a00226aa>] [<a00229e3>] [<a0023340>] [<a00233e1>]
+   [<a020d538>] [<a0023340>] [<a002330d>] [<a0224abd>]
 
-  - Matt
+
 
 
 -------------------------------------------------------
