@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AdvgT-0007I9-5q for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:12:05 -0800
-Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AdvgS-000451-FA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:12:04 -0800
-Mime-Version: 1.0
-Message-Id: <a0602040abc20a9f6862e@[192.168.1.10]>
-In-Reply-To: <200401061718.i06HILtd002620@ccure.user-mode-linux.org>
+	id 1Advmz-0007gn-9B for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:18:49 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1Advmy-0000Ai-OO for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:18:48 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
 References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<200401060258.i062wuFI023117@ccure.user-mode-linux.org> 
-	<a06020407bc208b5b5a7a@[192.168.1.10]>
 	<200401061718.i06HILtd002620@ccure.user-mode-linux.org>
-From: Johannes Formann <johannes@formann.de>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip
- 0x400e51a4
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+	<a0602040abc20a9f6862e@[192.168.1.10]>
+In-Reply-To: <a0602040abc20a9f6862e@[192.168.1.10]>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200401061918.31447.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,155 +29,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 6 Jan 2004 19:11:42 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Jeff Chua <jchua@fedex.com>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 6 Jan 2004 19:18:31 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-At 12:18 Uhr -0500 06.01.2004, Jeff Dike wrote:
+Alle 19:11, marted=EC 6 gennaio 2004, Johannes Formann ha scritto:
+> At 12:18 Uhr -0500 06.01.2004, Jeff Dike wrote:
+> >No, gdb it, put a breakpoint on panic, get a stack trace when it hits the
+> >breakpoint.
+>
+> I'd run it once without a breakpoint set (after compiling it with
+> debug symbols):
 
->No, gdb it, put a breakpoint on panic, get a stack trace when it hits the
->breakpoint.
+you need to type this before starting:
 
-I'd run it once without a breakpoint set (after compiling it with 
-debug symbols):
+(host gdb) handle SIGSEGV pass nostop noprint=20
+(host gdb) handle SIGUSR1 pass nostop noprint
 
-<much more>
+see http://user-mode-linux.sourceforge.net/debugging-skas.html for details.
 
-Program received signal SIGUSR1, User defined signal 1.
-0x40040781 in kill () from /lib/libc.so.6
-(gdb) c
-Continuing.
-.
+And we *do* need the backtrace when it hits the breakpoint on panic, please.
 
-Program received signal SIGUSR1, User defined signal 1.
-0x40040781 in kill () from /lib/libc.so.6
-(gdb) c
-Continuing.
-Starting kernel log daemon: klogd
-Program received signal SIGUSR1, User defined signal 1.
-0x40040781 in kill () from /lib/libc.so.6
-(gdb) bt
-#0  0x40040781 in kill () from /lib/libc.so.6
-#1  0x8006c91f in ?? ()
-#2  0x800697ea in ?? ()
-#3  0x8006919d in ?? ()
-#4  0x80069968 in ?? ()
-#5  0x80064309 in ?? ()
-#6  0x8000cac4 in ?? ()
-#7  0x800662b1 in ?? ()
-#8  0x80069abf in ?? ()
-#9  0x80066af5 in ?? ()
-#10 0x80069afa in ?? ()
-#11 0x80068ea7 in ?? ()
-#12 0x800690da in ?? ()
-#13 0x80069897 in ?? ()
-#14 0x400406b8 in sigaction () from /lib/libc.so.6
-#15 0x800697ea in ?? ()
-(gdb) c
-Continuing.
+Bye and thanks for your reports
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+EOSIGN
 
-Program received signal SIGUSR1, User defined signal 1.
-0x40040781 in kill () from /lib/libc.so.6
-(gdb) bt
-#0  0x40040781 in kill () from /lib/libc.so.6
-#1  0x8006c91f in ?? ()
-#2  0x800697ea in ?? ()
-#3  0x8006919d in ?? ()
-#4  0x80069968 in ?? ()
-#5  0x80064309 in ?? ()
-#6  0x8000cac4 in ?? ()
-#7  0x800662b1 in ?? ()
-#8  0x80069abf in ?? ()
-#9  0x80066af5 in ?? ()
-#10 0x80069afa in ?? ()
-#11 0x80068ea7 in ?? ()
-#12 0x800690da in ?? ()
-#13 0x80069897 in ?? ()
-#14 0x400406b8 in sigaction () from /lib/libc.so.6
-#15 0x800697ea in ?? ()
-(gdb) c
-Continuing.
-
-Program received signal SIGSEGV, Segmentation fault.
-0x8006a281 in ?? ()
-(gdb) bt
-#0  0x8006a281 in ?? ()
-#1  0x8006a0f4 in ?? ()
-#2  0x8006a13c in ?? ()
-#3  0x8006a307 in ?? ()
-#4  0x8006cc9c in ?? ()
-#5  0x8002be5a in ?? ()
-#6  0x80069abf in ?? ()
-#7  0x80066af5 in ?? ()
-#8  0x80069afa in ?? ()
-#9  0x80068ea7 in ?? ()
-#10 0x800690da in ?? ()
-#11 0x80069897 in ?? ()
-#12 0x400406b8 in sigaction () from /lib/libc.so.6
-(gdb) c
-Continuing.
-Kernel panic: Kernel mode fault at addr 0x8814000, ip 0x400d93c4
-.
-
-Program received signal SIGUSR1, User defined signal 1.
-0x40040781 in kill () from /lib/libc.so.6
-(gdb) bt
-#0  0x40040781 in kill () from /lib/libc.so.6
-#1  0x8006c91f in ?? ()
-#2  0x800697ea in ?? ()
-#3  0x8006919d in ?? ()
-#4  0x80069968 in ?? ()
-#5  0x80064309 in ?? ()
-#6  0x8000cac4 in ?? ()
-#7  0x800662b1 in ?? ()
-#8  0x80069abf in ?? ()
-#9  0x80066af5 in ?? ()
-#10 0x80069afa in ?? ()
-#11 0x80068ea7 in ?? ()
-#12 0x800690da in ?? ()
-#13 0x80069897 in ?? ()
-#14 0x400406b8 in sigaction () from /lib/libc.so.6
-(gdb) c
-Continuing.
-
-Program received signal SIGUSR1, User defined signal 1.
-0x40040781 in kill () from /lib/libc.so.6
-(gdb) bt
-#0  0x40040781 in kill () from /lib/libc.so.6
-#1  0x8006c91f in ?? ()
-#2  0x800697ea in ?? ()
-#3  0x8006919d in ?? ()
-#4  0x80069968 in ?? ()
-#5  0x80064309 in ?? ()
-#6  0x8000cac4 in ?? ()
-#7  0x800662b1 in ?? ()
-#8  0x80069abf in ?? ()
-#9  0x80066af5 in ?? ()
-#10 0x80069afa in ?? ()
-#11 0x80068ea7 in ?? ()
-#12 0x800690da in ?? ()
-#13 0x80069897 in ?? ()
-#14 0x400406b8 in sigaction () from /lib/libc.so.6
-#15 0x800697ea in ?? ()
-(gdb) c
-Continuing.
-
-
-Program exited normally.
-
-
-
-
-I hope that can help you.
-
-regards Johannes
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
