@@ -1,7 +1,7 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind
-Message-ID: <20040804151057.GA7205@ccure.user-mode-linux.org>
+Message-ID: <20040804153541.GA7237@ccure.user-mode-linux.org>
 References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<410EFCDB.8080404@enterasys.com>
 	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
@@ -27,27 +27,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 4 Aug 2004 11:10:57 -0400
+Date: Wed, 4 Aug 2004 11:35:41 -0400
 To: Tom Hughes <thh@cyberscience.com>
 Cc: "D. Bahi" <dbahi@enterasys.com>, Nicholas Nethercote <njn25@cam.ac.uk>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
 On Wed, Aug 04, 2004 at 08:52:19AM +0100, Tom Hughes wrote:
-> I don't see how a patch that small can have made clone work for you in
-> any version - at the very least you would need a change to vg_syscall.c
-> to stop it trapping the clone and complaining about it or you would
-> never actually reach VG_(do_syscall).
-
-There may have been more - this was the only bit that I spotted in my old
-email.  In any case, that patch was the guts of the clone support.
+> >> @@ -39,6 +40,10 @@
+> >>  # code which copies from baseBlock before the call, into
+> >>  # m_state_static, and back afterwards.
+> >>  
+> >> +.section .data
+> >> +save_ip:
+> >> +        .long   0
+> >> +
+> >>  VG_(do_syscall):
+> >>         # Save all the int registers of the real machines state on the
+> >>         # simulators stack.
+> >> @@ -80,10 +85,27 @@
+> >>         movl    VG_(m_state_static)+48, %esi
+> >>         movl    VG_(m_state_static)+52, %edi
+> >>  
+> >> +       cmpl    $__NR_clone, %eax
+> >> +       jne     not_clone
+> >> +
+> >> +       pushl   %eax
+> >> +       movl    VG_(m_state_static)+60, %eax
+> >> +       movl    %eax, save_ip
+> >> +       popl    %eax
+> >> +
+> >> +       int     $0x80
+> >> +
+> >> +       cmpl    $0, %eax
+> >> +       jne     parent_finish
+> >> +
+> >> +       jmp     *save_ip
+> >> +
+> >> +not_clone:
+> >>         # esp now refers to the simulatees stack
+> >>         # Do the actual system call
+> >>         int     $0x80
+> 
 
 > But how did you cope with the fact that valgrind doesn't protect it's
 > internal data structures in any way? You would have all sorts of
 > problems with two threads trying to access the same data.
 
-Despite its use of clone, UML is essentially single-threaded.  The child
-thread goes and does something, and the parent waits for it.  There is a 
-window between the clone and wait where both could be executing at the
-same time, and trashing valgrind data, but I never saw that happen.
+I think I was mistaken about this firing off another valgrind thread, for
+two reasons.  
+
+I remember being concerned about whether the process data was still present
+in its normal, not running under valgrind, form.  This would only be a problem
+if you were planning on running a non-valgrind thread in the same address
+space.
+
+Second, the patch above looks like it extracts the client IP from valigrind's
+state and branches to it.  This would make the new thread a non-valgrind one.
+
+So, this being the case, there are no concerns about multi-threading V, just
+UML, which isn't your problem.
 
 				Jeff
 
