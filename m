@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D4LZ6-00052D-PH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Feb 2005 08:10:12 -0800
+	id 1D4Nsi-0004JZ-37 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Feb 2005 10:38:36 -0800
 Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D4LYg-0007aq-Ph for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Feb 2005 08:10:12 -0800
+	id 1D4NsH-00007O-0u for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Feb 2005 10:38:36 -0800
 Received: from NHROCAVG2.ets.enterasys.com ([134.141.79.124])
-	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id j1OG9ZZC018698
+	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id j1OIc6ZC024338
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 24 Feb 2005 11:09:35 -0500 (EST)
-Message-ID: <421DFC3C.3020709@enterasys.com>
+	Thu, 24 Feb 2005 13:38:06 -0500 (EST)
+Message-ID: <421E1F0D.4040108@enterasys.com>
 From: "D. Bahi" <dbahi@enterasys.com>
 MIME-Version: 1.0
 Subject: Re: [uml-devel] UML startup -- segfault with no mm
@@ -21,7 +21,7 @@ References: <421D59C5.9020003@enterasys.com>
 In-Reply-To: <200502241736.j1OHaFha003688@ccure.user-mode-linux.org>
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="------------enigE6ACE7BD17259A921206C3F0"
+	boundary="------------enigCFE465D41D340D576C04A7AE"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,20 +33,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Feb 2005 11:09:32 -0500
+Date: Thu, 24 Feb 2005 13:38:05 -0500
 To: Jeff Dike <jdike@addtoit.com>
 Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE6ACE7BD17259A921206C3F0
+--------------enigCFE465D41D340D576C04A7AE
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-thank you very very much jeff.
+actually - 2.4.26-3um looks like this already.
 
-i'll apply and let you know.
+int start_uml_skas(void)
+{
+    start_userspace(0);
+    capture_signal_stack();
 
-very much looking forward to the 'update/moderinization' of the 2.4 series.
+    init_new_thread_signals(1);
+    idle_timer();
+
+    init_task.thread.request.u.thread.proc = start_kernel_proc;
+    init_task.thread.request.u.thread.arg = NULL;
+
+so this doesn't play into it as it just put the
+idle_timer in 2.6 back where it was in 2.4:
+
+***************
+*** 224,232 ****
+  {
+      start_userspace(0);
+      capture_signal_stack();
+-     uml_idle_timer();
+
+      init_new_thread_signals(1);
+
+      init_task.thread.request.u.thread.proc = start_kernel_proc;
+      init_task.thread.request.u.thread.arg = NULL;
+--- 224,232 ----
+  {
+      start_userspace(0);
+      capture_signal_stack();
+
+      init_new_thread_signals(1);
++     uml_idle_timer();
+
+
 
 Jeff Dike wrote:
 
@@ -71,7 +102,7 @@ Jeff Dike wrote:
 db
 
 
---------------enigE6ACE7BD17259A921206C3F0
+--------------enigCFE465D41D340D576C04A7AE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -79,12 +110,12 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.0 (MingW32)
 
-iD8DBQFCHfw83XQ4zakZ3z4RAlnuAJ9RPkil7BU7FC6zRXOeAuUzLn+8YgCePsMj
-Qs9zbvWfgIZKPIuuYnE70wQ=
-=xM7i
+iD8DBQFCHh8N3XQ4zakZ3z4RAvqcAJ9PRPy13jq2rdF8kZ8vMM+dLCCMdgCeLCsi
+d2t60fN1UGwONARbN1hMVOE=
+=Vx2d
 -----END PGP SIGNATURE-----
 
---------------enigE6ACE7BD17259A921206C3F0--
+--------------enigCFE465D41D340D576C04A7AE--
 
 
 -------------------------------------------------------
