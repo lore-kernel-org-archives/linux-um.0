@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CYtz0-0007Ph-CU for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 14:26:58 -0800
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CYtyy-0005xm-7y for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 14:26:57 -0800
-Message-ID: <41ABA22B.8020004@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1CYu7T-00088P-7x for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Nov 2004 14:35:43 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CYu7S-0001AJ-2b for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Nov 2004 14:35:42 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: Auto-updating Jeff Dike tree
+References: <200410081635.i98GZgr02277@trolli.pdb.fsc.net>
+	<200410132008.59231.blaisorblade_spam@yahoo.it>
+	<41AB9E02.9050400@tuxrocks.com>
+In-Reply-To: <41AB9E02.9050400@tuxrocks.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] 2.6.9-bb3 on 2.6.9 host problem - triggering a host
-	bug?
-References: <200411292315.25368.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200411292315.25368.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411292338.45801.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,82 +31,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 29 Nov 2004 23:26:51 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 29 Nov 2004 23:38:45 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Frank Sorenson <frank@tuxrocks.com>, bodo.stroesser@fujitsu-siemens.com
 
-Blaisorblade wrote:
-> Checking for the skas3 patch in the host...found
-> Checking for /proc/mm...found
-> Checking PROT_EXEC mmap in /tmp...OK
-> Linux version 2.6.9-skas3-v7-bb3nobodo-rework-hang (paolo@zion) (gcc version 
-> 3.3.2 (Mandrake Linux 10.0 3.3.2-6mdk)) #9 FriNov 26 03:51:10 CET 2004
-> Built 1 zonelists
-> Kernel command line: ubd0s=slack90.rootfs rootfs=/dev/ubd0 ubd7=slack90.swapfs 
-> mem=64m eth0=tuntap,,,192.168.0.100 UML_XDISPLAY=192.168.0.100:0 
-> UML_IP=192.168.0.3 con=xterm con0=fd:0,fd:1 root=98:0
-> PID hash table entries: 512 (order: 9, 8192 bytes)
-> Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
-> Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
-> Memory: 61792k available
-> Kernel panic - not syncing: Segfault with no mm
-> 
-> EIP: 0000:[<00000000>] CPU: 0 Not tainted EFLAGS: 00000000
->     Not tainted
-> EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
-> ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 0000 ES: 0000
-Meanwhile, I have some experience analyzing the call trace.
-It's very difficult, when not even impossible, since the output lacks the
-stack-addresses. Could you please insert a additional address-field in
-the output?
+On Monday 29 November 2004 23:09, Frank Sorenson wrote:
+> BlaisorBlade wrote:
+> > I use the attached script (questionable as much as you want, i.e. it kind
+> > of works here, no guarantee, not even "I think it works") to download the
+> > patches. It parses the patches.html in a very rough Way. I mean
+> > "DownloadAllPatches".
+> >
+> > Also, the generated series file must be edited: it appends the new patch
+> > list, so if you use it as-is it has duplicate patches and won't work.
+>
+> BlaisorBlade,
+>
+> I've modified your DownloadAllPatches script a bit, and thought you
+> might want the changes as well.  This version doesn't require editing
+> for whatever versions are on the page (now auto-detects), rewrites the
+> series file, and is quieter.
 
-Bodo
-> Call Trace:
->  [<080791d3>] printk+0x13/0x20
->  [<0808bbd6>] notifier_call_chain+0x26/0x50
->  [<08078468>] panic+0x58/0xc0
->  [<0805f2a2>] segv+0x192/0x1d0
->  [<081e2157>] sigemptyset+0x17/0x30
->  [<0805d483>] change_signals+0x43/0x70
->  [<0805f673>] segv_handler+0xc3/0xd0
->  [<0805d4cd>] unblock_signals+0xd/0x10
->  [<08061cc4>] sig_handler_common_skas+0xa4/0xc0
->  [<080616a0>] start_kernel_proc+0x0/0x30
->  [<0805f6a3>] sig_handler+0x13/0x20
->  [<081e1e88>] __restore+0x0/0x8
->  [<080616a0>] start_kernel_proc+0x0/0x30
->  [<0804871d>] start_kernel+0xfd/0x1b0
->  [<0805d509>] enable_mask+0x39/0x50
->  [<081e2157>] sigemptyset+0x17/0x30
->  [<081e1e88>] __restore+0x0/0x8
->  [<08071158>] file_io+0x28/0x80
->  [<08071158>] file_io+0x28/0x80
->  [<0805d509>] enable_mask+0x39/0x50
->  [<081e2157>] sigemptyset+0x17/0x30
->  [<0805d509>] enable_mask+0x39/0x50
->  [<081e2157>] sigemptyset+0x17/0x30
->  [<08071158>] file_io+0x28/0x80
->  [<0805d509>] enable_mask+0x39/0x50
->  [<081e2157>] sigemptyset+0x17/0x30
->  [<0805d5f0>] set_signals+0x80/0x180
->  [<08079727>] release_console_sem+0x1f7/0x270
->  [<080795f5>] release_console_sem+0xc5/0x270
->  [<080793a5>] vprintk+0x1c5/0x2e0
->  [<080791d3>] printk+0x13/0x20
->  [<0804cfb0>] free_all_bootmem+0x10/0x20
->  [<0805969a>] mem_init+0xfa/0x110
->  [<08059662>] mem_init+0xc2/0x110
->  [<080616c7>] start_kernel_proc+0x27/0x30
->  [<0805ad0a>] run_kernel_thread+0x3a/0x50
->  [<080616a0>] start_kernel_proc+0x0/0x30
->  [<0805acef>] run_kernel_thread+0x1f/0x50
->  [<080616a0>] start_kernel_proc+0x0/0x30
->  [<080613c7>] new_thread_handler+0x67/0xa0
->  [<080616a0>] start_kernel_proc+0x0/0x30
->  [<081e1e88>] __restore+0x0/0x8
->  [<081e20e1>] kill+0x11/0x20
-> 
+Thanks a lot for this... 
 
+A note: appending rather than rewriting was done for the need of saving the 
+old content of series. It was not reliable at all, however, and maybe it 
+would be better to just copy somewhere else the old content, so it's probably 
+better as you did.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
