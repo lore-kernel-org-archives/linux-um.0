@@ -1,8 +1,7 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Date: Tue, 02 Sep 2003 05:05:45 -0700
-Subject: User-mode-linux-devel -- confirmation of subscription -- request 733638
+Date: Tue, 02 Sep 2003 05:14:05 -0700
+Subject: Welcome to the "User-mode-linux-devel" mailing list
 From: user-mode-linux-devel-request@lists.sourceforge.net
-Reply-To: user-mode-linux-devel-request@lists.sourceforge.net
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -13,30 +12,44 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Message-Id: <E19u9vP-0005BD-00@sc8-sf-list2.sourceforge.net>
+Message-Id: <E19uA3T-0007tw-00@sc8-sf-list2.sourceforge.net>
 To: geert@linux-m68k.org
 
-User-mode-linux-devel -- confirmation of subscription -- request
-733638
+Welcome to the User-mode-linux-devel@lists.sourceforge.net mailing
+list!
 
-We have received a request from 195.0.45.164 for subscription of your
-email address, <geert@linux-m68k.org>, to the
-user-mode-linux-devel@lists.sourceforge.net mailing list.  To confirm
-the request, please send a message to
-user-mode-linux-devel-request@lists.sourceforge.net, and either:
+To post to this list, send your email to:
 
-- maintain the subject line as is (the reply's additional "Re:" is
-ok),
+  user-mode-linux-devel@lists.sourceforge.net
 
-- or include the following line - and only the following line - in the
-message body: 
+General information about the mailing list is at:
 
-confirm 733638
+  https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-(Simply sending a 'reply' to this message should work from most email
-interfaces, since that usually leaves the subject line in the right
-form.)
+If you ever want to unsubscribe or change your options (eg, switch to
+or from digest mode, change your password, etc.), visit your
+subscription page at:
 
-If you do not wish to subscribe to this list, please simply disregard
-this message.  Send questions to
-user-mode-linux-devel-admin@lists.sourceforge.net.
+  https://lists.sourceforge.net/lists/options/user-mode-linux-devel/geert%40linux-m68k.org
+
+
+You can also make such adjustments via email by sending a message to:
+
+  User-mode-linux-devel-request@lists.sourceforge.net
+
+with the word `help' in the subject or body (don't include the
+quotes), and you will get back a message with instructions.
+
+You must know your password to change your options (including changing
+the password, itself) or to unsubscribe.  It is:
+
+  UMl33t
+
+If you forget your password, don't worry, you will receive a monthly
+reminder telling you what all your lists.sourceforge.net mailing list
+passwords are, and how to unsubscribe or change your options.  There
+is also a button on your options page that will email your current
+password to you.
+
+You may also have your password mailed to you automatically off of the
+Web page noted above.
