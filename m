@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ba4E9-0003GA-V7 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jun 2004 20:03:09 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Ba4E9-0007C3-Fx
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jun 2004 20:03:09 -0700
-Message-Id: <200406150354.i5F3sBFm025995@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: [SYSEMU] New benchmarks results 
-In-Reply-To: Your message of "Sun, 13 Jun 2004 23:50:14 +0200."
-	<1087163413.1260.111.camel@chartreuse> 
-References: <200406121616.26839.blaisorblade_spam@yahoo.it>
-	<1087163413.1260.111.camel@chartreuse> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1Ba4K0-0004OU-PR for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Jun 2004 20:09:12 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Ba4K0-00008B-7u for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Jun 2004 20:09:12 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+References: <200406071949.04220.blaisorblade_spam@yahoo.it>
+	<200406080455.i584tad2023374@ccure.user-mode-linux.org>
+	<200406092305.24447.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200406092305.24447.blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200406142017.39563.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: The SKAS4 patch?? + ideas for 0 context-switch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,25 +29,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 14 Jun 2004 23:54:11 -0400
-To: Laurent Vivier <LaurentVivier@wanadoo.fr>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, roland <for_spam@gmx.de>
+Date: Mon, 14 Jun 2004 20:17:39 +0200
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-LaurentVivier@wanadoo.fr said:
-> Could you explain where we lost :
-> w/o SYSEMU
-> real - (user+sys) 5m13.144s 5m10.549s 5m12.002s 
-> w/ SYSEMU
-> real - (user+sys) 3m02.705s 3m08.483s 3m01.044s 
+Alle 23:05, mercoled=EC 9 giugno 2004, BlaisorBlade ha scritto:
 
-Somewhere in the host kernel.  Given this, it would seem that real is a better
-measurement than user+sys on an unloaded system since user+sys leaves out the
-host kernel.
+> > plus using segments will cost you a cycle or something
+> > on every memory reference.
+The Intel Manual 3 (Intel System Programming Guide - 253668 -15.pdf) says, =
+at=20
+page 4-1 (page 107 in the PDF), that limit checking has no performance cost=
+,=20
+and I expect this to hold especially for simply verifying if an address is =
 
-What you really want is time on the host, except covering only the benchmark
-period rather than the period from boot to halt.
+below a limit. Maybe it could lie, ok, but maybe Alan Cox was referring to =
 
-				Jeff
+more complex segmentation tricks.
+
+I'm also going to ask to Ingo Molnar (he sets a segment limit in the CS=20
+descriptor in his exec-shield patch, so he has probably benchmarked the=20
+result).
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
 
 
 
