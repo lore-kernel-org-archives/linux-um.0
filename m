@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQatk-0003fC-Eg for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2004 16:54:56 -0700
+	id 1BQb2W-0005kg-5K for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 May 2004 17:04:00 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BQatk-0007Py-3u
+	(Exim 4.30) id 1BQb2V-00019B-Ks
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2004 16:54:56 -0700
-Message-Id: <200405200040.i4K0eYDt002107@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] /dev/fd/62: No such file or directory 
-In-Reply-To: Your message of "Mon, 17 May 2004 22:16:16 +0200."
-	<030101c43c4b$cf6bd1a0$2000000a@schlepptopp> 
-References: <030101c43c4b$cf6bd1a0$2000000a@schlepptopp> 
+	Wed, 19 May 2004 17:03:59 -0700
+Message-Id: <200405200050.i4K0o2Dt002135@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Implementing 802.11... 
+In-Reply-To: Your message of "Fri, 14 May 2004 20:24:47 +0200."
+	<20040514182447.56774.qmail@web25106.mail.ukl.yahoo.com> 
+References: <20040514182447.56774.qmail@web25106.mail.ukl.yahoo.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,18 +28,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 May 2004 20:40:34 -0400
-To: roland <for_spam@gmx.de>
+Date: Wed, 19 May 2004 20:50:02 -0400
+To: =?iso-8859-1?q?maria=20maria?= <for_spam2004@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-for_spam@gmx.de said:
-> can anybody give me a hint, what`s the problem, and how to (probably)
-> fix this ? 
+for_spam2004@yahoo.it said:
+> Warning: kfree_skb passed an skb still on a list (from a0126b3b)
+> Kernel panic: kernel BUG at skbuff.c:316!
+>
+> Does someone have some idea about the cause of this problem? 
 
-Can you trace these back to the system call within which these happen?
-
-Figuring out which command in which script causes it, and putting a strace
-in front of it should do the trick.
+If you aren't familiar with skbuff management, you should probably find
+some driver that's similar to yours, and just copy how it does things.
 
 				Jeff
 
