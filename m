@@ -1,9 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Message-ID: <Pine.LNX.4.58.0410151043400.17537@blackhole.kfki.hu>
+Subject: Re: [uml-devel] video mode reprogrammed!
+In-Reply-To: <Pine.LNX.4.58.0410151043400.17537@blackhole.kfki.hu>
+Message-ID: <Pine.LNX.4.58.0410151218360.17537@blackhole.kfki.hu>
+References: <Pine.LNX.4.58.0410151043400.17537@blackhole.kfki.hu>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] video mode reprogrammed!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -15,26 +17,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 15 Oct 2004 11:07:12 +0200 (CEST)
+Date: Fri, 15 Oct 2004 12:27:12 +0200 (CEST)
 To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On Fri, 15 Oct 2004, Jozsef Kadlecsik wrote:
 
-When experimenting with UML (linux-2.4.26) on my laptop, I successfully
-attached a console to a free tty channel.
+> When experimenting with UML (linux-2.4.26) on my laptop, I successfully
+> attached a console to a free tty channel.
+>
+> However, UML immediately reprogrammed the BIOS to switch to a video mode,
+> where only a small portion in the middle of the screen is used only.
 
-However, UML immediately reprogrammed the BIOS to switch to a video mode,
-where only a small portion in the middle of the screen is used only. After
-that when booting the host system, the bios menu, lilo, etc come up in
-this small "screen". I can use the whole TFT screen only when running the
-console on framebuffer with proper modes or when switching to X. I'd like
-to switch back the default video mode to the original one, but so far
-google or searching the mailing lists did not help much.
+Oh my, that was me and nothing's wrong with UML.
 
-The laptop is an Thinkpad T30 with ATI Radeon Mobility M7 LW (Radeon
-Mobility 7500) chipset.
+I used tty8 for the UML console. When switching to it, first I must had
+hit Fn+F8 instead of Alt+F8: Fn+F8 toggles screen expansion on or
+off, which I was not aware of.
 
-Any help is greatly appreciated!
+Sorry for wasting yout time.
 
 Best regards,
 Jozsef
