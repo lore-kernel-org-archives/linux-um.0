@@ -1,26 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CYWFs-0002uh-Oa for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 28 Nov 2004 13:06:48 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CYWFs-0005uG-65 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 28 Nov 2004 13:06:48 -0800
-Received: from hawk (mothership.theshore.net [69.137.84.52])
-	by www.theshore.net (8.12.9/8.9.1) with SMTP id iASL6kqS027903
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 28 Nov 2004 16:06:46 -0500
-Message-ID: <0d9b01c4d58e$379c29b0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <091a01c4d48e$9dddcd60$0201a8c0@hawk>
-Subject: Re: [uml-devel] 2.6.10-rc2-mm3 + incrementals - Kernel panic - not
-	syncing: Segfault with no mm
+Message-ID: <267988DEACEC5A4D86D5FCD780313FBB021BB9B1@exch-03.noida.hcltech.com>
+From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4D62A.7BD22753"
+Subject: [uml-devel] /etc/shadow problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,16 +16,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 28 Nov 2004 15:07:04 -0600
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 29 Nov 2004 21:15:42 +0530
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-> Kernel panic - not syncing: Segfault with no mm
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Just an update.  2.6.10-rc1 and 2.6.10-rc2 both work fine.  Problems start in
-2.6.10-rc2-mm1.
+------_=_NextPart_001_01C4D62A.7BD22753
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
--Chris
+Hi,
+im trying to change the user password to empty. On normal linux u can do it
+by making the password field empty in /etc/shadow file. But when im trying
+to do on UML, it doesnt update and give message login incorrect. How to make
+it empty??
 
+Thanks and Best Regards,
+Adil Mujeeb
+
+
+
+------_=_NextPart_001_01C4D62A.7BD22753
+Content-Type: text/html;
+	charset="iso-8859-1"
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+
+<META content="MSHTML 5.00.3821.2800" name=GENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=Arial size=2><SPAN 
+class=364364315-29112004>Hi,</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=364364315-29112004>im trying to change 
+the user password to empty. On normal linux u can do it by making the password 
+field empty in /etc/shadow file. But when im trying to do on UML, it doesnt 
+update and give message login incorrect. How to make it 
+empty??</SPAN></FONT></DIV>
+<P><FONT face="Comic Sans MS" size=2>Thanks and Best Regards,</FONT><FONT 
+face=Arial><BR><B></B></FONT><B><FONT color=#0000ff face="Times New Roman">Adil 
+Mujeeb</FONT></B><BR></P></BODY></HTML>
+
+------_=_NextPart_001_01C4D62A.7BD22753--
 
 
 -------------------------------------------------------
