@@ -1,26 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CmEga-0000vj-P3 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Jan 2005 09:11:04 -0800
-Received: from mail.gmx.net ([213.165.64.20])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CmEgW-0001EL-0c for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Jan 2005 09:11:04 -0800
-From: "Armin M. Warda" <Armin.Warda@gmx.de>
-Reply-To: Armin.Warda@gmx.de
-Subject: Re: [uml-devel] Re: UML fills /tmp irreversibly (2.6.9-bb4 on SuSE
-	9.2)
-References: <200412140958.58402.Armin.Warda@ePost.De>
-	<040e01c4f272$c44e35f0$0201a8c0@hawk>
-	<20050105112813.GA14779@bytesex>
-In-Reply-To: <20050105112813.GA14779@bytesex>
+Message-ID: <267988DEACEC5A4D86D5FCD780313FBB033EBB38@exch-03.noida.hcltech.com>
+From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1250595.tRK1pi7o76";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501051522.52632.Armin.Warda@gmx.de>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4F400.640F017A"
+Subject: [uml-devel] Networking problem.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,61 +16,129 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 5 Jan 2005 15:22:47 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 6 Jan 2005 20:29:58 +0530
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
---nextPart1250595.tRK1pi7o76
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
+
+------_=_NextPart_001_01C4F400.640F017A
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+	charset="iso-8859-1"
 
-On Wednesday 05 January 2005 12:28, Gerd Knorr wrote:
-> > > # mount tmpfs tmp/ -t tmpfs
-> > > # TMPDIR=3D./tmp/ /kernels/non-fix-kill-patched-kernel
-> > > rootfs=3Ddebian.fs # uml_mconsole .uml/xxx/mconsole cad
-> > > # kill -KILL <pid1> <pid2>
->
-> That doesn't kill all the processes, I additionally need 'kill
-> -CONT' for one of them.
+Hi all,
+i have problem related to networking.
+ 
+CASE 1:
+My host machine has 2 ethernet cards.
+i have booted a UML & connected its interface eth0 with a bridge. The steps
+are as :
+ 
+1. Boot the UMl.
+2. Create the tap device & bridge.
+3. Add the tap & host interface in the bridge and assign the IP to bridge.
+4. config the uml interface with uml_mconsole as eth0=tuntap,tap0
+5. enable ip forwarding on host & guest
+ 
+Now Iam able to ping the uml interface from the host & ping back the host
+from UML. But from uml iam unable to ping outside the host to other machins
+on the same network. I have manipulated the routing table but still im
+unable to ping other machines from UML.
+ 
+CASE 2:
+Create the vlan device on host with vconfig command.
+Boot the UML
+Create the tap device & bridge
+Add the vlan interface & tap device (tap0) to bridge.
+Create the uml switch with -tap option & attach with tap0
+config the uml interface with uml_mconsole as eth0=daemon,,unix,socket file
+enable ip forwarding on host & guest
+Assign an ip to tap device but its unable to ping the uml interface & vice
+versa.
+ 
+ 
+Could anyone plz help me out.
 
-I remember that behaviour you describe from the uml-kernel that was=20
-delivered on SuSE 9.2's Distribution media, um-host-kernel-2.6.8-24.*=20
+Thanks and Best Regards,
+Adil Mujeeb
 
-But my 2.6.9-bb4 um-kernel does not show that problem, I think because=20
-bb4 has that fix-kill patch inside.
 
-> > > # umount tmp/
-> > > umount: /root/tmp: device is busy
->
-> Works for me, at least when no uml kernel process left over.=20
-> Sure there are no uml processes hanging around any more=20
-> at this point? =20
 
-Yes, I am very sure: ps and lsof show no more uml processes, lsof=20
-shows no processes using the /tmp any more, but still I cannot umount=20
-it. (As I described in my original posting, see:=20
-http://marc.theaimsgroup.com/?l=3Duser-mode-linux-devel&m=3D110301482900866=
-&w=3D2
+------_=_NextPart_001_01C4F400.640F017A
+Content-Type: text/html;
+	charset="iso-8859-1"
 
-  Armin.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
-=2D-=20
-   --- May the Source be with you! Linux. ---
-   --- secure eMail: http://www.gnupg.de/ ---
 
---nextPart1250595.tRK1pi7o76
-Content-Type: application/pgp-signature
+<META content="MSHTML 5.00.3821.2800" name=GENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Hi 
+all,</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>i have problem 
+related to networking.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN 
+class=392174514-06012005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>CASE 
+1:</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>My host machine has 
+2 ethernet cards.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>i have booted a UML 
+&amp; connected its interface eth0 with a bridge. The steps are as 
+:</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN 
+class=392174514-06012005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>1. Boot the 
+UMl.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>2. Create the tap 
+device &amp; bridge.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>3. Add the tap &amp; 
+host interface in the bridge and assign the IP to bridge.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>4. config 
+the&nbsp;uml interface with uml_mconsole as eth0=tuntap,tap0</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>5. enable ip 
+forwarding on host &amp; guest</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN 
+class=392174514-06012005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Now Iam able to ping 
+the&nbsp;uml interface from the host &amp; ping back the host from UML. But from 
+uml iam unable to ping outside the host to other machins on the same network. I 
+have manipulated the routing table but still im unable to ping other machines 
+from UML.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN 
+class=392174514-06012005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>CASE 
+2:</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Create the vlan 
+device on host with vconfig command.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Boot the 
+UML</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Create the tap 
+device &amp; bridge</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Add the vlan 
+interface &amp; tap device (tap0) to bridge.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Create the uml 
+switch with -tap option &amp; attach with tap0</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>config the&nbsp;uml 
+interface with uml_mconsole as eth0=daemon,,unix,socket file</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>enable ip forwarding 
+on host &amp; guest</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Assign an ip to tap 
+device but its unable to ping the uml interface &amp; vice 
+versa.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN 
+class=392174514-06012005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN 
+class=392174514-06012005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2><SPAN class=392174514-06012005>Could anyone plz 
+help me out.</SPAN></FONT></DIV>
+<P><FONT face="Comic Sans MS" size=2>Thanks and Best Regards,</FONT><FONT 
+face=Arial><BR><B></B></FONT><B><FONT color=#0000ff face="Times New Roman">Adil 
+Mujeeb</FONT></B><BR></P></BODY></HTML>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBB2/g8RyBj5Zbydm0RAhN1AJ49yOzfajeMPx+0drNTnP0PFmpvjgCfTjyT
-FJ0zlo6LZVG94VoS7pSkBxw=
-=Mddc
------END PGP SIGNATURE-----
-
---nextPart1250595.tRK1pi7o76--
+------_=_NextPart_001_01C4F400.640F017A--
 
 
 -------------------------------------------------------
