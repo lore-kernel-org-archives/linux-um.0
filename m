@@ -2,27 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CsrsB-0005or-Lb for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Jan 2005 16:14:27 -0800
-Received: from mail4.tpgi.com.au ([203.12.160.61] helo=mail.tpgi.com.au)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CsrsA-00028D-2J
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Jan 2005 16:14:27 -0800
-Received: from mail.dimtech.com.au (203-213-61-226-syd-ts9-2600.tpgi.com.au
-	[203.213.61.226])
-	by mail.tpgi.com.au (8.12.10/8.12.10) with ESMTP id j0O0EFZm005801
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 24 Jan 2005 11:14:20 +1100
-From: Peter Hartshorn <peter@dimtech.com.au>
-Reply-To: peter@dimtech.com.au
-Subject: Re: [uml-devel] Hellow Dear. I love you.
-References: <E1CsrhO-0001Xn-8U@sc8-sf-mx2.sourceforge.net>
-In-Reply-To: <E1CsrhO-0001Xn-8U@sc8-sf-mx2.sourceforge.net>
+	id 1Csv11-00070v-2n for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 Jan 2005 19:35:47 -0800
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Csv0w-0005Ii-Gy for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 Jan 2005 19:35:47 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.61.0501232231380.6197@sparrow>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <200501241108.10778.peter@dimtech.com.au>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: [uml-devel] x86_64 compile on 2.6.11-rc2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,25 +25,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Jan 2005 11:08:10 +1100
-Content-Transfer-Encoding: 8bit
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 23 Jan 2005 22:35:50 -0500 (EST)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: William Stearns <wstearns@pobox.com>
 
-Well I guess someone loves UML.
+Good evening, all,
+ 	I'm trying to get 2.6.11-rc2 to compile.  Applying x86_64-fixes 
+helps it get further, but I still run into:
 
-PS. anyone from Canada using sympatico.ca might want to check their computer 
-for viruses.
 
-On Mon, 24 Jan 2005 03:37 pm, Natusik wrote:
-> Hi sweethart,
-> I just get round to email! My camera shootings takes a lot of time! I love
-> and miss you very much, I think just about you!! I'm fine, my first
-> photosession has ended yesterday, and you, as usually, the first who will
-> see my photos. My photographer is the really genius! I there madly
-> beautiful, especially when I oiled!!! Love, yours Natasha.
->
-> I’ll try to write as often as possible, I’ll send you new photos very soon.
-> Photos’ password: 0102
+gcc -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing 
+-fno-common -ffreestanding -O2 -fno-omit-frame-pointer -g -U__x86_64__ 
+-fno-builtin -D__arch_um__ -DSUBARCH=\"x86_64\" -Iarch/um/include 
+-I/usr/src/linux-2.6.11-rc2/arch/um/kernel/tt/include 
+-I/usr/src/linux-2.6.11-rc2/arch/um/kernel/skas/include -D__x86_64__ 
+-D_GNU_SOURCE -D_LARGEFILE64_SOURCE  -c -o arch/um/kernel/process.o 
+arch/um/kernel/process.c
+   CC      arch/um/kernel/process_kern.o
+   CC      arch/um/kernel/ptrace.o
+arch/um/kernel/ptrace.c: In function `sys_ptrace':
+arch/um/kernel/ptrace.c:104: error: structure has no member named 
+`debugregs'
+make[1]: *** [arch/um/kernel/ptrace.o] Error 1
+make: *** [arch/um/kernel] Error 2
+
+
+ 	None of the other patches in Jeff's 2.6 tar looked relevant to 
+this untrained eye.  Could anyone suggest either an additional patch 
+(/patchset) that would get x86_64 to compile?  If not, could someone 
+suggest a kernel that will compile on x86_64?  The last one I have that I 
+got to compile was 2.6.4, but to be fair, I'm just getting back into 
+kernel compiles.
+ 	Cheers,
+ 	- Bill
+
+---------------------------------------------------------------------------
+         "A man's character is his fate."
+ 	-- The Emperor's Club
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
