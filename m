@@ -2,18 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Axvlp-0006UZ-Nu for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Mar 2004 14:20:17 -0800
-Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AxvZs-0004l0-2A for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Mar 2004 14:07:56 -0800
-Message-ID: <4043B42A.10803@nortelnetworks.com>
-From: Chris Friesen <cfriesen@nortelnetworks.com>
+	id 1AxxL9-0003fG-Ly for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Mar 2004 16:00:51 -0800
+Received: from stclair.eecs.umich.edu ([141.213.8.40])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1Axx99-00063u-EF
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Mar 2004 15:48:27 -0800
+Received: from stclair.eecs.umich.edu (localhost.eecs.umich.edu [127.0.0.1])
+	by stclair.eecs.umich.edu (8.12.8/8.12.8) with ESMTP id i21NmLA4022623
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 1 Mar 2004 18:48:21 -0500
+Received: from localhost (dunlapg@localhost)
+	by stclair.eecs.umich.edu (8.12.8/8.12.8/Submit) with ESMTP id
+	i21NmLUk022619 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 1 Mar 2004 18:48:21 -0500
+From: George Washington Dunlap III <dunlapg@umich.edu>
+Message-ID: <Pine.LNX.4.44.0403011824040.19252-100000@stclair.eecs.umich.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] problems with UML, issues with includes
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Overhead of UML-skas
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,63 +33,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 01 Mar 2004 17:07:38 -0500
-To: Jeff Dike <jdike@addtoit.com>, User-mode-linux-devel <User-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 1 Mar 2004 18:48:21 -0500 (EST)
+To: user-mode-linux-devel@lists.sourceforge.net
 
+Hey Jeff (and any other interested parties) -- this is George Dunlap, from
+the CoVirt group at U of M.  I've been testing the overhead of running
+workloads under UML compared to on the bare host, and we're getting some
+unexpectedly slow numbers -- for the particular benchmark we're using,
+about 105% overhead;  I was wondering if you could shed any light on the
+subject: has anyone had similar experiences, and are there any obvious 
+optimizations we're missing.
 
+We're using 2.4.20-7um, on a 2.4.18 host with the skas patch.  UML has 
+raw access to its own disk (via 'raw /dev/raw/raw1 /dev/hdc'), and is 
+given 256M (out of 1Gig host memory).  Asyncronous I/O is enabled via the 
+helper process.  COW disk mode is off.
 
-I'm having issues with UML.
+The workload we're running is a "kernel build" benchmark, which consists
+of the following commands:
+  make clean ; make dep ; make bzImage.
+This benchmark is run four times: once to warm up the cache, and thrice to 
+get "warm cache" numbers.  All runs are taken immediately after booting 
+the host kernel and then (if appropriate) the guest kernel.
 
-I've got a rootfs that used to work with an older UML.  With 2.4.24, I 
-try and boot with the following arguments:
+We're comparing this against a 2.4.20 vanilla kernel using a copy of the 
+same disk image, on the same disk.
 
-./linux-2.4.24  mem=256M con0=fd:0,fd:1 con=pts ubd0=test,rootfs debug 
-msp_view=build_neptune_2.0_int11
+Host 2.4.20 average:	 93 seconds
+UML 2.4.20 average:	192 seconds (105% overhead)
 
-The msp_view thing causes additional mounts to be created at init time. 
-  However, I get a bunch of errors in my console window when I try to 
-log in:
+All numbers were run on a P4 3GHz processor.
 
-ed Hat Linux release 8.0 (Psyche)
-Plankton/CELP 2.5.0 - Kernel 2.4.24-1um on an i686
+Two years ago for our ReVirt paper, we did the same test with UMLinux (now
+FAUMAchine) (with some optimizations to make it not-dog-slow) on a 1.2GHz
+AMD box and got a 70% overhead for that benchmark.  Similar tests at that
+time with VMWare got about 30% overhead.
 
-(none) login: Registering fd 47 twice
-Irqs : 3, 3
-Ids : 0xa022c3f8, 0xa022c3f8
-Registering fd 47 twice
-Irqs : 3, 3
-Ids : 0xa022c3f8, 0xa022c3f8
+Has anyone else had a similar experience?  Are there any obvious reasons 
+why it would be so much slower?
 
+I realize that it's different hardware as well, so I'm not really 
+comparing apples to apples.
 
+The "kernel make" benchmark is sort of a wost-case of our "realistic 
+workloads" because it makes a lot of system calls and forks a lot of 
+processes.  
 
-If I then keep going, I end up with a whole bunch of lines like:
+The numbers are for a RedHat 6.2 kernel image with ext2 FS, but we've
+gotten similar ratio for a RedHat 9.0 installation with ext3.  (The
+absolute time for both is increased, we think because the newer version of
+gcc does more work.)
 
-Failed to forward -1359446016 to pid 16452, err = 9
+Any help would be appreciated.
 
-
-As part of my efforts to try and debug this, I wanted to dump out the 
-names of the processes that were calling os_set_owner().  Accordingly in 
-  um/os/file.c I included <linux/sched.c> and wrote some code with 
-appropriate locking around the tasklist_lock so that I could match the 
-pid against the process name.
-
-When I compiled, it grabbed the sched.h from /usr/include rather than 
-from the kernel build, and everything blew up.
-
-So I guess I'm asking for help on two fronts.  1) How do I fix the build 
-process to pick up the kernel includes (and why doesn't it do that by 
-default?).  2) Any ideas why I'm getting the descriptor thing?
-
-Thanks,
-
-Chris
+-George Dunlap
+PhD Candidate at the University of Michigan
 
 -- 
-Chris Friesen                    | MailStop: 043/33/F10
-Nortel Networks                  | work: (613) 765-0557
-3500 Carling Avenue              | fax:  (613) 765-2986
-Nepean, ON K2H 8E9 Canada        | email: cfriesen@nortelnetworks.com
-
++-------------------+----------------------------------------
+| dunlapg@umich.edu | http://www-personal.umich.edu/~dunlapg 
++-------------------+----------------------------------------
+| "An empty life of luxury is still an empty life"
+|    -- everybodyduck, "Walk the Plank"
++------------------------------------------------------------
+| Outlaw Junk Email! Support HR 1748 (www.cauce.org)
 
 
 
