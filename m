@@ -1,45 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DGwXH-00032L-I7 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Mar 2005 02:04:23 -0800
-Received: from lon-del-01.spheriq.net ([195.46.50.97])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1DGwWy-0004nA-NS
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Mar 2005 02:04:23 -0800
-Received: from lon-out-02.spheriq.net ([195.46.50.130])
-	by lon-del-01.spheriq.net with ESMTP id j2VA3qRc015711
+	id 1DGzAf-0004cj-9Q for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 31 Mar 2005 04:53:13 -0800
+Received: from dsl-084-056-239-202.arcor-ip.net ([84.56.239.202]
+	helo=qualle.fzk.de)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DGzAc-0001GN-Nd for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 31 Mar 2005 04:53:13 -0800
+Received: from localhost.luise.net (localhost.luise.net [127.0.0.1])
+	by qualle.fzk.de (Postfix) with ESMTP id B0CA17AF9C
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Mar 2005 10:03:53 GMT
-Received: from lon-cus-02.spheriq.net (lon-cus-02.spheriq.net [195.46.50.38])
-	by lon-out-02.spheriq.net with ESMTP id j2VA3pBX009544
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Mar 2005 10:03:51 GMT
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by lon-cus-02.spheriq.net with ESMTP id j2VA3kXQ014296
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Mar 2005 10:03:50 GMT
-Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D0678DA41
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Mar 2005 10:03:45 +0000 (GMT)
-Received: from zeta.dmz-ap.st.com (localhost [127.0.0.1])
-	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7E209520C1
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Mar 2005 10:03:45 +0000 (UTC)
-Received: from mail1.sha.st.com (mail1.sha.st.com [10.94.100.2])
-	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 5F20413280
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Mar 2005 10:03:43 +0000 (GMT)
-From: Alex LIU <alex.liu@st.com>
-Message-ID: <003501c535d8$e8574a50$90b3c68a@st.com>
+	Thu, 31 Mar 2005 14:53:09 +0200 (CEST)
+From: Marcus Hardt <marcus.hardt@iwr.fzk.de>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
-Subject: [uml-devel] question about UML sigcontext in tt mode
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200503311453.09073.marcus.hardt@iwr.fzk.de>
+Subject: [uml-devel] 2.6.10 compilation error
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -51,43 +32,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 31 Mar 2005 18:03:34 +0800
-Content-Transfer-Encoding: 8bit
-To: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 31 Mar 2005 14:53:08 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,all:
+Hi Guys!
 
-I have a question about the sigcontext in tt mode.The union uml_pt_regs is defined as below(in uml-2.6.7):
+Whenever I try to compile a 2.6 guest kernel, I get a compilation error:
 
---------------------------------
-union uml_pt_regs {
-#ifdef UML_CONFIG_MODE_TT
-	struct tt_regs {
-		long syscall;
-		void *sc;
-	} tt;
-#endif
-#ifdef UML_CONFIG_MODE_SKAS
-	struct skas_regs {
-		unsigned long regs[HOST_FRAME_SIZE];
-		unsigned long fp[HOST_FP_SIZE];
-		unsigned long xfp[HOST_XFP_SIZE];
-		unsigned long fault_addr;
-		unsigned long fault_type;
-		unsigned long trap_type;
-		long syscall;
-		int is_user;
-	} skas;
-#endif
-};
--------------------------------------
+linux-2.6.9]$ cat ../uml-2.6.9-bs7.patch.bz2 | bzip2 -d | patch -p1
+linux-2.6.9]$ make ARCH=um xconfig
+linux-2.6.9]$ make ARCH=um
+  CC      init/version.o
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+arch/um/kernel/built-in.o(.text+0x23c8): In function `mem_init':
+: undefined reference to `phys_page'
+arch/um/kernel/built-in.o(.init.text+0x203): In function `kmap_init':
+: undefined reference to `pte_offset'
+collect2: ld returned 1 exit status
+  KSYM    .tmp_kallsyms1.S
+nm: '.tmp_vmlinux1': No such file
+  AS      .tmp_kallsyms1.o
+  LD      .tmp_vmlinux2
 
-Then why the tt.sc is defined as void while not as struct sigcontext? Thanks!
-
-Alex 
-
-
-
+What am I doing wrong?
+Help greatly appreciated!
+-- 
+Marcus
 
 
 -------------------------------------------------------
