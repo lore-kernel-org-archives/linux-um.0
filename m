@@ -1,10 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <267988DEACEC5A4D86D5FCD780313FBB0365E4A6@exch-03.noida.hcltech.com>
-From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Cogyz-00068I-Me for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 03:48:13 -0800
+Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1Cogyx-0005Cz-SX for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 03:48:13 -0800
+Message-ID: <50806.80.203.0.208.1105530488.squirrel@80.203.0.208>
+Subject: Re: [uml-devel] df -h and hostfs
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [uml-devel] uml_switch query
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,36 +25,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 Jan 2005 14:27:55 +0530
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 12 Jan 2005 12:48:08 +0100 (CET)
+To: user-mode-linux-devel@lists.sourceforge.net
+
+(ops, forgot reply-all)
+
+df -h inside UML: (/etc/mtab is symlinked to /proc/mounts)
+
+Filesystems           Size  Used Avail Use% Mounted on
+rootfs                496M   11M  460M   3% /
+/dev/root             496M   11M  460M   3% /
+/dev/ubd/disc1/part1  187G  146G   33G  82% /a
+a                     7.3G  6.2G  717M  90% /a/lost+found
+/root/UML/a           7.3G  6.2G  717M  90% /a/lost+found
 
 
-Hi,
-I have some questiosn related to uml switch
+mount inside UML:
 
-1. When we attach uml switch with tap device, what should be the command for
-it. I haev used:
-   a) uml_switch -unix /tmp/uml1 -tap tap10
-   But when we configure the device of UML, its not working:
-   uml_mconsole umid configure eth0=daemon,,unix,/tmp/uml1
-   Assign the IP address to eth device, but it is unable to ping the bridge.
+rootfs on / type rootfs (rw)
+/dev/root on / tyoe ext3 (ro)
+none on /dev/ type devfs (rw)
+/dev/ubd/disc1/part1 on /a type ext2 (rw)
+a on /a/lost+found type hostfs (rw)
+noen on poroc type proc (rw,nodiratime)
 
-   b) uml_switch -tap tap10
-   Now if we configure the device of UML, its working:
-   uml_mconsole umid configure eth0=daemon
-   Assign the IP address to eth device, it is able to ping the bridge. Here
-default socket file is used /tmp/uml.ctl
 
-So why in first case it doesnt work?? Also if i use second approach, there
-may be problems. Like if i run one more switch attach with other tap device,
-then in that case default socket file is used which is already being used.
-This will cause any problems or not?? Same socket file can be attach to
-multiple uml_switches??
+df -h on host:
 
-2. Is it possible to attach the uml switch with multiple tap devices??
-  
-Thanks and Best Regards, 
-Adil Mujeeb
+Filesystems           Size  Used Avail Use% Mounted on
+/dev/hda2             7.3G  6.2G  717M  90% /
+none                  126M     0  126M   0% /dev/shm
+192.168.1.1:/var/home/stian
+                      147G  104G   37G  75% /root/UML/a
+
+mount on host
+
+/dev/hda2 on / type xfs (rw,noatime)
+none on /dev type devfs (rw)
+none on /proc type proc (rw)
+noen on /dev/shm type tmpfs (rw)
+192.l68.1.1:/var/home/stian on /root/UML/a type nfs (rw,addr=192.168.1.1)
+
+
+The problem is the nfs partition you can see, that is mounted inside UML
+again as hostfs. (This setup is a recovery of a broken disk where I wanted
+the cow layer when testing recoverytools and dumping out files they
+found). The UML-kernel itself is 2.6.10-rc3-mm1 with the patch-set from
+the web-pages dated back 1-2 weeks ago.
+
+
+Stian
 
 
 
