@@ -1,11 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200408092128.i79LSqQW025765@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] PATCH -- Was: link error MODE_SKAS and ! MODE_TT in
-	2.4.26-2 + uml.sf.net patches 
-In-Reply-To: Your message of "Fri, 06 Aug 2004 16:29:12 EDT."
-	<4113EA18.3040506@enterasys.com> 
-References: <410E5994.4060606@enterasys.com> <410E5CFA.5000504@enterasys.com>
-	<4113EA18.3040506@enterasys.com> 
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BuHFA-0000oY-Uy for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Aug 2004 13:59:44 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1BuHFA-00054h-Gv
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Aug 2004 13:59:44 -0700
+Message-Id: <200408092158.i79LwaQW026235@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] corrections to 2.4 series incrementals: fix-smp 
+In-Reply-To: Your message of "Fri, 06 Aug 2004 14:51:04 EDT."
+	<4113D318.2030407@enterasys.com> 
+References: <4113D318.2030407@enterasys.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -20,19 +28,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 09 Aug 2004 17:28:52 -0400
+Date: Mon, 09 Aug 2004 17:58:36 -0400
 To: "D. Bahi" <dbahi@enterasys.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 dbahi@enterasys.com said:
-> this patch fixes the unresolved link time error with a conditional
-> around the definition of CAN_KMALLOC 
+> The line in the available patch incorrectly adds this line:
+>   define_bool CONFIG_SMP $CONFIG_UML_SMP
+> And thus it fails to apply. 
 
-I don't see that here.  If you look at the definition of CHOOSE_MODE, you'll
-see that it's conditional on CONFIG_MODE_TT and CONFIG_MODE_SKAS in such a
-way that if a mode is configured out, any code associated with it disappears.
-
-I think you didn't do that build from a clean pool.
+That was a quilt botch.  It's fixed now.
 
 				Jeff
 
