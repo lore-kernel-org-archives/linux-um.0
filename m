@@ -1,21 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bplhd-000447-GC for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jul 2004 03:30:29 -0700
-Received: from everest.2mbit.com
-	([24.123.221.2] helo=mail.sosdg.org ident=mail)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1Bplhb-0003Jy-D3
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jul 2004 03:30:29 -0700
-Message-ID: <41078007.5000802@greatcn.org>
-From: Coywolf Qi Hunt <coywolf@greatcn.org>
+Message-ID: <50485.151.205.59.135.1091030391.squirrel@www.csee.wvu.edu>
+Subject: Re: [uml-devel] help needed for running uml on a sarge
+From: <atanugul@csee.wvu.edu>
+In-Reply-To: <200407272357.02784.a_mulyadi@telkom.net>
+References: <1359.157.182.42.226.1090946399.squirrel@www.csee.wvu.edu>
+	<200407272357.02784.a_mulyadi@telkom.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [PATCH] [UM] remove a group of unused bh functions
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,74 +18,183 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Jul 2004 18:29:27 +0800
-To: jdike@karaya.com, akpm@osdl.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 28 Jul 2004 11:59:51 -0400 (EDT)
+Content-Transfer-Encoding: quoted-printable
+To: a_mulyadi@telkom.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, atanugul@csee.wvu.edu, user-mode-linux-user@lists.sourceforge.net
 
-hi jdike, akpm,
+Hi!
+I downloaded some root file sytems and got the following errors on a
+Debian 2.6.3-1-386 when I tired to run UML
+1)with Debian-3.0r0.ext2 rootfs
 
-This patch removes a group of unused bh functions in um.
-This 2.2 legacy code should be cleaned up.
+ashwin@Debian:/usr/bin$ ./linux ubd0=3D/uml/Debian-3.0r0.ext2
+Checking for the skas3 patch in the host...not found
+Checking for /proc/mm...not found
+tracing thread pid =3D 1974
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Linux version 2.4.26-1um (root@mizar) (gcc version 3.3.3 (Debian
+20040422)) #2 Sat Jun 5 12:15:21 PDT 2004
+On node 0 totalpages: 8192
+zone(0): 8192 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: ubd0=3D/uml/Debian-3.0r0.ext2 root=3D/dev/ubd0
+Calibrating delay loop... 4023.91 BogoMIPS
+Memory: 28148k available
+Dentry cache hash table entries: 4096 (order: 3, 32768 bytes)
+Inode cache hash table entries: 2048 (order: 2, 16384 bytes)
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+Buffer cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 8192 (order: 3, 32768 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+VFS: Disk quotas vdquot_6.5.1
+Journalled Block Device driver loaded
+devfs: v1.12c (20020818) Richard Gooch (rgooch@atnf.csiro.au)
+devfs: boot_options: 0x0
+SGI XFS with ACLs, no debug enabled
+SGI XFS Quota Management subsystem
+Disabling 2.6 AIO in tt mode
+pty: 256 Unix98 ptys configured
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+loop: loaded (max 8 devices)
+Initializing Cryptographic API
+Initializing software serial port version 1
+mconsole (version 2) initialized on /home/ashwin/.uml/I4vNmf/mconsole
+Partition check:
+ ubda: unknown partition table
+Initializing stdio console driver
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 2048 bind 4096)
+Linux IP multicast router 0.06 plus PIM-SM
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+VFS: Mounted root (ext2 filesystem) readonly.
+INIT: version 2.84 booting
+Activating swap.
+Checking root file system...
+fsck 1.27 (8-Mar-2002)
+fsck.ext2: No such file or directory while trying to open /dev/ubd/0
+/dev/ubd/0:
+The superblock could not be read or does not describe a correct ext2
+filesystem.  If the device is valid and it really contains an ext2
+filesystem (and not swap or ufs or something else), then the superblock
+is corrupt, and you might try running e2fsck with an alternate superblock:
+    e2fsck -b 8193 <device>
 
-    -- coywolf
 
-Signed-off-by: Coywolf Qi Hunt <coywolf@greatcn.org>
+fsck failed.  Please repair manually and reboot.  Please note
+that the root file system is currently mounted read-only.  To
+remount it read-write:
 
- smp.c |   35 -----------------------------------
- 1 files changed, 35 deletions(-)
+ # mount -n -o remount,rw /
 
-diff -Nrup linux-2.6.8-rc2/arch/um/kernel/smp.c linux-2.6.8-rc2-cy/arch/um/kernel/smp.c
---- linux-2.6.8-rc2/arch/um/kernel/smp.c	2004-06-29 23:03:33.000000000 -0500
-+++ linux-2.6.8-rc2-cy/arch/um/kernel/smp.c	2004-07-28 05:26:32.554146767 -0500
-@@ -59,41 +59,6 @@ void smp_send_reschedule(int cpu)
- 	num_reschedules_sent++;
- }
- 
--static void show(char * str)
--{
--	int cpu = smp_processor_id();
--
--	printk(KERN_INFO "\n%s, CPU %d:\n", str, cpu);
--}
--	
--#define MAXCOUNT 100000000
--
--static inline void wait_on_bh(void)
--{
--	int count = MAXCOUNT;
--	do {
--		if (!--count) {
--			show("wait_on_bh");
--			count = ~0;
--		}
--		/* nothing .. wait for the other bh's to go away */
--	} while (atomic_read(&global_bh_count) != 0);
--}
--
--/*
-- * This is called when we want to synchronize with
-- * bottom half handlers. We need to wait until
-- * no other CPU is executing any bottom half handler.
-- *
-- * Don't wait if we're already running in an interrupt
-- * context or are inside a bh handler. 
-- */
--void synchronize_bh(void)
--{
--	if (atomic_read(&global_bh_count) && !in_interrupt())
--		wait_on_bh();
--}
--
- void smp_send_stop(void)
- {
- 	int i;
+CONTROL-D will exit from this shell and REBOOT the system.
+
+(none):~#
 
 
 
--- 
-Coywolf Qi Hunt
-Homepage http://greatcn.org/~coywolf/
-Admin of http://GreatCN.org and http://LoveCN.org
+2)with root_fs_toms1.7.205
+
+ashwin@Debian:/usr/bin$ ./linux ubd0=3D/uml/root_fs_toms1.7.205
+Checking for the skas3 patch in the host...not found
+Checking for /proc/mm...not found
+tracing thread pid =3D 2085
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Checking for /dev/anon on the host...Not available (open failed with errno =
+2)
+Linux version 2.4.26-1um (root@mizar) (gcc version 3.3.3 (Debian
+20040422)) #2 Sat Jun 5 12:15:21 PDT 2004On node 0 totalpages: 8192
+zone(0): 8192 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: ubd0=3D/uml/root_fs_toms1.7.205 root=3D/dev/ubd0
+Calibrating delay loop... 4010.80 BogoMIPS
+Memory: 28148k available
+Dentry cache hash table entries: 4096 (order: 3, 32768 bytes)
+Inode cache hash table entries: 2048 (order: 2, 16384 bytes)
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+Buffer cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 8192 (order: 3, 32768 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+VFS: Disk quotas vdquot_6.5.1
+Journalled Block Device driver loaded
+devfs: v1.12c (20020818) Richard Gooch (rgooch@atnf.csiro.au)
+devfs: boot_options: 0x0
+SGI XFS with ACLs, no debug enabled
+SGI XFS Quota Management subsystem
+Disabling 2.6 AIO in tt mode
+pty: 256 Unix98 ptys configured
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+loop: loaded (max 8 devices)
+Initializing Cryptographic API
+Initializing software serial port version 1
+mconsole (version 2) initialized on /home/ashwin/.uml/brsNYL/mconsole
+Partition check:
+ ubda: unknown partition table
+Initializing stdio console driver
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 2048 bind 4096)
+Linux IP multicast router 0.06 plus PIM-SM
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+VFS: Mounted root (ext2 filesystem) readonly.
+INIT: version 2.84 booting
+EXT2-fs warning: mounting unchecked fs, running e2fsck is recommended
+INIT: Entering runlevel: 5
+
+Can anyone tell me what i can do?
+
+Thanks,
+Ashwin.
+
+
+
+> Hello :-)
+>
+>> Please append a correct "root=3D" boot option
+>> Kernel panic: VFS: Unable to mount root fs on 62:00
+>>  <6>SysRq : Show Regs
+>
+> have u create root disk image? You can use UMLBuilder of mkrootfs to do
+>  that....
+>
+> regards
+>
+> Mulyadi
+
+
 
 
 
@@ -102,7 +202,7 @@ Admin of http://GreatCN.org and http://LoveCN.org
 This SF.Net email is sponsored by BEA Weblogic Workshop
 FREE Java Enterprise J2EE developer tools!
 Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
+http://ads.osdn.com/?ad_idG21&alloc_id=10040&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
