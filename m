@@ -1,21 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BO2qm-0003SC-LF for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 16:09:20 -0700
-Received: from mail.gmx.net ([213.165.64.20])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BO2qm-0002sT-2f for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 16:09:20 -0700
-Message-ID: <105d01c43877$1f70db10$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <104601c43874$a5735f60$2000000a@schlepptopp>
-Subject: Re: [uml-devel] uml 2.6.6 - minor issue ( IO memory driver compile
-	fails)
+	id 1BO3rv-0000fE-Hf for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 17:14:35 -0700
+Received: from mekong.darkman.de
+	([217.69.160.53] helo=mail.darkman.de ident=postfix)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BO3rv-00018M-3J for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 17:14:35 -0700
+Received: from darkman.de (ezri.darkman.de [23.23.23.42])
+	by mail.darkman.de (Postfix) with ESMTP id 35EE62EF84
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 13 May 2004 02:14:23 +0200 (CEST)
+Message-ID: <40A2BDDE.90504@darkman.de>
+From: "Sven 'Darkman' Michels" <sven@darkman.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: [uml-devel] uml-patch-2.4.24-3
+References: <200405122208.i4CM8cCe008920@ccure.user-mode-linux.org>
+	<104b01c43876$36b53c40$2000000a@schlepptopp>
+In-Reply-To: <104b01c43876$36b53c40$2000000a@schlepptopp>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -28,73 +33,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 May 2004 01:16:13 +0200
-To: blaisorblade_spam@yahoo.it, Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 13 May 2004 02:14:22 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-hi again, 
-the email-address of Greg Lonnon seems to be obsolete.
-is he still involved in UML ?
-i forwarded that message to him, because he is mentioned on:
-http://user-mode-linux.sourceforge.net/iomem.html
+roland wrote:
+> hi jeff, 
+> compiling a 2.4.26 with uml-patch-2.4.24-3 still seems to have
+> the __cmpxchg issue.
+> see:
+> http://article.gmane.org/gmane.linux.uml.user/3806
+> 
+> i attached the mentioned patch and after that,  it compiles cleanly
+> for me.
 
-the IO memory driver compiles fine (statically/module) for 2.4.26 - 
-so it probably needs to be fixed for 2.6.6 only.
+Well, notice that its still UML 2.4.->24<- ;)
+If the releases will be for a newer kernel, the patch will be
+included.
 
-regards
-roland
+Regards,
+Sven
 
-
------ Original Message ----- 
-From: "roland" <for_spam@gmx.de>
-To: <blaisorblade_spam@yahoo.it>; "Jeff Dike" <jdike@addtoit.com>
-Cc: <glonnon@ridgerun.com>; <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Thursday, May 13, 2004 12:58 AM
-Subject: [uml-devel] uml 2.6.6 - minor issue ( IO memory driver compile fails)
-
-
-> hi !
-> compiling the the example IO memory driver in 2.6.6 (blaisorblade patch)
-> (->Block Devices -> Example IO memory driver) fails  - regardless if it`s 
-> compiled statically or as a module. don`t know if it was broken before - 
-> but i think it`s at least worth being mentioned.
-> 
-> if it`s generally broken and not expected to be fixed in the near future, 
-> maybe it makes sense to change arch/um/Kconfig_block to:
-> 
-> -----snipp-----
-> config MMAPPER
->         tristate "Example IO memory driver"
->         depends on !CLEAN_COMPILE               <- insert this line
->         help
-> -----snippp------
-> 
-> ???
-> 
-> regards
-> roland
-> 
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by Sleepycat Software
-> Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to 
-> deliver higher performing products faster, at low TCO.
-> http://www.sleepycat.com/telcomwpreg.php?From=osdnemail3
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by Sleepycat Software
-Learn developer strategies Cisco, Motorola, Ericsson & Lucent use to 
-deliver higher performing products faster, at low TCO.
-http://www.sleepycat.com/telcomwpreg.php?From=osdnemail3
+This SF.Net email is sponsored by: SourceForge.net Broadband
+Sign-up now for SourceForge Broadband and get the fastest
+6.0/768 connection for only $19.95/mo for the first 3 months!
+http://ads.osdn.com/?ad_id=2562&alloc_id=6184&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
