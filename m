@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CszOw-0008EF-8x for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 00:16:46 -0800
-Received: from [202.54.110.230] (helo=ngate.noida.hcltech.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CszOu-0000z7-81
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 00:16:46 -0800
-Received: from exch-03.noida.hcltech.com (exch-01 [204.160.254.57])
-	by ngate.noida.hcltech.com (8.12.5/8.12.5) with ESMTP id j0O8M3td012826
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 24 Jan 2005 13:52:05 +0530
-Message-ID: <267988DEACEC5A4D86D5FCD780313FBB03B7317C@exch-03.noida.hcltech.com>
-From: "Vaibhav  Sharma, Noida" <Vaibhavs@noida.hcltech.com>
-Subject: RE: [uml-devel] memory
+	id 1Ct135-0004Az-4p for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 02:02:19 -0800
+Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Ct133-0002jS-6w for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 02:02:19 -0800
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] memory
+In-Reply-To: <200501231325.10021.rob@landley.net>
+Message-ID: <Pine.LNX.4.61.0501241049100.5934@filer.marasystems.com>
+References: <267988DEACEC5A4D86D5FCD780313FBB03B12C4B@exch-03.noida.hcltech.com>
+	<41F36014.7050905@easyco.com>
+	<Pine.LNX.4.61.0501231605440.20896@filer.marasystems.com>
+	<200501231325.10021.rob@landley.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,91 +29,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Jan 2005 13:43:34 +0530
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 24 Jan 2005 11:02:14 +0100 (CET)
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Henrik Nordstrom <uml@hno.marasystems.com>, Doug Dumitru <doug@easyco.com>, "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
 
-Thank you all for ur valuable discussion (temp dir) and suggestions related
-to highmem/PAE and x86_64. 
+On Sun, 23 Jan 2005, Rob Landley wrote:
 
-I have another thing to ask related to debugging...i want to check the
-routines which will be involved in the memory management.  
+> The client kernel's highmem suport is unlikely to do much, I'd think. 
+> Not unless it's unmapping and remapping multiple mmaps. (There's large 
+> file support, but trying to mmap a 5 gig chunk out of a large file can't 
+> work: what would that mean?  How could you generate an offset into the 
+> last meg? What would the pointer _be_?)
 
-According to the design of UML, it has its own VM system. If I have to check
-the scalability limits of the "parent kernel" for memory management, will
-UML be useful..? 
+off_t is 64 bits in 64-bit file pointer mode, so there is no problem to 
+mmap portions of an multi-gigabyte "ram" file within a 32-bit address 
+space.
 
-When I debug the UML kernel when a process requests a large amount of
-memory, I will only get the flow used by UML for its VM. Is the code/design
-of UML very different from the parent kernel..?
+> The parent kernel's highmem support still doesn't provide more than 4
+> gigabytes per application, and the UML kernel is one application.
 
-Is there a way in I can get to code of parent kernel when 2G /3G RAM size is
-used?
+Yes, but with HIGHMEM UML in theory can provide as as much ram to each 
+single process running below it as it can for a single process. So yes, 
+each process in the UML would still be limited, but the total RAM usage of 
+UML would be practically unlimited. And in addition a very good 
+environment for debugging HIGHMEM in general as you could set up things to 
+only provide a very limited directly addressible address space with the 
+rest remapped by HIGHMEM.
 
-(I may be totally wrong in this mail, please do correct me...)
---
+With HIGHMEM the host process size limitations has an direct effect on the 
+maximum process size possible within the UML, but not on the RAM size of 
+UML. In addition running an UML with HIGHMEM support does not depend on 
+the host HIGHMEM support, but performance will obviously suffer if UML 
+needs to swap..
 
-vaibhav
+> (And that's with the 4 gig kernel/4 gig user patches from...  Ingo 
+> Molnar, I think.)  Highmem lets the system as a whole use PAE (up to 64 
+> gigs physical memory), but the kernel is basically doing something very 
+> like the old DOS expanded memory behind the scenes, swapping around page 
+> tables so each process sees a different set of physical memory. pages 
+> (The overhead isn't quite so bad since it's doing that anyway as part of 
+> protecting process's memory from each other...)
 
------Original Message-----
-From: Rob Landley [mailto:rob@landley.net] 
-Sent: Monday, January 24, 2005 10:40 AM
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike; Vaibhav Sharma, Noida; Doug Dumitru
-Subject: Re: [uml-devel] memory
+Exctaly, and UML can do something very similar with the help of mmap().
 
-On Sunday 23 January 2005 08:11 pm, Jeff Dike wrote:
-> It'll allocate a temp file of the appropriate size.  If it's larger 
-> than what it can use for physical memory, the rest will be allocated as
-highmem.
->  If you leave 2-level pagetables on, then you're limited to 4G. If you 
-> turn on 3-level pagetables, then you get up to 128G.
-
-Interesting.  I wonder how that works?  (PAE on x86 only lets you have 64G.)
-
-> rob@landley.net said:
-> > Not  unless it's unmapping and remapping multiple mmaps.
->
-> It is.
-
-But an individual process running under UML can still only have 4 gigabytes.
-
-> > (There's
-> > large file  support, but trying to mmap a 5 gig chunk out of a large 
-> > file can't work:
->
-> It does it a page at a time.
->
-> > what would that mean?  How could you generate an offset into the 
-> > last meg?
->
-> The LFS interfaces take 64-bit offsets.
-
-Yeah.  (Ouch.  But yeah, I can see that working...)
-
-> > What would the pointer _be_?)
->
-> What pointer?
-
-The virtual or physical address used to access memory.  (I'm guessing
-userspace programs running under UML are limited to 4 gigs, and UML is using
-page indexes and is thus limited to 4 billion pages, not 4 billion bytes.)
-
-> > The parent kernel's highmem support still doesn't provide more than 
-> > 4 gigabytes per application, and the UML kernel is one application.
->
-> The host kernel's highmem support is totally irrelevant.  There 
-> doesn't even need to be highmem support on the host.
-
-Just large file support, and the ability to mmap up to 4 gigs of memory at a
-time (with a starting offset potentially above 4 gigabytes), and unmap it
-and map a different 4 gigs when you switch to the next process...
-
-Makes my brain hurt just thinking about it, but that could be caffeine
-withdrawl...
-
-> 				Jeff
-
-Rob
+Regards
+Henrik
 
 
 -------------------------------------------------------
