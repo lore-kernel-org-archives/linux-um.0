@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Adh81-0007gP-5d for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:39:33 -0800
+	id 1Adh8F-0007hN-8D for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 18:39:47 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Adh80-0002PX-Ho
+	(Exim 4.30) id 1Adh8E-0002Sb-JX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:39:32 -0800
-Message-Id: <200401060259.i062xAFI023142@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] user-mode linux stop at boot in fedora 
-In-Reply-To: Your message of "Fri, 26 Dec 2003 17:51:37 +0100."
-	<3FEC6719.907@online.no> 
-References: <3FEC6719.907@online.no> 
+	Mon, 05 Jan 2004 18:39:46 -0800
+Message-Id: <200401060259.i062x7FI023137@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] UML build system: patch ready 
+In-Reply-To: Your message of "Sat, 27 Dec 2003 08:51:10 +1300."
+	<1072468270.6872.13.camel@laptop-linux> 
+References: <200312241943.37474.blaisorblade_spam@yahoo.it>
+	<Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
+	<1072468270.6872.13.camel@laptop-linux> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,20 +30,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 05 Jan 2004 21:59:10 -0500
-To: Knut J Bjuland <knutjbj@online.no>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 05 Jan 2004 21:59:07 -0500
+To: Nigel Cunningham <ncunningham@clear.net.nz>
+Cc: Jeff Chua <jeff98@silk.corp.fedex.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-knutjbj@online.no said:
-> I have applyed patch from uml site for Fedora, but the boot process is
->  hanging with just after mounting ext2 image. I have use Debian-3.0r0
-> and  redhat 6.2 image from user mode linux site.  My system is a pc
-> with  Fedora 1 and lates 2.6 kernel from fedora develomment. Glibc
-> 2.3.3-1 
+ncunningham@clear.net.nz said:
+> I may be able to get software suspend [a bit closer to] working under
+> UML. The lack of support for modifying ldts was where I blocked when I
+> briefly looked at it a while ago.
 
-> I'm tracing myself and I can't get out 
-
-See usermodelinux.org for a patch which should fix this.
+swsusp for UML is now reality, see sbuml.sf.net for details.  The one hitch
+is that it's not up to date with the current UML.  I'm sure that help fixing
+that would be appreciated.
 
 				Jeff
 
