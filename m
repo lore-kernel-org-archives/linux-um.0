@@ -1,24 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpFGn-0000NI-Hf for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 16:24:53 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CpFGi-0007Qy-RH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 16:24:53 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Fix stack corruption
-References: <200501121856.j0CIuMiZ003766@ccure.user-mode-linux.org>
-	<002001c4f9c7$de282ec0$0201a8c0@hawk>
-In-Reply-To: <002001c4f9c7$de282ec0$0201a8c0@hawk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501140127.09333.blaisorblade@yahoo.it>
+	id 1CpCzC-0001bI-0i for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 13:58:34 -0800
+Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CpCzA-0001Or-V4 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 13:58:33 -0800
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20050113210113.D81F91FEFD@zion>
+Subject: [uml-devel] [patch 11/11] uml: update ld scripts to newer binutils
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,56 +22,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 14 Jan 2005 01:27:09 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Christopher S. Aker" <caker@theshore.net>
+Date: Thu, 13 Jan 2005 22:01:13 +0100
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
-On Friday 14 January 2005 00:30, Christopher S. Aker wrote:
-> > The fix is obvious:
-> >
-> > Index: 2.6.10/arch/um/kernel/skas/process.c
-> > ===================================================================
-> > --- 2.6.10.orig/arch/um/kernel/skas/process.c 2005-01-12
-> > 11:17:22.000000000 -0500 +++ 2.6.10/arch/um/kernel/skas/process.c
-> > 2005-01-12 11:18:03.000000000 -0500 @@ -323,9 +323,10 @@
-> >   block_signals();
-> >   if(sigsetjmp(fork_buf, 1) == 0)
-> >   new_thread_proc(stack, handler);
-> > - set_signals(flags);
-> >
-> >   remove_sigstack();
-> > +
-> > + set_signals(flags);
-> >  }
-> >
-> >  void thread_wait(void *sw, void *fb)
->
-> Just a follow up on this for the sake of a paper trail...  This doesn't fix
-> the test-case below:
->
-> http://www.theshore.net/~caker/uml/crashkit-no-console-output/
->
-> readme.txt:
-> ----
-> All you need is an UML guest assigned an IP on your network, iptables, and
-> the two files below in the same directory.  Run the script, while
-> ping-flooding the UML's IP address from the host, or another machine on
-> your network.
->
-> This script works best with a 2.6 based UML.  I can recreate the crash
-> easily using 2.6.9-linode9 (based on -bb4), also available on this website.
-> ----
->
-> I believe we've figured out that this is skas3 specific.  Once you start
-> ping-flooding the UML, it crashes within a second.
-I wasn't able to riproduce it... I ran two instances of the above loop + a 
-ping flood from the host, but it didn't crash UML, even after letting it that 
-way for some minutes.
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+It seems that linker script for userspace software are quite
+toolchain-depending, at least because what we use is a merge between builtin
+LD scripts (see strings /usr/bin/ld) and normal kernel linking scripts.
+
+Plus, a number of people are having toolchain-related troubles building UML
+(even assertion failures on linking, with Gentoo and Fedora 2).
+
+So, let's try to make UML nicer for binutils.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ linux-2.6.11-paolo/arch/um/kernel/dyn.lds.S |    3 +++
+ linux-2.6.11-paolo/arch/um/kernel/uml.lds.S |   10 +++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+diff -puN arch/um/kernel/uml.lds.S~uml-update-lds-to-ld-version arch/um/kernel/uml.lds.S
+--- linux-2.6.11/arch/um/kernel/uml.lds.S~uml-update-lds-to-ld-version	2005-01-13 05:53:48.582270064 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/uml.lds.S	2005-01-13 05:56:06.458309720 +0100
+@@ -7,8 +7,12 @@ jiffies = jiffies_64;
+ 
+ SECTIONS
+ {
++  /*This must contain the right address - not quite the default ELF one.*/
++  PROVIDE (__executable_start = START);
+   . = START + SIZEOF_HEADERS;
+ 
++  /* Used in arch/um/kernel/mem.c. Any memory between START and __binary_start
++   * is remapped.*/
+   __binary_start = .;
+ #ifdef MODE_TT
+   .thread_private : {
+@@ -20,9 +24,13 @@ SECTIONS
+   }
+   . = ALIGN(4096);
+   .remap : { arch/um/kernel/tt/unmap_fin.o (.text) }
+-#endif
++
++  /* We want it only if we are in MODE_TT. In both cases, however, when MODE_TT
++   * is off the resulting binary segfaults.*/
+ 
+   . = ALIGN(4096);		/* Init code and data */
++#endif
++
+   _stext = .;
+   __init_begin = .;
+   .init.text : {
+diff -puN arch/um/kernel/dyn.lds.S~uml-update-lds-to-ld-version arch/um/kernel/dyn.lds.S
+--- linux-2.6.11/arch/um/kernel/dyn.lds.S~uml-update-lds-to-ld-version	2005-01-13 05:53:48.583269912 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/dyn.lds.S	2005-01-13 05:53:48.616264896 +0100
+@@ -7,8 +7,11 @@ jiffies = jiffies_64;
+ 
+ SECTIONS
+ {
++  PROVIDE (__executable_start = START);
+   . = START + SIZEOF_HEADERS;
+   .interp         : { *(.interp) }
++  /* Used in arch/um/kernel/mem.c. Any memory between START and __binary_start
++   * is remapped.*/
+   __binary_start = .;
+   . = ALIGN(4096);		/* Init code and data */
+   _stext = .;
+_
 
 
 -------------------------------------------------------
