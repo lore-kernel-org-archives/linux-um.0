@@ -1,9 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200312081921.hB8JLMAv029232@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash 
-In-Reply-To: Your message of "Mon, 08 Dec 2003 02:20:27 +0100."
-             <05bc01c3bd29$7766a3f0$2000000a@schlepptopp> 
-References: <Pine.LNX.4.44.0312070010550.16967-100000@filer.marasystems.com>  <05bc01c3bd29$7766a3f0$2000000a@schlepptopp> 
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ATQjJ-0001wR-5t
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 11:07:37 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1ATQjH-00061a-8v
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 11:07:35 -0800
+Message-Id: <200312081921.hB8JLGAv029222@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] provide asm/ldt.h 
+In-Reply-To: Your message of "Sat, 06 Dec 2003 10:45:01 +0100."
+             <Pine.LNX.4.44.0312061043110.13464-100000@filer.marasystems.com> 
+References: <Pine.LNX.4.44.0312061043110.13464-100000@filer.marasystems.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -17,23 +26,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 08 Dec 2003 14:21:22 -0500
-To: roland <for_spam@gmx.de>
-Cc: Henrik Nordstrom <hno@marasystems.com>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Date: Mon, 08 Dec 2003 14:21:16 -0500
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: Steve Bennett <steveb@snapgear.com>, user-mode-linux-devel@lists.sourceforge.net
 
-for_spam@gmx.de said:
-> that really is a matter of taste. from my personal view, i find it
-> difficult to track patches or bugs if one must dig for that into a ML
-> archive.
+hno@marasystems.com said:
+> Which is a bit troublesome on self-hosted UML systems of when building
+>  kernel configuration dependent programs. 
 
-I personally hate the SF patch/bug trackers.  Webby crap like that is unusable
-as far as I'm concerned.
-
-> see what i mean? 5-6 times posted - but people need a helping hand to
-> find them. 
-
-That makes this a candidate for the usermodelinux.org FAQ section, which I
-created for exactly this reason.  Feel free to make submissions.
+Do you have any specific examples?
 
 				Jeff
 
