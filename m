@@ -1,20 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CINnU-0001dd-P2 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Oct 2004 01:50:48 -0700
-Received: from witte.sonytel.be ([80.88.33.193])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CINmI-0002im-Hd for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Oct 2004 01:50:48 -0700
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uml-devel] [patch 1/1] uml: readd linux Makefile target
-In-Reply-To: <20041014220554.0F20244BE@zion.localdomain>
-Message-ID: <Pine.GSO.4.61.0410151047270.10040@waterleaf.sonytel.be>
-References: <20041014220554.0F20244BE@zion.localdomain>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Message-ID: <Pine.LNX.4.58.0410151043400.17537@blackhole.kfki.hu>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] video mode reprogrammed!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,60 +15,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 15 Oct 2004 10:49:17 +0200 (MEST)
-To: blaisorblade_spam@yahoo.it
-Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 15 Oct 2004 11:07:12 +0200 (CEST)
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 15 Oct 2004 blaisorblade_spam@yahoo.it wrote:
-> Since people are used to doing "make linux ARCH=um" and to use "linux" as the
-> kernel image, make it be an hard link to vmlinux. This should hurt the less
-> possible the users (actually nothing) while not slowing down the build.
-> 
-> Acked-by: Jeff Dike <jdike@addtoit.com>
-> 
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
-> ---
-> 
->  linux-2.6.9-current-paolo/arch/um/Makefile |   12 ++++++++++++
->  1 files changed, 12 insertions(+)
-> 
-> diff -puN arch/um/Makefile~uml-readd-linux-target arch/um/Makefile
-> --- linux-2.6.9-current/arch/um/Makefile~uml-readd-linux-target	2004-10-14 22:52:47.274383552 +0200
-> +++ linux-2.6.9-current-paolo/arch/um/Makefile	2004-10-14 22:52:47.276383248 +0200
-> @@ -62,6 +62,18 @@ ifeq ($(CONFIG_MODE_SKAS), y)
->  $(SYS_HEADERS) : $(ARCH_DIR)/include/skas_ptregs.h
->  endif
->  
-> +all: linux
-> +
-> +linux: vmlinux
-> +	$(RM) $@
-> +	ln $< $@
-> +
-> +define archhelp
-> +  echo '* linux		- Binary kernel image (./linux) - for backward'
-> +  echo '		   compatibility only: now you can simply run'
-> +  echo '		   the vmlinux binary you find in the kernel root.'
-> +endef
-> +
+Hi,
 
-What happens if you modify the kernel source and rebuild the kernel?
-I guess vmlinux gets deleted and replaced, but linux is still the old kernel,
-because there's no .phony rule for linux?
+When experimenting with UML (linux-2.4.26) on my laptop, I successfully
+attached a console to a free tty channel.
 
-What about using a symbolic link instead? It will always point to the most
-recent kernel.
+However, UML immediately reprogrammed the BIOS to switch to a video mode,
+where only a small portion in the middle of the screen is used only. After
+that when booting the host system, the bios menu, lilo, etc come up in
+this small "screen". I can use the whole TFT screen only when running the
+console on framebuffer with proper modes or when switching to X. I'd like
+to switch back the default video mode to the original one, but so far
+google or searching the mailing lists did not help much.
 
-Gr{oetje,eeting}s,
+The laptop is an Thinkpad T30 with ATI Radeon Mobility M7 LW (Radeon
+Mobility 7500) chipset.
 
-						Geert
+Any help is greatly appreciated!
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
 
 -------------------------------------------------------
