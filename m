@@ -2,18 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ABC3E-0006qU-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 19 Oct 2003 04:48:48 -0700
-Received: from mail.gmx.net ([213.165.64.20])
+	id 1ABDnt-0004as-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 19 Oct 2003 06:41:05 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 1AAvv9-0008Hv-VT
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 18 Oct 2003 11:35:24 -0700
-From: Dan Aloni <da-x@gmx.net>
-Message-ID: <20031018183128.GA22119@callisto.yi.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1AAqlM-0008E8-LF
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 18 Oct 2003 06:04:56 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Exactly what is wanted with hostfs UID/GID operation
+References: <3F8B2B6E.30709@easyco.com>
+In-Reply-To: <3F8B2B6E.30709@easyco.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] Problem with UML cross compilation
+Message-Id: <200310171358.20666.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,56 +28,48 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Oct 2003 20:31:28 +0200
-To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 17 Oct 2003 16:28:57 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@addtoit.com
 
-Hi,
+Answering to a previous message of Jeff Dike
+At 03:49, 11 Oct 2003, Jeff Dike wrote:
+> doug@easyco.com said:
+> > The code itself involves a lot of extra parameters from kernel to user
+> >  space as things like the current user aren't propogated down.  I
+> > personally think that our current patch set is "100% ugly" and would
+> > not  consider posting it as-is.  If people are interested in
+> > transparent  numeric UID/GID to hostfs, then I would be happy to clean
+> > up what we  have and submit it.
+>
+> OK, that ain't the way to do it.  Anything that involves passing a parallel
+> set of creds through VFS will cause Al Viro to lop my head off.  Since I'm
+> somewhat attached to it, I will not propose such a thing, no matter how
+> cleaned up it is.
+I don't agree. Al Viro doesn't matter here. The only more params to pass are 
+from hostfs_kern.c to hostfs_user.c. Stop. Also, since we are in process 
+context inside hostfs_kern.c, we can also read current very easily (even if we 
+should rely on VFS permission handling as much as possible). By the way, if 
+you want to manage the UMSDOS-like db, then you need to pass exactly the same 
+params down.
+**Security risks!**
+Besides, even with the UMSDOS-like db, you still need to avoid as much as 
+possible to create root-owned files on the host. It's always a security risk, 
+even if it's not that easy to exploit: for instance, let's look at the man 
+page of modutils:
 
-Lately I have found a problem with UML and cross compilation. Cross 
-compilation means that the architecture that the UML kernel will 
-run on (target) is different than the one that it is compiled on 
-(host). 
-
-I attempted cross compilation and found that some utils are being
-built and run during the build process. These utils were compiled
-using the target compiler, which obviously didn't work (all which 
-is run on the host needs to be compiled with HOSTCC instead of CC).
-Fixing the Makefiles fixes the build procedure from breaking, 
-however, the problem is that there is no gaurantee that the UML 
-kernel that was built would work.
-
-The reason for the problem is that those utils generate code that
-depends on things like offsets inside structs, which obviously 
-change between architectures that have different word size. 
-It also relies on the target's libc headers, for that purpose.
-
-I've discussed with Jeff about this problem in private E-Mail,
-we both thought about solutions but didn't share them yet.
-
-My solution is:
-
- * Let not build and run those utils on the build host, obviously.
- * All the required versions of the generated code for each of the
-   targets will already reside in the tree, the build process will
-   automatically pick up the right version and symlink to it.
- * Create a completely standalone program that embeds those utils 
-   and generates the code. People who port UML to other 
-   architectures will take this program, compile and run it on
-   the target and put its output(s) in the tree.
-   
-The main problem with this method is when and if the target 
-changes in such a way that requires those outputs to be 
-regenerated. 
-
-I would like your suggestions and opinions about how feasible 
-this solution with the 2.4 and 2.6 trees, and if you have
-other solutions I'd like to know.
-
-Thanks,
-
+By default, modutils will reject attempts to use a  module  that
+              is  not  owned by root.
+Luckily, you need write access to the /lib/modules path to exploit this, but 
+it's not a good thing anyway. So if we remove this possibility, it's a better 
+world for all us.
 -- 
-Dan Aloni
-da-x@gmx.net
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
+
+
 
 
 -------------------------------------------------------
