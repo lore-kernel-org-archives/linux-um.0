@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPbZu-00014b-Hy for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 16 May 2004 23:26:22 -0700
-Received: from rwcrmhc11.comcast.net ([204.127.198.35])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPbZu-0002bv-4P for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 16 May 2004 23:26:22 -0700
-Received: from SCG2 ([10.0.0.29])
-	by www.gspcg.com (8.11.2/8.11.2) with SMTP id i4H6QGW23455
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 16 May 2004 23:26:16 -0700
-From: "Anthony Brock" <Anthony_Brock@ous.edu>
-Message-ID: <IFEIKNDOLFNCKMGAENCFGEPBCDAA.Anthony_Brock@ous.edu>
+	id 1BPkBi-0005du-53 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 08:37:58 -0700
+Received: from zrc2s0jx.nortelnetworks.com ([47.103.122.112])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BPkBg-0001pC-A6 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 08:37:56 -0700
+Message-ID: <40A8DC43.5060001@nortelnetworks.com>
+From: Joe Marzot <gmarzot@nortelnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+References: <200405122208.i4CM8cCe008920@ccure.user-mode-linux.org>
+	<40A3E217.2080104@nortelnetworks.com>
+	<200405140143.i4E1hWZB005226@ccure.user-mode-linux.org>
+	<40A4B26F.8080507@nortelnetworks.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <IFEIKNDOLFNCKMGAENCFOEOICDAA.Anthony_Brock@ous.edu>
-Subject: [uml-devel] RE: [uml-user] UML on 64-Bit AMD
+Subject: [uml-devel] 2.4.24-2 UML problems with hostfs ClearCase mounts [ was
+	Re: [uml-devel] uml-patch-2.4.24-3]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,84 +30,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 16 May 2004 23:26:12 -0700
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 17 May 2004 11:37:39 -0400
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-I apologize if I am posting to the wrong group. However, troubleshooting a
-compile doesn't seem appropriate for the user list...
 
-Given problems with compiling the "evaluation" of UML in 64-bit mode (on a
-64-bit AMD host), I tried to compile a 32-bit version so we could start
-playing. The results are not initially promising. First, it failed to
-compile due to a missing Makefile-x86_64. So I modified the base Makefile to
-assume a subarch of i386:
+A little more data on this one - the behaviour I see with these mounts 
+is that
 
-diff Makefile.orig Makefile
-131c131,132
-<                                 -e s/s390x/s390/ -e s/parisc64/parisc/ )
----
->                                 -e s/s390x/s390/ -e s/parisc64/parisc/ \
->                                 -e s/x86_64/i386/ )
+mount -t hostfs none /mnt/mybob -o /view/myview/vob/myvob
 
-Now, when attempting to compile, I see:
+succeeds but mounts the hosts / dir instead of the desired view extended 
+pathname of the ClearCase vob.
 
-  HOSTCC  arch/um/sys-i386/util/mk_sc
-arch/um/sys-i386/util/mk_sc.c: In function `main':
-arch/um/sys-i386/util/mk_sc.c:21: error: structure has no member named `eip'
-arch/um/sys-i386/util/mk_sc.c:22: error: structure has no member named `esp'
-arch/um/sys-i386/util/mk_sc.c:23: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:24: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:25: error: structure has no member named `ds'
-arch/um/sys-i386/util/mk_sc.c:26: error: structure has no member named `es'
-arch/um/sys-i386/util/mk_sc.c:27: error: structure has no member named `ss'
-arch/um/sys-i386/util/mk_sc.c:28: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:29: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:30: error: structure has no member named `eax'
-arch/um/sys-i386/util/mk_sc.c:31: error: structure has no member named `ebx'
-arch/um/sys-i386/util/mk_sc.c:32: error: structure has no member named `ecx'
-arch/um/sys-i386/util/mk_sc.c:33: error: structure has no member named `edx'
-arch/um/sys-i386/util/mk_sc.c:34: error: structure has no member named `edi'
-arch/um/sys-i386/util/mk_sc.c:35: error: structure has no member named `esi'
-arch/um/sys-i386/util/mk_sc.c:36: error: structure has no member named `ebp'
-arch/um/sys-i386/util/mk_sc.c:37: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:38: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:39: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:40: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:41: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:42: error: structure has no member named `cw'
-arch/um/sys-i386/util/mk_sc.c:43: error: structure has no member named `sw'
-arch/um/sys-i386/util/mk_sc.c:44: error: structure has no member named `tag'
-arch/um/sys-i386/util/mk_sc.c:45: error: structure has no member named
-`ipoff'
-arch/um/sys-i386/util/mk_sc.c:46: error: structure has no member named
-`cssel'
-arch/um/sys-i386/util/mk_sc.c:47: error: structure has no member named
-`dataoff'
-arch/um/sys-i386/util/mk_sc.c:48: error: structure has no member named
-`datasel'
-arch/um/sys-i386/util/mk_sc.c:49: warning: int format, different type arg
-(arg 2)
-arch/um/sys-i386/util/mk_sc.c:50: error: structure has no member named
-`_fxsr_env'
-make[1]: *** [arch/um/sys-i386/util/mk_sc] Error 1
-make: *** [arch/um/sys-i386/util/mk_sc] Error 2
+very strange - 2.4.24-1 patch seems to work fine with these Clearcase 
+host filesystems.
 
-Any ideas? I'm beginning to remember why it's been over a decade since I
-dealt with the Linux kernel code. Even then I was a poor excuse for a
-programmer...
+I tries with 2.4.24-3 but did not even get it too boot but this is 
+likely some other issue.
 
-Thanks again for your patience.
+regards, GSM
 
-Tony
+Joe Marzot wrote:
+> Jeff Dike wrote:
+> 
+>> gmarzot@nortelnetworks.com said:
+>>
+>>> I wonder based on what you say here if two UMLs that hostfs mount the
+>>> same directory and access the same file...one for reading, and the
+>>> other  for writing, if the first will see the updates written by the
+>>> second....or maybe I am misinterpretting.
+>>
+>>
+>>
+>> You are correct, the writer will cache the new data, and the reader 
+>> won't see
+>> it until it's flushed out somehow.  If you can arrange to have the 
+>> writer sync the filesystem before the reader reads the files, then it 
+>> will get up-to-date information.
+>>
+>> Otherwise, if this is a problem, we need to make hostfs optionally 
+>> synchronous.
+> 
+> 
+> Yes - I think there is value in that.
+> 
+> On a different but related topic. I am trying the 2.4.24-2 patch to see 
+> if it helps with the kernel panics I posted about in a previous thread 
+> but I am now seeing some odd failures with hostfs. Granted my seetup is 
+> a bit odd (i.e., atypical).
+> 
+> I am mounting Clearcase vobs using view extended pathnames. I have a 
+> little script that mounts a whole series of Clearcase vobs...after the 
+> script some are mounted and some are not...Clearcase implements these 
+> view extended pathnames as a virtual filsystem (mvfs) and there must be 
+> something about that which makes the mounting fail 
+> occasionally...mouinting other host filesystems works as before. note: 
+> mounting the CC mvfs vobs worked in 2.4.24-1 with no problem.
+> 
+> I will try again with 2.4.24-3 (w/ fsync - hopefully I can find the 
+> right place(s)) and report on that...
+> 
+> regards, GSM
+> 
+>>
+>>                 Jeff
+>>
+>>
+> 
+> 
+> 
+
 
 
 
