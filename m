@@ -1,27 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BOKix-0006MP-1h for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 May 2004 11:14:27 -0700
-Received: from [217.138.31.253] (helo=ray.lwpuk.co.uk)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BOKiw-0005sz-Gp for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 May 2004 11:14:26 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by ray.lwpuk.co.uk (Postfix) with ESMTP id 1A4891EE9D
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 13 May 2004 18:24:11 +0000 (GMT)
-Received: from pccw.com (host-212-158-213-142.bulldogdsl.com [212.158.213.142])
-	by ray.lwpuk.co.uk (Postfix) with ESMTP id 128491EE98
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 13 May 2004 18:24:08 +0000 (GMT)
-Message-ID: <40A3BB29.7050606@pccw.com>
-From: Leigh Porter <leigh.porter@pccw.com>
+	id 1BOL1R-0001pH-3x for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 May 2004 11:33:33 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BOL1Q-0003VI-AK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 May 2004 11:33:32 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Seeking real kernel bugs mirrored in UML
+References: <Pine.LNX.4.60.0405121355060.12720@stclair.eecs.umich.edu>
+In-Reply-To: <Pine.LNX.4.60.0405121355060.12720@stclair.eecs.umich.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] UML kernel panic
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200405122041.12475.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,79 +27,80 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 May 2004 19:15:05 +0100
+Date: Wed, 12 May 2004 20:41:12 +0200
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hiya,
+Alle 20:11, mercoled=EC 12 maggio 2004, George Washington Dunlap III ha scr=
+itto:
+> I'm looking for a bug in any recent version of linux (probably 2.4.18+)
+> that would be mirrored in User Mode Linux.  We were thinking probably a
+> filesystem bug, but anything would do.  Preferred are bugs that are very
+> difficult using traditional iterative debugging techniques: namely, ones
+> that involve
+>   * a race condition
+>   * corruption of the stack / data
+>
+> I need to know:
+>   * What version of linux / UML the bug is in.
+>   * The conditions needed to trigger it.
 
-I have UML 2.6.4-1 on a stock SuSE 8.1 box (also tried on 8.1) running 
-2.4.19
+Well, the first idea I have is to check changelogs for them. I remember one=
+=20
+(fixed in 2.4.25 - check the changelogs) that occurred with /dev/shm when y=
+ou=20
+run updatedb on it (there are even littler test programs). Since distros ma=
+ke=20
+updatedb not run on tmpfs folders, this normally does not show, but reenabl=
+e=20
+updatedb on it (check /etc/updatedb.conf, usually) and you'll see by sure a=
+=20
+kernel panic, both on a host and on a guest system. Since this disabling do=
+es=20
+not work from inside a UML for the host /dev/shm mounted through hostfs, th=
+at=20
+caused the UML's to crash misteriously when they were left running with=20
+hostfs mounted.
 
-The system boots fine an dnetworking comes up and works. The system
-starts sshd, apache etc however, when the system starts bind9 the
-UML kernel panics. This only happens when networking has not been 
-brought up,
-with networking started named starts fine.
+The fix is a oneliner from James W McMechan <mcmechanjw@juno.com>:
 
-Kernel panic: Kernel mode fault at addr 0x4, ip 0xa0030643
- <6>SysRq : Show Regs
+diff -urN linux-2.4.24/fs/readdir.c linux-2.4.25/fs/readdir.c
+--- linux-2.4.24/fs/readdir.c   2002-08-02 17:39:45.000000000 -0700
++++ linux-2.4.25/fs/readdir.c   2004-02-18 05:36:31.000000000 -0800
+@@ -69,6 +69,7 @@
+                        loff_t n =3D file->f_pos - 2;
 
-EIP: 0023:[<a0030643>] CPU: 0 Not tainted ESP: 002b:a0b8b8f4 EFLAGS: 
-00010202
-    Not tainted
-EAX: 00000000 EBX: a1e56498 ECX: 00000001 EDX: a1e56504
-ESI: a1e56498 EDI: a1c53990 EBP: a0b8b90c DS: 002b ES: 002b
-Call Trace: [<a018345e>] [<a001c45f>] [<a008b5f8>] [<a0045b56>] [<a0030643>]
-   [<a0037945>] [<a00379c7>] [<a0030643>] [<a001b600>] [<a0030643>] 
-[<a001b76d>]
-   [<a0030643>] [<a001bce0>] [<a0205505>] [<a00194dd>] [<a001bace>] 
-[<a0030643>]
-   [<a001ba22>] [<a001f9ac>] [<a001fa25>] [<a001bce0>] [<a02053d8>] 
-[<a0030643>]
-   [<a0205505>] [<a0019743>] [<a0031b68>] [<a0205505>] [<a00194dd>] 
-[<a0205505>]
-   [<a001956b>] [<a0205505>] [<a0205505>] [<a00194dd>] [<a0205505>] 
-[<a0019648>]
-   [<a0094756>] [<a0094935>] [<a0086199>] [<a00864aa>] [<a007a51c>] 
-[<a006a4f2>]
-   [<a006b69f>] [<a007787d>] [<a0044224>] [<a0045080>] [<a001952d>] 
-[<a001947b>]
-   [<a001884a>] [<a001e678>] [<a001a28e>] [<a0018a81>] [<a001e801>] 
-[<a0016b5a>]
-   [<a001f9ac>] [<a001f9f5>] [<a001bce0>] [<a02053d8>]
+                        spin_lock(&dcache_lock);
++                       list_del(&cursor->d_child);
+                        p =3D file->f_dentry->d_subdirs.next;
+                        while (n && p !=3D &file->f_dentry->d_subdirs) {
+                                struct dentry *next;
+@@ -77,7 +78,6 @@
+                                        n--;
+                                p =3D p->next;
+                        }
+-                       list_del(&cursor->d_child);
+                        list_add_tail(&cursor->d_child, p);
+                        spin_unlock(&dcache_lock);
+                }
 
+Even with the patch, figuring out what is the bug is hard. The problem is t=
+hat=20
+the old version calls list_del while p is onto cursor->d_child (or close to=
+=20
+it - I don't remember well): anyway this results in a NULL pointer=20
+dereference in list_add_tail.
 
-The gdb bt is:
+Sorry it is not a race condition - for that search in the changelogs for=20
+changes in locking.
 
-(gdb) bt
-#0  panic (fmt=0xa0257de0 "Kernel mode fault at addr 0x%lx, ip 0x%lx")
-    at kernel/panic.c:58
-#1  0xa001b76d in segv (address=4, ip=2684552771, is_write=0, is_user=0,
-    sc=0xa0932f88) at arch/um/kernel/trap_kern.c:151
-#2  0xa001bace in segv_handler (sig=11, regs=0xa0932f88)
-    at arch/um/kernel/trap_user.c:67
-#3  0xa001f9ac in sig_handler_common_tt (sig=11, sc_ptr=0x58)
-    at arch/um/kernel/tt/trap_user.c:37
-#4  0xa001bce0 in sig_handler (sig=0, sc=
-      {gs = 0, __gsh = 0, fs = 0, __fsh = 0, es = 43, __esh = 0, ds = 43,
-__dsh = 0, edi = 2696380512, esi = 2716447384, ebp = 2714630412, esp =
-2714630388, ebx = 2716447384, edx = 2716447492, ecx = 1, eax = 0, trapno =
-14, err = 4, eip = 2684552771, cs = 35, __csh = 0, eflags = 66050,
-esp_at_signal = 2714630388, ss = 43, __ssh = 0, fpstate = 0x0, oldmask =
-201392128, cr2 = 4})
-    at arch/um/kernel/trap_user.c:102
-#5  <signal handler called>
-#6  0xa0030643 in dump_fpu (regs=0x0, fpu=0xa1e9b298)
-    at arch/um/sys-i386/ptrace.c:329
-#7  0xa0094756 in elf_dump_thread_status (signr=6, p=0xa0b78060,
-    thread_list=0xa1cdf9f4) at include/linux/elfcore.h:115
-(gdb)
-
-I can supply a disk image and kernel if required.
-
-Thanks,
-Leigh
-
+For a race condition, look on the ML for 2.6 - UML race conditions fixed in=
+=20
+the 2.6.4 patch - the fixes with description were posted together with=20
+patches.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 
@@ -113,7 +108,7 @@ Leigh
 This SF.Net email is sponsored by: SourceForge.net Broadband
 Sign-up now for SourceForge Broadband and get the fastest
 6.0/768 connection for only $19.95/mo for the first 3 months!
-http://ads.osdn.com/?ad_id=2562&alloc_id=6184&op=click
+http://ads.osdn.com/?ad_id%62&alloc_ida84&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
