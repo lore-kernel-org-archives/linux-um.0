@@ -1,27 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D4SAu-0001VP-P4 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Feb 2005 15:13:40 -0800
-Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D4SAq-0002Gi-7S for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Feb 2005 15:13:40 -0800
-Received: from NHROCAVG2.ets.enterasys.com ([134.141.79.124])
-	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id j1ONDWZC003065
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 24 Feb 2005 18:13:32 -0500 (EST)
-Message-ID: <421E5F9A.6030109@enterasys.com>
-From: "D. Bahi" <dbahi@enterasys.com>
+Message-ID: <267988DEACEC5A4D86D5FCD780313FBB04F72671@exch-03.noida.hcltech.com>
+From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] UML 2.4 shmem.c changes? panic w/ backtrace
-References: <41A35EF5.4080302@enterasys.com>
-	<200411240242.iAO2gI7p006614@ccure.user-mode-linux.org>
-In-Reply-To: <200411240242.iAO2gI7p006614@ccure.user-mode-linux.org>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig3C49F89C0C52AA599B964F59"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C51C1E.4E89415C"
+Subject: [uml-devel] Telnet (IPV6) on port
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,56 +16,111 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Feb 2005 18:13:30 -0500
-To: Jeff Dike <jdike@addtoit.com>
-Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 26 Feb 2005 21:44:54 +0530
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: "Mukul Prasad, Noida" <mprasad@hcltech.com>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3C49F89C0C52AA599B964F59
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-This happens everytime i try to load an application of ours that
-uses shmem for syslog...
+------_=_NextPart_001_01C51C1E.4E89415C
+Content-Type: text/plain;
+	charset="iso-8859-1"
 
-Jeff Dike wrote:
+Hi,
+Iam using 2.4.26 linux source and patch it with uml-patch-2.4.26-3 patch.
+I have built the uml binary with ipv6 support and my host has ipv6 module
+loaded.
+The telnet client and daemon are IPV6 supported on the Host machine. Iam
+able to telnet on the localhost with ipv6 address. 
+For example to telnet on localhost with loopback address ( ::1 ) , it works
+fine.
+ 
+Now Im running uml on this host (RedHat 9) with command as follows:
+ 
+./linux ubd0=guest1.diff,root_fs con=port:9001 con0=fd:0,fd:1 umid=guest1
+mem=32m
+ 
+Now when i try to telnet on UML with following command :
+telnet 127.0.0.1 9001, it works fine
+ 
+But if I telnet with :
+telnet ::1 9001
+it gives message connection refused.
+ 
+Can anyone throw some light on it why this is happening???
+ 
+Thanks and Best Regards,
+Adil Mujeeb
 
->dbahi@enterasys.com said:
->
->
->>i know things are hot and heavy in 2.6 but i hope somebody can spare a
->>thought about this panic i'm struggling to understand.
->>
->>
->
->Is this easily reproduced?
->
->The stack isn't ringing any bells with me, particularly since none of my code
->appears on the stack until the bug has already happened.
->
->				Jeff
->
->
->
 
---
-db
+------_=_NextPart_001_01C51C1E.4E89415C
+Content-Type: text/html;
+	charset="iso-8859-1"
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 
---------------enig3C49F89C0C52AA599B964F59
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+<META content="MSHTML 5.00.3825.700" name=GENERATOR></HEAD>
+<BODY>
+<DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004>Hi,</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004><SPAN 
+class=877220716-26022005>Iam using 2.4.26 linux source and patch it with 
+uml-patch-2.4.26-3 patch.</SPAN></SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004><SPAN 
+class=877220716-26022005>I have built the uml binary with ipv6 support and my 
+host has ipv6 module loaded.</SPAN></SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=877220716-26022005>The 
+telnet client and daemon are IPV6 supported on the Host machine. Iam able to 
+telnet on the localhost with ipv6 address. </SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=877220716-26022005>For 
+example to telnet on localhost with loopback address ( ::1 ) , it works 
+fine.</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN 
+class=877220716-26022005></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT size=2><FONT color=#0000ff><FONT face=Arial><SPAN 
+class=835345809-02122004><SPAN class=877220716-26022005>Now </SPAN>Im running 
+uml on&nbsp;<SPAN class=877220716-26022005>this host (</SPAN>RedHat 9<SPAN 
+class=877220716-26022005>)</SPAN> with command as 
+follows:</SPAN></FONT></FONT></FONT></DIV>
+<DIV><SPAN class=835345809-02122004></SPAN><FONT color=#0000ff face=Arial 
+size=2>&nbsp;</FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
+class=835345809-02122004>./linux ubd0=guest1.diff,root_fs con=port:9001 
+con0=fd:0,fd:1 umid=guest1 mem=32m</SPAN></FONT></DIV>
+<DIV><SPAN class=835345809-02122004></SPAN><FONT color=#0000ff face=Arial 
+size=2>&nbsp;</FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=877220716-26022005>Now 
+when i try to telnet on UML with following command :</SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=877220716-26022005>telnet 
+127.0.0.1 9001, it works fine</SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=835345809-02122004><SPAN 
+class=877220716-26022005></SPAN></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004><SPAN 
+class=877220716-26022005>But if I telnet with :</SPAN></SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004><SPAN 
+class=877220716-26022005>telnet ::1 9001</SPAN></SPAN></FONT></DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004><SPAN 
+class=877220716-26022005>it gives message connection 
+refused.</SPAN></SPAN></FONT></DIV>
+<DIV><FONT face=Arial size=2><SPAN class=835345809-02122004><SPAN 
+class=877220716-26022005>
+<DIV>&nbsp;</DIV>
+<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=835345809-02122004>Can 
+anyone throw some light on it why this is 
+happening???</SPAN></FONT></SPAN></SPAN></FONT><SPAN 
+class=835345809-02122004></SPAN><FONT face="Comic Sans MS" 
+size=2></FONT></DIV></DIV>
+<DIV><FONT face="Comic Sans MS" size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face="Comic Sans MS" size=2>Thanks and Best Regards,</FONT><FONT 
+face=Arial><BR><B></B></FONT><B><FONT color=#0000ff face="Times New Roman">Adil 
+Mujeeb</FONT></B><BR></DIV></DIV></BODY></HTML>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (MingW32)
-
-iD8DBQFCHl+a3XQ4zakZ3z4RAg99AJ9YmV/QI7XFBlSZ2QNzhPYO4p5QRQCeJIpc
-I1JRpGZFYHQ6+wJZKoi8+ew=
-=IQZo
------END PGP SIGNATURE-----
-
---------------enig3C49F89C0C52AA599B964F59--
+------_=_NextPart_001_01C51C1E.4E89415C--
 
 
 -------------------------------------------------------
