@@ -1,22 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B9FIX-0006z3-Tc for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Apr 2004 19:24:49 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B9FIX-0006DE-8o
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Apr 2004 19:24:49 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Timer patch for 2.6
-Message-ID: <20040402040124.GB5559@ccure.user-mode-linux.org>
-References: <20040401181616.26d1fcb7.zaitcev@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040401181616.26d1fcb7.zaitcev@redhat.com>
+	id 1B9Q1D-0007hA-6t for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Apr 2004 06:51:39 -0800
+Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1B9Q1C-0002It-SL for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Apr 2004 06:51:38 -0800
+Message-ID: <20040402145136.19157.qmail@praize.com>
+From: "gboutwel" <gboutwel@praize.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+Subject: [uml-devel] Re: [PATCH] patch for linux-2.6.5-rc2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,39 +24,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 1 Apr 2004 23:01:24 -0500
-To: Pete Zaitcev <zaitcev@redhat.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: 2 Apr 2004 14:51:36 -0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Apr 01, 2004 at 06:16:16PM -0800, Pete Zaitcev wrote:
-> I was unable to verify that it actually works in UML. My UML seems to
-> be hosed by a recent Fedora update, known good setups fail to work, too.
-> So, I am posting this mainly for review. I am terribly confused by
-> the way timers work in UML. In particular, it appears that every
-> process has to set up a timer. 
+> did you do a "make mrproper ARCH=um"? ...
 
-In tt mode, each UML process gets a host process, the kernel is mapped
-into each process, and it runs in each process.  That means that the
-kernel switches host processes every time there's a context switch.
-So, every process needs its own timer.
+>
 
-For this, what needs to happen is that, on every context switch, the 
-timer has to be reset to fire at the appropriate time.  The switch
-will happen some time in the middle of the interval, so the remaining
-time needs to be calculated, and the timer for the new process set
-accordingly.  The timer of the outgoing process can just be disabled.
+> ok, after you patch, do this ...
 
-Things are somewhat more sane in skas mode.  There are two processes -
-kernel and user, and both need a timer.  However, there's a
-complication.  The kernel process needs to be able to manipulate the
-user process' timer, which would appear to call for another ptrace op
-or something.
+>
 
-I haven't taken a good look at the patch yet.
+> make mrproper ARCH=um
 
-Thanks for doing this...
+> make menuconfig ARCH=um
 
-				Jeff
+> make scripts
+
+> make scripts ARCH=um
+
+> make linux ARCH=um
+
+> strip linux
+
+> make modules ARCH=um
+
+
+
+using same patches and same steps as I did for 2.6.4 I was able
+to build an SKAS host no problem.  After the following 1 line
+patch (which is in Jeffs patch, but the only part of his patch
+that I used to get it working), I'm able to compile ans 2.6.5-rc3
+(moved up to rc3) uml guest kernel without problems.  Again,
+I'm using the same patches and same steps that I used when I
+built my 2.6.4 (ie. not needing to make scripts and make scripts
+ARCH=um)
+
+
+
+--- ./arch/um/Makefile-i386.orig        2004-04-02 09:07:45.000000000
+-0600
+
++++ ./arch/um/Makefile-i386     2004-04-02 09:08:07.000000000
+-0600
+
+@@ -30,7 +30,7 @@
+
+ $(SYS_DIR)/thread.h: $(SYS_UTIL_DIR)/mk_thread
+
+        $(call filechk,$@)
+
+
+
+-$(SYS_UTIL_DIR)/mk_sc: scripts/fixdep include/config/MARKER
+FORCE ;
+
++$(SYS_UTIL_DIR)/mk_sc: scripts/basic/fixdep include/config/MARKER
+FORCE ;
+
+        $(Q)$(MAKE) $(build)=$(SYS_UTIL_DIR) $@
+
+
+
+ $(SYS_UTIL_DIR)/mk_thread: $(ARCH_SYMLINKS) $(GEN_HEADERS) sys_prepare
+FORCE ;
+
+
+
+
+
+------------------------------------
+
+Want to talk to other Christians?
+
+Get the Christian Instant Messenger
+
+http://www.praize.com/IM/ 
+
 
 
 -------------------------------------------------------
