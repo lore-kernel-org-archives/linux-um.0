@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ydU2-0002fN-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 13:28:34 -0700
+	id 19ydZC-000373-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 13:33:54 -0700
 Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19ydU0-0005w3-PV
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 13:28:33 -0700
+	id 19ydZB-00009Q-Gq
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 13:33:53 -0700
 From: Henrik Nordstrom <hno@marasystems.com>
 Subject: Re: [uml-devel] [PATCH] Starting a command inside UML from mconsole
-In-Reply-To: <2878.1063561501@marajade.sandelman.ottawa.on.ca>
-Message-ID: <Pine.LNX.4.44.0309142216310.7867-100000@filer.marasystems.com>
+In-Reply-To: <200309142050.03304.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.LNX.4.44.0309142231120.7867-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -24,33 +24,19 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Sep 2003 22:28:10 +0200 (CEST)
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Date: Sun, 14 Sep 2003 22:33:46 +0200 (CEST)
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, 14 Sep 2003, Michael Richardson wrote:
+On Sun, 14 Sep 2003, BlaisorBlade wrote:
 
-> It is entirely reasonable that the admin of the host system doesn't even
-> have login priveledges on the guest system, but would like the guest to
-> shutdown nicely before he reboots the host.
+> Your idea is good(opening a file and dupping it to 0,1,2 handles should be 
+> simple). Only I wouldn't like that it becomes too long to implement, i.e. to 
+> do in user-space. And I must go discovering how exactly to do it inside the 
+> kernel(I'll do this, however).
 
-For this there already is control-alt-delete (cad command in mconsole). A
-guest which wants to be cleanly shut down ought to have a cad handler in
-it's inittab (all distros does).
-
-I see the ability to execute commands from mconsole more of a advanced 
-administration and debugging tool, where a channel to the guest is always 
-guaranteed no matter what happens inside the guest (within reasonable 
-limits). 
-
-My personal feeling is that having a mconsole "backdoor" into executing
-commands inside the guest is a generally good thing as it gives the host a
-clean path for controlling the UML beyond just c-a-d. Even more so in
-hosting or honeypot situations where it may not be possible to guarantee
-that the hosted UML maintains a separate channel for the purpose. I would
-even go as far as saying this is a thing which should be possible via the
-sysrq interface on all architectures but unfortunately the kernel sysrq
-interface is a bit too limited for this purpose.
+My feeling is that attaching to the console is a suitable default, maybe
+with the option to attaching to a specified channel.
 
 Regards
 Henrik
