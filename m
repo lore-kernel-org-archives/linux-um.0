@@ -2,30 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CnuC0-0001wZ-BX for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jan 2005 23:42:24 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CnuBy-0005SK-QN
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jan 2005 23:42:24 -0800
-Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.12.11/8.12.11) with ESMTP id j0A8oRbh007647
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 10 Jan 2005 03:50:28 -0500
-From: Rob Landley <rob@landley.net>
+	id 1CnvDm-0004dP-9W for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 00:48:18 -0800
+Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CnvDh-0003u4-Iu for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 00:48:18 -0800
+From: Henrik Nordstrom <uml@hno.marasystems.com>
 Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
+In-Reply-To: <200501100120.04746.rob@landley.net>
+Message-ID: <Pine.LNX.4.61.0501100923131.22992@filer.marasystems.com>
 References: <200501082106.38306.rob@landley.net>
 	<31487.1105315534@marajade.sandelman.ottawa.on.ca>
 	<200501100120.04746.rob@landley.net>
-In-Reply-To: <200501100120.04746.rob@landley.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501100141.04892.rob@landley.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,28 +28,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 10 Jan 2005 01:41:04 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 10 Jan 2005 09:48:02 +0100 (CET)
+To: Rob Landley <rob@landley.net>
+Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>, user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 10 January 2005 01:20 am, Rob Landley wrote:
+On Mon, 10 Jan 2005, Rob Landley wrote:
 
-> I did, of course, check and make sure that ls and cat and such found ld in
-> the UML environment, which they did.  (The error message is actually
-> collect2 can't find ld, although apparently gcc can find collect2.)  I
-> tried running gcc -v to see if I could get it to tell me what it was doing
-> that didn't work (thinking possibly some environment variable was set
-> wrong), and uclibc hung so badly I had to kill it from another window.
+> Did you read second sentence in the bit you just quoted?  How, exactly, could
+> I chroot into there and compile stuff if ld isn't there?
 
-Ahem: uml is what hung so badly I had to kill it from another window.  
-(Possibly just that ctrl-c doesn't work from an fd console.  I've set it up 
-like that to be scriptable, but I need to get it to work before I can script 
-it...)
+Is the permissions on your hostfs tree set correctly?
 
-I admit I may be hard to understand here.  I'm relatively new to UML, and 
-among other things I keep typing "uclibc" when I mean "UML".  (Acronym 
-overload, as usual.  Never was that good with names...)
+Can you execute ld manually?
 
-Rob
+And again, have you tried with the -bb UML kernels?
+
+http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/
+
+> C) I've compiled this project on a machine with 32 megs of ram and no swap,
+> and my laptop actually has 128 megs so if UML isn't giving itself at least 32
+> it's making a bad decision...
+
+UML gives itself as much memory as you tell it to on the kernel command 
+line. Default to 32 MB IIRC.
+
+Regards
+Henrik
 
 
 -------------------------------------------------------
