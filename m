@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ar51b-0002uV-Ab
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 16:48:15 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	id 1Ar5vL-0005Jd-H6
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 17:45:51 -0800
+Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
 	(Exim 4.30)
-	id 1Ar50l-0002M2-Bo
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 16:47:23 -0800
-Message-Id: <200402120113.i1C1Dqip008480@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Compiling 2.6.3-rc1-mm1 in UML architecture 
-In-Reply-To: Your message of "Wed, 11 Feb 2004 00:12:41 EST."
-             <Pine.LNX.4.44.0402102352330.3217-100000@sparrow> 
-References: <Pine.LNX.4.44.0402102352330.3217-100000@sparrow> 
+	id 1Ar5uU-0000yc-AH
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 17:44:58 -0800
+From: Dan Shearer <dan@shearer.org>
+Subject: Re: [uml-devel] mconsole telinit design, worry about init standards?
+Message-ID: <20040212014725.GV4203@erizo.shearer.org>
+References: <20040206003759.GY4203@erizo.shearer.org> <200402120114.i1C1E5ip008500@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <200402120114.i1C1E5ip008500@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,23 +26,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 11 Feb 2004 20:13:52 -0500
-To: William Stearns <wstearns@pobox.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, MOLNAR Ingo <mingo@elte.hu>
+Date: Thu, 12 Feb 2004 12:17:25 +1030
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Cameron Patrick <cameron@patrick.wattle.id.au>, BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, miquels@cistron.nl
 
-wstearns@pobox.com said:
-> 	Next:
-> 	In file included from arch/um/kernel/syscall_kern.c:22: arch/um/
-> include/sysdep/syscalls.h:17: conflicting types for  `sys_ni_syscall'
-> include/linux/syscalls.h:453: previous declaration of `sys_ni_syscall'
-> .   UM types it as syscall_handler_t, include/linux types it as
-> "asmlinkage long".
-> 	I'm lost on this one.  No idea on how to resolve it. 
+Jeff,
 
-Just wait for the corresponding UML patch.  2.6 is changing relatively quickly
-underneath me these days.
+On Wed, Feb 11, 2004 at 08:14:05PM -0500, Jeff Dike wrote:
+> dan@shearer.org said:
+> > I've got a rough implementation of an mcsonole telinit command, where
+> > mconsole_kern opens /dev/initctl and sends a command to change
+> > runlevels.
+> 
+> cameron@patrick.wattle.id.au said:
+> > How about having some kind of generic interface to allow the host to
+> > access files, send signals, etc inside the VM?
+> 
+> Sorry, but none of these handy things are going into the kernel.  If you want
+> to run processes, open files, etc, you can do all that from userspace.
 
-				Jeff
+Could you tell us what the rules are? At some level we can interact with
+the kernel (eg call the c-a-d and halt handlers.) Yet at another we
+can't (run processes.) This has to do with how much potential there is
+for trouble. Would you be happy with sending signals? If so, even RT
+signals, which have a payload? If not, perhaps you could indicate which
+class of things you are happy for us to trigger. Perhaps only things
+which can be conceptually related to the hardware... so long as we know.
+
+This is part of having a clearer model about what UML is.
+
+> I see the following possibilities:
+
+Yes, the things you propose will work. The bit that we have been trying
+to get away from here (in more or less ambitious ways:-) is cooperation
+from the UML. I don't mind relying on the UML root being non-hostile (in
+many cases that is their right to be relatively hostile if they like,
+hosting is that sort of a thing :-) but I want to avoid requiring more
+than a tiny minimum above ordinary software intstalled, or better still
+nothing at all.
+
+-- 
+Dan Shearer
+dan@shearer.org
 
 
 -------------------------------------------------------
