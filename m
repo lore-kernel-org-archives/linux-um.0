@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBXK4-0003gR-41 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 04:03:52 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BBXK3-0003wU-Lk
+	id 1BBYCg-0005uz-GV for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Apr 2004 05:00:18 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BBYCf-0001nf-Tw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 04:03:51 -0700
-Message-Id: <200404081141.i38BfdB6001907@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] A quick humfs HOWTO 
-In-Reply-To: Your message of "Thu, 08 Apr 2004 12:07:38 +0200."
-	<Pine.LNX.4.44.0404081201120.8462-100000@filer.marasystems.com> 
-References: <Pine.LNX.4.44.0404081201120.8462-100000@filer.marasystems.com> 
-Mime-Version: 1.0
+	Thu, 08 Apr 2004 05:00:18 -0700
+References: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
+From: Gerd Knorr <kraxel@bytesex.org>
+In-Reply-To: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
+Message-ID: <87smfevfq2.fsf@bytesex.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: A quick humfs HOWTO
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,33 +27,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 08 Apr 2004 07:41:39 -0400
-To: Henrik Nordstrom <uml@henrik.marasystems.com>
-Cc: Nick Craig-Wood <ncw1@axis.demon.co.uk>, user-mode-linux-devel@lists.sourceforge.net
+Date: 08 Apr 2004 14:03:49 +0200
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-uml@henrik.marasystems.com said:
-> Eh? Why a loop mounted filesystem for humfs? The whole point of humfs
-> is to be able to emulate full UNIX semantics including ownership,
-> permissions, filesystem size etc ontop of a plain file tree without
-> requiring root on the host..
+Jeff Dike <jdike@addtoit.com> writes:
 
-humfs was done now because it's the only way to get the memory savings offered
-by doing mmap IO.
+> As the readers of uml-devel are aware by now, there is a new virtual UML 
+> filesystem called humfs.  This is a hostfs-like filesystem which does ownerships
+> right, by separating them from the actual file, ala umsdos.
 
-It turns out that some people need block devices because they repartition
-their UMLs, run RAID, etc.  Loop-mounting a disk image located on a humfs
-filesystem gives you both.  So, it's more than a transitional thing.
+Hmm.  Why separate?  These days almost all filesystems in 2.6 support
+extended attributes, that would be the ideal place for such metadata
+IMHO ...
 
-> If you want performance then ubd devices is the path to go. 
+  Gerd
 
-That's currently the case (a humfs boot is noticably slower than a ubd boot),
-but it's not clear why that should be the case.  There is less code running
-inside UML (no block layer or block driver), and it's not obvious to me
-that putting stuff in files in a host directory should be slower than 
-having it in a disk image.
-
-				Jeff
-
+-- 
+http://bigendian.bytesex.org
 
 
 -------------------------------------------------------
