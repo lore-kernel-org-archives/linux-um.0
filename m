@@ -1,25 +1,30 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhySt-0005P2-I2 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 13:58:47 -0800
-Received: from main.gmane.org ([80.91.224.249])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhySt-0002Fd-6Y for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 13:58:47 -0800
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1AhySs-0000Iu-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 17 Jan 2004 22:58:46 +0100
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <bucb6k$pck$1@sea.gmane.org>
-References: <bua04l$6uo$1@sea.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <bua04l$6uo$1@sea.gmane.org>
+	id 1AhzIO-0002j1-1T for User-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 14:52:00 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AhzIN-0004wH-H5 for User-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 14:51:59 -0800
+Received: from mercury.dur.ac.uk (mercury.dur.ac.uk [129.234.4.40])
+	by hermes.dur.ac.uk (8.11.7-20030923/8.11.7) with ESMTP id i0HMpsn01190
+	for <User-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 17 Jan 2004 22:51:54 GMT
+Received: from altair.dur.ac.uk (altair.dur.ac.uk [129.234.4.14])
+	by mercury.dur.ac.uk (8.12.10+Sun/8.11.7) with ESMTP id i0HMppg8009639
+	for <User-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 17 Jan 2004 22:51:51 GMT
+Received: from localhost (dit0may@localhost)
+	by altair.dur.ac.uk (8.11.7+Sun/8.11.1) with ESMTP id i0HMpp720248
+	for <User-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 17 Jan 2004 22:51:51 GMT
+From: M A Young <m.a.young@durham.ac.uk>
 Subject: [uml-devel] Re: cannot compile 2.6.1 uml-kernel, NPTL?
+Message-ID: <Pine.GSO.4.58.0401172244290.19712@altair.dur.ac.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,20 +36,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 22:57:42 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 17 Jan 2004 22:51:51 +0000 (GMT)
+To: User-mode-linux-devel@lists.sourceforge.net
 
-> gcc -Wl,-T,arch/um/uml.lds.s -static -Wl,--wrap,malloc -Wl,--wrap,free 
-> -Wl,--wrap,calloc \
->         -o linux arch/um/main.o vmlinux -L/usr/lib -lutil
+>> gcc -Wl,-T,arch/um/uml.lds.s -static -Wl,--wrap,malloc -Wl,--wrap,free
+>> -Wl,--wrap,calloc \
+>>         -o linux arch/um/main.o vmlinux -L/usr/lib -lutil
+>
+>Since the only file that's included is /usr/lib/libutils.so and this
+>file is part of glibc, i believe that it's my NPTL-patched glibc.
+>
+>Can somebody with installed NPTL confirm the problem?
+>
+>BTW: i'm using glibc 2.3.2
 
-Since the only file that's included is /usr/lib/libutils.so and this 
-file is part of glibc, i believe that it's my NPTL-patched glibc.
+I think I saw something similar to your original error when playing with
+linking against an nptl enabled libc.a, but I can't remember the details.
+I suspect NPTL has some header differences.
 
-Can somebody with installed NPTL confirm the problem?
+It is however worth starting again from a clean kernel tree to make sure
+it is not old .o files causing the problems.
 
-BTW: i'm using glibc 2.3.2
-
+	Michael Young
 
 
 -------------------------------------------------------
