@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AX46w-0006mv-HB
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 11:47:02 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AX46v-0004GS-OY
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 11:47:01 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] uml-patch-2.4.22-7 without CONFIG_MODE_TT failed
-References: <Pine.LNX.4.58.0312181520100.15701@boston.corp.fedex.com> <20031218192158.GB3388@ccure.user-mode-linux.org>
-In-Reply-To: <20031218192158.GB3388@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+	id 1AX4bD-0007yI-3K
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 12:18:19 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1AX4bB-0003xS-2h
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 12:18:17 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] [PATCH] 2.6: mrproper and clean still broken
+Message-ID: <20031218203350.GA3705@ccure.user-mode-linux.org>
+References: <200312131838.32002.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200312182050.55543.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200312131838.32002.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,43 +26,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Dec 2003 20:50:55 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 18 Dec 2003 15:33:50 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 20:21, gioved=EC 18 dicembre 2003, Jeff Dike ha scritto:
-> On Thu, Dec 18, 2003 at 03:24:06PM +0800, Jeff Chua wrote:
-> > Can't compile without CONFIG_MODE_TT. 2.4.22-5 has no problem.
->
-> Fixed, thanks.
+On Sat, Dec 13, 2003 at 06:38:31PM +0100, BlaisorBlade wrote:
+> PROBLEM:
+> make mrproper has problems with the SIZE var:
+> SIZE = (($(CONFIG_NEST_LEVEL) + $(CONFIG_KERNEL_HALF_GIGS)) * 0x20000000)
+> since .config is not included when doing *make clean* or *make mrproper*.
 
-Would you either post the fix or release -8? Or maybe it's on CVS(but you p=
-ost=20
-a release for each CVS commit, right?)
+This is all fixed in my 2.6 tree now.
 
-In general:
-Maybe before than on the site you should announce the release here providin=
-g=20
-the file as a link, get the silly compile errors and release on the site th=
-e=20
-patched version. Since -6 to -7 hostaudio needed that silly fix for=20
-modules... it's so unpleasant.
-
-Or just build or use a compilation test-suite...
-
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
-
+				Jeff
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
