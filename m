@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C7dAl-000697-GT for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Sep 2004 10:02:23 -0700
-Received: from sark4.cc.gatech.edu ([130.207.7.19])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C7dAj-00053d-4V for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Sep 2004 10:02:23 -0700
-Received: from tokyo.cc.gatech.edu (tokyo.cc.gatech.edu [130.207.114.15])
-	by sark4.cc.gatech.edu (8.12.10/8.12.8) with ESMTP id i8FH2Jb0007167
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 15 Sep 2004 13:02:19 -0400 (EDT)
-Received: from localhost (young@localhost)
-	by tokyo.cc.gatech.edu (8.12.10/8.12.8) with ESMTP id i8FH2IGU010102
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 15 Sep 2004 13:02:19 -0400 (EDT)
-From: Younggyun Koh <young@cc.gatech.edu>
-Message-ID: <Pine.GSO.4.58.0409151257150.24774@tokyo.cc.gatech.edu>
+	id 1C7fak-00018C-Jw for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Sep 2004 12:37:22 -0700
+Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C7faj-0003rV-OQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Sep 2004 12:37:22 -0700
+Message-ID: <41489967.1090307@nortelnetworks.com>
+From: Joe Marzot <gmarzot@nortelnetworks.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] weird hanging when uml starts up
+Subject: Re: [uml-devel] handle_trap - failed to wait at end of syscall
+References: <200408120541.i7C5faJd010923@ccure.user-mode-linux.org>
+	<200409132139.33256.blaisorblade_spam@yahoo.it>
+	<200409132214.i8DMEwL7003829@ccure.user-mode-linux.org>
+	<200409141241.21480.blaisorblade_spam@yahoo.it>
+	<414717A4.7070605@nortelnetworks.com>
+	<200409142123.i8ELN34W004063@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,110 +31,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 15 Sep 2004 13:02:18 -0400 (EDT)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 15 Sep 2004 15:35:03 -0400
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Joe Marzot <gmarzot@nortelnetworks.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, "Smith, Paul [BL60:NP52:EXCH]" <pausmith@americasm01.nt.com>
 
-Hi,
+Jeff Dike wrote:
+> gmarzot@nortelnetworks.com said:
+> 
+>>In our case the UML is launched like this:
+>>perl script
+>>   my $pid = fork();
+>>   if ($pid == 0) {
+>>      setpgrp(); # give all UMLs the same group id so I can renice them
+>>      exec($cmd); 
+> 
+> 
+> I think I understand what's happening.  You are (unwittingly) sending UML
+> (and every process that belongs to it) a HUP when you, in effect, detach it
+> from its parent terminal.
 
-i inserted some code in uml network stack, but after that, i can't boot
-uml in skas mode. (it's okay with tt mode, tho)
+where am I detaching from the parent terminal?
 
-the code i inserted is...
+I just did a little test and instead of invoking UML I start a little 
+perl script in exactly the same way as above to catch SIGHUP...but no 
+SIGHUP arrives.
 
-asmlinkage long sys_sendto(int fd, void * buff, size_t len, unsigned
-flags,
-			   struct sockaddr *addr, int addr_len)
-{
-	struct socket *sock;
-	char address[MAX_SOCK_ADDR];
-	int err;
-	struct msghdr msg;
-	struct iovec iov;
+> 
+> My first thought was that SIGHUP isn't disabled in the userspace process,
+> and it should be, but it is, so I don't know why it's even being seen by
+> the ptracer.  It should only see signals which are enabled in the child.
 
-#ifdef MY_CODE
-	{
-	if (len > 16 && ((char *)buff)[0] == '$' && ((char *)buff)[1] ==
-'$')
-	{
-		unsigned long ts1 = my_rdtscl();
-		sprintf(buff+2, "%u\0", ts1);
-	}
-	}
-#endif
-....
+more oddness.
 
-and uml hands on "Configuring kernel paramaters"
+> 
+> In the meantime, while we figure this out, you might try just adding "nohup"
+> to the beginning of your $cmd.
 
-Checking for the skas3 patch in the host...found
-Checking for /proc/mm...found
-Kernel virtual memory size shrunk to 258998272 bytes
-Checking for /dev/anon on the host...Not available (open failed with errno
-2)
-Linux version 2.4.26-3um (young@odysseus.cc.gt.atl.ga.us) (gcc version
-3.2.3) #19
-On node 0 totalpages: 65536
-zone(0): 65536 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line: ubd0=root_fs.rh-7.2-full.pristine.20020312 mem=256M
-eth0=tuntap,,,192.168.0.100 root=/dev/ubd0
-Calibrating delay loop... 2994.99 BogoMIPS
-Memory: 253116k available
-Dentry cache hash table entries: 32768 (order: 6, 262144 bytes)
-Inode cache hash table entries: 16384 (order: 5, 131072 bytes)
-Mount cache hash table entries: 512 (order: 0, 4096 bytes)
-Buffer cache hash table entries: 16384 (order: 4, 65536 bytes)
-Page-cache hash table entries: 65536 (order: 6, 262144 bytes)
-Checking for host processor cmov support...Yes
-Checking for host processor xmm support...No
-Checking that ptrace can change system call numbers...OK
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-POSIX conformance testing by UNIFIX
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-Initializing RT netlink socket
-Starting kswapd
-devfs: v1.12c (20020818) Richard Gooch (rgooch@atnf.csiro.au)
-devfs: devfs_debug: 0x0
-devfs: boot_options: 0x1
-JFFS version 1.0, (C) 1999, 2000  Axis Communications AB
-JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis Communications
-AB.
-pty: 256 Unix98 ptys configured
-Software Watchdog Timer: 0.05, timer margin: 60 sec
-SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256).
-RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-loop: loaded (max 8 devices)
-PPP generic driver version 2.4.2
-Universal TUN/TAP device driver 1.5 (C)1999-2002 Maxim Krasnyansky
-Initializing software serial port version 1
-mconsole (version 2) initialized on /home/young/.uml/09wwe4/mconsole
-Partition check:
- ubda: unknown partition table
-Initializing stdio console driver
-Netdevice 0 : TUN/TAP backend - IP = 192.168.0.100
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP, IGMP
-IP: routing cache hash table of 2048 buckets, 16Kbytes
-TCP: Hash tables configured (established 16384 bind 32768)
-arp_tables: (C) 2002 David S. Miller
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-SCTP: Hash tables configured (established 8192 bind 16384)
-NET4: Ethernet Bridge 008 for NET4.0
-VFS: Mounted root (ext2 filesystem) readonly.
-Mounted devfs on /dev
-INIT: version 2.78 booting
-                        Welcome to Red Hat Linux
-                Press 'I' to enter interactive startup.
-Mounting proc filesystem:  [  OK  ]
-Configuring kernel parameters:
+originally tried this but something bad happened...forget which I could 
+go back and see ... and try setsid as the other poster suggested.
 
-anyone has any idea what's wrong with it?
+regards, GSM
 
-thank you,
+> 
+> 				Jeff
+> 
+> 
+> 
 
-			-Younggyun Koh (young@cc.gatech.edu)
+
+
 
 
 -------------------------------------------------------
