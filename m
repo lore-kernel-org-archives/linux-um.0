@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BusFD-0001do-2N for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Aug 2004 05:30:15 -0700
-Received: from imag.imag.fr ([129.88.30.1])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1BusFC-0006HB-Ea
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Aug 2004 05:30:14 -0700
-Received: from inrialpes.fr (iseran.inrialpes.fr [194.199.24.100])
-	by imag.imag.fr (8.13.0/8.13.0) with ESMTP id i7BCU6NA012479
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	id 1Buv70-0003tc-8S for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 11 Aug 2004 08:33:58 -0700
+Received: from zsc3s004.nortelnetworks.com ([47.81.138.65])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1Buv70-0001Vc-00 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 11 Aug 2004 08:33:58 -0700
+Received: from zsc3c028.us.nortel.com (zsc3c028.us.nortel.com [47.81.138.28])
+	by zsc3s004.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with
+	ESMTP id i7BFXlO08432
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 11 Aug 2004 14:30:08 +0200 (CEST)
-Message-ID: <411A114E.7050303@inrialpes.fr>
-From: Aurelien Francillon <aurelien.francillon@inrialpes.fr>
-Reply-To: aurelien.francillon@inrialpes.fr
+	Wed, 11 Aug 2004 08:33:47 -0700 (PDT)
+Message-ID: <411A3BF6.8020003@nortelnetworks.com>
+From: Joe Marzot <gmarzot@nortelnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Subject: [uml-devel] [PATCH] insmod error with module, memcpy
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] debugging UML cores
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,73 +30,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 11 Aug 2004 14:30:06 +0200
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 11 Aug 2004 11:32:06 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
 
-hi,
-i am unable to insmod a external module which uses the memcpy function
-against a 2.4.26-um2 kernel patched with the last patches from
-http://user-mode-linux.sourceforge.net/patches.html
-while this works with a 2.4.24 uml kernel.
+Hi UML developers,
 
-With the following patch this works again for me,
-but i really don't know if this is the right way to do this ?
+I am getting a variety of cores from UML - fairly intermittent. The bad 
+part is that examining these cores with GDB is utterly fruitless (for 
+me). Are there some tricks beyond the normal stuff below I should be 
+doing to get a better sense of what is going wrong? I see no back trace 
+and no thread info. thanks for any help, Giovanni
 
-aur=E9lien
+[root@wbl6y227 plankton]# /usr/local/builds/gdb-6.2/gdb/gdb -c 
+/bne/home/gmarzot/proj/celp/cores/core_sanity_crash_8_11 celp/linux.celp
+GNU gdb 6.2
+Copyright 2004 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain 
+conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i686-pc-linux-gnu"...Using host libthread_db 
+library "/lib/libthread_db.so.1".
 
-
---- linux-2.4.26-clean/arch/um/kernel/user_syms.c    Wed Aug 11 12:21:55=20
-2004
-+++ linux-2.4.26/arch/um/kernel/user_syms.c    Wed Aug 11 14:07:08 2004
-@@ -1,34 +1,28 @@
- #include "linux/types.h"
- #include "linux/module.h"
-=20
--/* XXX Deleted a number of symbols because they clashed strangely with=20
-headers
-- * Add them back later.
-- */
--
--#if 0
- /* Some of this are builtin function (some are not but could in the=20
-future),
-  * so I *must* declare good prototypes for them and then EXPORT them.
-  * The kernel code uses the macro defined by include/linux/string.h,
-  * so I undef macros; the userspace code does not include that and I
-  * add an EXPORT for the glibc one.*/
-=20
-+
- #undef strlen
-+#undef strstr
- #undef memcpy
- #undef memset
-=20
--EXPORT_SYMBOL_PROTO(strlen);
--EXPORT_SYMBOL_PROTO(memset);
--EXPORT_SYMBOL_PROTO(memcpy);
--#undef strstr
--
--EXPORT_SYMBOL_PROTO(strstr);
--
- extern size_t strlen(const char *);
- extern void *memcpy(void *, const void *, size_t);
- extern void *memset(void *, int, size_t);
--extern int printf(const char *, ...);
-=20
--#endif
-+EXPORT_SYMBOL(strlen);
-+EXPORT_SYMBOL(memcpy);
-+EXPORT_SYMBOL(memset);
-+
-+EXPORT_SYMBOL(strstr);
-+
-=20
- /* Here, instead, I can provide a fake prototype. Yes, someone cares:=20
-genksyms.
-  * However, the modules will use the CRC defined *here*, no matter if=20
-it is
-
+Core was generated by `/vob/neptune/plankton/celp/linux.celp (CSC-0-4-0) 
+[/sbin/modprobe]            '.
+Program terminated with signal 11, Segmentation fault.
+#0  0x00000000 in ?? ()
+(gdb) where
+#0  0x00000000 in ?? ()
+(gdb) bt
+#0  0x00000000 in ?? ()
+(gdb) info thr
+* 1 process 12718  0x00000000 in ?? ()
+warning: Couldn't restore frame in current thread, at frame 0
+0x00000000 in ?? ()
+(gdb)
 
 
 
