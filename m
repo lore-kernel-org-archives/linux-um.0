@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQafn-00010o-3X for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2004 16:40:31 -0700
+	id 1BQalF-0001qW-Dl for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 May 2004 16:46:09 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BQafm-0004D7-ND
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BQalE-0000Tn-Ui
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2004 16:40:30 -0700
-Message-Id: <200405200026.i4K0QPDt002030@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Mon, 17 May 2004 19:21:11 +0200."
-	<20040517172111.GA12321@bytesex.org> 
-References: <20040517172111.GA12321@bytesex.org> 
+	Wed, 19 May 2004 16:46:09 -0700
+Message-Id: <200405200032.i4K0W7Dt002066@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Native drivers for UML 
+In-Reply-To: Your message of "Tue, 18 May 2004 13:49:40 EDT."
+	<Pine.LNX.4.60.0405181335300.4190@stclair.eecs.umich.edu> 
+References: <Pine.LNX.4.60.0405181335300.4190@stclair.eecs.umich.edu> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [patch] fix fault handling
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,17 +28,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 May 2004 20:26:25 -0400
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 19 May 2004 20:32:07 -0400
+To: George Washington Dunlap III <dunlapg@umich.edu>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-kraxel@bytesex.org said:
-> skas has a design bug: PTRACE_FAULTINFO doesn't pass enougth
-> informations. 
+dunlapg@umich.edu said:
+> I'm looking into doing (host) device driver debugging w/ UML.  I'd
+> seen  some references to it in different places, but nothing with any
+> solid  leads.  Is anyone still doing this?  Are there any old patches /
+>  example  device drivers out there?
 
-Yeah, this is the biggest technical mistake in skas3.  I left it because I
-didn't really want to touch the skas3 patch again, and instead fix it in
-skas4.
+There was a VPCI driver by Jon Smirl which allowed UML to drive physical
+devices.  However, it's not being maintained, as far as I know.
 
 				Jeff
 
