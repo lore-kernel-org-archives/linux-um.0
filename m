@@ -2,18 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bp0Yf-0000dX-Hx for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jul 2004 01:10:05 -0700
-Received: from web52101.mail.yahoo.com ([206.190.39.70])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1Bp0Ye-0001v4-Rl for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jul 2004 01:10:05 -0700
-Message-ID: <20040726080954.43807.qmail@web52101.mail.yahoo.com>
-From: =?iso-8859-1?q?Chris=20Epicier?= <seuchato@yahoo.de>
+	id 1Bp5uN-0004lp-TK for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Jul 2004 06:52:51 -0700
+Received: from smtp.telkom.net.id ([203.130.196.196])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1Bp5uN-00077P-01 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Jul 2004 06:52:51 -0700
+From: Mulyadi Santosa <a_mulyadi@telkom.net>
+Reply-To: a_mulyadi@telkom.net
+Subject: Re: [uml-devel] Kallsyms on UML
+References: <20040726002724.GA11374@kevlar.burdell.org>
+	<web-1072592@b1.c.plasa.com>
+	<20040726060108.GA17971@kevlar.burdell.org>
+In-Reply-To: <20040726060108.GA17971@kevlar.burdell.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] suse 9.1 compilation error: net/ipv4/igmp.c:1192
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200407262045.35821.a_mulyadi@telkom.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,56 +32,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 26 Jul 2004 10:09:54 +0200 (CEST)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 26 Jul 2004 20:45:35 +0700
+To: Sonny Rao <sonny@burdell.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi there
+hello Sonny :-)
 
-I already posted this one  in the user-mode-linux-user
-maillist but had no reply. Is it a beginners error
-(possible, sionce I am a newbie in UML)?
+> I was referring to the stack traces which appear after an Oops or
+> panic, or if you is simply call dump_stack() somewhere.  Normally, if
+> CONFIG_KALLSYMS isn't defined in the kernel's .config file, then those
+> stack traces don't show function names, just the address of the
+> function, which is somewhat annoying to decode :)
 
-I would like to build a safe server using suse 9.1 and
-uml. When I try to compile the kernel I get the
-following error(s):
+Oh...sorry...looks like I am misinterpreting your e-mail :-)
 
-...
-CC      net/ipv4/igmp.o
-  net/ipv4/igmp.c: In function `ip_mc_inc_group':
-  net/ipv4/igmp.c:1192: error: `multicast_chain'
-undeclared (first use in this function)
-  net/ipv4/igmp.c:1192: error: (Each undeclared
-identifier is reported only once
-  net/ipv4/igmp.c:1192: error: for each function it
-appears in.)
-  net/ipv4/igmp.c: In function `ip_mc_dec_group':
-  net/ipv4/igmp.c:1219: error: `multicast_chain'
-undeclared (first use in this function)
-  make[2]: *** [net/ipv4/igmp.o] Error 1
-  make[1]: *** [net/ipv4] Error 2
-  make: *** [net] Error 2 
+ehm, AFAIK, stack frame pointer also determine the precision of stack dump, so 
+make sure you don't include -fomit-frame-pointer
 
-I use Suse 9.1:
-Linux version 2.6.5-7.95-default (geeko@buildhost)
-(gcc version 3.3.3 (SuSE Linux)) #1 Thu Jul 1 15:23:45
-UTC 2004 
+CONFIG_KALLSYMS, ehm, for 2.6, right? well, I still use 2.4....that's why I 
+miss that option :-)
 
-I do the following commands: 
-make clean ARCH=um
-make mrproper ARCH=um
-make xconfig ARCH=um (saved .config)
-make linux ARCH=um 
+> Fortunately, an in-kernel symbol table has been added in 2.6 which
+> does the work for you.  It doesn't seem to work out of the box on UML
+> on 2.6, and I was just wondering if it would be trivial to add that
+> support to UML.  It seems that way to me, and its a rather useful
+> feature for people using UML as a kernel development tool.
 
-What I tried is to replace -O2 by -O1 compiler option
-with exactly same result.
+Yes, I agree. Bulls-eye stack dump is definitely useful to pin point 
+problem....and of course...you still need to fully understand the inner work. 
+it reminds me to Linus' wise word "Use the source,Luke"  :-). Well, somehow I 
+need to pratice my Force's power to achieve Jedi senior warrior :-)))
 
-I would appreciat any help thanks
+regards
 
+Mulyadi
 
-	
-		
-___________________________________________________________
-Gesendet von Yahoo! Mail - Jetzt mit 100MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
 
 
 -------------------------------------------------------
