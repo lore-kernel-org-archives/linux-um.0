@@ -2,17 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AGS8R-0003J5-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 02 Nov 2003 15:59:55 -0800
-Received: from [211.54.73.3] (helo=lists.sourceforge.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AGS8Q-0005mS-LV
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 02 Nov 2003 15:59:54 -0800
-MIME-Version: 1.0
-Content-Type: text/html; charset=euc-kr
-From: chj4772@naver.com
-Message-Id: <E1AGS8Q-0005mS-LV@sc8-sf-mx1.sourceforge.net>
-Subject: [uml-devel] =?unknown-8bit?b?saSw7SkgwPq0wiDB/b+hvK0gKHNvaG8pILW3ILn6vu6/5C5fQA==?=
+	id 1AGUU1-0002SP-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 02 Nov 2003 18:30:21 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AGUU0-00024l-Od
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 02 Nov 2003 18:30:21 -0800
+Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id hA32HpD03097
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 2 Nov 2003 21:17:51 -0500
+Message-Id: <200311030236.hA32aggX002499@ccure.karaya.com>
+Subject: Re: [uml-devel] Sleeping process getting segfault signal 
+In-Reply-To: Your message of "Sun, 02 Nov 2003 11:23:51 +0200."
+             <200311020923.hA29Np9K029637@car.linuxhacker.ru> 
+References: <Pine.GSO.4.58.0311012137370.355@altair.dur.ac.uk>  <200311020923.hA29Np9K029637@car.linuxhacker.ru> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -23,63 +29,34 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 2003.11. 3  8:59:49
-Content-Transfer-Encoding: base64
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 02 Nov 2003 21:36:42 -0500
+To: Oleg Drokin <green@linuxhacker.ru>
+Cc: m.a.young@durham.ac.uk, user-mode-linux-devel@lists.sourceforge.net
 
-PGh0bWw+DQo8aGVhZD4NCjx0aXRsZT5NYWlsIGZvciBwb3RlbnRpYWwgY3VzdG9tZXJzPC90
-aXRsZT4NCjxib2R5PiANCjxicj4NCjxlbWJlZCBzcmM9aHR0cDovL2hra2ltLmFuc2FuLmFj
-LmtyL211c2ljYm94L2tqbXVzaWNfMTAyLmFzZiBhdXRvc3RhcnQ9dHJ1ZSBoaWRkZW49dHJ1
-ZSBsb29wPS0xIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4Ij48YnI+DQq79bfOv+4gvNLIoyCx
-4rn9wLsgvNKws8fVtM+02S48YnI+DQq+yLPnx8+8vL/kPyA8YnI+DQrA+rTCIMH9v6G8rSC6
-zr73wLi3ziCwo7Tcx8+w1CAgxMTHu8XNIMfRtOu3ziC1tyC5+rDtIMDWtMIgu+e298DUtM+0
-2S48YnI+DQq/7Lius6q287+hvK20wiDD1sPKt84gwM7FzbPdILzSyKMguvHB9rTPvbqwoSAg
-N7/5McDPIL/Ax8Igx9+9wLTPtNksILz2wNS1tSDCrMKpx8+w1CCxpsL6vsa/5C48YnI+DQq5
-zLG5wMyzqiDAr7e0te6/obyttMIgwMy3r8fRILzSyKMguvHB9rTPvbqwoSAzfjSz4iDA/LrO
-xc0gyKPIssC7ILq4wMyw7SDA1r3AtM+02SwgPGJyPg0KteW18L7uIL/suK6zqrbzv6G8rbW1
-IGNjbjIxLmNvbbvnwMzGrrChILv9seQgsM3AzMH2v+QuPGJyPg0Kv+TB8iDH0ri4x9EgwM/A
-zCC++L76tMK1pSzAzLexILzSyKMgseK5/cDMIL/suK6zqrbzv6Egu/2x5iDB2SC49Lb6sMW1
-57/kLCDDs8C9v6EgwPq1tSDAzLexILGksO24piC6uLDtICA8YnI+DQqx3cC2IMfHtvO5zLXl
-ILCwwLogsM3AziDB2SC+y77Svu6/5Cwgvsuw7SC6uLTPse4gvLyw6MD7wM4gyLi757G4v+Qs
-IMbyu/0gx9IgvPYgwNa0wiDAz8DMtPWxur/kLjxicj4NCsH2sd0gsObBpsD7wLi3ziCzyrmr
-s6ogvu63wb/uIMDMtqe/oSBjY24yMS5jb23AuiDHz7OqwMcgyPG4wcDMIL7GtNIgvPYgvvi9
-wLTPtNkuIDxicj4NCiA8YnI+DQogY2Nuv6EgsPy9ySCwocGuuri8vL/kLiA8YnI+DQo8YnI+
-DQqwocDUx8+9w7jpILq7wM7AxyDIqMbkwMzB9rChILXOsLOwoSDBprD4tcu0z7TZLjxicj4N
-Cjxicj4NCjEuvO7Hzrj0ILvnwMzGriAovPbAzbHdIDI1JX40MCXC97XuIMH2sd4pPGJyPg0K
-PGJyPg0KMi64rsTtuKPGrii48MH9u+fAzMauKSC6u8DOwMwguPDB/cfRILvntvfAxyC4xcPi
-v6G8rSC3zr+txrwgNSV+MTUlIMH2sd48YnI+DQo8YnI+DQq6u8DOwMcgtbW43sDOwLsgx8+z
-qiC4uLXlvLy/5C48YnI+DQq1tbjewM7AuiC/ubvasNQguLi16bjpILq7wM7AzCC87sfOILj0
-IMHWwM7A1LTPtNkuPGJyPg0KuPDB/bW1ILi2wvmwocH2wNS0z7TZLiA8YnI+DQrBprChICDB
-9rHdIMfPsO0gwNa0wiDAzCCxpLDtsKEguPDB/bGksO0gwNS0z7TZLiA8YnI+DQrA2sCvt9Ow
-1CC6u8DOwMwgwffBoiDIqMbkwMzB9rimIL/uv7XH2LytILzStebAuyC/w7iuvcO46SC1y7TP
-tNkuILGksO0guea5/cC6ILTZvufHz7DUIMfPvccgvPYgwNa9wLTPtNkuPGJyPg0KIDxicj4N
-CiC2x8fRIMGmx7DAuiAyM7PiILXIILy8sOjA+8DOIMGmx7DAuyC87sfOuPS/oSC/w7ixsNQg
-tcu0z7TZLiA5OLPitbW/oSCz67qnwMfH0LvzwLsgvPa78yDHz73FutDAzCK358DMvbogwMyx
-17Oqt8652rvnIrChICDB98GiIMGmx7DAuyCws7nfIMfPvcO0wiC60MDUtM+02S4gwMy3sSDA
-r7jtx9EgutDAzCDBpsewwLsguLi15bTCIMi4u+e287jpILnPwL3AzCCwoSC9x7Kov7m/5C4g
-wMy60MC6ILrxvsax17bzuKYgsLO53yDHz73FILrQwLi3ziDAr7jtx9W0z7TZLrHXt7i02bDt
-IMDMIMi4u+e/obytILrxvsax17bzILimIMbHuMXHz8H2tMIgvsq9wLTPtNkuPGJyPg0KPGJy
-Pg0Kw7PAvb+htMIgNTB+MTAwuLi/+CDBpLW1wMcgvNK15sC7ILjxx6W3ziDHz73DsO0gvcPA
-28fPvccgvPYgwNa9wLTPtNkuIMDasd3AzCDF9cDatcfB9rW1IL7KtMIgvcUgvNLIoyC68cH2
-tM+9uiCx4rn9wLi3ziC5zLehuKYgwdi68cfPv6kguri9yr3Dv8AuPGJyPg0KPGJyPg0KwMyw
-zcC6IMGkuLsgseLIuMDUtM+02S4gx9G5+CCw/L3JILChwa66uL3DsO0gu+fAzMauILnmua7H
-z7+pILq4vcq9w7/ALiA8YnI+DQo8YnI+DQoqILD8waHAuyC52bLZvu68rSC5z8C9wLi3ziAg
-vLy788C7ILnZtvO6uLjpILnMt6GwoSC03rbzIMH4tNmw7SDH1bTPtNkgIjxicj4NCiA8YnI+
-DQoqsLDAurvnubC1tSC+7rayu+e298DMIL7utruw1CC757/rx8+0wrChv6Egtfu28yC6r8fV
-tM+02S4guq/IrbimILnZtvO9w7TZuOkgtOe9xbrOxd8guq/IrcfPvcq9w7/ALjxicj4NCiA8
-YnI+DQo8YSBocmVmPSJodHRwOi8va2htaTEyLmNhZmUyNC5jb20idGFyZ2V0PSJfYmxhbmsi
-Pjxicj4NCmh0dHA6Ly9raG1pMTIuY2FmZTI0LmNvICA8YnI+DQogPGJyPg0KIMfjtvS++MDM
-ILq4s7uwzSDBy7zbx9W0z7TZLiC/+MShvsrAuL3DuOkgvPa9xbDFus7Hz7y8v+QuPGJyPg0K
-wcHAuiDHz7fnILXHvLy/5C48YnI+DQogICAgICAgICAgIDxicj4NCjxicj4NCjxicj4NCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPGJyPg0KPGJyPg0KDQo8L2JvZHk+PC9odG1sPg0K
-DQoNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQ0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5OiBTRi5uZXQgR2l2
-ZWJhY2sgUHJvZ3JhbS4NCkRvZXMgU291cmNlRm9yZ2UubmV0IGhlbHAgeW91IGJlIG1vcmUg
-cHJvZHVjdGl2ZT8gIERvZXMgaXQNCmhlbHAgeW91IGNyZWF0ZSBiZXR0ZXIgY29kZT8gICBT
-SEFSRSBUSEUgTE9WRSwgYW5kIGhlbHAgdXMgaGVscA0KWU9VISAgQ2xpY2sgSGVyZTogaHR0
-cDovL3NvdXJjZWZvcmdlLm5ldC9kb25hdGUvDQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXw0KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcg
-bGlzdA0KVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldA0KaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxp
-bnV4LWRldmVsDQo=
+green@linuxhacker.ru said:
+> Jeff: I finally hit the problem yesterday with extra debug code to
+> save the sigmask. Here's what I see. (also include sigjump buffer that
+> was setup later than sigprocmask was run).
+>
+> sigmask = {__val = {134284288
+
+(gdb) p/x 134284288
+$1 = 0x8010400
+
+Thats SIGSEGV (the one that matters here), SIGCHLD, and SIGIO.  So, we have
+to figure out how we're getting there with SIGSEGV blocked.  What's the stack
+at that point?
+
+				Jeff
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: SF.net Giveback Program.
+Does SourceForge.net help you be more productive?  Does it
+help you create better code?   SHARE THE LOVE, and help us help
+YOU!  Click Here: http://sourceforge.net/donate/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
