@@ -1,9 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200501121856.j0CIuMiZ003766@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] Fix stack corruption
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Cokop-0000nG-Nq for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 07:53:59 -0800
+Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1Cokon-0004EI-TZ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 07:53:59 -0800
+From: "Armin M. Warda" <Armin.Warda@gmx.de>
+Reply-To: Armin.Warda@gmx.de
+Subject: Re: [uml-devel] Re: UML fills /tmp irreversibly (2.6.9-bb4 on SuSE
+	9.2)
+References: <200412140958.58402.Armin.Warda@ePost.De>
+	<200501101450.32169.Armin.Warda@gmx.de>
+	<20050111165848.GA20592@bytesex>
+In-Reply-To: <20050111165848.GA20592@bytesex>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1806485.TXk5uJczLf";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200501121653.44872.Armin.Warda@gmx.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -15,55 +32,65 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 Jan 2005 13:56:22 -0500
-To: caker@linode.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 12 Jan 2005 16:53:38 +0100
+To: Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net
+Cc: "Christopher S. Aker" <caker@theshore.net>, Paolo Giarrusso <blaisorblade_personal@yahoo.it>
 
-This patch fixes a long-standing problem in skas mode process creation.  Chris
-Aker has been seeing it at linode, and found a way of reproducing it.  Once
-I spotted the bug, I found an easier way:
+--nextPart1806485.TXk5uJczLf
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-ping flood the UML from the host while running
-	while true; do ls > /dev/null; done
+On Tuesday 11 January 2005 17:58, Gerd Knorr wrote:
+> Once it is tested and confirmed that this patch actually fixes the
+> issue I can take care to put it into the suse kernel and get it
+> released with the next security update kernel. =20
+> [...]
+> So it would be nice if one of you guys can try that=20
+> [...]
+> The kernel-source rpm has a fully patched suse source tree, you can
+> try to apply the patch there and rebuild a kernel. =20
 
-In 10-15 seconds, UML will simply exit back to the shell with a segfault,
-no panic, no output, no nothing.
+#  2004/12/17 09:18:41-08:00 roland@redhat.com=20
+#  [PATCH] fix bogus ECHILD return from wait* with zombie group leader
 
-When UML sets up the kernel stack for a new process, it sends itself a 
-SA_ONSTACK signal with the signal stack being the new kernel stack.  It 
-calls setjmp there to set up a context that it can longjmp to when the new
-process is run for the first time.
+I tried to apply this patch to the SuSE kernel-source-2.6.8-24.10, but=20
+it failed. The reason is obvious: there are other patches necessary=20
+before applying this one.
 
-The problem was that, while signals were blocked during this, they were 
-re-enabled before SA_ONSTACK was disabled.  Thus, a signal arriving at the
-wrong time, between signals being turned on and SA_ONSTACK being disabled,
-would cause the signal to be handled on the stack, destroying the context
-that had been set up there.
+The kernel/exit.c of SuSE 2.6.8-24.10 corresponds to bitkeeper rev=20
+1.155, and the above "bogus ECHILD return" fix is in bk rev 1.170 of=20
+kernel/exit.c, thus there are at least 15 additional fixes to be=20
+considered for backporting from 2.6.10 to SuSE's 2.6.8-24.10.
 
-When the new process ran, it would longjmp to this trashed stack, and UML
-would die.
+This is to much for me, as I am no kernel hacker. If no one picks up=20
+that job, then my only hope is that SuSE will finally move its SuSE=20
+9.2 forward to 2.6.10.
 
-The fix is obvious:
+On Saturday 08 January 2005 13:15, Paolo Giarrusso wrote:
+> The changelog does not mention our particular bug it but there is a
+> good reason for not mentioning it, and it's related to TASK_TRACED
+> which is *the* problem in 2.6.9 with UML.
 
-Index: 2.6.10/arch/um/kernel/skas/process.c
-===================================================================
---- 2.6.10.orig/arch/um/kernel/skas/process.c	2005-01-12 11:17:22.000000000 -0500
-+++ 2.6.10/arch/um/kernel/skas/process.c	2005-01-12 11:18:03.000000000 -0500
-@@ -323,9 +323,10 @@
- 	block_signals();
- 	if(sigsetjmp(fork_buf, 1) == 0)
- 		new_thread_proc(stack, handler);
--	set_signals(flags);
- 
- 	remove_sigstack();
-+
-+	set_signals(flags);
- }
- 
- void thread_wait(void *sw, void *fb)
+  Armin.
 
-				Jeff
+=2D-=20
+   --- May the Source be with you! Linux. ---
+   --- secure eMail: http://www.gnupg.de/ ---
 
+--nextPart1806485.TXk5uJczLf
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQBB5UgIRyBj5Zbydm0RAiyoAKCJa45xLSy6G9p5Pt0XQ9zIHEVQ4wCfY6/M
+u4+JlLSeqACDUQl58/lNk6Q=
+=L5hv
+-----END PGP SIGNATURE-----
+
+--nextPart1806485.TXk5uJczLf--
 
 
 -------------------------------------------------------
