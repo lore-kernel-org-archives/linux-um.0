@@ -1,18 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXVgR-0002me-89
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 17:13:31 -0800
-Received: from mta9.adelphia.net ([68.168.78.199])
+	id 1AXVzE-0005Gf-NO
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 17:32:56 -0800
+Received: from main.gmane.org ([80.91.224.249])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXVgQ-0007Ko-Tv
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 17:13:31 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Message-ID: <20031220011323.GW18100@alcor.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] 2.4.22-[67] problems
+	id 1AXVzE-0006MN-Bk
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 17:32:56 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AXVzB-0008Gy-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 20 Dec 2003 02:32:53 +0100
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <slrnbu79m4.a5h.lunz@orr.homenet>
+References: <20031219212840.GA8203@ccure.user-mode-linux.org>
+Subject: [uml-devel] Re: uml-patch-2.4.23-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,84 +24,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 17:13:23 -0800
+Date: Sat, 20 Dec 2003 01:32:52 +0000 (UTC)
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: 224431@bugs.debian.org, 224502@bugs.debian.org
 
-There definitely seems to be something awry here, even in skas mode.  I am
-getting a lot of ENOSYS errors inside UML:
+jdike@addtoit.com said:
+> This patch updates UML to 2.4.23.  The only change required by 2.4.23
+> was the ELF_PLAT_INIT that other people saw and fixed.
 
-/usr/lib/apt/methods/http: error while loading shared libraries: libc.so.6: cannot map zero-fill pages: Error 38
+um, there's also some problem if you compile the uml kernel with SMP
+because of the NUM_CPUS stuff in 2.4.23.
 
-dpkg: error processing /var/cache/apt/archives/debhelper_4.0.2_all.deb (--unpack):
- failed to rmdir/unlink `/usr/share/man/man1/dh_compress.1.gz.dpkg-tmp': Function not implemented
+Jason
 
-basename: write error: Function not implemented
-
-etc.
-
-Downgrading to user-mode-linux 2.4.22-6um-1 still has the problem,
-downgrading further to 2.4.22-5um-1 (the old binary) fixes it.  The
-following things changed from 2.4.22-5um-1 to 2.4.22-6um-1, most of which
-were outside of UML itself:
-
-1. -6um and later were built with a glibc using 2.6 kernel headers
-(linux-kernel-headers in Debian unstable).  This also required a patch to
-get UML to compile:
-
-@@ -35628,7 +35631,7 @@
- +       */
- +static void disable_lcall(void)
- +{
--+      struct modify_ldt_ldt_s ldt;
-++      struct user_desc ldt;
- +      int err;
- +
- +      bzero(&ldt, sizeof(ldt));
-@@ -36784,7 +36787,7 @@
- +      nregs = sizeof(dummy->u_debugreg)/sizeof(dummy->u_debugreg[0]);
- +      for(i = 0; i < nregs; i++){
- +              if((i == 4) || (i == 5)) continue;
--+              if(ptrace(PTRACE_POKEUSR, pid, &dummy->u_debugreg[i],
-++              if(ptrace(PTRACE_POKEUSER, pid, &dummy->u_debugreg[i],
- +                        regs[i]) < 0)
- +                      printk("write_debugregs - ptrace failed on "
- +                             "register %d, errno = %d\n", errno);
-@@ -36799,7 +36802,7 @@
- +      dummy = NULL;
- +      nregs = sizeof(dummy->u_debugreg)/sizeof(dummy->u_debugreg[0]);
- +      for(i = 0; i < nregs; i++){
--+              regs[i] = ptrace(PTRACE_PEEKUSR, pid, 
-++              regs[i] = ptrace(PTRACE_PEEKUSER, pid, 
- +                               &dummy->u_debugreg[i], 0);
- +      }
- +}
-
-2. CONFIG_UML_REAL_TIME_CLOCK=y was added to the configuration
-
-3. Various newer versions of the compiler toolchain were used, with the
-exception of gcc (the Debian package has been explicitly building using gcc
-2.95 for a long time)
-
-4. Update Debian kernel source tree
-
-So at this point, I don't know whether something in the development
-environment has broken UML, or if UML has broken itself somehow.  I haven't
-tried patching 2.4.22-5um to compile with linux-kernel-headers yet, so I
-don't know whether a new binary of that older code would also work.  I don't
-know whether I'm dealing with one bug or several.
-
-There are a lot of factors to try to eliminate, so to help with the
-investigation, I'd like to know if anyone else s seeing problems similar to
-http://bugs.debian.org/{224431,224502}, the ENOSYS errors shown above, or
-anything else strange with 2.4.22-6um or -7um, or after updating any
-toolchain components.  I'd especially like to hear from Debian unstable
-users, especially anyone building from non-Debian kernel sources.
-
-Thanks...
-
--- 
- - mdz
 
 
 -------------------------------------------------------
