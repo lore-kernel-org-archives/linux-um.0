@@ -2,18 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19vJiV-0005ee-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 05 Sep 2003 09:45:47 -0700
-Received: from boof.brainfood.com ([146.82.138.61] helo=gradall.private.brainfood.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19vJiV-0004oz-Ar
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 05 Sep 2003 09:45:47 -0700
-From: Adam Heath <adam@doogie.org>
-Subject: Re: [uml-devel] hostfs as root 
-In-Reply-To: <11075.1062779336@marajade.sandelman.ottawa.on.ca>
-Message-ID: <Pine.LNX.4.44.0309051143480.686-100000@gradall.private.brainfood.com>
+	id 19vKJx-0003S5-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 05 Sep 2003 10:24:29 -0700
+Received: from pluto.nixia.no ([195.159.42.3])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
+	id 19vKJx-0006cC-4z
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 05 Sep 2003 10:24:29 -0700
+Message-ID: <19654.193.212.97.12.1062774897.squirrel@pluto.nixia.no>
+Subject: Re: [uml-devel] hostfs as root
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;charset=iso-8859-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,26 +23,39 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 5 Sep 2003 11:44:45 -0500 (CDT)
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
-Cc: Matt Zimmerman <mdz@debian.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 5 Sep 2003 17:14:57 +0200 (CEST)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 5 Sep 2003, Michael Richardson wrote:
+The problem occurs when you create a file you are later not allowed to
+open if I'm seeing this right, so, the best fix would be not to close the
+file when we create them in the first place. Fix the behavour that we
 
->     Adam> No, it's a problem.  Just because there's no race in the emulated
->     Adam> environment, doesn't mean there isn't a race in the host.
->
->   I don't think that hostfs provides any inter-UML locking guarantees.
->   What do we do with flock(2)?
->
->   If you like, we can flock(2) the file too while we play with it.
+create file
+close file
+open file again
+do action
 
-This has not hing to do with inter-uml.  This has everything to do with uml
-behaving like a sane, properly written application.
+If that is redone till
 
-If 2 normal applications did something like this, they'd be buggy just as
-well.
+create file
+do action
 
+
+The mode issue goes pretty much away, since trying to open a file you are
+not allowed to read will normally fail both in host and uml. Only problem
+is when creating new files as far as I can see.
+
+
+Might be more job, but the result is more cleaner than than chmod stuff on
+the fly.
+
+Stian
+
+
+
+
+This mail has been scanned for known viruses on an open, Linux-based mailsystem
+developed by http://Knowledge-Network.no and http://Nixia.no.
 
 
 -------------------------------------------------------
