@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ycqw-00005c-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 12:48:10 -0700
-Received: from hermes.dur.ac.uk ([129.234.4.9])
+	id 19ydU2-0002fN-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 14 Sep 2003 13:28:34 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19ycqv-0004J8-57
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 12:48:09 -0700
-From: M A Young <m.a.young@durham.ac.uk>
-Subject: Re: [uml-devel] Child exit when booting uml 2.4.20 on 2.6.0-test4
- host
-In-Reply-To: <200309141946.05977.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.GSO.4.53.0309142027420.13499@altair.dur.ac.uk>
+	id 19ydU0-0005w3-PV
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Sep 2003 13:28:33 -0700
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] [PATCH] Starting a command inside UML from mconsole
+In-Reply-To: <2878.1063561501@marajade.sandelman.ottawa.on.ca>
+Message-ID: <Pine.LNX.4.44.0309142216310.7867-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-559023410-851401618-1063568206=:13499"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -25,146 +24,37 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Sep 2003 20:36:46 +0100 (BST)
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Sun, 14 Sep 2003 22:28:10 +0200 (CEST)
+To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Sun, 14 Sep 2003, Michael Richardson wrote:
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+> It is entirely reasonable that the admin of the host system doesn't even
+> have login priveledges on the guest system, but would like the guest to
+> shutdown nicely before he reboots the host.
 
----559023410-851401618-1063568206=:13499
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+For this there already is control-alt-delete (cad command in mconsole). A
+guest which wants to be cleanly shut down ought to have a cad handler in
+it's inittab (all distros does).
 
-On Sun, 14 Sep 2003, BlaisorBlade wrote:
+I see the ability to execute commands from mconsole more of a advanced 
+administration and debugging tool, where a channel to the guest is always 
+guaranteed no matter what happens inside the guest (within reasonable 
+limits). 
 
-> I could see the bug with 2.6.0-test4/test5, and for me, too it was solved
-> using 2.4.22-3um. So that's ok.
+My personal feeling is that having a mconsole "backdoor" into executing
+commands inside the guest is a generally good thing as it gives the host a
+clean path for controlling the UML beyond just c-a-d. Even more so in
+hosting or honeypot situations where it may not be possible to guarantee
+that the hosted UML maintains a separate channel for the purpose. I would
+even go as far as saying this is a thing which should be possible via the
+sysrq interface on all architectures but unfortunately the kernel sysrq
+interface is a bit too limited for this purpose.
 
-If you want to try it on 2.6, I got impatient waiting for Jeff's patch to
-appear in his 2.6 tree and forward ported his patch (attached), with some
-minor cleanups.
+Regards
+Henrik
 
-	Michael Young
----559023410-851401618-1063568206=:13499
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="sigjmp.patch"
-Content-Transfer-Encoding: BASE64
-Content-Description: 
-Content-Disposition: attachment; filename="sigjmp.patch"
-
-ZGlmZiAtTmF1ciBsaW51eC0vYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jIGxp
-bnV4Ky9hcmNoL3VtL2tlcm5lbC9wcm9jZXNzLmMNCi0tLSBsaW51eC0vYXJj
-aC91bS9rZXJuZWwvcHJvY2Vzcy5jCTIwMDMtMDktMTQgMTk6MTc6MzcuMDAw
-MDAwMDAwICswMTAwDQorKysgbGludXgrL2FyY2gvdW0va2VybmVsL3Byb2Nl
-c3MuYwkyMDAzLTA5LTE0IDE4OjA1OjU2LjAwMDAwMDAwMCArMDEwMA0KQEAg
-LTIyOSwxMSArMjI5LDExIEBADQogDQogaW50IHJ1bl9rZXJuZWxfdGhyZWFk
-KGludCAoKmZuKSh2b2lkICopLCB2b2lkICphcmcsIHZvaWQgKipqbXBfcHRy
-KQ0KIHsNCi0Jam1wX2J1ZiBidWY7DQorCXNpZ2ptcF9idWYgYnVmOw0KIAlp
-bnQgbjsNCiANCiAJKmptcF9wdHIgPSAmYnVmOw0KLQluID0gc2V0am1wKGJ1
-Zik7DQorCW4gPSBzaWdzZXRqbXAoYnVmLDEpOw0KIAlpZihuICE9IDApDQog
-CQlyZXR1cm4obik7DQogCSgqZm4pKGFyZyk7DQpkaWZmIC1OYXVyIGxpbnV4
-LS9hcmNoL3VtL2tlcm5lbC9za2FzL3Byb2Nlc3MuYyBsaW51eCsvYXJjaC91
-bS9rZXJuZWwvc2thcy9wcm9jZXNzLmMNCi0tLSBsaW51eC0vYXJjaC91bS9r
-ZXJuZWwvc2thcy9wcm9jZXNzLmMJMjAwMy0wOS0xNCAxOToxNzo0NC4wMDAw
-MDAwMDAgKzAxMDANCisrKyBsaW51eCsvYXJjaC91bS9rZXJuZWwvc2thcy9w
-cm9jZXNzLmMJMjAwMy0wOS0xNCAxODowNTo1Ni4wMDAwMDAwMDAgKzAxMDAN
-CkBAIC0xODQsMTIgKzE4NCwxMiBAQA0KIHZvaWQgbmV3X3RocmVhZCh2b2lk
-ICpzdGFjaywgdm9pZCAqKnN3aXRjaF9idWZfcHRyLCB2b2lkICoqZm9ya19i
-dWZfcHRyLA0KIAkJdm9pZCAoKmhhbmRsZXIpKGludCkpDQogew0KLQlqbXBf
-YnVmIHN3aXRjaF9idWYsIGZvcmtfYnVmOw0KKwlzaWdqbXBfYnVmIHN3aXRj
-aF9idWYsIGZvcmtfYnVmOw0KIA0KIAkqc3dpdGNoX2J1Zl9wdHIgPSAmc3dp
-dGNoX2J1ZjsNCiAJKmZvcmtfYnVmX3B0ciA9ICZmb3JrX2J1ZjsNCiANCi0J
-aWYoc2V0am1wKGZvcmtfYnVmKSA9PSAwKQ0KKwlpZihzaWdzZXRqbXAoZm9y
-a19idWYsMSkgPT0gMCkNCiAJCW5ld190aHJlYWRfcHJvYyhzdGFjaywgaGFu
-ZGxlcik7DQogDQogCXJlbW92ZV9zaWdzdGFjaygpOw0KQEAgLTE5NywxMiAr
-MTk3LDEyIEBADQogDQogdm9pZCB0aHJlYWRfd2FpdCh2b2lkICpzdywgdm9p
-ZCAqZmIpDQogew0KLQlqbXBfYnVmIGJ1ZiwgKipzd2l0Y2hfYnVmID0gc3cs
-ICpmb3JrX2J1ZjsNCisJc2lnam1wX2J1ZiBidWYsICoqc3dpdGNoX2J1ZiA9
-IHN3LCAqZm9ya19idWY7DQogDQogCSpzd2l0Y2hfYnVmID0gJmJ1ZjsNCiAJ
-Zm9ya19idWYgPSBmYjsNCi0JaWYoc2V0am1wKGJ1ZikgPT0gMCkNCi0JCWxv
-bmdqbXAoKmZvcmtfYnVmLCAxKTsNCisJaWYoc2lnc2V0am1wKGJ1ZiwxKSA9
-PSAwKQ0KKwkJc2lnbG9uZ2ptcCgqZm9ya19idWYsIDEpOw0KIH0NCiANCiBz
-dGF0aWMgaW50IG1vdmVfcmVnaXN0ZXJzKGludCBpbnRfb3AsIGludCBmcF9v
-cCwgdW5pb24gdW1sX3B0X3JlZ3MgKnJlZ3MsDQpAQCAtMjU3LDM0ICsyNTcs
-MzQgQEANCiANCiB2b2lkIHN3aXRjaF90aHJlYWRzKHZvaWQgKm1lLCB2b2lk
-ICpuZXh0KQ0KIHsNCi0Jam1wX2J1ZiBteV9idWYsICoqbWVfcHRyID0gbWUs
-ICpuZXh0X2J1ZiA9IG5leHQ7DQorCXNpZ2ptcF9idWYgbXlfYnVmLCAqKm1l
-X3B0ciA9IG1lLCAqbmV4dF9idWYgPSBuZXh0Ow0KIAkNCiAJKm1lX3B0ciA9
-ICZteV9idWY7DQotCWlmKHNldGptcChteV9idWYpID09IDApDQotCQlsb25n
-am1wKCpuZXh0X2J1ZiwgMSk7DQorCWlmKHNpZ3NldGptcChteV9idWYsMSkg
-PT0gMCkNCisJCXNpZ2xvbmdqbXAoKm5leHRfYnVmLCAxKTsNCiB9DQogDQot
-c3RhdGljIGptcF9idWYgaW5pdGlhbF9qbXBidWY7DQorc3RhdGljIHNpZ2pt
-cF9idWYgaW5pdGlhbF9qbXBidWY7DQogDQogLyogWFhYIE1ha2UgdGhlc2Ug
-cGVyY3B1ICovDQogc3RhdGljIHZvaWQgKCpjYl9wcm9jKSh2b2lkICphcmcp
-Ow0KIHN0YXRpYyB2b2lkICpjYl9hcmc7DQotc3RhdGljIGptcF9idWYgKmNi
-X2JhY2s7DQorc3RhdGljIHNpZ2ptcF9idWYgKmNiX2JhY2s7DQogDQogaW50
-IHN0YXJ0X2lkbGVfdGhyZWFkKHZvaWQgKnN0YWNrLCB2b2lkICpzd2l0Y2hf
-YnVmX3B0ciwgdm9pZCAqKmZvcmtfYnVmX3B0cikNCiB7DQotCWptcF9idWYg
-Kipzd2l0Y2hfYnVmID0gc3dpdGNoX2J1Zl9wdHI7DQorCXNpZ2ptcF9idWYg
-Kipzd2l0Y2hfYnVmID0gc3dpdGNoX2J1Zl9wdHI7DQogCWludCBuOw0KIA0K
-IAkqZm9ya19idWZfcHRyID0gJmluaXRpYWxfam1wYnVmOw0KLQluID0gc2V0
-am1wKGluaXRpYWxfam1wYnVmKTsNCisJbiA9IHNpZ3NldGptcChpbml0aWFs
-X2ptcGJ1ZiwxKTsNCiAJaWYobiA9PSAwKQ0KIAkJbmV3X3RocmVhZF9wcm9j
-KCh2b2lkICopIHN0YWNrLCBuZXdfdGhyZWFkX2hhbmRsZXIpOw0KIAllbHNl
-IGlmKG4gPT0gMSkNCiAJCXJlbW92ZV9zaWdzdGFjaygpOw0KIAllbHNlIGlm
-KG4gPT0gMil7DQogCQkoKmNiX3Byb2MpKGNiX2FyZyk7DQotCQlsb25nam1w
-KCpjYl9iYWNrLCAxKTsNCisJCXNpZ2xvbmdqbXAoKmNiX2JhY2ssIDEpOw0K
-IAl9DQogCWVsc2UgaWYobiA9PSAzKXsNCiAJCWttYWxsb2Nfb2sgPSAwOw0K
-QEAgLTI5NCw3ICsyOTQsNyBAQA0KIAkJa21hbGxvY19vayA9IDA7DQogCQly
-ZXR1cm4oMSk7DQogCX0NCi0JbG9uZ2ptcCgqKnN3aXRjaF9idWYsIDEpOw0K
-KwlzaWdsb25nam1wKCoqc3dpdGNoX2J1ZiwgMSk7DQogfQ0KIA0KIHZvaWQg
-cmVtb3ZlX3NpZ3N0YWNrKHZvaWQpDQpAQCAtMzA5LDE1ICszMDksMTUgQEAN
-CiANCiB2b2lkIGluaXRpYWxfdGhyZWFkX2NiX3NrYXModm9pZCAoKnByb2Mp
-KHZvaWQgKiksIHZvaWQgKmFyZykNCiB7DQotCWptcF9idWYgaGVyZTsNCisJ
-c2lnam1wX2J1ZiBoZXJlOw0KIA0KIAljYl9wcm9jID0gcHJvYzsNCiAJY2Jf
-YXJnID0gYXJnOw0KIAljYl9iYWNrID0gJmhlcmU7DQogDQogCWJsb2NrX3Np
-Z25hbHMoKTsNCi0JaWYoc2V0am1wKGhlcmUpID09IDApDQotCQlsb25nam1w
-KGluaXRpYWxfam1wYnVmLCAyKTsNCisJaWYoc2lnc2V0am1wKGhlcmUsMSkg
-PT0gMCkNCisJCXNpZ2xvbmdqbXAoaW5pdGlhbF9qbXBidWYsIDIpOw0KIAl1
-bmJsb2NrX3NpZ25hbHMoKTsNCiANCiAJY2JfcHJvYyA9IE5VTEw7DQpAQCAt
-MzI4LDEzICszMjgsMTMgQEANCiB2b2lkIGhhbHRfc2thcyh2b2lkKQ0KIHsN
-CiAJYmxvY2tfc2lnbmFscygpOw0KLQlsb25nam1wKGluaXRpYWxfam1wYnVm
-LCAzKTsNCisJc2lnbG9uZ2ptcChpbml0aWFsX2ptcGJ1ZiwgMyk7DQogfQ0K
-IA0KIHZvaWQgcmVib290X3NrYXModm9pZCkNCiB7DQogCWJsb2NrX3NpZ25h
-bHMoKTsNCi0JbG9uZ2ptcChpbml0aWFsX2ptcGJ1ZiwgNCk7DQorCXNpZ2xv
-bmdqbXAoaW5pdGlhbF9qbXBidWYsIDQpOw0KIH0NCiANCiBpbnQgbmV3X21t
-KGludCBmcm9tKQ0KZGlmZiAtTmF1ciBsaW51eC0vYXJjaC91bS9rZXJuZWwv
-dHJhcF91c2VyLmMgbGludXgrL2FyY2gvdW0va2VybmVsL3RyYXBfdXNlci5j
-DQotLS0gbGludXgtL2FyY2gvdW0va2VybmVsL3RyYXBfdXNlci5jCTIwMDMt
-MDktMTQgMTk6MTg6MTAuMDAwMDAwMDAwICswMTAwDQorKysgbGludXgrL2Fy
-Y2gvdW0va2VybmVsL3RyYXBfdXNlci5jCTIwMDMtMDktMTQgMTg6MDU6NTYu
-MDAwMDAwMDAwICswMTAwDQpAQCAtMTIzLDkgKzEyMyw5IEBADQogDQogdm9p
-ZCBkb19sb25nam1wKHZvaWQgKmIsIGludCB2YWwpDQogew0KLQlqbXBfYnVm
-ICpidWYgPSBiOw0KKwlzaWdqbXBfYnVmICpidWYgPSBiOw0KIA0KLQlsb25n
-am1wKCpidWYsIHZhbCk7DQorCXNpZ2xvbmdqbXAoKmJ1ZiwgdmFsKTsNCiB9
-DQogDQogLyoNCmRpZmYgLU5hdXIgbGludXgtL2FyY2gvdW0va2VybmVsL3R0
-L3VhY2Nlc3NfdXNlci5jIGxpbnV4Ky9hcmNoL3VtL2tlcm5lbC90dC91YWNj
-ZXNzX3VzZXIuYw0KLS0tIGxpbnV4LS9hcmNoL3VtL2tlcm5lbC90dC91YWNj
-ZXNzX3VzZXIuYwkyMDAzLTA5LTE0IDE5OjE4OjEzLjAwMDAwMDAwMCArMDEw
-MA0KKysrIGxpbnV4Ky9hcmNoL3VtL2tlcm5lbC90dC91YWNjZXNzX3VzZXIu
-YwkyMDAzLTA5LTE0IDE4OjA1OjU2LjAwMDAwMDAwMCArMDEwMA0KQEAgLTcy
-LDEwICs3MiwxMCBAQA0KIAlzdHJ1Y3QgdHRfcmVncyBzYXZlID0gVEFTS19S
-RUdTKGdldF9jdXJyZW50KCkpLT50dDsNCiAJaW50IHJldDsNCiAJdW5zaWdu
-ZWQgbG9uZyAqZmFkZHJwID0gKHVuc2lnbmVkIGxvbmcgKilmYXVsdF9hZGRy
-Ow0KLQlqbXBfYnVmIGpidWY7DQorCXNpZ2ptcF9idWYgamJ1ZjsNCiANCiAJ
-KmZhdWx0X2NhdGNoZXIgPSAmamJ1ZjsNCi0JaWYoc2V0am1wKGpidWYpID09
-IDApew0KKwlpZihzaWdzZXRqbXAoamJ1ZiwxKSA9PSAwKXsNCiAJCXJldCA9
-IHN0cmxlbihzdHIpICsgMTsNCiAJfSANCiAJZWxzZSB7DQpkaWZmIC1OYXVy
-IGxpbnV4LS9hcmNoL3VtL2tlcm5lbC91YWNjZXNzX3VzZXIuYyBsaW51eCsv
-YXJjaC91bS9rZXJuZWwvdWFjY2Vzc191c2VyLmMNCi0tLSBsaW51eC0vYXJj
-aC91bS9rZXJuZWwvdWFjY2Vzc191c2VyLmMJMjAwMy0wNy0yNyAxODowNTo1
-Ni4wMDAwMDAwMDAgKzAxMDANCisrKyBsaW51eCsvYXJjaC91bS9rZXJuZWwv
-dWFjY2Vzc191c2VyLmMJMjAwMy0wOS0xNCAxODowNDowMC4wMDAwMDAwMDAg
-KzAxMDANCkBAIC0xOCw5ICsxOCw5IEBADQogew0KIAl1bnNpZ25lZCBsb25n
-ICpmYWRkcnAgPSAodW5zaWduZWQgbG9uZyAqKSBmYXVsdF9hZGRyLCByZXQ7
-DQogDQotCWptcF9idWYgamJ1ZjsNCisJc2lnam1wX2J1ZiBqYnVmOw0KIAkq
-ZmF1bHRfY2F0Y2hlciA9ICZqYnVmOw0KLQlpZihzZXRqbXAoamJ1ZikgPT0g
-MCl7DQorCWlmKHNpZ3NldGptcChqYnVmLDEpID09IDApew0KIAkJKCpvcCko
-dG8sIGZyb20sIG4pOw0KIAkJcmV0ID0gMDsNCiAJCSpmYXVsdGVkX291dCA9
-IDA7DQo=
-
----559023410-851401618-1063568206=:13499--
 
 
 -------------------------------------------------------
