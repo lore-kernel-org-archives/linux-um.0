@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AU9ho-0000d9-Sv
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Dec 2003 11:09:04 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	id 1AU9w9-0001kQ-En
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Dec 2003 11:23:53 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AU9ho-0008CV-7F
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Dec 2003 11:09:04 -0800
+	id 1AU9w8-0005qr-R0
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Dec 2003 11:23:53 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Locking user-mode kernel RAM into host physical RAM
-References: <200312081639.22888.matthew-list@bytemark.co.uk> <200312081901.hB8J1VAv028738@ccure.user-mode-linux.org>
-In-Reply-To: <200312081901.hB8J1VAv028738@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] fix for: Host panic when UML reads host /dev/shm
+References: <20031210.073651.-388765.0.mcmechanjw@juno.com>
+In-Reply-To: <20031210.073651.-388765.0.mcmechanjw@juno.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200312092000.45933.blaisorblade_spam@yahoo.it>
+Message-Id: <200312102027.31059.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,46 +25,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 9 Dec 2003 20:00:45 +0100
+Date: Wed, 10 Dec 2003 20:27:30 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: James W McMechan <mcmechanjw@juno.com>
 
-Alle 20:01, luned=EC 8 dicembre 2003, Jeff Dike ha scritto:
-> As far as I'm concerned, this is papering over the symptoms rather than
-> fixing a real problem.
->
-> If you're really not overselling memory, then the host should not be
-> swapping. If it is, then that's the problem.
->
-> > My experience with 2.4 as  a host kernel is that it will quite happily
-> > swap out pages from running  applications to use as disc cache; this
-> > is apparently alleviated with 2.6's  "swappiness" kernel parameter.
->
-> This being the case, you should maybe be looking at 2.6 as your host.
->
-> > I hope that it's obvious enough to warrant inclusion in the next
-> > release of  the UML patch
->
-> It's not.  Feel free to argue, but this is really the wrong thing to do,
-> IMHO.
-But anyway, if the "physical memory" of the guest is not guaranted to be=20
-actually physical, then the UML's kernel VM will get fooled. What's more,=20
-it's the guest's VM which must decide what has to be swapped.
-The only swap that must be used is the UML's one. He must be fair to his=20
-customer(i.e. no overselling), but done that the host can't swap anything=20
-out.
+Alle 16:36, mercoled=EC 10 dicembre 2003, James W McMechan ha scritto:
+> Ok here are the two patches one each for 2.4.23
+> and 2.6.0-test11
+> Linus has accepted the test11 patch into bk so
+> the next 2.6 kernel should have the fix
+> I have also been testing a 2.4.23 patch
+> They no longer oopes with any of my test programs
+> Since you were having problems here they are
+Compliments for the catch! I had been trying uselessly to find the bug insi=
+de=20
+the shm code(I had found that which was the invalid pointer, but nothing=20
+after that)...
 
-> /dev/anon is a new host driver which implements the munmap semantics need=
-ed
-> by UML physical memory (pages are release to the host when they're no
-> longer mapped, even if they're dirty).
-It means that the guest VM will see that the available memory has shrinked =
-and=20
-that it will swap things out following the new memory limit? It seems to me=
- a=20
-little bit difficult. This (if I understand correctly) requires core VM=20
-changes(the stock VM isn't much tested with shrinking/increasing memory=20
-sizes, if this is supported at all, for strange architectures).
+Are you going to send that for 2.4.24? That one will be the last 2.4 kernel=
+...
+In the meantime, I think that people at http://www.hardrock.org/ will be ha=
+ppy=20
+of it... it's the -uv tree(not very famous, maybe, but even kerneltrap.org =
+
+speaks about it).
+
+By the way: if this is the problem, then why didn't the kernel oops on /pro=
+c=20
+reads? Isn't it a memory based fs, too?
 
 --=20
 cat <<EOSIGN
