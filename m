@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BK2oG-0003I0-IT for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 May 2004 15:18:12 -0700
-Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BK2oF-0007Mt-Rd for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 May 2004 15:18:12 -0700
-Message-ID: <00cd01c42fcb$2165c200$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
+	id 1BKeZJ-0002b6-3v for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 May 2004 07:37:17 -0700
+Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BKeZF-0007Ux-SJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 May 2004 07:37:13 -0700
+From: Frank Sorenson <frank@tuxrocks.com>
+Subject: Re: [uml-devel] UML kernel panic
+In-Reply-To: <005b01c42fc0$a48b37b0$2000000a@schlepptopp>
+Message-ID: <Pine.LNX.4.44.0405022056100.9671-100000@tuxrocks.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: UML @ astaro security-linux demo site ?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,54 +26,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 May 2004 00:24:52 +0200
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Mon, 3 May 2004 08:37:07 -0600 (MDT)
+To: roland <for_spam@gmx.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-confirmed:
+On Sat, 1 May 2004, roland wrote:
 
+> hi!
+> yesterday in installed tomcat on a uml 2.6.4 with suse9 rootfs.
+> tomcat needs jre1.4 and jdk1.4 rpm`s.
+> all demo jsp`s and demo servlets run fine - so basically java works.
+> are there any known uml java issues besides the ones reported by frank ?
+> i would like to create an development environment for some programmers, 
+> where everybody should have his own machine with his own tomcat - so 
+> i`m a little bit unsure, if it is stable enough. 
 
-Current Interface Status  
+This is very similar to the environment that I'm working on, which is a
+java development environment for students to design and build "Enterprise"  
+systems.  Other than this particular bug, I've found UML to be quite
+stable.
 
-Name/Type                                Parameters
+Any ideas on what's causing UML kernel panics, and thoughts on how to fix
+it would be greatly appreciated.  Can the UML kernel panics be caused by
+host kernel or system problems, or is it likely a UML kernel problem, or
+is there something else?
 
-eth1_Intranet (Standard ethernet interface)
-on eth1 (UserModeLinux (UML-Device)])   ???.???.???.??? / ???.???.???.???
+Thanks,
 
-Extenal (Standard ethernet interface)
-on eth3 (UserModeLinux (UML-Device)])   ???.???.???.??? / ???.???.???.???
+Frank
+---------------------------------------------------------------------------
+Frank Sorenson - KD7TZK
+Systems Manager, Computer Science Department
+Brigham Young University
+frank@tuxrocks.com
 
-Intern (Standard ethernet interface)
-on eth0 (UserModeLinux (UML-Device)])   212.126.221.22 / 255.255.255.224
-
-sepp1 (Additional address on ethernet interface)
-on eth0 (UserModeLinux (UML-Device)])   ???.???.???.??? / ???.???.???.???
-
-at least _some_ of the demo-machines at 
-https://demo.astaro.com/ (seems to be "round robined")
-are running UML :)
-
-regards
-roland
-
-
------ Original Message ----- 
-From: "roland" <for_spam@gmx.de>
-To: <user-mode-linux-user@lists.sourceforge.net>; <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Saturday, May 01, 2004 7:53 PM
-Subject: UML @ astaro security-linux demo site ?
-
-
-> saw this today.
-> watch the window-title.
-> browser screenshot attached.
-> 
-> regards
-> roland
-> 
-> ps:
-> astaro is a very well known and very good linux security "appliance"
-> 
 
 
 -------------------------------------------------------
