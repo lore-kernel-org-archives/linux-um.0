@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPlV8-0007ev-1S for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 10:02:06 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	id 1BPlpA-0002xM-1M for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 10:22:48 -0700
+Received: from orange.ous.edu ([140.211.15.17])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPlV7-0005P1-Bb for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 10:02:05 -0700
-Received: from localhost (henrik@localhost)
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id i4HH21n18507
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 17 May 2004 19:02:01 +0200
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] CVS not updated?
-In-Reply-To: <Pine.LNX.4.44.0405171748550.17607-100000@filer.marasystems.com>
-Message-ID: <Pine.LNX.4.44.0405171859530.18477-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1BPlp7-0001Pl-QM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 10:22:45 -0700
+Message-Id: <s0a89290.084@ORANGE.OUS.EDU>
+From: "Anthony Brock" <Anthony_Brock@ous.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Subject: [uml-devel] Re: Patch 2.6.6
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,22 +26,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 May 2004 19:02:01 +0200 (CEST)
+Date: Mon, 17 May 2004 10:22:53 -0700
 To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 17 May 2004, Henrik Nordstrom wrote:
+I've downloaded this patch, with a vanilla kernel to a SuSE 9.0 machine
+(32-bit, native Intel architecture). Following previously posted
+suggestions, I removed the um_rquest_irq function from
+include/asm-um/irq.h.
 
-> Is the SF CVS no longer updated with the current 2.4 sources? It seems the 
-> last sources in the SF CVS is around 2.4.23-2 (last tag is 2.4.23-1), but 
-> the released patch is now up to 2.4.26-1..
+However, I'm having problems compiling. I issue 'make vmlinux ARCH=um'
+and see:
 
-The more I look at the CVS tree the more confused I get.. what is
-actaually in the CVS at the moment? Looks like something like the current
-patch but based on 2.4.23 instead of 2.4.26..
+  HOSTCC  arch/um/util/mk_constants_kern.o
+arch/um/util/mk_constants_kern.c: In function `main':
+arch/um/util/mk_constants_kern.c:16: error: `KERN_EMERG' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:16: error: (Each undeclared identifier
+is reported only once
+arch/um/util/mk_constants_kern.c:16: error: for each function it
+appears in.)
+arch/um/util/mk_constants_kern.c:17: error: `KERN_ALERT' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:18: error: `KERN_CRIT' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:19: error: `KERN_ERR' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:20: error: `KERN_WARNING' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:21: error: `KERN_NOTICE' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:22: error: `KERN_INFO' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:23: error: `KERN_DEBUG' undeclared
+(first use in this function)
+arch/um/util/mk_constants_kern.c:25: error: `NSEC_PER_SEC' undeclared
+(first use in this function)
+make[1]: *** [arch/um/util/mk_constants_kern.o] Error 1
+make: *** [arch/um/util] Error 2
 
-Regards
-Henrik
+However, KERN_EMERG is declared in both
+<kernel_src>/include/linux/kernel.h and /usr/include/linux/kernel.h,
+which is included at the top of the source file. Why would this fail to
+be declared? I HAVE to be missing something basic on my compiles...
+*sigh*
 
+Tony
 
 
 -------------------------------------------------------
