@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D96ud-0004ry-7w for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 11:32:07 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D96ub-00041i-Ia for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 11:32:07 -0800
+	id 1D96vq-0004u4-Te for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 11:33:22 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1D96vn-0006Zn-MJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 11:33:22 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] RE: uml_switch security fixing
-References: <BAY24-F357DBC6F37DC0BCFA0926483510@phx.gbl>
-In-Reply-To: <BAY24-F357DBC6F37DC0BCFA0926483510@phx.gbl>
+Subject: Re: [uml-devel] [PATCH 2/16] UML - Update defconfig
+References: <200503072037.j27KbGbc003947@ccure.user-mode-linux.org>
+	<200503081054.27975.rob@landley.net>
+In-Reply-To: <200503081054.27975.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200503092031.43707.blaisorblade@yahoo.it>
+Message-Id: <200503092032.57936.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,38 +30,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 9 Mar 2005 20:31:43 +0100
+Date: Wed, 9 Mar 2005 20:32:57 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Steve Schmidtke <steve_schmidtke@hotmail.com>, kraxel@bytesex.org
+Cc: Rob Landley <rob@landley.net>, Jeff Dike <jdike@addtoit.com>
 
-On Wednesday 09 March 2005 19:53, Steve Schmidtke wrote:
-> Blaisorblade wrote:
-> >But an unpatched UML won't work with a newer uml_net binary (for SLIP
-> > usage only and only for closing the interface, I mean), right?
-
-> Correct.  I think uml_net would need to manage a database of who opened
-> what to do what you suggest.
-Not going to implement it because nobody uses SLIP for what we can see.
-> >I also looked at the versioning for uml_net, but what happens is that we
-> >can
-> >only stop unpatched uml_net from working with newer UML for any protocol,
-> >not
-> >anything else. So I won't change that. However, I just saw that we did it
-> >correctly until Version 3 of the uml_net protocol...
-> >I wonder what has happened after.
-
-> I'd like to know this too.  It is odd that it was only the shutdown of the
-> interface that changed, it worked perfectly well before.
-
-> > > Agreed, tuntap is a compile time option, slip should be as well.
+On Tuesday 08 March 2005 16:54, Rob Landley wrote:
+> On Monday 07 March 2005 03:37 pm, Jeff Dike wrote:
+> > Signed-off-by: Jeff Dike <jdike@addtoit.com>
 > >
-> >Ok... tuntap is compile-time because of a rough check for host support.
+> > Index: linux-2.6.11/arch/um/defconfig
 >
-> Yes, but uml_net is suid.  I may not want my users to be able to set up
-> slip devices on their own (why? I don't know, I'm just paranoid that way).
-Correct... And this holds especially for TUN/TAP: I think that giving TUN/TAP 
-away to everybody makes it possible for unprivileged users to send raw 
-packets, which normally is permitted only to root.
+> While you're at it:
+>
+> Last I checked, when I extract a fresh kernel tarball and do a make ARCH=um
+> menuconfig, it tries to set options based on the /boot/config file instead
+> of defconfig, even though the architecture is different.
+
+> Has this been fixed recently, or is it considered a feature?
+I've tried to fix this but the fix was refused.
+
+Actually, for the same arch it's a feature, but I wasn't able to convince the 
+author to change this. I'll maybe retry again.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
