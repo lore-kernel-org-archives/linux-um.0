@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpEkS-0007Nv-Fz for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 15:51:28 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CpEkQ-0004ax-Vs for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 15:51:28 -0800
-Received: from hawk (mothership.theshore.net [69.137.84.52])
-	by www.theshore.net (8.12.9/8.9.1) with SMTP id j0DNpQTv030021
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 13 Jan 2005 18:51:26 -0500
-Message-ID: <001901c4f9ca$f72825d0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
+	id 1CpBPJ-0005Nu-MF for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 12:17:25 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CpBPF-0007z3-HX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 12:17:25 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: Breakage of compilation in .11-rc1 -
+	"code-tidying" is broken
+References: <200501132008.41725.blaisorblade@yahoo.it>
+	<200501132205.j0DM5Oha005643@ccure.user-mode-linux.org>
+In-Reply-To: <200501132205.j0DM5Oha005643@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] 2.6.10-um, /proc/stat is missing information
+Content-Disposition: inline
+Message-Id: <200501132119.40389.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,38 +31,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Jan 2005 17:52:36 -0600
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 13 Jan 2005 21:19:40 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-I just verified this on a Debian install and an FC2 install.
+On Thursday 13 January 2005 23:05, Jeff Dike wrote:
+> blaisorblade@yahoo.it said:
+> > In fact, including both linux/ptrace.h and sys/ptrace.h is not
+> > redundant - it  must also be done in the proper order, so I'm writing
+> > a patch with the  appropriate content.
 
-Moving from 2.6.9-bb4 to 2.6.10-um vanilla, top reports either 100% user, or 100%
-idle.
+> Wait till I update my patch list before fixing this.  Bodo send me a patch,
+> which I am polishing now.
 
-[2.6.10] # cat /proc/stat
-cpu  645 1 0 0 0 0 0
-cpu0 645 1 0 0 0 0 0
-intr 63462 54820 0 174 10 8270 93 0 0 0 0 1 94 0 0
-ctxt 108849
-btime 1105659428
-processes 1542
-procs_running 2
-procs_blocked 0
+>     Jeff
+I'm testing the compilation now - also, I'm commenting out part of the new 
+syscalls - the vperfctr ones give problems, I guess they are mm-only for now.
+Instead the key managing ones already exist.
 
-[2.6.9-bb4] # cat /proc/stat
-cpu  407 0 1989 7536 252 28 1
-cpu0 407 0 1989 7536 252 28 1
-intr 15430 10185 0 48 1 5035 134 0 0 0 0 0 27 0 0
-ctxt 10966
-btime 1105660071
-processes 1501
-procs_running 1
-procs_blocked 0
-
-Looks like some information is missing from /proc/stat in 2.6.10.
-
--Chris
-
+So, I've done a patch for both things and I'm posting it - preserve the 
+comment I added about those headers in your polished version which you'll 
+merge.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
