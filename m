@@ -1,26 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AoXLz-00058Y-En
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 04 Feb 2004 16:26:47 -0800
-Received: from mta5.srv.hcvlny.cv.net ([167.206.5.78])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AoXLy-00006z-Q5
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 04 Feb 2004 16:26:46 -0800
-Received: from 10.0.0.11 (ool-44c218a8.dyn.optonline.net [68.194.24.168])
- by mta5.srv.hcvlny.cv.net
- (iPlanet Messaging Server 5.2 HotFix 1.16 (built May 14 2003))
- with ESMTP id <0HSL00JOL58KNK@mta5.srv.hcvlny.cv.net> for
- user-mode-linux-devel@lists.sourceforge.net; Wed,
- 04 Feb 2004 19:26:45 -0500 (EST)
-From: "Josef 'Jeff' Sipek" <jeffpc@optonline.net>
-Message-id: <200402041926.39098.jeffpc@optonline.net>
-MIME-version: 1.0
-Content-type: Text/Plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Content-description: clearsigned data
-Subject: [uml-devel] [patch] 2.6 uml & CONFIG_SMP fix
+	id 1AoieJ-0003R5-Lh
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 04:30:27 -0800
+Received: from mx2.elte.hu ([157.181.151.9])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AoieJ-0000uB-8d
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 04:30:27 -0800
+From: Ingo Molnar <mingo@elte.hu>
+Message-ID: <20040205123057.GA23555@elte.hu>
+References: <20040118235730.GC21046@ccure.user-mode-linux.org> <20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu> <Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk> <20040120002301.GA5708@elte.hu> <Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk> <Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk> <Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org> <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
+Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re: uml-patch-2.6.0)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,63 +25,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 Feb 2004 19:26:29 -0500
-To: jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Hello,
-	yesterday, I finally got around to fixing the code. Right now, it
-compiles, but there are some warnings that I didn't take a look at.
-This patch makes it compile with CONFIG_SMP, nothing more.
-I tested the resulting binary, and it works well in tt (I did NOT test
-skas.) 
-
-You should be able to pull the patch from
-http://kernel.bkbits.net:14690/jeffpc/uml-smp/ (I think that pulling via web
-is not working, I'll check later.)
-
-Jeff.
-
-diff -Nru a/arch/um/Makefile b/arch/um/Makefile
-- --- a/arch/um/Makefile	Tue Feb  3 21:48:38 2004
-+++ b/arch/um/Makefile	Tue Feb  3 21:48:38 2004
-@@ -170,7 +170,7 @@
- 	ln -sf $(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $(notdir $@)
- 
- include/asm-um/arch:
-- -	cd $(TOPDIR)/include/asm-um && ln -sf ../asm-$(SUBARCH) arch
-+	cd $(TOPDIR)/include/asm-um && ln -sf ../asm-$(SUBARCH) arch && ln -sf arch/spinlock.h
- 
- $(ARCH_DIR)/include/sysdep:
- 	cd $(ARCH_DIR)/include && ln -sf sysdep-$(SUBARCH) sysdep
-diff -Nru a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-- --- a/arch/um/kernel/irq.c	Tue Feb  3 21:48:38 2004
-+++ b/arch/um/kernel/irq.c	Tue Feb  3 21:48:38 2004
-@@ -584,7 +584,7 @@
- 					unsigned long count, void *data)
- {
- 	int irq = (long) data, full_count = count, err;
-- -	cpumask_t new_value;
-+	cpumask_t new_value, tmp;
- 
- 	if (!irq_desc[irq].handler->set_affinity)
- 		return -EIO;
+Date: Thu, 5 Feb 2004 13:30:57 +0100
+To: M A Young <m.a.young@durham.ac.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
 
 
-- -- 
-"Intellectuals solve problems; geniuses prevent them"
-		- Albert Einstein
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+* M A Young <m.a.young@durham.ac.uk> wrote:
 
-iD8DBQFAIY28wFP0+seVj/4RAr8dAKCrYt3JZg+cFUIoKGVNpgxX9pGuqwCfUFsM
-vsjhr3DJcTBwzxkMwFNR+OU=
-=GXuF
------END PGP SIGNATURE-----
+> Yes, that fixes it (I tried a similar fix by setting AT_SYSINFO_EHDR
+> directly to NULL, both work).
 
+does skas mode work for you? I tried a FC1 image today and even with
+this change, in tt mode, it gets stuck pretty early into the bootup (but
+not in init like before).
+
+in tt mode, booting up into /bin/bash seems to work fine and simple
+commands work.
+
+in skas mode, booting up into /bin/bash works but the first /bin/ls (or
+any other process) again gets stuck (infinite pagefaults or #GPF's again
+i suspect).
+
+	Ingo
 
 
 -------------------------------------------------------
