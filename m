@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPm6M-0006fS-DH for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 10:40:34 -0700
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BPm6K-0002Lm-MB
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 10:40:33 -0700
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20040517172111.GA12321@bytesex.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] [patch] fix fault handling
+	id 1BPmff-0004ae-Lu for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 11:17:03 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BPmfe-0001O0-Sy for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 11:17:03 -0700
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] 2.4.23(24?)-2 TT mode hangs on request_module
+In-Reply-To: <40A8F902.8090001@microbus.com>
+Message-ID: <Pine.LNX.4.44.0405172007480.20517-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,43 +25,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 May 2004 19:21:11 +0200
-To: Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 17 May 2004 20:16:59 +0200 (CEST)
+To: Robbie Dinn <robbie@microbus.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-  Hi,
+On Mon, 17 May 2004, Robbie Dinn wrote:
 
-skas has a design bug: PTRACE_FAULTINFO doesn't pass enougth
-informations.  Specifically the trap_no is missing, so you
-don't know for sure whenever the SIGSEGV was a page fault or
-a general protection fault.  I think that should be fixed in
-skas4 (where we'll break backward compatibility anyway).
+> I think I may have seen this too, although I didn't understand what
+> was going on at the time (still don't). I am a little unsure what
+> versions of software I was using, because I wasn't working very
+> systematically. It might have been:
+>   host: 2.6.6 + skas3 patch or 2.6.6-rc3-mm2 + ska3 patch
+> 	+ recent CVS netfilter p-o-m
 
-For the time being I've tried to fix that with the patch below,
-which makes the uml kernel pass through general protection SEGV
-to the app and seems to have no ill side effects.
+If you are using SKAS and statically linked kernel (no modules) then your
+problem is most likely different. The problem I am seeing is only when the
+kernel tries to dynamically load a module. If code is statially linked or
+manually loaded using modprobe then the problem does not occur, and also
+if the host supports SKAS then the problem does not occur. The problem I
+am seeing is only if using TT and allowing the kernel to dynamically
+initiating loading of modules (not manually using modprobe or statically 
+linked), has only been seen in the current CVS version of UML-2.4.
 
-  Gerd
+Please attach a debugger to your uml to see what it is doing. It may be
+the same problem I am seeing, but most likely not.
 
---- linux-2.6.5/arch/um/kernel/skas/process.c.segv	2004-05-14 18:40:36.155621129 +0200
-+++ linux-2.6.5/arch/um/kernel/skas/process.c	2004-05-14 19:49:00.762159068 +0200
-@@ -54,6 +54,17 @@
- 		panic("handle_segv - PTRACE_FAULTINFO failed, errno = %d\n",
- 		      errno);
- 
-+	if (!(fault.is_write & 4)) {
-+		/*
-+		    kernel fault -- likely that was general
-+ 		    protection fault (trap_no = 13), not a
-+		    page fault (trap_no = 14).  But we don't
-+		    know for sure as PTRACE_FAULTINFO doesn't
-+		    tell us :-/
-+		*/
-+		bad_segv(fault.addr, 0, fault.is_write);
-+		return;
-+	}
- 	segv(fault.addr, 0, FAULT_WRITE(fault.is_write), 1, NULL);
- }
- 
+If I were to guess what your problem is I would guess there is again some
+problem with the vmalloc implementation in the version of UML you are
+using.. there has historically been issues with vmalloc in UML and
+iptables is one of very few users of the vmalloc kernel interface..
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
