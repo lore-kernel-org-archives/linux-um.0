@@ -1,23 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BL7Gf-0000HS-GU for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 May 2004 14:15:57 -0700
-Received: from ns1.auto.ucl.ac.be ([130.104.239.135] helo=zlop.auto.ucl.ac.be)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BL7GA-0003b4-Vo for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 May 2004 14:15:27 -0700
-Received: from auto.ucl.ac.be (unknown [213.213.240.140])
-	by zlop.auto.ucl.ac.be (Postfix) with ESMTP id D0029A495B
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue,  4 May 2004 23:15:11 +0200 (CEST)
-Message-ID: <40981F7F.4070007@auto.ucl.ac.be>
-From: Vincent Guffens <guffens@auto.ucl.ac.be>
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Subject: Re: [uml-devel] Fedora Core 2 test3 root filesystem
+In-Reply-To: <Pine.LNX.4.58.0405031721560.4536@sparrow>
+Message-ID: <Pine.LNX.4.58.0405041842040.4536@sparrow>
+References: <Pine.LNX.4.58.0405031721560.4536@sparrow>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] missing symbols in ksyms
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,61 +18,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 05 May 2004 00:55:59 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 4 May 2004 18:44:33 -0400 (EDT)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>
+Cc: William Stearns <wstearns@pobox.com>
 
-Hi,
+Good evening, all,
 
-I think these 2 symbols are missing in ksyms.c : enable_irq, disable_irq
+On Mon, 3 May 2004, William Stearns wrote:
 
-Following diff fixes the problem for 2.4.24-um1 :
+> 	I've got a first pass at a Fedora core 2 test3 root filesystem up 
+> at http://www.stearns.org/uml-root/ .
+> 	Bug reports welcome.  Bug reports with suggested fixes encouraged!  
+> I'll generally not add new rpm's to the build unless they're something so
+> critical that one can't even install new rpm's without them (damn, I
+> forgot the rpm rpm again? ;-)
 
+	OK, I've done some simple testing and the 20040504 version 
+(155549908 May  4 13:57 root_fs.fc-2-client.pristine.20040504.bz2 , 
+heading up to http://www.stearns.org/uml-root/ ) boots with just the odd 
+warning.
+	Cheers,
+	- Bill
 
-
---- linux-2.4.24-um1-orig/arch/um/kernel/ksyms.c        Tue May  4 
-22:10:01 2004
-+++ linux-2.4.24-um1/arch/um/kernel/ksyms.c     Tue May  4 17:13:34 2004
-@@ -8,6 +8,7 @@
-  #include "linux/string.h"
-  #include "linux/smp_lock.h"
-  #include "linux/spinlock.h"
-+#include "asm/irq.h"
-  #include "asm/current.h"
-  #include "asm/delay.h"
-  #include "asm/processor.h"
-@@ -44,6 +45,9 @@
-  EXPORT_SYMBOL(mode_tt);
-  EXPORT_SYMBOL(handle_page_fault);
-
-+EXPORT_SYMBOL(enable_irq);
-+EXPORT_SYMBOL(disable_irq);
-+
-  #ifdef CONFIG_MODE_TT
-  EXPORT_SYMBOL(copy_from_user_tt);
-  EXPORT_SYMBOL(copy_to_user_tt);
-
-
-
---- linux-2.4.24-um1-orig/include/asm-um/irq.h  Tue May  4 22:10:01 2004
-+++ linux-2.4.24-um1/include/asm-um/irq.h       Tue May  4 17:19:20 2004
-@@ -19,4 +19,7 @@
-  #define LAST_IRQ XTERM_IRQ
-  #define NR_IRQS (LAST_IRQ + 1)
-
-+extern void enable_irq (unsigned int);
-+extern void disable_irq (unsigned int);
-+
-  #endif
-
-
--- 
-				Vincent Guffens
-				PhD Student UCL/CESAME
-				tel:   +32 10 47 80 30
-Value your freedom, or you will lose it, teaches history.
-"Don't bother us with politics," respond those who don't want to learn.
-	      	-- Richard M. Stallman
-
+---------------------------------------------------------------------------
+First snow, then silence.
+This thousand dollar screen dies
+so beautifully.
+        -- Error messages in haiku
+(Courtesy of Rasmus Andersen <rasmus@jaquet.dk>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
