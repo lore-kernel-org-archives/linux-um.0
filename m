@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DCypW-0001hz-Ri for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 03:42:50 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DCypU-0001kn-6Y for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 03:42:50 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	id 1DD16D-00047P-2m for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 06:08:13 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DD16B-0003ul-55
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 06:08:12 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Message-ID: <20050320150306.GA14594@bytesex>
+References: <200503191904.05870.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200503201242.23591.blaisorblade@yahoo.it>
-Subject: [uml-devel] Testing GCOV handling in -bk
+In-Reply-To: <200503191904.05870.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: Supporting building on x86-64 host as 32-bit UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,27 +28,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 20 Mar 2005 12:42:22 +0100
-To: Anton Altaparmakov <aia21@cam.ac.uk>
+Date: Sun, 20 Mar 2005 16:03:06 +0100
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Anton, would you test the current -bk tree for the CONFIG_GCOV problem and the 
-patch I and Jeff put together?
+> 1) how the user must choose what he wants (SUBARCH=i386 can be useful,
+> maybe a Kconfig option would be nice - we need to choose the default
+> depending on the host arch).
 
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.11-bk8/patches/weak_gcov_init
+That one is easy -- just use "linux32 make ...".  That will switch the
+personality and "uname" will return "i686" instead of "x86_64" then ;)
 
-The above should fix the situation for you... for real 3.4 Gcc, however, the 
-problems are bigger because it also requires to change link flags (and this 
-interferes with some executables we build). I also get a link failure on 
-__bb_fork_<something>..., which I haven't been able to solve until now.
+> 2) using the proper options for the tools (addressed partially by the
+> patch below)
 
-Regards
+Probably still needed.  Maybe not any more with gcc4, I remember there
+was some discussion among the gcc folks to make gcc default to -m64 /
+-m32 depending on the current personalily.  In that case the linux32
+thingy mentioned above should catch that one as well.  Not sure that
+actually happened.
+
+> 3) using the proper headers (asm-i386 instead of asm-x86_64)... Fedora
+
+linux32 should fix that one as well.
+
+> +AFLAGS		+= -m32
+> +CFLAGS		+= -m32
+
+I think that can also be fixed on the make command line, with a small
+wrapper script -- named make32 for example -- doing something like this:
+
+  #!/bin/sh
+  exec linux32 make CC="gcc -m32" AS="as -m32" ... "$@"
+
+Last time I tried I ran into the problem that the glibc headers of the
+x86_64 biarch compiler slightly different from the ones on a real i386
+machine, thus some #ifdefs in uml userspace code didn't work as expected
+and broke the build.
+
+> +HOSTCFLAGS	+= -m32
+> +HOSTLDFLAGS	+= -m32
+
+Not needed I think.  Thats used for kconfig and other stuff which runs
+on the _host_ machine (for cross compiles), thus it doesn't hurt if it
+is 64 bit.
+
+  Gerd
+
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
-
+#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
