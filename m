@@ -2,26 +2,29 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDElh-0004hd-JF for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 20:43:57 -0800
-Received: from rproxy.gmail.com ([64.233.170.203])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DDElf-0004yK-TX for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 20:43:57 -0800
-Received: by rproxy.gmail.com with SMTP id 40so336264rnz
+	id 1DDFEe-00068g-RM for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 21:13:52 -0800
+Received: from rimuhosting.com ([69.90.33.248])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DDFEd-0006yd-BU
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 21:13:52 -0800
+Received: from [192.168.1.100] (222-153-43-105.jetstream.xtra.co.nz
+	[222.153.43.105]) (authenticated bits=0)
+	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id j2L5Dipj011547
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 20 Mar 2005 20:43:54 -0800 (PST)
-Message-ID: <cbec11ac05032020433867d95e@mail.gmail.com>
-From: Ian McDonald <imcdnzl@gmail.com>
-Reply-To: Ian McDonald <imcdnzl@gmail.com>
-Subject: BUG with proposed fix Re: [uml-devel] Can't compile under vanilla
-	2.6.11
-In-Reply-To: <200503181843.05832.rob@landley.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
+	Mon, 21 Mar 2005 05:13:47 GMT
+Message-ID: <423E5806.2070501@rimuhosting.com>
+From: Peter <peter.spamcatcher@rimuhosting.com>
+MIME-Version: 1.0
+References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>	
 	<200503181843.05832.rob@landley.net>
+	<cbec11ac05032020433867d95e@mail.gmail.com>
+In-Reply-To: <cbec11ac05032020433867d95e@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] 2.4 do_mmap_pgoff compile problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,54 +36,65 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 21 Mar 2005 16:43:54 +1200
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 21 Mar 2005 17:13:42 +1200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-OK after much further investigation, redownloading of source
-(2.6.11.4) and looking at what you have said I know why it is
-breaking....
+linux-2.4.27.tar.bz2 + uml-2.4.27-bs2-pre6.patch.bz2 patches with no 
+error.  But I get the error below compile.  It seems like the UML code 
+is passing in a mm as the first arg and the only definitions of 
+`do_mmap_pgoff' I can find start with a file arg and have no mm.  I 
+dropped the mm arg in the code, and it then compiles OK.  But segfaults 
+immediately on use.  I'm not sure if that is caused by my code change or 
+not.
 
-I had assumed (wrongly of course) that ARCH_SYSCALLS was a one line
-symbol definition but it is much more than this.
+BTW: what is the current recommendation for a 'stable' 2.4 UML guest kernel?
 
-The problem occurs because in both
-arch/um/include/sysdep-i386/syscalls.h and in
-arch/um/kernel/sys_call_table.c a number of the elements are defined
-in BOTH files.
+Regards, Peter
 
-I presume the reason why this doesn't break others systems is that
-they are not using the same version of gcc as me (2.95.4). I would
-guess that with a later gcc in an enum you can redefine an element and
-it doesn't complain...
 
-Anyway I believe the proper fix is to delete the lines from
-arch/um/kernel/sys_call_table.c and here is a patch to do that:
+gcc -D__KERNEL__ -I/usr/src/uml/linux-2.4.27-rimu2/linux-2.4.27/include 
+-Wall -Wstrict-prototypes -Wno-trigraphs -O2 
+-fno-strict-aliasing-fno-common  -U__i386__ -Ui386 -DUM_FASTCALL -g 
+-D__arch_um__ -DSUBARCH="i386" -D_LARGEFILE64_SOURCE 
+-I/usr/src/uml/linux-2.4.27-rimu2/linux-2.4.27/arch/um/include 
+-Derrno=kernel_errno 
+-I/usr/src/uml/linux-2.4.27-rimu2/linux-2.4.27/arch/um/kernel/skas/include 
+    -nostdinc -iwithprefix include -DKBUILD_BASENAME=syscall_kern  -c -o 
+syscall_kern.o syscall_kern.c
+syscall_kern.c: In function `do_mmap2':
+syscall_kern.c:82: warning: passing arg 1 of `do_mmap_pgoff' from 
+incompatible pointer type
+syscall_kern.c:82: warning: passing arg 2 of `do_mmap_pgoff' makes 
+integer from pointer without a cast
+syscall_kern.c:82: too many arguments to function `do_mmap_pgoff'
+make[2]: *** [syscall_kern.o] Error 1
 
-255d254
-< 	[ __NR_statfs64 ] = (syscall_handler_t *) sys_statfs64,
-258,260d256
-< 	[ __NR_utimes ] = (syscall_handler_t *) sys_utimes,
-< 	[ __NR_fadvise64_64 ] = (syscall_handler_t *) sys_fadvise64_64,
-< 	[ __NR_vserver ] = (syscall_handler_t *) sys_vserver,
+relevant code:
 
-Can somebody verify that and if correct submit to whoever (this is my
-first ever attempt at fixing something in the kernel so not quite sure
-what to do next!!)
+/* common code for old and new mmaps */
+long do_mmap2(struct mm_struct *mm, unsigned long addr, unsigned long len,
+               unsigned long prot, unsigned long flags, unsigned long fd,
+               unsigned long pgoff)
+{
+         int error = -EBADF;
+         struct file * file = NULL;
 
-Regards,
+         flags &= ~(MAP_EXECUTABLE | MAP_DENYWRITE);
+         if (!(flags & MAP_ANONYMOUS)) {
+                 file = fget(fd);
+                 if (!file)
+                         goto out;
+         }
 
-Ian
+         down_write(&mm->mmap_sem);
+         error = do_mmap_pgoff(mm, file, addr, len, prot, flags, pgoff);
+         up_write(&mm->mmap_sem);
 
-PS still have some linking issues and I will report on them as I work
-out why....
-
-On Fri, 18 Mar 2005 18:43:05 -0500, Rob Landley <rob@landley.net> wrote:
-> Ah, nevermind.  Check out Anton's message.  You were using a -bk snapshot
-> rather than the officially 2.6.11 release, I take it?
-> 
-> Rob
->
+         if (file)
+                 fput(file);
+  out:
+         return error;
+}
 
 
 -------------------------------------------------------
