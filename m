@@ -1,26 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BrsJQ-0005vF-08 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 22:58:12 -0700
-Message-ID: <410F2B62.7050808@hevanet.com>
-From: Matt Clay <mattclay@hevanet.com>
+From: Nicholas Nethercote <njn25@cam.ac.uk>
+Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind
+In-Reply-To: <200408030517.i735HZUE026250@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk>
+References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
+	<410EFCDB.8080404@enterasys.com>
+	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: Bug#260111: user-mode-linux: upgrade hangs at
-	"NET4: Linux TCP/IP 1.0 for NET4.0 "
-References: <200407280315.08207.alydar@users.sourceforge.net>
-	<200407281722.i6SHM6eh002963@ccure.user-mode-linux.org>
-	<200407291430.18818.alydar@users.sourceforge.net>
-	<200407292234.04279.alydar@users.sourceforge.net>
-	<200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
-	<410A833F.9030207@hevanet.com>
-	<200407301849.i6UInpUE003226@ccure.user-mode-linux.org>
-	<410C6367.3090206@hevanet.com>
-	<20040801155231.GA19648@ccure.user-mode-linux.org>
-In-Reply-To: <20040801155231.GA19648@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,24 +19,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 02 Aug 2004 23:06:26 -0700
+Date: Tue, 3 Aug 2004 10:31:22 +0100 (BST)
 To: Jeff Dike <jdike@addtoit.com>
-Cc: Allen Chan <alydar@users.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net, 260111@bugs.debian.org
+Cc: "D. Bahi" <dbahi@enterasys.com>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
-Jeff Dike wrote:
-> 
->>This patch seems to fix the problem by adding error handling to
->>the tcsetattr call in generic_console_write.
-> 
-> What are the errnos from the failures?
+On Tue, 3 Aug 2004, Jeff Dike wrote:
 
-Ignore what I said before about errno not being set, I was wrong.
+> dbahi@enterasys.com said:
+>> Executable is mapped outside of range (nil)-0x52c00000 valgrind:
+>> do_exec(/local/dbahi/kernels/linux-2.4.26_uml-patch-2.4.26-2um/linux)
+>> failed: Cannot allocate memory
+>>
+>> How does one get around this sudden valgrind exit?
+>
+> If I remember right, there is a hard-coded address in valgrind.  If the process
+> loads above that you get that error.  Changing it and rebuilding doesn't seem
+> to hurt anything.
 
-The answer is that tcsetattr is failing with EINTR rather frequently. 
-It never seems to happen when running UML on a real console, but quite 
-frequently from inside xterm, konsole or gnome-terminal.
+It's not quite hard-coded, but close -- that address depends on another 
+address that is hard-coded, unfortunately.  Programs that have to load 
+pieces at high addresses don't interact well with Valgrind, which 
+partitions the address space, the low part for the client program, the 
+high part for Valgrind.
 
-  - Matt
+What address was UML trying to load something at?  Is that adjustable?
+
+N
 
 
 -------------------------------------------------------
