@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKvXz-0007bQ-5m for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Oct 2004 02:17:19 -0700
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	id 1CKwxc-0004XR-SI for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 22 Oct 2004 03:47:52 -0700
+Received: from webmail-outgoing.us4.outblaze.com ([205.158.62.67])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CKvXx-0008Rp-7p for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Oct 2004 02:17:19 -0700
-Message-ID: <4178D172.7020406@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1CKwxb-0000pY-Vh for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 22 Oct 2004 03:47:52 -0700
+Received: from wfilter.us4.outblaze.com (wfilter.us4.outblaze.com
+	[205.158.62.180])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	44D2A18007E8 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 22 Oct 2004 10:47:30 +0000 (GMT)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 MIME-Version: 1.0
-References: <20041021231834.9D3833F37@zion.localdomain>
-In-Reply-To: <20041021231834.9D3833F37@zion.localdomain>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [patch 1/1] SYSEMU: avoid intercepting syscall on
-	return when using SYSCALL again.
+From: "Peter Breuer" <ptb@linuxmail.org>
+Message-Id: <20041022104730.2E91B3AA515@ws5-8.us4.outblaze.com>
+Subject: [uml-devel] 2.6.8.1 fails to boot - unexpected signal - SOLVED
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,97 +30,120 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 22 Oct 2004 11:22:58 +0200
-To: blaisorblade_spam@yahoo.it
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
+Date: Fri, 22 Oct 2004 11:47:30 +0100
+Content-Transfer-Encoding: 8bit
+To: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it wrote:
-> From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-> 
-> A guest process switching from using PTRACE_SYSEMU to PTRACE_SYSCALL crashes.
-> 
-> The problem is in arch/i386/kernel/entry.S. The current SYSEMU patch inhibits
-> the syscall-handler to be called, but does not prevent do_syscall_trace to be
-> called after this for syscall completion interception.
-> 
-> The appended patch fixes this. It reuses the flag TIF_SYSCALL_EMU to remember
-> "we come from PTRACE_SYSEMU and now are in PTRACE_SYSCALL", since the flag is
-> unused in the depicted situation.
-> 
-> The patch is tested, AFAICS, it works fine, i.e. sysemu can be switched on and
-> off dynamically without crash.
-> 
-> Bodo
-> 
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
-> ---
-> 
-Fine idea to move one part of the patch to sys_ptrace()!
-But maybe you missed to reset TIF_SYSCALL_EMU while resuming with PTRACE_CONT?
-Here is a revised patch.
 
-Bodo
 
----
+ 
+ 
+The following failure has now been traced down to the following .config
+difference between good and bad configs:
+ 
+ 
+  (diff .config.good .config.bad)
+  < # CONFIG_KMOD is not set
+  ---
+  > CONFIG_KMOD=y
+ 
+ 
+> Checking for the skas3 patch in the host...not found
+> Checking for /proc/mm...not found
+> tracing thread pid = 16051
+> Linux version 2.6.8.1-UML-1um (root@betty.it.uc3m.es) (gcc version
+> 2.95.4 20011002 (Debian prerelease)) #36 Tue Oct 12 21:51:57 CEST 2004
+> Built 1 zonelists
+> Kernel command line:
+> ubd0=/usr/local/src/linux-2.6.8.1-uml/root_fs_toms1.7.205.small
+> eth0=tuntap,tap0,,192.168.222.254 ro pwd=/usr/oboe/ptb root=98:0
+> PID hash table entries: 16 (order 4: 128 bytes)
+> Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+> Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+> Memory: 29592k available
+> Calibrating delay loop... 1120.66 BogoMIPS
+> Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+> Checking for host processor cmov support...Yes
+> Checking for host processor xmm support...No
+> Checking that ptrace can change system call numbers...OK
+> Checking that host ptys support output SIGIO...Yes
+> Checking that host ptys support SIGIO on close...No, enabling
+> workaround
+> Checking for /dev/anon on the host...Not available (open failed with
+> errno 6)
+> NET: Registered protocol family 16
+> mconsole (version 2) initialized on /usr/oboe/ptb/.uml/JcQUhY/mconsole
+> Netdevice 0 : TUN/TAP backend - IP = 192.168.222.254
+> devfs: 2004-01-31 Richard Gooch (rgooch@atnf.csiro.au)
+> devfs: boot_options: 0x0
+> Initializing Cryptographic API
+> loop: loaded (max 8 devices)
+> Universal TUN/TAP device driver 1.5 (C)1999-2002 Maxim Krasnyansky
+> NET: Registered protocol family 2
+> IP: routing cache hash table of 512 buckets, 4Kbytes
+> TCP: Hash tables configured (established 2048 bind 2048)
+> NET: Registered protocol family 1
+> NET: Registered protocol family 17
+> Initializing software serial port version 1
+> Using anticipatory io scheduler
+>  /dev/ubd/disc0: unknown partition table
+> Initializing stdio console driver
+> VFS: Mounted root (ext2 filesystem) readonly.
+> INIT: version 2.84 booting
+> Entering rc.S
+> none /proc proc rw,nodiratime 0 0
+> Exiting rc.S
+> INIT: Entering runlevel: 5
+> Entering rc.M
+> + echo Entering rc.custom
+> Entering rc.custom
+> + cd /etc
+> + [ ! -s resolv.conf ]
+> + [ ! -s hosts ]
+> + [ ! -s networks ]
+> + [ ! -s passwd ]
+> + [ ! -s profile ]
+> + hostname localhost
+> + ifconfig lo 127.0.0.1
+> Kernel panic: fix_range fixing wrong address space, current =
+> 0xa02d30c0
+>  <6>SysRq : Show Regs
+> 
+> EIP: 0023:[<a0128834>] CPU: 0 Not tainted ESP: 002b:a1ecc678 EFLAGS:
+> 00000246
+>     Not tainted
+> EAX: 00000000 EBX: 00000001 ECX: a1ecc744 EDX: a1ecc6c4
+> ESI: 00000008 EDI: 00000001 EBP: a1ecc694 DS: 002b ES: 002b
+> Call Trace: [<a002ee79>] [<a00ccd30>] [<a00ccd1a>] [<a00cccd9>]
+> [<a00ccde0>] 
+>    [<a002ef8e>] [<a0016876>] [<a002ee67>] [<a002ee79>] [<a003a8dc>]
+> [<a00bdfa7>] 
+>    [<a002ee79>] [<a002e3d8>] [<a002e3c4>] [<a002e3ba>] [<a0014060>]
+> [<a0018b7a>] 
+>    [<a0018b5b>] [<a001413e>] [<a0019021>] [<a001584f>] [<a001577f>]
+> [<a001790a>] 
+>    [<a00177ce>] [<a003d768>] [<a0011aeb>] [<a0014098>] [<a0155d09>]
+> [<a0155a73>] 
+>    [<a003d768>] [<a0029c13>] [<a00309bc>] [<a0029c83>] [<a003d768>]
+> [<a00179ac>] 
+>    [<a00140ac>] [<a0017a42>] [<a0017af1>] [<a001619b>] [<a01287f8>]
+> [<a0128834>] 
+> sleeping process 16178 got unexpected signal : 10
+ 
 
---- a/arch/i386/kernel/ptrace.c	2004-10-20 16:57:25.000000000 +0200
-+++ b/arch/i386/kernel/ptrace.c	2004-10-22 10:57:15.460287887 +0200
-@@ -366,16 +366,21 @@ asmlinkage int sys_ptrace(long request,
-  		ret = -EIO;
-  		if ((unsigned long) data > _NSIG)
-  			break;
-+		/* If we came here with PTRACE_SYSEMU and now continue with
-+		 * PTRACE_SYSCALL, entry.S used to intercept the syscall return. But it
-+		 * shouldn't!
-+		 * So we don't clear TIF_SYSCALL_EMU, which is always unused in this
-+		 * special case, to remember, we came from SYSEMU. That flag
-+		 * will be cleared by do_syscall_trace().
-+		 */
-  		if (request == PTRACE_SYSEMU) {
-  			set_tsk_thread_flag(child, TIF_SYSCALL_EMU);
--		}
--		else {
-+		} else if (request == PTRACE_CONT) {
-  			clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
-  		}
-  		if (request == PTRACE_SYSCALL) {
-  			set_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		}
--		else {
-+		} else {
-  			clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
-  		}
-  		child->exit_code = data;
-@@ -585,7 +590,7 @@ out:
-  __attribute__((regparm(3)))
-  int do_syscall_trace(struct pt_regs *regs, int entryexit)
-  {
--	int is_sysemu;
-+	int is_sysemu, is_systrace;
-  	if (unlikely(current->audit_context)) {
-  		if (!entryexit)
-  			audit_syscall_entry(current, regs->orig_eax,
-@@ -595,9 +600,19 @@ int do_syscall_trace(struct pt_regs *reg
-  			audit_syscall_exit(current, regs->eax);
-  	}
-  	is_sysemu = test_thread_flag(TIF_SYSCALL_EMU);
-+	is_systrace = test_thread_flag(TIF_SYSCALL_TRACE);
+compiler and glibc variations tried include gcc 2.95.4, 3.4.0, glibc
+2.1 2.2 2.3 . It's all down to the config.
+ 
+Peter
+ 
+ 
 
--	if (!test_thread_flag(TIF_SYSCALL_TRACE) && !is_sysemu)
-+	if (!is_systrace && !is_sysemu)
-  		return 0;
-+	/* We can detect the case of coming from PTRACE_SYSEMU and now
-+	 * running with PTRACE_SYSCALL, by TIF_SYSCALL_EMU being set
-+	 * additionally.
-+	 * If so let's reset the flag and return without action.
-+	 */
-+	if (is_sysemu && is_systrace) {
-+		clear_thread_flag(TIF_SYSCALL_EMU);
-+		return 0;
-+	}
-  	if (!(current->ptrace & PT_PTRACED))
-  		return 0;
-  	/* the 0x80 provides a way for the tracing parent to distinguish
+-- 
+______________________________________________
+Check out the latest SMS services @ http://www.linuxmail.org 
+This allows you to send and receive SMS through your mailbox.
+
+Powered by Outblaze
 
 
 -------------------------------------------------------
