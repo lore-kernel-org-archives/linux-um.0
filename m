@@ -1,20 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArMCJ-0005GE-RD
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 11:08:27 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1ArMB2-0003cB-0c
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 11:07:08 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Swapping directly to host swap area?
-References: <Pine.LNX.4.44.0401251827030.2766-100000@sparrow> <200402051759.03917.blaisorblade_spam@yahoo.it> <200402110043.i1B0hOip004189@ccure.user-mode-linux.org>
-In-Reply-To: <200402110043.i1B0hOip004189@ccure.user-mode-linux.org>
+	id 1ArNid-0001JV-NO
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 12:45:55 -0800
+Received: from rimuhosting.com ([207.44.185.16])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30)
+	id 1ArNf2-000358-34
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 12:42:12 -0800
+Received: from objexcel (port-203-99-26-174.jet.net.nz [203.99.26.174])
+	(authenticated bits=0)
+	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id i1CKiQHh021073
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 13 Feb 2004 09:44:31 +1300
+Message-ID: <01ee01c3f1a9$06424800$0600a8c0@objexcel>
+Reply-To: "Peter" <support@rimuhosting.com>
+From: "Peter" <peter@rimuhosting.com>
+References: <1076598155.20064.12.camel@wopr.tektonic.net>
+Subject: Re: [uml-devel] /dev/anon without /dev/anon ?
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200402122008.22995.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,46 +30,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 Feb 2004 20:08:22 +0100
+Date: Fri, 13 Feb 2004 09:43:09 +1300
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 01:43, mercoled=EC 11 febbraio 2004, Jeff Dike ha scritto:
-> blaisorblade_spam@yahoo.it said:
-> > About this, my idea was that using swap both on the host and on the
-> > guests is  not very useful:
->
-> My suggestions were aimed at making the host less likely to swap.  There
-> are various pathological things which happen when both UML and the host a=
-re
-> swapping.  Having said that, the host needs to be able to swap UMLs if the
-> memory situation is so bad that there is no other choice.
-I agree completely.
+This may just be noise, but I also had a host server with 2.4.24 + skas3 + =
+/dev/anon that crashed yesterday after a day or so of running.  Not using u=
+bd=3Dmmap.
 
-> > - because the host already sees which pages are accessed and which not
-> > (an  access inside UML is an access inside the host); the only
-> > difference is that  the host can swap even the guest kernel, while UML
-> > not;
->
-> UML might have a better idea than the host, though.
+Regards, Peter
+----- Original Message -----=20
+From: "Matt Ayres" <matta@tektonic.net>
+To: <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Friday, February 13, 2004 4:02 AM
+Subject: [uml-devel] /dev/anon without /dev/anon ?
 
-It seems to me that the access statistics should be the same ones: I do not=
-=20
-know thoroughly the way pages are marked as active or swappable (I can chec=
-k=20
-in the 2.4 VM description - ask for the address) but if that depends on pag=
-e=20
-faulting, then, it seems to me that since guest page fault are even host pa=
-ge=20
-fault (the UML handling of SIGSEGV is like the host handling of CPU fault=20
-exceptions, right?) the statistics should be the same. At least In My Very =
 
-Humble Opinion.
-
-Bye
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+> Hi,
+>=20
+> I had tried out the /dev/anon patch on a host server, success wasn't too
+> good.  It crashed after a few hours of running.  This was without
+> ubd=3Dmmap passed to the UML's. Unfortunately I do not have any sort of
+> OOPs.
 
 
 
