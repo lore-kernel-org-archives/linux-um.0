@@ -2,14 +2,14 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CAwes-0003yq-4c for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Sep 2004 13:27:10 -0700
+	id 1CAwf6-00042S-Rt for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Sep 2004 13:27:24 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CAwep-0008Gb-TO
+	(Exim 4.41) id 1CAwf5-0008LD-7d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Sep 2004 13:27:09 -0700
-Message-Id: <200409242132.i8OLWNZX003930@ccure.user-mode-linux.org>
+	Fri, 24 Sep 2004 13:27:24 -0700
+Message-Id: <200409242132.i8OLWoZX003951@ccure.user-mode-linux.org>
 Subject: Re: [uml-devel] Minor problems with interrupted systemcalls 
 In-Reply-To: Your message of "Wed, 22 Sep 2004 19:12:37 +0200."
 	<8B6FF516CBA0194AB0996705076B02520F7C38@ABGEX01E.abg.fsc.net> 
@@ -28,117 +28,84 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Sep 2004 17:32:23 -0400
+Date: Fri, 24 Sep 2004 17:32:50 -0400
 To: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-OK, following is my breakup of your signal patch.  It all looks right to me,
-and cleans up that code nicely.  Let me know if you see any problems here.
+handle_signal now checks whether it is being called from a system call 
+invocation.
 
-These are also available from the incremental patches page
-	http://user-mode-linux.sourceforge.net/patches.html
-and I would appreciate testing.
-
-This one changes the do_signal interface to eliminate its argument.  Also,
-remove the calls from the system call handlers since they are redundant.  In
-all cases, pending signals are checked for in the interrupt handler.
-Temporarily, do_signal passes the current error to kern_do_signal.
-
-				Jeff
-
-Index: 2.6.9-rc/arch/um/include/kern_util.h
-===================================================================
---- 2.6.9-rc.orig/arch/um/include/kern_util.h	2004-09-24 12:58:02.000000000 -0400
-+++ 2.6.9-rc/arch/um/include/kern_util.h	2004-09-24 14:10:16.000000000 -0400
-@@ -29,7 +29,7 @@
- extern void syscall_segv(int sig);
- extern int current_pid(void);
- extern unsigned long alloc_stack(int order, int atomic);
--extern int do_signal(int error);
-+extern int do_signal(void);
- extern int is_stack_fault(unsigned long sp);
- extern unsigned long segv(unsigned long address, unsigned long ip, 
- 			  int is_write, int is_user, void *sc);
-Index: 2.6.9-rc/arch/um/kernel/process_kern.c
-===================================================================
---- 2.6.9-rc.orig/arch/um/kernel/process_kern.c	2004-09-24 13:05:44.000000000 -0400
-+++ 2.6.9-rc/arch/um/kernel/process_kern.c	2004-09-24 16:17:07.000000000 -0400
-@@ -139,7 +139,7 @@
- void interrupt_end(void)
- {
- 	if(need_resched()) schedule();
--	if(test_tsk_thread_flag(current, TIF_SIGPENDING)) do_signal(0);
-+	if(test_tsk_thread_flag(current, TIF_SIGPENDING)) do_signal();
- }
- 
- void release_thread(struct task_struct *task)
 Index: 2.6.9-rc/arch/um/kernel/signal_kern.c
 ===================================================================
---- 2.6.9-rc.orig/arch/um/kernel/signal_kern.c	2004-09-24 13:05:44.000000000 -0400
-+++ 2.6.9-rc/arch/um/kernel/signal_kern.c	2004-09-24 16:04:00.000000000 -0400
-@@ -163,9 +163,10 @@
- 	return(0);
- }
- 
--int do_signal(int error)
-+int do_signal(void)
+--- 2.6.9-rc.orig/arch/um/kernel/signal_kern.c	2004-09-24 16:17:04.000000000 -0400
++++ 2.6.9-rc/arch/um/kernel/signal_kern.c	2004-09-24 16:17:07.000000000 -0400
+@@ -44,45 +44,37 @@
  {
--	return(kern_do_signal(&current->thread.regs, NULL, error));
-+	return(kern_do_signal(&current->thread.regs, NULL,
-+			      PT_REGS_SYSCALL_RET(&current->thread.regs)));
- }
+ 	void (*restorer)(void);
+ 	unsigned long sp;
+-	int error, err, ret;
++	int err;
  
- /*
-Index: 2.6.9-rc/arch/um/kernel/skas/syscall_user.c
-===================================================================
---- 2.6.9-rc.orig/arch/um/kernel/skas/syscall_user.c	2004-09-13 22:37:13.000000000 -0400
-+++ 2.6.9-rc/arch/um/kernel/skas/syscall_user.c	2004-09-24 14:10:16.000000000 -0400
-@@ -10,10 +10,6 @@
- #include "sysdep/ptrace.h"
- #include "sysdep/sigcontext.h"
+-	error = PT_REGS_SYSCALL_RET(&current->thread.regs);
+-	ret = 0;
+ 	/* Always make any pending restarted system calls return -EINTR */
+ 	current_thread_info()->restart_block.fn = do_no_restart_syscall;
+-	switch(error){
+-	case -ERESTART_RESTARTBLOCK:
+-	case -ERESTARTNOHAND:
+-		ret = -EINTR;
+-		break;
+-
+-	case -ERESTARTSYS:
+-		if (!(ka->sa.sa_flags & SA_RESTART)) {
+-			ret = -EINTR;
++
++	/* Did we come from a system call? */
++	if(PT_REGS_SYSCALL_NR(regs) >= 0){
++		/* If so, check system call restarting.. */
++		switch(PT_REGS_SYSCALL_RET(regs)){
++		case -ERESTART_RESTARTBLOCK:
++		case -ERESTARTNOHAND:
++			PT_REGS_SYSCALL_RET(regs) = -EINTR;
+ 			break;
+-		}
++
++		case -ERESTARTSYS:
++			if (!(ka->sa.sa_flags & SA_RESTART)) {
++				PT_REGS_SYSCALL_RET(regs) = -EINTR;
++				break;
++			}
+ 		/* fallthrough */
+-	case -ERESTARTNOINTR:
+-		PT_REGS_RESTART_SYSCALL(regs);
+-		PT_REGS_ORIG_SYSCALL(regs) = PT_REGS_SYSCALL_NR(regs);
+-
+-		/* This is because of the UM_SET_SYSCALL_RETURN and the fact
+-		 * that on i386 the system call number and return value are
+-		 * in the same register.  When the system call restarts, %eax
+-		 * had better have the system call number in it.  Since the
+-		 * return value doesn't matter (except that it shouldn't be
+-		 * -ERESTART*), we'll stick the system call number there.
+-		 */
+-		ret = PT_REGS_SYSCALL_NR(regs);
+-		break;
++		case -ERESTARTNOINTR:
++			PT_REGS_RESTART_SYSCALL(regs);
++			PT_REGS_ORIG_SYSCALL(regs) = PT_REGS_SYSCALL_NR(regs);
++			break;
++		}
+ 	}
  
--/* XXX Bogus */
--#define ERESTARTSYS	512
--#define ERESTARTNOINTR	513
--#define ERESTARTNOHAND	514
+ 	sp = PT_REGS_SP(regs);
+ 	if((ka->sa.sa_flags & SA_ONSTACK) && (sas_ss_flags(sp) == 0))
+ 		sp = current->sas_ss_sp + current->sas_ss_size;
  
- void handle_syscall(union uml_pt_regs *regs)
- {
-@@ -26,9 +22,6 @@
- 	result = execute_syscall(regs);
- 
- 	REGS_SET_SYSCALL_RETURN(regs->skas.regs, result);
--	if((result == -ERESTARTNOHAND) || (result == -ERESTARTSYS) || 
--	   (result == -ERESTARTNOINTR))
--		do_signal(result);
- 
- 	syscall_trace(regs, 0);
- 	record_syscall_end(index, result);
-Index: 2.6.9-rc/arch/um/kernel/tt/syscall_user.c
-===================================================================
---- 2.6.9-rc.orig/arch/um/kernel/tt/syscall_user.c	2004-09-13 22:37:13.000000000 -0400
-+++ 2.6.9-rc/arch/um/kernel/tt/syscall_user.c	2004-09-24 16:04:02.000000000 -0400
-@@ -17,10 +17,6 @@
- #include "syscall_user.h"
- #include "tt.h"
- 
--/* XXX Bogus */
--#define ERESTARTSYS	512
--#define ERESTARTNOINTR	513
--#define ERESTARTNOHAND	514
- 
- void syscall_handler_tt(int sig, union uml_pt_regs *regs)
- {
-@@ -42,9 +38,6 @@
- 	UPT_SC(regs) = sc;
- 
- 	SC_SET_SYSCALL_RETURN(sc, result);
--	if((result == -ERESTARTNOHAND) || (result == -ERESTARTSYS) || 
--	   (result == -ERESTARTNOINTR))
--		do_signal(result);
- 
- 	syscall_trace(regs, 0);
- 	record_syscall_end(index, result);
+-	if(error != 0) PT_REGS_SET_SYSCALL_RETURN(regs, ret);
+-
+ 	if (ka->sa.sa_flags & SA_RESTORER) 
+ 		restorer = ka->sa.sa_restorer;
+ 	else restorer = NULL;
+
 
 
 
