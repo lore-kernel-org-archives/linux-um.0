@@ -1,18 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPWq7-0004b7-Ej for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:03 -0800
+	id 1CPWqi-0004hx-FF for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:55:40 -0800
 Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
 	helo=zion.localdomain)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPWq2-0000Dq-Tp for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:03 -0800
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CPWqd-0004Hz-Iw for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:55:40 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041103231719.0CC3A36389@zion.localdomain>
-Subject: [uml-devel] [patch 02/20] Uml: add startup check for
-	mmap(...PROT_EXEC...) from /tmp.
+Message-Id: <20041103231728.550C64F6D2@zion.localdomain>
+Subject: [uml-devel] [patch 06/20] uml: remove useless inclusion
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,89 +23,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 04 Nov 2004 00:17:18 +0100
+Date: Thu, 04 Nov 2004 00:17:28 +0100
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it
 
 
-This adds a check that /tmp is not mounted noexec.  UML needs to be able
-to do PROT_EXEC mmaps of temp files.  Previously, a noexec /tmp would
-cause an early mysterious UML crash.
-(Actually, not /tmp but $TMP, which often is the same).
+Avoid including some unused headers.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- vanilla-linux-2.6.9-paolo/arch/um/include/mem_user.h |    1 
- vanilla-linux-2.6.9-paolo/arch/um/kernel/mem_user.c  |   22 ++++++++++++++++++-
- vanilla-linux-2.6.9-paolo/arch/um/kernel/um_arch.c   |    5 ++++
- 3 files changed, 27 insertions(+), 1 deletion(-)
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/main.c                  |    2 ++
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/include/mmu-skas.h |    3 ---
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff -puN arch/um/include/mem_user.h~uml-tmp-exec arch/um/include/mem_user.h
---- vanilla-linux-2.6.9/arch/um/include/mem_user.h~uml-tmp-exec	2004-11-03 23:44:37.382877056 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/include/mem_user.h	2004-11-03 23:44:37.387876296 +0100
-@@ -67,6 +67,7 @@ extern void map_memory(unsigned long vir
- extern int protect_memory(unsigned long addr, unsigned long len, 
- 			  int r, int w, int x, int must_succeed);
- extern unsigned long get_kmem_end(void);
-+extern void check_tmpexec(void);
+diff -puN arch/um/kernel/skas/include/mmu-skas.h~uml-remove-useless-inclusion arch/um/kernel/skas/include/mmu-skas.h
+--- vanilla-linux-2.6.9/arch/um/kernel/skas/include/mmu-skas.h~uml-remove-useless-inclusion	2004-11-03 23:44:58.287699040 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/include/mmu-skas.h	2004-11-03 23:44:58.291698432 +0100
+@@ -6,9 +6,6 @@
+ #ifndef __SKAS_MMU_H
+ #define __SKAS_MMU_H
  
- #endif
- 
-diff -puN arch/um/kernel/mem_user.c~uml-tmp-exec arch/um/kernel/mem_user.c
---- vanilla-linux-2.6.9/arch/um/kernel/mem_user.c~uml-tmp-exec	2004-11-03 23:44:37.383876904 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/kernel/mem_user.c	2004-11-03 23:44:37.388876144 +0100
-@@ -83,6 +83,26 @@ static int create_tmp_file(unsigned long
- 	return(fd);
- }
- 
-+void check_tmpexec(void)
-+{
-+	void *addr;
-+	int err, fd = create_tmp_file(UM_KERN_PAGE_SIZE);
-+
-+	addr = mmap(NULL, UM_KERN_PAGE_SIZE,
-+		    PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
-+	printf("Checking PROT_EXEC mmap in /tmp...");
-+	fflush(stdout);
-+	if(addr == MAP_FAILED){
-+		err = errno;
-+		perror("failed");
-+		if(err == EPERM)
-+			printf("/tmp must be not mounted noexec\n");
-+		exit(1);
-+	}
-+	printf("OK\n");
-+	munmap(addr, UM_KERN_PAGE_SIZE);
-+}
-+
- static int have_devanon = 0;
- 
- void check_devanon(void)
-@@ -111,7 +131,7 @@ static int create_anon_file(unsigned lon
- 		exit(1);
- 	}
- 
--	addr = mmap(NULL, len, PROT_READ | PROT_WRITE , MAP_PRIVATE, fd, 0);
-+	addr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
- 	if(addr == MAP_FAILED){
- 		os_print_error((int) addr, "mapping physmem file");
- 		exit(1);
-diff -puN arch/um/kernel/um_arch.c~uml-tmp-exec arch/um/kernel/um_arch.c
---- vanilla-linux-2.6.9/arch/um/kernel/um_arch.c~uml-tmp-exec	2004-11-03 23:44:37.385876600 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/kernel/um_arch.c	2004-11-03 23:44:37.388876144 +0100
-@@ -321,6 +321,11 @@ int linux_main(int argc, char **argv)
- 	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas, 0,
- 				     &host_task_size, &task_size);
- 
-+	/* Need to check this early because mmapping happens before the
-+	 * kernel is running.
-+	 */
-+	check_tmpexec();
-+
- 	brk_start = (unsigned long) sbrk(0);
- 	CHOOSE_MODE_PROC(before_mem_tt, before_mem_skas, brk_start);
- 	/* Increase physical memory size for exec-shield users
+-#include "linux/list.h"
+-#include "linux/spinlock.h"
+-
+ struct mmu_context_skas {
+ 	int mm_fd;
+ };
+diff -puN arch/um/kernel/main.c~uml-remove-useless-inclusion arch/um/kernel/main.c
+--- vanilla-linux-2.6.9/arch/um/kernel/main.c~uml-remove-useless-inclusion	2004-11-03 23:44:58.288698888 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/main.c	2004-11-03 23:44:58.291698432 +0100
+@@ -17,6 +17,8 @@
+ #include "kern_util.h"
+ #include "mem_user.h"
+ #include "signal_user.h"
++#include "time_user.h"
++#include "irq_user.h"
+ #include "user.h"
+ #include "init.h"
+ #include "mode.h"
 _
 
 
