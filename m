@@ -2,19 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ACr13-0002hh-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 18:45:26 -0700
-Received: from h65s138a81n47.user.nortelnetworks.com ([47.81.138.65] helo=zsc3s004.nortelnetworks.com)
+	id 1ACsTL-00088a-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 20:18:43 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1ACi4O-0001wq-Tc
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 23 Oct 2003 09:12:16 -0700
-Message-ID: <3F97FD98.10700@nortelnetworks.com>
-From: Giovanni Marzot <gmarzot@nortelnetworks.com>
-MIME-Version: 1.0
-References: <3F97E849.1090700@nortelnetworks.com> <1066924964.12497.2.camel@ixodes.goop.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: Valgrind meets UML
+	id 1ACqFm-0008KH-En
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 23 Oct 2003 17:56:34 -0700
+Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h9O0isj04359
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 20:44:55 -0400
+Message-Id: <200310240101.h9O11hmN006339@ccure.karaya.com>
+Subject: Re: [uml-devel] Re: Valgrind meets UML 
+In-Reply-To: Your message of "Thu, 23 Oct 2003 10:40:09 EDT."
+             <3F97E849.1090700@nortelnetworks.com> 
+References: <3F97E849.1090700@nortelnetworks.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -25,51 +29,38 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Oct 2003 12:11:04 -0400
-To: Jeremy Fitzhardinge <jeremy@goop.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 23 Oct 2003 21:01:43 -0400
+To: Giovanni Marzot <gmarzot@nortelnetworks.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jeremy@goop.org
 
-Thank you for the reply.
+gmarzot@nortelnetworks.com said:
+> Any words of wisdom appreciated. Has anyone used this combination
+> succesfully?
 
-Jeremy Fitzhardinge wrote:
-> On Thu, 2003-10-23 at 07:40, Giovanni Marzot wrote:
-> 
->>Can anyone confirm if the patches to valgrind mentioned below have found 
->>there way into the release?
-> 
-> 
-> They haven't.  They were mostly slimy hacks to see what needed fixing,
-> rather than proper fixes.  The good news is that I've been busily
-> incorporating proper fixes and redesigns into Valgrind, so the
-> development version should be capable of running uml unpatched soon.
+I ran out of free time about a year ago when playing with this, but I did
+have UML and Valgrind playing together.
 
-hmmm...Should I wait until this is done or is there something I can try 
-in the meantime.
+> I wonder what "teaching valgrind about the false positives" entails. 
 
-Are the old patches even available anywhere?
+However, I didn't get anything useful out of it.  This is because Valgrind
+knows nothing about the kernel memory allocators.  I started describing them,
+but didn't get too far.
 
-If you have something you would like me to try out (even if its grungy) 
-I would be happy to give it a whirl.
+IIRC, you add special macros into the allocators when the status of a region
+of memory changes.  I.e.
+	a buffer being returned from an allocator is declared readable and 
+writeable
+	a buffer being freed is declared unreadable and unwriteable (or maybe
+just inaccessible, I forgot)
 
-> 
-> 
->>I wonder what "teaching valgrind about the false positives" entails.
-> 
-> 
-> Not everything Valgrind reports is an error.  You can either generate a
-> suppression rule to tell V not to report it, or you can use annotations
-> in your program to tell V what's really going on.
+These macros expand into different sequences of noops which are recognized
+by Valgrind, which is a cute trick.
 
-cool.
+You've found the UML config changes needed for Valgrind.  If Valgrind itself
+has the changes that Jeremy and I made, then you should be all set to at
+least run UML under it.
 
--GSM
-
-> 
-> 	J
-> 
-
-
-
+				Jeff
 
 
 -------------------------------------------------------
