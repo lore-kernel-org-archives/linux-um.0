@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AANbd-0001oD-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 16 Oct 2003 22:56:57 -0700
-Received: from tsv.sws.net.au ([61.95.69.2])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1AANaK-0003wA-N0
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 16 Oct 2003 22:55:36 -0700
-From: Russell Coker <russell@coker.com.au>
-Reply-To: russell@coker.com.au
-Subject: Re: [uml-devel] Hardening hostfs
+	id 1AANsc-0002i5-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 16 Oct 2003 23:14:30 -0700
+Received: from rimuhosting.com ([207.44.185.16])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.22)
+	id 1AANsR-0005Wx-GV
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 16 Oct 2003 23:14:19 -0700
+Message-ID: <03db01c39475$cfc00be0$0600a8c0@objexcel>
+From: "Peter" <peter@rimuhosting.com>
 References: <3F8F7C06.7080306@easyco.com>
-In-Reply-To: <3F8F7C06.7080306@easyco.com>
+Subject: Re: [uml-devel] Hardening hostfs
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200310171552.29026.russell@coker.com.au>
+	charset="iso-8859-1"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -29,25 +26,18 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Oct 2003 15:52:29 +1000
+Date: Fri, 17 Oct 2003 19:09:48 +1300
+Content-Transfer-Encoding: 8bit
 To: Doug Dumitru <doug@easyco.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 17 Oct 2003 15:20, Doug Dumitru wrote:
-> o Run UML in a chroot jail.
+> I don't think that this is perfect as you could still load a LKM and 
+> probably get to the underlying filesystem.  At least it is chroot'd at 
+> this point.
+> 
 
-There are a variety of other security systems which UML can be run under.  My 
-SE Linux policy for UML greatly restricts which files it can access on the 
-host (and could be made far more restrictive if you wanted to remove the 
-xterm option).
+You can disable module support in the UML kernel.
 
-Systrace, RSBAC, or GRSEC could also be used in a similar manner.
-
--- 
-http://www.coker.com.au/selinux/   My NSA Security Enhanced Linux packages
-http://www.coker.com.au/bonnie++/  Bonnie++ hard drive benchmark
-http://www.coker.com.au/postal/    Postal SMTP/POP benchmark
-http://www.coker.com.au/~russell/  My home page
-
+- Peter
 
 
 -------------------------------------------------------
