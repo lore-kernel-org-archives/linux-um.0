@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cc5NW-0001AY-Hu for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 09:13:26 -0800
-Received: from pike.sandelman.ca ([205.150.200.164])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1Cc5NV-0000e7-5W
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 09:13:26 -0800
-Subject: Re: [uml-devel] Re: What to do with uml_switch? 
-In-Reply-To: Message from "Steve Schmidtke" <steve_schmidtke@hotmail.com> 
-	of "Tue,
-	07 Dec 2004 16:06:44 GMT." <BAY24-F14D010172174FC8FBD303F83B50@phx.gbl>
-References: <BAY24-F14D010172174FC8FBD303F83B50@phx.gbl> 
-Message-ID: <7044.1102525892@marajade.sandelman.ottawa.on.ca>
-From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+	id 1Cc7dK-00053U-In for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 11:37:54 -0800
+Received: from bay24-f39.bay24.hotmail.com ([64.4.18.89] helo=hotmail.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cc7dK-0005cX-8H for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 11:37:54 -0800
+Message-ID: <BAY24-F39F020DFE0870A8FDC91DC83B60@phx.gbl>
+In-Reply-To: <5810.1102524702@marajade.sandelman.ottawa.on.ca>
+From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
+Subject: Re: [uml-devel] Re: What to do with uml_switch?
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,47 +25,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Dec 2004 10:11:32 -0700
-To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: blaisorblade_spam@yahoo.it, kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 08 Dec 2004 19:36:25 +0000
+To: mcr@sandelman.ottawa.on.ca, kraxel@bytesex.org
+Cc: blaisorblade_spam@yahoo.it, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
+Michael Richardson wrote:
+>     Gerd> Hmm, I don't think it is a good idea to put that kind of
+>     Gerd> testing code into the switch daemon.  I'd make the switch
+>     Gerd> daemon behave as close as possible to a real switch, then use
+>     Gerd> the normal tools you use for real networks as well.  I think
+>     Gerd> uml_switch should just support a monitor port which will see
+>
+>   Not practical, not reliable.
+
+Why not reliable?  A monitor port is a diagnostic tool, and there is no 
+reason you couldn't run it in a sychronous mode with the switch, i.e. the 
+switch is paused as the monitor inspects an IO event (an input packet) and 
+either allows it to proceed or be modified in some way (replaced, dropped, 
+etc).
+
+I will agree that it wouldn't be fit for all purposes.  There is obviously a 
+delay as a packet must be written to the monitor app for inspection, a 
+context switch to the monitor, an ACK written from the monitor, a context 
+switch back, and the ACK processed, before a packet can be disposed of.  
+Does that make a monitor port impractical?  I don't think so.  The real 
+world delay I've been seeing so far on my test monitor doing just that for 
+ping round trip times is less than a millisecond.  I havn't tried larger 
+packets yet.
+
+On the other hand, once the monitor has ACK'd a packet, the switch and 
+monitor app are free to continue processing independently, possibly reducing 
+overall delay times.
+
+>   Often, not even possible if you wish to play packets that Linux simply
+>can not easily produce.
+
+There is no reason you would need to use Linux as your packet source:
+
+  cat tcpdump.pcap | switch_mon_tool --socket /tmp/uml.mon --delay 100ms
+
+is the type of functionality I'm shooting for (above example not to be taken 
+literally).
+
+Steve Schmidtke
 
 
->>>>> "Steve" == Steve Schmidtke <steve_schmidtke@hotmail.com> writes:
-    Steve> Agreed, it would be an unwieldy solution.  And it's obvious
-    Steve> you need fine grained control to manage packets in your test
-    Steve> environment, sorry if it sounded like I was telling you what
-    Steve> you should do.  What I was trying to point out (and thinking
-    Steve> out loud) is that an ARP generator can be connected *to*
-    Steve> uml_switch, it doesn't have to be built *into* uml_switch.
-
-  Yes, that could be done.
-  If you needed more sophistication than we have, then you'd want to do
-exactly that.
-
-    Steve> Strip down the UML kernel's daemon_user.c and what you have
-    Steve> is a framework to talk socket datagrams to a uml_switch.  Add
-
-  That's probably not the best idea. We put the interfaces in two places
-right now... Best would be if a refactored uml_switch exported an
-interface that replaced daemon_user.c :-)
-
-- -- 
-]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
-]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
-] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
-] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-Comment: Finger me for keys
-
-iQCVAwUBQbc1w4qHRg3pndX9AQGyIgQAgnkAvJ1JWlsugt+VwwJz5Qg/qvv81lXa
-nxrZ7gHWo4qn4oKE0bQS7FWgdNLnFbFm2Ii7VwYUQs9XVrYkIv0LN+DfjpRhBA3g
-DB/KvaBkAAm6WNpRaoQ5hhKiBAtRE/ej3Wp/IU7EVw0Zz7e1OqplZUFlJ8dYvth4
-kXOxWroli5Q=
-=Izak
------END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
