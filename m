@@ -2,26 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AjfyE-0004u8-4D for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 06:38:10 -0800
+	id 1Ajgwv-0007fn-2o for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jan 2004 07:40:53 -0800
 Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30) id 1AjfyD-0000Yw-GK
+	(Exim 4.30) id 1Ajgwu-0005gY-Ho
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 06:38:09 -0800
-Received: from localhost ([127.0.0.1]:33330 helo=shearer.org)
-	by shearer.org with esmtp (Dan's MTA 1.0) id 1Ajg0K-00046c-Q0
+	Thu, 22 Jan 2004 07:40:52 -0800
+Received: from localhost ([127.0.0.1]:33356 helo=shearer.org)
+	by shearer.org with esmtp (Dan's MTA 1.0) id 1Ajgz1-00048z-1U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jan 2004 01:10:20 +1030
+	Fri, 23 Jan 2004 02:13:03 +1030
 Received: from dan by erizo.shearer.org with local (Spammer Slammer 3.141)
-	id 1Ajg0K-00046Z-ER for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jan 2004 01:10:20 +1030
+	id 1Ajgz0-00048w-A2 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jan 2004 02:13:02 +1030
 From: Dan Shearer <dan@shearer.org>
-Message-ID: <20040122144020.GQ4203@erizo.shearer.org>
+Subject: Re: [uml-devel] Changes to port_user
+Message-ID: <20040122154302.GR4203@erizo.shearer.org>
+References: <20040122144020.GQ4203@erizo.shearer.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Subject: [uml-devel] Changes to port_user
+In-Reply-To: <20040122144020.GQ4203@erizo.shearer.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,45 +35,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 23 Jan 2004 01:10:20 +1030
+Date: Fri, 23 Jan 2004 02:13:02 +1030
 To: user-mode-linux-devel@lists.sourceforge.net
 
-I've done some minor work in drivers/port_user.c, including replacing
-the binding to INADDR_ANY with a gethostbyname(passed_ip), so you
-can specify which single IP to listen on. I'll post when I'm sure its
-ok.
+On Fri, Jan 23, 2004 at 01:10:20AM +1030, Dan Shearer wrote:
+> Now, I just want raw data to go from the kernel to the port and back
+> again. So should I:
+> 
+> 	a) just shortcircuit this by hooking the inbound and outbound
+> 	descriptors up, or
 
-Now what I'm trying to do is replace in.telnetd with something else, for
-the moment netcat as a simple case, or something that gives the same
-effect. That involves understanding the significance of port_helper and
-kernel/helper.c, which I don't yet.
+I'm starting to get it, chan_kern is the place to start to understand
+what happens when a read or write irq goes off. I don't think there is a
+short-circuit mechanism for hooking up the internal fd for a tty
+directly to an fd within a channel driver without breaking this design.
+So what if I modified port_task_proc to copy the incoming data in the
+appropriate direction? I'll give that a try next.
 
-Here's what I've noticed so far:
+Jeff, please, what does "winch" stand for?
 
-	When port_task_proc is run for a new incoming connection (an irq
-	raised), port_accept calls port_connection, which is over in
-	userspace (port_user.c)
-
-	port_connection calls run_helper from kernel/helper.c, which
-	starts in.telnetd in a new thread with clone(), supplying
-	port-helper as the login program for telnetd but I'm not too
-	sure what it does. telnetd behaves as if it were being run from
-	inetd, being passed an input and an output descriptor, one
-	connected to the UML (I don't know the mechanism for this yet)
-	and the other to the network port.
-
-Now, I just want raw data to go from the kernel to the port and back
-again. So should I:
-
-	a) just shortcircuit this by hooking the inbound and outbound
-	descriptors up, or
-
-	b) drop netcat in instead of telnetd (which I have tried but it
-	isn't quite working yet.)
-
-There may be architectural reasons why I shouldn't do (a).
-
-Comments?
+And also, if I submit some patches that just contain brief source
+comments about how things work will you accept them? I notice you don't
+use them much.
 
 -- 
 Dan Shearer
