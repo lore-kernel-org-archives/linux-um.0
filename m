@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwPib-0004I2-Js for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 09:54:41 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwPZ6-0007dV-72 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 09:44:52 -0800
-From: M A Young <m.a.young@durham.ac.uk>
-Subject: Re: [uml-devel] Fwd: Re: [uml-user] 2.6.3 hang on boot
-In-Reply-To: <Pine.GSO.4.58.0402260830580.15349@altair.dur.ac.uk>
-Message-ID: <Pine.LNX.4.58.0402261739560.27896@vega.dur.ac.uk>
-References: <200402252038.42084.blaisorblade_spam@yahoo.it>
-	<Pine.GSO.4.58.0402260830580.15349@altair.dur.ac.uk>
+	id 1AwQZV-0000T2-Ub for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 10:49:21 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AwQBz-0008GI-JJ for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 10:25:03 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Problem: copy_thread : pipe failed, err = 24
+References: <20040220092607.GA8007@lain.intern.internetx.de>
+In-Reply-To: <20040220092607.GA8007@lain.intern.internetx.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200402261734.11621.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,38 +27,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 Feb 2004 17:44:08 +0000 (GMT)
+Date: Thu, 26 Feb 2004 17:34:11 +0100
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, Jeff Dike <jdike@addtoit.com>, Ingo Molnar <mingo@elte.hu>
+Cc: Sebastian Wiesinger <sw@internetx.de>
 
-On Thu, 26 Feb 2004, M A Young wrote:
-
-> On Wed, 25 Feb 2004, BlaisorBlade wrote:
+Alle 10:26, venerd=EC 20 febbraio 2004, Sebastian Wiesinger ha scritto:
+> Hello,
 >
-> > Hi, could you please take a look at this message? It seems like libc, in RH9,
-> > still trigger "vsyscall" problems. I'm not sure, however, since the vsyscall
-> > reference in the stack frame could be botched. However there is init getting
-> > SIGSEGV.
+> I'm using a host system with 9 UML boxes and keep getting the error
 >
-> I certainly knew that a RH9 glibc in the client can trigger the vsyscall
-> segfault hang, but it only happens if the /lib/tls libraries are present;
-> presumably the same code is present but it moved from the tls only code to
-> the general code for the FC1 glibc. This is why I originally thought it
-> was an issue with tls and suggested hiding the /lib/tls libraries. I think
-> the fix works in both cases.
+> copy_thread : pipe failed, err =3D 24
 
-Actually, I am wrong, the fix doesn't work with a RH9 image, which still
-crashes, though the workaround of hiding /lib/tls in the image does work
-in this case.
+This is EMFILE. Either you "ulimit"ed your UML's (and one UML needs a lot o=
+f=20
+filehandles) or you need to increase the filehandle limit where it is=20
+happening.
 
-	Michael Young
+> This error appears first after a few hours of running and the boxes
+> with this error is no longer reachable.
+
+*Very* strange. If you mean that you can no longer login / do anything that=
+=20
+needs to create a new process inside UML, I understand it. Otherwise, there=
+=20
+is something strange. Please try to watch how many open files UML has (ls=20
+/proc/<Umlpid>/fd is your friend) and increase filehandles and process limi=
+ts=20
+(read man proc and search about /proc/sys/kernel for this).
+
+> The following other errors
+> also appear:
+>
+> flush_thread : new thread failed, errno =3D 1
+> copy_thread : clone failed - errno =3D 11
+> copy_thread : clone failed - errno =3D 1
+> copy_thread : clone failed - errno =3D 1
+
+EPERM (very strange) and EAGAIN (too many processes running). Checking the =
+
+source for sys_clone could be needed to diagnose EPERM (unless you have=20
+something as GrSecurity active).
+
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
 
 
 -------------------------------------------------------
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
