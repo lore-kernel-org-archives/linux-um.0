@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8jJc-0003zI-2n for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:48:04 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1C8jJb-0001Th-6O for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:48:04 -0700
-From: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
+	id 1C8jpJ-00030r-DN for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 11:20:49 -0700
+Received: from brown.brainfood.com ([146.82.138.61]
+	helo=gradall.private.brainfood.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1C8jpI-0005hO-ON for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 11:20:49 -0700
+From: Adam Heath <doogie@brainfood.com>
+Subject: Re: [uml-devel] uml, ptrace, and BKL
+In-Reply-To: <20040918131814.GA2942@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.58.0409181318020.1171@gradall.private.brainfood.com>
+References: <Pine.LNX.4.58.0409171920470.1171@gradall.private.brainfood.com>
+	<20040918033012.GA1618@ccure.user-mode-linux.org>
+	<Pine.LNX.4.58.0409172129180.1171@gradall.private.brainfood.com>
+	<20040918131814.GA2942@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200409181944.58072.blaisorblade_personal@yahoo.it>
-Subject: [uml-devel] Managing 2.6 merge
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,22 +30,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Sep 2004 19:44:58 +0200
+Date: Sat, 18 Sep 2004 13:20:39 -0500 (CDT)
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff, could you please make sure you CC: me /the uml-devel list on every patch 
-you send to Andrew Morton? I'm working on merging a lot of patches myself, so 
-I'd like to be notified.
+On Sat, 18 Sep 2004, Jeff Dike wrote:
 
-However, if you now are working on the mainline tree yourself, I'm going to 
-send you a tarball containing my remaining patches. I've got a lot of them, 
-right now.
+> The scalability of a lock depends on the number of processors on the system,
+> not the number of processes.  So, for a given host, increasing the number of
+> UMLs on the system won't increase the pressure on the BKL, assuming that
+> number is greater than the number of processors.  And in any case, on a UP
+> system, there is no BKL.
 
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+This is true(and something I hadn't considered).  But with preemption, it's
+possible for multiple threads to be running in the kernel(as I understand it).
+
+However, yes, ptrace paths should be rather short, so the chances for lock
+contention to occur are most likely small.
+
+> However, it would be interesting to see if UML is causing lock contention
+> anywhere.  Running lockmeter on an SMP box running UMLs would show if there's
+> any problems.
+
+Same for a preemptible box.
 
 
 -------------------------------------------------------
