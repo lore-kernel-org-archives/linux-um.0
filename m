@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPlpA-0002xM-1M for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 10:22:48 -0700
-Received: from orange.ous.edu ([140.211.15.17])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPlp7-0001Pl-QM for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 10:22:45 -0700
-Message-Id: <s0a89290.084@ORANGE.OUS.EDU>
-From: "Anthony Brock" <Anthony_Brock@ous.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1BPm6C-0006ej-JZ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 10:40:24 -0700
+Received: from carriage.microbus.com ([195.224.204.205])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BPm6C-0002KH-2A for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 10:40:24 -0700
+Message-ID: <40A8F902.8090001@microbus.com>
+From: Robbie Dinn <robbie@microbus.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] 2.4.23(24?)-2 TT mode hangs on request_module
+References: <Pine.LNX.4.44.0405171722530.17607-100000@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0405171722530.17607-100000@filer.marasystems.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Subject: [uml-devel] Re: Patch 2.6.6
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,51 +27,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 May 2004 10:22:53 -0700
+Date: Mon, 17 May 2004 18:40:18 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-I've downloaded this patch, with a vanilla kernel to a SuSE 9.0 machine
-(32-bit, native Intel architecture). Following previously posted
-suggestions, I removed the um_rquest_irq function from
-include/asm-um/irq.h.
+Henrik Nordstrom wrote:
 
-However, I'm having problems compiling. I issue 'make vmlinux ARCH=um'
-and see:
+> I can very reliably reproduce the problem by
+> 
+> 1. Boot in single user mode (/proc mounted etc.., but no other disturbing 
+> factors)
+> 2. iptables -A INPUT -j REJECT
+> 
 
-  HOSTCC  arch/um/util/mk_constants_kern.o
-arch/um/util/mk_constants_kern.c: In function `main':
-arch/um/util/mk_constants_kern.c:16: error: `KERN_EMERG' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:16: error: (Each undeclared identifier
-is reported only once
-arch/um/util/mk_constants_kern.c:16: error: for each function it
-appears in.)
-arch/um/util/mk_constants_kern.c:17: error: `KERN_ALERT' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:18: error: `KERN_CRIT' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:19: error: `KERN_ERR' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:20: error: `KERN_WARNING' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:21: error: `KERN_NOTICE' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:22: error: `KERN_INFO' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:23: error: `KERN_DEBUG' undeclared
-(first use in this function)
-arch/um/util/mk_constants_kern.c:25: error: `NSEC_PER_SEC' undeclared
-(first use in this function)
-make[1]: *** [arch/um/util/mk_constants_kern.o] Error 1
-make: *** [arch/um/util] Error 2
+I think I may have seen this too, although I didn't understand what
+was going on at the time (still don't). I am a little unsure what
+versions of software I was using, because I wasn't working very
+systematically. It might have been:
+  host: 2.6.6 + skas3 patch or 2.6.6-rc3-mm2 + ska3 patch
+	+ recent CVS netfilter p-o-m
 
-However, KERN_EMERG is declared in both
-<kernel_src>/include/linux/kernel.h and /usr/include/linux/kernel.h,
-which is included at the top of the source file. Why would this fail to
-be declared? I HAVE to be missing something basic on my compiles...
-*sigh*
+  uml: 2.6.6 + blaisorblades unofficial patches
+	and/or uml patches from suse kernel
+	+ recent CVS netfilter p-o-m
 
-Tony
+I am just a monkey applying patches here, I don't claim to actually
+understand the code.
+
+I could get the UML machine to start in single user mode, but
+when starting in run level 2 or 3, it would hang (eating lots of cpu
+cycles) while starting the firewall.
+
+I assumed that the hang was due to me failing to recompile and install
+a fresh version of iptables on UML machine, but I don't have any good
+reason to back up that belief. Does that sound plausible?
+(I was using iptables-1.2.9 built against an older UML kernel, and had
+the 1.2.10 sources waiting to be used).
+
+> The sequence of events here is:
+> 
+> 1. iptables modprobes the base modules (iptable_filter), then uploads the 
+> new iptable which referes to the REJECT match.
+> 
+> 2. The kernel verifies the new iptable and triggers a request_module call
+> for the ipt_REJECT module and here the kernel gets completely stuck..
+> 
+> If all required modules are loaded manually avoiding the call to
+> request_module then there is no problem, but unfortunately this is not a
+> very feasible workaround here..
+> 
+
+The UML binary that I was using had all the iptables stuff statically
+linked. I wasn't using modules at all.
+
+If by so minor miracle I do manage to assemble something that works or
+I find some useful information, I will post a follow up of course.
+
+HTH
+
+Robbie Dinn
 
 
 -------------------------------------------------------
