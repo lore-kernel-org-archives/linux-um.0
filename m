@@ -1,25 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Auzma-0007xj-Ca for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Feb 2004 12:00:56 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AuzUj-0007Ec-10 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Feb 2004 11:42:29 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-user] Re: [uml-devel] new skas3 patch ready for 2.4.25
-References: <40338C1B.1070800@meisterwerk.net>
-	<200402221516.09898.blaisorblade_spam@yahoo.it>
-	<87u11jrnwk.fsf@amaterasu.srvr.nix>
-In-Reply-To: <87u11jrnwk.fsf@amaterasu.srvr.nix>
+Message-ID: <001f01c3f990$c5c3dba0$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <1077259546.6429.56.camel@upupandaway.homenet>
+	<200402202139.40555.blaisorblade_spam@yahoo.it>
+	<013d01c3f7f5$23ae2790$0201a8c0@hawk>
+	<200402221549.24742.blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [uml-user] Host 2.6.2/3 + CFQ + BlaisorBlade
+	patches == host panic
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+	charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200402222056.30704.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,38 +22,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 22 Feb 2004 20:56:30 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 22 Feb 2004 16:11:06 -0600
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-Alle 19:04, domenica 22 febbraio 2004, Nix ha scritto:
-> On Sun, 22 Feb 2004, BlaisorBlade said:
-> > Hmmm, I've looked at the faulting code and IMHO the most probable thing
-> > is a compilation problem (forgot make dep after applying the patch, for
-> > instance) - try saving your .config, running make mrproper,
-> > grepping through .config to check that CONFIG_PROC_MM=y and recompiling
-> > the bzImage:
-> >  $ make dep bzImage
->
-> It's highly plausible that exactly that happened: I forgot `make
-> oldconfig' during the first build and assumed (ha!) that `make dep'
-> would fix everything up OK so that a config change would trigger
-> rebuilds appropriately. Possibly this was a foolish assumption and a
-> `make dep clean' was necessary.
+> So you have enabled CONFIG_SMP, right? In that situation the code above needs
+> to be changed - I need some more thinking to understand what must be done.
 
-When analyzing your bug I was really astonished - I thought at a such scenario 
-( 1st build without CONFIG_PROC_MM created ptrace.o but then failed - config 
-updated - rebuild all but ptrace.o is not rebuilt) and posted my answer in 
-that hypothesis, but I thought that was too hard to trigger and that I had 
-made some errors.
+Yes, this is a dual-xeon box with CONFIG_SMP.  This machine has been assigned to
+active duty back on my 2.4 host kernel, but I have new machines coming in this
+week.  I'll gladly test whatever you need.
 
-Make dep should have fixed things, so it's not your fault, but in this case it 
-didn't - sometimes happens in 2.4 builds. Luckily, 2.6 finally fixed this (at 
-least for what I've heard and for my personal experience).
-
-Good bye and best wishes for your new kernel!
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+Thanks,
+-Chris
 
 
 
