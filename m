@@ -1,29 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AilJG-0002JE-Ca for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jan 2004 18:08:06 -0800
-Received: from mta11.adelphia.net ([68.168.78.205])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AilJG-0006eo-2H for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jan 2004 18:08:06 -0800
-Received: from mizar.alcor.net ([68.64.159.24]) by mta11.adelphia.net
-	(InterMail vM.5.01.06.05 201-253-122-130-105-20030824) with ESMTP
-	id <20040120020757.ECQJ11898.mta11.adelphia.net@mizar.alcor.net>
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 19 Jan 2004 21:07:57 -0500
-Received: from mdz by mizar.alcor.net with local (Exim 4.30)
-	id 1AilJ5-0000Pq-F9 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jan 2004 18:07:55 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] Re: more on COW (long)
-Message-ID: <20040120020755.GF16181@alcor.net>
-References: <20040119.155346.-522689.0.mcmechanjw@juno.com>
+	id 1Ais48-0000yq-Sh for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 01:20:56 -0800
+Received: from userbb201.dsl.pipex.com ([62.190.241.201]
+	helo=irishsea.home.craig-wood.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Ais45-0005Gz-Gp for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 01:20:53 -0800
+From: Nick Craig-Wood <ncw1@axis.demon.co.uk>
+Subject: Re: [uml-devel] uml-patch-2.4.23-2
+Message-ID: <20040120092050.GA31994@axis.demon.co.uk>
+References: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040119.155346.-522689.0.mcmechanjw@juno.com>
+In-Reply-To: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,28 +28,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Jan 2004 18:07:55 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 20 Jan 2004 09:20:50 +0000
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Jan 19, 2004 at 03:53:43PM -0800, James W McMechan wrote:
-
-> The setup in that case would be to use losetup to make devices using
-> one for each COW and backing file so you can only have 1/2 of the
-> available loops used for COW files and the other 1/2 as the backing
-> files i.e. 4 COW files with 4 backing files from 8 loop back devices
-> the usual default, as of Feb 2002 you can now have up to 256 loop
-> devices. But I think that a hard limit of 128 COW files per system is
-> too small, and if the max_loop is left at the default of 8... 4 COW files
-> per system would be a great pain, (yes, if they all use the exact same
-> backing file you could get 255 or 7)
-
-Why do you need loop devices?  Doing COW in the UML kernel can deal with ubd
-block devices instead. This means chewing up two ubd devices for each COW
-device, though, and I think is the opposite direction of where Jeff wants to
-go.
+I looked for this on sourceforge - it is linked to on the projects
+page, but it gives a 404 error when you try to download it.  I had a
+look for it on uploads.sourceforge.net also (in the user-mode-linux
+directory and in /incoming) and its not there either!
 
 -- 
- - mdz
+Nick Craig-Wood
+ncw1@axis.demon.co.uk
 
 
 -------------------------------------------------------
