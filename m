@@ -1,25 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CYu7T-00088P-7x for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 14:35:43 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CYu7S-0001AJ-2b for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 14:35:42 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: Auto-updating Jeff Dike tree
-References: <200410081635.i98GZgr02277@trolli.pdb.fsc.net>
-	<200410132008.59231.blaisorblade_spam@yahoo.it>
-	<41AB9E02.9050400@tuxrocks.com>
-In-Reply-To: <41AB9E02.9050400@tuxrocks.com>
+Message-ID: <267988DEACEC5A4D86D5FCD780313FBB021BBBDE@exch-03.noida.hcltech.com>
+From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200411292338.45801.blaisorblade_spam@yahoo.it>
+	charset="iso-8859-15"
+Subject: [uml-devel] RE: [uml-user] /etc/shadow problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,33 +16,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 29 Nov 2004 23:38:45 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Frank Sorenson <frank@tuxrocks.com>, bodo.stroesser@fujitsu-siemens.com
+Date: Tue, 30 Nov 2004 09:39:18 +0530
+To: Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-user@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 29 November 2004 23:09, Frank Sorenson wrote:
-> BlaisorBlade wrote:
-> > I use the attached script (questionable as much as you want, i.e. it kind
-> > of works here, no guarantee, not even "I think it works") to download the
-> > patches. It parses the patches.html in a very rough Way. I mean
-> > "DownloadAllPatches".
-> >
-> > Also, the generated series file must be edited: it appends the new patch
-> > list, so if you use it as-is it has duplicate patches and won't work.
->
-> BlaisorBlade,
->
-> I've modified your DownloadAllPatches script a bit, and thought you
-> might want the changes as well.  This version doesn't require editing
-> for whatever versions are on the page (now auto-detects), rewrites the
-> series file, and is quieter.
+Is it possible to make the root password empty with passwd command?? i have
+tried but it gives error on empty password
 
-Thanks a lot for this... 
+Thanks and Best Regards, 
+Adil Mujeeb
 
-A note: appending rather than rewriting was done for the need of saving the 
-old content of series. It was not reliable at all, however, and maybe it 
-would be better to just copy somewhere else the old content, so it's probably 
-better as you did.
+
+-----Original Message-----
+From: Blaisorblade [mailto:blaisorblade_spam@yahoo.it]
+Sent: Monday, November 29, 2004 11:39 PM
+To: user-mode-linux-user@lists.sourceforge.net
+Cc: Adil Mujeeb, Noida; user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-user] /etc/shadow problem
+
+
+On Monday 29 November 2004 16:45, Adil  Mujeeb, Noida wrote:
+> Hi,
+> im trying to change the user password to empty. On normal linux u can do
+it
+> by making the password field empty in /etc/shadow file. But when im trying
+> to do on UML, it doesnt update and give message login incorrect. How to
+> make it empty??
+Depends on the root_fs distro - the "passwd" command should always work, 
+except on the toms root fs - it rewrites /etc/passwd on each shutdown (I 
+don't remember exactly where).
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
