@@ -1,26 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJEoh-0004oQ-62 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Apr 2005 10:59:51 -0700
-Received: from zproxy.gmail.com ([64.233.162.207])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DJEof-0004s0-Hz for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Apr 2005 10:59:51 -0700
-Received: by zproxy.gmail.com with SMTP id 9so139741nzo
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 06 Apr 2005 10:59:42 -0700 (PDT)
-Message-ID: <cbec11ac05040610597dfb93e1@mail.gmail.com>
-From: Ian McDonald <imcdnzl@gmail.com>
-Reply-To: Ian McDonald <imcdnzl@gmail.com>
-Subject: Re: [uml-devel] Broken compiling under 2.6.12-rc2 on my machine
-In-Reply-To: <200504060145.24555.rob@landley.net>
+	id 1DJFcO-0007R3-Fj for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Apr 2005 11:51:12 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DJFcM-0001fw-VM for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Apr 2005 11:51:12 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050406203558.GA3307@ccure.user-mode-linux.org>
+References: <4253E3D6.2000809@fujitsu-siemens.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-References: <cbec11ac050405205173f18157@mail.gmail.com>
-	<200504060145.24555.rob@landley.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4253E3D6.2000809@fujitsu-siemens.com>
+Subject: [uml-devel] Re: UML-patches to prepare UML/s390
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,21 +27,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 7 Apr 2005 05:59:42 +1200
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 6 Apr 2005 16:35:58 -0400
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
 
-> > And UML does compile under 2.6.11 with a patch for gcc (which is
-> > include in 2.6.12-rc4). Haven't yet tried 2.6.12-rc1 but can do later
-> > if this will help.
-> 
-> I'm confused: what?
-> 
-That should read 2.6.12-rc2 not 2.6.12-rc4.
+On Wed, Apr 06, 2005 at 03:27:50PM +0200, Bodo Stroesser wrote:
+> Here are the patches (tarball attached), that I've applied to
+> UML 2.6.11 + incrementals, before adding s390-files.
+> These patches are tested a bit on x86, but not on x86_64.
 
-I will supply the .config when I get into university. I will try to
-replicate yours as well - I was running without SKAS I think which is
-where your problem appears to be....
+I merged these, except for the restartnointr one because I don't have
+ERESTARTNOINTR in my /usr/include, inside a #ifdef KERNEL or not.
+
+				Jeff
 
 
 -------------------------------------------------------
