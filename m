@@ -1,16 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-list2-b.sourceforge.net ([10.3.1.8] helo=sc8-sf-list2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AZT0I-0001Kf-Ee
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 25 Dec 2003 02:46:06 -0800
-From: Christoph Hellwig <hch@infradead.org>
-Message-ID: <20031225104559.A23615@infradead.org>
-References: <200312242019.23335.blaisorblade_work@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200312242019.23335.blaisorblade_work@yahoo.it>; from blaisorblade_work@yahoo.it on Wed, Dec 24, 2003 at 08:19:23PM +0100
-Subject: [uml-devel] Re: [kbuild-devel] Needed help for UML kbuild.
+Message-ID: <3FEAE023.6040908@darkman.de>
+From: "Sven 'Darkman' Michels" <sven@darkman.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] ubd=mmap problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,26 +15,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 25 Dec 2003 10:45:59 +0000
-To: BlaisorBlade <blaisorblade_work@yahoo.it>
-Cc: kbuild-devel@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 25 Dec 2003 14:03:31 +0100
+To: UML devel list <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
 
-On Wed, Dec 24, 2003 at 08:19:23PM +0100, BlaisorBlade wrote:
-> Makefile.build change is just cosmetic(changing the shown tag; I must change 
-> it more to fix the filename alignment; but why don't you use a tab for 
-> this?). The Makefile.lib, instead, is the core change: objects listed in 
-> UML_USER_OBJS get completely different CFLAGS.
+Hi there,
 
-Please don't use shouting names..
+i started uml with udb=mmap, the box runs fine but today i
+noticed that the box was terminated after a nightly cron
+run inside the uml. While trying to figure out what the
+problem was, i noticed that the uml can't reboot anymore
+cause it hangs in an endless loop when unmounting the devices.
+all i saw was:
+map : /proc/mm map failed, err = 9
+map : /proc/mm map failed, err = 9
+map : /proc/mm map failed, err = 9
+map : /proc/mm map failed, err = 9
+map : /proc/mm map failed, err = 9
+map : /proc/mm map failed, err = 9
 
-> The list always contains, in the arch/um subfolders, all objects whose name 
-> matches %_user.o(as it has always been for UML).
+this was with 2.4.23 and latest uml 2.4.22 patch. So i thought
+its an problem with the patches and builded a fres 2.4.23 with
+the latest -1 patch. But the problem is still there. When i
+remove the udb=mmap from my startup line, uml works and reboots
+like expected. Anyone had that too or can tell me what the
+Problem is? ;) The host is running 2.4.22 with skas patch.
 
-This doesn't sound like a good heuristic, imagine a driver using e.g.
-foo_user.c for the chardev user interface.  In general I'd suggest adding
-parallel infrastructure for user-$(CONFIG_FOO) variables in addition to
-the current obj-* and host-*.  The only problem you could get with that
-is that you need to take special care of the link order.
+Regards,
+Sven
 
 
 
