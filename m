@@ -2,22 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AfhT9-0001Z3-O6 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Jan 2004 07:25:39 -0800
-Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
+	id 1Afhlx-0002RU-Ii for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 07:45:05 -0800
+Received: from imap.unet.univie.ac.at ([131.130.221.38])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AfhT9-0003hn-6w for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Jan 2004 07:25:39 -0800
+	id 1Afhlw-0000No-Ed for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 07:45:04 -0800
+Received: from unet.univie.ac.at (unet.univie.ac.at [131.130.221.49])
+	by imap.unet.univie.ac.at (8.12.10/8.12.10) with ESMTP id
+	i0BFiomg097446 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 11 Jan 2004 16:44:58 +0100
+Received: (from a9501467@localhost) by unet.univie.ac.at
+	(AIX5.2/8.11.6p2/8.11.0) id i0BFioj80320 for
+	user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 16:44:50 +0100
+From: Ralph Spitzer <a9501467@unet.univie.ac.at>
+Message-ID: <20040111154449.GJ204688@login.unet.univie.ac.at>
 Mime-Version: 1.0
-Message-Id: <a0602042dbc271a5a5e68@[192.168.1.10]>
-In-Reply-To: <200401111334.04252.blaisorblade_spam@yahoo.it>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<200401072025.02885.blaisorblade_spam@yahoo.it>
-	<a06020426bc2611122f8b@[192.168.1.10]>
-	<200401111334.04252.blaisorblade_spam@yahoo.it>
-From: Johannes Formann <johannes@formann.de>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [uml-devel] Survey: Motivations to Contribute
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,38 +33,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 11 Jan 2004 16:25:31 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 11 Jan 2004 16:44:49 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-At 13:34 Uhr +0100 11.01.2004, BlaisorBlade wrote:
+Hi all!
 
->Why do you say "modules"? I.e. do you get that problem in a special situation,
->like Jeff Chua that sees it only when he uses LVM? Does your UML uses an
->initrd to load some modules?
+I'm doing a research project on the motives of free software / open source 
+software developers. This survey follows a somewhat different approach than 
+some earlier studies and tries to incorporate concepts of social 
+psychology to better understand the internal motivation of developers.  
 
-I've found that problem with ecery module I reyed (tun, ipv6, and a few more)
+The questionnaire consists of 44 questions which should be scored on a scale
+from 1 to 7. According to test runs, completion of the questionnaire should 
+take about 6 minutes. No registration required.  
 
->Jeff Chua posted 2 patches. The second was shorter BUT I'm *at all* sure it
->cannot do anything (by having read and understood it).
+ 
+The questionnaire and more information about the survey can be found here:
 
-The shorter Patch shows no change in the behavior, and the longer one 
-doesn't work (seems like mem.c has changed a bit more since 22-5um)
+*** http://foss-survey.at.tf ***
+  
+The survey will be online until the end of January. I hope to have the results
+online by mid February. If you want to be notified, please enter
+your email address in the appropriate box. 
 
->I think you should
->apply his first change, or, as a workaround, disable klogd from inside UML
+If you have questions or comments about this survey, please CC me or email me
+directly, because I won't be able to follow all the lists/forums.  
 
-That could be a bit handy,
+Thank you. Your help is greatly appreciated.
 
->  or
->remove /dev/kmem.
-
-But that sounds manageable, I'll have only to llok where I can 
-disable that (I'm usind defs, but I'm shure I can find that.
-
-
-Thanks for your hint
-
-regatds Johannes
+ralph
 
 
 -------------------------------------------------------
