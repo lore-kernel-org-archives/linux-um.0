@@ -1,19 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Adh7F-0007bj-29 for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:38:45 -0800
+	id 1Adh7b-0007fJ-CR for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 18:39:07 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Adh7E-0002Dp-II
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:38:44 -0800
-Message-Id: <200401060258.i062wNFI023072@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] NPTL + UML? 
-In-Reply-To: Your message of "Fri, 02 Jan 2004 15:22:50 EST."
-	<3FF5D31A.8050503@timesys.com> 
-References: <3FF5D31A.8050503@timesys.com> 
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Adh7a-0000sa-JY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 18:39:06 -0800
+Message-Id: <200401060258.i062wWFI023087@ccure.user-mode-linux.org>
+Subject: Re: Resolution (Re: [uml-devel] 2.4.22-[67] problems) 
+In-Reply-To: Your message of "Tue, 30 Dec 2003 10:43:30 PST."
+	<20031230184330.GD1365@alcor.net> 
+References: <20031220011323.GW18100@alcor.net>
+	<20031220171450.GB10692@ccure.user-mode-linux.org>
+	<20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
+	<20031228093317.GK17472@alcor.net>
+	<20031228095115.GL17472@alcor.net>
+	<20031228101240.GN17472@alcor.net>
+	<20031228113042.GO17472@alcor.net>
+	<20031230184330.GD1365@alcor.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,18 +35,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 05 Jan 2004 21:58:23 -0500
-To: "La Monte H.P. Yarroll" <piggy@timesys.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 05 Jan 2004 21:58:32 -0500
+To: Matt Zimmerman <mdz@debian.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org
 
-piggy@timesys.com said:
-> Is anybody out there working on getting thread-local storage (i.e.
-> NPTL)  working with UML?  I see that set_thread_area(2) and
-> get_thread_area(2)  are both sys_ni_syscall in arch/um/kernel/
-> sys_call_table.c. 
+mdz@debian.org said:
+> It turns out that this problem seems to be due to compiler
+> incompatibility. UML had been built with gcc 2.95 due to old breakage,
+> and when built with gcc 3.3 (as glibc is), everything starts working
+> again.  My suspicion is that this is due to certain recent changes in
+> pthreads.
 
-I've punted on some of the new 2.6 stuff for now.  I'll catch up on that
-and other things (modules, hugetlbfs, etc) when I get a free moment or two.
+Is it your opinion that there's no problem in UML itself?  Having a field
+in the sigcontext getting magically munged is somewhat worrying.  I'd be 
+happier knowing what exactly was happening so I can be sure this wasn't
+exposing some subtle UML bug.
 
 				Jeff
 
