@@ -1,23 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AdioW-0004iY-8U for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 20:27:32 -0800
-Received: from dsl093-055-110.blt1.dsl.speakeasy.net
-	([66.93.55.110] helo=mail.d20boards.net ident=1014)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AdioV-0000Z9-Qf for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 20:27:31 -0800
-Message-ID: <1178.66.93.55.203.1073363628.squirrel@mail.d20boards.net>
-In-Reply-To: <200401060258.i062wYFI023092@ccure.user-mode-linux.org>
-References: <20031230183331.GB2845@carpediem.epita.fr> 
-	<200401060258.i062wYFI023092@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] UML + skas
-From: "attriel" <attriel@d20boards.net>
-Reply-To: attriel@d20boards.net
+	id 1Adlp4-0002AC-N4 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 23:40:18 -0800
+Received: from [81.193.166.163] (helo=puma-vgertech.no-ip.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Adlp3-00061X-Va for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Jan 2004 23:40:18 -0800
+Message-ID: <3FFA66B3.501@vgertech.com>
+From: Nuno Silva <nuno.silva@vgertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Subject: Re: Resolution (Re: [uml-devel] 2.4.22-[67] problems)
+References: <20031220011323.GW18100@alcor.net>
+	<20031220171450.GB10692@ccure.user-mode-linux.org>
+	<20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
+	<20031228093317.GK17472@alcor.net>
+	<20031228095115.GL17472@alcor.net>
+	<20031228101240.GN17472@alcor.net>
+	<20031228113042.GO17472@alcor.net>
+	<20031230184330.GD1365@alcor.net>
+	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
+In-Reply-To: <200401060258.i062wWFI023087@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,16 +35,79 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 5 Jan 2004 23:33:48 -0500 (EST)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 06 Jan 2004 07:41:39 +0000
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Matt Zimmerman <mdz@debian.org>, user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org
 
-> Maybe, but skas4 doesn't have this problem, and /usr/include/asm should
+Hi!
 
-Is SKAS4 nearing completion, btw?  I know you said a while ago that you
-were working out a last little bug or something, just curious how it's
-going :)
+Jeff Dike wrote:
+> mdz@debian.org said:
+> 
+>>It turns out that this problem seems to be due to compiler
+>>incompatibility. UML had been built with gcc 2.95 due to old breakage,
+>>and when built with gcc 3.3 (as glibc is), everything starts working
+>>again.  My suspicion is that this is due to certain recent changes in
+>>pthreads.
+> 
+> 
+> Is it your opinion that there's no problem in UML itself?  Having a field
+> in the sigcontext getting magically munged is somewhat worrying.  I'd be 
+> happier knowing what exactly was happening so I can be sure this wasn't
+> exposing some subtle UML bug.
+> 
 
---attriel
+I've been doing some tests and I'd say that the problem is something 
+regarding the NPTL+TLS+__thread features of recent libc6 (2.3.2 and 
+2.3.3cvs)... But I'm clueless about the fix :-)
+
+I'll setup a chroot where I can play around with glibc setups.
+
+OARS, why does linux (the UML executable) doesn't run under 
+/lib/ld-linux.so?
+
+Example:
+puma:/tmp# ldd /usr/bin/scp
+                 libutil.so.1 => /lib/tls/i686/cmov/libutil.so.1 
+(0x4002f000)
+         libz.so.1 => /usr/lib/libz.so.1 (0x40032000)
+         libnsl.so.1 => /lib/tls/i686/cmov/libnsl.so.1 (0x40044000)
+         libcrypto.so.0.9.7 => /usr/lib/i686/cmov/libcrypto.so.0.9.7 
+(0x40059000)
+         libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0x40156000)
+         libdl.so.2 => /lib/tls/i686/cmov/libdl.so.2 (0x4028f000)
+         /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+
+puma:/tmp# ldd ./linux
+                 libutil.so.1 => /lib/tls/i686/cmov/libutil.so.1 
+(0x40018000)
+         libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0x4001b000)
+         /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+puma:/tmp#
+
+scp has a superset of linux's shared libs and runs ok:
+puma:/tmp# /lib/ld-linux.so.2 --library-path /lib:/usr/lib /usr/bin/scp
+usage: scp [-pqrvBC1246] [-F config] [-S program] [-P port]
+            [-c cipher] [-i identity] [-l limit] [-o option]
+            [[user@]host1:]file1 [...] [[user@]host2:]file2
+puma:/tmp#
+
+
+But linux does not run:
+puma:/tmp# /lib/ld-linux.so.2 --library-path /lib:/usr/lib /tmp/linux
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+Mapping memory: Invalid argument
+puma:/tmp#
+
+If linux could run under ld-linux-so helper testing would be easier :)
+
+Regards,
+Nuno Silva
+
+
+
+
 
 
 -------------------------------------------------------
