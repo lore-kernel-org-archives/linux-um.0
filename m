@@ -1,12 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Matt Zimmerman <mdz@debian.org>
-Subject: modify_ldt_ldt_s vs. user_desc (Re: [uml-devel] Re: [uml-user] UML (unofficial) patches against vanilla 2.6.2)
-Message-ID: <20040213071536.GJ19147@alcor.net>
-References: <200402052107.37625.blaisorblade_spam@yahoo.it> <200402130523.i1D5NTgR005420@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200402130523.i1D5NTgR005420@ccure.user-mode-linux.org>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Ara32-0001wH-CO
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 01:55:48 -0800
+Received: from witte.sonytel.be ([80.88.33.193])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1ArZyd-0004cz-LQ
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 01:51:15 -0800
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [uml-devel] Re: patch/RFC: add bypass for "debug" parameter
+In-Reply-To: <20040212214058.R25203@almesberger.net>
+Message-ID: <Pine.GSO.4.58.0402131052540.23784@waterleaf.sonytel.be>
+References: <20040208185334.H9021@almesberger.net>
+ <20040212154958.GB2834@ccure.user-mode-linux.org> <20040212214058.R25203@almesberger.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,31 +25,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 Feb 2004 23:15:36 -0800
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 13 Feb 2004 10:53:52 +0100 (MET)
+To: Werner Almesberger <werner@almesberger.net>
+Cc: Jeff Dike <jdike@addtoit.com>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Feb 13, 2004 at 12:23:29AM -0500, Jeff Dike wrote:
+On Thu, 12 Feb 2004, Werner Almesberger wrote:
+> Jeff Dike wrote:
+> > Would there be any loud screams of horror if I were to change the UML
+> > 'debug' switch to 'gdb' or something?
+>
+> Only screams of joy from my side :-)
+>
+> Perhaps a parameter to pass further parameters verbatim to the
+> kernel, i.e. something like the "--" some programs use, could
+> be useful too, just in case someone invents a configurable
+> "global debug buffer" or such.
 
-> As for I-01-Debian_workaround.patch, I had the impression that this was
-> caused by a Debian bug.  If so, they should fix it, and I shouldn't have
-> to put workarounds in UML for it.
+Be careful not to break the feature to pass all remaining arguments to init.
 
-I'm not sure whether this is a bug, but if it is, it is not Debian's bug
-alone.  glibc in Debian testing and unstable just happens to provide newer
-kernel headers, including asm/ldt.h, which has the new name for the struct
-(user_desc vs.  modify_ldt_ldt_s).  There is no provision for backward
-compatibility in ldt.h, so apparently user programs are on their own in
-determining which name to use.
+Gr{oetje,eeting}s,
 
-I was working around this in the debs, but then it was #ifdef'd out
-anyway (2.4.22-7? 2.4.23-1?), and I stopped worrying about it.
+						Geert
 
-I don't suppose there would be much harm in adding a macro to ldt.h so that
-existing software could continue to work, but that change belongs in the
-kernel.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
--- 
- - mdz
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 -------------------------------------------------------
