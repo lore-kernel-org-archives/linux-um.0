@@ -1,34 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AvkNp-0007b3-BK for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Feb 2004 13:46:29 -0800
-Received: from napo.bezeqint.net ([192.115.104.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AvkFP-00008D-BA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Feb 2004 13:37:47 -0800
-Received: from napo.bezeqint.net (localhost [127.0.0.1])
-	by napo.bezeqint.net (Bezeq International SMTP out Mail Server) with
-	SMTP id 26501DC064 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 24 Feb 2004 23:37:35 +0200 (IST)
-Received: from localhost (localhost.active.ath.cx [127.0.0.1])
-	by active.ath.cx (Postfix) with ESMTP id 8F3465C82
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 24 Feb 2004 23:37:34 +0200 (IST)
-Received: from active.ath.cx ([127.0.0.1])
-	by localhost (active.ath.cx [127.0.0.1]) (amavisd-new,
-	port 10024) with ESMTP
-	id 57353-10 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 24 Feb 2004 23:37:33 +0200 (IST)
-From: "Amir S." <amir@boom.org.il>
-Message-ID: <20040224213733.GA32999@active.ath.cx>
-Reply-To: amir@boom.org.il
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-Subject: [uml-devel] export strnlen_user_tt and strnlen_user_skas
+	id 1Avu4C-0007Yk-8K for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Feb 2004 00:06:52 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user18657)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Avtik-0002gA-K3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 24 Feb 2004 23:44:42 -0800
+Subject: Re: [uml-user] Re: [uml-devel] new skas3 patch ready for 2.4.25
+References: <40338C1B.1070800@meisterwerk.net>
+	<200402221516.09898.blaisorblade_spam@yahoo.it>
+	<87u11jrnwk.fsf@amaterasu.srvr.nix>
+	<200402222056.30704.blaisorblade_spam@yahoo.it>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200402222056.30704.blaisorblade_spam@yahoo.it> (BlaisorBlade's
+	message of "Sun, 22 Feb 2004 20:56:30 +0100")
+Message-ID: <87fzczsi9z.fsf@amaterasu.srvr.nix>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,37 +31,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 24 Feb 2004 23:37:33 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 25 Feb 2004 07:57:44 +0000
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Sun, 22 Feb 2004, BlaisorBlade mused:
+> When analyzing your bug I was really astonished - I thought at a such scenario 
+> ( 1st build without CONFIG_PROC_MM created ptrace.o but then failed - config 
+> updated - rebuild all but ptrace.o is not rebuilt) and posted my answer in 
+> that hypothesis, but I thought that was too hard to trigger and that I had 
+> made some errors.
 
+... and after a full rebuild it works. It's easy to trigger that scenario
+if one is sufficiently distracted when building :)
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Blasted blasted dependencies.
 
-both strnlen_user_tt, and strnlen_user_skas aren't exported.
+> Good bye and best wishes for your new kernel!
 
-this is required for modules to use strnlen_user() function under UML.
+She lives, she lives!
 
---=20
-	Amir.
-
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (FreeBSD)
-
-iD8DBQFAO8Qd6GJjqfuvOIgRAmsDAJ4sWJzPGIZDAyE66efPbFnZLC4uxgCZAYpt
-qqIVNfATBMksnaZZOlge2u8=
-=7elW
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
+-- 
+`note to the crown prosecution service: Machine guns dont have a
+ 'stun' setting.' --- mjw
 
 
 -------------------------------------------------------
