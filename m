@@ -2,26 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpLA8-00035b-8U for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 22:42:24 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CpLA6-0002JC-9R
+	id 1CpUo7-0004wi-PQ for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 14 Jan 2005 09:00:19 -0800
+Received: from pool-151-203-218-166.bos.east.verizon.net ([151.203.218.166]
+	helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CpUo4-0002St-0P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 22:42:23 -0800
-Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.12.11/8.12.11) with ESMTP id j0E7oiXa021301
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 14 Jan 2005 02:50:45 -0500
-From: Rob Landley <rob@landley.net>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501140040.56592.rob@landley.net>
-Subject: [uml-devel] UML build process uses perl?  (With sed alternative.)
+	Fri, 14 Jan 2005 09:00:17 -0800
+Message-Id: <200501141922.j0EJMKnV003227@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Thu, 13 Jan 2005 22:00:51 +0100."
+	<20050113210051.99326AB30@zion> 
+References: <20050113210051.99326AB30@zion> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [patch 02/11] uml: fix compilation for missing headers
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,31 +29,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 14 Jan 2005 00:40:56 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 14 Jan 2005 14:22:20 -0500
+To: blaisorblade_spam@yahoo.it
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-I thought maybe the problem I'm having is due to running UML with a uclibc 
-root on a glibc host system, so I tried to build UML in my chroot 
-environment.
+blaisorblade_spam@yahoo.it said:
+> If you think it cannot make sense to include both <sys/ptrace.h> and
+> <linux/ptrace.h> (as userspace process, i.e. host includes), go
+> complaining with glibc, or follow the linux-abi includes idea.
 
-It died when it tried to use perl to build.
+> However, the compilation failure is possibly glibc-version (or better
+> glibc includes version) related - what I now is that the failure
+> happens on my system with a glibc 2.3.4 (from Gentoo).
 
-My uclibc environment hasn't got perl.  The normal linux kernel build doesn't 
-use perl.  Neither do busybox, lilo, uClibc, zlib, dropbear, autoconf, 
-automake, bin86, binutils, bison, cdrtools, e2fsprogs, flex, gcc, libtool, 
-m4, make, nasm, the squashfs or zisofs tools, udev, or any of the other 
-packages I build under the thing.
+> Also, remove some syscalls from the syscall table, since some syscalls
+> were added which are only inside -mm currently, and this prevents
+> currently compilation. 
 
-As far as I can tell, the following sed invocation will give more or less what 
-the perl does, without a dependency on perl.  (Busybox has sed.)  It may need 
-a bit of adapting to make the makefile happy (and adding config.tmp to make 
-clean), but the concept seems to work...
+Hold off on this one.  I have different fixes for this in my tree.
 
-sed -e 's/^.*$/"&\\n"/' /linux-2.6.9/.config > config.tmp
-sed -e '/CONFIG/{' -e 's/"CONFIG"\;/""/' -e 'r config.tmp' -e 'a ""\;' \
-	-e '}' config.c.in
+The system ptrace headers (asm/ptrace.h, sys/ptrace.h, linux/ptrace.h) have
+varying effects, depending on distro and architecture.  So, I decided to put
+sysdep/ptrace_user.h in charge of supplying the system ptrace information to
+the rest of UML.  This has some ripple effects which I am in the process of
+sorting out.
 
-Rob
+On the system calls, I have them indef-ed depending on whether one of the
+__NR_vperf symbols are defined.  This will go away when the entry points
+are in both -mm and -linus.
+
+				Jeff
+
 
 
 -------------------------------------------------------
