@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cnr3d-0001zd-TN for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jan 2005 20:21:33 -0800
-Received: from rimuhosting.com ([69.90.33.248])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Cnr3a-00067L-NS
+	id 1Cntrj-00019p-Ql for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Jan 2005 23:21:27 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1Cntri-0003HA-Co
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jan 2005 20:21:33 -0800
-Message-ID: <41E202BB.5010305@randomwebstuff.com>
-From: peter <peter@randomwebstuff.com>
+	Sun, 09 Jan 2005 23:21:27 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
+References: <200501082106.38306.rob@landley.net>
+	<31487.1105315534@marajade.sandelman.ottawa.on.ca>
+In-Reply-To: <31487.1105315534@marajade.sandelman.ottawa.on.ca>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Memory corruption/errors?
-References: <41CAC781.1030903@fujitsu-siemens.com>
-	<41CB7FBB.10705@rimuhosting.com>
-In-Reply-To: <41CB7FBB.10705@rimuhosting.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_U6h4BIJ4WAB5BxQ"
+Message-Id: <200501100120.04746.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,360 +31,393 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 10 Jan 2005 17:21:15 +1300
-To: Peter <peter.spamcatcher@rimuhosting.com>
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 10 Jan 2005 01:20:04 -0500
+To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Bodo?
 
-Peter wrote:
-> Hi.  Thanks for the patch.
-> 
-> I am trying to apply these against 2.6.9 + bb4 (from 
-> http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/). 
->   Your patch is not applying (no such file, HUNKs failing, etc).
-> 
-> Do you have a version of your patch that compiles against 2.6.9-bb4? 
-> Ideally I'd like to get this working with 2.6.9-bb4 since that seems to 
-> be the 'stable' 2.6 UML guest kernel.
-> 
-> Else, can you let me know what code (links to all component patches 
-> appreciated) your patch is against and I will try that.
-> 
-> Regards, Peter
-> 
-> Bodo Stroesser wrote:
-> 
->> I'm forwarding this to the list, because I did a "Reply to all"
->> missing the fact, that the list wasn't CC'ed
->>
->> Bodo
->>
->> ------------------------------------------------------------------------
->>
->> Subject:
->> Re: [uml-devel] Memory corruption/errors?
->> From:
->> Bodo Stroesser <bstroesser@fujitsu-siemens.com>
->> Date:
->> Thu, 23 Dec 2004 13:58:18 +0100
->> To:
->> Peter <peter.spamcatcher@rimuhosting.com>
->>
->> To:
->> Peter <peter.spamcatcher@rimuhosting.com>
->> CC:
->> Jeff Dike <jdike@addtoit.com>
->>
->>
->> Peter wrote:
->>
->>>
->>> I really don't know what fxsr is.  But I think I have it.  My servers 
->>> are dual proc xeons.  2.6.8.1 with skas3 v7 (mostly).
->>>
->>> # cat /proc/cpuinfo  | grep fxsr
->>> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr 
->>> pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm 
->>> pbe cid
->>> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr 
->>> pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm 
->>> pbe cid
->>> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr 
->>> pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm 
->>> pbe cid
->>> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr 
->>> pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm 
->>> pbe cid
->>
->>
->> Yes. Here the machine tell us, that fxsr is available.
->>
->>>
->>> So you can only reproduce the problem when your use the sighandler?  
->>> But when you use your patch the problem is not triggered (even with 
->>> the sighandler)?
->>>
->>> I'd be happy to try a patch.  I only have production machines at the 
->>> moment, so I may not be able to restart one for a week or two until 
->>> some new ones arrive.
->>>
->>> Regards, Peter
->>>
->>> Bodo Stroesser wrote:
->>>
->>>> Peter wrote:
->>>>
->>>>> I don't run TT mode UMLs.  So, no I haven't tried that.
->>>>>
->>>>> I don't know about the sighandler.  The program runs as it was 
->>>>> listed. It is running on a 'regular' server (Debian, and/or WBL3) 
->>>>> with other processes running.  And the host servers happen to be 
->>>>> running other UMLs.  I don't know if that information helps.  (i.e. 
->>>>> can a sighandler in another process on the UML or on the host cause 
->>>>> this problem?)
->>>>>
->>>>> I'd be happy to try out a skas patch - preferably if it just 
->>>>> applied to the guest ;)  To see if it fixes things or not.
->>>>>
->>>>> Regards, Peter
->>>>>
->>>> I could try to create a patch, just for testing.
->>>> What machine is your host? It probably has fxsr?
->>>>
->>>> Bodo
->>
->>
->> OK. Here it is! For testing only!
->>
->> I've tested the patch on a XEON 2.4GHz, and AFAICS it works.
->> But no guarantee!
->>
->> The errors with memtest2 no longer occur on my system.
->>
->> I have no machine without fxsr, thus I couldn't test that.
->> When the patch is applied, don't forget to do
->>     "make clean ARCH=um"
->> before recompiling the kernel.Else you will get an
->> inconsitent kernel that crashes.
->>
->> Bodo
->>
->>
->> ------------------------------------------------------------------------
->>
->> From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
->>
->> This patch is for testing only!
->>
->> It's a quick and dirty patch to verify, that wrong fp-context
->> saving and restore really are the cause of errors in "memtest.c"
->> It fixes the problem by:
->>  - making have_fpx_regs accessible for other modules instead of
->>    declaring it "static" in arch/um/os-Linux/sys-i386/registers.c
->>  - Adding 1 to HOST_FP_SIZE to have room for the "status" (and magic)
->>    field. Now skas.fp + skas.xfp combined have the size of
->>    struct _fpstatus
->>  - in arch/um/sys-i386/signal.c adding some code, that handles
->>    the _fpstatus in sigcontext differently, depending on have_fpx_regs.
->>    For (have_fpx_regs == 0), the _fpstatus simply is copied to/from
->>    user from/to skas.fp. When writing to user, the status field is
->>    created also.
->>    For (have_fpx_regs == 1), when writing to user, the full _fpstatus
->>    is created in skas.fp and skas.xfp, from the data found in skas.xfp.
->>    Then it is copied to user. When reading, the full _fpstatus is read
->>    to skas.fp and skas.xfp. Then, skas.xfp is reconstructed from this
->>    data.
->>
->> ---
->>
->> --- arch/um/os-Linux/sys-i386/registers.c.orig    2004-12-23 
->> 00:22:54.000000000 +0100
->> +++ arch/um/os-Linux/sys-i386/registers.c    2004-12-23 
->> 00:23:13.016000444 +0100
->> @@ -17,7 +17,7 @@
->>  static unsigned long exec_regs[HOST_FRAME_SIZE];
->>  static unsigned long exec_fp_regs[HOST_FP_SIZE];
->>  static unsigned long exec_fpx_regs[HOST_XFP_SIZE];
->> -static int have_fpx_regs = 1;
->> +int have_fpx_regs = 1;
->>  
->>  void init_thread_registers(union uml_pt_regs *to)
->>  {
->> --- arch/um/sys-i386/signal.c.orig    2004-12-23 00:17:19.000000000 +0100
->> +++ arch/um/sys-i386/signal.c    2004-12-23 11:41:41.928379633 +0100
->> @@ -19,15 +19,37 @@
->>  
->>  #include "skas.h"
->>  
->> +
->> +static inline unsigned short twd_i387_to_fxsr( unsigned short twd )
->> +{
->> +    unsigned int tmp; /* to avoid 16 bit prefixes in the code */
->> +
->> +    /* Transform each pair of bits into 01 (valid) or 00 (empty) */
->> +    tmp = ~twd;
->> +    tmp = (tmp | (tmp>>1)) & 0x5555; /* 0V0V0V0V0V0V0V0V */
->> +    /* and move the valid bits to the lower byte. */
->> +    tmp = (tmp | (tmp >> 1)) & 0x3333; /* 00VV00VV00VV00VV */
->> +    tmp = (tmp | (tmp >> 2)) & 0x0f0f; /* 0000VVVV0000VVVV */
->> +    tmp = (tmp | (tmp >> 4)) & 0x00ff; /* 00000000VVVVVVVV */
->> +    return tmp;
->> +}
->> +
->> +#define printk printf
->> +
->>  static int copy_sc_from_user_skas(struct pt_regs *regs,
->>                    struct sigcontext *from)
->>  {
->>        struct sigcontext sc;
->> -    unsigned long fpregs[HOST_FP_SIZE];
->> -    int err;
->> +    struct _fpstate * fp = (struct _fpstate *)regs->regs.skas.fp;
->> +    int size, err, i;
->> +
->> +    if (have_fpx_regs)
->> +        size = sizeof(struct _fpstate);
->> +    else
->> +        size = sizeof(regs->regs.skas.fp);
->>  
->>      err = copy_from_user(&sc, from, sizeof(sc));
->> -    err |= copy_from_user(fpregs, sc.fpstate, sizeof(fpregs));
->> +    err |= copy_from_user(fp, sc.fpstate, size);
->>      if(err)
->>          return(err);
->>  
->> @@ -48,23 +70,70 @@
->>      REGS_EFLAGS(regs->regs.skas.regs) = sc.eflags;
->>      REGS_SS(regs->regs.skas.regs) = sc.ss;
->>  
->> -    err = ptrace_setfpregs(userspace_pid[0], fpregs);
->> -    if(err < 0){
->> -          printk("copy_sc_from_user_skas - PTRACE_SETFPREGS failed, "
->> -               "errno = %d\n", err);
->> -        return(1);
->> +    if (have_fpx_regs) {
->> +        *(unsigned short *)fp->_fxsr_env = (unsigned short)(fp->cw & 
->> 0xffff);
->> +        *((unsigned short *)fp->_fxsr_env + 1) = (unsigned 
->> short)(fp->sw & 0xffff);
->> +        *((unsigned short *)fp->_fxsr_env + 2) = 
->> twd_i387_to_fxsr(fp->tag & 0xffff);
->> +        *((unsigned short *)fp->_fxsr_env + 3) = (unsigned 
->> short)(fp->cssel >> 16);
->> +        fp->_fxsr_env[2] = fp->ipoff;
->> +        fp->_fxsr_env[3] = fp->cssel & 0xffff;
->> +        fp->_fxsr_env[4] = fp->dataoff;
->> +        fp->_fxsr_env[5] = fp->datasel;
->> +        for ( i=0; i<8; i++)
->> +        memcpy(fp->_fxsr_st+i, fp->_st+i, sizeof(struct _fpreg));
->>      }
->>  
->>      return(0);
->>  }
->>  
->> +static inline unsigned long twd_fxsr_to_i387( struct _fpstate *fp)
->> +{
->> +    struct _fpxreg *st = fp->_fxsr_st;
->> +    unsigned long twd = fp->_fxsr_env[1] & 0x0000fffflu;
->> +    unsigned long tag;
->> +    unsigned long ret = 0xffff0000lu;
->> +    int i;
->> +
->> +    for ( i = 0 ; i < 8 ; i++, st++ ) {
->> +    if ( twd & 0x1 ) {
->> +        switch ( st->exponent & 0x7fff ) {
->> +        case 0x7fff:
->> +            tag = 2;
->> +            break;
->> +        case 0x0000:
->> +            if ( !st->significand[0] &&
->> +                 !st->significand[1] &&
->> +                 !st->significand[2] &&
->> +                 !st->significand[3] ) {
->> +            tag = 1;
->> +            } else {
->> +            tag = 2;
->> +            }
->> +            break;
->> +        default:
->> +            if ( st->significand[3] & 0x8000 ) {
->> +            tag = 0;
->> +            } else {
->> +            tag = 2;
->> +            }
->> +            break;
->> +        }
->> +    } else {
->> +        tag = 3;
->> +    }
->> +    ret |= (tag << (2 * i));
->> +    twd = twd >> 1;
->> +    }
->> +    return ret;
->> +}
->> +
->>  int copy_sc_to_user_skas(struct sigcontext *to, struct _fpstate *to_fp,
->>               struct pt_regs *regs)
->>  {
->>        struct sigcontext sc;
->> -    unsigned long fpregs[HOST_FP_SIZE];
->> +    struct _fpstate * fp = (struct _fpstate *)regs->regs.skas.fp;
->>      struct faultinfo * fi = &current->thread.arch.faultinfo;
->> -    int err;
->> +    int size, i;
->>  
->>      sc.gs = REGS_GS(regs->regs.skas.regs);
->>      sc.fs = REGS_FS(regs->regs.skas.regs);
->> @@ -87,20 +156,30 @@
->>      sc.err = fi->error_code;
->>      sc.trapno = fi->trap_no;
->>  
->> -    err = ptrace_getfpregs(userspace_pid[0], fpregs);
->> -    if(err < 0){
->> -          printk("copy_sc_to_user_skas - PTRACE_GETFPREGS failed, "
->> -               "errno = %d\n", err);
->> -        return(1);
->> +    if (have_fpx_regs) {
->> +        fp->cw = (unsigned long)*(unsigned short *)fp->_fxsr_env | 
->> 0xffff0000ul;
->> +        fp->sw = (unsigned long)*((unsigned short *)fp->_fxsr_env+1) 
->> | 0xffff0000ul;
->> +        fp->tag = twd_fxsr_to_i387(fp);
->> +        fp->ipoff = fp->_fxsr_env[2];
->> +        fp->cssel = fp->_fxsr_env[3] |
->> +            ((unsigned long)*((unsigned short *)fp->_fxsr_env+3) << 16);
->> +        fp->dataoff = fp->_fxsr_env[4];
->> +        fp->datasel = fp->_fxsr_env[5];
->> +        fp->status = (unsigned short)(fp->sw & 0xfffful);
->> +        fp->magic = 0;
->> +        for ( i=0; i<8; i++)
->> +        memcpy(fp->_st+i, fp->_fxsr_st+i, sizeof(struct _fpreg));
->> +        size = sizeof(struct _fpstate);
->> +    }
->> +    else {
->> +        *(unsigned long *)&fp->status = fp->sw;
->> +        size = sizeof(regs->regs.skas.fp);
->>      }
->>      to_fp = (to_fp ? to_fp : (struct _fpstate *) (to + 1));
->>      sc.fpstate = to_fp;
->>  
->> -    if(err)
->> -          return(err);
->> -
->>      return(copy_to_user(to, &sc, sizeof(sc)) ||
->> -           copy_to_user(to_fp, fpregs, sizeof(fpregs)));
->> +           copy_to_user(to_fp, fp, size));
->>  }
->>  #endif
->>  
->> --- arch/um/kernel/skas/util/mk_ptregs-i386.c.orig    2004-12-23 
->> 10:46:41.143243494 +0100
->> +++ arch/um/kernel/skas/util/mk_ptregs-i386.c    2004-12-23 
->> 11:08:01.272251951 +0100
->> @@ -13,8 +13,9 @@
->>      printf("#define __SKAS_PT_REGS_\n");
->>      printf("\n");
->>      printf("#define HOST_FRAME_SIZE %d\n", FRAME_SIZE);
->> +    /* This needs to have space for "status", too */
->>      printf("#define HOST_FP_SIZE %d\n", -           sizeof(struct 
->> user_i387_struct) / sizeof(unsigned long));
->> +           sizeof(struct user_i387_struct) / sizeof(unsigned long) + 1);
->>      printf("#define HOST_XFP_SIZE %d\n",             sizeof(struct 
->> user_fxsr_struct) / sizeof(unsigned long));
->>  
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF email is sponsored by - The IT Product Guide
-> Read honest & candid reviews on hundreds of IT Products from real users.
-> Discover which products truly live up to the hype. Start reading now. 
-> http://productguide.itmanagersjournal.com/
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+--Boundary-00=_U6h4BIJ4WAB5BxQ
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Sunday 09 January 2005 07:05 pm, Michael Richardson wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+>
+> >>>>> "Rob" == Rob Landley <rob@landley.net> writes:
+>
+>     Rob> I want to use UML because I'm building a little uclibc-based
+>     Rob> distro that has a problem when the system it's building on has
+>     Rob> a kernel older than the one it's building.  I'm testing the
+>
+>   I think you have a serious problem to begin with.
+>
+>   Probably, you aren't building with the cross-compile headers, but
+> rather with the host's headers, and maybe you are using the kernel
+> headers rather than the uClibc headers.
+
+No, I'm using maritz maszur's kernel headers.  Before I build uclibc I move 
+the linux, sound, and asm (actually asm-$ARCH) directories from that into the 
+uclibc source's include directory and then truncating 
+extra/scripts/fix_includes.sh to zero bytes.  As I said earlier, I have to 
+use maszur's old 2.6.6 headers for this, even when the kernel I'm building is 
+2.6.9 or 2.6.10, because if I use newer ones the binaries linked with the 
+resulting uclibc segfault when run under the 2.6.7 kernel in my knoppix host 
+system.
+
+In case the web page I linked earlier was too much to wade through, here are 
+the direct links to my build scripts from the end of the page.  The first 
+script does the equivalent of a heavily modified Linux From Scratch chapter 
+5, and the second one no longer has that much to do with chapter 6 but you 
+can still sort of see it if you squint.
+
+http://www.landley.net/code/firmware/mktools.sh
+http://www.landley.net/code/firmware/build.sh
+
+>   When building for a different libc, you'd be best to pretend that you
+> are in fact building for a different CPU. I.e. build a whole
+> cross-compile environment.
+
+Maybe I wasn't clear.
+
+My uclibc system works just fine as long as I chroot into it or boot into it 
+with a normal (2.6) linux kernel.  It can even recompile itself, entirely 
+from source, under itself.
+
+Using user mode linux with it is what causes problems.  If I run user mode 
+linux with that exact same directory a hostfs root partition, it either hangs 
+or malfunctions in numerous different ways, some of which seem to be race 
+conditions and others are reproducible bad behavior which I have never once 
+seen those exact same binaries exhibit when I chroot from the host kernel.
+
+Clear?  This directory works just fine with chroot.  It does not work with 
+UML.
+
+>     Rob> Under the UML built from stock 2.6.9 sources, after some
+>     Rob> tweaking I got it to sort of boot and give me a shell prompt
+>     Rob> about 1/3 of the time (the other 2/3 of the time it paniced
+>     Rob> during boot due to various race conditions, but trying it
+>     Rob> several times in a row usually got me to the shell prompt).  I
+>     Rob> couldn't figure out any way to make it start with a readable
+>     Rob> hostfs by default, but "mount -o remount,rw / /" once it was up
+>     Rob> seemed to do the trick, and I can put that in an init script no
+>     Rob> problem.  (And yes it worked: I could create files and have
+>     Rob> them show up in the host system.)
+>
+>   I use hostfs root all the time.
+>   I have no such problems.
+
+Cool.  I'd love to figure out what you're doing that I'm not, or vice versa.
+
+>     Rob> But when trying to compile "hello world", gcc died saying it
+>     Rob> couldn't find ld.  This exact filesystem worked fine chrooting
+>     Rob> into it on the host kernel, a knoppix system running 2.6.7.
+>
+>   Well, was ld actually there?
+
+Did you read second sentence in the bit you just quoted?  How, exactly, could 
+I chroot into there and compile stuff if ld isn't there?
+
+I did, of course, check and make sure that ls and cat and such found ld in the 
+UML environment, which they did.  (The error message is actually collect2 
+can't find ld, although apparently gcc can find collect2.)  I tried running 
+gcc -v to see if I could get it to tell me what it was doing that didn't work 
+(thinking possibly some environment variable was set wrong), and uclibc hung 
+so badly I had to kill it from another window.
+
+"ld" is in both /bin/ld and /usr/bin/ld, since /bin is a symlink to /usr/bin.  
+(And /sbin is a symlink to /usr/sbin, and /lib is a symlink to /usr/lib, and 
+yes I needed to rip the gratuitous extra hardwired path out of collect2.c to 
+make a unified lib directory work.  That was months ago.  And it works fine 
+under the host kernel.)
+
+>     Rob> mconsole (version 2) initialized on
+>     Rob> /home/knoppix/.uml/WGIHE3/mconsole audit: initializing netlink
+>     Rob> socket (disabled) audit(300.210:0): initialized Initializing
+>     Rob> Cryptographic API Kernel panic - not syncing: fix_range fixing
+>     Rob> wrong address space, current = 0xa0cb90a0
+>
+>   It sounds like your builds are really what is broken, not the root
+> file system.
+
+Yes.  I agree with this.  I'm not building user mode linux properly.  The root 
+filesystem works when I chroot into it instead of running uclibc against it.
+
+I would very much like to be able to build uclibc such that it works properly.  
+I like the concept of this project, and want to use it.  I just don't seem to 
+know how to get it to work for me.  There seems to be more to it than untar, 
+make ARCH=um menuconfig, make ARCH=um, use resulting binary.  Doing so sort 
+of worked for me under 2.6.9: I got a shell prompt, at least the 1/3 of the 
+time that the UML boot process survived the various race conditions, but when 
+it did the applications (reliably and reproducibly) malfunctioned.
+
+Doing the same build under 2.6.10, I have yet to see a shell prompt on my 
+laptop.  I was hoping someone would see something obviously wrong from 
+my .config...
+ 
+>     Rob> cables and virtual hubs and it doesn't apply to me.  I'm trying
+>     Rob> for a VERY simple setup: my UML doesn't need more networking
+>     Rob> than loopback, doesn't need swap, doesn't need module
+>
+>   Yes, it does need swap if you intend to run gcc.
+
+A) Not to compile hello world it doesn't.  I'm fairly certain that can still 
+be done in 16 megs, even with a modern gcc.
+B) On my work machine, without swap, I compiled a whole c++ project.
+C) I've compiled this project on a machine with 32 megs of ram and no swap, 
+and my laptop actually has 128 megs so if UML isn't giving itself at least 32 
+it's making a bad decision...
+
+And it isn't: Memory: 27808k available according to the bootup message.  
+Hmmm...
+
+Interesting.  Somebody said earlier that it's using /tmp instead of /dev/shm 
+in hopes of getting shared memory.  On knoppix, /tmp is a ramdisk.  I wonder 
+if that's confusing it...?  (dmesg doesn't say the out of memory killer's 
+getting triggered...)
+
+Interesting.  Running it with "TMPDIR=." at the start of the command line, I 
+got the same old panics the first three times (and it didn't try to allocate 
+any more memory than before, presumably I need to tell it mem= for that), but 
+on the fourth attempt it got farther than it ever has before, and instead of 
+panicing it just hung.  (Still didn't get my shell prompt, but oh well.)
+
+The tee output of four consecutive runs is attached.  All I did each time was 
+ctrl-c out of the hang, cursor up, change the number on out.txt, and hit 
+return again.  This is not the full range of failures to boot I've seen from 
+this thing, by the way...
+
+The command line was:
+TMPDIR=. ../uml.sh 2>&1 | tee out.txt
+
+And uml.sh is (wordwrapped here, but not in the original):
+./vmlinux rootfstype=hostfs rootflags=/home/knoppix/newbuild/build 
+init=/bin/bash
+
+>   I suggest that you might want to try the UML image system in the
+> Openswan builds. It generates everything you need. It has been used with
+> 2.6.9+ guests, on 2.4 and 2.6 hosts.
+
+Is this a binary, or a build script?  (Do you have a URL?)
+
+I'd really like to compile this thing from source since I already have the 
+linux source tarball in my build processs anyway, to make the kernel for the 
+final system.  I'll happily applying patches for this different use if they 
+fix the problems I'm having.  Right now, it dosn't seem like anybody else has 
+been seeing these problems, though, so I'd like to figure out what I'm doing 
+wrong...
+
+Rob
+
+--Boundary-00=_U6h4BIJ4WAB5BxQ
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name="out.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="out.txt"
+
+Checking for the skas3 patch in the host...not found
+Checking for /proc/mm...not found
+Checking PROT_EXEC mmap in /tmp...OK
+Linux version 2.6.10 (knoppix@Knoppix) (gcc version 3.3.4 (Debian 1:3.3.4-9)) #1 Sat Jan 8 19:07:07 EST 2005
+Built 1 zonelists
+Kernel command line: rootfstype=hostfs rootflags=/home/knoppix/newbuild/build init=/bin/bash root=98:0
+PID hash table entries: 256 (order: 8, 4096 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 27808k available
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with errno 2)
+NET: Registered protocol family 16
+Sangoma WANPIPE Router v1.1 (c) 1995-2000 Sangoma Technologies Inc.
+mconsole (version 2) initialized on /home/knoppix/.uml/QwNyrK/mconsole
+audit: initializing netlink socket (disabled)
+audit(300.210:0): initialized
+Initializing Cryptographic API
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+loop: loaded (max 8 devices)
+elevator: using anticipatory as default io scheduler
+nbd: registered device at major 43
+ipddp.c:v0.01 8/28/97 Bradford W. Johnson <johns393@maroon.tc.umn.edu>
+ipddp0: Appletalk-IP Encap. mode by Bradford W. Johnson <johns393@maroon.tc.umn.edu>
+pktgen.c: v1.4: Packet Generator for packet performance testing.
+pktgen: Error: your machine does not have working cycle counter.
+NET: Registered protocol family 26
+u32 classifier
+    OLD policer on 
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 2048 bind 4096)
+IPv4 over IPv4 tunneling driver
+GRE over IPv4 tunneling driver
+ip_conntrack version 2.1 (217 buckets, 1736 max) - 300 bytes per conntrack
+ip_tables: (C) 2000-2002 Netfilter core team
+ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>.  http://snowman.net/projects/ipt_recent/
+arp_tables: (C) 2002 David S. Miller
+IPVS: Registered protocols (TCP, UDP, AH, ESP)
+IPVS: Connection hash table configured (size=4096, memory=32Kbytes)
+IPVS: ipvs loaded.
+IPVS: [rr] scheduler registered.
+IPVS: [wrr] scheduler registered.
+IPVS: [lc] scheduler registered.
+IPVS: [wlc] scheduler registered.
+IPVS: [lblc] scheduler registered.
+IPVS: [lblcr] scheduler registered.
+IPVS: [dh] scheduler registered.
+IPVS: [sh] scheduler registered.
+IPVS: [sed] scheduler registered.
+IPVS: [nq] scheduler registered.
+Initializing IPsec netlink socket
+NET: Registered protocol family 1
+NET: Registered protocol family 10
+IPv6 over IPv4 tunneling driver
+ip6_tables: (C) 2000-2002 Netfilter core team
+NET: Registered protocol family 17
+NET: Registered protocol family 15
+Bridge firewalling registered
+Ebtables v2.0 registered
+NET: Registered protocol family 4
+NET: Registered protocol family 5
+NET: Registered protocol family 9
+X.25 for Linux. Version 0.2 for Linux 2.1.15
+NET: Registered protocol family 8
+NET: Registered protocol family 20
+lec.c: Jan  8 2005 18:41:28 initialized
+mpoa: /proc/mpoa initialized
+mpc.c: Jan  8 2005 18:41:11 initialized
+NET4: DECnet for Linux: V.2.5.68s (C) 1995-2003 Linux DECnet Project Team
+DECnet: Routing cache hash table of 512 buckets, 4Kbytes
+NET: Registered protocol family 12
+NET: Registered protocol family 19
+802.1Q VLAN Support v1.8 Ben Greear <greearb@candelatech.com>
+All bugs added by David S. Miller <davem@redhat.com>
+SCTP: Hash tables configured (established 512 bind 1024)
+Initializing stdio console driver
+
+--Boundary-00=_U6h4BIJ4WAB5BxQ
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name="out2.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="out2.txt"
+
+Checking for the skas3 patch in the host...not found
+Checking for /proc/mm...not found
+Checking PROT_EXEC mmap in /tmp...OK
+Linux version 2.6.10 (knoppix@Knoppix) (gcc version 3.3.4 (Debian 1:3.3.4-9)) #1 Sat Jan 8 19:07:07 EST 2005
+Built 1 zonelists
+Kernel command line: rootfstype=hostfs rootflags=/home/knoppix/newbuild/build init=/bin/bash root=98:0
+PID hash table entries: 256 (order: 8, 4096 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 27808k available
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with errno 2)
+Kernel panic - not syncing: write of switch_pipe failed, err = 0
+
+--Boundary-00=_U6h4BIJ4WAB5BxQ
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name="out3.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="out3.txt"
+
+Checking for the skas3 patch in the host...not found
+Checking for /proc/mm...not found
+Checking PROT_EXEC mmap in /tmp...OK
+Linux version 2.6.10 (knoppix@Knoppix) (gcc version 3.3.4 (Debian 1:3.3.4-9)) #1 Sat Jan 8 19:07:07 EST 2005
+Built 1 zonelists
+Kernel command line: rootfstype=hostfs rootflags=/home/knoppix/newbuild/build init=/bin/bash root=98:0
+PID hash table entries: 256 (order: 8, 4096 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 27808k available
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with errno 2)
+NET: Registered protocol family 16
+Kernel panic - not syncing: read of switch_pipe failed, errno = 9
+
+--Boundary-00=_U6h4BIJ4WAB5BxQ
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name="out4.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="out4.txt"
+
+Checking for the skas3 patch in the host...not found
+Checking for /proc/mm...not found
+Checking PROT_EXEC mmap in /tmp...OK
+Linux version 2.6.10 (knoppix@Knoppix) (gcc version 3.3.4 (Debian 1:3.3.4-9)) #1 Sat Jan 8 19:07:07 EST 2005
+Built 1 zonelists
+Kernel command line: rootfstype=hostfs rootflags=/home/knoppix/newbuild/build init=/bin/bash root=98:0
+PID hash table entries: 256 (order: 8, 4096 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 27808k available
+Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with errno 2)
+Kernel panic - not syncing: read of switch_pipe failed, errno = 9
+ 
+EIP: 0073:[<a02652f2>] CPU: 0 Not tainted ESP: 007b:a0c826b4 EFLAGS: 00200286
+    Not tainted
+EAX: 00000000 EBX: 00000001 ECX: a0c82754 EDX: a0c826d4
+ESI: 00000008 EDI: 0000000a EBP: a0c826bc DS: 007b ES: 007b
+Call Trace: 
+ [<a0046d2d>] notifier_call_chain+0x2d/0x50
+ [<a00e9b46>] bust_spinlocks+0x46/0x50
+ [<a00362e1>] panic+0x71/0x120
+ [<a001c800>] copy_from_user_proc+0x0/0x50
+ [<a0022e33>] switch_to_tt+0x1e3/0x220
+ [<a02a95f0>] schedule+0x2c0/0x4b0
+ [<a0038f10>] do_exit+0x170/0x340
+ [<a0017733>] um_execve+0x23/0x60
+ [<a0049a26>] ____call_usermodehelper+0x76/0xb0
+ [<a00499b0>] ____call_usermodehelper+0x0/0xb0
+ [<a001bed8>] run_kernel_thread+0x78/0x80
+ [<a02653c4>] sigemptyset+0x24/0x40
+ [<a00499b0>] ____call_usermodehelper+0x0/0xb0
+ [<a001bea0>] run_kernel_thread+0x40/0x80
+ [<a00499b0>] ____call_usermodehelper+0x0/0xb0
+ [<a0023018>] new_thread_handler+0xe8/0x110
+ [<a00499b0>] ____call_usermodehelper+0x0/0xb0
+ [<a0265298>] __restore+0x0/0x8
+ [<a02652f2>] __sigprocmask+0x22/0x50
+
+ 
+--Boundary-00=_U6h4BIJ4WAB5BxQ--
 
 
 -------------------------------------------------------
