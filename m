@@ -1,19 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CkmCC-0007YC-GW for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 Jan 2005 08:33:40 -0800
-Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CkmC7-0003Pd-HP for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 Jan 2005 08:33:40 -0800
-Message-ID: <49797.80.203.9.2.1104597206.squirrel@80.203.9.2>
-From: stian@nixia.no
+	id 1CkpZh-0006pw-8r for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 01 Jan 2005 12:10:09 -0800
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CkpZb-0003oO-Ch for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 01 Jan 2005 12:10:09 -0800
+Message-ID: <0e6601c4f03e$00c69770$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <200412140958.58402.Armin.Warda@ePost.De>
+	<200412301520.48951.Armin.Warda@gmx.de>
+	<E54DD071-5A7D-11D9-853A-0003931D03FE@theshore.net>
+	<200412311222.10579.Armin.Warda@gmx.de>
+Subject: Re: [uml-devel] Re: UML fills /tmp irreversibly (2.6.9-bb4 on SuSE
+	9.2)
 MIME-Version: 1.0
-Content-Type: text/plain;charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] uml_console_write
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,45 +31,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 1 Jan 2005 17:33:26 +0100 (CET)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 1 Jan 2005 14:10:45 -0600
+To: Armin.Warda@gmx.de, user-mode-linux-devel@lists.sourceforge.net
+Cc: Gerd Knorr <kraxel@bytesex.org>
 
-if you enable all semaphore locking debuing and such alike, you get a
-warning at uml_console_write calliong __might_sleep with irqs_disabled()
+> That's supposed to be a 2.6.10 _Host_-Kernel? (Not 2.6.10 UM-Kernel?)
 
-The callpath are on another machine, byt here the names are
+Correct.
 
-__might_sleep
-uml_console_write
-__call_console_drivers
-call_console_drivers
-release_console_drives
-vprintk
-printk
-ext2_warning
-ext2_fill_super
-get_sb_bdev
-__kmalloc
-ext2_get_sb
-ext2_fill_super
-do_kern_mount
-do_new_mount
-do_mount
-copy_from_user_tt
-excact_copy_from_user
-copy_mount_options
-sys_mount
-execute_syscall_tt
-syscall_handler_tt
-unblock_signals
-sig_handler_common
-set_user_mode
-sig_handler
-__restore
+>> The tmpfs problem is also  
+>> compounded by the fact that UMLs without the fix-kill patch don't
+>> exit properly, but the 2.6.9-bb4 patchset has the fix for UML.
 
+> You say UM-Kernel 2.6.9-bb4 has that fix? (Yes, I am running 2.6.9-bb4 
+> UM-Kernels)
 
+Correct.
 
-Stian
+>> For 2.4-um, you can find the fix-kill patch here:
+>> http://www.theshore.net/~caker/uml/patches/2.4.27-1um/
+
+-Chris
 
 
 -------------------------------------------------------
