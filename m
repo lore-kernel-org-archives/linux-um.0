@@ -2,25 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9nsr-00021Q-FU for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 09:25:09 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D9nsm-0002Da-M8 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Mar 2005 09:25:09 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [PATCH 4/9] UML - Export gcov symbol based on gcc
-	version
-References: <200503100216.j2A2G2DN015232@ccure.user-mode-linux.org>
-	<20050310225340.GD3205@stusta.de>
-	<Pine.LNX.4.58.0503101516190.2530@ppc970.osdl.org>
-In-Reply-To: <Pine.LNX.4.58.0503101516190.2530@ppc970.osdl.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200503111800.56423.blaisorblade@yahoo.it>
+	id 1D9oho-0004t0-6w for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 10:17:48 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1D9ohm-0007ce-Jz for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Mar 2005 10:17:48 -0800
+Message-Id: <200503111845.j2BIjkJp003341@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH 3/9] UML - "Hardware" random number generator 
+In-Reply-To: Your message of "Thu, 10 Mar 2005 13:41:37 EST."
+	<200503101341.37346.rob@landley.net> 
+References: <200503100215.j2A2FuDN015227@ccure.user-mode-linux.org>
+	<200503101341.37346.rob@landley.net> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +28,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 11 Mar 2005 18:00:56 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Linus Torvalds <torvalds@osdl.org>, Adrian Bunk <bunk@stusta.de>, Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
+Date: Fri, 11 Mar 2005 13:45:46 -0500
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Friday 11 March 2005 00:21, Linus Torvalds wrote:
-> On Thu, 10 Mar 2005, Adrian Bunk wrote:
-> > This patch is still wrong.
->
-> Can't we just fix it by havign an alias for both names?
-No, because the patch is wrong. It should export both symbols in the second 
-case.
-> It seems stupid to 
-> jump through hoops and worry about compiler versions, when afaik we could
-> just do something like
->
->  extern xxxx(...) __attribute__((alias("yyyy")));
->
-> instead. Exact details left to the reader who knows more about all the
-> magic gcc/linker things..
->
->   Linus
+rob@landley.net said:
+> I'm just thinking about those UML hosting farms, with several UML
+> instances  per machine, on machines which haven't got a keyboard
+> attached constantly  feeding entropy into the pool.  If just ONE of
+> them is serving ssl  connections from its own /dev/urandom, that would
+> drain the /dev/random  entropy pool on the host machine almost
+> immediately... 
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+All true (except for that last reference to urandom), but also irrelevant to
+whether UML's hwrng should be hooked up to the host's /dev/random or not.
 
+As far as I can see, the only thing that matters is that hwrng should produce
+real randomness, and that can only be had by reading /dev/random (or maybe
+the host's /dev/hwrng, but that's supposed to be fed into /dev/random anyway).
 
+So, hooking up the UML /dev/hwrng to the host's /dev/urandom would be lying.
+
+If the host's entropy pool gets drained as a result, I would say that's an
+application bug, and not a reason for UML to get its randomness from the
+host's /dev/urandom.
+
+				Jeff
 
 
 
