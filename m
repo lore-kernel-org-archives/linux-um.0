@@ -1,16 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpCzD-0001bU-IT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 13:58:35 -0800
+	id 1CpCzF-0001ba-RM for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 13:58:37 -0800
 Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CpCzB-0001VM-NH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 13:58:35 -0800
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CpCzD-0001PL-DP for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 13:58:37 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20050113210051.99326AB30@zion>
-Subject: [uml-devel] [patch 02/11] uml: fix compilation for missing headers
+Message-Id: <20050113210053.ED4D0B0F7@zion>
+Subject: [uml-devel] [patch 03/11] uml: fix some UML own initcall macros
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,103 +22,67 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Jan 2005 22:00:51 +0100
+Date: Thu, 13 Jan 2005 22:00:53 +0100
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Readd some needed headers inclusion deleted in
-http://linux.bkbits.net:8080/linux-2.5/cset@41e49628dGbOWX-bT9yZII4f19GT6A
+UML has his own initcall mechanism to handle his special userspace
+initialization (they are called in different moments, so they are indeed
+different).
 
-If you think it cannot make sense to include both <sys/ptrace.h> and
-<linux/ptrace.h> (as userspace process, i.e. host includes), go complaining
-with glibc, or follow the linux-abi includes idea.
-
-However, the compilation failure is possibly glibc-version (or better glibc
-includes version) related - what I now is that the failure happens on my
-system with a glibc 2.3.4 (from Gentoo).
-
-Also, remove some syscalls from the syscall table, since some syscalls were
-added which are only inside -mm currently, and this prevents currently
-compilation.
+It must also duplicate some definition for the benefit of userspace code - but
+those definition weren't in sync with the main code. Also, the UML own macros
+missed __attribute_used__. Both problems are fixed by this patch.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.11-paolo/arch/um/kernel/process.c        |    4 ++++
- linux-2.6.11-paolo/arch/um/kernel/sys_call_table.c |   13 +++++++++++++
- 2 files changed, 17 insertions(+)
+ linux-2.6.11-paolo/arch/um/include/init.h |   25 +++++++++++++++++--------
+ 1 files changed, 17 insertions(+), 8 deletions(-)
 
-diff -puN arch/um/kernel/process.c~uml-fix-compilation-for-missing-headers arch/um/kernel/process.c
---- linux-2.6.11/arch/um/kernel/process.c~uml-fix-compilation-for-missing-headers	2005-01-13 19:57:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/kernel/process.c	2005-01-13 19:59:30.000000000 +0100
-@@ -13,6 +13,10 @@
- #include <setjmp.h>
- #include <sys/time.h>
- #include <sys/ptrace.h>
+diff -puN arch/um/include/init.h~uml-init_h-fix arch/um/include/init.h
+--- linux-2.6.11/arch/um/include/init.h~uml-init_h-fix	2005-01-13 02:55:49.051805472 +0100
++++ linux-2.6.11-paolo/arch/um/include/init.h	2005-01-13 02:55:49.088799848 +0100
+@@ -40,9 +40,18 @@
+ typedef int (*initcall_t)(void);
+ typedef void (*exitcall_t)(void);
+ 
+-#define __init          __attribute__ ((__section__ (".text.init")))
+-#define __exit          __attribute__ ((unused, __section__(".text.exit")))
+-#define __initdata      __attribute__ ((__section__ (".data.init")))
++/* These are for everybody (although not all archs will actually
++   discard it in modules) */
++#define __init		__attribute__ ((__section__ (".init.text")))
++#define __initdata	__attribute__ ((__section__ (".init.data")))
++#define __exitdata	__attribute__ ((__section__(".exit.data")))
++#define __exit_call	__attribute_used__ __attribute__ ((__section__ (".exitcall.exit")))
 +
-+/*Userspace header, must be after sys/ptrace.h, and both must be included. */
-+#include <linux/ptrace.h>
-+
- #include <sys/wait.h>
- #include <sys/mman.h>
- #include <asm/unistd.h>
-diff -puN arch/um/kernel/sys_call_table.c~uml-fix-compilation-for-missing-headers arch/um/kernel/sys_call_table.c
---- linux-2.6.11/arch/um/kernel/sys_call_table.c~uml-fix-compilation-for-missing-headers	2005-01-13 20:48:02.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/kernel/sys_call_table.c	2005-01-13 21:17:23.866866296 +0100
-@@ -20,7 +20,11 @@
- #define NFSSERVCTL sys_ni_syscall
++#ifdef MODULE
++#define __exit		__attribute__ ((__section__(".exit.text")))
++#else
++#define __exit		__attribute_used__ __attribute__ ((__section__(".exit.text")))
++#endif
+ 
  #endif
  
-+#if 0
- #define LAST_GENERIC_SYSCALL __NR_vperfctr_read
-+#else
-+#define LAST_GENERIC_SYSCALL __NR_keyctl
-+#endif
+@@ -94,11 +103,11 @@ extern struct uml_param __uml_setup_star
+  * Mark functions and data as being only used at initialization
+  * or exit time.
+  */
+-#define __uml_init_setup	__attribute__ ((unused,__section__ (".uml.setup.init")))
+-#define __uml_setup_help	__attribute__ ((unused,__section__ (".uml.help.init")))
+-#define __uml_init_call		__attribute__ ((unused,__section__ (".uml.initcall.init")))
+-#define __uml_postsetup_call	__attribute__ ((unused,__section__ (".uml.postsetup.init")))
+-#define __uml_exit_call		__attribute__ ((unused,__section__ (".uml.exitcall.exit")))
++#define __uml_init_setup	__attribute_used__ __attribute__ ((__section__ (".uml.setup.init")))
++#define __uml_setup_help	__attribute_used__ __attribute__ ((__section__ (".uml.help.init")))
++#define __uml_init_call		__attribute_used__ __attribute__ ((__section__ (".uml.initcall.init")))
++#define __uml_postsetup_call	__attribute_used__ __attribute__ ((__section__ (".uml.postsetup.init")))
++#define __uml_exit_call		__attribute_used__ __attribute__ ((__section__ (".uml.exitcall.exit")))
  
- #if LAST_GENERIC_SYSCALL > LAST_ARCH_SYSCALL
- #define LAST_SYSCALL LAST_GENERIC_SYSCALL
-@@ -54,11 +58,14 @@ extern syscall_handler_t sys_get_mempoli
- extern syscall_handler_t sys_set_mempolicy;
- extern syscall_handler_t sys_sys_kexec_load;
- extern syscall_handler_t sys_sys_setaltroot;
-+
-+#if 0
- extern syscall_handler_t sys_vperfctr_open;
- extern syscall_handler_t sys_vperfctr_control;
- extern syscall_handler_t sys_vperfctr_unlink;
- extern syscall_handler_t sys_vperfctr_iresume;
- extern syscall_handler_t sys_vperfctr_read;
-+#endif
+ #endif /* _LINUX_UML_INIT_H */
  
- syscall_handler_t *sys_call_table[] = {
- 	[ __NR_restart_syscall ] = (syscall_handler_t *) sys_restart_syscall,
-@@ -273,7 +280,10 @@ syscall_handler_t *sys_call_table[] = {
- 	[ __NR_mq_timedreceive ] = (syscall_handler_t *) sys_mq_timedreceive,
- 	[ __NR_mq_notify ] = (syscall_handler_t *) sys_mq_notify,
- 	[ __NR_mq_getsetattr ] = (syscall_handler_t *) sys_mq_getsetattr,
-+#if 0
- 	[ __NR_sys_kexec_load ] = (syscall_handler_t *) sys_kexec_load,
-+#endif
-+	[ __NR_sys_kexec_load ] = (syscall_handler_t *) sys_ni_syscall,
- 	[ __NR_waitid ] = (syscall_handler_t *) sys_waitid,
- #if 0
- 	[ __NR_sys_setaltroot ] = (syscall_handler_t *) sys_sys_setaltroot,
-@@ -281,11 +291,14 @@ syscall_handler_t *sys_call_table[] = {
- 	[ __NR_add_key ] = (syscall_handler_t *) sys_add_key,
- 	[ __NR_request_key ] = (syscall_handler_t *) sys_request_key,
- 	[ __NR_keyctl ] = (syscall_handler_t *) sys_keyctl,
-+	/* These syscalls are still in -mm only*/
-+#if 0
- 	[ __NR_vperfctr_open ] = (syscall_handler_t *) sys_vperfctr_open,
- 	[ __NR_vperfctr_control ] = (syscall_handler_t *) sys_vperfctr_control,
- 	[ __NR_vperfctr_unlink ] = (syscall_handler_t *) sys_vperfctr_unlink,
- 	[ __NR_vperfctr_iresume ] = (syscall_handler_t *) sys_vperfctr_iresume,
- 	[ __NR_vperfctr_read ] = (syscall_handler_t *) sys_vperfctr_read,
-+#endif
- 
- 	ARCH_SYSCALLS
- 	[ LAST_SYSCALL + 1 ... NR_syscalls ] = 
 _
 
 
