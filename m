@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5bXj-0007Re-TL for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 19:53:43 -0700
+	id 1C5bXc-0007Pt-EV for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 19:53:36 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C5bXf-0004Ay-6d
+	(Exim 4.34) id 1C5bXW-0004BE-HC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 19:53:42 -0700
-Message-Id: <200409100355.i8A3tNg1005671@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] crash with uml-2.6.8.1-um1 
-In-Reply-To: Your message of "Thu, 02 Sep 2004 12:24:08 +0200."
-	<4136F4C8.4040905@exse.net> 
-References: <4136F4C8.4040905@exse.net> 
+	Thu, 09 Sep 2004 19:53:34 -0700
+Message-Id: <200409100355.i8A3tcg1005691@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] kernel panic with 2.6.7-bb6 
+In-Reply-To: Your message of "Wed, 25 Aug 2004 02:19:14 +0200."
+	<412BDB02.6090509@exse.net> 
+References: <412BDB02.6090509@exse.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,15 +28,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 09 Sep 2004 23:55:23 -0400
-To: Sebastian <seb@exse.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 09 Sep 2004 23:55:38 -0400
+To: =?ISO-8859-1?Q?Sebastian_B=F6hm?= <seb@exse.net>
+Cc: Paolo Giarrusso <blaisorblade_personal@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, jdike@sonycom.com
 
 seb@exse.net said:
-> I know that this does not help to find the problem, what can I do ?
-> How to produce a stacktrace ? 
+> Do you have an idea why gdb did not stop at the kernel panic (I did
+> "break panic"), but exited. So I am not able to provide a backtrace. 
 
-Putting a breakpoint on panic and get a backtrace when it hits.
+What was the panic message, at least?
 
 				Jeff
 
