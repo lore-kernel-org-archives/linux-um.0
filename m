@@ -1,16 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6ZLN-0002BI-OT for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 11:44:57 -0700
-Received: from mail-relay-4.tiscali.it ([213.205.33.44])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C6ZLN-0002YK-0i for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 11:44:57 -0700
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20040912182626.E030180BF@zion.localdomain>
-Subject: [uml-devel] [patch 1/2] uml-correct-tlb-fix-range-skas
+	id 1C6Zcx-00082I-5B for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2004 12:03:07 -0700
+Received: from pimout1-ext.prodigy.net ([207.115.63.77])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C6Zcv-0001SS-5T for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2004 12:03:07 -0700
+From: Chris Wedgwood <cw@f00f.org>
+Subject: Re: [uml-devel] glibc and NPTL, problem, workarounds, etc.
+Message-ID: <20040912190258.GA7818@taniwha.stupidest.org>
+References: <Pine.LNX.4.58.0409081440150.3136@sparrow>
+	<200409122020.51479.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200409122020.51479.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,36 +28,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 12 Sep 2004 20:26:25 +0200
-To: jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Sun, 12 Sep 2004 12:02:58 -0700
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, William Stearns <wstearns@pobox.com>
 
+On Sun, Sep 12, 2004 at 08:20:51PM +0200, BlaisorBlade wrote:
 
-Do not flush the whole kernel page table instead of flushing only a range in SKAS mode:
-loop from start to end instead than to start_vm to end_vm. To test a lot, since
-it could well be wrong, or some callers could be passing wrong parameters (they
-were ignored!). Anyway, it seems that this is safe and that most callers are in
-arch-independent code (i.e. correct one). But actually I did not test modules well.
+> There is another patch which should make the work - (I never tested
+> it, but it should work). Basically, uname will state it is a "i586"
+> rather than "i686",
+> so NPTL is not enabled:
+>
+> http://www.suse.de/~kraxel/uml/patches/uml-pretend-to-be-i586
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+This apparently only works because people[1] ship either i386 or i686
+libc and only the latter has NPTL support --- but there is nothing
+preventing i586 NPTL support in the future...
 
- uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/tlb.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
+  --cw
 
-diff -puN arch/um/kernel/skas/tlb.c~uml-correct-tlb-fix-range-skas arch/um/kernel/skas/tlb.c
---- uml-linux-2.6.8.1/arch/um/kernel/skas/tlb.c~uml-correct-tlb-fix-range-skas	2004-08-29 14:40:53.413091752 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/tlb.c	2004-08-29 14:40:53.415091448 +0200
-@@ -77,7 +77,7 @@ void flush_tlb_kernel_range_skas(unsigne
- 	int updated = 0, err;
- 
- 	mm = &init_mm;
--	for(addr = start_vm; addr < end_vm;){
-+	for(addr = start; addr < end;){
- 		pgd = pgd_offset(mm, addr);
- 		pmd = pmd_offset(pgd, addr);
- 		if(pmd_present(*pmd)){
-_
+[1] RH & Debian checked, maybe this isn't true for gentoo in which
+    case it will break there?
 
 
 -------------------------------------------------------
