@@ -2,15 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4Ncg-0006iw-Am for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Sep 2004 10:49:46 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	id 1C4Nch-0006j1-D5 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 10:49:47 -0700
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C4Nce-0003ak-Mi for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Sep 2004 10:49:46 -0700
+	id 1C4Nce-0003al-N9 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 10:49:47 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20040906174447.238788D1E@zion.localdomain>
-Subject: [uml-devel] [patch 1/3] uml-ubd-no-empty-queue
+Message-Id: <20040906174449.8CAAEBB1A@zion.localdomain>
+Subject: [uml-devel] [patch 2/3] uml-ubd-any-elevator
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,49 +22,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 06 Sep 2004 19:44:46 +0200
+Date: Mon, 06 Sep 2004 19:44:49 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Avoid using, in the UBD driver, the elv_queue_empty function. It's for
-the block layer only; in fact, the Anticipatory Scheduler can return NULL
-with elv_next_request() even if the queue is not empty, because it waits
-for the process to send another request before seeking on the disk.
-
-In fact, if (with uml-ubd-any-elevator) we let UBD use any scheduler,
-elevator=as will make the UBD driver Oops, if we don't have this patch.
+Avoid forcing use of the no-op scheduler for UBD; this may uncover some bugs in the
+UBD driver, and in fact uml-ubd-no-empty-queue.patch is needed to make this sure.
+But as of now, no other bugs have been discovered, so this should be safe.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+ uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c |    2 --
+ 1 files changed, 2 deletions(-)
 
-diff -puN arch/um/drivers/ubd_kern.c~uml-ubd-no-empty-queue arch/um/drivers/ubd_kern.c
---- uml-linux-2.6.8.1/arch/um/drivers/ubd_kern.c~uml-ubd-no-empty-queue	2004-08-29 14:40:51.313410952 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c	2004-08-29 14:40:51.315410648 +0200
-@@ -1038,8 +1038,7 @@ static void do_ubd_request(request_queue
- 	int err, n;
- 
- 	if(thread_fd == -1){
--		while(!elv_queue_empty(q)){
--			req = elv_next_request(q);
-+		while((req = elv_next_request(q)) != NULL){
- 			err = prepare_request(req, &io_req);
- 			if(!err){
- 				do_io(&io_req);
-@@ -1048,9 +1047,8 @@ static void do_ubd_request(request_queue
- 		}
+diff -puN arch/um/drivers/ubd_kern.c~uml-ubd-any-elevator arch/um/drivers/ubd_kern.c
+--- uml-linux-2.6.8.1/arch/um/drivers/ubd_kern.c~uml-ubd-any-elevator	2004-08-29 14:40:53.731043416 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/drivers/ubd_kern.c	2004-08-29 14:40:53.733043112 +0200
+@@ -749,8 +749,6 @@ int ubd_init(void)
+ 		return -1;
  	}
- 	else {
--		if(do_ubd || elv_queue_empty(q))
-+		if(do_ubd || (req = elv_next_request(q)) == NULL)
- 			return;
--		req = elv_next_request(q);
- 		err = prepare_request(req, &io_req);
- 		if(!err){
- 			do_ubd = ubd_handler;
+ 		
+-	elevator_init(ubd_queue, &elevator_noop);
+-
+ 	if (fake_major != MAJOR_NR) {
+ 		char name[sizeof("ubd_nnn\0")];
+ 
 _
 
 
