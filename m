@@ -1,11 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] [POLL] Putting UML/2.4 into "fixes-only" mode
-In-Reply-To: <200501262310.49814.blaisorblade@yahoo.it>
-Message-ID: <Pine.LNX.4.61.0501301406390.13409@filer.marasystems.com>
-References: <200501262310.49814.blaisorblade@yahoo.it>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CvkrC-0006o4-As for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 31 Jan 2005 15:21:22 -0800
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cvkr8-0005VG-Nr for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 31 Jan 2005 15:21:22 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.61.0501311817060.5814@sparrow>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: [uml-devel] FC3/i386 root filesystem on ford (x64_64) with 2.6.4
+	kernel: cannot setup LDT
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,30 +26,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Jan 2005 14:28:54 +0100 (CET)
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Mon, 31 Jan 2005 18:21:09 -0500 (EST)
+To: Jeff Dike <jdike@addtoit.com>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Marion Bates <marion.bates@dartmouth.edu>, William Stearns <wstearns@pobox.com>
 
-On Wed, 26 Jan 2005, Blaisorblade wrote:
+Good evening, Jeff, all,
+ 	When trying to set up a fc3 i386 root filesystem on an x86_64 uml 
+host, we're getting the following error out of FC3 (which did not show up 
+in slackware 10/i386):
 
-> So, I'd suggest to follow this policy to choose the work to merge:
->
-> - reduce *a lot* what is going to be merged... no new features, no code
-> cleanups (especially NOT the Makefiles cleanups)...
->
-> - concentrate on stability... and on backing out the hostfs rewrite.
 
-I am all for this. People wanting "new fetures" should be using the 2.6 
-tree + relevant patches anyway. 2.4 should focus only on stability, 
-nothing else.
+kjournald starting.  Commit interval 5 seconds
+EXT3-fs: mounted filesystem with ordered data mode.
+VFS: Mounted root (ext3 filesystem) readonly.
+Mounted devfs on /dev
+cannot set up thread-local storage: cannot set up LDT for thread-local 
+storage
 
-If there is users willing to have new features in 2.4 to the point that 
-they provide these features backported to 2.4 then I am OK with having an 
-"experimental" 2.4 patch with these aplied, but I do not think these 
-belongs in the main 2.4 patch.
+Kernel panic: Attempted to kill init!
+  <6>SysRq : Show Regs
+Kernel panic: show_regs
+...
 
-Regards
-Henrik
+ 	Is this related to the tls libraries (which I've not yet moved out 
+of the way)?  I actually booted this with the "ro single init=/bin/sash" 
+command line params to try to rename that directory, but couldn't even get 
+to a sash prompt.
+ 	Cheers,
+ 	- Bill
+
+---------------------------------------------------------------------------
+         "The time for action is past!  Now is the time for senseless
+bickering."
+(Courtesy of Vivek Dasmohapatra <vivek@etla.org>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
