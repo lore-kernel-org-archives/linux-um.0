@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AVSUA-0007I5-Uk
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Dec 2003 01:24:22 -0800
-Received: from smtp3.att.ne.jp ([165.76.15.139])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AVSUA-0000A4-H8
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Dec 2003 01:24:22 -0800
-From: Richard Potter <sbuml-deletethispart@zar.att.ne.jp>
-Subject: Re: [uml-devel] demo of SBUML - swsusp functionality for UML
-In-Reply-To: <03ce01c3c190$edde5c10$2000000a@schlepptopp>
-References: <20031213130717.D57E.SBUML-DELETETHISPART@zar.att.ne.jp> <03ce01c3c190$edde5c10$2000000a@schlepptopp>
-Message-Id: <20031214182343.D583.SBUML-DELETETHISPART@zar.att.ne.jp>
+	id 1AVXj7-0003Pf-HD
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Dec 2003 07:00:09 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AVXj7-0003Il-21
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Dec 2003 07:00:09 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [PATCH]Modules support in 2.6: reaching the complete fix
+References: <200312131828.03645.blaisorblade_spam@yahoo.it> <200312132019.hBDKJ8rL002905@ccure.user-mode-linux.org>
+In-Reply-To: <200312132019.hBDKJ8rL002905@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200312141604.32309.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,60 +27,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Dec 2003 18:24:19 +0900
+Date: Sun, 14 Dec 2003 16:04:32 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-> hey this is GREAT!
-> i`m currently downloading the whole stuff and give it a try.
+First, I tried without CONFIG_MODVERSIONS, and the panic doesn't happen(which 
+was obvious, since the offending code is compiled #ifdef MODVERSIONS) and no 
+other one appears. And the module loading works.
 
-If you have any problems with the demo, let me know what Linux host you
-are testing it on.
+Only thing which obviously can't work is the umlgdb script; I need 2.6 Uml 
+modules because I need to test a change to the 2.6 loop device(i.e. the 
+partition support).
 
-> 
-> > UML.  Eventually it will be announced and hosted at
-> > sbuml.sourceforge.net
-> can you explain why it will be hosted as an extra project? 
-> i just see it as additional feature for uml - so why somewhat "forking" ?
-> just independence?
+[About user_ksyms.c]
+> Yeah, this is nasty, but I couldn't think of any way of handling this
+> without just copying stuff.
+Yes, I understand you've tried(though I don't know why user code can't include 
+even some kernel headers, but that's my fault).
 
-This is a good question.  As for the core functionality (i.e. sbumlsave
-and sbumlrestore), I hope it will be merged into the UML project code.
-For now, the SBUML project can be a safe place to debug the core
-functionality until it is stable enough and meets Jeff's standards.  (Or
-someone may re-implement this functionality in a totally different way
-for the UML project, in which case the SBUML project may adopt that code.)
+> > 2) then, the UML build system is broken for USER_OBJS.
+>
+> This is separate from the module problem.  It still needs fixing though.
+Yes, but the general rule does some post-processing which is needed for 
+modules. See scripts/Makefile.build:134 and following ones(around the 
+"cmd_modversions" definition).
 
-In addition, the overall goal of SBUML is to support what we have been
-calling "Computation Scrapbook" and "Snapshot Programming" ideas. SBUML
-basically makes a UML machine act like a first-class programming object.
-The SBUML project will explore the higher-level programs/scripts that
-this makes possible.  Some of these programs/scripts will require
-extended functionality for controlling the UML that might not be of
-general interest to other UML users.  For example, our work with model
-checking requires scripts to externally control the scheduling order of
-processes in a UML machine.  So the SBUML project will do more than add
-just one "addition feature" to UML.  It will also be adding various
-experimental high-level scripts and extended functionality to support
-them.
+>
+> It would be nice just to have something in one Makefile, like
+> arch/um/Makefile, which makes this work.  I haven't looked at whether this
+> is possible.
+I'm going to try!
 
-At this point, I think independence will be valuable, although I hope we
-can keep the forking minimal as we confirm where the projects' goals
-overlap.
+> > And for this, I cannot help because I've not enough  experience with
+> > link scripts(I've been able to learn the syntax, but I don't  know the
+> > reason why some section missing in the i386 appear in the UML  script;
+> > some are from libc, but I don't know which ones).
+>
+> The ones you deleted are all kernel sections.
 
-> 
-> >Potential users might include software
-> > developers who wish to prepare demos without bothering potential users
-> > with setup instructions, teachers of programming who want to distribute
-> > debugging scenarios to students, or software users who would like
-> > provide detailed bug reports (super core dumps :-) to developers.
-> and security experts can snapshot infected honeypot UML`s and transfer them
-> to other experts for analysis :D
-> 
-Somebody told me he wants to use it for pre-configuring a bunch of IRC
-clients to stress test a server he is setting up.
+I understand this well(I'm aware of how are they born), but check and see that 
+the RODATA macro, know, already includes them... so it's useless(if not 
+harmful, but it shouldn't) to list them twice.
 
---Richard
-
+Bye
+-- 
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
