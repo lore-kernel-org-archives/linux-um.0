@@ -1,19 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKb6l-0004Xy-3r for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 04:27:51 -0700
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CKb6j-00037i-C2 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 04:27:51 -0700
-Message-ID: <41779E6A.8030706@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [uml-devel] Re: [uml-user] UML "Distro" ?
+In-Reply-To: <87brewe7lq.fsf@bytesex.org>
+Message-ID: <Pine.GSO.4.61.0410211451460.614@waterleaf.sonytel.be>
+References: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
+	<87brewe7lq.fsf@bytesex.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Error in incremental patch link-x86-64
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,30 +18,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 21 Oct 2004 13:32:58 +0200
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 21 Oct 2004 14:52:29 +0200 (MEST)
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: roland <for_spam@gmx.de>, user-mode-linux-user@lists.sourceforge.net, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-With this patch installed, UML no longer boots in TT-mode:
+On Thu, 21 Oct 2004, Gerd Knorr wrote:
+> "roland" <for_spam@gmx.de> writes:
+> > What do you think ?
+> > 
+> > ( ) Ohhhh - nooooo, not another Distro!
+> > ( ) probably useful to make setup/usage of UML easier
+> > ( ) becoming useless, if skas/sysemu go into vanilla kernel
+> 
+> [x] Distributions already working on it ;)
+> 
+> SuSE ships uml + skas-patched kernels for quite some time.  The other
+> stuff also slowly moves forward to better UML support, the yast2
+> installer runs just fine within a UML environment for example.
+> 
+> Debian also has uml packages (havn't tested them through).
 
-   Checking PROT_EXEC mmap in /tmp...OK
-   Mapping memory: Invalid argument
+Put AFAIK the standard Debian kernels don't contain the SKAS patch. They do
+ship kernel-patch-skas as a separate package.
 
-Applied a patch, that fixes it.
+Gr{oetje,eeting}s,
 
-Bodo
+						Geert
 
----
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---- a/arch/um/Kconfig_i386	2004-10-21 13:01:34.972662948 +0200
-+++ b/arch/um/Kconfig_i386	2004-10-21 13:01:49.597246150 +0200
-@@ -4,5 +4,5 @@
-
-  config TOP_ADDR
-  	hex
--	default 0xc0000000 if HOST_2G_2G
--	default 0x80000000 if !HOST_2G_2G
-+	default 0xc0000000 if !HOST_2G_2G
-+	default 0x80000000 if HOST_2G_2G
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 -------------------------------------------------------
