@@ -2,25 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CnmAf-0003VI-0O for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jan 2005 15:08:29 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CnmAa-0001GM-9u
+	id 1CnnPU-0006u8-Gi for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Jan 2005 16:27:52 -0800
+Received: from pike.sandelman.ca ([205.150.200.164])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CnnPS-00075i-Dk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jan 2005 15:08:28 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
-References: <200501082106.38306.rob@landley.net>
-	<41E0C885.3020608@tuxrocks.com>
-In-Reply-To: <41E0C885.3020608@tuxrocks.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501091706.58778.rob@landley.net>
+	Sun, 09 Jan 2005 16:27:52 -0800
+Subject: Re: [uml-devel] How stable is hostfs (and UML in general)? 
+In-Reply-To: Message from Rob Landley <rob@landley.net> of "Sat,
+	08 Jan 2005 21:06:38 EST." <200501082106.38306.rob@landley.net> 
+References: <200501082106.38306.rob@landley.net> 
+Message-ID: <31487.1105315534@marajade.sandelman.ottawa.on.ca>
+From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,92 +26,81 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 9 Jan 2005 17:06:58 -0500
-To: Frank Sorenson <frank@tuxrocks.com>
+Date: Sun, 09 Jan 2005 19:05:34 -0500
+To: Rob Landley <rob@landley.net>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sunday 09 January 2005 01:00 am, Frank Sorenson wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
 
-> I may not be able to answer all your questions, but I may be able to
-> offer a few pointers.
->
-> For the UML kernel version, the stock 2.6.x kernel is getting better,
-> but still isn't the most stable and reliable kernel.  Right now, the
-> most stable I've found is using 2.6.9 from kernel.org, with the -bb4
-> patches from
-> http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/
 
-Hmmm...  Cool.  Grabbed it, I'll try to look through it tonight to see what's 
-already in 2.6.10 and what isn't...
+>>>>> "Rob" == Rob Landley <rob@landley.net> writes:
+    Rob> I want to use UML because I'm building a little uclibc-based
+    Rob> distro that has a problem when the system it's building on has
+    Rob> a kernel older than the one it's building.  I'm testing the
 
-> There are several thing you can do to improve the speed at which the UML
-> runs.  When UML starts, it opens a file in /tmp (or somewhere else if
-> TMPDIR is set), mmaps it, and uses that as its memory.  To speed this
-> up, make sure that it's located on a tmpfs-mounted filesystem (so it's
-> real memory).
+  I think you have a serious problem to begin with.
 
-Ah.  Definitely a good thing to know, (and non-obvious, and not in any FAQ 
-I've read yet).
+  Probably, you aren't building with the cross-compile headers, but
+rather with the host's headers, and maybe you are using the kernel
+headers rather than the uClibc headers.
+  When building for a different libc, you'd be best to pretend that you
+are in fact building for a different CPU. I.e. build a whole
+cross-compile environment.
 
-On the other hand, if I bundle up the firmware linux build process, I'm not 
-really going to be able to control what environment it runs in.  (That's kind 
-of the point.  I'm developing/testing it on knoppix as a reasonable minimal 
-build environment.)  I suppose I could mount tmpfs myself and set TMPDIR, but 
-that assumes the script is being run as root and another benefit of using UML 
-is getting away from the need to do that for chroot and mknod and such...
+    Rob> Under the UML built from stock 2.6.9 sources, after some
+    Rob> tweaking I got it to sort of boot and give me a shell prompt
+    Rob> about 1/3 of the time (the other 2/3 of the time it paniced
+    Rob> during boot due to various race conditions, but trying it
+    Rob> several times in a row usually got me to the shell prompt).  I
+    Rob> couldn't figure out any way to make it start with a readable
+    Rob> hostfs by default, but "mount -o remount,rw / /" once it was up
+    Rob> seemed to do the trick, and I can put that in an init script no
+    Rob> problem.  (And yes it worked: I could create files and have
+    Rob> them show up in the host system.)
+  
+  I use hostfs root all the time.
+  I have no such problems.
 
-I remember way way back, that there used to be a gross hack people would do to 
-get shared memory (before shm), which was create a file somewhere, have all 
-the processes that needed to share memory open the file, and then delete the 
-file.  That signalled the operating system to stop updating the on-disk copy.
+    Rob> But when trying to compile "hello world", gcc died saying it
+    Rob> couldn't find ld.  This exact filesystem worked fine chrooting
+    Rob> into it on the host kernel, a knoppix system running 2.6.7.
+  
+  Well, was ld actually there? 
 
-I wonder if that old hack (deleting the file signalling there's no rush about 
-writing stuff back to the disk anymore, although it's still your backing 
-store) still works?
+    Rob> mconsole (version 2) initialized on
+    Rob> /home/knoppix/.uml/WGIHE3/mconsole audit: initializing netlink
+    Rob> socket (disabled) audit(300.210:0): initialized Initializing
+    Rob> Cryptographic API Kernel panic - not syncing: fix_range fixing
+    Rob> wrong address space, current = 0xa0cb90a0
 
-Why does it do this instead of just mallocing stuff, anyway?  (Quick and dirty 
-shared memory again?)
+  It sounds like your builds are really what is broken, not the root
+file system.
 
-> fstab:
-> none   /UML/MEMORY      tmpfs   defaults,size=768M      0 0
->
-> Starting the UML:
-> export TMPDIR=/UML/MEMORY
-> /UML/linux ...
->
->
-> Also, with an unpatched host kernel, your UML will run slower.  If
-> possible, patch the host kernel to allow UMLs to run in SKAS mode and
-> take advantage of some SYSEMU code.  These patches are also here:
-> http://www.user-mode-linux.org/~blaisorblade/patchlist.html or you can
-> get the 2.6.10 host patch from
-> http://uml.tuxrocks.com/Patches/host-skas3-2.6.10-v7.patch
+    Rob> cables and virtual hubs and it doesn't apply to me.  I'm trying
+    Rob> for a VERY simple setup: my UML doesn't need more networking
+    Rob> than loopback, doesn't need swap, doesn't need module
 
-I know.  But once again, I'm tryng to use UML in hopes of being more portable 
-and doing without root access.  Patching the kernel defeats the point 
-entirely, I might as well just tell people "you'll need to boot 2.6.10 to 
-build this, and it needs to be run as root".
+  Yes, it does need swap if you intend to run gcc.
 
-I'm more interested in correctness than performance at the moment.  As long as 
-it WORKS, they can leave it running overnight for now...
+  I suggest that you might want to try the UML image system in the
+Openswan builds. It generates everything you need. It has been used with
+2.6.9+ guests, on 2.4 and 2.6 hosts.
 
-> I don't know much about hostfs, so I can't give any real ideas there.
-> UML doesn't support TLS yet, so make sure that your UML root_fs doesn't
-> have a /lib/tls directory.
+- -- 
+]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
+]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
+] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
+] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+Comment: Finger me for keys
 
-The knoppix host system does, but the build directory I'm giving it doesn't.
-
-Hmmm...  I wonder what TLS _is_?  Internationalization, I suspect.  It seems 
-unlikely knoppix would waste space on a second copy of libc for any other 
-reason...
-
-> Hope this helps,
-
-Yes, actually.  Thanks. :)
-
-> Frank
-
-Rob
+iQCVAwUBQeHGxYqHRg3pndX9AQHxbwQAkZEnFOz0z4xxSB4XLVl6XXKJAk/vw4/w
+48HCyCv/guKdwmZcwCYd3MFVyMood8aNSjlzfpETSjYvGTKqGR/cqJEn+4Urtara
+NX2N7kcN3DYPs3yW1g5QZ/kWoTQc/+sTV3BOC4mw2vGRga2W0VTRblCShnuvV/N2
+v/szXnInqK4=
+=O7w2
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
