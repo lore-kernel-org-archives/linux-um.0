@@ -2,24 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B8mKr-0000rT-CC for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 Mar 2004 12:29:17 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B8mKq-0002oO-T5
+	id 1B8pZj-0005pe-JA for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 31 Mar 2004 15:56:51 -0800
+Received: from pond72.drizzle.com ([216.162.218.72] helo=cac.seattle.wa.us)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1B8pZj-0001a5-Bh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 Mar 2004 12:29:17 -0800
-Message-Id: <200403312104.i2VL4dLl008781@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: Vmlinux - linux linking stages & /proc/kallsyms
-	empty 
-In-Reply-To: Your message of "Wed, 31 Mar 2004 19:42:39 +0100."
-	<200403312042.39776.blaisorblade_spam@yahoo.it> 
-References: <200403302025.02276.blaisorblade_spam@yahoo.it>
-	<200403302138.i2ULc3Ll004220@ccure.user-mode-linux.org>
-	<200403312042.39776.blaisorblade_spam@yahoo.it> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	Wed, 31 Mar 2004 15:56:51 -0800
+Received: from cac.seattle.wa.us (localhost.localdomain [127.0.0.1])
+	by cac.seattle.wa.us (8.12.10/8.12.10) with ESMTP id i2VNuQxK025623
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 31 Mar 2004 15:56:26 -0800
+Received: from localhost (cac@localhost)
+	by cac.seattle.wa.us (8.12.10/8.12.10/Submit) with ESMTP id
+	i2VNuQ1e025619 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 31 Mar 2004 15:56:26 -0800
+From: "Charles A. Clinton" <cac@cac.seattle.wa.us>
+Message-ID: <Pine.LNX.4.58.0403311549380.25444@cac>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Segfault on UML load
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +33,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 31 Mar 2004 16:04:39 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 31 Mar 2004 15:56:26 -0800 (PST)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> Wait a moment (maybe you already understood this but I'm not sure):
-> what I  suggest *now* is much *more* than the patch I had at that time
-> - that one was  not enough (i.e. with that you get /proc/kallsyms
-> full, but having wrong  addresses)! 
+When I build a UML kernel on my Fedora Core 1 machine, it segfaults when 
+it tries to load. It looks to me like changes in binutils to support 
+exec-shield have added a STACK program header at 0x00000000, causing the 
+image to appear to be 2.5G in size.
 
-Yeah, but at least you're explaining things, which you didn't do with the
-combo patch that I mostly applied last time.
+Is this a:
+    1) known and solved
+    2) an open issue that I need to work on a fix for
+    3) nobody cares
+kind of problem?
 
-I haven't checked whether you're explaining everything that I don't understand
-yet :-)
+(My guess is that adding some commands to arch/um/ld.link.in to disappear 
+or move the STACK program header is the right way to fix it)
 
-				Jeff
-
+-- Charles
 
 
 -------------------------------------------------------
