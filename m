@@ -2,21 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuJA2-0005XF-1n for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Feb 2004 14:30:18 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuJ3x-0004Or-5J for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Feb 2004 14:24:01 -0800
-From: M A Young <m.a.young@durham.ac.uk>
-In-Reply-To: <200402201837.13918.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.LNX.4.58.0402202219290.23596@vega.dur.ac.uk>
-References: <200402162004.i1GK4isq024309@ccure.user-mode-linux.org>
-	<200402201837.13918.blaisorblade_spam@yahoo.it>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: 2.4.24-1um - exec-shield - [PATCH][RFC] memory
-	shortness fix
+	id 1AuTwC-00027B-Ho for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 02:00:44 -0800
+Received: from mail-04.iinet.net.au ([203.59.3.36] helo=mail.iinet.net.au)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AuTpp-0006ng-TT for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 01:54:10 -0800
+Received: from cameron by cp.yi.org with local (Exim 3.36 #1 (Debian))
+	id 1AuThH-0001Bh-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 21 Feb 2004 17:45:19 +0800
+From: Cameron Patrick <cameron@patrick.wattle.id.au>
+Subject: Re: [uml-devel] [PATCH] skas3 for x86_64 arch
+Message-ID: <20040221094519.GB31609@patrick.wattle.id.au>
+References: <1077305069.8412.62.camel@wopr.tektonic.net>
+	<200402202155.44773.blaisorblade_spam@yahoo.it>
+	<1077311125.8412.78.camel@wopr.tektonic.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1077311125.8412.78.camel@wopr.tektonic.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,21 +33,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 22:23:51 +0000 (GMT)
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 21 Feb 2004 17:45:19 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 20 Feb 2004, BlaisorBlade wrote:
+Matt Ayres wrote:
 
-> The simple fix would be IMHO to add in setup_physmem:
->
->   offset -= UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end);
+| The x86_64 emulator seems to cost money.
 
-You can't do that because the memory you add to the physmem area isn't
-empty, but includes memory used for other purposes, and using memory twice
-isn't good!
+Have you tried Bochs?  I've not used it for x86-64 myself but it
+claims to be able to do it.  'tis a bit slow, though.
 
-	Michael Young
+Cameron.
 
 
 -------------------------------------------------------
