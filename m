@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASrnx-00078s-HY
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 21:50:05 -0800
-Received: from externalmx.valinux.com ([198.186.202.147] helo=externalmx.vasoftware.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASrnx-000721-BK
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 21:50:05 -0800
-Received: from [61.185.123.42] (port=3387 helo=198.186.202.147)
-	by externalmx.vasoftware.com with smtp (Exim 4.24 #1 (Debian))
-	id 1ASrnw-0006cG-8r
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Dec 2003 21:50:05 -0800
-Message-ID: <hreb08uo-864t61x4044mesis$86ap70@u3d7i.vp>
-From: "Minerva Jewell" <37oxhhkylg@yahoo.com>
-Reply-To: "Minerva Jewell" <37oxhhkylg@yahoo.com>
+	id 1ASs1S-0007X3-Dt
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 22:04:02 -0800
+Received: from [216.156.129.65] (helo=www.theshore.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1ASs1R-0000X2-W0
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 22:04:02 -0800
+Received: from hawk (mothership.theshore.net [68.52.199.4])
+	by www.theshore.net (8.12.9/8.9.1) with SMTP id hB7660m4023065
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 7 Dec 2003 01:06:01 -0500
+Message-ID: <004201c3bc87$e1b1ab30$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <hreb08uo-864t61x4044mesis$86ap70@u3d7i.vp>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="8_9EDFE.22_7AFC8_.6"
-Subject: [uml-devel] Boost Your  Car's Gas Mileage 27%+.....bazyli
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] BUG: /proc/ has timestamp of Dec 31, 1969
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,77 +28,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 07 Dec 2003 02:31:03 -0300
+Date: Sun, 7 Dec 2003 00:03:45 -0600
 To: user-mode-linux-devel@lists.sourceforge.net
 
+Hello,
 
+I've tested this with 2.4.20-3um and the most recent uml patch (6um) against
+2.4.23, on a bunch of different host machines -- all of them mount /proc/ with a
+date of Dec 31, 1969.
 
---8_9EDFE.22_7AFC8_.6
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+li-20:~# ls -ald /proc/
+dr-xr-xr-x   37 root     root            0 Dec 31  1969 /proc/
 
-FUEL SAVER PRO
+There are distros that rely on /proc having a timestamp close to boot time, like
+for cron clearing out /var/cron.
 
-This revolutionary device Boosts Gas Mileage 27%+ by helping fuel burn bet=
-ter using three patented processes from General Motors.
-www.eoei.com?axel=3D49
-
-PROVEN TECHNOLOGY
-A certified U.S. Environmental Protection Agency (EPA) laboratory recently=
- completed tests on the new Fuel Saver. The results were astounding! Maste=
-r Service, a subsidiary of Ford Motor Company, also conducted extensive em=
-issions testing and obtained similar, unheard of results. The achievements=
- of the Fuel Saver is so noteworthy to the environmental community, that C=
-ommercial News has featured it as their cover story in their June, 2000 ed=
-ition.
-
-Take a test drive Today - www.eoei.com?axel=3D49
-
-
-
-
-
-
-No more advertisements, thanks - http://www.5jzd.org/out5s/pre-rem2e.asp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-xqi duowmobvp  awhii
-wyakrthoibyp m
-stzlftcdbujk
-sllouha zb
-c yqqnemwfko
-mrd
-
---8_9EDFE.22_7AFC8_.6--
+Thanks,
+-Chris
 
 
 
