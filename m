@@ -1,26 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Auvgd-00055d-Sy for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Feb 2004 07:38:31 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AuvP2-0008Ht-9A for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Feb 2004 07:20:20 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: 2.4.24-1um - exec-shield - [PATCH][RFC] memory
-	shortness fix
-References: <200402162004.i1GK4isq024309@ccure.user-mode-linux.org>
-	<200402211651.27584.blaisorblade_spam@yahoo.it>
-	<Pine.LNX.4.58.0402212049160.25949@vega.dur.ac.uk>
-In-Reply-To: <Pine.LNX.4.58.0402212049160.25949@vega.dur.ac.uk>
+Subject: Re: [uml-user] Re: [uml-devel] new skas3 patch ready for 2.4.25
+References: <40338C1B.1070800@meisterwerk.net>
+	<200402202125.58574.blaisorblade_spam@yahoo.it>
+	<87k72gv3cg.fsf@amaterasu.srvr.nix>
+	<200402221516.09898.blaisorblade_spam@yahoo.it>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200402221516.09898.blaisorblade_spam@yahoo.it> (BlaisorBlade's
+	message of "Sun, 22 Feb 2004 16:00:38 +0100")
+Message-ID: <87u11jrnwk.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200402221634.06668.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,37 +21,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 22 Feb 2004 16:34:06 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: M A Young <m.a.young@durham.ac.uk>
+Date: Sun, 22 Feb 2004 18:04:43 +0000
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-Alle 21:54, sabato 21 febbraio 2004, M A Young ha scritto:
-> On Sat, 21 Feb 2004, BlaisorBlade wrote:
-> > Yes, you are perfectly right and what I wrote is at all foolish and
-> > stupid - I should have written len += UML_ROUND_UP(brk_start) -
-> > UML_ROUND_UP(&_end); (or something similar).
->
-> That doesn't help you either, because increasing len within setup_physmem
-> writes to memory that is going to be used for other purposes.
-Why cannot we fix the other mmaps from the file?
-> The only way
-> around this amounts to increasing physmem_size anyway.
+On Sun, 22 Feb 2004, BlaisorBlade said:
+> Hmmm, I've looked at the faulting code and IMHO the most probable thing is a 
+> compilation problem (forgot make dep after applying the patch, for instance) - 
+> try saving your .config, running make mrproper, 
+> grepping through .config to check that CONFIG_PROC_MM=y and recompiling the 
+> bzImage:
+>  $ make dep bzImage
 
-I must repeat myself: it seems that increasing physmem_size by, i.e., 4megas, 
-when the user asked, i.e., for 32 mega, means that the kernel will have 
-correctly 32mega of memory, but that it can try to access 36 mega of memory, 
-right? I've actually checked that the statistics about how much memory it can 
-use come from physmem_size, through init_maps() and mem_init():
+It's highly plausible that exactly that happened: I forgot `make
+oldconfig' during the first build and assumed (ha!) that `make dep'
+would fix everything up OK so that a config change would trigger
+rebuilds appropriately. Possibly this was a foolish assumption and a
+`make dep clean' was necessary.
 
-        /* this will put all low memory onto the freelists */
-        totalram_pages = free_all_bootmem();
+> More exactly, it seems that arch/i386/kernel/ptrace.c was recompiled after 
+> applying the patch but without CONFIG_PROC_MM on.
 
-Please, read this email and correct me on this point if I am wrong or confirm 
-this behaviour.
+OK.
+
+> Also, IMHO that kind of error cannot be returned by sys_ptrace, unless 
+> CONFIG_PROC_MM was off when compiling that file (I've also checked 
+> proc_mm_get_mm).
+
+That's my conclusion too. I'll try rebuilding from scratch tomorrow
+evening and see if that works.
+
+(Oops.)
+
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-
+`note to the crown prosecution service: Machine guns dont have a
+ 'stun' setting.' --- mjw
 
 
 -------------------------------------------------------
