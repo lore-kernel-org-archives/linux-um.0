@@ -1,13 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] Re: [uml-user] keyring syscalls
-In-Reply-To: <20050125215416.GA2912@halcrow.us>
-Message-ID: <Pine.LNX.4.61.0501252301330.3289@filer.marasystems.com>
+From: Michael Halcrow <uml@halcrow.us>
+Message-ID: <20050125224650.GA6136@halcrow.us>
+Reply-To: Michael Halcrow <uml@halcrow.us>
 References: <20041118160909.GA7630@halcrow.us>
 	<200411181839.26596.blaisorblade_spam@yahoo.it>
 	<20050125215416.GA2912@halcrow.us>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	<200501252337.58219.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Disposition: inline
+In-Reply-To: <200501252337.58219.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] keyring syscalls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,61 +23,54 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Jan 2005 23:21:33 +0100 (CET)
-To: Michael Halcrow <uml@halcrow.us>
-Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Tue, 25 Jan 2005 16:46:51 -0600
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Michael Halcrow <uml@halcrow.us>, Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Tue, 25 Jan 2005, Michael Halcrow wrote:
 
-> I am not entirely clear on the function that ``[ 222 ] =
-> sys_ni_syscall,'' at the end of the table in syscalls.h is supposed to
-> serve.
+--a8Wt8u1KmwUX3Y2C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This says that syscall number 222 is not implemented, which it isn't on 
-i386 (not defined).
+On Tue, Jan 25, 2005 at 11:37:57PM +0100, Blaisorblade wrote:
+> On Tuesday 25 January 2005 22:54, Michael Halcrow wrote:
+> > On Thu, Nov 18, 2004 at 06:39:26PM +0100, Blaisorblade wrote:
+> Well, it should be fixed in the -mm tree (and probably in 2.6.11-rc2-bk2,=
+ I=20
+> guess, though it's not tested)... browse the patches at=20
+> http://user-mode-linux.sourceforge.net/patches.html.
 
->  Syscalls in UML contstitutes new territory for me.
+I did notice that and tried to build it, but I had build errors.
+Specifically, the compiler complains that the PTRACE_SETOPTIONS symbol
+is undeclared in arch/um/kernel/process.c.  If I include
+linux/ptrace.h and try again, then the new syscalls (vperfctr_*) are
+undeclared in arch/um/kernel/sys_call_table.c.  I just gave up at that
+point; I'll wait for the official 2.6.11 release.  In the meantime,
+I'll see if I can't backport the changes in the 2.6.11-rc2 patch to
+2.6.10.
 
-Mostly the same as syscalls in any other architecture. A big table with 
-function pointers to each syscall, indexed by the syscall number.
+Thanks,
+Mike
+=2E___________________________________________________________________.
+                         Michael A. Halcrow                         =20
+       Security Software Engineer, IBM Linux Technology Center      =20
+GnuPG Fingerprint: 05B5 08A8 713A 64C1 D35D  2371 2D3C FDDA 3EB6 601D
 
-As each architecture has it's own syscall table but UML sharing the 
-syscall numbers with the host architecture things get a little confusing 
-sometimes. And in addition the UML syscall table often lags behind a 
-little, missing the newer syscalls.
+--a8Wt8u1KmwUX3Y2C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Note that the main syscall table is defined in 
-arch/um/kernel/sys_call_table.c, the define in the 
-include/asm/sysdep/syscalls.h is just the part of the syscall table which 
-is specific to a certain host architecture.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-To add a new generic syscall you should
+iD8DBQFB9sxaLTz92j62YB0RAuAOAJ45/VdW/cf7LbTWxubpIIKVX3JWkwCfRjkG
+ZxcEjj7M587AeRM46GeVJkk=
+=oJpe
+-----END PGP SIGNATURE-----
 
-   1. Add it to asm-xxx/unistd.h of each architecture, except for um which 
-picks it up from the host architecture.
-   2. Add it to the syscall table of earch architecture, um included.
-
-To add a new i386 only syscall you should
-
-   1. Add it to asm-i386/unistd.h
-   2. Add it to the i386 syscall table
-   3. Add it to um i386 specific syscall table in 
-asm-um/sysdep-i386/syscall.h
-
-> I would assume that the __NR_* assignments in the UML environment are 
-> identical to those of the host system.
-
-They are. UML directly includes unistd.h from the host architecture.
-
-> That means that request_key,
-> for example, maps to identifier 288 on the i386 architecture, right?
-
-Which should have their appropriate _NR_xxx identifiers defined. For 
-maintenance reasons the syscall table should be built using _NR_xxx 
-identifiers, not the absolute numbers.
-
-Regards
-Henrik
+--a8Wt8u1KmwUX3Y2C--
 
 
 -------------------------------------------------------
