@@ -1,25 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AiDXA-0006kK-Ps for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 06:04:12 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AiDXA-0002pW-D8 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2004 06:04:12 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040118140400.GA11109@elte.hu>
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<200401172009.50449.blaisorblade_spam@yahoo.it>
-	<20040117195137.GB7405@ccure.user-mode-linux.org>
-	<20040118134935.GA10490@elte.hu> <20040118135856.GA10747@elte.hu>
+From: s-uml@rhythm.cx
+Message-ID: <20040118162345.GA23424@infinity.rhythm.cx>
+References: <4009A583.7070007@lig.net>
+	<20040118044551.GB8571@ccure.user-mode-linux.org>
+	<400A30CC.20308@lig.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040118135856.GA10747@elte.hu>
-Subject: [uml-devel] Re: uml-patch-2.6.1-1: VFS: Cannot open root device
-	"ubd0" or unknown-block(0, 0)
+In-Reply-To: <400A30CC.20308@lig.net>
+Subject: [uml-devel] Re: [uml-user] Dynamic remount with variable COW
+	stacking/merging needed, support for snapshot repilication
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,22 +21,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Jan 2004 15:04:00 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 18 Jan 2004 11:23:45 -0500
+To: "Stephen D. Williams" <sdw@lig.net>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+
+On Sun, Jan 18, 2004 at 02:07:56AM -0500, Stephen D. Williams wrote:
+> Yes, but that doesn't meet the key requirement I am proposing: that the 
+> downtime be limited to a few seconds. 
+
+If you use the LVM on the host you can take a snapshot of the volume the ubd
+images are on while the uml is stopped. The snapshot gets made instantly so
+the uml would be stopped for very little time. 
 
 
->  VFS: Cannot open root device "ubd0" or unknown-block(0,0)
->  Please append a correct "root=" boot option
->  Kernel panic: VFS: Unable to mount root fs on unknown-block(0,0)
-
-ah, found it. This command-line used to work:
-
- ./linux ubd0=/tmp/uml.img root=/dev/ubd0 mem=64m init=/bin/bash umid=uml1
-
-but now it has to be /dev/ubd/0, not /dev/ubd0.
-
-	Ingo
+-Steve
 
 
 -------------------------------------------------------
