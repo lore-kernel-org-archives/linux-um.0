@@ -2,25 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D4hGF-0002ua-1W for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Feb 2005 07:20:11 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1D4hGE-000512-5H for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Feb 2005 07:20:10 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [PATCH] uml: support a separate build tree;
-	support USER_OBJS dependencies
-References: <opsl43d9yilfdzum@localhost.localdomain>
-	<200502161930.55206.blaisorblade@yahoo.it>
-	<opsmfxytsflfdzum@localhost.localdomain>
-In-Reply-To: <opsmfxytsflfdzum@localhost.localdomain>
+	id 1D4SAu-0001VP-P4 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Feb 2005 15:13:40 -0800
+Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D4SAq-0002Gi-7S for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Feb 2005 15:13:40 -0800
+Received: from NHROCAVG2.ets.enterasys.com ([134.141.79.124])
+	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id j1ONDWZC003065
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 24 Feb 2005 18:13:32 -0500 (EST)
+Message-ID: <421E5F9A.6030109@enterasys.com>
+From: "D. Bahi" <dbahi@enterasys.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200502241731.56876.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] UML 2.4 shmem.c changes? panic w/ backtrace
+References: <41A35EF5.4080302@enterasys.com>
+	<200411240242.iAO2gI7p006614@ccure.user-mode-linux.org>
+In-Reply-To: <200411240242.iAO2gI7p006614@ccure.user-mode-linux.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig3C49F89C0C52AA599B964F59"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,71 +33,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Feb 2005 17:31:56 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Vadim Abrossimov <vadim_abrossimov@yahoo.com>, Jeff Dike <jdike@addtoit.com>
+Date: Thu, 24 Feb 2005 18:13:30 -0500
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Saturday 19 February 2005 11:55, Vadim Abrossimov wrote:
-> On Wed, 16 Feb 2005 19:30:54 +0100, Blaisorblade <blaisorblade@yahoo.it>
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig3C49F89C0C52AA599B964F59
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+This happens everytime i try to load an application of ours that
+uses shmem for syslog...
+
+Jeff Dike wrote:
+
+>dbahi@enterasys.com said:
 >
-> wrote:
-> > Ok, I have two more requests, if possible:
-> > 1) add something like arch/um/Rules.make which is included everywhere
-> > needed
-> > 2) There is an error in the patch (even in Al's idea): you must swap, in
-> > the below code
 >
-> OK. I will do it.
-> Against which version you would suggest me to do it:
-> - as an add-on to 2.6.11-rc3-mm2 + Jeff's tarball (which already includes
-> the original USER_OBJ cleanup)
-For now, against this one. The patch is still in development, so this is the 
-right choice.
-> - 2.6 bk
-> - any other
+>>i know things are hot and heavy in 2.6 but i hope somebody can spare a
+>>thought about this panic i'm struggling to understand.
+>>
+>>
 >
-> Also I have more general questions about the usual way the uml community
-> works:
+>Is this easily reproduced?
+>
+>The stack isn't ringing any bells with me, particularly since none of my code
+>appears on the stack until the bug has already happened.
+>
+>				Jeff
+>
+>
+>
 
-> - do the patches from Jeff's tarball are intended to be pushed in 2.6 BK?
-> if yes when and how?
-Yes, "when they are felt as ready". However the process in most cases is  
-possibly (author?) -> possibly (someone, including me, forwarding it; I often 
-forward patches directly to -mm) -> Jeff's tree -> -mm tree -> BitKeeper 
-repository and final release.
-
-However, there are actually some little differences between the trees that 
-interact with this patch. The patch also changes some additions to the 
-Makefiles done in the Jeff's tree, for instance about "skas0" and "x11-fb".
-
-Those hunks will have to stay in the tree even after the patch is merged, 
-while the rest will go with the relevant patches.
-
-I'm finding it not trivial to port these patches from the Jeff's tree 
-to the mainline tree... there are some little differences which should move 
-inside a "jeff-only" part of the patch 
-
-I'm doing the port to get it merged as soon as 2.6.12.
-> - if one propose a patch against which version he/she should do it in
-> order to (1) be useful for the community (2) get the patch pushed in 2.6
-> BK soon? (Presumably (1) and (2) have the same answer :->)
-Well, the Jeff's tree is highly experimental, so the casual user often does 
-not apply the full tree, and patches can evolve in it for months, in the case 
-of big rewrites (they are merged sooner if they are fixes).
-
-Probably the better way to get the patch immediately useful is to prepare it 
-against -bk or -mm... after all, normally you don't get big hunks of Jeff's 
-tree merged at once.
-
-When the patch is merged, it will need to get resync'ed against mainline 
-anyway.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+--
+db
 
 
+--------------enig3C49F89C0C52AA599B964F59
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (MingW32)
+
+iD8DBQFCHl+a3XQ4zakZ3z4RAg99AJ9YmV/QI7XFBlSZ2QNzhPYO4p5QRQCeJIpc
+I1JRpGZFYHQ6+wJZKoi8+ew=
+=IQZo
+-----END PGP SIGNATURE-----
+
+--------------enig3C49F89C0C52AA599B964F59--
 
 
 -------------------------------------------------------
