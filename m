@@ -2,15 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CoXCa-0002SA-Ua for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 17:21:36 -0800
+	id 1CoXCw-0002TK-S3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 17:21:58 -0800
 Received: from sourceware.org ([12.107.209.250])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CoXCZ-0003vb-73 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 17:21:36 -0800
-Message-ID: <20050112012134.18139.qmail@sourceware.org>
-From: sourceware-bugzilla@sources.redhat.com
-Subject: [uml-devel] Your Bugzilla password.
+	id 1CoXCw-0003ye-4a for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 17:21:58 -0800
+Message-ID: <20050112012157.18489.qmail@sourceware.org>
+From: "blaisorblade_spam at yahoo dot it"
+	<sourceware-bugzilla@sources.redhat.com>
+In-Reply-To: <20050112011749.651.blaisorblade_spam@yahoo.it>
+References: <20050112011749.651.blaisorblade_spam@yahoo.it>
+Reply-To: sourceware-bugzilla@sources.redhat.com
+Subject: [uml-devel] [Bug nptl/651] The getpid() cache (and TLS) is not
+	invalidated after clone() calls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,16 +27,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 12 Jan 2005 01:21:34 -0000
+Date: 12 Jan 2005 01:21:57 -0000
 To: user-mode-linux-devel@lists.sourceforge.net
 
-To use the wonders of Bugzilla, you can use the following:
 
- E-mail address: user-mode-linux-devel@lists.sourceforge.net
-       Password: Y_caJERs
 
- To change your password, go to:
- http://sources.redhat.com/bugzilla/userprefs.cgi
+-- 
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |user-mode-linux-devel at
+                   |                            |lists dot sourceforge dot
+                   |                            |net
+
+
+http://sources.redhat.com/bugzilla/show_bug.cgi?id=651
+
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
