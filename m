@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpE6M-0005Bs-5r for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 15:10:02 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CpE6H-0000Zf-V2 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 15:10:01 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 8/8] uml: depend on !USERMODE in
-	drivers/block/Kconfig and drop arch/um/Kconfig_block
-References: <20050113051341.DD29D6325A@zion>
-	<200501132206.j0DM67ha005650@ccure.user-mode-linux.org>
-	<200501132122.38517.blaisorblade@yahoo.it>
-In-Reply-To: <200501132122.38517.blaisorblade@yahoo.it>
+	id 1CpFQA-0000ow-70 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 16:34:34 -0800
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CpFQ8-0008K7-Pi for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 16:34:34 -0800
+Message-ID: <001201c4f9d0$fbde9a40$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <200501121856.j0CIuMiZ003766@ccure.user-mode-linux.org>
+	<002001c4f9c7$de282ec0$0201a8c0@hawk>
+	<200501140127.09333.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] Fix stack corruption
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501140012.16334.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +29,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 14 Jan 2005 00:12:16 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, blaisorblade_spam@yahoo.it
+Date: Thu, 13 Jan 2005 18:35:43 -0600
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 13 January 2005 21:22, Blaisorblade wrote:
-> On Thursday 13 January 2005 23:06, Jeff Dike wrote:
-> > blaisorblade@yahoo.it said:
-> > > Ok, what you'd like is an additional patch however, because
-> > > CONFIG_USERMODE  has existed for ages, so for now this can go in,
-> > > right?
-> >
-> > Yup, your patches are in my tree.
->
-> Ok, thanks for quick merging - I hope that Andrew Morton merges it also
-> directly, since I CC'ed him.
->
-> And seeing you so promptly answer probably means that I'll no longer need
-> to queue patches on my own tree, and to find a way to snapshot it; this is
-> a good improvement over the past and helps my work. Thanks a lot for it.
-So, I'm also going to post some other patches in my local tree - I'm cc'ing 
-them to Andrew anyway, since they are (I hope) tested enough... part of them 
-has staged inside -bb.
+> > I believe we've figured out that this is skas3 specific.  Once you start
+> > ping-flooding the UML, it crashes within a second.
+> I wasn't able to riproduce it... I ran two instances of the above loop + a
+> ping flood from the host, but it didn't crash UML, even after letting it that
+> way for some minutes.
 
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+What UML version are you running?  Also, can you reproduce it without Jeff's patch?
+
+Under skas3, I can't crash my UML's using Jeff's "ls > /dev/null" method, with or
+without his patch.
+
+I've been able to reproduce my crash with two different host kernels, an older 2.6.4,
+and the newest 2.6.10+skas-v7.  Guest kernels that crash that I've tried include
+2.6.9-bb4, 2.6.10, and 2.6.10-mm2 plus the incrementals from yesterday.  Also, I
+believe Frank Sorenson is also able to reproduce this crash.
+
+Thanks,
+-Chris
+
 
 
 -------------------------------------------------------
