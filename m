@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Aewps-00011X-W9 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Jan 2004 05:38:00 -0800
-Received: from adsl-b4-78-221.telepac.pt ([81.193.78.221]
-	helo=puma-vgertech.no-ip.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aewps-0004Zw-HD for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Jan 2004 05:38:00 -0800
-Message-ID: <3FFEAF28.8000707@vgertech.com>
-From: Nuno Silva <nuno.silva@vgertech.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] UML running on host-kernel 2.6.0 with NPTL-enabled
-	glibc problem
-References: <3FFE6FE3.8090303@vgertech.com> <3FFEAA6C.8020002@timesys.com>
-	<3FFEACBC.7060704@timesys.com>
-In-Reply-To: <3FFEACBC.7060704@timesys.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Af61G-00007e-DK for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Jan 2004 15:26:22 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Af61F-0002Jn-Qe
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Jan 2004 15:26:22 -0800
+Message-Id: <200401092346.i09NkdS4003979@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: [kbuild-devel] Needed help for UML kbuild. 
+In-Reply-To: Your message of "Thu, 08 Jan 2004 19:07:56 +0100."
+	<200401081907.56198.blaisorblade_work@yahoo.it> 
+References: <200312242019.23335.blaisorblade_work@yahoo.it>
+	<200401072012.05007.blaisorblade_work@yahoo.it>
+	<200401080019.i080JOtd008375@ccure.user-mode-linux.org>
+	<200401081907.56198.blaisorblade_work@yahoo.it> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,30 +31,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 09 Jan 2004 13:39:52 +0000
-To: "La Monte H.P. Yarroll" <piggy@timesys.com>
+Date: Fri, 09 Jan 2004 18:46:39 -0500
+To: BlaisorBlade <blaisorblade_work@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+blaisorblade_work@yahoo.it said:
+> **So: would you merge this patch?** 
+> If yes, can I be smart about files
+> to just move? (Shipping a list of mv  commands would be ok?) Also, the
+> *_user.c (+ the other user-objs) should go under under  os-Linux/
+> {drivers, kernel, kernel/tt, kernel/skas} ..., right? 
 
+I'd rather you look at the actual libc dependencies in the _user files and
+add interfaces to os that let those dependencies be moved.  Then merge the
+remaining code (which should be independent of both libc and kernel) into
+the corresponding _kern files.  I want as little as possible under os.
 
-La Monte H.P. Yarroll wrote:
-> 
-> Going back through your posting it looks like it probably does not 
-> matter if the host kernel
-> implements TLS as long as libc does not use NTPL.  Is this a correct 
-> interpretation?
-> 
+> -the watchdogs (what are they?)
 
-The host kernel runs UML fine... UML doesn't run only when system's 
-glibc has nptl+tls support.
+They watch the system and reboot it if it appears to hang.
 
-This same kernel runs UML with the same glibc, compiled without nptl+tls 
-support.
+> -cow (but why tristate? Maybe related to the standalone cow device, that I 
+> have not understood).
 
-So, I can only assume that's nptl :)
+Yeah, when I get the cow driver working, it makes sense for it to be modular.
 
-Regards,
-Nuno Silva
+				Jeff
 
 
 
