@@ -1,15 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Nicholas Nethercote <njn25@cam.ac.uk>
+Received: from sc8-sf-list2-b.sourceforge.net ([10.3.1.8]
+	helo=sc8-sf-list2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Bs2YI-00049X-Gd for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Aug 2004 09:54:14 -0700
+Message-Id: <200408031750.i73HoMvv002966@ccure.user-mode-linux.org>
 Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind 
-In-Reply-To: <200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.60.0408031527320.22157@hermes-1.csi.cam.ac.uk>
+In-Reply-To: Your message of "Tue, 03 Aug 2004 15:31:44 BST."
+	<Pine.LNX.4.60.0408031527320.22157@hermes-1.csi.cam.ac.uk> 
 References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<410EFCDB.8080404@enterasys.com>
 	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
-	<Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk> 
+	<Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk>
 	<200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	<Pine.LNX.4.60.0408031527320.22157@hermes-1.csi.cam.ac.uk> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,30 +28,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 3 Aug 2004 15:31:44 +0100 (BST)
-To: Jeff Dike <jdike@addtoit.com>
+Date: Tue, 03 Aug 2004 13:50:22 -0400
+To: Nicholas Nethercote <njn25@cam.ac.uk>
 Cc: "D. Bahi" <dbahi@enterasys.com>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
-On Tue, 3 Aug 2004, Jeff Dike wrote:
+njn25@cam.ac.uk said:
+> What address was UML trying to load something at?  Is that adjustable?
 
->> What address was UML trying to load something at?
->
-> 0xa0000000
+It is now.  Get the load-low patch from 
+	http://user-mode-linux.sourceforge.net/patches.html
 
-Currently Valgrind uses 0xb0000000--0xbfffffff for itself, always.  Below 
-that depends which tool you are using, if it uses "shadow memory" (ie. 
-shadowing every memory value with a metavalue), and how big the shadow 
-metavalues are.
+It will make UML load where every normal process loads when CONFIG_MODE_SKAS
+is on and CONFIG_MODE_TT is off.  This should get you past valgrind's address
+space assumptions.
 
-For example, Memcheck uses 9 bits of shadow memory for every byte of real 
-memory, so it reserves down to 0x52c00000 or so for its own use.  If you 
-try Addrcheck, which only uses 1 shadow bit per real byte, it will reserve 
-down to only about 0x9c000000.  If you use --tool=none, no shadow memory 
-is needed so you should be able to use up to about 0xaf000000.
+As a side-benefit, this will allow UML to have much greater physical memory
+without needing to go to highmem.  If you take advantage of this, either enable 
+CONFIG_STATIC_LINK or keep the physical memory size below about 750M.  The
+reason is you don't want to push UML physical memory into the 0x40000000 area
+occupied by shared libraries.  With CONFIG_STATIC_LINK, this problem goes away
+and you can have physical memory up to about 2.75G.
 
-HTH
+Let me know if there are any problems.  It's not well tested - I ran it enough
+to see it panic because it had no root filesystem.  My current work box doesn't
+have skas on it yet, so I can't boot this one up totally.
 
-N
+				Jeff
+
 
 
 -------------------------------------------------------
