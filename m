@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFHit-0001al-1h for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 12:45:15 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CFHio-000410-Ca for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 12:45:14 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] T-mode processes
-References: <29246.1096763190@marajade.sandelman.ottawa.on.ca>
-	<200410052051.47614.blaisorblade_spam@yahoo.it>
-	<Pine.LNX.4.61.0410060141120.1986@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.61.0410060141120.1986@filer.marasystems.com>
-MIME-Version: 1.0
+	id 1CFIYj-0005IO-If for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Oct 2004 13:38:49 -0700
+Received: from cantor.suse.de ([195.135.220.2])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CFIYi-0005bh-Ik
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Oct 2004 13:38:49 -0700
+From: Andi Kleen <ak@suse.de>
+Subject: Re: [uml-devel] uml "ip header error" for large (fragmented) udp
+	packets
+Message-ID: <20041006203539.GC22794@wotan.suse.de>
+References: </ydgn6vAKqzNNA6XYwRcEgI=lge@web.de>
+	<200410061938.06648.blaisorblade_spam@yahoo.it>
+	<vm4cST3zEEx6OdPLK17ocyg=lge@web.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200410062145.03109.blaisorblade_spam@yahoo.it>
+In-Reply-To: <vm4cST3zEEx6OdPLK17ocyg=lge@web.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,69 +31,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 6 Oct 2004 21:45:03 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Date: Wed, 6 Oct 2004 22:35:39 +0200
+To: Lars Ellenberg <Lars.Ellenberg@linbit.com>, user-mode-linux-devel@lists.sourceforge.net, lmb@suse.de, ak@suse.de
 
-On Wednesday 06 October 2004 02:00, Henrik Nordstrom wrote:
-> On Tue, 5 Oct 2004, BlaisorBlade wrote:
-> > Since opening /proc/mm is more or less like creating a new process (or
-> > even like forking), dumpable can become 1, following the general Linux
-> > rules.
->
-> only if it was 1 for the process I think. If it was 0 for the process then
-> there is a obvious risk that sensitive pages will get migrated to the new
-> mm.
-Yes, I agree on this (even if I had not the "shared pages" problem in my 
-picture of the problem).
+On Wed, Oct 06, 2004 at 08:48:23PM +0200, Lars Ellenberg wrote:
+> > So this could help you for now, while we try to find a clue about this. Quite 
+> > frankly, I must say that I'm not seeing any network kernel hacker here 
+> > (correct me if I'm wrong), so it will take some time to debug it. Maybe Gerd 
+> > Knorr is an exception, actually.
+> 
+> Well, then I take Andi Kleen and Lars Marowsky-Br?e into CC for now.
+> Lars, because I expect him to be interessted in having UML as full
+> featured cluster simulation tool available, and Andi because I hope he
+> might know the network code much better than me...
+> 
+> FYI, full thread can be found for example at
+> http://thread.gmane.org/gmane.linux.uml.devel/4607
 
-> creating a new memory map within the process is not really the same as
-> exec if I understand SKAS correctly. The two memory maps may be set to
-> share a significant portion of pages including data pages, while on exec
-> you are guaranteed the two memory maps are fully separate unless they
-> cooperate via mmap or shm which both have access to.
+Paolo's analysis is basically correct. loopback sets this flag
+for better performance.  Actually in 2.6 it probably doesn't help
+very much anymore because TCP can do checksum copy RX now, and that
+would get the checksum basically for free. But it's still there
+and may still make things slightly faster.
 
-In fact I was going to compare it to fork, not to exec, because what we do is 
-more similar to creating a new mm and a new process, instead of replacing a 
-process with another... and plus there is a lot of shared-memory, which is a 
-problem.
+If UML taps the packets from lo it will see incorrect checksums.
 
-> If there is need to then it may be possible to add an argument indicating
-> that the mm should be dumpable even if sanity checks says it should not,
-> but I don't see very much need for this.
+Using a tun or ethertap device would avoid this. In the worst
+case you could also just delete the flag from the loopback
+interface, it's only an optimization.
 
-I don't want to skip the sanity checks! They are currently skipped and 
-dumpable is always 0. Stop. And the fact that we are safe (i.e. that dumpable 
-is by default 0) seems to just be by a lucky accident, actually. Oh well.
+-Andi
 
-> > However, that's a problem if a process using /proc/mm changes its
-> > setting of mm->dumpable (which happens on uid changes and with prctl).
-> > Does in that case the uid of the ptraced process change?
-
-> In such case the dumpable attribute needs to be cleared on all mm:s of
-> that process. There is no easy way telling which memory maps may contain
-> restricted pages on such change of the process status.
-
-Ok, in this case, this should be doable on PTRACE_SWITCH_MM. Anyway, the 
-dumpable flag can become 1 again only with prctl(), so in that case things 
-should be safe (or it is the application's fault).
-
-> Regarding prctl, the running code can be assumed trusted here. The
-> dumpable attribute is about preventing sensitive data from leaking outside
-> of the process. If you circumvent this by setting dumpable to 1 you are
-> assumed to know what you (and any libraries you use) do and assume all
-> responsibility. It is only the running process code itself which can do
-> this, the user can not force it externally from outside of the process
-
-Ok, this is fine and clear.
-
-Btw: I've also found the ptrace root exploit for 2.4.20. And I'm understanding 
-the old problem.
-
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
 
 -------------------------------------------------------
