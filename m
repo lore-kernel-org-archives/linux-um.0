@@ -2,22 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B3vv7-0004x2-Br for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Mar 2004 03:42:41 -0800
-Received: from pegasus.hiit.fi ([212.68.1.186])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B3vv5-0008T2-Ss for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Mar 2004 03:42:40 -0800
-Received: from iki.fi (fortytwo.hiit.fi [212.68.5.83])
-	by pegasus.hiit.fi (Postfix) with ESMTP id BB4EB220009
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 18 Mar 2004 13:42:28 +0200 (EET)
-Message-ID: <40598B24.7040700@iki.fi>
-From: Kristian Slavov <kristian.slavov@iki.fi>
+	id 1B40w0-0003cE-LJ for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Mar 2004 09:03:56 -0800
+Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1B40w0-0002wE-72 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Mar 2004 09:03:56 -0800
+Message-ID: <20040318170350.783.qmail@praize.com>
+From: "gboutwel" <gboutwel@praize.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Using GDB in debugging UML kernel (2.6)
+Subject: Re: [uml-devel] Re: 2.6.4 UML kernel available
+Content-Type: Text/Plain;
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,48 +24,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Mar 2004 13:42:28 +0200
+Date: 18 Mar 2004 17:03:50 -0000
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
 
-I'm trying to debug my kernel code with UML and have run into couple of 
-troubles. My host kernel is 2.6.3 patched with host-skas3-2.6.3-v1, the UML 
-kernel is 2.6.3 with uml-patch-2.6.3-rc2-1. Both systems run Debian testing (sarge).
 
-* GDB 5.3 with GCC 2.95
+> On Tue, 16 Mar 2004, Mike Snitzer wrote:
 
-GDB does not recognize most of the structures. For example, try typing 'info 
-types xfrm_state' (requires IPv6 + IPsec stuff compiled in kernel).
-GDB will list many files. Some of them will show 'struct xfrm_state', most of 
-them 'struct unknown'.
-If I have a breakpoint in one of those file (that don't recognize the structure) 
-I can't print the structure. I've tried 'print {struct xfrm_state *}variable' 
-etc... but still nothing.
-I don't really like to dump memory and try to interpret the structures manually.
 
-* GDB 5.3 with GCC 3.3.3
 
-info types xfrm_state shows the same files as above, but all of them now 
-recognize the xfrm_state. The problem in this case is that GDB will only show me
-one frame in the backtrace :( Not really useful having breakpoint in panic().
+> > So Debian's init tries to spawn a getty on each and fails.
+ I'm not using
 
-Actually I've exerienced this same behaviour with GCC-2.95 too. I changed -g to 
--ggdb in Linux makefiles. Perhaps GCC-3.3's -g is equal to GCC-2.95's -ggdb?
+> > devfs or anything; again the same debian testing FS works
+great with a
 
-* GDB 6.0 with GCC 2.95 or 3.3.3
+> > 2.4.24 UML.
 
-UML kernel does not send SIGTRAP at the beginning, or GDB ignores it. I checked 
-info signal and the SIGTRAP's actions were 'stop, print, don't pass'. This is 
-the same in both GDBs.
 
-Now the actual question :)
-What kind of setups do you use to debug UML? Do you have some ideas/suggestions 
-to help me?
 
-TIA
--- 
-Kristian Slavov
+> Are you sure it is not a problem with the version of getty
+used?
+
+
+
+> Can you boot in singleuser mode?
+
+
+
+> Do you get the console output while the system is booting?
+
+
+
+It was determined that this is caused by the new thread system
+in the new glibc (which is in Debian testing & Debain unstable,
+but not in Dabin stable).  If you experience this problem the
+easiest solution is to local-loopback the filesystem, go to it's
+/lib/tls directory and move it.  Doing that solves the problem.
+
+
+
+George
+
+
+
+------------------------------------
+
+Want to talk to other Christians?
+
+Get the Christian Instant Messenger
+
+http://www.praize.com/IM/ 
+
+
+
 
 
 -------------------------------------------------------
