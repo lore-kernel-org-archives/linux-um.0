@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CnzrB-0001e9-BD for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jan 2005 05:45:17 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	id 1Co0uh-00055N-Sa for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 06:52:59 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1Cnzr5-0002MN-4v for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jan 2005 05:45:16 -0800
+	id 1Co0uf-0001bH-8g for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 06:52:59 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
-References: <200501082106.38306.rob@landley.net>
-	<Pine.LNX.4.61.0501100141480.14613@filer.marasystems.com>
-	<200501100134.05591.rob@landley.net>
-In-Reply-To: <200501100134.05591.rob@landley.net>
+Subject: Re: [uml-devel] uml_console_write
+References: <49797.80.203.9.2.1104597206.squirrel@80.203.9.2>
+In-Reply-To: <49797.80.203.9.2.1104597206.squirrel@80.203.9.2>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501101447.11835.blaisorblade@yahoo.it>
+Message-Id: <200501101554.59810.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +29,71 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 10 Jan 2005 14:47:11 +0100
+Date: Mon, 10 Jan 2005 15:54:59 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>, Henrik Nordstrom <uml@hno.marasystems.com>, Frank Sorenson <frank@tuxrocks.com>
+Cc: stian@nixia.no
 
-On Monday 10 January 2005 07:34, Rob Landley wrote:
-> On Sunday 09 January 2005 08:53 pm, Henrik Nordstrom wrote:
-> > On Sun, 9 Jan 2005, Rob Landley wrote:
-> > > I wonder if that old hack (deleting the file signalling there's no rush
-> > > about writing stuff back to the disk anymore, although it's still your
-> > > backing store) still works?
-> >
-> > Probably not.
->
-> Might be worth a shot, though.  (If I delete the file from userspace after
-> launching UML, will it screw up anything?)
-You won't be able to delete it, because UML deletes the file by itself...
+On Saturday 01 January 2005 17:33, stian@nixia.no wrote:
+> if you enable all semaphore locking debuing and such alike, you get a
+> warning at uml_console_write calliong __might_sleep with irqs_disabled()
 
-(See my other mail for more details).
+Yes, thanks a lot for reporting it... I've added it to my TODO-list.
+
+ in fact uml_console_write acquires a semaphore with 
+
+        if(con_init_done)
+                down(&line->sem);
+
+And if down() sleeps, that thread will sleep with interrupt disabled, i.e. 
+crash.
+
+I don't know if it's correct that the interrupts are disabled in the below 
+callpath: it would be strange that the code in the call stack before printk 
+does it, and I searched for interrupts disabling in the printk() code... it 
+happens, but not in the path leading to call_console_drivers.
+
+However, the comments (i.e. the specification) says that release_console_sem() 
+can be called from any context, like printk(). So, uml_console_write must be 
+fixed.
+
+The solution is to turn line->sem into a spinlock (and rename it as ->lock).
+
+Now, this is due from long time... see line_write() and 
+line_write_interrupt(): they should synchronize with line->sem, but since the 
+second function is an interrupt, it can't acquire a semaphore. So it does not 
+do any locking! So it must be done anyway.
+
+> The callpath are on another machine, byt here the names are
+
+> __might_sleep
+> uml_console_write
+> __call_console_drivers
+> call_console_drivers
+> release_console_drives
+> vprintk
+> printk
+> ext2_warning
+> ext2_fill_super
+> get_sb_bdev
+> __kmalloc
+> ext2_get_sb
+> ext2_fill_super
+> do_kern_mount
+> do_new_mount
+> do_mount
+> copy_from_user_tt
+> excact_copy_from_user
+> copy_mount_options
+> sys_mount
+> execute_syscall_tt
+> syscall_handler_tt
+> unblock_signals
+> sig_handler_common
+> set_user_mode
+> sig_handler
+> __restore
+
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
