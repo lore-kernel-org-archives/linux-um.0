@@ -1,21 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATUvZ-0001w3-IF
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 15:36:33 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1ATUvX-0006j7-O7
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 15:36:31 -0800
-Message-Id: <200312082350.hB8NoHAv030501@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] updating 2.6 to merge 2.4 changes(was: Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash) 
-In-Reply-To: Your message of "Mon, 08 Dec 2003 22:32:43 +0100."
-             <Pine.LNX.4.44.0312082230230.14902-100000@filer.marasystems.com> 
-References: <Pine.LNX.4.44.0312082230230.14902-100000@filer.marasystems.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1ATVPv-0003eZ-AB
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 16:07:55 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1ATVPu-00082H-NO
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 16:07:54 -0800
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] [PATCH] provide asm/ldt.h 
+In-Reply-To: <200312082338.hB8NcCAv030482@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0312090101020.14902-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,18 +23,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 08 Dec 2003 18:50:17 -0500
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 9 Dec 2003 01:07:45 +0100 (CET)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Steve Bennett <steveb@snapgear.com>, user-mode-linux-devel@lists.sourceforge.net
 
-hno@marasystems.com said:
-> Agreed here, but not all my friends unfortunately agree... and I have
-> to  admit that there is no perfect way.
+On Mon, 8 Dec 2003, Jeff Dike wrote:
 
-Note that I wasn't saying that all insulation is obfuscation - that's just
-the way 2_5compat.h turned out.
+> How are these kernel-dependent (in the sense that they have to be built against
+> a UML /usr/include/asm or they won't work under UML)?
 
-				Jeff
+They are kernel dependent in that they need to be build to a
+/usr/src/linux/include tree matching the kernel used. The "kernel"  
+headers in /usr/include/ should not be used when compiling kernel
+dependent applications, those are just there from historic reasons to make
+glibc happy.
+
+It is true that in all cases I know of building the tools to a kernel tree
+configured for the host arch with the same kernel configuration options as
+the UML kernel will work and this is how we build our tools, but for some
+this might be quite some hassle to set up. Luckily most tools build fine 
+to the UML headers.
+
+Regards
+Henrik
 
 
 
