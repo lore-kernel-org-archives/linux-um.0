@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYCF7-0005hw-8W
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 14:40:09 -0800
-Received: from mta11.adelphia.net ([68.168.78.205])
+	id 1AYCoX-0007Fe-IA
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 15:16:45 -0800
+Received: from mta9.adelphia.net ([68.168.78.199])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYCF6-0005yk-Tm
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 14:40:09 -0800
+	id 1AYCoX-0005sP-7M
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 21 Dec 2003 15:16:45 -0800
 From: Matt Zimmerman <mdz@debian.org>
 Subject: Re: [uml-devel] 2.4.22-[67] problems
-Message-ID: <20031221224001.GO9354@alcor.net>
-References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org> <20031221004742.GE9354@alcor.net> <200312211658.44353.blaisorblade_spam@yahoo.it>
+Message-ID: <20031221231638.GR9354@alcor.net>
+References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org> <20031221004742.GE9354@alcor.net> <200312211658.44353.blaisorblade_spam@yahoo.it> <20031221224001.GO9354@alcor.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200312211658.44353.blaisorblade_spam@yahoo.it>
+In-Reply-To: <20031221224001.GO9354@alcor.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,42 +25,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 21 Dec 2003 14:40:01 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: 224431@bugs.debian.org, 224502@bugs.debian.org
+Date: Sun, 21 Dec 2003 15:16:38 -0800
+To: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, 224502@bugs.debian.org
+Cc: debian-glibc@lists.debian.org
 
-On Sun, Dec 21, 2003 at 04:58:44PM +0100, BlaisorBlade wrote:
+On Sun, Dec 21, 2003 at 02:40:01PM -0800, Matt Zimmerman wrote:
 
-> Alle 01:47, domenica 21 dicembre 2003, Matt Zimmerman ha scritto:
-> > Thanks for looking at it.  It's sounding more and more like the new
-> > glibc/linux-kernel-headers packages have broken UML. 
-> > Maybe something is
-> > getting the host's kernel headers when it needs the ones from the UML build
-> > tree?
-> Something is getting the host's headers and it must get them, not the ones 
-> from UML build tree.
-> 
-> Every UML arch file with its name ending in _user.c(+ quite a lot of other 
-> ones, listed in USER_OBJS in Makefiles) are built against the host headers, 
-> since they are the code interacting with the host.
+> I have heard reports that building the same source on Debian woody (glibc
+> 2.2.5-11.5 with 2.4 kernel headers) works, however.  I am going to be
+> testing this myself shortly.  If it works, the cause is most likely
+> somewhere in glibc.
 
-Yes, I understand that.  Was my sentence unclear?  I was suggesting that
-it was possible that the host's kernel headers were being used in a
-situation where the UML tree kernel headers _should_ be used.
+I have just verified this myself.  Building user-mode-linux 2.4.22-7um-1 on
+woody works fine (even when running on unstable), but building it on
+unstable does not.  The one built on unstable randomly sees ENOSYS from
+certain system calls, such as select, read and mmap.
 
-> But you need to actually compile UML against 2.4 host headers to see if this 
-> is the reason; debugging it can be worst than an unnoticed wrong pointer or 
-> buffer overrun, since probably a macro went in silently and it changed the 
-> semantics of sources...
-
-...which is one thing that I have tested.  I substituted 2.4.22 kernel
-headers for the 2.6 ones provided by linux-kernel-headers and rebuilt UML,
-and the problem persists.
-
-I have heard reports that building the same source on Debian woody (glibc
-2.2.5-11.5 with 2.4 kernel headers) works, however.  I am going to be
-testing this myself shortly.  If it works, the cause is most likely
-somewhere in glibc.
+I would appreciate any suggestions for how to track this problem down
+further.  I suspect that changes in glibc/linux-kernel-headers have broken
+things.  I tried replacing the headers in linux-kernel-headers (asm,
+asm-generic and linux) with the ones from Linux 2.4.22, but this did not
+help.
 
 -- 
  - mdz
