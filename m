@@ -1,18 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArINc-0007Az-1S
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 07:03:52 -0800
-Received: from [69.93.28.254] (helo=unix.easyadmin ident=qmailr)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1ArIKL-0003wM-DS
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 07:00:29 -0800
-From: Matt Ayres <matta@tektonic.net>
-Content-Type: text/plain
-Message-Id: <1076598155.20064.12.camel@wopr.tektonic.net>
+	id 1ArIhZ-0003dV-JQ
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 07:24:29 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30)
+	id 1ArIeH-0007ha-8o
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 07:21:05 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20040212154958.GB2834@ccure.user-mode-linux.org>
+References: <20040208185334.H9021@almesberger.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] /dev/anon without /dev/anon ?
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20040208185334.H9021@almesberger.net>
+Subject: [uml-devel] Re: patch/RFC: add bypass for "debug" parameter
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,28 +26,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 Feb 2004 10:02:36 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 12 Feb 2004 10:49:58 -0500
+To: Werner Almesberger <werner@almesberger.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On Sun, Feb 08, 2004 at 06:53:34PM -0300, Werner Almesberger wrote:
+> Since UML ursurps the "debug" parameter, we can't make the kernel
+> more verbose before user space runs. This patch adds a new option
+> "kernel" that has the same effect as the original "debug".
 
-I had tried out the /dev/anon patch on a host server, success wasn't too
-good.  It crashed after a few hours of running.  This was without
-ubd=mmap passed to the UML's. Unfortunately I do not have any sort of
-OOPs.
+Hummm, that was some bad planning on my part.
 
-Now the interesting part, I rebooted with the previous kernel so it does
-not have the /dev/anon kernel patch.  The /dev/anon device still exists
-and the UML's are using it!  
+Would there be any loud screams of horror if I were to change the UML
+'debug' switch to 'gdb' or something?  That would get rid of this clash
+and eliminate the need for this patch.
 
-My primary question now is, is this a "bad thing" to do?  Would there be
-any significant performance problems to just let it run this way? 
-Shouldn't the UML kernel check to make sure that /dev/anon kernel
-support is indeed there?
+If I don't hear sufficiently loud objections, I think I will go ahead and
+do it.
 
-Thanks,
-Matt
-
+				Jeff
 
 
 -------------------------------------------------------
