@@ -1,17 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Au832-00044K-8h
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 02:38:20 -0800
-Received: from web41506.mail.yahoo.com ([66.218.93.89])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1Au7oX-0007FV-PE
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 02:23:21 -0800
-Message-ID: <20040220103213.38256.qmail@web41506.mail.yahoo.com>
-From: jl344322 <jl344322@yahoo.com>
-MIME-Version: 1.0
+	id 1Au70x-0004FE-EX
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 01:32:07 -0800
+Received: from gate2.mailgate.de ([62.116.129.39] helo=web4.internetx.de)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Au6vB-0005Lw-PM
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 01:26:09 -0800
+Received: from lain.internetx.de (pizza.internetx.de [62.116.129.3])
+	(authenticated bits=0)
+	by web4.internetx.de (8.12.9/8.12.9) with ESMTP id i1K9Q8Ax026159
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 20 Feb 2004 10:26:08 +0100
+Received: from lain.internetx.de (localhost [127.0.0.1])
+	by lain.internetx.de (8.12.3/8.12.3/Debian-6.6) with ESMTP id i1K9Q7V4008076
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 20 Feb 2004 10:26:07 +0100
+Received: (from sebastianw@localhost)
+	by lain.internetx.de (8.12.3/8.12.3/Debian-6.6) id i1K9Q7Ur008075
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 10:26:07 +0100
+From: Sebastian Wiesinger <sw@internetx.de>
+Message-ID: <20040220092607.GA8007@lain.intern.internetx.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Unsubscribe from this list...
+Content-Disposition: inline
+Subject: [uml-devel] Problem: copy_thread : pipe failed, err = 24
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,16 +34,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 02:32:13 -0800 (PST)
+Date: Fri, 20 Feb 2004 10:26:07 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Sorry,
-Thanks.
+Hello,
 
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail SpamGuard - Read only the mail you want.
-http://antispam.yahoo.com/tools
+I'm using a host system with 9 UML boxes and keep getting the error
+
+copy_thread : pipe failed, err = 24
+
+This error appears first after a few hours of running and the boxes
+with this error is no longer reachable. The following other errors
+also appear:
+
+flush_thread : new thread failed, errno = 1
+copy_thread : clone failed - errno = 11
+copy_thread : clone failed - errno = 1
+copy_thread : clone failed - errno = 1
+
+
+I used the 2.4.24 UML Patch with a new 2.4.25 Kernel wich applied
+without errors.
+
+Any suggestions?
+
+Sebastian
 
 
 -------------------------------------------------------
