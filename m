@@ -1,23 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CEZPT-0004Gl-BV for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Oct 2004 13:26:15 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CEZPR-0007ST-MY for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Oct 2004 13:26:15 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] T-mode processes
-In-Reply-To: <200410042057.19226.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.LNX.4.61.0410042223180.483@filer.marasystems.com>
-References: <29246.1096763190@marajade.sandelman.ottawa.on.ca>
-	<200410031704.29051.blaisorblade_spam@yahoo.it>
-	<29485.1096825447@marajade.sandelman.ottawa.on.ca>
-	<200410042057.19226.blaisorblade_spam@yahoo.it>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	id 1CEad5-0006hD-Vn for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Oct 2004 14:44:23 -0700
+Received: from bay22-f38.bay22.hotmail.com ([64.4.16.88] helo=hotmail.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CEacz-0000dl-68 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Oct 2004 14:44:23 -0700
+From: "Young K" <young_uml@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <BAY22-F38Fm15k4R9xC00023711@hotmail.com>
+Subject: [uml-devel] slow execution in uml?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +24,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 4 Oct 2004 22:25:45 +0200 (CEST)
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Date: Mon, 04 Oct 2004 17:35:00 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 4 Oct 2004, BlaisorBlade wrote:
+hi, folks,
 
-> Actually, what I should do is to set the "mm->dumpable" flag to 1 inside
-> mm/proc_mm.c (after mm_alloc(), it is 0). The situation is clear. However, to
-> write a good patch, I want to study well the "mm->dumpable" flag use (when
-> it's set, when not...) otherwise I could open a security hole (even because
-> there are people using UML setuid to root, for the mlock() patch).
+i was comparing uml network performance with genuine linux. the experiment i 
+did was to insert time-stamping code in network stack, and see how slower 
+uml is. i was sending 32-byte udp packets to another machine every 10 msec, 
+and used rdtsc to measure the elapsed cpu cycles between sendto() and 
+nf_hook_slow() (which is called inside ip_build_xmit()).
 
-I don't think it is safe to set dumpable to 1 once it has become 0.
+what i found was that it took around 29,000 cycles from sendto() to 
+nf_hook_slow() in uml whereas only 2,000 cycles in genuine linux. it looks 
+like a big difference. but i think it's purely code execution without any 
+I/O operation between sendto() to nf_hook_slow(). then, why is it so slow in 
+uml? is there any possible factors that make uml slower? (more cache 
+misses?)
 
-If you want to fix this you need to find secure ways to prevent it from 
-becoming 0, or to add another parameter defining "security restricted" 
-processes differently from dumpable.
+i used 2.4.22 for guest os(tt mode) and 2.4.25 for host os, but numbers were 
+pretty much the same when i used other versions of 2.4 kernels for both 
+guest and host. the computer i used for test was P4 2.2 GHz single processor 
+with 512MB, FYI.
 
-Just some thoughts.
+_________________________________________________________________
+Check out Election 2004 for up-to-date election news, plus voter tools and 
+more! http://special.msn.com/msn/election2004.armx
 
-Regards
-Henrik
 
 
 -------------------------------------------------------
