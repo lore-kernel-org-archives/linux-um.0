@@ -1,35 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BiN14-0005Zh-0q for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jul 2004 17:43:58 -0700
-Received: from main.gmane.org ([80.91.224.249])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1BiN13-00016B-KQ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jul 2004 17:43:57 -0700
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1BiN10-0006FJ-00
+	id 1BiOQp-0008Tp-3d for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jul 2004 19:14:39 -0700
+Received: from mproxy.gmail.com ([216.239.56.248])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1BiOQo-0006M9-S5 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jul 2004 19:14:39 -0700
+Received: by mproxy.gmail.com with SMTP id r62so392145cwc
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 08 Jul 2004 02:43:54 +0200
-Received: from pd9e58a35.dip.t-dialin.net ([217.229.138.53])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 08 Jul 2004 02:43:54 +0200
-Received: from skoehler by pd9e58a35.dip.t-dialin.net with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 08 Jul 2004 02:43:54 +0200
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <cci5c8$r3a$1@sea.gmane.org>
-References: <200407071924.14187.blaisorblade_spam@yahoo.it>
-	<20040707180437.GD7801@cobalt.cs.wisc.edu>
+	Wed, 07 Jul 2004 19:14:29 -0700 (PDT)
+Message-ID: <16f5f6240407071914138341e3@mail.gmail.com>
+From: Eddy Yuniar <dogmaphobia@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20040707180437.GD7801@cobalt.cs.wisc.edu>
-Subject: [uml-devel] Re: UML will be maybe included in -mm
+Subject: [uml-devel] problem with hostfs in statfs... (2.6.7)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,19 +28,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 08 Jul 2004 02:43:52 +0200
+Date: Thu, 8 Jul 2004 09:14:29 +0700
 To: user-mode-linux-devel@lists.sourceforge.net
 
->>As in the subject. We are trying to get it in mainline, but it needs a few 
->>cleanups...
-> 
-> Is there any hope of getting the SKAS patches in the mainline 2.6 kernel,
-> or is it going to have to wait for 2.7? 
-
-As far as i know, only SKAS4 will make it into 2.6. The problem is, that 
-Jeff is still working on SKAS4, and i think it will take some time until 
-it is ready.
-
+I''ve runnning a problem when invoking df from the shell.... and got
+kernel panic...
+the problem is in hostfs_statfs when calling do_statfs, parameter
+sf->f_spare should be substituted with sf->f_frsize, because there is
+a change in struct kstatfs with addition f_frsize that using one of
+f_spare array.... so array f_spare now only have size 5....
 
 
 -------------------------------------------------------
