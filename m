@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AtscL-0003uy-1H
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 10:09:45 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1Atskh-00065Z-Tv
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 10:18:23 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AtsOr-0002Kh-RD
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 09:55:49 -0800
+	id 1AtsXE-0003Xf-K3
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 19 Feb 2004 10:04:28 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
-References: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp> <200402182001.44243.blaisorblade_spam@yahoo.it> <021601c3f680$7d13eb10$2000000a@schlepptopp>
-In-Reply-To: <021601c3f680$7d13eb10$2000000a@schlepptopp>
+Subject: Re: [uml-devel] 2.6.3-rc2-uml1 Kernel mode panic
+References: <Pine.LNX.4.44.0402181635060.15836-100000@sparrow>
+In-Reply-To: <Pine.LNX.4.44.0402181635060.15836-100000@sparrow>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200402191906.56217.blaisorblade_spam@yahoo.it>
+Message-Id: <200402191914.01209.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,23 +25,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 Feb 2004 19:06:56 +0100
+Date: Thu, 19 Feb 2004 19:14:01 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
 
-Alle 01:36, gioved=EC 19 febbraio 2004, roland ha scritto:
-> hi !
+Alle 22:56, mercoled=EC 18 febbraio 2004, William Stearns ha scritto:
+> Good afternoon, all,
 >
-> >If I guessed right, the attached patch will solve everything.
->
-> yep - maybe - but it doesn`t seem to fix the "hang after NET: Registered
-> protocol family 2" ! i applied the patch and recompiled - same effect.
 
-Sorry - your bug is probably related to mine one, in fact the patch does no=
-t=20
-solve neither one. When I wrote that I didn't yet finished compiling the ne=
-w=20
-kernel.
+>
+> 	On a kernel using Jeff's patch from 2/16, which looks absolutely
+> identical to yours,=20
+
+Yes, I just reposted it to roland, but it was the same.
+
+> 20 of these running in the background * produces:
+> Kernel panic: Kernel BUG at kernel/exit.c:793
+> 	or
+> Kernel panic: Kernel BUG at kernel/exit.c:793
+
+If you get this with the patch applied, then the problem is very serious. I=
+=20
+thought the patch would have been able to fix this second part (when I got =
+
+this, I received two panics, first the "Kernel mode fault" and then this=20
+"Kernel BUG" (for more info look where it says: comments explains what=20
+happens).
+
+> Kernel panic: Segfault with no mm
+> Kernel panic: Segfault with no mm
+> Kernel panic: Segfault with no mm
+> 	or
+> Kernel mode fault at addr 0x0, ip 0x401e643e
+> Kernel mode fault at addr 0x0, ip 0x401e643e
+> Kernel mode fault at addr 0x0, ip 0x401e643e
+> Kernel mode fault at addr 0x0, ip 0x401e643e
+
+You said you provide the kernel at:
+http://www.stearns.org/uml/
+
+Since I'm not able to upload a kernel while you seem to have broad band, co=
+uld=20
+you please (if it is not already so) provide a kernel with debugging symbol=
+s=20
+enabled and showing this bug to Jeff Dike, since it seems he cannot reprodu=
+ce=20
+the bug?
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
