@@ -1,15 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Michael Halcrow <uml@halcrow.us>
-Message-ID: <20050125215416.GA2912@halcrow.us>
-Reply-To: Michael Halcrow <uml@halcrow.us>
-References: <20041118160909.GA7630@halcrow.us>
-	<200411181839.26596.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CtXML-0003AX-KF for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 12:32:21 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CtXMK-0002BE-Uy
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 12:32:21 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] SIGSEGV and SA_NODEFER
+References: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
+	<200501251230.04080.rob@landley.net>
+	<200501252034.25668.blaisorblade@yahoo.it>
+In-Reply-To: <200501252034.25668.blaisorblade@yahoo.it>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200411181839.26596.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] keyring syscalls
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200501251430.26927.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,65 +33,84 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Jan 2005 15:54:16 -0600
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: Michael Halcrow <uml@halcrow.us>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Tue, 25 Jan 2005 14:30:26 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
 
+On Tuesday 25 January 2005 02:34 pm, Blaisorblade wrote:
+> > Once I get /dev on ramfs managed by udev?  Not really, no.  I need the
+> > permissions to be right, but just about everything else should belong to
+> > root.  (Yeah, there are a couple fun tricks where files change their
+> > ownership to some variant of "nobody" to do chroot jails and stuff, but
+> > they do that at runtime...)
+>
+> I don't expect chown to work at all - i.e. it's not "it forgets it at
+> reboot", it's "it forgets it immediately"... If you see it working, maybe
+> you are seeing the more precise behaviour "it forgets it As Soon as the
+> file is closed".
 
---cNdxnHkX5QqsyA0e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Actually, I don't think I've tried to do a chown on UML at all.  As I said, 
+the files I care about the ownership of being right (the /dev directory) are 
+all in a ramfs.  Everything else should belong to root, I just care that the 
+permissions are right.  (A user can set the suid bit on their own files, 
+right?)
 
-On Thu, Nov 18, 2004 at 06:39:26PM +0100, Blaisorblade wrote:
-> On Thursday 18 November 2004 17:09, Michael Halcrow wrote:
-> Ok, please list the new syscalls - I see at least add_key() and
-> request_key() too - are these three the only ones? I'll build the
-> patch ASAP when getting your answer.
+And what I meant to say earlier is that some programs chuser (like bind and 
+httpd and such), which they do at runtime
 
-I spent some more time today trying to implement these silly
-request_key, add_key, and keyctl syscalls in the 2.6.10 kernel, but I
-haven't had any luck.  It would be a *tremendous* help for me in my
-filesystem development if I could just get these syscalls working in
-UML; it is much more tedious having to use kgdb in my debugging.  I
-tried adding entries on to the end of the
-include/sysdep-i386/syscalls.h and the kernel/sys_call_table.c files.
-I also exported the symbols in os-Linux/user_syms.c.  I am trying to
-work from the documentation here:
+Still, good point.  I'm doing a rebuild without UML and I'll run "find . -not 
+-uid 0" on the result to see what comes up...
 
-http://jdike.stearns.org/uml/arch-port.html
+> > I've probably missed one or two instances, but I expect I can work around
+> > 'em...
+> >
+> > > I'm not at all happy with this, but I don't want someone using hostfs
+> > > over its possibilities. NFS is much better, anyway.
+> >
+> > NFS gives me hives
+>
+> ?? What's hives?
 
-I am not entirely clear on the function that ``[ 222 ] =3D
-sys_ni_syscall,'' at the end of the table in syscalls.h is supposed to
-serve.  Syscalls in UML contstitutes new territory for me.
+An NFS server can't be exposed to the internet securely.  (To add insult to 
+injury, for _years_ Red Hat exposed portmap and such to the outside world and 
+there was absolutely no way to tell it not to install/run that crud, and you 
+had to go in by hand and rip them out of each new install if you wanted it on 
+the net.)
 
-I would assume that the __NR_* assignments in the UML environment are
-identical to those of the host system.  That means that request_key,
-for example, maps to identifier 288 on the i386 architecture, right?
-The keyctl.c utility defines these syscall identifiers, so I need to
-make sure that I get the numbers right for the syscall table lookup.
+NFS was designed to be a stateless protocol, yet the point of a filesystem is 
+to maintain state.  It DIDN'T just do a TCP/IP connection to a client, 
+instead it did weird UDP stuff so the server doesn't have to know which files 
+the client has open and 8 gazillion other strange corner cases that I stopped 
+trying to pay attention to more than 5 years ago.
 
-Thanks,
-Mike
-=2E___________________________________________________________________.
-                         Michael A. Halcrow                         =20
-       Security Software Engineer, IBM Linux Technology Center      =20
-GnuPG Fingerprint: 05B5 08A8 713A 64C1 D35D  2371 2D3C FDDA 3EB6 601D
+I'm told the most recent version of NFS has been redesigned to work like 
+Samba: a client that mounts one of these things opens a TCP/IP session, and 
+if it gets closed the client re-opens it.  I should look into that, but the 
+last time I did support for the new way of doing it it wasn't in the kernel 
+yet.
 
---cNdxnHkX5QqsyA0e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+> > > And somebody says it's also
+> > > faster (and since hostfs does limited caching, it makes sense - hostfs
+> > > must avoid having any inode cache, since it closes the host fd only
+> > > when the inode is evicted from the cache; I don't think it's possible
+> > > to cache data without an inode to link to, so it's clear it's slow).
+> >
+> > Since the host is cacheing the data for us, not having a redundant cache
+> > sounds like a good idea to me.  Admittedly, it's more syscalls, but less
+> > memory consumption...
+>
+> The problem is that its slower than NFS!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+Okay, remember how my build process is designed to be packaged up, exported to 
+some random Linux system out there, and run as a normal user without root 
+access?  HostFS is exactly what I need.  Even assuming an NFS server is 
+installed on the target system, a normal user can't run nfsd if it isn't 
+already running on the system, and can't control what it exports if it is. 
 
-iD8DBQFB9sAHLTz92j62YB0RAvSXAJ9kGXNlzBh5lacPxrXEyfDWqeKNjgCgrg3h
-Y0Uq3KWbbCxLb+bVqtAaPWM=
-=lWQe
------END PGP SIGNATURE-----
+Maybe I'll profile it and look at speeding it up later, but not anytime 
+soon...
 
---cNdxnHkX5QqsyA0e--
+Rob
 
 
 -------------------------------------------------------
