@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuHGv-0006mf-Mj for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Feb 2004 12:29:17 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1AuHjk-0007qs-42 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Feb 2004 12:59:04 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AuHAt-0006so-O1 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Feb 2004 12:23:03 -0800
+	id 1AuHdh-00013D-FI for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Feb 2004 12:52:49 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] new skas3 patch ready for 2.4.25
-References: <40338C1B.1070800@meisterwerk.net>
-In-Reply-To: <40338C1B.1070800@meisterwerk.net>
+Subject: Re: [uml-devel] [PATCH] skas3 for x86_64 arch
+References: <1077305069.8412.62.camel@wopr.tektonic.net>
+In-Reply-To: <1077305069.8412.62.camel@wopr.tektonic.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Disposition: inline
-Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <200402202125.58574.blaisorblade_spam@yahoo.it>
+Message-Id: <200402202155.44773.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,44 +27,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Feb 2004 21:25:57 +0100
+Date: Fri, 20 Feb 2004 21:55:44 +0100
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: Patrick Moor <uml@meisterwerk.net>, Ali Campbell <ali@alicampbell.org.uk>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Matt Ayres <matta@tektonic.net>
 
-Alle 17:00, mercoled=EC 18 febbraio 2004, Patrick Moor ha scritto:
-> hello
+Alle 20:24, venerd=EC 20 febbraio 2004, Matt Ayres ha scritto:
+> Hi,
 >
->  >patching file arch/i386/kernel/ldt.c
->  >Hunk #1 FAILED at 24.
->
-> i could manually correct this one
->
->  >patching file arch/i386/kernel/process.c
->  >Hunk #1 FAILED at 551.
->  >Hunk #2 FAILED at 568.
->  >...
->  >patching file include/asm-i386/processor.h
->  >Hunk #1 FAILED at 436.
->
-> but these two i couldn't fix.
-> ("copy_segments" function seems to be gone)
+> I just did a quick port of the skas3 patch to the x86_64 architecture.
+> Everything seems very straightforward except for the do_mmap2 function.
 
-Yes, it went away, so a new skas patch must be built. I have one (tested) a=
-t=20
-http://www.user-mode-linux.org/~blaisorblade/
+Sorry, but you've changed the prototype of sys32_mmap2 by adding the mm=20
+parameter (which goes only on do_mmap2). So it cannot possibly compile.
 
-However, what is good is that things seems to be more similar to 2.6 (the=20
-inserted code comes straight from 2.6, even in the meaningless things), and=
-=20
-since a 2.6 skas patch exists and I know it well, I have prepared soon a=20
-2.4.25 skas patch.
+-asmlinkage long sys32_mmap2(unsigned long addr, unsigned long len,
++/* common code for old and new mmaps */
++static inline long do_mmap2(struct mm_struct *mm,
++unsigned long addr, unsigned long len,
+ unsigned long prot, unsigned long flags,
+ unsigned long fd, unsigned long pgoff)
 
-Also, since disabling /proc/mm lead to a compilation failure, I've replaced=
-=20
-the option with a message that says you cannot disable it.
++
++asmlinkage long sys32_mmap2(struct mm_struct *mm,
++unsigned long addr, unsigned long len,
++unsigned long prot, unsigned long flags,
++unsigned long fd, unsigned long pgoff)
++{
++return do_mmap2(addr, len, prot, flags, fd, pgoff);
++}
++
 
-Enjoy it and good bye!
+Apart for this, I did not see anything strange (but I give a *very* quick=20
+look, i.e. 1 minute, so I'm not sure).
+> I don't have a x86_64 machine or an emulator so I can't even verify this
+> even compiles.
+
+Have you tried a cross build with make ARCH=3Dx86_64 ? I'm not sure if that=
+ can=20
+work or requires cross-compilators, but maybe not.
+
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
