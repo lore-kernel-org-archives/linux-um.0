@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPQxQ-0008Rd-Or for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 11:38:12 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CPQxP-0004LF-Qj for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 11:38:12 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
+	id 1CPRSL-0008Cg-M1 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 12:10:09 -0800
+Received: from pimout2-ext.prodigy.net ([207.115.63.101])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CPRSL-0002SL-0h for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 12:10:09 -0800
+From: Chris Wedgwood <cw@f00f.org>
 Subject: Re: [uml-devel] [PATCH] UML: Use PTRACE_KILL instead of SIGKILL to
 	kill host-OS processes (take #2)
+Message-ID: <20041103200930.GA10669@taniwha.stupidest.org>
 References: <20041103113736.GA23041@taniwha.stupidest.org>
 	<1099482457.16445.1.camel@imp.csi.cam.ac.uk>
 	<20041103120829.GA23182@taniwha.stupidest.org>
-In-Reply-To: <20041103120829.GA23182@taniwha.stupidest.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	<200411032028.44376.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200411032028.44376.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411032028.44376.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,52 +31,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Nov 2004 20:28:44 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Chris Wedgwood <cw@f00f.org>, Jeff Dike <jdike@addtoit.com>, Anton Altaparmakov <aia21@cam.ac.uk>, Andrew Morton <akpm@osdl.org>, lkml <linux-kernel@vger.kernel.org>, Gerd Knorr <kraxel@bytesex.org>
+Date: Wed, 3 Nov 2004 12:09:30 -0800
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Anton Altaparmakov <aia21@cam.ac.uk>, Andrew Morton <akpm@osdl.org>, lkml <linux-kernel@vger.kernel.org>, Gerd Knorr <kraxel@bytesex.org>
 
-On Wednesday 03 November 2004 13:08, Chris Wedgwood wrote:
-> On Wed, Nov 03, 2004 at 11:47:38AM +0000, Anton Altaparmakov wrote:
-> > You have two %d but only one argument.  You seem to have forgotten
-> > an "old_pid, " in there.
+On Wed, Nov 03, 2004 at 08:28:44PM +0100, Blaisorblade wrote:
 
-> kill(..., SIGKILL) doesn't work to kill host-OS processes created in
-> the exec path in TT mode --- for this we need PTRACE_KILL (it did work
-> in previous kernels, but not by design).  Without this process will
-> accumulate on the host-OS (although the won't be visible inside UML).
+> I'm going to test this.
 
-> Signed-off-by: Chris Wedgwood <cw@f00f.org>
-> ---
->
-> Index: cw-current/arch/um/kernel/tt/exec_user.c
-> ===================================================================
-> --- cw-current.orig/arch/um/kernel/tt/exec_user.c 2004-11-03
-> 02:10:18.064830204 -0800 +++
-> cw-current/arch/um/kernel/tt/exec_user.c 2004-11-03 04:05:00.435843464
-> -0800 @@ -35,7 +35,8 @@
->    tracer_panic("do_exec failed to get registers - errno = %d",
->          errno);
->
-> - kill(old_pid, SIGKILL);
-> + if (ptrace(PTRACE_KILL, old_pid, NULL, NULL))
-> +  printk("Warning: ptrace(PTRACE_KILL, %d, ...) saw %d\n", old_pid,
-> errno);
->
->   if(ptrace_setregs(new_pid, regs) < 0)
->    tracer_panic("do_exec failed to start new proc - errno = %d",
+please do
 
-I'm going to test this. I thought that Gerd Knorr patch (which I sent cc'ing 
-LKML and most of you) already solved this (I actually modified that one, 
-replacing his SIGCONT kill()ing with a PTRACE_KILL, but I did this in the 
-places he identified). I guess that old_pid should either already be dead 
-there or going to die after a little, but I'm going to check (after I get UML 
-to run in the current snapshot...)
+> I thought that Gerd Knorr patch (which I sent cc'ing LKML and most
+> of you) already solved this (I actually modified that one, replacing
+> his SIGCONT kill()ing with a PTRACE_KILL, but I did this in the
+> places he identified).
 
-For now, please hold on this.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+it might, i'm going to check soon
 
+what worries me is that two very different code paths might be fixing
+the same problem which makes me think the flow of execution here is
+very vague and needs cleaninng up
+
+also, check your return values for errors --- i bet you will see
+some.  os_kill_process has this problem too --- many invocations of it
+are pointless and fail, especially those from relase_thread_tt (i need
+to check the details here, this is all from memory and im getting old)
+
+> I guess that old_pid should either already be dead there or going to
+> die after a little, but I'm going to check (after I get UML to run
+> in the current snapshot...)
+
+it should build pretty close to as-is, if not let me know and i'll
+sent you what i have
 
 
 -------------------------------------------------------
