@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CzCO5-00020p-Vp for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 03:21:33 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1CzCUE-0002Bb-KO for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 03:27:54 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CzCO1-0001nx-5K for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 03:21:33 -0800
+	id 1CzCUB-000320-03 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 03:27:54 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <7769792b3ce4e3e093cfd819954ae55e@server-ranch.ch>
-	<200502072023.41630.blaisorblade@yahoo.it>
-	<db90534f90b487c87a9d0fa2311a82b2@server-ranch.ch>
-In-Reply-To: <db90534f90b487c87a9d0fa2311a82b2@server-ranch.ch>
+Subject: Re: [uml-devel] strace of "ls" under Fedora Core 3
+References: <A06801158AE07847B27A52C1A074BC1D0725A4D6@fmsmsx404.amr.corp.intel.com>
+In-Reply-To: <A06801158AE07847B27A52C1A074BC1D0725A4D6@fmsmsx404.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200502101220.25484.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Security Issues
+Message-Id: <200502101226.47978.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,32 +29,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Feb 2005 12:20:25 +0100
-To: Dominik Hirt <dhi@server-ranch.ch>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 10 Feb 2005 12:26:47 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: "Wichmann, Mats D" <mats.d.wichmann@intel.com>, Marion Bates <mbates@whoopis.com>, William Stearns <wstearns@pobox.com>
 
-On Wednesday 09 February 2005 10:36, Dominik Hirt wrote:
-> Hi
+On Wednesday 09 February 2005 21:12, Wichmann, Mats D wrote:
+> > As a quick reminder, Marion and Bill are trying to get
+> >i386 fedora
+> >core 3 running under uml (2.6.4, with the i386 emulation code) on ford
+> >(x86_64).
+
+Well, the problem is that UML for x86_64 is not yet complete, especially for 
+the 32-bit compatibility code, as stated by Jeff. This is what creates you 
+those problems.
+
+You should absolutely run a 32-bit UML if you want good support for 32-bit 
+programs.
+
+To compile it, either you set up well the compilation environment for 32-bit 
+programs or you build the binary on a 32-bit host distro.
+
+> >The uml binaries don't have TLS support, so we've renamed 
+> >all of: /lib/tls. /usr/lib/tls, and /usr/X11R6/lib/tls directories.
+> > Even with that done, we're getting "cannot set up LDT
+> >for thread-local
+> >storage" as an error message when running something as simple as
+> >/bin/ls.  It appears that there's TLS system calls in the binary
+> >itself, not just in the */lib/tls libraries:
 >
-> Many thanks for your answer.
-> So the problem exists only when module support is activated in the
-> kernel of the uml, right?
-Well, what I said is that on any UML the guest root can do everything on the 
-host as normal user (but everything is not much if you chroot your UML). And 
-this is not the "security hole" I spoke about, since this is not fixable 
-(it's not a bug either, actually).
+> I'm not sure this call is a TLS thing.
+I can add that it is *not* a TLS thing absolutely for sure...
 
-That's easy to exploit with module support, and possible even without 
-when /dev/kmem is writable; this applies also to normal kernels, there is 
-literature about normal kernels. It is probably hard, however, I guess.
-
-The bug which is fixed in the patches allows *normal user* to reach the host, 
-even without module support.
-> Do you need any mirror in Switzerland?
-> When the expected traffic is not too high I could offer you one for
-> free.
-Well, thanks a lot, however for now I don't think additional mirrors are 
-needed... at least until somebody starts complaining for the load (but 
-patches are usually little, so there should not be any problem, I guess).
+Also, the code inside UML should absolutely support it (from the code I don't 
+see any problem), at least for the x86 UML.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
