@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Adh8F-0007hN-8D for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Adh8F-0007hS-D7 for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 05 Jan 2004 18:39:47 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Adh8E-0002Sb-JX
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Adh8E-00015P-Sh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Jan 2004 18:39:46 -0800
-Message-Id: <200401060259.i062x7FI023137@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] UML build system: patch ready 
-In-Reply-To: Your message of "Sat, 27 Dec 2003 08:51:10 +1300."
-	<1072468270.6872.13.camel@laptop-linux> 
-References: <200312241943.37474.blaisorblade_spam@yahoo.it>
-	<Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
-	<1072468270.6872.13.camel@laptop-linux> 
+	Mon, 05 Jan 2004 18:39:47 -0800
+Message-Id: <200401060258.i062wYFI023092@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] UML + skas 
+In-Reply-To: Your message of "Tue, 30 Dec 2003 19:33:31 +0100."
+	<20031230183331.GB2845@carpediem.epita.fr> 
+References: <20031230183331.GB2845@carpediem.epita.fr> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -30,18 +28,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 05 Jan 2004 21:59:07 -0500
-To: Nigel Cunningham <ncunningham@clear.net.nz>
-Cc: Jeff Chua <jeff98@silk.corp.fedex.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 05 Jan 2004 21:58:34 -0500
+To: jeremie le-hen <le-hen_j@epita.fr>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-ncunningham@clear.net.nz said:
-> I may be able to get software suspend [a bit closer to] working under
-> UML. The lack of support for modifying ldts was where I blocked when I
-> briefly looked at it a while ago.
+le-hen_j@epita.fr said:
+> But it think it would not be very difficult to make some #define
+> protection around theses structures to prevent from changing the
+> destination of `/usr/src/linux/' to a source without the SKAS patch
+> applied.
 
-swsusp for UML is now reality, see sbuml.sf.net for details.  The one hitch
-is that it's not up to date with the current UML.  I'm sure that help fixing
-that would be appreciated.
+Maybe, but skas4 doesn't have this problem, and /usr/include/asm should
+point to the distro kernel headers, not whatever you have sitting in 
+/usr/src/linux (and if the distro put a kernel tree there, you should be
+building stuff somewhere else).
+
+Of course, this is wrong if there are distros shipping a kernel tree with
+the skas patch in it (which maybe SuSE is).  In this case, some sort of
+protection would be the right thing for skas3.
 
 				Jeff
 
