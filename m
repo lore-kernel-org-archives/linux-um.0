@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CvzvT-0002XM-0r for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Feb 2005 07:26:47 -0800
-Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CvzvS-0000nY-Lj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Feb 2005 07:26:46 -0800
-Message-ID: <41FF9FA7.3000500@tuxrocks.com>
-From: Frank Sorenson <frank@tuxrocks.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] SKAS3: prerelease of V8 (against 2.6.9) uploaded
+	id 1Cw0qP-0006tc-0h for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 Feb 2005 08:25:37 -0800
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cw0qN-0003HJ-JJ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 Feb 2005 08:25:36 -0800
+Message-ID: <08a901c5087a$fabe3950$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
 References: <200501290036.51182.blaisorblade@yahoo.it>
 	<41FEF317.3070505@easyco.com> <41FF261A.2070001@tuxrocks.com>
 	<200502010848.30042.rob@landley.net>
-In-Reply-To: <200502010848.30042.rob@landley.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	<41FF9FA7.3000500@tuxrocks.com>
+Subject: Re: [uml-devel] SKAS3: prerelease of V8 (against 2.6.9) uploaded
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -30,39 +30,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 01 Feb 2005 08:26:31 -0700
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Doug Dumitru <doug@easyco.com>, Blaisorblade <blaisorblade@yahoo.it>, "Christopher S. Aker" <caker@theshore.net>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Tue, 1 Feb 2005 10:27:50 -0600
+To: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Doug Dumitru <doug@easyco.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Frank Sorenson <frank@tuxrocks.com>, Rob Landley <rob@landley.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+With the problems we had with 2.6.9 as a host, I was wondering why Blaisorblade chose
+it when he released skas-v8-rc1.
 
-Rob Landley wrote:
-| If a kill -9 needs to be followed by a CONT signal to actually take
-effect on
-| a stopped process, why is this not a kernel bug?  (Kill -9 is supposed to
-| _mean_ it.  I've always thought of it as the "with shotgun" option...)
-|
-| Rob
+Here is skas-v8-rc1 diffed against 2.6.10:
 
-I believe there were PTRACE changes in 2.6.9 that caused this:
+http://www.theshore.net/~caker/patches/skas-v8-rc1-2.6.10.patch
 
-http://marc.theaimsgroup.com/?l=linux-kernel&m=109877438509709&w=2
+-Chris
 
-Frank
-- --
-Frank Sorenson - KD7TZK
-Systems Manager, Computer Science Department
-Brigham Young University
-frank@tuxrocks.com
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFB/5+naI0dwg4A47wRApyhAJwKVrAZiH8bcxwGlx/6GSSyPdNr7gCglcfo
-i0d67JyivfwJSiZv+yk7Wp8=
-=W8eb
------END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
