@@ -1,29 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AeUGL-0006Un-T4 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jan 2004 23:07:25 -0800
-Received: from mta13.mail.adelphia.net ([68.168.78.44] helo=mta13.adelphia.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AeUGL-0006oS-H7 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jan 2004 23:07:25 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: Resolution (Re: [uml-devel] 2.4.22-[67] problems)
-Message-ID: <20040108070718.GI28393@alcor.net>
-References: <20031220011323.GW18100@alcor.net>
-	<20031220171450.GB10692@ccure.user-mode-linux.org>
-	<20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
-	<20031228093317.GK17472@alcor.net>
-	<20031228095115.GL17472@alcor.net>
-	<20031228101240.GN17472@alcor.net>
-	<20031228113042.GO17472@alcor.net>
-	<20031230184330.GD1365@alcor.net>
-	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1Aee72-0002Ec-BE for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Jan 2004 09:38:28 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Aee71-00040O-Ko for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Jan 2004 09:38:27 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [tracked down] Kernel mode fault with /dev/kmem
+References: <Pine.LNX.4.44.0401071254540.1058-100000@gradall.private.brainfood.com>
+In-Reply-To: <Pine.LNX.4.44.0401071254540.1058-100000@gradall.private.brainfood.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200401060258.i062wWFI023087@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200401081834.44045.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,38 +27,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Jan 2004 23:07:18 -0800
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, debian-gcc@lists.debian.org
+Date: Thu, 8 Jan 2004 18:34:43 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Jan 05, 2004 at 09:58:32PM -0500, Jeff Dike wrote:
+Alle 20:18, mercoled=EC 7 gennaio 2004, Adam Heath ha scritto:
+> On Thu, 8 Jan 2004, Jeff Chua wrote:
+> > open("/dev/kmem", O_RDONLY)             =3D 3
+> > _llseek(0x3, 0, 0xa8965000, 0xbffff934, 0) =3D 0
+> > read(3, Kernel panic: Kernel mode fault at addr 0x48965000, ip 0x400df1=
+a4
+>
+> 0xa8965000 !=3D 0x48965000
+>
+> Note how only the first octet is different.
 
-> mdz@debian.org said:
-> > It turns out that this problem seems to be due to compiler
-> > incompatibility. UML had been built with gcc 2.95 due to old breakage,
-> > and when built with gcc 3.3 (as glibc is), everything starts working
-> > again.  My suspicion is that this is due to certain recent changes in
-> > pthreads.
-> 
-> Is it your opinion that there's no problem in UML itself?  Having a field
-> in the sigcontext getting magically munged is somewhat worrying.  I'd be 
-> happier knowing what exactly was happening so I can be sure this wasn't
-> exposing some subtle UML bug.
+Ok, excellent note; or better, that behaviour (a different address) *is*=20
+right, but the difference is *wrong*.
 
-I was not able to come to a satisfactory conclusion as to the origin of the
-problem, and once I found a solution, I stopped looking.  I'm copying
-debian-gcc and debian-glibc in case they're interested.
+Reading the code of read_kmem as patched, we get this pseudo-code:
 
-Summary for debian-{gcc,glibc}:
+p=3D*ppos; //position pointer
+...
+p =3D __va(p); /*translate physical address to virtual, like: */
+//p +=3D uml_physmem;
 
-UML built with gcc-2.95 fails to run correctly on a current unstable system
-with a 2.4 kernel.  The symptoms are very strange; This started to happen recently; UML had been building
-with gcc 2.95 successfully for over 9 months now with no problems.
+However, starting from 0xa8965000, and increasing it by 2,5Gb, we get an=20
+overflow, i.e. p becomes <old p> + 2,5Gb - 4Gb =3D <old p> - 1,5 Gb=3D0x489=
+65000.
 
-Details are here: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=224431
+So we've got to the bug. But anyway, doing p=3D__va(p) is a wrong fix becau=
+se an=20
+offset inside /dev/kmem is already virtual (comments in the file are clear)=
+,=20
+and in read_mem we see:
+  copy_to_user(buf, __va(p), count).
 
--- 
- - mdz
+So, the patch just turns /dev/kmem into /dev/mem, on reading, while it does=
+n't=20
+do the overflow check done inside read_mem. On writing, instead, it changes=
+=20
+nothing, so we would have probably other panics.
+
+What I've read about the patch was that the kmem driver "incorrectly assume=
+s=20
+the address space starts from the 0 address", IIRC. If this is correct, the=
+n=20
+the correct fix would be to check whether the address is mapped and to=20
+provide a suitable error code, either -EFAULT, or 0, as here:
+
+static ssize_t read_mem(struct file * file, char * buf,
+                        size_t count, loff_t *ppos) {
+        unsigned long p =3D *ppos;
+        unsigned long end_mem;
+        ssize_t read;
+
+        end_mem =3D __pa(high_memory);
+        if (p >=3D end_mem)
+                return 0;
+	/*...*/
+}
+
+However, I'm not up to see how to exactly do the check (even if this check =
+is=20
+already done when using the copy_from_user macros).
+
+Bye
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 -------------------------------------------------------
