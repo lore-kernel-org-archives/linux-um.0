@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ar51e-0002vB-AU
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 16:48:18 -0800
+	id 1Ar51b-0002uV-Ab
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 16:48:15 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.30)
-	id 1Ar4zE-0000Li-16
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 16:45:48 -0800
-Message-Id: <200402120114.i1C1E5ip008500@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] mconsole telinit design, worry about init standards? 
-In-Reply-To: Your message of "Fri, 06 Feb 2004 11:07:59 +1030."
-             <20040206003759.GY4203@erizo.shearer.org> 
-References: <20040206003759.GY4203@erizo.shearer.org> 
+	id 1Ar50l-0002M2-Bo
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 11 Feb 2004 16:47:23 -0800
+Message-Id: <200402120113.i1C1Dqip008480@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Compiling 2.6.3-rc1-mm1 in UML architecture 
+In-Reply-To: Your message of "Wed, 11 Feb 2004 00:12:41 EST."
+             <Pine.LNX.4.44.0402102352330.3217-100000@sparrow> 
+References: <Pine.LNX.4.44.0402102352330.3217-100000@sparrow> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -26,44 +26,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 11 Feb 2004 20:14:05 -0500
-To: Dan Shearer <dan@shearer.org>, Cameron Patrick <cameron@patrick.wattle.id.au>, BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, miquels@cistron.nl
+Date: Wed, 11 Feb 2004 20:13:52 -0500
+To: William Stearns <wstearns@pobox.com>
+Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, MOLNAR Ingo <mingo@elte.hu>
 
-dan@shearer.org said:
-> I've got a rough implementation of an mcsonole telinit command, where
-> mconsole_kern opens /dev/initctl and sends a command to change
-> runlevels.
+wstearns@pobox.com said:
+> 	Next:
+> 	In file included from arch/um/kernel/syscall_kern.c:22: arch/um/
+> include/sysdep/syscalls.h:17: conflicting types for  `sys_ni_syscall'
+> include/linux/syscalls.h:453: previous declaration of `sys_ni_syscall'
+> .   UM types it as syscall_handler_t, include/linux types it as
+> "asmlinkage long".
+> 	I'm lost on this one.  No idea on how to resolve it. 
 
-cameron@patrick.wattle.id.au said:
-> How about having some kind of generic interface to allow the host to
-> access files, send signals, etc inside the VM?
-
-Sorry, but none of these handy things are going into the kernel.  If you want
-to run processes, open files, etc, you can do all that from userspace.
-
-I see the following possibilities:
-
-	Log in and run the command - some people don't like to write scripts
-to go through the login process, so you can
-	Have a dedicated console which just has a root shell running on it.  I
-think there will be people who object to parsing shell prompts, so they can
-	Send the command through /proc/mconsole to a script which does
-
-	while true; do cmd=read < /proc/mconsole; `$cmd >& /proc/mconsole`; done
-
-This last requires that /proc/mconsole be made bidirectional, plus it requires
-that script running inside UML.  All of these require some amount of setup
-beforehand (knowledge of the root password, inittab running a shell instead of
-getting on one console, the /proc/mconsole script).  
-
-All of them are also subject to interference by a hostile root inside the
-UML.  However, the in-kernel proposals can be subverted by root as well (change
-init to not obey initctl, move files around, etc).
+Just wait for the corresponding UML patch.  2.6 is changing relatively quickly
+underneath me these days.
 
 				Jeff
-
-
 
 
 -------------------------------------------------------
