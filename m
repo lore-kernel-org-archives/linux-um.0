@@ -1,26 +1,30 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZQev-0006C7-Hf for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 01:20:25 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CZQeu-0003As-CF
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 01:20:25 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20041201090203.GD12963@bytesex>
-References: <20041130200845.2C5058BAFE@zion.localdomain>
-	<20041130152017.129e134c.akpm@osdl.org>
-	<200412010120.39579.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200412010120.39579.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: VFS interactions with UML and other big UML changes
-	(was: Re: [patch 1/2] Uml - first part rework of run_helper()
-	and users.)
+	id 1CZZ67-0005NE-Nn for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 10:21:03 -0800
+Received: from main.gmane.org ([80.91.229.2])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CZZ65-0008MQ-52 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 10:21:03 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CZZ5z-00084I-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 01 Dec 2004 19:20:55 +0100
+Received: from 69.15.40.50 ([69.15.40.50])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 01 Dec 2004 19:20:55 +0100
+Received: from lunz by 69.15.40.50 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 01 Dec 2004 19:20:55 +0100
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <col21v$2gm$1@sea.gmane.org>
+References: <200411230550.iAN5o8mY007302@ccure.user-mode-linux.org>
+Subject: [uml-devel] Re: The current fix-kill patch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,28 +36,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 1 Dec 2004 10:02:03 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, jdike@addtoit.com, bstroesser@fujitsu-siemens.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 1 Dec 2004 18:20:47 +0000 (UTC)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> > uml-terminal-cleanup.patch
-> 
-> I don't know technically this one. It won't probably go in 2.6.10, I think 
-> later... tested in the SuSE tree, but let's be quiet in merging _big_ things, 
-> ok? It was also tested in a different tree, so it perfectly working on 2.6.9 
-> does not mean perfectly working on current kernels.
+jdike@addtoit.com said:
+> Here's the latest fix-kill patch in my tree.  Please test and report...
 
-Tested by me on 2.6.10-rc2-bk<something> as well.  It needed some
-trivial adaptions to the tty layer changes done by Linus compared
-to the old 2.6.9 version.  I'm pretty confident it wouldn't break
-anything, but as it is to big to be classified as ObviouslyCorrect[tm]
-fix it probably should not go to into 2.6.10 but be merged in the
-2.6.11 cycle.
+Will there be anything similar put out to let 2.4 uml guests run on
+2.6.9?
 
-  Gerd
+Jason
 
--- 
-#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
