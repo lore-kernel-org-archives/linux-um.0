@@ -1,25 +1,8 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CRw50-0007N8-Fk for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Nov 2004 09:16:22 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CRw4z-0007ad-Lk for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Nov 2004 09:16:22 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: Stop at startup on 2.6 NPTL hosts
-References: <20041029092641.8558.qmail@web26102.mail.ukl.yahoo.com>
-	<200411092012.05383.blaisorblade_spam@yahoo.it>
-	<34658.80.203.1.124.1100075791.squirrel@80.203.1.124>
-In-Reply-To: <34658.80.203.1.124.1100075791.squirrel@80.203.1.124>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200411101816.39361.blaisorblade_spam@yahoo.it>
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20041110175907.AD85EA1FA@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] uml: use sys_getpid bypassing glibc (fixes
+	UML on Gentoo)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,36 +14,120 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 10 Nov 2004 18:16:39 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: stian@nixia.no, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>, Roland Kaeser <roli8200@yahoo.de>, Nuno Silva <nuno.silva@vgertech.com>, Antoine Martin <antoine@nagafix.co.uk>, Sven =?utf-8?q?K=EF=BF=BDhler?= <skoehler@upb.de>, Dennis Muhlestein <devel@muhlesteins.com>
+Date: Wed, 10 Nov 2004 18:59:06 +0100
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, blaisorblade_spam@yahoo.it, bstroesser@fujitsu-siemens.com, drepper@redhat.com
 
-On Wednesday 10 November 2004 09:36, stian@nixia.no wrote:
-> > This fact (glibc caches getpid() results) was even known because already
-> > posted, and I guessed that this could happen only with TLS support.
->
-> That glibc caches getpid() has been a known issue before when people
-> wanted to benchmark uml syscall speeds inside vs outside of UML using a
-> simple libc-function.
-In fact, it has been also said against SYSEMU benchmarks. Actually, it was 
-obvious it didn't apply: in fact, this only happens with TLS, which is always 
-disabled inside UML.
 
-> A clone() call can't easily invalidate caches around 
-> in libs that are stored in statics. But it should be mentioned on
-> getpid()'s man/info page that the value might be cached.
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+Cc: Ulrich Drepper <drepper@redhat.com>
 
-> Perhaps sende the glibc dudes an email with the problem, and either get
-> them to remove the cache or document it. Either way it will be a problem,
-> since people might use a version of glibc then that caches getpid.. only
-> work-around  is to use syscall() directly, or avoid using getpid() before
-> clone().
-The first one is better, I'm going to use it.
+Using NPTL, getpid() sometimes delivers the wrong pid, since it uses the one
+buffered in TLS from previous calls.  This buffered pid isn't discarded, when
+a child is created by a clone().
 
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+So, as a workaround, UML should use a direct kernel call to bypass the lib.
+
+Also, I (Paolo) went replacing all remaining calls of getpid() with
+os_getpid(), to make sure they use the syscall and not the normal glibc
+definition.
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ linux-2.6.10-rc-paolo/arch/um/kernel/frame.c        |    8 ++++----
+ linux-2.6.10-rc-paolo/arch/um/kernel/main.c         |    3 ++-
+ linux-2.6.10-rc-paolo/arch/um/kernel/skas/process.c |    2 +-
+ linux-2.6.10-rc-paolo/arch/um/os-Linux/process.c    |    4 ++++
+ 4 files changed, 11 insertions(+), 6 deletions(-)
+
+diff -puN arch/um/os-Linux/process.c~uml-use-sys-getpid-bypassing-glibc arch/um/os-Linux/process.c
+--- linux-2.6.10-rc/arch/um/os-Linux/process.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:24:10.000000000 +0100
++++ linux-2.6.10-rc-paolo/arch/um/os-Linux/process.c	2004-11-10 18:24:10.000000000 +0100
+@@ -107,6 +107,10 @@ void os_usr1_process(int pid)
+ 	kill(pid, SIGUSR1);
+ }
+ 
++/*Don't use the glibc version, which caches the result in TLS. It misses some
++ * syscalls, and also breaks with clone(), which does not unshare the TLS.*/
++inline _syscall0(pid_t, getpid)
++
+ int os_getpid(void)
+ {
+ 	return(getpid());
+diff -puN arch/um/kernel/skas/process.c~uml-use-sys-getpid-bypassing-glibc arch/um/kernel/skas/process.c
+--- linux-2.6.10-rc/arch/um/kernel/skas/process.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:45:59.529650720 +0100
++++ linux-2.6.10-rc-paolo/arch/um/kernel/skas/process.c	2004-11-10 18:46:52.166648680 +0100
+@@ -30,7 +30,7 @@
+ 
+ int is_skas_winch(int pid, int fd, void *data)
+ {
+-	if(pid != getpid())
++	if(pid != os_getpid())
+ 		return(0);
+ 
+ 	register_winch_irq(-1, fd, -1, data);
+diff -puN arch/um/kernel/frame.c~uml-use-sys-getpid-bypassing-glibc arch/um/kernel/frame.c
+--- linux-2.6.10-rc/arch/um/kernel/frame.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:45:59.564645400 +0100
++++ linux-2.6.10-rc-paolo/arch/um/kernel/frame.c	2004-11-10 18:46:52.168648376 +0100
+@@ -140,7 +140,7 @@ static void child_common(struct common_r
+ 	}
+ 	if(sigaltstack(&ss, NULL) < 0){
+ 		printf("sigaltstack failed - errno = %d\n", errno);
+-		kill(getpid(), SIGKILL);
++		kill(os_getpid(), SIGKILL);
+ 	}
+ 
+ 	if(restorer){
+@@ -162,7 +162,7 @@ static void child_common(struct common_r
+ 	
+ 	if(err < 0){
+ 		printf("sigaction failed - errno = %d\n", errno);
+-		kill(getpid(), SIGKILL);
++		kill(os_getpid(), SIGKILL);
+ 	}
+ 
+ 	os_stop_process(os_getpid());
+@@ -191,7 +191,7 @@ static void sc_handler(int sig, struct s
+ 	setup_arch_frame_raw(&raw_sc->common.arch, &sc + 1, raw_sc->common.sr);
+ 
+ 	os_stop_process(os_getpid());
+-	kill(getpid(), SIGKILL);
++	kill(os_getpid(), SIGKILL);
+ }
+ 
+ static int sc_child(void *arg)
+@@ -229,7 +229,7 @@ static void si_handler(int sig, siginfo_
+ 			     ucontext->uc_mcontext.fpregs, raw_si->common.sr);
+ 	
+ 	os_stop_process(os_getpid());
+-	kill(getpid(), SIGKILL);
++	kill(os_getpid(), SIGKILL);
+ }
+ 
+ static int si_child(void *arg)
+diff -puN arch/um/kernel/main.c~uml-use-sys-getpid-bypassing-glibc arch/um/kernel/main.c
+--- linux-2.6.10-rc/arch/um/kernel/main.c~uml-use-sys-getpid-bypassing-glibc	2004-11-10 18:45:59.575643728 +0100
++++ linux-2.6.10-rc-paolo/arch/um/kernel/main.c	2004-11-10 18:49:05.002454568 +0100
+@@ -26,6 +26,7 @@
+ #include "uml-config.h"
+ #include "irq_user.h"
+ #include "time_user.h"
++#include "os.h"
+ 
+ /* Set in set_stklim, which is called from main and __wrap_malloc.
+  * __wrap_malloc only calls it if main hasn't started.
+@@ -175,7 +176,7 @@ int main(int argc, char **argv, char **e
+ }
+ 
+ #define CAN_KMALLOC() \
+-	(kmalloc_ok && CHOOSE_MODE((getpid() != tracing_pid), 1))
++	(kmalloc_ok && CHOOSE_MODE((os_getpid() != tracing_pid), 1))
+ 
+ extern void *__real_malloc(int);
+ 
+_
 
 
 -------------------------------------------------------
