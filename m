@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BmcZp-0001er-8v for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jul 2004 11:09:25 -0700
+	id 1Bmd8W-00088m-Bz for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Jul 2004 11:45:16 -0700
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1BmcZo-0003gq-EH for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jul 2004 11:09:25 -0700
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1Bmd8V-0002Sw-N4 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Jul 2004 11:45:16 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: I'm back - glibc LDT handling (was: Re: [uml-devel] I'm out for some
-	time - SKAS host leak diagnosis.)
+Subject: Re: I'm back - glibc LDT handling (was: Re: [uml-devel] I'm out for
+	some time - SKAS host leak diagnosis.)
 References: <200407081804.40148.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200407081804.40148.blaisorblade_spam@yahoo.it>
+	<200407191958.40012.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200407191958.40012.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_QvA/ANORUZ+X27Q"
-Message-Id: <200407191958.40012.blaisorblade_spam@yahoo.it>
+  boundary="Boundary-00=_jbB/AZokiYUfUZm"
+Message-Id: <200407192045.55420.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,80 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Jul 2004 19:58:39 +0200
+Date: Mon, 19 Jul 2004 20:45:55 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
 
 
---Boundary-00=_QvA/ANORUZ+X27Q
+--Boundary-00=_jbB/AZokiYUfUZm
 Content-Type: text/plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-Alle 18:04, gioved=EC 8 luglio 2004, BlaisorBlade ha scritto:
-> 1) From 9 to 18 July, I'll be away for study=20
-Ok, I'm back. And glad to see the release of 2.4.26-2um.
-
-> 2) Especially, I'm near to fixing the host SKAS leak... seems like it's a
-> race condition when calling alloc_ldt(): one of the two values is
-> overwritten by the other, and so never freed. In fact for each mm
-> init_new_context() is called when open()ing it, while __init_new_context()
-> is called when writing a MM_COPY_SEGMENTS request onto /proc/mm (which
-> happens shortly after). The mm->context is not locked anyway, and this is=
- a
-> SKAS bug: it makes sense in mainline, but not when using SKAS. The strange
-> thing is that on host/kernel configurations where it happens, it is
-> repeatable, i.e. does not seem a race condition. However the locking must
-> be anyway added.
-
-I've attached the patch, but I've not had time to even compile one kernel w=
-ith=20
-it. However try it if you want: it's for 2.6 and probably works for 2.4.
-
-Ok, the problem is the double call, but it is not a race condition: when=20
-calling again __init_new_context, we do mm->context.size =3D 0, so alloc_ld=
-t=20
-does not free mm->context.ldt. Much simpler. While the race condition is=20
-impossible (it is the same thread to open /proc/mm and to write the=20
-MM_COPY_SEGMENTS request).
-
-And it did not happen before 2.4.25 because there was no clearing of=20
-mm->context.size (it did not exist). There is another strange thing: why th=
-e=20
-leak does not happen everywhere? To actually have an LDT to allocate, the U=
-ML=20
-host thread calling new_mm() must have an LDT with size !=3D 0, which will =
-then=20
-be inherited by every UML thread: I do not think this is nice, and it's=20
-unwanted since UML assumes that a kernel thread has not an LDT, see the=20
-current->mm !=3D NULL check in new_mm(); I think this can only come from gl=
-ibc=20
-(for instance to support TLS).
-
-Anyway, that is the problem. And the locking is not the solution (deadlock=
-=20
-risk): simply it does not make sense to call twice init_new_context(),=20
-because after the first time the context is old. I've avoided to add lockin=
-g=20
-because I fear deadlocks (I would need to lock both the old and the new=20
-context) and because the old code worked fine without adding locks; anyway,=
-=20
-there is no chance that a proper UML can cause a race onto the new LDT; but=
-=20
-if a process wants to, it can. The fix would be very simple: lock the old=20
-context, copy its LDT to a bounce buffer, unlock it, and copy the bounce=20
-buffer to the new context under locking; but I don't like this. Maybe it=20
-could be deadlock-free to take the old_mm lock and after the new_mm one (it=
-'s=20
-impossible that another process does the reverse copy, or not?)
+Sorry for the patch: the new one should make more sense (it compiles, but be 
+careful with it). Anyway, you can still wait for it, for now...
 
 Bye
-=2D-=20
+-- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 
---Boundary-00=_QvA/ANORUZ+X27Q
+--Boundary-00=_jbB/AZokiYUfUZm
 Content-Type: text/x-diff; charset="iso-8859-1"; name="skas-leak-fix.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="skas-leak-fix.patch"
@@ -118,13 +64,13 @@ Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
  include/asm-i386/mmu_context.h                        |    0 
- vanilla-linux-2.6.7-SKAS-paolo/arch/i386/kernel/ldt.c |   18 +++++++++++++++---
- vanilla-linux-2.6.7-SKAS-paolo/mm/proc_mm.c           |    3 ++-
- 3 files changed, 17 insertions(+), 4 deletions(-)
+ vanilla-linux-2.6.7-SKAS-paolo/arch/i386/kernel/ldt.c |   21 +++++++++++++++---
+ vanilla-linux-2.6.7-SKAS-paolo/mm/proc_mm.c           |    3 +-
+ 3 files changed, 20 insertions(+), 4 deletions(-)
 
 diff -puN arch/i386/kernel/ldt.c~skas-leak-fix arch/i386/kernel/ldt.c
---- vanilla-linux-2.6.7-SKAS/arch/i386/kernel/ldt.c~skas-leak-fix	2004-07-19 13:52:46.439670608 +0200
-+++ vanilla-linux-2.6.7-SKAS-paolo/arch/i386/kernel/ldt.c	2004-07-19 13:52:46.444669848 +0200
+--- vanilla-linux-2.6.7-SKAS/arch/i386/kernel/ldt.c~skas-leak-fix	2004-07-19 20:32:22.774713648 +0200
++++ vanilla-linux-2.6.7-SKAS-paolo/arch/i386/kernel/ldt.c	2004-07-19 20:37:08.394292872 +0200
 @@ -89,12 +89,14 @@ static inline int copy_ldt(mm_context_t 
   * we do not have to muck with descriptors here, that is
   * done in switch_mm() as needed.
@@ -141,7 +87,7 @@ diff -puN arch/i386/kernel/ldt.c~skas-leak-fix arch/i386/kernel/ldt.c
  	if (old_mm && old_mm->context.size > 0) {
  		down(&old_mm->context.sem);
  		retval = copy_ldt(&mm->context, &old_mm->context);
-@@ -103,9 +105,19 @@ int __init_new_context(struct mm_struct 
+@@ -103,9 +105,22 @@ int __init_new_context(struct mm_struct 
  	return retval;
  }
  
@@ -149,7 +95,10 @@ diff -puN arch/i386/kernel/ldt.c~skas-leak-fix arch/i386/kernel/ldt.c
 +int copy_context(struct mm_struct *mm, struct mm_struct *old_mm)
  {
 -	return __init_new_context(mm, current->mm);
-+	int err;
++	int err = 0;
++	mm_context_t *new, *old;
++	new = &mm->context;
++	old = &old_mm->context;
 +	if (old_mm && old_mm->context.size > 0) {
 +		down(&old_mm->context.sem);
 +		err = alloc_ldt(new, old->size, 0);
@@ -164,8 +113,8 @@ diff -puN arch/i386/kernel/ldt.c~skas-leak-fix arch/i386/kernel/ldt.c
  
  /*
 diff -puN mm/proc_mm.c~skas-leak-fix mm/proc_mm.c
---- vanilla-linux-2.6.7-SKAS/mm/proc_mm.c~skas-leak-fix	2004-07-19 13:52:46.441670304 +0200
-+++ vanilla-linux-2.6.7-SKAS-paolo/mm/proc_mm.c	2004-07-19 13:52:46.445669696 +0200
+--- vanilla-linux-2.6.7-SKAS/mm/proc_mm.c~skas-leak-fix	2004-07-19 20:32:22.776713344 +0200
++++ vanilla-linux-2.6.7-SKAS-paolo/mm/proc_mm.c	2004-07-19 20:39:17.131721808 +0200
 @@ -12,6 +12,7 @@
  #include "asm/mmu_context.h"
  
@@ -179,14 +128,14 @@ diff -puN mm/proc_mm.c~skas-leak-fix mm/proc_mm.c
  		}
  
 -		__init_new_context(mm, from);
-+		copy_ldt(mm, from);
++		ret = copy_context(mm, from);
  		break;
  	}
  	default:
 diff -puN include/asm-i386/mmu_context.h~skas-leak-fix include/asm-i386/mmu_context.h
 _
 
---Boundary-00=_QvA/ANORUZ+X27Q--
+--Boundary-00=_jbB/AZokiYUfUZm--
 
 
 
