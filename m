@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CNKV4-00063A-Qa for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 17:20:14 -0700
-Received: from pimout3-ext.prodigy.net ([207.115.63.102])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CNKV4-0003lI-2C for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 17:20:14 -0700
+	id 1CNKdK-000788-T2 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 17:28:46 -0700
+Received: from pimout2-ext.prodigy.net ([207.115.63.101])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CNKdJ-00059y-CD for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 17:28:46 -0700
 From: Chris Wedgwood <cw@f00f.org>
-Subject: Re: [uml-devel] Re: [patch 7/7] uml: resolve symbols in back-traces
-Message-ID: <20041029001950.GC12434@taniwha.stupidest.org>
-References: <200410272223.i9RMNj921852@mail.osdl.org>
-	<200410282132.i9SLWhA3004709@ccure.user-mode-linux.org>
-	<20041028205136.GA1888@taniwha.stupidest.org>
-	<200410290144.11700.blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: Why UML often does not build (was: Re: [PATCH]
+	UML: Build fix for TT w/o SKAS)
+Message-ID: <20041029002831.GD12434@taniwha.stupidest.org>
+References: <20041027053602.GB30735@taniwha.stupidest.org>
+	<200410282254.21944.blaisorblade_spam@yahoo.it>
+	<20041028214242.GB2269@taniwha.stupidest.org>
+	<200410290149.31665.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200410290144.11700.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200410290149.31665.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,20 +31,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Oct 2004 17:19:50 -0700
+Date: Thu, 28 Oct 2004 17:28:31 -0700
 To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>
 
-On Fri, Oct 29, 2004 at 01:44:11AM +0200, Blaisorblade wrote:
+On Fri, Oct 29, 2004 at 01:49:31AM +0200, Blaisorblade wrote:
 
-> ??? I don't understand you well. If there are compile-commands for
-> emacs, they're broken too - using make namefile.o ARCH=um is the
-> kernel universal solution.
+> Yes, it was using SIGKILL instead of PTRACE_KILL; this gets broken
+> by 2.6.9.
 
-consider a load-able module for uml ... the compile command might be
-to build and load the module into a running UML instance...  for some
-people that's a pretty nice working module where you dont have to
-leave your editor to boot/run test things
+the problem here is that ptrace semantics are not well defined to
+anything subtle can and will break from time to time
+
+if we can get UML in a more suitable state and perhaps get some minor
+QA stuff merged (a new make target using initramfs maybe?) we could
+'encourage' people to test UML more often
+
+> Well, I've seen Christoph Hellwig not particularly happy about us,
+> see for instance:
+>
+> http://linux.bkbits.net:8080/linux-2.5/cset@41752cc9xdFXib-03VDV5akqKJZ-yA?nav=index.html|ChangeSet@-7d
+
+well, he is right in this case
+
+it's hard to find a balance between keeping it working for existing
+UML users (which is what i'm trying to make sure is the case) and
+doing cleanups which people such as hch point out really are needed
+
+> Sending a patch requires at least proof-reading it and writing a
+> meaningful changelog.  Also, managing mails takes tons of time.
+
+im happy to take any and all fixes w/o comments in any form for now if
+you want to fire them off to me
 
 
 -------------------------------------------------------
