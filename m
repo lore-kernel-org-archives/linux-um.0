@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Colm3-0004Lf-7P for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 08:55:11 -0800
-Received: from pike.sandelman.ca ([205.150.200.164])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1Colm0-0002Sb-Eu
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 08:55:11 -0800
-Subject: Re: [uml-devel] How stable is hostfs (and UML in general)? 
-In-Reply-To: Message from Blaisorblade <blaisorblade@yahoo.it> of "Wed,
-	12 Jan 2005 00:23:05 +0100." <200501120023.05580.blaisorblade@yahoo.it>
+	id 1Colxe-00054f-LV for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 09:07:10 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1Colxa-00049U-O8 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 09:07:10 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
 References: <200501082106.38306.rob@landley.net>
-	<200501110135.55716.rob@landley.net>
-	<11049.1105479264@marajade.sandelman.ottawa.on.ca>
-	<200501120023.05580.blaisorblade@yahoo.it> 
-Message-ID: <23435.1105548900@marajade.sandelman.ottawa.on.ca>
-From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+	<200501120023.05580.blaisorblade@yahoo.it>
+	<23435.1105548900@marajade.sandelman.ottawa.on.ca>
+In-Reply-To: <23435.1105548900@marajade.sandelman.ottawa.on.ca>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200501121809.13623.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,56 +31,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 Jan 2005 11:55:00 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>
+Date: Wed, 12 Jan 2005 18:09:13 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>, Rob Landley <rob@landley.net>
 
------BEGIN PGP SIGNED MESSAGE-----
+On Wednesday 12 January 2005 17:55, Michael Richardson wrote:
+> >>>>> "Blaisorblade" == Blaisorblade  <blaisorblade@yahoo.it> writes:
+>
+>     Rob> Chapter 5 of current variants of LFS uses the host system to
+>     Rob> create a toolchain you can chroot into and build the final
+>     Rob> system with.  Then in chapter 6, you build the final system in
 
+>     >> I think the use of chroot is a cop-out.
 
->>>>> "Blaisorblade" == Blaisorblade  <blaisorblade@yahoo.it> writes:
-    Rob> Chapter 5 of current variants of LFS uses the host system to
-    Rob> create a toolchain you can chroot into and build the final
-    Rob> system with.  Then in chapter 6, you build the final system in
+>     Rob> This requires root access (as does creating device nodes,
+>     Rob> mounting /proc or loopback devices...  A rather large number of
 
-    >> I think the use of chroot is a cop-out.
+>     >> I use "fakeroot" to do all of that for embedded work that I do...
 
-    Rob> This requires root access (as does creating device nodes,
-    Rob> mounting /proc or loopback devices...  A rather large number of
+>     Blaisorblade> What's this?
 
-    >> I use "fakeroot" to do all of that for embedded work that I do...
+>   A tool which LD_PRELOAD's a library that intercepts all calls that
+> require root, and "emulates" them.
+>   I.e. if a program does "chown(2)", it just remembers that this
+> occured, and when a stat() is made, it returns the "right" answer.
+>   (so tar/mkjffs, etc. get the right answer)
+Ah, ok... this means it cannot work onto UML, actually (unless you dinamically 
+link it - which is not the common case...).
+>   Used in debian a lot.
+>   http://packages.debian.org/testing/utils/fakeroot
 
-    Blaisorblade> What's this?
+>     Blaisorblade> Yes, that's because it turns the console to raw mode
+> (don't ask me why).
 
-  A tool which LD_PRELOAD's a library that intercepts all calls that
-require root, and "emulates" them.
-  I.e. if a program does "chown(2)", it just remembers that this
-occured, and when a stat() is made, it returns the "right" answer.  
-  (so tar/mkjffs, etc. get the right answer)
-
-  Used in debian a lot.
-  http://packages.debian.org/testing/utils/fakeroot
-
-    Blaisorblade> Yes, that's because it turns the console to raw mode (don't ask me why).
- 
-  Because, you'd like to have ^C get passed to the program being run
-under the UML :-)
-
-- -- 
-] Michael Richardson          Xelerance Corporation, Ottawa, ON |  firewalls  [
-] mcr @ xelerance.com           Now doing IPsec training, see   |net architect[
-] http://www.sandelman.ca/mcr/    www.xelerance.com/training/   |device driver[
-] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-Comment: Finger me for keys
-
-iQCVAwUBQeVWY4qHRg3pndX9AQEH/wQA1Hkp7/41q61Oh4razESw6WHAmLMiXseB
-I8TGHI10/o55F8iqN0ePZHOzKFnOxw75/8J10RiPdTWWGnqn3wUh3Fx4LXyzG0Hy
-/T/YWIErJwc8G7Y5aJrltehTHdtudEKei0Wei99EiCo65JPczSVBY8ZHFYae/wLR
-2ueRvZlyZzs=
-=VIrB
------END PGP SIGNATURE-----
+>   Because, you'd like to have ^C get passed to the program being run
+> under the UML :-)
+Ah, well, yes, but that happens when you use /dev/tty0 as console inside UML 
+(and I don't do it).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
