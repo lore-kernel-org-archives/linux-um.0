@@ -1,21 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1At8NB-0008PH-JH
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 08:47:01 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30)
-	id 1At8Cf-0007Wy-3q
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 08:36:09 -0800
-Message-Id: <200402171710.i1HHAYMM002541@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: Segfault of UML-TT on FC1 
-In-Reply-To: Your message of "Mon, 16 Feb 2004 19:32:30 GMT."
-             <Pine.LNX.4.58.0402161916440.8742@vega.dur.ac.uk> 
-References: <20040215232525.7c2f38a8.zaitcev@redhat.com> <Pine.LNX.4.58.0402160248320.3114@devserv.devel.redhat.com>  <Pine.LNX.4.58.0402161916440.8742@vega.dur.ac.uk> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1AtFRq-0007ck-Qh
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 16:20:18 -0800
+Received: from [203.199.92.194] (helo=mailgw.seepz.tcs.co.in)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AtFNR-0003OJ-Fg
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 17 Feb 2004 16:15:45 -0800
+From: "SVRSPZMAIN/TCSSEEPZ/TCS.TCSSEEPZ" <SVRSPZMAIN/TCSSEEPZ/TCS.TCSSEEPZ@seepz.tcs.co.in>
+Message-ID: <OF8B758921.BF67B97D-ON65256E3E.0001E00C@seepz.tcs.co.in>
+MIME-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [uml-devel] Report to Recipient(s)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,22 +22,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Feb 2004 12:10:34 -0500
-To: M A Young <m.a.young@durham.ac.uk>
-Cc: Ingo Molnar <mingo@redhat.com>, Pete Zaitcev <zaitcev@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 18 Feb 2004 05:50:28 +0530
+To: User-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-m.a.young@durham.ac.uk said:
-> The remaining issue which the final part addresses is that a later
-> routine that reserves area to act as physical memory still assumes the
-> areas are adjacent, and you get a random amount less memory reserved
-> than you expect (something like 16M), and this might not leave you
-> with enough memory to use.
+Incident Information:-
 
-The space is non-zero even on a non-exec-shield system, probably because some
-mallocing has pushed the brk across a page boundary.  So I changed it to add
-memory only if it's > 1M, and also added a printf saying what's happening.
+Originator:    user-mode-linux-devel-admin@lists.sourceforge.net
+Recipients:    User-mode-linux-devel
+<user-mode-linux-devel@lists.sourceforge.net>
+Subject:  [uml-devel] Love4lust.info is the best place to enjoy virtual SEX
+!
 
-				Jeff
+This is a message from the TCS SEEPZ E-Mail Server
+------------------------------------------------------------------------------------------------
+
+You are receiving this message because the  E-Mail sent from
+user-mode-linux-devel-admin@lists.sourceforge.net
+has been quarantined. The mail has been quarantined as it does not confor
+to the TCS EMail policy.
+You are requested to inform the addressee and get in touch with the System
+Administrator.
+
+
+
+*****************************************************************************************************************************
+
+ DISCLAIMER: The information contained in this message is intended only and
+solely for the addressed individual or entity  indicated in this message
+and for the exclusive use of the said addressed individual or entity
+indicated in this message  (or responsible for delivery of the message to
+such person) and may contain legally privileged and confidential
+information  belonging to Tata Consultancy Services. It must not be
+printed, read, copied, disclosed, forwarded, distributed or used  (in
+whatsoever manner) by any person other than the addressee. Unauthorized
+use, disclosure or copying is strictly prohibited  and may constitute
+unlawful act and can possibly attract legal action, civil and/or criminal.
+The contents of this message  need not necessarily reflect or endorse the
+views of TATA Consultancy Services on any subject matter. Any action taken
+or omitted to be taken based on this message is entirely at your risk and
+neither the originator of this message nor  Tata Consultancy Services takes
+any responsibility or liability towards the same. Opinions, conclusions and
+any other  information contained in this message that do not relate to the
+official business of Tata Consultancy Services shall be  understood as
+neither given nor endorsed by Tata Consultancy Services or any affiliate of
+Tata Consultancy Services.  If you have received this message in error, you
+should destroy this message and may please notify the sender by e-mail.
+Thank you.
+*****************************************************************************************************************************
+
+
 
 
 
