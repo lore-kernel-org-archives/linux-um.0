@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AO3nA-0004kV-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Sun, 23 Nov 2003 15:37:24 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AO3n9-0007BJ-C8
-	for User-mode-linux-devel@lists.sourceforge.net; Sun, 23 Nov 2003 15:37:23 -0800
-Received: from localhost (henrik@localhost)
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id hANNbKY07334
-	for <User-mode-linux-devel@lists.sourceforge.net>; Mon, 24 Nov 2003 00:37:20 +0100
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] iptables-restore randomly crashes under UML
-In-Reply-To: <Pine.LNX.4.44.0311221347440.20561-100000@filer.marasystems.com>
-Message-ID: <Pine.LNX.4.44.0311232251090.6878-100000@filer.marasystems.com>
+	id 1AO6zn-0008C6-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 23 Nov 2003 19:02:39 -0800
+Received: from mekong.darkman.de ([217.69.160.53] helo=mail.darkman.de)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AO6zj-0004gs-3K
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 23 Nov 2003 19:02:35 -0800
+Received: from darkman.de (ezri.darkman.de [23.23.23.42])
+	by mail.darkman.de (Postfix) with ESMTP id 374F72EF84
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 24 Nov 2003 04:02:15 +0100 (CET)
+Message-ID: <3FC174B6.4030908@darkman.de>
+From: "Sven 'Darkman' Michels" <sven@darkman.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Problem with 2.4.22-uml6 & skas...
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -27,96 +27,87 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Nov 2003 00:37:20 +0100 (CET)
-To: User-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 24 Nov 2003 04:02:14 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 22 Nov 2003, Henrik Nordstrom wrote:
+Hi there,
 
-> We have found what looks like a UML-specific problem when running the 
-> iptables-restore command.
+i try to get 2.4.22-6 running with skas mode.
 
-Have been looking closely at this one, and from what I can tell everything
-indicates there is something within UML which corrupts the kernel memory
-allocated by iptables.
+The host:
+Running vanilla 2.4.22 with host-skas3.patch (applied without
+any error), PROC_MM enabled.
+GCC is 3.3.1
+The box is running fine with the kernel.
 
-The culpit code from net/ipv4/netfilter/ip_tables.c:do_replace() with 
-comments:
+The UML:
+2.4.22 patched with uml6, skas enabled etc.pp.
 
-        newinfo = vmalloc(sizeof(struct ipt_table_info)
-                          + SMP_ALIGN(tmp.size) * smp_num_cpus);
-        if (!newinfo)
-                return -ENOMEM;
+Problem:
+i start the uml with:
+linux-2.4.22 ubd0=/home/uml1/uml/10/root_fs 
+ubd1=/home/uml1/uml/10/swap.disk mem=64M con1=pts umid=uml10 
+eth0=tuntap,uml10-eth0 devfs=mount
+and it stops here:
+VFS: Mounted root (ext2 filesystem) readonly.
+Mounted devfs on /dev
 
-[The allocated size is verified to be correct]
+if i take a look at the host, i can see the following:
+uml1     12180  0.0  0.0     4    0 pts/4    TW   03:41   0:00 
+[linux-2.4.22-te]
+uml1     12185  0.0  0.9 65956 4640 pts/4    S    03:41   0:00 
+/home/uml1/uml/linux-2.4.22-test 
 
-        if (copy_from_user(newinfo->entries, user + sizeof(tmp),
-                           tmp.size) != 0) {
-                ret = -EFAULT;
-                goto free_newinfo;
-        }
+uml1     12186  0.0  0.9 65956 4640 pts/4    S    03:41   0:00 
+/home/uml1/uml/linux-2.4.22-test 
 
-[So far everything looks fine and what gdb finds in newinfo->entries
-matches what looks like was sent from userspace. Sizes of the copied data
-has been verified that there is no buffer overflow. newinfo->entries is
-correct even if it looks odd at first sight (array, not a pointer)]
+uml1     12164 99.7  0.9 65956 4640 pts/4    R    03:41   4:13 
+/home/uml1/uml/linux-2.4.22-test
 
-        counters = vmalloc(tmp.num_counters * sizeof(struct ipt_counters));
-        if (!counters) {
-                ret = -ENOMEM;
-                goto free_newinfo;
-        }
-
-[still everything looks fine, and contents identical to after the 
-copy_from_user call above]
-
-        memset(counters, 0, tmp.num_counters * sizeof(struct ipt_counters));
-
-[here randomly (not always) the data copied has been currupted in
-semi-random ways.  Sometimes this corruption can be seen before the call
-to translate_table(), sometimes early in the start of translate_table()  
-before the memory in question is referenced. There seems to be only two or
-three different patterns of corruption all spread out little here little
-there in the memory aream, but that pattern may also be an artefact of 
-the repetive nature of the test used to trigger the error]
-
-        ret = translate_table(tmp.name, tmp.valid_hooks,
-                              newinfo, tmp.size, tmp.num_entries,
-                              tmp.hook_entry, tmp.underflow);
+(one uml running with nearly 100% cpu usage..)
+attached strace on that one, i get:
 
 
-I have tried using a watch expression on the data which gets currupted but
-GDB does not seem to detect any writes to this area. The memory just
-"magically" changes content. Using watch expressions on data changes in
-the same are done within the relevant code flow works fine however.
+--- SIGSEGV (Segmentation fault) @ 0 (0) ---
+rt_sigprocmask(SIG_UNBLOCK, [USR1], [], 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [ALRM VTALRM PROF IO], NULL, 8) = 0
+getpid()                                = 12164
+write(12, "7\0\0\0\0`\1@\0\20\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 
+28) = 28
+write(12, "6\0\0\0\0`\1@\0\20\0\0\7\0\0\0\21\0\0\0\3\0\0\0\0P\\\0"..., 
+28) = 28
+sigreturn()                             = ? (mask now [])
+--- SIGSEGV (Segmentation fault) @ 0 (0) ---
+rt_sigprocmask(SIG_UNBLOCK, [USR1], [], 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [ALRM VTALRM PROF IO], NULL, 8) = 0
+getpid()                                = 12164
+write(12, "7\0\0\0\0`\1@\0\20\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 
+28) = 28
+write(12, "6\0\0\0\0`\1@\0\20\0\0\7\0\0\0\21\0\0\0\3\0\0\0\0P\\\0"..., 
+28) = 28
+sigreturn()                             = ? (mask now [])
+--- SIGSEGV (Segmentation fault) @ 0 (0) ---
+and so on...
 
-This is seen with Linux-2.4.22 + current UML CVS in TT mode, without any
-other kernel patches.
+with mode=tt the kernel runs. Then i tried another kernel from
+kernels.usermodelinux.org:
+linux-2.4.23-rc3-djc3-6um (nomods)
+and: it works.
+I talked to david and he said the kernel builds without problems
+which is not the case on my host. I get this error:
+bugs.c: In function `disable_lcall':
+bugs.c:111: error: storage size of `ldt' isn't known
+bugs.c:118: warning: implicit declaration of function `modify_ldt'
+bugs.c:111: warning: unused variable `ldt'
 
-The only good thing is that I can very easily reproduce the problem within
-a few seconds, and also reliably detect when it happens by using a few
-breakpoints spread out along the code path checksumming the relevant
-memory area for changes.
+which is fixed with a patch from:
+http://people.0x63.nu/~andersg/uml-minor-fixes.diff
 
-Bad thing is that I am really out of options what to look for next. To me 
-it looks like my UML is simulating badly broken memory, but I am pretty 
-sure there is some other magics messing around somewhere..
+so, for now, i don't have more ideas to solve this Problem. If someone
+of you has an idea or fix, please commit ;)
 
-The exact same error is seen on multiple different hosts so I am fully
-confident it is not a cause of broken host memory.
-
-
-
-Hmm.. I just found one odd thing which might hint to where the problem may
-be.. if I break just after vmalloc() but before copy_from_user() then GDB
-can't read the memory area:
-
-(gdb) x/1024b newinfo
-0xa2819000:     Cannot access memory at address 0xa2819000
-
-the same addresses just after copy_from_user() works just fine however..
-
-Regards
-Henrik
+Thanks and regards,
+Sven
 
 
 
