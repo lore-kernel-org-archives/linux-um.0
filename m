@@ -1,27 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DD9h7-00050U-I3 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 15:18:53 -0800
+	id 1DD9pM-0005Nu-DF for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Mar 2005 15:27:24 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DD9h4-0003vP-Hu
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DD9pK-0000Tr-SG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Mar 2005 15:18:53 -0800
-Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j2L0WUQK029014
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 20 Mar 2005 19:32:39 -0500
+	Sun, 20 Mar 2005 15:27:24 -0800
 From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] [patch] Remove unnecessary config symbol from
+	makefile.
+References: <200503170219.38388.rob@landley.net>
+	<200503171859.52969.rob@landley.net>
+	<200503201142.17480.blaisorblade@yahoo.it>
+In-Reply-To: <200503201142.17480.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503201417.59739.rob@landley.net>
-Subject: [uml-devel] Hostfs permission checks are all wonky.
+Message-Id: <200503201724.35155.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,25 +34,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 20 Mar 2005 14:17:59 -0500
+Date: Sun, 20 Mar 2005 17:24:33 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade@yahoo.it>
 
-If I open a device like /dev/loop0 or /dev/console from a hostfs mount, I'll 
-get the UML device, not the host device, right?
+On Sunday 20 March 2005 05:42 am, Blaisorblade wrote:
 
-So why are the permissions checks on hostfs devices done relative to the 
-_host_ user?  If /dev/console doesn't belong to the current user, the system 
-can't even open the initial console, despite the fact the output does NOT go 
-to TTY1 if I'm running it an xterm.
+> > Without the fix I posted, I have to remove existing
+> > symbols from the list,
+>
+> If you enable the other symbol, Kbuild will remove it from .config for you
+> (and output a warning message, yes, but that's hardly a problem). When I
+> remove config options from Kconfig files I don't need to remove them
+> from .config by hand...
 
-Similarly, if /dev/loop0 is chmod 600 and I run UML as a normal user and try 
-to do a mount -o loop, it says it can't find a loop device.  Yet if I run UML 
-as root, it doesn't allocate one of the parent's loop devices, UML does it 
-internally...
+How does oldconfig know which one "wins" when they're both set in the .config?  
+I'm not running menuconfig, I have a script that is appending more symbols to 
+the .config file, which works fine for normal symbols (ones that are 
+commented out when they're not set), and I'm starting with a "make 
+allnoconfig" that I then append extra symbols to and run make oldconfig to 
+resolve dependencies...
 
-I'm told there's a major rewrite of hostfs underway.  Is it worth me trying to 
-patch the existing hostfs code, or should I go try to track down the new 
-stuff and try it out?
+Trying to set up something with make config and expect would be more brittle 
+and version specific than just snapshotting a .config file in the first 
+place, and would defeat the purpose anyway.  The point is, I wanted my build 
+script to be self-documenting about what symbols it needed.  The ones it 
+appends are the ones it needs, and the ones you'd have to switch on by hand 
+if you did a make allnoconfig followed by make menuconfig yourself..
+
+See what I'm getting at?
+
+If you're saying that there's a hard rule that any symbol that's set by make 
+allnoconfig will automatically lose to any other symbol that isn't if both 
+are set in the config and oldconfig has to resolve an inconsistent state, I 
+suppose I can live with that.  I'm a bit uncomfortable relying on that unless 
+it's documented somewhere...
 
 Rob
 
