@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B5WDr-0003YJ-6s for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Mar 2004 12:40:35 -0800
+	id 1B5WDB-0003PC-R0 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Mar 2004 12:39:53 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B5WDp-0007uN-FS
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1B5WDA-0003pK-9k
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Mar 2004 12:40:33 -0800
-Message-Id: <200403222115.i2MLF9VB021469@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Kernel panic on UML linux 
-In-Reply-To: Your message of "Sun, 21 Mar 2004 00:34:27 +0100."
-	<200403210034.27325.mark.hurenkamp@xs4all.nl> 
-References: <200403200047.29359.mark.hurenkamp@xs4all.nl>
-	<200403200108.i2K18Ipd004482@ccure.user-mode-linux.org>
-	<200403210034.27325.mark.hurenkamp@xs4all.nl> 
+	Mon, 22 Mar 2004 12:39:52 -0800
+Message-Id: <200403222114.i2MLETVB021458@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Problems with Bind9 on UML 2.6.4 
+In-Reply-To: Your message of "Sun, 21 Mar 2004 17:12:36 +1100."
+	<000001c40f0b$9039a3d0$6401a8c0@vmwinxp> 
+References: <000001c40f0b$9039a3d0$6401a8c0@vmwinxp> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -30,16 +28,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Mar 2004 16:15:09 -0500
-To: Mark Hurenkamp <mark.hurenkamp@xs4all.nl>
+Date: Mon, 22 Mar 2004 16:14:29 -0500
+To: ralston@stral.net
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-mark.hurenkamp@xs4all.nl said:
-> Forgive me for being ignorant, but how can I create such a stack
-> trace? The UML doesn't dump core, and I've not been able to run it
-> from gdb or ddd properly (yet :-). 
+ralston@stral.net said:
+> Would I be better of compiling libc6 from source with NPTL/TLS
+> disabled? Would it resolve this problem? Or is it a matter of this
+> syscall not being implemented in UML? 
 
-You've read the docs on debugging UML?
+Kill is definitely implemented in UML.  This looks like a pthreads thing,
+but I don't know what, given you've moved /lib/tls.
 
 				Jeff
 
