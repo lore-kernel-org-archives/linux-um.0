@@ -1,33 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ahx7K-0007qF-HO for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 12:32:26 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ahx7K-0000O9-15 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 12:32:26 -0800
-Received: from mercury.dur.ac.uk (mercury.dur.ac.uk [129.234.4.40])
-	by hermes.dur.ac.uk (8.11.7-20030923/8.11.7) with ESMTP id i0HKWHn22077
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 17 Jan 2004 20:32:17 GMT
-Received: from altair.dur.ac.uk (altair.dur.ac.uk [129.234.4.14])
-	by mercury.dur.ac.uk (8.12.10+Sun/8.11.7) with ESMTP id i0HKWGg8004980
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 17 Jan 2004 20:32:16 GMT
-Received: from localhost (dit0may@localhost)
-	by altair.dur.ac.uk (8.11.7+Sun/8.11.1) with ESMTP id i0HKWFN12269
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 17 Jan 2004 20:32:15 GMT
-From: M A Young <m.a.young@durham.ac.uk>
-Subject: Re: [uml-devel] uml-patch-2.6.0
-In-Reply-To: <200401172009.50449.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.GSO.4.58.0401172027460.11676@altair.dur.ac.uk>
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<200401172009.50449.blaisorblade_spam@yahoo.it>
+	id 1AhsPf-0008Tx-Pn for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 07:31:03 -0800
+Received: from 66-95-121-230.client.dsl.net ([66.95.121.230] helo=mail.lig.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AhsPf-0000nf-C2 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 07:31:03 -0800
+Message-ID: <40095537.1090602@lig.net>
+From: "Stephen D. Williams" <sdw@lig.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <4008A7DF.6000308@lig.net> <87llo6hmmc.fsf@bytesex.org>
+In-Reply-To: <87llo6hmmc.fsf@bytesex.org>
+Content-Type: multipart/mixed; boundary="------------000903050107070905010103"
+Subject: [uml-devel] Re: What is the most up to date,
+	least crashing kernel+patch?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,26 +27,79 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 20:32:15 +0000 (GMT)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 17 Jan 2004 10:31:03 -0500
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 17 Jan 2004, BlaisorBlade wrote:
 
-> I've updated all the stuff that was there. You claimed you didn't want some
-> patches, now I've organized things so they can be easily excluded. Do *not*
-> use the combo.
+This is a multi-part message in MIME format.
+--------------000903050107070905010103
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Thank you very much!!
+
+BTW, I solved stability and performance problems by lowering the memory 
+setting ro 430M, using the 2.4.20 UML kernel, still with my 2.6.1+skas3 
+host, and getting around to TMPDIR=/dev/shm (doh!).
+
+If I can build in everything I need by rebuilding a kernel, I can live 
+without modules.  In particular, I need IPv6, IPSec, and other advanced 
+networking.
+
+sdw
+
+Gerd Knorr wrote:
+
+>"Stephen D. Williams" <sdw@lig.net> writes:
 >
-> This are some brief patches descriptions (in the 00-README).
-> C-03 (trivial, removes smplock.h which went away)
-> C-04 (sys-i386/fault.c shouldn't even compile for now, as the exception
-> handling has had a syntactic change)
-> G-01 (one-liner for SELinux build, from M A Young)
+>  
+>
+>>I would like 2.6.1 as a UML kernel along with support for >512 UML ram
+>>and preferrably modules.  What is the best I can get right now?
+>>
+>>I'm running Gerd/SuSE's 2.6.0-test9,
+>>    
+>>
+>
+>ftp://ftp.suse.com/pub/people/kraxel/i386/ has 2.6.1 rpms since a few
+>hours.  Both binary and source rpms, both uml and host, host with
+>skas3, all building out a single source tree.  Modules don't work yet
+>through.
+>
+>  Gerd
+>
+>  
+>
 
-Actually, I got it from u-m-l-d; it was originally by someone else,
-possibly Russell Coker.
+
+-- 
+swilliams@hpti.com http://www.hpti.com Personal: sdw@lig.net http://sdw.st
+Stephen D. Williams 703-724-0118W 703-995-0407Fax 20147-4622 AIM: sdw
 
 
-	Michael Young
+--------------000903050107070905010103
+Content-Type: text/x-vcard; charset=utf8;
+ name="sdw.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="sdw.vcf"
+
+begin:vcard
+fn:Stephen Williams
+n:Williams;Stephen
+email;internet:sdw@lig.net
+tel;work:703-724-0118
+tel;fax:703-995-0407
+tel;pager:sdwpage@lig.net
+tel;home:703-729-5405
+tel;cell:703-371-9362
+x-mozilla-html:TRUE
+version:2.1
+end:vcard
+
+
+--------------000903050107070905010103--
 
 
 -------------------------------------------------------
