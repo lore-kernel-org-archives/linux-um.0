@@ -1,25 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BToE8-0007ia-BA for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 13:45:16 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BToE7-0004zb-3s
+	id 1BTodw-0005RD-Ct for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 14:11:56 -0700
+Received: from smtp08.web.de ([217.72.192.226])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BTodw-00078z-05
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 13:45:15 -0700
-Message-Id: <200405282133.i4SLX1B5002977@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] CVS not updated? 
-In-Reply-To: Your message of "Fri, 28 May 2004 21:09:18 +0200."
-	<200405282109.18920.blaisorblade_spam@yahoo.it> 
-References: <20040518180259.GC29114@ccure.user-mode-linux.org>
-	<200405231337.30401.blaisorblade_spam@yahoo.it>
-	<20040523214437.GC25780@ccure.user-mode-linux.org>
-	<200405282109.18920.blaisorblade_spam@yahoo.it> 
+	Fri, 28 May 2004 14:11:56 -0700
+Received: from [217.226.155.70] (helo=kira.himalaya.homeip.net)
+	by smtp08.web.de with asmtp (TLSv1:RC4-MD5:128) (WEB.DE 4.101 #91)
+	id 1BTodo-000201-00 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 23:11:48 +0200
+Subject: Re: [uml-devel] RE: NX inside UML - WAS: Re: Intel pitches
+	pocket-size 'personal server'
+From: Ulf Bartelt <ulf.bartelt@web.de>
+In-Reply-To: <1085768665.5396.128.camel@localhost>
+References: <3DF9165145FACB4C96977FF650C1E9040C469FF5@its-mail1.its.corp.gwl.com>
+	<1085768665.5396.128.camel@localhost>
+Content-Type: text/plain
+Message-Id: <1085778706.15028.32.camel@kira.himalaya.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,21 +34,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 May 2004 17:33:01 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 28 May 2004 23:11:47 +0200
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-blaisorblade_spam@yahoo.it said:
-> Why do you need a private key anywhere? The checkout should be done
-> with  pserver (i.e. anonymous CVS); checkout + rebuild should be done
-> on the  web-server. The private key is needed only by who writes
-> something in the  repo, i.e. you and who you want; obviously public
-> key must be stored in  authorized_keys but that is NOT a problem. 
+Am Fr, den 28.05.2004 schrieb Barry Flanagan um 20:24:
+> I also have NX with full KDE running inside UML. Works a treat. so far I
+> have had 5 such UMLs running within a single 2.5GHz/1Gb single CPU
+> system and they are very usable.
 
-This has nothing to do with CVS.  It has to do with syncing stuff to the
-mirrors, which for a lot of them involves an rsync push over ssh.
+X with network-enabled displaymanager inside uml is not new to me for 2
+yrs or so... but what is NX?
 
-				Jeff
 
 
 
