@@ -1,27 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BqhA2-0007oH-UX for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jul 2004 16:51:38 -0700
-Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1BqhA2-0000Pg-BY for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jul 2004 16:51:38 -0700
-From: Daniel Heemann <daniel.heemann@gmx.de>
-Reply-To: daniel.heemann@gmx.de
+	id 1BqhlO-0007AF-QS for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Jul 2004 17:30:14 -0700
+Received: from stateless.plumtree.co.nz ([202.89.35.97])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1BqhlO-0000Zz-99 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Jul 2004 17:30:14 -0700
+From: Nicholas Lee <nj.lee@plumtree.co.nz>
 Subject: Re: [uml-devel] Re: Bug#260111: user-mode-linux: upgrade hangs at
 	"NET4: Linux TCP/IP 1.0 for NET4.0 "
+Message-ID: <20040731003007.GD11490@stateless>
 References: <200407280315.08207.alydar@users.sourceforge.net>
+	<200407281722.i6SHM6eh002963@ccure.user-mode-linux.org>
+	<200407291430.18818.alydar@users.sourceforge.net>
 	<200407292234.04279.alydar@users.sourceforge.net>
 	<200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
-In-Reply-To: <200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200407310151.49188.daniel.heemann@gmx.de>
+In-Reply-To: <200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,26 +32,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 31 Jul 2004 01:51:48 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 31 Jul 2004 12:30:07 +1200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 260111@bugs.debian.org
 
-On Friday 30 July 2004 19:23, Jeff Dike wrote:
-> The move_console_write patch at
-> http://user-mode-linux.sourceforge.net/patches.html backs out this part
-> of that change.
->
+On Fri, Jul 30, 2004 at 01:23:40PM -0400, Jeff Dike wrote:
 > Can anyone who's seeing this check that it fixes the hang?
->
-> 				Jeff
 
-Fixes the hang here, too.
+Yep.
 
-Regards
-Daniel
-
--- 
-"Those who would give up essential liberty, to purchase a little temporary 
-safety, deserve neither liberty nor safety."  - Benjamin Franklin
+Nicholas
 
 
 -------------------------------------------------------
