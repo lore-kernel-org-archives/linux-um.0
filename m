@@ -2,29 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZZ67-0005NE-Nn for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 10:21:03 -0800
-Received: from main.gmane.org ([80.91.229.2])
+	id 1CZZaZ-00081a-OI for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 10:52:31 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CZZ65-0008MQ-52 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 10:21:03 -0800
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1CZZ5z-00084I-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 01 Dec 2004 19:20:55 +0100
-Received: from 69.15.40.50 ([69.15.40.50])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 01 Dec 2004 19:20:55 +0100
-Received: from lunz by 69.15.40.50 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 01 Dec 2004 19:20:55 +0100
-From: Jason Lunz <lunz@falooley.org>
-Message-ID: <col21v$2gm$1@sea.gmane.org>
-References: <200411230550.iAN5o8mY007302@ccure.user-mode-linux.org>
-Subject: [uml-devel] Re: The current fix-kill patch
+	id 1CZZaT-0003kp-Ka for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 10:52:31 -0800
+Message-ID: <41AE12E4.9080609@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] 2.6.9-bb3 on 2.6.9 host problem - triggering a host
+	bug?
+References: <200411292315.25368.blaisorblade_spam@yahoo.it>
+	<200411301950.13529.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411301950.13529.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,17 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 1 Dec 2004 18:20:47 +0000 (UTC)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 01 Dec 2004 19:52:20 +0100
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-jdike@addtoit.com said:
-> Here's the latest fix-kill patch in my tree.  Please test and report...
+Blaisorblade wrote:
+> On Monday 29 November 2004 23:15, Blaisorblade wrote:
+> 
+> However, I've now discovered that it only happens when CONFIG_STATIC_LINK is 
+> enabled - that makes the kernel die. The interesting thing is that it becomes 
+> unkillable
+Have found the reason for the task to become unkillable, i.e. state 'D'.
 
-Will there be anything similar put out to let 2.4 uml guests run on
-2.6.9?
+There is a bug in 2.6.9 and up in fs/exec.c
 
-Jason
+If the kernel does coredump_wait(), it tries to kill all other threads, that are
+running on the same mm. Therefore it calls "force_sig_specific(SIGKILL, p)".
+But if one of the threads is on a ptrace-stop, SIGKILL has no effect.
+The killing thread will wait forever in "D".
 
+Bodo
 
 
 -------------------------------------------------------
