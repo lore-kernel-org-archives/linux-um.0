@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A1NJh-0002tk-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 22 Sep 2003 02:49:13 -0700
-Received: from solar.nuked.org ([66.11.174.19])
+	id 1A1PUm-0004fe-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 22 Sep 2003 05:08:48 -0700
+Received: from pluto.nixia.no ([195.159.42.3])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 1A1NJg-0007iP-9S
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Sep 2003 02:49:12 -0700
-From: Rod Moffitt <rodlist@rod.info>
-In-Reply-To: <20030920173518.521B03BCE7@home.petschge.de>
-Message-ID: <Pine.LNX.4.58.0309220535000.28187@crystal.nuked.org>
-References: <200309182037.h8IKbMEk028815@hongkong.cs.nmsu.edu>
- <20030919095020.294F93BCE4@home.petschge.de> <20030920173518.521B03BCE7@home.petschge.de>
+	id 1A1PUl-0001p9-9u
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Sep 2003 05:08:47 -0700
+Message-ID: <29962.193.212.97.12.1064224575.squirrel@pluto.nixia.no>
+In-Reply-To: <3F6DFD84.8090309@davidcoulson.net>
+References: <20030921183013.99560.qmail@web80507.mail.yahoo.com> 
+     <3F6DFD84.8090309@davidcoulson.net>
+Subject: Re: [uml-devel] mounting filesystems - mount crashes
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] skas & /proc/mm in the host kernel, yet /proc/mm 'not found'
+Content-Type: text/plain;charset=iso-8859-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,42 +26,31 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Sep 2003 05:49:41 -0400 (EDT)
+Date: Mon, 22 Sep 2003 11:56:15 +0200 (CEST)
 To: user-mode-linux-devel@lists.sourceforge.net
 
-I have been trying to build a recent host kernel with the host-skas3.patch
-however when I attempt to run a skas aware UML kernel it claims /proc/mm
-is 'not found', even though the skas3 patch was detected:
+> Terry wrote:
+>> I created the filesystem on the host os with dd.  I
+>> boot up my vm with ubd3=/uml/new_fs as a kernel
+>> argument.  WHen inside the VM, I create an ext2
+>> filesystem on it.  I am then able to mount it normally
+>> from there.  When I add it to fstab as:
+>> /dev/ubd/3     /usr            ext2    defaults 1 1
+>> It blows chunks.
+>
+> What's the error message? What command line are you starting UML with?
+> You need to give us some information to actually debug the problem.
 
-  Checking for the skas3 patch in the host...found
-  Checking for /proc/mm...not found
+Do you get a kernel crashing, or just rc stuff failing due to most of all
+shell-tools and stuff lies under /usr/bin, and therefor needs to be
+mounted very early during the boot.
 
-Eventually I get a kernel panic:
 
-  Mounted devfs on /dev
-  Kernel panic: init_new_context_skas - new_mm failed, errno = -2
+Stian
 
-However /proc/mm does exist (it's 0222) on the machine.
 
-I tried patching stock kernels including 2.4.19, 20, 21 and 22 and the
-same thing occurs on all of them. I understand there might be some
-tweaking needed for the later kernels, however I was under the impression
-that this patch was meant for a stock 2.4.19.
-
-Any help would be appreciated.
-
-Thanks,
-
-- Rod
-
---
-                         ___  ____  ___    _      ___
- Rod Moffitt            / _ \/ __ \/ _ \  (_)__  / _/__
- http://rod.info       / , _/ /_/ / // / / / _ \/ _/ _ \
- rodANTISPAM@rod.info /_/|_|\____/____(*)_/_//_/_/ \___/
- ========================================================
- ~ Where loved ones are remembered: http://memoriam.org ~
-
+This mail has been scanned for known viruses on an open, Linux-based mailsystem
+developed by http://Knowledge-Network.no and http://Nixia.no.
 
 
 -------------------------------------------------------
