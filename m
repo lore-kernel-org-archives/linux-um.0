@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19yEop-0003H2-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 13 Sep 2003 11:08:23 -0700
-Received: from smtp101.mail.sc5.yahoo.com ([216.136.174.139])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 19yEop-0000qn-FK
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 13 Sep 2003 11:08:23 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Problems with linking of 2.4.19-5um (elf-init.o symbols missing during final link)
-References: <20030906143230.47744.qmail@web41607.mail.yahoo.com>
-In-Reply-To: <20030906143230.47744.qmail@web41607.mail.yahoo.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200309132008.52834.blaisorblade_spam@yahoo.it>
+	id 19yFXO-00074d-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 13 Sep 2003 11:54:26 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 19yFXN-000307-AE
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 13 Sep 2003 11:54:25 -0700
+Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8DIkAj23091
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 13 Sep 2003 14:46:10 -0400
+Message-Id: <200309131854.h8DIsEe4006813@ccure.karaya.com>
+Subject: Re: [uml-devel] Re: pthreads? 
+In-Reply-To: Your message of "Sat, 13 Sep 2003 17:24:31 +0200."
+             <Pine.GSO.4.21.0309131710100.2634-100000@vervain.sonytel.be> 
+References: <Pine.GSO.4.21.0309131710100.2634-100000@vervain.sonytel.be> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -28,46 +29,23 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 13 Sep 2003 20:08:52 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jsjohn2000@yahoo.com
+Date: Sat, 13 Sep 2003 14:54:14 -0400
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-Alle 16:32, sabato 6 settembre 2003, Jason Johnson ha scritto:
-> I have been experimenting with user mode linux and
-> when I tried compiling against the 2.4.19 kernel I
-> received the following link error
-Hmmm, it seems like libc itself is wrong. Maybe you new libc is just fine but 
-those symbols simply don't have to appear. Since you recompiled libc(I hope 
-glibc), you should test it with a simpler program, using static linking. 
-Maybe you changed something in the libc config that broke this.
-If, instead, libc is good, check below for UML-related ideas.
+geert@linux-m68k.org said:
+> First step: libpthread redefines sigaction to install its own signal
+> handler around the signal.
 
-First: what version of glibc have you got? If it's much older/newer than UML, 
-it could be a problem(I remember that glibc 2.3 gave problems, fixed in 
-2.3.1, with some special programs with a little stack... I'm not sure at all, 
-but could be the case).
-Second: try to recheck the build procedure, after a make mrproper(save your 
-.config before)
-(use
-make menuconfig ARCH=um
-make linux ARCH=um
-don't forgot the ARCH=um part!)
+Gawd, that's unpleasant.  What does its signal handler do?
 
-Third: it could be a bug, maybe, but you are using a very old version! Also, 
-you should at all be using something newer! 2.4.19 is very old and has 
-serious bugs, too(Google ptrace 2.4.20 Linux to find news about it).
+> and quits without any further messages. If I try to run it under gdb,
+> gdb crashes immediately with a segmentation fault. 
 
-Download the needed patches from kernel.org(it won't be 30 M, much less) to go 
-at least to 2.4.21(which fixes that bug), even for your host kernel, and the 
-related patch from the UML site.
+Try stracing it.  You can tell a lot about its progress by looking at its 
+system calls.
 
-If you still need help, specify your distro, your libc/gcc/binutils version... 
-and so on. And try to build a static program as I said above!
--- 
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+				Jeff
 
 
 
