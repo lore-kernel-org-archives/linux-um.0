@@ -2,24 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZF54-0006dQ-QH for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 12:58:38 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	id 1CZHEi-0000mg-Rc for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 15:16:44 -0800
+Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CZF53-0000jY-3y for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 12:58:38 -0800
-Message-ID: <24ec01c4d71f$6e050fc0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <000901c4d0e1$e7f998d0$0201a8c0@hawk>
-	<200411222346.36960.blaisorblade_spam@yahoo.it>
-	<001001c4d184$ca00b9f0$0201a8c0@hawk>
-	<241401c4d70e$38b53450$0201a8c0@hawk>
-	<41ACC8BC.6050507@fujitsu-siemens.com>
-Subject: Re: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 1CZHEe-0001t3-4d for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 15:16:44 -0800
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20041130152017.129e134c.akpm@osdl.org>
+In-Reply-To: <20041130200845.2C5058BAFE@zion.localdomain>
+References: <20041130200845.2C5058BAFE@zion.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [patch 1/2] Uml - first part rework of run_helper()
+	and users.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,31 +28,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Nov 2004 14:59:04 -0600
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade_spam@yahoo.it>, dopez <lists@dopez.xs4all.nl>
+Date: Tue, 30 Nov 2004 15:20:17 -0800
+To: blaisorblade_spam@yahoo.it
+Cc: jdike@addtoit.com, bstroesser@fujitsu-siemens.com, user-mode-linux-devel@lists.sourceforge.net
 
-> Christopher S. Aker wrote:
-> > I've been able to narrow this down to the "signal-delivery" patch.
-2.6.10-rc2-mm3
-> > without the patch is fine, whereas adding the signal-delivery patch and you'll
-get
-> > mysql zombies inside the UML.  This happens on a variety of hosts, including
-> > 2.6.10-rc2-bk7 + skas-v7.
-> >
-> > I just noticed 2.6.10-rc2-mm4 is out, and the patch there is named
-> > "uml-redo-the-signal-delivery-mechanism.patch".
-> >
-> > -Chris
-> >
-> Have found a bug in the signal-delivery patch a few days ago.
-> Could you please try the appended patch? (It's relevant for usage of RTSIGs
-> only, don't know, whether this could help you)
+blaisorblade_spam@yahoo.it wrote:
+>
+> Fixed a file descriptor leak in the network driver when changing an IP
+> address.
+> 
+> Fixed the error handling in run_helper.
+> 
+> 
+> Paolo notes:
+> 
+> Actually, this is part one of the change, the exact one extracted from Jeff
+> Dike's incrementals tree before 2.6.9-rc big UML merge.
+> 
+> There is some changes must be done, so I'm also sending a second patch with
+> this one, too. Separated for tracking purposes.
+> 
+> Don't send this pair of ones to Linus before Jeff ACK's it - just put into -mm for now.
 
-That fixes it.  Nice work!
+That makes five UML patches which I have queued up pending confirmation:
 
--Chris
+hostfs-uml-set-sendfile-to-generic_file_sendfile.patch
+hostfs-uml-add-some-other-pagecache-methods.patch
+uml-terminal-cleanup.patch
+uml-first-part-rework-of-run_helper-and-users.patch
+uml-finish-fixing-run_helper-failure-path.patch
 
+Could you gents please put heads together and tell me whether and when
+these should go upstream?
+
+Thanks.
 
 
 -------------------------------------------------------
