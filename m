@@ -1,24 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CoFo8-00050J-1X for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jan 2005 22:47:12 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CoFo7-0001we-JW for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jan 2005 22:47:11 -0800
-Received: from hawk (mothership.theshore.net [69.137.84.52])
-	by www.theshore.net (8.12.9/8.9.1) with SMTP id j0B6l9ie020545
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 11 Jan 2005 01:47:10 -0500
-Message-ID: <063e01c4f7a9$aabaf790$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
+	id 1CoG0s-0005b5-QN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 23:00:22 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CoG0o-0006Ka-F2
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 23:00:22 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
+References: <200501082106.38306.rob@landley.net>
+	<200501100120.04746.rob@landley.net>
+	<Pine.LNX.4.61.0501100923131.22992@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.61.0501100923131.22992@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] kernel BUG at net/ipv4/tcp_output.c:277!
+Content-Disposition: inline
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_cs24BhGki2oy8o8"
+Message-Id: <200501110058.52993.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,64 +32,713 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Jan 2005 00:49:13 -0600
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 11 Jan 2005 00:58:52 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Michael Richardson <mcr@sandelman.ottawa.on.ca>
 
-I've had reports of this crash from a user who says he experiences this crash several
-times a day.  I'm not sure if this is related to another crash which produces no
-console output that I've been chasing for a few weeks, or if this is even related to
-UML or a bug in x86.
 
-Host: 2.6.10 w/ SKAS-v7
-UML: 2.6.9-bb4
+--Boundary-00=_cs24BhGki2oy8o8
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
------
-kernel BUG at net/ipv4/tcp_output.c:277!
-Kernel panic - not syncing: BUG!
+On Monday 10 January 2005 03:48 am, Henrik Nordstrom wrote:
+> On Mon, 10 Jan 2005, Rob Landley wrote:
+> > Did you read second sentence in the bit you just quoted?  How, exactly,
+> > could I chroot into there and compile stuff if ld isn't there?
+>
+> Is the permissions on your hostfs tree set correctly?
 
-EIP: 0073:[<40058f08>] CPU: 0 Not tainted ESP: 007b:be9ff5cc EFLAGS: 00000246
-Not tainted
-EAX: ffffffda EBX: 00000003 ECX: be9ff5d4 EDX: 0865bd7c
-ESI: ffffffe0 EDI: 00000000 EBP: be9ff5ec DS: 007b ES: 007b
-Call Trace:
-[<80034549>] vprintk+0xe9/0x13c
-[<800421ee>] notifier_call_chain+0x1e/0x38
-[<80033a9e>] panic+0x56/0xbc
-[<802792ef>] tcp_transmit_skb+0x8a7/0x8a8
-[<80053afb>] kmem_cache_alloc+0x13/0x50
-[<8023a57b>] skb_clone+0x9b/0x19c
-[<8027af05>] tcp_send_synack+0x12d/0x134
-[<8030f1d7>] sigemptyset+0x17/0x30
-[<80277de2>] tcp_rcv_synsent_state_process+0x526/0x570
-[<8027874c>] tcp_rcv_state_process+0x920/0xa28
-[<8027f6e8>] tcp_v4_do_rcv+0x74/0xf0
-[<802398a3>] __release_sock+0x37/0x50
-[<80031fd4>] prepare_to_wait+0x4c/0x54
-[<80239e65>] release_sock+0x5d/0x64
-[<8028cc17>] inet_wait_for_connect+0x7f/0xd8
-[<80032088>] autoremove_wake_function+0x0/0x3c
-[<80032088>] autoremove_wake_function+0x0/0x3c
-[<80023056>] copy_from_user_skas+0x56/0x80
-[<8028cd1e>] inet_stream_connect+0xae/0x180
-[<80237a8d>] sys_connect+0x71/0x90
-[<80022fae>] buffer_op+0x2a/0x50
-[<80022e64>] do_buffer_op+0x0/0x120
-[<80022fd4>] copy_chunk_from_user+0x0/0x2c
-[<80023056>] copy_from_user_skas+0x56/0x80
-[<80022fd4>] copy_chunk_from_user+0x0/0x2c
-[<80238471>] sys_socketcall+0x95/0x1b8
-[<8005b9d4>] sys_munmap+0x34/0x3c
-[<800228a6>] execute_syscall_skas+0xaa/0xec
-[<80022918>] handle_syscall+0x30/0x58
-[<80021afc>] handle_trap+0x34/0x110
-[<80021f33>] userspace+0x1c7/0x1e4
-[<8030eef8>] __restore+0x0/0x8
-[<8030f151>] kill+0x11/0x20
------
+Yup.  I tried chown -R all the files to knoppix, and I tried running uml as 
+root.  No major difference I could spot.  And again, it works fine via 
+chroot.
 
-Thanks,
--Chris
+> Can you execute ld manually?
 
+Yes.
+
+> And again, have you tried with the -bb UML kernels?
+
+Just did.  The result is much more stable than the previous one: it seems to 
+boot up without error and give me a shell prompt reliably.  Nice work.
+
+Attempting to actually _use_ still fails the same way: can't find ld.  My 
+first attempt I forgot to remount the hostfs rw and it went into an endless 
+loop eating CPU until I killed it.  I admit I had it set up wrong, but an 
+endless loop probably isn't the correct behavior there...
+
+The second time I tried adding rw to the command line.  Nice trick that, I was 
+trying ,rw appended to the rootfs flags and it didn't work.  Here's what 
+happened then (with gratuitous wordwrap of long vmlinux command line provided 
+by kmail):
+root@ttyp3[linux-2.6.9]# ./vmlinux rootfstype=hostfs 
+rootflags=/home/knoppix/newbuild/build rw init=/bin/bash
+...
+All bugs added by David S. Miller <davem@redhat.com>
+SCTP: Hash tables configured (established 512 bind 1024)
+Initializing stdio console driver
+VFS: Mounted root (hostfs filesystem).
+bash-2.05b# ld
+ld: no input files
+bash-2.05b# gcc hello.c
+collect2: cannot find `ld'
+bash-2.05b# exit
+
+Then I chrooted into the directory:
+
+root@ttyp3[linux-2.6.9]# chroot ~knoppix/newbuild/build
+bash-2.05b# gcc hello.c
+bash-2.05b# ls -l a.out
+-rwxr-xr-x    1 root     root         3447 Jan 10 23:41 a.out
+bash-2.05b# strip a.out
+bash-2.05b# ls -l a.out
+-rwxr-xr-x    1 root     root         2164 Jan 10 23:41 a.out
+bash-2.05b# ./a.out
+Hello world!
+bash-2.05b#
+
+> http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/
+
+Yup.  Applied the big patch.  It definitely helped stabilize things, just 
+didn't fix this problem.
+
+> > C) I've compiled this project on a machine with 32 megs of ram and no
+> > swap, and my laptop actually has 128 megs so if UML isn't giving itself
+> > at least 32 it's making a bad decision...
+>
+> UML gives itself as much memory as you tell it to on the kernel command
+> line. Default to 32 MB IIRC.
+
+Of which 28 megs or so are free after the kernel grabs its structures, that 
+matches what I'm seeing.  That should definitely be enough to compile 
+hello.c, and probably enough to run my whole build process.
+
+Here, try it for yourself.  I just uploaded 
+"http://www.landley.net/build.tar.bz2", which is 10.2 megabytes.  It's what 
+my build process from the earlier website results in.  (Okay, a slightly more 
+up to date version than the one on the website, but the differences don't 
+matter for this.)  There are a few other miscelanous components, but the bulk 
+of it is uclibc, busybox, gcc, and binutils.
+
+"tar xvjpf build.tar.bz2" (as root) should extract the build directory with 
+all the permissions intact, then you can chroot into it, drop a hello world 
+executable in there (it's got busybox vi) and compile it with gcc.  This 
+should work.  Then try doing the same thing with uml (as root, so as not to 
+worry about permissions, or chown to taste if you're not up for that).  This 
+doesn't work for me.
+
+Attached is the config I used to build 2.6.9-bb4.  The command line I used to 
+run it was mentioned earlier in this message.
+
+> Regards
+> Henrik
+
+Rob
+
+--Boundary-00=_cs24BhGki2oy8o8
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name=".config"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=".config"
+
+#
+# Automatically generated make config: don't edit
+# Linux kernel version: 2.6.9-bb4
+# Mon Jan 10 22:07:36 2005
+#
+CONFIG_USERMODE=y
+CONFIG_MMU=y
+CONFIG_UID16=y
+CONFIG_RWSEM_GENERIC_SPINLOCK=y
+
+#
+# UML-specific options
+#
+CONFIG_MODE_TT=y
+CONFIG_MODE_SKAS=y
+CONFIG_NET=y
+CONFIG_BINFMT_ELF=y
+CONFIG_BINFMT_MISC=y
+CONFIG_HOSTFS=y
+# CONFIG_HPPFS is not set
+CONFIG_MCONSOLE=y
+# CONFIG_HOST_2G_2G is not set
+# CONFIG_SMP is not set
+CONFIG_NEST_LEVEL=0
+CONFIG_KERNEL_HALF_GIGS=1
+# CONFIG_HIGHMEM is not set
+CONFIG_KERNEL_STACK_ORDER=2
+CONFIG_UML_REAL_TIME_CLOCK=y
+
+#
+# Code maturity level options
+#
+CONFIG_EXPERIMENTAL=y
+# CONFIG_CLEAN_COMPILE is not set
+CONFIG_BROKEN=y
+CONFIG_BROKEN_ON_SMP=y
+
+#
+# General setup
+#
+CONFIG_LOCALVERSION=""
+# CONFIG_SWAP is not set
+CONFIG_SYSVIPC=y
+CONFIG_POSIX_MQUEUE=y
+CONFIG_BSD_PROCESS_ACCT=y
+# CONFIG_BSD_PROCESS_ACCT_V3 is not set
+CONFIG_SYSCTL=y
+CONFIG_AUDIT=y
+CONFIG_LOG_BUF_SHIFT=15
+CONFIG_HOTPLUG=y
+# CONFIG_IKCONFIG is not set
+# CONFIG_EMBEDDED is not set
+CONFIG_KALLSYMS=y
+# CONFIG_KALLSYMS_ALL is not set
+# CONFIG_KALLSYMS_EXTRA_PASS is not set
+CONFIG_FUTEX=y
+CONFIG_EPOLL=y
+CONFIG_IOSCHED_NOOP=y
+CONFIG_IOSCHED_AS=y
+CONFIG_IOSCHED_DEADLINE=y
+CONFIG_IOSCHED_CFQ=y
+# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
+CONFIG_SHMEM=y
+# CONFIG_TINY_SHMEM is not set
+
+#
+# Loadable module support
+#
+# CONFIG_MODULES is not set
+
+#
+# Generic Driver Options
+#
+CONFIG_STANDALONE=y
+CONFIG_PREVENT_FIRMWARE_BUILD=y
+CONFIG_FW_LOADER=y
+# CONFIG_DEBUG_DRIVER is not set
+
+#
+# Character Devices
+#
+CONFIG_STDIO_CONSOLE=y
+# CONFIG_SSL is not set
+CONFIG_FD_CHAN=y
+# CONFIG_NULL_CHAN is not set
+# CONFIG_PORT_CHAN is not set
+# CONFIG_PTY_CHAN is not set
+# CONFIG_TTY_CHAN is not set
+# CONFIG_XTERM_CHAN is not set
+CONFIG_NOCONFIG_CHAN=y
+CONFIG_CON_ZERO_CHAN="fd:0,fd:1"
+CONFIG_CON_CHAN="xterm"
+CONFIG_SSL_CHAN="pty"
+CONFIG_UNIX98_PTYS=y
+CONFIG_LEGACY_PTYS=y
+CONFIG_LEGACY_PTY_COUNT=256
+# CONFIG_WATCHDOG is not set
+# CONFIG_UML_SOUND is not set
+# CONFIG_SOUND is not set
+# CONFIG_HOSTAUDIO is not set
+
+#
+# Block Devices
+#
+CONFIG_BLK_DEV_UBD=y
+# CONFIG_BLK_DEV_UBD_SYNC is not set
+CONFIG_BLK_DEV_COW_COMMON=y
+CONFIG_BLK_DEV_LOOP=y
+CONFIG_BLK_DEV_NBD=y
+CONFIG_BLK_DEV_RAM=y
+CONFIG_BLK_DEV_RAM_SIZE=4096
+CONFIG_BLK_DEV_INITRD=y
+# CONFIG_MMAPPER is not set
+CONFIG_NETDEVICES=y
+
+#
+# UML Network Devices
+#
+# CONFIG_UML_NET is not set
+
+#
+# Networking support
+#
+
+#
+# Networking options
+#
+CONFIG_PACKET=y
+CONFIG_PACKET_MMAP=y
+CONFIG_NETLINK_DEV=y
+CONFIG_UNIX=y
+CONFIG_NET_KEY=y
+CONFIG_INET=y
+CONFIG_IP_MULTICAST=y
+CONFIG_IP_ADVANCED_ROUTER=y
+CONFIG_IP_MULTIPLE_TABLES=y
+CONFIG_IP_ROUTE_FWMARK=y
+# CONFIG_IP_ROUTE_MULTIPATH is not set
+# CONFIG_IP_ROUTE_VERBOSE is not set
+# CONFIG_IP_PNP is not set
+CONFIG_NET_IPIP=y
+CONFIG_NET_IPGRE=y
+# CONFIG_NET_IPGRE_BROADCAST is not set
+# CONFIG_IP_MROUTE is not set
+# CONFIG_ARPD is not set
+CONFIG_SYN_COOKIES=y
+CONFIG_INET_AH=y
+CONFIG_INET_ESP=y
+CONFIG_INET_IPCOMP=y
+CONFIG_INET_TUNNEL=y
+
+#
+# IP: Virtual Server Configuration
+#
+CONFIG_IP_VS=y
+# CONFIG_IP_VS_DEBUG is not set
+CONFIG_IP_VS_TAB_BITS=12
+
+#
+# IPVS transport protocol load balancing support
+#
+CONFIG_IP_VS_PROTO_TCP=y
+CONFIG_IP_VS_PROTO_UDP=y
+CONFIG_IP_VS_PROTO_ESP=y
+CONFIG_IP_VS_PROTO_AH=y
+
+#
+# IPVS scheduler
+#
+CONFIG_IP_VS_RR=y
+CONFIG_IP_VS_WRR=y
+CONFIG_IP_VS_LC=y
+CONFIG_IP_VS_WLC=y
+CONFIG_IP_VS_LBLC=y
+CONFIG_IP_VS_LBLCR=y
+CONFIG_IP_VS_DH=y
+CONFIG_IP_VS_SH=y
+CONFIG_IP_VS_SED=y
+CONFIG_IP_VS_NQ=y
+
+#
+# IPVS application helper
+#
+CONFIG_IP_VS_FTP=y
+CONFIG_IPV6=y
+CONFIG_IPV6_PRIVACY=y
+CONFIG_INET6_AH=y
+CONFIG_INET6_ESP=y
+CONFIG_INET6_IPCOMP=y
+CONFIG_INET6_TUNNEL=y
+CONFIG_IPV6_TUNNEL=y
+CONFIG_NETFILTER=y
+# CONFIG_NETFILTER_DEBUG is not set
+CONFIG_BRIDGE_NETFILTER=y
+
+#
+# IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=y
+# CONFIG_IP_NF_CT_ACCT is not set
+# CONFIG_IP_NF_CT_PROTO_SCTP is not set
+CONFIG_IP_NF_FTP=y
+CONFIG_IP_NF_IRC=y
+CONFIG_IP_NF_TFTP=y
+CONFIG_IP_NF_AMANDA=y
+CONFIG_IP_NF_QUEUE=y
+CONFIG_IP_NF_IPTABLES=y
+CONFIG_IP_NF_MATCH_LIMIT=y
+CONFIG_IP_NF_MATCH_IPRANGE=y
+CONFIG_IP_NF_MATCH_MAC=y
+CONFIG_IP_NF_MATCH_PKTTYPE=y
+CONFIG_IP_NF_MATCH_MARK=y
+CONFIG_IP_NF_MATCH_MULTIPORT=y
+CONFIG_IP_NF_MATCH_TOS=y
+CONFIG_IP_NF_MATCH_RECENT=y
+CONFIG_IP_NF_MATCH_ECN=y
+CONFIG_IP_NF_MATCH_DSCP=y
+CONFIG_IP_NF_MATCH_AH_ESP=y
+CONFIG_IP_NF_MATCH_LENGTH=y
+CONFIG_IP_NF_MATCH_TTL=y
+CONFIG_IP_NF_MATCH_TCPMSS=y
+CONFIG_IP_NF_MATCH_HELPER=y
+CONFIG_IP_NF_MATCH_STATE=y
+CONFIG_IP_NF_MATCH_CONNTRACK=y
+CONFIG_IP_NF_MATCH_OWNER=y
+CONFIG_IP_NF_MATCH_PHYSDEV=y
+# CONFIG_IP_NF_MATCH_ADDRTYPE is not set
+# CONFIG_IP_NF_MATCH_REALM is not set
+# CONFIG_IP_NF_MATCH_SCTP is not set
+# CONFIG_IP_NF_MATCH_COMMENT is not set
+CONFIG_IP_NF_FILTER=y
+CONFIG_IP_NF_TARGET_REJECT=y
+CONFIG_IP_NF_TARGET_LOG=y
+CONFIG_IP_NF_TARGET_ULOG=y
+CONFIG_IP_NF_TARGET_TCPMSS=y
+CONFIG_IP_NF_NAT=y
+CONFIG_IP_NF_NAT_NEEDED=y
+CONFIG_IP_NF_TARGET_MASQUERADE=y
+CONFIG_IP_NF_TARGET_REDIRECT=y
+CONFIG_IP_NF_TARGET_NETMAP=y
+CONFIG_IP_NF_TARGET_SAME=y
+CONFIG_IP_NF_NAT_LOCAL=y
+CONFIG_IP_NF_NAT_SNMP_BASIC=y
+CONFIG_IP_NF_NAT_IRC=y
+CONFIG_IP_NF_NAT_FTP=y
+CONFIG_IP_NF_NAT_TFTP=y
+CONFIG_IP_NF_NAT_AMANDA=y
+CONFIG_IP_NF_MANGLE=y
+CONFIG_IP_NF_TARGET_TOS=y
+CONFIG_IP_NF_TARGET_ECN=y
+CONFIG_IP_NF_TARGET_DSCP=y
+CONFIG_IP_NF_TARGET_MARK=y
+CONFIG_IP_NF_TARGET_CLASSIFY=y
+CONFIG_IP_NF_RAW=y
+CONFIG_IP_NF_TARGET_NOTRACK=y
+CONFIG_IP_NF_ARPTABLES=y
+CONFIG_IP_NF_ARPFILTER=y
+CONFIG_IP_NF_ARP_MANGLE=y
+
+#
+# IPv6: Netfilter Configuration
+#
+CONFIG_IP6_NF_QUEUE=y
+CONFIG_IP6_NF_IPTABLES=y
+CONFIG_IP6_NF_MATCH_LIMIT=y
+CONFIG_IP6_NF_MATCH_MAC=y
+CONFIG_IP6_NF_MATCH_RT=y
+CONFIG_IP6_NF_MATCH_OPTS=y
+CONFIG_IP6_NF_MATCH_FRAG=y
+CONFIG_IP6_NF_MATCH_HL=y
+CONFIG_IP6_NF_MATCH_MULTIPORT=y
+CONFIG_IP6_NF_MATCH_OWNER=y
+CONFIG_IP6_NF_MATCH_MARK=y
+CONFIG_IP6_NF_MATCH_IPV6HEADER=y
+CONFIG_IP6_NF_MATCH_AHESP=y
+CONFIG_IP6_NF_MATCH_LENGTH=y
+CONFIG_IP6_NF_MATCH_EUI64=y
+# CONFIG_IP6_NF_MATCH_PHYSDEV is not set
+CONFIG_IP6_NF_FILTER=y
+CONFIG_IP6_NF_TARGET_LOG=y
+CONFIG_IP6_NF_MANGLE=y
+CONFIG_IP6_NF_TARGET_MARK=y
+CONFIG_IP6_NF_RAW=y
+
+#
+# DECnet: Netfilter Configuration
+#
+CONFIG_DECNET_NF_GRABULATOR=y
+
+#
+# Bridge: Netfilter Configuration
+#
+CONFIG_BRIDGE_NF_EBTABLES=y
+CONFIG_BRIDGE_EBT_BROUTE=y
+CONFIG_BRIDGE_EBT_T_FILTER=y
+CONFIG_BRIDGE_EBT_T_NAT=y
+CONFIG_BRIDGE_EBT_802_3=y
+CONFIG_BRIDGE_EBT_AMONG=y
+CONFIG_BRIDGE_EBT_ARP=y
+CONFIG_BRIDGE_EBT_IP=y
+CONFIG_BRIDGE_EBT_LIMIT=y
+CONFIG_BRIDGE_EBT_MARK=y
+CONFIG_BRIDGE_EBT_PKTTYPE=y
+CONFIG_BRIDGE_EBT_STP=y
+CONFIG_BRIDGE_EBT_VLAN=y
+CONFIG_BRIDGE_EBT_ARPREPLY=y
+CONFIG_BRIDGE_EBT_DNAT=y
+CONFIG_BRIDGE_EBT_MARK_T=y
+CONFIG_BRIDGE_EBT_REDIRECT=y
+CONFIG_BRIDGE_EBT_SNAT=y
+CONFIG_BRIDGE_EBT_LOG=y
+CONFIG_XFRM=y
+CONFIG_XFRM_USER=y
+
+#
+# SCTP Configuration (EXPERIMENTAL)
+#
+CONFIG_IP_SCTP=y
+# CONFIG_SCTP_DBG_MSG is not set
+# CONFIG_SCTP_DBG_OBJCNT is not set
+CONFIG_SCTP_HMAC_NONE=y
+# CONFIG_SCTP_HMAC_SHA1 is not set
+# CONFIG_SCTP_HMAC_MD5 is not set
+CONFIG_ATM=y
+CONFIG_ATM_CLIP=y
+CONFIG_ATM_CLIP_NO_ICMP=y
+CONFIG_ATM_LANE=y
+CONFIG_ATM_MPOA=y
+CONFIG_ATM_BR2684=y
+# CONFIG_ATM_BR2684_IPFILTER is not set
+CONFIG_BRIDGE=y
+CONFIG_VLAN_8021Q=y
+CONFIG_DECNET=y
+# CONFIG_DECNET_SIOCGIFCONF is not set
+CONFIG_DECNET_ROUTER=y
+CONFIG_DECNET_ROUTE_FWMARK=y
+CONFIG_LLC=y
+CONFIG_LLC2=y
+CONFIG_IPX=y
+CONFIG_IPX_INTERN=y
+CONFIG_ATALK=y
+CONFIG_DEV_APPLETALK=y
+CONFIG_IPDDP=y
+CONFIG_IPDDP_ENCAP=y
+CONFIG_IPDDP_DECAP=y
+CONFIG_X25=y
+CONFIG_LAPB=y
+# CONFIG_NET_DIVERT is not set
+CONFIG_ECONET=y
+CONFIG_ECONET_AUNUDP=y
+CONFIG_ECONET_NATIVE=y
+CONFIG_WAN_ROUTER=y
+# CONFIG_NET_HW_FLOWCONTROL is not set
+
+#
+# QoS and/or fair queueing
+#
+CONFIG_NET_SCHED=y
+CONFIG_NET_SCH_CLK_JIFFIES=y
+# CONFIG_NET_SCH_CLK_GETTIMEOFDAY is not set
+# CONFIG_NET_SCH_CLK_CPU is not set
+CONFIG_NET_SCH_CBQ=y
+CONFIG_NET_SCH_HTB=y
+CONFIG_NET_SCH_HFSC=y
+CONFIG_NET_SCH_ATM=y
+CONFIG_NET_SCH_PRIO=y
+CONFIG_NET_SCH_RED=y
+CONFIG_NET_SCH_SFQ=y
+CONFIG_NET_SCH_TEQL=y
+CONFIG_NET_SCH_TBF=y
+CONFIG_NET_SCH_GRED=y
+CONFIG_NET_SCH_DSMARK=y
+# CONFIG_NET_SCH_NETEM is not set
+CONFIG_NET_SCH_INGRESS=y
+CONFIG_NET_QOS=y
+CONFIG_NET_ESTIMATOR=y
+CONFIG_NET_CLS=y
+CONFIG_NET_CLS_TCINDEX=y
+CONFIG_NET_CLS_ROUTE4=y
+CONFIG_NET_CLS_ROUTE=y
+CONFIG_NET_CLS_FW=y
+CONFIG_NET_CLS_U32=y
+# CONFIG_CLS_U32_PERF is not set
+# CONFIG_NET_CLS_IND is not set
+CONFIG_NET_CLS_RSVP=y
+CONFIG_NET_CLS_RSVP6=y
+# CONFIG_NET_CLS_ACT is not set
+CONFIG_NET_CLS_POLICE=y
+
+#
+# Network testing
+#
+CONFIG_NET_PKTGEN=y
+# CONFIG_NETPOLL is not set
+# CONFIG_NET_POLL_CONTROLLER is not set
+# CONFIG_HAMRADIO is not set
+# CONFIG_IRDA is not set
+# CONFIG_BT is not set
+CONFIG_DUMMY=y
+# CONFIG_BONDING is not set
+# CONFIG_EQUALIZER is not set
+# CONFIG_TUN is not set
+# CONFIG_ETHERTAP is not set
+
+#
+# Ethernet (10 or 100Mbit)
+#
+# CONFIG_NET_ETHERNET is not set
+
+#
+# Ethernet (1000 Mbit)
+#
+
+#
+# Ethernet (10000 Mbit)
+#
+
+#
+# Token Ring devices
+#
+
+#
+# Wireless LAN (non-hamradio)
+#
+# CONFIG_NET_RADIO is not set
+
+#
+# PCMCIA network device support
+#
+# CONFIG_NET_PCMCIA is not set
+
+#
+# Wan interfaces
+#
+# CONFIG_WAN is not set
+
+#
+# ATM drivers
+#
+# CONFIG_ATM_TCP is not set
+# CONFIG_PPP is not set
+# CONFIG_SLIP is not set
+# CONFIG_SHAPER is not set
+# CONFIG_NETCONSOLE is not set
+
+#
+# File systems
+#
+CONFIG_EXT2_FS=y
+# CONFIG_EXT2_FS_XATTR is not set
+CONFIG_EXT3_FS=y
+# CONFIG_EXT3_FS_XATTR is not set
+CONFIG_JBD=y
+# CONFIG_JBD_DEBUG is not set
+# CONFIG_REISERFS_FS is not set
+# CONFIG_JFS_FS is not set
+# CONFIG_XFS_FS is not set
+# CONFIG_MINIX_FS is not set
+# CONFIG_ROMFS_FS is not set
+# CONFIG_QUOTA is not set
+# CONFIG_AUTOFS_FS is not set
+# CONFIG_AUTOFS4_FS is not set
+
+#
+# CD-ROM/DVD Filesystems
+#
+# CONFIG_ISO9660_FS is not set
+# CONFIG_UDF_FS is not set
+
+#
+# DOS/FAT/NT Filesystems
+#
+# CONFIG_MSDOS_FS is not set
+# CONFIG_VFAT_FS is not set
+# CONFIG_NTFS_FS is not set
+
+#
+# Pseudo filesystems
+#
+CONFIG_PROC_FS=y
+CONFIG_PROC_KCORE=y
+CONFIG_SYSFS=y
+# CONFIG_DEVFS_FS is not set
+# CONFIG_DEVPTS_FS_XATTR is not set
+# CONFIG_TMPFS is not set
+# CONFIG_HUGETLBFS is not set
+# CONFIG_HUGETLB_PAGE is not set
+CONFIG_RAMFS=y
+
+#
+# Miscellaneous filesystems
+#
+# CONFIG_ADFS_FS is not set
+# CONFIG_AFFS_FS is not set
+# CONFIG_HFS_FS is not set
+# CONFIG_HFSPLUS_FS is not set
+# CONFIG_BEFS_FS is not set
+# CONFIG_BFS_FS is not set
+# CONFIG_EFS_FS is not set
+# CONFIG_CRAMFS is not set
+# CONFIG_VXFS_FS is not set
+# CONFIG_HPFS_FS is not set
+# CONFIG_QNX4FS_FS is not set
+# CONFIG_SYSV_FS is not set
+# CONFIG_UFS_FS is not set
+
+#
+# Network File Systems
+#
+# CONFIG_NFS_FS is not set
+# CONFIG_NFSD is not set
+# CONFIG_EXPORTFS is not set
+# CONFIG_SMB_FS is not set
+# CONFIG_CIFS is not set
+# CONFIG_NCP_FS is not set
+# CONFIG_CODA_FS is not set
+# CONFIG_AFS_FS is not set
+
+#
+# Partition Types
+#
+# CONFIG_PARTITION_ADVANCED is not set
+CONFIG_MSDOS_PARTITION=y
+
+#
+# Native Language Support
+#
+# CONFIG_NLS is not set
+
+#
+# Security options
+#
+# CONFIG_SECURITY is not set
+
+#
+# Cryptographic options
+#
+CONFIG_CRYPTO=y
+CONFIG_CRYPTO_HMAC=y
+CONFIG_CRYPTO_NULL=y
+CONFIG_CRYPTO_MD4=y
+CONFIG_CRYPTO_MD5=y
+CONFIG_CRYPTO_SHA1=y
+CONFIG_CRYPTO_SHA256=y
+CONFIG_CRYPTO_SHA512=y
+# CONFIG_CRYPTO_WP512 is not set
+CONFIG_CRYPTO_DES=y
+CONFIG_CRYPTO_BLOWFISH=y
+CONFIG_CRYPTO_TWOFISH=y
+CONFIG_CRYPTO_SERPENT=y
+CONFIG_CRYPTO_AES=y
+CONFIG_CRYPTO_CAST5=y
+CONFIG_CRYPTO_CAST6=y
+# CONFIG_CRYPTO_TEA is not set
+CONFIG_CRYPTO_ARC4=y
+# CONFIG_CRYPTO_KHAZAD is not set
+CONFIG_CRYPTO_DEFLATE=y
+CONFIG_CRYPTO_MICHAEL_MIC=y
+CONFIG_CRYPTO_CRC32C=y
+# CONFIG_CRYPTO_TEST is not set
+
+#
+# Library routines
+#
+# CONFIG_CRC_CCITT is not set
+# CONFIG_CRC32 is not set
+CONFIG_LIBCRC32C=y
+CONFIG_ZLIB_INFLATE=y
+CONFIG_ZLIB_DEFLATE=y
+
+#
+# SCSI support
+#
+# CONFIG_SCSI is not set
+
+#
+# Multi-device support (RAID and LVM)
+#
+# CONFIG_MD is not set
+
+#
+# Memory Technology Devices (MTD)
+#
+# CONFIG_MTD is not set
+# CONFIG_INPUT is not set
+
+#
+# Kernel hacking
+#
+CONFIG_DEBUG_KERNEL=y
+# CONFIG_DEBUG_SLAB is not set
+# CONFIG_DEBUG_SPINLOCK is not set
+# CONFIG_DEBUG_INFO is not set
+
+--Boundary-00=_cs24BhGki2oy8o8--
 
 
 -------------------------------------------------------
