@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CxUF5-00022I-O0 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Feb 2005 10:01:11 -0800
-Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CxUF0-0004qg-MP
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Feb 2005 10:01:11 -0800
-Message-ID: <420509D1.2080401@tuxrocks.com>
-From: Frank Sorenson <frank@tuxrocks.com>
+	id 1Cxd3y-0005zN-Hx for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Feb 2005 19:26:18 -0800
+Received: from smtp205.mail.sc5.yahoo.com ([216.136.129.95])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1Cxd3x-0008IV-Qx for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Feb 2005 19:26:18 -0800
+Message-ID: <42058E52.8030306@yahoo.com.au>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [patch] Make User Mode Linux compile in 2.6.11-rc3
-References: <200502051051.46242.rob@landley.net>
-In-Reply-To: <200502051051.46242.rob@landley.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <42021E35.8050601@fujitsu-siemens.com>	<4202C18F.5010605@yahoo.com.au>	<42036C2C.5040503@fujitsu-siemens.com>	<4203F40C.8040707@yahoo.com.au>
+	<20050204143917.1f9507cb.akpm@osdl.org>
+	<4204020F.2000501@yahoo.com.au> <42044D17.5040703@yahoo.com.au>
+In-Reply-To: <42044D17.5040703@yahoo.com.au>
+Content-Type: multipart/mixed; boundary="------------070507080205010708080905"
+Subject: [uml-devel] [PATCH] fix wait_task_inactive race (was Re: Race
+	condition in ptrace)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,53 +29,107 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 05 Feb 2005 11:00:49 -0700
-To: Rob Landley <rob@landley.net>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, torvalds@osdl.org, Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>
+Date: Sun, 06 Feb 2005 14:26:10 +1100
+To: Andrew Morton <akpm@osdl.org>
+Cc: bstroesser@fujitsu-siemens.com, roland@redhat.com, jdike@addtoit.com, blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+This is a multi-part message in MIME format.
+--------------070507080205010708080905
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Rob Landley wrote:
-| As of yesterday afternoon, the UML build still breaks in
-sys_call_table.c,
-| here's the patch I submitted earlier (which got me past the break when I
-| tried it).  Last week, this produced what seemed like a working UML.
-|
-| Now there's a second break in mm/memory.c: the move to four level page
-| tables conflicts with a stub in our headers.  Not quite sure how to
-fix that.
-| Jeff?
-|
-| (Yeah, I know Andrew's tree works.  But wouldn't it be nice if the
-kernel.org
-| tree to worked too, before 2.6.11 release.)
+Nick Piggin wrote:
 
-This patch for sys_call_table.c was merged into the main tree in this
-changeset:
-http://linux.bkbits.net:8080/linux-2.5/cset@1.2080?nav=index.html|ChangeSet@-2d
+> Something like the following (untested) extension of Bodo's work
+> could be the minimal fix for 2.6.11. As I've said though, I'd
+> consider it a hack and prefer to do something about the locking.
+> That could be done after 2.6.11 though. Depends how you feel.
+> 
 
-The patch fixes both the sys_call_table and the pud_alloc breakage, and
-as of 2.6.11-rc3-bk2, the main tree compiles again for UML.
+I think this is the right fix.
 
-Andrew's tree, however, (at least 2.6.11-rc3-mm1) requires the patch I
-sent out yesterday in the message titled "Fix compilation of UML after
-the stack-randomization patches."
+When a task is put to sleep, it is dequeued from the runqueue
+while it is still running. The problem is that the runqueue
+lock can be dropped and retaken in schedule() before the task
+actually schedules off, and wait_task_inactive did not account
+for this.
 
-Frank
-- --
-Frank Sorenson - KD7TZK
-Systems Manager, Computer Science Department
-Brigham Young University
-frank@tuxrocks.com
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+I introduced a new function to resolve this state, fixed
+wait_task_inactive, and converted over an open coded test.
 
-iD8DBQFCBQlRaI0dwg4A47wRAjJ8AJ9CKD/aXaz1TS9QfOO11vcsv+57BACg1CdJ
-GR0ukCKAabFtJs5rVsPItGg=
-=h/on
------END PGP SIGNATURE-----
+I did a quick audit of sched.c, and nothing else seems to have
+made the same mistake.
+
+Signed-off-by: Nick Piggin <nickpiggin@yahoo.com.au>
+
+
+Question: why does wait_task_inactive have different semantics
+for UP && PREEMPT than SMP && PREEMPT? I can see that the kthread
+caler probably isn't used in the UP case, but technically it is
+relying on behaviour that it doesn't get with UP and PREEMPT.
+Looks like the ptrace.c caller won't care.
+
+But still, can we either fix it or put a nice comment there?
+Preferably fix, if this isn't a very performance critical path?
+
+
+--------------070507080205010708080905
+Content-Type: text/plain;
+ name="sched-fixup-races.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="sched-fixup-races.patch"
+
+
+
+
+---
+
+ linux-2.6-npiggin/kernel/sched.c |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
+
+diff -puN kernel/sched.c~sched-fixup-races kernel/sched.c
+--- linux-2.6/kernel/sched.c~sched-fixup-races	2005-02-06 14:03:53.000000000 +1100
++++ linux-2.6-npiggin/kernel/sched.c	2005-02-06 14:06:43.000000000 +1100
+@@ -298,6 +298,14 @@ static DEFINE_PER_CPU(struct runqueue, r
+ #endif
+ 
+ /*
++ * Is the task currently running or on the runqueue
++ */
++static int task_onqueue(runqueue_t *rq, task_t *p)
++{
++	return (p->array || task_running(rq, p));
++}
++
++/*
+  * task_rq_lock - lock the runqueue a given task resides on and disable
+  * interrupts.  Note the ordering: we can safely lookup the task_rq without
+  * explicitly disabling preemption.
+@@ -836,7 +844,7 @@ static int migrate_task(task_t *p, int d
+ 	 * If the task is not on a runqueue (and not running), then
+ 	 * it is sufficient to simply update the task's cpu field.
+ 	 */
+-	if (!p->array && !task_running(rq, p)) {
++	if (!task_onqueue(rq, p)) {
+ 		set_task_cpu(p, dest_cpu);
+ 		return 0;
+ 	}
+@@ -867,7 +875,7 @@ void wait_task_inactive(task_t * p)
+ repeat:
+ 	rq = task_rq_lock(p, &flags);
+ 	/* Must be off runqueue entirely, not preempted. */
+-	if (unlikely(p->array)) {
++	if (unlikely(task_onqueue(rq, p))) {
+ 		/* If it's preempted, we yield.  It could be a while. */
+ 		preempted = !task_running(rq, p);
+ 		task_rq_unlock(rq, &flags);
+
+_
+
+--------------070507080205010708080905--
+
+
 
 
 -------------------------------------------------------
