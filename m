@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6gaL-000184-0b for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 19:28:53 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C6gaH-0000Mg-Lh
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 19:28:52 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20040913033239.GA13207@ccure.user-mode-linux.org>
-References: <20040912182629.3FEC49F37@zion.localdomain>
+	id 1C6mu9-0007gM-5F for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Sep 2004 02:13:45 -0700
+Received: from atrey.karlin.mff.cuni.cz ([195.113.31.123] ident=postfix)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C6mu8-00034j-Mw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Sep 2004 02:13:45 -0700
+From: Jan Kara <jack@suse.cz>
+Subject: Re: [uml-devel] UML compile fix
+Message-ID: <20040913091342.GB24853@atrey.karlin.mff.cuni.cz>
+References: <20040904075520.GA5799@atrey.karlin.mff.cuni.cz>
+	<200409100355.i8A3tEg1005654@ccure.user-mode-linux.org>
+	<20040911205707.GB28557@atrey.karlin.mff.cuni.cz>
+	<200409121932.22567.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040912182629.3FEC49F37@zion.localdomain>
-Subject: [uml-devel] Re: [patch 2/2] add-SIGPROF-get-set_signals
+In-Reply-To: <200409121932.22567.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,32 +30,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 12 Sep 2004 23:32:39 -0400
-To: blaisorblade_spam@yahoo.it
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 13 Sep 2004 11:13:42 +0200
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Sun, Sep 12, 2004 at 08:26:29PM +0200, blaisorblade_spam@yahoo.it wrote:
->  {
->  	sigset_t mask;
-> +	sigset_t old_mask;
->  	int ret;
+> On Saturday 11 September 2004 22:57, Jan Kara wrote:
+> > > jack@suse.cz said:
+> > > > +HOSTCFLAGS := $(subst -fomit-frame-pointer,,$(HOSTCFLAGS))
+> > >
+> > > What does this fix?
+> >
+> >   I got errors that "omit-frame-pointer" and debugging flags exclude
+> > each other.
+> Well, that is wrong for two reasons:
+> 
+> 1) if the host programs are compiled with debugging symbols, something went 
+> wrong
+> 
+> 2) The UML kernel has always been compiled with both -fomit-frame-pointer and 
+> -g. Obviously this with GCC (but what compiler did you use? And which 
+> version?)
+> 
+> Try to re-get the exact error message and send it us. Compile preferably with 
+> "make ARCH=um V=1": the V=1 will ensure that the compiler command line is 
+> shown.
+  OK. I retried on a different host and the problems with compiler flags
+went away so it was probably either my mistake or just somehow broken
+instalation.. Sadly I don't have access to that system anymore - it was
+just a borrowed notebook and I had to return it. Thank you very much for
+help.
 
-Weren't you just complaining about stack consumption?  Do you know how
-big a sigset_t is?
-
-	(gdb) p sizeof(sigset_t)
-	$1 = 128
-
-I went to a reasonable amount of trouble to get that function to only
-use one sigset_t and now you are proposing to add the old one back.  
-
-Fix the patch and I'll put it in.
-
-Also, if you're going to fix something, send a patch which does
-nothing but make the fix, and save whatever cleanups you want to make
-for a differet patch.
-
-				Jeff
+									Honza
+-- 
+Jan Kara <jack@suse.cz>
+SuSE CR Labs
 
 
 -------------------------------------------------------
