@@ -1,19 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AoieJ-0003R5-Lh
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 04:30:27 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AoieJ-0000uB-8d
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 04:30:27 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040205123057.GA23555@elte.hu>
-References: <20040118235730.GC21046@ccure.user-mode-linux.org> <20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu> <Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk> <20040120002301.GA5708@elte.hu> <Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk> <Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk> <Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org> <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
+	id 1Aoit7-0002Pk-M5
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 04:45:45 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Aoit7-00024C-18
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 04:45:45 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+In-Reply-To: <20040205123057.GA23555@elte.hu>
+Message-ID: <Pine.GSO.4.58.0402051236350.5177@algedi.dur.ac.uk>
+References: <20040118235730.GC21046@ccure.user-mode-linux.org>
+ <20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu>
+ <Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk> <20040120002301.GA5708@elte.hu>
+ <Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk>
+ <Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk>
+ <Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk>
+ <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org>
+ <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk> <20040205123057.GA23555@elte.hu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re: uml-patch-2.6.0)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -25,28 +31,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 5 Feb 2004 13:30:57 +0100
-To: M A Young <m.a.young@durham.ac.uk>
+Date: Thu, 5 Feb 2004 12:45:25 +0000 (GMT)
+To: Ingo Molnar <mingo@elte.hu>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
 
+On Thu, 5 Feb 2004, Ingo Molnar wrote:
 
-* M A Young <m.a.young@durham.ac.uk> wrote:
+> * M A Young <m.a.young@durham.ac.uk> wrote:
+>
+> > Yes, that fixes it (I tried a similar fix by setting AT_SYSINFO_EHDR
+> > directly to NULL, both work).
+>
+> does skas mode work for you? I tried a FC1 image today and even with
+> this change, in tt mode, it gets stuck pretty early into the bootup (but
+> not in init like before).
+>
+> in tt mode, booting up into /bin/bash seems to work fine and simple
+> commands work.
 
-> Yes, that fixes it (I tried a similar fix by setting AT_SYSINFO_EHDR
-> directly to NULL, both work).
+I have a fully booting FC1 image (from a slightly hacked anaconda) with
+this patch and an additional one to avoid the exec-shield host problems.
+It still crashes with sleeping process got sig 11 when I try to shut it
+down.
 
-does skas mode work for you? I tried a FC1 image today and even with
-this change, in tt mode, it gets stuck pretty early into the bootup (but
-not in init like before).
+> in skas mode, booting up into /bin/bash works but the first /bin/ls (or
+> any other process) again gets stuck (infinite pagefaults or #GPF's again
+> i suspect).
 
-in tt mode, booting up into /bin/bash seems to work fine and simple
-commands work.
+The only skas host kernel was one using an early version of your combo
+patch, which was fine when I tested a combo patched uml, but recent
+mainline umls panic. I probably need a later version of your combo patch,
+which I might try tonight.
 
-in skas mode, booting up into /bin/bash works but the first /bin/ls (or
-any other process) again gets stuck (infinite pagefaults or #GPF's again
-i suspect).
-
-	Ingo
+	Michael Young
 
 
 -------------------------------------------------------
