@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CG07i-0006c4-Og for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Oct 2004 12:09:50 -0700
+	id 1CG08m-0006wZ-AN for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Oct 2004 12:10:56 -0700
 Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CG07g-0001vv-6h for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Oct 2004 12:09:50 -0700
-Message-Id: <200410081909.i98J9dr20207@trolli.pdb.fsc.net>
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CG08X-0005P6-No for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Oct 2004 12:10:56 -0700
+Message-Id: <200410081910.i98JAar20308@trolli.pdb.fsc.net>
 From: bodo.stroesser@fujitsu-siemens.com
 Subject: [uml-devel] Inconsistency in incremental patches 2.6.9
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -22,7 +22,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 08 Oct 2004 21:09:38 +0200
+Date: Fri, 08 Oct 2004 21:10:36 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: jdike@addtoit.com
 
