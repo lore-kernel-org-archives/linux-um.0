@@ -2,15 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZDey-0007py-Vb for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 11:27:36 -0800
+	id 1CZEFh-0002MO-SV for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 12:05:33 -0800
 Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CZDey-0000cc-0x for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 11:27:36 -0800
+	id 1CZEFg-0005Q7-HM for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 12:05:33 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041130193047.3370F8D743@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml: add stack content to dumps
+Message-Id: <20041130200845.2C5058BAFE@zion.localdomain>
+Subject: [uml-devel] [patch 1/2] Uml - first part rework of run_helper() and
+	users.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,86 +23,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Nov 2004 20:30:46 +0100
-To: bstroesser@fujitsu-siemens.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Tue, 30 Nov 2004 21:08:44 +0100
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, bstroesser@fujitsu-siemens.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Copy some code from i386 to print the stack content. Rough form yet, should
-work although.
+From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+
+Fixed a file descriptor leak in the network driver when changing an IP
+address.
+
+Fixed the error handling in run_helper.
+
+
+Paolo notes:
+
+Actually, this is part one of the change, the exact one extracted from Jeff
+Dike's incrementals tree before 2.6.9-rc big UML merge.
+
+There is some changes must be done, so I'm also sending a second patch with
+this one, too. Separated for tracking purposes.
+
+Don't send this pair of ones to Linus before Jeff ACK's it - just put into -mm for now.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.10-rc-paolo/arch/um/kernel/sysrq.c |   40 +++++++++++++++++++++++----
- 1 files changed, 35 insertions(+), 5 deletions(-)
+ linux-2.6.10-rc-paolo/arch/um/drivers/net_user.c |    3 ++-
+ linux-2.6.10-rc-paolo/arch/um/kernel/helper.c    |   14 +++++---------
+ 2 files changed, 7 insertions(+), 10 deletions(-)
 
-diff -puN arch/um/kernel/sysrq.c~uml-add-stack-content-to-dumps arch/um/kernel/sysrq.c
---- linux-2.6.10-rc/arch/um/kernel/sysrq.c~uml-add-stack-content-to-dumps	2004-11-30 18:32:12.000000000 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/kernel/sysrq.c	2004-11-30 20:27:06.540447816 +0100
-@@ -15,11 +15,13 @@
- void show_trace(unsigned long * stack)
- {
- 	/* XXX: Copy the CONFIG_FRAME_POINTER stack-walking backtrace from
--	 * arch/i386/kernel/traps.c. */
-+	 * arch/i386/kernel/traps.c, and then move this to sys-i386/sysrq.c.*/
-         unsigned long addr;
+diff -puN arch/um/drivers/net_user.c~uml-orig-helper-rework arch/um/drivers/net_user.c
+--- linux-2.6.10-rc/arch/um/drivers/net_user.c~uml-orig-helper-rework	2004-11-30 20:43:45.701552240 +0100
++++ linux-2.6.10-rc-paolo/arch/um/drivers/net_user.c	2004-11-30 21:08:14.756221984 +0100
+@@ -173,8 +173,9 @@ static int change_tramp(char **argv, cha
+ 	pe_data.stdout = fds[1];
+ 	pid = run_helper(change_pre_exec, &pe_data, argv, NULL);
  
--        if (!stack)
-+        if (!stack) {
-                 stack = (unsigned long*) &stack;
-+		WARN_ON(1);
-+	}
+-	os_close_file(fds[1]);
+ 	read_output(fds[0], output, output_len);
++	os_close_file(fds[0]);
++	os_close_file(fds[1]);
  
-         printk("Call Trace: \n");
-         while (((long) stack & (THREAD_SIZE-1)) != 0) {
-@@ -34,7 +36,8 @@ void show_trace(unsigned long * stack)
+ 	CATCH_EINTR(err = waitpid(pid, NULL, 0));
+ 	return(pid);
+diff -puN arch/um/kernel/helper.c~uml-orig-helper-rework arch/um/kernel/helper.c
+--- linux-2.6.10-rc/arch/um/kernel/helper.c~uml-orig-helper-rework	2004-11-30 20:43:45.703551936 +0100
++++ linux-2.6.10-rc-paolo/arch/um/kernel/helper.c	2004-11-30 21:08:14.755222136 +0100
+@@ -94,24 +94,20 @@ int run_helper(void (*pre_exec)(void *),
+ 	if(n < 0){
+ 		printk("run_helper : read on pipe failed, err = %d\n", -n);
+ 		err = n;
+-		goto out_kill;
++		os_kill_process(pid, 1);
+ 	}
+ 	else if(n != 0){
+ 		CATCH_EINTR(n = waitpid(pid, NULL, 0));
+ 		pid = -errno;
+ 	}
++	err = pid;
+ 
+-	if(stack_out == NULL) free_stack(stack, 0);
+-        else *stack_out = stack;
+-	return(pid);
+-
+- out_kill:
+-	os_kill_process(pid, 1);
+  out_close:
+ 	os_close_file(fds[0]);
+-	os_close_file(fds[1]);
+  out_free:
+-	free_stack(stack, 0);
++	if(stack_out == NULL)
++		free_stack(stack, 0);
++        else *stack_out = stack;
+ 	return(err);
  }
  
- /*
-- * The architecture-independent dump_stack generator
-+ * stack dumps generator - this is used by arch-independent code.
-+ * And this is identical to i386 currently.
-  */
- void dump_stack(void)
- {
-@@ -44,7 +47,34 @@ void dump_stack(void)
- }
- EXPORT_SYMBOL(dump_stack);
- 
--void show_stack(struct task_struct *task, unsigned long *sp)
-+/*Stolen from arch/i386/kernel/traps.c */
-+static int kstack_depth_to_print = 24;
-+
-+/* This recently started being used in arch-independent code too, as in
-+ * kernel/sched.c.*/
-+void show_stack(struct task_struct *task, unsigned long *esp)
- {
--	show_trace(sp);
-+	unsigned long *stack;
-+	int i;
-+
-+	if (esp == NULL) {
-+		if (task != current) {
-+			esp = (unsigned long *) KSTK_ESP(task);
-+			/* Which one? No actual difference - just coding style.*/
-+			//esp = (unsigned long *) PT_REGS_IP(&task->thread.regs);
-+		} else {
-+			esp = (unsigned long *) &esp;
-+		}
-+	}
-+
-+	stack = esp;
-+	for(i = 0; i < kstack_depth_to_print; i++) {
-+		if (kstack_end(stack))
-+			break;
-+		if (i && ((i % 8) == 0))
-+			printk("\n       ");
-+		printk("%08lx ", *stack++);
-+	}
-+
-+	show_trace(esp);
- }
 _
 
 
