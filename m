@@ -2,20 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A2bju-0002Ui-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 25 Sep 2003 12:25:22 -0700
-Received: from tailtiu.davidcoulson.net ([207.166.203.132] helo=mail.mx.davidcoulson.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.22)
-	id 1A2bjt-0005kn-01
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 25 Sep 2003 12:25:21 -0700
-Message-ID: <3F734106.7090802@davidcoulson.net>
-From: David Coulson <david@davidcoulson.net>
+	id 1A2czG-000196-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 25 Sep 2003 13:45:18 -0700
+Received: from brown.brainfood.com ([146.82.138.61] helo=gradall.private.brainfood.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 1A2czF-000132-MU
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 25 Sep 2003 13:45:17 -0700
+From: Adam Heath <adam@doogie.org>
+Subject: Re: [uml-devel] RE: ptrace_faultinfo ptrace_ldt redefined 
+In-Reply-To: <200309251822.h8PIM6qg002375@uml.karaya.com>
+Message-ID: <Pine.LNX.4.44.0309251544240.26334-100000@gradall.private.brainfood.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] mounting filesystems - mount crashes
-References: <20030925184539.19093.qmail@web60302.mail.yahoo.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,22 +24,20 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 25 Sep 2003 15:24:54 -0400
-To: Terry <td3201@yahoo.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 25 Sep 2003 15:44:34 -0500 (CDT)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
-Terry wrote:
-> Mounting local filesystems:  Child 28884 exited with
-> signal 11
+On Thu, 25 Sep 2003, Jeff Dike wrote:
 
-Sig 11 is usually bad RAM.
+> jeff98@silk.corp.fedex.com said:
+> > Jeff Dike ... any comments?
+>
+> Yeah, the next version of the skas patch, which will implement Linus-acceptable
+> interfaces, is in the works, so I'm not that interested in fixing the old
+> patch right now.
 
-David
-
--- 
-David Coulson                                    email: d@vidcoulson.com
-Linux Developer /                          web: http://davidcoulson.net/
-Network Engineer                                   phone: (216) 533-6967
+How long?
 
 
 
