@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8O8a-0004al-Kw for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:43:32 -0800
+	id 1D8O8n-0004bU-2Z for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:43:45 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1D8O8Z-00062H-Rc for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:43:32 -0800
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1D8O8m-00061Y-DV for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:43:44 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [BUG: UML 2.6.11-rc4-bk-latest] sleeping function
-	called from invalid context and segmentation fault
-References: <1108381733.10703.5.camel@imp.csi.cam.ac.uk>
-	<1108740823.6713.28.camel@imp.csi.cam.ac.uk>
-	<200502222141.54891.blaisorblade@yahoo.it>
-In-Reply-To: <200502222141.54891.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
+Message-Id: <200503061949.03819.blaisorblade@yahoo.it>
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503051907.41787.blaisorblade@yahoo.it>
+Subject: [uml-devel] SKAS leftovers: having fun with old code relicts (aka
+	PTRACE_SIGPENDING)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,90 +28,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 5 Mar 2005 19:07:41 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Anton Altaparmakov <aia21@cam.ac.uk>, Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>, Gerd Knorr <kraxel@bytesex.org>
+Date: Sun, 6 Mar 2005 19:49:03 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 22 February 2005 21:41, Blaisorblade wrote:
-> On Friday 18 February 2005 16:33, Anton Altaparmakov wrote:
-> > On Wed, 2005-02-16 at 19:35 +0100, Blaisorblade wrote:
-> > > On Monday 14 February 2005 12:48, Anton Altaparmakov wrote:
-> > > > Hi,
-> > > >
-> > > > I get a few Debug messages of the form from UML:
-> > > >
-> > > > Debug: sleeping function called from invalid context at
-> > > > include/asm/arch/semaphore.h:107
-> > > > in_atomic():0, irqs_disabled():1
-> > > > Call Trace:
-> > > > 087d77b0:  [<0809aaa5>] __might_sleep+0x135/0x180
-> > > > 087d77d8:  [<084d377f>] mcount+0xf/0x20
-> > > > 087d77e0:  [<0807cc13>] uml_console_write+0x33/0x80
-> > > >
-> > > > Most are coming via uml_console_write.
-> > >
-> > > The problem is that the UML tty drivers use a semaphore instead of a
-> > > spinlock for the locking, which also causes some other problems.
-> > >
-> > > The attached patch should fix this, but I've not yet made sure it is
-> > > not deadlock-prone (I didn't hit any during some very limited testing).
-> > >
-> > > So it's not yet ready for 2.6.11.
-> >
-> > Trying with the above patch in now only get two "sleeping function
-> > called from invalid context" warnings during boot and none during
-> > running.
->
-> I'll look at whether I can produce them... if it's no problem, post their
-> traces anyway, please.
-I'm not able... I *did* enable CONFIG_DEBUG_SPINLOCK and 
-CONFIG_DEBUG_SPINLOCK_SLEEP, but still I don't get them.
+Ok, what I discovered today is just funny...
 
-Maybe I have not an interesting enough test case (or kobject debugging is 
-flooding the dmesg ring buffer, which is doing too).
+A little, ignarious programmer (me) was porting the SKAS patch to x86_64, and 
+proof-checking the sizes of vars.
 
-> > However I get a lot of those errors:
-> >
-> > arch/um/drivers/line.c:262: spin_lock(arch/um/drivers/line.c:085b5900)
-> > already locked by arch/um/drivers/line.c/262
->
-> Ok, I'll be looking into them ASAP (which infortunately means not very
-> soon, sorry).
+While looking at PTRACE_SIGPENDING, he realized that in the i386 version we 
+copy a sigset_t value (child->pending.signal), which is 64-bit wide, to a 
+"unsigned long", i.e. 32-bit wide*.
 
-> At a quick look, I see that line 262 is a "spin_lock" called by
-> line_write_interrupt. I used spin_lock_irqsave everywhere else... but
-> actually the interrupt must explicitly disable interrupts (I forgot) so,
-> the simple answer seems to be using spin_lock_irqsave() would fix it.
-I've done this in the patch I'm working on. I've various stuff on the press, 
-however it should go in for 2.6.12-rc1, I hope.
-> I 
-> cannot make a patch now.
->
-> > Also both before and after the patch I see a lot of messages like:
-> >
-> > kernel: line_write_room: tty2: no room left in buffer
+        case PTRACE_SIGPENDING:
+                ret = copy_to_user((unsigned long *) data,
+                                   &child->pending.signal,
+                                   sizeof(child->pending.signal));
+                break;
 
-> I've never seen them... 
-Ok, correction, I've seen a lot of these...
-> Anyway, I'm not sure this is a needed warning:
->
-> in include/linux/tty_driver.h, the .write_room member must tell the
-> available space... it's reasonable that the TTY layer will call a
-> flush_buffers function. However, looking at stdio_console, I'm seeing that,
-> in fact, there is no flush_chars function(!!). I'll provide one ASAP.
-I've not yet removed the warning in the patch, just to be a bit too careful. 
-I'm providing a flush_chars and flush_buffers method.
+"What the fuck!" said the ignarious programmer (me), and he went looking 
+carefully to each and every usage of PTRACE_SIGPENDING in the Uml code, to 
+check why nobody sees the world collapsing (maybe the callers are correct 
+anyway, he thought):
 
-That said, there must be something else going on... it is easy to get the 
-"repeated chars" problem (cat a file is enough), which I thought linked to 
-this: it's when some data is printed and re-printed many times...
+ $ find arch/um/ include/asm-um/ |xargs grep PTRACE_SIGPENDING
+arch/um/kernel/ptrace.c:        case PTRACE_SIGPENDING:
+arch/um/include/skas_ptrace.h:#define PTRACE_SIGPENDING 53
 
-, and everybody started noticing it just around 2.6.9 / 2.6.10. I'm not sure, 
-but maybe something else is causing the problem...
+He checked better, and better, distrusting the Truth discovered by his poor 
+and liable mate, Lord Grep... but at last he couldn't ignore the Truth: 
+PTRACE_SIGPENDING is a (broken) relict!
 
-I'm going to work on the ring-buffer handling too, so that I make sure the 
-unusual code paths are also correct (which code paths are usual and which are 
-unusual could have changed).
+After this story, we come to the question: Jeff, what I missed (apart that 
+probably it was used in releases before SKAS3)?
+
+Could I delete PTRACE_SIGPENDING from the SKAS patch?
+
+I wouldn't for the sake of compatibility, but since the interface has never 
+been used by SKAS, and probably (if somebody else used it) it didn't work 
+well, I'm not certain.
+
+*Actually, even if we write 64-bit to a 32-bit pointer above, this is done 
+also for PTRACE_LDT, so type of the cast is just cosmetical. The point is 
+that it's misleading for the reader.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
