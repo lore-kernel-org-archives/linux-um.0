@@ -1,15 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Subject: Re: [uml-user] Re: [uml-devel] new skas3 patch ready for 2.4.25
-References: <40338C1B.1070800@meisterwerk.net>
-	<200402202125.58574.blaisorblade_spam@yahoo.it>
-	<87k72gv3cg.fsf@amaterasu.srvr.nix>
-	<200402221516.09898.blaisorblade_spam@yahoo.it>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200402221516.09898.blaisorblade_spam@yahoo.it> (BlaisorBlade's
-	message of "Sun, 22 Feb 2004 16:00:38 +0100")
-Message-ID: <87u11jrnwk.fsf@amaterasu.srvr.nix>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Auzew-0003r2-Ea for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Feb 2004 11:53:02 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AuzXh-0007Fk-AO for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Feb 2004 11:45:33 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] patch: use elv_queue_empty
+References: <20040208181109.G1325@almesberger.net>
+In-Reply-To: <20040208181109.G1325@almesberger.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200402221933.32232.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,41 +29,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 22 Feb 2004 18:04:43 +0000
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Sun, 22 Feb 2004 19:33:32 +0100
+To: Werner Almesberger <werner@almesberger.net>, jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, 22 Feb 2004, BlaisorBlade said:
-> Hmmm, I've looked at the faulting code and IMHO the most probable thing is a 
-> compilation problem (forgot make dep after applying the patch, for instance) - 
-> try saving your .config, running make mrproper, 
-> grepping through .config to check that CONFIG_PROC_MM=y and recompiling the 
-> bzImage:
->  $ make dep bzImage
+Alle 22:11, domenica 8 febbraio 2004, Werner Almesberger ha scritto:
+> This patch makes UBD a little more compatible with alternative
+> elevators that may not use a single request queue.
 
-It's highly plausible that exactly that happened: I forgot `make
-oldconfig' during the first build and assumed (ha!) that `make dep'
-would fix everything up OK so that a config change would trigger
-rebuilds appropriately. Possibly this was a foolish assumption and a
-`make dep clean' was necessary.
+> --- linux-2.6.1/arch/um/drivers/ubd_kern.c.orig	Sun Feb  8 17:16:51 2004
+> +++ linux-2.6.1/arch/um/drivers/ubd_kern.c	Sun Feb  8 17:17:32 2004
+> @@ -1034,7 +1034,7 @@
+>  	int err, n;
+>
+>  	if(thread_fd == -1){
+> -		while(!list_empty(&q->queue_head)){
+> +		while(!elv_queue_empty(q)){
+>  			req = elv_next_request(q);
+>  			err = prepare_request(req, &io_req);
+>  			if(!err){
+> @@ -1044,7 +1044,7 @@
+>  		}
+>  	}
+>  	else {
+> -		if(do_ubd || list_empty(&q->queue_head)) return;
+> +		if(do_ubd || elv_queue_empty(q)) return;
+>  		req = elv_next_request(q);
+>  		err = prepare_request(req, &io_req);
+>  		if(!err){
 
-> More exactly, it seems that arch/i386/kernel/ptrace.c was recompiled after 
-> applying the patch but without CONFIG_PROC_MM on.
+The old code was basically wrong - but Documentation/block/biodoc.txt 
+recommends using just elv_next_request - i.e. instead of looping until 
+elv_queue_empty(q) is true, just loop until elv_next_request returns NULL.
+Calling elv_queue_empty is meaningless to just check if queues are empty if we 
+must not get a request right now, since that can save us the cost of 
+dispatching pending requests. But this is not the case. So the code could 
+become:
 
-OK.
+while (1) {
+  req = elv_next_request(q);
+  if (!req) break;
+...}
 
-> Also, IMHO that kind of error cannot be returned by sys_ptrace, unless 
-> CONFIG_PROC_MM was off when compiling that file (I've also checked 
-> proc_mm_get_mm).
+and 
 
-That's my conclusion too. I'll try rebuilding from scratch tomorrow
-evening and see if that works.
+if(do_ubd) return;
+req = elv_next_request(q);
+if (!req) return;
 
-(Oops.)
-
+Any idea against / in favour of this?
+Bye
 -- 
-`note to the crown prosecution service: Machine guns dont have a
- 'stun' setting.' --- mjw
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
 
 
 -------------------------------------------------------
