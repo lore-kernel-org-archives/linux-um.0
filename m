@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CM0g4-0006TY-S7 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2004 01:58:08 -0700
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CM0g3-0004gw-2U for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2004 01:58:08 -0700
-Message-ID: <417CC1D7.7000605@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] What to send to Andrew next
-References: <200410220516.i9M5GwFL007932@ccure.user-mode-linux.org>
-	<200410221852.27232.blaisorblade_spam@yahoo.it>
-	<200410222128.i9MLSmWY005910@ccure.user-mode-linux.org>
-In-Reply-To: <200410222128.i9MLSmWY005910@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1CM2tW-0007qE-Pn for User-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 04:20:10 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CM2tV-0004i3-2x
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Oct 2004 04:20:10 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] [patches] ptrace fix, x11 fb update, minor stuff.
+Message-ID: <20041025110320.GB7551@bytesex>
+References: <BAY24-F2R77bieLYCT40001280e@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BAY24-F2R77bieLYCT40001280e@hotmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,43 +28,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 25 Oct 2004 11:05:27 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 25 Oct 2004 13:03:20 +0200
+To: Steve Schmidtke <steve_schmidtke@hotmail.com>
+Cc: User-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> blaisorblade_spam@yahoo.it said:
-> 
->>1) FOR INSTANCE, I sent the patch avoiding SIGPROF being touched by
->>change_signals(). Why did not you bother at it? 
->>2) copy_from_user_skas() does not make sense. When accessing the page
->>tables,  they would be happy to get some locking. If you want to take
->>a look to the  4G-4G patch from Ingo Molnar, which must do something
->>identical,  
-> 
-> 
-> Because I lost them, probably.  I'll go look for them.
-> 
-> 
->>Well, yes, but let's try to be fast on these. They are very good
->>patches and  fix also security problems. 
-> 
-> 
-> Yeah, syscall-security-* can go in now.  I want to see his test cases before
-> pushing the signal delivery stuff though.
-> 
-> 
-I'm working to integrate the bulk of tiny tests into a few more handy programs,
-they will be mailed as fast as possible.
+> I looked into this a while ago.  What I found was that you have to add UML 
+> to the exclude ifdef in CheckGenericGA() from xfree86/common/xf86Bus.c, and 
+> also around all the iopl() and ioperm() exclude ifdefs in 
+> xfree86/os_support/linux/linux_video.c.
 
-On your list of incremental patches, there are still missing syscall-security-4
-and -5, which fix a bug and a incorrect interpretation in the previos patches.
-Is this intentionally?
+Well, a compile time option isn't that nice as you usually can run the
+very same binaries inside and outside the UML machine ...
 
-And to close all holes I've seen so far, the TRACESYSGOOD patches are needed
-(Test-case included in breakout.c).
+> I think it doesn't hurt to add  Option "PciOsConfig"  to the ServerFlags 
+> section in the conf file.
 
-Bodo
+Yep, I think that's another issue that on i386 the X-Server might try to
+do PCI scans by directly banging on the hardware (for compatibility with
+kernels without /proc/bus/pci, which is pre-2.4 (or even pre-2.2?)).
+
+> +++ linux.new/drivers/char/vt.c		Sun Aug  1 13:44:36 2003
+> int _kbd_rate(struct kbd_repeat *rep)
+
+Hmm, in 2.6 that doesn't exist any more, probably due to the linux input
+layer changes.  How this is called from userspace, is this some ioctl?
+
+  Gerd
+
+-- 
+#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
