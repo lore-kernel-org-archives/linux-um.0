@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C7Anj-00054w-Fu for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Sep 2004 03:44:43 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C7Ane-0006rb-3o for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Sep 2004 03:44:43 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] handle_trap - failed to wait at end of syscall
-References: <200408120541.i7C5faJd010923@ccure.user-mode-linux.org>
-	<200409132139.33256.blaisorblade_spam@yahoo.it>
-	<200409132214.i8DMEwL7003829@ccure.user-mode-linux.org>
-In-Reply-To: <200409132214.i8DMEwL7003829@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	id 1C7Cvp-0003y3-1W for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Sep 2004 06:01:13 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.34) id 1C7Cvn-0007k6-DU
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Sep 2004 06:01:12 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] Re: [ann] kraxel's 2.6.8 uml patch kit
+Message-ID: <20040914123658.GB29562@bytesex>
+References: <20040820122445.GA21790@bytesex>
+	<200408201901.i7KJ1eIF003843@ccure.user-mode-linux.org>
+	<20040822111745.GA10736@bytesex> <4133C57D.6060201@enterasys.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200409141241.21480.blaisorblade_spam@yahoo.it>
+In-Reply-To: <4133C57D.6060201@enterasys.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,55 +30,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 14 Sep 2004 12:41:20 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Joe Marzot <gmarzot@nortelnetworks.com>
+Date: Tue, 14 Sep 2004 14:36:58 +0200
+To: "D. Bahi" <dbahi@enterasys.com>
+Cc: Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tuesday 14 September 2004 00:14, Jeff Dike wrote:
-> blaisorblade_spam@yahoo.it said:
-> > However, it is not possible nor desirable to do this in CATCH_EINTR -
-> > retry if  errno == EINTR is a general rule valid in every Unix program
-> > ever, while this  is very specific to this call.
-> >
-> > do {
-> >    CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
-> > } while (WIFSTOPPED(status) && (STOPSIG(status) == SIGHUP))
->
-> I'd still like to understand exactly what's going on here.  UML interprets
-> a SIGHUP to itself as a "shut down now" command, while it should not see
-> SIGHUP from a terminal going away.
->
-> Figuring out why it is should point us at the correct fix.
+> I liked this too. Here's a pass at it if you like (attached).
 
-Well, I've a situation where I consistently get SIGSEGV instead of SIGHUP 
-here, but only on 2.6 host. The scenario is to do "echo 0 > /proc/sysemu". 
-You can test that with 2.6.9-rc2 or with 2.6.7-bb6 (both include /proc/sysemu 
-support).
+Sorry for the delay, going over this while being busy updating my
+patches right now ...
 
-The problem (at least in my scenario) is that the signal in 2.4 is delivered 
-only to the kernel thread, while on 2.6 (for some reason) it is delivered 
-first to the userspace thread. You too mentioned 2.6 signal delivery changes 
-as the reason for some fixes.
+> +static int panic_coreonpanic(struct notifier_block *self, unsigned long unused1,
+> +			     void *unused2)
+> +{
+> +	if(uml_coreonpanic){
+> +		uml_cleanup();
+> +		block_signals();
+> +		abort();
 
-So, Joe, since you can get this panic consistently, could you try reproducing 
-the scenario on a 2.4 host kernel? I guess you shouldn't be able, but I could 
-be wrong. Also, a 2.4 RH kernel does not qualify as a true 2.4 host kernel, 
-since it contains some NPTL code - if you can, try just a 2.4 vanilla + SKAS.
+What is the point of doing that?  I'd just let it dump core without any
+cleanups, to get the state of the uml kernel dumped to the disk with few
+modifications as possible.  Any changes might make the analysis of the
+crash harder or even impossible.
 
-About the fix, most signals get delivered to all threads, so we can probably 
-safely ignore them when received through waitpid(). But Ulrich Drepper says 
-here:
- 
-http://people.redhat.com/drepper/posix-signal-model.xml
+  Gerd
 
-that SIGSEGV should be delivered only to the generating thread; the document 
-lists changes to be done to Linux, so maybe this is implemented in 2.6 and 
-not in 2.4. However, OTOH, he also says that signal handlers are 
-process-wide, so we should be safe anyway. And anyway, the code works 
-perfectly on 2.4 hosts.
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+return -ENOSIG;
 
 
 -------------------------------------------------------
