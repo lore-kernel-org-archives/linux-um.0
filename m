@@ -2,26 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AEtsh-0006NG-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 29 Oct 2003 09:13:15 -0800
-Received: from smtp2.wanadoo.fr ([193.252.22.29] helo=mwinf0202.wanadoo.fr)
+	id 1AEuss-0008D1-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 29 Oct 2003 10:17:30 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AEtsh-0001pr-C4
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 29 Oct 2003 09:13:15 -0800
-Received: from doggy.fute.lan (AMontsouris-108-1-18-216.w80-15.abo.wanadoo.fr [80.15.147.216])
-	by mwinf0202.wanadoo.fr (SMTP Server) with ESMTP id 36066A400248
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 29 Oct 2003 18:13:09 +0100 (CET)
-Received: from snide by doggy.fute.lan with local (Exim 3.35 #1 (Debian))
-	id 1AEtsa-0001Qq-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 29 Oct 2003 18:13:08 +0100
-From: Steve Schnepp <snide@free.fr>
-Subject: Re: [uml-devel] About COW & filesystems
-Message-ID: <20031029171307.GB2182@fute.lan>
-References: <BAY2-DAV62hA53ZpEVm00000924@hotmail.com> <200310281723.h9SHNLLJ002565@ccure.karaya.com> <BAY10-DAV26Yvm7kLig00008a71@hotmail.com>
+	id 1AEusq-0004Ff-Ur
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 29 Oct 2003 10:17:29 -0800
+Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h9TI5Lj14528
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 29 Oct 2003 13:05:21 -0500
+Message-Id: <200310291823.h9TINV4d002520@ccure.karaya.com>
+Subject: Re: [uml-devel] About COW & filesystems 
+In-Reply-To: Your message of "Wed, 29 Oct 2003 06:16:18 PST."
+             <BAY10-DAV26Yvm7kLig00008a71@hotmail.com> 
+References: <BAY2-DAV62hA53ZpEVm00000924@hotmail.com> <200310281723.h9SHNLLJ002565@ccure.karaya.com>  <BAY10-DAV26Yvm7kLig00008a71@hotmail.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BAY10-DAV26Yvm7kLig00008a71@hotmail.com>
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -32,40 +29,75 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Oct 2003 18:13:08 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 29 Oct 2003 13:23:31 -0500
+To: James McMechan <James_McMechan@hotmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Oct 29, 2003 at 06:16:18AM -0800, James McMechan wrote:
-> [Plenty interesting stuff about the future of COW]
+James_McMechan@hotmail.com said:
+> Yes, but I will argue that having the offsets directly in the header
+> rather than the __u32 alignment; would seem to make more sense, the
+> offsets are what are needed to compute where in the file to read/mmap
 
-I did a kernel module to support user space loop devices. [ actually 
-any userspace block device ]
+As far as calculating offsets, the information content is the same.  Putting
+offsets in there strikes me as being a step in the direction of turning the
+COW format into some general, self-describing thing, which I don't want.
 
-The idea is that you open a /dev/ulb[a-z] and the kernel module connects
-it to /dev/ulc[0-26] (major/minor are assigned automatically by the
-kernel)
+The alignment field describes the requirement, which an offset field wouldn't,
+so it seems better from a documentation point of view.
 
-Then a user-space helper reads /dev/ulc0 for commands & data, and
-reads/writes somewhere (usually in a file), and then writes back the
-result to /dev/ulc0. For now it's heavily 2.4.x oriented...
+> I may be missunderstanding this works, it mmaps in from the device and
+> then copies to/from the uml buffer, rather than reading/writing from
+> the uml buffer?
+>
+> I think we can't mmap the pages from the device to the buffer address?
 
-The code isn't in a really good shape (lots of hardcoded values)
-But, since i don't have much spare time i decided to publish it here in
-case of someone wants to have a look at it. The code should be almost
-self-explaining.
+Yes, we can, and that's exactly what ubd=mmap does. 
 
-I should be able to resume working on it soon, but anyway... your
-feedback is very welcome. ( i'm not a good C hacker, and i *do* like to
-improve myself )
+> The read might have the wrong model since any writes to the just read
+> buffer would be via mmap be copied back to the device. MAP_PRIVATE
+> notes that it is unspecified if writes to the mmaped area will appear
+> in the mmaped area, and might end up with SEGV on NORESERVE 
 
-URL: http://snide.free.fr/uldd/
+If the buffer wasn't mapped before, then it is written out to the file before
+being mapped in again.  The mapping is done with MAP_SHARED.
 
-	Steve
+> Write would have the same soft of problem in that the mmap should
+> occur before the data is copied into the buffer not when the ubd
+> driver is called 
 
--- 
-GPG public key available from http://snide.free.fr/gpg/snide.free.fr.asc
-   Or by email to "snide at free.fr" with "send key pub" as subject
-   Fingerprint: 19D7 12ED 5A37 4F29 8FDA  19B0 6DFD 3A54 A753 EA6F 
+Again, if the buffer was changed before the map happened, it is written out
+first.
+
+> Save memory on host seems like a good reason., I don't see where write
+> gains though 
+
+I'm not sure how well the block layer insulates the driver from a flood of
+little writes, so that may have been a bogus reason.  But, if you can, within
+a fixed amount of memory, cause the driver to do continuous writes, then
+mapping is a win because the writes don't touch the host kernel any more.
+
+> Actually it just seemed logical to put it in there and for those that
+> don't need COW use a degenerate header e.g. no bitmap/no data area/
+> backing file is written to, or no bitmap/no backing file/data area is
+> the disk image 
+
+My claim is that a need for geometry is totally independent of whether you're
+using COW.  So, introducing a geometry needs to be somewhere else.  If we stick
+it in the COW header, someone is going to say that they need geometry, and
+they have a good reason that they can't use COW.  So, we need to come up with
+something else, and then the geometry in the COW header is useless.
+
+> It was interesting, the bookkeeping was a hassle but not too hard
+> Testing it was a bit of work though 
+
+This is basically the same problem that the VM system solves.  So, I would
+look at presenting the COW bitmap to the VM system as virtual memory or a file,
+and have it deal with swapping it in and out.  It may be impossible because
+you can't make high level read-in-a-file-page calls from the driver because of
+the locks that are already held, but I think it's worth looking at.
+
+				Jeff
+
 
 
 -------------------------------------------------------
