@@ -1,11 +1,35 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Frank Sorenson <frank@tuxrocks.com>
-Subject: Re: [uml-devel] Fixing the 2.4 bugs - patches against 2.4.24-1um
-In-Reply-To: <200407012050.14867.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.LNX.4.58.0407071420550.9924@tuxrocks.com>
-References: <200407012050.14867.blaisorblade_spam@yahoo.it>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BiN14-0005Zh-0q for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jul 2004 17:43:58 -0700
+Received: from main.gmane.org ([80.91.224.249])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1BiN13-00016B-KQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jul 2004 17:43:57 -0700
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1BiN10-0006FJ-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 08 Jul 2004 02:43:54 +0200
+Received: from pd9e58a35.dip.t-dialin.net ([217.229.138.53])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 08 Jul 2004 02:43:54 +0200
+Received: from skoehler by pd9e58a35.dip.t-dialin.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 08 Jul 2004 02:43:54 +0200
+From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
+Message-ID: <cci5c8$r3a$1@sea.gmane.org>
+References: <200407071924.14187.blaisorblade_spam@yahoo.it>
+	<20040707180437.GD7801@cobalt.cs.wisc.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20040707180437.GD7801@cobalt.cs.wisc.edu>
+Subject: [uml-devel] Re: UML will be maybe included in -mm
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,61 +41,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Jul 2004 14:51:02 -0600 (MDT)
+Date: Thu, 08 Jul 2004 02:43:52 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Thu, 1 Jul 2004, BlaisorBlade wrote:
-> I've started working also on UML/2.4.
+>>As in the subject. We are trying to get it in mainline, but it needs a few 
+>>cleanups...
 > 
-> Today I've split the changes between 2.4.24-1um and 2.4.24-2um into several 
-> patches; the HUMFS ones are carefully split out, but I've separated even the 
-> others. Now I need testers. Lots of people cannot use UML patches later than 
-> 2.4.24-1um, since they contain a lot of Hostfs bugs and some stability 
-> issues. Now, if you use just some patches, you'll avoid the bugs in the 
-> other.
-> 
-> You should apply surely the first 3 patches, IMHO; the other ones should not 
-> hurt; inside txt/ there is a description of them.
-<snip>
+> Is there any hope of getting the SKAS patches in the mainline 2.6 kernel,
+> or is it going to have to wait for 2.7? 
 
-BlaisorBlade,
+As far as i know, only SKAS4 will make it into 2.6. The problem is, that 
+Jeff is still working on SKAS4, and i think it will take some time until 
+it is ready.
 
-Thank you for splitting these patches out.  Using them, I was able to
-track down and squash a kernel panic issue I've had with all 2.4 patch
-versions after 2.4.24-1um!
-
-My panic, for reference - 
-http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=108344473226217&w=2
-
-In this case, the problem was actualy in the first 'mini-changes' patch, 
-and the fix (diff to the 2.4.24-2um patch):
---- uml-patch-2.4.24-2  2004-04-07 14:31:13.000000000 -0600
-+++ uml-patch-2.4.24-2_frank    2004-07-07 14:26:49.000000000 -0600
-@@ -35588,7 +35588,7 @@
- +
- +ARCH_CFLAGS = -U__$(SUBARCH)__ -U$(SUBARCH)
- +
--+ifeq ($(CONFIG_GPROF),n)
-++ifneq ($(CONFIG_GPROF),y)
- +ARCH_CFLAGS += -DUM_FASTCALL
- +endif
- +
-
-The configuration program will either set CONFIG_GPROF to 'y', or it will 
-put "# CONFIG_GPROF is not set" into the .config file.  CONFIG_GPROF will 
-never be 'n', at least in my understanding.
-
-I believe this bug may affect stability for a number of people, and it has
-existed since 2.4.24-2um first came out.  It may not solve any underlying
-problems, but I'd like to hear if it helps anyone else.
-
-Frank
----------------------------------------------------------------------------
-Frank Sorenson - KD7TZK
-Systems Manager, Computer Science Department
-Brigham Young University
-frank@tuxrocks.com
 
 
 -------------------------------------------------------
