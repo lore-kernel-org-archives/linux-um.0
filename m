@@ -1,23 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DC59o-0005me-Ni for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Mar 2005 16:16:04 -0800
-Received: from wproxy.gmail.com ([64.233.184.206])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DC59n-0007lu-5k for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Mar 2005 16:16:04 -0800
-Received: by wproxy.gmail.com with SMTP id 69so332024wri
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 17 Mar 2005 16:15:56 -0800 (PST)
-Message-ID: <838f7c50050317161548f108@mail.gmail.com>
-From: ashwin tanugula <ashwin.tanugula@gmail.com>
-Reply-To: ashwin tanugula <ashwin.tanugula@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1DC5tG-0007oH-44 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 17:03:02 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DC5tE-0007oe-7R
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 17:03:02 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] [patch] Remove unnecessary config symbol from
+	makefile.
+References: <200503170219.38388.rob@landley.net>
+	<200503172022.52943.blaisorblade@yahoo.it>
+In-Reply-To: <200503172022.52943.blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] ptrace_test.c program on PPC
+Message-Id: <200503171859.52969.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,19 +33,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Mar 2005 19:15:55 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 17 Mar 2005 18:59:52 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi!
-I tried running ptrace_test.c on my ppc. Initially i initialized
-ORIG_EAX to 20 which is the system call number for getpid on my ppc,
-but it gave out two different pids.
-Then i started playing with the numbers
-Finally i got same pids when i put ORIG_EAX to 0 , which is the system
-call number for  restart_syscall.
-Can somebody tell me if my machine is able to run UML?
-Thanks,
-Ashwin.
+On Thursday 17 March 2005 02:22 pm, Blaisorblade wrote:
+> On Thursday 17 March 2005 08:19, Rob Landley wrote:
+> > There can be only one!
+>
+> Yes, but I prefer slightly the current way, since it's more similar to the
+> obj-$(CONFIG_WHATEVER) += whatyouneed.o Kbuild idiom...
+
+What I wanted to do was have my build "make allnoconfig", add the symbols I 
+wanted to switch on to the .config, and "yes '' | make oldconfig" to resolve 
+dependencies.
+
+The symbol I killed is set Y by make allnoconfig, and disabled by switching 
+the other symbol on.  Without the fix I posted, I have to remove existing 
+symbols from the list, which is uglier.
+
+I can snapshot a handtuned .config, but that's A) harder to see what I did, B) 
+a lot more version-specific.
+
+Rob
 
 
 -------------------------------------------------------
