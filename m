@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArRjM-0000sg-36
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 17:02:56 -0800
-Received: from mout2.freenet.de ([194.97.50.155])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	id 1ArS2v-0004La-CB
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 17:23:09 -0800
+Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
 	(Exim 4.30)
-	id 1ArRhv-00019T-Dx
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 17:01:27 -0800
-From: Michael Koehne <kraehe@copyleft.de>
+	id 1ArRz1-0001uh-Vu
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 17:19:08 -0800
+From: Dan Shearer <dan@shearer.org>
 Subject: Re: [uml-devel] Which UPS simulator?
-Message-ID: <20040213010127.GA3172@bakunin.copyleft.de>
-References: <20040212052823.GA4203@erizo.shearer.org> <20040212150023.GA32317@bakunin.copyleft.de> <20040212230844.GV4203@erizo.shearer.org>
+Message-ID: <20040213012414.GW4203@erizo.shearer.org>
+References: <20040212052823.GA4203@erizo.shearer.org> <20040212150023.GA32317@bakunin.copyleft.de> <20040212230844.GV4203@erizo.shearer.org> <20040213010127.GA3172@bakunin.copyleft.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20040212230844.GV4203@erizo.shearer.org>
+In-Reply-To: <20040213010127.GA3172@bakunin.copyleft.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,30 +26,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 02:01:27 +0100
-To: Dan Shearer <dan@shearer.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 13 Feb 2004 11:54:14 +1030
+To: Michael Koehne <kraehe@copyleft.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Moin Dan Shearer,
+On Fri, Feb 13, 2004 at 02:01:27AM +0100, Michael Koehne wrote:
+> Moin Dan Shearer,
+> 
+> > That is exactly what I want to avoid. I want a more accurate UML where
+> > no UML-specific logic is needed for communication -- from one point of
+> > view that is what communication is all about. There are plenty of ways
+> > of introducing new communications methods (such as you have done, or a
+> > special listening port, etc) into the UML. 
+> 
+>   implementing an UPS would also only require existing uml technics, as
+>   APC and Berkin UPS are talking to a serial line. But it would require
+>   some special program running inside and outside your UML, while my
+>   simple script only require to cad line to be right.
 
-> That is exactly what I want to avoid. I want a more accurate UML where
-> no UML-specific logic is needed for communication -- from one point of
-> view that is what communication is all about. There are plenty of ways
-> of introducing new communications methods (such as you have done, or a
-> special listening port, etc) into the UML. 
+Just depends on what you want to achive. You are correct, but your way
+requires something different to real life. My point remains that a UML
+user with root has only to run "some special program" that is a standard
+UPS tool that he can read about in any Linux reference.
 
-  implementing an UPS would also only require existing uml technics, as
-  APC and Berkin UPS are talking to a serial line. But it would require
-  some special program running inside and outside your UML, while my
-  simple script only require to cad line to be right.
+>   see http://quasar.mathstat.uottawa.ca/~selinger/ups/simulator.c
+>   for Berkin simulator and demons, or reference apcupsd for APC 
+>   and reverse enginier a simulator.
 
-  see http://quasar.mathstat.uottawa.ca/~selinger/ups/simulator.c
-  for Berkin simulator and demons, or reference apcupsd for APC 
-  and reverse enginier a simulator.
+Read my original message, where I quoted exactly this URL (and Cc'd the
+author.)
 
-Bye Michael
 -- 
-  mailto:kraehe@copyleft.de             UNA:+.? 'CED+2+:::Linux:2.4.22'UNZ+1'
-  http://www.xml-edifact.org/           CETERUM CENSEO WINDOWS ESSE DELENDAM
+Dan Shearer
+dan@shearer.org
 
 
 -------------------------------------------------------
