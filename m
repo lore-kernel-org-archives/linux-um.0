@@ -1,29 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArpN9-0000va-Ba
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 18:17:35 -0800
-Received: from mta10.srv.hcvlny.cv.net ([167.206.5.85])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArpHm-0007Cj-EV
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 18:12:02 -0800
-Received: from 10.0.0.11 (ool-44c218a8.dyn.optonline.net [68.194.24.168])
- by mta10.srv.hcvlny.cv.net
- (iPlanet Messaging Server 5.2 HotFix 1.16 (built May 14 2003))
- with ESMTP id <0HT100HDRY9QMC@mta10.srv.hcvlny.cv.net> for
- user-mode-linux-devel@lists.sourceforge.net; Fri,
- 13 Feb 2004 21:15:26 -0500 (EST)
-From: Jeff Sipek <jeffpc@optonline.net>
-In-reply-to: <20040212185344.GD2834@ccure.user-mode-linux.org>
-Message-id: <200402132115.17512.jeffpc@optonline.net>
-MIME-version: 1.0
-Content-type: Text/Plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Content-description: clearsigned data
-References: <200402041926.39098.jeffpc@optonline.net>
- <20040212185344.GD2834@ccure.user-mode-linux.org>
-Subject: [uml-devel] Re: [patch] 2.6 uml & CONFIG_SMP fix
+	id 1Arqat-0005sn-IK
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 19:35:51 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30)
+	id 1ArqVR-0005Lu-PR
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 19:30:14 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20040214040052.GB5007@ccure.user-mode-linux.org>
+References: <20040112064620.GU1436@alcor.net> <200402140043.i1E0h7sq004297@ccure.user-mode-linux.org> <008201c3f29d$30a1e750$0201a8c0@hawk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <008201c3f29d$30a1e750$0201a8c0@hawk>
+Subject: [uml-devel] Re: uml-patch-2.6.3-rc2-1, RTC, CPU > 2.1 Ghz
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,34 +26,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 21:15:11 -0500
-To: Jeff Dike <jdike@addtoit.com>
+Date: Fri, 13 Feb 2004 23:00:52 -0500
+To: "Christopher S. Aker" <caker@theshore.net>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Fri, Feb 13, 2004 at 07:52:20PM -0600, Christopher S. Aker wrote:
+> Looking at uml-patch-2.6.3-rc2-1, I noticed it needs the RTC fix (mhz to unsigned
+> long long) for CPUs > 2.1Ghz   This is just a friendly reminder to make sure that
+> change makes it into your 2.6 tree (looks good on 2.4)..
 
-On Thursday 12 February 2004 13:53, Jeff Dike wrote:
-> Applied, thanks.  The spinlock.h part wasn't exactly right - the thing to
-> do was create one that just includes the arch spinlock.h.  Although, I'm
-> not sure that symlinks are a bad idea in the case of those trivial headers.
+Right.  Generic fixes (2.4 and 2.6) usually start off in my 2.4 tree, then
+get migrated into my 2.6 tree when I get around to it.
 
-That was a quick fix to make it compile. I have the next 9 days off, so I'll 
-spend some quality time with the kernel :-)
-
-Jeff.
-
-- -- 
-Please avoid sending me Word or PowerPoint attachments.
- See http://www.fsf.org/philosophy/no-word-attachments.html 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFALYSzwFP0+seVj/4RAnCEAJ48X2ZFFolqeCQTsV+iakquJMHBMwCdGpUB
-r3rJMI3cJFXLEzy/3EFwWN8=
-=LkAi
------END PGP SIGNATURE-----
-
+				Jeff
 
 
 -------------------------------------------------------
