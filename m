@@ -1,16 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATSwz-0002bp-9P
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 13:29:53 -0800
+	id 1ATSzr-0002lt-S2
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 13:32:51 -0800
 Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATSwy-0002Rs-Jk
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 13:29:52 -0800
+	id 1ATSzr-0003GF-7A
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 13:32:51 -0800
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] [PATCH] provide asm/ldt.h 
-In-Reply-To: <200312081921.hB8JLGAv029222@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.44.0312082224010.14902-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] updating 2.6 to merge 2.4 changes(was: Re: bug in
+ COW? - Re: [uml-user] uml 2.6.0-test9 crash) 
+In-Reply-To: <200312082042.hB8KgiAv029421@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0312082230230.14902-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -23,34 +24,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 8 Dec 2003 22:29:40 +0100 (CET)
+Date: Mon, 8 Dec 2003 22:32:43 +0100 (CET)
 To: Jeff Dike <jdike@addtoit.com>
-Cc: Steve Bennett <steveb@snapgear.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
 On Mon, 8 Dec 2003, Jeff Dike wrote:
 
-> hno@marasystems.com said:
-> > Which is a bit troublesome on self-hosted UML systems of when building
-> >  kernel configuration dependent programs. 
-> 
-> Do you have any specific examples?
+> Insulation is nice, but, in reality, what happens is that the insulation
+> just becomes obfuscation, hiding what the code really is and making it harder
+> to maintain.
 
-Consider a hosted system where the user is allowed to build his own UML 
-kernel. With this there is various kernel-dependent programs such as 
-iptables, strace etc which needs to be built.
-
-It is obviously possible the user is made aware of the quirks of the UML 
-kernel tree compared to the other architectures, instructing him to 
-configure the kernel source using the host arch when building these tools, 
-but should he be required to?
-
-Luckily so I do not have this problem with any of the kernel dependent
-software we use, but mainly because uml is not our main architecture so
-our build process always builds primarily for the host, and also always
-builds temporary kernel source trees matching the exact kernel version
-when building kernel-dependent binaries, but I see the situation quite 
-different in a UML hosting situation where UML is the primary architecture 
-seen by the users.
+Agreed here, but not all my friends unfortunately agree... and I have to 
+admit that there is no perfect way.
 
 Regards
 Henrik
