@@ -1,30 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BEObm-0005ii-C1 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Apr 2004 01:21:58 -0700
-Received: from mx15.sac.fedex.com ([199.81.195.17])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BEObk-0008DK-SH
+	id 1BETzf-0007EV-P3 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Apr 2004 07:06:59 -0700
+Received: from mx13.sac.fedex.com ([199.81.197.53])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BETzf-0000e4-8b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Apr 2004 01:21:57 -0700
+	Fri, 16 Apr 2004 07:06:59 -0700
 Received: from inet03.prod.fedex.com (inet03.prod.fedex.com [199.81.10.43])
-	by mx15.sac.fedex.com (8.12.9p2/8.12.9) with ESMTP id i3G8LfGd013905
+	by mx13.sac.fedex.com (8.12.9p2/8.12.9) with ESMTP id i3GE6ou8000998
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 16 Apr 2004 03:21:41 -0500 (CDT)
+	Fri, 16 Apr 2004 09:06:50 -0500 (CDT)
 	(envelope-from jeff98@silk.corp.fedex.com)
 Received: from entpm11.apac.fedex.com (entpm11.apac.fedex.com [155.161.92.11])
 	by inet03.prod.fedex.com (8.12.11/8.12.11) with ESMTP id
-	i3G8Ld8a000820 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 16 Apr 2004 03:21:40 -0500 (CDT)
+	i3GE6mKt017896 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 16 Apr 2004 09:06:48 -0500 (CDT)
+Received: from pppz6 (pppz6 [155.161.201.186] (may be forged))
+	by silk.corp.fedex.com (8.11.4/8.11.4) with ESMTP id i3GE5K002131
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 16 Apr 2004 22:05:20 +0800
 From: Jeff Chua <jeff98@silk.corp.fedex.com>
-Subject: Re: [uml-devel] Problems with the SKAS patch and 2.6
-In-Reply-To: <407F7EFF.5060106@austin.rr.com>
-Message-ID: <Pine.LNX.4.58.0404161608350.9658@boston.corp.fedex.com>
-References: <407F7EFF.5060106@austin.rr.com>
+Message-ID: <Pine.LNX.4.58.0404162157280.29213@boston.corp.fedex.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1436359237-1082103559=:9658"
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-1815932998-1082124260=:29213"
+Subject: [uml-devel] patch for 2.6.6-rc1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,80 +38,148 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 16 Apr 2004 16:19:19 +0800 (SGT)
-To: Steven Elliott <selliott4@austin.rr.com>
-Cc: User Mode Linux Devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 16 Apr 2004 22:04:20 +0800 (SGT)
+To: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
 
 
 
---0-1436359237-1082103559=:9658
+--0-1815932998-1082124260=:29213
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 
 
-It is possible to run SKAS on 2.6. I'm running 2.6.6-rc1-1um SKAS now.
+Here's patch to make uml compiles and run with 2.6.6-rc1.
 
-Try the attached patch (00-2.6.6-v0-host-SKAS2.patch.bz2) for 2.6.6-rc1.
-It's slightly modified from the original 00-2.6.2-v1-host-SKAS2.patch.bz2
-patch, which should apply up to 2.6.5.
+1) Host 2.6.6-rc1 has 00-2.6.6-v0-host-SKAS2.patch.bz2 applied.
 
-Up to 2.6.5, the uml kernel should compile fine, but to compile 2.6.6-rc1,
-those files in arch/um/util need to be modified. I'll try to post those
-modifications if you're interested. Currently, I just simply modified
-those files to get the kernel to compile, and need to go back to trace the
-changes.
+2) Guest has patch.2.6.5-uml1.fix applied, make mrproper ARCH=um, then
+   patch.266rc1-1 applied.
+
+I fudged those filed to make it compile and run. Please verify. I know
+TASK_DEBUGREGS is incorrect, but since I don't use the debug mode, I
+simply set to 1 to make it run, but it may not be right if you need to
+debug uml. Hopefully someone can come up with a better patch.
+
 
 Thanks,
 Jeff
+--0-1815932998-1082124260=:29213
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="patch.266rc1-1"
+Content-ID: <Pine.LNX.4.58.0404162204200.29213@boston.corp.fedex.com>
+Content-Description: 
+Content-Disposition: attachment; filename="patch.266rc1-1"
+Content-Transfer-Encoding: quoted-printable
+
+--- uml/arch/um/kernel/Makefile.org	Wed Mar 24 23:55:39 2004
++++ uml/arch/um/kernel/Makefile	Tue Mar 23 22:20:55 2004
+@@ -38,7 +38,7 @@
+ $(USER=5FOBJS) : %.o: %.c
+ 	$(CC) $(CFLAGS=5F$(notdir $@)) $(USER=5FCFLAGS) -c -o $@ $<
+=20
+-QUOTE =3D 'my $$config=3D`cat $(TOPDIR)/.config`; $$config =3D~ s/"/\\"/g =
+; $$config =3D~ s/\n/\\n"\n"/g ; while(<STDIN>) { $$=5F =3D~ s/CONFIG/$$con=
+fig/; print $$=5F }'
++QUOTE =3D 'my $$config=3D`cat $(TOPDIR)/.config`; $$config =3D~ s/"/\\"/g =
+; $$config =3D~ s/\\n/\\\n"\\n"/g ; while(<STDIN>) { $$=5F =3D~ s/CONFIG/$$=
+config/; print $$=5F }'
+=20
+ $(obj)/config.o : $(obj)/config.c
+=20
+--- uml/arch/um/kernel/skas/process.c.org	Wed Mar 24 23:56:27 2004
++++ uml/arch/um/kernel/skas/process.c	Tue Mar 23 22:20:22 2004
+@@ -24,6 +24,7 @@
+ #include "sysdep/sigcontext.h"
+ #include "os.h"
+ #include "proc=5Fmm.h"
++#define =5F=5FSKAS=5FPTRACE=5FH
+ #include "skas=5Fptrace.h"
+ #include "chan=5Fuser.h"
+ #include "signal=5Fuser.h"
+--- uml/arch/um/kernel/process.c.org	Wed Mar 24 23:57:25 2004
++++ uml/arch/um/kernel/process.c	Tue Mar 23 22:20:27 2004
+@@ -37,6 +37,7 @@
+ #include "mode.h"
+ #ifdef UML=5FCONFIG=5FMODE=5FSKAS
+ #include "skas.h"
++#define =5F=5FSKAS=5FPTRACE=5FH
+ #include "skas=5Fptrace.h"
+ #endif
+=20
+--- uml.org/arch/um/util/mk=5Fconstants=5Fkern.c	Fri Apr 16 21:23:49 2004
++++ uml/arch/um/util/mk=5Fconstants=5Fkern.c	Fri Apr 16 11:35:02 2004
+@@ -1,3 +1,4 @@
++#define =5F=5FKERNEL=5F=5F
+ #include "linux/kernel.h"
+ #include "linux/stringify.h"
+ #include "linux/time.h"
+--- uml.org/arch/um/util/mk=5Ftask=5Fkern.c	Sun Apr  4 11:36:25 2004
++++ uml/arch/um/util/mk=5Ftask=5Fkern.c	Fri Apr 16 11:58:29 2004
+@@ -1,3 +1,4 @@
++#define =5F=5FKERNEL=5F=5F
+ #include "linux/sched.h"
+ #include "linux/stddef.h"
+=20
+@@ -10,7 +11,7 @@
+ {
+   print=5Fhead();
+   print=5Fptr("TASK=5FREGS", "union uml=5Fpt=5Fregs",=20
+-	    offsetof(struct task=5Fstruct, thread.regs));
++	    offsetof(struct task=5Fstruct, thread.esp0));
+   print("TASK=5FPID", "int", offsetof(struct task=5Fstruct, pid));
+   print=5Ftail();
+   return(0);
+--- uml.org/arch/um/sys-i386/util/mk=5Fthread=5Fkern.c	Sun Apr  4 11:36:14 =
+2004
++++ uml/arch/um/sys-i386/util/mk=5Fthread=5Fkern.c	Fri Apr 16 12:01:33 2004
+@@ -1,3 +1,4 @@
++#define =5F=5FKERNEL=5F=5F
+ #include "linux/config.h"
+ #include "linux/stddef.h"
+ #include "linux/sched.h"
+@@ -12,7 +13,7 @@
+ int main(int argc, char **argv)
+ {
+   print=5Fhead();
+-  print=5Fconstant=5Fptr("TASK=5FDEBUGREGS", THREAD=5FOFFSET(arch.debugreg=
+s));
++  print=5Fconstant=5Fptr("TASK=5FDEBUGREGS", 1);
+ #ifdef CONFIG=5FMODE=5FTT
+   print=5Fconstant("TASK=5FEXTERN=5FPID", "int", THREAD=5FOFFSET(mode.tt.e=
+xtern=5Fpid));
+ #endif
+--- uml.org/arch/um/kernel/physmem.c	Fri Apr 16 21:23:49 2004
++++ uml/arch/um/kernel/physmem.c	Fri Apr 16 12:01:56 2004
+@@ -285,7 +285,7 @@
+ 		p =3D &map[i];
+ 		set=5Fpage=5Fcount(p, 0);
+ 		SetPageReserved(p);
+-		INIT=5FLIST=5FHEAD(&p->list);
++		INIT=5FLIST=5FHEAD(&p->lru);
+ 	}
+=20
+ 	mem=5Fmap =3D map;
+--- uml.org/kernel/sched.c	Fri Apr 16 21:23:00 2004
++++ uml/kernel/sched.c	Fri Apr 16 12:19:34 2004
+@@ -225,12 +225,14 @@
+ #define task=5Frq(p)		cpu=5Frq(task=5Fcpu(p))
+ #define cpu=5Fcurr(cpu)		(cpu=5Frq(cpu)->curr)
+=20
++/*
+ extern unsigned long =5F=5Fscheduling=5Ffunctions=5Fstart=5Fhere;
+ extern unsigned long =5F=5Fscheduling=5Ffunctions=5Fend=5Fhere;
+ const unsigned long scheduling=5Ffunctions=5Fstart=5Fhere =3D
+ 			(unsigned long)&=5F=5Fscheduling=5Ffunctions=5Fstart=5Fhere;
+ const unsigned long scheduling=5Ffunctions=5Fend=5Fhere =3D
+ 			(unsigned long)&=5F=5Fscheduling=5Ffunctions=5Fend=5Fhere;
++*/
+=20
+ /*
+  * Default context-switch locking:
 
 
-On Fri, 16 Apr 2004, Steven Elliott wrote:
 
-> I'd like to first thank you for creating a very valuable kernel
-> debugging tool.  I wish more people knew about UML as a means of
-> learning about how kernels work.
->
-> I may be overlooking something, but as far as I can tell it is not
-> currently possible to apply any of the SKAS patches to 2.6.
->
-> The host-skas3.patch patch has several conflicts when applied to 2.6.  I
-> attempted to manually port host-skas3.patch to 2.6, but I ran into a
-> missing file or function (unfortunately I can remember what it was).
->
-> Also, it is not obvious what host-skas-2.6.0-test1.diff should be
-> applied to.  It seems to somehow depend on code added by the
-> host-skas3.patch patch, but first applying the host-skas3.patch patch is
-> not sufficient.  If someone could regenerate host-skas-2.6.0-test1.diff
-> such that it can be applied to a straight 2.6 kernel that would be very
-> helpful.
->
-> Right now I'll assume that there are some technical problems with
-> porting SKAS to 2.6, so it is not just a simple matter of shuffling code
-> from the host-skas3.patch patch to the corresponding place in 2.6.
->
-> Also, my experience has been that debugging with GDB works better when
-> SKAS mode is used.  So, you might want to mention that in either the
-> SKAS page or the debugging page.
->
-> --
-> -----------------------------------------------------------------------
-> |          Steven Elliott          |      selliott4@austin.rr.com     |
-> -----------------------------------------------------------------------
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: IBM Linux Tutorials
-> Free Linux tutorial presented by Daniel Robbins, President and CEO of
-> GenToo technologies. Learn everything from fundamentals to system
-> administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
---0-1436359237-1082103559=:9658
+--0-1815932998-1082124260=:29213
 Content-Type: APPLICATION/octet-stream; name="00-2.6.6-v0-host-SKAS2.patch.bz2"
-Content-ID: <Pine.LNX.4.58.0404161619190.9658@boston.corp.fedex.com>
+Content-ID: <Pine.LNX.4.58.0404162204201.29213@boston.corp.fedex.com>
 Content-Description: 
 Content-Disposition: attachment; filename="00-2.6.6-v0-host-SKAS2.patch.bz2"
 Content-Transfer-Encoding: base64
@@ -168,7 +238,51 @@ FhrC0r1KBpUQsXIqzQK7Nnc4lENKtvyVoBVFyPOeS6AYmj5LWSOfNP5SXyZMZkyBxD44CSZLIJgJ
 oym4El3fVHWrzK2ZAwPjvL0Nm8LLr6Dyv4NsWqSazGTvFkIkLuD10tUauHCDM5RlkMF7yhmhavrI
 XnIHMGVKMErK2lSnzEnnJMPtF3JFOFCQzQOScA==
 
---0-1436359237-1082103559=:9658--
+--0-1815932998-1082124260=:29213
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="patch.2.6.5-uml1.fix"
+Content-ID: <Pine.LNX.4.58.0404162204202.29213@boston.corp.fedex.com>
+Content-Description: 
+Content-Disposition: attachment; filename="patch.2.6.5-uml1.fix"
+Content-Transfer-Encoding: quoted-printable
+
+diff -ruN linux/include/asm-i386/system.h uml/linux/include/asm-i386/system=
+.h
+--- linux/include/asm-i386/system.h	2004-04-07 23:29:03.000000000 +0200
++++ uml/linux/include/asm-i386/system.h	2004-04-07 23:24:39.000000000 +0200
+@@ -243,6 +243,7 @@
+ #define =5F=5FHAVE=5FARCH=5FCMPXCHG 1
+ #endif
+=20
++#ifndef =5F=5FUM=5FSYSTEM=5FI386=5FH=20
+ static inline unsigned long =5F=5Fcmpxchg(volatile void *ptr, unsigned lon=
+g old,
+ 				      unsigned long new, int size)
+ {
+@@ -270,6 +271,8 @@
+ 	return old;
+ }
+=20
++#endif
++
+ #define cmpxchg(ptr,o,n)\
+ 	((=5F=5Ftypeof=5F=5F(*(ptr)))=5F=5Fcmpxchg((ptr),(unsigned long)(o),\
+ 					(unsigned long)(n),sizeof(*(ptr))))
+--- linux/arch/um/Makefile-i386	2004-04-07 23:29:20.521333000 +0200
++++ uml/linux/arch/um/Makefile-i386	2004-04-07 23:22:31.000000000 +0200
+@@ -30,7 +30,7 @@
+ $(SYS=5FDIR)/thread.h: $(SYS=5FUTIL=5FDIR)/mk=5Fthread=20
+ 	$(call filechk,$@)
+=20
+-$(SYS=5FUTIL=5FDIR)/mk=5Fsc: scripts/fixdep include/config/MARKER FORCE ; =
+
++$(SYS=5FUTIL=5FDIR)/mk=5Fsc: scripts/basic/fixdep include/config/MARKER FO=
+RCE ;=20
+ 	$(Q)$(MAKE) $(build)=3D$(SYS=5FUTIL=5FDIR) $@
+=20
+ $(SYS=5FUTIL=5FDIR)/mk=5Fthread: $(ARCH=5FSYMLINKS) $(GEN=5FHEADERS) sys=
+=5Fprepare FORCE ;=20
+
+--0-1815932998-1082124260=:29213--
 
 
 -------------------------------------------------------
