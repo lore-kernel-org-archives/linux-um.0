@@ -1,31 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AgS2s-00008x-3e for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jan 2004 09:09:38 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AgS2r-0007oo-AT
+	id 1AgSIg-0001Qn-8b for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Jan 2004 09:25:58 -0800
+Received: from mout0.freenet.de ([194.97.50.131])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1AgSIf-0001XV-O2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jan 2004 09:09:37 -0800
-Message-Id: <200401131730.i0DHUMhg002358@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Tue, 13 Jan 2004 16:25:42 +0100."
-	<20040113152542.GD7072@seventeen> 
-References: <20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
-	<20031228093317.GK17472@alcor.net>
-	<20031228095115.GL17472@alcor.net>
-	<20031228101240.GN17472@alcor.net>
-	<20031228113042.GO17472@alcor.net>
-	<20031230184330.GD1365@alcor.net>
-	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
-	<20040108070718.GI28393@alcor.net>
-	<20040112183623.GB1436@alcor.net>
-	<20040113152542.GD7072@seventeen> 
+	Tue, 13 Jan 2004 09:25:57 -0800
+From: Michael Koehne <kraehe@copyleft.de>
+Subject: Re: [uml-devel] UML and AMD-64
+Message-ID: <20040113172553.GA28699@bakunin.copyleft.de>
+References: <200401131451.i0DEp8hg001684@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: Panic with slirp transport and gcc 3.3
+Content-Disposition: inline
+In-Reply-To: <200401131451.i0DEp8hg001684@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,18 +28,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 13 Jan 2004 12:30:22 -0500
-To: Bill Allombert <allomber@math.u-bordeaux.fr>
-Cc: user-mode-linux-devel@lists.sourceforge.net, 176485@bugs.debian.org, mdz@debian.org
+Date: Tue, 13 Jan 2004 18:25:53 +0100
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-allomber@math.u-bordeaux.fr said:
->  Kernel panic: Segfault with no mm
-> Without the eth0=slirp parameter, there are no kernel panic. 
+Moin Jeff Dike,
 
-Can someone get a stack trace from this?
+> > Is there any possibility of running a 64-bit UML virtual machine on an
+> > AMD-64 ? 
+> It is, and I'm working on it.
 
-				Jeff
+  i'm thinking about upgrading my oldest UML system to either a
+  BiAthlon, which is known to work with SKAS, or to wait a few
+  month more a dual Opteron system to become cheap. I remember
+  the TT problems of UML running on duals, leading me to install
+  SKAS.  Are there any experiences about running UML on an 64bit
+  NUMA system ?
 
+Bye Michael
+-- 
+  mailto:kraehe@copyleft.de             UNA:+.? 'CED+2+:::Linux:2.4.22'UNZ+1'
+  http://www.xml-edifact.org/           CETERUM CENSEO WINDOWS ESSE DELENDAM
 
 
 -------------------------------------------------------
