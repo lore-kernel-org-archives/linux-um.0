@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Aee72-0002Ec-BE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Jan 2004 09:38:28 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1AeeZd-0003xx-GL for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Jan 2004 10:08:01 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1Aee71-00040O-Ko for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Jan 2004 09:38:27 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [tracked down] Kernel mode fault with /dev/kmem
-References: <Pine.LNX.4.44.0401071254540.1058-100000@gradall.private.brainfood.com>
-In-Reply-To: <Pine.LNX.4.44.0401071254540.1058-100000@gradall.private.brainfood.com>
+	id 1AeeZc-0005Wt-Ta for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Jan 2004 10:08:01 -0800
+From: BlaisorBlade <blaisorblade_work@yahoo.it>
+Subject: Re: [uml-devel] Re: [kbuild-devel] Needed help for UML kbuild.
+References: <200312242019.23335.blaisorblade_work@yahoo.it>
+	<200401072012.05007.blaisorblade_work@yahoo.it>
+	<200401080019.i080JOtd008375@ccure.user-mode-linux.org>
+In-Reply-To: <200401080019.i080JOtd008375@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <200401081834.44045.blaisorblade_spam@yahoo.it>
+Content-Disposition: inline
+Message-Id: <200401081907.56198.blaisorblade_work@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,77 +29,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 8 Jan 2004 18:34:43 +0100
+Date: Thu, 8 Jan 2004 19:07:56 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 20:18, mercoled=EC 7 gennaio 2004, Adam Heath ha scritto:
-> On Thu, 8 Jan 2004, Jeff Chua wrote:
-> > open("/dev/kmem", O_RDONLY)             =3D 3
-> > _llseek(0x3, 0, 0xa8965000, 0xbffff934, 0) =3D 0
-> > read(3, Kernel panic: Kernel mode fault at addr 0x48965000, ip 0x400df1=
-a4
->
-> 0xa8965000 !=3D 0x48965000
->
-> Note how only the first octet is different.
+Alle 01:19, gioved=EC 8 gennaio 2004, Jeff Dike ha scritto:
+> blaisorblade_work@yahoo.it said:
+> > some modules(i.e. hostaudio) are built from a "userspace" (needing the
+> > special  treatment) file and a "kernel" (to be compiled as usual)
+> > file. How will  kbuild link them together?
+> >
+> > I have three workarounds:
 
-Ok, excellent note; or better, that behaviour (a different address) *is*=20
-right, but the difference is *wrong*.
+> > - split the module into 2 separate ones, with the kernel one requiring
+> > the other. BUT a lot of EXPORT_SYMBOLS should be added (one for each
+> > function inside the userspace file at least)
 
-Reading the code of read_kmem as patched, we get this pseudo-code:
+> So, rather than have a module consisting of a userspace chunk and a kernel
+> chunk needing to be turned into a single .o, I would rather look at having
+> two modules, with the userspace piece plugging into an interface in the
+> kernel piece.
 
-p=3D*ppos; //position pointer
-...
-p =3D __va(p); /*translate physical address to virtual, like: */
-//p +=3D uml_physmem;
+> This is what I've envisioned for hostfs for a long time.  You don't need =
+to
+> stick host files underneath hostfs files - you can stick other host
+> resources under them, and the way to do that is to have multiple hostfs
+> userspace modules which plug into an interface in the hostfs kernel piece,
+> each of which provides access to a different sort of host resource.
 
-However, starting from 0xa8965000, and increasing it by 2,5Gb, we get an=20
-overflow, i.e. p becomes <old p> + 2,5Gb - 4Gb =3D <old p> - 1,5 Gb=3D0x489=
-65000.
-
-So we've got to the bug. But anyway, doing p=3D__va(p) is a wrong fix becau=
-se an=20
-offset inside /dev/kmem is already virtual (comments in the file are clear)=
-,=20
-and in read_mem we see:
-  copy_to_user(buf, __va(p), count).
-
-So, the patch just turns /dev/kmem into /dev/mem, on reading, while it does=
-n't=20
-do the overflow check done inside read_mem. On writing, instead, it changes=
+No idea about this hostfs feature - apart the fact it can be something good=
+ to=20
+have (I don't yet see samples but this can be my fault; if you have any=20
+specific one I'd like it). However, I don't think this is needed for all=20
+modules. However, this can be delayed to after (or at least, I'd like to=20
+implement it, after having some other "host resource" to manage). For now, =
+I=20
+would split the modules into two parts and add needed EXPORT_SYMBOL's. It's=
 =20
-nothing, so we would have probably other panics.
+worth noting that while in 2.4 a module exports all symbols, in 2.6 symbols=
+=20
+must be exported explicitly.
 
-What I've read about the patch was that the kmem driver "incorrectly assume=
-s=20
-the address space starts from the 0 address", IIRC. If this is correct, the=
-n=20
-the correct fix would be to check whether the address is mapped and to=20
-provide a suitable error code, either -EFAULT, or 0, as here:
+**So: would you merge this patch?**
+If yes, can I be smart about files to just move? (Shipping a list of mv=20
+commands would be ok?)
+Also, the *_user.c (+ the other user-objs) should go under under=20
+os-Linux/{drivers, kernel, kernel/tt, kernel/skas} ..., right?
 
-static ssize_t read_mem(struct file * file, char * buf,
-                        size_t count, loff_t *ppos) {
-        unsigned long p =3D *ppos;
-        unsigned long end_mem;
-        ssize_t read;
+The other modules I found in UML 2.6, for which I don't see an obvious reas=
+on=20
+to use a "register_xxx" thing, are:
+-hostaudio
+-the watchdogs (what are they?)
+-hppfs
+-cow (but why tristate? Maybe related to the standalone cow device, that I =
 
-        end_mem =3D __pa(high_memory);
-        if (p >=3D end_mem)
-                return 0;
-	/*...*/
-}
+have not understood).
+-Example IO memory driver.
 
-However, I'm not up to see how to exactly do the check (even if this check =
-is=20
-already done when using the copy_from_user macros).
-
-Bye
 --=20
 cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
 EOSIGN
+
 
 
 -------------------------------------------------------
