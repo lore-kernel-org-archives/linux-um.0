@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B1cu2-0001LE-J8 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Mar 2004 19:00:02 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B1cC2-00071a-6Q
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Mar 2004 18:14:34 -0800
-Message-Id: <200403120313.i2C3DstV005296@ccure.user-mode-linux.org>
+	id 1B1ewf-0007P0-6G for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 11 Mar 2004 21:10:53 -0800
+Received: from i-195-137-100-222.freedom2surf.net ([195.137.100.222]
+	helo=greenrd.org) by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1B1eed-0002GZ-HR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 11 Mar 2004 20:52:15 -0800
+From: Robin Green <greenrd@greenrd.org>
+Message-ID: <20040312045211.GH2083@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] uml-patch-2.6.4-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lQSB8Tqijvu1+4Ba"
+Content-Disposition: inline
+Subject: [uml-devel] Securing the kernel against exploits
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,34 +26,95 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 11 Mar 2004 22:13:54 -0500
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-
-This patch updates UML to 2.6.4.  Besides the update, there were the following
-changes since the last patch:
-	a bug which caused either a crash in the kernel or a BUG at exit.c:793
-was fixed
-	a bug which caused a crash when a process tried to dump core was fixed
-	the hang early in boot on GHz hosts is gone
-	various other
-
-The 2.6.4-1 UML patch is available at
-	http://www.user-mode-linux.org/mirror/uml-patch-2.6.4-1.bz2
-
-BK users can pull my 2.5 repository from
-	http://www.user-mode-linux.org:5000/uml-2.5
-
-For the other UML mirrors and other downloads, see 
-        http://user-mode-linux.sourceforge.net/dl-sf.html
- 
-Other links of interest:
- 
-        The UML project home page : http://user-mode-linux.sourceforge.net
-        The UML Community site : http://usermodelinux.org
-
-				Jeff
+Date: Fri, 12 Mar 2004 04:52:11 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
 
+
+--lQSB8Tqijvu1+4Ba
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Apologies in advance for any misconceptions in this post, for I am but
+a kernel newbie.
+
+I have been designing what I believe is a very effective system to render
+even root exploits on a host relatively powerless. But obviously at some
+level you need a "trusted level" that "cannot" be exploited - or, at least,
+is very difficult to exploit.
+
+I was wondering to what extent the UML kernel can be secured against
+exploits, by special measures on the host - and to what extent, if any,
+such ideas have been implemented so far.
+
+Let's assume for these purposes that the host is secured and for all
+practical purposes "unexploitable". Then, would these ideas be possible?
+And would they actually decrease risk?
+
+1. Make all executable code in the UML kernel read-only.
+
+2. Prevent the UML kernel from making itself writeable again.
+(This is something that cannot be done with the kernel running directly
+on a real x86 architecture, AFAIK, but can be done with UML. Hence a
+UML selling point for the ultra-paranoid?)
+
+3. Restrict the executable segment for the UML kernel so that kernel
+data and stack(s) are not executable, using something like exec-shield.
+
+Given these measures, my plan essentially involves introducing an
+"archangel" security layer in the kernel, which follows constraints
+set by a "God process" running on another machine (perhaps a different
+UML). The archangel and the God process communicate via a socket. The
+archangel must obviously prevent any process running on the UML from
+interfering with or spoofing that communication channel.
+
+The default constraints prohibit modifying system files and
+modifying firewall rules; when a sysadmin needs to do some work, they
+instruct the God process to temporarily relax certain constraints -
+but only for the files etc. they need to access, only from a particular
+process tree, and only until they have finished working with them.
+(The archangel could also do an unspoofable md5sum of files, to verify
+that no rogue code has taken the opportunity left by relaxed
+constraints to perform some unauthorised modifications. Rogue code in
+that scenario is most likely to be run as a result of the sysadmin
+running code from an untrusted source.)
+
+It might seem like an overcomplicated or byzantine system, but I
+believe it offers a good balance between security, performance and
+system maintainability. Move too much logic into the God process
+and you lose performance (and simplicity); move too much logic
+into the read-only space (i.e. in my model, the kernel, but it
+doesn't have to be the kernel) and you lose maintainability;
+move the God process onto the same UML as the archangel and you
+lose security, because then rogue code can pretend to be the
+sysadmin. (The idea is that the machine hosting the God process
+has less services running, and therefore is less likely to be
+exploited. The truly paranoid could run it on a different OS
+altogether, to reduce the chance of the God machine and the
+original UML being cracked simultaneously - and cracking both
+at the same time is the only way to gain unauthorised
+privileged access to the original UML.)
+
+All of this would benefit from a "host-hardened" kernel. Is this
+possible?
+
+--=20
+Robin
+
+--lQSB8Tqijvu1+4Ba
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFAUUH7tPCt67UksSYRAsgzAKDFGHRCx8tjwPsc/N5sgKxSICAR7wCfd4ah
+20YxU5TWzJw7RQW2RUmsOD0=
+=kPOU
+-----END PGP SIGNATURE-----
+
+--lQSB8Tqijvu1+4Ba--
 
 
 -------------------------------------------------------
