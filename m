@@ -2,25 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D4hGB-0002uJ-8q for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Feb 2005 07:20:07 -0800
+	id 1D4hGF-0002ua-1W for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Feb 2005 07:20:11 -0800
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1D4hG8-00051f-Kb for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Feb 2005 07:20:07 -0800
+	id 1D4hGE-000512-5H for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Feb 2005 07:20:10 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Re: [PATCH] uml: support a separate build tree;
 	support USER_OBJS dependencies
 References: <opsl43d9yilfdzum@localhost.localdomain>
 	<200502161930.55206.blaisorblade@yahoo.it>
-	<opsmf6p3ellfdzum@localhost.localdomain>
-In-Reply-To: <opsmf6p3ellfdzum@localhost.localdomain>
+	<opsmfxytsflfdzum@localhost.localdomain>
+In-Reply-To: <opsmfxytsflfdzum@localhost.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200502241919.58716.blaisorblade@yahoo.it>
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <200502241731.56876.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,96 +32,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 24 Feb 2005 19:19:58 +0100
+Date: Thu, 24 Feb 2005 17:31:56 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Vadim Abrossimov <vadim_abrossimov@yahoo.com>, Jeff Dike <jdike@addtoit.com>
 
-On Saturday 19 February 2005 15:04, Vadim Abrossimov wrote:
+On Saturday 19 February 2005 11:55, Vadim Abrossimov wrote:
 > On Wed, 16 Feb 2005 19:30:54 +0100, Blaisorblade <blaisorblade@yahoo.it>
 >
 > wrote:
 > > Ok, I have two more requests, if possible:
 > > 1) add something like arch/um/Rules.make which is included everywhere
 > > needed
+> > 2) There is an error in the patch (even in Al's idea): you must swap, in
+> > the below code
 >
-> Find below the patch which implements Paolo's suggestion with one
-> exception:
-The patch is totally mangled by the mailer, sorry. Could you please reattach 
-it? I've tried fixing it by hand but hadn't got the time.
+> OK. I will do it.
+> Against which version you would suggest me to do it:
+> - as an add-on to 2.6.11-rc3-mm2 + Jeff's tarball (which already includes
+> the original USER_OBJ cleanup)
+For now, against this one. The patch is still in development, so this is the 
+right choice.
+> - 2.6 bk
+> - any other
+>
+> Also I have more general questions about the usual way the uml community
+> works:
 
-*) Another suggestion (I'll implement it if you are not going to): the 
-creation of USER_SINGLE_OBJS should also be moved to Makefile.rules (the 
-below form should be the more general one); so even the "$(filter %_user.o, 
-$(USER_SINGLE_OBJS))" snippet could move there.
+> - do the patches from Jeff's tarball are intended to be pushed in 2.6 BK?
+> if yes when and how?
+Yes, "when they are felt as ready". However the process in most cases is  
+possibly (author?) -> possibly (someone, including me, forwarding it; I often 
+forward patches directly to -mm) -> Jeff's tree -> -mm tree -> BitKeeper 
+repository and final release.
 
-USER_SINGLE_OBJS = $(foreach f,$(patsubst %.o,%,$(obj-y) $(obj-m)),
-$($(f)-objs))
+However, there are actually some little differences between the trees that 
+interact with this patch. The patch also changes some additions to the 
+Makefiles done in the Jeff's tree, for instance about "skas0" and "x11-fb".
 
-*) About  
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.11-rc3-mm2/patches/user-obj-cleanup
-at his end: I've seen that for stub.S you don't succeed to get it working. 
-Have you tried setting a_flags for that one only?
+Those hunks will have to stay in the tree even after the patch is merged, 
+while the rest will go with the relevant patches.
 
-*) Someone who has a working tree with this can check whether enabling 
-CONFIG_MODVERSIONS works well? Without it it does not work, for what I 
-remember, exactly for the kbuild problem.
+I'm finding it not trivial to port these patches from the Jeff's tree 
+to the mainline tree... there are some little differences which should move 
+inside a "jeff-only" part of the patch 
 
-When time ago I built a similar patch which changed c_flags (it hacked the 
-main Makefiles though) it started to work well, since the object 
-postprocessing step was also done. So this patch should also achieve this 
-goal, I think.
+I'm doing the port to get it merged as soon as 2.6.12.
+> - if one propose a patch against which version he/she should do it in
+> order to (1) be useful for the community (2) get the patch pushed in 2.6
+> BK soon? (Presumably (1) and (2) have the same answer :->)
+Well, the Jeff's tree is highly experimental, so the casual user often does 
+not apply the full tree, and patches can evolve in it for months, in the case 
+of big rewrites (they are merged sooner if they are fixes).
 
-*) (Slightly unrelated) About this change in the "skas0" patch:
+Probably the better way to get the patch immediately useful is to prepare it 
+against -bk or -mm... after all, normally you don't get big hunks of Jeff's 
+tree merged at once.
 
-Index: linux-2.6.10/arch/um/Makefile-i386
-===================================================================
---- linux-2.6.10.orig/arch/um/Makefile-i386     2005-02-12 13:57:48.000000000 
--0500
-+++ linux-2.6.10/arch/um/Makefile-i386  2005-02-14 12:36:37.000000000 -0500
-@@ -8,7 +8,7 @@
-   endif
- endif
-
--CFLAGS += -U__$(SUBARCH)__ -U$(SUBARCH)
-+CFLAGS += -U__$(SUBARCH)__ -U$(SUBARCH) $(STUB_CFLAGS)
- ARCH_USER_CFLAGS :=
-
- ifneq ($(CONFIG_GPROF),y)
-Index: linux-2.6.10/arch/um/Makefile-x86_64
-===================================================================
---- linux-2.6.10.orig/arch/um/Makefile-x86_64   2005-02-12 13:57:48.000000000 
--0500
-+++ linux-2.6.10/arch/um/Makefile-x86_64        2005-02-14 12:36:37.000000000 
--0500
-@@ -4,7 +4,7 @@
- SUBARCH_LIBS := arch/um/sys-x86_64/
- START := 0x60000000
-
--CFLAGS += -U__$(SUBARCH)__ -fno-builtin
-+CFLAGS += -U__$(SUBARCH)__ -fno-builtin $(STUB_CFLAGS)
- ARCH_USER_CFLAGS := -D__x86_64__
-
- ELF_ARCH := i386:x86-64
-
-I guess it's actually useless, because STUB_CFLAGS is not defined at that 
-point, so it should be undone.
-> I put the common definitions in arch/um/scripts/Makefile.rules to be more
-> consistent
-> with my understanding of conventions.
-This form is also ok for me. If when merging they want it further renamed, 
-we'll take care of it.
-
-> Also I noticed that including my original patch in his tarball Jeff  
-> excluded changes
-> in some Makefiles (e.g. arch/um/kernel/Makefile).
-> Jeff, had you a problem with those Makefiles?
-I don't know what Jeff thought, but do you remember the bug I pointed out 
-about USER_CFLAGS and CFLAGS_$@?
-
-Well, that problem would cause a compilation problem on 
-arch/um/kernel/frame.o, because this would not work:
-
-CFLAGS_frame.o := -fno-omit-frame-pointer
+When the patch is merged, it will need to get resync'ed against mainline 
+anyway.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
