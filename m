@@ -1,17 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDncF-0005ZV-4k for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:31 -0800
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DDncD-0004GC-UB for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:31 -0800
+	id 1DDnc8-0005Z6-Mj for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 09:56:24 -0800
+Received: from mail-relay-3.tiscali.it ([213.205.33.43])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DDnc7-0005j2-Oc for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 09:56:24 -0800
 From: blaisorblade@yahoo.it
-Message-Id: <20050322162136.B82619766F@zion>
-Subject: [uml-devel] [patch 08/12] uml: factor out common code in user-obj
-	handling
+Message-Id: <20050322162129.2A53297669@zion>
+Subject: [uml-devel] [patch 05/12] uml: extend cmd line limits
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,288 +22,182 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 17:21:36 +0100
+Date: Tue, 22 Mar 2005 17:21:29 +0100
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, vadim_abrossimov@yahoo.com
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, util@deuroconsult.ro
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Vadim Abrossimov <vadim_abrossimov@yahoo.com>
+From: "Catalin(ux aka Dino) BOIE" <util@deuroconsult.ro>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>
+Increase UML command line size. And fix a crash from passing an overly-long
+command line to UML.
 
-*) Handle USER_OBJS through the general Kbuild infrastructure; the trick we
-use is to change c_flags only for USER_OBJS.
-
-This ain't at all worse than the previous kludgy solution, enables us to use a
-better dependency handling and to support MODVERSIONS.
-
-And it is UML-specific, as a bonus.
-
-So, no "it ain't clean enough" reasoning is allowed to hold this patch until
-you find a better solution. Leaving there the current broken code is not
-accepted.
-
-*) Move similar definitions from Makefiles to the newly created
-arch/um/scripts/Makefile.rules and include it everywhere needed.
-
-Please test on x86_64 subarch, I've tested it on i386.
+XXX: check that init can handle 128 params and 128 env. var. The original
+patch set this limit to 256, but it seems me too much. Think!
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.11-paolo/arch/um/drivers/Makefile             |    9 ++-------
- linux-2.6.11-paolo/arch/um/kernel/Makefile              |   14 +++++++-------
- linux-2.6.11-paolo/arch/um/kernel/skas/Makefile         |    8 +++-----
- linux-2.6.11-paolo/arch/um/kernel/tt/Makefile           |   12 +++++-------
- linux-2.6.11-paolo/arch/um/kernel/tt/ptproxy/Makefile   |    5 ++---
- linux-2.6.11-paolo/arch/um/os-Linux/Makefile            |    6 ++----
- linux-2.6.11-paolo/arch/um/os-Linux/drivers/Makefile    |    8 +-------
- linux-2.6.11-paolo/arch/um/os-Linux/sys-i386/Makefile   |    5 ++---
- linux-2.6.11-paolo/arch/um/os-Linux/sys-x86_64/Makefile |    5 ++---
- linux-2.6.11-paolo/arch/um/scripts/Makefile.rules       |   10 ++++++++++
- linux-2.6.11-paolo/arch/um/sys-i386/Makefile            |    6 ++----
- linux-2.6.11-paolo/arch/um/sys-x86_64/Makefile          |    8 +++-----
- linux-2.6.11-paolo/fs/hostfs/Makefile                   |   10 ++--------
- 13 files changed, 43 insertions(+), 63 deletions(-)
+ linux-2.6.11-paolo/arch/um/include/user_util.h |    2 -
+ linux-2.6.11-paolo/arch/um/kernel/um_arch.c    |   34 ++++++++++++++-----------
+ linux-2.6.11-paolo/arch/um/kernel/user_util.c  |   15 -----------
+ linux-2.6.11-paolo/include/asm-um/setup.h      |    5 ++-
+ linux-2.6.11-paolo/init/Kconfig                |    8 +++++
+ linux-2.6.11-paolo/init/main.c                 |    4 +-
+ 6 files changed, 35 insertions(+), 33 deletions(-)
 
-diff -puN arch/um/drivers/Makefile~uml-user-obj-cleanup arch/um/drivers/Makefile
---- linux-2.6.11/arch/um/drivers/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:50.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/drivers/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -41,11 +41,6 @@ obj-$(CONFIG_UML_WATCHDOG) += harddog.o
- obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
- obj-$(CONFIG_UML_RANDOM) += random.o
+diff -puN arch/um/kernel/um_arch.c~uml-extend-cmd-line-limits arch/um/kernel/um_arch.c
+--- linux-2.6.11/arch/um/kernel/um_arch.c~uml-extend-cmd-line-limits	2005-03-21 15:25:42.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/um_arch.c	2005-03-21 15:25:42.000000000 +0100
+@@ -25,6 +25,7 @@
+ #include "asm/user.h"
+ #include "ubd_user.h"
+ #include "asm/current.h"
++#include "asm/setup.h"
+ #include "user_util.h"
+ #include "kern_util.h"
+ #include "kern.h"
+@@ -40,6 +41,20 @@
  
--USER_SINGLE_OBJS = $(foreach f,$(patsubst %.o,%,$(obj-y) $(obj-m)),$($(f)-objs))
-+USER_OBJS := fd.o null.o pty.o tty.o xterm.o
+ #define DEFAULT_COMMAND_LINE "root=98:0"
  
--USER_OBJS := $(filter %_user.o,$(obj-y) $(obj-m) $(USER_SINGLE_OBJS)) fd.o \
--	null.o pty.o tty.o xterm.o
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
--
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
-+include arch/um/scripts/Makefile.rules
-diff -puN arch/um/kernel/Makefile~uml-user-obj-cleanup arch/um/kernel/Makefile
---- linux-2.6.11/arch/um/kernel/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:50.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/kernel/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -23,16 +23,16 @@ obj-$(CONFIG_SYSCALL_DEBUG) += syscall_u
- obj-$(CONFIG_MODE_TT) += tt/
- obj-$(CONFIG_MODE_SKAS) += skas/
- 
--user-objs-$(CONFIG_TTY_LOG) += tty_log.o
-+# This needs be compiled with frame pointers regardless of how the rest of the
-+# kernel is built.
-+CFLAGS_frame.o := -fno-omit-frame-pointer
- 
--USER_OBJS := $(filter %_user.o,$(obj-y))  $(user-objs-y) config.o helper.o \
--	main.o process.o tempfile.o time.o tty_log.o umid.o user_util.o frame.o
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
-+user-objs-$(CONFIG_TTY_LOG) += tty_log.o
- 
--CFLAGS_frame.o := -fno-omit-frame-pointer
-+USER_OBJS := $(user-objs-y) config.o helper.o main.o process.o tempfile.o \
-+	time.o tty_log.o umid.o user_util.o frame.o
- 
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(USER_CFLAGS) $(CFLAGS_$(notdir $@)) -c -o $@ $<
-+include arch/um/scripts/Makefile.rules
- 
- targets += config.c
- 
-diff -puN arch/um/kernel/skas/Makefile~uml-user-obj-cleanup arch/um/kernel/skas/Makefile
---- linux-2.6.11/arch/um/kernel/skas/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:50.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/kernel/skas/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -6,10 +6,8 @@
- obj-y := exec_kern.o mem.o mem_user.o mmu.o process.o process_kern.o \
- 	syscall_kern.o syscall_user.o time.o tlb.o trap_user.o uaccess.o \
- 
--USER_OBJS = $(filter %_user.o,$(obj-y)) process.o time.o
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
-+subdir- := util
- 
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
-+USER_OBJS := process.o time.o
- 
--subdir- := util
-+include arch/um/scripts/Makefile.rules
-diff -puN arch/um/kernel/tt/Makefile~uml-user-obj-cleanup arch/um/kernel/tt/Makefile
---- linux-2.6.11/arch/um/kernel/tt/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/kernel/tt/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -12,17 +12,15 @@ obj-y = exec_kern.o exec_user.o gdb.o ks
- 
- obj-$(CONFIG_PT_PROXY) += gdb_kern.o ptproxy/
- 
--USER_OBJS := $(filter %_user.o,$(obj-y)) gdb.o time.o tracer.o
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
-+USER_OBJS := gdb.o time.o tracer.o
++/* Changed in linux_main and setup_arch, which run before SMP is started */
++char command_line[COMMAND_LINE_SIZE] = { 0 };
 +
-+include arch/um/scripts/Makefile.rules
- 
- UNMAP_CFLAGS := $(patsubst -pg -DPROFILING,,$(USER_CFLAGS))
- UNMAP_CFLAGS := $(patsubst -fprofile-arcs -ftest-coverage,,$(UNMAP_CFLAGS))
- 
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
--
--$(obj)/unmap.o: $(src)/unmap.c
--	$(CC) $(UNMAP_CFLAGS) -c -o $@ $<
-+#XXX: partially copied from arch/um/scripts/Makefile.rules
-+$(obj)/unmap.o: c_flags = -Wp,-MD,$(depfile) $(UNMAP_CFLAGS)
- 
- $(obj)/unmap_fin.o : $(obj)/unmap.o
- 	$(LD) -r -o $(obj)/unmap_tmp.o $< $(shell $(CC) -print-file-name=libc.a)
-diff -puN arch/um/kernel/tt/ptproxy/Makefile~uml-user-obj-cleanup arch/um/kernel/tt/ptproxy/Makefile
---- linux-2.6.11/arch/um/kernel/tt/ptproxy/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/kernel/tt/ptproxy/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -5,7 +5,6 @@
- 
- obj-y = proxy.o ptrace.o sysdep.o wait.o
- 
--USER_OBJS := $(foreach file,$(obj-y),$(src)/$(file))
-+USER_OBJS := $(obj-y)
- 
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
-+include arch/um/scripts/Makefile.rules
-diff -puN arch/um/os-Linux/drivers/Makefile~uml-user-obj-cleanup arch/um/os-Linux/drivers/Makefile
---- linux-2.6.11/arch/um/os-Linux/drivers/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/os-Linux/drivers/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -10,10 +10,4 @@ obj-y = 
- obj-$(CONFIG_UML_NET_ETHERTAP) += ethertap.o
- obj-$(CONFIG_UML_NET_TUNTAP) += tuntap.o
- 
--USER_SINGLE_OBJS = $(foreach f,$(patsubst %.o,%,$(obj-y)),$($(f)-objs))
--
--USER_OBJS = $(filter %_user.o,$(obj-y) $(USER_SINGLE_OBJS))
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
--
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
-+include arch/um/scripts/Makefile.rules
-diff -puN arch/um/os-Linux/Makefile~uml-user-obj-cleanup arch/um/os-Linux/Makefile
---- linux-2.6.11/arch/um/os-Linux/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/os-Linux/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -7,9 +7,7 @@ obj-y = elf_aux.o file.o process.o signa
- 	sys-$(SUBARCH)/
- 
- USER_OBJS := elf_aux.o file.o process.o signal.o time.o tty.o
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
--
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
- 
- CFLAGS_user_syms.o += -DSUBARCH_$(SUBARCH)
++void add_arg(char *arg)
++{
++	if (strlen(command_line) + strlen(arg) + 1 > COMMAND_LINE_SIZE) {
++		printf("add_arg: Too much command line!\n");
++		exit(1);
++	}
++	if(strlen(command_line) > 0)
++		strcat(command_line, " ");
++	strcat(command_line, arg);
++}
 +
-+include arch/um/scripts/Makefile.rules
-diff -puN arch/um/os-Linux/sys-i386/Makefile~uml-user-obj-cleanup arch/um/os-Linux/sys-i386/Makefile
---- linux-2.6.11/arch/um/os-Linux/sys-i386/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/os-Linux/sys-i386/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -5,7 +5,6 @@
+ struct cpuinfo_um boot_cpu_data = { 
+ 	.loops_per_jiffy	= 0,
+ 	.ipi_pipe		= { -1, -1 }
+@@ -314,9 +329,11 @@ int linux_main(int argc, char **argv)
+ 		if((i == 1) && (argv[i][0] == ' ')) continue;
+ 		add = 1;
+ 		uml_checksetup(argv[i], &add);
+-		if(add) add_arg(saved_command_line, argv[i]);
++		if (add)
++			add_arg(argv[i]);
+ 	}
+-	if(have_root == 0) add_arg(saved_command_line, DEFAULT_COMMAND_LINE);
++	if(have_root == 0)
++		add_arg(DEFAULT_COMMAND_LINE);
  
- obj-$(CONFIG_MODE_SKAS) = registers.o
- 
--USER_OBJS := $(foreach file,$(obj-y),$(obj)/$(file))
-+USER_OBJS := $(obj-y)
- 
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
-+include arch/um/scripts/Makefile.rules
-diff -puN arch/um/os-Linux/sys-x86_64/Makefile~uml-user-obj-cleanup arch/um/os-Linux/sys-x86_64/Makefile
---- linux-2.6.11/arch/um/os-Linux/sys-x86_64/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/os-Linux/sys-x86_64/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -5,7 +5,6 @@
- 
- obj-$(CONFIG_MODE_SKAS) = registers.o
- 
--USER_OBJS := $(foreach file,$(obj-y),$(obj)/$(file))
-+USER_OBJS := $(obj-y)
- 
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
-+include arch/um/scripts/Makefile.rules
-diff -puN /dev/null arch/um/scripts/Makefile.rules
---- /dev/null	2005-03-21 16:13:45.157956824 +0100
-+++ linux-2.6.11-paolo/arch/um/scripts/Makefile.rules	2005-03-21 15:25:51.000000000 +0100
-@@ -0,0 +1,10 @@
-+# ===========================================================================
-+# arch/um: Generic definitions
-+# ===========================================================================
-+
-+USER_SINGLE_OBJS = $(foreach f,$(patsubst %.o,%,$(obj-y) $(obj-m)),$($(f)-objs))
-+USER_OBJS += $(filter %_user.o,$(obj-y) $(obj-m) $(USER_SINGLE_OBJS))
-+
-+USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
-+
-+$(USER_OBJS): c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) $(CFLAGS_$(notdir $@))
-diff -puN arch/um/sys-i386/Makefile~uml-user-obj-cleanup arch/um/sys-i386/Makefile
---- linux-2.6.11/arch/um/sys-i386/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/sys-i386/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -5,7 +5,8 @@ obj-$(CONFIG_HIGHMEM) += highmem.o
- obj-$(CONFIG_MODULES) += module.o
- 
- USER_OBJS := bugs.o ptrace_user.o sigcontext.o fault.o
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
-+
-+include arch/um/scripts/Makefile.rules
- 
- SYMLINKS = bitops.c semaphore.c highmem.c module.c
- 
-@@ -25,9 +26,6 @@ define make_link
- 	ln -sf $(srctree)/arch/i386/$($(notdir $1)-dir)/$(notdir $1) $1
- endef
- 
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
+ 	mode_tt = force_tt ? 1 : !can_do_skas();
+ #ifndef CONFIG_MODE_TT
+@@ -432,7 +449,7 @@ void __init setup_arch(char **cmdline_p)
+ {
+ 	notifier_chain_register(&panic_notifier_list, &panic_exit_notifier);
+ 	paging_init();
+- 	strcpy(command_line, saved_command_line);
++ 	strlcpy(saved_command_line, command_line, COMMAND_LINE_SIZE);
+  	*cmdline_p = command_line;
+ 	setup_hostinfo();
+ }
+@@ -448,14 +465,3 @@ void __init check_bugs(void)
+ void apply_alternatives(void *start, void *end)
+ {
+ }
 -
- $(SYMLINKS): 
- 	$(call make_link,$@)
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN arch/um/kernel/user_util.c~uml-extend-cmd-line-limits arch/um/kernel/user_util.c
+--- linux-2.6.11/arch/um/kernel/user_util.c~uml-extend-cmd-line-limits	2005-03-21 15:25:42.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/user_util.c	2005-03-21 15:25:42.000000000 +0100
+@@ -31,21 +31,6 @@
+ #include "ptrace_user.h"
+ #include "uml-config.h"
  
-diff -puN arch/um/sys-x86_64/Makefile~uml-user-obj-cleanup arch/um/sys-x86_64/Makefile
---- linux-2.6.11/arch/um/sys-x86_64/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/arch/um/sys-x86_64/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -9,7 +9,8 @@ lib-y = bitops.o bugs.o csum-partial.o d
- 	syscalls.o sysrq.o thunk.o
+-#define COMMAND_LINE_SIZE _POSIX_ARG_MAX
+-
+-/* Changed in linux_main and setup_arch, which run before SMP is started */
+-char command_line[COMMAND_LINE_SIZE] = { 0 };
+-
+-void add_arg(char *cmd_line, char *arg)
+-{
+-	if (strlen(cmd_line) + strlen(arg) + 1 > COMMAND_LINE_SIZE) {
+-		printf("add_arg: Too much command line!\n");
+-		exit(1);
+-	}
+-	if(strlen(cmd_line) > 0) strcat(cmd_line, " ");
+-	strcat(cmd_line, arg);
+-}
+-
+ void stop(void)
+ {
+ 	while(1) sleep(1000000);
+diff -puN include/asm-um/setup.h~uml-extend-cmd-line-limits include/asm-um/setup.h
+--- linux-2.6.11/include/asm-um/setup.h~uml-extend-cmd-line-limits	2005-03-21 15:25:42.000000000 +0100
++++ linux-2.6.11-paolo/include/asm-um/setup.h	2005-03-21 15:25:42.000000000 +0100
+@@ -1,6 +1,9 @@
+ #ifndef SETUP_H_INCLUDED
+ #define SETUP_H_INCLUDED
  
- USER_OBJS := ptrace_user.o sigcontext.o
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
+-#define COMMAND_LINE_SIZE 512
++/* POSIX mandated with _POSIX_ARG_MAX that we can rely on 4096 chars in the
++ * command line, so this choice is ok.*/
 +
-+include arch/um/scripts/Makefile.rules
++#define COMMAND_LINE_SIZE 4096
  
- SYMLINKS = bitops.c csum-copy.S csum-partial.c csum-wrappers.c memcpy.S \
- 	semaphore.c thunk.S
-@@ -27,13 +28,10 @@ thunk.S-dir = lib
+ #endif		/* SETUP_H_INCLUDED */
+diff -puN init/Kconfig~uml-extend-cmd-line-limits init/Kconfig
+--- linux-2.6.11/init/Kconfig~uml-extend-cmd-line-limits	2005-03-21 15:25:42.000000000 +0100
++++ linux-2.6.11-paolo/init/Kconfig	2005-03-21 15:25:42.000000000 +0100
+@@ -55,6 +55,14 @@ config LOCK_KERNEL
+ 	depends on SMP || PREEMPT
+ 	default y
  
- define make_link
-        -rm -f $1
--       ln -sf $(TOPDIR)/arch/x86_64/$($(notdir $1)-dir)/$(notdir $1) $1
-+       ln -sf $(srctree)/arch/x86_64/$($(notdir $1)-dir)/$(notdir $1) $1
- endef
++config INIT_ENV_ARG_LIMIT
++	int
++	default 32 if !USERMODE
++	default 128 if USERMODE
++	help
++	  This is the value of the two limits on the number of argument and of
++	  env.var passed to init from the kernel command line.
++
+ endmenu
  
- $(SYMLINKS):
- 	$(call make_link,$@)
+ menu "General setup"
+diff -puN init/main.c~uml-extend-cmd-line-limits init/main.c
+--- linux-2.6.11/init/main.c~uml-extend-cmd-line-limits	2005-03-21 15:25:42.000000000 +0100
++++ linux-2.6.11-paolo/init/main.c	2005-03-21 15:25:42.000000000 +0100
+@@ -110,8 +110,8 @@ EXPORT_SYMBOL(system_state);
+ /*
+  * Boot command-line arguments
+  */
+-#define MAX_INIT_ARGS 32
+-#define MAX_INIT_ENVS 32
++#define MAX_INIT_ARGS CONFIG_INIT_ENV_ARG_LIMIT
++#define MAX_INIT_ENVS CONFIG_INIT_ENV_ARG_LIMIT
  
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
--
- CFLAGS_csum-partial.o := -Dcsum_partial=arch_csum_partial
-diff -puN fs/hostfs/Makefile~uml-user-obj-cleanup fs/hostfs/Makefile
---- linux-2.6.11/fs/hostfs/Makefile~uml-user-obj-cleanup	2005-03-21 15:25:51.000000000 +0100
-+++ linux-2.6.11-paolo/fs/hostfs/Makefile	2005-03-21 15:25:51.000000000 +0100
-@@ -5,13 +5,7 @@
- 
- hostfs-objs := hostfs_kern.o hostfs_user.o
- 
--obj-y =
-+obj-y :=
- obj-$(CONFIG_HOSTFS) += hostfs.o
- 
--SINGLE_OBJS = $(foreach f,$(patsubst %.o,%,$(obj-y) $(obj-m)),$($(f)-objs))
--
--USER_OBJS := $(filter %_user.o,$(obj-y) $(obj-m) $(SINGLE_OBJS))
--USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
--
--$(USER_OBJS) : %.o: %.c
--	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
-+include arch/um/scripts/Makefile.rules
+ extern void time_init(void);
+ /* Default late time init is NULL. archs can override this later. */
+diff -puN arch/um/include/user_util.h~uml-extend-cmd-line-limits arch/um/include/user_util.h
+--- linux-2.6.11/arch/um/include/user_util.h~uml-extend-cmd-line-limits	2005-03-21 15:25:42.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/include/user_util.h	2005-03-21 15:25:42.000000000 +0100
+@@ -67,7 +67,7 @@ extern void *um_kmalloc(int size);
+ extern int switcheroo(int fd, int prot, void *from, void *to, int size);
+ extern void setup_machinename(char *machine_out);
+ extern void setup_hostinfo(void);
+-extern void add_arg(char *cmd_line, char *arg);
++extern void add_arg(char *arg);
+ extern void init_new_thread_stack(void *sig_stack, void (*usr1_handler)(int));
+ extern void init_new_thread_signals(int altstack);
+ extern void do_exec(int old_pid, int new_pid);
 _
 
 
