@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWmZr-0008PP-5p
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:03:43 -0800
+	id 1AWn04-0003rs-5q
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:30:48 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.24)
-	id 1AWmZp-0001xd-5m
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:03:41 -0800
-Message-Id: <200312180119.hBI1JBkS008102@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: [PATCH]Modules support in 2.6: reaching the complete fix 
-In-Reply-To: Your message of "Wed, 17 Dec 2003 18:51:18 +0100."
-             <200312171851.18353.blaisorblade_spam@yahoo.it> 
-References: <200312131828.03645.blaisorblade_spam@yahoo.it> <200312132019.hBDKJ8rL002905@ccure.user-mode-linux.org>  <200312171851.18353.blaisorblade_spam@yahoo.it> 
+	id 1AWn02-00036D-9i
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:30:46 -0800
+Message-Id: <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [bug] uml segfaults if forcing static link, 2.6.0-test11 
+In-Reply-To: Your message of "Wed, 17 Dec 2003 22:54:58 +0100."
+             <Pine.LNX.4.58.0312172249020.19508@earth> 
+References: <Pine.LNX.4.58.0312171735540.8123@earth> <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth>  <Pine.LNX.4.58.0312172249020.19508@earth> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -26,25 +26,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Dec 2003 20:19:11 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Wed, 17 Dec 2003 20:46:01 -0500
+To: Ingo Molnar <mingo@elte.hu>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> If not, I can just patch this way scripts/Makefile.lib: 
+mingo@elte.hu said:
+> the attached .config produces an UML binary that segfaults much the
+> same way as before the ALIGN fixes. 
 
-This seems promising.  Can the new infrastructure be put in arch/um/Makefile?
+HAHAHA, there is justice in this world :-)
 
-This would isolate it nicely to UML since it's the only arch which needs it.
+This one is your fault, I think.
 
-Although, thinking about this some more, this isn't the right way to do it
-in the long run.  Ultimately, the userspace stuff will be confined to 
-arch/um/os, along with the userspace CFLAGS.  So, the arch/um/os/Makefile
-will contain this nonsense, and nothing outside there will have to worry
-about it.
-
-So, if you want to sign up to a longer project, you might start moving the
-userspace stuff into arch/um/os-Linux instead of trying to fix the build.
+See this patch and see if it fixes the problem:
+	http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=106867347801038&w=2
 
 				Jeff
 
