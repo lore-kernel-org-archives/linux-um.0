@@ -2,32 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DGje2-0005V9-Lb for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 12:18:30 -0800
-Received: from mout0.freenet.de ([194.97.50.131])
+	id 1DGlHN-0002K4-24 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 14:03:13 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DGjdz-0002Qr-TL
+	(Exim 4.41) id 1DGlH3-0002nK-31
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 12:18:30 -0800
-Received: from [194.97.55.190] (helo=mx6.freenet.de)
-	by mout0.freenet.de with esmtpa (Exim 4.51) id 1DGjdv-00033y-Va
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 22:18:23 +0200
-Received: from i954f.i.pppool.de ([85.73.149.79] helo=bakunin.copyleft.de)
-	by mx6.freenet.de with esmtpsa (ID freenet_bakunin@freenet.de)
-	(TLSv1:AES256-SHA:256) (Exim 4.43 #13) id 1DGjdv-00077M-OO
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 22:18:23 +0200
-Received: from kraehe by bakunin.copyleft.de with local (Exim 4.50)
-	id 1DGjdu-0001J1-SK for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Mar 2005 22:18:22 +0200
-From: kraehe <kraehe@copyleft.de>
-Message-ID: <20050330201822.GA4962@copyleft.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Wed, 30 Mar 2005 14:03:12 -0800
+From: Rob Landley <rob@landley.net>
+References: <20050330173400.36A5FEFEFF@zion>
+In-Reply-To: <20050330173400.36A5FEFEFF@zion>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] NFS/UDP/uml_switch/tap0 problems with
-	2.6.11.6-skas3-v9-pre1
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200503301559.34350.rob@landley.net>
+Subject: [uml-devel] Re: [patch 6/8] uml: fix hostfs special perm handling
+	[for 2.6.12]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,42 +32,68 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 30 Mar 2005 22:18:22 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 30 Mar 2005 15:59:34 -0500
+To: blaisorblade@yahoo.it
+Cc: torvalds@osdl.org, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Moin Guru's,
+On Wednesday 30 March 2005 12:34 pm, blaisorblade@yahoo.it wrote:
+> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> CC: Rob Landley <rob@landley.net>
+> When opening devices nodes on hostfs, it does not make sense to call
+> access(), since we are not going to open the file on the host.
+>
+> If the device node is owned by root, the root user in UML should succeed in
+> opening it, even if UML won't be able to open the file.
+>
+> As reported by Rob Landley, UML currently does not follow this, so here's
+> an (untested) fix.
+>
+> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-  i've some new hardware - suggesting 2.6 kernel. So I'm now running
-  2.6.11.6-skas3-v9-pre1 as host on this system. The old client kernel
-  2.4.22-uml1-5um looked to work fine, together with the old uml_switch
-  and uml_mconsole I had.
-  
-  Problems started when I've tried to NFS mount the host from client.
-  At first it works, but NFS hangs, if its used under load. I've tested
-  the following cases with the uml-utilities provided by Debian/Sarge :
+Not untested, it Worked For Me (tm).
 
-  - server 2.6.11.6-skas3-v9-pre1
-  - client 2.4.22-uml (the uml system)
-      - nfs/tcp using uml_switch/tap0 is fine
-      - nfs/udp using uml_switch/tap0 is hangs under load
-  - client 2.6.7-skas3 (my laptop using ethernet to compare the normal case)
-      - nfs/udp using eth0 is fine
-      - nfs/tcp using eth0 is fine
+Signed-off-by: Rob Landley <rob@landley.net>
 
-  after reboot of both host and user mode linux :
-
-  - same server but 2.4.29-skas3 kernel
-  - same client 2.4.22-uml
-      - nfs/tcp using uml_switch/tap0 is fine
-      - nfs/udp using uml_switch/tap0 is fine
-
-  So I circled the problem to 2.6.11.6 hosting kernel and nfs/udp -
-  any further ideas how/where to debug this problem ?
-
-Bye Michael
--- 
-  mailto:kraehe@copyleft.de             UNA:+.? 'CED+2+:::Linux:2.4.22'UNZ+1'
-  http://www.xml-edifact.org/           CETERUM CENSEO WINDOWS ESSE DELENDAM
+> ---
+>
+>  linux-2.6.11-paolo/fs/hostfs/hostfs_kern.c |   20 +++++++++++++-------
+>  1 files changed, 13 insertions(+), 7 deletions(-)
+>
+> diff -puN fs/hostfs/hostfs_kern.c~uml-fix-hostfs-special-perm-handling
+> fs/hostfs/hostfs_kern.c ---
+> linux-2.6.11/fs/hostfs/hostfs_kern.c~uml-fix-hostfs-special-perm-handling	2
+>005-03-22 20:10:07.000000000 +0100 +++
+> linux-2.6.11-paolo/fs/hostfs/hostfs_kern.c	2005-03-22 20:12:45.000000000
+> +0100 @@ -806,15 +806,21 @@ int hostfs_permission(struct inode *ino,
+>  	char *name;
+>  	int r = 0, w = 0, x = 0, err;
+>
+> -	if(desired & MAY_READ) r = 1;
+> -	if(desired & MAY_WRITE) w = 1;
+> -	if(desired & MAY_EXEC) x = 1;
+> +	if (desired & MAY_READ) r = 1;
+> +	if (desired & MAY_WRITE) w = 1;
+> +	if (desired & MAY_EXEC) x = 1;
+>  	name = inode_name(ino, 0);
+> -	if(name == NULL) return(-ENOMEM);
+> -	err = access_file(name, r, w, x);
+> +	if (name == NULL) return(-ENOMEM);
+> +
+> +	if (S_ISCHR(ino->i_mode) || S_ISBLK(ino->i_mode) ||
+> +			S_ISFIFO(ino->i_mode) || S_ISSOCK(ino->i_mode))
+> +		err = 0;
+> +	else
+> +		err = access_file(name, r, w, x);
+>  	kfree(name);
+> -	if(!err) err = generic_permission(ino, desired, NULL);
+> -	return(err);
+> +	if(!err)
+> +		err = generic_permission(ino, desired, NULL);
+> +	return err;
+>  }
+>
+>  int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
+> _
 
 
 -------------------------------------------------------
