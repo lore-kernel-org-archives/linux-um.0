@@ -1,9 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200312180115.hBI1FAkS007918@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Debug uml kernel won't boot (VFS: Unable to mount root fs) 
-In-Reply-To: Your message of "Mon, 15 Dec 2003 09:04:37 PST."
-             <20031215170437.73387.qmail@web10402.mail.yahoo.com> 
-References: <20031215170437.73387.qmail@web10402.mail.yahoo.com> 
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AWmZr-0008PP-5p
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:03:43 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1AWmZp-0001xd-5m
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 17:03:41 -0800
+Message-Id: <200312180119.hBI1JBkS008102@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: [PATCH]Modules support in 2.6: reaching the complete fix 
+In-Reply-To: Your message of "Wed, 17 Dec 2003 18:51:18 +0100."
+             <200312171851.18353.blaisorblade_spam@yahoo.it> 
+References: <200312131828.03645.blaisorblade_spam@yahoo.it> <200312132019.hBDKJ8rL002905@ccure.user-mode-linux.org>  <200312171851.18353.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -17,24 +26,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Dec 2003 20:15:10 -0500
-To: Joydeep Sen Sarma <jsensarma@yahoo.com>, "James S. Johnson" <jjohnson@eclipse.ncsc.mil>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 17 Dec 2003 20:19:11 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-jsensarma@yahoo.com said:
-> The regular uml kernel worked fine till i turned on the debug option.
-> Kernel version is 2.4.22 and I applied uml patch 2.4.22-6 to it.
+blaisorblade_spam@yahoo.it said:
+> If not, I can just patch this way scripts/Makefile.lib: 
 
-jjohnson@eclipse.ncsc.mil said:
-> When I try to run a UML kernel as root, using a real partition as the
-> UML root  filesystem, it reports that the filesystem is corrupted and
-> goes into single  user mode.
->
-> The UML kernel is 2.4.22 with uml-patch-2.4.22-6 applied.
+This seems promising.  Can the new infrastructure be put in arch/um/Makefile?
 
-For grins, can you try 2.4.22-5 and see if it's any better?  Looking through
-my mail I see a couple of complaints about things newly broken in -6 and
-I'd like to see if these are some more.
+This would isolate it nicely to UML since it's the only arch which needs it.
+
+Although, thinking about this some more, this isn't the right way to do it
+in the long run.  Ultimately, the userspace stuff will be confined to 
+arch/um/os, along with the userspace CFLAGS.  So, the arch/um/os/Makefile
+will contain this nonsense, and nothing outside there will have to worry
+about it.
+
+So, if you want to sign up to a longer project, you might start moving the
+userspace stuff into arch/um/os-Linux instead of trying to fix the build.
 
 				Jeff
 
