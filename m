@@ -1,18 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ChSxk-00017X-MN for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Dec 2004 05:25:04 -0800
+	id 1ChSzC-0001Ac-6S for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Dec 2004 05:26:34 -0800
 Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1ChSxi-0003em-TK for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Dec 2004 05:25:04 -0800
-Message-ID: <41CAC727.9030102@fujitsu-siemens.com>
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1ChSzB-0004bo-0F for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Dec 2004 05:26:34 -0800
+Received: from [172.25.177.129] ([172.25.177.129])
+	by trolli.pdb.fsc.net (8.11.6/8.11.6) with ESMTP id iBNDQTA09263
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 23 Dec 2004 14:26:29 +0100
+Message-ID: <41CAC781.1030903@fujitsu-siemens.com>
 From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
 Subject: [Fwd: Re: [uml-devel] Memory corruption/errors?]
-Content-Type: multipart/mixed; boundary="------------010501010801080700030202"
+Content-Type: multipart/mixed; boundary="------------040106020404080508040500"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,56 +28,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Dec 2004 14:24:55 +0100
+Date: Thu, 23 Dec 2004 14:26:25 +0100
 To: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Peter <peter.spamcatcher@rimuhosting.com>
 
 This is a multi-part message in MIME format.
---------------010501010801080700030202
+--------------040106020404080508040500
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-I'm forwarding this to the list.
+I'm forwarding this to the list, because I did a "Reply to all"
+missing the fact, that the list wasn't CC'ed
 
 Bodo
 
---------------010501010801080700030202
+--------------040106020404080508040500
 Content-Type: message/rfc822; name="Re: [uml-devel] Memory corruption/errors?"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
 	filename="Re: [uml-devel] Memory corruption/errors?"
 
-Received: from abgzex5e.abg.fsc.net ([172.25.159.229]) by ABGEX01E.abg.fsc.net
-	with Microsoft SMTPSVC(6.0.3790.211); 
-	Thu, 23 Dec 2004 03:04:19 +0100
-Received: from pdbzex1e.pdb.fsc.net ([172.25.96.71]) by abgzex5e.abg.fsc.net
-	with Microsoft SMTPSVC(6.0.3790.211); 
-	Thu, 23 Dec 2004 03:04:18 +0100
-Received: from trolli.pdb.fsc.net ([172.25.97.20]) by pdbzex1e.pdb.fsc.net
-	with Microsoft SMTPSVC(6.0.3790.211); 
-	Thu, 23 Dec 2004 03:04:17 +0100
-Received: from dgate2.fujitsu-siemens.com (pdbgate2d.pdb.fsc.net
-	[172.25.96.91])
-	by trolli.pdb.fsc.net (8.11.6/8.11.6) with ESMTP id iBN24HA11889
-	for <bstroesser@fujitsu-siemens.com>; Thu, 23 Dec 2004 03:04:17 +0100
-Received: from rimuhosting.com (69.90.33.248)
-	by dgate2.fujitsu-siemens.com with ESMTP; 23 Dec 2004 03:04:17 +0100
-X-SBRSScore: 3.5
-X-BrightmailFiltered: true
-X-Brightmail-Tracker: AAAAAgAAA+sAAAPp
-X-IronPort-AV: i="3.88,83,1102287600"; d="scan'208"; a="1195965:sNHT21769836"
-Received: from [192.168.1.103] (port-222-152-51-26.fastadsl.net.nz
-	[222.152.51.26]) (authenticated bits=0)
-	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id iBN23q5s015946
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-	Thu, 23 Dec 2004 02:03:57 GMT
-Message-ID: <41CA9812.2060505@rimuhosting.com>
-Date: Thu, 23 Dec 2004 23:04:02 +1300
-From: Peter <peter.spamcatcher@rimuhosting.com>
-User-Agent: Mozilla Thunderbird 0.9 (X11/20041127)
+Message-ID: <41CAC0EA.6080908@fujitsu-siemens.com>
+Date: Thu, 23 Dec 2004 13:58:18 +0100
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.3) Gecko/20040913
 X-Accept-Language: en-us, en
 MIME-Version: 1.0
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+To: Peter <peter.spamcatcher@rimuhosting.com>
 CC: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Memory corruption/errors?
 References: <63806.222.152.52.159.1103583370.squirrel@222.152.52.159>
@@ -82,59 +62,300 @@ References: <63806.222.152.52.159.1103583370.squirrel@222.152.52.159>
 	<41C9E847.2060405@fujitsu-siemens.com>
 	<41C9FD81.6000408@rimuhosting.com>
 	<41CA0002.6050802@fujitsu-siemens.com>
-In-Reply-To: <41CA0002.6050802@fujitsu-siemens.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	<41CA9812.2060505@rimuhosting.com>
+In-Reply-To: <41CA9812.2060505@rimuhosting.com>
+Content-Type: multipart/mixed; boundary="------------030906040306030103040707"
+
+This is a multi-part message in MIME format.
+--------------030906040306030103040707
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: peter.spamcatcher@rimuhosting.com
-X-OriginalArrivalTime: 23 Dec 2004 02:04:18.0399 (UTC)
-	FILETIME=[B5F81EF0:01C4E893]
 
-
-I really don't know what fxsr is.  But I think I have it.  My servers 
-are dual proc xeons.  2.6.8.1 with skas3 v7 (mostly).
-
-# cat /proc/cpuinfo  | grep fxsr
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
-mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
-mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
-mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
-mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
-
-So you can only reproduce the problem when your use the sighandler?  But 
-when you use your patch the problem is not triggered (even with the 
-sighandler)?
-
-I'd be happy to try a patch.  I only have production machines at the 
-moment, so I may not be able to restart one for a week or two until some 
-new ones arrive.
-
-Regards, Peter
-
-Bodo Stroesser wrote:
-> Peter wrote:
+Peter wrote:
 > 
->> I don't run TT mode UMLs.  So, no I haven't tried that.
->>
->> I don't know about the sighandler.  The program runs as it was listed. 
->> It is running on a 'regular' server (Debian, and/or WBL3) with other 
->> processes running.  And the host servers happen to be running other 
->> UMLs.  I don't know if that information helps.  (i.e. can a sighandler 
->> in another process on the UML or on the host cause this problem?)
->>
->> I'd be happy to try out a skas patch - preferably if it just applied 
->> to the guest ;)  To see if it fixes things or not.
->>
->> Regards, Peter
->>
-> I could try to create a patch, just for testing.
-> What machine is your host? It probably has fxsr?
+> I really don't know what fxsr is.  But I think I have it.  My servers 
+> are dual proc xeons.  2.6.8.1 with skas3 v7 (mostly).
 > 
-> Bodo
+> # cat /proc/cpuinfo  | grep fxsr
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
+> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
+> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
+> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
+> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
+> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe cid
+Yes. Here the machine tell us, that fxsr is available.
+> 
+> So you can only reproduce the problem when your use the sighandler?  But 
+> when you use your patch the problem is not triggered (even with the 
+> sighandler)?
+> 
+> I'd be happy to try a patch.  I only have production machines at the 
+> moment, so I may not be able to restart one for a week or two until some 
+> new ones arrive.
+> 
+> Regards, Peter
+> 
+> Bodo Stroesser wrote:
+> 
+>> Peter wrote:
+>>
+>>> I don't run TT mode UMLs.  So, no I haven't tried that.
+>>>
+>>> I don't know about the sighandler.  The program runs as it was 
+>>> listed. It is running on a 'regular' server (Debian, and/or WBL3) 
+>>> with other processes running.  And the host servers happen to be 
+>>> running other UMLs.  I don't know if that information helps.  (i.e. 
+>>> can a sighandler in another process on the UML or on the host cause 
+>>> this problem?)
+>>>
+>>> I'd be happy to try out a skas patch - preferably if it just applied 
+>>> to the guest ;)  To see if it fixes things or not.
+>>>
+>>> Regards, Peter
+>>>
+>> I could try to create a patch, just for testing.
+>> What machine is your host? It probably has fxsr?
+>>
+>> Bodo
+OK. Here it is! For testing only!
 
---------------010501010801080700030202--
+I've tested the patch on a XEON 2.4GHz, and AFAICS it works.
+But no guarantee!
+
+The errors with memtest2 no longer occur on my system.
+
+I have no machine without fxsr, thus I couldn't test that.
+When the patch is applied, don't forget to do
+     "make clean ARCH=um"
+before recompiling the kernel.Else you will get an
+inconsitent kernel that crashes.
+
+Bodo
+
+--------------030906040306030103040707
+Content-Type: text/plain;
+ name="testpatch-skas_fp"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="testpatch-skas_fp"
+
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+
+This patch is for testing only!
+
+It's a quick and dirty patch to verify, that wrong fp-context
+saving and restore really are the cause of errors in "memtest.c"
+It fixes the problem by:
+ - making have_fpx_regs accessible for other modules instead of
+   declaring it "static" in arch/um/os-Linux/sys-i386/registers.c
+ - Adding 1 to HOST_FP_SIZE to have room for the "status" (and magic)
+   field. Now skas.fp + skas.xfp combined have the size of
+   struct _fpstatus
+ - in arch/um/sys-i386/signal.c adding some code, that handles
+   the _fpstatus in sigcontext differently, depending on have_fpx_regs.
+   For (have_fpx_regs == 0), the _fpstatus simply is copied to/from
+   user from/to skas.fp. When writing to user, the status field is
+   created also.
+   For (have_fpx_regs == 1), when writing to user, the full _fpstatus
+   is created in skas.fp and skas.xfp, from the data found in skas.xfp.
+   Then it is copied to user. When reading, the full _fpstatus is read
+   to skas.fp and skas.xfp. Then, skas.xfp is reconstructed from this
+   data.
+
+---
+
+--- arch/um/os-Linux/sys-i386/registers.c.orig	2004-12-23 00:22:54.000000000 +0100
++++ arch/um/os-Linux/sys-i386/registers.c	2004-12-23 00:23:13.016000444 +0100
+@@ -17,7 +17,7 @@
+ static unsigned long exec_regs[HOST_FRAME_SIZE];
+ static unsigned long exec_fp_regs[HOST_FP_SIZE];
+ static unsigned long exec_fpx_regs[HOST_XFP_SIZE];
+-static int have_fpx_regs = 1;
++int have_fpx_regs = 1;
+ 
+ void init_thread_registers(union uml_pt_regs *to)
+ {
+--- arch/um/sys-i386/signal.c.orig	2004-12-23 00:17:19.000000000 +0100
++++ arch/um/sys-i386/signal.c	2004-12-23 11:41:41.928379633 +0100
+@@ -19,15 +19,37 @@
+ 
+ #include "skas.h"
+ 
++
++static inline unsigned short twd_i387_to_fxsr( unsigned short twd )
++{
++    unsigned int tmp; /* to avoid 16 bit prefixes in the code */
++
++    /* Transform each pair of bits into 01 (valid) or 00 (empty) */
++    tmp = ~twd;
++    tmp = (tmp | (tmp>>1)) & 0x5555; /* 0V0V0V0V0V0V0V0V */
++    /* and move the valid bits to the lower byte. */
++    tmp = (tmp | (tmp >> 1)) & 0x3333; /* 00VV00VV00VV00VV */
++    tmp = (tmp | (tmp >> 2)) & 0x0f0f; /* 0000VVVV0000VVVV */
++    tmp = (tmp | (tmp >> 4)) & 0x00ff; /* 00000000VVVVVVVV */
++    return tmp;
++}
++
++#define printk printf
++
+ static int copy_sc_from_user_skas(struct pt_regs *regs,
+ 				  struct sigcontext *from)
+ {
+   	struct sigcontext sc;
+-	unsigned long fpregs[HOST_FP_SIZE];
+-	int err;
++	struct _fpstate * fp = (struct _fpstate *)regs->regs.skas.fp;
++	int size, err, i;
++
++	if (have_fpx_regs)
++		size = sizeof(struct _fpstate);
++	else
++		size = sizeof(regs->regs.skas.fp);
+ 
+ 	err = copy_from_user(&sc, from, sizeof(sc));
+-	err |= copy_from_user(fpregs, sc.fpstate, sizeof(fpregs));
++	err |= copy_from_user(fp, sc.fpstate, size);
+ 	if(err)
+ 		return(err);
+ 
+@@ -48,23 +70,70 @@
+ 	REGS_EFLAGS(regs->regs.skas.regs) = sc.eflags;
+ 	REGS_SS(regs->regs.skas.regs) = sc.ss;
+ 
+-	err = ptrace_setfpregs(userspace_pid[0], fpregs);
+-	if(err < 0){
+-	  	printk("copy_sc_from_user_skas - PTRACE_SETFPREGS failed, "
+-		       "errno = %d\n", err);
+-		return(1);
++	if (have_fpx_regs) {
++	    *(unsigned short *)fp->_fxsr_env = (unsigned short)(fp->cw & 0xffff);
++	    *((unsigned short *)fp->_fxsr_env + 1) = (unsigned short)(fp->sw & 0xffff);
++	    *((unsigned short *)fp->_fxsr_env + 2) = twd_i387_to_fxsr(fp->tag & 0xffff);
++	    *((unsigned short *)fp->_fxsr_env + 3) = (unsigned short)(fp->cssel >> 16);
++	    fp->_fxsr_env[2] = fp->ipoff;
++	    fp->_fxsr_env[3] = fp->cssel & 0xffff;
++	    fp->_fxsr_env[4] = fp->dataoff;
++	    fp->_fxsr_env[5] = fp->datasel;
++	    for ( i=0; i<8; i++)
++		memcpy(fp->_fxsr_st+i, fp->_st+i, sizeof(struct _fpreg));
+ 	}
+ 
+ 	return(0);
+ }
+ 
++static inline unsigned long twd_fxsr_to_i387( struct _fpstate *fp)
++{
++    struct _fpxreg *st = fp->_fxsr_st;
++    unsigned long twd = fp->_fxsr_env[1] & 0x0000fffflu;
++    unsigned long tag;
++    unsigned long ret = 0xffff0000lu;
++    int i;
++
++    for ( i = 0 ; i < 8 ; i++, st++ ) {
++	if ( twd & 0x1 ) {
++	    switch ( st->exponent & 0x7fff ) {
++		case 0x7fff:
++		    tag = 2;
++		    break;
++		case 0x0000:
++		    if ( !st->significand[0] &&
++		         !st->significand[1] &&
++		         !st->significand[2] &&
++		         !st->significand[3] ) {
++			tag = 1;
++		    } else {
++			tag = 2;
++		    }
++		    break;
++		default:
++		    if ( st->significand[3] & 0x8000 ) {
++			tag = 0;
++		    } else {
++			tag = 2;
++		    }
++		    break;
++	    }
++	} else {
++	    tag = 3;
++	}
++	ret |= (tag << (2 * i));
++	twd = twd >> 1;
++    }
++    return ret;
++}
++
+ int copy_sc_to_user_skas(struct sigcontext *to, struct _fpstate *to_fp,
+ 			 struct pt_regs *regs)
+ {
+   	struct sigcontext sc;
+-	unsigned long fpregs[HOST_FP_SIZE];
++	struct _fpstate * fp = (struct _fpstate *)regs->regs.skas.fp;
+ 	struct faultinfo * fi = &current->thread.arch.faultinfo;
+-	int err;
++	int size, i;
+ 
+ 	sc.gs = REGS_GS(regs->regs.skas.regs);
+ 	sc.fs = REGS_FS(regs->regs.skas.regs);
+@@ -87,20 +156,30 @@
+ 	sc.err = fi->error_code;
+ 	sc.trapno = fi->trap_no;
+ 
+-	err = ptrace_getfpregs(userspace_pid[0], fpregs);
+-	if(err < 0){
+-	  	printk("copy_sc_to_user_skas - PTRACE_GETFPREGS failed, "
+-		       "errno = %d\n", err);
+-		return(1);
++	if (have_fpx_regs) {
++	    fp->cw = (unsigned long)*(unsigned short *)fp->_fxsr_env | 0xffff0000ul;
++	    fp->sw = (unsigned long)*((unsigned short *)fp->_fxsr_env+1) | 0xffff0000ul;
++	    fp->tag = twd_fxsr_to_i387(fp);
++	    fp->ipoff = fp->_fxsr_env[2];
++	    fp->cssel = fp->_fxsr_env[3] |
++			((unsigned long)*((unsigned short *)fp->_fxsr_env+3) << 16);
++	    fp->dataoff = fp->_fxsr_env[4];
++	    fp->datasel = fp->_fxsr_env[5];
++	    fp->status = (unsigned short)(fp->sw & 0xfffful);
++	    fp->magic = 0;
++	    for ( i=0; i<8; i++)
++		memcpy(fp->_st+i, fp->_fxsr_st+i, sizeof(struct _fpreg));
++	    size = sizeof(struct _fpstate);
++	}
++	else {
++	    *(unsigned long *)&fp->status = fp->sw;
++	    size = sizeof(regs->regs.skas.fp);
+ 	}
+ 	to_fp = (to_fp ? to_fp : (struct _fpstate *) (to + 1));
+ 	sc.fpstate = to_fp;
+ 
+-	if(err)
+-	  	return(err);
+-
+ 	return(copy_to_user(to, &sc, sizeof(sc)) ||
+-	       copy_to_user(to_fp, fpregs, sizeof(fpregs)));
++	       copy_to_user(to_fp, fp, size));
+ }
+ #endif
+ 
+--- arch/um/kernel/skas/util/mk_ptregs-i386.c.orig	2004-12-23 10:46:41.143243494 +0100
++++ arch/um/kernel/skas/util/mk_ptregs-i386.c	2004-12-23 11:08:01.272251951 +0100
+@@ -13,8 +13,9 @@
+ 	printf("#define __SKAS_PT_REGS_\n");
+ 	printf("\n");
+ 	printf("#define HOST_FRAME_SIZE %d\n", FRAME_SIZE);
++	/* This needs to have space for "status", too */
+ 	printf("#define HOST_FP_SIZE %d\n", 
+-	       sizeof(struct user_i387_struct) / sizeof(unsigned long));
++	       sizeof(struct user_i387_struct) / sizeof(unsigned long) + 1);
+ 	printf("#define HOST_XFP_SIZE %d\n", 
+ 	       sizeof(struct user_fxsr_struct) / sizeof(unsigned long));
+ 
+
+--------------030906040306030103040707--
+
+
+--------------040106020404080508040500--
 
 
 -------------------------------------------------------
