@@ -1,24 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AJ19g-0003TL-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 09 Nov 2003 17:47:48 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AJ19f-0000aR-1Y
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 09 Nov 2003 17:47:47 -0800
-Received: from ccure.user-mode-linux.org (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id hAA1Ye119457
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 9 Nov 2003 20:34:40 -0500
-Message-Id: <200311100155.hAA1tVxD012909@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] skas & /proc/mm in the host kernel, yet /proc/mm 'not found' 
-In-Reply-To: Your message of "Wed, 24 Sep 2003 12:47:16 EDT."
-             <Pine.LNX.4.58.0309241245150.27930@crystal.nuked.org> 
-References: <200309182037.h8IKbMEk028815@hongkong.cs.nmsu.edu> <20030919095020.294F93BCE4@home.petschge.de> <20030920173518.521B03BCE7@home.petschge.de> <Pine.LNX.4.58.0309220535000.28187@crystal.nuked.org> <200309232016.h8NKGNaK003251@ccure.karaya.com> <Pine.LNX.4.58.0309232330340.28187@crystal.nuked.org> <200309241619.h8OGJwaK006019@ccure.karaya.com>  <Pine.LNX.4.58.0309241245150.27930@crystal.nuked.org> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1AJ1MU-0006WY-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 09 Nov 2003 18:01:02 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AJ1MT-0002PR-9a
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 09 Nov 2003 18:01:01 -0800
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] umlgdb update 
+In-Reply-To: <200311100155.hAA1tRxD012904@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0311100259300.26553-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -29,22 +24,24 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 09 Nov 2003 20:55:31 -0500
-To: Rod Moffitt <rodlist@rod.info>
+Date: Mon, 10 Nov 2003 03:00:54 +0100 (CET)
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-rodlist@rod.info said:
-> What kind of test can I run on the host to verify that procmm does
-> indeed work? 
+On Sun, 9 Nov 2003, Jeff Dike wrote:
 
-Are you still having problems with this?
+> hno@marasystems.com said:
+> > Attached to this message is a slightly corrected and updated version
+> > of  umlgdb. 
+> 
+> Cool.  Do you want to give yourself credit at the top?  If so, send me a patch
+> for that.
 
-> If the host is OK, what possibly in the UML kernel configuration,
-> besides the obvious enabling of SKAS mode, is needed for SKAS and
-> procmm to work? 
+No credits needed. The changes are just minor patches to make ulmgdb work 
+properly..
 
-Nothing.
-				Jeff
+Regards
+Henrik
 
 
 
