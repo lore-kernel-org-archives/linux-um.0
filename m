@@ -1,16 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwdXH-000492-1O for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 00:39:55 -0800
-Received: from hongkong.cs.nmsu.edu ([128.123.64.160] ident=0)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Awd8w-0002mO-DF for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 00:14:46 -0800
-From: Ross Combs <rocombs@cs.nmsu.edu>
-Message-Id: <200402270829.i1R8TfAX014941@hongkong.cs.nmsu.edu>
-Subject: [uml-devel] Crash early in boot with 2.4.25+uml-patch-2.4.24-1
+	id 1Aweda-0005mj-Ai for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Feb 2004 01:50:30 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1AweTg-0006wO-KI
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Feb 2004 01:40:16 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Message-ID: <20040227092656.GA12168@bytesex.org>
+References: <20040226212655.GA5191@bytesex.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20040226212655.GA5191@bytesex.org>
+Subject: [uml-devel] Re: [patch] module symbol fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,72 +28,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 Feb 2004 02:29:41 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 27 Feb 2004 10:26:56 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-I've been trying to debug an early boot crash with 2.4.25 (x86 with
-UML running on Red Hat 7.3 with kernel 2.4.20-28.7.
+On Thu, Feb 26, 2004 at 10:26:55PM +0100, Gerd Knorr wrote:
+>   Hi,
+> 
+> recent gcc versions need this one ...
 
-The boot messages look like this when it dies:
+Another one of this kind (without this gcc may optimizes away the static
+declared but unreferenced stuff, resulting in initrd= and --help options
+not working any more for example ...).
 
- Checking for the skas3 patch in the host...not found
- Checking for /proc/mm...not found
- make_umid - mkstemp failed, errno = 13
- tracing thread pid = 22242
- Segmentation fault
+  Gerd
 
-If I keep everything the same except not call chroot() in my startup
-script it boots fine (until mounting the root fs which would need
-modified paths to work without chroot).  The messages look like this
-when it works:
-
- Checking for the skas3 patch in the host...not found
- Checking for /proc/mm...not found
- make_umid - mkstemp failed, errno = 13
- Checking for /dev/anon on the host...Not available (open failed with errno 2)
- Checking for /dev/anon on the host...Not available (open failed with errno 2)
- Checking for /dev/anon on the host...Not available (open failed with errno 2)
- Checking for /dev/anon on the host...Not available (open failed with errno 2)
- make_umid - mkstemp failed, errno = 13
- Linux version 2.4.25-1um (nospam@nospam.com) (gcc version 3.3.3 20040125 (prerelease) (Debian)) #11 Fri Feb 27 02:23:25 EST 2004
- On node 0 totalpages: 16384
- zone(0): 16384 pages.
- zone(1): 0 pages.
- ...
-
-The mkstemp permission problem with the pidfile has always been there
-because there is only one writable place in the chrooted environment,
-but it has never caused a problem before.
-
-It looks like the /dev/anon checks are somehow skipped when using
-chroot and it jumps directly to starting the tracing thread which then
-dies after receiving a SIGUSR1.
-
-I've tried adding more debug messages to the boot sequence.  They
-didn't tell me a whole lot but here is the sequence when it dies:
-
- ...
- Postsetup completed
- tracing thread pid = 21888
- after clone
- after ptrace
- after debug
- ready to loop
- after waitpid
- got sig 10
- before do_proc_op
- before switch
- got REBOOT or HALT
- Segmentation fault
-
-
-I really have no clue what is causing this and the only factor I have
-found to make a difference doesn't make sense.
-
-Has anyone else seen this?  Do you have any ideas?
-
-Thanks,
--Ross
+--- linux-um-2.6.3/arch/um/include/init.h.used	2004-02-27 09:34:57.874205081 +0100
++++ linux-um-2.6.3/arch/um/include/init.h	2004-02-27 09:44:32.415275725 +0100
+@@ -40,9 +40,9 @@
+ typedef int (*initcall_t)(void);
+ typedef void (*exitcall_t)(void);
+ 
+-#define __init          __attribute__ ((__section__ (".text.init")))
++#define __init          __attribute__ ((used,__section__ (".text.init")))
+ #define __exit          __attribute__ ((unused, __section__(".text.exit")))
+-#define __initdata      __attribute__ ((__section__ (".data.init")))
++#define __initdata      __attribute__ ((used,__section__ (".data.init")))
+ 
+ #endif
+ 
+@@ -94,11 +94,11 @@
+  * Mark functions and data as being only used at initialization
+  * or exit time.
+  */
+-#define __uml_init_setup	__attribute__ ((unused,__section__ (".uml.setup.init")))
+-#define __uml_setup_help	__attribute__ ((unused,__section__ (".uml.help.init")))
+-#define __uml_init_call		__attribute__ ((unused,__section__ (".uml.initcall.init")))
+-#define __uml_postsetup_call	__attribute__ ((unused,__section__ (".uml.postsetup.init")))
+-#define __uml_exit_call		__attribute__ ((unused,__section__ (".uml.exitcall.exit")))
++#define __uml_init_setup	__attribute__ ((used,__section__ (".uml.setup.init")))
++#define __uml_setup_help	__attribute__ ((used,__section__ (".uml.help.init")))
++#define __uml_init_call		__attribute__ ((used,__section__ (".uml.initcall.init")))
++#define __uml_postsetup_call	__attribute__ ((used,__section__ (".uml.postsetup.init")))
++#define __uml_exit_call		__attribute__ ((used,__section__ (".uml.exitcall.exit")))
+ 
+ #endif /* _LINUX_UML_INIT_H */
+ 
 
 
 -------------------------------------------------------
