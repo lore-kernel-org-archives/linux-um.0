@@ -2,19 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BgJgi-0000JU-Hx for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jul 2004 01:46:28 -0700
-Received: from letters.cs.ucsb.edu ([128.111.41.13])
+	id 1BgPpQ-0003p6-Jm for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Jul 2004 08:19:52 -0700
+Received: from mail-relay-4.tiscali.it ([212.123.84.94]
+	helo=sparkfist.tiscali.it)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1BgJgi-0007kR-4K for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jul 2004 01:46:28 -0700
-Message-ID: <40E520AE.8040302@cs.ucsb.edu>
-From: "Lamia M.Youseff" <Lyouseff@cs.ucsb.edu>
+	id 1BgPpP-0003tu-UT for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Jul 2004 08:19:52 -0700
+Received: from damiano (62.10.86.52) by sparkfist.tiscali.it (7.1.021.3)
+	id 40D9B09D002A292B for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 2 Jul 2004 17:19:22 +0200
+Message-ID: <000801c46048$00bd3c10$0100a8c0@damiano>
+From: "Rosario Borda" <rosario.borda@sinervis.com>
 MIME-Version: 1.0
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] does O_DIRECT hinder greatly file reading performance but
-	not writing??
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C46058.C2DDF090"
+Subject: [uml-devel] more than 512 Mb
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,99 +29,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 02 Jul 2004 01:45:34 -0700
-To: lyouseff@cs.ucsb.edu, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 2 Jul 2004 17:19:41 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body>
-<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-<title></title>
-          Hi All,<br>
- 
-<pre class="moz-signature" cols="$mailwrapcol">I am kind of new to UML and I am experiencing a very strange performance hinder with it.
-I am running two benchmarks; one that writes a 50Mbyte file and the other one reads a 50Mbyte file.
-I tried the benchmarks with and without setting the O_DIRECT flag, in which cases the whole task is done in a matter of seconds(10-30 seconds) except when reading the file with O_DIRECT flag on. In this case, it takes 18-20 min!!!
 
-I am running UML 2.4.19 on top of kernel 2.4.25.  I have time output like that (average of 20 runs) 
-</pre>
- 
-<table cellpadding="2" cellspacing="2" border="1" width="100%">
-   <tbody>
-     <tr>
-       <td valign="top"><b><font color="#000000">Operation<br>
-       </font></b></td>
-       <td valign="top"><b><font color="#000000">User Time (sec)<br>
-       </font></b></td>
-       <td valign="top"><b><font color="#000000">Sys Time(sec)<br>
-       </font></b></td>
-       <td valign="top"><b><font color="#000000">Wall Clock Time(sec)<br>
-       </font></b></td>
-     </tr>
-     <tr>
-       <td valign="top">       
-      <pre class="moz-signature" cols="$mailwrapcol"><b><font
- color="#000000">Write Without O_DIRECT</font></b></pre>
-       </td>
-       <td valign="top"><font color="#000000">5.612000<br>
-       </font></td>
-       <td valign="top"><font color="#000000">0.117500<br>
-       </font></td>
-       <td valign="top"><font color="#000000">27.164500<br>
-       </font></td>
-     </tr>
-     <tr>
-       <td valign="top">       
-      <pre class="moz-signature" cols="$mailwrapcol"><b><font
- color="#000000">Write With O_DIRECT</font></b></pre>
-       </td>
-       <td valign="top"><font color="#000000">10.007000<br>
-       </font></td>
-       <td valign="top"><font color="#000000">0.017000<br>
-       </font></td>
-       <td valign="top"><font color="#000000">22.199500<br>
-       </font></td>
-     </tr>
-     <tr>
-       <td valign="top">       
-      <pre class="moz-signature" cols="$mailwrapcol"><b><font
- color="#000000">Read without O_DIRECT </font></b></pre>
-       </td>
-       <td valign="top"><font color="#000000">3.035000<br>
-       </font></td>
-       <td valign="top"><font color="#000000">0.091000<br>
-       </font></td>
-       <td valign="top"><font color="#000000">7.760000<br>
-       </font></td>
-     </tr>
-     <tr>
-       <td valign="top">       
-      <pre class="moz-signature" cols="$mailwrapcol"><b><font
- color="#000000">Read With O_DIRECT</font></b></pre>
-       </td>
-       <td valign="top"><b><font color="#ff0000">21.492000<br>
-       </font></b></td>
-       <td valign="top"><b><font color="#ff0000">29.680000<br>
-       </font></b></td>
-       <td valign="top"><b><font color="#ff0000">1133.054000<br>
-       </font></b></td>
-     </tr>
-   
-  </tbody> 
-</table>
- 
-<pre class="moz-signature" cols="$mailwrapcol">I would appreciate it very much if somebody would explain to me how to solve that strange performance problem, or even explain why does it happen for reading with O_DIRECT but not without !!??
+This is a multi-part message in MIME format.
 
-Thanks allot,
-Lamia Youseff
--- </pre>
- 
-</body>
-</html>
+------=_NextPart_000_0005_01C46058.C2DDF090
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+ Hi all,
+ how to utilize more than 512 Mb on a UML without slowing down =
+process(HIGHMEM support)?
+ The host machine is a dual Xeon (4 cpus with hypertrading) with 4Gb of =
+ram.
+=20
+ Thanks in advance.
+ R.B.
+
+
+PS For a response i must be a subscriber? Thanks.
+------=_NextPart_000_0005_01C46058.C2DDF090
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>&nbsp;Hi all,<BR> how to utilize more than 512 =
+Mb on a UML=20
+without slowing down process(HIGHMEM support)?<BR> The host machine is a =
+dual=20
+Xeon (4 cpus with hypertrading) with 4Gb of ram.<BR> <BR> Thanks in =
+advance.<BR>=20
+R.B.<BR>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>PS For a response i must be a =
+subscriber?=20
+Thanks.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0005_01C46058.C2DDF090--
 
 
 
