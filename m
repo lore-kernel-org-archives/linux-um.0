@@ -2,17 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19zdvm-0003nx-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 08:09:22 -0700
-Received: from bay7-f103.bay7.hotmail.com ([64.4.11.103] helo=hotmail.com)
+	id 19zeHL-0007xt-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 08:31:39 -0700
+Received: from [128.123.64.160] (helo=hongkong.cs.nmsu.edu ident=0)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19zdvl-0000tl-Lx
-	for User-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 08:09:21 -0700
-From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
-Subject: Re: [uml-devel] Problem with 2.4.22-um4
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <BAY7-F103PPYPeOqp2N00015916@hotmail.com>
+	id 19zeHK-0000p2-7s
+	for User-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 08:31:38 -0700
+From: Ross Combs <rocombs@cs.nmsu.edu>
+Message-Id: <200309171531.h8HFVT54015182@hongkong.cs.nmsu.edu>
+Subject: [uml-devel] Re: Problem with 2.4.22-um4
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -23,47 +21,30 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Sep 2003 15:08:49 +0000
-To: petschge@gmx.de
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 17 Sep 2003 09:31:29 -0600
+To: User-mode-linux-devel@lists.sourceforge.net
 
-petschge@gmx.de wrote:
 
->Checking that host ptys support output SIGIO...<0>Kernel panic: check_sigio 
->: read failed, err = -1
->
->In idle task - not syncing
->
->The host kernel is a 2.4.18 kernel patched by SuSE _without_ skas support. 
->gcc version is 2.95.3.
->
->Is this a know bug?
+Patrick,
 
-Jeff didn't like a part of my patch, but didn't back out all of the related 
-bits.  I've sent him a patch that should fix this issue, but havn't heard 
-back if he likes it any better.
+You are running into a different problem than the ubd_user stuff.
 
-In the mean time you can hand apply this diff to 
-arch/um/kernel/sigio_user.c:tty_output()
+Somehow your host kernel is returning an error on tty read.  It looks
+like the error might be "Permission denied".  You can try changing
+the sigio_user.c::tty_output() function to look like this at the end:
 
--       else if(n == -EAGAIN) printk("No, enabling workaround\n");
--       else panic("check_sigio : read failed, err = %d\n", n);
-+       else if(errno == EAGAIN) printk("No, enabling workaround\n");
-+       else panic("check_sigio : read failed, errno = %d\n", errno);
+        ...
+        else if(n == -EAGAIN) printk("No, enabling workaround\n");
+        else printk(KERN_ERR "check_sigio : slave read failed, err = %d\n", -n);
 
-Steve Schmidtke
+(Basically change the last like from a panic to a printk and negate
+the variable n.)
 
->Is 2.4.22-um4 unusable without skas? Is this related to the patch in 
->arch/um/drivers/ubd_user.c? (Neither the patch from Ross Combs nor the 
->patch named ubd_start_io_thread.diff from Steve Schmidtke fix this error)
->
->mfg,
->Patrick "Petschge" Kilian
+I see a problem in the file though it probably isn't causing any
+problems right now.  Doesn't the variable got_sigio need to be marked
+volatile?
 
-_________________________________________________________________
-MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*.  
-http://join.msn.com/?page=features/virus
-
+-Ross
 
 
 -------------------------------------------------------
