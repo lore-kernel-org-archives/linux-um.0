@@ -1,11 +1,41 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Henrik Nordstrom <uml@henrik.marasystems.com>
-Subject: Re: [uml-devel] uml responsivenes or "AS vs DEADLINE Scheduler on
-	uml-host" - was: [uml-user] Network lags
-In-Reply-To: <1fb601c4219d$ee592c20$2000000a@schlepptopp>
-Message-ID: <Pine.LNX.4.44.0404140254330.20676-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BDhfF-0000nX-1W for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Apr 2004 03:30:41 -0700
+Received: from ns.lbox.cz ([62.129.50.35])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BDhfE-0005CF-AH for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Apr 2004 03:30:40 -0700
+Received: from mail.cubenet.cz (mail.cubenet.cz [62.129.60.162])
+	by ns.lbox.cz (8.11.6/8.11.6) with ESMTP id i3EAUZP07068
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 14 Apr 2004 12:30:35 +0200
+Received: from linuxbox.linuxbox.cz ([10.76.66.10])
+	by mail.cubenet.cz (8.11.6/8.11.6) with ESMTP id i3EAUWP29585
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 14 Apr 2004 12:30:32 +0200
+Received: from linuxbox.linuxbox.cz (localhost.localdomain [127.0.0.1])
+	by linuxbox.linuxbox.cz (8.12.8/8.12.8) with ESMTP id i3EASC42002582
+	for <user-mode-linux-devel@lists.sourceforge.net.OUTNOCOPY>;
+	Wed, 14 Apr 2004 12:28:12 +0200
+Received: (from mail@localhost)
+	by linuxbox.linuxbox.cz (8.12.8/8.12.8/Submit) id i3EASCBe002578
+	for user-mode-linux-devel@lists.sourceforge.net.OUTNOCOPY;
+	Wed, 14 Apr 2004 12:28:12 +0200
+Received: from [10.76.66.13] (develbox.linuxbox.cz [10.76.66.13])
+	by linuxbox.linuxbox.cz (8.12.8/8.12.8) with ESMTP id i3EAS642002546
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 14 Apr 2004 12:28:06 +0200
+Subject: Re: [uml-devel] openswan @ missing symbols strstr & memset
+From: Nikola Ciprich <extmaillist@linuxbox.cz>
+In-Reply-To: <200404131947.02463.blaisorblade_spam@yahoo.it>
+References: <1081875793.19343.90.camel@develbox>
+	<200404131947.02463.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <1081938622.19343.99.camel@develbox>
+Mime-Version: 1.0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,54 +47,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Apr 2004 03:02:45 +0200 (CEST)
-To: roland <for_spam@gmx.de>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, Jeff Dike <jdike@addtoit.com>, Joern Bredereck <jb@bw-networx.net>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 14 Apr 2004 12:30:22 +0200
+Content-Transfer-Encoding: 8bit
+To: UML devel list <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, 13 Apr 2004, roland wrote:
-
-> mmhh - i didn`t really recognize that i got a big improvement of i/o
-> performance in general. i just recognized, that my uml was more
-> responsive to ping (no more "sendmsg: no buffer space available,no
-> network lags of values like 60s anymore). btw: my uml didn`t access the
-> disk at all, while answering the pings (why should it? all that
-> network-stuff happens in uml-kernel space)
-
-Heavy host I/O can cause the inactive portions of your UMLs to be swapped 
-out..
-
-> thats a point. will try that if i find some time. does somebody have some more details
-> what was changed exactly? (i dont know much about bitkeeper - but maybe i can view the
-> changelog like in cvs, for every single file?)
-
-You can view which changesets applies to a given file, and from there the
-log messages of those, much the same as in CVS but not as simple 
-operation.
-
-> i think he guessed wrong. it doesnt matter if my uml is idle or not - no difference
-> if i run a vmstat (and some more) inside my uml( i.e. it is not idle)
-
-only running a vmstat is effectively idle.
-
-you need to be running something which really uses the CPU within your UML 
-to not make it idle. A simple "perl -e '$i++ while(1);'" should do nicely 
-as a CPU hog..
-
-> while pinging. the effect i experience doesnt`t seem to be an effect
-> which is caused by a uml being swapped out and in again - because i
-> didn`t see a single byte being swapped out/in on the host. so this
-> effect remains....strange for me.
-
-What did "vmstat 1" on the host report for the period around your strange
-ping results?
-
-Are you using TT or SKAS? If TT then swapping of UML does not show up in
-swap in/out as the UML is then running from memory mapped files and not
-using the host swap. I think SKAS uses the host swap for the UML memory,
-but I am not sure..
-
-Regards
-Henrik
+thanks for reply, I took a look to user_syms.c of version I'm using, and
+really both memset and strstr are exported, but with
+EXPORT_SYMBOL_PROTO. whats the difference between EXPORT_SYMBOL and
+EXPORT_SYMBOL_PROTO? and it did not work, so should I just remove
+_PROTO?
+thanks in advance
+V Út, 13. 04. 2004 v 19:47, BlaisorBlade píše:
+> Alle 19:03, martedì 13 aprile 2004, Nikola Ciprich ha scritto:
+> > Hello, I was trying to get openswan working under UML, module compiles
+> > fine, but trying to load it fails with complaint about unresolved symbol
+> > memset and strstr
+> > I've found that those symbols are exported in i386 ksyms, but not in uml
+> > ksyms, so I've created little patch (enclosed), and everythink seems to
+> > work well.
+> 
+> > I'd like to ask, if my solution is 'clean' and if yes,
+> Yes, it is clean (just it should go inside user_syms.c), but IIRC it has been 
+> applied to late 2.4 & 2.6 UML kernels (I could be wrong). Check against 
+> latest version and if it is not there (look inside user_syms.c) send the 
+> patch, after making the change in user_syms.c, to Jeff Dike.
+> 
+> Bye
 
 
 
@@ -72,7 +80,7 @@ Henrik
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+administration.http://ads.osdn.com/?ad_id70&alloc_id638&op�k
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
