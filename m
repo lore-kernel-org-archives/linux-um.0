@@ -1,17 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZEFh-0002MO-SV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 12:05:33 -0800
+	id 1CZEFn-0002Md-J7 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 12:05:39 -0800
 Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CZEFg-0005Q7-HM for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 12:05:33 -0800
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CZEFm-0000l0-Rs for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 12:05:39 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041130200845.2C5058BAFE@zion.localdomain>
-Subject: [uml-devel] [patch 1/2] Uml - first part rework of run_helper() and
-	users.
+Message-Id: <20041130200848.2A3DD8BAFE@zion.localdomain>
+Subject: [uml-devel] [patch 2/2] uml: finish fixing run_helper failure path
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,81 +22,147 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 30 Nov 2004 21:08:44 +0100
+Date: Tue, 30 Nov 2004 21:08:48 +0100
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, bstroesser@fujitsu-siemens.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+Fix some bugs left in the failure path of run_helper by the previous patch: it
+was missing one
 
-Fixed a file descriptor leak in the network driver when changing an IP
-address.
+os_close_file(fds[1])
 
-Fixed the error handling in run_helper.
+which is conditional. To use the goto handling model, I set the fd to -1 if
+it's already closed (I don't want to check if keeping one more pipe-end open
+is no problem).
 
+Also do some cosmethic cleanup:
 
-Paolo notes:
+* "err" was what we returned even on success, so just use a neutral "ret".
 
-Actually, this is part one of the change, the exact one extracted from Jeff
-Dike's incrementals tree before 2.6.9-rc big UML merge.
+* use tabs, not spaces.
 
-There is some changes must be done, so I'm also sending a second patch with
-this one, too. Separated for tracking purposes.
-
-Don't send this pair of ones to Linus before Jeff ACK's it - just put into -mm for now.
+* a little more comments.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.10-rc-paolo/arch/um/drivers/net_user.c |    3 ++-
- linux-2.6.10-rc-paolo/arch/um/kernel/helper.c    |   14 +++++---------
- 2 files changed, 7 insertions(+), 10 deletions(-)
+ linux-2.6.10-rc-paolo/arch/um/drivers/net_user.c |    3 -
+ linux-2.6.10-rc-paolo/arch/um/kernel/helper.c    |   48 ++++++++++++-----------
+ 2 files changed, 29 insertions(+), 22 deletions(-)
 
-diff -puN arch/um/drivers/net_user.c~uml-orig-helper-rework arch/um/drivers/net_user.c
---- linux-2.6.10-rc/arch/um/drivers/net_user.c~uml-orig-helper-rework	2004-11-30 20:43:45.701552240 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/drivers/net_user.c	2004-11-30 21:08:14.756221984 +0100
-@@ -173,8 +173,9 @@ static int change_tramp(char **argv, cha
- 	pe_data.stdout = fds[1];
- 	pid = run_helper(change_pre_exec, &pe_data, argv, NULL);
+diff -puN arch/um/kernel/helper.c~uml-finish-fixing-helper-failure-path arch/um/kernel/helper.c
+--- linux-2.6.10-rc/arch/um/kernel/helper.c~uml-finish-fixing-helper-failure-path	2004-11-30 21:08:16.526952792 +0100
++++ linux-2.6.10-rc-paolo/arch/um/kernel/helper.c	2004-11-30 21:08:16.530952184 +0100
+@@ -49,14 +49,14 @@ static int helper_child(void *arg)
+ 	return(0);
+ }
  
--	os_close_file(fds[1]);
- 	read_output(fds[0], output, output_len);
-+	os_close_file(fds[0]);
-+	os_close_file(fds[1]);
+-/* XXX The alloc_stack here breaks if this is called in the tracing thread */
+-
++/* Returns either the pid of the child process we run or -E* on failure.
++ * XXX The alloc_stack here breaks if this is called in the tracing thread */
+ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv,
+ 	       unsigned long *stack_out)
+ {
+ 	struct helper_data data;
+ 	unsigned long stack, sp;
+-	int pid, fds[2], err, n;
++	int pid, fds[2], ret, n;
  
- 	CATCH_EINTR(err = waitpid(pid, NULL, 0));
- 	return(pid);
-diff -puN arch/um/kernel/helper.c~uml-orig-helper-rework arch/um/kernel/helper.c
---- linux-2.6.10-rc/arch/um/kernel/helper.c~uml-orig-helper-rework	2004-11-30 20:43:45.703551936 +0100
-+++ linux-2.6.10-rc-paolo/arch/um/kernel/helper.c	2004-11-30 21:08:14.755222136 +0100
-@@ -94,24 +94,20 @@ int run_helper(void (*pre_exec)(void *),
+ 	if((stack_out != NULL) && (*stack_out != 0))
+ 		stack = *stack_out;
+@@ -64,16 +64,16 @@ int run_helper(void (*pre_exec)(void *),
+ 	if(stack == 0)
+ 		return(-ENOMEM);
+ 
+-	err = os_pipe(fds, 1, 0);
+-	if(err < 0){
+-		printk("run_helper : pipe failed, err = %d\n", -err);
++	ret = os_pipe(fds, 1, 0);
++	if(ret < 0){
++		printk("run_helper : pipe failed, ret = %d\n", -ret);
+ 		goto out_free;
+ 	}
+ 
+-	err = os_set_exec_close(fds[1], 1);
+-	if(err < 0){
+-		printk("run_helper : setting FD_CLOEXEC failed, err = %d\n",
+-		       -err);
++	ret = os_set_exec_close(fds[1], 1);
++	if(ret < 0){
++		printk("run_helper : setting FD_CLOEXEC failed, ret = %d\n",
++		       -ret);
+ 		goto out_close;
+ 	}
+ 
+@@ -85,30 +85,36 @@ int run_helper(void (*pre_exec)(void *),
+ 	pid = clone(helper_child, (void *) sp, CLONE_VM | SIGCHLD, &data);
+ 	if(pid < 0){
+ 		printk("run_helper : clone failed, errno = %d\n", errno);
+-		err = -errno;
++		ret = -errno;
+ 		goto out_close;
+ 	}
+ 
+ 	os_close_file(fds[1]);
+-	n = os_read_file(fds[0], &err, sizeof(err));
++	fds[1] = -1;
++
++	/*Read the errno value from the child.*/
++	n = os_read_file(fds[0], &ret, sizeof(ret));
  	if(n < 0){
- 		printk("run_helper : read on pipe failed, err = %d\n", -n);
- 		err = n;
--		goto out_kill;
-+		os_kill_process(pid, 1);
+-		printk("run_helper : read on pipe failed, err = %d\n", -n);
+-		err = n;
++		printk("run_helper : read on pipe failed, ret = %d\n", -n);
++		ret = n;
+ 		os_kill_process(pid, 1);
  	}
  	else if(n != 0){
  		CATCH_EINTR(n = waitpid(pid, NULL, 0));
- 		pid = -errno;
+-		pid = -errno;
++		ret = -errno;
++	} else {
++		ret = pid;
  	}
-+	err = pid;
+-	err = pid;
  
--	if(stack_out == NULL) free_stack(stack, 0);
--        else *stack_out = stack;
--	return(pid);
--
-- out_kill:
--	os_kill_process(pid, 1);
-  out_close:
+- out_close:
++out_close:
++	if (fds[1] != -1)
++		os_close_file(fds[1]);
  	os_close_file(fds[0]);
--	os_close_file(fds[1]);
-  out_free:
--	free_stack(stack, 0);
-+	if(stack_out == NULL)
-+		free_stack(stack, 0);
-+        else *stack_out = stack;
- 	return(err);
+- out_free:
++out_free:
+ 	if(stack_out == NULL)
+ 		free_stack(stack, 0);
+-        else *stack_out = stack;
+-	return(err);
++	else *stack_out = stack;
++	return(ret);
+ }
+ 
+ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags, 
+@@ -139,7 +145,7 @@ int run_helper_thread(int (*proc)(void *
+ 			       "0x%x\n", status);
+ 		free_stack(stack, stack_order);
+ 	}
+-        else *stack_out = stack;
++	else *stack_out = stack;
+ 	return(pid);
+ }
+ 
+diff -puN arch/um/drivers/net_user.c~uml-finish-fixing-helper-failure-path arch/um/drivers/net_user.c
+--- linux-2.6.10-rc/arch/um/drivers/net_user.c~uml-finish-fixing-helper-failure-path	2004-11-30 21:08:16.528952488 +0100
++++ linux-2.6.10-rc-paolo/arch/um/drivers/net_user.c	2004-11-30 21:08:16.530952184 +0100
+@@ -177,7 +177,8 @@ static int change_tramp(char **argv, cha
+ 	os_close_file(fds[0]);
+ 	os_close_file(fds[1]);
+ 
+-	CATCH_EINTR(err = waitpid(pid, NULL, 0));
++	if (pid > 0)
++		CATCH_EINTR(err = waitpid(pid, NULL, 0));
+ 	return(pid);
  }
  
 _
