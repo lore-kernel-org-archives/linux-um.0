@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BbiyT-0003jN-Op for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:45:49 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BbiyT-0008IC-6J for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:45:49 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Uml PATCH for 2.6.7
-References: <200406181348.58968.blaisorblade_spam@yahoo.it>
-	<40D45DFA.707@morpheux.org>
-In-Reply-To: <40D45DFA.707@morpheux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 1Bbj0S-0003q8-QK for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 09:47:52 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Bbj0S-0000Ez-Aj
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 09:47:52 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Kernel panic: handle_trap - failed to wait at end of
+	syscall, errno = 4, status = 1151
+Message-ID: <20040619173952.GA7740@ccure.user-mode-linux.org>
+References: <000f01c45593$35c20e00$0201a8c0@hawk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200406191856.31714.blaisorblade_spam@yahoo.it>
+In-Reply-To: <000f01c45593$35c20e00$0201a8c0@hawk>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,36 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 19 Jun 2004 18:56:31 +0200
-To: Faye Gibbins <wibble@morpheux.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 19 Jun 2004 13:39:52 -0400
+To: "Christopher S. Aker" <caker@theshore.net>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Alle 17:38, sabato 19 giugno 2004, Faye Gibbins ha scritto:
-> Hi,
->
-> jusr finished compiling with the 2.6.7 patch. Compile died with:
+On Fri, Jun 18, 2004 at 07:19:57PM -0500, Christopher S. Aker wrote:
+> Kernel panic: handle_trap - failed to wait at end of syscall, errno = 4, status =
+> 1151
+> 
+>         err = waitpid(pid, &status, WUNTRACED);
+>         if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
+>                 panic("handle_trap - failed to wait at end of syscall, "
+>                       "errno = %d, status = %d\n", errno, status);
 
-> gcc -Wl,-T,arch/um/uml.lds.s -static -Wl,--wrap,malloc -Wl,--wrap,free
-> -Wl,--wrap,calloc \
->          -o linux arch/um/main.o vmlinux -L/usr/lib -lutil
-> vmlinux(.text+0x617f): In function `mem_init':
-> arch/um/kernel/mem.c:71: undefined reference to `phys_page'
+Easy diagnosis - errno 4 is EINTR, this wasn't checking for that and redoing
+the wait.
 
-> vmlinux(.init.text+0x3268): In function `kmap_init':
-> include/asm/pgtable.h:394: undefined reference to `pte_offset'
-> collect2: ld returned 1 exit status
-> make: *** [linux] Error 1
+I've been adding EINTR safety in a bit at a time, just hadn't noticed this
+yet.
 
-Don't enable CONFIG_HIGHMEM, it's probably again broken (but it's should not 
-be my fault - if it works with the 2.6.6 patch and same config, complain 
-again with me). However I've already seen it somewhere, so I don't think to 
-be at fault. I've checked that both errors come from CONFIG_HIGHMEM actually.
-
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-
+				Jeff
 
 
 -------------------------------------------------------
