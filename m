@@ -1,24 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4nVU-0001vM-MR for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 14:28:04 -0700
-Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C4nVU-00018x-6b for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 14:28:04 -0700
-From: Andrew Morton <akpm@osdl.org>
+	id 1C4pAb-0000nv-76 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 16:14:37 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C4pAX-00027V-80
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 16:14:36 -0700
+Message-Id: <200409080016.i880GlBP011581@ccure.user-mode-linux.org>
 Subject: Re: [uml-devel] Re: [patch 1/1] uml: no extraversion in
-	arch/um/Makefile for mainline
-Message-Id: <20040907142613.2ab5775e.akpm@osdl.org>
-In-Reply-To: <200409072016.01749.blaisorblade_spam@yahoo.it>
+	arch/um/Makefile for mainline 
+In-Reply-To: Your message of "Tue, 07 Sep 2004 14:26:13 PDT."
+	<20040907142613.2ab5775e.akpm@osdl.org> 
 References: <20040906173524.EE034B977@zion.localdomain>
 	<20040906193620.A8502@infradead.org>
 	<200409072016.01749.blaisorblade_spam@yahoo.it>
+	<20040907142613.2ab5775e.akpm@osdl.org> 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,32 +32,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Sep 2004 14:26:13 -0700
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, hch@infradead.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
+Date: Tue, 07 Sep 2004 20:16:47 -0400
+To: Andrew Morton <akpm@osdl.org>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, hch@infradead.org, linux-kernel@vger.kernel.org
 
-BlaisorBlade <blaisorblade_spam@yahoo.it> wrote:
->
-> On Monday 06 September 2004 20:36, Christoph Hellwig wrote:
->  > Could you please fix UML to not use ghash.h and remove that one before
->  > playing with new toys?  This has been requested a few times now.
->  Yes, I can try - but I'd like to know the exact reason (I'm not developing UML 
->  as long as Jeff does).
-> 
->  My idea is that ghash.h is just trivial boilerplate which does not deserve 
->  generalized code, so that even rewriting the same exact code without using 
->  those macros (and maybe embedding some assumptions about this usage) would be 
->  a fine solution; also, there is just one user of it 
->  (arch/um/kernel/physmem.c, with just one hash defined), so it shouldn't be 
->  hard.
-> 
->  However, if the problem with ghash.h is different, I need more explainations.
+akpm@osdl.org said:
+> Please, rewrite that piece of UML so we can again remove ghash.h.
 
-Take one look at ghash.h and you'll see why we don't want it in the tree.
+I am, I'll send you a patch when I'm done.
 
-ghash was removed for a while and it was not intended that it come back -
-it snuck back by accident.  Please, rewrite that piece of UML so we can
-again remove ghash.h.
+				Jeff
 
 
 
