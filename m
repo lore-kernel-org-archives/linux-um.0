@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AAYIg-0005NV-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Fri, 17 Oct 2003 10:22:07 -0700
-Received: from brown.brainfood.com ([146.82.138.61] helo=gradall.private.brainfood.com)
+	id 1AAdH5-0005Ox-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 17 Oct 2003 15:40:47 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1AAYGc-0001lZ-Mo
-	for User-mode-linux-devel@lists.sourceforge.net; Fri, 17 Oct 2003 10:19:58 -0700
-From: Adam Heath <adam@doogie.org>
-Subject: Re: [uml-devel] filemap feature 2.4.22-5um
-In-Reply-To: <BAY7-F67zjLYL23VZvZ0000e11f@hotmail.com>
-Message-ID: <Pine.LNX.4.44.0310171213360.1367-100000@gradall.private.brainfood.com>
+	id 1AAdFI-0007n1-8a
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 17 Oct 2003 15:38:56 -0700
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] Hardening hostfs
+In-Reply-To: <3F8F7C06.7080306@easyco.com>
+Message-ID: <Pine.LNX.4.44.0310180026300.22559-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -24,31 +24,64 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Oct 2003 12:14:03 -0500 (CDT)
-To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 18 Oct 2003 00:35:32 +0200 (CEST)
+To: Doug Dumitru <doug@easyco.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 14 Oct 2003, Steve Schmidtke wrote:
+On Thu, 16 Oct 2003, Doug Dumitru wrote:
 
->   umlwrap -bind=15,/dev/shm/mconsole-$$ -connect=17,/tmp/uml.ctl \
->   -dir=/home/uml -user=guest -- /bin/linux mem=64M \
->   uml_dir=/uml/ umid=um$$ ubd0=/disk.cow,/disk.dat \
->   eth0=daemon con=null con0=fd:0,fd:1 \
->   filemap=file,10,/proc/cpuinfo 10</proc/cpuinfo \
->   filemap=file,11,/disk.dat 11</mnt/backing.dat \
->   filemap=file,12,/disk.cow 12<>/home/uml/cow-$$.cow \
->   filemap=file,15,/uml/um$$/mconsole \
->   filemap=file,16,/uml/um$$/pid 16</dev/shm/pid-$$ \
->   filemap=file,17,/tmp/uml.ctl \
->   filemap=vm,20-23 20<>/dev/shm/vm-$$.0 21<>/dev/shm/vm-$$.1 \
->   22<>/dev/shm/vm-$$.2 23<>/dev/shm/vm-$$.3 \
->
-> Ugly, isn't it.  If you find a nicer way to do this let me know.  Notice how
-> networking is carried out here via the daemon transport, connecting to the
-> /tmp/uml.ctl socket run by uml_switch.  Your mileage may vary.
+> I have been trying to build a reasonably bullet-proof UML kernel that 
+> prevents users from doing hostfs mounts.
+> 
+> I have observed some behaviours which are non ideal.
+> 
+> 1.  If hostfs is compiled in as a module, then the hostfs=... 
+> command-line arguments are not used.  Thus, trying to restrict access 
+> with this does not appear to be effective.
 
-I have some unfinished code to make uml read a config file.  It fits in nicely
-with the cmdline parsing.
+There should be a module argument in this case.. but it seems there is no 
+module arguments for the hostfs options..
+
+> 2.  If hostfs is not compiled in at all, you can still load a hostfs 
+> module assuming that you can build one off-line.  This would allow a 
+> compromise of an underlying system by a "moderate" hacker with root 
+> access to the virtual.
+
+And also in a number of other ways. This is not a question about hardening 
+hostfs, but a question about harderning your UML environment.
+
+Note that even if you do not have hostfs at all, the hacker can just write 
+his own kernel module performing whatever operations on the host he likes 
+and this will be executed as the user who runs the uml kernel on the host 
+with the same privileges as given to the uml kernel.
+
+There is two approaches you can take in hardening this. Which depends on
+your situation
+
+a) You can hardening the UML kernel itself from user modifications. This
+involves disabling the support for loading kernel modules, raw I/O etc
+which would otherwise allow root (inside the UML) to modify the kernel
+operation.
+
+b) Or you harden the environment wherein the UML kernel runs. The most 
+common method is chrooting the UML, but as discussed in this thread a 
+number of other options exists depending on how hard you need to have the 
+UML isolated from the host.
+
+> A lot of device open/close on the fly, so chrooting all of UML might be 
+> hard.  The best that I can think of is to build a chroot jail with only 
+> those devices.
+
+There should not be many devices used by UML in a hardened setup.
+
+> You still have to deal with /proc/mm for SKAS mode (at least until the 
+> next SKAS interface shift).
+
+Yes, but not really a problem is it? It is kind of just another device and 
+you can easily mount it into the uml chroot. (see --bind option to mount)
+
+Regards
+Henrik
 
 
 
