@@ -1,13 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200408092352.i79Nq8QW026728@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] PATCH -- Was: link error MODE_SKAS and ! MODE_TT in
-	2.4.26-2 + uml.sf.net patches 
-In-Reply-To: Your message of "Mon, 09 Aug 2004 18:13:01 EDT."
-	<C28780ABC637504896EB86B4FB75FFBFA26E71@MAANDMBX1.ets.enterasys.com> 
-References: <C28780ABC637504896EB86B4FB75FFBFA26E71@MAANDMBX1.ets.enterasys.com>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BuO2I-0002mE-3n for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Aug 2004 21:14:54 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1BuO2H-0005eu-KC
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Aug 2004 21:14:54 -0700
+Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	by ccure.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id
+	i7A5FUQW027590 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 10 Aug 2004 01:15:30 -0400
+Message-Id: <200408100515.i7A5FUQW027590@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Testing needed for terminal handling patches
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,17 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 09 Aug 2004 19:52:08 -0400
-To: "Bahi, David" <dbahi@enterasys.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Tue, 10 Aug 2004 01:15:30 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-dbahi@enterasys.com said:
-> i don't suppose there is some depencency checking  that could be
-> improved to fix this - requiring a  clean seems obsessive-compulsive
-> <grin>. 
+I've posted a set of patches that fiddle with UML's handling of terminal modes
+to http://user-mode-linux.sourceforge.net/patches.html
 
-Probably.  The UML build is in need of a good reaming.  The other major
-symptom of this is when you try a -j make.
+I'd like people to try them out and report bad experiences, especially if you
+saw the 'netdevice 0' hang or stairstepping output during boot.  They are the
+catch-eintr, bb-raw, and clean-raw patches.
+
+In particular, I removed the complain argument to raw, which means that it
+will always complain if something failed.  The reason it was there in the
+first place is that a long, long time ago, in a universe far, far away, I
+saw a failure there on stdout call printk, which would recurse through the
+same code, causing the same failure, reporting it through printk again, ad
+infinitum.  I'm curious as to whether this infinite recursion was sparked
+by an EINTR or something else.
+
+Also, TCSACRAIN is always used instead of TCSANOW.  I don't see any reason
+that I need NOW instead of DRAIN.
 
 				Jeff
 
