@@ -1,15 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Chris Wedgwood <cw@f00f.org>
-Subject: Re: [uml-devel] Re: [uml-user] uml help __alloc_pages: 0-order
-	allocation failed (gfp=0xf0/0)
-Message-ID: <20050317192527.GA15619@taniwha.stupidest.org>
-References: <000d01c52b22$8ab2c020$0201a8c0@lualele>
-	<20050317190007.GA15341@taniwha.stupidest.org>
-	<000501c52b25$717710e0$0201a8c0@lualele>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1DC0qy-0007Xz-DR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 11:40:20 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DC0qt-0002Xa-J0 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Mar 2005 11:40:20 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] http://www.user-mode-linux.org/~blaisorblade/  down?
+References: <000301c52b09$850fc370$0201a8c0@lualele>
+In-Reply-To: <000301c52b09$850fc370$0201a8c0@lualele>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <000501c52b25$717710e0$0201a8c0@lualele>
+Message-Id: <200503172039.25086.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,18 +29,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Mar 2005 11:25:27 -0800
-To: itamar <itamar@ispbrasil.com.br>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 17 Mar 2005 20:39:24 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: itamar <itamar@ispbrasil.com.br>, "Christopher S. Aker" <caker@theshore.net>, David Coulson <david@davidcoulson.net>
 
-On Thu, Mar 17, 2005 at 04:13:37PM -0300, itamar wrote:
+On Thursday 17 March 2005 16:53, itamar wrote:
+> http://www.user-mode-linux.org/~blaisorblade/  down ?
+Yes, just verified... the mirror below is still up, and seems up to date...
 
-> I am running the guest kernel with mem=256M
+http://uml.linode.com/blaisorblade/
 
-does it sound reasonable that 256MB of memory is in use?  if so can
-you trim that down?
+Note I don't run the mirror (it's auto-synced periodically) and I don't manage 
+the main host (only use the provided hosting). IIRC David Coulson hosts that 
+(I'm not at all sure)...
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-if this seems too high we need to see if there is a leak somewhere
 
 
 
