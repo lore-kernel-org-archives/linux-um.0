@@ -1,13 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: M A Young <m.a.young@durham.ac.uk>
-In-Reply-To: <3FBC842A.8050104@wasp.net.au>
-Message-ID: <Pine.GSO.4.58.0311200947530.23741@altair.dur.ac.uk>
-References: <034b01c3ae0a$b508baa0$2000000a@schlepptopp> <3FBB252F.6080403@wasp.net.au>
- <070801c3aeeb$65ef3930$2000000a@schlepptopp> <Pine.GSO.4.58.0311200838090.9958@altair.dur.ac.uk>
- <3FBC842A.8050104@wasp.net.au>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp 
+	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
+	id 1AMn56-0004AJ-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 03:34:40 -0800
+Received: from adsl-b4-97-234.telepac.pt ([81.193.97.234] helo=puma-vgertech.no-ip.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AMn4T-0004DC-UB
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 03:34:02 -0800
+Message-ID: <3FBCA6DA.7020407@vgertech.com>
+From: Nuno Silva <nuno.silva@vgertech.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: [uml-user] fwd: 2.6.0-test9-um on 2.6.0-test9-skas host
+Subject: Re: [uml-devel] skas3-related crash of the week
+References: <877k1w85vh.fsf@amaterasu.srvr.nix> <3FBBD9CA.2010303@vgertech.com>
+In-Reply-To: <3FBBD9CA.2010303@vgertech.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -18,26 +26,43 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Nov 2003 09:51:23 +0000 (GMT)
-To: Brad Campbell <brad@wasp.net.au>
-Cc: roland <for_spam@gmx.de>, User-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 20 Nov 2003 11:34:50 +0000
+To: Nuno Silva <nuno.silva@vgertech.com>
+Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 20 Nov 2003, Brad Campbell wrote:
 
-> M A Young wrote:
-> >>
-> >>yes - tt-mode doesn`t seem to work on 2.6.0test9 - skas _does_ !
-> >
-> >
-> > I have tt mode working on 2.6.0test9 to a stage where it is usable (it
-> > crashes on shutdown).
->
-> could you enlighten me as to how please ?
 
-I know of several issues, but this one would be favourite.
-http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=106356914101712&w=2
+Nuno Silva wrote:
+> Hi!!
+> 
+> Nix wrote:
+> 
+>> Using unmodified 2.4.22-6. sshed in through the firewall on the UML
+>> instance, with tty logging enabled: typing exit on the last sshed-in
+>> console froze the box yielded this on the console before UML died:
+>>
+>> Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 9
+>>
+>> Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 9
+>>
 
-	Michael Young
+I've found a log with the error, it's a bit different from yours:
+
+Kernel panic: save_registers - saving registers failed, errno = 3
+
+Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 3
+
+In idle task - not syncing
+
+--------------------------------
+
+ From the screen(1) logs this was a few minutes after the boot and this 
+UML should be mostly idle. I only have this log and no backtraces... not 
+  very helpfull :(
+
+Regards,
+Nuno Silva
+
 
 
 -------------------------------------------------------
