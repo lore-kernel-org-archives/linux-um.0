@@ -2,23 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFBMg-0001cU-Nw for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 05:57:54 -0700
-Received: from ctron-dnm.enterasys.com ([12.25.1.120] ident=firewall-user)
+	id 1CFBb9-0005LK-9t for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Oct 2004 06:12:51 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CFBMK-0004Yj-CS for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 05:57:54 -0700
-Received: (from uucp@localhost)
-	by ctron-dnm.enterasys.com (8.8.7/8.8.7) id JAA04451
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 6 Oct 2004 09:02:07 -0400 (EDT)
+	id 1CFBap-0007SM-Mu for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Oct 2004 06:12:51 -0700
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Message-ID: <EAC7622167479948B614F8B9AD41C505ECA5D5@MAANDMBX2.ets.enterasys.com>
-From: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
-Subject: [uml-devel] need choose-mode.h in os-Linux/signal.c
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C50@ABGEX01E.abg.fsc.net>
+From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
+Subject: [uml-devel] Panic while core dumping in tt-mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,14 +26,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 6 Oct 2004 08:56:44 -0400
+Date: Wed, 6 Oct 2004 14:57:16 +0200
 Content-Transfer-Encoding: 8bit
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-If UML_CONFIG_MODE_TT is not defined, it appears
-that the CHOOSE_MODE_PROC macro is also not defined.
-This results in a compilation failiure.
+Testing my extensions for vsyscall/sysenter I need to check the
+presence of the vsyscall-page in the core. But in tt-mode the
+kernel panics if core dump is started. In copy_fpu_fxsave_tt()
+the line
 
+  struct i387_fxsave_struct *fpu = SC_FXSR_ENV(PT_REGS_SC(regs));
+
+sets fpu to 0x70, then memcpy() segfaults.
+Maybe the reason is in the new signal-delivery?
+
+Bodo
 
 
 -------------------------------------------------------
