@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1By6Lt-00055L-Qf for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 03:10:29 -0700
+	id 1By6Le-00053j-L7 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 03:10:14 -0700
 Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1By6Lr-0000jX-Uv for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 03:10:28 -0700
+	id 1By6Ld-0000gr-OV for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 03:10:14 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Patch for arch/um/drivers/line.c to fix buffer error
-References: <40DFB54D.5040109@easyco.com>
-In-Reply-To: <40DFB54D.5040109@easyco.com>
+References: <20040504205709.GE31641@peach.ece.utexas.edu>
+In-Reply-To: <20040504205709.GE31641@peach.ece.utexas.edu>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200408141849.09779.blaisorblade_spam@yahoo.it>
 Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200408051824.12958.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] kernel memory leak?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,89 +27,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Aug 2004 21:50:35 +0200
+Date: Thu, 5 Aug 2004 18:24:12 +0200
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Doug Dumitru <doug@easyco.com>
+To: Tom Brown <tdbrown@uiuc.edu>, Michael Ihde <ihde@uiuc.edu>, Peter Joanes <pjoanes@hotmail.com>, Riccardo Losselli <riccardo@e4a.it>, Nicolas <linux@1g6.biz>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Alle 08:06, luned=EC 28 giugno 2004, Doug Dumitru ha scritto:
-> All,
->
-> I have been fighting a buffering error when sending large amounts of
-> data out pty devices from UML.  I have tried a couple of patches that
-> did not really fix the problem (and were rightly rejected by the group),
-> but have finally found the real bug.
->
-> In /arch/um/drivers/line.c there is a function "buffer_data" that is
-> responsible for storing data into the lines ring buffer.  The function
-> is "supposed" to return the number of characters actually buffered.
-> Unfortunately, in the case where the buffer wraps, the "len" variable is
-> decremented by "end" before it is used as the return parameter.
->
-> Here is a patch that fixes this.
->
-> --- linux-2.4.26-um/arch/um/drivers/line.c      2004-06-28
-> 01:46:21.000000000 -0400
-> +++ linux-2.4.23-um/arch/um/drivers/line.c      2004-06-28
-> 01:45:35.000000000 -0400
-> @@ -72,9 +72,9 @@
->          else {
->                  memcpy(line->tail, buf, end);
->                  buf +=3D end;
-> -               len -=3D end;
-> -               memcpy(line->buffer, buf, len);
-> -               line->tail =3D line->buffer + len;
-> +               //len -=3D end;
-> +               memcpy(line->buffer, buf, len - end );
-> +               line->tail =3D line->buffer + len - end;
->          }
->
->          return(len);
-Since it was not collected in 2.4.26-2um, I'm collecting it for my 2.4 and =
-2.6=20
-patchsets. I would like a test case for this, if possible (i.e. the patch=20
-looks right, but I don't notice any problem on consoles, which are handled =
-by=20
-the same code).
+Answering to various people, all experiencing kernel memory leaks or possib=
+ly=20
+related problem. I'm mailing all of you to inform about the updates to the =
 
-> There is actually another bug in this area, but I am still working on a
-> "good" fix for this.  The scenario is this:
->
->    o An application opens an output device (ie /dev/serial/13)
->    o It pushes stuff do the device
->    o It closes the device
+SKAS patch, for both 2.4 and 2.6.
 
-> This would be like:
->
->    cat /etc/termcap > /dev/serial/13
+I've experienced the same problem with the UML skas patch, which turned out=
+ to=20
+be buggy; the bug was introduced when porting it from 2.4.19 to 2.6 (and th=
+is=20
+patch went into the 2.4.25 version) because a micro-change in the kernel we=
+nt=20
+unseen. The bug happens reliably, but only in some unusual situations. So=20
+when you see this email I should have uploaded the new patch to
 
-Without DevFS it maps to cat /etc/termcap > /dev/ttyS0, right? I've just=20
-checked that this *should* be true (there seems to be a UML-specific symlin=
-k=20
-from /dev/serial to /dev/tts).
+ http://www.user-mode-linux.org/~blaisorblade/
 
-> The problem is that the device will close while there is still data
-> buffered in the ring buffer (and the ring-buffered data will not be
-> transfered to the device).
+For me the most common trigger is when starting UML from inside KDE, and I =
 
-Ehr, probably I don't understand you well, because it seems me that the fix=
+guess that any multi-threaded process using Thread Local Storage, TLS, woul=
+d=20
+suffice (I guess that GNOME is one of these); but only if you are not using=
 =20
-would be as easy as calling flush_buffer() during line_close(). Or not?
+NPTL on the host; since I can find only these 4 reports, what I guess is th=
+at=20
+almost nobody runs UML from inside KDE.
 
-I guess that there are some synchronization issue (there is an interrupt do=
-ing=20
-the same thing, but it's disable in line_disable) - and there is some=20
-refcount kludge commented about in line_close(). But that's the idea, right=
-?=20
-However, for now I didn't handle this thing. So please remind this me.
+In the first and third case(i.e. Tom Brown and Nicolas), I am sure that the=
+=20
+update addresses the problem (it should also solve it, report either succes=
+s=20
+or failure). In the other cases, I'm not sure (especially for Riccardo=20
+Losselli), but anyway the update increases stability.
 
-> This is a pretty complicated scenario to=20
-> handle completely, so I have not tried to put together a patch for this
-> (plus it does not directly impact my customers at this point).  In
-> theory, handling all of these situations might require changes to how
-> the ring-buffering is implemented (or maybe can the ring-buffer be
-> eliminated all together).  Suggestions on how to implement this would be
-> appreciated.
+Alle 22:57, marted=EC 4 maggio 2004, Tom Brown ha scritto:
+> I am stopping and starting a UML kernel many times and seem to observe a
+> decrease in free memory space on the host as reported by top running on
+> the host. There are no processes on the host showing lots of memory
+> use and ps -e looks normal.
+
+Alle 23:54, sabato 17 luglio 2004, Peter Joanes ha scritto:
+
+> I made both host and uml use 2.6.7, using Paolo's patches (thanks again).
+> The host is Gentoo, gcc version 3.3.3, and only the host kernel would
+> compile, so I had to compile the uml kernel on (Mandrake 9) gcc 3.2.
+>
+> The problem: I've been running this setup for a while but today, four
+> times, the host crashed. The last time I noticed that memory was leaking
+> and acted quickly enough to shut down. I use the system every day, so the
+> differences today were:
+
+Alle 17:08, sabato 22 maggio 2004, Nicolas ha scritto:
+> Hello,
+>
+> Here is my hostos config :
+>
+> fresh 2.6.6 kernel with :
+>
+> uml-patch-2.6.6-02
+> patch-2.6.6-v2
+> host+Uml-skas3-2.6.6-v1.patch
+>
+> I noticed a memory leak each time starting/stopping
+> an uml os. (approx 7mo).
+
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
