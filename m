@@ -1,16 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
-	3.3.3 similarities to 2.6.6!?
-References: <114001c44bf7$b69ca120$2000000a@schlepptopp>
-	<008901c44c40$c2ed0e30$dd02a8c0@ferraro>
-	<878yerf7d4.fsf@amaterasu.srvr.nix>
-	<200406142109.45156.blaisorblade_spam@yahoo.it>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200406142109.45156.blaisorblade_spam@yahoo.it> (BlaisorBlade's
-	message of "Mon, 14 Jun 2004 21:09:45 +0200")
-Message-ID: <87oenle40x.fsf@amaterasu.srvr.nix>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Ba7Os-0005Qc-45 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Jun 2004 23:26:26 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Ba7E2-0003rO-Qj for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Jun 2004 23:15:14 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: The SKAS4 patch?? + ideas for 0 context-switch
+References: <200406071949.04220.blaisorblade_spam@yahoo.it>
+	<200406080455.i584tad2023374@ccure.user-mode-linux.org>
+In-Reply-To: <200406080455.i584tad2023374@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200406142010.31954.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,70 +28,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 15 Jun 2004 07:20:14 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: uml <uml@dot1q.net>, roland <for_spam@gmx.de>, uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 14 Jun 2004 20:10:31 +0200
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 14 Jun 2004, BlaisorBlade mused:
-> Alle 23:58, domenica 13 giugno 2004, Nix ha scritto:
->> On Sun, 06 Jun 2004, uml@dot1q.net stipulated:
->> > Switch differences between -O1 and -O2 on GCC 3.3.3:
->>
->> Note: -O{n} are *not* the equivalent of groups of -f switches:
->> they turn those switches on, but other things inside the compiler
->> are directly triggered by the optimization level.
-> 
-> I expected that SuSE 9.1 shipped a buggy gcc, but I didn't found any confirm 
-> to this (I remember they did such things in the past). However the fact that 
-> the compiler output that dump is anyway a compiler bug...
+Alle 06:55, marted=EC 8 giugno 2004, Jeff Dike ha scritto:
+> blaisorblade_spam@yahoo.it said:
 
-Oh, yes, certainly.
+> > In detail (skip this if you got what I mean): to do a syscall, without
+> > SYSEMU  there is a CS to the guest kernel (which invalidates tons of
+> > TLBs, i.e. is  the heavier of all ones) + a few instruction + the two
+> > useless CS's deleted  by SYSEMU, which invalidate a very few TLB
+> > entries (I think that only 1-2  pages of code + data will have be
+> > accessed) + the syscall execution (using a  lot of memory) + the final
+> > context switch to the userspace program, which  will now take a lot of
+> > time to refill its TLB.
+>
+> On x86, which doesn't have tagged TLBs IIRC, there has to be a full tlb
+> flush no matter how large the processes involved in the switch.
 
-> Well, ok, more hints, the first possible answer to this one seems to be that 
-> SuSE enables -funit-at-a-time:
+Sorry, what are tagged TLBs? x86 can flush, on some processors, just some=20
+TLBs, but for process switch you must flush everything.
 
-(unsurprising, given that -funit-at-a-time's primary author is jh@suse ;} )
+Or better, if "tagged TLBs" means that the processor knows with which proce=
+ss=20
+a TLB is associated, then I understand what you mean and agree with you.
 
-> http://www.google.com/search?q=%22SuSE+9.1%22+bug+gcc&sourceid=opera&num=25&ie=utf-8&oe=utf-8
-> 
-> I checked the first hit (read the whole thread):
-> 
-> http://gcc.gnu.org/ml/gcc-bugs/2004-05/msg01912.html
+>  What I'm
+> not clear on is whether small full flushes are faster than big ones.
 
-Yep, -funit-at-a-time will definitely break kernels that aren't
-expecting it, both because of elision of unused statics and because some
-arches depend on emission of asm's at the top level to emit stuff in the
-same order in generated code, and with -funit-at-a-time this just
-doesn't happen anymore. (I don't think i386 is such an architecture,
-though.)
+Ok, something more definite on this:
 
--funit-at-a-time is enabled by default for C and C++ in GCC 3.4.
+http://kerneltrap.org/node/view/2891
 
-> This is the trick:
-> "#define ATTRIBUTE_USED
-> #if (__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >=4)
-> #undef ATTRIBUTE_USED
-> #define ATTRIBUTE_USED __attribute__((used))
-> #endif
+the 4G/4G patch creates a situation similar to the current one (without my =
 
-The sort of thing you want to stash away in a header file and never lay
-eyes on again. :)
+approach) for UML - but they here speak about number-crunching, i.e. only=20
+about the cost of the interrupt handler, which is ran HZ (=3D 1000) times p=
+er=20
+second:
 
-> static const int hello ATTRIBUTE_USED  = 56;
-> 
-> int main()
-> {
->         asm(
->         "mov hello, %eax\n"
->         );
+"> [*] a nitpick: you keep saying '2000 tlb flushes per second'. This is
+>     misleading, there's one flush of the userspace TLBs every 1 msec
+>     (i.e. 1000 per second), and one flush of the kernel TLBs - but
+>     the kernel TLBs are small at this point, especially with 4MB pages.
 
-Well, in this *specific* case, hello should be marked as clobbered,
-which will also stop the compiler eliding it. But this *was* a contrived
-testcase...
+I'm saying 2000 tlb flushes only because I'd be wrong saying there are only
+1000, but I obviously agree the cost of half of them is not significant (the
+footprint of the irq handler is tiny)."
 
--- 
-`We in no way believe that this Christ was a space alien.'
-                    --- A creationist website goes completely bonkers
+I.e. they (Andrea Arcangeli and Ingo Molnar) agree that the cost of a TLB=20
+flush changes depending on the number of filled TLBs. And they seem to also=
+=20
+agree that there is a "secondary cost", the cost of the TLB misses (which i=
+s=20
+IMHO the one which changes depending on how much entries you flush).
+
+See also the benchmark I post (host vs UML with SYSEMU), which show that th=
+ere=20
+is an doubling in user time due to executing getpid() vs non executing it, =
+
+while looping over 64 pages (64 pages should mean that the TLB never faults=
+):=20
+the increase in user time, which is spent mostly by looping onto pages, is =
+
+due to the TLB misses.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+
 
 
 -------------------------------------------------------
