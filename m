@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXrqC-00028P-Pu
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:53:04 -0800
-Received: from mta9.adelphia.net ([68.168.78.199])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXrqC-0000qn-Gf
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 16:53:04 -0800
+	id 1AXrxM-0002KS-Jx
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 17:00:28 -0800
+Received: from mta11.adelphia.net ([68.168.78.205])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AXrxM-0001zx-9r
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 17:00:28 -0800
 From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] 2.4.22-[67] problems
-Message-ID: <20031221005257.GF9354@alcor.net>
-References: <20031220011323.GW18100@alcor.net> <20031220171450.GB10692@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: Bug#224502: FATAL: cannot determine library version
+Message-ID: <20031221010021.GG9354@alcor.net>
+References: <20031219143655.GA7944@pari.math.u-bordeaux.fr> <20031219161144.GB18100@alcor.net> <20031221004003.GR25221@seventeen>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20031220171450.GB10692@ccure.user-mode-linux.org>
+In-Reply-To: <20031221004003.GR25221@seventeen>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,36 +25,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 20 Dec 2003 16:52:57 -0800
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, 224502@bugs.debian.org
+Date: Sat, 20 Dec 2003 17:00:21 -0800
+To: Bill Allombert <allomber@math.u-bordeaux.fr>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 224502@bugs.debian.org
 
-On Sat, Dec 20, 2003 at 12:14:50PM -0500, Jeff Dike wrote:
+On Sun, Dec 21, 2003 at 01:40:03AM +0100, Bill Allombert wrote:
 
-> Beyond that, if you can find a system call that reproducably fails, then
-> just step through it, and see where the -ENOSYS comes from.  This shouldn't
-> be too difficult.
+> On Fri, Dec 19, 2003 at 08:11:44AM -0800, Matt Zimmerman wrote:
+> > On Fri, Dec 19, 2003 at 03:36:55PM +0100, Bill Allombert wrote:
+> > 
+> > > I have upgraded from 2.4.22-5um-1 to 2.4.22-7um-1 and now 
+> > > user-mode-linux fail to start with 
+> > > 
+> > > NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+> > > VFS: Mounted root (ext2 filesystem) readonly.
+> > > FATAL: cannot determine library version
+> > 
+> > Strange.  I think this error message comes from ld.so.
+> 
+> You are right.  From the source , this message com from
+>  sysdeps/unix/sysv/linux/dl-osinfo.h in the following macro:
+> 
+> #define DL_SYSDEP_OSCHECK(FATAL) \
+>   do {                                                                        \
+>     /* Test whether the kernel is new enough.  This test is only              \
+>        performed if the library is not compiled to run on all                 \
+>        kernels.  */                                                           \
+> 
+> The UML filesystem is woody.
 
-Unfortunately, I can't seem to find a system call that reproducibly fails.
-There's something weird and racy going on.  With exactly the same UML
-invocation, twice in a row, the first will panic:
-
-Kernel panic: Segfault with no mm
-In idle task - not syncing
-
-and the second will boot successfully.  Even within an invocation, things
-aren't normal:
-
-sh-2.05a# apt-get source -b hello
-apt-get: error while loading shared libraries: /lib/libm.so.6: cannot read
-file data: Error 38
-sh-2.05a# 
-sh-2.05a# apt-get source -b hello
-Reading Package Lists... Done
-Building Dependency Tree... Done
-
-And of course, I haven't been able to get this to happen in the debugger
-(yet).
+This is probably another symptom of the same bug; something is returning
+-ENOSYS _sometimes_.
 
 -- 
  - mdz
