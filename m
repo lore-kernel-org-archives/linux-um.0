@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BRqBL-0005Dz-O4 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 03:26:15 -0700
-Received: from bingo.yandex.ru ([213.180.200.1])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BRqBL-0007SD-3S for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 03:26:15 -0700
-From: <alnsn@yandex.ru>
-Subject: Re: [uml-devel] Hostfs doesn't work - digging the kernel
-Message-ID: <20040523102602.GA4034@x1000.localdomain>
-References: <20040523093605.GA2223@x1000.localdomain>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+	id 1BRqFo-0003qy-GR for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 03:30:52 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BRqFn-0008VR-9v for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 03:30:51 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+References: <20040521202120.43068.qmail@web51103.mail.yahoo.com>
+	<050e01c44002$d965b490$2000000a@schlepptopp>
+In-Reply-To: <050e01c44002$d965b490$2000000a@schlepptopp>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20040523093605.GA2223@x1000.localdomain>
+Message-Id: <200405222057.18606.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] [PATCH] for the NPTL problem (was: cannot
+	set up thread-local storage???)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,44 +31,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 May 2004 14:26:02 +0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 22 May 2004 20:57:18 +0200
+To: roland <for_spam@gmx.de>, user-mode-linux-user@lists.sourceforge.net, Eli Criffield <elicriffield@yahoo.com>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+
+Alle 15:44, sabato 22 maggio 2004, roland ha scritto:
+> isn`t that the NPTL problem ?
+> rename /lib/tls in your root_fs and reboot.
+>
+> furthermore:
+> http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=107449893709134&w=2
+>
+> do see that right, there is a patch which could users probably keep away
+> from hitting that bug ?
+
+Never had NPTL on my system so I can't test, but what I see is that you're 
+right, but he says "i'll test it soon" so this needs at least one people 
+testing it. I'm reforwarding this to Jeff so that he picks this up.
+
+It is possible that this does not work on distros other than Fedora; but 
+actually "Ulrich" is the maintainer of standard glibc (even if he works for 
+RedHat), so this should not be distro-specific.
+
+Bye and thanks for the note!
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
-
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Alexander Nasonov wrote:
-> Even with -o option I can't mount. Function hostfs_init_file composes a
-> path beginning with jail_dir (/ in my case), then go mount and file.
->     const char *path[] =3D { jail_dir, mount, file, NULL };
-> In my case path is either // or //tmp. The open64 function can't open bot=
-h.
-> If I do these transformations:
-> "//" -> ""
-> "//tmp" -> "/tmp"
-> they are mounted but I can't read files.
-> I suggest always transform path like this. What do you think?
-Opps, it doesn't work. I wonder how it worked before. I need more digging :)
---=20
-Alexander Nasonov
-
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQFAsHw6K8n/CZPtRx4RAuXoAKCoChUcmM1tgZ3C3+Hga+K1qT9CZgCfbvY3
-0AMCLm94DSD7ozho3+26bpo=
-=TVzw
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
 
 
 -------------------------------------------------------
