@@ -1,15 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cc7dK-00053U-In for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 11:37:54 -0800
-Received: from bay24-f39.bay24.hotmail.com ([64.4.18.89] helo=hotmail.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cc7dK-0005cX-8H for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 11:37:54 -0800
-Message-ID: <BAY24-F39F020DFE0870A8FDC91DC83B60@phx.gbl>
-In-Reply-To: <5810.1102524702@marajade.sandelman.ottawa.on.ca>
+	id 1Cc7pJ-00062L-7I for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 11:50:17 -0800
+Received: from bay24-f30.bay24.hotmail.com ([64.4.18.80] helo=hotmail.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cc7pH-0006mP-01 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 11:50:15 -0800
+Message-ID: <BAY24-F3095F190F005AC385C24ED83B60@phx.gbl>
+In-Reply-To: <7044.1102525892@marajade.sandelman.ottawa.on.ca>
 From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
 Subject: Re: [uml-devel] Re: What to do with uml_switch?
 Mime-Version: 1.0
@@ -25,47 +25,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Dec 2004 19:36:25 +0000
-To: mcr@sandelman.ottawa.on.ca, kraxel@bytesex.org
-Cc: blaisorblade_spam@yahoo.it, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 08 Dec 2004 19:49:09 +0000
+To: mcr@sandelman.ottawa.on.ca
+Cc: blaisorblade_spam@yahoo.it, kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
 Michael Richardson wrote:
->     Gerd> Hmm, I don't think it is a good idea to put that kind of
->     Gerd> testing code into the switch daemon.  I'd make the switch
->     Gerd> daemon behave as close as possible to a real switch, then use
->     Gerd> the normal tools you use for real networks as well.  I think
->     Gerd> uml_switch should just support a monitor port which will see
+>     Steve> Strip down the UML kernel's daemon_user.c and what you have
+>     Steve> is a framework to talk socket datagrams to a uml_switch.  Add
 >
->   Not practical, not reliable.
+>   That's probably not the best idea. We put the interfaces in two places
+>right now... Best would be if a refactored uml_switch exported an
+>interface that replaced daemon_user.c :-)
 
-Why not reliable?  A monitor port is a diagnostic tool, and there is no 
-reason you couldn't run it in a sychronous mode with the switch, i.e. the 
-switch is paused as the monitor inspects an IO event (an input packet) and 
-either allows it to proceed or be modified in some way (replaced, dropped, 
-etc).
+It would be useful if daemon_user.c could be run in a synchronous mode such 
+that packets are guaranteed delivered to the switch and guaranteed delivered 
+to a host.  The switch could then mangle packets in a deterministic fashion 
+for testing.
 
-I will agree that it wouldn't be fit for all purposes.  There is obviously a 
-delay as a packet must be written to the monitor app for inspection, a 
-context switch to the monitor, an ACK written from the monitor, a context 
-switch back, and the ACK processed, before a packet can be disposed of.  
-Does that make a monitor port impractical?  I don't think so.  The real 
-world delay I've been seeing so far on my test monitor doing just that for 
-ping round trip times is less than a millisecond.  I havn't tried larger 
-packets yet.
-
-On the other hand, once the monitor has ACK'd a packet, the switch and 
-monitor app are free to continue processing independently, possibly reducing 
-overall delay times.
-
->   Often, not even possible if you wish to play packets that Linux simply
->can not easily produce.
-
-There is no reason you would need to use Linux as your packet source:
-
-  cat tcpdump.pcap | switch_mon_tool --socket /tmp/uml.mon --delay 100ms
-
-is the type of functionality I'm shooting for (above example not to be taken 
-literally).
+It would also be interesting if packets could be passed in shared memory.  
+I'm wondering if it would be faster and more reliable at the same time.
 
 Steve Schmidtke
 
