@@ -1,23 +1,35 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C03Bt-0004Ui-Gt for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Aug 2004 12:12:13 -0700
-Received: from witte.sonytel.be ([80.88.33.193])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C03Bq-00061k-M2 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Aug 2004 12:12:13 -0700
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uml-devel] gdkfb
-In-Reply-To: <20040824091116.GA1138@bytesex>
-Message-ID: <Pine.GSO.4.58.0408252111210.28854@waterleaf.sonytel.be>
-References: <Pine.LNX.4.58.0408021210420.23627@anakin>
-	<87isb9yjfj.fsf@bytesex.org>
-	<Pine.LNX.4.58.0408232116540.13834@anakin>
-	<20040824091116.GA1138@bytesex>
+	id 1C04Z2-0004uq-9m for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Aug 2004 13:40:12 -0700
+Received: from ip-217-18-179-10.reverse.dsi.net ([217.18.179.10]
+	helo=sindar.exse.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1C04Z0-0006Wp-Qw for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Aug 2004 13:40:12 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by sindar.exse.net (Postfix) with ESMTP id EE53422B69
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 25 Aug 2004 22:40:05 +0200 (CEST)
+Received: from sindar.exse.net ([127.0.0.1])
+	by localhost (sindar [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 10772-36
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 25 Aug 2004 22:40:05 +0200 (CEST)
+Received: from [10.0.6.6] (pD9F6300D.dip.t-dialin.net [217.246.48.13])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by sindar.exse.net (Postfix) with ESMTP id E775C219C2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 25 Aug 2004 22:40:04 +0200 (CEST)
+Message-ID: <412CF94A.1030607@exse.net>
+From: Sebastian <seb@exse.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] crash with 2.6.7-bb6
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,27 +41,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 25 Aug 2004 21:11:45 +0200 (MEST)
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 25 Aug 2004 22:40:42 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 24 Aug 2004, Gerd Knorr wrote:
-> > That's indeed simple. Have you tried running on X with depth 24?
->
-> Looks much better now, hope I didn't broke 16 bpp ;)
+Hi,
 
-Thanks, works fine in 24 bpp. Haven't tried anything else, though.
+this happend with uml-2.5.6-bb6 :
 
-Gr{oetje,eeting}s,
+(machine was idle, maybe some http traffic)
 
-						Geert
+KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
+net/unix/af_unix.c (333)
+KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
+net/unix/af_unix.c (333)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+more information necessary ?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+
+/sebastian
 
 
 -------------------------------------------------------
