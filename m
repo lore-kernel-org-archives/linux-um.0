@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwT54-0003nm-NT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 13:30:06 -0800
+	id 1AwThv-0004UK-Od for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 14:10:15 -0800
 Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1AwSvT-0004S1-Rj
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1AwTKD-0001Up-KH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Feb 2004 13:20:12 -0800
+	Thu, 26 Feb 2004 13:45:45 -0800
 From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20040226212655.GA5191@bytesex.org>
+Message-ID: <20040226212946.GA5208@bytesex.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] [patch] module symbol fix
+Subject: [uml-devel] [patch] makefile cleanup
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,26 +26,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 Feb 2004 22:26:55 +0100
+Date: Thu, 26 Feb 2004 22:29:46 +0100
 To: Jeff Dike <jdike@addtoit.com>
 Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
   Hi,
 
-recent gcc versions need this one ...
+Neat trick to get rid of some symlinks, stolen from the x86-64 makefiles ;)
 
   Gerd
 
---- linux-um-2.6.3/arch/um/kernel/user_syms.c.uml	2004-02-26 21:20:51.202244050 +0100
-+++ linux-um-2.6.3/arch/um/kernel/user_syms.c	2004-02-26 21:21:06.599701859 +0100
-@@ -57,6 +57,7 @@
- 	__attribute__((section("__ksymtab_strings")))		\
- 	= MODULE_SYMBOL_PREFIX #sym;                    	\
- 	static const struct kernel_symbol __ksymtab_##sym	\
-+	__attribute_used__					\
- 	__attribute__((section("__ksymtab" sec), unused))	\
- 	= { (unsigned long)&sym, __kstrtab_##sym }
+--- linux-2.6.3/arch/um/sys-i386/Makefile.sym	2004-02-26 21:55:23.014975595 +0100
++++ linux-2.6.3/arch/um/sys-i386/Makefile	2004-02-26 21:59:55.961970104 +0100
+@@ -7,24 +7,11 @@
+ USER_OBJS := bugs.o ptrace_user.o sigcontext.o fault.o
+ USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
  
+-SYMLINKS = semaphore.c highmem.c module.c
+-SYMLINKS := $(foreach f,$(SYMLINKS),$(src)/$f)
+-
+-clean-files := $(SYMLINKS)
+-
+-semaphore.c-dir = kernel
+-highmem.c-dir = mm
+-module.c-dir = kernel
+-
+-define make_link
+-	-rm -f $1
+-	ln -sf $(TOPDIR)/arch/i386/$($(notdir $1)-dir)/$(notdir $1) $1
+-endef
++semaphore-y = ../../i386/kernel/semaphore.o
++highmem-y = ../../i386/mm/highmem.o
++module-y = ../../i386/kernel/module.o
+ 
+ $(USER_OBJS) : %.o: %.c
+ 	$(CC) $(CFLAGS_$(notdir $@)) $(USER_CFLAGS) -c -o $@ $<
+ 
+-$(SYMLINKS): 
+-	$(call make_link,$@)
+-
+ subdir- := util
 
 
 -------------------------------------------------------
