@@ -2,21 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cvnmh-00036C-9k for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 31 Jan 2005 18:28:55 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cvnmf-0008Ij-Ng for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 31 Jan 2005 18:28:55 -0800
-Message-Id: <200502010441.j114fXUt006210@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Mon, 31 Jan 2005 18:21:09 EST."
-	<Pine.LNX.4.61.0501311817060.5814@sparrow> 
-References: <Pine.LNX.4.61.0501311817060.5814@sparrow> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: FC3/i386 root filesystem on ford (x64_64) with 2.6.4
-	kernel: cannot setup LDT
+	id 1Cvo8x-0004gH-AF for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 31 Jan 2005 18:51:55 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1Cvo8w-0002BY-OS
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 31 Jan 2005 18:51:55 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Re: FC3/i386 root filesystem on ford (x64_64) with
+	2.6.4 kernel: cannot setup LDT
+References: <Pine.LNX.4.61.0501311817060.5814@sparrow>
+	<200502010441.j114fXUt006210@ccure.user-mode-linux.org>
+In-Reply-To: <200502010441.j114fXUt006210@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200501312049.32427.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,23 +33,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 31 Jan 2005 23:41:33 -0500
-To: William Stearns <wstearns@pobox.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Marion Bates <marion.bates@dartmouth.edu>
+Date: Mon, 31 Jan 2005 20:49:31 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>, Marion Bates <marion.bates@dartmouth.edu>
 
-wstearns@pobox.com said:
-> cannot set up thread-local storage: cannot set up LDT for thread-local
->  storage
+On Monday 31 January 2005 11:41 pm, Jeff Dike wrote:
+> wstearns@pobox.com said:
+> > cannot set up thread-local storage: cannot set up LDT for thread-local
+> >  storage
+> >
+> > Kernel panic: Attempted to kill init!
 >
-> Kernel panic: Attempted to kill init! 
+> I don't know why you can't get a sash prompt, but this diagnosis looks
+> easy.
 
-I don't know why you can't get a sash prompt, but this diagnosis looks easy.
+I've got a good guess why he couldn't get a sash prompt.  The sash binary is 
+probably statically linked against the tls library versions.
 
-The tls stuff isn't there, so the shell which tried to use it died.  Since you
-did init=/bin/bash or something, the kernel paniced when it died.
-
-				Jeff
-
+Rob
 
 
 -------------------------------------------------------
