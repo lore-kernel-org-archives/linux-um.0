@@ -2,19 +2,30 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTzTE-00043n-CG for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 May 2004 01:45:36 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	id 1BU2Xs-00089s-Ms for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 05:02:36 -0700
+Received: from smtpq2.home.nl ([213.51.128.197])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTzTB-0006vD-Ie for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 May 2004 01:45:33 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] RE: NX inside UML - WAS: Re: Intelpitchespocket-size
-	'personal server'
-In-Reply-To: <1085784625.18033.67.camel@kira.himalaya.homeip.net>
-Message-ID: <Pine.LNX.4.44.0405291044100.9729-100000@filer.marasystems.com>
+	id 1BU2Xs-0002Yr-B1 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 05:02:36 -0700
+Received: from [213.51.128.132] (port=45488 helo=smtp1.home.nl)
+	by smtpq2.home.nl with esmtp (Exim 4.30) id 1BU2Xr-0005XI-GL
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 14:02:35 +0200
+Received: from cc22149-a.groni1.gr.home.nl ([217.121.240.26]:33565
+	helo=ws-02.local) by smtp1.home.nl with esmtp (Exim 4.30)
+	id 1BU2Xq-0005f7-7e for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 14:02:34 +0200
+From: Leendert Meyer <leen.meyer@home.nl>
+Subject: Re: [uml-devel] No of ubd
+References: <Pine.LNX.4.44.0405291038140.9729-100000@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0405291038140.9729-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200405291408.09412.leen.meyer@home.nl>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,28 +37,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 29 May 2004 10:45:31 +0200 (CEST)
-To: Ulf Bartelt <ulf.bartelt@web.de>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 29 May 2004 14:08:09 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 29 May 2004, Ulf Bartelt wrote:
+On Saturday 29 May 2004 10:40, Henrik Nordstrom wrote:
+> On Fri, 28 May 2004, Leendert Meyer wrote:
+> > I know how to use fdisk. But I need a bit of guidance here. Given *any*
+> > partitionsize, what are the appropriate values? Is there a formula for
+> > that?
+>
+> You just need to set some geometry on the disk.. Linux does not care
+> what..  The only important matter is that the geometry should add upp to
+> the size of your disk (in 512 byte sectors).
 
-> the last crash i had was a suddnely terminating uml process ( just
-> falling down to the host prompt without any error message and i am not
-> good runtime-debugger :-( ) when i tried to compress multiple copies of
-> linux-2.4.24 sources with all compression metods e2compr (see
-> e2compr.sourceforge.net) offers in parallel...
-> 
-> there i really dont know who is to blame.... uml or e2compr?
+Found this in linux/Documentation/kernel-parameters.txt:
+---8<---8<---8<---
+	hd=		[EIDE] (E)IDE hard drive subsystem geometry
+			Format: <cyl>,<head>,<sect>
+---8<---8<---8<---
 
-uml, unless you pushed the uml guest too far in memory usage..
+And this in linux/Documentation/ide.txt:
+---8<---8<---8<---
+ "hdx=cyl,head,sect"	: disk drive is present, with specified geometry
+---8<---8<---8<---
 
-no applications should be able to terminate the uml, but if you push a 
-Linux system too far in memory usage bad things will often happen..
+Nothing on ubd concerning geometry. Do I need the fake_ide or fakehd 
+parameters in combination with a hdx=C,H,S?
 
-Regards
-Henrik
+Cheers,
 
+Leen
 
 
 -------------------------------------------------------
