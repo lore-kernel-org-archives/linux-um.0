@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AlePw-0004Cz-Lo for user-mode-linux-devel@lists.sourceforge.net;
+	id 1AlePw-0004D1-UU for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 27 Jan 2004 17:22:56 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AlePw-0006tp-3S
+	(Exim 4.30) id 1AlePw-0006to-3T
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 27 Jan 2004 17:22:56 -0800
-Message-Id: <200401280146.i0S1kaZw004957@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Mon, 26 Jan 2004 13:16:17 +1030."
-	<20040126024617.GB4203@erizo.shearer.org> 
-References: <20040126024617.GB4203@erizo.shearer.org> 
+Message-Id: <200401280146.i0S1kaZw004952@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Mon, 26 Jan 2004 23:17:08 +1030."
+	<20040126124708.GH4203@erizo.shearer.org> 
+References: <20040126124708.GH4203@erizo.shearer.org> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [PATCH] mconsole fixes
+Subject: [uml-devel] Re: PATCH kernel/umid.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +33,23 @@ To: Dan Shearer <dan@shearer.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
 dan@shearer.org said:
-> + * instance over a local pipe connection. This tool does not 
-> + * (since uml_mconsole version 1) need to be in sync with the version
-> + * of the UML kernel since the commands and their implementation 
-> + * are within UML.
+> -                       return(0); 
+> +                       return(1);
 
-The version does need to match.  UML will only talk to one version of mconsole.
+I did the return(0) on purpose because, even though initcall procedures are
+declared as returning an int, do_initcalls ignores it.
 
-The smarts are all in the kernel, but they do need to agree on the format of
-the request and the response.
+So, I added a comment there instead of changing the return value.
 
-> -    fprintf(stderr, "Sending command to '%s' : ", sun.sun_path);
-> -    perror("");
-> -    return;
-> +    if (strlen(sun.sun_path)==0) {
-> +      fprintf(stderr, "No connection exists, cannot send command.\n");
-> +    } else {
-> +      fprintf(stderr, "While sending command to '%s' : ", sun.sun_path);
-> +      perror("");
-> +    }
-> +    return(1);
+> In addition, umid.c seems to be a bit inconsistent as to what rates an
+> exit(1) and what just does return(1). 
 
-I don't see the point of the strlen(sun.sun_path)==0 check, so I'm leaving that
-out until I see why it's necessary.
+Stuff that's done early, before the kernel is actually running, rates an 
+exit(1).  Everything else gets a return(1).  I don't always follow this rule,
+but I did a quick check of umid.c and it looks OK.
 
-I applied most of the rest of that.  I got rid of the exits from main, since
-I like returns better and I tidied up some other stuff.
+				Jeff
+
 
 				Jeff
 
