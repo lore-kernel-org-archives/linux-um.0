@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8iiU-0004tC-Ml for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:09:42 -0700
+	id 1C8iiX-0004uH-Np for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:09:45 -0700
 Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1C8iiT-0003p1-W9 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:09:42 -0700
+	id 1C8iiX-0003pL-1e for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:09:45 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] segmentation fault in RH9
-References: <20040917083215.BF36EF19F6@relay1.pgi.com.my>
-In-Reply-To: <20040917083215.BF36EF19F6@relay1.pgi.com.my>
+Subject: Re: [uml-devel] skas3(-v3) for 2.4.27 with exec-shield
+References: <20040916210145.GJ24624@shell.blacknet.de>
+	<200409172054.44049.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200409172054.44049.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409181225.24501.blaisorblade_spam@yahoo.it>
+Message-Id: <200409181242.04919.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,50 +30,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Sep 2004 12:25:24 +0200
+Date: Sat, 18 Sep 2004 12:42:04 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "lauchiawen@pgi.com.my" <lauchiawen@pgi.com.my>
+Cc: Goetz Bock <bock+uml@blacknet.de>
 
-On Friday 17 September 2004 10:28, lauchiawen@pgi.com.my wrote:
-> Hi,
+On Friday 17 September 2004 20:54, BlaisorBlade wrote:
+> On Thursday 16 September 2004 23:01, Goetz Bock wrote:
+> > Hi all,
+> >
+> > as I've no realy idea about the internal work of the skas patches, I'll
+> > have to bother you.
+Don't worry.
+> > I'd like to run a 2.4.27 kernel with exec-shield patch and skas3, if
+> > possible the -v3 version from BlaisorBlade, except that it does not
+> > apply :-(
+
+> > There are three conflicts in mm/mprotect.c but i suspect there are more
+> > not working sections.
+> >
+> > The patch seams to mainly change current->mm to mm, after defining
+> >
+> >     struct mm_struct * mm = vma->vm_mm;
+> >
+> > unfortunately i've no idea how current-> mm and vma->vm_mm (aka mm)
+> > relate. Are they the same?
 >
-> I still quite new to Linux and I previously used UML in my University study
-> and found out it is very powerful.
->
-> However, when I tried to install it in my PCs with Red Hat 9, it keep
-> giving me segmentation fault and some error I don't really know about. Here
-> is an attach of the problem I encounter. Hopefully you can help me with
-> that or if you know anybody that you think can help please tell me.
-> Thanks 
-> you in advance.
-First, some policy: 
-1) don't send screenshots; copy and paste the text.
-2) post such question to the uml-user mailing list; you are not discussing 
-development, so please go there.
+> Not at all; they must be different.
 
-Also, you are not very clear about your config. Which distro you use for the 
-root_fs? Also, have you tried updating to 2.4.24-1 or 2.4.26-3 (don't try 
-releases in the middle, they have problems)?
-If it is different from the host, and you are trying to use the host binaries, 
-this is the problem. Binaries compiled with different glibc's can be 
-incompatible. You must make sure to use with those binaries the host 
-libraries, like (if you have hostfs mounted on /mnt/host)
-LD_LIBRARY_PATH=/mnt/host/lib:/mnt/host/usr/lib /mnt/host/lib/ld-linux.so.2 
-<command pathname> 
-where command pathname will be like "/mnt/host/something". However, this does 
-not work for scripts (you would need to update each line of the script), so 
-use:
-chroot /mnt/host
+> If you look below, you see that in the old code, sys_mprotect says: "I'm
+> acting on current->mm"; the patch wants to be able to pass it any mm_struct
+> (and this is done within mm/proc_mm.c), so I had to replace every reference
+> to current->mm with a reference to the mm.
 
-(man chroot for more info).
+Sorry, I did not finish the message.
 
-If this is not the problem, try:
-- renaming, inside the root_fs, /lib/tls to /lib/notls, or if that does not 
-exist you might try renaming /lib/i686 to /lib/noi686 (but probably this 2nd 
-renaming does not help).
-> Regards,
-> chia wen
+Actually, the idea is to make that substitution in everything inside 
+mm/mprotect.c (but also for all calls invoked by mm/proc_mm.c - 
+write_proc_mm(), i.e. mmap and munmap); however, this also means adding one 
+more parameter to each of those calls, so I implemented it in a different 
+way, the one you see.
+I investigated a bit and discovered that if, inside the mm_struct* mm0, I pick 
+one vm_area_struct (vma1), then vma1->vm_mm is always equal to mm0. So the 
+implementation is the one above.
 
+Also, some general VM info:
+- one mm_struct contains all the memory mappings of one process; if you have 
+more threads (which share the same memory), they share the mm_struct.
+- inside a mm_struct, there are lots of vm_area_struct; when you call mmap() 
+in userspace, one new vm_area_struct is created, containing the data to 
+represent the created mapping. There are also some other situations in which 
+a vm_area_struct is created, however this is enough. Also, a vm_area_struct 
+(a VMA) is never shared between two mm_struct.
+
+Also, when you do cat /proc/<aPid>/maps, what you see is a dump of the VMAs of 
+that process (the one with <aPid>); each line contains the data of one VMA.
+
+Finally, what the patch does:
+- it allows one UML thread (the kernel thread) to do something like 
+mmap()/munmap()/mprotect(), except that these calls have effect on the 
+userspace thread (the one running the various process); also, it allows this 
+process to have various mm_struct; the kernel thread, with PTRACE_SWITCH_MM, 
+can make the userspace thread switch from one mm_struct to another (and this 
+is done when a different guest process must run).
+
+Bye
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
