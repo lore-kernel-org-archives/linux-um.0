@@ -1,25 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ai4Yw-000722-6a for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 20:29:26 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Ai4Yv-00059M-Kv
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 20:29:25 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: uml-patch-2.6.0
-Message-ID: <20040118045121.GD8571@ccure.user-mode-linux.org>
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<200401172009.38339.blaisorblade_spam@yahoo.it>
-	<20040117195019.GA7405@ccure.user-mode-linux.org>
-	<200401172103.26457.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200401172103.26457.blaisorblade_spam@yahoo.it>
+Message-ID: <4009A583.7070007@lig.net>
+From: "Stephen D. Williams" <sdw@lig.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------030206040508010004010806"
+Subject: [uml-devel] Dynamic remount with variable COW stacking/merging needed,
+	support for snapshot repilication
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,25 +16,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 23:51:21 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 17 Jan 2004 16:13:39 -0500
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Sat, Jan 17, 2004 at 09:03:26PM +0100, BlaisorBlade wrote:
-> I didn't start it. Also, I must check exactly the API to create (i.e. how to 
-> abstract os-specific details, which is hard since I've never programmed on 
-> Cygwin or Freebsd). And also, if you assume that a file handle is an integer 
-> (which is true only on POSIX), why do you wrap open inside os_open_file 
-> (which always works on POSIX)? The same question could go for other calls.
 
-I don't, but I'm leaving it as an int for now since that works.  The interfaces
-can be tweaked in the future, so a descriptor may become some sort of void *
-cookie to handle OSes with non-integer file handles.
+This is a multi-part message in MIME format.
+--------------030206040508010004010806
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-What I'm trying to do now is get some sort of reasonable approximation to
-a decent OS abstraction layer.
+When a UML instance is running a always-on service, such as a web 
+server, an administrator needs to be able to make live backups, or 
+replications, of a running system.
 
-				Jeff
+This can be done using LVM snapshots, although that is not always 
+appropriate for just this feature. A UML instance can be paused and then 
+restarted, but this can cause severe delays while large partitions are 
+replicated.
+
+The COW ability is a great basis for an ideal solution, but I believe we 
+need to identify and implement some additional features.
+
+What I propose as a useful solution is:
+
+A UML instance mounts filesystems directly or based on a COW image.
+When an administrator invokes a console snapshot mode, the UML instance 
+causes a quick freeze, new delta COWs to be created and stacked on 
+existing mounts, then resumes.
+When the administrator completes whatever snapshot backup is needed, 
+they invoke a console unsnapshot command which pauses the instance, 
+merges the delta COWs, remounts the original images with updates, and 
+resumes.
+
+This relies on COW stacking, which I saw was added in a patch last year 
+and I assume is still present.
+The downtime for the instance would be measured in seconds generally.
+
+Can this be done now?  What needs to be added to support it?
+
+sdw
+
+-- 
+swilliams@hpti.com http://www.hpti.com Personal: sdw@lig.net http://sdw.st
+Stephen D. Williams 703-724-0118W 703-995-0407Fax 20147-4622 AIM: sdw
+
+
+
+--------------030206040508010004010806
+Content-Type: text/x-vcard; charset=utf8;
+ name="sdw.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="sdw.vcf"
+
+begin:vcard
+fn:Stephen Williams
+n:Williams;Stephen
+email;internet:sdw@lig.net
+tel;work:703-724-0118
+tel;fax:703-995-0407
+tel;pager:sdwpage@lig.net
+tel;home:703-729-5405
+tel;cell:703-371-9362
+x-mozilla-html:TRUE
+version:2.1
+end:vcard
+
+
+--------------030206040508010004010806--
 
 
 -------------------------------------------------------
