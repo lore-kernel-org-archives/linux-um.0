@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhwaI-0000dc-0H for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 11:58:18 -0800
+	id 1Ahwaq-0000jt-JI for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 11:58:52 -0800
 Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AhwaH-0006LU-GB for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 11:58:17 -0800
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Ahwaq-0005PM-1d for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 11:58:52 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH]: arch/um/os-Linux/process.c:os_usr1_process()
-References: <16392.14211.847713.994092@laputa.namesys.com>
-In-Reply-To: <16392.14211.847713.994092@laputa.namesys.com>
+Subject: Re: [uml-devel] cannot compile 2.6.1 uml-kernel, NPTL?
+References: <bua04l$6uo$1@sea.gmane.org>
+In-Reply-To: <bua04l$6uo$1@sea.gmane.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200401172059.59824.blaisorblade_spam@yahoo.it>
+Message-Id: <200401172100.36754.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,24 +27,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 20:59:59 +0100
+Date: Sat, 17 Jan 2004 21:00:36 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Nikita Danilov <Nikita@Namesys.COM>
+Cc: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>
 
-Alle 20:12, venerd=EC 16 gennaio 2004, Nikita Danilov ha scritto:
-> Hello,
+Alle 01:38, sabato 17 gennaio 2004, Sven K=F6hler ha scritto:
+> hi,
 >
-> to compile 2.6.1 UML on the host kernel without tkill (for example,
-> 2.4.21, that I use), I need the following patch (not sure it is right
-> one):
-On Uml 2.4 currently kill is used at that point instead of tkill, so your=20
-patch should probably work... however I don't have here any tkill docs so I=
-=20
-can't check them.
+> i'm trying to compile kernel 2.6.1 with the UML-patch that Jeff Dike
+> supplied. Well, i get that error:
 
-Also, the Jeff Dike's address on the site is out-of-date: use jdike (at)=20
-addtoit (dot) com.
+> arch/um/kernel/tt/unmap_fin.o(.text+0x358d0):strpbrk: first defined here
+> /usr/lib/gcc-lib/i686-pc-linux-gnu/3.2.3/../../../../i686-pc-linux-gnu/bi=
+n/
+>ld: Warning: size of symbol `strpbrk' changed from 179 in
+> arch/um/kernel/tt/unmap_fin.o to 64 in vmlinux
+
+It must be linker error.
+
+> /usr/lib/gcc-lib/i686-pc-linux-gnu/3.2.3/../../../../i686-pc-linux-gnu/bi=
+n/
+
+>ld: BFD 2.14.90.0.6 20030820 assertion fail elf.c:3458
+
+assertion failed means a bug. Would you retest with another binutils versio=
+n?=20
+On my system ld --version gives:
+
+GNU ld version 2.13.90.0.18 20030121
+
+So probably you have a binutils bug. *Maybe* there is also something strang=
+e=20
+in UML that triggers the bug, but an assertion failed is anyway a linker bu=
+g.
 
 Bye
 --=20
