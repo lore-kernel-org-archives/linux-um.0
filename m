@@ -2,15 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5TO3-0000q1-Ef for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 11:11:11 -0700
-Received: from mail-relay-4.tiscali.it ([213.205.33.44])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C5TO1-00016e-Ss for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 11:11:11 -0700
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20040909180519.61C2DA374@zion.localdomain>
-Subject: [uml-devel] [patch 1/2] uml: fold ghash.h inside physmem.c
+	id 1C5TaP-0003tW-Hb for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 11:23:57 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C5TaN-00039o-SG for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 11:23:57 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Compiling UML 2.6.8.1 with Static Linking results in
+	segfault
+References: <E1C5GuB-0000wT-QX@sc8-sf-mx2.sourceforge.net>
+In-Reply-To: <E1C5GuB-0000wT-QX@sc8-sf-mx2.sourceforge.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409092020.27856.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,363 +30,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 09 Sep 2004 20:05:18 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, hch@infradead.org, blaisorblade_spam@yahoo.it
+Date: Thu, 9 Sep 2004 20:20:27 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, ralston@stral.net
+Cc: 'Jeff Dike' <jdike@addtoit.com>
 
+On Thursday 09 September 2004 06:51, Michael Ralston wrote:
+> (gdb) run
+> Starting program: /uml/linux-2.4.26-static
+>
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x0815c520 in __libc_setup_tls ()
+> (gdb) bt
+> #0  0x0815c520 in __libc_setup_tls ()
+> #1  0x0815c82b in __pthread_initialize_minimal ()
+> #2  0x00000004 in ?? ()
+> #3  0xbffffd88 in ?? ()
+> #4  0x0815c2e8 in __libc_start_main ()
+> Previous frame inner to this frame (corrupt stack?)
+> (gdb)
+>
+>
+> I compiled the uml binary with debugging symbols enabled... Let me know if
+> there is anything else I can do... Would my complete .config be useful?
+Please, try using the 2.6.7-1 patch. There are some changes which could be at 
+fault. I'm referring to "load-low" and "link" from 
+http://user-mode-linux.sourceforge.net/changelog-uml-patch-2.6.7-2.bz2.html.
 
-Since we don't want ghash.h, just move the two needed macros (which don't use
-the nasty fuzzy algorithm) to physmem.c. This should at all safe, and will
-avoid ghash.h making its way inside 2.6.9. A separate patch will also fold the
-macros inside their uses (there is just one defined hash), but since this hook
-is not very used in this particular moment, I'll defer that to later. However
-I'm posting the second one for review (but not for merging).
+At least, just for the reason they touch the linking script (after all, who 
+says that the used start address should be the one we use, with TLS)?
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+Also, please run:
+strings /usr/bin/ld | bzip2 >linkScript.bz2
 
- uml-linux-2.6.8.1-paolo/arch/um/kernel/physmem.c |   80 +++++++
- uml-linux-2.6.8.1/include/linux/ghash.h          |  236 -----------------------
- 2 files changed, 79 insertions(+), 237 deletions(-)
+and mail the obtained file (which contains the default linker scripts). I 
+think I can build the patch for you easily, with that file; making it work on 
+everyone's glibc could be harder.
 
-diff -L include/linux/ghash.h -puN include/linux/ghash.h~uml-fold-ghash-h-inside-physmem-c /dev/null
---- uml-linux-2.6.8.1/include/linux/ghash.h
-+++ /dev/null	2004-06-25 17:47:25.000000000 +0200
-@@ -1,236 +0,0 @@
--/*
-- * include/linux/ghash.h -- generic hashing with fuzzy retrieval
-- *
-- * (C) 1997 Thomas Schoebel-Theuer
-- *
-- * The algorithms implemented here seem to be a completely new invention,
-- * and I'll publish the fundamentals in a paper.
-- */
--
--#ifndef _GHASH_H
--#define _GHASH_H
--/* HASHSIZE _must_ be a power of two!!! */
--
--
--#define DEF_HASH_FUZZY_STRUCTS(NAME,HASHSIZE,TYPE) \
--\
--struct NAME##_table {\
--	TYPE * hashtable[HASHSIZE];\
--	TYPE * sorted_list;\
--	int nr_entries;\
--};\
--\
--struct NAME##_ptrs {\
--	TYPE * next_hash;\
--	TYPE * prev_hash;\
--	TYPE * next_sorted;\
--	TYPE * prev_sorted;\
--};
--
--#define DEF_HASH_FUZZY(LINKAGE,NAME,HASHSIZE,TYPE,PTRS,KEYTYPE,KEY,KEYCMP,KEYEQ,HASHFN)\
--\
--LINKAGE void insert_##NAME##_hash(struct NAME##_table * tbl, TYPE * elem)\
--{\
--	int ix = HASHFN(elem->KEY);\
--	TYPE ** base = &tbl->hashtable[ix];\
--	TYPE * ptr = *base;\
--	TYPE * prev = NULL;\
--\
--	tbl->nr_entries++;\
--	while(ptr && KEYCMP(ptr->KEY, elem->KEY)) {\
--		base = &ptr->PTRS.next_hash;\
--		prev = ptr;\
--		ptr = *base;\
--	}\
--	elem->PTRS.next_hash = ptr;\
--	elem->PTRS.prev_hash = prev;\
--	if(ptr) {\
--		ptr->PTRS.prev_hash = elem;\
--	}\
--	*base = elem;\
--\
--	ptr = prev;\
--	if(!ptr) {\
--		ptr = tbl->sorted_list;\
--		prev = NULL;\
--	} else {\
--		prev = ptr->PTRS.prev_sorted;\
--	}\
--	while(ptr) {\
--		TYPE * next = ptr->PTRS.next_hash;\
--		if(next && KEYCMP(next->KEY, elem->KEY)) {\
--			prev = ptr;\
--			ptr = next;\
--		} else if(KEYCMP(ptr->KEY, elem->KEY)) {\
--			prev = ptr;\
--			ptr = ptr->PTRS.next_sorted;\
--		} else\
--			break;\
--	}\
--	elem->PTRS.next_sorted = ptr;\
--	elem->PTRS.prev_sorted = prev;\
--	if(ptr) {\
--		ptr->PTRS.prev_sorted = elem;\
--	}\
--	if(prev) {\
--		prev->PTRS.next_sorted = elem;\
--	} else {\
--		tbl->sorted_list = elem;\
--	}\
--}\
--\
--LINKAGE void remove_##NAME##_hash(struct NAME##_table * tbl, TYPE * elem)\
--{\
--	TYPE * next = elem->PTRS.next_hash;\
--	TYPE * prev = elem->PTRS.prev_hash;\
--\
--	tbl->nr_entries--;\
--	if(next)\
--		next->PTRS.prev_hash = prev;\
--	if(prev)\
--		prev->PTRS.next_hash = next;\
--	else {\
--		int ix = HASHFN(elem->KEY);\
--		tbl->hashtable[ix] = next;\
--	}\
--\
--	next = elem->PTRS.next_sorted;\
--	prev = elem->PTRS.prev_sorted;\
--	if(next)\
--		next->PTRS.prev_sorted = prev;\
--	if(prev)\
--		prev->PTRS.next_sorted = next;\
--	else\
--		tbl->sorted_list = next;\
--}\
--\
--LINKAGE TYPE * find_##NAME##_hash(struct NAME##_table * tbl, KEYTYPE pos)\
--{\
--	int ix = hashfn(pos);\
--	TYPE * ptr = tbl->hashtable[ix];\
--	while(ptr && KEYCMP(ptr->KEY, pos))\
--		ptr = ptr->PTRS.next_hash;\
--	if(ptr && !KEYEQ(ptr->KEY, pos))\
--		ptr = NULL;\
--	return ptr;\
--}\
--\
--LINKAGE TYPE * find_##NAME##_hash_fuzzy(struct NAME##_table * tbl, KEYTYPE pos)\
--{\
--	int ix;\
--	int offset;\
--	TYPE * ptr;\
--	TYPE * next;\
--\
--	ptr = tbl->sorted_list;\
--	if(!ptr || KEYCMP(pos, ptr->KEY))\
--		return NULL;\
--	ix = HASHFN(pos);\
--	offset = HASHSIZE;\
--	do {\
--		offset >>= 1;\
--		next = tbl->hashtable[(ix+offset) & ((HASHSIZE)-1)];\
--		if(next && (KEYCMP(next->KEY, pos) || KEYEQ(next->KEY, pos))\
--		   && KEYCMP(ptr->KEY, next->KEY))\
--			ptr = next;\
--	} while(offset);\
--\
--	for(;;) {\
--		next = ptr->PTRS.next_hash;\
--		if(next) {\
--			if(KEYCMP(next->KEY, pos)) {\
--				ptr = next;\
--				continue;\
--			}\
--		}\
--		next = ptr->PTRS.next_sorted;\
--		if(next && KEYCMP(next->KEY, pos)) {\
--			ptr = next;\
--			continue;\
--		}\
--		return ptr;\
--	}\
--	return NULL;\
--}
--
--/* LINKAGE - empty or "static", depending on whether you want the definitions to
-- *	be public or not
-- * NAME - a string to stick in names to make this hash table type distinct from
-- * 	any others
-- * HASHSIZE - number of buckets
-- * TYPE - type of data contained in the buckets - must be a structure, one 
-- * 	field is of type NAME_ptrs, another is the hash key
-- * PTRS - TYPE must contain a field of type NAME_ptrs, PTRS is the name of that
-- * 	field
-- * KEYTYPE - type of the key field within TYPE
-- * KEY - name of the key field within TYPE
-- * KEYCMP - pointer to function that compares KEYTYPEs to each other - the
-- * 	prototype is int KEYCMP(KEYTYPE, KEYTYPE), it returns zero for equal, 
-- * 	non-zero for not equal
-- * HASHFN - the hash function - the prototype is int HASHFN(KEYTYPE),
-- * 	it returns a number in the range 0 ... HASHSIZE - 1
-- * Call DEF_HASH_STRUCTS, define your hash table as a NAME_table, then call
-- * DEF_HASH.
-- */
--
--#define DEF_HASH_STRUCTS(NAME,HASHSIZE,TYPE) \
--\
--struct NAME##_table {\
--	TYPE * hashtable[HASHSIZE];\
--	int nr_entries;\
--};\
--\
--struct NAME##_ptrs {\
--	TYPE * next_hash;\
--	TYPE * prev_hash;\
--};
--
--#define DEF_HASH(LINKAGE,NAME,TYPE,PTRS,KEYTYPE,KEY,KEYCMP,HASHFN)\
--\
--LINKAGE void insert_##NAME##_hash(struct NAME##_table * tbl, TYPE * elem)\
--{\
--	int ix = HASHFN(elem->KEY);\
--	TYPE ** base = &tbl->hashtable[ix];\
--	TYPE * ptr = *base;\
--	TYPE * prev = NULL;\
--\
--	tbl->nr_entries++;\
--	while(ptr && KEYCMP(ptr->KEY, elem->KEY)) {\
--		base = &ptr->PTRS.next_hash;\
--		prev = ptr;\
--		ptr = *base;\
--	}\
--	elem->PTRS.next_hash = ptr;\
--	elem->PTRS.prev_hash = prev;\
--	if(ptr) {\
--		ptr->PTRS.prev_hash = elem;\
--	}\
--	*base = elem;\
--}\
--\
--LINKAGE void remove_##NAME##_hash(struct NAME##_table * tbl, TYPE * elem)\
--{\
--	TYPE * next = elem->PTRS.next_hash;\
--	TYPE * prev = elem->PTRS.prev_hash;\
--\
--	tbl->nr_entries--;\
--	if(next)\
--		next->PTRS.prev_hash = prev;\
--	if(prev)\
--		prev->PTRS.next_hash = next;\
--	else {\
--		int ix = HASHFN(elem->KEY);\
--		tbl->hashtable[ix] = next;\
--	}\
--}\
--\
--LINKAGE TYPE * find_##NAME##_hash(struct NAME##_table * tbl, KEYTYPE pos)\
--{\
--	int ix = HASHFN(pos);\
--	TYPE * ptr = tbl->hashtable[ix];\
--	while(ptr && KEYCMP(ptr->KEY, pos))\
--		ptr = ptr->PTRS.next_hash;\
--	return ptr;\
--}
--
--#endif
-diff -puN arch/um/kernel/physmem.c~uml-fold-ghash-h-inside-physmem-c arch/um/kernel/physmem.c
---- uml-linux-2.6.8.1/arch/um/kernel/physmem.c~uml-fold-ghash-h-inside-physmem-c	2004-09-09 18:56:28.381109520 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/physmem.c	2004-09-09 19:43:52.463743240 +0200
-@@ -4,7 +4,6 @@
-  */
- 
- #include "linux/mm.h"
--#include "linux/ghash.h"
- #include "linux/slab.h"
- #include "linux/vmalloc.h"
- #include "linux/bootmem.h"
-@@ -45,6 +44,85 @@ static struct add_mapping(void *addr, st
- #define PHYS_HASHSIZE (8192)
- 
- struct phys_desc;
-+/* LINKAGE - empty or "static", depending on whether you want the definitions to
-+ *	be public or not
-+ * NAME - a string to stick in names to make this hash table type distinct from
-+ * 	any others
-+ * HASHSIZE - number of buckets
-+ * TYPE - type of data contained in the buckets - must be a structure, one
-+ * 	field is of type NAME_ptrs, another is the hash key
-+ * PTRS - TYPE must contain a field of type NAME_ptrs, PTRS is the name of that
-+ * 	field
-+ * KEYTYPE - type of the key field within TYPE
-+ * KEY - name of the key field within TYPE
-+ * KEYCMP - pointer to function that compares KEYTYPEs to each other - the
-+ * 	prototype is int KEYCMP(KEYTYPE, KEYTYPE), it returns zero for equal,
-+ * 	non-zero for not equal
-+ * HASHFN - the hash function - the prototype is int HASHFN(KEYTYPE),
-+ * 	it returns a number in the range 0 ... HASHSIZE - 1
-+ * Call DEF_HASH_STRUCTS, define your hash table as a NAME_table, then call
-+ * DEF_HASH.
-+ */
-+
-+#define DEF_HASH_STRUCTS(NAME,HASHSIZE,TYPE) \
-+\
-+struct NAME##_table {\
-+	TYPE * hashtable[HASHSIZE];\
-+	int nr_entries;\
-+};\
-+\
-+struct NAME##_ptrs {\
-+	TYPE * next_hash;\
-+	TYPE * prev_hash;\
-+};
-+
-+#define DEF_HASH(LINKAGE,NAME,TYPE,PTRS,KEYTYPE,KEY,KEYCMP,HASHFN)\
-+\
-+LINKAGE void insert_##NAME##_hash(struct NAME##_table * tbl, TYPE * elem)\
-+{\
-+	int ix = HASHFN(elem->KEY);\
-+	TYPE ** base = &tbl->hashtable[ix];\
-+	TYPE * ptr = *base;\
-+	TYPE * prev = NULL;\
-+\
-+	tbl->nr_entries++;\
-+	while(ptr && KEYCMP(ptr->KEY, elem->KEY)) {\
-+		base = &ptr->PTRS.next_hash;\
-+		prev = ptr;\
-+		ptr = *base;\
-+	}\
-+	elem->PTRS.next_hash = ptr;\
-+	elem->PTRS.prev_hash = prev;\
-+	if(ptr) {\
-+		ptr->PTRS.prev_hash = elem;\
-+	}\
-+	*base = elem;\
-+}\
-+\
-+LINKAGE void remove_##NAME##_hash(struct NAME##_table * tbl, TYPE * elem)\
-+{\
-+	TYPE * next = elem->PTRS.next_hash;\
-+	TYPE * prev = elem->PTRS.prev_hash;\
-+\
-+	tbl->nr_entries--;\
-+	if(next)\
-+		next->PTRS.prev_hash = prev;\
-+	if(prev)\
-+		prev->PTRS.next_hash = next;\
-+	else {\
-+		int ix = HASHFN(elem->KEY);\
-+		tbl->hashtable[ix] = next;\
-+	}\
-+}\
-+\
-+LINKAGE TYPE * find_##NAME##_hash(struct NAME##_table * tbl, KEYTYPE pos)\
-+{\
-+	int ix = HASHFN(pos);\
-+	TYPE * ptr = tbl->hashtable[ix];\
-+	while(ptr && KEYCMP(ptr->KEY, pos))\
-+		ptr = ptr->PTRS.next_hash;\
-+	return ptr;\
-+}
- 
- DEF_HASH_STRUCTS(virtmem, PHYS_HASHSIZE, struct phys_desc);
- 
-_
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
