@@ -1,21 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBYCg-0005uz-GV for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 05:00:18 -0700
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BBYCf-0001nf-Tw
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 05:00:18 -0700
-References: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
-From: Gerd Knorr <kraxel@bytesex.org>
-In-Reply-To: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
-Message-ID: <87smfevfq2.fsf@bytesex.org>
+From: Henrik Nordstrom <uml@henrik.marasystems.com>
+Subject: Re: [uml-devel] A quick humfs HOWTO 
+In-Reply-To: <200404081134.i38BYZB6001887@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0404081405570.9689-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: A quick humfs HOWTO
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,23 +16,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 08 Apr 2004 14:03:49 +0200
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 8 Apr 2004 14:09:42 +0200 (CEST)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Henrik Nordstrom <uml@henrik.marasystems.com>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike <jdike@addtoit.com> writes:
+On Thu, 8 Apr 2004, Jeff Dike wrote:
 
-> As the readers of uml-devel are aware by now, there is a new virtual UML 
-> filesystem called humfs.  This is a hostfs-like filesystem which does ownerships
-> right, by separating them from the actual file, ala umsdos.
+> Don't care isn't a possibility.  humfsify chowns everything in the data tree
+> to this uid and gid.  UML needs write access to everything if root is to
+> behave as root.
 
-Hmm.  Why separate?  These days almost all filesystems in 2.6 support
-extended attributes, that would be the ideal place for such metadata
-IMHO ...
+Ugh.. this should be removed and just documented as a requirement in my 
+opinion, especially considering following of symlinks..
 
-  Gerd
+> Possible it could run as a normal user, but my expectation is that people
+> will loop-mount ubd volumes as their data sources, and those are filled with
+> root-owned files.  The only place that makes sense is when you already have
+> a tree which is completely owned by the UML user.
 
--- 
-http://bigendian.bytesex.org
+Such as is the case if one today is using hostfs, or setting up a 
+reasonable read-only access to some tree but wanting detailed permissions. 
+Anyway, these are all extensions to the humfsify tool, not the filesystem 
+as such so it should be pretty easy for anyone needing this to get it 
+done.
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
