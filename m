@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AZxE1-0008N7-3h
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:17 -0800
+	id 1AZxE3-0008NC-S1
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:19 -0800
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AZxE0-00032Y-Ir
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:16 -0800
+	id 1AZxE3-000336-At
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:19 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] UML patches against vanilla 2.6.0
-References: <200312261905.48277.blaisorblade_spam@yahoo.it> <20031226182737.GK2378@erdos.home>
-In-Reply-To: <20031226182737.GK2378@erdos.home>
+Subject: Re: [uml-devel] UML build system: patch ready
+References: <200312241943.37474.blaisorblade_spam@yahoo.it> <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
+In-Reply-To: <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200312261956.13626.blaisorblade_spam@yahoo.it>
+Message-Id: <200312261956.24711.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,59 +27,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Dec 2003 19:56:13 +0100
-Content-Transfer-Encoding: quoted-printable
+Date: Fri, 26 Dec 2003 19:56:24 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 19:27, venerd=EC 26 dicembre 2003, Cameron Patrick ha scritto:
-> On Fri, Dec 26, 2003 at 07:05:48PM +0100, BlaisorBlade wrote:
-> | Go here:
-> |
-> | http://web.tiscali.it/no-redirect-tiscali/blaisorblade/index.html
->
-> Which says:
->
-> 	The only problematic patch is A-04-MM-compile-fix.patch, but
-> 	maybe i386 can live even with it (I don't remember if I got a
-> 	successful compilation with it applied). However, I think it's
-> 	not at all safe even if it compiles.
->
-> and in the README:
->
-> 	but I think you'd better avoid doing this or do a complete
-> 	backup, since you'll need it...).
+> arch/um/sys-i386/bugs.c ...
+[...]
+> It looks that modify_ldt_ldt_s is not defined anywhere and modify_ldt()
+> cannot be found.
+It's true, but they should be defined by /usr/include/asm/ldt.h. So it's not 
+my fault(unless you succeed in compiling a 2.6 with the -test9 patch).
+Have you got a Debian? This problem has appeared on Debian unstable also for 
+2.4, since that file is from the 2.6 headers.
+The quick fix is to make /usr/include/asm and /usr/include/linux be symlinks 
+into a 2.4 kernel tree, but only for compiling UML(for the other programs, in 
+fact, they must stay as they are).
 
-> Eeek!  I just upgraded my home desktop to a 2.6.0 kernel with that patch
-> applied (actually as part of Jeff's 2.6.0-test9 patch) and so far it
-> seems to be working.
-Are you sure? If you compile a stock 2.6.0 with Jeff's 2.6.0-test9 patch an=
-d=20
-try to compile an i386 kernel, you'll get soon errors about=20
-do_mmap_pgoff(except if you applied a host-skas to your 2.6 tree).
+> arch/um/sys-i386/bugs.c: In function `disable_lcall':
+> arch/um/sys-i386/bugs.c:110: storage size of `ldt' isn't known
+> arch/um/sys-i386/bugs.c:117: warning: implicit declaration of function
+> `modify_ldt'
+> arch/um/sys-i386/bugs.c:110: warning: unused variable `ldt'
 
-> Looking at the patch, it seems innocuous enough -
-> why should it be unsafe on an i386 kernel?
+> I did these ...
+> 	cd uml
+> 	patch -p1 </tar/uml/uml-combo-2.6.0-A5
+> 	patch -p1 </tar/uml/A-01-Fix_clean_mrproper.patch
+> 	patch -p1 </tar/uml/A-02-Apply_altern-constants.patch
+> 	patch -p1 </tar/uml/A-03-Module_support.patch
 
-I don't know actually, but it doesn't seem innocuous.
+That's ok(apart for the uml-combo, I didn't test it), but I wasn't clear about 
+A-04.
+You can apply A-04-User_obj_makefiles-v2.patch(note the -v2), while you must 
+not apply A-04-User_obj_makefiles.patch (now I've seen this wasn't uploaded). 
+However that is unrelated to the above problem. Also, if you want some more 
+to test, see my new message "UML patches against vanilla 2.6.0", which 
+describes a more complete group of patches.
 
-Instead, FIXADDR_USER_START is replaced by FIXADDR_START(+ some syntactical=
-=20
-changes that do not hurt). And they have a different meaning(see=20
-include/asm-i386/fixmap.h).
-
-Since I'm not a VM hacker, and I don't understand the change, I just say th=
-at=20
-that shouldn't be used, for prudence's sake. That mention about backup is=20
-maybe a bit exaggerated, but it's a form of "no warranty" disclaimer.
-
-*NOTE*: the combo patches from Ingo Molnar contain this, too(I don't know i=
-f=20
-he noticed this change at all), and he probably used this without problem. =
-So=20
-I may be wrong at all.
-
-Bye
---=20
+-- 
 cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
 Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
@@ -89,7 +75,7 @@ EOSIGN
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
