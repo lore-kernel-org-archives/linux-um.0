@@ -1,33 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BGRoK-0005IZ-6H for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Apr 2004 17:11:24 -0700
-Received: from mx13.sac.fedex.com ([199.81.197.53])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BGRnb-0002j7-Im
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Apr 2004 17:10:39 -0700
-Received: from inet04.prod.fedex.com (inet04.prod.fedex.com [199.81.10.44])
-	by mx13.sac.fedex.com (8.12.9p2/8.12.9) with ESMTP id i3M0A5u8015779
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 21 Apr 2004 19:10:06 -0500 (CDT)
-	(envelope-from jeff98@silk.corp.fedex.com)
-Received: from entpm11.apac.fedex.com (entpm11.apac.fedex.com [155.161.92.11])
-	by inet04.prod.fedex.com (8.12.11/8.12.11) with ESMTP id
-	i3M09vDw010419 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 21 Apr 2004 19:10:03 -0500 (CDT)
-From: Jeff Chua <jeff98@silk.corp.fedex.com>
+Message-ID: <40877E45.7070608@fastwebnet.it>
+From: Primero <primero@fastwebnet.it>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] patch for 2.6.6-rc1
-In-Reply-To: <08bf01c427fb$86cb9520$2000000a@schlepptopp>
-Message-ID: <Pine.LNX.4.58.0404220806000.7782@boston.corp.fedex.com>
 References: <Pine.LNX.4.58.0404162157280.29213@boston.corp.fedex.com>
 	<072401c4273d$99b857e0$2000000a@schlepptopp>
 	<Pine.LNX.4.58.0404211409570.2147@boston.corp.fedex.com>
 	<08bf01c427fb$86cb9520$2000000a@schlepptopp>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	<Pine.LNX.4.58.0404220806000.7782@boston.corp.fedex.com>
+In-Reply-To: <Pine.LNX.4.58.0404220806000.7782@boston.corp.fedex.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig512C115A4E163CD261CB060E"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,20 +23,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Apr 2004 08:07:36 +0800 (SGT)
-To: roland <for_spam@gmx.de>
-Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 22 Apr 2004 10:11:49 +0200
+To: Jeff Chua <jeff98@silk.corp.fedex.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Thu, 22 Apr 2004, roland wrote:
 
-> uml-patch-2.6.4-1.bz2 doesn`t apply to 2.6.6-rc1/2 (hunks failed)
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig512C115A4E163CD261CB060E
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> > You must apply uml-patch-2.6.4-1.bz2 (or the attached uml-patch-2.6.6-0)
+Jeff Chua wrote:
 
-Have you tried uml-patch-2.6.6-0 instead of uml-patch-2.6.4-1 ?
+>On Thu, 22 Apr 2004, roland wrote:
+>
+>  
+>
+>>uml-patch-2.6.4-1.bz2 doesn`t apply to 2.6.6-rc1/2 (hunks failed)
+>>    
+>>
+>
+>  
+>
+>>>You must apply uml-patch-2.6.4-1.bz2 (or the attached uml-patch-2.6.6-0)
+>>>      
+>>>
+>
+>Have you tried uml-patch-2.6.6-0 instead of uml-patch-2.6.4-1 ?
+>
+>  
+>
+Hi all, i'm new on the ML and on UML... I've got some problems of 
+perfomance of my 2.6.3 guest kernel on a 2.6.5 host kernel on Gentoo. 
+Reading as much as i can i think that could be a problem because i've 
+not a SKAS3 patched host kernel ... so, where can i find a 2.6.5 SKAS 
+patch or , much better , the 2.6.6 SKAS patch that is called above?
 
-Jeff
+thanks in advance
 
+Primero
+
+--------------enig512C115A4E163CD261CB060E
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFAh35FOGoQ6Fir3nYRApV5AJ46HbMozqWzmjJAFWJUMAR+akHerQCdEJ+s
+e8mMbUhiie7utLtfo7Pw8/A=
+=reZm
+-----END PGP SIGNATURE-----
+
+--------------enig512C115A4E163CD261CB060E--
 
 
 -------------------------------------------------------
