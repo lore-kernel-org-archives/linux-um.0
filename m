@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AooXu-0000dW-1e
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 10:48:14 -0800
+	id 1AooXq-0000bY-6i
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 10:48:10 -0800
 Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AooXt-00050p-DN
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 10:48:13 -0800
+	id 1AooXp-0004zc-EX
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 10:48:09 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] UML & 2.6.2
-References: <20040204173846.7522.qmail@praize.com>
-In-Reply-To: <20040204173846.7522.qmail@praize.com>
+Subject: Re: [uml-devel] Swapping directly to host swap area?
+References: <Pine.LNX.4.44.0401251827030.2766-100000@sparrow> <200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
+In-Reply-To: <200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
 Content-Disposition: inline
-Message-Id: <200402051800.19582.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200402051759.03917.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,60 +25,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 5 Feb 2004 18:00:19 +0100
+Date: Thu, 5 Feb 2004 17:59:03 +0100
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: gboutwel <gboutwel@praize.com>
+To: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 18:38, mercoled=EC 4 febbraio 2004, gboutwel ha scritto:
-> Hey!
+Alle 05:39, mercoled=EC 28 gennaio 2004, Jeff Dike ha scritto:
 
->   Here we go again.  I just checked out the 2.6.2 release ChangeLog.
->  Only thing I can see in there related to UML is a minor compile
-> fix.
+> > In the current setup, the host kernel sees this as a normal
+> > write to an open file, caching it in the process and so not truly
+> > freeing up the ram for a bit.
+>
+> This is, and this could be done by setting O_DIRECT on UML swap devices. =
 
->   Do get an SKAS3/4 2.6.2 Host, and a 2.6.2 guest.  What do I
-> need?  the Kernel Source, Ingos' combo patch (for SKAS), and
-> the um-patch-2.6.1?
+> That way, writes go directly (and asynchronously) to the device without
+> landing in the cache.
+>
+> With mmap in effect, this can also be done with a MADVISE_DONTNEED on the
+> relevant pages of the swap file.
+>
+> Patches cheerfully accepted.
 
-Mainly ok, only some notes:
+About this, my idea was that using swap both on the host and on the guests =
+is=20
+not very useful:
 
-1) Use Ingo's combo only for the host kernel (since the UML part for itself=
- is=20
-out-of-date).
+- because the host already sees which pages are accessed and which not (an =
 
-2) Now I've tested uml-patch-2.6.2 and there are a few minor rejects with t=
-hat=20
-patch. They are solved properly in this patch (I'm going to upload it, not =
+access inside UML is an access inside the host); the only difference is tha=
+t=20
+the host can swap even the guest kernel, while UML not;
 
-yet done):
-
-http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/2=
-.6.2-v1/uml-patch-2.6.2-0.bz2
-
-I've given it a quick test and it compiles and boots correctly, at least in=
-=20
-the reduced configuration I tried.
-
-If you don't find it, that should mean that Jeff Dike already posted his pa=
-tch=20
-(which has also some functional changes).
-
-That one has not any real change from Jeff Dike one; so with it don't enabl=
+- because that probably creates overhead: page aging probably has little on=
 e=20
-modules. If you want to use modules, read instructions at:
+(it should be possible to disable it with CONFIG_SWAP=3Dn), but since UML (=
+if I=20
+understand correctly) needs to trap a SIGSEGV (which is slow, according to =
 
-http://web.tiscali.it/no-redirect-tiscali/blaisorblade/
+what you say about TT and SKAS) from a page access to swap in a page, while=
+=20
+the host does this in hardware, my opinion is that you would probably disab=
+le=20
+swap inside UML. Swap on the host means just that the host will cache datas=
+=20
+instead of keeping in memory UML pages, if you don't give to the guests mor=
+e=20
+than the physical memory; but this makes sense, IMHO. When you have differe=
+nt=20
+customers on the same host, there is a problem, but then they can choose=20
+differently (even because this doesn't constrast with the changes to code=20
+suggested above).
 
-you will probably choose to download:
-
-http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/2=
-.6.2-v1/00-Combo-v1.bz2
-
-Bye
+I think this is correct even when /dev/anon is used, but I'm not very sure =
+for=20
+it.
 --=20
+cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+EOSIGN
+
 
 
 
