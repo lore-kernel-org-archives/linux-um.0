@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cjrjc-0001Ne-LY for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Dec 2004 20:16:24 -0800
-Received: from pike.sandelman.ca ([205.150.200.164])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1Cjrjb-0004yc-L9
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Dec 2004 20:16:24 -0800
-Subject: Re: [uml-devel] synchronous hostfs 
-In-Reply-To: Message from Blaisorblade <blaisorblade@yahoo.it> of "Wed,
-	29 Dec 2004 19:06:08 +0100." <200412291906.08122.blaisorblade@yahoo.it>
-References: <27776.1104084973@marajade.sandelman.ottawa.on.ca>
-	<200412291906.08122.blaisorblade@yahoo.it> 
-Message-ID: <23369.1104380180@marajade.sandelman.ottawa.on.ca>
-From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+	id 1Ck2q5-0005u7-Fa for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Dec 2004 08:07:49 -0800
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1Ck2q3-00047c-Mx for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Dec 2004 08:07:48 -0800
+From: "Armin M. Warda" <Armin.Warda@gmx.de>
+Reply-To: Armin.Warda@gmx.de
+References: <200412140958.58402.Armin.Warda@ePost.De>
+	<20041216183604.GB24982@bytesex>
+	<200412162013.21197.blaisorblade_personal@yahoo.it>
+In-Reply-To: <200412162013.21197.blaisorblade_personal@yahoo.it>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1949118.CmYVAM1vlQ";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200412301520.48951.Armin.Warda@gmx.de>
+Subject: [uml-devel] Re: UML fills /tmp irreversibly (2.6.9-bb4 on SuSE 9.2)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,67 +31,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Dec 2004 23:16:20 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 30 Dec 2004 15:20:42 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Gerd Knorr <kraxel@bytesex.org>
 
------BEGIN PGP SIGNED MESSAGE-----
+--nextPart1949118.CmYVAM1vlQ
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
+  Hi,
 
->>>>> "Blaisorblade" == Blaisorblade  <blaisorblade@yahoo.it> writes:
-    >> I'm running 2.4.26-um3.  I happen to be running hostfs with NFS
-    >> underneath.  I get core dumps from my application, and I want to
-    >> gdb them outside of the UML.
+just tried again with SuSE host kernel 2.6.8-24.10: same problem.
 
-    >> I had to switch from core dump to NFS (which seems to fail now)
-    >> to putting them in /tmp (which is ramdisk), and then move them to
-    >> /var/tmp, which is hostfs.
+(Is 2.6.8-24.10 a 2.6.8 with back-ported fixes from 2.6.10 ?)
 
-    Blaisorblade> Hmm - were you putting the core dumps inside a hostfs
-    Blaisorblade> mount, right? This has been reported to fail badly
+  Armin.
 
-  Yes, previously.
+On Thursday 16 December 2004 20:13, Paolo Giarrusso wrote:
+> On Thursday 16 December 2004 19:36, Gerd Knorr wrote:
+> > > Well, this matches some other reports of a different problem
+> > > (impossible to unmount a fs used by UML) which probably relates
+> > > to 2.6.9 host bugs.
+> > >
+> > > I'd suggest trying to reproduce the bug with a 2.6.8.1 +
+> > > SKAS3-v7 patch, or checking what's different in the SuSE kernel
+> > > from vanilla 2.6.8.1 (I'm particularly suspiscious about the
+> > > TASK_TRACED introduction).
+> >
+> > The suse 2.6.8 kernel is actually 2.6.9-rc2, thus more close to
+> > 2.6.9 than 2.6.8.  Especially it already has the TASK_TRACED
+> > stuff and I've used the 2.6.9 version of the skas v7 patch
+> >
+> > (and also thats why I've
+> > suggested to check against 2.6.9 not 2.6.8.1 vanilla to see if
+> > the issue is still there).
+>
+> Remember that there was an invisible reference from died UMLs that
+> kept the tmpfs from being unmounted (multiply reported, I
+> experienced that too). Well, it the file is kept used, then it will
+> keep using the tmpfs space. So nothing new....
 
-    Blaisorblade> with 2.4.26-3um... the hostfs contained in 2.4.24-1um
-    Blaisorblade> and 2.4.27-1bs (this tree is from me, on my homepage)
-    Blaisorblade> is stable, while the one in 2.4.24-2um and subsequent
-    Blaisorblade> releases isn't.
+=2D-=20
+   --- May the Source be with you! Linux. ---
+   --- secure eMail: http://www.gnupg.de/ ---
 
-  I'll try it on my next compile.
+--nextPart1949118.CmYVAM1vlQ
+Content-Type: application/pgp-signature
 
-    >> Is there some way to defeat the caching that is occuring?  or
-    >> even to just flush it? (other than umount)
-
-    Blaisorblade> Hmmm, I don't know this... probably giving "sync"
-    Blaisorblade> inside UML should work.  I remember that Jeff said
-    Blaisorblade> that he made hostfs asynchronous in those releases on
-    Blaisorblade> purpose (for performance, IIRC), and this is not bad.
-
-  I actually wonder if there is really any advantage.
-  I'd like to be convinced.
-
-  It seems that for executables, mapping hostfs files straight into the
-guest address space wouldn't care. I'd have thought that for stdio
-things, that any buffering done by guest kernel would be really just
-wasted. glibc has already buffered pretty much everything...
-
-  However, I'd like to be able to turn it off.
-
-- -- 
-]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
-]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
-] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
-] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-Comment: Finger me for keys
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-iQCVAwUBQdOBE4qHRg3pndX9AQH1dgQA6/oZIVgXnHeGVzfe607Lm5+FRfne0Sw7
-OuNd3+mgbEpZMxExMI1bMPv0mvDD7SCoHjy3Fn7nR61n5iOLeAOOxIIuPxvzmzsO
-Hc1jh8NQQARsBrIqpJKW+5UO5Y7Vr0BE6V990QPa/Yhv0T4vSQOucP5IZfvV6yAN
-Q8gwgs6zd34=
-=9+kS
+iD8DBQBB1A7ARyBj5Zbydm0RAqbLAKDVNijt42LzTx2oRZot2mBrtELNagCgiYiZ
+69IzeWRxL6G8rx+elKvv7Bs=
+=IHLK
 -----END PGP SIGNATURE-----
+
+--nextPart1949118.CmYVAM1vlQ--
 
 
 -------------------------------------------------------
