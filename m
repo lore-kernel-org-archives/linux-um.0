@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKnfH-0001Wf-Fr for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 17:52:19 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CKnfG-0006zO-Q3 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 17:52:19 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [patch 1/1] SYSEMU: avoid intercepting syscall on
-	return when using SYSCALL again.
-References: <20041021231834.9D3833F37@zion.localdomain>
-In-Reply-To: <20041021231834.9D3833F37@zion.localdomain>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200410220237.53212.blaisorblade_spam@yahoo.it>
+	id 1CKosR-0000Vf-HG for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 19:09:59 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CKosP-0000BV-4D
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 19:09:59 -0700
+Message-Id: <200410220319.i9M3JSFL007319@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Wed, 20 Oct 2004 19:40:54 PDT."
+	<20041021024054.GA17968@taniwha.stupidest.org> 
+References: <20041021024054.GA17968@taniwha.stupidest.org> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [PATCH] UML: INITRAMFS_SOURCE noise/build fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,31 +28,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 22 Oct 2004 02:37:53 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: bstroesser@fujitsu-siemens.com, jdike@addtoit.com
+Date: Thu, 21 Oct 2004 23:19:28 -0400
+To: Chris Wedgwood <cw@f00f.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 22 October 2004 01:18, blaisorblade_spam@yahoo.it wrote:
-> From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+cw@f00f.org said:
+> Trivial patch (copy & yank) so UML builds don't generate a warning
+> from linux/usr/Makefile:gen_cmd_list when CONFIG_INITRAMFS_SOURCE
+> isn't defined (maybe the Makefile shouldn't require
+> CONFIG_INITRAMFS_SOURCE to be set?). 
 
-> A guest process switching from using PTRACE_SYSEMU to PTRACE_SYSCALL
-> crashes.
->
-> The problem is in arch/i386/kernel/entry.S. The current SYSEMU patch
-> inhibits the syscall-handler to be called, but does not prevent
-> do_syscall_trace to be called after this for syscall completion
-> interception.
->
-> The appended patch fixes this. It reuses the flag TIF_SYSCALL_EMU to
-> remember "we come from PTRACE_SYSEMU and now are in PTRACE_SYSCALL", since
-> the flag is unused in the depicted situation.
-This version of the patch sets it during sys_ptrace(), instead of clearing it 
-and re-enabling it as was being done. I'm going to test this version ASAP.
+Applied, thanks.
 
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+I hadn't got around to figuring out what that error was about.
+
+				Jeff
 
 
 
