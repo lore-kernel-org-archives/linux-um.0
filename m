@@ -2,28 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BqamT-0001sK-9U for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jul 2004 10:02:53 -0700
-Received: from brown.brainfood.com ([146.82.138.61]
-	helo=gradall.private.brainfood.com)
+	id 1Bqb3s-0005Rd-2f for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Jul 2004 10:20:52 -0700
+Received: from rwcrmhc12.comcast.net ([216.148.227.85])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1BqamS-0001XB-W9 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jul 2004 10:02:53 -0700
-Received: from localhost ([127.0.0.1] ident=adam)
-	by gradall.private.brainfood.com with esmtp (Exim 3.36 #1 (Debian))
-	id 1BqamQ-00088V-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 30 Jul 2004 12:02:50 -0500
-From: Adam Heath <doogie@brainfood.com>
-Subject: Re: [uml-devel] uml-patch-2.4.26-2
-In-Reply-To: <20040730144606.GA27236@memset.com>
-Message-ID: <Pine.LNX.4.58.0407301202240.1450@gradall.private.brainfood.com>
-References: <200407162019.i6GKJKqa003236@ccure.user-mode-linux.org>
-	<20040730074833.GA22488@craig-wood.com>
-	<878yd1itow.fsf@amaterasu.srvr.nix>
-	<20040730144606.GA27236@memset.com>
+	id 1Bqb3r-0004lL-Rr for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Jul 2004 10:20:52 -0700
+Message-ID: <410A833F.9030207@hevanet.com>
+From: Matt Clay <mattclay@hevanet.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [uml-devel] Re: Bug#260111: user-mode-linux: upgrade hangs at
+	"NET4: Linux TCP/IP 1.0 for NET4.0 "
+References: <200407280315.08207.alydar@users.sourceforge.net>
+	<200407281722.i6SHM6eh002963@ccure.user-mode-linux.org>
+	<200407291430.18818.alydar@users.sourceforge.net>
+	<200407292234.04279.alydar@users.sourceforge.net>
+	<200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
+In-Reply-To: <200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,17 +32,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 30 Jul 2004 12:02:49 -0500 (CDT)
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 30 Jul 2004 10:19:59 -0700
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Allen Chan <alydar@users.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net, 260111@bugs.debian.org
 
-On Fri, 30 Jul 2004, Nick Craig-Wood wrote:
+Jeff Dike wrote:
+> 
+> The move_console_write patch at http://user-mode-linux.sourceforge.net/patches.html
+> backs out this part of that change.
+> 
+> Can anyone who's seeing this check that it fixes the hang?
 
-> However I view the above to be a bug in UML - it shouldn't lock up.
-> Its entitled to miss events etc though.  gettimeofday(2) isn't
-> guaranteed to be monotonic, but unfortunately there isn't a monotonic
-> timer (like jiffies) that escapes to user space AFAIK.
+Works for me.  What still bothers me is that turning on debugging 
+symbols was "fixing" it for me as well.
 
-rdtsc, but only on newer cpus.
+  - Matt
 
 
 -------------------------------------------------------
