@@ -2,30 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTjMH-00008s-6j for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 08:33:21 -0700
-Received: from smtpq3.home.nl ([213.51.128.198])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTjME-0005G2-Sz for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 08:33:19 -0700
-Received: from [213.51.128.136] (port=45149 helo=smtp5.home.nl)
-	by smtpq3.home.nl with esmtp (Exim 4.30) id 1BTjME-0002YK-0x
+	id 1BTjb7-0003O0-P1 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 08:48:41 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BTjb7-0000T5-CL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 17:33:18 +0200
-Received: from cc22149-a.groni1.gr.home.nl ([217.121.240.26]:33797
-	helo=ws-02.local) by smtp5.home.nl with esmtp (Exim 4.30)
-	id 1BTjMC-0002UW-2j for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 17:33:16 +0200
-From: Leendert Meyer <leen.meyer@home.nl>
-Subject: Re: [uml-devel] No of ubd
-References: <Pine.LNX.4.44.0405280922080.27901-100000@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.44.0405280922080.27901-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200405281737.19674.leen.meyer@home.nl>
+	Fri, 28 May 2004 08:48:41 -0700
+Message-Id: <200405281636.i4SGaHB5001932@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Fri, 28 May 2004 15:58:16 +0200."
+	<20040528135816.GA27837@bytesex.org> 
+References: <20040528135816.GA27837@bytesex.org> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [2.6 patch] terminal/console cleanups
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,25 +28,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 May 2004 17:37:19 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 28 May 2004 12:36:17 -0400
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Friday 28 May 2004 10:13, Henrik Nordstrom wrote:
-> On Fri, 28 May 2004, Raymond Wong wrote:
-> > How many ubd drives are available to use?  8? Or 256?
->
-> 8, each with 16 partitions.
+kraxel@bytesex.org said:
+> The changes in detail:
 
-To create an ubd partition, one does on the host e.g.
+Excellent!  I've been wanting to do this for a long time, but haven't had the
+spare time.
 
-  dd if=/dev/zero of=rootfs count=1 bs=1G
-  mkreiserfs -ff rootfs
+> The changes in detail:
 
-But how to make an ubd drive?
+I haven't looked at the actual changes, but this all sounds right.
 
-Cheers,
+> Note that with this patch applied it is strongly recommended to
+> specify the device you want to use as console on the kernel command
+> line.
 
-Leen
+Except for this.  I don't want to break everyone's scripts.  I think maybe
+some logic similar to the root= might be in order, where it checks to see
+if a console was specified, and if not, adds one to the command line.
+
+				Jeff
+
 
 
 -------------------------------------------------------
