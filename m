@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CNKdK-000788-T2 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 17:28:46 -0700
-Received: from pimout2-ext.prodigy.net ([207.115.63.101])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CNKdJ-00059y-CD for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 17:28:46 -0700
-From: Chris Wedgwood <cw@f00f.org>
-Subject: Re: [uml-devel] Re: Why UML often does not build (was: Re: [PATCH]
-	UML: Build fix for TT w/o SKAS)
-Message-ID: <20041029002831.GD12434@taniwha.stupidest.org>
-References: <20041027053602.GB30735@taniwha.stupidest.org>
-	<200410282254.21944.blaisorblade_spam@yahoo.it>
-	<20041028214242.GB2269@taniwha.stupidest.org>
-	<200410290149.31665.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200410290149.31665.blaisorblade_spam@yahoo.it>
+	id 1CNLQM-0007VO-7d for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 18:19:26 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CNLQK-0003kB-St for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 18:19:26 -0700
+Message-ID: <41819A8A.20403@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] Re: [patch 1/1] SYSEMU: avoid intercepting syscall
+	on return when using SYSCALL again.
+References: <20041021231834.9D3833F37@zion.localdomain>
+	<200410290104.22725.blaisorblade_spam@yahoo.it>
+	<41818295.5000209@fujitsu-siemens.com>
+	<200410290200.46907.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200410290200.46907.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,38 +31,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Oct 2004 17:28:31 -0700
+Date: Fri, 29 Oct 2004 03:19:06 +0200
 To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>
+Cc: jdike@addtoit.com, Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Oct 29, 2004 at 01:49:31AM +0200, Blaisorblade wrote:
+Blaisorblade wrote:
+> No. Just strace any process inside UML. Let's "strace ls". Last time I 
+> checked, it does not work. Oh hell! It works (as of 2.6.9)! Well, you already 
+> fixed that.
+> 
+No. Here you are wrong. The problem is still there (or is it again there?).
+Sorry.
 
-> Yes, it was using SIGKILL instead of PTRACE_KILL; this gets broken
-> by 2.6.9.
+My latest patch "patch-singlestep-sighdlr" has been too complete!
+Setting TIF_SIGPENDING after ptrace_notify() in syscall_trace() in neccessary
+only on the 2nd tracepoint (entryexit == 1).
+And setting it on the 1st tracepoint lets some specific systemcalls loop.
+Example: sys_rt_sigaction() wants to be called without SIGPENDING. Thus it returns
+with -ERESTARTNOINTR. On return do_signal() is called, which resets TIF_SIGPENDING
+and sets EIP back to the syscall. Now the syscall starts, runs through
+syscall_trace() and TIF_SIGPENDING is set again. Now it returns with -ERESTARTNOINTR
+...
+...
 
-the problem here is that ptrace semantics are not well defined to
-anything subtle can and will break from time to time
+Here's the patch:
 
-if we can get UML in a more suitable state and perhaps get some minor
-QA stuff merged (a new make target using initramfs maybe?) we could
-'encourage' people to test UML more often
+---
 
-> Well, I've seen Christoph Hellwig not particularly happy about us,
-> see for instance:
->
-> http://linux.bkbits.net:8080/linux-2.5/cset@41752cc9xdFXib-03VDV5akqKJZ-yA?nav=index.html|ChangeSet@-7d
+--- a/arch/um/kernel/ptrace.c	2004-10-29 02:27:42.000000000 +0200
++++ b/arch/um/kernel/ptrace.c	2004-10-29 02:28:24.000000000 +0200
+@@ -330,7 +330,8 @@ void syscall_trace(union uml_pt_regs *re
+  	   between a syscall stop and SIGTRAP delivery */
+  	ptrace_notify(SIGTRAP | (((current->ptrace & PT_TRACESYSGOOD) &&
+  				 !is_singlestep) ? SYSCALL_TRAP : 0));
+-	set_thread_flag(TIF_SIGPENDING); /* force do_signal() --> is_syscall() */
++	if ( entryexit ) /* force do_signal() --> is_syscall() */
++		set_thread_flag(TIF_SIGPENDING);
 
-well, he is right in this case
+  	/*
+  	 * this isn't the same as continuing with a signal, but it will do
 
-it's hard to find a balance between keeping it working for existing
-UML users (which is what i'm trying to make sure is the case) and
-doing cleanups which people such as hch point out really are needed
-
-> Sending a patch requires at least proof-reading it and writing a
-> meaningful changelog.  Also, managing mails takes tons of time.
-
-im happy to take any and all fixes w/o comments in any form for now if
-you want to fire them off to me
 
 
 -------------------------------------------------------
