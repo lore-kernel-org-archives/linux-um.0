@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWKmr-0000yq-UF
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 11:23:17 -0800
-Received: from tektonic.net
-	([69.56.241.195] helo=unix.easyadmin ident=qmailr)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AWKmr-00023p-Jc
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 11:23:17 -0800
-Subject: Re: [uml-devel] uml-patch-2.4.22-7
-From: Matt Ayres <matta@tektonic.net>
-In-Reply-To: <200312161653.hBGGrDkS002312@ccure.user-mode-linux.org>
-References: <200312161653.hBGGrDkS002312@ccure.user-mode-linux.org>
-Content-Type: text/plain
-Message-Id: <1071602585.3374.27.camel@wopr.tektonic.net>
+	id 1AWKyY-0001QJ-8U
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 11:35:22 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1AWKyW-0005ML-D4
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 16 Dec 2003 11:35:20 -0800
+Message-Id: <200312161950.hBGJoVkS002972@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] uml-patch-2.4.22-7 
+In-Reply-To: Your message of "16 Dec 2003 18:50:53 +0100."
+             <1071597053.2150.9.camel@mancillotti.retesintesi.net> 
+References: <200312161653.hBGGrDkS002312@ccure.user-mode-linux.org>  <1071597053.2150.9.camel@mancillotti.retesintesi.net> 
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,32 +26,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Dec 2003 14:23:06 -0500
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 16 Dec 2003 14:50:31 -0500
+To: marco ancillotti <mancillotti@interfree.it>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Couple questions regarding these features (i'm fairly new to using UML
-so I haven't  been tracking the list for long)
+mancillotti@interfree.it said:
+> so there's better performance in tt mode when using highmem ? 
 
-On Tue, 2003-12-16 at 11:53, Jeff Dike wrote:
-> This is another sizable set of changes.  The major items in it are
-> 	Sapan's real-time clock patch - this allows UML to sleep accurately,
-> assuming enough idle cycles on the host
+Ironically, tt mode is faster than skas mode when you have a lot of highmem
+in use.  skas mode is slowed down that much.
 
-Is there a thread that I can be pointed to or a brief explanation of how
-this is a benefit?
+I'm thinking of ways of improving that.  The current plan is to make kmap/kunmap
+do reads and writes instead of mmap/munmap in skas mode.  That will exchange
+I/O for the tlb flushing.  We'll see how much difference that makes.
 
-> 	it will now use /dev/anon if it's present on the host, which it won't
-> be until I release that patch, which will be fairly soon.  In conjunction with
-> ubd-mmap, I'm seeing ~25% host memory use reduction.
-> 
-
-ubd-mmap is new behavior that doesn't need to be enabled? (meaning, just
-upgrade to -7 and we'll seen some better performance using the block
-device) ?  Do you know how much performance is gained from ubd-mmap and
-/dev/anon individually?
-
-
+				Jeff
 
 
 
