@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B3N8G-0003qE-Oq for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Mar 2004 14:33:56 -0800
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1B3N8D-0003na-Lj for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Mar 2004 14:33:53 -0800
-From: Mike Snitzer <msnitzer@lnxi.com>
-Message-ID: <20040316151745.B12857@lnxi.com>
-References: <Pine.LNX.4.44.0403120222160.2524-100000@sparrow>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0403120222160.2524-100000@sparrow>;
-	from wstearns@pobox.com on Fri, Mar 12, 2004 at 02:27:13AM -0500
-Subject: [uml-devel] Re: 2.6.4 UML kernel available
+	id 1B3Oyr-00034y-TK for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Mar 2004 16:32:21 -0800
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1B3Oyq-0001Rf-In for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Mar 2004 16:32:20 -0800
+Message-ID: <306501c40bb8$228bece0$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <200403120313.i2C3DstV005296@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] uml-patch-2.6.4-1
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,24 +27,63 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Mar 2004 15:17:45 -0700
-To: William Stearns <wstearns@pobox.com>
-Cc: ML-uml-user <User-mode-linux-user@lists.sourceforge.net>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 17 Mar 2004 01:38:14 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Fri, Mar 12 2004 at 00:27,
-William Stearns <wstearns@pobox.com> wrote:
+did some stresstesting (i/o, scheduler - system loadavg ~50) - and my first impression is:
 
-> * I'm having trouble finding the right command line to get Debian 3.0's 
-> init to hook up to the console devices, but that's most certainly my 
-> problem, and not the kernel's.
+rock solid!
 
-Has anyone had any luck tracking down a solution to Debian's init and
-2.6.4 (and I think 2.6.3) UML?  I'm having the same problem.
+thanks jeff!
 
-regards,
-Mike
+regards
+roland
 
 
+----- Original Message ----- 
+From: "Jeff Dike" <jdike@addtoit.com>
+To: <linux-kernel@vger.kernel.org>; <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Friday, March 12, 2004 4:13 AM
+Subject: [uml-devel] uml-patch-2.6.4-1
+
+
+> This patch updates UML to 2.6.4.  Besides the update, there were the following
+> changes since the last patch:
+> a bug which caused either a crash in the kernel or a BUG at exit.c:793
+> was fixed
+> a bug which caused a crash when a process tried to dump core was fixed
+> the hang early in boot on GHz hosts is gone
+> various other
+> 
+> The 2.6.4-1 UML patch is available at
+> http://www.user-mode-linux.org/mirror/uml-patch-2.6.4-1.bz2
+> 
+> BK users can pull my 2.5 repository from
+> http://www.user-mode-linux.org:5000/uml-2.5
+> 
+> For the other UML mirrors and other downloads, see 
+>         http://user-mode-linux.sourceforge.net/dl-sf.html
+>  
+> Other links of interest:
+>  
+>         The UML project home page : http://user-mode-linux.sourceforge.net
+>         The UML Community site : http://usermodelinux.org
+> 
+> Jeff
+> 
+> 
+> 
+> 
+> -------------------------------------------------------
+> This SF.Net email is sponsored by: IBM Linux Tutorials
+> Free Linux tutorial presented by Daniel Robbins, President and CEO of
+> GenToo technologies. Learn everything from fundamentals to system
+> administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> 
 
 
 -------------------------------------------------------
