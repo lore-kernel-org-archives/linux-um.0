@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1By7Rv-0006AF-Qa for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 04:20:47 -0700
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1By7Rv-00058r-14
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 04:20:47 -0700
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [uml-devel] [patch] mconsole_proc rewrite (and crash fix).
-Message-ID: <20040820110817.GA21170@bytesex>
-References: <20040719204008.GA15091@bytesex>
-	<200408111957.40575.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1By7fc-0008Cb-5Z for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 04:34:56 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1By7fb-0007qz-HG for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 04:34:56 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] New messages at boot with 2.6.7 kernel
+References: <s107d727.063@ORANGE.OUS.EDU>
+In-Reply-To: <s107d727.063@ORANGE.OUS.EDU>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200408111957.40575.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200408201330.54086.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,45 +27,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Aug 2004 13:08:17 +0200
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Fri, 20 Aug 2004 13:30:54 +0200
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anthony Brock <Anthony_Brock@ous.edu>
 
-On Wed, Aug 11, 2004 at 07:57:40PM +0200, BlaisorBlade wrote:
-        ^^^^^^
-Did the mail really travel that long, or is your clock broken?
+Alle 01:40, gioved=EC 29 luglio 2004, Anthony Brock ha scritto:
+> I've started seeing the following message with a newly built kernel at
+> startup of SuSE 9.1 and Debian Woody images. While the kernel appears to =
+be
+> functioning as expected, the messages are new. I did configure this kernel
+> from scratch, so it's possible that I made a significant change to cause
+> these.
+They come because you enabled CONFIG_DEBUG_SPINLOCK, and show a bug standin=
+g=20
+since 2.5.70 at least. Anyway it causes actual problems just with SMP (whic=
+h=20
+does not work under UML), so for now don't worry; I already noticed this=20
+problem and I'm going to fix it.
 
-> Actually the exec command cannot send anything to the mconsole, but since it 
-> invokes sh -c it allows for redirections to new consoles.
-
-Having the output go directly to mconsole is much easier to handle
-through.
-
-> > The old code had the problem that the kernel crashed after calling
-> > "uml_mconsole proc <somefile>" a few times.  I havn't tracked what
-> > exactly causes the problem, I guess trying to access the procfs without
-> > actually mounting it somewhere causes some corruption of kernel data
-> > structures.
-> 
-> Who said that he didn't have mounted /proc inside the guest?
-
-Code looks like that, as it uses get_filesystem and all that instead of
-doing a simple /proc/... path lookup.  What is the point of doing it
-that way, other than make it work even if procfs is not mounted below
-/proc?
-
-> However, I see basically two bugs:
-> 1) why put_filesystem is not called at the end?
-
-It is called earlier, right after ->get_sb() call.  Which looks sane to
-me, as a successfull get_sb() should increase the refcount and thus
-releasing the filesystems afterwards should be safe.  I'm no VFS expert
-through.
-
-  Gerd
-
--- 
-return -ENOSIG;
+Bye
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
