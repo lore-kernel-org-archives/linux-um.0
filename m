@@ -1,22 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Argzp-0004bx-I6
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 09:20:57 -0800
-Received: from witte.sonytel.be ([80.88.33.193])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Arguz-0006E6-Lb
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 09:15:57 -0800
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uml-devel] Re: patch/RFC: add bypass for "debug" parameter
-In-Reply-To: <20040213141512.C8503@almesberger.net>
-Message-ID: <Pine.GSO.4.58.0402131817210.29056@waterleaf.sonytel.be>
-References: <20040208185334.H9021@almesberger.net>
- <20040212154958.GB2834@ccure.user-mode-linux.org> <20040212214058.R25203@almesberger.net>
- <Pine.GSO.4.58.0402131052540.23784@waterleaf.sonytel.be>
- <20040213141512.C8503@almesberger.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1ArhV9-0006ny-L9
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 09:53:19 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30)
+	id 1ArhQH-0002K7-MQ
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 09:48:17 -0800
+Message-Id: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] uml-patch-2.6.3-rc2-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,29 +23,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 18:18:55 +0100 (MET)
-To: Werner Almesberger <werner@almesberger.net>
-Cc: Jeff Dike <jdike@addtoit.com>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 13 Feb 2004 13:18:27 -0500
+To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 13 Feb 2004, Werner Almesberger wrote:
-> Geert Uytterhoeven wrote:
-> > Be careful not to break the feature to pass all remaining arguments to init.
->
-> Hmm, I don't see it. How does it work ?
+This patch updates UML to 2.6.3-rc2.  This breaks with my usual practice of
+ignoring test patches.  However, when I updated my UML tree, I had forgotten
+that my stock Linus tree was up to 2.6.3-rc2.  I took this as a sign from a
+higher power that this was Meant To Be.
 
-All kernel parameters that are not recognized by the kernel are passed to init
-using its argv[].
+As well as catching up, there are some bug fixes and cleanups -
+	modules should now work
+	worked around a process start time bug
+	fixed a bug which caused ps to divide by zero
 
-Gr{oetje,eeting}s,
+The 2.6.3-rc2-1 UML patch is available at
+	http://www.user-mode-linux.org/mirror/uml-patch-2.6.3-rc2-1.bz2
 
-						Geert
+BK users can pull my 2.5 repository from
+	http://www.user-mode-linux.org:5000/uml-2.5
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+For the other UML mirrors and other downloads, see 
+        http://user-mode-linux.sourceforge.net/dl-sf.html
+ 
+Other links of interest:
+ 
+        The UML project home page : http://user-mode-linux.sourceforge.net
+        The UML Community site : http://usermodelinux.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+				Jeff
+
 
 
 -------------------------------------------------------
