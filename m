@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AYaoa-0008Uj-UD
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Dec 2003 16:54:24 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1AYaoZ-00066i-1B
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 22 Dec 2003 16:54:23 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] UML on Alpha
-Message-ID: <20031223011046.GA16757@ccure.user-mode-linux.org>
-References: <20031220052032.GC1152@erdos.home> <20031220173249.GC10692@ccure.user-mode-linux.org> <20031222041951.GB1023@erdos.home>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20031222041951.GB1023@erdos.home>
+	id 1AYoD6-0001DS-RS
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 23 Dec 2003 07:12:36 -0800
+Received: from witte.sonytel.be ([80.88.33.193])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AYoD6-0003WJ-BA
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 23 Dec 2003 07:12:36 -0800
+Received: from waterleaf.sonytel.be (localhost [127.0.0.1])
+	by witte.sonytel.be (8.12.10/8.12.10) with ESMTP id hBNFCWQG010837
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 23 Dec 2003 16:12:32 +0100 (MET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <Pine.GSO.4.58.0312231524380.1139@waterleaf.sonytel.be>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] early setup
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,21 +25,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Dec 2003 20:10:46 -0500
-To: user-mode-linux-devel@lists.sourceforge.net, Cameron Patrick <cameron@patrick.wattle.id.au>
+Date: Tue, 23 Dec 2003 16:12:33 +0100 (MET)
+To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, Dec 22, 2003 at 12:19:51PM +0800, Cameron Patrick wrote:
-> Yeah, but that's fpstate, not fpregs.  
 
-Oops, nevermind...
+From time to time I continue my work on gdkfb, a frame buffer device for UML
+using GTK/X11...
 
-> Okay.  It doesn't seem to be there in 2.4.x, but I'll have a look at 2.6
-> some time and see if that makes this problem disappear.
+It appears that just calling the GTK initialization routine gtk_init_check()
+during kernel init causes UML to crash later, while user space is already
+running. A reliable way to crash it is reading anything in /proc:
 
-It's not there either.  I think for now, ifdef those things on something like 
-CONFIG_64BIT_UML, and set that in your config.in.
+| (none):~# cat /proc/mounts
+| Kernel panic: Kernel mode fault at addr 0x890856a3, ip 0x400d9304
 
-				Jeff
+Which is inside libgtk:
+
+| tux$ ldd linux
+|         libutil.so.1 => /lib/libutil.so.1 (0x40018000)
+|         libgtk-1.2.so.0 => /usr/lib/libgtk-1.2.so.0 (0x4002a000)
+|         libgdk-1.2.so.0 => /usr/lib/libgdk-1.2.so.0 (0x40148000)
+|         libX11.so.6 => /usr/X11R6/lib/libX11.so.6 (0x4017c000)
+|         libXi.so.6 => /usr/X11R6/lib/libXi.so.6 (0x40243000)
+|         libXext.so.6 => /usr/X11R6/lib/libXext.so.6 (0x4024b000)
+|         libglib-1.2.so.0 => /usr/lib/libglib-1.2.so.0 (0x40259000)
+|         libgmodule-1.2.so.0 => /usr/lib/libgmodule-1.2.so.0 (0x4027a000)
+|         libdl.so.2 => /lib/libdl.so.2 (0x4027d000)
+|         libm.so.6 => /lib/libm.so.6 (0x40281000)
+|         libc.so.6 => /lib/libc.so.6 (0x402a3000)
+|         /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+| tux$
+
+Running UML in gdb doesn't help much, UML just quits and setting a break point
+doesn't work (can I single-step automatically until the PC is at 0x400d9304 so
+I can get a backtrace?).
+
+On the other hand, if I call gtk_init_check() really early (from a
+__uml_setup() routine), UML works fine!
+
+Any good reason why?  I'm using SKAS mode, since TT gave me even more headaches
+(cfr. the libpthread problem from a few months ago).
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 -------------------------------------------------------
