@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CRaqr-0004D2-B0 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 Nov 2004 10:36:21 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CRaqo-0006G9-Hy
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 Nov 2004 10:36:20 -0800
-Message-Id: <200411092048.iA9Kmjg9004223@ccure.user-mode-linux.org>
-Subject: Re: Synchronization primitives in UML (was: Re: [uml-devel] Re:
-	[patch 09/20] uml: use SIG_IGN for empty sighandler) 
-In-Reply-To: Your message of "Tue, 09 Nov 2004 18:44:35 +0100."
-	<200411091844.44218.blaisorblade_spam@yahoo.it> 
-References: <200411052036.55541.blaisorblade_spam@yahoo.it>
-	<20041106051306.GA3038@ccure.user-mode-linux.org>
-	<200411091844.44218.blaisorblade_spam@yahoo.it> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1CRb46-0006FD-0L for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 09 Nov 2004 10:50:02 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CRb44-0007v6-4K for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 09 Nov 2004 10:50:01 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+References: <200411041932.39733.blaisorblade_spam@yahoo.it>
+	<41910740.3080301@fujitsu-siemens.com>
+In-Reply-To: <41910740.3080301@fujitsu-siemens.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411091950.54127.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: 2.6.9-bb1, 2.4.27-bs1, SKAS3/2.6-V7 released
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,49 +30,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 09 Nov 2004 15:48:45 -0500
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, cw@f00f.org
+Date: Tue, 9 Nov 2004 19:50:53 +0100
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> I also understand now what all this is for. When I have time for this,
-> I'll at  least copy and paste your mail into a comment, with any
-> needed adjustment.
+On Tuesday 09 November 2004 19:06, Bodo Stroesser wrote:
+> Blaisorblade wrote:
+> > Any testing and report is welcome.
+>
+> OK. 2.6.9-bb1 is a fine list of patches! The first tests as UML
+> are OK. At the moment, I saw one small problem only in
+> uml-refuse-to-run-if-no-tt-mode-in.patch
+> Use the following patch to fix it:
+Yes, the problem was reported and I already was queueing up the fix.
 
-That would be a good idea.
+Btw, how can you do so much for UML? Thanks a lot for what you're doing.
 
-> For the semaphore issue, I have some ideas (like using futexes) which
-> need to  be developed a bit:
-
-> 1) I want to create a semaphore API in os_*. 
-> 2) It will be able to use socketpairs. 
-> 3) It will be able to use futexes, if they are
-> non-persistant and usable  without too much issues (the same way we
-> are going to support Async I/O). 
-> 4) It will be used first by the code
-> which could really benefit from the  performance increase.
-> 5) It won't
-> use persistant objects.
-
-This all sounds good, although there are simplicity benefits to just using
-one underlying mechanism, as long as there are no overriding disadvantages
-to it.
-
-> Any comment on these issues? Also, apart TT context switching, is
-> there any  other performance-sensitive use of semaphores, which would
-> benefit from using  futexes? 
-
-Offhand, I think context switching is the most sensitive one.
-
-> Yes, semget and friends are uglier.
-> But don't think that the current nested code is simple to read - three
->  semaphores at a time, without a clear name, are not the clearer code
-> on the  world. 
-
-What nested code are you talking about?
-
-				Jeff
-
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
