@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CDJJb-0002bN-00 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Oct 2004 02:02:59 -0700
+	id 1CDKDg-0004wu-4K for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Oct 2004 03:00:56 -0700
 Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CDJJZ-0002yI-Oy for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Oct 2004 02:02:58 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CDKDI-0001mZ-K0 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Oct 2004 03:00:56 -0700
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Subject: RE: [uml-devel] Signal handling: use the kernels restorer 
-Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C42@ABGEX01E.abg.fsc.net>
+Subject: RE: [uml-devel] Signal handling: signal mask incorrect after segfault
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C43@ABGEX01E.abg.fsc.net>
 From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -26,60 +26,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 1 Oct 2004 10:57:25 +0200
+Date: Fri, 1 Oct 2004 11:53:59 +0200
 Content-Transfer-Encoding: 8bit
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-> Can you fix your mailer so that it doesn't wrap patches?
-> 
-> I mostly applied that (by hand since it was corrupt :-).
-I would really like to fix this. The problem is, I *have* to use
-Outlook, and I could not find a menu to change the behavior. Until now I
-only could change the mail format to be plain text (instead of http).
-I'm trying to get help from our system admins, but still got none :-(.
-
-> 
-> > But if a user directly calls sys_sigaction() without glibc being 
-> > involved (e.g. via "int 0x80"), he can reset SA_RESTORER. Now the 
-> > kernel should use it's own restorer-stub. On i386 it's located in
+> Bodo.Stroesser@fujitsu-siemens.com said:
+> > If the user stack limit is reached or the signal stack assigned with
+> > sigaltstack() is invalid when a user signal handler with SA_ONSTACK 
+> > has to be started, the signal mask of the interrupted user program
+is 
+> > modified. This happens because the mask, that should be used with
 the 
-> > vsyscall-page. UML must use the old method of putting it onto the 
-> > stack. The patch modifies the signal-stack-setup to get the restorer
-> > on the stack working.
+> > handler only, is written to "current->blocked" even if the handler 
+> > could not be started. But without a handler, no rewrite of the 
+> > original mask at sys_sigreturn will be done.
 > 
-> This is the part I didn't apply.  As the comment says, gdb uses that
-as a signature, and I don't want to change it for that reason.  Let's
-just leave it  the same as as x86, even if that's wrong.
-I don't know exactly, which part of the patch you talk about. If it is
-writing the restorers code to stack, please note, there have to be
-different restorers in setup_signal_stack_sc() and
-setup_signal_stack_si(). They must use different systemcalls
-(sys_sigreturn / sys_rt_sigreturn) to remove the signal stack frame
-(refer to arch/i386/kernel/signal.c). With the patch applied, UML
-exactly does, what i386 does. And it must do so, because in UML the code
-on the stack could be used in special cases.
+> I don't see where current->blocked is modified up to that point.  It
+looks like this could be fixed by checking err in the !SA_DEFER case:
+> 
+> 	if (!err && !(ka->sa.sa_flags & SA_NODEFER)) {
 
-> > While testing that stuff, I could crash UML by using the wrong 
-> > systemcall-number in the restorer-stub (has been wrong for 
-> > sys_sigreturn). I think, there is no check in sys_(rt_)sigreturn(), 
-> > whether the contents of the stack is wrong.
+Yes. That is, what the patch does. It uses:
+
+if (err) {
+}
+else if (!(ka->sa.sa_flags & SA_NODEFER)) {
+
+> > A slightly different case
+> > is sys_sigsuspend(), where the mask is already modified when
+> > kern_do_signal() is started. "*oldset" and "current->blocked" are
+not 
+> > equal here and thus current->blocked has to be set to *oldset, if an
+
+> > error occurs in handle_signal(). For both cases I've written small 
+> > tests, and with the patch the result is OK.
 > 
-> If the syscall number is wrong, then it'll never hit sys_sigreturn.
-It sounds like there's some other sanity-checking that's missing.
-No. The restorer written in setup_signal_stack_sc() has been wrong. So
-the wrong syscall has been done with the wrong stack pointer (missing a
-"popl %eax" at the beginning of the restorer.
+> The existing code looks OK to me.  If there's an error writing the
+signal frame, then it will get a SIGSEGV.  If that is caught (and
+somehow succeeds, like it's going to a good stack), and it returns, then
+that's where your sigreturn and mask restoration is going to happen.
+
+No. sys_sigsuspend() modifies current->blocked before calling
+kern_do_signal(). Because of that, it takes a copy of the original mask
+and passes it to kern_do_signal(). This mask has to be restored by the
+signal handler at sys_sigreturn. But if an error occurs, the handler
+will not be started and the mask will not be restored. Then
+kern_do_signal returns to sys_sigsuspend() with the wrong mask set,
+sys_sigsuspend() returns (the original mask is lost at that moment) and
+the SIGSEGV-handler is started later when passing interrupt_end(), which
+calls do_signal() again. The SIGSEGV handler doesn't even see the real
+"original mask", because do_signal() now calls kern_do_signal() with
+current->blocked as oldset, which is the mask modified by
+sys_sigsuspend(). So I believe, handle_signal() should restore the
+original mask if setup_signal_stack_XX() returns an error. (For the
+first case I described, this is a NOOP.)
+
+On the other hand: with the patch "deliver segfault immediately"
+applied, this is redundant, because the "oldset" used to build the next
+handler's stack frame will be the same as before, as kern_do_signal()
+doesn't return after an error. At least a handler for SIGSEGV will be
+started and it will restore the mask, or the process will die.
 
 > 
-> > Unfortunately at the moment I can't see, what UML prints out,
-because 
-> > messages to console are not displayed (don't know why, yet). If the 
-> > system runs, I can use dmesg, but when it is crashed ...
-> 
-> At gdb, printf "%s", log_buf
-Thank you. I'll try that.
-
+> If none of the above happen, then the process is dead meat, of course.
 > 
 > 				Jeff
 
