@@ -1,25 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPvsQ-0004ym-B5 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Nov 2004 20:39:06 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CPvsM-0004i0-D4
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Nov 2004 20:39:06 -0800
-Message-Id: <200411050548.iA55m4DZ007773@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: [patch 09/20] uml: use SIG_IGN for empty
-	sighandler 
-In-Reply-To: Your message of "Thu, 04 Nov 2004 05:11:44 +0100."
-	<200411040511.54892.blaisorblade_spam@yahoo.it> 
-References: <20041103231735.8C1E955C79@zion.localdomain>
-	<200411040451.iA44pJ5G012816@ccure.user-mode-linux.org>
-	<200411040511.54892.blaisorblade_spam@yahoo.it> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1CQ6R1-00061T-7c for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 07:55:31 -0800
+Received: from web26105.mail.ukl.yahoo.com ([217.12.10.229])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CQ6Qx-00057c-H4 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 07:55:30 -0800
+Message-ID: <20041105155432.49097.qmail@web26105.mail.ukl.yahoo.com>
+From: Roland Kaeser <roli8200@yahoo.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: [uml-devel] con=port hangs uml guest when it trys to create mingettys
+	for the ttyp's
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,28 +26,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 05 Nov 2004 00:48:04 -0500
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org, cw@f00f.org
+Date: Fri, 5 Nov 2004 16:54:32 +0100 (CET)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> I had a doubt on this, but I was not getting much feedback from you...
-Yeah, sorry.
+Hello
 
-> Also, if you reject this, I'd require a comment-only patch for it: "as
-> soon as I remember why" makes me think back to my yesterday's class,
-> when  the teacher said "put comments in your code or you'll soon
-> forget what it  does!" 8-O (yes, 1st year University student :-( ). 
+I try to use con=port:<number> for the local uml guest consoles. But I recognized
+that the uml guest system hangs unless a telnet connection to the port was made,
+while creating the mingettys for the ttyps on startuptime. 
+On Fedora look on /etc/rc.d/rc.sysinit for the section:
 
-The thing is, you often don't realize what's going to be mysterious until it 
-actually is, and then it's too late for the comment :-)
+if [ "$HOSTTYPE" != "s390" -a "$HOSTTYPE" != "s390x" ]; then
+  last=0
+  for i in `LC_ALL=C grep '^[0-9].*respawn:/sbin/mingetty' /etc/inittab | sed 's/^.*
+tty\([0-9][0-9]*\).*/\1/g'`; do
+        > /dev/tty$i
+        last=$i
+  done
+  if [ $last -gt 0 ]; then
+       > /dev/tty$((last+1))
+       > /dev/tty$((last+2))
+  fi
+fi
 
-In this case, it wants to be bounced out of sigprocmask when a SIGWINCH 
-arrives.  In order to do so, it must have a handler registered, even if
-it does nothing.
+With uml kernel 2.6.9 and host kernel 2.6.7(SKAS)
 
-				Jeff
+Some ideas?
 
+Roland
+
+
+	
+
+	
+		
+___________________________________________________________
+Gesendet von Yahoo! Mail - Jetzt mit 100MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
 
 
 -------------------------------------------------------
