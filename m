@@ -2,20 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A6b6N-00054m-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 06 Oct 2003 12:33:03 -0700
-Received: from smtp101.mail.sc5.yahoo.com ([216.136.174.139])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 1A6b6L-0005Sh-2C
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 06 Oct 2003 12:33:01 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: pthreads?
-References: <878you2xu2.fsf@bytesex.org> <Pine.GSO.4.21.0309121104430.2312-100000@vervain.sonytel.be> <20031002090834.GS24534@vagabond>
-In-Reply-To: <20031002090834.GS24534@vagabond>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200310061529.16173.blaisorblade_spam@yahoo.it>
+	id 1A6FOX-0006xq-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 05 Oct 2003 13:22:22 -0700
+Received: from bay7-f106.bay7.hotmail.com ([64.4.11.106] helo=hotmail.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 1A6FOW-00088s-Ct
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 05 Oct 2003 13:22:20 -0700
+From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/html
+Message-ID: <BAY7-F106QD9Eg44PdO0000c3b5@hotmail.com>
+Subject: [uml-devel] Re: Hostaudio module parameters
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,54 +23,27 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 6 Oct 2003 15:29:16 +0200
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 05 Oct 2003 20:20:19 +0000
+To: blaisorblade_spam@yahoo.it
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
 
-Alle 11:08, gioved=EC 2 ottobre 2003, Jan Hudec ha scritto:
-> On Fri, Sep 12, 2003 at 11:07:54 +0200, Geert Uytterhoeven wrote:
-> > BTW, it's libX11 that needs libpthread...
->
-> bulb@vagabond:~$ ldd /usr/X11R6/lib/libX11.so.6.2
-> 	libdl.so.2 =3D> /lib/libdl.so.2 (0x400d5000)
-> 	libc.so.6 =3D> /lib/libc.so.6 (0x400d8000)
-> 	/lib/ld-linux.so.2 =3D> /lib/ld-linux.so.2 (0x80000000)
->
-> Not see libpthread anywhere around!
-Yes, but obviously since it's dinamically loaded, it mustn't be reported.=20
-libdl is used for this(Dinamic Loading). While I run gedit, which seems to =
-
-run only 1 thread, and in its /proc/<pid>/maps found libpthread. While I ra=
-n=20
-xev(which is simple) and didn't find libpthread. Coming back to Gtk, I run =
-nm=20
--D on /usr/lib/libglib-2.0.so and it didn't find the "pthr" string, but did=
-=20
-find the "thread" string(with names I think come from the gthread lib). So,=
-=20
-they can use pthread, even if this library doesn't appear in ldd output. Ho=
-w=20
-they do is another problem: probably to use thread, the program will have t=
-o=20
-be linked to libgthread/pthread.
->
-> However, I just checked gmodule and glib and neither seems to report
-> libpthread either!
->
-> However, I just ran the simplest gtk-2.0 program I could find
-Which is this one? It seems like gedit it's too complex....
-> and greped
-> it's /proc/<pid>/maps for string pthr. NOT FOUND.
->
-> Thus it really looks like gtk-2.0 application does NOT have to use
-> pthreads!
-
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
-
+<html><div style='background-color:'><DIV>
+<P>&gt;Since hostaudio can be also a module, it's useful to specify the host dsp and </P>
+<P>&gt;mixer position even on module loading. So I've added two params with </P></DIV>
+<DIV></DIV>&gt;descriptions for this. The patch is straightforward and non-intrusive, so 
+<DIV></DIV>&gt;please apply it. 
+<DIV></DIV>
+<DIV></DIV>
+<P>This could be abused to allow reading and writing arbitrary files on the host by loading the module with parameters within the UML.</P>
+<P>&gt;By the way: while testing it(I repeated this with an unpatched UML kernel) </P>
+<DIV></DIV>&gt;with mpg123, I discovered that it crackles horribly and plays very 
+<DIV></DIV>&gt;slowly(i.e. a second of music lasts even two or more ones). Will this ever be 
+<DIV></DIV>
+<P>&gt;solved? Is this problem specific to me or general?</P>
+<P>I think it's due to the dsp&nbsp;device being opened&nbsp;in blocking mode and the UML&nbsp;pauses while the audio data gets written out.&nbsp; There is&nbsp;no support for&nbsp;async IO in the driver, so turning on O_NONBLOCK on the host file open, might speed up the app, but likely&nbsp;result in&nbsp;choppy output, and/or confuse the app with EAGAIN errors.</P>
+<P>The answer to this is to rewrite the driver as a virtual sound card with async IO.&nbsp; I may do this at some point, if no one&nbsp;is willing to take on the challenge.</P>
+<P>&nbsp;</P>
+<P>Steve Schmidtke</P></div><br clear=all><hr>STOP MORE SPAM with  <a href="http://g.msn.com/8HMBENCA/2728??PS=">the new MSN 8 </a> and get 2 months FREE* </html>
 
 
 -------------------------------------------------------
