@@ -1,33 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CwMVX-0002Ps-VC for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Feb 2005 07:33:31 -0800
-Received: from lon-del-02.spheriq.net ([195.46.50.98])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CwMVW-0004zh-3X
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Feb 2005 07:33:31 -0800
-Received: from lon-inc-02.spheriq.net ([195.46.50.66])
-	by lon-del-02.spheriq.net with ESMTP id j12FWeIT001727
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 2 Feb 2005 15:33:18 GMT
-Received: from lon-out-01.spheriq.net (lon-out-01.spheriq.net [195.46.50.129])
-	by lon-inc-02.spheriq.net with ESMTP id j12FUhKs007919
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 2 Feb 2005 15:30:43 GMT
-Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
-	by lon-out-01.spheriq.net with ESMTP id j12FUhg9012436
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 2 Feb 2005 15:30:43 GMT
-From: Alex LIU <alex.liu@st.com>
-Message-ID: <021201c5093c$0ec75780$ac655e0a@sha.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-In-Reply-To: <200501282010.50020.blaisorblade@yahoo.it>
-Subject: [uml-devel] RE: Explaination of system call function flow in TT mode
+	id 1CwRds-0006iR-02 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Feb 2005 13:02:28 -0800
+Received: from ktown.kde.org ([131.246.103.200])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CwRdo-0005lv-UK for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Feb 2005 13:02:27 -0800
+From: das deniz <das_deniz@yahoo.com>
+Reply-To: 98444@bugs.kde.org
+Content-Type: text/plain; charset="utf-8"   
+Message-ID: <20050202220205.98444.das_deniz@yahoo.com>  
+Subject: [uml-devel] [Bug 98444] New: valgrind fails to run against
+	user-mode-linux (UML) process - clone
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,35 +25,67 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 2 Feb 2005 23:29:59 +0800
-Content-Transfer-Encoding: 8bit
-To: 'Blaisorblade' <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: 2 Feb 2005 21:02:15 -0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,Blaisorblade. You wrote:
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
+         
+http://bugs.kde.org/show_bug.cgi?id=98444         
+           Summary: valgrind fails to run against user-mode-linux (UML)
+                    process - clone
+           Product: valgrind
+           Version: 2.3 CVS
+          Platform: RedHat RPMs
+        OS/Version: Linux
+            Status: UNCONFIRMED
+          Severity: crash
+          Priority: NOR
+         Component: general
+        AssignedTo: jseward acm org
+        ReportedBy: das_deniz yahoo com
+                CC: user-mode-linux-devel lists sourceforge net
 
->do_syscall is called, and then this is done:
->
->                                sig = SIGUSR2;
->                                tracing = 0;
->... after, this saves the new tracing value inside "task", which is a struct 
->task_struct.
->
->                       set_tracing(task, tracing);
->
 
-But what's the exact meaning of the task in the tracer function? It is defined as:
+picking up this thread again:  
 
-	task = cpu_tasks[proc_id].task
+  http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=109152647819605&w=2
 
-Is it the task struct of the traced thread?
-What's the difference between "task->pid" and "task->thread.mode.tt.extern_pid"?
-I know in TT mode every thread in UML will has a corresponding thread in host. But I don't know the exact relationship between them. And I didn't found how UML creat the corresponding thread in host.
+in valgrind 2.2.0 we had at best -- "clone(): not supported by Valgrind." and it
+never went any further despite talk of old patches that would allow the clone
+out from under valgrind to get to the next stopper.
 
-Thanks a lot!
+but now in CVS HEAD, we no longer get this message, but instead we see:
 
-Alex
-
+SYSCALL[27839,1](120) special:sys_clone ( 11, 0x1BB4AFEC, 0x1BA40DA0, 0x8113360,
+0x52BFE4F4 )==27839== Syscall param clone(parent_tidptr) contains uninitialised
+byte(s)
+==27839==    at 0x1B9EE4C9: clone (in /lib/libc-2.3.2.so)
+==27839==    by 0x80BEBC8: can_do_skas (process.c:243)
+==27839==    by 0x80C2DB3: linux_main (um_arch.c:332)
+==27839==    by 0x80512BF: main (main.c:148)
+==27839== 
+==27839== Syscall param clone(tlsinfo) contains uninitialised byte(s)
+==27839==    at 0x1B9EE4C9: clone (in /lib/libc-2.3.2.so)
+==27839==    by 0x80BEBC8: can_do_skas (process.c:243)
+==27839==    by 0x80C2DB3: linux_main (um_arch.c:332)
+==27839==    by 0x80512BF: main (main.c:148)
+==27839== 
+==27839== Syscall param clone(child_tidptr) contains uninitialised byte(s)
+==27839==    at 0x1B9EE4C9: clone (in /lib/libc-2.3.2.so)
+==27839==    by 0x80BEBC8: can_do_skas (process.c:243)
+==27839==    by 0x80C2DB3: linux_main (um_arch.c:332)
+==27839==    by 0x80512BF: main (main.c:148)
+   clone(fork): process 27839 created child 27840
+ --> 0 (0x0)
+==27840== 
+==27840== Jump to the invalid address stated on the next line
+==27840==    at 0x7: ???
+==27840==  Address 0x7 is not stack'd, malloc'd or (recently) free'd
+==27840== 
+==27840== Process terminating with default action of signal 11 (SIGSEGV)
+==27840==  Access not within mapped region at address 0x7
+==27840==    at 0x7: ???
 
 
 -------------------------------------------------------
