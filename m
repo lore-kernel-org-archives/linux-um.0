@@ -1,20 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-list2-b.sourceforge.net ([10.3.1.8]
-	helo=sc8-sf-list2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BrzhH-0002a4-6L for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Aug 2004 06:51:19 -0700
-Message-Id: <200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
+From: Nicholas Nethercote <njn25@cam.ac.uk>
 Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind 
-In-Reply-To: Your message of "Tue, 03 Aug 2004 10:31:22 BST."
-	<Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk> 
+In-Reply-To: <200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.60.0408031527320.22157@hermes-1.csi.cam.ac.uk>
 References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<410EFCDB.8080404@enterasys.com>
 	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
 	<Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	<200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,21 +21,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 03 Aug 2004 10:50:14 -0400
-To: Nicholas Nethercote <njn25@cam.ac.uk>
+Date: Tue, 3 Aug 2004 15:31:44 +0100 (BST)
+To: Jeff Dike <jdike@addtoit.com>
 Cc: "D. Bahi" <dbahi@enterasys.com>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
-njn25@cam.ac.uk said:
-> What address was UML trying to load something at?  
+On Tue, 3 Aug 2004, Jeff Dike wrote:
 
-0xa0000000
+>> What address was UML trying to load something at?
+>
+> 0xa0000000
 
-> Is that adjustable?
+Currently Valgrind uses 0xb0000000--0xbfffffff for itself, always.  Below 
+that depends which tool you are using, if it uses "shadow memory" (ie. 
+shadowing every memory value with a metavalue), and how big the shadow 
+metavalues are.
 
-Yup, just something I haven't got around to doing yet.
+For example, Memcheck uses 9 bits of shadow memory for every byte of real 
+memory, so it reserves down to 0x52c00000 or so for its own use.  If you 
+try Addrcheck, which only uses 1 shadow bit per real byte, it will reserve 
+down to only about 0x9c000000.  If you use --tool=none, no shadow memory 
+is needed so you should be able to use up to about 0xaf000000.
 
-				Jeff
+HTH
 
+N
 
 
 -------------------------------------------------------
