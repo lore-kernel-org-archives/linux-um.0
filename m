@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AMw69-000178-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 13:12:21 -0800
-Received: from pisces.lunarpages.com ([64.235.234.123])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1AMw69-00042W-3e
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 13:12:21 -0800
-Received: from adsl-66-125-109-149.dsl.scrm01.pacbell.net ([66.125.109.149] helo=nexxus)
-	by pisces.lunarpages.com with asmtp (Exim 4.24)
-	id 1AMw67-0004fM-OP
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 13:12:19 -0800
-Message-ID: <000201c3afaa$fed85f40$6801a8c0@nexxus>
-From: "sean whalen" <swhalen@denature.org>
+	id 1AMxMG-0000gl-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2003 14:33:04 -0800
+Received: from nibbel.kulnet.kuleuven.ac.be ([134.58.240.41])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AMxMG-0007Kd-DV
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 20 Nov 2003 14:33:04 -0800
+From: Frank Dekervel <Frank.dekervel@student.kuleuven.ac.Be>
+Subject: Re: [uml-devel] Host panic when UML reads host /dev/shm
+References: <200311201915.29188.blaisorblade_spam@yahoo.it> <200311201956.39623.Frank.dekervel@student.kuleuven.ac.Be> <200311202037.14480.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200311202037.14480.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] further scheduling weirdness
+Message-Id: <200311202332.56549.Frank.dekervel@student.kuleuven.ac.Be>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -30,46 +28,41 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Nov 2003 13:12:15 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 20 Nov 2003 23:32:56 +0100
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi All --
-Continuing yesterday's thread where 2.6.0-test9-um was bombing on a
-schedule_timeout() or interruptible_sleep_on_wait() call due to a null
-pointer dereference in sched.c, I decided to try 2.4.22-um and see what
-calling schedule_timeout() would do.  Again it crashes at sched.c:564, which
-is a different place and has a different back trace.  This time the back
-trace is:
+Op Thursday 20 November 2003 20:37, schreef BlaisorBlade:
+> > i saw the same crash.
+>
+> Only an oops on linux or the same oops? If the second, it's useful news
 
-(gdb)
-451             schedule();
-(gdb)
-Kernel panic: kernel BUG at sched.c:564!
-In interrupt handler - not syncing
- start_idle_thread (stack=0xa023e000, switch_buf_ptr=0xa023c578,
-       fork_buf_ptr=0x2) at process.c:281
- 281             if(n == 0)
-(gdb) bt
-#0  start_idle_thread (stack=0xa023e000, switch_buf_ptr=0xa023c578,
-     fork_buf_ptr=0x2) at process.c:281
-#1  0xa00fd15b in start_uml_skas () at process_kern.c:167
-#2  0xa00f7421 in linux_main (argc=0, argv=0xa0800000) at um_arch.c:382
-#3  0xa000d3a6 in main (argc=8, argv=0xbffff824, envp=0xbffff848)
-at arch/um/main.c:143
+the second ... exactly the same backtrace iirc. i'll try to find the oops, but 
+i'm almost sure. i've posted here to uml-devel once (subject hostfs-crash i 
+believe) but google cannot find it.
 
-This is simply due to a schedule_timeout call in a module.  Does anyone have
-any ideas on this?  It seems to critical a function to actually be broken.
+> In fact, I'm seeing now 4:40, the time the oops happens, is when the
+> slackware every day runs updatedb.
 
-Thanks,
-    -Sean
+a-ha ! exactly the same, my oops also happent when doing updatedb...
 
--
-sean whalen . ucdavis security lab
-swhalen at denature.org || node99.org
+> I think hostfs reads files just as any normal process on the host, right?
+> Or it does anything special or at least unusual?
 
-'if god had wanted us to evolve past the non sequitur,
-he wouldn't have left all these fish in the tub.'
+well, you could try to let uml run without hostfs a couple of days to see if 
+it happens. not using hostfs definately solved my problem (uml has an uptime 
+of 1month now, before i disabled hostfs it crashed every night). I also used 
+skas mode, don't know if it happens in TT mode.
 
+greetings,
+frank
+
+
+-- 
+Frank Dekervel
+Mechelsestraat 88
+3000 Leuven
+frank.dekervel@student.kuleuven.ac.be, (nieuw) 0473/94.34.21
 
 
 -------------------------------------------------------
