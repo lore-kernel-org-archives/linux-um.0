@@ -1,17 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpCzD-0001bP-4w for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 13:58:35 -0800
-Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CpCzC-0001Vb-Bp for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 13:58:35 -0800
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20050113210058.94CDC1FB6D@zion>
-Subject: [uml-devel] [patch 05/11] uml: for ubd cmdline param use colon as
-	delimiter
+	id 1CpFcz-0001Ng-8z for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 16:47:49 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CpFcv-0001Pq-NL for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 16:47:48 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.10-um, /proc/stat is missing information
+References: <001901c4f9ca$f72825d0$0201a8c0@hawk>
+In-Reply-To: <001901c4f9ca$f72825d0$0201a8c0@hawk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200501140150.08487.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,68 +29,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Jan 2005 22:00:58 +0100
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Fri, 14 Jan 2005 01:50:08 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: "Christopher S. Aker" <caker@theshore.net>
 
+On Friday 14 January 2005 00:52, Christopher S. Aker wrote:
+> I just verified this on a Debian install and an FC2 install.
+>
+> Moving from 2.6.9-bb4 to 2.6.10-um vanilla, top reports either 100% user,
+> or 100% idle.
+>
+> [2.6.10] # cat /proc/stat
+> cpu  645 1 0 0 0 0 0
+> cpu0 645 1 0 0 0 0 0
+> intr 63462 54820 0 174 10 8270 93 0 0 0 0 1 94 0 0
+> ctxt 108849
+> btime 1105659428
+> processes 1542
+> procs_running 2
+> procs_blocked 0
+>
+> [2.6.9-bb4] # cat /proc/stat
+> cpu  407 0 1989 7536 252 28 1
+> cpu0 407 0 1989 7536 252 28 1
+> intr 15430 10185 0 48 1 5035 134 0 0 0 0 0 27 0 0
+> ctxt 10966
+> btime 1105660071
+> processes 1501
+> procs_running 1
+> procs_blocked 0
+>
+> Looks like some information is missing from /proc/stat in 2.6.10.
+>
+> -Chris
+Try retesting after applying update-process-times.patch (the one for the crash 
+you were seeing): that patch was not merged by maintainers in mainline, 
+though IIRC it was sent in the right time frame (maybe because they weren't 
+marked as urgent, or because they were a lot of patches, which is also 
+possible).
 
-Currently we can use this syntax ubd<n>[<flags>]=file1,file2. However, writing
-things as
-	ubd0=~/Uml/file1,~/Uml/file2
-does not work; in fact, the shell won't expand the second '~', since it's not
-at a path beginning; possibly even other shell expansions don't work here. So
-simply allow using, instead of the ',' separator, the ':' separator.
+About this, we should try for the future (even if this one was a special case, 
+having to merge tens of invasive patches for security purposes is not nice) 
+to merge big things only before -rc1 and -rc2, since after those releases 
+things must calm down. This recommendation must be updated with changes in 
+the release cycle followed by Linus, obviously.
 
-The ',' separator can still be used to preserve backward compatibility.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
-
- linux-2.6.11-paolo/arch/um/drivers/ubd_kern.c |   20 +++++++++++++++++---
- 1 files changed, 17 insertions(+), 3 deletions(-)
-
-diff -puN arch/um/drivers/ubd_kern.c~uml-ubd-use-colon-as-delimiter arch/um/drivers/ubd_kern.c
---- linux-2.6.11/arch/um/drivers/ubd_kern.c~uml-ubd-use-colon-as-delimiter	2005-01-13 03:11:19.623337096 +0100
-+++ linux-2.6.11-paolo/arch/um/drivers/ubd_kern.c	2005-01-13 03:11:19.640334512 +0100
-@@ -337,6 +337,11 @@ static int ubd_setup_common(char *str, i
- 
- 	err = 0;
- 	backing_file = strchr(str, ',');
-+
-+	if (!backing_file) {
-+		backing_file = strchr(str, ':');
-+	}
-+
- 	if(backing_file){
- 		if(dev->no_cow)
- 			printk(KERN_ERR "Can't specify both 'd' and a "
-@@ -362,13 +367,22 @@ static int ubd_setup(char *str)
- 
- __setup("ubd", ubd_setup);
- __uml_help(ubd_setup,
--"ubd<n>=<filename>\n"
-+"ubd<n><flags>=<filename>[(:|,)<filename2>]\n"
- "    This is used to associate a device with a file in the underlying\n"
--"    filesystem. Usually, there is a filesystem in the file, but \n"
-+"    filesystem. When specifying two filenames, the first one is the\n"
-+"    COW name and the second is the backing file name. As separator you can\n"
-+"    use either a ':' or a ',': the first one allows writing things like;\n"
-+"	ubd0=~/Uml/root_cow:~/Uml/root_backing_file\n"
-+"    while with a ',' the shell would not expand the 2nd '~'.\n"
-+"    When using only one filename, UML will detect whether to thread it like\n"
-+"    a COW file or a backing file. To override this detection, add the 'd'\n"
-+"    flag:\n"
-+"	ubd0d=BackingFile\n"
-+"    Usually, there is a filesystem in the file, but \n"
- "    that's not required. Swap devices containing swap files can be\n"
- "    specified like this. Also, a file which doesn't contain a\n"
- "    filesystem can have its contents read in the virtual \n"
--"    machine by running dd on the device. n must be in the range\n"
-+"    machine by running 'dd' on the device. <n> must be in the range\n"
- "    0 to 7. Appending an 'r' to the number will cause that device\n"
- "    to be mounted read-only. For example ubd1r=./ext_fs. Appending\n"
- "    an 's' (has to be _after_ 'r', if there is one) will cause data\n"
-_
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
