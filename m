@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsoRI-00071b-94
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 11:29:56 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
+	id 1AsoXc-00007u-PQ
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 11:36:28 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsoI2-0004BI-Rm
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 11:20:23 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Subject: Re: [uml-devel] Re: Diagnosed and repeatable kernel mode panic in schedule() for 2.6!
-Message-ID: <20040216192703.GA13746@elte.hu>
-References: <200402151911.11890.blaisorblade_spam@yahoo.it> <20040216095335.GA27377@elte.hu> <200402162025.24853.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200402162025.24853.blaisorblade_spam@yahoo.it>
+	id 1AsoOM-00050N-Mp
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 11:26:54 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] Re: Segfault of UML-TT on FC1
+In-Reply-To: <Pine.LNX.4.58.0402160248320.3114@devserv.devel.redhat.com>
+Message-ID: <Pine.LNX.4.58.0402161916440.8742@vega.dur.ac.uk>
+References: <20040215232525.7c2f38a8.zaitcev@redhat.com>
+ <Pine.LNX.4.58.0402160248320.3114@devserv.devel.redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,23 +25,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 Feb 2004 20:27:03 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 16 Feb 2004 19:32:30 +0000 (GMT)
+To: Ingo Molnar <mingo@redhat.com>
+Cc: Pete Zaitcev <zaitcev@redhat.com>, user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
+On Mon, 16 Feb 2004, Ingo Molnar wrote:
 
-* BlaisorBlade <blaisorblade_spam@yahoo.it> wrote:
+> On Sun, 15 Feb 2004, Pete Zaitcev wrote:
+>
+> > The &__bss_start at this point is a01c6000, abd brk_start is a1f33000,
+> > and so memcpy segfaults when it steps on the hole.
+> >
+> > Does anyone have a suggestion what to do about this?
+>
+> the workaround is to install the setarch rpm, and then do:
+>
+> 	i386 ./linux <args>
+>
+> (but it would be nice to find the brk assumption in UML and change it to
+> work with the FC1 brk changes.)
 
-> However, I discovered that an old 2.6.0 kernel works well. I think
-> that had 2.6.0-test9 patch; so I think that this is related with the
-> NET: Registered ... hang, which was solved with the same patch. That
-> does not happen on different compilation env.s, but I think that is
-> random: a crazy pointer failing in different places.
+See
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=107564046216529&w=2
+The first two segments of the patch there are in the latest 2.4 uml kernel
+patch. The problem is that for exec-shield the program area and data
+segment aren't adjacent. The remaining issue which the final part
+addresses is that a later routine that reserves area to act as physical
+memory still assumes the areas are adjacent, and you get a random amount
+less memory reserved than you expect (something like 16M), and this might
+not leave you with enough memory to use.
 
-i cannot reproduce using 2.6.2-rc3-mm1, so it's likely some recent
-breakage.
-
-	Ingo
+	Michael Young
 
 
 -------------------------------------------------------
