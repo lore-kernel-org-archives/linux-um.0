@@ -2,27 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CzKfK-0004c8-6Z for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 12:11:54 -0800
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CzKfH-0006PR-OF
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 12:11:54 -0800
+	id 1CzKkA-0004rJ-6O for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Feb 2005 12:16:54 -0800
 Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] ident=93)
-	by externalmx-1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CzKfB-0005jx-4s
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CzKk6-00077Q-QI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Feb 2005 12:11:47 -0800
+	Thu, 10 Feb 2005 12:16:54 -0800
 From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <20050210201128.GD8859@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [uml-devel] Re: uml kbuild cleanup (cross-build) - some fixes and
+	comments
+Message-ID: <20050210201646.GE8859@parcelfarce.linux.theplanet.co.uk>
 References: <200502101939.23300.blaisorblade@yahoo.it>
+	<20050210190412.GC8859@parcelfarce.linux.theplanet.co.uk>
+	<200502102016.52209.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200502101939.23300.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: uml kbuild cleanup (cross-build) - some fixes and
-	comments
+In-Reply-To: <200502102016.52209.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,53 +31,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Feb 2005 20:11:28 +0000
+Date: Thu, 10 Feb 2005 20:16:46 +0000
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Thu, Feb 10, 2005 at 07:39:23PM +0100, Blaisorblade wrote:
-> First, Al, thanks a lot for succeeding in solving this... I had tried a lot of 
-> time ago to make sure that O= worked... (I think that -j already worked, 
-> unless somebody re-broke it after I fixed that). Plus you fix a lot of other 
-> stuff.
+On Thu, Feb 10, 2005 at 08:16:52PM +0100, Blaisorblade wrote:
+> On Thursday 10 February 2005 20:04, Al Viro wrote:
+> > On Thu, Feb 10, 2005 at 07:39:23PM +0100, Blaisorblade wrote:
+> > > 3) I don't understand how vmlinux.lds.S is created... it's a symlink, but
+> > > it's created nowhere after the patch - maybe I overlook something, maybe
+> > > you didn't do "make clean" and retest.
 > 
-> There are (at least) two bugs to fix about this patch, plus some comments:
+> > Not a symlink anymore.  It's right there in the patch -
+> Nice trick.
+> In this case, it got lost in the version at that URL (I don't know whose is 
+> the fault). I triple-checked that the file is missing at that URL.
 > 
-> http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.11-rc3-mm1/patches/cross-build
-> 
-> 1) typo here: "objtre" should be "objtree"
-> 
-> Index: linux-2.6.10/arch/um/kernel/Makefile
-> ===================================================================
-> 
-> @@ -50,7 +50,7 @@
->  quiet_cmd_quote2 = QUOTE   $@
->        cmd_quote2 = sed -e '/CONFIG/{'          \
->    -e 's/"CONFIG"\;/""/'        \
-> -  -e 'r $(obj)/config.tmp'     \
-> +  -e 'r $(objtre)/config.tmp'  \
+> Btw, did you also fix the typo I mentioned?
 
-	Where had that come from?  The patch I've done is on
-ftp://ftp.linux.org.uk/pub/people/viro/UML-kbuild.  I don't see that
-chunk in there.  The closest I can find is
-
--QUOTE = 'my $$config=`cat $(TOPDIR)/.config`; $$config =~ s/"/\\"/g ; $$config =~ s/\n/\\n"\n"/g ; while(<STDIN>) { $$_ =~ s/CONFIG/$$config/; print $$_ }'
-+QUOTE = 'my $$config=`cat $(objtree)/.config`; $$config =~ s/"/\\"/g ; $$config =~ s/\n/\\n"\n"/g ; while(<STDIN>) { $$_ =~ s/CONFIG/$$config/; print $$_ }'
- 
- quiet_cmd_quote = QUOTE   $@
- cmd_quote = $(PERL) -e $(QUOTE) < $< > $@
- 
- targets += config.c
--$(obj)/config.c : $(src)/config.c.in $(TOPDIR)/.config FORCE
-+$(obj)/config.c : $(src)/config.c.in $(objtree)/.config FORCE
-
-Note that it's not -mm-based; problem with porting to -mm, maybe?  Or
-I might have equivalent typo in one of the older versions of patch and
-it migrated...
-
-BTW, that chunk in your patch looks bogus regardless of typos - you have
-config.tmp in clean-files, so it'd better be in arch/um/kernel, not in
-the root...
+See another reply upthread.  BTW, patch is going to be split - right now
+it's a big lump of unrelated fixes.  I'm waiting for Sam to return with
+comments on headers layout...
 
 
 -------------------------------------------------------
