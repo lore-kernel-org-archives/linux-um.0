@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CX38d-0003fy-Ld for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 11:49:15 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CX307-0006WD-B4
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 11:40:28 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
+	id 1CX3oF-0006iq-9O for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 12:32:15 -0800
+Received: from dns2.uxu.ch ([195.216.70.51])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CX3oE-0004LH-6c for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Nov 2004 12:32:15 -0800
+Message-ID: <41A4EE93.9090800@uxu.ch>
+From: =?ISO-8859-1?Q?Felix_M=FCri?= <uml@uxu.ch>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] [PATCH] uml_router: cleanup
-Message-ID: <20041124192756.GA26938@bytesex>
-References: <874qjfftsz.fsf@bytesex.org>
-	<BAY24-F33146F620CDD96B205B7283B80@phx.gbl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BAY24-F33146F620CDD96B205B7283B80@phx.gbl>
+References: <BAY24-F27D8548BC9B2976EFF8B3883B80@phx.gbl>
+	<874qjfftsz.fsf@bytesex.org>
+In-Reply-To: <874qjfftsz.fsf@bytesex.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,52 +28,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 24 Nov 2004 20:27:56 +0100
-To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 24 Nov 2004 21:26:59 +0100
+To: User-mode-linux-devel@lists.sourceforge.net
+Cc: Gerd Knorr <kraxel@bytesex.org>, Steve Schmidtke <steve_schmidtke@hotmail.com>
 
-> >  * Has outgoing package queues per switch port.
+Gerd Knorr schrieb:
+
+> "Steve Schmidtke" <steve_schmidtke@hotmail.com> writes:
 > 
-> I wanted this as well - dropping packets just because of a temporary EAGAIN 
-> makes network traffic stumble.
-
-I'm not sure any more that this makes actually a big difference.
-It may help a bit on network load peaks.
-
-The (host) kernel does some buffering as well in the fifo/socket
-buffers, you'll get the -EAGAIN once they are full.  Buffering in the
-switch daemon as well just makes the buffer space bigger, but at some
-point you have to drop packets.
-
-The TCP protocol has a clever algoritm to get as much as possible out of
-a link between two machines which actually *depends* on packets being
-dropped once you've over the limit for the link.  Thus dropping packets
-isn't something you should try to avoid at any cost.  You can't do that
-anyway ;)
-
-> But one thing I think I noticed is you don't expire packets if they
-> get stale (packet dropping seems to drop the newest packet rather than
-> the oldest as well), which could cause problems too.
-
-Not sure what a real switch/router does in that case.  Note that the
-packets which are already in the kernel's fifo/socket buffer can't be
-expired as well ...
-
-> >  * use poll() instead of select() (again this likely doesn't make a
-> >    noticable difference for most users ...).
 > 
-> Not to have completely wasted my time, the io dispatcher I wrote around 
-> poll() should be an easy retrofit in your package as well, if you want it.
+>>Hi,
+>>
+>>While I was playing around with uml_switch, I started thinking that
+>>the code is a bit messy and really could use a facelift.
 > 
-> Or, if it would be useful, I would be happy to try and integrate both 
-> packages together.
+> While browsing the code I figured that it likely is easier to largely
+> rewrite the stuff rather than trying to fix the existing stuff.
+> Especially the mac handling is broken by design.
+> 
+Hello,
 
-Feel free to go ahead with merging code and push it upstream.
+long ago I found similar issues with the uml_switch codebase. My 
+problem was not the mac handling, but an missing feature to 
+connect two switches together via an udp-tunnel. I have rewritten 
+(but not redesigned) most of the code. The latest published 
+codebase can be found here:
 
-  Gerd
+http://www.uxu.ch/uxu/software/uml_switch2
 
--- 
-#define printk(args...) fprintf(stderr, ## args)
+
+regards
+
+Felix
+
+
+P.S.: My code is (since about a year) in the state of further 
+improvement (I want an uml-switch, which can start and stop 
+uml-guests and be controlled via a control socket), but this 
+codebase is actually not in an releasable state (although I use 
+it on my production machine :-)
 
 
 -------------------------------------------------------
