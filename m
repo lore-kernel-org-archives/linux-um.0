@@ -1,21 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cojzr-0006Jy-PO for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 07:01:19 -0800
-Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cojzp-000587-TH for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 07:01:19 -0800
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] df -h and hostfs
-In-Reply-To: <200501120110.32416.blaisorblade@yahoo.it>
-Message-ID: <Pine.LNX.4.61.0501121555010.31072@filer.marasystems.com>
-References: <62845.80.203.0.208.1105438274.squirrel@80.203.0.208>
-	<200501120110.32416.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Message-Id: <200501121856.j0CIuMiZ003766@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH] Fix stack corruption
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,21 +15,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 Jan 2005 15:56:08 +0100 (CET)
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, stian@nixia.no
+Date: Wed, 12 Jan 2005 13:56:22 -0500
+To: caker@linode.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Wed, 12 Jan 2005, Blaisorblade wrote:
+This patch fixes a long-standing problem in skas mode process creation.  Chris
+Aker has been seeing it at linode, and found a way of reproducing it.  Once
+I spotted the bug, I found an easier way:
 
-> Yes, good idea... fixing it like you said will guarantee correct free space
-> stats (apart for quotas) but not correct used-space and total-space stats
-> (they would be possible only for humfs if it uses some accounting).
+ping flood the UML from the host while running
+	while true; do ls > /dev/null; done
 
-It will be as good as if the root was NFS mounted, which is what most 
-people expect.
+In 10-15 seconds, UML will simply exit back to the shell with a segfault,
+no panic, no output, no nothing.
 
-Regards
-Henrik
+When UML sets up the kernel stack for a new process, it sends itself a 
+SA_ONSTACK signal with the signal stack being the new kernel stack.  It 
+calls setjmp there to set up a context that it can longjmp to when the new
+process is run for the first time.
+
+The problem was that, while signals were blocked during this, they were 
+re-enabled before SA_ONSTACK was disabled.  Thus, a signal arriving at the
+wrong time, between signals being turned on and SA_ONSTACK being disabled,
+would cause the signal to be handled on the stack, destroying the context
+that had been set up there.
+
+When the new process ran, it would longjmp to this trashed stack, and UML
+would die.
+
+The fix is obvious:
+
+Index: 2.6.10/arch/um/kernel/skas/process.c
+===================================================================
+--- 2.6.10.orig/arch/um/kernel/skas/process.c	2005-01-12 11:17:22.000000000 -0500
++++ 2.6.10/arch/um/kernel/skas/process.c	2005-01-12 11:18:03.000000000 -0500
+@@ -323,9 +323,10 @@
+ 	block_signals();
+ 	if(sigsetjmp(fork_buf, 1) == 0)
+ 		new_thread_proc(stack, handler);
+-	set_signals(flags);
+ 
+ 	remove_sigstack();
++
++	set_signals(flags);
+ }
+ 
+ void thread_wait(void *sw, void *fb)
+
+				Jeff
+
 
 
 -------------------------------------------------------
