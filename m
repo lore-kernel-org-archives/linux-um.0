@@ -2,21 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AdvpH-0007pv-J4 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:21:11 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AdvpH-0001Cx-11 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 10:21:11 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+	id 1Advoc-0007n3-WA for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:20:30 -0800
+Received: from mx15.sac.fedex.com ([199.81.197.54])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Advoc-0000q4-HJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 10:20:30 -0800
+Received: from inet04.prod.fedex.com (inet04.prod.fedex.com [199.81.10.44])
+	by mx15.sac.fedex.com (8.12.6p2/8.12.3) with ESMTP id i06IKIdO000667
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 6 Jan 2004 12:20:22 -0600 (CST)
+	(envelope-from jeff98@silk.corp.fedex.com)
+From: Jeff Chua <jeff98@silk.corp.fedex.com>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
+In-Reply-To: <a06020407bc208b5b5a7a@[192.168.1.10]>
+Message-ID: <Pine.LNX.4.58.0401070150290.1840@boston.corp.fedex.com>
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
+	<200401060258.i062wuFI023117@ccure.user-mode-linux.org>
+	<a06020407bc208b5b5a7a@[192.168.1.10]>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200401061921.00054.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] 2.6-specific UML patches (modules, modversions,
-	various other stuff)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,79 +34,112 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 6 Jan 2004 19:20:59 +0100
+Date: Wed, 7 Jan 2004 02:00:07 +0800 (SGT)
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>, Johannes Formann <johannes@formann.de>
 
-Hi! I'm happy to hear again from you.
+Ok, here's the strace results.
 
-I don't remember if you answered when I posted this URL:
-http://web.tiscali.it/no-redirect-tiscali/blaisorblade/
+1st is the working one (without lvm2), 2nd is the problem one (with lvm2
+-- loaded by "vgscan", "vgchange -a y", "mount /u0/v0").
 
-There you will find a number of patches for UML 2.6. Some are mine and some 
-come from Ingo and M A Young; I've included everything Ingo posted minus the 
-speedup - breakage for 2.4 host. That is, MM_COPY_SEGMENTS is still called by 
-UML but if the host is a 2.6 that is a no-op.
+Without loading lvm2, uml works just fine.
 
-Only use the v8! In the Readme there is a careful description of each patch - 
-ask for more comments if you need.
+Host:   	2.4.25-pre4
+Guest:  	2.4.25-pre4-1um
+Gcc:		2.95.3 20010315
+Glibc:		2.2.5-34
+Binutils:	2.14.90.0.7
 
-They are tested enough (at least for building UML; the resulting patch should 
-work even on i386, and at least it compiles). Maybe you already have in your 
-tree some of the patches; they apply onto vanilla linux kernel. The -test9 
-patch has been split: the change for tty_init has been removed, and the 
-change to mm/memory.c has been replaced. You can find the two patches to move 
-out here, as A-03* and A-04*:
 
-http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/v6/A-Orig/
+Both traces are starting the same command "klog" ...
 
-The replacements are in the B directory. About the A-04 patch, and this hunk 
-in particular(it goes to mm/memory.c):
 
-@@ -700,19 +719,8 @@
 
-                vma = find_extend_vma(mm, start);
+Trace 1 (without lvm2)
 
--#ifdef FIXADDR_USER_START
--               if (!vma &&
--                   start >= FIXADDR_USER_START && start < FIXADDR_USER_END) {
--                       static struct vm_area_struct fixmap_vma = {
--                               /* Catch users - if there are any valid
--                                  ones, we can make this be "&init_mm" or
--                                  something.  */
--                               .vm_mm = NULL,
--                               .vm_start = FIXADDR_USER_START,
--                               .vm_end = FIXADDR_USER_END,
--                               .vm_page_prot = PAGE_READONLY,
--                               .vm_flags = VM_READ | VM_EXEC,
--                       };
-+#ifdef FIXADDR_START
-+               if (!vma && start >= FIXADDR_START && start < FIXADDR_TOP) {
-                        unsigned long pg = start & PAGE_MASK;
-                        pgd_t *pgd;
-                        pmd_t *pmd;
-Did you have any reason for replacing FIXADDR_USER_START with FIXADDR_START?
-I've looked in older patches and saw that FIXADDR_USER_START didn't exist, so 
-I thought that you simply didn't see the change happened in mainline; even 
-because I've maybe understood what code does, and there is no need to map 
-anything in a process's address space except for the VSYSCALL page. Am I 
-right?
+# strace klogd
+execve("/usr/sbin/klogd", ["klogd"], [/* 34 vars */]) = 0
+brk(0)                                  = 0x804e750
+open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+SYS_197(0x3, 0xbfffec98, 0x40015604, 0x400156ec, 0x3) = 0
+mmap(0, 1628, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40016000
+close(3)                                = 0
+open("/lib/libc.so.6", O_RDONLY)        = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3"..., 1024) = 1024
+SYS_197(0x3, 0xbfffece8, 0x40015604, 0x400156ec, 0x3) = 0
+mmap(0, 1190528, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40017000
+mprotect(0x40130000, 39552, PROT_NONE)  = 0
+mmap(0x40130000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
+0x119000) = 0x40130000
+mmap(0x40136000, 14976, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40136000
+close(3)                                = 0
+mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x4013a000
+munmap(0x40016000, 1628)                = 0
+brk(0)                                  = 0x804e750
+brk(0x804e780)                          = 0x804e780
+brk(0x804f000)                          = 0x804f000
+chdir("/")                              = 0
+open("/var/run/klogd.pid", O_RDONLY)    = -1 ENOENT (No such file or
+directory)
+fork()                                  = 112
+_exit(0)                                = ?
 
-I must admit that with my replacement for that patch, I've got one 
-non-repeatable segfault, in the early boot process. I've never had it any 
-more, so maybe it's elsewhere.
 
-For the makefile patches, they haven't still been accepted by Kbuild 
-developers :-(. But everything is open (kbuild mail list is not that active, 
-actually...)
 
-Bye
--- 
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
-EOSIGN
 
+
+Trace 2 (with lvm2)
+# strace klogd
+execve("/usr/sbin/klogd", ["klogd"], [/* 34 vars */]) = 0
+brk(0)                                  = 0x804e750
+open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
+directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+SYS_197(0x3, 0xbfffec98, 0x40015604, 0x400156ec, 0x3) = 0
+mmap(0, 1628, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40016000
+close(3)                                = 0
+open("/lib/libc.so.6", O_RDONLY)        = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3"..., 1024) = 1024
+SYS_197(0x3, 0xbfffece8, 0x40015604, 0x400156ec, 0x3) = 0
+mmap(0, 1190528, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40017000
+mprotect(0x40130000, 39552, PROT_NONE)  = 0
+mmap(0x40130000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
+0x119000) = 0x40130000
+mmap(0x40136000, 14976, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40136000
+close(3)                                = 0
+mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x4013a000
+munmap(0x40016000, 1628)                = 0
+brk(0)                                  = 0x804e750
+brk(0x804e780)                          = 0x804e780
+brk(0x804f000)                          = 0x804f000
+chdir("/")                              = 0
+open("/var/run/klogd.pid", O_RDONLY)    = -1 ENOENT (No such file or
+directory)
+fork()                                  = 147
+Kernel panic: Kernel mode fault at addr 0x488b5000, ip 0x400df1a4
+
+
+
+Thanks,
+Jeff
+
+On Tue, 6 Jan 2004, Johannes Formann wrote:
+
+> At 21:58 Uhr -0500 05.01.2004, Jeff Dike wrote:
+> >jchua@fedex.com said:
+> >>  Starting daemons: syslogd klogd inetd namedKernel panic: Kernel mode
+> >>  fault at addr 0x48965000, ip 0x400e51a4
+> >
+> >Can you get a stack trace from the panic?
+>
+> a simple strace $comand_to_run_uml?
 
 
 -------------------------------------------------------
