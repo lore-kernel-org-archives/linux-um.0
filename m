@@ -1,20 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BUFVM-00070f-PP for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 May 2004 18:52:52 -0700
-Received: from shell.blacknet.de ([80.254.131.106])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BUFVM-00062D-Ct
+	id 1BUJlS-0001Ar-EM for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 23:25:46 -0700
+Received: from smtpq3.home.nl ([213.51.128.198])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BUJlR-0004qJ-T4 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 May 2004 23:25:46 -0700
+Received: from [213.51.128.132] (port=46574 helo=smtp1.home.nl)
+	by smtpq3.home.nl with esmtp (Exim 4.30) id 1BUJlP-0001tQ-RG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 May 2004 18:52:52 -0700
-From: Goetz Bock <bock+uml@blacknet.de>
-Message-ID: <20040530015300.GB450@shell.blacknet.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sun, 30 May 2004 08:25:43 +0200
+Received: from cc22149-a.groni1.gr.home.nl ([217.121.240.26]:32948
+	helo=ws-02.local) by smtp1.home.nl with esmtp (Exim 4.30)
+	id 1BUJlN-0003I0-Uf for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 May 2004 08:25:41 +0200
+From: Leendert Meyer <leen.meyer@home.nl>
+Subject: Re: [uml-devel] No of ubd
+References: <Pine.LNX.4.44.0405291038140.9729-100000@filer.marasystems.com>
+	<200405291408.09412.leen.meyer@home.nl>
+In-Reply-To: <200405291408.09412.leen.meyer@home.nl>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] username support for jail_uml
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200405300831.32648.leen.meyer@home.nl>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,92 +38,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 May 2004 03:53:00 +0200
+Date: Sun, 30 May 2004 08:31:32 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi all,
+On Saturday 29 May 2004 14:08, Leendert Meyer wrote:
+> On Saturday 29 May 2004 10:40, Henrik Nordstrom wrote:
+> > On Fri, 28 May 2004, Leendert Meyer wrote:
+> > > I know how to use fdisk. But I need a bit of guidance here. Given *any*
+> > > partitionsize, what are the appropriate values? Is there a formula for
+> > > that?
+> >
+> > You just need to set some geometry on the disk.. Linux does not care
+> > what..  The only important matter is that the geometry should add upp to
+> > the size of your disk (in 512 byte sectors).
+>
+> Found this in linux/Documentation/kernel-parameters.txt:
+> ---8<---8<---8<---
+> 	hd=		[EIDE] (E)IDE hard drive subsystem geometry
+> 			Format: <cyl>,<head>,<sect>
+> ---8<---8<---8<---
+>
+> And this in linux/Documentation/ide.txt:
+> ---8<---8<---8<---
+>  "hdx=cyl,head,sect"	: disk drive is present, with specified geometry
+> ---8<---8<---8<---
+>
+> Nothing on ubd concerning geometry. Do I need the fake_ide or fakehd
+> parameters in combination with a hdx=C,H,S?
 
-I've written included patch to add support for usernames/groups and gids
-to jail_uml. The default group/gid is hardcoded to 99 (=nobody on my
-system).
+I found out that: 
 
-Cu,
-    Goetz.
+a) Debians cfdisk calculates the number of cilinders automatically, when used 
+on an empty disk image file. My current {c,}fdisk (SuSE Linux 9.0) is not 
+that smart. UML calculates the same number of cylinders.
 
-diff -ur tools/jail/jail_uml.c tools-bn/jail/jail_uml.c
---- tools/jail/jail_uml.c	2003-01-22 18:46:36.000000000 +0100
-+++ tools-bn/jail/jail_uml.c	2004-05-30 03:43:17.000000000 +0200
-@@ -1,18 +1,32 @@
-+/* jail a uml into a directory.
-+ 
-+*/
-+
- #include <stdio.h>
- #include <unistd.h>
- #include <errno.h>
-+#include <pwd.h>
-+#include <grp.h>
-+#include <sys/types.h>
- 
- static void Usage(void)
- {
--  fprintf(stderr, "Usage : jail_uml jail-directory uid "
-+  fprintf(stderr, "Usage : jail_uml jail-directory user "
- 	  "uml-command-line ...\n");
-+  fprintf(stderr, "    or: jail_uml jail-directory uid "
-+	  "uml-command-line ...\n\n");
-+  fprintf(stderr, "If the user is not found, it's assumed to be a uid.\n");
-   exit(1);
- }
- 
- int main(int argc, char **argv)
- {
-   char *dir, *end;
--  int uid;
-+  char *user;
-+  struct passwd *pw;
-+  int uid, gid=99;
-+  gid_t gidset[1];
-+  gidset[0]=gid;
- 
-   if(geteuid() != 0){
-     fprintf(stderr, "jail_uml must be run as root\n");
-@@ -21,8 +35,22 @@
- 
-   if(argc < 3) Usage();
-   dir = argv[1];
--  uid = strtoul(argv[2], &end, 0);
--  if(*end != '\0') Usage();
-+  user = argv[2];
-+  
-+  // get users password information
-+  pw = getpwnam (user);
-+  if (pw == 0){
-+    uid = strtoul(argv[2], &end, 0);
-+    if(*end != '\0') Usage();
-+    setgroups(1, gidset);
-+  } else {
-+    // try to init groups
-+    initgroups (pw->pw_name, pw->pw_gid); 
-+    uid = pw->pw_uid;
-+    gid = pw->pw_gid;
-+  }
-+
-+  // if(*end != '\0') Usage();
-   argc -= 3;
-   argv += 3;
- 
-@@ -36,6 +64,10 @@
-     exit(1);
-   }
- 
-+  if(setgid(gid)){
-+    perror("setgid");
-+    exit(1);
-+  }
-   if(setuid(uid)){
-     perror("setuid");
-     exit(1);
+b) On the kernel command line, ubd#=<file>, where file can be a disk image, a 
+partition (e.g. /dev/hda7), or an entire disk (e.g. /dev/hdd). You can even 
+use COW files on partitions and disks.
+
+c) In UML, ubd0 is mapped to ubda, ubd1 is mapped to ubdb, etc.
+
+Thanks to Uwe Barteld for assistance! :)
+
+Cheers,
+
+Leen
 
 
 -------------------------------------------------------
