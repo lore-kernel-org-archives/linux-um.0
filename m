@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CoXFA-0002aH-Up for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 17:24:16 -0800
-Received: from smtp.gentoo.org ([156.56.111.197])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CoXFA-0006Vg-Gq
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 17:24:16 -0800
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.42)
-	id 1CoXF9-00078D-DZ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 01:24:15 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.42)
-	id 1CoXF9-0002Tm-5E for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 01:24:15 +0000
-From: bugzilla-daemon@gentoo.org
-Message-Id: <E1CoXF9-0002Tm-5E@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+	id 1CoXxK-0006OR-Jp for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 18:09:54 -0800
+Received: from sourceware.org ([12.107.209.250])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CoXxI-0002c2-Lg for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 18:09:54 -0800
+Message-ID: <20050112020943.3374.qmail@sourceware.org>
+From: "blaisorblade_spam at yahoo dot it"
+	<sourceware-bugzilla@sources.redhat.com>
+In-Reply-To: <20050112011749.651.blaisorblade_spam@yahoo.it>
+References: <20050112011749.651.blaisorblade_spam@yahoo.it>
+Reply-To: sourceware-bugzilla@sources.redhat.com
+Subject: [uml-devel] [Bug nptl/651] The getpid() cache (and TLS) is not
+	invalidated after clone() calls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,23 +27,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 Jan 2005 01:24:15 +0000
+Date: 12 Jan 2005 02:09:43 -0000
 To: user-mode-linux-devel@lists.sourceforge.net
 
-http://bugs.gentoo.org/show_bug.cgi?id=49277
+
+------- Additional Comments From blaisorblade_spam at yahoo dot it  2005-01-12 02:09 -------
+I'll test it against an updated glibc if and when I'll have time, but anyway I 
+have no reason to doubt on you.
+
+And sorry a lot... I didn't want to "rumble", just to be complete. Detailed 
+excuses follow, feel free to skip them.
+
+1) I feared that fixing it looked too ugly and too controversial (for the 
+complexity added to a syscall wrapper, like I said)...
+
+I didn't actually verify that it was on the latest glibc... I tested a 2.3.4 
+snapshot (20040808) which is the one I run.
+
+but I cc'ed you a patch for UML talking about it some time ago and got no 
+answer.
+
+(I tested it against glibc-2.3.4.20040808 (a glibc snapshot used in Gentoo, 
+which is the latest "stable" glibc in Gentoo). And I didn't find any bug report 
+about this *here*, so I thought it wasn't fixed).
+
+-- 
 
 
-blaisorblade_spam@yahoo.it changed:
-
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |user-mode-linux-
-                   |                            |devel@lists.sourceforge.net
-
-
-
-
-
+http://sources.redhat.com/bugzilla/show_bug.cgi?id=651
 
 ------- You are receiving this mail because: -------
 You are on the CC list for the bug, or are watching someone who is.
