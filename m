@@ -1,21 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CtYtx-0001Gd-Ae for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Jan 2005 14:11:09 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CtYtv-00070x-Jh for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Jan 2005 14:11:09 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] Re: [uml-user] keyring syscalls
+In-Reply-To: <20050125215416.GA2912@halcrow.us>
+Message-ID: <Pine.LNX.4.61.0501252301330.3289@filer.marasystems.com>
+References: <20041118160909.GA7630@halcrow.us>
+	<200411181839.26596.blaisorblade_spam@yahoo.it>
+	<20050125215416.GA2912@halcrow.us>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501252310.22421.blaisorblade@yahoo.it>
-Subject: [uml-devel] Error in current vsyscall patch
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,42 +19,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Jan 2005 23:10:22 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 25 Jan 2005 23:21:33 +0100 (CET)
+To: Michael Halcrow <uml@halcrow.us>
+Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-About 
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.11-rc1-mm1/patches/vsyscall
+On Tue, 25 Jan 2005, Michael Halcrow wrote:
 
-this hunk is not enough:
+> I am not entirely clear on the function that ``[ 222 ] =
+> sys_ni_syscall,'' at the end of the table in syscalls.h is supposed to
+> serve.
 
-@@ -152,6 +152,7 @@
- static void init_highmem(void)
- {
- pgd_t *pgd;
-+pud_t *pud;
- pmd_t *pmd;
- pte_t *pte;
- unsigned long vaddr;
-@@ -163,6 +164,7 @@
- fixrange_init(vaddr, vaddr + PAGE_SIZE*LAST_PKMAP, swapper_pg_dir);
- 
- pgd = swapper_pg_dir + pgd_index(vaddr);
-+pud = pud_offset(pgd, vaddr);
- pmd = pmd_offset(pgd, vaddr);
- pte = pte_offset_kernel(pmd, vaddr);
- pkmap_page_table = pte;
+This says that syscall number 222 is not implemented, which it isn't on 
+i386 (not defined).
 
-You forgot this obvious change:
+>  Syscalls in UML contstitutes new territory for me.
 
--pmd = pmd_offset(pgd, vaddr);
-+pmd = pmd_offset(pud, vaddr);
+Mostly the same as syscalls in any other architecture. A big table with 
+function pointers to each syscall, indexed by the syscall number.
 
-Please correct... and always try to proof-read each patch you write...
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+As each architecture has it's own syscall table but UML sharing the 
+syscall numbers with the host architecture things get a little confusing 
+sometimes. And in addition the UML syscall table often lags behind a 
+little, missing the newer syscalls.
+
+Note that the main syscall table is defined in 
+arch/um/kernel/sys_call_table.c, the define in the 
+include/asm/sysdep/syscalls.h is just the part of the syscall table which 
+is specific to a certain host architecture.
+
+To add a new generic syscall you should
+
+   1. Add it to asm-xxx/unistd.h of each architecture, except for um which 
+picks it up from the host architecture.
+   2. Add it to the syscall table of earch architecture, um included.
+
+To add a new i386 only syscall you should
+
+   1. Add it to asm-i386/unistd.h
+   2. Add it to the i386 syscall table
+   3. Add it to um i386 specific syscall table in 
+asm-um/sysdep-i386/syscall.h
+
+> I would assume that the __NR_* assignments in the UML environment are 
+> identical to those of the host system.
+
+They are. UML directly includes unistd.h from the host architecture.
+
+> That means that request_key,
+> for example, maps to identifier 288 on the i386 architecture, right?
+
+Which should have their appropriate _NR_xxx identifiers defined. For 
+maintenance reasons the syscall table should be built using _NR_xxx 
+identifiers, not the absolute numbers.
+
+Regards
+Henrik
 
 
 -------------------------------------------------------
