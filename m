@@ -1,28 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWsmG-00079S-UC
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 23:40:56 -0800
-Received: from mx11.sac.fedex.com ([199.81.193.118])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1AWsmG-0001S2-HW
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Dec 2003 23:40:56 -0800
-Received: from mail-e1000-1.prod.fedex.com (inet03.prod.fedex.com [199.81.10.43])
-	by mx11.sac.fedex.com (8.12.6p2/8.12.3) with ESMTP id hBI7egJw084047
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Dec 2003 01:40:42 -0600 (CST)
-	(envelope-from jeff98@silk.corp.fedex.com)
-Received: from entpm11.apac.fedex.com (entpm11.apac.fedex.com [155.161.92.11])
-	by inet03.prod.fedex.com (8.12.10/8.12.10) with ESMTP id hBI7eelx009717
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Dec 2003 01:40:41 -0600 (CST)
-Received: from boston.corp.fedex.com ([155.161.156.88])
-	by silk.corp.fedex.com (8.11.4/8.11.4) with ESMTP id hBI7d4021890
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Dec 2003 15:39:04 +0800
-From: Jeff Chua <jeff98@silk.corp.fedex.com>
-Message-ID: <Pine.LNX.4.58.0312181520100.15701@boston.corp.fedex.com>
+	id 1AWtEH-00082i-ID
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 00:09:53 -0800
+Received: from [216.156.129.65] (helo=www.theshore.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AWtEH-0001F8-6m
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 00:09:53 -0800
+Received: from hawk (mothership.theshore.net [68.52.199.4])
+	by www.theshore.net (8.12.9/8.9.1) with SMTP id hBI8D7sH014312
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Dec 2003 03:13:07 -0500
+Message-ID: <000901c3c53e$4a759550$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <Pine.LNX.4.58.0312181520100.15701@boston.corp.fedex.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] uml-patch-2.4.22-7 without CONFIG_MODE_TT failed
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] [PATCH] - fix for 2.4.22-7um RTC on CPUs faster than 2.1 GHz
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,73 +28,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Dec 2003 15:24:06 +0800 (SGT)
-To: UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 18 Dec 2003 02:09:39 -0600
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+
+Enabling the RTC in 2.4.22-7um produced a hang very soon after INIT at boot time.
+
+I discovered host_hz as an int overflows past 2.1 Ghz (2147483647 hz).  An
+unsigned int/long would only work for up to ~ 4.3 Ghz (4294967295 hz) or so, which
+isn't that far off, imo...  So -- Below is a patch that changes the type of
+host_hz to unsigned long long.  Also, I believe some casting was taking place with
+the return value of get_host_hz, so mhz is also redefined as an unsigned long
+long.
+
+-Chris
 
 
-uml-patch-2.4.22-7 on linux 2.4.24-pre1
+diff -Naur orig/arch/um/kernel/time.c mine/arch/um/kernel/time.c
+--- orig/arch/um/kernel/time.c  2003-12-18 02:30:20.000000000 -0500
++++ mine/arch/um/kernel/time.c  2003-12-18 02:32:38.000000000 -0500
+@@ -79,10 +79,11 @@
+        set_interval(ITIMER_REAL);
+ }
 
-Can't compile without CONFIG_MODE_TT. 2.4.22-5 has no problem.
+-static long get_host_hz(void)
++static unsigned long long get_host_hz(void)
+ {
+        char mhzline[16], *end;
+-       int ret, mult, mhz, rest, len;
++       int ret, mult, rest, len;
++       unsigned long long mhz;
 
+        ret = cpu_feature("cpu MHz", mhzline,
+                          sizeof(mhzline) / sizeof(mhzline[0]));
+@@ -112,7 +113,7 @@
+        return(1000000 * mhz + rest);
+ }
 
-Command to compile (make linux ARCH=um)
+-int host_hz = 0;
++unsigned long long host_hz = 0;
 
+ void time_init(void)
+ {
+diff -Naur orig/arch/um/kernel/time_kern.c mine/arch/um/kernel/time_kern.c
+--- orig/arch/um/kernel/time_kern.c     2003-12-18 02:30:20.000000000 -0500
++++ mine/arch/um/kernel/time_kern.c     2003-12-18 02:34:58.000000000 -0500
+@@ -39,7 +39,7 @@
+ static unsigned long long prev_tsc;
+ static long long delta;                /* Deviation per interval */
 
-Thanks,
-Jeff
-[ jchua@fedex.com ]
+-extern int host_hz;
++extern unsigned long long host_hz;
 
-
-gcc -D__KERNEL__ -I/v6/src/2424p1/uml/include -Wall -Wstrict-prototypes
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer
--U__i386__ -Ui386 -DUM_FASTCALL  -D__arch_um__ -DSUBARCH="i386"
--D_LARGEFILE64_SOURCE -I/v6/src/2424p1/uml/arch/um/include
--Derrno=kernel_errno -I/v6/src/2424p1/uml/arch/um/kernel/skas/include
--nostdinc -iwithprefix include -DKBUILD_BASENAME=root  -DEXPORT_SYMTAB -c
-root.c
-In file included from /v6/src/2424p1/uml/arch/um/include/um_uaccess.h:17,
-                 from /v6/src/2424p1/uml/include/asm/uaccess.h:31,
-                 from root.c:9:
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h: In
-function `verify_area_skas':
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-`current' undeclared (first use in this function)
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-(Each undeclared identifier is reported only once
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-for each function it appears in.)
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-`mm_segment_t' undeclared (first use in this function)
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-parse error before `{'
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-`TASK_SIZE' undeclared (first use in this function)
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-`EFAULT' undeclared (first use in this function)
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:17:
-parse error before `)'
-/v6/src/2424p1/uml/arch/um/include/../kernel/skas/include/uaccess.h:18:
-warning: control reaches end of non-void function
-In file included from /v6/src/2424p1/uml/include/asm/processor.h:22,
-                 from /v6/src/2424p1/uml/include/linux/prefetch.h:13,
-                 from /v6/src/2424p1/uml/include/linux/list.h:6,
-                 from /v6/src/2424p1/uml/include/linux/wait.h:14,
-                 from /v6/src/2424p1/uml/include/linux/fs.h:12,
-                 from /v6/src/2424p1/uml/include/linux/capability.h:17,
-                 from /v6/src/2424p1/uml/include/linux/binfmts.h:5,
-                 from /v6/src/2424p1/uml/include/linux/sched.h:9,
-                 from root.c:12:
-/v6/src/2424p1/uml/include/asm/processor-generic.h: At top level:
-/v6/src/2424p1/uml/include/asm/processor-generic.h:95: `mm_segment_t' used
-prior to declaration
-make[3]: *** [root.o] Error 1
-make[3]: Leaving directory `/v6/src/2424p1/uml/fs/proc'
-make[2]: *** [first_rule] Error 2
-make[2]: Leaving directory `/v6/src/2424p1/uml/fs/proc'
-make[1]: *** [_subdir_proc] Error 2
-make[1]: Leaving directory `/v6/src/2424p1/uml/fs'
-make: *** [_dir_fs] Error 2
-
+ void timer_irq(union uml_pt_regs *regs)
+ {
 
 
 
