@@ -2,24 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BSQ75-0004Or-9v for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 May 2004 17:48:15 -0700
-Received: from mx15.sac.fedex.com ([199.81.195.17])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BSQ74-0004WK-W9
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 May 2004 17:48:15 -0700
-Received: from inet04.prod.fedex.com (inet04.prod.fedex.com [199.81.10.44])
-	by mx15.sac.fedex.com (8.12.9p2/8.12.9) with ESMTP id i4P0m41u085593
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 24 May 2004 19:48:04 -0500 (CDT) (envelope-from jchua@fedex.com)
-From: Jeff Chua <jchua@fedex.com>
-Subject: Re: [uml-devel] uml-patch-2.6.6-1
-In-Reply-To: <200405241733.i4OHXiWC030995@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.60.0405250845270.3841@boston.corp.fedex.com>
-References: <200405241733.i4OHXiWC030995@ccure.user-mode-linux.org>
+	id 1BSdep-000287-GW for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 May 2004 08:15:59 -0700
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BSdeo-00010E-PA for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 May 2004 08:15:58 -0700
+Message-ID: <0cef01c4426c$2db53cd0$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <20040523204612.92053.qmail@web40507.mail.yahoo.com>
+Subject: Re: [uml-devel] UML hangs at "INIT: Entering runlevel: 3"
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,74 +27,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 May 2004 08:47:56 +0800 (SGT)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 25 May 2004 17:23:05 +0200
+To: Cheng yong <cheng_lucia@yahoo.com>, user-mode-linux-devel@lists.sourceforge.net
 
-Is it possible for you to release one for 2.6.7-rc1?
+lucia, 
+didn`t you tell you converted your root_fs from ext2 to reiserfs ?
+can you check, if /etc/fstab has an entry, still pointing to an ext2
+filesystem ?
+regards
+roland
 
-I haven't tried this latest patch, but my own patches do not work for 
-2.6.7-rc1. arch_free_page seems to have a problem in the following 
-section...
-
---- a/mm/page_alloc.c   2004-03-10 08:20:20.000000000 -0500
-+++ b/mm/page_alloc.c   2004-03-10 08:34:21.000000000 -0500
-@@ -268,6 +268,8 @@
-         LIST_HEAD(list);
-         int i;
-
-+       arch_free_page(page, order);
-+
-         mod_page_state(pgfree, 1 << order);
-         for (i = 0 ; i < (1 << order) ; ++i)
-                 free_pages_check(__FUNCTION__, page + i);
-@@ -457,6 +459,8 @@
-         struct per_cpu_pages *pcp;
-         unsigned long flags;
-
-+       arch_free_page(page, 0);
-+
-         kernel_map_pages(page, 1, 0);
+----- Original Message ----- 
+From: "Cheng yong" <cheng_lucia@yahoo.com>
+To: "roland" <for_spam@gmx.de>; <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Sunday, May 23, 2004 10:46 PM
+Subject: Re: [uml-devel] UML hangs at "INIT: Entering runlevel: 3"
 
 
-
-Thanks,
-Jeff
-[ jchua@fedex.com ]
-
-On Mon, 24 May 2004, Jeff Dike wrote:
-
-> This patch updates UML to 2.6.6.  Aside from the update, there were a few
-> small bug fixes.
->
-> The 2.6.6-1 UML patch is available at
-> 	http://www.user-mode-linux.org/mirror/uml-patch-2.6.6-1.bz2
->
-> BK users can pull my 2.5 repository from
-> 	http://www.user-mode-linux.org:5000/uml-2.5
->
-> For the other UML mirrors and other downloads, see
->        http://user-mode-linux.sourceforge.net/dl-sf.html
->
-> Other links of interest:
->
->        The UML project home page : http://user-mode-linux.sourceforge.net
->        The UML Community site : http://usermodelinux.org
->
-> 				Jeff
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: Oracle 10g
-> Get certified on the hottest thing ever to hit the market... Oracle 10g.
-> Take an Oracle 10g class now, and we'll give you the exam FREE.
-> http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
+> Hi, 
+> 
+> in the attachment is the whole output of UML-Session.
+> 
+> best regards
+> 
+> Lucia
+> 
+> 
+> 
+> 
+> __________________________________
+> Do you Yahoo!?
+> Yahoo! Domains - Claim yours for only $14.70/year
+> http://smallbusiness.promotions.yahoo.com/offer
 
 
 -------------------------------------------------------
