@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8O8n-0004bU-2Z for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:43:45 -0800
+	id 1D8O9M-0004ly-Hc for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:44:20 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D8O8m-00061Y-DV for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:43:44 -0800
+	id 1D8O9J-00065k-08 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:44:20 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] uml_moo
+References: <3809.83.109.31.19.1105785957.squirrel@83.109.31.19>
+In-Reply-To: <3809.83.109.31.19.1105785957.squirrel@83.109.31.19>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200503061949.03819.blaisorblade@yahoo.it>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] SKAS leftovers: having fun with old code relicts (aka
-	PTRACE_SIGPENDING)
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_Bc1KCEfW/gnrmhN"
+Message-Id: <200503062016.17186.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,54 +27,107 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 6 Mar 2005 19:49:03 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 6 Mar 2005 20:16:17 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: stian@nixia.no, Gigie Lertriniva <gigie_lertriniva@yahoo.com>
 
-Ok, what I discovered today is just funny...
+--Boundary-00=_Bc1KCEfW/gnrmhN
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-A little, ignarious programmer (me) was porting the SKAS patch to x86_64, and 
-proof-checking the sizes of vars.
+On Saturday 15 January 2005 11:45, stian@nixia.no wrote:
+> I have one issue with uml_moo.
+>
+> uml_moo and the kernel cow drivers doesn't seem to use the same method
+> when calculating the size of the backing file.
+>
+> I used /dev/hdc1 which was an block device (147 GB partition)
+>
+> uml kernel perfectely finds the correct size. uml_moo uses stat on the
+> device which gives size 0, og uml_moo fails.
+Try the patch.
+> Also I see that it is 
+> compiled with 64bit file support, but shouldn't you define _GNU_SOURCE as
+> well?
+Well, it works, and no idea. Did you notice _XOPEN_SOURCE defined in 
+moo/uml_moo.c? I'm in a hurry so I'm not checking the exact various 
+situations.
+> Since off_t didn't need %lld in the printf, but %ld as the 
+> source-code now uses which is 32bit on i386 atleast. The last thingy was
+> just a question.
+Where?
+>
+> Stian
+Somebody also complained about wrong text messages (no version 3 support is 
+declared in the help). So I'm working also on the above.
 
-While looking at PTRACE_SIGPENDING, he realized that in the i386 version we 
-copy a sigset_t value (child->pending.signal), which is 64-bit wide, to a 
-"unsigned long", i.e. 32-bit wide*.
-
-        case PTRACE_SIGPENDING:
-                ret = copy_to_user((unsigned long *) data,
-                                   &child->pending.signal,
-                                   sizeof(child->pending.signal));
-                break;
-
-"What the fuck!" said the ignarious programmer (me), and he went looking 
-carefully to each and every usage of PTRACE_SIGPENDING in the Uml code, to 
-check why nobody sees the world collapsing (maybe the callers are correct 
-anyway, he thought):
-
- $ find arch/um/ include/asm-um/ |xargs grep PTRACE_SIGPENDING
-arch/um/kernel/ptrace.c:        case PTRACE_SIGPENDING:
-arch/um/include/skas_ptrace.h:#define PTRACE_SIGPENDING 53
-
-He checked better, and better, distrusting the Truth discovered by his poor 
-and liable mate, Lord Grep... but at last he couldn't ignore the Truth: 
-PTRACE_SIGPENDING is a (broken) relict!
-
-After this story, we come to the question: Jeff, what I missed (apart that 
-probably it was used in releases before SKAS3)?
-
-Could I delete PTRACE_SIGPENDING from the SKAS patch?
-
-I wouldn't for the sake of compatibility, but since the interface has never 
-been used by SKAS, and probably (if somebody else used it) it didn't work 
-well, I'm not certain.
-
-*Actually, even if we write 64-bit to a 32-bit pointer above, this is done 
-also for PTRACE_LDT, so type of the cast is just cosmetical. The point is 
-that it's misleading for the reader.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 http://www.user-mode-linux.org/~blaisorblade
+
+--Boundary-00=_Bc1KCEfW/gnrmhN
+Content-Type: text/x-diff;
+  charset="utf-8";
+  name="moo-little-fixes.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="moo-little-fixes.patch"
+
+
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ tools-paolo/moo/cow.c     |    2 +-
+ tools-paolo/moo/cow_sys.h |    4 ++--
+ tools-paolo/moo/uml_moo.c |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff -puN moo/cow.c~moo-little-fixes moo/cow.c
+--- tools/moo/cow.c~moo-little-fixes	2005-03-06 19:42:38.580011064 +0100
++++ tools-paolo/moo/cow.c	2005-03-06 19:43:41.456452392 +0100
+@@ -298,7 +298,7 @@ int read_cow_header(int (*reader)(__u64,
+ 	}
+ 	else if(version == 3){
+ 		if(n < sizeof(header->v3)){
+-			cow_printf("read_cow_header - failed to read V2 "
++			cow_printf("read_cow_header - failed to read V3 "
+ 				   "header\n");
+ 			goto out;
+ 		}
+diff -puN moo/uml_moo.c~moo-little-fixes moo/uml_moo.c
+--- tools/moo/uml_moo.c~moo-little-fixes	2005-03-06 19:44:34.553380432 +0100
++++ tools-paolo/moo/uml_moo.c	2005-03-06 19:44:45.431726672 +0100
+@@ -203,7 +203,7 @@ static char *usage_string = 
+ "its current backing file\n"
+ "Specifying -b overrides the backing_file specified in the COW file.  This is\n"
+ "needed when dealing with a COW file that was created inside a chroot jail.\n"
+-"%s supports version 1 and 2 COW files.\n"
++"%s supports version 1,2 and 3 COW files.\n"
+ "";
+ 
+ static int Usage(char *prog) {
+diff -puN moo/cow_sys.h~moo-little-fixes moo/cow_sys.h
+--- tools/moo/cow_sys.h~moo-little-fixes	2005-03-06 20:08:18.120965264 +0100
++++ tools-paolo/moo/cow_sys.h	2005-03-06 20:08:20.556594992 +0100
+@@ -48,9 +48,9 @@ static inline int cow_seek_file(int fd, 
+ 
+ static inline int cow_file_size(char *file, long long *size_out)
+ {
+-	struct stat buf;
++	struct stat64 buf;
+ 
+-	if(stat(file, &buf) == -1){
++	if (stat64(file, &buf) == -1) {
+ 		cow_printf("Couldn't stat \"%s\" : errno = %d\n", file, errno);
+ 		return(-errno);
+ 	}
+_
+
+--Boundary-00=_Bc1KCEfW/gnrmhN--
 
 
 
