@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AhoGJ-0002L5-Oq for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 03:05:07 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1AhoGJ-0007RZ-7Y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 03:05:07 -0800
-References: <4008A7DF.6000308@lig.net>
-From: Gerd Knorr <kraxel@bytesex.org>
+	id 1AhuwM-0003aA-Le for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 10:12:58 -0800
+Received: from brown.brainfood.com ([146.82.138.61] helo=yakko.doogie.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AhuwJ-0002jF-Hy for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 10:12:55 -0800
+From: Adam Heath <adam@doogie.org>
+Subject: Re: [uml-devel] What is the most up to date, least crashing
+	kernel+patch?
 In-Reply-To: <4008A7DF.6000308@lig.net>
-Message-ID: <87llo6hmmc.fsf@bytesex.org>
+Message-ID: <Pine.LNX.4.44.0401171208310.23425-100000@yakko.doogie.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: What is the most up to date,
-	least crashing kernel+patch?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,25 +26,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 17 Jan 2004 11:53:47 +0100
-To: "Stephen D. Williams" <sdw@lig.net>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 17 Jan 2004 12:12:37 -0600 (CST)
+To: "Stephen D. Williams" <sdw@lig.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-"Stephen D. Williams" <sdw@lig.net> writes:
+yOn Fri, 16 Jan 2004, Stephen D. Williams wrote:
 
-> I would like 2.6.1 as a UML kernel along with support for >512 UML ram
-> and preferrably modules.  What is the best I can get right now?
-> 
-> I'm running Gerd/SuSE's 2.6.0-test9,
+> I have noticed that paging an executable (like Python) in takes much
+> more time that it would natively and that large amounts of disk I/O is
+> slow.  Where is the bottleneck for this and what can be done about it?
+> (I realized that the virtual layering is going to cost some.)
 
-ftp://ftp.suse.com/pub/people/kraxel/i386/ has 2.6.1 rpms since a few
-hours.  Both binary and source rpms, both uml and host, host with
-skas3, all building out a single source tree.  Modules don't work yet
-through.
+Any context switches(which includes pthreads), or io, in UML, is dog slow.
 
-  Gerd
+A context switch underneath uml(and io as well) involes the host uml switching
+from the emulated process, into itself, and back(at the very least).
 
--- 
-"... und auch das ganze Wochenende oll" -- Wetterbericht auf RadioEins
+With the current and forseeable UML implementations, this can't be fixed.
+You'd have to port major portitions of UML to a kernel module(this is more
+than just SKAS).
+
+
 
 
 -------------------------------------------------------
