@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQ85a-0002Xu-FW for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 May 2004 10:09:14 -0700
+	id 1BQ89q-0003dL-SZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 May 2004 10:13:38 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BQ85Z-00077E-NF
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BQ89q-0004hk-6F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 May 2004 10:09:13 -0700
+	Tue, 18 May 2004 10:13:38 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] 2.4.24-2 UML problems with hostfs ClearCase mounts
-Message-ID: <20040518175447.GA29114@ccure.user-mode-linux.org>
-References: <Pine.LNX.4.44.0405180141460.28239-100000@filer.marasystems.com>
-	<40AA2F06.6020607@nortelnetworks.com>
+Subject: Re: [uml-devel] [PATCH] host context switch reduction
+Message-ID: <20040518175904.GB29114@ccure.user-mode-linux.org>
+References: <20040229043549.GA8583@ccure.user-mode-linux.org>
+	<02dc01c43c4a$bb7c0490$2000000a@schlepptopp>
+	<1084831251.1230.4.camel@chartreuse>
+	<03ff01c43c5d$7db6e5e0$2000000a@schlepptopp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <40AA2F06.6020607@nortelnetworks.com>
+In-Reply-To: <03ff01c43c5d$7db6e5e0$2000000a@schlepptopp>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,22 +31,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 May 2004 13:54:47 -0400
-To: Joe Marzot <gmarzot@nortelnetworks.com>
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 18 May 2004 13:59:04 -0400
+To: roland <for_spam@gmx.de>
+Cc: Laurent Vivier <LaurentVivier@wanadoo.fr>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, May 18, 2004 at 11:43:02AM -0400, Joe Marzot wrote:
-> Thank you so much for the reply - For the most part existing hostfs 
-> support has been fine for me (I need the sync behaviour).
+On Tue, May 18, 2004 at 12:22:45AM +0200, roland wrote:
+> the question is:
+> is the "real world" performance benefit, uml get`s from this patch worth taking your time and is it implemented in a way, so that
+> uml maintainers are happy with that ?
 
-Enough people do that I will add a synchronous option which restores the
-old behavior.
+The patch seems reasonable to me.  I'd be happiest with Laurent pushing this
+into mainline himself.
 
-> I do have loads of cores if anyone is interested since I hacked the 
-> panic code to abort() as I was not catching these intermittent crashes 
-> very often.
+> i cannot really estimate, what performance benefits your patch brings to uml in detail, but what i have seen so far, this seems
+> quite worth doing the work.  reducing context switches by 1/3 is a LOT, imho - and reducing the execution time of the getpid-loop to
+> nearly the half is quite impressive.
 
-For starters, backtraces would be good.
+Yeah, but no real workloads do while(1) getpid();
+
+The kernel build improvement is obviously smaller, but still worth having.
+
+> are there any "con`s" that argue for that work _NOT_ being done ?
+
+No.  But testing, and happy reports to the appropriate mailing lists would
+help.
 
 				Jeff
 
