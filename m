@@ -1,11 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Rus Foster <rghf@fsck.me.uk>
+From: Henrik Nordstrom <uml@henrik.marasystems.com>
+Subject: Re: [uml-devel] A quick humfs HOWTO
 In-Reply-To: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.58.0404080857520.928@bitch.localdomain>
-References: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0404081027360.7910-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: [uml-user] A quick humfs HOWTO
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,28 +16,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 8 Apr 2004 08:58:38 +0100 (BST)
+Date: Thu, 8 Apr 2004 10:35:48 +0200 (CEST)
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
 On Wed, 7 Apr 2004, Jeff Dike wrote:
 
-> As the readers of uml-devel are aware by now, there is a new virtual UML
-> filesystem called humfs.  This is a hostfs-like filesystem which does ownerships
-> right, by separating them from the actual file, ala umsdos.
->
-> The reasons for humfs are described in my latest diary entry at
-> 	http://user-mode-linux.sourceforge.net/diary.html
+> The root contains two directories :
+> 	data - which contains the files
+> 	metadata - which shadows "data" and whose files contain ownership 
+> 		information
+> and one file
+> 	superblock - which contains information about the filesystem as a 
+> 		whole
 
-Anyone else getting /usr/include/linux/aio_abi.h not found or is it just
-me?
 
-Rus
--- 
-e: support@vpscolo.com
-t: 1-888-327-6330
-www.jvds.com - Root on your own box
-www.vpscolo.com - Your next hosting company
+Can data be a symlink on the host?
+
+I would suggest adding an option to optionally allow specifying the path
+to data, this to allow humfs permission shadows to easily be created of
+existing trees. If data can be a symlink this option can be managed in
+humfsify.
+
+
+Also, what happens if there is a mismatches between metadata and data
+content?
+
+> The superblock file has the format
+> 	"version <number>\nused <number>\ntotal <number>\n"
+> 
+> The version is currently 1.  used is set to the disk space consumed by 
+> everything in the data directory.  total is set arbitrarily when you set
+> up the filesystem.  It is the size of the filesystem as seen within UML.
+
+Great!
+
+I wouldsuggest adding a read-only flag, preventing UML from mounting the 
+directory read-write.
+
+> user and group are the uid and gid that UML will be running as, respectively.
+
+How is this information used by humfsify? Can these be made optional (then 
+use current uid/gid, or don't care)
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
