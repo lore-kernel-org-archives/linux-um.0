@@ -1,11 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AsCf6-0002Uo-Ch
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 14 Feb 2004 19:09:40 -0800
+Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AsCYF-0004jH-Qt
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 14 Feb 2004 19:02:36 -0800
 From: William Stearns <wstearns@pobox.com>
 Reply-To: William Stearns <wstearns@pobox.com>
-Subject: Re: [uml-devel] UML kernel 2.6.3-rc2-1 available
-In-Reply-To: <Pine.LNX.4.44.0402141556470.3225-100000@sparrow>
-Message-ID: <Pine.LNX.4.44.0402141959260.3225-100000@sparrow>
+Message-ID: <Pine.LNX.4.44.0402142159580.5528-100000@sparrow>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] 2.6.3-rc2-uml1 Kernel mode panic
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,43 +23,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 14 Feb 2004 20:02:02 -0500 (EST)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>
+Date: Sat, 14 Feb 2004 22:06:49 -0500 (EST)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 Cc: William Stearns <wstearns@pobox.com>
 
-Good evening, all,
+Good evening, Jeff,
+	I got a Kernel panic from the above kernel; sorry to say my 
+compiler won't let me include all the debugging information that would 
+have made this report useful.  :-(
 
-On Sat, 14 Feb 2004, William Stearns wrote:
+Kernel panic: Kernel mode fault at addr 0x0, ip 0x40101f94
 
-> On Sat, 14 Feb 2004, William Stearns wrote:
-> > 	I have a compiled 2.6.3-rc2-uml1 kernel available at 
-> > http://www.stearns.org/uml/ .  It has some of the netfilter patch-o-matic 
-> > modules available (see the associated config to see which ones).
-> > 	At the moment, it suffers from "sleeping process NNNNN got 
-> > unexpected signal : 11" from time to time; I've seen it on startup just as 
-> > the gettys get going, and at shutdown after "System halted", both on the 
-> > stock rh-7.3 filesystem.  Other than that, it seems to run reasonably 
-> > well.  I'd suggest against trusting production systems to it at the 
-> > moment.
-> 
-> 	- The host on which this is running (2.6.3-rc1) has no skas patch,
-> so these errors showed up in tt mode.  On skas mode on a 2.4.23-rc3 host,
-> the error has not shown up at all in 2 complete startup-to-shutdown
-> cycles.  In skas mode, this _appears at first glance_ to be reasonably 
-> stable.
-> 	- After kill -HUP'ing the tt mode "linux" from the host to kill it
-> off, the only uml process left was "linux [/sbin/update]"; any chance that
-> was the "sleeping process"?
-
-	And to further p*** o** the people who dislike it when others 
-respond to their own posts... ;-)
-	The kernel looks sufficiently stable in skas mode that I've moved 
-some of the virtual machines on Zaphod over to it, with no problems so far 
-to report.  I can't say for sure that it's OK, but there's no evidence of 
-problems so far in skas mode.
+	Sorry I don't have anything better.
 	Cheers,
 	- Bill
 
+---------------------------------------------------------------------------
+	Opinions expressed are my own, but they should be everybody's. 
+(Courtesy of Doug Ledford <dledford@dialnet.net>) 
 --------------------------------------------------------------------------
 William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
 rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
