@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Co9rv-0002Np-Kt for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jan 2005 16:26:43 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1Co9rq-00040B-Vq for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jan 2005 16:26:43 -0800
+	id 1CoANP-0003jD-Ap for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 16:59:15 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CoANI-0001hl-PU for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Jan 2005 16:59:13 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Put the check for NULL before the use of a
-	potentially-null value
-References: <41E2F90C.4020707@tuxrocks.com>
-In-Reply-To: <41E2F90C.4020707@tuxrocks.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501110128.38523.blaisorblade@yahoo.it>
+Message-Id: <200501110201.13651.blaisorblade@yahoo.it>
+Subject: [uml-devel] Bug in for-each-cpu-akpm from incrementals
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +27,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Jan 2005 01:28:38 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, Frank Sorenson <frank@tuxrocks.com>, Gerd Knorr <kraxel@bytesex.org>
+Date: Tue, 11 Jan 2005 02:01:13 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 10 January 2005 22:52, Frank Sorenson wrote:
-> This patch reorders two lines to check a variable for NULL before using
-> the variable.
->
-> Signed-off-by: Frank Sorenson <frank@tuxrocks.com>
+You think that for_each_cpu() only iterates over online CPU, while you should 
+use for_each_online_cpu() for this purpose.
 
-diff -Naur linux-2.6.10-mm2.orig/arch/um/drivers/line.c 
-linux-2.6.10-mm2/arch/um/drivers/line.c
---- linux-2.6.10-mm2.orig/arch/um/drivers/line.c        2005-01-10 
-14:35:20.379815252 -0700
-+++ linux-2.6.10-mm2/arch/um/drivers/line.c     2005-01-10 14:35:59.786829555 
--0700
-@@ -593,8 +593,8 @@
-                }
-        }
-        tty  = winch->tty;
--       line = tty->driver_data;
-        if (tty != NULL) {
-+               line = tty->driver_data;
-                chan_window_size(&line->chan_list,
-                                 &tty->winsize.ws_row, 
-                                 &tty->winsize.ws_col);
+http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.10-mm2/patches/for-each-cpu-akpm
 
-Ok, correct and thanks a lot.
-
-Sorry, a little question: against what tree does it apply?
-
-I cannot apply it locally, but I see that it should apply on top of Gerd 
-Knorr's terminal cleanup patch, which introduces the bug.
-
-I hope I'll not forget it...
+Bye
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
