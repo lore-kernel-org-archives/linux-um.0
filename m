@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8Na5-0002EB-Q7 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:07:53 -0800
+	id 1D8Ndd-0002Qf-3B for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:11:33 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D8Na4-0002dZ-8E for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Mar 2005 11:07:53 -0800
-Message-Id: <200503072037.j27Kbnbc003967@ccure.user-mode-linux.org>
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D8Ndb-0001ya-GE for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 11:11:33 -0800
+Message-Id: <200503072038.j27Kc6bc003978@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 6/16] UML - make the ubd driver recognize letters
-	in device names
+Subject: [uml-devel] [PATCH 8/16] UML - Code cleanup
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,36 +24,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 07 Mar 2005 15:37:49 -0500
+Date: Mon, 07 Mar 2005 15:38:06 -0500
 To: Linus Torvalds <torvalds@osdl.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, bstroesser@fujitsu-siemens.com
 
-ubd_get_config wasn't using the standard device number parser, which caused
-it not to recognize letters.
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
+Shifting register restore and userspace resume to the
+beginning of the userspace loop, we can remove the
+identical code done before the loop.
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.11/arch/um/drivers/ubd_kern.c
+Index: uml-i386/arch/um/kernel/skas/process.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/drivers/ubd_kern.c	2005-03-05 12:07:35.000000000 -0500
-+++ linux-2.6.11/arch/um/drivers/ubd_kern.c	2005-03-05 12:11:43.000000000 -0500
-@@ -746,15 +746,9 @@
- static int ubd_get_config(char *name, char *str, int size, char **error_out)
- {
- 	struct ubd *dev;
--	char *end;
- 	int n, len = 0;
+--- uml-i386.orig/arch/um/kernel/skas/process.c	2005-03-02 23:39:26.408483443 -0800
++++ uml-i386/arch/um/kernel/skas/process.c	2005-03-02 23:45:55.666136061 -0800
+@@ -139,17 +139,20 @@
+ 	int err, status, op, pid = userspace_pid[0];
+ 	int local_using_sysemu; /*To prevent races if using_sysemu changes under us.*/
  
--	n = simple_strtoul(name, &end, 0);
--	if((*end != '\0') || (end == name)){
--		*error_out = "ubd_get_config : didn't parse device number";
--		return(-1);
--	}
+-	restore_registers(pid, regs);
+-		
+-	local_using_sysemu = get_using_sysemu();
++	while(1){
++		restore_registers(pid, regs);
+ 
+-	op = local_using_sysemu ? PTRACE_SYSEMU : PTRACE_SYSCALL;
+-	err = ptrace(op, pid, 0, 0);
++		/* Now we set local_using_sysemu to be used for one loop */
++		local_using_sysemu = get_using_sysemu();
++
++		op = SELECT_PTRACE_OPERATION(local_using_sysemu, singlestepping(NULL));
++
++		err = ptrace(op, pid, 0, 0);
++		if(err)
++			panic("userspace - could not resume userspace process, "
++			      "pid=%d, ptrace operation = %d, errno = %d\n",
++			      op, errno);
+ 
+-	if(err)
+-		panic("userspace - PTRACE_%s failed, errno = %d\n",
+-		       local_using_sysemu ? "SYSEMU" : "SYSCALL", errno);
+-	while(1){
+ 		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
+ 		if(err < 0)
+ 			panic("userspace - waitpid failed, errno = %d\n", 
+@@ -187,19 +190,6 @@
+ 			/* Avoid -ERESTARTSYS handling in host */
+ 			PT_SYSCALL_NR(regs->skas.regs) = -1;
+ 		}
 -
-+	n = parse_unit(&name);
- 	if((n >= MAX_DEV) || (n < 0)){
- 		*error_out = "ubd_get_config : device number out of range";
- 		return(-1);
+-		restore_registers(pid, regs);
+-
+-		/*Now we ended the syscall, so re-read local_using_sysemu.*/
+-		local_using_sysemu = get_using_sysemu();
+-
+-		op = SELECT_PTRACE_OPERATION(local_using_sysemu, singlestepping(NULL));
+-
+-		err = ptrace(op, pid, 0, 0);
+-		if(err)
+-			panic("userspace - PTRACE_%s failed, "
+-			      "errno = %d\n",
+-			      local_using_sysemu ? "SYSEMU" : "SYSCALL", errno);
+ 	}
+ }
+ 
 
 
 
