@@ -2,30 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cx2EI-0002vr-Ac for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Feb 2005 04:06:30 -0800
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Cx2EH-0003LO-2e
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Feb 2005 04:06:30 -0800
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Cx2DO-0002tM-69 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Feb 2005 13:05:34 +0100
-Received: from naked.iki.fi ([62.142.249.112])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 04 Feb 2005 13:05:34 +0100
-Received: from naked by naked.iki.fi with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 04 Feb 2005 13:05:34 +0100
-From: Nuutti Kotivuori <naked@iki.fi>
-Message-ID: <87hdks5y35.fsf@aka.i.naked.iki.fi>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
-Subject: [uml-devel] UML tuntap driver problem with queueing
+	id 1Cx2Tl-0003ny-SM for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 04:22:29 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cx2Tl-0005Mj-Ai for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 04:22:29 -0800
+Message-ID: <42036C2C.5040503@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+References: <42021E35.8050601@fujitsu-siemens.com>
+	<4202C18F.5010605@yahoo.com.au>
+In-Reply-To: <4202C18F.5010605@yahoo.com.au>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: Race condition in ptrace
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,116 +28,111 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 04 Feb 2005 14:06:06 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
+Date: Fri, 04 Feb 2005 13:35:56 +0100
+To: Nick Piggin <nickpiggin@yahoo.com.au>
+Cc: Roland Mc Grath <roland@redhat.com>, Jeff Dike <jdike@addtoit.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org
 
---=-=-=
+Nick Piggin wrote:
+> Bodo Stroesser wrote:
+> 
+>> Working with the new UML skas0 mode on my Xeon HT host, sporadically I 
+>> saw
+>> some processes on UML segfaulting.
+>>
+>> In all cases, I could track this down to be caused by a gs segment 
+>> register,
+>> that had the wrong contents.
+>>
+>> This again is caused by a problem in the host linux: A ptraced child 
+>> going to
+>> stop and having woken up its parent, will save some of its registers 
+>> (on i386
+>> they are fs, gs and the fp-registers) very late in switch_to. The 
+>> parent is
+>> granted access to child's registers as soon, as the child is removed from
+>> the runqueue. Thus, in rare cases, the parent might access child's 
+>> register
+>> savearea before the registers really are saved.
+>>
+>> This problem might also be the reason for problems with floatpoint on 
+>> UML,
+>> that were reported some time ago.
+>>
+>> I've written a test program, that reproduces the problem on my 2.6.9 
+>> vanilla
+>> host quite quick. Using SuSE kernel 2.6.5-7.97-smp, I can't reproduce the
+>> problem, although the relevant parts seem to be unchanged. Maybe not 
+>> related
+>> changes modify the timing?
+>>
+>> I also created a patch, that fixes the problem on my 2.6.9 host. This 
+>> probably
+>> isn't a sane patch, but is enough to demonstrate, where I think, the 
+>> bug is.
+>> Both files are attached.
+>>
+>>        Bodo
+>>
+>>
+>> ------------------------------------------------------------------------
+>>
+>> --- a/include/linux/sched.h    2005-02-02 22:15:51.000000000 +0100
+>> +++ b/include/linux/sched.h    2005-02-02 22:22:54.000000000 +0100
+>> @@ -584,6 +584,7 @@ struct task_struct {
+>>        struct mempolicy *mempolicy;
+>>        short il_next;        /* could be shared with used_math */
+>>  #endif
+>> +    volatile long saving;
+>>  };
+>>  
+>>  static inline pid_t process_group(struct task_struct *tsk)
+>> --- a/kernel/sched.c    2005-02-02 21:32:51.000000000 +0100
+>> +++ b/kernel/sched.c    2005-02-02 22:12:14.000000000 +0100
+>> @@ -2689,8 +2689,10 @@ need_resched:
+>>          if (unlikely((prev->state & TASK_INTERRUPTIBLE) &&
+>>                  unlikely(signal_pending(prev))))
+>>              prev->state = TASK_RUNNING;
+>> -        else
+>> +        else {
+>> +            prev->saving = 1;
+>>              deactivate_task(prev, rq);
+>> +        }
+>>      }
+>>  
+>>      cpu = smp_processor_id();
+>> --- a/kernel/ptrace.c    2005-02-02 22:12:33.000000000 +0100
+>> +++ b/kernel/ptrace.c    2005-02-02 22:20:46.000000000 +0100
+>> @@ -96,6 +96,7 @@ int ptrace_check_attach(struct task_stru
+>>  
+>>      if (!ret && !kill) {
+>>          wait_task_inactive(child);
+>> +        while ( child->saving ) ;
+>>      }
+>>  
+>>      /* All systems go.. */
+>> --- a/arch/i386/kernel/process.c    2005-02-02 22:18:29.000000000 +0100
+>> +++ b/arch/i386/kernel/process.c    2005-02-02 22:19:22.000000000 +0100
+>> @@ -577,6 +577,9 @@ struct task_struct fastcall * __switch_t
+>>      asm volatile("movl %%fs,%0":"=m" (*(int *)&prev->fs));
+>>      asm volatile("movl %%gs,%0":"=m" (*(int *)&prev->gs));
+>>  
+>> +    wmb();
+>> +    prev_p->saving=0;
+>> +
+>>      /*
+>>       * Restore %fs and %gs if needed.
+>>       */
+>>
+> 
+> I don't see how this could help because AFAIKS, child->saving is only
+> set and cleared while the runqueue is locked. And the same runqueue lock
+> is taken by wait_task_inactive.
+> 
 
-I will first briefly outline here how tun/tap device queueing works.
+Sorry, that not right. There are some routines called by sched(), that release
+and reacquire the runqueue lock.
 
-Each tap device has two ends - one is the network device lookalike
-'tap0' and the other is the fd received by opening '/dev/net/tun' and
-running some ioctls. With UML, the host kernel has the 'tap0' device
-and the UML process opens up '/dev/net/tun' side, showing it as 'eth0'
-inside the UML kernel. Right now, we are only interested in how
-packets travel from the host to the guest, eg. packets sent to the
-'tap0' device travelling to the UML kernel.
-
-There are two queues involved in this process. One is the normal
-network device send queue attached to the 'tap0'. It can be
-manipulated by the QoS tools, like 'tc'. I will call this
-'txqueue'. The other is an internal queue of the tun/tap driver, an
-skb queue, in the tun_struct as readq. I will call this simply
-'readq'.
-
-There are two alternatives on how packets are queued, controlled by
-IFF_ONE_QUEUE flag when creating the tap device. The default is that
-IFF_ONE_QUEUE is off. In that case, packets are first queued to the
-'readq'. When 'readq' grows to 10 packets, netif_stop_queue is called
-on the device, which causes the 'txqueue' to start accumulating the
-following packets. When packets are read from the fd side, the queue
-is started again, which starts filling 'readq' again. So, this
-alternative should keep the queue mostly on the device side and allow
-normal QoS routines to handle packet dropping and such.
-
-The other alternative, when IFF_ONE_QUEUE is set, uses just a single
-queue. Packets are queued to 'readq' always, the net device queue is
-never stopped. If 'readq' grows to the interface 'txqueuelen', packets
-are simply tail dropped. This means that the normal QoS tools cannot
-affect how packets are dropped and the packet queue is 'hidden' inside
-the kernel as there is no simple way to see it.
-
-Now, here comes the actual bug report.
-
-If the UML kernel is sent more packets than it can handle, and
-IFF_ONE_QUEUE is not set (as it isn't by default), packets first fill
-the 'readq' and then start amassing at 'txqueue', as they should. But
-when no more packets are being sent, the queue does not start growing
-smaller. If no packets are sent to the device, the queue stays there
-indefinitely. When single packets are sent, the queue always decreases
-by 10 packets (so 11 packets in total arrive on the guest side).
-
-If I understood correctly from the code, UML uses SIGIO to trigger
-packet reading. So, either SIGIO is not delivered properly in the case
-of the two queues - or UML's SIGIO handling is broken.
-
-If IFF_ONE_QUEUE is set, everything works fine, packets are delivered
-in a timely manner and queue is never stalled.
-
-As a workaround to the problem, I've added the IFF_ONE_QUEUE option to
-all the places that open a tap device (namely tunctl, uml_net and
-uml_router). The patch is attached. But the actual problem should most
-likely be fixed once found.
-
--- Naked
-
---=-=-=
-Content-Type: text/x-patch
-Content-Disposition: attachment; filename=tuntap_one_queue.diff
-
-Index: uml-utilities-20040406/uml_net/tuntap.c
-===================================================================
---- uml-utilities-20040406.orig/uml_net/tuntap.c
-+++ uml-utilities-20040406/uml_net/tuntap.c
-@@ -44,7 +44,7 @@
-     return(-1);
-   }
-   memset(ifr, 0, sizeof(*ifr));
--  ifr->ifr_flags = IFF_TAP | IFF_NO_PI;
-+  ifr->ifr_flags = IFF_TAP | IFF_NO_PI | IFF_ONE_QUEUE;
-   ifr->ifr_name[0] = '\0';
-   if(ioctl(tap_fd, TUNSETIFF, (void *) ifr) < 0){
-     output_errno(output, "TUNSETIFF : ");
-Index: uml-utilities-20040406/tunctl/tunctl.c
-===================================================================
---- uml-utilities-20040406.orig/tunctl/tunctl.c
-+++ uml-utilities-20040406/tunctl/tunctl.c
-@@ -81,7 +81,7 @@
- 
-   memset(&ifr, 0, sizeof(ifr));
- 
--  ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
-+  ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_ONE_QUEUE;
-   strncpy(ifr.ifr_name, tun, sizeof(ifr.ifr_name) - 1);
-   if(ioctl(tap_fd, TUNSETIFF, (void *) &ifr) < 0){
-     perror("TUNSETIFF");
-Index: uml-utilities-20040406/uml_router/tuntap.c
-===================================================================
---- uml-utilities-20040406.orig/uml_router/tuntap.c
-+++ uml-utilities-20040406/uml_router/tuntap.c
-@@ -28,7 +28,7 @@
-     return(-1);
-   }
-   memset(&ifr, 0, sizeof(ifr));
--  ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
-+  ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_ONE_QUEUE;
-   strncpy(ifr.ifr_name, dev, sizeof(ifr.ifr_name) - 1);
-   if(ioctl(fd, TUNSETIFF, (void *) &ifr) < 0){
-     perror("TUNSETIFF failed");
-
---=-=-=--
-
+Bodo
 
 
 -------------------------------------------------------
