@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D96sT-0004ny-R8 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 11:29:53 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1D96sS-0006E1-4L for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 11:29:53 -0800
+	id 1D96ud-0004ry-7w for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 11:32:07 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1D96ub-00041i-Ia for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 11:32:07 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] tun/tap network throughput problem
-References: <3524bf1f05030712562d547e1c@mail.gmail.com>
-In-Reply-To: <3524bf1f05030712562d547e1c@mail.gmail.com>
+Subject: Re: [uml-devel] RE: uml_switch security fixing
+References: <BAY24-F357DBC6F37DC0BCFA0926483510@phx.gbl>
+In-Reply-To: <BAY24-F357DBC6F37DC0BCFA0926483510@phx.gbl>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200503092029.30119.blaisorblade@yahoo.it>
+Message-Id: <200503092031.43707.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,21 +29,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 9 Mar 2005 20:29:29 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
+Date: Wed, 9 Mar 2005 20:31:43 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Steve Schmidtke <steve_schmidtke@hotmail.com>, kraxel@bytesex.org
 
-On Monday 07 March 2005 21:56, Young Koh wrote:
-> Hi,
+On Wednesday 09 March 2005 19:53, Steve Schmidtke wrote:
+> Blaisorblade wrote:
+> >But an unpatched UML won't work with a newer uml_net binary (for SLIP
+> > usage only and only for closing the interface, I mean), right?
+
+> Correct.  I think uml_net would need to manage a database of who opened
+> what to do what you suggest.
+Not going to implement it because nobody uses SLIP for what we can see.
+> >I also looked at the versioning for uml_net, but what happens is that we
+> >can
+> >only stop unpatched uml_net from working with newer UML for any protocol,
+> >not
+> >anything else. So I won't change that. However, I just saw that we did it
+> >correctly until Version 3 of the uml_net protocol...
+> >I wonder what has happened after.
+
+> I'd like to know this too.  It is odd that it was only the shutdown of the
+> interface that changed, it worked perfectly well before.
+
+> > > Agreed, tuntap is a compile time option, slip should be as well.
+> >
+> >Ok... tuntap is compile-time because of a rough check for host support.
 >
-> i was running an expriment to measure network throughput of UML.
-> physical machine A and B are connected with gigabit network. and UML
-> runs on machine A. i'm sending bulk UDP packets from UML to machine B
-> using ttcp network throughput benchmark program.
-> i'm using 2.4.26 for both UML and host. (skas + sysemu patched)
->
-> i modified UML kernel code to get high performance a little bit, and i
-> got some gain with TCP and UDP throughput.
-Hmm, can you share your changes with us, please? We'd be very grateful...
+> Yes, but uml_net is suid.  I may not want my users to be able to set up
+> slip devices on their own (why? I don't know, I'm just paranoid that way).
+Correct... And this holds especially for TUN/TAP: I think that giving TUN/TAP 
+away to everybody makes it possible for unprivileged users to send raw 
+packets, which normally is permitted only to root.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
