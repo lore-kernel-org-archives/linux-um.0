@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AlqMz-0007r7-NM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jan 2004 06:08:41 -0800
-Received: from shell.blacknet.de ([80.254.131.106])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1AlqMz-0004Hq-CP
+	id 1Ako47-0001Wv-Ei for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Jan 2004 09:28:55 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AkS1v-0001gN-3W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jan 2004 06:08:41 -0800
-From: Goetz Bock <bock@blacknet.de>
-Subject: Re: [uml-devel] O_DIRECT (was: Swapping directly to host swap area?)
-Message-ID: <20040128140122.GM17709@shell.blacknet.de>
-References: <Pine.LNX.4.44.0401251827030.2766-100000@sparrow>
-	<200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
+	Sat, 24 Jan 2004 09:57:11 -0800
+Message-Id: <200401241820.i0OIKLY3002404@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Draft docs for port console channel 
+In-Reply-To: Your message of "Sat, 24 Jan 2004 18:50:57 +1030."
+	<20040124082057.GG4203@erizo.shearer.org> 
+References: <20040123035639.GC4203@erizo.shearer.org>
+	<20040123144320.GB6768@ccure.user-mode-linux.org>
+	<20040124082057.GG4203@erizo.shearer.org> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200401280439.i0S4dMZw005517@ccure.user-mode-linux.org>
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,30 +30,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Jan 2004 15:01:22 +0100
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 24 Jan 2004 13:20:21 -0500
+To: Dan Shearer <dan@shearer.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+dan@shearer.org said:
+> Another fumbling newbie question: why can't we just have the fd for
+> the unix socket for xterm connected before xterm is exec'd? Then there
+> would be no need for open_socket in port-helper. I'm sure there's an
+> obvious reason. 
 
-On Tue, Jan 27 '04 at 23:39, Jeff Dike wrote:
-> > In the current setup, the host kernel sees this as a normal
-> > write to an open file, caching it in the process and so not truly
-> > freeing up the ram for a bit. 
-> 
-> This is, and this could be done by setting O_DIRECT on UML swap
-> devices.  That way, writes go directly (and asynchronously) to the
-> device without landing in the cache.
-Please bare with me, if this seams a stupid qestion, but my C skills are
-pritty lacking :-(
+I think that's just paranoia.  IIRC, I was more confident about command-line
+switches getting through xterm than open file descriptors.  I think I needed
+to pass an open file descriptor through telnetd because there is no way to
+influence the command line of the -L login program.
 
-But could we get this as an option for all ubd devices?
+Thanks for the patch.
 
-(I'm using Logical Volumes as base for ubd devices, and have no swap on
- my hosts)
--- 
-/"\ Goetz Bock at blacknet dot de  --  secure mobile Linux everNETting
-\ /                     (c) 2003 as GNU FDL 1.1
- X   [ 1. Use descriptive subjects - 2. Edit a reply for brevity -  ]
-/ \  [ 3. Reply to the list - 4. Read the archive *before* you post ]
+				Jeff
+
 
 
 -------------------------------------------------------
