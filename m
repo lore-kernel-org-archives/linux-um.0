@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Armlc-0007I7-2o
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 15:30:40 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30)
-	id 1Armjd-000374-5H
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 15:28:37 -0800
-Message-Id: <200402132355.i1DNtjsq004236@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] First shrinkage of *_user.c files 
-In-Reply-To: Your message of "Wed, 21 Jan 2004 20:19:02 +0100."
-             <200401212019.02494.blaisorblade_spam@yahoo.it> 
-References: <200401202026.19785.blaisorblade_spam@yahoo.it>  <200401212019.02494.blaisorblade_spam@yahoo.it> 
+	id 1ArnET-0007TV-6D
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 16:00:29 -0800
+Received: from 203-79-92-50.cable.paradise.net.nz ([203.79.92.50] helo=bag.kiwa.co.nz)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1ArnCT-0007oH-J0
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 15:58:25 -0800
+From: Nicholas Lee <nj.lee@plumtree.co.nz>
+Subject: Re: [uml-devel] uml-patch-2.6.3-rc2-1
+Message-ID: <20040213235820.GB10191@woodcut.kpac.co.nz>
+References: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org> <1076697530.20064.21.camel@wopr.tektonic.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Disposition: inline
+In-Reply-To: <1076697530.20064.21.camel@wopr.tektonic.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,20 +25,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 18:55:45 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 14 Feb 2004 12:58:20 +1300
+To: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> The next thing I'm going to do is to remove entirely
-> hostaudio_user.c (I've already started this, but I've not got a
-> successful test yet, since I also did a little fix in this). 
+On Fri, Feb 13, 2004 at 01:38:51PM -0500, Matt Ayres wrote:
+> I'm still receiving the "NET: Registered protocol family 2" hang using
+> this kernel, FYI.
 
-I finally merged this.  Now we are one file closer to being able to get
-rid of the USER_OBJS crap :-)
+Is there a workaround for this?
 
-				Jeff
+-- 
+Nicholas Lee - nj.lee at plumtree.co dot nz, somewhere on the fish Maui caught.
+gpg. 8072 4F86 EDCD 4FC1 18EF  5BDD 07B0 9597 6D58 D70C            
 
+                         Quixotic Eccentricity
 
 
 -------------------------------------------------------
