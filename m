@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWNzw-0002QM-RC for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Nov 2004 15:53:32 -0800
-Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CWNzr-0001w7-CF for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Nov 2004 15:53:32 -0800
-Message-ID: <050101c4d0ee$d68041a0$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <000901c4d0e1$e7f998d0$0201a8c0@hawk>
-	<200411222346.36960.blaisorblade_spam@yahoo.it>
-	<002d01c4d0eb$9d829810$0201a8c0@hawk>
-Subject: Re: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
+	id 1CWR3e-0000BV-TF for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Nov 2004 19:09:34 -0800
+Received: from rimuhosting.com ([69.90.33.248])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CWR3d-0000vs-R8
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Nov 2004 19:09:34 -0800
+Message-ID: <41A2A9E3.9070203@rimuhosting.com>
+From: Peter <peter.repliesignored@rimuhosting.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: [uml-devel] Re: [patch 3/4] uml: remove most devfs_mk_symlink
+	calls
+References: <20041119011337.74CDD7B9C9@zion.localdomain>
+	<87sm726j2h.fsf@aka.i.naked.iki.fi>
+	<200411222325.17269.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411222325.17269.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -29,89 +31,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 23 Nov 2004 00:56:07 +0100
-To: "Christopher S. Aker" <caker@theshore.net>, Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Tue, 23 Nov 2004 16:09:23 +1300
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi Christopher,
+How will this affect existing UML setups?  Does it mean they would need 
+to change if we started them up with a new UML kernel after /dev/ubd/0 
+"goes away"?  That would mean quite a disruption to operations (i.e. 
+making changes on lots of UML instances).  Is there a way to acheive 
+what you're doing in a backwards-compatible manner?
 
-> > Btw, question: what about your I/O token limiter? Actively using it? Could
-> > start being worked on for merge (there is at least one bug-report on it by
-> > "roland" on a strange but valid test-case).
-see http://sourceforge.net/mailarchive/message.php?msg_id=8560363
+Regards, Peter
 
-that`s probably just a minor one.
-
-roland
-
-
------ Original Message ----- 
-From: "Christopher S. Aker" <caker@theshore.net>
-To: "Blaisorblade" <blaisorblade_spam@yahoo.it>
-Cc: <user-mode-linux-devel@lists.sourceforge.net>; "Bodo Stroesser" <bstroesser@fujitsu-siemens.com>
-Sent: Tuesday, November 23, 2004 12:33 AM
-Subject: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
-
-
-> > On Monday 22 November 2004 23:23, Christopher S. Aker wrote:
-> > > Hello,
-> > Btw, question: what about your I/O token limiter? Actively using it? Could
-> > start being worked on for merge (there is at least one bug-report on it by
-> > "roland" on a strange but valid test-case).
+Blaisorblade wrote:
+> I'd suggest to also stop using /dev/ubd/0 symlinks and going directly 
+> to /dev/ubd/disc.../disc (whatever), since the first one could soon go away 
+> (I've deferred that at least for now).
 > 
-> Yes, I use it in all my kernels -- it's invaluable.to me for stopping swap-thrashing
-> UMLs from taking down the entire host.  What bug did Roland find?   If you want to
-> merge it, you probably want to add some way to turn it off completely (perhaps by
-> default).  I'm sure there are other improvements to be made...
-> 
-> > > I thought I'd give 2.6.9-bb3 a shot, and I had a bunch of users report the
-> > > accumulation of zombies.
-> > What the hell! This should *not* happen. What did we (I mean developers) do?
-> > > This is on a 2.6.7 host, using your
-> > > host-skas3-2.6.7-v1 patch.
-> > ??? There is a ton of bugs in that patch (see the changelogs on my site).
-> > Actually, it's likely you're not going to be hurt by them if you're using
-> > NPTL on the host (it is *hard* to get them in that case), but you'd better
-> > upgrade.
-> 
-> No doubt... I've been getting ready for The Great Reboot (38 hosts), but it takes
-> careful planning with that many hosts.  I've been testing a SKAS-V7 based host kernel
-> and things look very good.  All the weird bugs have gone away (mysql instability,
-> Gentoo not able to complete emerges, this is all on either V1 or V6 skas patches).
-> Looking forward to the upgrade to V7, and the latest CFQ changes.
-> 
-> > I have been releasing tons of updates, and even too quickly (most times I was
-> > not introducing new bugs, just fixing the ones I and Bodo Stroesser was
-> > finding) but -V1 is "a bit" old. That said, this should not happen.
-> 
-> Changes have been coming so quickly, it's hard to keep up :)
-> 
-> > > I'm not sure if it happened on newer host
-> > > kernels, since I had to revert it back quickly.
-> >
-> > Back to what? To 2.6.9-bb2 or to 2.6.9?
-> 
-> Vanilla 2.6.9-um
-> 
-> > I'll check in these days what's going on... it was hyper-tested on 2.6.9 host
-> > (not by me, but I trust Bodo Stroesser normally), but not on other hosts, I
-> > guess.
-> 
-> Thanks,
-> -Chris
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF email is sponsored by - The IT Product Guide
-> Read honest & candid reviews on hundreds of IT Products from real users.
-> Discover which products truly live up to the hype. Start reading now. 
-> http://productguide.itmanagersjournal.com/
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
+> Bye
 
 
 -------------------------------------------------------
