@@ -1,12 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uml-devel] AMD or Intel for host
-In-Reply-To: <045f01c43ffc$418302f0$2000000a@schlepptopp>
-Message-ID: <Pine.GSO.4.58.0405231120280.2027@waterleaf.sonytel.be>
-References: <40AF3E70.3000205@almahdi.cc>
-	<045f01c43ffc$418302f0$2000000a@schlepptopp>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BRpP1-0002vo-Pv for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 02:36:19 -0700
+Received: from vanish.yandex.ru ([213.180.200.4])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BRpP0-0007Vu-Uq for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 02:36:19 -0700
+From: <alnsn@yandex.ru>
+Message-ID: <20040523093605.GA2223@x1000.localdomain>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
+Subject: [uml-devel] Hostfs doesn't work - digging the kernel
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,40 +26,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 May 2004 11:22:11 +0200 (MEST)
-To: roland <for_spam@gmx.de>
-Cc: Ali Almahdi <ali@almahdi.cc>, user-mode-linux-user@lists.sourceforge.net, User Mode Linux Devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sun, 23 May 2004 13:36:05 +0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 22 May 2004, roland wrote:
-> not easy to tell, if xp 2800+ or P4 2.8 is better for uml
->
-> but maybe:
-> http://www6.tomshardware.com/cpu/20021001/index.html
-> helps to find a decision.
->
-> this is another comparison i found on the net:
->
-> Intel Pentium 4 2.8GHz
-> SPECint: 1010
-> SPECfp: 947
->
-> AMD Athlon XP 2800+ (2.25GHz)
-> SPECint: 933
-> SPECfp: 843
 
-That must be an old XP 2800+, since the new ones (Barton core) run at 2083 MHz.
-SPEC numbers may have changed, since Barton has 512 KiB L2 cache.
 
-Gr{oetje,eeting}s,
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-						Geert
+Hi,
+I'm trying to mount hostfs from inside my tiny uml. Host linux is RH9
+with linux-2.6.6 and linux-2.4.26 vanilla kernels. UML patch is
+2.4.26-1.
+Mounting with no -o option results in UML kernel panic because
+mount_arg argument is NULL in this case:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+char *host_root_filename(char *mount_arg)
+{  =20
+    char *root =3D DEFAULT_ROOT;
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+    if((mount_arg !=3D NULL) && (*mount_arg !=3D '\0'))
+        root =3D mount_arg;
+
+    return(uml_strdup(mount_arg));
+}
+
+Returning uml_strdup(NULL) causes this panic to happen.
+Correct behavior, I think, is return uml_strdup(root).
+
+Even with -o option I can't mount. Function hostfs_init_file composes a
+path beginning with jail_dir (/ in my case), then go mount and file.
+    const char *path[] =3D { jail_dir, mount, file, NULL };
+In my case path is either // or //tmp. The open64 function can't open both.
+If I do these transformations:
+"//" -> ""
+"//tmp" -> "/tmp"
+they are mounted but I can't read files.
+I suggest always transform path like this. What do you think?
+--=20
+Alexander Nasonov
+
+--Kj7319i9nmIyA2yE
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQFAsHCFK8n/CZPtRx4RAv8CAKCXlpErHjbtrlt5CZYzoE8uwPykxgCgpdCX
+eAB7IqwviQurFGNUteN4QJw=
+=qqq9
+-----END PGP SIGNATURE-----
+
+--Kj7319i9nmIyA2yE--
 
 
 -------------------------------------------------------
