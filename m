@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A2b7y-00079m-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 25 Sep 2003 11:46:10 -0700
-Received: from web60302.mail.yahoo.com ([216.109.118.113])
+	id 1A2bfj-0002A6-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 25 Sep 2003 12:21:03 -0700
+Received: from pluto.nixia.no ([195.159.42.3])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 1A2b7x-0007hw-Ph
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 25 Sep 2003 11:46:09 -0700
-Message-ID: <20030925184539.19093.qmail@web60302.mail.yahoo.com>
-From: Terry <td3201@yahoo.com>
+	id 1A2bfi-00051a-S8
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 25 Sep 2003 12:21:03 -0700
+Message-ID: <1337.62.97.174.68.1064509678.squirrel@pluto.nixia.no>
+In-Reply-To: <20030925184539.19093.qmail@web60302.mail.yahoo.com>
+References: <3F6DFD84.8090309@davidcoulson.net> 
+     <20030925184539.19093.qmail@web60302.mail.yahoo.com>
 Subject: Re: [uml-devel] mounting filesystems - mount crashes
-In-Reply-To: <3F6DFD84.8090309@davidcoulson.net>
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;charset=iso-8859-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,60 +26,35 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 25 Sep 2003 11:45:39 -0700 (PDT)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 25 Sep 2003 19:07:58 +0200 (CEST)
+To: Terry <td3201@yahoo.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
---- David Coulson <david@davidcoulson.net> wrote:
-> Terry wrote:
-> > I created the filesystem on the host os with dd. 
-> I
-> > boot up my vm with ubd3=/uml/new_fs as a kernel
-> > argument.  WHen inside the VM, I create an ext2
-> > filesystem on it.  I am then able to mount it
-> normally
-> > from there.  When I add it to fstab as:
-> > /dev/ubd/3     /usr            ext2    defaults 1
-> 1
-> > It blows chunks.  
-> 
-> What's the error message? What command line are you
-> starting UML with? 
-> You need to give us some information to actually
-> debug the problem.
-> 
-> David
+> Or Manually with fstab:
+> mount /usr.new
+> Child 23701 exited with signal 11
+>
+> I can get it mounted in the following ways:
+> mount /dev/ubd/3 /usr
+> mount -a (if its in fstab)
 
-During the boot process:
-Mounting local filesystems:  Child 28884 exited with
-signal 11
+Since you are able to trigger the fault now, you can take a peek behind
+the sceenes and play with strace.
 
-Or Manually with fstab:
-mount /usr.new
-Child 23701 exited with signal 11
+strace mount /dev/ubd/3 /usr
 
-I can get it mounted in the following ways:
-mount /dev/ubd/3 /usr
-mount -a (if its in fstab)
+and
 
-I start UML with:
-./linux ubd0=/home/td/uml/root_fs
-ubd1=/home/td/uml/home_fs ubd2=/home/td/uml/swap
-ubd3=/home/td/uml/usr_fs eth0=tuntap,,,192.168.0.254
-mem=512M
+strace mount /usr.new
 
-I took a peek at the script that mounts filesystems
-and it is pretty basic.
+normally should produce the same output and outfall for you.
 
-Any ideas on how to get around this?  It works if I
-put the mount command in rc.local but I need the
-filesystem way before that gets ran.
 
-Thanks.
+Stian
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+
+This mail has been scanned for known viruses on an open, Linux-based mailsystem
+developed by http://Knowledge-Network.no and http://Nixia.no.
 
 
 -------------------------------------------------------
