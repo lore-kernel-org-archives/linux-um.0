@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CwmpB-0006Xu-QD for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 11:39:33 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1Cwmp6-0005rj-V1 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 11:39:33 -0800
+	id 1Cwn1O-0007MA-TC for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 11:52:10 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1Cwn1N-00069x-PW for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 11:52:10 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] RE: Explaination of system call function flow in TT
-	mode
-References: <021201c5093c$0ec75780$ac655e0a@sha.st.com>
-In-Reply-To: <021201c5093c$0ec75780$ac655e0a@sha.st.com>
+Subject: Re: [uml-devel] Re: [PATCH 2.6] 4/7 replace uml_strdup by kstrdup
+References: <1107228511.41fef75f4a296@webmail.grupopie.com>
+	<84144f02050201235257d0ec1c@mail.gmail.com>
+	<4200BFA1.2060808@grupopie.com>
+In-Reply-To: <4200BFA1.2060808@grupopie.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200502032038.37637.blaisorblade@yahoo.it>
+Message-Id: <200502032051.18191.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,85 +31,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 3 Feb 2005 20:38:36 +0100
+Date: Thu, 3 Feb 2005 20:51:17 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Alex LIU <alex.liu@st.com>
+Cc: Paulo Marques <pmarques@grupopie.com>, Pekka Enberg <penberg@gmail.com>, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, penberg@cs.helsinki.fi
 
-On Wednesday 02 February 2005 16:29, Alex LIU wrote:
-> Hi,Blaisorblade. You wrote:
-> >do_syscall is called, and then this is done:
+On Wednesday 02 February 2005 12:55, you wrote:
+> Pekka Enberg wrote:
+> > On Tue,  1 Feb 2005 03:28:31 +0000, pmarques@grupopie.com
 > >
-> >                                sig = SIGUSR2;
-> >                                tracing = 0;
-> >... after, this saves the new tracing value inside "task", which is a
-> > struct task_struct.
+> > <pmarques@grupopie.com> wrote:
+> >>diff -buprN -X dontdiff
+> >> vanilla-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c
+> >> linux-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c ---
+> >> vanilla-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c      
+> >> 2004-12-24 21:35:40.000000000 +0000 +++
+> >> linux-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c 2005-01-31
+> >> 20:39:08.591154025 +0000
 > >
-> >                       set_tracing(task, tracing);
-Pre-question: I hope for you that you use a ctags/etags enabled editor (or at 
-least LXR) to help in source browsing, otherwise you'll get lost.
-
-There is more than one good introduction about ctags (which is supported at 
-least by Vim and Emacs, and maybe even by Kate).
-
-> But what's the exact meaning of the task in the tracer function? It is
-> defined as:
+> > [snip]
+> >
+> >>-               pri->dev_name = uml_strdup(buffer);
+> >>+               pri->dev_name = kstrdup(buffer);
+> >
+> > Please compile-test before submitting.
 >
->  task = cpu_tasks[proc_id].task
+> I'm really sorry about this...
 >
-> Is it the task struct of the traced thread?
+> I've compiled with an allyesconfig to validate the changes, but that
+> doesn't build the UML parts :(
 
-Yes, it is... proc_id is the ID of the virtual processor (it will be always 0 
-on a uniprocessor UML instance). 
+Well, the answer is to do add a "ARCH=um" to the build commands... you could 
+maybe use a "make defconfig ARCH=um" however because UML itself, sometimes, 
+does not build with allyesconfig /allmodconfig...
 
-If you look at the comment before that line (when it is re-executed) and at 
-do_proc_op(), you'll see that when doing an exec the host process is changed.
+However, that said, there are bigger problems for UML.
 
-> What's the difference between "task->pid" and
-> "task->thread.mode.tt.extern_pid"?
+Since of its particular nature, it contains some code which is compiled 
+against userspace headers. For instance cow_user.c (the list includes 
+*_user.c and everything that is explicitly listed in USER_OBJS inside the 
+Makefiles)
 
-> I know in TT mode every thread in UML 
-> will has a corresponding thread in host.
+So, for cow_user.c, when you add <linux/string.h> to cow_user.c, you are 
+actually making it include /usr/include/linux/string.h...
 
-Yes, and while task->pid (which is a field also existing in i386 Linux) is the 
-pid you see inside UML for that task, extern_pid is the pid of the matching 
-host thread.
+For UML, you should probably add the prototype to a good header inside 
+arch/um/include (those headers are in the searchpath for every file under 
+arch/um) - probably the one which declared uml_strdup. Yes, we have had to 
+duplicate prototypes for many functions... for inlines, we've had to provide 
+in many case a non-inline version.
 
-> But I don't know the exact 
-> relationship between them.
+> Anyway, thanks for pointing this out. I still haven't got feedback
+> regarding the acceptance of these patches. If there is a chance they're
+> accepted, maybe the best thing to do is to post the series again with
+> this correction and the sound patch corrections.
 
-It's 1-1 I think, and the code does not show sign of working otherwise (even 
-if, probably, it could be changed to make sure that multiple threads have 
-only one corresponding host thread)...
-
-I don't know the relation between tracer() running instances and childs... in 
-SKAS mode, the scheduler does a context switch (through sigsetjmp() / 
-siglongjmp()) between multiple tracers (i.e. ; when  a new tracer is 
-scheduled inside UML, it makes the host process switch to the right thread 
-and execute it.
-
-Instead, in TT mode there is just one tracer, which does a waitpid() on every 
-thread... a process is scheduled away by making it wait on a pipe 
-(task->thread.mode.tt.switch_pipe[]).
-
-> And I didn't found how UML creat the 
-> corresponding thread in host.
-
-To create a process (with fork(), vfork() or clone()) the do_fork() call is 
-executed with appropriate flags...
-
-The arch-dependent hook for the process creation is copy_thread()... and 
-copy_thread_tt() calls start_fork_tramp() which creates the host thread with 
-clone (actually with 2 clone calls, I dunno why) and returns the pid of the 
-newly created thread, which is then assigned inside copy_thread to 
-task->.....extern_pid.
-
-Also notice the messages sent with SIGUSR1 named by OP_* (OP_FORK, OP_EXEC...)
-> Thanks a lot!
-Well, this was also an occasion to learn these things myself (I didn't need 
-understanding it in detail until now since I've not been working on TT code, 
-I had a feeling of what happened), so thanks to you.
-
-Regards
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
