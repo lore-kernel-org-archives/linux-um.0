@@ -2,23 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C43d7-0005jA-0f for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Sep 2004 13:28:53 -0700
-Received: from parcelfarce.linux.theplanet.co.uk
-	([195.92.249.252] helo=www.linux.org.uk ident=93)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1C43d6-00007N-IM
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Sep 2004 13:28:52 -0700
-Message-ID: <413B76DB.5010600@pobox.com>
-From: Jeff Garzik <jgarzik@pobox.com>
-MIME-Version: 1.0
-References: <200408190301.i7J30xek004150@ccure.user-mode-linux.org>
-	<200408251746.53523.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200408251746.53523.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 1C44fQ-0001V7-V8 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Sep 2004 14:35:20 -0700
+Received: from smtp-vbr15.xs4all.nl ([194.109.24.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1C44fP-0000Lr-A6 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Sep 2004 14:35:20 -0700
+In-Reply-To: <200409041737.29495.blaisorblade_spam@yahoo.it>
+References: <20040903180244.42898.qmail@web54004.mail.yahoo.com>
+	<1094299889.7716.36.camel@localhost>
+	<200409041737.29495.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0 (Apple Message framework v619)
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg=pgp-sha1; boundary="Apple-Mail-10-146602369"
+Message-Id: <5CAA3946-FF7E-11D8-83EF-000A95CD704C@kungfoocoder.org>
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Current state of UML
+From: Paul Wagland <paul@kungfoocoder.org>
+Subject: Re: [uml-devel] Problems compiling any 2.6.x UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,42 +30,80 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 05 Sep 2004 16:28:11 -0400
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
-Just a FWIW...
-
-Using the latest UML code in 2.6.x BitKeeper (2.6.9-rc1-bk), things are 
-looking pretty darn good.  I was able to boot a Fedora Core userland 
-with "init=/bin/sh", set up networking easily [uml_net helper worked], 
-and ssh into my virtual host.
-
-To problems, one major and two minor:
-
-(major)
-1) Using standard Fedora Core SysvInit, rc.sysinit will proceed to 
-completion, then the userland boot halts.  ps shows the virtual host's 
-/sbin/init process in constant run state, chewing CPU time like mad. 
-Didn't investigate further, simply booted with init=/bin/sh and moved on.
-
-(minor)
-2) The Makefiles appear to add "-um1" to the kernel version for some 
-reason, and IMHO violates the Principle of Least Surprise.  This breaks 
-several of my scripts :(
-
-3) The arch/um build is verbose, showing each gcc command line as it is 
-executed.  This is incorrect when KBUILD_VERBOSE or similar setting are 
-not enabled.  As a result, the arch/um is verbose, but the rest is not, 
-by default.
-
-Overall I am really impressed.  Like other arches in the Linux kernel, 
-it is IMO very important to be able to work "out of the box", without 
-patches.
-
-	Jeff
+Date: Sun, 5 Sep 2004 22:58:39 +0200
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Matt Zimmerman <mdz@debian.org>, =?ISO-8859-1?Q?Dominik_J=FCrgens?= <dcdom@gmx.de>
 
 
+--Apple-Mail-10-146602369
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+
+
+On Sep 4, 2004, at 17:37, BlaisorBlade wrote:
+
+> Alle 14:11, sabato 4 settembre 2004, Dominik J=FCrgens ha scritto:
+>> Thank you very very much, that really fixed the problem!
+>>
+>> But why does anyone use the /bin/sh in any script, when he wants to=20=
+
+>> use
+>> the bash? That is in my opinion a very bad fault!!
+>>
+>> My /bin/sh was linked to the /bin/dash, not because I linked it, but
+>> anything else! It does not seem to be very failure tolerant to =
+suppose
+>> that /bin/sh is the bash...
+>
+> 1) Someone else got a similar problem, because he used a Debian, too,=20=
+
+> and he
+> had /bin/sh -> /bin/dash. Why and when does Debian do this?
+
+Someone has already answered this, but here is a more detailed answer:
+
+When you install the dash package it will ask you if you want to use=20
+this as your default shell. This should be OK, since dash is posix=20
+compliant, and if you ask for /bin/sh you should only expect posix=20
+compliance. Under debian, any package that specifies /bin/sh and then=20
+uses bash extensions will normally get a level 3 bug raised, which is a=20=
+
+violation of packaging policy. I.e. Only use /bin/sh if you want a=20
+posix shell, otherwise use /bin/bash.
+
+As to when, dash is the only package that I know of that will do this=20
+for you, and then only if you ask it to. Why? Dash is faster than bash,=20=
+
+and could save up to a second of boot time! ;-) Seriously, some people=20=
+
+use it to ensure package compliance, some people do it because it seems=20=
+
+right. I do it because it has a very low overhead, and it helps me to=20
+ensure that my scripts are cross platform compatible.
+
+> 2) Well, I'm attaching the patch to fix this.
+
+Much appreciated :-)
+
+Cheers,
+Paul=
+
+--Apple-Mail-10-146602369
+content-type: application/pgp-signature; x-mac-type=70674453;
+	name=PGP.sig
+content-description: This is a digitally signed message part
+content-disposition: inline; filename=PGP.sig
+content-transfer-encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (Darwin)
+
+iD8DBQFBO34Dtch0EvEFvxURAkqPAJ9a/eLgJi2AS125fWlBeznYzpR0iQCggWUU
+ArIpeVG6KQj4L93gXUtKsc0=
+=YS9v
+-----END PGP SIGNATURE-----
+
+--Apple-Mail-10-146602369--
 
 
 
