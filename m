@@ -2,23 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDpHB-0002YA-ER for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 11:42:53 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DDpH7-0007tr-Ox for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 11:42:53 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: Testing GCOV handling in -bk
-References: <200503201242.23591.blaisorblade@yahoo.it>
-	<1111402190.24494.12.camel@imp.csi.cam.ac.uk>
-In-Reply-To: <1111402190.24494.12.camel@imp.csi.cam.ac.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200503222037.39350.blaisorblade@yahoo.it>
+	id 1DDncU-0005aF-V1 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 09:56:46 -0800
+Received: from mail-relay-3.tiscali.it ([213.205.33.43])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DDncA-0005j2-T5 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 09:56:46 -0800
+From: blaisorblade@yahoo.it
+Message-Id: <20050322162145.98B97D5EA8@zion>
+Subject: [uml-devel] [patch 11/12] uml: real fix for __gcov_init symbols
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,52 +22,84 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 20:37:39 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Anton Altaparmakov <aia21@cam.ac.uk>
-
-On Monday 21 March 2005 11:49, Anton Altaparmakov wrote:
-> On Sun, 2005-03-20 at 12:42 +0100, Blaisorblade wrote:
-> > Anton, would you test the current -bk tree for the CONFIG_GCOV problem
-> > and the patch I and Jeff put together?
-> >
-> > http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.11-bk8/patche
-> >s/weak_gcov_init
-> >
-> > The above should fix the situation for you... for real 3.4 Gcc, however,
-> > the problems are bigger because it also requires to change link flags
-> > (and this interferes with some executables we build). I also get a link
-> > failure on __bb_fork_<something>..., which I haven't been able to solve
-> > until now.
->
-> I would test it but UML in current -BK doesn't build at all.  It stops
-> with:
->
->   CC      kernel/signal.o
-> kernel/signal.c: In function `get_signal_to_deliver':
-> kernel/signal.c:1849: error: structure has no member named `eflags'
-> kernel/signal.c:1849: error: `TF_MASK' undeclared (first use in this
-> function)
-> kernel/signal.c:1849: error: (Each undeclared identifier is reported
-> only once
-> kernel/signal.c:1849: error: for each function it appears in.)
-> make[1]: *** [kernel/signal.o] Error 1
-> make: *** [kernel] Error 2
->
-> Best regards,
->
->         Anton
-Ok, watch the patches I'm sending now. The one titled "uml: fix compile" fix 
-the above problem, while the one named "uml: real fix for __gcov_init 
-symbols" is what I'm merging for this problem (from your results I guess it 
-should work well for you too).
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Date: Tue, 22 Mar 2005 17:21:45 +0100
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, aia21@cam.ac.uk
 
 
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+CC: Anton Altaparmakov <aia21@cam.ac.uk>
 
+Correctly export __gcov_init for cases where it's needed, by adding a weak
+definition for the case when GCC does not define this symbol and letting it
+being overriden by the real definition when GCC defines it (recent ones).
+
+Can't be implemented as a test on GCC version because SuSE has a crippled GCC,
+declared as 3.3.4 but having a lot of backported features.
+
+Also, since gcc 3.4.3 requires profiling options even during linking, add
+profiling options to final link stage.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.11-paolo/arch/um/Makefile-skas      |   10 ++++++----
+ linux-2.6.11-paolo/arch/um/kernel/gmon_syms.c |   20 ++++++++++++++------
+ 2 files changed, 20 insertions(+), 10 deletions(-)
+
+diff -puN arch/um/kernel/gmon_syms.c~uml-real-fix-gcov-symbols arch/um/kernel/gmon_syms.c
+--- linux-2.6.11/arch/um/kernel/gmon_syms.c~uml-real-fix-gcov-symbols	2005-03-22 11:06:13.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/gmon_syms.c	2005-03-22 11:06:13.000000000 +0100
+@@ -5,14 +5,22 @@
+ 
+ #include "linux/module.h"
+ 
+-#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 3) || \
+-	(__GNUC__ == 3 && __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__ >= 4)
+-extern void __gcov_init(void *);
+-EXPORT_SYMBOL(__gcov_init);
+-#else
+ extern void __bb_init_func(void *);
+ EXPORT_SYMBOL(__bb_init_func);
+-#endif
++
++/* This is defined (and referred to in profiling stub code) only by some GCC
++ * versions in libgcov.
++ *
++ * Since SuSE backported the fix, we cannot handle it depending on GCC version.
++ * So, unconditinally export it. But also give it a weak declaration, which will
++ * be overriden by any other one.
++ */
++
++extern void __gcov_init(void *) __attribute__((weak));
++EXPORT_SYMBOL(__gcov_init);
++
++extern void __gcov_merge_add(void *) __attribute__((weak));
++EXPORT_SYMBOL(__gcov_merge_add);
+ 
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+diff -puN arch/um/Makefile-skas~uml-real-fix-gcov-symbols arch/um/Makefile-skas
+--- linux-2.6.11/arch/um/Makefile-skas~uml-real-fix-gcov-symbols	2005-03-22 11:06:13.000000000 +0100
++++ linux-2.6.11-paolo/arch/um/Makefile-skas	2005-03-22 11:06:13.000000000 +0100
+@@ -3,10 +3,12 @@
+ # Licensed under the GPL
+ #
+ 
+-PROFILE += -pg
++GPROF_OPT += -pg
++GCOV_OPT += -fprofile-arcs -ftest-coverage
+ 
+-CFLAGS-$(CONFIG_GCOV) += -fprofile-arcs -ftest-coverage
+-CFLAGS-$(CONFIG_GPROF) += $(PROFILE)
+-LINK-$(CONFIG_GPROF) += $(PROFILE)
++CFLAGS-$(CONFIG_GCOV) += $(GCOV_OPT)
++CFLAGS-$(CONFIG_GPROF) += $(GPROF_OPT)
++LINK-$(CONFIG_GCOV) += $(GCOV_OPT)
++LINK-$(CONFIG_GPROF) += $(GPROF_OPT)
+ 
+ GEN_HEADERS += $(ARCH_DIR)/include/skas_ptregs.h
+_
 
 
 -------------------------------------------------------
