@@ -1,31 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AdxHq-0004eJ-2W for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 11:54:46 -0800
-Received: from mx11.sac.fedex.com ([199.81.193.118])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AdxHp-0000Pu-Kf
+	id 1AdxwG-00073T-VC for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Jan 2004 12:36:32 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AdxwG-0005IQ-A7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 11:54:45 -0800
-Received: from inet04.prod.fedex.com (inet04.prod.fedex.com [199.81.10.44])
-	by mx11.sac.fedex.com (8.12.6p2/8.12.3) with ESMTP id i06JsiiC059644
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 6 Jan 2004 13:54:44 -0600 (CST) (envelope-from jchua@fedex.com)
-From: Jeff Chua <jchua@fedex.com>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
-In-Reply-To: <a0602040dbc20be564c59@[192.168.1.10]>
-Message-ID: <Pine.LNX.4.58.0401070325360.1840@boston.corp.fedex.com>
+	Tue, 06 Jan 2004 12:36:32 -0800
+Message-Id: <200401062055.i06Ktutd003466@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4 
+In-Reply-To: Your message of "Tue, 06 Jan 2004 20:40:06 +0100."
+	<a0602040dbc20be564c59@[192.168.1.10]> 
 References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com><200401061718.i
 	06HILtd002620@ccure.user-mode-linux.org><a0602040abc20a9f6862e@[192.16
-	8.1.10]><200401061918.31447.blaisorblade_spam@yahoo.it>     
+	8.1.10]><200401061918.31447.blaisorblade_spam@yahoo.it>
 	<a0602040bbc20b325acfd@[192.168.1.10]>
 	<33261.193.212.97.12.1073406789.squirrel@pluto.nixia.no>
 	<a0602040cbc20b788b425@[192.168.1.10]>
-	<a0602040dbc20be564c59@[192.168.1.10]>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	<a0602040dbc20be564c59@[192.168.1.10]> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,34 +34,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Jan 2004 03:34:33 +0800 (SGT)
+Date: Tue, 06 Jan 2004 15:55:56 -0500
 To: Johannes Formann <johannes@formann.de>
-Cc: stian@nixia.no, BlaisorBlade <blaisorblade_spam@yahoo.it>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Cc: stian@nixia.no, BlaisorBlade  <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
+johannes@formann.de said:
+> I hope this backtrave can helpt you. 
 
-On Tue, 6 Jan 2004, Johannes Formann wrote:
-> so, now I'm done:
-> I hope this backtrave can helpt you.
+Thanks, that's what I was looking for.
 
-I just made a little patch to uml-patch-2.4.23-1. It's a modified version
-of BlaisorBlade's patch few minutes ago. Also, please ignore the patch in
-my previous email.
+				Jeff
 
-Can you please try to see the patch below solve your problem?
-
-
-
-Thanks,
-Jeff.
-
-
---- uml/drivers/char/mem.c.org	Wed Jan  7 03:30:40 2004
-+++ uml/drivers/char/mem.c	Wed Jan  7 03:31:47 2004
-@@ -269,3 +269,3 @@
- 	}
-- 	*ppos = __pa((void *) p);
-+ 	*ppos = p;
-  	return virtr + read;
 
 
 -------------------------------------------------------
