@@ -2,22 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CA7o2-0004Q7-2P for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Sep 2004 07:09:14 -0700
-Received: from custpop.ca.mci.com ([142.77.1.111] helo=mail.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CA7o1-00011A-F1 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Sep 2004 07:09:13 -0700
-Received: from [216.95.199.148] (account alex@xiphos.ca HELO onefishtwo.ca)
-	by mail.net (CommuniGate Pro SMTP 3.5.6)
-	with ESMTP id 19751091 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Sep 2004 10:09:07 -0400
-Message-ID: <41518862.6070202@onefishtwo.ca>
-From: Alex deVries <alex@onefishtwo.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Problems debugging a UML kernel
+	id 1CA9Vl-0003fF-L0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Sep 2004 08:58:29 -0700
+Received: from nessie.weebeastie.net ([220.233.7.36]
+	helo=theirongiant.lochness.weebeastie.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CA9Vh-00087G-Is
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Sep 2004 08:58:29 -0700
+From: CaT <cat@zip.com.au>
+Message-ID: <20040920044512.GA6672@zip.com.au>
+References: <20040915214906.02A1F138028@tla.xelerance.com>
+	<20040918151657.GG953@zip.com.au>
+	<21443.1095535410@marajade.sandelman.ottawa.on.ca>
+	<20040918235319.GH953@zip.com.au>
+	<26724.1095652408@marajade.sandelman.ottawa.on.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26724.1095652408@marajade.sandelman.ottawa.on.ca>
+Subject: [uml-devel] Re: [Openswan CVS] openswan-2/linux/net/ipsec addrtot.c,
+	1.16, 1.17
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,70 +34,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 22 Sep 2004 10:12:50 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 20 Sep 2004 14:45:13 +1000
+To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Cc: dev@lists.openswan.org, user-mode-linux-devel@lists.sourceforge.net
 
+On Sun, Sep 19, 2004 at 11:53:28PM -0400, Michael Richardson wrote:
+>     CaT> In include/asm-i386/string.h for example. Not all arches have
+>     CaT> it defined but a few do.
+> 
+>     CaT> With the change btw, the kernel compiled.
+> 
+>   Using __HAVE_ARCH_STRSTR doesn't work on UML.
+>   It appears that the strstr.c from arch/i386/lib/strstr.c doesn't get
+> compiled. I tried to get it compiled, but I seem to be missing some
+> symbol table magic. (Adding EXPORT_SYMTAB(strstr) to the file didn't
+> help).
+> 
+>   Any ideas on this?
 
-UML has really helped me with some kernel module debugging in the past, 
-but I'm having a problem getting it running in a new environment.
+I'm not expert (seriously - this isn't just modesty :) but it looks
+like that uml is undefining strstr but not __HAVE_ARCH_STRSTR so that
+when it's compiled on an arch that defines __HAVE_ARCH_STRSTR because
+it has strstr it's only half undefined. If I'm right it appears to
+be a bug in the part of uml.
 
-I'm having a problem where I can't seem to get into an interactive debug 
-mode with a UML kernel.
+Check linux/arch/um/os-Linux/user_syms.c. It includes string.h
+which includes asm/string.h which includes asm/arch/string.h which
+points to asm-i386/string.h which would define the above.
 
-In one window, I'm running:
+I've CCed the happy-fun folks at UML to be sure because my feeling that
+I'm talking sheer bollocks is about as strong as my feeling that I am
+not. :)
 
-gdb linux-2.4.26/linux
-
-which prints out:
-
-[root@cubalibre uml]# GNU gdb 6.2
-Copyright 2004 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you are
-welcome to change it and/or distribute copies of it under certain 
-conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for details.
-This GDB was configured as "i686-pc-linux-gnu"...Using host libthread_db 
-library "/lib/tls/libthread_db.so.1".
-
-
-
-In another window, I run:
-linux-2.4.26/linux debug gdb-pid=<pid of gdb> ubd0=fedora
-
-At this point, UML starts up and prints out:
-
-Checking for the skas3 patch in the host...not found
-Checking for /proc/mm...not found
-tracing thread pid = 14094
-
-
-Then, if I type 'att 1' in the gdb window, it prints out:
-
-(gdb) Attaching to program: linux-2.4.26/linux, process 1
-
-
-And then just stops.  I never end up in the interactive debugging mode 
-I've seen before.  If I hit ^c, gdb gives me:
-
-0xa015f2f1 in kill () at string.h:486
-486                     case 1: COMMON("\n\tstosb"); return s;
-(gdb) Quit
-(gdb)
-
-but I can never actually run the kernel within the debugger.
-
-
-My host is Fedora Core 2, running a custom built 2.6.7 kernel.  I'm 
-using a custom-built gdb version 6.2, although I see the same behaviour 
-with my distribution's gdb (version 6.0post-0.20040223.19rh)
-
-My uml host kernel is 2.6.7, patched with uml-2.6.7-2.  I have 
-CONFIG_PT_PROXY, TT and SKAS mode enabled.
-
-Any help is greatly appreciated.
-
-- Alex
+-- 
+    Red herrings strewn hither and yon.
 
 
 -------------------------------------------------------
