@@ -1,22 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CUr5f-0002I4-KA for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Nov 2004 10:33:07 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CUr5e-0003Tg-FT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Nov 2004 10:33:07 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
+From: Michael Halcrow <uml@halcrow.us>
+Message-ID: <20041118174324.GA8993@halcrow.us>
+Reply-To: Michael Halcrow <uml@halcrow.us>
 References: <20041118160909.GA7630@halcrow.us>
-In-Reply-To: <20041118160909.GA7630@halcrow.us>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+	<200411181839.26596.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
 Content-Disposition: inline
-Message-Id: <200411181839.26596.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411181839.26596.blaisorblade_spam@yahoo.it>
 Subject: [uml-devel] Re: [uml-user] keyring syscalls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -29,31 +21,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Nov 2004 18:39:26 +0100
-To: Michael Halcrow <uml@halcrow.us>, user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 18 Nov 2004 11:43:24 -0600
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: Michael Halcrow <uml@halcrow.us>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Thursday 18 November 2004 17:09, Michael Halcrow wrote:
-> Howdy folks,
->
-> I am attempting to use David Howells' new keyring in 2.6.10-rc2 UML
-> and am getting a ``Function not implemented'' error with keyctl.  I
-> was getting that in my host kernel until I mucked with the __NR_*
-> #define's in the userspace keyctl.c to align with the values in the
-> 2.6.10-rc2 entry.S.  I imagine that new syscalls require some magic in
-> UML that I am unfamiliar with.  I tried adding some entries to
-> arch/um/include/sysdep-i386/syscalls.h for keyctl et. al., to no
-> avail, but I'm kind of shooting the dark here.
->
-> Thanks,
-> Mike
-Ok, please list the new syscalls - I see at least add_key() and request_key() 
-too - are these three the only ones? I'll build the patch ASAP when getting 
-your answer.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Nov 18, 2004 at 06:39:26PM +0100, Blaisorblade wrote:
+> On Thursday 18 November 2004 17:09, Michael Halcrow wrote:
+> > Howdy folks,
+> >
+> > I am attempting to use David Howells' new keyring in 2.6.10-rc2
+> > UML and am getting a ``Function not implemented'' error with
+> > keyctl.  I was getting that in my host kernel until I mucked with
+> > the __NR_* #define's in the userspace keyctl.c to align with the
+> > values in the 2.6.10-rc2 entry.S.  I imagine that new syscalls
+> > require some magic in UML that I am unfamiliar with.  I tried
+> > adding some entries to arch/um/include/sysdep-i386/syscalls.h for
+> > keyctl et. al., to no avail, but I'm kind of shooting the dark
+> > here.
+>
+> Ok, please list the new syscalls - I see at least add_key() and
+> request_key() too - are these three the only ones? I'll build the
+> patch ASAP when getting your answer.
+
+Yes, those are the only three.  Thanks!
+
+Mike
+=2E___________________________________________________________________.
+                         Michael A. Halcrow                         =20
+       Security Software Engineer, IBM Linux Technology Center      =20
+GnuPG Fingerprint: 05B5 08A8 713A 64C1 D35D  2371 2D3C FDDA 3EB6 601D
+
+"Never go to a doctor whose office plants have died."               =20
+ - Erma Bombeck=20
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFBnN88LTz92j62YB0RAjI+AJ4sgHfT3eUNvix3v9rQrW3/ltf+rACfYxux
+yR+AMIGRsfuvlmBVrWz70Ek=
+=nvrE
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
 
 
 -------------------------------------------------------
