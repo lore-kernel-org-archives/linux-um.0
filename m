@@ -2,27 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19ueEl-0000bN-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 03 Sep 2003 13:28:19 -0700
-Received: from smtp01.mrf.mail.rcn.net ([207.172.4.60])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19ueEl-0005Gz-Dm
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 03 Sep 2003 13:28:19 -0700
-Received: from 216-15-124-77.c3-0.smr-ubr3.sbo-smr.ma.cable.rcn.com ([216.15.124.77] helo=mizar.alcor.net)
-	by smtp01.mrf.mail.rcn.net with esmtp (Exim 3.35 #4)
-	id 19ueEj-00066B-00
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 03 Sep 2003 16:28:17 -0400
-Received: from mdz by mizar.alcor.net with local (Exim 3.36 #1 (Debian))
-	id 19ueEj-0003aU-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 03 Sep 2003 16:28:17 -0400
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] Creating virtual consoles on the fly
-Message-ID: <20030903202817.GX7304@alcor.net>
-References: <10C160F5A03A0942A1A87B658784CA6A0A4928@gummo.domain.trailerparc.com>
+	id 19uhLq-0003Jl-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 03 Sep 2003 16:47:50 -0700
+Received: from birosca.ime.usp.br ([143.107.45.59])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
+	id 19uhLp-0007Rq-7l
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 03 Sep 2003 16:47:49 -0700
+From: Livio Baldini Soares <livio@ime.usp.br>
+Message-ID: <20030903234212.GA19087@ime.usp.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <10C160F5A03A0942A1A87B658784CA6A0A4928@gummo.domain.trailerparc.com>
+Subject: [uml-devel] [PATCH] Undefined __virt_to_page and to_virt symbols
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -33,19 +24,33 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Sep 2003 16:28:17 -0400
+Date: Wed, 3 Sep 2003 20:42:12 -0300
 To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Sep 03, 2003 at 12:59:34PM -0700, Michael Talyansky wrote:
+  Hey Jeff, and list,
 
-> Is there a programmatic way to create a virtual console on the fly, that
-> is, without changing /etc/inittab and doing something like "telinit q"? 
+  Today I've  upgraded my UML patch to  2.4.22-1, and when I  tried to load
+(as a module) a FS I'm developing, it complained with lack of symbols. 
 
-inittab isn't magic; all it does is to run programs as appropriate for the
-current runlevel.  You can run the same programs manually.
+  Attached trivial patch fixes it for me. Unfortunately, cvs.sf.net is down
+so I can't quite trace when these started not working, and why. 
 
--- 
- - mdz
+  best regards,
+
+--  
+  Livio B. Soares
+
+--- arch/um/kernel/ksyms.c~	Wed Sep  3 16:57:53 2003
++++ arch/um/kernel/ksyms.c	Wed Sep  3 20:03:54 2003
+@@ -37,6 +37,8 @@ EXPORT_SYMBOL(arch_validate);
+ EXPORT_SYMBOL(high_physmem);
+ EXPORT_SYMBOL(empty_zero_page);
+ EXPORT_SYMBOL(um_virt_to_phys);
++EXPORT_SYMBOL(__virt_to_page);
++EXPORT_SYMBOL(to_virt);
+ EXPORT_SYMBOL(mode_tt);
+ EXPORT_SYMBOL(handle_page_fault);
+ 
 
 
 -------------------------------------------------------
