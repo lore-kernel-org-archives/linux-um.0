@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aweda-0005mj-Ai for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 01:50:30 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1AweTg-0006wO-KI
+	id 1AwiXf-0001oY-5t for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Feb 2004 06:00:39 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1Awi8y-0002mO-RW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 01:40:16 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20040227092656.GA12168@bytesex.org>
-References: <20040226212655.GA5191@bytesex.org>
+	Fri, 27 Feb 2004 05:35:09 -0800
+Message-Id: <200402271419.i1REJtM9001977@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Crash early in boot with 2.4.25+uml-patch-2.4.24-1 
+In-Reply-To: Your message of "Fri, 27 Feb 2004 02:29:41 CST."
+	<200402270829.i1R8TfAX014941@hongkong.cs.nmsu.edu> 
+References: <200402270829.i1R8TfAX014941@hongkong.cs.nmsu.edu> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040226212655.GA5191@bytesex.org>
-Subject: [uml-devel] Re: [patch] module symbol fix
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,52 +28,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 Feb 2004 10:26:56 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 27 Feb 2004 09:19:55 -0500
+To: Ross Combs <rocombs@cs.nmsu.edu>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Feb 26, 2004 at 10:26:55PM +0100, Gerd Knorr wrote:
->   Hi,
-> 
-> recent gcc versions need this one ...
+rocombs@cs.nmsu.edu said:
+> The boot messages look like this when it dies:
+>  Checking for the skas3 patch in the host...not found
+>  Checking for /proc/mm...not found
+>  make_umid - mkstemp failed, errno = 13
+>  tracing thread pid = 22242
+>  Segmentation fault 
 
-Another one of this kind (without this gcc may optimizes away the static
-declared but unreferenced stuff, resulting in initrd= and --help options
-not working any more for example ...).
+Copy /proc/cpuinfo into the jail.  I added a dependency on that when doing
+the RTC change, but forgot to make it behave well when cpuinfo isn't available.
 
-  Gerd
+				Jeff
 
---- linux-um-2.6.3/arch/um/include/init.h.used	2004-02-27 09:34:57.874205081 +0100
-+++ linux-um-2.6.3/arch/um/include/init.h	2004-02-27 09:44:32.415275725 +0100
-@@ -40,9 +40,9 @@
- typedef int (*initcall_t)(void);
- typedef void (*exitcall_t)(void);
- 
--#define __init          __attribute__ ((__section__ (".text.init")))
-+#define __init          __attribute__ ((used,__section__ (".text.init")))
- #define __exit          __attribute__ ((unused, __section__(".text.exit")))
--#define __initdata      __attribute__ ((__section__ (".data.init")))
-+#define __initdata      __attribute__ ((used,__section__ (".data.init")))
- 
- #endif
- 
-@@ -94,11 +94,11 @@
-  * Mark functions and data as being only used at initialization
-  * or exit time.
-  */
--#define __uml_init_setup	__attribute__ ((unused,__section__ (".uml.setup.init")))
--#define __uml_setup_help	__attribute__ ((unused,__section__ (".uml.help.init")))
--#define __uml_init_call		__attribute__ ((unused,__section__ (".uml.initcall.init")))
--#define __uml_postsetup_call	__attribute__ ((unused,__section__ (".uml.postsetup.init")))
--#define __uml_exit_call		__attribute__ ((unused,__section__ (".uml.exitcall.exit")))
-+#define __uml_init_setup	__attribute__ ((used,__section__ (".uml.setup.init")))
-+#define __uml_setup_help	__attribute__ ((used,__section__ (".uml.help.init")))
-+#define __uml_init_call		__attribute__ ((used,__section__ (".uml.initcall.init")))
-+#define __uml_postsetup_call	__attribute__ ((used,__section__ (".uml.postsetup.init")))
-+#define __uml_exit_call		__attribute__ ((used,__section__ (".uml.exitcall.exit")))
- 
- #endif /* _LINUX_UML_INIT_H */
- 
 
 
 -------------------------------------------------------
