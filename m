@@ -2,17 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bo7p1-0001PT-Lt for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jul 2004 14:43:19 -0700
-Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1Bo7p1-0004FF-BS for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jul 2004 14:43:19 -0700
-Message-ID: <20040723214312.14567.qmail@praize.com>
-From: "gboutwel" <gboutwel@praize.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-Subject: [uml-devel] uml-2.6.8-rc2 (2.6.8-rc2 w/ uml-patch-2.6.7-01)
+	id 1BoDMw-0007eS-Nn for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jul 2004 20:38:42 -0700
+Received: from harrier.mail.pas.earthlink.net ([207.217.120.12])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
+	id 1BoDMw-0002wc-41 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jul 2004 20:38:42 -0700
+Received: from user-12hcjeo.cable.mindspring.com ([69.22.77.216]
+	helo=bender.davehollis.com)
+	by harrier.mail.pas.earthlink.net with esmtp (Exim 3.33 #1)
+	id 1BoDMs-0007h1-00 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jul 2004 20:38:38 -0700
+Subject: Re: [uml-devel] uml-2.6.8-rc2 (2.6.8-rc2 w/ uml-patch-2.6.7-01)
+From: David T Hollis <dhollis@davehollis.com>
+In-Reply-To: <20040723214312.14567.qmail@praize.com>
+References: <20040723214312.14567.qmail@praize.com>
+Content-Type: text/plain
+Message-Id: <1090640326.4233.4.camel@dhollis-lnx.kpmg.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,150 +32,62 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 23 Jul 2004 21:43:12 -0000
-To: user-mode-linux-devel@lists.sourceforge.net
-
-  I'm testing the 2.6.8 waters. Looks like it's not been included
-
-in the rc2 version yet. It's in the mm1 version though... so
-
-there's hope. Here's what I've done:
-
-
-
-1) tar jzf linux-2.6.7.tar.bz2
-
-
-
-2) mv linux-2.6.7 linux-2.6.8-rc2-1um
-
-
-
-3) bzcat patch-2.6.8-rc2.bz2 | patch -p1
-
-
-
-4) bzcat uml-patch-2.6.7-01.bz2 | patch -p1 --dry-run | less
-
-
-
-* not bad, just shows 1 reject, which is the removal of an
-
-#include from init_setup.c
-
-
-
-5) cp ~/2.6.7/config-2.6.7-1um .config
-
-
-
-6) make oldconfig ARCH=um
-
-
-
-7) make linux ARCH=um
-
-
-
-* this fails on arch/um/drivers/stdio_console.c with:
-
-arch/um/drivers/stdio_console.c:207: error: conflicting types
-
-for `console_device'
-
-include/linux/console.h:107: error: previous declaration of `console_device'
-
-
-
-Where:
-
-
-
-include/linux/console.h:107 extern struct tty_driver *console_device(int
-
-*);
-
-arch/um/drivers/stdio_console.c:207 has struct tty_driver *console_device(struct
-
-console *c, int *index)
-
-
-
-so, on a wild 'whim' I changed console_device in stdio_console.c
-
-to uml_console_device.
-
-
-
-That compiles, but then it ends with an linker error:
-
-
-
-vmlinux(.text+0x2d8b0): In function `alloc_pidmap':
-
-: undefined reference to `find_next_zero_bit'
-
-vmlinux(.text+0x4faef): In function `get_unused_fd':
-
-: undefined reference to `find_next_zero_bit'
-
-vmlinux(.text+0x5fcd8): In function `locate_fd':
-
-: undefined reference to `find_next_zero_bit'
-
-vmlinux(.text+0x7e3f1): In function `scan_bitmap_block':
-
-: undefined reference to `find_next_zero_bit'
-
-vmlinux(.text+0x9f49e): In function `reiserfs_in_journal':
-
-: undefined reference to `find_next_zero_bit'
-
-vmlinux(.text+0xa6bd0): more undefined references to `find_next_zero_bit'
-
-follow
-
-vmlinux(.text+0xb7905): In function `sub_alloc':
-
-: undefined reference to `find_next_bit'
-
-vmlinux(.init.text+0x43d0): In function `__alloc_bootmem_core':
-
-: undefined reference to `find_next_zero_bit'
-
-collect2: ld returned 1 exit status
-
-make: *** [linux] Error 1
-
-
-
-Probably something simple, but I wanted to discuss with folks
-
-more in the now on if the above (stdio_console) fix was the right
-
-one, and to find out if anyone else has an idea of how to fixe
-
-the find_next_zero_bit error.
-
-
-
-Thanks,
-
-George
-
-
-
-
-
-
-
-----------------------------------------------------
-
-Need to store your files online? 
-
-Upload them for free in Praize Briefcase
-
-http://www.praize.com/cgi-bin/members/mybriefcase.cgi
+Date: Fri, 23 Jul 2004 23:38:46 -0400
+To: gboutwel <gboutwel@praize.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+
+On Fri, 2004-07-23 at 21:43 +0000, gboutwel wrote:
+> vmlinux(.text+0x5fcd8): In function `locate_fd':
+> 
+> : undefined reference to `find_next_zero_bit'
+> 
+> vmlinux(.text+0x7e3f1): In function `scan_bitmap_block':
+> 
+> : undefined reference to `find_next_zero_bit'
+> 
+> vmlinux(.text+0x9f49e): In function `reiserfs_in_journal':
+> 
+> : undefined reference to `find_next_zero_bit'
+> 
+> vmlinux(.text+0xa6bd0): more undefined references to `find_next_zero_bit'
+> 
+> follow
+> 
+> vmlinux(.text+0xb7905): In function `sub_alloc':
+> 
+> : undefined reference to `find_next_bit'
+> 
+> vmlinux(.init.text+0x43d0): In function `__alloc_bootmem_core':
+> 
+> : undefined reference to `find_next_zero_bit'
+> 
+> collect2: ld returned 1 exit status
+> 
+> make: *** [linux] Error 1
+> 
+> 
+> 
+> Probably something simple, but I wanted to discuss with folks
+> 
+> more in the now on if the above (stdio_console) fix was the right
+> 
+> one, and to find out if anyone else has an idea of how to fixe
+> 
+> the find_next_zero_bit error.
+> 
+
+I ran into this around a week or so ago as well.  Unfortunately, I don't
+have a patch but here is the rough idea of what I did to work around it.
+find_next_zero_bit is defined in arch/i386/lib/bitops.c.  If you look in
+arch/um/sys-i386, a couple files get symlinked from other parts of the
+tree (see the Makefile).  If you add bitops.c to this, you will get past
+the find_next_zero_bit problem.  You would add bitops.o to the obj-y,
+bitops.c to SYMLINKS, bitops.c-dir := arch/i386/lib.  I think thats
+about it.
+
+Good luck
+-- 
+David T Hollis <dhollis@davehollis.com>
 
 
 
