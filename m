@@ -2,18 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CX5EC-0007Ek-0f for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 14:03:08 -0800
-Received: from bay24-f37.bay24.hotmail.com ([64.4.18.87] helo=hotmail.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CX5EB-0008Gs-Bi for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Nov 2004 14:03:07 -0800
-Message-ID: <BAY24-F37F3586AE72E2E119F0A4483B80@phx.gbl>
-In-Reply-To: <41A4EE93.9090800@uxu.ch>
-From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
-Subject: Re: [uml-devel] [PATCH] uml_router: cleanup
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+	id 1CXISL-0004w1-Mu for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 25 Nov 2004 04:10:37 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CXISJ-000546-Te for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 25 Nov 2004 04:10:37 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411251313.09806.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Fwd: Re: Fwd: [PATCH] UML - close host file descriptors
+	properly
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,33 +28,188 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 24 Nov 2004 22:02:31 +0000
-Content-Transfer-Encoding: 8bit
-To: uml@uxu.ch
-Cc: kraxel@bytesex.org, User-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 25 Nov 2004 13:13:09 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Felix M�ri <uml@uxu.ch> wrote:
->long ago I found similar issues with the uml_switch codebase. My problem 
->was not
->the mac handling, but an missing feature to connect two switches together 
->via an
->udp-tunnel.
+I'm forwarding this to uml-devel.
 
-Interesting.  Is there a way to signal the program that a remote switch is 
-not responding?
+----------  Forwarded Message  ----------
 
->(I want an uml-switch, which can start and stop uml-guests and be 
->controlled via a
->control socket)
+Subject: Re: Fwd: [PATCH] UML - close host file descriptors properly
+Date: Thursday 25 November 2004 12:44
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
 
-Hmmm, is that the right spot for control?  I'd be concerned that a unsecured 
-UDP port would allow someone to inject arbitrary control packets between the 
-switches.  A seperate daemon that spoke mconsole securely and could talk to 
-uml_switch would probably make more sense and be safer.
+Blaisorblade wrote:
+> This patch was sent by Jeff for merging in mainline - since you complained
+> on an earlier version, have you still something to correct in it?
 
-Steve Schmidtke
+AFAICS, it's the same patch as you have in bb3 with the name
+ "uml-close-all-fds". So, it's OK. To have reboot on SKAS working,
+ fix-reboot-skas is required also.
 
+> Btw, the reboot problem is not fixed for me - even in -bb3, with your last
+> patch tarball excluding SYSEMU_SINGLESTEP, rebooting does not always work.
 
+That's bad. On my system, since the patches are applied, I never saw a reboot
+failing.
+I have an idea to find out, what happens on your machine. First let me
+ summarize, what the reasons were on my system for problems while reboot:
+- on shutdown, UML blocks some signals before jumping back to main().
+- while the signals are blocked, the file descriptors still are set to
+ generate SIGIO an IO events.
+- immediately before doing the exec()for reboot, UML did the following
+ sequence * unblock the signals
+   * stop the timers
+   * deactivate the fds (i.e. reset O_ASYNC)
+- This failed, because:
+   * when a signal-handler was called after unblocking the signals, it
+ segfaulted, because it got NULL from get_current(), so I inserted to set
+ SIG_IGN for SIGIO and SIGALRM/SIGVTALRM, before unblocking the signals. Also
+ I changed the sequence to first deactivate the fds and stop the timers, then
+ unblock the signals
+   * Some fds, that were activated to generate SIGIO, were not closed nor
+ disabled (on my system, this was the daemon-network). So, new SIGIOs were
+ generated, while or short after the exec(). Since exec() resets the
+ SIGIO-handler to SIG_DFL, this kills UML.
+Considering this, the reason for the problems on your system might be an
+ other configuration, where again a fd stays open and active and kills the
+ reboot generating a SIGIO.
+We can verify this by inserting
+     char c;
+     change_sig(SIGIO,0);
+     read(0,&c,1);
+     change_sig(SIGIO,1);
+as the very first action in main(). Now on start and reboot you have to press
+a key to continue. A SIGIO coming in while waiting, won't kill us, since
+ SIGIO is blocked. So we have time to do "ls -l /proc/PID/fd" and see,
+ whether there is something open still, only 0,1 and 2 should be open at that
+ time. If there are others open, we need a close-all-fds-2 patch.
+There is an other possibility, I can't leave out. When the kernel does the
+ exec(), there might be a signal just written to the queue, but not delivered
+ yet. Then the first action after the exec() the kernel does, is to kill the
+ process. Also, if there is a fd still open and active with CLOSE_ON_EXEC
+ set, after the exec() you will see nothing being wrong, but in very rare
+ cases, the reboot might be broken. To catch these, you could insert a
+ read(0,&c,1) immediately before the exec() (no change_sig needed) and see,
+ which fds are open there. But in this case, e.g. vmfile-XXXXX is
+ intentionally open and will be closed on exec(). That doesn't matter, since
+ SIGIO isn't activated for it. So, we have to look carefully, which fd is
+ wrong.
+
+> ----------  Forwarded Message  ----------
+>
+> Subject: [PATCH] UML - close host file descriptors properly
+> Date: Thursday 25 November 2004 00:07
+> From: Jeff Dike <jdike@addtoit.com>
+> To: akpm@osdl.org
+> Cc: linux-kernel@vger.kernel.org, Blaisorblade <blaisorblade_spam@yahoo.it>
+>
+> This process closes some file descriptors which were left open incorrectly.
+> These are the initrd descriptor, the temporary test file used for testing
+> /tmp for execution permission, and a descriptor used by the netork to
+> connect to the switch.  In the network case, we add network devices to the
+> opened list as soon as they are added to UML, rather than when they are
+> configured. This ensures that close_devices will remove the device properly
+> on shutdown.
+>
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+>
+> Index: 2.6.9/arch/um/drivers/net_kern.c
+> ===================================================================
+> --- 2.6.9.orig/arch/um/drivers/net_kern.c 2004-11-18 11:02:33.000000000
+> -0500 +++ 2.6.9/arch/um/drivers/net_kern.c 2004-11-18 11:22:10.000000000
+> -0500 @@ -126,10 +126,6 @@
+>   lp->tl.data = (unsigned long) &lp->user;
+>   netif_start_queue(dev);
+>
+> - spin_lock(&opened_lock);
+> - list_add(&lp->list, &opened);
+> - spin_unlock(&opened_lock);
+> -
+>   /* clear buffer - it can happen that the host side of the interface
+>    * is full when we get here.  In this case, new data is never queued,
+>    * SIGIOs never arrive, and the net never works.
+> @@ -150,11 +146,9 @@
+>
+>   free_irq_by_irq_and_dev(dev->irq, dev);
+>   free_irq(dev->irq, dev);
+> - if(lp->close != NULL) (*lp->close)(lp->fd, &lp->user);
+> + if(lp->close != NULL)
+> +  (*lp->close)(lp->fd, &lp->user);
+>   lp->fd = -1;
+> - spin_lock(&opened_lock);
+> - list_del(&lp->list);
+> - spin_unlock(&opened_lock);
+>
+>   spin_unlock(&lp->lock);
+>   return 0;
+> @@ -289,7 +283,7 @@
+>  static spinlock_t devices_lock = SPIN_LOCK_UNLOCKED;
+>  static struct list_head devices = LIST_HEAD_INIT(devices);
+>
+> -static int eth_configure(int n, void *init, char *mac,
+> +static int eth_configure(int n, void *init, char *mac,
+>      struct transport *transport)
+>  {
+>   struct uml_net *device;
+> @@ -397,6 +391,11 @@
+>
+>   if (device->have_mac)
+>    set_ether_mac(dev, device->mac);
+> +
+> + spin_lock(&opened_lock);
+> + list_add(&lp->list, &opened);
+> + spin_unlock(&opened_lock);
+> +
+>   return(0);
+>  }
+>
+> @@ -705,7 +704,7 @@
+>  static void close_devices(void)
+>  {
+>   struct list_head *ele;
+> - struct uml_net_private *lp;
+> + struct uml_net_private *lp;
+>
+>   list_for_each(ele, &opened){
+>    lp = list_entry(ele, struct uml_net_private, list);
+> Index: 2.6.9/arch/um/kernel/initrd_user.c
+> ===================================================================
+> --- 2.6.9.orig/arch/um/kernel/initrd_user.c 2004-11-18 11:02:33.000000000
+>  -0500 +++ 2.6.9/arch/um/kernel/initrd_user.c 2004-11-18 11:07:48.000000000
+>  -0500 @@ -29,6 +29,8 @@
+>           filename, -n);
+>    return(-1);
+>   }
+> +
+> + os_close_file(fd);
+>   return(0);
+>  }
+>
+> Index: 2.6.9/arch/um/kernel/mem_user.c
+> ===================================================================
+> --- 2.6.9.orig/arch/um/kernel/mem_user.c 2004-11-18 11:02:33.000000000
+> -0500 +++ 2.6.9/arch/um/kernel/mem_user.c 2004-11-18 11:07:48.000000000
+> -0500 @@ -101,6 +101,8 @@
+>   }
+>   printf("OK\n");
+>   munmap(addr, UM_KERN_PAGE_SIZE);
+> +
+> + os_close_file(fd);
+>  }
+>
+>  static int have_devanon = 0;
+>
+> -------------------------------------------------------
+
+-------------------------------------------------------
+
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
