@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bbiq9-0002vs-LZ for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:37:13 -0700
+	id 1BbiqD-0002wr-St for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 09:37:17 -0700
 Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1Bbiq8-0006m5-OR for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:37:12 -0700
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BbiqD-0004n7-BY for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 09:37:17 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200406191247.19316.blaisorblade_work@yahoo.it>
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [patch 1/1] Avoid that gcc breaks UML with "unit at a
-	time" compilation mode.
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_vbF1AGbCIZAbqqI"
+Message-Id: <200406191708.31918.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] [PATCH] [2.4.26] Symbols fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,36 +25,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 19 Jun 2004 12:47:48 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Sat, 19 Jun 2004 17:08:31 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 
-Avoid that gcc breaks UML with "unit at a time" compilation mode; this patch 
-is for 2.6. Please test it.
 
+--Boundary-00=_vbF1AGbCIZAbqqI
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
----
+Please apply this to fix a "XXX" about some symbols to export in user_syms.c.
+This makes the file similar to the 2.6 one, so I don't think that those 
+symbols will "strangely clash with headers".
 
- uml-Dike-linux-2.6.6-paolo/arch/um/Makefile |    2 ++
- 1 files changed, 2 insertions(+)
+However I'm compiling it right now, to test it anyway.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-diff -puN arch/um/Makefile~disable-UnitAtATime arch/um/Makefile
---- uml-Dike-linux-2.6.6/arch/um/Makefile~disable-UnitAtATime	2004-06-19 
-11:56:02.000000000 +0200
-+++ uml-Dike-linux-2.6.6-paolo/arch/um/Makefile	2004-06-19 11:56:11.000000000 
-+0200
-@@ -61,6 +61,8 @@ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSU
- 	-D_LARGEFILE64_SOURCE $(ARCH_INCLUDE) -Derrno=kernel_errno \
- 	-Dsigprocmask=kernel_sigprocmask $(MODE_INCLUDE)
+--Boundary-00=_vbF1AGbCIZAbqqI
+Content-Type: text/x-diff; charset="us-ascii"; name="2.4-Symbols-fix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="2.4-Symbols-fix.patch"
+
+--- arch/um/kernel/user_syms.c.fix	2004-06-19 16:51:14.000000000 +0200
++++ arch/um/kernel/user_syms.c	2004-06-19 16:59:34.000000000 +0200
+@@ -1,11 +1,6 @@
+ #include "linux/types.h"
+ #include "linux/module.h"
  
-+CFLAGS += $(call check_gcc,-fno-unit-at-a-time,)
+-/* XXX Deleted a number of symbols because they clashed strangely with headers
+- * Add them back later.
+- */
+-
+-#if 0
+ /* Some of this are builtin function (some are not but could in the future),
+  * so I *must* declare good prototypes for them and then EXPORT them.
+  * The kernel code uses the macro defined by include/linux/string.h,
+@@ -15,20 +10,20 @@
+ #undef strlen
+ #undef memcpy
+ #undef memset
+-
+-EXPORT_SYMBOL_PROTO(strlen);
+-EXPORT_SYMBOL_PROTO(memset);
+-EXPORT_SYMBOL_PROTO(memcpy);
+ #undef strstr
+ 
+-EXPORT_SYMBOL_PROTO(strstr);
+-
+ extern size_t strlen(const char *);
+ extern void *memcpy(void *, const void *, size_t);
+ extern void *memset(void *, int, size_t);
+ extern int printf(const char *, ...);
++extern char *strstr(const char *, const char *);
 +
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
++EXPORT_SYMBOL(strlen);
++EXPORT_SYMBOL(memset);
++EXPORT_SYMBOL(memcpy);
++EXPORT_SYMBOL(strstr);
++EXPORT_SYMBOL(printf);
  
- # These are needed for clean and mrproper, since in that case .config is not
+-#endif
+ 
+ /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
+  * However, the modules will use the CRC defined *here*, no matter if it is 
+@@ -81,5 +76,3 @@
+ EXPORT_SYMBOL_PROTO(statfs64);
+ 
+ EXPORT_SYMBOL_PROTO(getuid);
+-
+-EXPORT_SYMBOL_PROTO(printf);
 
-_
+--Boundary-00=_vbF1AGbCIZAbqqI--
 
 
 
