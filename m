@@ -1,9 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ASZ0B-0000hX-Re
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 01:45:27 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ASZ0B-0000mR-7b
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 01:45:27 -0800
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9
- crash 
-In-Reply-To: <200312060005.hB605IAv008253@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] [PATCH] provide asm/ldt.h 
+In-Reply-To: <200312060005.hB6050Av008225@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0312061043110.13464-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -16,30 +23,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 6 Dec 2003 10:41:43 +0100 (CET)
+Date: Sat, 6 Dec 2003 10:45:01 +0100 (CET)
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Cc: Steve Bennett <steveb@snapgear.com>, user-mode-linux-devel@lists.sourceforge.net
 
 On Fri, 5 Dec 2003, Jeff Dike wrote:
 
-> It would be useful for someone to start a new UML tree, collect patches, merge 
-> them in, get testing, and forward them on to me.  But so far, pretty much no
-> one is in the code but me, so you're limited by the time that I can put into
-> it.
+> I don't think that's a great idea.  UML pretends to be the same arch as the 
+> host to userspace, so you should be compiling against the host's headers.
 
-I could volonteer for this job if it wasn't for bitkeeper and it's
-non-competive license restriction and I can not accept a license which
-prevents me from working on other similar projects just to be able to work
-on an open-source project (section 3d in the BKL license agreement), and 
-based on what we do with some tools around CVS I am probably already in 
-violation with the BKL agreement.
-
-If BitMovers would change the license to exclude Open Source version
-management tools from section 3d then the license is probably acceptable
-even if I dislike certain other terms..
-
-If there is a way where the above can be done without having to use 
-bitkeeper then I am all set.
+Which is a bit troublesome on self-hosted UML systems of when building 
+kernel configuration dependent programs.
 
 Regards
 Henrik
