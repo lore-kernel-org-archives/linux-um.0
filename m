@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BE7h0-0000rt-EC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Apr 2004 07:18:14 -0700
-Received: from albatross.ericsson.se ([193.180.251.49])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BE7gy-0002eD-OK for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Apr 2004 07:18:12 -0700
-Received: from esealmw140.al.sw.ericsson.se ([153.88.254.121])
-	by albatross.ericsson.se (8.12.10/8.12.10/WIREfire-1.8b) with ESMTP id
-	i3FEI7WR008246 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 15 Apr 2004 16:18:07 +0200 (MEST)
-From: Miklos.Szeredi@eth.ericsson.se (Miklos Szeredi)
-Message-Id: <200404151417.i3FEHr623628@duna48.eth.ericsson.se>
-Subject: [uml-devel] Kernel panic: fix_range fixing wrong address space
+	id 1BEE1G-0006xo-QO for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Apr 2004 14:03:34 -0700
+Received: from linuxhacker.ru
+	([217.76.32.60] helo=shrek.linuxhacker.ru ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BEE1G-00054H-9d
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Apr 2004 14:03:34 -0700
+From: Oleg Drokin <green@linuxhacker.ru>
+Message-ID: <20040415210318.GA205486@linuxhacker.ru>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="DocE+STaALJfprDB"
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] Fix for annoying problem with hostfs readdir
+	problems.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,69 +28,86 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Apr 2004 16:17:53 +0200 (MEST)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 16 Apr 2004 00:03:19 +0300
+To: jdike@karaya.com, umka@namesys.com, user-mode-linux-devel@lists.sourceforge.net, sikkh@wp.pl
 
-I get this error on 2.6.4 + latest uml patch.  The cause seems to be
-when call_usermodehelper() function is called twice in quick
-succession.  Timing seems to play the major role here, doing
-schedule() between them doesn't help.  I've tried under 2.4 and 2.6
-hosts, and the problem appears in both cases.  The same module runs
-perfectly under native linux, so it seems to be a UML bug.
 
-Here's a minimal kernel module that can be used to reproduce this
-problem:
 
-insmod umlbug.ko
+--DocE+STaALJfprDB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-echo > /proc/fs/umlbug
-(wait a little)
-echo > /proc/fs/umlbug
+Hello!
 
- -- no problem 
+   So the annoying problem with readdir not working on hostfs (on 2.6 host
+   kernel only for me) was finally hunted to memory allocation
+   problem during opendir.
 
-echo > /proc/fs/umlbug; echo > /proc/fs/umlbug
+   The patch below is a working and tested attempt at fixing it.
+   It is againt 2.4.20-something, but is pretty straightforward and
+   probably should apply everywhere else.
 
- -- Bang!
+Bye,
+    Oleg
 
-Any ideas?
+--DocE+STaALJfprDB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="malloc_fix.diff"
 
-Thanks,
-Miklos
-============================================================
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/proc_fs.h>
+--- uml-2.4/arch/um/kernel/process_kern.c.orig	2004-04-15 23:26:49.000000000 +0300
++++ uml-2.4/arch/um/kernel/process_kern.c	2004-04-15 23:49:38.312250576 +0300
+@@ -16,6 +16,7 @@
+ #include "linux/module.h"
+ #include "linux/init.h"
+ #include "linux/capability.h"
++#include "linux/vmalloc.h"
+ #include "asm/unistd.h"
+ #include "asm/mman.h"
+ #include "asm/segment.h"
+@@ -279,6 +280,11 @@ void *um_kmalloc(int size)
+ 	return(kmalloc(size, GFP_KERNEL));
+ }
+ 
++void *um_vmalloc(int size)
++{
++	return(vmalloc(size));
++}
++
+ void *um_kmalloc_atomic(int size)
+ {
+ 	return(kmalloc(size, GFP_ATOMIC));
+--- uml-2.4/arch/um/main.c.orig	2004-04-15 23:58:28.786606216 +0300
++++ uml-2.4/arch/um/main.c	2004-04-15 23:53:32.706617216 +0300
+@@ -161,7 +161,7 @@ extern void *__real_malloc(int);
+ void *__wrap_malloc(int size)
+ {
+ 	if(CAN_KMALLOC())
+-		return(um_kmalloc(size));
++		return(um_vmalloc(size));
+ 	else
+ 		return(__real_malloc(size));
+ }
+@@ -179,7 +179,7 @@ extern void __real_free(void *);
+ 
+ void __wrap_free(void *ptr)
+ {
+-	if(CAN_KMALLOC()) kfree(ptr);
++	if(CAN_KMALLOC()) vfree(ptr);
+ 	else __real_free(ptr);
+ }
+ 
+--- uml-2.4/arch/um/include/user.h.orig	2004-04-15 23:41:57.000000000 +0300
++++ uml-2.4/arch/um/include/user.h	2004-04-15 23:41:34.000000000 +0300
+@@ -12,6 +12,7 @@ extern void schedule(void);
+ extern void *um_kmalloc(int size);
+ extern void *um_kmalloc_atomic(int size);
+ extern void kfree(void *ptr);
++extern void vfree(void *ptr);
+ extern int in_aton(char *str);
+ extern int open_gdb_chan(void);
+ 
 
-static int trigger_write(struct file *file, const char __user *buffer,
-			 unsigned long count, void *data)
-{
-	char *argv[] = { "/bin/true", NULL };
-	char *envp[] = { NULL };
-	call_usermodehelper(argv[0], argv, envp, 1);
-	return count;
-}
-
-static int __init init_umlbug(void)
-{
-	struct proc_dir_entry *e;
-	e = create_proc_entry("umlbug", S_IFREG | 0200, proc_root_fs);
-	if (e) {
-		e->owner = THIS_MODULE;
-		e->write_proc = trigger_write;
-	}
-	return 0;
-}
-
-static void __exit exit_umlbug(void)
-{
-	remove_proc_entry("umlbug", proc_root_fs);
-}
-
-module_init(init_umlbug)
-module_exit(exit_umlbug)
-MODULE_LICENSE("GPL");
-============================================================
+--DocE+STaALJfprDB--
 
 
 -------------------------------------------------------
