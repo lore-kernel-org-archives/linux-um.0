@@ -1,32 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Awj1G-00049R-BE for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 06:31:14 -0800
-Received: from gort.metaparadigm.com ([203.117.131.12])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwirF-0003h8-KO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 06:20:53 -0800
-Received: from localhost (unknown [127.0.0.1])
-	by gort.metaparadigm.com (Postfix) with ESMTP id B20191AC93
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 27 Feb 2004 22:20:44 +0800 (SGT)
-Received: from gort.metaparadigm.com ([127.0.0.1])
-	by localhost (gort [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 04114-03 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 27 Feb 2004 22:20:44 +0800 (SGT)
-Received: from metaparadigm.com (cm210.gamma72.maxonline.com.sg
-	[202.156.72.210])
-	by gort.metaparadigm.com (Postfix) with ESMTP id ECC321AC05
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 27 Feb 2004 22:20:43 +0800 (SGT)
-Message-ID: <403F523B.2090602@metaparadigm.com>
-From: Michael Clark <michael@metaparadigm.com>
+Message-ID: <403FBD07.9000500@nortelnetworks.com>
+From: Chris Friesen <cfriesen@nortelnetworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] 2.6.3 skas mode host and guest success
+Subject: [uml-devel] BUG REPORT -- getting "registered fd 47 twice"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,40 +16,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 Feb 2004 22:20:43 +0800
-To: UML Devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 27 Feb 2004 16:56:23 -0500
+To: User-mode-linux-devel@lists.sourceforge.net, User-mode-linux-user@lists.sourceforge.net
 
-Hi All,
+Got a bug report for you guys, please CC me since I'm not subscribed...
 
-After hunting through the list. I couldn't find a patch
-that cleanly applies to 2.6.3 (on top of latest uml patch)
-to re-enable skas host support.
+I've got a 2.4.24 kernel with the latest uml patch, running on a 2.4.19 
+host.  UML is running just plain, no skas or /dev/anon.  I'm using a 
+whole bunch of boot args, enough that I had to expand the array in 
+init/main.c.
 
-So after merging parts of Paulo's and Ingo's skas patches
-for 2.6.0 and 2.6.2, I now have a single patch that cleanly
-applies and runs for me both as a host and guest with 2.6.3
-rediffed against the latest uml patch.
+Anyways, when I boot it goes through the startup fine, but when it gives 
+the login prompt I see this:
 
-First apply 2.6.3-rc2.1 uml patch (cleanly applies to 2.6.3)
 
-   http://www.user-mode-linux.org/mirror/uml-patch-2.6.3-rc2-1.bz2
+DSC-0-0-0 login: Registering fd 47 twice
+Irqs : 3, 3
+Ids : 0xa0261138, 0xa0261138
+Registering fd 47 twice
+Irqs : 3, 3
+Ids : 0xa0261138, 0xa0261138
 
-Then apply the skas patch:
 
-   http://www.metaparadigm.com/~mclark/uml/uml-2.6.3-skas-1.patch
 
-It includes the following changes:
+The irq 3 corresponds to CONSOLE_IRQ.  When I try and log in it spits 
+out the following, once per character I type:
 
-   * PROC_MM Kconfig
-   * add back skas ptrace support
-   * export ldt functions with mm argument
-   * export do_mmap2 with mm argument
-   * compatibility wrapper for do_mmap_pgoff
-   * proc_mm now uses __init_new_context
 
-Use at your own risk - it boots and runs skas mode guest here ;)
+find_irq_by_fd doesn't have descriptor 47
 
-~mc
+
+Then it starts spewing out the following message until I kill the process:
+
+
+Failed to forward -1439843404 to pid 17758, err = 9
+
+
+Where 17758 is the pid for bash.  With gdb I set a breakpoint in 
+line_setup_irq, and ran a backtrace just before the first error message 
+above.  This is what I got:
+
+
+Breakpoint 5, line_setup_irq (fd=-1608117768, input=-1608117768,
+     output=-1347667284, data=0xa0261200) at line.c:199
+199     {
+(gdb) bt
+#0  line_setup_irq (fd=-1608117768, input=-1608117768, output=-1347667284,
+     data=0xa0261200) at line.c:199
+#1  0xa0126efe in enable_chan (chans=0xa0261200, data=0xa02611f8)
+     at chan_kern.c:164
+#2  0xa01284af in line_open (lines=0xa0261200, tty=0xaa75c000, opts=0x2f)
+     at line.c:255
+#3  0xa0126971 in open_console (tty=0x2f) at stdio_console.c:135
+#4  0xa00efb07 in tty_open (inode=0xaa60d9e0, filp=0xaa380e20) at 
+tty_io.c:1437
+(gdb)
+bre
+
+
+So, somehow the generic tty_open stuff is giving strange behaviour.  Any 
+ideas what's going on?
+
+Chris
+
+
+
+-- 
+Chris Friesen                    | MailStop: 043/33/F10
+Nortel Networks                  | work: (613) 765-0557
+3500 Carling Avenue              | fax:  (613) 765-2986
+Nepean, ON K2H 8E9 Canada        | email: cfriesen@nortelnetworks.com
+
 
 
 -------------------------------------------------------
