@@ -1,29 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-list2-b.sourceforge.net ([10.3.1.8]
-	helo=sc8-sf-list2.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BsjBX-0006Qj-1f for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Aug 2004 07:25:35 -0700
-Message-Id: <200408051524.i75FOiCi002455@ccure.user-mode-linux.org>
-Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind 
-In-Reply-To: Your message of "Thu, 05 Aug 2004 10:28:00 BST."
-	<Pine.LNX.4.60.0408051026120.21344@hermes-1.csi.cam.ac.uk> 
-References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
-	<410EFCDB.8080404@enterasys.com>
-	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
-	<Pine.LNX.4.60.0408031028541.22157@hermes-1.csi.cam.ac.uk>
-	<200408031450.i73EoEvv002040@ccure.user-mode-linux.org>
-	<Pine.LNX.4.60.0408031527320.22157@hermes-1.csi.cam.ac.uk>
-	<200408031750.i73HoMvv002966@ccure.user-mode-linux.org>
-	<410FCC70.1050902@enterasys.com>
-	<200408031931.i73JVkvv003367@ccure.user-mode-linux.org>
-	<yek3c33tk5o.fsf@audi.uk.cyberscience.com>
-	<20040804153541.GA7237@ccure.user-mode-linux.org>
-	<yekacxbrlvi.fsf@audi.uk.cyberscience.com>
-	<200408041800.i74I0Nvv007667@ccure.user-mode-linux.org>
-	<2b464bd94c.work@loxley.compton.nu>
-	<200408042102.i74L2Pvv008609@ccure.user-mode-linux.org>
-	<Pine.LNX.4.60.0408051026120.21344@hermes-1.csi.cam.ac.uk> 
+	id 1Bsl2A-00045E-IS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Aug 2004 09:24:02 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1Bsl29-0001MC-Vy
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Aug 2004 09:24:02 -0700
+Message-Id: <200408051723.i75HNjCi003244@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Q: UML thread communication - scheduling oddness 
+In-Reply-To: Your message of "Thu, 05 Aug 2004 09:35:01 EDT."
+	<41123785.5040004@nortelnetworks.com> 
+References: <200408050020.i750Kwvv009127@ccure.user-mode-linux.org>
+	<41123785.5040004@nortelnetworks.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -38,23 +29,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 05 Aug 2004 11:24:44 -0400
-To: Nicholas Nethercote <njn25@cam.ac.uk>
-Cc: Tom Hughes <thh@cyberscience.com>, dbahi@enterasys.com, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
+Date: Thu, 05 Aug 2004 13:23:45 -0400
+To: Joe Marzot <gmarzot@nortelnetworks.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Randy Macleod <macleodr@nortelnetworks.com>
 
-njn25@cam.ac.uk said:
-> To summarise:  you seem to be confident there won't be any problems,
-> and  Tom's not so sure.  I'm not sure either, but the threads/signals/
-> syscalls  stuff is the part of Valgrind I understand the least.  I
-> would say, just  don't be shocked if you do this and weird things
-> start happening :) 
+gmarzot@nortelnetworks.com said:
+> Could you add a few sentences though on the delivery mechnisms for the
+>  the packets to the kernel thread and to userspace. I saw a poll() on
+> the  pollfds array which has the taps fd in it but this is a
+> non-blocking  poll and I could not trace to how often it is called and
+> what triggers  it - I also saw the sigio handler but I could not see
+> who was generating  the SIGIO - is that how the userspace thread is
+> woken up? 
 
-Fair enough.  I'd just point out that this worked fine a couple of years ago,
-so there's some basis for my confidence.  OTOH, that patch was never merged,
-so possibly that basis has disappeared.
+OK, an incoming packet is handled this way:
+	it's received by the host and routed to the tap device (or 
+alternatively, it's received by the host eth, sent to the bridge that it's part
+of, and copied to the tap device which is also in the bridge)
+	it pops out of /dev/net/tun, which UML has a file descriptor open to
+	the file descriptor is set up O_ASYNC, so that generates a SIGIO
+	this causes sigio_handler to be called
+	it looks at all of the descriptors in its care, and handles all the
+ones that are now active
+	the network driver's interrupt routine is called whenever a tap fd is
+active, and it reads the frame off the fd and passes it to the UML network 
+stack
 
-But I'd say that this is worth looking into, since valgrinding the kernel 
-would be an immensely useful thing to be able to do.
+sigio_handler does blocking polls because it knows that something is active,
+and that it won't, in fact, block.
 
 				Jeff
 
