@@ -1,27 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AEHUg-00064k-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 27 Oct 2003 16:13:54 -0800
-Received: from blacksheep.csh.rit.edu ([129.21.60.6])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AEHU6-0004Xd-58
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 27 Oct 2003 16:13:18 -0800
-Received: from dijkstra (dijkstra.csh.rit.edu [129.21.60.152])
-	by blacksheep.csh.rit.edu (Postfix) with ESMTP id E956BBC
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 27 Oct 2003 19:13:16 -0500 (EST)
-Received: from mdz by dijkstra with local (Exim 3.35 #1 (Debian))
-	id 1AEHU4-0005eX-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 27 Oct 2003 19:13:16 -0500
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] Has anyone ever considered a COW patch for loop.c
-Message-ID: <20031028001316.GT6350@dijkstra.csh.rit.edu>
-References: <3F9DA82B.7020808@easyco.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3F9DA82B.7020808@easyco.com>
+	id 1AEQP4-0006ad-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 28 Oct 2003 01:44:42 -0800
+Received: from bay2-dav35.bay2.hotmail.com ([65.54.246.92] helo=hotmail.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AEQOF-0001QA-Nn
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 28 Oct 2003 01:43:51 -0800
+From: "James McMechan" <James_McMechan@hotmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_000E_01C39CDF.0C3EFB00"
+Message-ID: <BAY2-DAV35Jc0xvlUQ9000007e8@hotmail.com>
+Subject: [uml-devel] short fixes for modules on 2.6.0-test
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -32,21 +24,78 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 27 Oct 2003 19:13:16 -0500
+Date: Mon, 27 Oct 2003 23:07:09 -0800
 To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Oct 27, 2003 at 03:20:11PM -0800, Doug Dumitru wrote:
 
-> It would be really intersting to do a cow format compatible patch for 
-> loop.c so that the standard loopback device could mount cow file pairs.
-> 
-> Has anyone considered/started on this.  If not, I might give it a hack.
+This is a multi-part message in MIME format.
 
-As I've said before, I think the way to go would be to teach device-mapper
-about the COW on-disk metadata format, and treat it as a snapshot.
+------=_NextPart_000_000E_01C39CDF.0C3EFB00
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
--- 
- - mdz
+Some of these have appeared before,
+but they still have not made mainline.
+Oh well, thankfully the apply_alternatives
+function works nicely as a nop, since if
+we don't update the spinlock functions
+all that happens is that it uses the old
+unoptimized functions
+------=_NextPart_000_000E_01C39CDF.0C3EFB00
+Content-Type: application/octet-stream;
+	name="mod-diff"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="mod-diff"
+
+diff -Nur uml-2.6.0-test8/arch/um/kernel/mem.c =
+work-2.6.0-test8/arch/um/kernel/mem.c=0A=
+--- uml-2.6.0-test8/arch/um/kernel/mem.c	2003-10-23 22:17:36.000000000 =
+-0700=0A=
++++ work-2.6.0-test8/arch/um/kernel/mem.c	2003-10-25 09:11:53.000000000 =
+-0700=0A=
+@@ -686,6 +686,7 @@=0A=
+ =0A=
+ 	return(region->start_pfn + (page - (struct page *) region->mem_map));=0A=
+ }=0A=
++EXPORT_SYMBOL(page_to_pfn);=0A=
+ =0A=
+ struct mem_region *pfn_to_region(unsigned long pfn, int *index_out)=0A=
+ {=0A=
+diff -Nur uml-2.6.0-test8/arch/um/kernel/um_arch.c =
+work-2.6.0-test8/arch/um/kernel/um_arch.c=0A=
+--- uml-2.6.0-test8/arch/um/kernel/um_arch.c	2003-10-23 =
+22:17:36.000000000 -0700=0A=
++++ work-2.6.0-test8/arch/um/kernel/um_arch.c	2003-10-25 =
+07:51:25.000000000 -0700=0A=
+@@ -415,6 +415,10 @@=0A=
+ 	check_sigio();=0A=
+ }=0A=
+ =0A=
++void apply_alternatives(void *start, void *end)=0A=
++{=0A=
++}=0A=
++=0A=
+ /*=0A=
+  * Overrides for Emacs so that we follow Linus's tabbing style.=0A=
+  * Emacs will notice this stuff at the end of the file and automatically=0A=
+diff -Nur uml-2.6.0-test8/include/asm-um/elf.h =
+work-2.6.0-test8/include/asm-um/elf.h=0A=
+--- uml-2.6.0-test8/include/asm-um/elf.h	2003-07-27 10:04:15.000000000 =
+-0700=0A=
++++ work-2.6.0-test8/include/asm-um/elf.h	2003-10-23 22:38:20.000000000 =
+-0700=0A=
+@@ -15,4 +15,7 @@=0A=
+ =0A=
+ #define USE_ELF_CORE_DUMP=0A=
+ =0A=
++#define R_386_32	1=0A=
++#define R_386_PC32	2=0A=
++=0A=
+ #endif=0A=
+
+------=_NextPart_000_000E_01C39CDF.0C3EFB00--
 
 
 -------------------------------------------------------
