@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CwwMT-00017U-S9 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 21:50:33 -0800
+	id 1CwwQd-0001Jt-Qm for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 21:54:51 -0800
 Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CwwMQ-0007cI-1a for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 21:50:33 -0800
+	id 1CwwQc-0007vq-QP for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 21:54:51 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20050113192817.2c0997f1.xraz@rwxr-xr-x.de>
-In-Reply-To: <20050113192817.2c0997f1.xraz@rwxr-xr-x.de>
+Subject: Re: [uml-devel] Re: [POLL] Putting UML/2.4 into "fixes-only" mode
+References: <200501262310.49814.blaisorblade@yahoo.it>
+	<200501290539.j0T5dlwM007191@ccure.user-mode-linux.org>
+In-Reply-To: <200501290539.j0T5dlwM007191@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200502040649.42422.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] privilege escalation?
+Message-Id: <200502040654.03388.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,78 +30,65 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 4 Feb 2005 06:49:42 +0100
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-Cc: Frank 'xraz' Fricke <xraz@rwxr-xr-x.de>
+Date: Fri, 4 Feb 2005 06:54:03 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Thursday 13 January 2005 19:28, Frank 'xraz' Fricke wrote:
-> Hi List!
+On Saturday 29 January 2005 06:39, you wrote:
+> blaisorblade@yahoo.it said:
+> > It's a huge work, but what is more important, it could obviously hurt
+> > stability...
 
-> I built UML from 2.6.10 sources with no additional uml-specific patches.
-> My Host is also 2.6.10 with skas. I discovered that when (my) uml is
-> running as root _every_ user-id inside the uml may chmod _every_ file on a
-> hostfs mount and therfore become root etc...
-I've verified that what you say is indeed true and if it happens on other 
-releases.
+> Yes.
 
-The current result, in fact, is that on both 2.6.9-bb4, 2.6.10 (I actually 
-tested onto the -bs5, but there cannot be any difference), what 
-you say does happen:
+> > So, I'd suggest to follow this policy to choose the work to merge:
+> >
+> > - reduce *a lot* what is going to be merged... no new features, no
+> > code  cleanups (especially NOT the Makefiles cleanups)...
+> >
+> > - concentrate on stability... and on backing out the hostfs rewrite.
 
-paolo@zion:~ (0)$ chmod 4755 /bin/bash
-chmod: changing permissions of `/bin/bash': Operation not permitted
+> This makes all kinds of sense.  But, from my point of view, if I'm going
+> maintain both 2.4 and 2.6 trees, I want them to be as similar as possible.
 
-paolo@zion:~ (0)$ chmod 4755 /mnt/host/bin/bash
-paolo@zion:~ (0)$ ll /mnt/host/bin/bash
+> We can go through the patches, and I got a nice list of them, and I was
+> planning on going through them and applying all of the ones that made sense
+> in 2.4.
 
--rwsr-xr-x  1 root root 662724 2004-10-20 02:15 /mnt/host/bin/bash*
+> So, your proposal makes sense from the point of a large number of users,
+> but you're signing me up for a whole lot of extra work.  So, I'm not too
+> inclined to run a stability 2.4 tree, as much sense as it makes.
 
-> This also happens if the hostfs mount is not the root-fs.
-> Is the following behaviour desired?
+> Are you?  Or someone else?  I've got this nice list of patches, and I'll
+> be happy to go through them and categorize them in terms of their effects
+> on stability.
 
-Surely not, I hope! However, remember that UML is often best run as 
-unprivileged user and inside one chroot.
+Well, there are two things that you can do to *avoid* increasing your work:
 
-> If not: what could cause it? 
+- avoid backporting cleanups, like the bh one... it's just lost time.
 
-Well, there is little that you can setup about this issue, apart the fact of 
-running UML itself as root - I've longly had the idea to add a check to 
-prevent UML from being run as root... (or at least give a very verbose 
-warning about the potential problems).
+- avoid if possible to backport new features...
 
-That said, this is one UML bug.
+- concentrate on the recent security fixes, if possible... the 
+syscall-security-1/6 fixes were not enough on 2.6 to fix everything, so for 
+me it's evident they cannot suffice on 2.4.
 
-> xraz@net3:~$ grep root /proc/mounts
-> rootfs / rootfs rw 0 0
-> /dev/root / hostfs rw 0 0
->
-> xraz@net3:~$ id
-> uid=1000(xraz) gid=104(xraz) groups=104(xraz),9997(chefs)
->
-> xraz@net3:~$ ls -la /bin/dash
-> -rwxr-xr-x  1 root root 83960 Aug 22 20:28 /bin/dash
->
-> xraz@net3:~$ chmod 4755 /bin/dash
->
-> xraz@net3:~$ ls -la /bin/dash
-> -rwsr-xr-x  1 root root 83960 Aug 22 20:28 /bin/dash
->
-> xraz@net3:~$ /bin/dash -c id
-> uid=1000(xraz) gid=104(xraz) euid=0(root) groups=104(xraz),9997(chefs)
+Also, it's not the kind of work which is easy to delegate (to me at least) - 
+those patches hack the UML core and I've not followed them well - for missing 
+time and for their difficulty.
 
-> What is going wrong?
-> Because i suppose this is a local error and not an uml-bug i don't yet
-> include debuginfo about my uml & system here.
+Also, now, I'm doing some more work on the 2.4 tree - I've some fixes I found 
+useful, like the 2.6.4 scheduler fixes which weren't merged in 2.4 and some 
+more recent ones.
 
-Well, this was not known to me, and surely is not intended... However I don't 
-think for now that such info is needed.
+I did that to try fixing the /dev/urandom bug, before realizing that the 
+problem is in some code related to the urandom driver... the reported panic 
+is just a "scheduling in interrupt" one. It means also that the problem is 
+due probably to something in UML that is used by the driver. Suggestions:
 
-That said, it has been longly-known that every user inside UML can create file 
-as the user running UML, in hostfs, even if that is root - that is not 
-considered to be a problem. I had tried to creat() a file with the S_ISUID 
-(i.e. to make it suid) hoping that UML would have created a setuid file (as 
-root since I ran UML as root), but the test failed because UML had an 
-explicit check for such exploits, which disallowed this.
+- timing code
+- interrupt code (they are entropy sources).
+
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
