@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AjCzT-0004zM-0x for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 23:41:31 -0800
-Received: from userbb201.dsl.pipex.com ([62.190.241.201]
-	helo=irishsea.home.craig-wood.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AjCzS-0003Jj-IA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 23:41:30 -0800
-From: Nick Craig-Wood <ncw1@axis.demon.co.uk>
-Subject: Re: [uml-devel] uml-patch-2.4.23-2
-Message-ID: <20040121074127.GA26168@axis.demon.co.uk>
-References: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
-	<20040120092050.GA31994@axis.demon.co.uk>
-	<200401201500.i0KF09DG002355@ccure.user-mode-linux.org>
-	<20040120173534.GA15399@axis.demon.co.uk>
-	<200401202040.i0KKeCDG004061@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1AjN0T-0008Vg-1g for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jan 2004 10:23:13 -0800
+Received: from cyrus.vandervecken.com ([64.124.43.248])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AjN0S-0002pi-QU for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jan 2004 10:23:12 -0800
+Received: from geoff by cyrus.vandervecken.com with local (Exim 3.35 #1
+	(Debian)) id 1AjN0Q-0000ix-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 21 Jan 2004 10:23:10 -0800
+From: Geoff Thorpe <geoff@geoffthorpe.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200401202040.i0KKeCDG004061@ccure.user-mode-linux.org>
+Message-Id: <200401211323.13372.geoff@geoffthorpe.net>
+Subject: [uml-devel] status of valgrind/uml interaction?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,41 +31,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Jan 2004 07:41:27 +0000
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 21 Jan 2004 13:23:13 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jan 20, 2004 at 03:40:11PM -0500, Jeff Dike wrote:
-> ncw1@axis.demon.co.uk said:
-> > I diffed the hex dump to see what sort of corruptions they were.
-> > Nothing obvious springs to mind, other than that the corruptions start
-> > on a page boundary, but don't extend for a whole page.  Maybe the page
-> > is being re-used before writeout has finished?
-> 
-> Interesting, but I'm not sure what it means.
+Hi all,
 
-fxs tells you what operation caused the problem.  Its output is a
-little hard to decode though!
+I've been scanning over the list archives for the last few times valgrind 
+was discussed. It appeared from that surfing that some fixes need to be 
+applied to valgrind (or have they been committed?) for this to gel, and 
+that perhaps various false-positives turn up due to valgrind's ignorance 
+of kmalloc/[etc].
 
-> I had a 100% reproducable test last night, thanks to Chris Aker, but
-> it became somewhat iffy today.
+Has anything changed on this front, and does anyone have a link to these 
+valgrind patches/fixes that they could send me? We are already using UML 
+for emulation and testing of kernel modules for external hardware (which 
+in turn is also emulated on the same host), so the possibility of using 
+valgrind to sanitise behaviour in the modules is very interesting. If 
+this is already summarised somewhere a link would be very much 
+appreciated.
 
-fxs has blown up within a minute each time I've tried it with
-ubd=mmap.  Not always in the same place though!
+TIA for any tips.
 
-FWIW I left fxs running on 2.4.23-2 without ubd=mmap and it ran fine
-all night.
-
-> BTW, what filesystem is this?  I'm seeing corruption with ext3, but nothing
-> with ext2.
-
-Its ext2
-
-/dev/root / ext2 rw,noatime,nodiratime 0 0
+Cheers,
+Geoff
 
 -- 
-Nick Craig-Wood
-ncw1@axis.demon.co.uk
+Geoff Thorpe
+geoff@geoffthorpe.net
+http://www.geoffthorpe.net/
+
 
 
 -------------------------------------------------------
