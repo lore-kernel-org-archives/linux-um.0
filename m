@@ -2,31 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AkwOl-0003RQ-6w for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Jan 2004 18:22:47 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AkTVb-0001qE-Od for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Jan 2004 11:31:55 -0800
-From: M A Young <m.a.young@durham.ac.uk>
-In-Reply-To: <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk>
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<bu0gnf$ief$1@sea.gmane.org> <87y8sbbrup.fsf@bytesex.org>
-	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
-	<20040118162112.GA15509@elte.hu>
-	<20040118235730.GC21046@ccure.user-mode-linux.org>
-	<20040119075351.GA4088@elte.hu> <20040119082805.GA4412@elte.hu>
-	<Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk>
-	<20040120002301.GA5708@elte.hu>
-	<Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk>
-	<Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk> 
-	<Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> 
-	<200401241820.i0OIKHY3002399@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re:
-	uml-patch-2.6.0)
+	id 1Akxo0-0008UL-Hj for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Jan 2004 19:52:56 -0800
+Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
+	(Exim 4.30) id 1AkJ5w-0004fn-LA
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Jan 2004 00:24:45 -0800
+From: Dan Shearer <dan@shearer.org>
+Message-ID: <20040124082657.GI4203@erizo.shearer.org>
+References: <20040124050440.GF4203@erizo.shearer.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20040124050440.GF4203@erizo.shearer.org>
+Subject: [uml-devel] Re: Mapping con=pts to a port instead of con=port
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,25 +28,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 24 Jan 2004 19:31:43 +0000 (GMT)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Gerd Knorr <kraxel@bytesex.org>
+Date: Sat, 24 Jan 2004 18:56:57 +1030
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 24 Jan 2004, Jeff Dike wrote:
+Let's get the versions right. Patch is actually:
 
-> m.a.young@durham.ac.uk said:
-> >  A possible workaround which seems to work (but I have too much
-> > debugging turned on to be sure yet) is to set AT_SYSINFO_EHDR to be
-> > NULL in include/asm/archparam-i386.h, though clearly the ultimate aim
-> > would be to get the vsyscall stuff working properly.
->
-> Yup, that looks right to me.  I've set VSYSCALL_BASE to NULL in my tree.
-> Can you do the same and see if that fixes anything?
+--- tndCfgParse.l.orig
++++ tndCfgParse.l    
+@@ -132,7 +132,8 @@
+ [Oo][Nn]      { return(YY_ON); }
+ [Oo][Ff][Ff]  { return(YY_OFF); }
+  
+-"/dev/"[.A-Za-z][.A-Za-z0-9_-]* { strcpy(yylval.s, yytext); return(YY_DEVICE); }
++"/dev/"[.A-Za-z][.A-Za-z0-9_-]*|"/dev/pts/"[0-9]{1,5} { strcpy(yylval.s, yytext); return(YY_DEVICE); }
++
+ [0-9A-Za-z_-]+ { strcpy(yylval.s, yytext); return(YY_IDENT); }
+ .              { return(yytext[0]); }
 
-Yes, that fixes it (I tried a similar fix by setting AT_SYSINFO_EHDR
-directly to NULL, both work).
 
-	Michael Young
+-- 
+Dan Shearer
+dan@shearer.org
 
 
 -------------------------------------------------------
