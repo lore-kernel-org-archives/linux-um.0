@@ -2,23 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8jpJ-00030r-DN for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 11:20:49 -0700
-Received: from brown.brainfood.com ([146.82.138.61]
-	helo=gradall.private.brainfood.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1C8jpI-0005hO-ON for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 11:20:49 -0700
-From: Adam Heath <doogie@brainfood.com>
+	id 1C8l9W-0007vs-Nd for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 12:45:46 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1C8l9V-0007XO-0A
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 12:45:46 -0700
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] uml, ptrace, and BKL
-In-Reply-To: <20040918131814.GA2942@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.58.0409181318020.1171@gradall.private.brainfood.com>
+Message-ID: <20040918205024.GA3748@ccure.user-mode-linux.org>
 References: <Pine.LNX.4.58.0409171920470.1171@gradall.private.brainfood.com>
 	<20040918033012.GA1618@ccure.user-mode-linux.org>
 	<Pine.LNX.4.58.0409172129180.1171@gradall.private.brainfood.com>
 	<20040918131814.GA2942@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	<Pine.LNX.4.58.0409181318020.1171@gradall.private.brainfood.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0409181318020.1171@gradall.private.brainfood.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,29 +32,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Sep 2004 13:20:39 -0500 (CDT)
-To: Jeff Dike <jdike@addtoit.com>
+Date: Sat, 18 Sep 2004 16:50:24 -0400
+To: Adam Heath <doogie@brainfood.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 18 Sep 2004, Jeff Dike wrote:
+On Sat, Sep 18, 2004 at 01:20:39PM -0500, Adam Heath wrote:
+> This is true(and something I hadn't considered).  But with preemption, it's
+> possible for multiple threads to be running in the kernel(as I understand it).
 
-> The scalability of a lock depends on the number of processors on the system,
-> not the number of processes.  So, for a given host, increasing the number of
-> UMLs on the system won't increase the pressure on the BKL, assuming that
-> number is greater than the number of processors.  And in any case, on a UP
-> system, there is no BKL.
+That's true in any case.  The difference with preemption is that a thread
+can be preempted involuntarily when it's in the kernel.  This doesn't really
+change anything with locking, especially the BKL.  That's automatically dropped
+when a thread calls schedule(), so that if a thread was preempted while 
+holding the BKL, it will drop it during the context switch.
 
-This is true(and something I hadn't considered).  But with preemption, it's
-possible for multiple threads to be running in the kernel(as I understand it).
+> Same for a preemptible box.
 
-However, yes, ptrace paths should be rather short, so the chances for lock
-contention to occur are most likely small.
+Again, lock contention only really becomes an issue with lots of processors.
+So, you may see some contention on a 2P box, but in order for it to be a
+real problem, you'll probably need a lot more.
 
-> However, it would be interesting to see if UML is causing lock contention
-> anywhere.  Running lockmeter on an SMP box running UMLs would show if there's
-> any problems.
-
-Same for a preemptible box.
+				Jeff
 
 
 -------------------------------------------------------
