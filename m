@@ -1,15 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-References: <20040615113816.02b911c5.schpoo@dartmouth.edu>
-	<87zn73biui.fsf@amaterasu.srvr.nix>
-	<25d101c453c1$9978f090$2000000a@schlepptopp>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <25d101c453c1$9978f090$2000000a@schlepptopp> (roland's message
-	of "Wed, 16 Jun 2004 18:47:17 +0200")
-Message-ID: <87oenjb1vo.fsf@amaterasu.srvr.nix>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BaxzX-0007CA-2u for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jun 2004 07:35:47 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BaxzW-0000Ha-GO for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jun 2004 07:35:46 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
+	3.3.3 similarities to 2.6.6!?
+References: <114001c44bf7$b69ca120$2000000a@schlepptopp>
+	<200406142109.45156.blaisorblade_spam@yahoo.it>
+	<87oenle40x.fsf@amaterasu.srvr.nix>
+In-Reply-To: <87oenle40x.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: [BUG!?] Re: [uml-user] TUNSETIFF failed, errno =
-	16SIOCSIFFLAGS: Device or resource busy
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200406162109.57341.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,40 +30,65 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 16 Jun 2004 22:59:23 +0100
-To: roland <for_spam@gmx.de>
-Cc: Naomi Fox <schpoo@Dartmouth.EDU>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 16 Jun 2004 21:09:57 +0200
+Content-Transfer-Encoding: quoted-printable
+To: Nix <nix@esperi.org.uk>
+Cc: uml <uml@dot1q.net>, roland <for_spam@gmx.de>, uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 16 Jun 2004, roland stipulated:
-> hi!
-> 
->> > When I start up my UML, the networking works fine.  If I bring down my
->> > interface and attempt to bring it back up again, I get the following
->> > message.
->> >
->> > # ifconfig eth0 down
->> > # ifconfig eth0 up
->> > TUNSETIFF failed, errno = 16SIOCSIFFLAGS: Device or resource busy
-> 
->> ... which it is: it's a component of the bridge, and doesn't have its
->> own independent existence anymore.
-> 
-> yes - and that is why we should somewhat call it a "bug" - because a
-> uml user indeed is allowed to bring down/up eth0, but he (usually)
-> isn't allowed to do something outside the uml.
+Alle 08:20, marted=EC 15 giugno 2004, Nix ha scritto:
+> On Mon, 14 Jun 2004, BlaisorBlade mused:
 
-This is just the analogue of the way in which taking a link down from
-one end will automatically take it down at the other end, too.
+> > Well, ok, more hints, the first possible answer to this one seems to be
+> > that SuSE enables -funit-at-a-time:
+>
+> (unsurprising, given that -funit-at-a-time's primary author is jh@suse ;}=
+ )
 
->> Either bring down br0, or bring down the UML side of the link.
->> that is a workaround , not a solution.
-> i think UML needs some fix to handle tun/tap via bridge appropriately.
+Well, someone following gcc development! Compliments! Do you think, too tha=
+t=20
+SuSE gcc is a pre-release or heavily patched?
 
-Er, it works now. :)
+> Yep, -funit-at-a-time will definitely break kernels that aren't
+> expecting it, both because of elision of unused statics and because some
+> arches depend on emission of asm's at the top level to emit stuff in the
+> same order in generated code, and with -funit-at-a-time this just
+> doesn't happen anymore. (I don't think i386 is such an architecture,
+> though.)
 
--- 
-`We in no way believe that this Christ was a space alien.'
-                    --- A creationist website goes completely bonkers
+However, I would like to see a successful test-case with -fno-unit-at-a-tim=
+e,=20
+plus understanding what are the faulting declaration (i.e. adding=20
+attribute_used where needed), before saying this bug is over.
+
+> -funit-at-a-time is enabled by default for C and C++ in GCC 3.4.
+>
+> > This is the trick:
+> The sort of thing you want to stash away in a header file and never lay
+> eyes on again. :)
+
+Well, this is already done, in the kernel: see the definition of=20
+attribute_used in linux/compiler-gcc*.h.
+
+> > static const int hello ATTRIBUTE_USED  =3D 56;
+> >
+> > int main()
+> > {
+> >         asm(
+> >         "mov hello, %eax\n"
+> >         );
+>
+> Well, in this *specific* case, hello should be marked as clobbered,
+
+If you mean should be marked by the coder, ok (gcc is not smart).
+
+> which will also stop the compiler eliding it. But this *was* a contrived
+> testcase...
+
+Bye!
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
 
 
 -------------------------------------------------------
