@@ -2,24 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cwn1O-0007MA-TC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 11:52:10 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1Cwn5m-0007Vu-0G for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 11:56:42 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Cwn1N-00069x-PW for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 11:52:10 -0800
+	id 1Cwn5k-0006ec-Ak for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 11:56:41 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [PATCH 2.6] 4/7 replace uml_strdup by kstrdup
-References: <1107228511.41fef75f4a296@webmail.grupopie.com>
-	<84144f02050201235257d0ec1c@mail.gmail.com>
-	<4200BFA1.2060808@grupopie.com>
-In-Reply-To: <4200BFA1.2060808@grupopie.com>
+Subject: Re: [uml-devel] SKAS3: prerelease of V8 (against 2.6.9) uploaded
+References: <200501290036.51182.blaisorblade@yahoo.it>
+	<41FF9FA7.3000500@tuxrocks.com>
+	<08a901c5087a$fabe3950$0201a8c0@hawk>
+In-Reply-To: <08a901c5087a$fabe3950$0201a8c0@hawk>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200502032051.18191.blaisorblade@yahoo.it>
+Message-Id: <200502032055.49880.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,60 +31,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 3 Feb 2005 20:51:17 +0100
+Date: Thu, 3 Feb 2005 20:55:49 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Paulo Marques <pmarques@grupopie.com>, Pekka Enberg <penberg@gmail.com>, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, penberg@cs.helsinki.fi
+Cc: "Christopher S. Aker" <caker@theshore.net>, Doug Dumitru <doug@easyco.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Frank Sorenson <frank@tuxrocks.com>, Rob Landley <rob@landley.net>
 
-On Wednesday 02 February 2005 12:55, you wrote:
-> Pekka Enberg wrote:
-> > On Tue,  1 Feb 2005 03:28:31 +0000, pmarques@grupopie.com
-> >
-> > <pmarques@grupopie.com> wrote:
-> >>diff -buprN -X dontdiff
-> >> vanilla-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c
-> >> linux-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c ---
-> >> vanilla-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c      
-> >> 2004-12-24 21:35:40.000000000 +0000 +++
-> >> linux-2.6.11-rc2-bk9/arch/um/os-Linux/drivers/tuntap_user.c 2005-01-31
-> >> 20:39:08.591154025 +0000
-> >
-> > [snip]
-> >
-> >>-               pri->dev_name = uml_strdup(buffer);
-> >>+               pri->dev_name = kstrdup(buffer);
-> >
-> > Please compile-test before submitting.
->
-> I'm really sorry about this...
->
-> I've compiled with an allyesconfig to validate the changes, but that
-> doesn't build the UML parts :(
+On Tuesday 01 February 2005 17:27, you wrote:
+> With the problems we had with 2.6.9 as a host, I was wondering why
+> Blaisorblade chose it when he released skas-v8-rc1.
 
-Well, the answer is to do add a "ARCH=um" to the build commands... you could 
-maybe use a "make defconfig ARCH=um" however because UML itself, sometimes, 
-does not build with allyesconfig /allmodconfig...
+I wondered too :-), however the reason was just that I wanted to get it out 
+for early review... I've then been busy and now I'm going to port it to 
+2.6.10.
 
-However, that said, there are bigger problems for UML.
+> Here is skas-v8-rc1 diffed against 2.6.10:
 
-Since of its particular nature, it contains some code which is compiled 
-against userspace headers. For instance cow_user.c (the list includes 
-*_user.c and everything that is explicitly listed in USER_OBJS inside the 
-Makefiles)
+> http://www.theshore.net/~caker/patches/skas-v8-rc1-2.6.10.patch
+I'm having a look at it, however IIRC there weren't too many subtle ptrace 
+change in 2.6.10, so I guess you've done it well...
 
-So, for cow_user.c, when you add <linux/string.h> to cow_user.c, you are 
-actually making it include /usr/include/linux/string.h...
+Actually I have some doubt about ptrace.c, for this part:
 
-For UML, you should probably add the prototype to a good header inside 
-arch/um/include (those headers are in the searchpath for every file under 
-arch/um) - probably the one which declared uml_strdup. Yes, we have had to 
-duplicate prototypes for many functions... for inlines, we've had to provide 
-in many case a non-inline version.
+                  child->exit_code = data;
+  -               /* make sure the single step bit is not set. */
+  -               clear_singlestep(child);
+  +               put_stack_long(child, EFL_OFFSET,tmp);
+                  wake_up_process(child);
+                  ret = 0;
+                  break;
 
-> Anyway, thanks for pointing this out. I still haven't got feedback
-> regarding the acceptance of these patches. If there is a chance they're
-> accepted, maybe the best thing to do is to post the series again with
-> this correction and the sound patch corrections.
-
+I understand the purpose, and it makes sense... but I'll have to find a way to 
+clean it up... 
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
