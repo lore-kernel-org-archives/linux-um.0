@@ -1,16 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDnc5-0005Yp-5g for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:21 -0800
-Received: from mail-relay-4.tiscali.it ([213.205.33.44])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DDnc4-0005ij-J2 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:21 -0800
-From: blaisorblade@yahoo.it
-Message-Id: <20050322162121.4295D2125C@zion>
-Subject: [uml-devel] [patch 02/12] uml: cpu_relax fix
+	id 1DDpbt-0003ZZ-2L for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 12:04:17 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DDpbZ-0007sA-6I for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Mar 2005 12:04:17 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: Supporting building on x86-64 host as 32-bit UML
+References: <200503191904.05870.blaisorblade@yahoo.it>
+	<200503221853.20853.blaisorblade@yahoo.it>
+	<20050322190731.GA8975@bytesex>
+In-Reply-To: <20050322190731.GA8975@bytesex>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200503222102.11643.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,71 +31,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 17:21:21 +0100
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Tue, 22 Mar 2005 21:02:11 +0100
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+
+On Tuesday 22 March 2005 20:07, Gerd Knorr wrote:
+> On Tue, Mar 22, 2005 at 06:53:20PM +0100, Blaisorblade wrote:
+> > On Sunday 20 March 2005 16:03, Gerd Knorr wrote:
+> > > > 1) how the user must choose what he wants (SUBARCH=i386 can be
+> > > > useful, maybe a Kconfig option would be nice - we need to choose the
+> > > > default depending on the host arch).
+> > >
+> > > That one is easy -- just use "linux32 make ...".  That will switch the
+> > > personality and "uname" will return "i686" instead of "x86_64" then ;)
+> >
+> > linux32 is a SuSE specific alias like the "i386" for Fedora, right (they
+> > both alias setarch, IIRC)?
+>
+> Don't have a "setarch" binary here.  But most likely they do almost the
+> same, yes.
+>
+> > > Not needed I think.  Thats used for kconfig and other stuff which runs
+> > > on the _host_ machine (for cross compiles), thus it doesn't hurt if it
+> > > is 64 bit.
+> >
+> > I'm not sure, but that's probably needed for the userspace utilities that
+> > print out some headers (with offsets inside host proc. specific structs).
+>
+> Uhm, ok, then it probably is needed.  This also means that you can't
+> cross-compile uml kernels, right?
+Eh? Those utilities must run on the compile host, and they are compiled with 
+HOSTCC, but use the targets header. So on x86-64 / x86 it works, but probably 
+in general you are right (I don't have the whole picture right now, but this 
+makes sense).
+
+That said, Al Viro changed this significantly when working on making UML 
+cross-compile well, so you again are probably right. I'm currently merging 
+his work in little pieces.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
-Use rep_nop instead of barrier for cpu_relax, following $(SUBARCH)'s doing
-that (i.e. i386 and x86_64).
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.11-paolo/include/asm-um/processor-generic.h |    2 --
- linux-2.6.11-paolo/include/asm-um/processor-i386.h    |    8 ++++++++
- linux-2.6.11-paolo/include/asm-um/processor-x86_64.h  |    8 ++++++++
- 3 files changed, 16 insertions(+), 2 deletions(-)
-
-diff -puN include/asm-um/processor-generic.h~uml-cpu_relax include/asm-um/processor-generic.h
---- linux-2.6.11/include/asm-um/processor-generic.h~uml-cpu_relax	2005-03-22 16:52:25.000000000 +0100
-+++ linux-2.6.11-paolo/include/asm-um/processor-generic.h	2005-03-22 16:54:41.000000000 +0100
-@@ -16,8 +16,6 @@ struct task_struct;
- 
- struct mm_struct;
- 
--#define cpu_relax()   barrier()
--
- struct thread_struct {
- 	int forking;
- 	int nsyscalls;
-diff -puN include/asm-um/processor-i386.h~uml-cpu_relax include/asm-um/processor-i386.h
---- linux-2.6.11/include/asm-um/processor-i386.h~uml-cpu_relax	2005-03-22 16:53:43.000000000 +0100
-+++ linux-2.6.11-paolo/include/asm-um/processor-i386.h	2005-03-22 16:54:39.000000000 +0100
-@@ -19,6 +19,14 @@ struct arch_thread {
- 
- #include "asm/arch/user.h"
- 
-+/* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
-+static inline void rep_nop(void)
-+{
-+	__asm__ __volatile__("rep;nop": : :"memory");
-+}
-+
-+#define cpu_relax()	rep_nop()
-+
- /*
-  * Default implementation of macro that returns current
-  * instruction pointer ("program counter"). Stolen
-diff -puN include/asm-um/processor-x86_64.h~uml-cpu_relax include/asm-um/processor-x86_64.h
---- linux-2.6.11/include/asm-um/processor-x86_64.h~uml-cpu_relax	2005-03-22 16:56:30.000000000 +0100
-+++ linux-2.6.11-paolo/include/asm-um/processor-x86_64.h	2005-03-22 16:56:32.000000000 +0100
-@@ -12,6 +12,14 @@
- struct arch_thread {
- };
- 
-+/* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
-+extern inline void rep_nop(void)
-+{
-+	__asm__ __volatile__("rep;nop": : :"memory");
-+}
-+
-+#define cpu_relax()   rep_nop()
-+
- #define INIT_ARCH_THREAD { }
- 
- #define current_text_addr() \
-_
 
 
 -------------------------------------------------------
