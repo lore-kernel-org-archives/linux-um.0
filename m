@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1A1tcn-000615-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Tue, 23 Sep 2003 13:19:05 -0700
+	id 1A1tkN-00071A-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Tue, 23 Sep 2003 13:26:55 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 1A1tcm-0001xK-6F
-	for User-mode-linux-devel@lists.sourceforge.net; Tue, 23 Sep 2003 13:19:04 -0700
+	id 1A1tkL-0005TG-HZ
+	for User-mode-linux-devel@lists.sourceforge.net; Tue, 23 Sep 2003 13:26:53 -0700
 Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8NKA2j29537
-	for <User-mode-linux-devel@lists.sourceforge.net>; Tue, 23 Sep 2003 16:10:03 -0400
-Message-Id: <200309232019.h8NKJ0aK003265@ccure.karaya.com>
-Subject: Re: [uml-devel] Re: compile problem with uml-patch-2.4.22-4 
-In-Reply-To: Your message of "Sat, 20 Sep 2003 19:35:18 +0200."
-             <20030920173518.521B03BCE7@home.petschge.de> 
-References: <200309182037.h8IKbMEk028815@hongkong.cs.nmsu.edu> <20030919095020.294F93BCE4@home.petschge.de>  <20030920173518.521B03BCE7@home.petschge.de> 
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8NKHpj29675
+	for <User-mode-linux-devel@lists.sourceforge.net>; Tue, 23 Sep 2003 16:17:52 -0400
+Message-Id: <200309232026.h8NKQkaK003305@ccure.karaya.com>
+Subject: Re: [uml-devel] Re: 2.4.22-4um race condition 
+In-Reply-To: Your message of "Wed, 17 Sep 2003 20:37:54 MDT."
+             <200309180237.h8I2bs7c021691@hongkong.cs.nmsu.edu> 
+References: <200309180237.h8I2bs7c021691@hongkong.cs.nmsu.edu> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,20 +29,20 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 23 Sep 2003 16:19:00 -0400
-To: "Patrick \"Petschge\" Kilian" <petschge@web.de>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 23 Sep 2003 16:26:46 -0400
+To: Ross Combs <rocombs@cs.nmsu.edu>
+Cc: steve_schmidtke@hotmail.com, User-mode-linux-devel@lists.sourceforge.net
 
-petschge@web.de said:
-> Perhaps it should not have a own CONFIG_ option but should be
-> triggerd by CONFIG_SOFT_WATCHDOG. 
+rocombs@cs.nmsu.edu said:
+> But it's important that kernel_fd is assigned before the clone.
+> That's the race condition I was talking about.  The loop in
+> io_thread() sends kernel_fd to the read system call, but there is no
+> guarantee that the assignment in start_io_thread() has completed
+> unless that assignment is before the clone() call.
 
-No, because it's a hardware watchdog.
+Yeah, I totally missed the race.
 
-> Jeff, is there a specific reason to
-> give  UML_WATCHDOG a own option?
-
-Yes, it's a separate driver.
+That's fixed in the way you suggested in the last patch.
 
 				Jeff
 
