@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQ6kU-0007Cy-Fq for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 May 2004 08:43:22 -0700
-Received: from zcars0m9.nortelnetworks.com ([47.129.242.157])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQ6kU-0004Vt-5c for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 May 2004 08:43:22 -0700
-Message-ID: <40AA2F06.6020607@nortelnetworks.com>
-From: Joe Marzot <gmarzot@nortelnetworks.com>
-MIME-Version: 1.0
+	id 1BQ7Qm-0000JB-GO for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 May 2004 09:27:04 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BQ7Ql-0003Tr-NC for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 May 2004 09:27:03 -0700
+From: Henrik Nordstrom <uml@henrik.marasystems.com>
 Subject: Re: [uml-devel] 2.4.24-2 UML problems with hostfs ClearCase mounts
-References: <Pine.LNX.4.44.0405180141460.28239-100000@filer.marasystems.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <40AA2F06.6020607@nortelnetworks.com>
+Message-ID: <Pine.LNX.4.44.0405181824230.8450-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,52 +25,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 May 2004 11:43:02 -0400
-To: Henrik Nordstrom <uml@hno.marasystems.com>
-Cc: Joe Marzot <gmarzot@nortelnetworks.com>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 18 May 2004 18:26:46 +0200 (CEST)
+To: Joe Marzot <gmarzot@nortelnetworks.com>
+Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-Thank you so much for the reply - For the most part existing hostfs 
-support has been fine for me (I need the sync behaviour).
+On Tue, 18 May 2004, Joe Marzot wrote:
 
-However with 2.4.24-1 I am still getting kernel panic crashes and it 
-looked like some crashes were handled in 2.4.24-2. I will try to pick 
-through the 2.4.24-2 patch and take just the not hostfs parts.
+> Thank you so much for the reply - For the most part existing hostfs 
+> support has been fine for me (I need the sync behaviour).
+> 
+> However with 2.4.24-1 I am still getting kernel panic crashes and it 
+> looked like some crashes were handled in 2.4.24-2. I will try to pick 
+> through the 2.4.24-2 patch and take just the not hostfs parts.
 
-I do have loads of cores if anyone is interested since I hacked the 
-panic code to abort() as I was not catching these intermittent crashes 
-very often.
+Pathes making hostfs usable in both 2.4.24-2 and 2.4.26-1 is available 
+from http://marasystems.com/download/
 
-regards, Giovanni
+> I do have loads of cores if anyone is interested since I hacked the 
+> panic code to abort() as I was not catching these intermittent crashes 
+> very often.
 
-Henrik Nordstrom wrote:
-> On Mon, 17 May 2004, Joe Marzot wrote:
-> 
-> 
->>A little more data on this one - the behaviour I see with these mounts 
->>is that
->>
->>mount -t hostfs none /mnt/mybob -o /view/myview/vob/myvob
->>
->>succeeds but mounts the hosts / dir instead of the desired view extended 
->>pathname of the ClearCase vob.
-> 
-> 
-> This is a known bug in 2.4.24-2. A patch can be found in the archives or 
-> from http://marasystems.com/download/uml/
-> 
-> If you need hostfs then you should probably stick to 2.4.24-1 for the time
-> being. Jeff is doing some heavy restructuring of the uml host file access
-> methods while adding the humfs and as a result of this the hostfs support
-> has become very unstable while the combined supporting framework for humfs
-> and hostfs is taking shape. Hopefully this will soon result in a much 
-> better hostfs than before, but at the moment things is a bit shaky..
-> 
-> Regards
-> Henrik
-> 
-> 
+stack traces of the panics is more interesting (extract from the core
+using gdb and the exact binary the core was generated from)..  even more
+so if you find a common pattern and have some suspicion on how/when it may
+occur.
 
-
+Regards
+Henrik
 
 
 
