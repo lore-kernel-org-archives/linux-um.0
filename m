@@ -2,27 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CA9Vl-0003fF-L0 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Sep 2004 08:58:29 -0700
-Received: from nessie.weebeastie.net ([220.233.7.36]
-	helo=theirongiant.lochness.weebeastie.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CA9Vh-00087G-Is
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Sep 2004 08:58:29 -0700
-From: CaT <cat@zip.com.au>
-Message-ID: <20040920044512.GA6672@zip.com.au>
-References: <20040915214906.02A1F138028@tla.xelerance.com>
-	<20040918151657.GG953@zip.com.au>
-	<21443.1095535410@marajade.sandelman.ottawa.on.ca>
-	<20040918235319.GH953@zip.com.au>
-	<26724.1095652408@marajade.sandelman.ottawa.on.ca>
+	id 1CA9qo-0000GU-SH for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Sep 2004 09:20:14 -0700
+Received: from orange.ous.edu ([140.211.15.17])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CA9qo-0002Yd-3G for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Sep 2004 09:20:14 -0700
+Message-Id: <s1514402.032@ORANGE.OUS.EDU>
+From: "Anthony Brock" <Anthony_Brock@ous.edu>
+Subject: Re: [uml-devel] UML on AMD64 x86_64
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <26724.1095652408@marajade.sandelman.ottawa.on.ca>
-Subject: [uml-devel] Re: [Openswan CVS] openswan-2/linux/net/ipsec addrtot.c,
-	1.16, 1.17
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,40 +26,79 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Sep 2004 14:45:13 +1000
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
-Cc: dev@lists.openswan.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 22 Sep 2004 09:20:28 -0700
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Sep 19, 2004 at 11:53:28PM -0400, Michael Richardson wrote:
->     CaT> In include/asm-i386/string.h for example. Not all arches have
->     CaT> it defined but a few do.
-> 
->     CaT> With the change btw, the kernel compiled.
-> 
->   Using __HAVE_ARCH_STRSTR doesn't work on UML.
->   It appears that the strstr.c from arch/i386/lib/strstr.c doesn't get
-> compiled. I tried to get it compiled, but I seem to be missing some
-> symbol table magic. (Adding EXPORT_SYMTAB(strstr) to the file didn't
-> help).
-> 
->   Any ideas on this?
+Jim,
 
-I'm not expert (seriously - this isn't just modesty :) but it looks
-like that uml is undefining strstr but not __HAVE_ARCH_STRSTR so that
-when it's compiled on an arch that defines __HAVE_ARCH_STRSTR because
-it has strstr it's only half undefined. If I'm right it appears to
-be a bug in the part of uml.
+You can run a 32-bit UML on an AMD 64-bit OS. However, there are some
+issues:
 
-Check linux/arch/um/os-Linux/user_syms.c. It includes string.h
-which includes asm/string.h which includes asm/arch/string.h which
-points to asm-i386/string.h which would define the above.
+1. The guest kernel needs to be compiled on a 32-bit OS. While it will
+run on the 64-bit, I haven't had any success with compiling.
+2. The host SKAS patch has not yet been ported (publicly) to AMD
+64-bit. So your guest kernels will ONLY run in TT mode.
 
-I've CCed the happy-fun folks at UML to be sure because my feeling that
-I'm talking sheer bollocks is about as strong as my feeling that I am
-not. :)
+Good luck!
 
--- 
-    Red herrings strewn hither and yon.
+Tony
+
+
+>>> "jmf" <jmfguy@excite.com> 09/22/04 06:07AM >>>
+
+
+
+I'm using 64 bit Gentoo on an Athlon64 and it would be really nice to
+have a working port of 32 bit UML. This would allow us to sandbox a 32
+bit Gentoo kernel within the 64 bit Gentoo environment.
+
+
+
+I want to emphasize that I'm not even asking for a real 64 bit UML
+port, I simply want the standard UML 32 bit port to compile, and run, in
+amd64 32-bit mode. This would allow people in amd64 linux-land to have
+some form of UML to use while we wait for a true 64-bit implementation.
+
+
+
+
+I tried simply compiling the 32 bit UML port using gcc 3.3.4 and
+"linux32 make linux ARCH=um" with a SUBARCH := i386, but this failed
+complaining about things like 
+
+
+
+arch/um/sys-i386/util/mk_sc.c:30: error: structure has no member named
+`eax'
+
+
+
+I'm surprised UML didn't compile so if anyone has some suggestions to
+try, please let me know. 
+
+
+
+
+
+
+
+
+
+_______________________________________________
+Join Excite! - http://www.excite.com 
+The most personalized portal on the Web!
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
+Project Admins to receive an Apple iPod Mini FREE for your judgement
+on
+who ports your project to Linux PPC the best. Sponsored by IBM.
+Deadline: Sept. 24. Go here: http://sf.net/ppc_contest.php 
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net 
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
 
 -------------------------------------------------------
