@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9As1-0000mu-7s for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 15:45:41 -0800
+	id 1D9AsL-0000ng-IO for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 15:46:01 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D9As0-0006vb-Is for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 15:45:41 -0800
-Message-Id: <200503100216.j2A2G6DN015238@ccure.user-mode-linux.org>
+	id 1D9AsK-0006wh-TZ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 15:46:01 -0800
+Message-Id: <200503100216.j2A2GcDN015243@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 5/9] UML - change semaphores to completions
+Subject: [uml-devel] [PATCH 6/9] UML - Remove build dependency on perl
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,128 +24,68 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 09 Mar 2005 21:16:06 -0500
+Date: Wed, 09 Mar 2005 21:16:38 -0500
 To: torvalds@osdl.org
-Cc: simlo@phys.au.dk, akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Blaisorblade <blaisorblade@yahoo.it>, akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Esben Nielsen <simlo at phys au dk>
+To quote .config into config.c for building the result into the code, use sed
+instead of perl, as requested by one "embedded" UML user (which notes that 
+perl is a big requirement, while busybox provides sed which is used in this 
+patch).
 
-One of the problems was use of direct architecture specific semaphores
-(which doesn't work under PREEMPT_REALTIME) and in places where a quick
-(maybe too quick) look at the code told me that completions ought to be
-used. Therefore I changed two semaphores to completions which compiled
-fine. I have tried the change on 2.6.11-rc2, and it seemed to work, but I
-have not tested it heavily.
+I've tested that there are only cosmethical differences in the produced
+config.c file, which don't change at all the result (i.e. "a" is replaced by
+"" "a" at the beginning, which is non-significant).
 
+Reported by, and initial patch provided by, Rob Landley.
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.11/arch/um/drivers/port_kern.c
+Index: linux-2.6.11/arch/um/kernel/Makefile
 ===================================================================
---- linux-2.6.11.orig/arch/um/drivers/port_kern.c	2005-03-08 20:17:34.000000000 -0500
-+++ linux-2.6.11/arch/um/drivers/port_kern.c	2005-03-08 22:16:48.000000000 -0500
-@@ -25,7 +25,7 @@
- 	struct list_head list;
- 	atomic_t wait_count;
- 	int has_connection;
--	struct semaphore sem;
-+	struct completion done;
- 	int port;
- 	int fd;
- 	spinlock_t lock;
-@@ -68,7 +68,7 @@
- 	conn->fd = fd;
- 	list_add(&conn->list, &conn->port->connections);
+--- linux-2.6.11.orig/arch/um/kernel/Makefile	2005-03-08 20:17:35.000000000 -0500
++++ linux-2.6.11/arch/um/kernel/Makefile	2005-03-08 22:19:21.000000000 -0500
+@@ -4,7 +4,7 @@
+ #
  
--	up(&conn->port->sem);
-+	complete(&conn->port->done);
- 	return(IRQ_HANDLED);
- }
+ extra-y := vmlinux.lds
+-clean-files := vmlinux.lds.S
++clean-files := vmlinux.lds.S config.tmp
  
-@@ -197,13 +197,14 @@
- 		{ .list 	 	= LIST_HEAD_INIT(port->list),
- 		  .wait_count		= ATOMIC_INIT(0),
- 		  .has_connection 	= 0,
--		  .sem 			= __SEMAPHORE_INITIALIZER(port->sem, 
--								  0),
- 		  .lock 		= SPIN_LOCK_UNLOCKED,
- 		  .port 	 	= port_num,
- 		  .fd  			= fd,
- 		  .pending 		= LIST_HEAD_INIT(port->pending),
- 		  .connections 		= LIST_HEAD_INIT(port->connections) });
+ obj-y = checksum.o config.o exec_kern.o exitcode.o \
+ 	helper.o init_task.o irq.o irq_user.o ksyms.o main.o mem.o mem_user.o \
+@@ -34,11 +34,25 @@
+ $(USER_OBJS) : %.o: %.c
+ 	$(CC) $(USER_CFLAGS) $(CFLAGS_$(notdir $@)) -c -o $@ $<
+ 
+-QUOTE = 'my $$config=`cat $(TOPDIR)/.config`; $$config =~ s/"/\\"/g ; $$config =~ s/\n/\\n"\n"/g ; while(<STDIN>) { $$_ =~ s/CONFIG/$$config/; print $$_ }'
++targets += config.c
+ 
+-quiet_cmd_quote = QUOTE   $@
+-cmd_quote = $(PERL) -e $(QUOTE) < $< > $@
++# Be careful with the below Sed code - sed is pitfall-rich!
++# We use sed to lower build requirements, for "embedded" builders for instance.
+ 
+-targets += config.c
+-$(obj)/config.c : $(src)/config.c.in $(TOPDIR)/.config FORCE
+-	$(call if_changed,quote)
++$(obj)/config.tmp: $(objtree)/.config FORCE
++	$(call if_changed,quote1)
 +
-+	init_completion(&port->done), 
++quiet_cmd_quote1 = QUOTE   $@
++      cmd_quote1 = sed -e 's/"/\\"/g' -e 's/^/"/' -e 's/$$/\\n"/' \
++		   $< > $@
 +
- 	list_add(&port->list, &ports);
- 
-  found:
-@@ -237,7 +238,7 @@
-         atomic_inc(&port->wait_count);
- 	while(1){
- 		fd = -ERESTARTSYS;
--		if(down_interruptible(&port->sem))
-+                if(wait_for_completion_interruptible(&port->done))
-                         goto out;
- 
- 		spin_lock(&port->lock);
-@@ -308,14 +309,3 @@
- }
- 
- __uml_exitcall(free_port);
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.11/arch/um/drivers/xterm_kern.c
-===================================================================
---- linux-2.6.11.orig/arch/um/drivers/xterm_kern.c	2005-03-08 20:17:34.000000000 -0500
-+++ linux-2.6.11/arch/um/drivers/xterm_kern.c	2005-03-08 22:16:48.000000000 -0500
-@@ -16,7 +16,7 @@
- #include "xterm.h"
- 
- struct xterm_wait {
--	struct semaphore sem;
-+	struct completion ready;
- 	int fd;
- 	int pid;
- 	int new_fd;
-@@ -32,7 +32,7 @@
- 		return(IRQ_NONE);
- 
- 	xterm->new_fd = fd;
--	up(&xterm->sem);
-+	complete(&xterm->ready);
- 	return(IRQ_HANDLED);
- }
- 
-@@ -49,10 +49,10 @@
- 
- 	/* This is a locked semaphore... */
- 	*data = ((struct xterm_wait) 
--		{ .sem  	= __SEMAPHORE_INITIALIZER(data->sem, 0),
--		  .fd 		= socket,
-+		{ .fd 		= socket,
- 		  .pid 		= -1,
- 		  .new_fd 	= -1 });
-+	init_completion(&data->ready);
- 
- 	err = um_request_irq(XTERM_IRQ, socket, IRQ_READ, xterm_interrupt, 
- 			     SA_INTERRUPT | SA_SHIRQ | SA_SAMPLE_RANDOM, 
-@@ -68,7 +68,7 @@
- 	 *
- 	 * XXX Note, if the xterm doesn't work for some reason (eg. DISPLAY
- 	 * isn't set) this will hang... */
--	down(&data->sem);
-+	wait_for_completion(&data->ready);
- 
- 	free_irq_by_irq_and_dev(XTERM_IRQ, data);
- 	free_irq(XTERM_IRQ, data);
++$(obj)/config.c: $(src)/config.c.in $(obj)/config.tmp FORCE
++	$(call if_changed,quote2)
++
++quiet_cmd_quote2 = QUOTE   $@
++      cmd_quote2 = sed -e '/CONFIG/{'          \
++		  -e 's/"CONFIG"\;/""/'        \
++		  -e 'r $(obj)/config.tmp'     \
++		  -e 'a""\;'                   \
++		  -e '}'                       \
++		  $< > $@
 
 
 
