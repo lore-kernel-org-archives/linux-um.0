@@ -1,16 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDncJ-0005Zh-Dq for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:35 -0800
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DDncI-0004GC-FW for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Mar 2005 09:56:34 -0800
-From: blaisorblade@yahoo.it
-Message-Id: <20050322162118.C3CA4A8A0@zion>
-Subject: [uml-devel] [patch 01/12] uml: fix compile
+	id 1DE8pW-0005oT-K2 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 08:35:38 -0800
+Received: from server.ispbrasil.com.br ([66.160.135.36] helo=ispbrasil.com.br)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DE8pU-0005j8-PJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 08:35:38 -0800
+Message-ID: <002901c52fc6$649f51c0$0201a8c0@lualele>
+From: "itamar" <itamar@ispbrasil.com.br>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="Windows-1252";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] swap help->  swapon: /dev/ubd/1: No such device
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,42 +27,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 22 Mar 2005 17:21:13 +0100
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Wed, 23 Mar 2005 13:35:52 -0300
+To: user-mode-linux-devel@lists.sourceforge.net
+
+I am starting my guest machine with ubd1=/uml/clau/swap.img
 
 
-Quick compile fix for i386-only change (which interacts with UML since we
-include headers from include/asm-$(SUBARCH)), which keeps the old behaviour
-and hence should cause no problems.
+-bash-2.05b# swapon -a
+swapon: /dev/ubd/1: No such device
+-bash-2.05b#
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
 
- linux-2.6.11-paolo/include/asm-um/signal.h |    3 +++
- 1 files changed, 3 insertions(+)
+my fstab
+/dev/ubd/0      /               ext3    defaults,usrquota 1 1
+/proc           /proc           proc    defaults
+devpts          /dev/pts        devpts  mode=0622 0 0
+/dev/ubd/1      none            swap    sw      0       0
 
-diff -puN include/asm-um/signal.h~uml-fix-compile include/asm-um/signal.h
---- linux-2.6.11/include/asm-um/signal.h~uml-fix-compile	2005-03-21 20:13:13.000000000 +0100
-+++ linux-2.6.11-paolo/include/asm-um/signal.h	2005-03-21 20:13:13.000000000 +0100
-@@ -11,6 +11,9 @@
- #define do_signal do_signal_renamed
- #include "asm/arch/signal.h"
- #undef do_signal
-+#undef ptrace_signal_deliver
-+
-+#define ptrace_signal_deliver(regs, cookie) do {} while(0)
- 
- #endif
- 
-_
+
+How to make my swap working ?
+
+
+Itamar Reis Peixoto
++55 (34) 3238 3845
+e-mail : itamar@ispbrasil.com.br
+http://www.ispbrasil.com.br
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
-for the chance to win $25,000 and application distribution. Enter today at
-http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
+This SF.net email is sponsored by Microsoft Mobile & Embedded DevCon 2005
+Attend MEDC 2005 May 9-12 in Vegas. Learn more about the latest Windows
+Embedded(r) & Windows Mobile(tm) platforms, applications & content.  Register
+by 3/29 & save $300 http://ads.osdn.com/?ad_id=6883&alloc_id=15149&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
