@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Arkeh-0001Vx-J5
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 13:15:23 -0800
+	id 1Armlc-0007I7-2o
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 15:30:40 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.30)
-	id 1ArkZd-0003vf-69
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 13:10:09 -0800
-Message-Id: <200402132140.i1DLeUsq003451@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Tue, 27 Jan 2004 16:56:00 +0300."
-             <16406.28144.943056.461426@laputa.namesys.com> 
-References: <16406.28144.943056.461426@laputa.namesys.com> 
+	id 1Armjd-000374-5H
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 15:28:37 -0800
+Message-Id: <200402132355.i1DNtjsq004236@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] First shrinkage of *_user.c files 
+In-Reply-To: Your message of "Wed, 21 Jan 2004 20:19:02 +0100."
+             <200401212019.02494.blaisorblade_spam@yahoo.it> 
+References: <200401202026.19785.blaisorblade_spam@yahoo.it>  <200401212019.02494.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [PATCH]: 2.6.2-rc2: kill arch/um/sys-i386/extable.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,17 +26,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 16:40:30 -0500
-To: Nikita Danilov <Nikita@Namesys.COM>
+Date: Fri, 13 Feb 2004 18:55:45 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Nikita@Namesys.COM said:
-> 2.6.2-rc2 moved search_extable() into generic code (lib/extable.c), so
-> there is no need to duplicate i386's version in the UML. 
+blaisorblade_spam@yahoo.it said:
+> The next thing I'm going to do is to remove entirely
+> hostaudio_user.c (I've already started this, but I've not got a
+> successful test yet, since I also did a little fix in this). 
 
-It's gone now, thanks.
+I finally merged this.  Now we are one file closer to being able to get
+rid of the USER_OBJS crap :-)
 
-			Jeff
+				Jeff
 
 
 
