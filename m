@@ -2,24 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8iuA-0006qL-7J for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:21:46 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	id 1C8ixc-0007Zm-I3 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:25:20 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1C8iu9-0005FJ-GO for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 10:21:46 -0700
+	id 1C8ixb-0005j3-Tb for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:25:20 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-References: <4144F914.4080609@merkurio.com.ve>
-	<200409132148.56200.blaisorblade_spam@yahoo.it>
-	<14ugk0trj7f3rcneq3ed42vetdnbv9gcqs@4ax.com>
-In-Reply-To: <14ugk0trj7f3rcneq3ed42vetdnbv9gcqs@4ax.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409181918.45184.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] How to announce new SKAS3 releases
+Message-Id: <200409181922.19365.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Fwd: [uml-user] Kernel panic: Segfault with no mm &&
+	CONFIG_DEBUG_SLAB
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,35 +28,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Sep 2004 19:18:45 +0200
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-Cc: Harald Kapper <hk@kapper.net>
+Date: Sat, 18 Sep 2004 19:22:19 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 15 September 2004 19:16, Harald Kapper wrote:
-> On Mon, 13 Sep 2004 21:48:56 +0200, BlaisorBlade
-> <blaisorblade_spam@yahoo.it>
->
-> wrote:
-> >The patch is located here, as all the SKAS patches:
-> >
-> >http://www.user-mode-linux.org/~blaisorblade/
-> >
-> >Please note (I don't know if you got confused, but just to make sure) that
-> > it is not the the SKAS4 patch, which is something completely different
-> > and not yet existing.
-> >
-> >Think of it as SKAS3-v4.
->
-> hi
-> might I suggest an announce-list for skas-patches?
+Could you investigate on this?
 
-> I simply wouldn't have noticed the latest one released on 12th september ;)
-Setting up an announce-list would be a bit heavy to manage for me. I could, 
-instead, make sure to post the announce both here and on uml-devel, and add a 
-tag like "SKAS-announce" to the title. Would it be Ok for you?
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
+
+----------  Forwarded Message  ----------
+
+Subject: [uml-user] Kernel panic: Segfault with no mm && CONFIG_DEBUG_SLAB
+Date: Friday 17 September 2004 19:05
+From: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
+To: <user-mode-linux-user@lists.sourceforge.net>
+
+I'm using skas with a late 2.4 host and a 2.4.26 uml
+with recent patch.
+
+I'm running a number of umls on a heavily loaded system
+and have run into an interesting problem. For a while I
+was running with CONFIG_DEBUG_SLABS turned on and things
+looked happy enough.
+
+Recently (in order to squeeze some more speed out of the
+setup) I turned off CONFIG_DEBUG_SLAB.
+
+The result is a very consistent kernel panic:
+
+Kernel panic: Segfault with no mm
+
+on two of the umls.
+
+I'm guessing that setting CONFIG_DEBUG_SLAB changes the
+way pages are mapped into the kernel's address space and
+is hiding some problem.
+
+Any thoughts?
 
 
 -------------------------------------------------------
