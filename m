@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWeVq-0002Wa-C6 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:31:34 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CWeVo-0008Aa-B7 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:31:34 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: WS lag
-References: <41A060D2.1030802@alexb.ch> <172427175.20041122225013@surbl.org>
-	<Pine.LNX.4.58.0411230209240.3317@sparrow>
-In-Reply-To: <Pine.LNX.4.58.0411230209240.3317@sparrow>
+	id 1CWegb-0000Rk-So for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 09:42:41 -0800
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CWegY-0001Xb-RZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 09:42:41 -0800
+Message-ID: <001001c4d184$ca00b9f0$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <000901c4d0e1$e7f998d0$0201a8c0@hawk>
+	<200411222346.36960.blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200411231833.02752.blaisorblade_spam@yahoo.it>
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,39 +28,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 23 Nov 2004 18:33:02 +0100
-Content-Transfer-Encoding: 8bit
-To: user-mode-linux-devel@lists.sourceforge.net, William Stearns <wstearns@pobox.com>
-Cc: Jeff Chan <jeffc@surbl.org>, Alex Broens <surbl@alexb.ch>
+Date: Tue, 23 Nov 2004 11:49:31 -0600
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Tuesday 23 November 2004 08:17, William Stearns wrote:
-> Good morning, all,
+> On Monday 22 November 2004 23:23, Christopher S. Aker wrote:
+> > Hello,
+> Btw, question: what about your I/O token limiter? Actively using it? Could
+> start being worked on for merge (there is at least one bug-report on it by
+> "roland" on a strange but valid test-case).
+> > I thought I'd give 2.6.9-bb3 a shot, and I had a bunch of users report the
+> > accumiluation of zombies.
+> What the hell! This should *not* happen. What did we (I mean developers) do?
 
->  (For the UML-devel mailing list: The "spamgate" virtual machine
-> creates multiple text files and stores them on the host via a hostfs
-> mount.  The slartibartfast and jeeves VM's publish that data read through
-> a hostfs mount out via http and rsync, respectively.)
+Just to be clear, these were zombies *inside* UML, not on the host.  I'm happy to
+blame it on the older SKAS version.
 
->  The three vm's were publishing just fine in the 2.4.23 kernel I
-> have at http://www.stearns.org/uml/ .  When I rebooted the three vm's into
-> the 2.4.27 kernel I have there, slart and jeeves started showing stale
-> data.  Moving spamgate back to 2.4.23 didn't help; slart and jeeves still
-> presented old files to the outside world.  As soon as I moved slart and
-> jeeves back to 2.4.23, the problems went away.
->  Kernels and compile options used are both at
-> http://www.stearns.org/uml/ .
+-Chris
 
-From the common experience, having hostfs working is a luck, with kernels 
-later than 2.4.24-1um.
-
-2.4.27-1bs (on my page) excludes all hostfs changes, while merging everything 
-else up to 2.4.26-3um, plus some other changes.
-
-Also, there are some unconfirmed results that NFS may be _faster_ than hostfs 
-- so you might want to experiment this.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
 
 -------------------------------------------------------
