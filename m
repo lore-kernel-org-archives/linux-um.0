@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBV8Y-0007VK-AY for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 01:43:50 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBV8X-0003mk-JU for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 01:43:49 -0700
-From: Henrik Nordstrom <uml@henrik.marasystems.com>
+	id 1BBWkX-0005pp-HP for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Apr 2004 03:27:09 -0700
+Received: from [212.62.253.247] (helo=nepa.nlc.no ident=qmailr)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BBWkW-0000iV-Ox for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Apr 2004 03:27:09 -0700
+Message-ID: <64241.82.148.164.122.1081420011.squirrel@nepa.nlc.no>
+In-Reply-To: <20040408095432.GA10043@axis.demon.co.uk>
+References: <200404080207.i3827rbe009294@ccure.user-mode-linux.org> 
+	<20040408095432.GA10043@axis.demon.co.uk>
 Subject: Re: [uml-devel] A quick humfs HOWTO
-In-Reply-To: <4074F052.20603@vgertech.com>
-Message-ID: <Pine.LNX.4.44.0404081039320.7910-100000@filer.marasystems.com>
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;charset=iso-8859-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,43 +27,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 8 Apr 2004 10:43:47 +0200 (CEST)
-To: Nuno Silva <nuno.silva@vgertech.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 8 Apr 2004 12:26:51 +0200 (CEST)
+To: Nick Craig-Wood <ncw1@axis.demon.co.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 8 Apr 2004, Nuno Silva wrote:
+> And an idea...
+>
+> Why not make each of the files in the metadata directory a symlink and
+> store the metadata in the symlink itself?  I believe that there is room in
+> the inode for short symlinks so you'll save inodes there.  Lots of
+> dangling symlinks might look a bit untidy, but its a technique thats
+> been used before (eg emacs session files).
+>
+> See http://www.charmed.com/txt/ext2.txt and in particular
+>
+>   Symbolic links are also filesystem objects with inodes.  They
+>   deserve special mention because the data for them is stored within
+>   the inode itself if the symlink is less than 60 bytes long.  It uses
+>   the fields which would normally be used to store the pointers to
+>   data blocks.  This is a worthwhile optimisation as it we avoid
+>   allocating a full block for the symlink, and most symlinks are less
+>   than 60 characters long.
 
-> In the meanwhile I'm thinking about this system and it seems that this
-> will eat lots of inodes because every file will be present twice in the
-> [host] filesystem with the metadata version using only a few bytes.
+What if the place you store all you data does not support symlinks (yes,
+most filesystems supports symlinks, but there are a few that don't).
 
-Indeed, so the host better use a filesystem which can handle this 
-efficiently such as reiserfs if you plan on very large filesystems.
-
-> Also every "ls -la" (if it's not cached) in UML will generate a read in
-> the file's metafile file (say this 3 times quickly! eheheh). With 1000
-> files in a directory thats lot's of fopen()s.
-
-Indeed.
-
-> Wouldn't it be better to add support for a simple DB, like sleepycat or
-> CMU cyrus' project skiplist or even something lighter? This way we can
-> have only 2 files in the humfs "root", the superblock and the metadataDB.
-
-Sounds like a cool idea.
-
-> The downsides:
-> - - another linker requirement at build time;
-> - - can't inspect and/or easily modify permissions with emacs. :-)
-
-Doesn't there exists a emacs .el file for editing DB files? Exists for 
-pretty much anything else so why not DB files.. should also be quite 
-trivial to add a vim filter for the same. Just db4 tools required as long 
-as keys & data are all ascii compatible.
-
-Regards
-Henrik
-
+Stan
 
 
 -------------------------------------------------------
