@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CSl3T-0004iL-1s for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Nov 2004 15:42:11 -0800
+	id 1CSsj0-00028m-V2 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Nov 2004 23:53:34 -0800
 Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CSl3S-00029D-4E for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Nov 2004 15:42:10 -0800
+	id 1CSsiz-0001zI-MH for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Nov 2004 23:53:34 -0800
 From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Patchset to implement PTRACE_SYSEMU_SINGLESTEP
-References: <419517A4.7020700@fujitsu-siemens.com>
-In-Reply-To: <419517A4.7020700@fujitsu-siemens.com>
+Subject: Re: [uml-devel] [Patch 1/1] uml: fix uml-use-sysemu-for-tt.patch
+References: <4194C43D.6030107@fujitsu-siemens.com>
+In-Reply-To: <4194C43D.6030107@fujitsu-siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200411130043.25888.blaisorblade_spam@yahoo.it>
+Message-Id: <200411130854.51896.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,59 +29,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 13 Nov 2004 00:43:25 +0100
+Date: Sat, 13 Nov 2004 08:54:51 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
 
-On Friday 12 November 2004 21:05, Bodo Stroesser wrote:
-> Attached are several patches. Four of them (patch-2.6.*-skas-v7-*)
-> implement PTRACE_SYSEMU_SINGLESTEP in the host. They are based on
-> linux-2.6.7-vanilla + host-skas3-2.6.7-v7.patch (resp. the 2.6.9 versions).
-> The "-reorganize" patches are a rework of the current patch without
-> changing the functionality. The "add-SYSEMU_SINGLESTEP" then implement the
-> new features. Please note: the differences between 2.6.7 and 2.6.9 are
-> dependent on the different handling of syscall singlestepping in the two
-> versions.
+On Friday 12 November 2004 15:10, Bodo Stroesser wrote:
+> From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 >
-> To have UML using the new feature, there are two further patches named
-> patch-SYSEMU_SINGLESTEP-*. They are based on linux-2.6.9-vanilla +
-> all bb2-patches + patch-sysemu-tt + patch-fix-uml-hang-on-2.6.9-host.
-> To have all the patches complete, the latter two are attached also.
->
-> I tested on host 2.6.7 and host 2.6.9 with SKAS and TT mode. Currently I
-> don't know any problem with it.
+> The patch needs some small corrections:
+> 1) local_using_sysemu must be sampled *before* the next
+>     ptrace(PTRACE_SYSEMU/SYSCALL) and must stay the same until do_syscall()
+>     has been done. Currently it is sampled before do_syscall() and is used
+>     after this for ptrace(PTRACE_SYSEMU/SYSCALL). Even if no problem is
+>     visible to the UML user, a single syscall could be executed on the host
+>     when switching on sysemu. The result of this then is overwritten by the
+>     syscall execution in UML.
 
-> Bodo
+>     Since the first event the tracer has to handle is not a syscall, it's
+>     enough to initialize local_using_sysemu to 0;
 
-> BTW: Today I tried the first time since weeks to do a reboot in SKAS. It
-> simply exits UML, as it did weeks ago. Is there anybody involved with that
-> problem?
+Sorry, what happens if the first signal it gets is a SIGTRAP, and so 
+local_using_sysemu is not yet set? If this is impossible, please add a 
+comment in the code for this. However, it seems that it can get to the 
+SIGTRAP case with tracing == 1. When beginning the procedure, it is 0, but it 
+can be changed with the value from is_tracing(task). I've not checked if that 
+is zeroed on process creation (i.e. by do_fork() calling copy_thread()), but 
+just note that in the code.
 
-It seems a bit randomical: on my system, it segfaults some times, after 
-checking for /proc/mm and SKAS mode.
+> 2) Even if the host never *does* a syscall in SYSEMU, we have to write the
+>     syscall number with -1, to not have the host doing syscall restarting.
+>     This would happen only with an invalid syscall number equal to one of
+>     the -ERESTART values.
 
-When applying my use-va_end patch, (it's also in Jeff incrementals), instead, 
-it always gets this segfault.
+>     But to be perfect ... 
 
-If you look at the comment about exec(), it says that UML risks to get some 
-signals after the exec(). It workarounds this for some signals, but this 
-cannot be done anyway for SIGSEGV... actually SIGSEGV delivery happens to 
-always be synchronous, since the process gets trapped before the signal is 
-queued.
-
-By comparison, all signals are normally asynchronous, i.e. they get queued and 
-later delivered, so that deliverying a signal is slower than doing a context 
-switch.
-
-Quoting from signal(7) man page:
-
-Multiple instances of real-time signals can be queued.  By contrast,  if  
-multiple instances of  a standard  signal  are  delivered  while  that signal 
-is currently blocked, then only one instance is queued.
+Yes, but shouldn't this be handled on the host? Restarting a syscall which has 
+never been done does not seem something that SYSEMU should allow... I don't 
+want anybody to need going through the code and checking that this is safe.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
-
 
 
 -------------------------------------------------------
