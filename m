@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8A4Y-00006J-VX for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Mar 2005 20:42:26 -0800
-Received: from bay24-f21.bay24.hotmail.com ([64.4.18.71] helo=hotmail.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D8A4X-0000ua-Fl for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Mar 2005 20:42:26 -0800
-Message-ID: <BAY24-F21573D60D3DDE776FDC27C835F0@phx.gbl>
-From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
+	id 1D8MdQ-0007KG-DA for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 10:07:16 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D8MdO-0001tt-Dl for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Mar 2005 10:07:16 -0800
+Message-Id: <200503072037.j27KbGbc003947@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_6243_72fd_3c69"
-Subject: [uml-devel] RE: uml_switch security fixing
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 2/16] UML - Update defconfig
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,83 +24,201 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 07 Mar 2005 04:42:19 +0000
-To: blaisorblade@yahoo.it, kraxel@bytesex.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 07 Mar 2005 15:37:16 -0500
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-------=_NextPart_000_6243_72fd_3c69
-Content-Type: text/plain; format=flowed
+Index: linux-2.6.11/arch/um/defconfig
+===================================================================
+--- linux-2.6.11.orig/arch/um/defconfig	2005-03-04 15:38:37.000000000 -0500
++++ linux-2.6.11/arch/um/defconfig	2005-03-04 15:39:48.000000000 -0500
+@@ -1,13 +1,11 @@
+ #
+ # Automatically generated make config: don't edit
+-# Linux kernel version: 2.6.10-rc2-mm4
+-# Wed Dec  1 13:45:40 2004
++# Linux kernel version: 2.6.11
++# Fri Mar  4 15:38:53 2005
+ #
+ CONFIG_GENERIC_HARDIRQS=y
+ CONFIG_USERMODE=y
+ CONFIG_MMU=y
+-# CONFIG_64_BIT is not set
+-CONFIG_TOP_ADDR=0xc0000000
+ CONFIG_UID16=y
+ CONFIG_RWSEM_GENERIC_SPINLOCK=y
+ CONFIG_GENERIC_CALIBRATE_DELAY=y
+@@ -17,17 +15,22 @@
+ #
+ CONFIG_MODE_TT=y
+ CONFIG_MODE_SKAS=y
++# CONFIG_64_BIT is not set
++CONFIG_TOP_ADDR=0xc0000000
+ # CONFIG_3_LEVEL_PGTABLES is not set
++CONFIG_ARCH_HAS_SC_SIGNALS=y
++CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA=y
++CONFIG_LD_SCRIPT_STATIC=y
+ CONFIG_NET=y
+ CONFIG_BINFMT_ELF=y
+ CONFIG_BINFMT_MISC=m
+ CONFIG_HOSTFS=y
+ CONFIG_MCONSOLE=y
++# CONFIG_MAGIC_SYSRQ is not set
+ # CONFIG_HOST_2G_2G is not set
+ # CONFIG_SMP is not set
+ CONFIG_NEST_LEVEL=0
+ CONFIG_KERNEL_HALF_GIGS=1
+-# CONFIG_HIGHMEM is not set
+ CONFIG_KERNEL_STACK_ORDER=2
+ CONFIG_UML_REAL_TIME_CLOCK=y
+ 
+@@ -75,7 +78,6 @@
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_MODULE_FORCE_UNLOAD is not set
+ CONFIG_OBSOLETE_MODPARM=y
+-# CONFIG_MODVERSIONS is not set
+ # CONFIG_MODULE_SRCVERSION_ALL is not set
+ CONFIG_KMOD=y
+ 
+@@ -84,6 +86,7 @@
+ #
+ CONFIG_STANDALONE=y
+ CONFIG_PREVENT_FIRMWARE_BUILD=y
++# CONFIG_FW_LOADER is not set
+ # CONFIG_DEBUG_DRIVER is not set
+ 
+ #
+@@ -97,7 +100,7 @@
+ CONFIG_PTY_CHAN=y
+ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+-CONFIG_NOCONFIG_CHAN=y
++# CONFIG_NOCONFIG_CHAN is not set
+ CONFIG_CON_ZERO_CHAN="fd:0,fd:1"
+ CONFIG_CON_CHAN="xterm"
+ CONFIG_SSL_CHAN="pty"
+@@ -110,15 +113,18 @@
+ CONFIG_HOSTAUDIO=m
+ 
+ #
+-# Block Devices
++# Block devices
+ #
+ CONFIG_BLK_DEV_UBD=y
+ CONFIG_BLK_DEV_UBD_SYNC=y
+ CONFIG_BLK_DEV_COW_COMMON=y
+ CONFIG_BLK_DEV_LOOP=m
++# CONFIG_BLK_DEV_CRYPTOLOOP is not set
+ CONFIG_BLK_DEV_NBD=m
+ # CONFIG_BLK_DEV_RAM is not set
++CONFIG_BLK_DEV_RAM_COUNT=16
+ CONFIG_INITRAMFS_SOURCE=""
++# CONFIG_LBD is not set
+ 
+ #
+ # IO Schedulers
+@@ -127,6 +133,7 @@
+ CONFIG_IOSCHED_AS=y
+ CONFIG_IOSCHED_DEADLINE=y
+ CONFIG_IOSCHED_CFQ=y
++# CONFIG_ATA_OVER_ETH is not set
+ CONFIG_NETDEVICES=y
+ 
+ #
+@@ -196,10 +203,7 @@
+ # Network testing
+ #
+ # CONFIG_NET_PKTGEN is not set
+-# CONFIG_KGDBOE is not set
+ # CONFIG_NETPOLL is not set
+-# CONFIG_NETPOLL_RX is not set
+-# CONFIG_NETPOLL_TRAP is not set
+ # CONFIG_NET_POLL_CONTROLLER is not set
+ # CONFIG_HAMRADIO is not set
+ # CONFIG_IRDA is not set
+@@ -232,6 +236,11 @@
+ # CONFIG_NET_RADIO is not set
+ 
+ #
++# PCMCIA network device support
++#
++# CONFIG_NET_PCMCIA is not set
++
++#
+ # Wan interfaces
+ #
+ # CONFIG_WAN is not set
+@@ -259,12 +268,15 @@
+ # CONFIG_EXT3_FS_XATTR is not set
+ CONFIG_JBD=y
+ # CONFIG_JBD_DEBUG is not set
+-# CONFIG_REISER4_FS is not set
+ CONFIG_REISERFS_FS=y
+ # CONFIG_REISERFS_CHECK is not set
+ # CONFIG_REISERFS_PROC_INFO is not set
+ # CONFIG_REISERFS_FS_XATTR is not set
+ # CONFIG_JFS_FS is not set
++
++#
++# XFS support
++#
+ # CONFIG_XFS_FS is not set
+ # CONFIG_MINIX_FS is not set
+ # CONFIG_ROMFS_FS is not set
+@@ -277,11 +289,6 @@
+ CONFIG_AUTOFS4_FS=m
+ 
+ #
+-# Caches
+-#
+-# CONFIG_FSCACHE is not set
+-
+-#
+ # CD-ROM/DVD Filesystems
+ #
+ CONFIG_ISO9660_FS=m
+@@ -331,7 +338,6 @@
+ #
+ # CONFIG_NFS_FS is not set
+ # CONFIG_NFSD is not set
+-# CONFIG_EXPORTFS is not set
+ # CONFIG_SMB_FS is not set
+ # CONFIG_CIFS is not set
+ # CONFIG_NCP_FS is not set
+@@ -400,10 +406,14 @@
+ # CONFIG_CRYPTO is not set
+ 
+ #
++# Hardware crypto devices
++#
++
++#
+ # Library routines
+ #
+ # CONFIG_CRC_CCITT is not set
+-# CONFIG_CRC32 is not set
++CONFIG_CRC32=m
+ # CONFIG_LIBCRC32C is not set
+ 
+ #
+@@ -416,13 +426,13 @@
+ # Kernel hacking
+ #
+ CONFIG_DEBUG_KERNEL=y
+-# CONFIG_MAGIC_SYSRQ is not set
+ # CONFIG_SCHEDSTATS is not set
+ # CONFIG_DEBUG_SLAB is not set
+ # CONFIG_DEBUG_SPINLOCK is not set
+ # CONFIG_DEBUG_SPINLOCK_SLEEP is not set
+ # CONFIG_DEBUG_KOBJECT is not set
+ CONFIG_DEBUG_INFO=y
++# CONFIG_DEBUG_FS is not set
+ CONFIG_FRAME_POINTER=y
+ CONFIG_PT_PROXY=y
+ # CONFIG_GPROF is not set
 
-Blaisorblade wrote:
->Hey, has anyone found the time to put together any patch to workaround the
->security bug in uml_net?
-
-Attached are two patches.  The first one, uml_net-slip.diff, is the minimal 
-patch to apply to uml_net.  The second one, uml_net-uml.diff, applies to 
-2.4.27-1um (note the half-hearted attempt to plug a FD leak in there as 
-well).  As a nice bonus, a UML with this patch still works with an unpatched 
-uml_net binary.
-
->I think it would be ok also to simply comment out the offending code (even
->providing some kind of -D configuration option for who really needs SLIP
->support, and they are few)!
->
->Suggestions?
-
-Agreed, tuntap is a compile time option, slip should be as well.
-
-Steve Schmidtke
-
-
-------=_NextPart_000_6243_72fd_3c69
-Content-Type: application/octet-stream; name="uml_net-slip.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="uml_net-slip.diff"
-
-LS0tIHRvb2xzLTIwMDQwNDA2Lm9sZC91bWxfbmV0L3NsaXAuYwkyMDAyLTA0
-LTI4IDE1OjQ3OjM1LjAwMDAwMDAwMCAtMDQwMAorKysgdG9vbHMtMjAwNDA0
-MDYubmV3L3VtbF9uZXQvc2xpcC5jCTIwMDUtMDMtMDcgMTA6NDA6MzcuMDAw
-MDAwMDAwIC0wNTAwCkBAIC0xMTEsNyArMTExLDcgQEAKIHZvaWQgc2xpcF92
-NChpbnQgYXJnYywgY2hhciAqKmFyZ3YpCiB7CiAgIHN0cnVjdCBvdXRwdXQg
-b3V0cHV0ID0gSU5JVF9PVVRQVVQ7Ci0gIGNoYXIgKm9wOworICBjaGFyICpv
-cCwgZGV2W3NpemVvZigic2xubm5ublwwIildOwogCiAgIGlmKHNldHJldWlk
-KDAsIDApIDwgMCl7CiAgICAgb3V0cHV0X2Vycm5vKCZvdXRwdXQsICJzbGlw
-IC0gc2V0cmV1aWQgZmFpbGVkIik7CkBAIC0xMzUsNyArMTM1LDggQEAKICAg
-ICBzbGlwX3VwKDAsIGFyZ3ZbMV0sIE5VTEwsIE5VTEwsICZvdXRwdXQpOwog
-ICB9CiAgIGVsc2UgaWYoIXN0cmNtcChvcCwgImRvd24iKSl7Ci0gICAgc2xp
-cF9kb3duKGFyZ3ZbMV0sIE5VTEwsIE5VTEwsICZvdXRwdXQpOworICAgIHNs
-aXBfbmFtZSgwLCBkZXYsICZvdXRwdXQpOworICAgIHNsaXBfZG93bihkZXYs
-IE5VTEwsIE5VTEwsICZvdXRwdXQpOwogICB9CiAgIGVsc2UgewogICAgIHBy
-aW50Zigic2xpcCAtIFVua25vd24gb3AgJyVzJ1xuIiwgb3ApOwo=
-
-
-------=_NextPart_000_6243_72fd_3c69
-Content-Type: application/octet-stream; name="uml_net-uml.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="uml_net-uml.diff"
-
-LS0tIGxpbnV4LTIuNC4yNy0xdW0ub2xkL2FyY2gvdW0vZHJpdmVycy9zbGlw
-X3VzZXIuYwkyMDA1LTAzLTA3IDA5OjU5OjE0LjAwMDAwMDAwMCAtMDUwMAor
-KysgbGludXgtMi40LjI3LTF1bS5uZXcvYXJjaC91bS9kcml2ZXJzL3NsaXBf
-dXNlci5jCTIwMDUtMDMtMDcgMTE6NTU6MjUuMDAwMDAwMDAwIC0wNTAwCkBA
-IC0xMDgsNiArMTA4LDkgQEAKIAkJCWVyciA9IC1FSU5WQUw7CiAJCX0KIAl9
-CisKKwlvc19jbG9zZV9maWxlKGZkc1swXSk7CisKIAlyZXR1cm4oZXJyKTsK
-IH0KIApAQCAtMTI4LDYgKzEzMSw3IEBACiAJc2ZkID0gb3Nfb3Blbl9maWxl
-KHB0c25hbWUobWZkKSwgb2ZfcmR3cihPUEVORkxBR1MoKSksIDApOwogCWlm
-KHNmZCA8IDApewogCQlwcmludGsoIkNvdWxkbid0IG9wZW4gdHR5IGZvciBz
-bGlwIGxpbmUsIGVyciA9ICVkXG4iLCAtc2ZkKTsKKwkJb3NfY2xvc2VfZmls
-ZShtZmQpOwogCQlyZXR1cm4oc2ZkKTsKIAl9CiAJaWYoc2V0X3VwX3R0eShz
-ZmQpKSByZXR1cm4oLTEpOwpAQCAtMTc1LDcgKzE3OSw3IEBACiAKIAlzcHJp
-bnRmKHZlcnNpb25fYnVmLCAiJWQiLCBVTUxfTkVUX1ZFUlNJT04pOwogCi0J
-ZXJyID0gc2xpcF90cmFtcChhcmd2LCAtMSk7CisJZXJyID0gc2xpcF90cmFt
-cChhcmd2LCBwcmktPnNsYXZlKTsKIAogCWlmKGVyciAhPSAwKQogCQlwcmlu
-dGsoInNsaXBfdHJhbXAgZmFpbGVkIC0gZXJybm8gPSAlZFxuIiwgLWVycik7
-Cg==
-
-
-------=_NextPart_000_6243_72fd_3c69--
 
 
 -------------------------------------------------------
