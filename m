@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BvgOz-0006Dw-WD for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Aug 2004 11:03:41 -0700
-Received: from zrtps0kp.nortelnetworks.com ([47.140.192.56])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1BvgOy-00036W-Nh for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Aug 2004 11:03:41 -0700
-Message-ID: <411D01F6.9030209@nortelnetworks.com>
-From: "Joe Marzot" <gmarzot@nortelnetworks.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] handle_trap - failed to wait at end of syscall [was
-	Re: [uml-devel] debugging UML cores]
+	id 1Bvivz-00006g-9P for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Aug 2004 13:45:55 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1Bvivy-0001E8-FJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Aug 2004 13:45:54 -0700
+Message-Id: <200408132147.i7DLlB2o003883@ccure.user-mode-linux.org>
+Subject: Re: handle_trap - failed to wait at end of syscall [was Re:
+	[uml-devel] debugging UML cores] 
+In-Reply-To: Your message of "Fri, 13 Aug 2004 11:46:04 EDT."
+	<411CE23C.4070903@nortelnetworks.com> 
 References: <200408120541.i7C5faJd010923@ccure.user-mode-linux.org>
 	<411B8E89.5040407@nortelnetworks.com>
-	<411CE23C.4070903@nortelnetworks.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	<411CE23C.4070903@nortelnetworks.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,22 +31,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Aug 2004 14:01:26 -0400
-To: Jeff Dike <jdike@addtoit.com>
+Date: Fri, 13 Aug 2004 17:47:11 -0400
+To: Joe Marzot <gmarzot@nortelnetworks.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Marzot, Joe [BL60:NP72:EXCH] wrote:
-> (gdb) p status
-> $7 = 383
-> 
+gmarzot@nortelnetworks.com said:
 > WSTOPSIG(err) = SIGHUP
-> 
+> does this give any clues...any ideas of what else to look at?
 
-that should be
+Do you have any idea how you're making this happen?  The userspace process is
+getting a SIGHUP in the middle of having a system call nullified.  This is OK
+since a SIGHUP can happen any time if you log out on it or something, but
+I'd like to know exactly what's going on so I can decide what the right reaction
+to it is.
 
-WSTOPSIG(status) = SIGHUP
+Simplistically, we could just handle it there and ignore it, since UML probably
+got the SIGHUP as well, and will deal with it then.
 
-of course. -g
+				Jeff
+
 
 
 
