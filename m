@@ -2,13 +2,13 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AyJMH-0001K6-E2 for User-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 15:31:29 -0800
-Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
+	id 1AyJei-0005XV-Pq for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 15:50:32 -0800
+Received: from zcars0m9.nortelnetworks.com ([47.129.242.157])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AyJ9h-0003Ef-CY for User-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Mar 2004 15:18:29 -0800
-Message-ID: <40451634.70902@nortelnetworks.com>
+	id 1AyJS8-0006vh-1d for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Mar 2004 15:37:32 -0800
+Message-ID: <40451AAB.5050304@nortelnetworks.com>
 From: Chris Friesen <cfriesen@nortelnetworks.com>
 MIME-Version: 1.0
 References: <4043B42A.10803@nortelnetworks.com>
@@ -19,7 +19,7 @@ References: <4043B42A.10803@nortelnetworks.com>
 	<200403022322.i22NM8Wo003853@ccure.user-mode-linux.org>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: problems with UML, issues with includes
+Subject: [uml-devel] Re: problems with UML -- new data with memory debugging on
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,65 +31,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 02 Mar 2004 18:18:12 -0500
+Date: Tue, 02 Mar 2004 18:37:15 -0500
 To: Jeff Dike <jdike@addtoit.com>
 Cc: User-mode-linux-devel <User-mode-linux-devel@lists.sourceforge.net>
 
-Jeff Dike wrote:
-> cfriesen@nortelnetworks.com said:
-> 
->>#1  0xa00d03d6 in activate_fd (irq=3, fd=47, type=1,
->>dev_id=0xa02309f8) at irq_user.c:230 
->>
-> 
-> Why don't your line numbers match mine?  
 
-I've added debug statements.
+I turned on memory debugging, and got the following.  Line 1439 in 
+slab.c is
 
-The kfree you seem to be talking
-> about is this:
+/* Either write before start, or a double free. */
 
-> 
->    211   out_unlock:
->    212          irq_unlock(flags);
->    213          kfree(new_fd);
->    214   out:
-> 
-> And I totally don't see a problem there.  new_fd isn't on any lists when it's
-> freed there.
+Here's the backtrace:
 
-As mentioned in my other message, I'm seeing um_kmalloc() return a 
-new_fd address that is *already* on the active_fds list.  Hence it ends 
-up looking like a dupe, hence we end up calling kfree() on an address 
-that is still on the active_fds list.
-
-I made the following changes within activate_fd() to try and see what's 
-going on.  If I set a breakpoint at the "redo=1" line and then step 
-through the code, I end up in a continuous loop getting the same value 
-for the return code of um_kmalloc().  There's something fishy going on 
-here....
-
-get_mem:
-	new_fd = um_kmalloc(sizeof(*new_fd));	
-	err = -ENOMEM;
-	if(new_fd == NULL)
-		goto out;
-	
-	redo = 0;
-	flags = irq_lock();
-	for(irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd->next){
-		
-		if (irq_fd == new_fd) {
-			redo = 1;
-		}
-	}
-	irq_unlock(flags);
-	
-	if (redo)
-		goto get_mem;
-
-
-Chris
+Breakpoint 1, panic (fmt=0xa01e2d8a "kernel BUG at %s:%d!\n") at panic.c:60
+60              bust_spinlocks(1);
+(gdb) bt
+#0  panic (fmt=0xa01e2d8a "kernel BUG at %s:%d!\n") at panic.c:60
+#1  0xa002dc8a in kfree (objp=0xa032c89c) at slab.c:1439
+#2  0xa0103ac8 in hostfs_read_super (sb=0xaf332400, data=0xaf036000, 
+silent=0)
+     at hostfs_kern.c:932
+#3  0xa003cae9 in get_sb_nodev (fs_type=0xa022d62c, flags=0,
+     dev_name=0xaf037000 "none", data=0xaf036000) at super.c:756
+#4  0xa003cc82 in do_kern_mount (fstype=0xaf0d8000 "hostfs", flags=0,
+     name=0xaf037000 "none", data=0xaf036000) at super.c:808
+#5  0xa004fd62 in do_add_mount (nd=0xaefcbb94, type=0xaf0d8000 "hostfs",
+     flags=0, mnt_flags=0, name=0xaf037000 "none", data=0xaf036000)
+     at namespace.c:626
+#6  0xa0050049 in do_mount (dev_name=0xaf037000 "none",
+     dir_name=0xaff46000 "/vob/neptune", type_page=0xaf0d8000 "hostfs",
+     flags=3236757504, data_page=0xaf036000) at namespace.c:740
+#7  0xa0050416 in sys_mount (dev_name=0x8059e20 "none",
+     dir_name=0x8059e30 "/vob/neptune", type=0x8059e48 "hostfs",
+     flags=3236757504, data=0x8059eb8) at namespace.c:853
+#8  0xa00da41c in execute_syscall_tt (r=0xaefc8274) at syscall_kern.c:120
+#9  0xa00da4d9 in syscall_handler_tt (sig=12, regs=0xaefc8274)
+     at syscall_user.c:37
+#10 0xa00db5eb in sig_handler_common_tt (sig=12, sc_ptr=0xaefcbd28)
+     at trap_user.c:37
+#11 0xa00d7d0d in sig_handler (sig=12, sc=
+---Type <return> to continue, or q <return> to quit---
+       {gs = 0, __gsh = 0, fs = 0, __fsh = 0, es = 43, __esh = 0, ds = 
+43, __dsh = 0, edi = 134586040, esi = 3236757504, ebp = 2684353448, esp 
+= 2684353408, ebx = 134585888, edx = 134585928, ecx = 134585904, eax = 
+4294967258, trapno = 14, err = 4, eip = 1074791518, cs = 35, __csh = 0, 
+eflags = 582, esp_at_signal = 2684353408, ss = 43, __ssh = 0, fpstate = 
+0xaefcbd80, oldmask = 134283264, cr2 = 1074791488}) at trap_user.c:101
+#12 <signal handler called>
+#13 0x4010045e in ?? ()
+#14 0x0804a8b8 in ?? ()
+#15 0x0804b4d1 in ?? ()
+#16 0x0804c125 in ?? ()
+#17 0x0804cf1d in ?? ()
+#18 0x4002f9a7 in ?? ()
 
 
 -- 
