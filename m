@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CbOiW-0002ux-VV for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Dec 2004 11:40:16 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CbOiV-0007bu-Ed
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Dec 2004 11:40:16 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20041206192526.GC12953@bytesex>
-References: <200412040452.32722.blaisorblade_spam@yahoo.it>
-	<29928.1102218163@marajade.sandelman.ottawa.on.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1CbPB8-0004ri-0M for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Dec 2004 12:09:50 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CbPB6-000372-NQ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Dec 2004 12:09:49 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: 2.6.9-bb4 released
+References: <005301c4d95b$4bdbe4d0$0201a8c0@hawk> <41B240F4.2010108@upb.de>
+In-Reply-To: <41B240F4.2010108@upb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <29928.1102218163@marajade.sandelman.ottawa.on.ca>
-Subject: [uml-devel] Re: What to do with uml_switch?
+Message-Id: <200412062113.25753.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,57 +27,87 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 6 Dec 2004 20:25:27 +0100
-To: Michael Richardson <mcr@marajade.sandelman.ottawa.on.ca>
-Cc: Blaisorblade <blaisorblade_spam@yahoo.it>, Steve Schmidtke <steve_schmidtke@hotmail.com>, Felix =?iso-8859-1?Q?M=FCri?= <uml@uxu.ch>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 6 Dec 2004 21:13:25 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>, user-mode-linux-user@lists.sourceforge.net
 
->   uml_netjig is a tool which does the following:
->   
->   1) moves packets using "daemon" mode a la uml_switch.
->   2) has an expect-friendly command line interface 
+On Saturday 04 December 2004 23:57, Sven K=F6hler wrote:
+> > http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb=
+4/
 
-Sounds ok.
+> runs stable now for about 24 hours, longer than any version before ;-)
+Any -bb version you mean, I hope.
 
->   3) can create *multiple* switches and keep them seperate
+Including security fixes (which I had left to Bodo and Jeff at the beginnin=
+g)=20
+required destabilizing the -bb tree, which would otherwise have been a real=
+ly=20
+stabler version.
 
-Hmm, not sure I like that idea.  Is this with vlan tagging support?
-How can this be configured?  Is the command mode the only way, or can
-you also use some config file or command line switches for that?
+One *big* and basical problem was fixed exactly in -bb4, which explains why=
+=20
+it's stabler for you.
 
->   4) can record all packets to a .pcap file
->   5) can play packets from a .pcap file at a given rate 
->      (or under command line interface control)
->   6) can optionally answer ARP queries for imaginary nodes.
+The bug was in uml-signal-delivery.patch IIRC. It's very big, and when I wa=
+s=20
+compelled to merge it to include further security fixes depending on it, I =
 
-Hmm, I don't think it is a good idea to put that kind of testing code
-into the switch daemon.  I'd make the switch daemon behave as close as
-possible to a real switch, then use the normal tools you use for real
-networks as well.  I think uml_switch should just support a monitor port
-which will see all traffic (even the switched one), that is the usual
-way how it's done on physical hardware.
+was very worried about it giving problems.
 
-(4) may make sense neverless, to avoid packages being lost on load
-peaks.
+But since the first reports I got were just about trivial issues which were=
+=20
+easily fixed (I got *real* bug-reports much later), I just thought it was o=
+k=20
+(and I wasn't able to reproduce at all the problem).
 
-(5) + (6) I'd keep separated for sure.  Can be done by either some
-separate utility which connects to the switch daemon the same way the
-uml machines do that, and then injects the packets / answers arp and so
-on (probably the better option for test runs).  Or just connect the
-switch daemon via tuntap device and setup proxy-arp on the host machine
-to simulate the imaginary nodes, and also inject packets via tuntap
-network interface.
+> > Most notable patches are:
+> > - uml-hang-on-2.6.9-host
+> > - uml-fix-reboot-skas
 
-  Gerd
+> well, does this "fix-reboot" mean, that it doesn't reboot anymore?
 
--- 
-#define printk(args...) fprintf(stderr, ## args)
+That is not the intention. Just unapply it for now, and help diagnosing the=
+=20
+problem. Also, make sure *that* patch is at fault... start reverting end=20
+patches away (with patch-scripts, please, don't go doing it by hand, it's a=
+=20
+bit of a massacre) and report when it works again. I would expect the probl=
+em=20
+to be a bit earlier (except if you also tested -bb3 or something such).
 
+> because it doesn't when i tell it to
+
+> sometimes it even segfaults, when halting or rebooting.
+
+Ok, let's say it this way: UML happens to reboot depending on how much luck=
+y=20
+you / your box are.
+
+On my system, with *any* UML version, out of three reboots, I get on averag=
+e=20
+two correct reboots and one segfault. I only can get it to reliably *crash*=
+=20
+on reboot by applying an obviously correct patch (Jeff Dike is still=20
+astonished that it can hurt anything).
+
+For Bodo, it only works with the patches at the end, not otherwise. For me =
+
+it's no difference without those.
+
+Hearing that for you rebooting *worked* makes me just wonder a bit more.
+
+The fact it halts when halting is something new, however.
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now. 
+Discover which products truly live up to the hype. Start reading now.=20
 http://productguide.itmanagersjournal.com/
 _______________________________________________
 User-mode-linux-devel mailing list
