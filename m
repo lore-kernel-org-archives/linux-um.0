@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AT2IH-0004dE-9W
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 07 Dec 2003 09:02:05 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AT2IG-0004Fp-JK
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 07 Dec 2003 09:02:04 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] make clean & distclean are not cleaning up
-In-Reply-To: <20031207.071354.-1654081.1.mcmechanjw@juno.com>
-Message-ID: <Pine.LNX.4.44.0312071801310.31202-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1AT8pY-0001zt-J4
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 07 Dec 2003 16:00:52 -0800
+Received: from [219.95.0.242] (helo=STENNY)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AT8pX-0000kI-Lb
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 07 Dec 2003 16:00:52 -0800
+From: Stenny <uml@w4.homeip.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-ID: <skqnx1nepxadcv5.081220030759@STENNY>
+Subject: [uml-devel] SKAS vs ChrootJail
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,30 +23,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 Dec 2003 18:01:51 +0100 (CET)
-To: James W McMechan <mcmechanjw@juno.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 8 Dec 2003 07:59:56
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Did you remember to specify the arch when you ran make clean?
 
-Regards
-Henrik
+Hi,
 
-On Sat, 6 Dec 2003, James W McMechan wrote:
+I'm new UML users, I have a question regarding SKAS and chrootjail, what is diffirent between them, and if I have SKAS mode enabled, do I still need chrootjail for increase of security?
 
-> It is looking like make clean & make distclean don't clear some          
->       
-> of the headers :(                                                        
->       
-> I had a config with TT off and then turned it on then I got a            
->       
-> undefined TASK_EXTERN_PID for tt/gdb.c so I did a make clean,            
->       
-> still no luck, make distclean alas did not clear the problem,            
->       
-> so I just generated a new symlink tree to compile in, but I was          
->       
-> startled that distclean did not clear out the configuration.
+Thank you
+
+Stenny
 
 
 
