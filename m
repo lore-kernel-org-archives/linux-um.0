@@ -2,25 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CxgjC-00067Z-K1 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Feb 2005 23:21:06 -0800
-Received: from mx2.elte.hu ([157.181.151.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CxgjA-0002I2-Rw for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Feb 2005 23:21:06 -0800
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20050206071935.GA19991@elte.hu>
+	id 1Cxgy3-0006dP-Gw for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Feb 2005 23:36:27 -0800
+Received: from smtp209.mail.sc5.yahoo.com ([216.136.130.117])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1Cxgy2-0003Ov-4L for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Feb 2005 23:36:27 -0800
+Message-ID: <4205C8EF.2000604@yahoo.com.au>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
+MIME-Version: 1.0
 References: <42021E35.8050601@fujitsu-siemens.com>
 	<4202C18F.5010605@yahoo.com.au>
 	<42036C2C.5040503@fujitsu-siemens.com>
 	<4203F40C.8040707@yahoo.com.au>
 	<20050204143917.1f9507cb.akpm@osdl.org>
 	<4204020F.2000501@yahoo.com.au> <42044D17.5040703@yahoo.com.au>
-	<42058E52.8030306@yahoo.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42058E52.8030306@yahoo.com.au>
+	<42058E52.8030306@yahoo.com.au> <20050206071935.GA19991@elte.hu>
+In-Reply-To: <20050206071935.GA19991@elte.hu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Subject: [uml-devel] Re: [PATCH] fix wait_task_inactive race (was Re: Race
 	condition in ptrace)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -34,67 +34,72 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 6 Feb 2005 08:19:35 +0100
-To: Nick Piggin <nickpiggin@yahoo.com.au>
+Date: Sun, 06 Feb 2005 18:36:15 +1100
+To: Ingo Molnar <mingo@elte.hu>
 Cc: Andrew Morton <akpm@osdl.org>, bstroesser@fujitsu-siemens.com, roland@redhat.com, jdike@addtoit.com, blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
+Ingo Molnar wrote:
+> * Nick Piggin <nickpiggin@yahoo.com.au> wrote:
+> 
+> 
+>>When a task is put to sleep, it is dequeued from the runqueue
+>>while it is still running. The problem is that the runqueue
+>>lock can be dropped and retaken in schedule() before the task
+>>actually schedules off, and wait_task_inactive did not account
+>>for this.
+> 
+> 
+> ugh. This has been the Nth time we got bitten by the fundamental
+> unrobustness of non-atomic scheduling on some architectures ...
+> (And i'll say the N+1th time that this is not good.)
+> 
 
-* Nick Piggin <nickpiggin@yahoo.com.au> wrote:
+This is actually due to wake_sleeping_dependent and
+dependent_sleeper dropping the runqueue lock.
 
-> When a task is put to sleep, it is dequeued from the runqueue
-> while it is still running. The problem is that the runqueue
-> lock can be dropped and retaken in schedule() before the task
-> actually schedules off, and wait_task_inactive did not account
-> for this.
+Actually idle_balance can (in rare cases) drop the lock as well,
+which I didn't notice earlier, so it is something that we
+have been doing forever. The smtnice locking has just exposed
+the problem for us, so I wrongfully bashed it earlier *blush*.
 
-ugh. This has been the Nth time we got bitten by the fundamental
-unrobustness of non-atomic scheduling on some architectures ...
-(And i'll say the N+1th time that this is not good.)
+> 
+>>+static int task_onqueue(runqueue_t *rq, task_t *p)
+>>+{
+>>+	return (p->array || task_running(rq, p));
+>>+}
+> 
+> 
+> the fix looks good, but i'd go for the simplified oneliner patch below. 
+> I dont like the name 'task_onqueue()', a because a task is 'on the
+> queue' when it has p->array != NULL. The task is running when it's
+> task_running().  On architectures with nonatomic scheduling a task may
+> be running while not on the queue and external observers with the
+> runqueue lock might notice this - and wait_task_inactive() has to take
+> care of this case. I'm not sure how introducing a function named
+> "task_onqueue()" will make the situation any clearer.
+> 
+> ok?
+> 
 
-> +static int task_onqueue(runqueue_t *rq, task_t *p)
-> +{
-> +	return (p->array || task_running(rq, p));
-> +}
+Well just because there is a specific condition that both callsites
+require. That is, the task is neither running nor on the runqueue.
 
-the fix looks good, but i'd go for the simplified oneliner patch below. 
-I dont like the name 'task_onqueue()', a because a task is 'on the
-queue' when it has p->array != NULL. The task is running when it's
-task_running().  On architectures with nonatomic scheduling a task may
-be running while not on the queue and external observers with the
-runqueue lock might notice this - and wait_task_inactive() has to take
-care of this case. I'm not sure how introducing a function named
-"task_onqueue()" will make the situation any clearer.
+While task_onqueue is technically wrong if you're looking down into
+the fine details of the priority queue management, I think it is OK
+to go up a level of abstraction and say that the task is
+"on the runqueue" if it is either running or waiting to run.
 
-ok?
+It is really the one condition that is made un-intuitive due to the
+locking in schedule(), so I thought formalising it would be better.
+Suggestions for a better name welcome? ;)
 
-	Ingo
+Your one liner would fix the problem too, of course. The important
+thing at this stage is that it gets fixed for 2.6.11.
 
---
-When a task is put to sleep, it is dequeued from the runqueue
-while it is still running. The problem is that one some arches
-that has non-atomic scheduling, the runqueue lock can be
-dropped and retaken in schedule() before the task actually
-schedules off, and wait_task_inactive did not account for this.
+Thanks,
+Nick
 
-Signed-off-by: Nick Piggin <nickpiggin@yahoo.com.au>
-Signed-off-by: Ingo Molnar <mingo@elte.hu>
 
----
-
- linux/kernel/sched.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
-
---- linux/kernel/sched.c.orig
-+++ linux/kernel/sched.c
-@@ -867,7 +875,7 @@ void wait_task_inactive(task_t * p)
- repeat:
- 	rq = task_rq_lock(p, &flags);
- 	/* Must be off runqueue entirely, not preempted. */
--	if (unlikely(p->array)) {
-+	if (unlikely(p->array || task_running(rq, p))) {
- 		/* If it's preempted, we yield.  It could be a while. */
- 		preempted = !task_running(rq, p);
- 		task_rq_unlock(rq, &flags);
 
 
 
