@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1By7fc-0008Cb-5Z for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 04:34:56 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	id 1By7vR-0001dj-P2 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 04:51:17 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1By7fb-0007qz-HG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 04:34:56 -0700
+	id 1By7vP-0002Eh-38 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 04:51:17 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] New messages at boot with 2.6.7 kernel
-References: <s107d727.063@ORANGE.OUS.EDU>
-In-Reply-To: <s107d727.063@ORANGE.OUS.EDU>
+Subject: Re: handle_trap - failed to wait at end of syscall [was Re:
+	[uml-devel] debugging UML cores]
+References: <200408120541.i7C5faJd010923@ccure.user-mode-linux.org>
+	<411CE23C.4070903@nortelnetworks.com>
+	<200408132147.i7DLlB2o003883@ccure.user-mode-linux.org>
+In-Reply-To: <200408132147.i7DLlB2o003883@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <200408201330.54086.blaisorblade_spam@yahoo.it>
+Message-Id: <200408201346.53688.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,26 +30,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Aug 2004 13:30:54 +0200
+Date: Fri, 20 Aug 2004 13:46:53 +0200
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Anthony Brock <Anthony_Brock@ous.edu>
+Cc: Jeff Dike <jdike@addtoit.com>, Joe Marzot <gmarzot@nortelnetworks.com>
 
-Alle 01:40, gioved=EC 29 luglio 2004, Anthony Brock ha scritto:
-> I've started seeing the following message with a newly built kernel at
-> startup of SuSE 9.1 and Debian Woody images. While the kernel appears to =
-be
-> functioning as expected, the messages are new. I did configure this kernel
-> from scratch, so it's possible that I made a significant change to cause
-> these.
-They come because you enabled CONFIG_DEBUG_SPINLOCK, and show a bug standin=
-g=20
-since 2.5.70 at least. Anyway it causes actual problems just with SMP (whic=
-h=20
-does not work under UML), so for now don't worry; I already noticed this=20
-problem and I'm going to fix it.
+Alle 23:47, venerd=EC 13 agosto 2004, Jeff Dike ha scritto:
+> gmarzot@nortelnetworks.com said:
+> > WSTOPSIG(err) =3D SIGHUP
+> > does this give any clues...any ideas of what else to look at?
+>
+> Do you have any idea how you're making this happen?  The userspace process
+> is getting a SIGHUP in the middle of having a system call nullified.  This
+> is OK since a SIGHUP can happen any time if you log out on it or somethin=
+g,
+> but I'd like to know exactly what's going on so I can decide what the rig=
+ht
+> reaction to it is.
+I'm getting a similar problem, in another situation. With my current tree (=
+but=20
+also any 2.6.7-bb should do; but you can test it on -bb4, to be sure), on a=
+=20
+2.6.7 host with host-skas3-2.6.7-v2.patch (notice -v2, it contains SYSEMU) =
 
-Bye
+(never got this on 2.4 host, but I'll retest), if I do "echo 0=20
+> /proc/sysemu" I get the same failure, but with 2943 as status (i.e.=20
+WSTOPSIG=3DSIGSEGV) and EINTR as errno (but I think that's from a previous =
+
+loop, since I've applied the catch-EINTR patch; i.e. probably it did the=20
+syscall, it was interrupted, and did the syscall again which returned SIGSE=
+GV=20
+as stop status). And this is definitely reproducible with echo 0=20
+> /proc/sysemu. But when booting with nosysemu, it works, and I can even=20
+reenable it with echo 1 > /proc/sysemu; but if I try disabling it again, I =
+
+get the same problem.
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
