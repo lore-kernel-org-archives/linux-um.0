@@ -2,18 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cyuto-0005wi-Pn for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 08:41:08 -0800
-Received: from mail.ists.dartmouth.edu ([129.170.248.227])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Cyutk-0002DU-M5 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 08:41:08 -0800
-Mime-Version: 1.0 (Apple Message framework v619.2)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <69f5c8791e34adc0f05b7433f6c7e254@whoopis.com>
-Content-Transfer-Encoding: 7bit
-From: Marion Bates <mbates@whoopis.com>
-Subject: [uml-devel] strace of "ls" under Fedora Core 3
+	id 1CyzqY-0006Sf-LF for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 13:58:06 -0800
+Received: from smtp.gentoo.org ([156.56.111.197])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CyzqV-0006M1-3A
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 13:58:06 -0800
+Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
+	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.42)
+	id 1CyzqT-0004tX-VG for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 21:58:02 +0000
+Received: from apache by nuthatch.gentoo.org with local (Exim 4.42)
+	id 1CyzqT-00064s-Mn for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 21:58:01 +0000
+From: bugzilla-daemon@gentoo.org
+Message-Id: <E1CyzqT-00064s-Mn@nuthatch.gentoo.org>
+Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,48 +30,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 9 Feb 2005 11:40:54 -0500
+Date: Wed, 09 Feb 2005 21:58:01 +0000
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Marion Bates <mbates@whoopis.com>, William Stearns <wstearns@pobox.com>
 
-[this is Marion channeling Bill.]
-
-	As a quick reminder, Marion and Bill are trying to get i386 fedora 
-core 3 running under uml (2.6.4, with the i386 emulation code) on ford 
-(x86_64).  The uml binaries don't have TLS support, so we've renamed 
-all of: /lib/tls. /usr/lib/tls, and /usr/X11R6/lib/tls directories.
-	Even with that done, we're getting "cannot set up LDT for thread-local 
-storage" as an error message when running something as simple as 
-/bin/ls.  It appears that there's TLS system calls in the binary 
-itself, not just in the */lib/tls libraries:
-
-...
-brk(0)                                  = 0x805d000
-brk(0x807e000)                          = 0x807e000
-brk(0)                                  = 0x807e000
-shutdown(1610612264, 81)                = -1 ENOSYS (Function not 
-implemented)
-modify_ldt(0x1, 0x5ffffe28, 0x10)       = -1 ENOSYS (Function not 
-implemented)
-write(2, "cannot set up thread-local stora"..., 36cannot set up 
-thread-local storage: ) = 36
-write(2, "cannot set up LDT for thread-loc"..., 43cannot set up LDT for 
-thread-local storage
-) = 43
-write(2, "\n", 1
-)                       = 1
---- SIGSEGV (Segmentation fault) ---
-+++ killed by SIGSEGV +++
-
-	The "modify_ldt" call looks ominous; In a perfect world, wouldn't the 
-/bin/ls binary realize it didn't have any tls library support and not 
-use TLS system calls?
-	Yeah, right.  We can only hope.  :-)
-
-	Any ideas?
-	- A befuddled Marion and Bill
+http://bugs.gentoo.org/show_bug.cgi?id=49277
 
 
+
+
+
+------- Additional Comments From blaisorblade_spam@yahoo.it  2005-02-09 13:58 PST -------
+Yes, upgrading would partially help. Alternatively, using a non-NPTL glibc is a workaround (but things get slower); using the latest, ~x86 glibc, built without the nptlonly flag, makes sure that UML is linked against a non-NPTL glibc, so this is also a workaround.
+
+In short, see my previous message, and note that the previous official source (Jeff Dike) for the portage releases has stopped doing releases, since main work happens onto vanilla kernels (UML has been merged into vanilla Linux, finally). He now only maintains a development tree (http://user-mode-linux.sourceforge.net/patches.html, if you want, but it's for development).
+
+Both the 2.6.9-bs6 patchset (which I maintain and is very stable, see at http://www.user-mode-linux.org/~blaisorblade/) and the vanilla 2.6.10 Linux kernel (with a bit of other problems, which are fixed in the upcoming vanilla 2.6.11) have the (partial) fix included: they work if you compile a SKAS-only UML (enable CONFIG_SKAS and disable CONFIG_TT).
+
+Everything fails to compile if you have a NPTL glibc in /lib (necessary condition to experience the bug) and UML is statically linked, i.e. you enable also TT mode or explicitly request static linking (which is implied by TT mode).
+
+For this configuration, no workaround exists at the moment, nor I know anyone who knows enough about linking scripts and glibc details to fix it.
+And note that enabling TT mode is required to run UML onto a vanilla Linux kernel as host system; with the SKAS patch on the host it is possible to run a UML built with only SKAS mode enabled and TT mode disabled.
+
+* Why wasn't the portage tree not updated (I guess):
+The reason is that while previously UML was a separate patch to apply to a vanilla tarball, while starting from 2.6.9 UML has been merged in mainline so a vanilla kernel (should) compile. However, a vanilla 2.6.9 kernel tarball contains the whole UML architecture, but has these problems (they were discovered and fixed later).
+
+I release (when needed) a patchset (the -bb/-bs one) against vanilla kernels, however, for further UML fixes. "When needed" means that if the mainline release is good, and no important fixes are written, or if my time is short, I don't do a release.
+
+Possibly including it inside the portage tree would be good (as usermode-bb-sources, if you want). I both use a Gentoo system and maintain that patchset, so if you want I can help for this.
+
+
+
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
