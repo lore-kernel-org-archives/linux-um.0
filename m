@@ -1,12 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Subject: Re: [uml-devel] Fedora Core 2 test3 root filesystem
-In-Reply-To: <Pine.LNX.4.58.0405031721560.4536@sparrow>
-Message-ID: <Pine.LNX.4.58.0405041842040.4536@sparrow>
-References: <Pine.LNX.4.58.0405031721560.4536@sparrow>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BL8tr-0007Si-To for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 May 2004 16:00:31 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BL8tr-0000ve-Bo
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 May 2004 16:00:31 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] [patch] ethtool support
+Message-ID: <20040505054521.GA28847@bytesex.org>
+References: <20040430094557.GA19219@bytesex.org>
+	<200405042041.i44KfekI003899@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200405042041.i44KfekI003899@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,38 +29,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 May 2004 18:44:33 -0400 (EDT)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>
-Cc: William Stearns <wstearns@pobox.com>
+Date: Wed, 5 May 2004 07:45:21 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Good evening, all,
+On Tue, May 04, 2004 at 04:41:40PM -0400, Jeff Dike wrote:
+> kraxel@bytesex.org said:
+> > Trivial patch for the uml network driver: basic ethtool support so it
+> > returns name + version on ETHTOOL_GDRVINFO. 
+> 
+> Applied, thanks.  What's with the version == 42?
 
-On Mon, 3 May 2004, William Stearns wrote:
+I didn't find a version for the driver, so I picked a random number.
+Well, not completely random, just google for "42" ;)
 
-> 	I've got a first pass at a Fedora core 2 test3 root filesystem up 
-> at http://www.stearns.org/uml-root/ .
-> 	Bug reports welcome.  Bug reports with suggested fixes encouraged!  
-> I'll generally not add new rpm's to the build unless they're something so
-> critical that one can't even install new rpm's without them (damn, I
-> forgot the rpm rpm again? ;-)
+  Gerd
 
-	OK, I've done some simple testing and the 20040504 version 
-(155549908 May  4 13:57 root_fs.fc-2-client.pristine.20040504.bz2 , 
-heading up to http://www.stearns.org/uml-root/ ) boots with just the odd 
-warning.
-	Cheers,
-	- Bill
-
----------------------------------------------------------------------------
-First snow, then silence.
-This thousand dollar screen dies
-so beautifully.
-        -- Error messages in haiku
-(Courtesy of Rasmus Andersen <rasmus@jaquet.dk>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+-- 
+Bei Debian kannst du dir aussuchen, woran du selbst schuld sein willst.
+	-- Thiemo Seufer in dasr zu stable vs. testing
 
 
 -------------------------------------------------------
