@@ -1,18 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5tJN-0005pr-0E for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Sep 2004 14:52:05 -0700
-Received: from witte.sonytel.be ([80.88.33.193])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C5qoR-0002pL-Fr for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Sep 2004 12:12:06 -0700
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uml-devel] [patch 1/1] Refer to CONFIG_USERMODE, not to CONFIG_UM
-In-Reply-To: <20040910170859.24ABDC74B@zion.localdomain>
-Message-ID: <Pine.GSO.4.58.0409102109330.9294@waterleaf.sonytel.be>
-References: <20040910170859.24ABDC74B@zion.localdomain>
+Subject: Re: [uml-devel] Re: [uml-user] UML hanging at "Activating swap"
+In-Reply-To: <20040909194623.GQ5330@alcor.net>
+Message-ID: <Pine.GSO.4.58.0409100946440.93@waterleaf.sonytel.be>
+References: <7153203.1094632577758.SLOX.WebMail.wwwrun@webmail.helinet.de>
+	<200409092024.17925.blaisorblade_spam@yahoo.it>
+	<20040909184951.GM5330@alcor.net>
+	<200409092133.35518.blaisorblade_spam@yahoo.it>
+	<20040909194623.GQ5330@alcor.net>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -26,25 +21,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 10 Sep 2004 21:11:37 +0200 (MEST)
-To: blaisorblade_spam@yahoo.it
-Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 10 Sep 2004 09:48:04 +0200 (MEST)
+To: Matt Zimmerman <mdz@debian.org>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, Dennis Ploeger <ploeger@helinet.de>, Michael West <quagly@mitzit.net>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, 10 Sep 2004 blaisorblade_spam@yahoo.it wrote:
-> We should also figure out how to make the config process work better for UML.
-> We would like to make UML able to "source drivers/Kconfig" and have the right
-> drivers selectable (i.e. LVM, ramdisk, and so on) and the ones for actual
-> hardware excluded. I've been reading such a request even from Jeff Dike at the
-> last Kernel Summit, (in the lwn.net coverage) but without any followup.
+On Thu, 9 Sep 2004, Matt Zimmerman wrote:
+> hwclock has caused problems for UML in the past; one of the strange things
+> that it does is to try to open an fd for the console, because some
+> architectures use that as a means to interface to the hardware clock.
 
-Yes, I agree 100%!
+> open("/dev/rtc", O_RDONLY|O_LARGEFILErequest_module[char-major-10-135]: fork failed, errno 1
 
-Drivers for `modern' hardware (e.g. PCI, USB), shouldn't be a problem, since
-they have good dependencies.
+If UML would implement /dev/rtc, hwclock would never get to here:
 
-`legacy' hardware is more of a problem. Since the consensus was that CONFIG_ISA
-is meant to indicate ISA slots, perhaps we need something like CONFIG_XBUS to
-mark all these legacy drivers?
+> open("/dev/tty1", O_RDONLY|O_LARGEFILE) = 3
+
+This is just done for backwards-compatibility. /dev/rtc is the way to go.
 
 Gr{oetje,eeting}s,
 
