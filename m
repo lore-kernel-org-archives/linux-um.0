@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D7bmD-0000It-36 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Mar 2005 08:05:13 -0800
+	id 1D7bmE-0000J7-A1 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Mar 2005 08:05:14 -0800
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1D7bmB-0004PO-6J for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Mar 2005 08:05:12 -0800
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1D7bmB-0007aO-KO for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Mar 2005 08:05:14 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SKAS3 v8 for x86_64
-References: <OJEEKGNKKDLJIEPBEJMIAEIOCAAA.brocka@sterlingcgi.com>
-In-Reply-To: <OJEEKGNKKDLJIEPBEJMIAEIOCAAA.brocka@sterlingcgi.com>
+Subject: Re: [uml-devel] Triage on the pending patches
+References: <200503030822.j238MoBY016825@ccure.user-mode-linux.org>
+	<200503031844.j23IhmDS003473@ccure.user-mode-linux.org>
+	<200503032111.43966.rob@landley.net>
+In-Reply-To: <200503032111.43966.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200503051638.49653.blaisorblade@yahoo.it>
+Message-Id: <200503051657.59188.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,33 +31,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 5 Mar 2005 16:38:49 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, "Christopher S. Aker" <caker@theshore.net>
-Cc: Anthony Brock <brocka@sterlingcgi.com>
+Date: Sat, 5 Mar 2005 16:57:59 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Jeff Dike <jdike@addtoit.com>
 
-On Friday 04 March 2005 01:24, Anthony Brock wrote:
-> Recently some individuals posted a "port" of the SKAS 3 patch to x86_64.
-> However, this port was for the 2.4 kernel.
-And I know it didn't work... sadly.
-> Has anyone worked on porting 
-> SKAS 3 (especially v7 or v8) to the x86_64 architecture on 2.6 kernel? Is
-> this even on the radar for the current developers?
-Yesterday I was working on it. I've put the code together, as I did last time, 
-now it's only time to debug it. However the two problems are:
+On Friday 04 March 2005 03:11, Rob Landley wrote:
+> On Thursday 03 March 2005 01:43 pm, Jeff Dike wrote:
+> > rob@landley.net said:
+> > > Well, just in case your job was too easy, here's one more.  Using the
+> > > "quiet" option shows a couple of lines being printed out by printf
+> > > that should be printed out by printk (so they'll _shut_up_ when you
+> > > ask it to).
+> >
+> > Those are printfs for a reason.  Early boot mesages (before the kernel is
+> > actually running) won't be seen if they are printk-d and the thing
+> > crashes before the console is initialized.  The messages will be stuck in
+> > the printk buffer, and you will be none the wiser.
+>
+> I suspected there was a reason, nice to know what it is.  It would be nice
+> if they could be made quiet, because I'm in the process of doing a gross
+> hack to run an independent process wrapped in UML.
 
-1) I don't use a 64-bit arch normally (I have a ugly Fedora AMD64 installed).
-2) when I did it last time, UML didn't boot and nothing in the patch made me 
-understood what was wrong.
+> Basically, my nefarious scheme is to add the squashfs patch to UML, append
+> a squashfs image to the end of the  UML executable, and have a cpio ramfs
+> init script search through /proc/self/exe for the 32 bytes that were at the
+> start of the squashfs (which includes a 4 byte magic signature thingy) to
+> determine offset to pass to "losetup -o $OFFSET /dev/loop0 /proc/self/exe",
+> and then mount /dev/loop0 / and run the executable I want out of that
+> filesystem.
+First, compliments.... we need such stuff going.
 
-I hope next week I can publish my version, even if I don't solve the problem, 
-so that eventually somebody will be able to fix it.
+Please note that unless I'm mistaken the above scheme does not work 
+since /proc/self/exe contains what you want on the host, not on the guest. If 
+you use hostfs then it's ok, otherwise you'll have to pack the squashfs 
+within the cpio image (if it's possible, the cpio image could not be ready to 
+cope with so much data). Also, made sure adding stuff at the end of an exec. 
+file is accepted without problems? Seems reasonable but not obvious.
 
-However, notice that what we can currently give is a port to run 32-bit UMLs. 
-Which is very nice, but not everything. On the host side, the 64-bit version 
-is probably ready and easier to debug than the 32-bit emulation.
+No experience with such stuff, but isn't it a bit risky this way (a signature 
+being there by mistake)? If you still go for grepping the exec. image, I 
+would add a header in the end giving the size of the squashfs image, and 
+parse it. With the -s option to losetup you can cut at the end the area 
+seeing by the loop device.
+> And there's a cheap and dirty way to get a self contained program running
+> under UML.  (I hope to actually have an example working this evening using
+> 2.6.11.)
 
-The problem for 64-bit UMLs is that, to my knowledge, they must still get 
-support for 64-bit SKAS. It shouldn't be hard, I hope.
+> >
+> > So, they can be made quiet if you really want, but that's not the way.
+> The down side is that UML (even with the quiet option) just won't shut up
+> about its init stuff.  Hence me looking into cleaning that up...
+Add early_printk which is a printf but shuts down when the quiet option is 
+used.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
