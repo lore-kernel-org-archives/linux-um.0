@@ -1,12 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <005501c4d968$4e0feff0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <00c801c4d967$0bcb0590$9801a996@research.panasonic.com>
-Subject: Re: [uml-devel] Status
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CaJpZ-00040a-6j for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Dec 2004 12:15:05 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CaJpU-0008O9-Uy for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Dec 2004 12:15:05 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200412032118.03670.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Pushing things to CVS
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,26 +27,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 3 Dec 2004 12:45:46 -0600
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: user-mode-linux-user@lists.sourceforge.net, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 3 Dec 2004 21:18:03 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> Except for target kernel patches, it doesn't look like the download area has
-> been updated in quite some time and the User Mode Linux Community link is
-> broken. What's the status? Is UML so stable that the only work left is to
-> keep up with new kernels for the virtual machine?
+I'm likely going to get working on the biggest site issues - namely linking to 
+UMLazi, my own site and other stuff, remove outdated SKAS things and link to 
+the uml Wiki I link from my own page (that's somehow hidden, but hey, it's 
+there). It's definitely time I do that...
 
-UML development is as strong as ever, it's just that since 2.6.9 all 2.6 UML
-development has been going into the mainline (kernel.org). The 2.4 guest patches will
-continue to be released on the uml website.
-
-You should check out Blaisorblade's -bb guest patch for 2.6.  It contains all the new
-patches that are being fed into mainline:
-
-http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/
-
--Chris
-
+Can you push the site to CVS? Thanks
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
