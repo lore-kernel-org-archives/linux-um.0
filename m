@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6svw-0006rX-Co for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Sep 2004 08:40:00 -0700
-Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C6svv-0005UU-NG for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Sep 2004 08:40:00 -0700
-Message-ID: <4145BF3F.3090502@nortelnetworks.com>
-From: Joe Marzot <gmarzot@nortelnetworks.com>
+	id 1C6wEP-0007yn-RW for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Sep 2004 12:11:17 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C6wEN-0000EQ-2D for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Sep 2004 12:11:17 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 2/2] add-SIGPROF-get-set_signals
+References: <20040912182629.3FEC49F37@zion.localdomain>
+	<20040913033239.GA13207@ccure.user-mode-linux.org>
+In-Reply-To: <20040913033239.GA13207@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] handle_trap - failed to wait at end of syscall
-References: <200408120541.i7C5faJd010923@ccure.user-mode-linux.org>
-	<411B8E89.5040407@nortelnetworks.com>
-	<411CE23C.4070903@nortelnetworks.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Message-Id: <200409132012.29994.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,128 +30,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 13 Sep 2004 11:39:43 -0400
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 13 Sep 2004 20:12:29 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-remeber this one?...the latest take on this is that because we launch 
-UMLs from a perl script (using fork/exec) when the perl script exits a 
-SIGHUP is transmitted to the UML proc which sometimes interrupts a 
-waitpid()...if that interruption occurs during the nullification of a 
-syscall (now that I know what that means:) then you get a kernel panic 
-like below.
+On Monday 13 September 2004 05:32, Jeff Dike wrote:
+> On Sun, Sep 12, 2004 at 08:26:29PM +0200, blaisorblade_spam@yahoo.it wrote:
+> >  {
+> >  	sigset_t mask;
+> > +	sigset_t old_mask;
+> >  	int ret;
 
-I made a small fix that seems to be working for me and looks like what's 
-going on in CATCH_EINTR
+> Weren't you just complaining about stack consumption?  Do you know how
+> big a sigset_t is?
 
-do {
-   CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
-} while (WIFSTOPPED(status) && (STOPSIG(status) == SIGHUP))
+> 	(gdb) p sizeof(sigset_t)
+> 	$1 = 128
+Yes, I realize (glibc seems seriously original about this - who ever can use 
+1024 different signals? The kernel just uses 64 signals - 8 bit).
 
-can't do this globally in CATCH_EINTR since some waitpids don't check 
-status...maybe they should...maybe there is a more correct way to do 
-this altogether...
+> I went to a reasonable amount of trouble to get that function to only
+> use one sigset_t and now you are proposing to add the old one back.
+> Fix the patch and I'll put it in.
+I rechecked the patch and understood why I put that in - I understand your 
+point, but since that needs at least some, but using such unobvious tricks 
+requires at least some comment - I'm adding the comment to the patch (and 
+sending it inline separately).
 
-thoughts?
+Obviously feel free to delete/change the comment.
 
-regards, Giovanni
-
-Marzot, Joe [BL60:NP72:EXCH] wrote:
-> Joe Marzot wrote:
-> 
->> here is a better one produced under similar conditions - this time the 
->> core is readable (I do get the unreadable cores quite often though).
->>
->> this is host RH8 + skas3 patch
->>
->> guest is 2.4.2x + 2.4.24-1um
-> 
-> 
-> so looking deeper in this core in handle_trap I see the call to waitpid 
-> fails with a status of 383 and an err of 13456
-> 
-> (gdb) p err
-> $6 = 13456 (the pid of the child who exitted)
-> (gdb) p status
-> $7 = 383
-> 
-> WSTOPSIG(err) = SIGHUP
-> 
-> does this give any clues...any ideas of what else to look at?
-> 
-> thanks, GSM
-> 
->>
->> [root@wbl6y227 plankton]# /usr/local/builds/gdb-6.2/gdb/gdb -c 
->> ~szhimin/tmp/joe/core.13456 
->> /view/build_neptune_dev_int144.resp3/vob/neptune/plankton/celp/linux.celp
->> GNU gdb 6.2
->> Copyright 2004 Free Software Foundation, Inc.
->> GDB is free software, covered by the GNU General Public License, and 
->> you are
->> welcome to change it and/or distribute copies of it under certain 
->> conditions.
->> Type "show copying" to see the conditions.
->> There is absolutely no warranty for GDB.  Type "show warranty" for 
->> details.
->> This GDB was configured as "i686-pc-linux-gnu"...Using host 
->> libthread_db library "/lib/libthread_db.so.1".
->>
->> Core was generated by `/vob/neptune/plankton/celp/linux.celp 
->> (DSC-0-0-0) [nameServer]                '.
->> Program terminated with signal 6, Aborted.
->> #0  0xa01643e1 in kill ()
->>     at 
->> /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/asm/arch/string.h:486
->> 486                     case 1: COMMON("\n\tstosb"); return s;
->> (gdb) where
->> #0  0xa01643e1 in kill ()
->>     at 
->> /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/asm/arch/string.h:486
->> #1  0xa018cbdb in raise ()
->>     at 
->> /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/asm/arch/string.h:486
->> #2  0xa01646cd in abort ()
->>     at 
->> /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/asm/arch/string.h:486
->> #3  0xa00d01e4 in handle_trap (pid=13461, regs=0xa5f7827c) at 
->> process.c:90
->> #4  0xa00d0438 in userspace (regs=0xa5f7827c) at process.c:168
->> #5  0xa00d0bfa in fork_handler (sig=10) at process_kern.c:102
->> #6  <signal handler called>
->> #7  0xa01643e1 in kill ()
->>     at 
->> /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/asm/arch/string.h:486
->> #8  0xa00d4734 in os_usr1_process (pid=13456) at process.c:95
->> #9  0xa00d04ce in new_thread (stack=Cannot access memory at address 0x8
->> ) at process.c:205
->> Previous frame inner to this frame (corrupt stack?)
->> (gdb) info thr
->> * 1 process 13456  0xa01643e1 in kill ()
->>     at 
->> /localdisk/builds/3pc/2.4.22-i686sim/2.4.22/include/asm/arch/string.h:486
->> (gdb)
->>
->>
->>
-> 
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net email is sponsored by Shop4tech.com-Lowest price on Blank Media
-> 100pk Sonic DVD-R 4x for only $29 -100pk Sonic DVD+R for only $33
-> Save 50% off Retail on Ink & Toner - Free Shipping and Free Gift.
-> http://www.shop4tech.com/z/Inkjet_Cartridges/9_108_r285
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
-
-
-
+> Also, if you're going to fix something, send a patch which does
+> nothing but make the fix, and save whatever cleanups you want to make
+> for a differet patch.
+Ok, I agree at all, and most times I already work like that.
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
