@@ -1,11 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] Re: Workaround for bug #851759 -  SuSE YAST in
- textmode does not work
-In-Reply-To: <20031211120056.GA5347@bytesex.org>
-Message-ID: <Pine.LNX.4.44.0312111357440.25617-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] Re: Workaround for bug #851759 -  SuSE YAST in textmode does not work
+Message-ID: <20031211140607.GA6359@bytesex.org>
+References: <20031211120056.GA5347@bytesex.org> <Pine.LNX.4.44.0312111357440.25617-100000@filer.marasystems.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0312111357440.25617-100000@filer.marasystems.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,23 +17,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 11 Dec 2003 13:58:54 +0100 (CET)
-To: Gerd Knorr <kraxel@bytesex.org>
+Date: Thu, 11 Dec 2003 15:06:08 +0100
+To: Henrik Nordstrom <hno@marasystems.com>
 Cc: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-On Thu, 11 Dec 2003, Gerd Knorr wrote:
+> This is what the test does, and this will give a false positive when 
+> running UML within vmware making SuSe think it is running on vmware 
+> hardware when it is not really (UML and the host kernel is inbetween)
 
-> The test seems to work correctly.  Probably it tries to access a "magic"
-> i/o port which is used for communication between vmware and guest os,
-> but I don't know for sure.
+Ah, *that* corner case you are talking about.  Yea, in that case it
+will succeed although it doesn't run (directly) on vmware.
 
-This is what the test does, and this will give a false positive when 
-running UML within vmware making SuSe think it is running on vmware 
-hardware when it is not really (UML and the host kernel is inbetween)
+  Gerd
 
-Regards
-Henrik
-
+-- 
+You have a new virus in /var/mail/kraxel
 
 
 -------------------------------------------------------
