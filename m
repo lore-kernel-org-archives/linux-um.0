@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cdwjf-0007C3-9I for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Dec 2004 12:23:59 -0800
-Received: from pike.sandelman.ca ([205.150.200.164])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1Cdwjc-0006A4-Ve
+	id 1Ce0gM-0000QN-Qw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Dec 2004 16:36:50 -0800
+Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1Ce0gK-0001dm-O1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Dec 2004 12:23:58 -0800
-Subject: Re: [uml-devel] Re: What to do with uml_switch? 
-In-Reply-To: Message from "Steve Schmidtke" <steve_schmidtke@hotmail.com> 
-	of "Sun,
-	12 Dec 2004 19:11:24 GMT." <BAY24-F3066C52785F7FFBF9E53EA83AA0@phx.gbl>
-References: <BAY24-F3066C52785F7FFBF9E53EA83AA0@phx.gbl> 
-Message-ID: <30083.1102884650@marajade.sandelman.ottawa.on.ca>
-From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+	Mon, 13 Dec 2004 16:36:50 -0800
+From: Werner Almesberger <wa@almesberger.net>
+Subject: Re: [uml-devel] Re: What to do with uml_switch?
+Message-ID: <20041213213601.A28618@almesberger.net>
+References: <7044.1102525892@marajade.sandelman.ottawa.on.ca>
+	<BAY24-F3095F190F005AC385C24ED83B60@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BAY24-F3095F190F005AC385C24ED83B60@phx.gbl>;
+	from steve_schmidtke@hotmail.com on Wed, Dec 08, 2004 at
+	07:49:09PM +0000
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,50 +31,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 12 Dec 2004 15:50:50 -0500
+Date: Mon, 13 Dec 2004 21:36:01 -0300
 To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com
+Cc: mcr@sandelman.ottawa.on.ca, blaisorblade_spam@yahoo.it, kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
+Steve Schmidtke wrote:
+> It would be useful if daemon_user.c could be run in a synchronous mode such 
+> that packets are guaranteed delivered to the switch and guaranteed delivered 
+> to a host.  The switch could then mangle packets in a deterministic fashion 
+> for testing.
 
+BTW, for testing purposes, one may also want to consider umlsim,
+which gives you even more control over what happens to the packets
+(including delay, etc.).
 
->>>>> "Steve" == Steve Schmidtke <steve_schmidtke@hotmail.com> writes:
-    Steve> uml_netjig changes than the other way around.  I found 5
-    Steve> patches (1-5) for the uml_netjig foundation in the mailing
-    Steve> list archive, and I'm OK with the basic premises I have seen:
+Right now, the networking support still isn't great, but it's
+getting there ...
 
-  Great.
-  Let me know when I should diff against what I have, and re-submit more
-patches.
+- Werner
 
-    Steve> for controlling those switches.  If we can agree that the
-    Steve> other features like tcpdumps and fake ARPs, etc. are not core
-    Steve> to the nature of a switch (but can be patched in when
-    Steve> needed), then I would be happy to maintain the above premises
-    Steve> as well.
-
-  I'd rather see the multiple switch support in a seperate binary.
-  You'll see that in my patches uml_netjig and uml_switch each have
-their own poll(2)-loop. That's because the uml_switch is significantly
-simpler.
-
-- -- 
-]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
-]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
-] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
-] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-Comment: Finger me for keys
-
-iQCVAwUBQbyvKYqHRg3pndX9AQGwsAQA1U/+gyxKFjOfBeBSo1T4/9QUIYcK9QWS
-h0NI8NWNMTWT3E/nHSms01ZjYfiusWf7eWba7FMs8d2jj09d7fojoSDYFHxslOw2
-6voXfQwQdwAHhfvpPBgjA6+FZtQizliz7zH+pGgpnRIEOnvx7ZCpiZ5z/fDL08eL
-z8TkqkSpvoU=
-=rmIm
------END PGP SIGNATURE-----
+-- 
+  _________________________________________________________________________
+ / Werner Almesberger, Buenos Aires, Argentina         wa@almesberger.net /
+/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
