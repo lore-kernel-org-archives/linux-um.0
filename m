@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AueFR-0000jU-DX for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 13:01:17 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Audyw-0004kc-JU for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 12:44:14 -0800
-From: M A Young <m.a.young@durham.ac.uk>
-Subject: Re: [uml-devel] Re: 2.4.24-1um - exec-shield - [PATCH][RFC] memory
-	shortness fix
-In-Reply-To: <200402211651.27584.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.LNX.4.58.0402212049160.25949@vega.dur.ac.uk>
-References: <200402162004.i1GK4isq024309@ccure.user-mode-linux.org>
-	<200402201837.13918.blaisorblade_spam@yahoo.it>
-	<Pine.LNX.4.58.0402202219290.23596@vega.dur.ac.uk>
-	<200402211651.27584.blaisorblade_spam@yahoo.it>
+	id 1AujoW-0006L1-R8 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 18:57:52 -0800
+Received: from tektonic.net ([69.93.28.254] helo=unix.easyadmin ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Aujhk-0005Ic-Nb for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 18:50:52 -0800
+Message-ID: <51445.68.81.41.201.1077418309.squirrel@www.tektonic.net>
+Subject: Re: [uml-devel] [PATCH] skas3 for x86_64 arch
+From: <matta@tektonic.net>
+In-Reply-To: <20040221094519.GB31609@patrick.wattle.id.au>
+References: <1077305069.8412.62.camel@wopr.tektonic.net>
+	<200402202155.44773.blaisorblade_spam@yahoo.it>
+	<1077311125.8412.78.camel@wopr.tektonic.net>
+	<20040221094519.GB31609@patrick.wattle.id.au>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +30,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 21 Feb 2004 20:54:03 +0000 (GMT)
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Sat, 21 Feb 2004 21:51:49 -0500 (EST)
+To: cameron@patrick.wattle.id.au
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 21 Feb 2004, BlaisorBlade wrote:
+Yes, I installed bochs and just tried the AMD64 kernel provided by SuSe on
+their site and when it booted up it stated my CPU wasn't capable of
+64-bit.  So it looks like it does support it, but only when running under
+a 64-bit CPU.  I just went out and bought an Opteron so now I really need
+to get this working :)
 
-> Yes, you are perfectly right and what I wrote is at all foolish and stupid - I
-> should have written len += UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end); (or
-> something similar).
+> Matt Ayres wrote:
+>
+> | The x86_64 emulator seems to cost money.
+>
+> Have you tried Bochs?  I've not used it for x86-64 myself but it
+> claims to be able to do it.  'tis a bit slow, though.
+>
+> Cameron.
+>
+>
+> -------------------------------------------------------
+> SF.Net is sponsored by: Speed Start Your Linux Apps Now.
+> Build and deploy apps & Web services for Linux with
+> a free DVD software kit from IBM. Click Now!
+> http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-That doesn't help you either, because increasing len within setup_physmem
-writes to memory that is going to be used for other purposes. The only way
-around this amounts to increasing physmem_size anyway.
 
-	Michael Young
+
 
 
 -------------------------------------------------------
