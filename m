@@ -2,24 +2,29 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C7fak-00018C-Jw for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Sep 2004 12:37:22 -0700
-Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
+	id 1C7gs9-0007uy-P2 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Sep 2004 13:59:25 -0700
+Received: from gtfw2.enterasys.com ([12.25.1.128] ident=firewall-user)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C7faj-0003rV-OQ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Sep 2004 12:37:22 -0700
-Message-ID: <41489967.1090307@nortelnetworks.com>
-From: Joe Marzot <gmarzot@nortelnetworks.com>
+	id 1C7gs9-00084F-7Z for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Sep 2004 13:59:25 -0700
+Received: from NHROCAVG2.ets.enterasys.com (nhrocavg2.enterasys.com
+	[134.141.79.124])
+	by gtfw2.enterasys.com (0.25.1/8.12.6) with ESMTP id i8FKxGao019811
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 15 Sep 2004 16:59:16 -0400 (EDT)
+Message-ID: <4148AD24.1040408@enterasys.com>
+From: "D. Bahi" <dbahi@enterasys.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] handle_trap - failed to wait at end of syscall
-References: <200408120541.i7C5faJd010923@ccure.user-mode-linux.org>
-	<200409132139.33256.blaisorblade_spam@yahoo.it>
-	<200409132214.i8DMEwL7003829@ccure.user-mode-linux.org>
-	<200409141241.21480.blaisorblade_spam@yahoo.it>
-	<414717A4.7070605@nortelnetworks.com>
-	<200409142123.i8ELN34W004063@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [uml-devel] Re: [ann] kraxel's 2.6.8 uml patch kit
+References: <20040820122445.GA21790@bytesex>
+	<200408201901.i7KJ1eIF003843@ccure.user-mode-linux.org>
+	<20040822111745.GA10736@bytesex> <4133C57D.6060201@enterasys.com>
+	<20040914123658.GB29562@bytesex>
+In-Reply-To: <20040914123658.GB29562@bytesex>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig77E0FB5538E93EB3E7C33677"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,55 +36,84 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 15 Sep 2004 15:35:03 -0400
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Joe Marzot <gmarzot@nortelnetworks.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, "Smith, Paul [BL60:NP52:EXCH]" <pausmith@americasm01.nt.com>
+Date: Wed, 15 Sep 2004 16:59:16 -0400
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Jeff Dike wrote:
-> gmarzot@nortelnetworks.com said:
-> 
->>In our case the UML is launched like this:
->>perl script
->>   my $pid = fork();
->>   if ($pid == 0) {
->>      setpgrp(); # give all UMLs the same group id so I can renice them
->>      exec($cmd); 
-> 
-> 
-> I think I understand what's happening.  You are (unwittingly) sending UML
-> (and every process that belongs to it) a HUP when you, in effect, detach it
-> from its parent terminal.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig77E0FB5538E93EB3E7C33677
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-where am I detaching from the parent terminal?
+actually it's worse than that in my current implementation:
 
-I just did a little test and instead of invoking UML I start a little 
-perl script in exactly the same way as above to catch SIGHUP...but no 
-SIGHUP arrives.
-
-> 
-> My first thought was that SIGHUP isn't disabled in the userspace process,
-> and it should be, but it is, so I don't know why it's even being seen by
-> the ptracer.  It should only see signals which are enabled in the child.
-
-more oddness.
-
-> 
-> In the meantime, while we figure this out, you might try just adding "nohup"
-> to the beginning of your $cmd.
-
-originally tried this but something bad happened...forget which I could 
-go back and see ... and try setsid as the other poster suggested.
-
-regards, GSM
-
-> 
-> 				Jeff
-> 
-> 
-> 
+static int panic_coreonpanic(struct notifier_block *self, unsigned long 
+unused1,
+                 void *unused2)
+{
+    if ( uml_coreonpanic ) {
+        /* cleanup so we have less to cleanup [linux] on the host */
+        /* could panic in uml_cleanup though so we need a check */
+        if ( uml_exitcode++ < 1 ) {
+            uml_cleanup();
+        }
+        /* to prevent keyboard from causing terminal to spew during dump */
+        block_signals();
+        abort();
+    }
+    return(0);
+}
 
 
+Gerd Knorr wrote:
 
+>>I liked this too. Here's a pass at it if you like (attached).
+>>    
+>>
+>
+>Sorry for the delay, going over this while being busy updating my
+>patches right now ...
+>
+>  
+>
+>>+static int panic_coreonpanic(struct notifier_block *self, unsigned long unused1,
+>>+			     void *unused2)
+>>+{
+>>+	if(uml_coreonpanic){
+>>+		uml_cleanup();
+>>+		block_signals();
+>>+		abort();
+>>    
+>>
+>
+>What is the point of doing that?  I'd just let it dump core without any
+>cleanups, to get the state of the uml kernel dumped to the disk with few
+>modifications as possible.  Any changes might make the analysis of the
+>crash harder or even impossible.
+>
+>  Gerd
+>
+>  
+>
+
+-- 
+db
+
+
+--------------enig77E0FB5538E93EB3E7C33677
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (MingW32)
+
+iD8DBQFBSK0k3XQ4zakZ3z4RAp0wAJ4t/W2Jfd74Y/AUzt0RjduZUTep+ACeJftC
+tmkKMcrSI9Cq47h7htgpm2c=
+=eXG1
+-----END PGP SIGNATURE-----
+
+--------------enig77E0FB5538E93EB3E7C33677--
 
 
 -------------------------------------------------------
