@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AVGOJ-0000Lx-Cs
-	for User-mode-linux-devel@lists.sourceforge.net; Sat, 13 Dec 2003 12:29:31 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.24)
-	id 1AVGOH-0008IK-He
-	for User-mode-linux-devel@lists.sourceforge.net; Sat, 13 Dec 2003 12:29:29 -0800
-Message-Id: <200312132044.hBDKi5rL003033@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] linux-2.4.23 
-In-Reply-To: Your message of "Fri, 12 Dec 2003 23:11:11 +0100."
-             <20031212221111.671FF3BCB7@home.petschge.de> 
-References: <200312121917.05059.petschge@gmx.de> <Pine.LNX.4.44.0312122212001.19407-100000@filer.marasystems.com>  <20031212221111.671FF3BCB7@home.petschge.de> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1AVSUA-0007I5-Uk
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Dec 2003 01:24:22 -0800
+Received: from smtp3.att.ne.jp ([165.76.15.139])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AVSUA-0000A4-H8
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 14 Dec 2003 01:24:22 -0800
+From: Richard Potter <sbuml-deletethispart@zar.att.ne.jp>
+Subject: Re: [uml-devel] demo of SBUML - swsusp functionality for UML
+In-Reply-To: <03ce01c3c190$edde5c10$2000000a@schlepptopp>
+References: <20031213130717.D57E.SBUML-DELETETHISPART@zar.att.ne.jp> <03ce01c3c190$edde5c10$2000000a@schlepptopp>
+Message-Id: <20031214182343.D583.SBUML-DELETETHISPART@zar.att.ne.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,19 +25,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 13 Dec 2003 15:44:05 -0500
-To: "Patrick \"Petschge\" Kilian" <petschge@web.de>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 14 Dec 2003 18:24:19 +0900
+To: user-mode-linux-devel@lists.sourceforge.net
 
-petschge@web.de said:
-> Does anybody know why there isn't a official uml_patch-2.4.23-uml1?  
+> hey this is GREAT!
+> i`m currently downloading the whole stuff and give it a try.
 
-I do.
+If you have any problems with the demo, let me know what Linux host you
+are testing it on.
 
-It's because I haven't had any time to put it together.  Just fix the 
-ELF_PLAT_INIT thing, and you'll have pretty much what I'd release anyway.
+> 
+> > UML.  Eventually it will be announced and hosted at
+> > sbuml.sourceforge.net
+> can you explain why it will be hosted as an extra project? 
+> i just see it as additional feature for uml - so why somewhat "forking" ?
+> just independence?
 
-				Jeff
+This is a good question.  As for the core functionality (i.e. sbumlsave
+and sbumlrestore), I hope it will be merged into the UML project code.
+For now, the SBUML project can be a safe place to debug the core
+functionality until it is stable enough and meets Jeff's standards.  (Or
+someone may re-implement this functionality in a totally different way
+for the UML project, in which case the SBUML project may adopt that code.)
+
+In addition, the overall goal of SBUML is to support what we have been
+calling "Computation Scrapbook" and "Snapshot Programming" ideas. SBUML
+basically makes a UML machine act like a first-class programming object.
+The SBUML project will explore the higher-level programs/scripts that
+this makes possible.  Some of these programs/scripts will require
+extended functionality for controlling the UML that might not be of
+general interest to other UML users.  For example, our work with model
+checking requires scripts to externally control the scheduling order of
+processes in a UML machine.  So the SBUML project will do more than add
+just one "addition feature" to UML.  It will also be adding various
+experimental high-level scripts and extended functionality to support
+them.
+
+At this point, I think independence will be valuable, although I hope we
+can keep the forking minimal as we confirm where the projects' goals
+overlap.
+
+> 
+> >Potential users might include software
+> > developers who wish to prepare demos without bothering potential users
+> > with setup instructions, teachers of programming who want to distribute
+> > debugging scenarios to students, or software users who would like
+> > provide detailed bug reports (super core dumps :-) to developers.
+> and security experts can snapshot infected honeypot UML`s and transfer them
+> to other experts for analysis :D
+> 
+Somebody told me he wants to use it for pre-configuring a bunch of IRC
+clients to stress test a server he is setting up.
+
+--Richard
+
 
 
 
