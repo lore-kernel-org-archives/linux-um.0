@@ -1,20 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AU9w9-0001kQ-En
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Dec 2003 11:23:53 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AU9w8-0005qr-R0
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Dec 2003 11:23:53 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] fix for: Host panic when UML reads host /dev/shm
-References: <20031210.073651.-388765.0.mcmechanjw@juno.com>
-In-Reply-To: <20031210.073651.-388765.0.mcmechanjw@juno.com>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] Re: Workaround for bug #851759 -  SuSE YAST in
+ textmode does not work
+In-Reply-To: <20031208095906.GB22878@bytesex.org>
+Message-ID: <Pine.LNX.4.44.0312081233150.10622-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200312102027.31059.blaisorblade_spam@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,41 +16,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 10 Dec 2003 20:27:30 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: James W McMechan <mcmechanjw@juno.com>
+Date: Wed, 10 Dec 2003 22:14:07 +0100 (CET)
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-Alle 16:36, mercoled=EC 10 dicembre 2003, James W McMechan ha scritto:
-> Ok here are the two patches one each for 2.4.23
-> and 2.6.0-test11
-> Linus has accepted the test11 patch into bk so
-> the next 2.6 kernel should have the fix
-> I have also been testing a 2.4.23 patch
-> They no longer oopes with any of my test programs
-> Since you were having problems here they are
-Compliments for the catch! I had been trying uselessly to find the bug insi=
-de=20
-the shm code(I had found that which was the invalid pointer, but nothing=20
-after that)...
+On Mon, 8 Dec 2003, Gerd Knorr wrote:
 
-Are you going to send that for 2.4.24? That one will be the last 2.4 kernel=
-...
-In the meantime, I think that people at http://www.hardrock.org/ will be ha=
-ppy=20
-of it... it's the -uv tree(not very famous, maybe, but even kerneltrap.org =
+> IMHO this one is a UML kernel bug.
 
-speaks about it).
+The hang certainly can be considered a UML bug.
 
-By the way: if this is the problem, then why didn't the kernel oops on /pro=
-c=20
-reads? Isn't it a memory based fs, too?
+I think the same hang should be seen on any SIGSEGV due to incorrect X86
+I/O operations. Can you try these two simple programs to try to isolate 
+the error?
 
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+
+/* test1.c */
+
+#include <sys/io.h>
+
+int main(int argc, char **argv)
+{
+    inw(0x1234);
+}
+
+
+/* test2.c */
+
+#include <sys/types.h>
+#include <sys/unistd.h>
+#include <sys/io.h>
+
+int main(int argc, char **argv)
+{
+   pid_t pid;
+   pid = fork();
+   if (pid == 0) {
+      inw(0x1234);
+   } else {
+      waitpid(pid, NULL, 0);
+   }
+}
+
+
+The test as such will however (if not hanging) give a false positive if
+UML is running within vmware and can be questioned unless complemented 
+with a UML test.
+
+Regards
+Henrik
+
 
 
 
@@ -67,7 +73,7 @@ EOSIGN
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
