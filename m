@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CrPfo-0007TV-0n for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Jan 2005 15:55:40 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CrPfn-0002UE-2p for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Jan 2005 15:55:39 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SIGSEGV and SA_NODEFER
-References: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
-In-Reply-To: <200501182128.j0ILSgxi013966@ccure.user-mode-linux.org>
+	id 1CrUCZ-000670-Tp for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Jan 2005 20:45:47 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CrUCZ-0002ko-AF
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Jan 2005 20:45:47 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] UML build process uses perl? (With sed alternative.)
+References: <200501140040.56592.rob@landley.net>
+	<200501191955.55131.blaisorblade@yahoo.it>
+In-Reply-To: <200501191955.55131.blaisorblade@yahoo.it>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501200107.43159.blaisorblade@yahoo.it>
+Message-Id: <200501192244.16326.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,56 +32,88 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Jan 2005 01:07:43 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, "Christopher S. Aker" <caker@theshore.net>
+Date: Wed, 19 Jan 2005 22:44:16 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 18 January 2005 22:28, Jeff Dike wrote:
-> It turns out that caker's crashes were being caused by the lack of
-> SA_NODEFER in the SIGSEGV handler registration.
-As Jeff explained me on IRC, the previous patch sent about the same subject, 
-actually, was correct, but not related to the caker's problem.
+On Wednesday 19 January 2005 01:55 pm, Blaisorblade wrote:
 
-Since Jeff explained everything on IRC (#uml) I'm just explaining it here for 
-the archives.
+> > As far as I can tell, the following sed invocation will give more or less
+> > what the perl does, without a dependency on perl.  (Busybox has sed.)  It
+> > may need a bit of adapting to make the makefile happy (and adding
+> > config.tmp to make clean), but the concept seems to work...
+> >
+> > sed -e 's/^.*$/"&\\n"/' /linux-2.6.9/.config > config.tmp
+>
+> It's ok, if the "&" stands for the matched string as I recall; I've done it
+> through this equivalent form:
+>
+> sed -e 's/^/"/' -e 's/$/\\n"/' .config > config.tmp
 
-> I know I fixed this, and I have no idea where the fix went.  Do you have
-> any clue what happened to it?
+Cool.
 
-The SA_NODEFER flag was dropped from that call in 2.6.7-2um in the "random" 
-patch, in 2.4.24-2um, and finally in  
-uml-let-page-faults-always-be-delivered-immediately.patch in 2.6.9-rc2-mm1.
+> I've also modified this further below for a different requirement.
+>
+> The only potential problem is the use of the temporary file which is not
+> nice, however your need seems more important in fact...
 
-That was compensated by adding the addition of this hunk for TT mode in 
-sig_handler_common_tt() :
+There's bound to be a way to make the temporary file go away.  I couldn't 
+quite figure out how to apply the in-place option for sed, but possibly the 
+sed output could be assigned to an environment variable, and the shell could 
+do the final splice of the data into place...
 
-        /* This is done because to allow SIGSEGV to be delivered inside a SEGV
-         * handler.  This can happen in copy_user, and if SEGV is disabled,
-         * the process will die.
-         */
-        if(sig == SIGSEGV)
-                change_sig(SIGSEGV, 1);
+> > sed -e '/CONFIG/{' -e 's/"CONFIG"\;/""/' -e 'r config.tmp' -e 'a ""\;' \
+> >  -e '}' config.c.in
+>
+> If you compare that with the real result, it does not match - and you see
+> it because double quotes in .config (which exist, yes) are not escaped as
+> here (the dollar is escaped in the original):
 
-But this was forgot for sig_handler_common_skas()... and this caused the 
-problem.
+As I said, it needed more work.  I wanted to float the concept to see if 
+people were agreeable to it.
 
-I found this change to be done also in 2.4.24-2um; moreover, it's part of the 
-patch which causes hwclock to hang on 2.4 - I'll try applying your fix to 2.4 
-and retesting with hwclock.
+> Which gives the same result as the original method (there is one trivial
+> difference at the beginning of the output which is, IMHO, purely
+> cosmethical:
+>
+> --- arch/um/kernel/config.c     2005-01-19 18:51:48.174446032 +0100
+> +++ ./config.c  2005-01-19 18:52:46.015652832 +0100
+> @@ -9,3 +9,4 @@
+>
+> -static __initdata char *config = "#\n"
+> +static __initdata char *config = ""
+> +"#\n"
+>  "# Automatically generated make config: don't edit\n"
+>
+> This actually should work, indeed, if translated in the Makefile... which
+> should be more or less like the attached patch.
+>
+> Also, I wanted to avoid writing more -e options for the same programs, to
+> have it clearer... however I had problems to do it in the Makefile, so I
 
-What was discovered until now is this:
+I probably could have gotten the result to match exactly, but the result would 
+have been a more complex sed invocation for no real gain...
 
-The relation is obviously hidden somehow... however I sent on the uml-devel 
-list a couple of patches from after 2.4.24-1um: without them UML does not 
-suffer from the Debian/hwclock crash, while it happens with them. What's 
-strange is that the crash happens within TT mode, not within SKAS mode. And 
-rather than a crash, it's a hang, due to an infinite number of received 
-SIGSEGVs. Inside the couple of patches, there is exactly this problematic 
-change.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+> Please double-check that the patch works with your busybox sed
+> implementation, and compare the original and the new obtained config.c
+> carefully, since the sed code you supplied wasn't good.
+
+I maintain busybox sed, and if it can't handle something gnu sed can, I will 
+fix it.
+
+> In fact, I'm no expert in sed portability, so I'm not sure if it behaves
+> well with busybox (actually I'm no sed expert, so it was difficult for me
+> to read your code at first).
+
+Sorry 'bout that.  I wasn't a sed expert before I extensively rewrote busybox 
+sed, but I want to replace all the gnu command line tools with busybox ones 
+(for general usage: the FSF took 833 lines of C to implement "cat".  That's 
+just wrong).  Sed was heavily used in the ./configure steps of a lot of 
+software packages.  The old one didn't work, now it does.
+
+I'll take a closer look at the patch this evening.  Thanks.
+
+Rob
 
 
 -------------------------------------------------------
