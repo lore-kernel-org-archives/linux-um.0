@@ -1,10 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Richard Potter <sbuml-deletethispart@zar.att.ne.jp>
-Message-Id: <20040923230808.5837.SBUML-DELETETHISPART@zar.att.ne.jp>
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] SBUML update
+Content-Type: text/plain;
+	charset="us-ascii"
+Subject: RE: [uml-devel] RE: [uml-user] Kernel panic: Segfault with no mm &&
+	CONFIG_DEBUG_SLAB
+Message-ID: <EAC7622167479948B614F8B9AD41C505ECA551@MAANDMBX2.ets.enterasys.com>
+From: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,64 +18,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Sep 2004 00:34:17 +0900
-To: sbuml-devel@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 23 Sep 2004 08:28:44 -0400
+Content-Transfer-Encoding: 8bit
+To: stian@nixia.no
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+
+I use gcc 3.2.2 with -O2. The kernel is being built with frame
+pointers.
+
+-----Original Message-----
+From: stian@nixia.no [mailto:stian@nixia.no] 
+Sent: Thursday, September 23, 2004 5:25 AM
+To: Tsillas, Demetrios J
+Cc: BlaisorBlade; user-mode-linux-user@lists.sourceforge.net; Jeff Dike;
+user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] RE: [uml-user] Kernel panic: Segfault with no
+mm && CONFIG_DEBUG_SLAB
+
+> I have a core image now that I can browse. There's something
+> very odd about the stack after the sig_handler.
+> (gdb) p/x segfault_record[4]
+> $24 = {address = 0x28828000, is_write = 0x2, pid = 0x11db, sp
+0x40001fb4,
+> is_user = 0x0}
+
+> (gdb) down
+> #6  0x080d9bf9 in segv (address=671088640, ip=135618305, is_write=0,
+> is_user=0, sc=0x9310270) at trap_kern.c:149
+> (gdb) p/x 671088640
+> $26 = 0x28000000
+>
+> Address is wrong and is_write should be 0x2. It looks like the call
+> stack
+> from the _previous_ segfault_record.
+
+What version of gcc do you use? And what optimize-flags do you use?
+(stack-frames can't be trusted 100% with some combinations of
+gcc-versions/optimize-levels.
 
 
-It has been a while since I have posted any news about SBUML
-(http://sbuml.sf.net) to the UML lists.  There have been steady
-improvements over the past half year.  Following Jeff's suggestions, it
-is now possible to try out SBUML with a relatively small download (3MB),
-and it is running a relatively recent version of the kernel (2.4.23-2um).
-The source code patch is available for download.
-
-SBUML is implemented in two parts: the kernel patch and the command
-scripts.  The patch to the UML kernel handles suspending and resuming
-the host UML processes.  The command scripts handle creating, saving,
-restoring, assigning IP addresses, compressing, downloading, and
-migrating virtual machine states.  Recent work has been on the command
-scripts.  They remain a work in progress, but hopefully they are now
-complete enough to make it easy for people to experiment with UML's
-hibernate/resume and machine migration potential.
-
-Now I want to focus again on the kernel patch.  Currently I only know
-of only a few problems:
-
-  - It is still not complete.  Some devices (e.g. serial ports) have not
-    been implemented.  Skas mode is not supported yet.
-
-  - Booting on Knoppix sometimes segfaults.  I do not know if this is
-    a Knoppix, UML, or SBUML problem yet.  Snapshot restore always
-    seems to work, however.
-
-  - Snapshots with the Basilisk Macintosh emulator running inside do
-    not restore.
-
-  - It still has the "tracing myself" bug that affects UML on 2.6
-    hosts.  Applying Jeff's patch to change kill to tkill fixes this,
-    however snapshots saved on 2.4 hosts do not restore on 2.6 hosts.
-
-I am interested in fixing this last problem first so that the Web Page
-Snapshot (http://www.usenix.org/events/vm04/wips/potter.pdf) feature
-will be more useful.  If the same snapshot restores on both 2.4 and
-2.6, then publishers of snapshots can create just one snapshot and
-know that anybody with a recent Linux host can likely restore it.
-Since SBUML now seems to be working pretty well as it is, I plan to
-take a leisurely approach to fixing this and clean up related code
-along the way.  Also, I plan to investigate how to make use of recent
-UML code changes that could make the SBUML code patch cleaner, such
-UML's new mechanism for closing and reopening file descriptors.
-
---Richard
-
-For developers, information about compiling is at:
-http://sbuml.sourceforge.net/compiling.html
-and information about the interface between the kernel and scripts
-is at:  http://sbuml.sourceforge.net/kernel-scripts-interface.html
-
-
-
+Stian Skjelstad
 
 
 -------------------------------------------------------
