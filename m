@@ -1,17 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CHnGr-0001dt-0e for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Oct 2004 10:50:41 -0700
-Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
-	helo=zion.localdomain)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CHnGf-0000Zt-KK for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Oct 2004 10:50:40 -0700
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20041013172041.2C3C58685@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml: mark broken configs (fixed-up)
+	id 1CHnYG-00051O-18 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Oct 2004 11:08:40 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CHnYE-0006Nm-80 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Oct 2004 11:08:39 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: Auto-updating Jeff Dike tree (was: [uml-devel] Re: Inconsistency
+	in incremental patches 2.6.9)
+References: <200410081635.i98GZgr02277@trolli.pdb.fsc.net>
+	<200410122343.i9CNh03P004317@ccure.user-mode-linux.org>
+	<416D5CDA.9030007@fujitsu-siemens.com>
+In-Reply-To: <416D5CDA.9030007@fujitsu-siemens.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_78WbBbmvg9AkK50"
+Message-Id: <200410132008.59231.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,99 +31,146 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 13 Oct 2004 19:20:40 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it, zippel@linux-m68k.org
+Date: Wed, 13 Oct 2004 20:08:59 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>, bodo.stroesser@fujitsu-siemens.com
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>, Roman Zippel <zippel@linux-m68k.org>
-Some configuration options are known not to compile. So then make them
-depend on CONFIG_BROKEN.
+--Boundary-00=_78WbBbmvg9AkK50
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-In this version, which completely replaces the previous one, posted yesterday
-as "uml: mark broken configs", I do this:
- menu "SCSI support"
-+depends on BROKEN
+On Wednesday 13 October 2004 18:50, Bodo Stroesser wrote:
+> Jeff Dike wrote:
+> > bodo.stroesser@fujitsu-siemens.com said:
+> >>The incremental patches for 2.6.9 do not fully apply. Before
+> >>"signal-interface-cleaning" this patch is missing:
+> >
+> > That's in the signal_cleanup patch.  Am I missing something?
+> >
+> > 				Jeff
+>
+> No. I was wrong. I used an old version of the signal_cleanup patch.
+>
+> Sorry!
+>
+> Bodo
+I use the attached script (questionable as much as you want, i.e. it kind of 
+works here, no guarantee, not even "I think it works") to download the 
+patches. It parses the patches.html in a very rough Way. I mean 
+"DownloadAllPatches".
 
-instead of this:
+Also, the generated series file must be edited: it appends the new patch list, 
+so if you use it as-is it has duplicate patches and won't work.
 
--menu "SCSI support"
-+if BROKEN
-+     menu "SCSI support"
-...
-+endif
+"Get", instead, is to download announce.txt and patch-series for mm kernels 
+(maybe useless on broad-band). If you want to download them for a certain 
+release, simply do mkdir ./<release> and launch Get. End.
 
-as was requested by Roman Zippel.
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+--Boundary-00=_78WbBbmvg9AkK50
+Content-Type: application/x-perl;
+  name="Get"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="Get"
 
- linux-2.6.9-current-paolo/arch/um/Kconfig       |    7 +++++--
- linux-2.6.9-current-paolo/arch/um/Kconfig_block |    1 +
- linux-2.6.9-current-paolo/arch/um/Kconfig_net   |    2 +-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+#!/usr/bin/perl -w
+$baseUrl = "ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/";
+foreach $i (<*>) {
+	( -d $i ) or next;
+	$i =~ /^2\.6\.(.*)-mm(\d)$/ or next;
+	$version = "2.6.$1";
+	$mmNum="$2";
+	chdir $i;
+	$thisMmUrl = "$baseUrl/$version/$version-mm$mmNum";
+	foreach $j ("announce.txt", "patch-series") {
+		$name = $j;
+		$name eq "patch-series" and $name = "series";
+		( ! -f $name ) or next;
+		system("http_proxy= wget $thisMmUrl/$j");
+		system("mv $j $name") if ($name ne $j);
+	}
+	$name = "series";
+	( -f "umlSeries" ) or system("grep uml series > umlSeries");
+	chdir "..";
+	#To add.
+#while read i; do http_proxy= wget ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.9-rc3/2.6.9-rc3-mm3/broken-out/$i; done < umlSeries
+}
 
-diff -puN arch/um/Kconfig~uml-mark_broken_configs arch/um/Kconfig
---- linux-2.6.9-current/arch/um/Kconfig~uml-mark_broken_configs	2004-10-13 17:23:55.000000000 +0200
-+++ linux-2.6.9-current-paolo/arch/um/Kconfig	2004-10-13 17:26:54.967233056 +0200
-@@ -143,7 +143,6 @@ config SMP
-         will appear to be running simultaneously.  If the host is a
-         multiprocessor, then UML processes may run simultaneously, depending
-         on the host scheduler.
--        CONFIG_SMP will be set to whatever this option is set to.
-         It is safe to leave this unchanged.
- 
- config NR_CPUS
-@@ -179,6 +178,7 @@ config KERNEL_HALF_GIGS
- 
- config HIGHMEM
- 	bool "Highmem support"
-+	depends on BROKEN
- 
- config KERNEL_STACK_ORDER
- 	int "Kernel stack size order"
-@@ -226,6 +226,7 @@ source "crypto/Kconfig"
- source "lib/Kconfig"
- 
- menu "SCSI support"
-+depends on BROKEN
- 
- config SCSI
- 	tristate "SCSI support"
-@@ -242,6 +243,8 @@ endmenu
- 
- source "drivers/md/Kconfig"
- 
--source "drivers/mtd/Kconfig"
-+if BROKEN
-+	source "drivers/mtd/Kconfig"
-+endif
- 
- source "arch/um/Kconfig.debug"
-diff -puN arch/um/Kconfig_block~uml-mark_broken_configs arch/um/Kconfig_block
---- linux-2.6.9-current/arch/um/Kconfig_block~uml-mark_broken_configs	2004-10-13 17:23:55.000000000 +0200
-+++ linux-2.6.9-current-paolo/arch/um/Kconfig_block	2004-10-13 17:23:55.920452304 +0200
-@@ -54,6 +54,7 @@ config BLK_DEV_INITRD
- 
- config MMAPPER
- 	tristate "Example IO memory driver"
-+	depends on BROKEN
- 	help
-         The User-Mode Linux port can provide support for IO Memory
-         emulation with this option.  This allows a host file to be
-diff -puN arch/um/Kconfig_net~uml-mark_broken_configs arch/um/Kconfig_net
---- linux-2.6.9-current/arch/um/Kconfig_net~uml-mark_broken_configs	2004-10-13 17:23:55.000000000 +0200
-+++ linux-2.6.9-current-paolo/arch/um/Kconfig_net	2004-10-13 17:23:55.920452304 +0200
-@@ -135,7 +135,7 @@ config UML_NET_MCAST
- 
- config UML_NET_PCAP
- 	bool "pcap transport"
--	depends on UML_NET
-+	depends on UML_NET && BROKEN
- 	help
- 	The pcap transport makes a pcap packet stream on the host look
- 	like an ethernet device inside UML.  This is useful for making 
-_
+--Boundary-00=_78WbBbmvg9AkK50
+Content-Type: application/x-perl;
+  name="DownloadAllPatches"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="DownloadAllPatches"
+
+#!/usr/bin/perl -w
+
+open LIST4, ">>2.4-series";
+open LIST6, ">>2.6-series";
+open LIST6mm, ">>2.6mm-series";
+$dir4 = "2.4.26-3um";
+$dir6 = "2.6.8.1-1um";
+$dir6mm = "2.6.9-rc2-mm4";
+mkdir $dir4;
+mkdir $dir6;
+mkdir $dir6mm;
+
+$currDate = `date`;
+$comm = "#\n#Downloading from Jeff Dike web-site on " . chomp($currDate) . "\n#\n";
+print LIST4 $comm;
+print LIST6 $comm;
+print LIST6mm $comm;
+
+$hostName = "user-mode-linux.sourceforge.net";
+#$host = "66.35.250.209";
+$host = $hostName;
+
+system("wget -N http://user-mode-linux.sourceforge.net/patches.html");
+
+open PATCHES, "patches.html";
+while (<PATCHES>) {
+	$is24 = /name="2.4/ .. /name="2.6/;
+	$is26 = /name="2.6[^"]*um"/ .. /name="2.6[^"]*mm[^"]*"/;
+	$is26mm = /name="2.6[^"]*mm[^"]*"/ .. eof;
+	
+	next if (!($is24 || $is26 || $is26mm));
+	die "Both 2.4 and 2.6 kernel, problems in parsing" if ($is24 && $is26 && ! /name="2.6/);
+	die "Both 2.6 and 2.6mm kernel, problems in parsing" if ($is26 && $is26mm && ! /name="2.6[^"]*mm[^"]*"/);
+	# So either $is24 or $is26 is set, not both.
+
+	/href="(work[^"]+)"\>\s*([\w-]+)\<\/a\>/ or next;
+	$url = "http://$host/$1";
+	$name = "$2.patch\n";
+
+	if ($is24) {
+		print LIST4 "$name";
+		$outDir = $dir4;
+	} elsif ($is26) {
+		print LIST6 "$name";
+		$outDir = $dir6;
+	} else {
+		print LIST6mm "$name";
+		$outDir = $dir6mm;
+	}
+	#With -N check timestamps of the file.
+	
+	$i = 0;
+	do {
+		#system("cd $outDir && http_proxy= wget -N -S --header='Host: $hostName' $url");
+		system("cd $outDir && http_proxy= wget -N $url");
+		$i++;
+	} while ($? != 0 && $i < 10);
+}
+
+--Boundary-00=_78WbBbmvg9AkK50--
 
 
 -------------------------------------------------------
