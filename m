@@ -2,24 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19zcRO-0000pp-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 06:33:54 -0700
-Received: from fmr09.intel.com ([192.52.57.35] helo=hermes.hd.intel.com)
+	id 19zdvm-0003nx-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 08:09:22 -0700
+Received: from bay7-f103.bay7.hotmail.com ([64.4.11.103] helo=hotmail.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19zcRO-0001zO-44
-	for User-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 06:33:54 -0700
-Received: from petasus.hd.intel.com (petasus.hd.intel.com [10.127.45.3])
-	by hermes.hd.intel.com (8.11.6p2/8.11.6/d: outer.mc,v 1.83 2003/09/05 14:45:27 rfjohns1 Exp $) with ESMTP id h8HDV2W04412
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 13:31:02 GMT
-Received: from fmsmsxvs042.fm.intel.com (fmsmsxvs042.fm.intel.com [132.233.42.128])
-	by petasus.hd.intel.com (8.11.6p2/8.11.6/d: inner.mc,v 1.35 2003/05/22 21:18:01 rfjohns1 Exp $) with SMTP id h8HDS4r19465
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 13:28:05 GMT
-content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Subject: RE: [uml-devel] UML and Execution Replay
-Message-ID: <A06801158AE07847B27A52C1A074BC1D0247B964@fmsmsx404.fm.intel.com>
-From: "Wichmann, Mats D" <mats.d.wichmann@intel.com>
+	id 19zdvl-0000tl-Lx
+	for User-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 08:09:21 -0700
+From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
+Subject: Re: [uml-devel] Problem with 2.4.22-um4
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <BAY7-F103PPYPeOqp2N00015916@hotmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -30,22 +23,47 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Sep 2003 06:33:20 -0700
-Content-Transfer-Encoding: quoted-printable
-To: Oliver Oppitz <o.oppitz@web.de>, LarsMarowsky-Bree <lmb@suse.de>, User-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 17 Sep 2003 15:08:49 +0000
+To: petschge@gmx.de
+Cc: User-mode-linux-devel@lists.sourceforge.net
 
+petschge@gmx.de wrote:
 
-> Lars Marowsky-Bree <lmb@suse.de> schrieb am 17.09.03 11:20:35:
-> > Have you checked out Werner Almesberger work on "umlsim"?
->=20
-> Not yet. Looks interesting and seems to go into the same=20
-> direction. I'll contact him.
->=20
-> Thanks for the hint!
+>Checking that host ptys support output SIGIO...<0>Kernel panic: check_sigio 
+>: read failed, err = -1
+>
+>In idle task - not syncing
+>
+>The host kernel is a 2.4.18 kernel patched by SuSE _without_ skas support. 
+>gcc version is 2.95.3.
+>
+>Is this a know bug?
 
-Werner is presenting on umlsim at Linux-Kongress
-in Saarbr=FCcken in about a month if that's of=20
-interest...
+Jeff didn't like a part of my patch, but didn't back out all of the related 
+bits.  I've sent him a patch that should fix this issue, but havn't heard 
+back if he likes it any better.
+
+In the mean time you can hand apply this diff to 
+arch/um/kernel/sigio_user.c:tty_output()
+
+-       else if(n == -EAGAIN) printk("No, enabling workaround\n");
+-       else panic("check_sigio : read failed, err = %d\n", n);
++       else if(errno == EAGAIN) printk("No, enabling workaround\n");
++       else panic("check_sigio : read failed, errno = %d\n", errno);
+
+Steve Schmidtke
+
+>Is 2.4.22-um4 unusable without skas? Is this related to the patch in 
+>arch/um/drivers/ubd_user.c? (Neither the patch from Ross Combs nor the 
+>patch named ubd_start_io_thread.diff from Steve Schmidtke fix this error)
+>
+>mfg,
+>Patrick "Petschge" Kilian
+
+_________________________________________________________________
+MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*.  
+http://join.msn.com/?page=features/virus
+
 
 
 -------------------------------------------------------
