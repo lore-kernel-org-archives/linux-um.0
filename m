@@ -1,16 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CxF6C-00013M-QH for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Feb 2005 17:51:00 -0800
-Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CxF6B-0001Ds-88 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Feb 2005 17:51:00 -0800
-Message-Id: <200502050150.j151oll11301@mail.osdl.org>
-From: akpm@osdl.org
-Subject: [uml-devel] [patch 12/24] uml: Fix SKAS sig-handler reentrancy
+	id 1CxGPd-0006ZL-HX for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 19:15:09 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CxGPc-0002Uw-RP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 19:15:09 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Sky, comma,
+	falling.  (Was Re: [uml-devel] Xen going to be in Kernel 2.6 soon?)
+References: <cu189b$vnr$1@sea.gmane.org>
+In-Reply-To: <cu189b$vnr$1@sea.gmane.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-15"
+Message-Id: <200502042113.13876.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,47 +30,72 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 04 Feb 2005 17:50:44 -0800
-To: torvalds@osdl.org
-Cc: akpm@osdl.org, blaisorblade@yahoo.it, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 4 Feb 2005 21:13:13 -0500
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Sven =?iso-8859-15?q?K=F6hler?= <skoehler@upb.de>
 
+On Friday 04 February 2005 08:45 pm, Sven K=F6hler wrote:
+>  I feel like this is a slap in Jeff's face, since i thought=20
+> that UML will be developed as the first choice in virtualizations=20
+> techniques.
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>,
-      Jeff Dike <jdike@addtoit.com>,
+Yup, just like the inclusion of reiserfs in the kernel is a slap in the fac=
+e=20
+to ext3.  Obviously they did it just to be insulting, didn't you read Linus=
+'s=20
+"I'm a bastard" speech?
 
-This adds code which enables SIGSEGV reception to the SKAS sig_handler_common,
-which matches the tt code.
+> So what is it all about? When should somebody chose Xen, and when should
+> somebody chose UML? and how will UML and Xen compete?
 
-I still need to figure out why the SA_NODEFER flag was backed out in favor of
-this.
+You know, ever since the release of the BSD source code in 1992 totally=20
+derailed that "Linux" project people were playing with back then, this kind=
+=20
+of question has become vitally important.  The release of any remotely=20
+similar project obviously can immediately halt all development of establish=
+ed=20
+projects that developers have sunk years of effort into, and they immediate=
+ly=20
+start porting over things like the COW mounts and hostfs and honeypot procf=
+s,=20
+and rewrite all the existing tutorials and retrain everybody overnight to=20
+work on the new as yet untested thingy that hasn't been particularly debugg=
+ed=20
+yet.
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-CC: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Signed-off-by: Andrew Morton <akpm@osdl.org>
----
+Especially in a case like this, where Xen actually competes with VMWare rat=
+her=20
+than UML.  Obviously, UML is doomed.  What with Xen requiring a modified ho=
+st=20
+kernel to provide its virtualization environment whereas UML uses the proce=
+ss=20
+abstraction to virtualize it: I mean, who's going to use _processes_ in fiv=
+e=20
+years, will future kernels even bother to support them?  Sure, UML not only=
+=20
+runs on an unmodified Linux kernel (even running a 2.6 UML on a 2.2 host=20
+kernel), and even an effort underway to get it running on windows (who know=
+s=20
+why, but a MacOS X host can only be a matter of time), but that just means =
 
- 25-akpm/arch/um/kernel/skas/trap_user.c |    8 ++++++++
- 1 files changed, 8 insertions(+)
+maybe it can scrape on some tiny niches once it's driven off Linux by this =
 
-diff -puN arch/um/kernel/skas/trap_user.c~uml-fix-skas-sig-handler-reentrancy arch/um/kernel/skas/trap_user.c
---- 25/arch/um/kernel/skas/trap_user.c~uml-fix-skas-sig-handler-reentrancy	2005-02-04 17:23:04.000000000 -0800
-+++ 25-akpm/arch/um/kernel/skas/trap_user.c	2005-02-04 17:23:04.000000000 -0800
-@@ -20,6 +20,14 @@ void sig_handler_common_skas(int sig, vo
- 	int save_errno = errno;
- 	int save_user;
- 
-+	/* This is done because to allow SIGSEGV to be delivered inside a SEGV
-+	 * handler.  This can happen in copy_user, and if SEGV is disabled,
-+	 * the process will die.
-+	 * XXX Figure out why this is better than SA_NODEFER
-+	 */
-+	if(sig == SIGSEGV)
-+		change_sig(SIGSEGV, 1);
-+
- 	r = &TASK_REGS(get_current())->skas;
- 	save_user = r->is_user;
- 	r->is_user = 0;
-_
+new "Adeos" thing...  Er, I mean "Plex86"...  Um...  "Xen", that's it.  And=
+=20
+obviously its original use as a Linux development tool letting you do thing=
+s=20
+like create a filesystem driver and mount an instance of it without=20
+destablizing your host kernel, or run bits of the kernel under normal=20
+userspace debugging tools...  Well, we're well rid of that, aren't we?  And=
+=20
+being to swap kernel memory to backing store just like a regular applicatio=
+n,=20
+that was obviously a bad idea from day one...
+
+Why was the question interesting again?
+
+Rob
 
 
 -------------------------------------------------------
