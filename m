@@ -2,22 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ACimg-0007On-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 09:58:02 -0700
-Received: from adsl-206-170-148-147.dsl.snfc21.pacbell.net
-	([206.170.148.147] helo=gw.goop.org ident=firewall)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.22)
-	id 1ACidt-0004yl-1A
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 23 Oct 2003 09:48:57 -0700
-From: Jeremy Fitzhardinge <jeremy@goop.org>
-In-Reply-To: <3F97FD98.10700@nortelnetworks.com>
-References: <3F97E849.1090700@nortelnetworks.com>
-	 <1066924964.12497.2.camel@ixodes.goop.org>
-	 <3F97FD98.10700@nortelnetworks.com>
-Content-Type: text/plain
-Message-Id: <1066927553.12497.5.camel@ixodes.goop.org>
-Mime-Version: 1.0
+	id 1ACjaT-0002zy-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 23 Oct 2003 10:49:29 -0700
+Received: from zcars0m9.nortelnetworks.com ([47.129.242.157])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 1ACjaF-0004zV-Br
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 23 Oct 2003 10:49:15 -0700
+Message-ID: <3F97E849.1090700@nortelnetworks.com>
+From: Giovanni Marzot <gmarzot@nortelnetworks.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Subject: [uml-devel] Re: Valgrind meets UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -30,22 +24,46 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Oct 2003 09:45:54 -0700
-To: Giovanni Marzot <gmarzot@nortelnetworks.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 23 Oct 2003 10:40:09 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: jeremy@goop.org
 
-On Thu, 2003-10-23 at 09:11, Giovanni Marzot wrote:
-> hmmm...Should I wait until this is done or is there something I can try 
-> in the meantime.
-> 
-> Are the old patches even available anywhere?
+Hi,
 
-The old patches have either been merged or won't apply any more. 
-Normally I would say "try the CVS version", but we're in the process of
-migrating away from SF's CVS - I hope that will be done in the next few
-days.
+I see this email below...
 
-	J
+Can anyone confirm if the patches to valgrind mentioned below have found 
+there way into the release?
+
+I will be attempting this with 2.4.20-6um.
+
+Any words of wisdom appreciated. Has anyone used this combination 
+succesfully?
+
+I wonder what "teaching valgrind about the false positives" entails.
+
+thanks for any info, GSM
+
+ >bulb@ucw.cz said:
+ >> Is it possible to run 2.4.20-3um (or -4um - I have not got around to
+ >> updating yet) under valgrind?
+ >>
+ >> Does it need some specific config options to work?
+ >
+ >Any recent UML is as valgrindable as the UML mentioned in the post you 
+ >saw.
+ >
+ >You need CONFIG_MODE_SKAS, !CONFIG_MODE_TT, and 
+ >CONFIG_KERNEL_STACK_ORDER=3.
+ >
+ >You also probably need some valgrind patches unless the stuff I and 
+ >Jeremy
+ >have done have been merged into valgrind CVS.
+ >
+ >Once valgrind is working, you need to go through the false positives and
+ >teach valgrind about how the kernel deals with memory allocation.  This is
+ >the point at which I stopped.
+
 
 
 
