@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8e69-0000mT-3y for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 05:13:49 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1C8e67-00009p-Mb
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Sep 2004 05:13:49 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] uml, ptrace, and BKL
-Message-ID: <20040918131814.GA2942@ccure.user-mode-linux.org>
-References: <Pine.LNX.4.58.0409171920470.1171@gradall.private.brainfood.com>
-	<20040918033012.GA1618@ccure.user-mode-linux.org>
-	<Pine.LNX.4.58.0409172129180.1171@gradall.private.brainfood.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1C8iiS-0004ru-Tp for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:09:40 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1C8iiR-0005Ai-Lp for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 18 Sep 2004 10:09:40 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] weird hanging when uml starts up
+References: <Pine.GSO.4.58.0409151257150.24774@tokyo.cc.gatech.edu>
+In-Reply-To: <Pine.GSO.4.58.0409151257150.24774@tokyo.cc.gatech.edu>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0409172129180.1171@gradall.private.brainfood.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409181213.22295.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,45 +29,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Sep 2004 09:18:14 -0400
-To: Adam Heath <doogie@brainfood.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 18 Sep 2004 12:13:22 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Younggyun Koh <young@cc.gatech.edu>
 
-On Fri, Sep 17, 2004 at 09:30:53PM -0500, Adam Heath wrote:
-> No, I'm not.
-> 
-> UML ptraces it's children, to do it's emulation.  However, only one UML
-> tracing thread can be doing a ptrace of one of it's children at a time.  If
-> there are 50 UML instances running on the host, then that BKL inside
-> sys_ptrace is a bottleneck.
+On Wednesday 15 September 2004 19:02, Younggyun Koh wrote:
+> Hi,
+>
+> i inserted some code in uml network stack, but after that, i can't boot
+> uml in skas mode. (it's okay with tt mode, tho)
 
-OK, just your comment on preemption was a bit strange.
+I understand this, too, but the code is wrong even with TT mode. There are 
+some internal difference between TT and SKAS mode that make the crash certain 
+in SKAS mode and just possible in TT mode. See below.
 
-You're still wrong, just for different reasons.
+> the code i inserted is...
 
-The scalability of a lock depends on the number of processors on the system,
-not the number of processes.  So, for a given host, increasing the number of
-UMLs on the system won't increase the pressure on the BKL, assuming that
-number is greater than the number of processors.  And in any case, on a UP
-system, there is no BKL.
+> asmlinkage long sys_sendto(int fd, void * buff, size_t len, unsigned
+> flags,
+> 			   struct sockaddr *addr, int addr_len)
+> {
+> 	struct socket *sock;
+> 	char address[MAX_SOCK_ADDR];
+> 	int err;
+> 	struct msghdr msg;
+> 	struct iovec iov;
 
-Increasing the number of processors will increase the pressure on the BKL,
-again assuming there are more UMLs than processors.  So, 50 UMLs on a 2P
-system won't be a problem, but 50 UMLs on a 50P system could be.
+> #ifdef MY_CODE
+> 	{
+> 	if (len > 16 && ((char *)buff)[0] == '$' && ((char *)buff)[1] ==
+> '$')
+> 	{
+> 		unsigned long ts1 = my_rdtscl();
+> 		sprintf(buff+2, "%u\0", ts1);
+Please, the correct line is:
 
-The UML systems that I am aware of are 2P, at most.  I think that it is
-generally OK to run with the entire kernel under the BKL with 2 processors.
-This being the case, it follows that ptrace won't be an issue either.
+sprintf(buff+2, "%ul", ts1);
 
-Also, the ptrace paths are pretty short.  Get in, copy a small amount of data
-or change some state of the child, and get out.  On a 2P system, I have a 
-hard time seeing that being a bottleneck.
+both because for an unsigned long you use "%ul", while "%u" is for an unsigned 
+int, and because sprintf NULL-terminates the string by itself - and this is 
+more or less in the third lesson of "C for dummies". Are you sure you are 
+able to try kernel hacking?
 
-However, it would be interesting to see if UML is causing lock contention
-anywhere.  Running lockmeter on an SMP box running UMLs would show if there's
-any problems.
+Also, could you use a better name for "ts1"?
+> 	}
+> 	}
+> #endif
+> ....
 
-				Jeff
+> and uml hands on "Configuring kernel paramaters"
+You mean "hangs"?
+
+> anyone has any idea what's wrong with it?
+
+Well, I understand perfectly what is wrong with that.
+Have you got an idea of why copy_from_user exists? Well, in this case, 
+remember that you may not access "buff" without first calling 
+copy_from_user(). For more info, see:
+http://www.xml.com/ldd/chapter/book/ch03.html#t8
+
+However, if you never heard about that, this is the explaination. You are 
+never allowed to say *buff if "buff" is a pointer to user-space memory (such 
+pointers, in 2.6, are marked with __user). The pointed memory could have been 
+swapped out, or a malicious program could want to make the kernel fault and 
+pass an invalid address, or whatever. copy_from_user does what's needed. And 
+copy_to_user writes safely to user-space memory. However, you can see that 
+the code seem to behave well because it sometimes succeed.
+
+But, in SKAS mode, or with the 4G/4G patch from Ingo Molnar (which is NOT for 
+UML, but for normal kernels), dereferencing a pointer without copy_from_user 
+can never succeed. This because different page tables are loaded for 
+user-space and kernel-space, so a certain address points to different 
+locations for kernel and user space.
+
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
