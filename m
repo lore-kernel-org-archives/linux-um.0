@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Afjx7-0007MM-0y for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Jan 2004 10:04:45 -0800
-Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Afjx6-0003db-K8 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Jan 2004 10:04:44 -0800
+	id 1Afkaa-0000W6-My for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 10:45:32 -0800
+Received: from linuxhacker.ru
+	([217.76.32.60] helo=shrek.linuxhacker.ru ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1AfkaZ-0005vE-Rf
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Jan 2004 10:45:32 -0800
+From: Oleg Drokin <green@linuxhacker.ru>
+Subject: Re: [uml-devel] UML running on host-kernel 2.6.0 with NPTL-enabled
+	glibc problem
+Message-ID: <20040111182804.GF9172@linuxhacker.ru>
+References: <3FFE6FE3.8090303@vgertech.com>
+	<200401102025.i0AKPXeA004382@car.linuxhacker.ru>
+	<200401111149.20507.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
-Message-Id: <a0602042ebc27404e43b0@[192.168.1.10]>
-In-Reply-To: <200401111646.16322.blaisorblade_spam@yahoo.it>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
-	<200401111334.04252.blaisorblade_spam@yahoo.it>
-	<a0602042dbc271a5a5e68@[192.168.1.10]>
-	<200401111646.16322.blaisorblade_spam@yahoo.it>
-From: Johannes Formann <johannes@formann.de>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200401111149.20507.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,22 +32,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 11 Jan 2004 19:04:28 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Chua <jchua@fedex.com>
+Date: Sun, 11 Jan 2004 20:28:04 +0200
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Nuno Silva <nuno.silva@vgertech.com>
 
-At 16:46 Uhr +0100 11.01.2004, BlaisorBlade wrote:
+Hello!
 
->What you mean by "every module I tried"? You get that error on boot or not?
->And if you get the error on boot, what changed between trying the various
->modules? Do you use an initrd?
+On Sun, Jan 11, 2004 at 11:49:20AM +0100, BlaisorBlade wrote:
+> > NS> I've been trying for days and made lots of tests and it seems that the
+> > NS> 2.4 UML binary can't run on a host with 2.6 kernel and nptl-enabled
+> > glibc.
+> > Hm. I guess you are running some sort of old uml code.
+> > The fix was oneliner and included long ago. See the patch below.
+> > Apply it and then recompile.
+> I've just looked at 2.4.23-1um and I saw that dyn_link.ld.in has not this fix. 
 
-Strange, after aplying the 23-1 patch to 2.4.24 and aplying Chuas 
-(the first and  longer one) patch by hand, everything seems to run no.
+Hm. May be someone overlooked possibility to add it there as well?
 
-I'll test and report if something happens.
-
-regards Johannes
+Bye,
+    Oleg
 
 
 -------------------------------------------------------
