@@ -1,18 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp 
-	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AQZDS-0002vc-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 30 Nov 2003 13:34:54 -0800
-Received: from law10-f99.law10.hotmail.com ([64.4.15.99] helo=hotmail.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AQZDS-0002b3-EZ
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 30 Nov 2003 13:34:54 -0800
-From: "derry shribman" <derrysh@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <Law10-F99ny3O76JOTB00020380@hotmail.com>
-Subject: [uml-devel] Valgrinding Linux kernel with UML
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] How to copy COW files to another machine across the
+ network?
+In-Reply-To: <05a201c3b788$12caed30$2000000a@schlepptopp>
+Message-ID: <Pine.LNX.4.44.0311302233440.4256-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -23,31 +16,42 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Nov 2003 23:34:48 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 30 Nov 2003 22:37:47 +0100 (CET)
+To: roland <for_spam@gmx.de>
+Cc: Shao-Lin Joseph Chung <sc57@cs.waikato.ac.nz>, UML User list <user-mode-linux-user@lists.sourceforge.net>, UML Devel list <user-mode-linux-devel@lists.sourceforge.net>
 
-Hi,
+On Sun, 30 Nov 2003, roland wrote:
 
-I have been using valgrind for quite a while, and found it to be very useful 
-for my user-mode Linux programming.
-I therefore tried getting valgrind to work on the Linux Kernel, with UML.
+> but i`d like to move around my uml`s!
 
-I did a few quick hacks:
-- getting valgrind it to know UML's kmalloc/kfree and friends
-- canceling the sanity check valgrind performs upon loading an image, in 
-which it checks the image base address (since UML loads the kernel at a 
-different virtual start address than regular applications start address).
+Then as I said you (or someone else) needs to write the tool required to 
+adjust the COW header after the move.
 
-Still - valgrind+UML crashed immediately.
+> hey - this is one of the uml benefits: you have a virtual machine which 
+> is independent from hardware and is _generally_ quite "relocateable".
 
-Did anyone try out valgrind+UML?
+It is, except for COW files..
 
-Thanks,
-Derry
+> if it would have swsusp - i could even relocate a running instance - like
+> i can do with vmware.
 
-_________________________________________________________________
-Protect your PC - get McAfee.com VirusScan Online 
-http://clinic.mcafee.com/clinic/ibuy/campaign.asp?cid=3963
+To my knowledge nobody has solved suspend with UML yet..
+
+> why was that relocateability being made difficult artificially by putting 
+> that "features" into COW? 
+
+To make sure there is no mixup between COW and backing file, especially if 
+you umlmoo the backing file with one COW file but there is multiple other 
+UMLs also using the same backing file.
+
+> is this "problem" going to be adressed?
+
+It is simply one of many things which is not yet done. If a user who needs 
+such functionality contributes a patch I am pretty sure it will get 
+accepted, or at least commented on how it should be done.
+
+Regards
+Henrik
 
 
 
