@@ -1,19 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B90gh-00082f-7e for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Apr 2004 03:48:47 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1B90gg-0005iY-Fs for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Apr 2004 03:48:46 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
+	id 1B94FS-0003hA-Eb for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Apr 2004 07:36:54 -0800
+Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1B94FS-0001UP-8s for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Apr 2004 07:36:54 -0800
+From: Werner Almesberger <werner@almesberger.net>
 Subject: Re: [uml-devel] RFC: lossless printk
-In-Reply-To: <20040401083025.Z28573@almesberger.net>
-Message-ID: <Pine.LNX.4.44.0404011347330.2209-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20040401123622.D28573@almesberger.net>
+References: <20040401042512.Y28573@almesberger.net>
+	<Pine.LNX.4.44.0404011252320.1814-100000@filer.marasystems.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0404011252320.1814-100000@filer.marasystems.com>;
+	from hno@marasystems.com on Thu, Apr 01, 2004 at 12:58:01PM +0200
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,23 +29,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 1 Apr 2004 13:48:43 +0200 (CEST)
-To: Werner Almesberger <werner@almesberger.net>
-Cc: Adam Heath <adam@sonycom.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 1 Apr 2004 12:36:22 -0300
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 1 Apr 2004, Werner Almesberger wrote:
+Henrik Nordstrom wrote:
+> This won't work properly. What you need is something like:
 
-> Hmm, that's a tricky one. What's a good policy in this case ?
-> Wait up to a fixed amount of time before continuing, and perhaps
-> do the same thing on the next printk ? Stop retrying after one
-> timeout ? Make all this configurable ?
+Hmm, if the destination is "stuck", you should get ENOSPC or EAGAIN
+in the next iteration after a partial write. Someone may make us work
+particularly hard by only allowing only a few bytes at a time, but
+I'm not sure printk should worry about this.
 
-I would suggest using the standard serial console implementation as a
-template for how things should behave in such event..
+> Not sure about this.. should probably just drop the writes then and return
+> an error. The console may have been hung up by various reasons, and I do
+> not think this should kill the kernel.
 
-Regards
-Henrik
+Yes, that might be nicer.
 
+- Werner
+
+-- 
+  _________________________________________________________________________
+ / Werner Almesberger, Buenos Aires, Argentina     werner@almesberger.net /
+/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
