@@ -1,12 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Subject: 2.6 too, was Re: [uml-devel] Updated uml kernel
-In-Reply-To: <Pine.LNX.4.58.0411151550340.4216@sparrow>
-Message-ID: <Pine.LNX.4.58.0411161234550.3791@sparrow>
-References: <Pine.LNX.4.58.0411151550340.4216@sparrow>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CUAba-0004Li-7Z for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 13:11:14 -0800
+Received: from alchar.org ([66.92.236.138] ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CUAbT-0007Im-3X for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Nov 2004 13:11:14 -0800
+From: Kris Van Hees <aedil@alchar.org>
+Message-ID: <20041116211102.GA340@alchar.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [uml-devel] Problem booting UML 2.4.26 compiled with gcc 3.3.4
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,38 +25,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Nov 2004 12:37:48 -0500 (EST)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>
-Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
+Date: Tue, 16 Nov 2004 16:11:02 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Good day, all,
+Has anyone else experienced trouble with running a UML kernel 2.4.26 that was
+compiled with GCC 3.3.4?  My instances ran perfectly fine (compiled) with
+GCC 2.94 but when I upgraded my GCC and recompiled everything, suddenly they
+started giving me trouble, ranging from tracing thread crashes to kernel mode
+panics.
 
-On Mon, 15 Nov 2004, William Stearns wrote:
-
-> 	Just a quick note that I've placed a new i386 compiled uml kernel
-> up at http://www.stearns.org/uml/ .  The compressed kernel, based on
-> Jeff's latest 2.4.27-1 patch, is named
-> linux-2.4.27-um24271-netfilter20041111.bz2.  There are corresponding
-> System.map- and config- files there too.
-
-	That same directory also now contains  
-linux-2.6.10-rc2-netfilter20041111.bz2 and its corresponding config and 
-System.map files.  This used no external uml patch, just the stock code in 
-the 2.6.10-rc2 tree.
-
-	I have both kernels running on some of the virtual machines on 
-Zaphod without any apparent problems so far.
-	Cheers,
-	- Bill
-
----------------------------------------------------------------------------
-	"Scattered showers my ass!"
-	-- Noah
-(Courtesy of "Michael B. Trausch" <mtrausch@wcnet.org>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+	Kris
+-- 
+Never underestimate a Mage with:
+ - the Intelligence to cast Magic Missile,
+ - the Constitution to survive the first hit, and
+ - the Dexterity to run fast enough to avoid being hit a second time.
 
 
 -------------------------------------------------------
