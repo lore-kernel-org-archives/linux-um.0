@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNxRM-0006qR-Jd for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 10:22:44 -0700
-Received: from zrc2s0jx.nortelnetworks.com ([47.103.122.112])
+	id 1BNxVD-0007qP-0U for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 10:26:43 -0700
+Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNxRM-00045d-65 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 10:22:44 -0700
-Received: from zsc3c028.us.nortel.com (zsc3c028.us.nortel.com [47.81.138.28])
-	by zrc2s0jx.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with
-	ESMTP id i4CHMZ600438
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 12 May 2004 12:22:35 -0500 (CDT)
-Message-ID: <40A25D59.1080802@nortelnetworks.com>
+	id 1BNxV7-0004gN-VB for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 10:26:38 -0700
+Message-ID: <40A25E3E.9050502@nortelnetworks.com>
 From: Joe Marzot <gmarzot@nortelnetworks.com>
 MIME-Version: 1.0
+Subject: Re: [uml-devel] Re: [uml-user] LTT in UML ?
+References: <4098FC64.3000607@enterasys.com>
+	<070c01c432f8$1a423000$2000000a@schlepptopp>
+	<409AF27F.6020207@vgertech.com> <409FB190.4060006@enterasys.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] 2.4.24 Kernel panic (patch 2.4.24-1)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,25 +28,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 May 2004 13:22:33 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 12 May 2004 13:26:22 -0400
+To: David Bahi <dbahi@enterasys.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-The following has been seen for some time on an intermittent basis. less 
-than 1:20 runs. Having trouble debugging it so I added some code to 
-panic.c:panic() to abort() and dump core. Also attached is a back trace 
-from that.
+you are not the only one interested. There is a difference in what would 
+be shown with tracing UML from the host vs. tracing the guest 
+processes/kernel in a UML guest. I have the patches applied here as well 
+but it does not look like it is working. let's keep in touch as we 
+discover things.
 
-Kernel panic: handle_trap - failed to wait at end of syscall, errno = 2, 
-status = 383
+regards, GSM
 
-appreciate any tips or tricks to get more information about this problem.
+David Bahi wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> right. yet, not what i was going for.
+> i'd like to profile applications running
+> under/within the uml itself.
+> 
+> still, looks like it's just me that's
+> interested in this so i'll give it a go
+> when i get a chance and post specific
+> questions to this list when i'm lost.
+> 
+> - --
+> db
+> 
+> Nuno Silva wrote:
+> 
+> | roland wrote:
+> |
+> | [..]
+> |
+> |  >
+> |  > probably, having an LTT option for the uml-kernel could give some
+> | benefit (performance optimization?)
+> |  > for the uml project ?
+> |  >
+> |
+> | You can do that already. Run LTT on the host and "trace" the UML
+> | processes ;)
+> |
+> | Regards,
+> | Nuno Silva
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.2.4 (MingW32)
+> Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+> 
+> iD8DBQFAn7GQ3XQ4zakZ3z4RApfJAJ4/95BNqYzt/uRWCPWPwHlozVBvrACfTkjH
+> 2qU4ecl/5pHhbe0Pl+MfB+8=
+> =yEiC
+> -----END PGP SIGNATURE-----
 
-I have a core if that helps.
 
-regards, Giovanni
-
-ps. The kernel I am running is slightly modified but I do not believe 
-that is related. I will look more on a vanilla kernel just to be sure.
 
 
 
