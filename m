@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFS1V-0000OH-Sw for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 23:45:09 -0700
-Received: from [203.199.83.31] (helo=rediffmail.com)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CFS1R-0000xB-5K for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 23:45:09 -0700
-Message-ID: <20041007064432.14876.qmail@webmail46.rediffmail.com>
+	id 1CFax5-0000QS-7L for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 09:17:11 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CFawo-0002aP-DG for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 09:17:11 -0700
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-From: "young engineer" <y.engineer@rediffmail.com>
-Reply-To: "young engineer" <y.engineer@rediffmail.com>
-Content-type: multipart/alternative;
-	boundary="Next_1097131472---0-203.199.83.31-14741"
-Subject: [uml-devel] basic queries
+Content-Type: text/plain;
+	charset="us-ascii"
+Subject: RE: [uml-devel] Panic while core dumping in tt-mode
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C52@ABGEX01E.abg.fsc.net>
+From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,56 +26,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 7 Oct 2004 06:44:32 -0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 7 Oct 2004 18:13:37 +0200
+Content-Transfer-Encoding: 8bit
+To: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
- This is a multipart mime message
+> Testing my extensions for vsyscall/sysenter I need to check the
+presence of the vsyscall-page in the core. But in tt-mode the kernel
+panics if core dump > is started. In copy_fpu_fxsave_tt() the line
+> 
+>   struct i387_fxsave_struct *fpu = SC_FXSR_ENV(PT_REGS_SC(regs));
+> 
+> sets fpu to 0x70, then memcpy() segfaults.
+> Maybe the reason is in the new signal-delivery?
+No, silly speculation! The real reason is, that in signal delivery
+no fp-status is written and the pointer to the fp-status in the
+signalcontext is set to NULL, if a thread had never used the fp-regs.
+Easy to fix that, but what with the other issues:
+- In skas fpregs never are dumped. (Instead random data is written
+  to core)
+- dumping the register sets of other threads running in the same
+  thread group and mm is not supported
+- fpxregs are not dumped. They could be dumped "if (have_fpx_regs)"
+  (from arch/um/os-Linux/sys-i386/registers.c)
+Should I try a fix? Does it make sense to fix all this?
 
-
---Next_1097131472---0-203.199.83.31-14741
-Content-type: text/html;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-<P>=0A&nbsp; hi all<BR>=0Aim new to linux and started using UML. Some basic=
- queries from my side<BR>=0A1. UML is run as process, is there difference b=
-etweeen other normal linux processes? is it a higher priority process?<BR>=
-=0A2. When UML boots, it does the same things as a linux kernel booting ste=
-ps. But what devices it initializes during this process? It is a process so=
- how it does these things?<BR>=0A3. What changes makes it a linux OS to lin=
-ux process? what changes makes it a process?<BR>=0A4. Is there abstraction =
-like kernel and process inside a UML which is itself a process? how?<BR>=0A=
-5. How system calls &amp; interrupts are managed in UML?<BR>=0A6. UML is a =
-process so it has process address space. Is it further divided into kernel =
-address space and user address space in which other process can be run in U=
-ML or other processes uses host user address space ?<BR>=0A<BR>=0AIs there =
-any documents abt internals of UML?<BR>=0A<BR>=0APlz reply me back ..thanks=
- in advance<BR>=0AYoung<BR>=0A=0A</P>=0A<br><br>=0A<A target=3D"_blank" HRE=
-F=3D"http://clients.rediff.com/signature/track_sig.asp"><IMG SRC=3D"http://=
-ads.rediff.com/RealMedia/ads/adstream_nx.cgi/www.rediffmail.com/inbox.htm@B=
-ottom" BORDER=3D0 VSPACE=3D0 HSPACE=3D0></a>=0A
---Next_1097131472---0-203.199.83.31-14741
-Content-type: text/plain;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
- =A0hi all=0Aim new to linux and started using UML. Some basic queries from=
- my side=0A1. UML is run as process, is there difference betweeen other nor=
-mal linux processes? is it a higher priority process?=0A2. When UML boots, =
-it does the same things as a linux kernel booting steps. But what devices i=
-t initializes during this process? It is a process so how it does these thi=
-ngs?=0A3. What changes makes it a linux OS to linux process? what changes m=
-akes it a process?=0A4. Is there abstraction like kernel and process inside=
- a UML which is itself a process? how?=0A5. How system calls & interrupts a=
-re managed in UML?=0A6. UML is a process so it has process address space. I=
-s it further divided into kernel address space and user address space in wh=
-ich other process can be run in UML or other processes uses host user addre=
-ss space ?=0A=0AIs there any documents abt internals of UML?=0A=0APlz reply=
- me back ..thanks in advance=0AYoung=0A
---Next_1097131472---0-203.199.83.31-14741--
-
+Bodo
 
 
 -------------------------------------------------------
