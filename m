@@ -1,13 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Cameron Patrick <cameron@patrick.wattle.id.au>
-Subject: Re: [uml-devel] UML "Distro" ?
-Message-ID: <20041021065935.GB4900@patrick.wattle.id.au>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CKXEE-0001UC-Et for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 00:19:18 -0700
+Received: from msl01-26.link.iwn.fi ([195.165.243.157] helo=phoebe.64r.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CKXED-0007cV-RQ for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 00:19:18 -0700
+Message-ID: <002901c4b73e$3f41f8c0$0e0010ac@pubxw2k>
+From: "NTEK Technologies" <ntek@ntek.tk>
 References: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
-Content-Disposition: inline
-In-Reply-To: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [uml-user] UML "Distro" ?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,66 +27,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 21 Oct 2004 14:59:35 +0800
-To: roland <for_spam@gmx.de>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 21 Oct 2004 10:19:04 +0300
+To: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net
 
+My company is already working on such distro, but we're targetting server
+market, so no X or any fancy desktop stuff... our distro is based on Trustix
+Secure Linux 2.0, with our own enhancements.
 
---5I6of5zJg18YgZEa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Harri
+http://www.ntek.tk
 
-roland wrote:
-
-> I would like to hear your opinion if it`s worth thinking about a
-> "UML Linux Distribution".
-
-Sounds like an eminently sensible idea to me :-)
-
+> Hi folks,
+>
+> I would like to hear your opinion if it`s worth thinking about a "UML
+Linux Distribution".
+>
 > It could be based on another distro (debian? fedora?) and contain:
-
-My personal bias would be to base it on Debian, as it is generally
-quite readily hackable, and has a lot of the infrastructure to support
-UML already there.  Dunno, I don't think it really matters that much.
-
-> - A setup for installation of a minimalistic, UML-"ready" base
-> system - call it a "UML runtime environment". That means: Recent and
-> skas/sysemu-patched kernel(2.6), modules, X, uml-utilities, screen,
-> scripts, bridge-utils......
-
-Is having X installed really desirable most of the time?  Most of the
-uses for this distro would be on servers, and having X on the host
-makes maintaining the distro harder for relatively little benefit.
-
+>
+> - A setup for installation of a minimalistic, UML-"ready" base system -
+call it a "UML
+>   runtime environment". That means: Recent and skas/sysemu-patched
+kernel(2.6), modules,
+>   X, uml-utilities, screen, scripts, bridge-utils......
 > - Pre-configured environment (bridge setup,tmpfs,mountpoints...)
-
-Scripts to make it easy to add and remove UML guest instances would
-also be quite useful -- especially if it could take care of having
-UMLs running as their own user id (for security reasons) and setting
-up a root filesystem.
-
+> - some UML kernels
 > - basic root-filesystems "ready to run"
+>
+> This could be valuable to people who want to get UML run quickly at good
+performance or want
+> to roll it out in larger environments
+>
+> What do you think ?
+>
+> ( ) Ohhhh - nooooo, not another Distro!
+> ( ) probably useful to make setup/usage of UML easier
+> ( ) becoming useless, if skas/sysemu go into vanilla kernel
+>
+> :)
+>
+> regards
+> Roland
+>
+>
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+> Use IT products in your business? Tell us what you think of them. Give us
+> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out
+more
+> http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> _______________________________________________
+> User-mode-linux-user mailing list
+> User-mode-linux-user@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
 
-Or alternatively, including tools like rootstrap to make generating
-root fs'es easy?
-
-Cameron.
-
-
---5I6of5zJg18YgZEa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFBd15Xl1rlvh2uVnMRAscRAJ0TJWvKb7gS5yEMrvGfxcmPEdL9DwCgpdpg
-f5goQRLnJ0Oh1Pl+8AdZcug=
-=Mo9e
------END PGP SIGNATURE-----
-
---5I6of5zJg18YgZEa--
 
 
 -------------------------------------------------------
