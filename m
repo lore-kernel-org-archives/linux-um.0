@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ATS0C-0007UU-TZ
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 12:29:08 -0800
+	id 1ATS07-0007Sv-VG
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 12:29:03 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.24)
-	id 1ATS0A-0001BV-R7
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 12:29:07 -0800
-Message-Id: <200312082042.hB8KgmAv029431@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Porting UML to other plattforms 
-In-Reply-To: Your message of "Sat, 06 Dec 2003 23:45:35 +0100."
-             <20031206224535.GF3376@hydra.joerghoh.de> 
-References: <20031206224535.GF3376@hydra.joerghoh.de> 
+	id 1ATS05-0000Bt-Tc
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Dec 2003 12:29:02 -0800
+Message-Id: <200312082042.hB8KgiAv029421@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] updating 2.6 to merge 2.4 changes(was: Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash) 
+In-Reply-To: Your message of "Sun, 07 Dec 2003 11:53:33 +0100."
+             <200312071153.33410.blaisorblade_spam@yahoo.it> 
+References: <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>  <200312071153.33410.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -26,25 +26,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 08 Dec 2003 15:42:48 -0500
-To: Joerg Hoh <joerg@devone.org>
+Date: Mon, 08 Dec 2003 15:42:44 -0500
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-joerg@devone.org said:
-> Can someone tell me, how hard is the job to port UML to other
-> plattforms than i386 (how far went the ppc port?).
+blaisorblade_spam@yahoo.it said:
+> Do you think using a common code base and insulating the  different
+> things inside the 2_5compat.h header(since you created it, I  suppose
+> this was the meaning) would be a bad idea?
 
-In principal, it shouldn't be too hard.  In practice, the immature arch 
-abstraction layer inside UML is a problem, but this should be improved once
-I get the x86_64 port merged.
+Yes, it was a very bad idea.  I will accept patches which get rid of 
+2_5compat.h :-)
 
-More troublesome are are host-specific problems.  Every architecture that UML
-has run on has exposed toolchain problems of one sort or another.  Host kernel
-and hardware bugs are also somewhat common.  These are what will hold up any
-new port, rather than any problems with UML itself.
+Insulation is nice, but, in reality, what happens is that the insulation
+just becomes obfuscation, hiding what the code really is and making it harder
+to maintain.
 
 				Jeff
-
 
 
 -------------------------------------------------------
