@@ -1,34 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aw6uC-0005qo-0x for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Feb 2004 13:49:24 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1Aw6lB-0003O4-7e
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Feb 2004 13:40:05 -0800
-Received: from hirsch.in-berlin.de (localhost [127.0.0.1])
-	by hirsch.in-berlin.de (8.12.11/8.12.11/Debian-1) with ESMTP id
-	i1PLe2kq002440 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 25 Feb 2004 22:40:02 +0100
-Received: (from uucp@localhost)
-	by hirsch.in-berlin.de (8.12.11/8.12.11/Debian-1) with UUCP id
-	i1PLP209000725 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Feb 2004 22:25:02 +0100
-Received: from bytesex.org (kraxel@localhost [127.0.0.1])
-	by bytesex.org (8.12.3/8.12.3/Debian-6.6) with ESMTP id i1PLCZnW024008
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 25 Feb 2004 22:12:35 +0100
-References: <20040223172012.GA29046@bytesex.org>
-	<200402252047.59002.blaisorblade_spam@yahoo.it>
-From: Gerd Knorr <kraxel@bytesex.org>
-In-Reply-To: <200402252047.59002.blaisorblade_spam@yahoo.it>
-Message-ID: <87smgyamnx.fsf@bytesex.org>
+	id 1AwHFF-0006kD-Cw for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 00:51:49 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AwGsK-00037l-Ix for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Feb 2004 00:28:08 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] Fwd: Re: [uml-user] 2.6.3 hang on boot
+In-Reply-To: <200402252038.42084.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.GSO.4.58.0402260830580.15349@altair.dur.ac.uk>
+References: <200402252038.42084.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: post-2.6.3 build error
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,36 +26,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 25 Feb 2004 22:12:34 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 26 Feb 2004 08:41:54 +0000 (GMT)
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, Ingo Molnar <mingo@elte.hu>, user-mode-linux-devel@lists.sourceforge.net
 
-BlaisorBlade <blaisorblade_spam@yahoo.it> writes:
+On Wed, 25 Feb 2004, BlaisorBlade wrote:
 
-> __NR_sched_yield ] = (syscall_handler_t *) yield
-> 
-> It should refer to sys_sched_yield. yield() is not even asmlinkage, so this 
-> could case serious problems, and it is commented as "for kernel usage". Also 
-> I checked i386 syscall table, and it uses sys_sched_yield.
+> Hi, could you please take a look at this message? It seems like libc, in RH9,
+> still trigger "vsyscall" problems. I'm not sure, however, since the vsyscall
+> reference in the stack frame could be botched. However there is init getting
+> SIGSEGV.
 
-There is another related one (asmlinkage where it shouldn't be) in
-mprotect.c.  With the new CONFIG_REGPARM config option it becomes
-really important to get that right ...
+I certainly knew that a RH9 glibc in the client can trigger the vsyscall
+segfault hang, but it only happens if the /lib/tls libraries are present;
+presumably the same code is present but it moved from the tls only code to
+the general code for the FC1 glibc. This is why I originally thought it
+was an issue with tls and suggested hiding the /lib/tls libraries. I think
+the fix works in both cases.
 
-  Gerd
-
-Index: linux-2.6.3/mm/mprotect.c
-===================================================================
---- linux-2.6.3.orig/mm/mprotect.c
-+++ linux-2.6.3/mm/mprotect.c
-@@ -221,7 +221,7 @@ fail:
- 	return error;
- }
- 
--asmlinkage long
-+long
- do_mprotect(struct mm_struct *mm, unsigned long start, size_t len, 
- 	     unsigned long prot)
- {
+	Michael Young
 
 
 -------------------------------------------------------
