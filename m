@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AIwFR-0000oO-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Sun, 09 Nov 2003 12:33:25 -0800
+	id 1AJ0eT-0004Wp-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 09 Nov 2003 17:15:33 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AIwFQ-0006u2-GN
-	for User-mode-linux-devel@lists.sourceforge.net; Sun, 09 Nov 2003 12:33:24 -0800
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AJ0eS-0006G0-Fa
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 09 Nov 2003 17:15:32 -0800
 Received: from ccure.user-mode-linux.org (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id hA9KKA117036
-	for <User-mode-linux-devel@lists.sourceforge.net>; Sun, 9 Nov 2003 15:20:13 -0500
-Message-Id: <200311092032.hA9KVmxD011899@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] compile help texts for 2.4.* 
-In-Reply-To: Your message of "Mon, 29 Sep 2003 21:08:03 +0200."
-             <200309292108.03752.petschge@gmx.de> 
-References: <200309292108.03752.petschge@gmx.de> 
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id hAA12P119132
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 9 Nov 2003 20:02:26 -0500
+Message-Id: <200311100123.hAA1N6xD012768@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] compile error with 2.4.22-uml4 and 2.4.23-pre4-djc2-4um 
+In-Reply-To: Your message of "Tue, 16 Sep 2003 13:29:39 CDT."
+             <200309161329.39725.user-mode-linux-devel@goldenspud.com> 
+References: <200309161329.39725.user-mode-linux-devel@goldenspud.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,17 +29,17 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 09 Nov 2003 15:31:47 -0500
-To: petschge@web.de
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 09 Nov 2003 20:23:06 -0500
+To: "Matthew R. Scott" <user-mode-linux-devel@goldenspud.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-petschge@gmx.de said:
-> this should be the final version of the patch that adds the help texts
-> from 2.6.0-test5 to the 2.4.* kernel branch. Please include this patch
-> in the next um patches if nobody objects. 
+user-mode-linux-devel@goldenspud.com said:
+> When I look at line 41, 42, and 43 in arch/um/include/os.h though,
+> there  doesn't seem to be any sort of problems.  Those lines are in
+> the middle of a  perfectly valid-looking struct. 
 
-Done.  There's a section in there where the UML stuff is documented.  That's
-where I put these.  I liked the DEV_ANON help, BTW :-)
+This should be fixed now.  The problem was that those field names were
+#defined in a header to be something else.
 
 				Jeff
 
