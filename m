@@ -1,26 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BmWio-0000HB-Dl for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jul 2004 04:54:18 -0700
-Received: from vs1.mcgroarty.net ([69.44.158.141] helo=mcg.mcgroarty.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.34) id 1BmWio-0000ed-41
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Jul 2004 04:54:18 -0700
-Subject: Re: [uml-devel] [Bug#260111: user-mode-linux: upgrade hangs at "NET4:
-	Linux TCP/IP 1.0 for NET4.0"]
-Message-ID: <20040719115417.GA5505@mcgroarty.net>
-References: <20040718184513.GP4090@mizar.alcor.net>
-	<20040719000403.GA23215@stateless>
-	<20040719002409.GA4456@mcgroarty.net>
-	<20040719021321.GB23215@stateless>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1BmXOG-0008H8-H8 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Jul 2004 05:37:08 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1BmXOF-0005fZ-T0 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Jul 2004 05:37:08 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20040719021321.GB23215@stateless>
-From: Brian McGroarty <brian@mcgroarty.net>
+Message-Id: <200407191404.34410.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: Host oops caused by SKAS?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,32 +25,75 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Jul 2004 06:54:17 -0500
-To: Nicholas Lee <nj.lee@plumtree.co.nz>
-Cc: Matt Zimmerman <mdz@debian.org>, user-mode-linux-devel@lists.sourceforge.net, 260111-forwarded@bugs.debian.org
+Date: Mon, 19 Jul 2004 14:04:34 +0200
+Content-Transfer-Encoding: quoted-printable
+To: "C. Roscik" <cr@d-range.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Jul 19, 2004 at 02:13:21PM +1200, Nicholas Lee wrote:
-> 
-> Well this is odd.
-> 
-> [...]
-> 
-> So 2.4.25 works, and 2.4.26 requires tee to work.
+Alle 20:20, mercoled=EC 7 luglio 2004, C. Roscik ha scritto:
+> Hello Blaisorblade,
+>
+> i experienced an Host oops and for me it looks like skas is involved.
+> Maybe you can read something out of it, I can't =3D)
 
-Yes, that was the case for me. However, tee only prolonged the life of
-the machine.
+Yes, I confirm that you. It should be useful enough.
 
-With tee, I can bring up the machine in single-user mode if I use tee,
-but attempting to boot fully results in a hang when exim4 is coming
-up. Attempting to go to multi-user mode from single user mode results
-in a hang when inetd is coming up.
+> Host Kernel =3D Vanilla 2.6.5 + host-skas3-2.6.3-v1.patch (from your site)
+> Guest Kernel was =3D Vanilla 2.6.5 + uml-patch-2.6.4-1 + 2.6.5-uml1.fix2
+
+> If there are any other infos that could be usefull let me know.
+
+Yes: has the host any special configuration (SMP, HIGHMEM...)? I read that =
+SMP=20
+is enabled in the Oops (am I wrong?). I'm for now forwarding this to the=20
+list, I've not yet had time to look at it.
+
+Bye
+
+> Jun 27 12:11:25 nimbus kernel: Unable to handle kernel paging request at
+> virtual address 00100104
+> Jun 27 12:11:25 nimbus kernel:  printing eip:
+> Jun 27 12:11:25 nimbus kernel: c011b31f
+> Jun 27 12:11:25 nimbus kernel: *pde =3D 00000000
+> Jun 27 12:11:25 nimbus kernel: Oops: 0002 [#1]
+> Jun 27 12:11:25 nimbus kernel: SMP
+> Jun 27 12:11:25 nimbus kernel: CPU:    0
+> Jun 27 12:11:25 nimbus kernel: EIP:    0060:[<c011b31f>]    Not tainted
+> Jun 27 12:11:25 nimbus kernel: EFLAGS: 00010202   (2.6.5040422)
+> Jun 27 12:11:25 nimbus kernel: EIP is at mmput+0x23/0x68
+> Jun 27 12:11:25 nimbus kernel: eax: 00100100   ebx: ee2d3e00   ecx:
+> ee2d3e34 edx: 00200200
+> Jun 27 12:11:25 nimbus kernel: esi: f5804c60   edi: 00000037   ebp:
+> 00000000 esp: f085df80
+> Jun 27 12:11:25 nimbus kernel: ds: 007b   es: 007b   ss: 0068
+> Jun 27 12:11:25 nimbus kernel: Process linux-2.6.5-a1- (pid: 8864,
+> threadinfo=3Df085c000 task=3Dc1b5f290)
+> Jun 27 12:11:25 nimbus kernel: Stack: ee2d3e00 c010d0d4 ee2d3e00 00000037
+> 00000044 00000037 f085c000 f085c000
+> Jun 27 12:11:25 nimbus kernel:        f5804c60 f636f080 a696b5e8 0000001c
+> c0149aa4 00000044 bfc00000 00000001
+> Jun 27 12:11:25 nimbus kernel:        c0108573 00000037 000022a2 00000000
+> 00000044 00000037 a696b65c 0000001a
+> Jun 27 12:11:25 nimbus kernel: Call Trace:
+> Jun 27 12:11:25 nimbus kernel:  [<c010d0d4>] sys_ptrace+0x754/0x7d0
+> Jun 27 12:11:25 nimbus kernel:  [<c0149aa4>] sys_write+0x44/0x4c
+> Jun 27 12:11:25 nimbus kernel:  [<c0108573>] syscall_call+0x7/0xb
+> Jun 27 12:11:25 nimbus kernel:
+> Jun 27 12:11:25 nimbus kernel: Code: 89 50 04 89 02 c7 43 34 00 01 10 00 =
+c7
+> 41 04 00 02 20 00 ff
+
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by BEA Weblogic Workshop
 FREE Java Enterprise J2EE developer tools!
 Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
+http://ads.osdn.com/?ad_idG21&alloc_id=10040&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
