@@ -2,24 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DIv4x-0004gd-4u for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 13:55:19 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DIv4v-0000sB-GL for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 13:55:19 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] question about UML sigcontext in tt mode
-References: <003501c535d8$e8574a50$90b3c68a@st.com>
-	<20050404140011.GA1977@ccure.user-mode-linux.org>
-	<200504051320.45424.rob@landley.net>
-In-Reply-To: <200504051320.45424.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 1DIw1W-0008Bi-KI for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 14:55:50 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DIw1U-0006oj-Di for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 14:55:50 -0700
+Received: from ccure.user-mode-linux.org (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.11.2) with ESMTP id j35L6B430085
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 5 Apr 2005 17:06:11 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] 2.6.9-bs7 panic on check_sysemu
+Message-ID: <20050406002456.GA5430@ccure.user-mode-linux.org>
+References: <4250729B.7040407@rimuhosting.com>
+	<200504041532.23866.blaisorblade@yahoo.it>
+	<200504051323.47160.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200504052259.41817.blaisorblade@yahoo.it>
+In-Reply-To: <200504051323.47160.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,61 +33,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 5 Apr 2005 22:59:41 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>, Jeff Dike <jdike@addtoit.com>, Alex LIU <alex.liu@st.com>
+Date: Tue, 5 Apr 2005 20:24:56 -0400
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>, Peter <peter.spamcatcher@rimuhosting.com>
 
-On Tuesday 05 April 2005 19:20, Rob Landley wrote:
-> On Monday 04 April 2005 10:00 am, Jeff Dike wrote:
-> > On Thu, Mar 31, 2005 at 06:03:34PM +0800, Alex LIU wrote:
-> > > union uml_pt_regs {
-> > > #ifdef UML_CONFIG_MODE_TT
-> > >  struct tt_regs {
-> > >   long syscall;
-> > >   void *sc;
-> > >  } tt;
-> > > #endif
-> > > };
-> > > -------------------------------------
-> > >
-> > > Then why the tt.sc is defined as void while not as struct sigcontext?
-> > > Thanks!
-> >
-> > Probably because you can't get a definition of struct sigcontext into
-> > processor.h and have it still compile.
-> >
-> > Try #including sigcontext.h there and you'll see what I mean.
->
-> I don't know about can't.
->
-> #define sigcontext WALRUS
-> #include <processor.h>
-> thingy
-> #undef WALRUS
->
-> Adviseable is another matter entirely.  (Did I mention I have a knack for
-> coming up with disgusting solutions to impossible problems?)
-I've not tested if it's impossible in this very case, however: if any host 
-header includes kernel headers on the host, and we include it from a 
-kernelspace file, we run into trouble.
+On Tue, Apr 05, 2005 at 01:23:47PM -0400, Rob Landley wrote:
+> What's the minimal patch set that _just_ adds -SKAS0 mode to something like a 
+> 2.6.11 kernel?  I'd like to try it out, but every time I sit down to whack at 
+> it my interest budget runs out sifting through a mountain of unrelated x86-64 
+> patches to try to figure out what exactly I need to apply to get just 
+> SKAS0...
 
-So, defining away like you do above every and each identifier present in every 
-possible versions of glibc / kernel headers would indeed work. Is this still 
-a solution?
+There isn't really one right now.  Those patches need to be cleaned up, 
+merged, and disentanged from other stuff.
 
-So, we cut the problem by excluding the unusable headers from the compiler 
-search path. arch/um/include are includable everywhere, /usr/include from 
-userspace files, <currentTreeRoot>/include/{asm,linux,*}/ from kernelspace 
-only.
-
-If you really come up with a general solution, let us know. Please. Thanks for 
-you effort anyway.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
-
+				Jeff
 
 
 -------------------------------------------------------
