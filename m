@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CoXDQ-0002VB-9s for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 17:22:28 -0800
+	id 1CoXED-0002YM-Hj for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 17:23:17 -0800
 Received: from smtp.gentoo.org ([156.56.111.197])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CoXDO-0006FL-4m
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CoXEB-0004CO-QB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 17:22:28 -0800
+	Tue, 11 Jan 2005 17:23:17 -0800
 Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
 	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.42)
-	id 1CoXDN-00021x-7e for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 01:22:25 +0000
+	id 1CoXEA-0002rP-TK for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 01:23:14 +0000
 Received: from apache by nuthatch.gentoo.org with local (Exim 4.42)
-	id 1CoXDM-0007AK-Vh for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jan 2005 01:22:24 +0000
+	id 1CoXEA-0007Vt-LX for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Jan 2005 01:23:14 +0000
 From: bugzilla-daemon@gentoo.org
-Message-Id: <E1CoXDM-0007AK-Vh@nuthatch.gentoo.org>
-Subject: [uml-devel] Your Bugzilla password.
+Message-Id: <E1CoXEA-0007Vt-LX@nuthatch.gentoo.org>
+Subject: [uml-devel] [Bug 43616] gcc 3.3.2 cannot link usermode sources
+	(2.4.24-r1 & 2.6.3-r1)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,16 +31,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 Jan 2005 01:22:24 +0000
+Date: Wed, 12 Jan 2005 01:23:14 +0000
 To: user-mode-linux-devel@lists.sourceforge.net
 
-To use the wonders of Bugzilla, you can use the following:
+http://bugs.gentoo.org/show_bug.cgi?id=43616
 
- E-mail address: user-mode-linux-devel@lists.sourceforge.net
-       Password: 6eXFx70qgT
 
- To change your password, go to:
- http://bugs.gentoo.org/userprefs.cgi
+blaisorblade_spam@yahoo.it changed:
+
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |user-mode-linux-
+                   |                            |devel@lists.sourceforge.net
+
+
+
+
+
+
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
