@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cc9XL-0006Vs-My for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 13:39:51 -0800
+	id 1Cc9bF-0006eS-2f for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Dec 2004 13:43:53 -0800
 Received: from pike.sandelman.ca ([205.150.200.164])
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1Cc9Wq-0001eK-QU
+	(Exim 4.41) id 1Cc9ak-0002H3-BP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Dec 2004 13:39:51 -0800
+	Wed, 08 Dec 2004 13:43:52 -0800
 Subject: Re: [uml-devel] Re: What to do with uml_switch? 
 In-Reply-To: Message from "Steve Schmidtke" <steve_schmidtke@hotmail.com> 
 	of "Wed,
-	08 Dec 2004 19:36:25 GMT." <BAY24-F39F020DFE0870A8FDC91DC83B60@phx.gbl>
-References: <BAY24-F39F020DFE0870A8FDC91DC83B60@phx.gbl> 
-Message-ID: <9866.1102541879@marajade.sandelman.ottawa.on.ca>
+	08 Dec 2004 19:49:09 GMT." <BAY24-F3095F190F005AC385C24ED83B60@phx.gbl>
+References: <BAY24-F3095F190F005AC385C24ED83B60@phx.gbl> 
+Message-ID: <9901.1102542118@marajade.sandelman.ottawa.on.ca>
 From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -27,63 +27,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Dec 2004 16:37:59 -0500
+Date: Wed, 08 Dec 2004 16:41:58 -0500
 To: Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: kraxel@bytesex.org, blaisorblade_spam@yahoo.it, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Cc: blaisorblade_spam@yahoo.it, kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
 -----BEGIN PGP SIGNED MESSAGE-----
 
 
 >>>>> "Steve" == Steve Schmidtke <steve_schmidtke@hotmail.com> writes:
-    Gerd> Hmm, I don't think it is a good idea to put that kind of
-    Gerd> testing code into the switch daemon.  I'd make the switch
-    Gerd> daemon behave as close as possible to a real switch, then use
-    Gerd> the normal tools you use for real networks as well.  I think
-    Gerd> uml_switch should just support a monitor port which will see
+    Steve> It would be useful if daemon_user.c could be run in a
+    Steve> synchronous mode such that packets are guaranteed delivered
+    Steve> to the switch and guaranteed delivered to a host.  The switch
+    Steve> could then mangle packets in a deterministic fashion for
+    Steve> testing.
 
-    >> Not practical, not reliable.
+  Yes, that would be useful.
+  From a practical point of view:
+       s/SOCK_DGRAM/SOCK_STREAM/
 
-    Steve> Why not reliable?  A monitor port is a diagnostic tool, and
+  not a very useful way to operate if there is any network load, but it
+may be okay for regression testing. Also realize that Linux Unix domain
+datagram sockets are mostly reliable. (BSD does not have this property)
 
-  What would I connect to the monitor port? Another UML? 
+    Steve> It would also be interesting if packets could be passed in
+    Steve> shared memory.  I'm wondering if it would be faster and more
+    Steve> reliable at the same time.
 
-  This is the part that isn't practical.
-  My test cases sometimes have as many as 7 networks. Remember that we
-have 170 test cases, and growing. Remember that we may have packets akin
-to "ping-of-death", that may cause the Linux network stack to "oops".
-  (this isn't a good, but that's the point of regression tests... is to
-make sure that old bugs do not get re-introduced)
+  On a uniprocessor, perhaps.
+  Evidence is that on multiprocessor systems, shared memory is not
+faster than copying because of cache concurency costs.
 
-  So, we have to start the UMLs for each test, as they may have died.
-To make it simple, we start/stop all of the UMLs each time.
+  My opinion is that this is premature optimization.
 
-  The reason for having the ability to capture and play-back pcap files
-in the uml_netjig is to eliminate the need to run as many UMLs.
-
-    Steve> There is no reason you would need to use Linux as your packet
-    Steve> source:
-
-    Steve>   cat tcpdump.pcap | switch_mon_tool --socket /tmp/uml.mon
-    Steve> --delay 100ms
-
-    Steve> is the type of functionality I'm shooting for (above example
-    Steve> not to be taken literally).
-
-  Great. That works for 1 network.
-
-  Now, how do you replay packets where you need an actual time sequence
-diagram to make it work? I.e.
-	   - send packet A on network 1
-	   - send packet B on network 2
-	   - send packet C on network 1
-	   - send packet D on network 2
-
-  In most cases, we have found round-robin amount input sources works
-well, but in that we are disappointed with. 
-
-  Further, remember that you may want to single step the packet sources,
-because, you may spend *HOURS* in the debugger (with the UML in
-question). That's hard with the method you proposed.
+  I having been thinking of booting all my UMLs up to single-user
+prompt, swsusp them, and restore swsusp each time instead of booting
+them. That may be a larger win for me.
 
 - -- 
 ]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
@@ -94,17 +72,15 @@ question). That's hard with the method you proposed.
 
 
 
-
-
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 Comment: Finger me for keys
 
-iQCVAwUBQbd0NIqHRg3pndX9AQEZFgQA5vDKTWQviO9NSLr9Y6Pkvq23KQbWPop2
-GyR04q/ALPlMSbdPqsJfHFsqCXLZF/gmftZH6Cp52XpXX4AO7+7x47aUDG7SW2ug
-WxYjBJVqHBgBSJQNHkpcXwswqJPV4fidMyiN0X60PtmW+o6hMa/NXr9LPFcElwVw
-FiEFd3ONQ7U=
-=F82m
+iQCVAwUBQbd1I4qHRg3pndX9AQG/HgP7BTfeATngfiD8qffUreEmSVYgmxFM/ZYz
+cvS/qJjLVVghjL9Lf0KG56rOMqmVkQ47A7wE52coVLlHgXEIz0KX2j8lvuw2M3yg
+4neNAulXa+yiIGf/U/GoxCe/K74cW0//tCV/Jlcl9g68AKzQ952AzEOtqy7D4hXc
+sdxEKTXk//4=
+=mf5Q
 -----END PGP SIGNATURE-----
 
 
