@@ -1,10 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BCS6a-0002md-0j for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Apr 2004 16:41:44 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BCS6Z-0007rx-FX for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Apr 2004 16:41:43 -0700
 From: Henrik Nordstrom <uml@henrik.marasystems.com>
 Subject: Re: [uml-devel] Re: [uml-user] Network lags
-In-Reply-To: <407865A4.4070403@upb.de>
-Message-ID: <Pine.LNX.4.44.0404110125420.6583-100000@filer.marasystems.com>
+In-Reply-To: <20040410164619.GA12830@osiris.silug.org>
+Message-ID: <Pine.LNX.4.44.0404110135520.6583-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,33 +25,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 11 Apr 2004 01:29:49 +0200 (CEST)
-Content-Transfer-Encoding: quoted-printable
-To: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 11 Apr 2004 01:41:38 +0200 (CEST)
+To: Steven Pritchard <steve@silug.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 10 Apr 2004, Sven K=F6hler wrote:
+On Sat, 10 Apr 2004, Steven Pritchard wrote:
 
-> good point, but mlocking 128M should be like running the host with 128M=20
-> less. so if i could tell the kernel not to touch a certain memory-area=20
-> on the append-line, should there still be any VM issues?
-> of course that would need further patching of the host-kernel so that=20
-> UML can access and manage the reserved memory.
+> That behavior seems to be very dependent on the kernel you are
+> running.  For example, a Red Hat 2.4.20 kernel seems to really, really
+> want to swap:
+> 
+>              total       used       free     shared    buffers     cached
+> Mem:       2064704    2053224      11480          0       9432    1212940
+> -/+ buffers/cache:     830852    1233852
+> Swap:      4176892    1597508    2579384
+> 
+> I would expect that system to be swapping, but not *nearly* that much.
 
-Just add your own patch to uml to mlock the memory if you seriously=20
-think this is a good idea.
+The amount of swap used is not a good indication of how much your system
+is swapping, only that there is/has been some memory pressure on your
+system. What you need to monitor is the "si" column of vmstat 5 (or other
+interval of choice).  so is not really relevant other than the I/O it
+causes.
 
-Myself would build me a host with ample memory, and no swap partition if
-swapping of the host worries me. (Note: /dev/anon required to stop UMLs
-from being swapped out).
-
-> sound good too, but what i have in mind is a more static thing. even if=20
-> the host goes mad and eats all the memory, i still want to be sure that=20
-> the UML-kernels have their memory region and this won't get swapped out.
-
-See first paragraph above.. or better yet, don't allow running anything on
-the host which may go berserk and eat all the memory or cause heavy=20
-I/O..
+Why: The same page can exists both in memory and swap. The VM only 
+discards the swap page when it no longer can be of any value. This is also 
+why you need at least as much swap as you have memory for the swap to 
+operate correctly.
 
 Regards
 Henrik
@@ -53,7 +62,7 @@ Henrik
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
