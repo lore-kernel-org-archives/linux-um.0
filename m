@@ -1,20 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CCha1-0000hz-N9 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Sep 2004 09:45:25 -0700
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CCha0-00018R-Id for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Sep 2004 09:45:25 -0700
-Content-class: urn:content-classes:message
+	id 1CCiNm-0002EC-9Q for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Sep 2004 10:36:50 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CCiNk-0006SM-LE for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Sep 2004 10:36:50 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [Openswan CVS] openswan-2/linux/net/ipsec
+	addrtot.c, 1.16, 1.17
+References: <20040915214906.02A1F138028@tla.xelerance.com>
+	<200409251915.25579.blaisorblade_spam@yahoo.it>
+	<17531.1096224669@marajade.sandelman.ottawa.on.ca>
+In-Reply-To: <17531.1096224669@marajade.sandelman.ottawa.on.ca>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
-	charset="us-ascii"
-Subject: RE: [uml-devel] Minor problems with interrupted systemcalls 
-Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C3D@ABGEX01E.abg.fsc.net>
-From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409291934.08173.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,59 +32,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Sep 2004 18:34:14 +0200
-Content-Transfer-Encoding: 8bit
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Wed, 29 Sep 2004 19:34:08 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>, CaT <cat@zip.com.au>, dev@lists.openswan.org
 
-Jeff Dike <jdike@addtoit.com> said:
-> OK, following is my breakup of your signal patch.  It all looks right
-to me, and cleans up that code nicely.  Let me know if you see any
-problems here.
-> 
-> These are also available from the incremental patches page
-> 	http://user-mode-linux.sourceforge.net/patches.html
-> and I would appreciate testing.
-> 
-> This one changes the do_signal interface to eliminate its argument.
-Also, remove the calls from the system call handlers since they are
-redundant.  In > all cases, pending signals are checked for in the
-interrupt handler.
-> Temporarily, do_signal passes the current error to kern_do_signal.
-> 
-> 				Jeff
+On Sunday 26 September 2004 20:51, Michael Richardson wrote:
+> >>>>> "BlaisorBlade" == BlaisorBlade  <blaisorblade_spam@yahoo.it> writes:
+>
+>     BlaisorBlade> The problem is just the fact that
+>     BlaisorBlade> "EXPORT_SYMBOL(strstr)" is commented out in THAT
+>     BlaisorBlade> file. If you compile the code which uses that
+>     BlaisorBlade> statically, it will work, so you're not on the right
+>     BlaisorBlade> road.
+>
+>   Okay, can it be commented back in for 2.6.9?
+It is already fixed in 2.6.9-rc2; I refer to the actual vanilla kernel, since 
+the UML patch has been merged (actually from my own tree, so some things, as 
+this one, have been fixed there before than in the Jeff's tree; however I 
+*do* send the patches him, it's just sometimes they get lost).
 
-Thank you.
-
-I've tested the patches. AFAICS it works well.
-A small piece of code regarding SA_ONESHOT should be removed only. In
-2.6.9 this is done in get_signal_to_deliver(), and since
-get_signal_to_deliver() writes a copy of the corresponding k_sigaction
-into caller's ka_copy, it is a real NOOP.
-
-Still, there is something wrong with error handling in case, that a
-signal handler couldn't be started (i.E. stack limit reached or signal
-stack invalid). This is a problem not only for UML, but with i386, too.
-I will try to fix it for UML with separate patches.
-
-Bodo
-
-
---- orig/arch/um/kernel/signal_kern.c	2004-09-29 18:15:46.505334183
-+0200
-+++ new/arch/um/kernel/signal_kern.c	2004-09-29 18:16:37.813855152
-+0200
-@@ -88,9 +88,6 @@
- 					    (unsigned long)
-ka->sa.sa_handler,
- 					    restorer, regs, oldset);
- 
--	if (ka->sa.sa_flags & SA_ONESHOT)
--		ka->sa.sa_handler = SIG_DFL;
--
- 	if (!(ka->sa.sa_flags & SA_NODEFER)) {
- 		spin_lock_irq(&current->sighand->siglock);
- 		sigorsets(&current->blocked, &current->blocked, 
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
