@@ -1,32 +1,31 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CwyK6-0007Ow-R2 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 23:56:14 -0800
-Received: from [84.244.131.45] (helo=mail.flex-it.be)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CwyK4-0002mz-Kj for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 23:56:14 -0800
-Received: from localhost (mail.usermodelinux.be [127.0.0.1])
-	by mail.flex-it.be (Postfix) with ESMTP id E63179837
+	id 1Cx2EI-0002vr-Ac for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 04:06:30 -0800
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1Cx2EH-0003LO-2e
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 04:06:30 -0800
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Cx2DO-0002tM-69 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Feb 2005 13:05:34 +0100
+Received: from naked.iki.fi ([62.142.249.112])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  4 Feb 2005 08:57:20 +0100 (CET)
-Received: from mail.flex-it.be ([127.0.0.1])
-	by localhost (mail1.usermodelinux.be [127.0.0.1]) (amavisd-new,
-	port 10024) with ESMTP id 24546-02
+	Fri, 04 Feb 2005 13:05:34 +0100
+Received: from naked by naked.iki.fi with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 4 Feb 2005 08:57:18 +0100 (CET)
-Received: from [10.0.0.25] (pipos.xs4all.nl [82.92.180.217])
-	by mail.flex-it.be (Postfix) with ESMTP id B94469836
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  4 Feb 2005 08:57:17 +0100 (CET)
-Message-ID: <42032A7A.4030506@flex-it.be>
-From: Michael De Nil <michael@flex-it.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] UML Kernel segaults
+	Fri, 04 Feb 2005 13:05:34 +0100
+From: Nuutti Kotivuori <naked@iki.fi>
+Message-ID: <87hdks5y35.fsf@aka.i.naked.iki.fi>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=-=-="
+Subject: [uml-devel] UML tuntap driver problem with queueing
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,509 +37,115 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 04 Feb 2005 08:55:38 +0100
+Date: Fri, 04 Feb 2005 14:06:06 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 
-Hello,
+--=-=-=
 
-I have been running UML for service jailing for a few months without any 
-problem (host 2.6.7 + skas 2004-08-10 -- client 2.4.26 + 
-uml-patch-2.4.26-3).
-But since I compiled iptables into the kernel (a few weeks ago), some 
-uml jails started to segaulft at random times (approx 1 segfault / 1-2 
-weeks).
-When looking at the syslog of the crashed UML, I can't see anything weird.
+I will first briefly outline here how tun/tap device queueing works.
 
-I also tried with client 2.4.27 + uml-patch-2.4.27-1 with the same 
-kernel config, but that does not resolve the problem.
-The jails that I had crashing were an apache-jail, a postfix-jail and an 
-ircd-jail.
+Each tap device has two ends - one is the network device lookalike
+'tap0' and the other is the fd received by opening '/dev/net/tun' and
+running some ioctls. With UML, the host kernel has the 'tap0' device
+and the UML process opens up '/dev/net/tun' side, showing it as 'eth0'
+inside the UML kernel. Right now, we are only interested in how
+packets travel from the host to the guest, eg. packets sent to the
+'tap0' device travelling to the UML kernel.
 
-Is there any known problem on running kernels with iptables support?
-Since the kernel crashes only once in about 2 weeks, I am not ably to 
-reproduce the segfault easily.
+There are two queues involved in this process. One is the normal
+network device send queue attached to the 'tap0'. It can be
+manipulated by the QoS tools, like 'tc'. I will call this
+'txqueue'. The other is an internal queue of the tun/tap driver, an
+skb queue, in the tun_struct as readq. I will call this simply
+'readq'.
 
+There are two alternatives on how packets are queued, controlled by
+IFF_ONE_QUEUE flag when creating the tap device. The default is that
+IFF_ONE_QUEUE is off. In that case, packets are first queued to the
+'readq'. When 'readq' grows to 10 packets, netif_stop_queue is called
+on the device, which causes the 'txqueue' to start accumulating the
+following packets. When packets are read from the fd side, the queue
+is started again, which starts filling 'readq' again. So, this
+alternative should keep the queue mostly on the device side and allow
+normal QoS routines to handle packet dropping and such.
 
-Greetings,
+The other alternative, when IFF_ONE_QUEUE is set, uses just a single
+queue. Packets are queued to 'readq' always, the net device queue is
+never stopped. If 'readq' grows to the interface 'txqueuelen', packets
+are simply tail dropped. This means that the normal QoS tools cannot
+affect how packets are dropped and the packet queue is 'hidden' inside
+the kernel as there is no simple way to see it.
 
-Michael De Nil
+Now, here comes the actual bug report.
 
+If the UML kernel is sent more packets than it can handle, and
+IFF_ONE_QUEUE is not set (as it isn't by default), packets first fill
+the 'readq' and then start amassing at 'txqueue', as they should. But
+when no more packets are being sent, the queue does not start growing
+smaller. If no packets are sent to the device, the queue stays there
+indefinitely. When single packets are sent, the queue always decreases
+by 10 packets (so 11 packets in total arrive on the guest side).
 
+If I understood correctly from the code, UML uses SIGIO to trigger
+packet reading. So, either SIGIO is not delivered properly in the case
+of the two queues - or UML's SIGIO handling is broken.
 
-Here is my current kernel config:
+If IFF_ONE_QUEUE is set, everything works fine, packets are delivered
+in a timely manner and queue is never stalled.
 
-#
-# Automatically generated by make menuconfig: don't edit
-#
-CONFIG_USERMODE=y
-# CONFIG_ISA is not set
-# CONFIG_SBUS is not set
-# CONFIG_PCI is not set
-CONFIG_UID16=y
-CONFIG_RWSEM_XCHGADD_ALGORITHM=y
+As a workaround to the problem, I've added the IFF_ONE_QUEUE option to
+all the places that open a tap device (namely tunctl, uml_net and
+uml_router). The patch is attached. But the actual problem should most
+likely be fixed once found.
 
-#
-# Code maturity level options
-#
-CONFIG_EXPERIMENTAL=y
+-- Naked
 
-#
-# General Setup
-#
-CONFIG_MODE_SKAS=y
-CONFIG_MODE_TT=y
-CONFIG_NET=y
-CONFIG_SYSVIPC=y
-CONFIG_BSD_PROCESS_ACCT=y
-CONFIG_SYSCTL=y
-CONFIG_BINFMT_AOUT=y
-CONFIG_BINFMT_ELF=y
-CONFIG_BINFMT_MISC=y
-CONFIG_HOSTFS=y
-CONFIG_HUMFS=y
-CONFIG_EXTERNFS=y
-CONFIG_HPPFS=y
-CONFIG_MCONSOLE=y
-CONFIG_MAGIC_SYSRQ=y
-# CONFIG_HOST_2G_2G is not set
-# CONFIG_UML_SMP is not set
-# CONFIG_SMP is not set
-CONFIG_NEST_LEVEL=0
-CONFIG_KERNEL_HALF_GIGS=1
-# CONFIG_HIGHMEM is not set
-CONFIG_PROC_MM=y
-CONFIG_KERNEL_STACK_ORDER=2
-CONFIG_UML_REAL_TIME_CLOCK=y
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: attachment; filename=tuntap_one_queue.diff
 
-#
-# Loadable module support
-#
-# CONFIG_MODULES is not set
+Index: uml-utilities-20040406/uml_net/tuntap.c
+===================================================================
+--- uml-utilities-20040406.orig/uml_net/tuntap.c
++++ uml-utilities-20040406/uml_net/tuntap.c
+@@ -44,7 +44,7 @@
+     return(-1);
+   }
+   memset(ifr, 0, sizeof(*ifr));
+-  ifr->ifr_flags = IFF_TAP | IFF_NO_PI;
++  ifr->ifr_flags = IFF_TAP | IFF_NO_PI | IFF_ONE_QUEUE;
+   ifr->ifr_name[0] = '\0';
+   if(ioctl(tap_fd, TUNSETIFF, (void *) ifr) < 0){
+     output_errno(output, "TUNSETIFF : ");
+Index: uml-utilities-20040406/tunctl/tunctl.c
+===================================================================
+--- uml-utilities-20040406.orig/tunctl/tunctl.c
++++ uml-utilities-20040406/tunctl/tunctl.c
+@@ -81,7 +81,7 @@
+ 
+   memset(&ifr, 0, sizeof(ifr));
+ 
+-  ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
++  ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_ONE_QUEUE;
+   strncpy(ifr.ifr_name, tun, sizeof(ifr.ifr_name) - 1);
+   if(ioctl(tap_fd, TUNSETIFF, (void *) &ifr) < 0){
+     perror("TUNSETIFF");
+Index: uml-utilities-20040406/uml_router/tuntap.c
+===================================================================
+--- uml-utilities-20040406.orig/uml_router/tuntap.c
++++ uml-utilities-20040406/uml_router/tuntap.c
+@@ -28,7 +28,7 @@
+     return(-1);
+   }
+   memset(&ifr, 0, sizeof(ifr));
+-  ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
++  ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_ONE_QUEUE;
+   strncpy(ifr.ifr_name, dev, sizeof(ifr.ifr_name) - 1);
+   if(ioctl(fd, TUNSETIFF, (void *) &ifr) < 0){
+     perror("TUNSETIFF failed");
 
-#
-# Character Devices
-#
-CONFIG_STDIO_CONSOLE=y
-CONFIG_SSL=y
-CONFIG_FD_CHAN=y
-CONFIG_NULL_CHAN=y
-CONFIG_PORT_CHAN=y
-CONFIG_PTY_CHAN=y
-CONFIG_TTY_CHAN=y
-CONFIG_XTERM_CHAN=y
-CONFIG_CON_ZERO_CHAN="fd:0,fd:1"
-CONFIG_CON_CHAN="xterm"
-CONFIG_SSL_CHAN="pty"
-CONFIG_UNIX98_PTYS=y
-CONFIG_UNIX98_PTY_COUNT=256
-# CONFIG_WATCHDOG is not set
-# CONFIG_WATCHDOG_NOWAYOUT is not set
-# CONFIG_SOFT_WATCHDOG is not set
-# CONFIG_UML_WATCHDOG is not set
-# CONFIG_UML_SOUND is not set
-# CONFIG_SOUND is not set
-# CONFIG_HOSTAUDIO is not set
-# CONFIG_TTY_LOG is not set
-
-#
-# Block Devices
-#
-CONFIG_BLK_DEV_UBD=y
-# CONFIG_BLK_DEV_UBD_SYNC is not set
-# CONFIG_COW is not set
-CONFIG_COW_COMMON=y
-CONFIG_BLK_DEV_LOOP=y
-CONFIG_BLK_DEV_NBD=y
-CONFIG_BLK_DEV_RAM=y
-CONFIG_BLK_DEV_RAM_SIZE=4096
-CONFIG_BLK_DEV_INITRD=y
-# CONFIG_MMAPPER is not set
-CONFIG_NETDEVICES=y
-
-#
-# Network Devices
-#
-CONFIG_UML_NET=y
-CONFIG_UML_NET_ETHERTAP=y
-CONFIG_UML_NET_TUNTAP=y
-CONFIG_UML_NET_SLIP=y
-CONFIG_UML_NET_SLIRP=y
-CONFIG_UML_NET_DAEMON=y
-CONFIG_UML_NET_MCAST=y
-# CONFIG_UML_NET_PCAP is not set
-CONFIG_DUMMY=y
-# CONFIG_BONDING is not set
-# CONFIG_EQUALIZER is not set
-CONFIG_TUN=y
-CONFIG_PPP=y
-# CONFIG_PPP_MULTILINK is not set
-# CONFIG_PPP_FILTER is not set
-# CONFIG_PPP_ASYNC is not set
-# CONFIG_PPP_SYNC_TTY is not set
-# CONFIG_PPP_DEFLATE is not set
-# CONFIG_PPP_BSDCOMP is not set
-# CONFIG_PPPOE is not set
-# CONFIG_PPP_MPPE is not set
-CONFIG_SLIP=y
-# CONFIG_SLIP_COMPRESSED is not set
-# CONFIG_SLIP_SMART is not set
-# CONFIG_SLIP_MODE_SLIP6 is not set
-
-#
-# Networking options
-#
-CONFIG_PACKET=y
-CONFIG_PACKET_MMAP=y
-# CONFIG_NETLINK_DEV is not set
-CONFIG_NETFILTER=y
-# CONFIG_NETFILTER_DEBUG is not set
-# CONFIG_FILTER is not set
-CONFIG_UNIX=y
-CONFIG_INET=y
-# CONFIG_IP_MULTICAST is not set
-# CONFIG_IP_ADVANCED_ROUTER is not set
-# CONFIG_IP_PNP is not set
-# CONFIG_NET_IPIP is not set
-# CONFIG_NET_IPGRE is not set
-# CONFIG_ARPD is not set
-# CONFIG_INET_ECN is not set
-# CONFIG_SYN_COOKIES is not set
-
-#
-#   IP: Netfilter Configuration
-#
-CONFIG_IP_NF_CONNTRACK=y
-CONFIG_IP_NF_FTP=y
-CONFIG_IP_NF_AMANDA=y
-CONFIG_IP_NF_TFTP=y
-CONFIG_IP_NF_IRC=y
-CONFIG_IP_NF_QUEUE=y
-CONFIG_IP_NF_IPTABLES=y
-CONFIG_IP_NF_MATCH_LIMIT=y
-CONFIG_IP_NF_MATCH_MAC=y
-CONFIG_IP_NF_MATCH_PKTTYPE=y
-CONFIG_IP_NF_MATCH_MARK=y
-CONFIG_IP_NF_MATCH_MULTIPORT=y
-CONFIG_IP_NF_MATCH_TOS=y
-CONFIG_IP_NF_MATCH_RECENT=y
-CONFIG_IP_NF_MATCH_ECN=y
-CONFIG_IP_NF_MATCH_DSCP=y
-CONFIG_IP_NF_MATCH_AH_ESP=y
-CONFIG_IP_NF_MATCH_LENGTH=y
-CONFIG_IP_NF_MATCH_TTL=y
-CONFIG_IP_NF_MATCH_TCPMSS=y
-CONFIG_IP_NF_MATCH_HELPER=y
-CONFIG_IP_NF_MATCH_STATE=y
-CONFIG_IP_NF_MATCH_CONNTRACK=y
-# CONFIG_IP_NF_MATCH_UNCLEAN is not set
-# CONFIG_IP_NF_MATCH_OWNER is not set
-CONFIG_IP_NF_FILTER=y
-CONFIG_IP_NF_TARGET_REJECT=y
-# CONFIG_IP_NF_TARGET_MIRROR is not set
-CONFIG_IP_NF_NAT=y
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=y
-CONFIG_IP_NF_TARGET_REDIRECT=y
-CONFIG_IP_NF_NAT_AMANDA=y
-# CONFIG_IP_NF_NAT_LOCAL is not set
-CONFIG_IP_NF_NAT_SNMP_BASIC=y
-CONFIG_IP_NF_NAT_IRC=y
-CONFIG_IP_NF_NAT_FTP=y
-CONFIG_IP_NF_NAT_TFTP=y
-CONFIG_IP_NF_MANGLE=y
-CONFIG_IP_NF_TARGET_TOS=y
-CONFIG_IP_NF_TARGET_ECN=y
-CONFIG_IP_NF_TARGET_DSCP=y
-CONFIG_IP_NF_TARGET_MARK=y
-CONFIG_IP_NF_TARGET_LOG=y
-CONFIG_IP_NF_TARGET_ULOG=y
-CONFIG_IP_NF_TARGET_TCPMSS=y
-CONFIG_IP_NF_ARPTABLES=y
-CONFIG_IP_NF_ARPFILTER=y
-CONFIG_IP_NF_ARP_MANGLE=y
-
-#
-#   IP: Virtual Server Configuration
-#
-# CONFIG_IP_VS is not set
-# CONFIG_IPV6 is not set
-# CONFIG_KHTTPD is not set
-
-#
-#    SCTP Configuration (EXPERIMENTAL)
-#
-# CONFIG_IP_SCTP is not set
-# CONFIG_ATM is not set
-# CONFIG_VLAN_8021Q is not set
-# CONFIG_IPX is not set
-# CONFIG_ATALK is not set
-
-#
-# Appletalk devices
-#
-# CONFIG_DEV_APPLETALK is not set
-# CONFIG_DECNET is not set
-# CONFIG_BRIDGE is not set
-# CONFIG_X25 is not set
-# CONFIG_LAPB is not set
-# CONFIG_LLC is not set
-# CONFIG_NET_DIVERT is not set
-# CONFIG_ECONET is not set
-# CONFIG_WAN_ROUTER is not set
-# CONFIG_NET_FASTROUTE is not set
-# CONFIG_NET_HW_FLOWCONTROL is not set
-
-#
-# QoS and/or fair queueing
-#
-# CONFIG_NET_SCHED is not set
-
-#
-# Network testing
-#
-# CONFIG_NET_PKTGEN is not set
-
-#
-# File systems
-#
-CONFIG_QUOTA=y
-# CONFIG_QFMT_V2 is not set
-CONFIG_AUTOFS_FS=y
-CONFIG_AUTOFS4_FS=y
-CONFIG_REISERFS_FS=y
-# CONFIG_REISERFS_CHECK is not set
-# CONFIG_REISERFS_PROC_INFO is not set
-# CONFIG_ADFS_FS is not set
-# CONFIG_ADFS_FS_RW is not set
-# CONFIG_AFFS_FS is not set
-# CONFIG_HFS_FS is not set
-# CONFIG_HFSPLUS_FS is not set
-# CONFIG_BEFS_FS is not set
-# CONFIG_BEFS_DEBUG is not set
-# CONFIG_BFS_FS is not set
-CONFIG_EXT3_FS=y
-CONFIG_JBD=y
-# CONFIG_JBD_DEBUG is not set
-CONFIG_FAT_FS=y
-CONFIG_MSDOS_FS=y
-CONFIG_UMSDOS_FS=y
-CONFIG_VFAT_FS=y
-# CONFIG_EFS_FS is not set
-CONFIG_JFFS_FS=y
-CONFIG_JFFS_FS_VERBOSE=0
-CONFIG_JFFS_PROC_FS=y
-CONFIG_JFFS2_FS=y
-CONFIG_JFFS2_FS_DEBUG=0
-# CONFIG_CRAMFS is not set
-CONFIG_TMPFS=y
-CONFIG_RAMFS=y
-CONFIG_ISO9660_FS=y
-# CONFIG_JOLIET is not set
-# CONFIG_ZISOFS is not set
-# CONFIG_JFS_FS is not set
-# CONFIG_JFS_DEBUG is not set
-# CONFIG_JFS_STATISTICS is not set
-CONFIG_MINIX_FS=y
-# CONFIG_VXFS_FS is not set
-# CONFIG_NTFS_FS is not set
-# CONFIG_NTFS_RW is not set
-# CONFIG_HPFS_FS is not set
-CONFIG_PROC_FS=y
-CONFIG_DEVFS_FS=y
-CONFIG_DEVFS_MOUNT=y
-# CONFIG_DEVFS_DEBUG is not set
-CONFIG_DEVPTS_FS=y
-# CONFIG_QNX4FS_FS is not set
-# CONFIG_QNX4FS_RW is not set
-# CONFIG_ROMFS_FS is not set
-CONFIG_EXT2_FS=y
-# CONFIG_SYSV_FS is not set
-# CONFIG_UDF_FS is not set
-# CONFIG_UDF_RW is not set
-# CONFIG_UFS_FS is not set
-# CONFIG_UFS_FS_WRITE is not set
-# CONFIG_XFS_FS is not set
-# CONFIG_XFS_QUOTA is not set
-# CONFIG_XFS_RT is not set
-# CONFIG_XFS_TRACE is not set
-# CONFIG_XFS_DEBUG is not set
-
-#
-# Network File Systems
-#
-# CONFIG_CODA_FS is not set
-# CONFIG_INTERMEZZO_FS is not set
-# CONFIG_NFS_FS is not set
-# CONFIG_NFS_V3 is not set
-# CONFIG_NFS_DIRECTIO is not set
-# CONFIG_ROOT_NFS is not set
-# CONFIG_NFSD is not set
-# CONFIG_NFSD_V3 is not set
-# CONFIG_NFSD_TCP is not set
-# CONFIG_SUNRPC is not set
-# CONFIG_LOCKD is not set
-# CONFIG_SMB_FS is not set
-# CONFIG_NCP_FS is not set
-# CONFIG_NCPFS_PACKET_SIGNING is not set
-# CONFIG_NCPFS_IOCTL_LOCKING is not set
-# CONFIG_NCPFS_STRONG is not set
-# CONFIG_NCPFS_NFS_NS is not set
-# CONFIG_NCPFS_OS2_NS is not set
-# CONFIG_NCPFS_SMALLDOS is not set
-# CONFIG_NCPFS_NLS is not set
-# CONFIG_NCPFS_EXTRAS is not set
-# CONFIG_ZISOFS_FS is not set
-
-#
-# Partition Types
-#
-# CONFIG_PARTITION_ADVANCED is not set
-CONFIG_MSDOS_PARTITION=y
-# CONFIG_SMB_NLS is not set
-CONFIG_NLS=y
-
-#
-# Native Language Support
-#
-CONFIG_NLS_DEFAULT="iso8859-1"
-# CONFIG_NLS_CODEPAGE_437 is not set
-# CONFIG_NLS_CODEPAGE_737 is not set
-# CONFIG_NLS_CODEPAGE_775 is not set
-# CONFIG_NLS_CODEPAGE_850 is not set
-# CONFIG_NLS_CODEPAGE_852 is not set
-# CONFIG_NLS_CODEPAGE_855 is not set
-# CONFIG_NLS_CODEPAGE_857 is not set
-# CONFIG_NLS_CODEPAGE_860 is not set
-# CONFIG_NLS_CODEPAGE_861 is not set
-# CONFIG_NLS_CODEPAGE_862 is not set
-# CONFIG_NLS_CODEPAGE_863 is not set
-# CONFIG_NLS_CODEPAGE_864 is not set
-# CONFIG_NLS_CODEPAGE_865 is not set
-# CONFIG_NLS_CODEPAGE_866 is not set
-# CONFIG_NLS_CODEPAGE_869 is not set
-# CONFIG_NLS_CODEPAGE_936 is not set
-# CONFIG_NLS_CODEPAGE_950 is not set
-# CONFIG_NLS_CODEPAGE_932 is not set
-# CONFIG_NLS_CODEPAGE_949 is not set
-# CONFIG_NLS_CODEPAGE_874 is not set
-# CONFIG_NLS_ISO8859_8 is not set
-# CONFIG_NLS_CODEPAGE_1250 is not set
-# CONFIG_NLS_CODEPAGE_1251 is not set
-# CONFIG_NLS_ISO8859_1 is not set
-# CONFIG_NLS_ISO8859_2 is not set
-# CONFIG_NLS_ISO8859_3 is not set
-# CONFIG_NLS_ISO8859_4 is not set
-# CONFIG_NLS_ISO8859_5 is not set
-# CONFIG_NLS_ISO8859_6 is not set
-# CONFIG_NLS_ISO8859_7 is not set
-# CONFIG_NLS_ISO8859_9 is not set
-# CONFIG_NLS_ISO8859_13 is not set
-# CONFIG_NLS_ISO8859_14 is not set
-# CONFIG_NLS_ISO8859_15 is not set
-# CONFIG_NLS_KOI8_R is not set
-# CONFIG_NLS_KOI8_U is not set
-# CONFIG_NLS_UTF8 is not set
-
-#
-# SCSI support
-#
-CONFIG_SCSI=y
-# CONFIG_BLK_DEV_SD is not set
-# CONFIG_CHR_DEV_ST is not set
-# CONFIG_BLK_DEV_SR is not set
-# CONFIG_CHR_DEV_SG is not set
-# CONFIG_SCSI_DEBUG_QUEUES is not set
-# CONFIG_SCSI_MULTI_LUN is not set
-# CONFIG_SCSI_CONSTANTS is not set
-# CONFIG_SCSI_LOGGING is not set
-CONFIG_SCSI_DEBUG=y
-
-#
-# Multi-device support (RAID and LVM)
-#
-# CONFIG_MD is not set
-# CONFIG_BLK_DEV_MD is not set
-# CONFIG_MD_LINEAR is not set
-# CONFIG_MD_RAID0 is not set
-# CONFIG_MD_RAID1 is not set
-# CONFIG_MD_RAID5 is not set
-# CONFIG_MD_MULTIPATH is not set
-# CONFIG_BLK_DEV_LVM is not set
-
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=y
-# CONFIG_MTD_DEBUG is not set
-# CONFIG_MTD_PARTITIONS is not set
-# CONFIG_MTD_CONCAT is not set
-# CONFIG_MTD_REDBOOT_PARTS is not set
-# CONFIG_MTD_CMDLINE_PARTS is not set
-CONFIG_MTD_CHAR=y
-CONFIG_MTD_BLOCK=y
-# CONFIG_FTL is not set
-# CONFIG_NFTL is not set
-
-#
-# RAM/ROM/Flash chip drivers
-#
-# CONFIG_MTD_CFI is not set
-# CONFIG_MTD_JEDECPROBE is not set
-# CONFIG_MTD_GEN_PROBE is not set
-# CONFIG_MTD_CFI_INTELEXT is not set
-# CONFIG_MTD_CFI_AMDSTD is not set
-# CONFIG_MTD_CFI_STAA is not set
-# CONFIG_MTD_RAM is not set
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
-# CONFIG_MTD_OBSOLETE_CHIPS is not set
-# CONFIG_MTD_AMDSTD is not set
-# CONFIG_MTD_SHARP is not set
-# CONFIG_MTD_JEDEC is not set
-
-#
-# Mapping drivers for chip access
-#
-# CONFIG_MTD_PHYSMAP is not set
-# CONFIG_MTD_PCI is not set
-# CONFIG_MTD_PCMCIA is not set
-
-#
-# Self-contained MTD device drivers
-#
-# CONFIG_MTD_PMC551 is not set
-# CONFIG_MTD_SLRAM is not set
-# CONFIG_MTD_MTDRAM is not set
-CONFIG_MTD_BLKMTD=y
-# CONFIG_MTD_DOC1000 is not set
-# CONFIG_MTD_DOC2000 is not set
-# CONFIG_MTD_DOC2001 is not set
-# CONFIG_MTD_DOCPROBE is not set
-
-#
-# NAND Flash Device Drivers
-#
-# CONFIG_MTD_NAND is not set
-
-#
-# Library routines
-#
-# CONFIG_CRC32 is not set
-CONFIG_ZLIB_INFLATE=y
-CONFIG_ZLIB_DEFLATE=y
-
-#
-# Cryptographic options
-#
-# CONFIG_CRYPTO is not set
-
-#
-# Kernel hacking
-#
-CONFIG_DEBUG_SLAB=y
-CONFIG_DEBUGSYM=y
-CONFIG_PT_PROXY=y
-# CONFIG_GCOV is not set
+--=-=-=--
 
 
 
