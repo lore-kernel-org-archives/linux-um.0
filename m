@@ -1,17 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Michael Halcrow <uml@halcrow.us>
-Message-ID: <20050125224650.GA6136@halcrow.us>
-Reply-To: Michael Halcrow <uml@halcrow.us>
-References: <20041118160909.GA7630@halcrow.us>
-	<200411181839.26596.blaisorblade_spam@yahoo.it>
-	<20050125215416.GA2912@halcrow.us>
-	<200501252337.58219.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CtZXX-0003Lb-Gq for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 14:52:03 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CtZXV-0008AQ-Ln for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Jan 2005 14:52:03 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200501252337.58219.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] keyring syscalls
+Message-Id: <200501252351.15875.blaisorblade@yahoo.it>
+Subject: [uml-devel] 2.6.9-bs6 released
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,54 +27,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Jan 2005 16:46:51 -0600
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Michael Halcrow <uml@halcrow.us>, Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Tue, 25 Jan 2005 23:51:15 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
+Ok, this is a little but important upgrade on top of 2.6.9-bb4. I hope I can 
+soon release a patch for 2.6.10, but these days I've got to pass some exams 
+at University. I hope I can work on this nonetheless.
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes from -bb4 to -bs5:
+* restored the MAGIC_SYSRQ config option lost in 2.6.9 vanilla.
+* fixed a problem of which probably Paul Warren suffered... UML stopped early 
+at boot on a few system... what Bodo Stroesser fixed was a problem when using 
+the 2.6 host headers and running on 2.4
 
-On Tue, Jan 25, 2005 at 11:37:57PM +0100, Blaisorblade wrote:
-> On Tuesday 25 January 2005 22:54, Michael Halcrow wrote:
-> > On Thu, Nov 18, 2004 at 06:39:26PM +0100, Blaisorblade wrote:
-> Well, it should be fixed in the -mm tree (and probably in 2.6.11-rc2-bk2,=
- I=20
-> guess, though it's not tested)... browse the patches at=20
-> http://user-mode-linux.sourceforge.net/patches.html.
+Changes from -bs5 to -bs6:
+* Added the two fixes posted by Jeff Dike about the Christopher Aker 
+problems... the patches are "uml-fix-stack-corruption.patch" (from the ML) 
+and "uml-no-defer.patch" (from Jeff Dike's tree).
 
-I did notice that and tried to build it, but I had build errors.
-Specifically, the compiler complains that the PTRACE_SETOPTIONS symbol
-is undeclared in arch/um/kernel/process.c.  If I include
-linux/ptrace.h and try again, then the new syscalls (vperfctr_*) are
-undeclared in arch/um/kernel/sys_call_table.c.  I just gave up at that
-point; I'll wait for the official 2.6.11 release.  In the meantime,
-I'll see if I can't backport the changes in the 2.6.11-rc2 patch to
-2.6.10.
+For the second one we are not yet sure it is the best possible fix ever, but 
+it should work well.
 
-Thanks,
-Mike
-=2E___________________________________________________________________.
-                         Michael A. Halcrow                         =20
-       Security Software Engineer, IBM Linux Technology Center      =20
-GnuPG Fingerprint: 05B5 08A8 713A 64C1 D35D  2371 2D3C FDDA 3EB6 601D
+In case you have problems, try unapplying it and report the result in both 
+situations, together with your .config and host / guest datas, command line, 
+output and so on.
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFB9sxaLTz92j62YB0RAuAOAJ45/VdW/cf7LbTWxubpIIKVX3JWkwCfRjkG
-ZxcEjj7M587AeRM46GeVJkk=
-=oJpe
------END PGP SIGNATURE-----
-
---a8Wt8u1KmwUX3Y2C--
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
