@@ -2,24 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9ah7-0000Qs-Vq for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Mar 2005 19:20:09 -0800
+	id 1D9bQg-0002hS-SB for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Mar 2005 20:07:14 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D9ah6-00033G-DC
+	(Exim 4.41) id 1D9bQg-0006IO-Ar
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Mar 2005 19:20:09 -0800
+	Thu, 10 Mar 2005 20:07:14 -0800
 From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] [PATCH 3/9] UML - "Hardware" random number generator
-References: <200503100215.j2A2FuDN015227@ccure.user-mode-linux.org>
-In-Reply-To: <200503100215.j2A2FuDN015227@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: Fw: [patch] uml: terminal cleanup
+References: <20041128010910.1b5478c7.akpm@osdl.org>
+	<200503091938.46936.blaisorblade@yahoo.it>
+	<20050310081340.GC17880@bytesex>
+In-Reply-To: <20050310081340.GC17880@bytesex>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503101341.37346.rob@landley.net>
+Message-Id: <200503102204.08432.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,35 +33,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Mar 2005 13:41:37 -0500
+Date: Thu, 10 Mar 2005 22:04:08 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
+Cc: Gerd Knorr <kraxel@bytesex.org>, Blaisorblade <blaisorblade@yahoo.it>
 
-On Wednesday 09 March 2005 09:15 pm, Jeff Dike wrote:
-> This implements a hardware random number generator for UML which attaches
-> itself to the host's /dev/random.
+On Thursday 10 March 2005 03:13 am, Gerd Knorr wrote:
 
-Direct use of /dev/random always makes me nervous.  I've had a recurring 
-problem with /dev/random blocking, and generally configure as much as 
-possible to use /dev/urandom instead.  It's really easy for a normal user to 
-drain the /dev/random entropy pool on a server (at least one that doesn't 
-have a sound card you can tell it to read white noise from).  cat /dev/random 
-> /dev/null
+> Ouch.  I've never seen that myself though, works perfectly fine for me.
+> Could be somehow related to the scrambled compiler logs reported a few
+> weeks ago, maybe the tty/line buffer handling is broken ...
 
-I like /dev/urandom because it'll feed you as much entropy as it's got, but 
-won't block, and will presumably round-robin insert real entropy in the 
-streams that multiple users get from /dev/urandom.  (I realize this may not 
-be the best place to get gpg keys from.)
+I've done some more debugging on that, and I can reproduce it at will on any 
+machine now.  The problem is that if the process that is on the other end of 
+UML's output pipe gets stopped (like the Xterm consuming the UML output), its 
+retry logic is borked.
 
-I'm just thinking about those UML hosting farms, with several UML instances 
-per machine, on machines which haven't got a keyboard attached constantly 
-feeding entropy into the pool.  If just ONE of them is serving ssl 
-connections from its own /dev/urandom, that would drain the /dev/random 
-entropy pool on the host machine almost immediately...
+I have a more detailed analysis with debug info on another machine (I'll try 
+to dig that up later tonight), but really briefly, find out the PID of the 
+xterm you're running in, I.E. the parent process of the shell you're going to 
+run it under ("ps" followed by "ps l" should do it).  Then set up a dumb 
+little script ala
 
-Admittedly if UML used /dev/urandom instead of /dev/random, it wouldn't know 
-how much "real" randomness it was getting and how much synthetic randomness, 
-but this makes predicting the numbers it's producing easier how?
+while /bin/true
+do
+	kill -STOP $PID
+	sleep 1
+	kill -CONT $PID
+	sleep 1
+done
+
+And now run UML and do and extract a tarball under it or something, and watch 
+the output go bananas.
+
+The requeue logic handling -EAGAIN requeues the data that's already on the 
+buffer, not the new data that should go ON the buffer.  That's why the 
+stuttering.  (What happens when the 4k buffer fills up is anybody's guess.  I 
+think data just gets dropped.)
 
 Rob
 
