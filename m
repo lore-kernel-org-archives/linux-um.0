@@ -1,8 +1,8 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Nicholas Nethercote <njn25@cam.ac.uk>
-Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind 
-In-Reply-To: <200408042102.i74L2Pvv008609@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.60.0408051026120.21344@hermes-1.csi.cam.ac.uk>
+Message-ID: <411232F4.5030007@enterasys.com>
+From: "D. Bahi" <dbahi@enterasys.com>
+MIME-Version: 1.0
+Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind
 References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<410EFCDB.8080404@enterasys.com>
 	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
@@ -18,8 +18,11 @@ References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<200408041800.i74I0Nvv007667@ccure.user-mode-linux.org>
 	<2b464bd94c.work@loxley.compton.nu>
 	<200408042102.i74L2Pvv008609@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	<Pine.LNX.4.60.0408051026120.21344@hermes-1.csi.cam.ac.uk>
+In-Reply-To: <Pine.LNX.4.60.0408051026120.21344@hermes-1.csi.cam.ac.uk>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig334BC408615A16DBCEA2CF3A"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,22 +34,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 5 Aug 2004 10:28:00 +0100 (BST)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Tom Hughes <thh@cyberscience.com>, dbahi@enterasys.com, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
+Date: Thu, 05 Aug 2004 09:15:32 -0400
+To: Nicholas Nethercote <njn25@cam.ac.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, Tom Hughes <thh@cyberscience.com>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
-On Wed, 4 Aug 2004, Jeff Dike wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig334BC408615A16DBCEA2CF3A
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> It feels to me more like the valgrind thread runs a system call with no
-> perceptible effect, and there's this new thread all of a sudden which runs
-> happily in this address space because it can't tell that valgrind is there.
+ok, great.
 
-To summarise:  you seem to be confident there won't be any problems, and 
-Tom's not so sure.  I'm not sure either, but the threads/signals/syscalls 
-stuff is the part of Valgrind I understand the least.  I would say, just 
-don't be shocked if you do this and weird things start happening :)
+now where do i put this snippet - because it doesn't
+belong in the file mentioned in the earliest post...
+(or if it does - i don't see how). is there someone
+willing to 'modernize' this patch for the clueless
+user (me ;)
 
-N
+thanks very much.
+
+Nicholas Nethercote wrote:
+
+> On Wed, 4 Aug 2004, Jeff Dike wrote:
+> 
+>> It feels to me more like the valgrind thread runs a system call with no
+>> perceptible effect, and there's this new thread all of a sudden which 
+>> runs
+>> happily in this address space because it can't tell that valgrind is 
+>> there.
+> 
+> 
+> To summarise:  you seem to be confident there won't be any problems, and 
+> Tom's not so sure.  I'm not sure either, but the 
+> threads/signals/syscalls stuff is the part of Valgrind I understand the 
+> least.  I would say, just don't be shocked if you do this and weird 
+> things start happening :)
+> 
+> N
+
+
+--------------enig334BC408615A16DBCEA2CF3A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (MingW32)
+
+iD8DBQFBEjL03XQ4zakZ3z4RAuzBAJoC4lLZBTpxXO5uFg9OfOsusaFMNgCfYI9N
+YYxa6oIvDM+u06EA0GbQj+A=
+=t5gG
+-----END PGP SIGNATURE-----
+
+--------------enig334BC408615A16DBCEA2CF3A--
 
 
 -------------------------------------------------------
