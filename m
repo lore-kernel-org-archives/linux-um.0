@@ -2,25 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CHAV2-0003lS-QO for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:26:44 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1CHAii-0006fh-IR for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:40:52 -0700
+Received: from p15103123.pureserver.info ([217.160.129.185] helo=sektor37.de)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CHAV1-0000PL-Jd for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:26:44 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] SOLVED: uml "ip header error" for large (fragmented)
-	udp packets
-References: </ydgn6vAKqzNNA6XYwRcEgI=lge@web.de>
-	<j7l8RdbM+9uLzg0PWMggkBg=lge@web.de>
-	<xneXIovOv53ZtptO+AU2uyI=lge@web.de>
-In-Reply-To: <xneXIovOv53ZtptO+AU2uyI=lge@web.de>
+	id 1CHAig-0002xX-HO for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:40:52 -0700
+Message-ID: <416B281C.3090201@sektor37.de>
+From: Julian Scheid <julian@sektor37.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: Re: [uml-devel] Default kernel configuration on 2.6.x
+References: <416B07AC.3030308@sektor37.de>
+	<200410120146.06254.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200410120146.06254.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <200410120227.00849.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,67 +28,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Oct 2004 02:27:00 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Lars Ellenberg <Lars.Ellenberg@linbit.com>
+Date: Tue, 12 Oct 2004 02:41:00 +0200
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
-On Tuesday 12 October 2004 02:03, Lars Ellenberg wrote:
-> / 2004-10-11 19:55:12 +0200
->
-> \ Lars Ellenberg:
-> > since UML => Host does not work, but
-> > Host => UML does, this suggests that
-> > the bug is somewhere on the sending side.
-> >
-> > I was not able to track it down.
->
-> just so you know, finally:
+BlaisorBlade wrote:
+> On Tuesday 12 October 2004 00:22, Julian Scheid wrote:
+> 
+> 
+>>This is especially fatal because without a virtual character device
+>>driver, stdio initialization will fail silently or with an unhelpful
+>>error message ("sleeping process got unexpected signal 11"), leaving
+>>unsuspecting users like me completely puzzled.
+> 
+> I.e. that error comes from this?????? Thanks a lot for this solution, but 
+> could you explain which is exactly the wrong CONFIG_ option set for this to 
+> happen?
 
-> =======================
-> --- linux-2.6.6/arch/um/include/sysdep-i386/checksum.h.orig	2004-10-12
-> 01:50:49.000000000 +0200 +++
-> linux-2.6.6/arch/um/include/sysdep-i386/checksum.h	2004-10-12
-> 01:50:58.000000000 +0200 @@ -102,8 +102,7 @@
->  	   are modified, we must also specify them as outputs, or gcc
->  	   will assume they contain their original values. */
->
->  	: "=r" (sum), "=r" (iph), "=r" (ihl)
->
-> -	: "1" (iph), "2" (ihl)
-> -	: "memory");
-> +	: "1" (iph), "2" (ihl));
->  	return(sum);
->  }
-The patch you posted REMOVES a memory barrier - you reversed it. I actually 
-checked the barrier is missing in the source code; but the strange thing is 
-that you modified checksum.h.orig and not checksum.h! Are you sure that you 
-compiled the corrected header? However, the patch is correct, and I assume 
-you posted it the right way. I'm going to send it to Andrew Morton for 2.6.9 
-(hoping he wants to accept all these patches - they are rushing for 2.6.9).
+No, not exactly, but I believe it's the file descriptor channel support.
 
-> that's all, folks. only a missing memory barrier.
-Thanks a lot, folks! Yes, the patch is right.
-> WTF :-/
->
-> same patch applies to 2.6.8.1 - uml and probably all other umls.
-> since that is a one-to-one copy anyways, maybe UML should better use the
-> original (in include/asm-i386/checksum.h) right away??
-I could do this later - too much checks for the other header code for a 
-one-minute patch.
-> there may be similar bugs hiding in various areas of uml...
-I think there are even worse ones.
-> btw,
-> anyone wants to give me a hint how to tune it best?
-> maybe how to up the mtu of the UML "nics"?
-Impossible with the current code - it emulates an ethernet card, so I don't 
-think you can do anything for this. However I hope it does not cause too much 
-problems. Search for the network howtos: someone explained how to set the 
-interface packet scheduler (maybe even Jeff Dike on the main UML site).
+Long answer: when I encountered this problem ("signal 11") and realized 
+that my kernel config could be missing something I found that without 
+exception, all UML-specific options were disabled (for the reasons 
+mentioned).
 
-Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+I proceeded to enable most of them (except the watchdog and some virtual 
+network drivers which sounded arcane) and the problem went away.
+
+So I don't know exactly which option was necessary to get around the 
+SEGV, but since it always happened around the stdio initialization and I 
+was using "con=pty con0=fd:0,fd:1" I would say the culprit was the 
+missing file descriptor channel support and/or pty channel support.
+
+If you can't reproduce it like this, let me know and I will try to nail 
+it down.
+
+> [Please always avoid sending that kind of patches; you **MUST ALWAYS** use 
+> unified diffs, i.e. diff -u; the preferred setting is -puNr].
+
+I noticed that too just a minute ago, very newbie-ish. Pardon, I'm not 
+submitting patches too often, I'll take more care next time.
+
+But hey, that's no reason to shout at me, I'm just trying to be helpful ;)
+
+> About this, see the other responses - this must be done in mainline whenever 
+> we are cross-compiling.
+
+Agree 100% with Michael and you, this is the right solution. I was 
+focused on UML but in fact it's a larger issue.
+
+Cheers,
+
+Julian
 
 
 -------------------------------------------------------
