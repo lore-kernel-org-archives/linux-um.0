@@ -2,26 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQZjI-0005Wg-Ju for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2004 15:40:04 -0700
-Received: from adsl-b3-72-34.telepac.pt ([213.13.72.34]
-	helo=puma-vgertech.no-ip.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQZjI-0007rj-2M for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2004 15:40:04 -0700
-Message-ID: <40ABE244.3040408@vgertech.com>
-From: Nuno Silva <nuno.silva@vgertech.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
-References: <20040229043549.GA8583@ccure.user-mode-linux.org>	
-	<02dc01c43c4a$bb7c0490$2000000a@schlepptopp>	
-	<1084831251.1230.4.camel@chartreuse>	
-	<03ff01c43c5d$7db6e5e0$2000000a@schlepptopp>	
+	id 1BQaB9-0003d8-35 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 May 2004 16:08:51 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BQaB8-00054v-Kn
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 May 2004 16:08:50 -0700
+Message-Id: <200405192354.i4JNsJDt001917@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] host context switch reduction 
+In-Reply-To: Your message of "Wed, 19 May 2004 20:17:43 +0200."
+	<1084990661.2255.28.camel@chartreuse> 
+References: <20040229043549.GA8583@ccure.user-mode-linux.org>
+	<02dc01c43c4a$bb7c0490$2000000a@schlepptopp>
+	<1084831251.1230.4.camel@chartreuse>
+	<03ff01c43c5d$7db6e5e0$2000000a@schlepptopp>
 	<20040518175904.GB29114@ccure.user-mode-linux.org>
 	<1084987654.2250.4.camel@chartreuse>
-In-Reply-To: <1084987654.2250.4.camel@chartreuse>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	<012201c43dcb$402ca6a0$2000000a@schlepptopp>
+	<1084990661.2255.28.camel@chartreuse> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,69 +35,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 May 2004 23:40:04 +0100
+Date: Wed, 19 May 2004 19:54:19 -0400
+Content-Transfer-Encoding: quoted-printable
 To: Laurent Vivier <LaurentVivier@wanadoo.fr>
-Cc: Jeff Dike <jdike@addtoit.com>, roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net
+Cc: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+LaurentVivier@wanadoo.fr said:
+> Le mer 19/05/2004 =C3=A0 20:01, roland a =C3=A9crit :
+> > since this would be the 2nd patch for the HOST (besides skas), would
+> > it make sense, to merge "skas" and "sysemu" into one common
+> > HOST-patch (if it has been tested and approved stable) ?
+>
+> YES, I think... but Jeff is the boss ;-)=20
 
-Laurent Vivier wrote:
+Sometimes I wish I were less the boss.  There is absolutely nothing=20
+preventing anyone from repackaging, porting, etc patches, and I wish people
+were doing more of it.
 
-[..]
+That would make UML more useful for more people on more systems, and would
+lessen my workload some.
 
-| netserver:/usr/src# uname -a
-| Linux netserver 2.4.24-sysemu #4 SMP Tue Feb 17 16:43:11 CET 2004 i686
-GNU/Linux
-|
-| netserver:/usr/src# time ./getpid 1000000
-|
-| real    0m1.763s
-| user    0m0.910s
-
-Just want to comment on this.
-
-Benchmarks of syscall performance on systems with TLS and recent glibc
-should not use getpid()... I don't know why, but on my system getpid
-alone is *very* fast.
-
-(This is wrt the host. UML doesn't do TLS yet)
-
-To benchmark simple syscalls you may get "real" (in the sense that you
-can compare the result values to UML/host systems) values with something
-like this:
-
-int main()
-{
-~ long counter=0;
-~ int a;
-~ while( counter < 10000000)
-~ {
-~  counter++;
-~  a=getppid();
-~  a=getgid();
-~ }
-}
-
-Regards,
-Nuno Silva
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFAq+JEOPig54MP17wRAvYlAJ9GlJTvsXpf3iuSN/dNtCak9bp09ACgiUnv
-N6ZJgS48H7OsQ3yjVhSh9qw=
-=GBzz
------END PGP SIGNATURE-----
+				Jeff
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: Oracle 10g
-Get certified on the hottest thing ever to hit the market... Oracle 10g. 
+Get certified on the hottest thing ever to hit the market... Oracle 10g.=20
 Take an Oracle 10g class now, and we'll give you the exam FREE.
-http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
+http://ads.osdn.com/?ad_id149&alloc_id=8166&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
