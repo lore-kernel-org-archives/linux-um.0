@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CbgDY-0006WE-Sq for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 06:21:28 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CbgDX-0006kY-RL for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 06:21:28 -0800
-Message-ID: <41B5BC5F.20001@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Patchset to implement PTRACE_SYSEMU_SINGLESTEP
-References: <419517A4.7020700@fujitsu-siemens.com>
-	<200412062133.05798.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200412062133.05798.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1CbgpD-0001MF-2p for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 07:00:23 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CbgpB-0001H3-2t
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 07:00:23 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Message-ID: <20041207143643.GA23597@bytesex>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [uml-devel] [patch] uml: symbol export
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,71 +26,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Dec 2004 15:21:19 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Tue, 7 Dec 2004 15:36:43 +0100
+To: Andrew Morton <akpm@osdl.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, uml devel <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade_spam@yahoo.it>
 
-Blaisorblade wrote:
-> On Friday 12 November 2004 21:05, Bodo Stroesser wrote:
-> 
->>Attached are several patches. Four of them (patch-2.6.*-skas-v7-*)
->>implement PTRACE_SYSEMU_SINGLESTEP in the host. They are based on
->>linux-2.6.7-vanilla + host-skas3-2.6.7-v7.patch (resp. the 2.6.9 versions).
->>The "-reorganize" patches are a rework of the current patch without
->>changing the functionality. The "add-SYSEMU_SINGLESTEP" then implement the
->>new features. Please note: the differences between 2.6.7 and 2.6.9 are
->>dependent on the different handling of syscall singlestepping in the two
->>versions.
-> 
-> 
->>To have UML using the new feature, there are two further patches named
->>patch-SYSEMU_SINGLESTEP-*. They are based on linux-2.6.9-vanilla +
->>all bb2-patches + patch-sysemu-tt + patch-fix-uml-hang-on-2.6.9-host.
->>To have all the patches complete, the latter two are attached also.
-> 
-> 
->>I tested on host 2.6.7 and host 2.6.9 with SKAS and TT mode. Currently I
->>don't know any problem with it.
-> 
-> I have a problem... in recent host kernels, isn't SINGLESTEP also trapping for 
-> syscall instructions?
-Yes. IIRC, this feature was included with i386 2.6.9. I'm sure 2.6.7 doesn't
-have it, 2.6.9 has.
-The difference between the host versions are the reason for the different
-reorganize- and add- patches for 2.6.7 and 2.6.9.
-But, please, tell me, what problem do you see? SYSEMU_SINGLESTEP is a new
-function, that does SYSCALL_TRACE on syscalls and SINGLESTEP on all other
-instructions. The function is added without changing the previous functions.
-If available, the UML-kernel my use the new function, but users on UML
-shouldn't see any changed behavior.
-By the way: they also don't see the differences between host 2.6.7 and 2.6.9
-regarding syscall-singlestepping.
+export a missing symbol, IIRC xfs needs that one.
 
-> 
-> Also, you say that SINGLESTEP_SYSEMU does automatic syscall overwriting with 
-> -1 or emulates that - I suspect it being in the reorganize patches, but you 
-> don't mention it in the changelogs here, only about the UML patches.
-No. The overwrite is in the "add-" patches. The "reorganize-" patches are
-intended to *only* reorganize SKAS3-V7 without changing any little bit of
-its behavior. Everything else I would call an error.
-But it would be easy to split the "add-" patches into an "overwrite-" and
-an remaining "add-" patch.
-I only wanted to make clear, that UML must not rely on overwriting done by
-the host, unless it can detect the host to have a skas-sysemu-patch with
-overwriting enabled. My idea was to take availability of SYSEMU_SINGLESTEP
-as flag, that the host *will* do overwriting.
+Signed-off-by: Gerd Knorr <kraxel@bytesex.org>
+---
+ arch/um/kernel/um_arch.c |    1 +
+ 1 files changed, 1 insertion(+)
 
-> 
-> So, I'd personally accept only the -reorganize ones and hold on the rest - 
-> which is probably achieved with mainline SINGLESTEP fixes in 2.6.9 (or which 
-> could be discussed).
-> 
-> Sorry for being so late (I'd say "Call me a lamer" :-) ) in discussing this, 
-> but I hadn't the time to study patches and realize this.
-> 
->>Bodo
-> 
-> 
+Index: uml-2.6.9-rc2/arch/um/kernel/um_arch.c
+===================================================================
+--- uml-2.6.9-rc2.orig/arch/um/kernel/um_arch.c	2004-09-16 16:34:51.777620148 +0200
++++ uml-2.6.9-rc2/arch/um/kernel/um_arch.c	2004-09-16 16:44:39.249193721 +0200
+@@ -301,6 +301,7 @@ static void __init uml_postsetup(void)
+ /* Set during early boot */
+ unsigned long brk_start;
+ unsigned long end_iomem;
++EXPORT_SYMBOL(end_iomem);
+ 
+ #define MIN_VMALLOC (32 * 1024 * 1024)
+ 
+
+-- 
+#define printk(args...) fprintf(stderr, ## args)
 
 
 -------------------------------------------------------
