@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CNJpS-0006Sv-Ap for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 16:37:14 -0700
-Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CNJpP-000524-Ka for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Oct 2004 16:37:14 -0700
-Message-ID: <41818295.5000209@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1CNJuF-0007Z7-4i for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 16:42:11 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CNJuB-0006nI-3U for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Oct 2004 16:42:11 -0700
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Re: [patch 7/7] uml: resolve symbols in back-traces
+References: <200410272223.i9RMNj921852@mail.osdl.org>
+	<20041028192824.GC851@taniwha.stupidest.org>
+	<200410282132.i9SLWhA3004709@ccure.user-mode-linux.org>
+In-Reply-To: <200410282132.i9SLWhA3004709@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: [patch 1/1] SYSEMU: avoid intercepting syscall
-	on return when using SYSCALL again.
-References: <20041021231834.9D3833F37@zion.localdomain>
-	<41793409.70001@fujitsu-siemens.com>
-	<417FAEFD.8070805@fujitsu-siemens.com>
-	<200410290104.22725.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200410290104.22725.blaisorblade_spam@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200410290142.57081.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,61 +31,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 29 Oct 2004 01:36:53 +0200
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
+Date: Fri, 29 Oct 2004 01:42:56 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Chris Wedgwood <cw@f00f.org>, akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>
 
-Blaisorblade wrote:
-> On Wednesday 27 October 2004 16:21, Bodo Stroesser wrote:
-> 
->>Bodo Stroesser wrote:
->>
->>>BlaisorBlade wrote:
->>>
->>>>Yes - I forgot it. Does the revised version work? My version did not -
->>>>it failed the startup test. In fact, PTRACE_CONT is called in the
->>>>startup test (which fails). I'm recompiling and testing.
-> 
-> 
->>>Yes. My system works very fine with it.
-> No, simply UML should use PTRACE_KILL rather than sending SIGKILL itself. It 
-> always just *happened* to work.
-But why can't the host's filesystem be unmounted ("Is in use"), even if
-the UML-Processes were killed?
-
-> 
-> I was just about to release -v7 - I'll hold on it a bit more to include your 
-> fix. Then I'll do releases for 2.6.7 and 2.6.9.
-Year. But in November we hhave to talk again! Sysemu is still dangerous.
-If SKAS will support SMP, no one can guarantee, that the code of a UML-process
-isn't modified between "is_syscall()" and ptrace(PTRACE_SINGLESTEP, ...).
-What we really need is an option for PTRACE_SYSEMU, that lets it stop
-for Singlestep AND syscall-trace. Example:
-	ptrace( PTRACE_SYSEMU, pid, (void *)PTRACE_SINGLESTEP, 0)
-Then no more opcode-reading / checking will be needed.
-> 
-> I have idea we need something more robust, i.e. a return path avoiding 
-> altogether the 2nd do_syscall_trace call, like it happened in 2.4.
-Think, the current solution is robust. But let me know, if you find a
-way to knock it out.
-> 
-> Now, My Mighty Bodo, after cleaning up the issues about collecting your 
-> patches, could you try to understand also why strace does not work with 
-> SYSEMU on? Even switching SYSEMU off through /proc/sysemu avoids that. It 
-> seems to be a guest-only problem, since the UML debugger code seems totally 
-> unrelated to the syscall interception on the host.
-> 
-> Also, something strange is that when not enabling network support, strace 
-> printed out some network syscalls, with bogus return values, even with SYSEMU 
-> active.
-Do you talk about strace'ing the kernel?
-Or do you talk about the debugger problem, Lorenzo has?
-
-For his problem, I have an idea: writing my tests for Jeff, I saw SIGCHLD being
-masked by default! No SIGCHLD, no debugging ?!
-
-Regards
-Bodo
+On Thursday 28 October 2004 23:32, Jeff Dike wrote:
+> cw@f00f.org said:
+> > the emacs comments are gratuitous and completely pointless, they serve
+> > no useful purpose.  fwiw in my .emacs i have:
+>
+> Yeah, that's why I acked that particular change.
+>
+> They're not completely pointless, they just cater to an individual's
+> development environment, and that sort of stuff should be in the
+> environment, and not the code.
+>
+>     Jeff
+Ok. In fact I already agreed, and I was a bit unconfortable with that. However 
+I'm working on other stuff, so I never worried about that, while seeing you 
+adding such comments lately. I'm also concerned about not stepping on other 
+people toes.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
