@@ -1,26 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CNWUv-0008Ix-BM for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Oct 2004 06:08:53 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CNWUt-0005YH-TD for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Oct 2004 06:08:53 -0700
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 1/1] SYSEMU: avoid intercepting syscall on
-	return when using SYSCALL again.
-References: <20041021231834.9D3833F37@zion.localdomain>
-	<41819A8A.20403@fujitsu-siemens.com>
-	<20041029075124.GA14311@bytesex>
-In-Reply-To: <20041029075124.GA14311@bytesex>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	id 1CNXPP-0006VP-6j for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Oct 2004 07:07:15 -0700
+Received: from main.gmane.org ([80.91.229.2])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CNXPK-0007iR-0c for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Oct 2004 07:07:15 -0700
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1CNXPF-0002yZ-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 29 Oct 2004 16:07:05 +0200
+Received: from roam245-197.fas.harvard.edu ([140.247.245.197])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 29 Oct 2004 16:07:05 +0200
+Received: from lars by roam245-197.fas.harvard.edu with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 29 Oct 2004 16:07:05 +0200
+From: Lars Kellogg-Stedman <lars@oddbit.com>
+Message-ID: <lars-CA00F4.10070129102004@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200410291509.57662.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Unexported symbol in 2.6.9?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,54 +38,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 29 Oct 2004 15:09:57 +0200
+Date: Fri, 29 Oct 2004 10:07:01 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Gerd Knorr <kraxel@bytesex.org>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, jdike@addtoit.com
 
-On Friday 29 October 2004 09:51, Gerd Knorr wrote:
-> > Here's the patch:
->
-> Hmm, your mailer seems to mangle whitespaces, I often can apply your
-> patches mailed inline with "patch -l" only (the mime attached ones are
-> fine).
->
-> Two small fixes I need in the big stack of patches i have now to
-> build kernels successfully.  The first is a simple missing include:
+I just built a 2.6.9 UML kernel, and ended up with an error in the NTFS 
+filesystem module.  The symbol "end_iomem" was undefined.  This appears 
+to be defined in arch/um/um_arch.c, and adding EXPORT_SYMBOL(end_iomem) 
+makes the error go away.
 
-> ==============================[ cut here ]==============================
-> --- linux-uml-2.6.9.orig/arch/um/os-Linux/signal.c 2004-10-28
-> 20:11:02.757586671 +0200 +++
-> linux-uml-2.6.9/arch/um/os-Linux/signal.c 2004-10-28 20:23:32.730183963
-> +0200 @@ -6,6 +6,7 @@
->  #include <signal.h>
->  #include "time_user.h"
->  #include "mode.h"
-> +#include "choose-mode.h"
->  #include "sysdep/signal.h"
-I'll make sure that is in.
+Is this the correct solution?
 
->  void sig_handler(int sig)
-> ==============================[ cut here ]==============================
->
-> The second one is a fixup for the host-skas3 patch.  That one is needed
-> if you use one source tree for both host and uml builds.  Without that
-> fixup the host-skas3 patch breaks uml kernel builds (and also all other
-> architectures as only i386 has sysemu right now ...).
-Yes, I saw it in your tree. I'm including that in -v7 (I'm holding a bit on 
-that to see if any other bug is found).
-
-
-> It's kida quick&dirty, the real fix probably would be to have the skas
-> ptrace stuff in *one* place, guess that isn't going to happen before
-> skas is merged mainline through.  Whats the status on skas4 btw.?
-See Jeff's diary. He has started again working on that, quite unsuccessfully 
-however. If you want to look at the code, you can find it inside the UML 
-amd64 patch for 2.6.4 (mm_indirect() is more or less supported for both i386 
-and UML).
-
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+-- Lars
 
 
 
