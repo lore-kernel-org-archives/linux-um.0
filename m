@@ -1,16 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWuVA-0002bI-5d
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 01:31:24 -0800
-Received: from hermes.dur.ac.uk ([129.234.4.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AWuV9-0001W5-JZ
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 01:31:23 -0800
-From: M A Young <m.a.young@durham.ac.uk>
+	id 1AWuh3-00034k-9K
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 01:43:41 -0800
+Received: from mx1.elte.hu ([157.181.1.137])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1AWuh2-0007b0-Tw
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 01:43:41 -0800
+From: Ingo Molnar <mingo@elte.hu>
+Reply-To: Ingo Molnar <mingo@elte.hu>
 Subject: Re: [uml-devel] [bug] uml segfaults if forcing static link, 2.6.0-test11
 In-Reply-To: <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
-Message-ID: <Pine.GSO.4.58.0312180830170.15937@altair.dur.ac.uk>
+Message-ID: <Pine.LNX.4.58.0312181036220.31295@earth>
 References: <Pine.LNX.4.58.0312171735540.8123@earth>
  <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth>
   <Pine.LNX.4.58.0312172249020.19508@earth>  <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
@@ -26,32 +27,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Dec 2003 08:35:06 +0000 (GMT)
+Date: Thu, 18 Dec 2003 10:42:38 +0100 (CET)
 To: Jeff Dike <jdike@addtoit.com>
-Cc: Ingo Molnar <mingo@elte.hu>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
+
 
 On Wed, 17 Dec 2003, Jeff Dike wrote:
 
-> mingo@elte.hu said:
 > > the attached .config produces an UML binary that segfaults much the
-> > same way as before the ALIGN fixes.
->
+> > same way as before the ALIGN fixes. 
+> 
 > HAHAHA, there is justice in this world :-)
->
+> 
 > This one is your fault, I think.
->
-> See this patch and see if it fixes the problem:
-> 	http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=106867347801038&w=2
 
-Though that isn't a complete solution, as the same issue causes a random
-amount less memory, averaging about 16M, to be allocated to the UML
-process, potentially causing out of memory problems, including a failure
-to boot at all.
+i might be at fault for the FC1 problems :-) [*], but this one doesnt seem
+to be my doing:
 
-For some other bugs you might see in FC1, see
-http://toast.debian.net/~may/umlproject/bugs.html
+  $ uname -a
+  Linux asia 2.6.0-test11 #1 Wed Dec 17 21:52:45 CET 2003 i686 i686 i386 
+  $ ./linux
+  Segmentation fault
 
-	Michael Young
+i tried various other, non-Fedora kernels too, and it segfaults
+everywhere.
+
+	Ingo
+
+[*] wrt. FC1, running "i386 ./linux" should solve all problems - no need
+    to disable randomization. (this command reverts to the stock VM
+    layout.) Alternatively, the UML build process could strip out the
+    PT_GNU_STACK ELF section - that triggers the 'stock layout' too.
 
 
 -------------------------------------------------------
