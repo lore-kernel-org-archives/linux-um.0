@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BKoqd-0006wZ-Gx for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 May 2004 18:35:51 -0700
+	id 1BKoso-0008Or-ED for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 May 2004 18:38:06 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BKopx-0007RC-3U
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BKosn-00024D-1r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 May 2004 18:35:09 -0700
-Message-Id: <200405040218.i442I4ml026599@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] devanon for kernel 2.6 
-In-Reply-To: Your message of "Mon, 03 May 2004 17:49:42 +0300."
-	<40965C06.6050504@almahdi.cc> 
-References: <40965C06.6050504@almahdi.cc> 
+	Mon, 03 May 2004 18:38:05 -0700
+Message-Id: <200405040221.i442L2ml026618@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] hppfs file descriptor leak? 
+In-Reply-To: Your message of "Mon, 03 May 2004 11:25:12 CDT."
+	<1083601512.6946.6.camel@dan> 
+References: <1083601512.6946.6.camel@dan> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -28,20 +28,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 03 May 2004 22:18:04 -0400
-To: Ali Almahdi <ali@almahdi.cc>
+Date: Mon, 03 May 2004 22:21:02 -0400
+To: Dan Eaton <Dan.Eaton@rlx.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-ali@almahdi.cc said:
-> just a fast question, can devanon be ported to kernel 2.6??, since it
-> really reduces host memory usage. 
+Dan.Eaton@rlx.com said:
+> It seems that each access to /proc entries that I am spoofing from the
+> host results in an open file that never gets closed.  I am looking at
+> it via gdb but any insight that anyone has would be greatly
+> appreciated.
 
-It has been, and I have it.  There just didn't seem to be much demand for it,
-so I didn't really make it public.
+First I've heard of it, but I'm not too surprised.  The thing to do to
+track it down is see what file descriptors are being lost by looking at
+/proc/<uml-pid>/fd.  It should be pretty obvious.
 
-Also, there is a bug or two in it, plus it only works with ubd-mmap, which is
-going away, so I'm not really encouraging its use right now.  That'll change
-when I get humfs-mmap working, and devanon fixed.
+I'll take a look at it when I get a chance.
 
 				Jeff
 
