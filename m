@@ -2,21 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19vcjq-0005WX-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 06:04:26 -0700
-Received: from bela.bezeqint.net ([192.115.106.24])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19vcjp-0007Zs-Ek
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 06:04:25 -0700
-Received: from bezeqint.net (bzq-218-213-43.red.bezeqint.net [81.218.213.43])
-	by bela.bezeqint.net (Bezeq International SMTP out Mail Server) with ESMTP id C5E493422B
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat,  6 Sep 2003 15:55:00 +0300 (IDT)
-Message-ID: <3F59DC82.7070900@bezeqint.net>
-From: Etay Meiri <etay-m@bezeqint.net>
+	id 19ve7Z-0007IZ-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 07:33:01 -0700
+Received: from web41607.mail.yahoo.com ([66.218.93.107])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
+	id 19ve7Y-0001pE-Gn
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 07:33:00 -0700
+Message-ID: <20030906143230.47744.qmail@web41607.mail.yahoo.com>
+From: Jason Johnson <jsjohn2000@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Child exit when booting uml 2.4.20 on 2.6.0-test4 host
+Content-Type: text/plain; charset=us-ascii
+Subject: [uml-devel] Problems with linking of 2.4.19-5um (elf-init.o symbols missing during final link)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -27,45 +23,63 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 06 Sep 2003 16:09:22 +0300
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 6 Sep 2003 07:32:30 -0700 (PDT)
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: jsjohn2000@yahoo.com
 
-Hi,
+I have been experimenting with user mode linux and
+when I tried compiling against the 2.4.19 kernel I
+received the following link error
 
-I have been running a UML kernel version 2.4.20 on a RH9
-host with kernel 2.4.20-8. Everything is working properly in
-that environment. Now that I've upgraded the host system to
-2.6.0-test4 I can't boot that same UML kernel as before.
-I get the following error:
+gcc -Wl,-T,arch/um/link.ld  -Wl,--wrap,malloc
+-Wl,--wrap,free -Wl,--wrap,calloc \
+        -o linux -static arch/um/main.o vmlinux.o
+-L/usr/lib -lutil
+/usr/lib/libc.a(elf-init.o)(.text+0x2): In function
+`__libc_csu_init':
+: undefined reference to `__preinit_array_end'
+/usr/lib/libc.a(elf-init.o)(.text+0x9): In function
+`__libc_csu_init':
+: undefined reference to `__preinit_array_start'
+/usr/lib/libc.a(elf-init.o)(.text+0x23): In function
+`__libc_csu_init':
+: undefined reference to `__preinit_array_start'
+/usr/lib/libc.a(elf-init.o)(.text+0x34): In function
+`__libc_csu_init':
+: undefined reference to `__init_array_end'
+/usr/lib/libc.a(elf-init.o)(.text+0x39): In function
+`__libc_csu_init':
+: undefined reference to `__init_array_start'
+/usr/lib/libc.a(elf-init.o)(.text+0x49): In function
+`__libc_csu_init':
+: undefined reference to `__init_array_start'
+/usr/lib/libc.a(elf-init.o)(.text+0x61): In function
+`__libc_csu_fini':
+: undefined reference to `__fini_array_end'
+/usr/lib/libc.a(elf-init.o)(.text+0x67): In function
+`__libc_csu_fini':
+: undefined reference to `__fini_array_start'
+/usr/lib/libc.a(elf-init.o)(.text+0x84): In function
+`__libc_csu_fini':
+: undefined reference to `__fini_array_start'
+collect2: ld returned 1 exit status
+make: *** [linux] Error 1
 
-Checking root filesystem
-/dev/ubd/0: clean, 43713/75520 files, 136981/151040 blocks
-[/sbin/fsck.ext3 (1) -- /] fsck.ext3 -a /dev/ubd/0
-[  OK  ]
-Remounting root filesystem in read-write mode:  [  OK  ]
-Activating swap partitions:  [  OK  ]
-Finding module dependencies:  [  OK  ]
-Checking filesystems
-Checking all file systems.
-[  OK  ]
-Mounting local filesystems:  Child 15433 exited with signal 11
+I applied the 2.4.19-5um patch to my kernel source
+tree.  Does anyone have any ideas on how to fix this
+problem.
 
-The uml fs seems to be ok because I can mount it as a loop device
-in the host system.
+I tried compiling a new version of glibc, but the when
+I did a objdump -t libc.a symbols mentioned above do
+not appear.
 
-This is the command line I use for running UML:
+Thanks for the help.
 
-./linux-2.4.20 ubd0=./root_fs_rh_9 mem=48M 
-eth0=ethertap,tap1,,192.168.1.13 con=pty con0=fd:0,fd:1
 
-TIA,
-
--- 
---------------------------------
-Etay Meiri
-etay-m@bezeqint.net
---------------------------------
-
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
