@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bbj0S-0003q8-QK for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:47:52 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Bbj0S-0000Ez-Aj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Jun 2004 09:47:52 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Kernel panic: handle_trap - failed to wait at end of
-	syscall, errno = 4, status = 1151
-Message-ID: <20040619173952.GA7740@ccure.user-mode-linux.org>
-References: <000f01c45593$35c20e00$0201a8c0@hawk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1Bbj23-0003wR-3q for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 09:49:31 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1Bbj22-0007WH-HC for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Jun 2004 09:49:30 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] 2.6.x x86_64 skas3 patch?
+References: <Pine.LNX.4.58.0406190934090.5995@jackhammer.localdomain>
+In-Reply-To: <Pine.LNX.4.58.0406190934090.5995@jackhammer.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <000f01c45593$35c20e00$0201a8c0@hawk>
+Message-Id: <200406191900.13676.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,26 +29,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 19 Jun 2004 13:39:52 -0400
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 19 Jun 2004 19:00:13 +0200
+To: Rus Foster <rghf@fsck.me.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Jun 18, 2004 at 07:19:57PM -0500, Christopher S. Aker wrote:
-> Kernel panic: handle_trap - failed to wait at end of syscall, errno = 4, status =
-> 1151
-> 
->         err = waitpid(pid, &status, WUNTRACED);
->         if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
->                 panic("handle_trap - failed to wait at end of syscall, "
->                       "errno = %d, status = %d\n", errno, status);
+Alle 10:35, sabato 19 giugno 2004, Rus Foster ha scritto:
+> Hi All,
+>  Now I know jdike has got 64 bit UML running but I will be dammened if I
+> can find the skas3 patch for 2.6.x hosts on x86_64. Does it even exist of
+> was jdike using 2.4.x?
+>
+> Rus
 
-Easy diagnosis - errno 4 is EINTR, this wasn't checking for that and redoing
-the wait.
+None, there does not exist a SKAS patch for the host. Currently x86_64 seems 
+to run in SKAS mode without a host SKAS patch. Or better, I've seen two 
+changes in the patch which remove two uses of that patch...
 
-I've been adding EINTR safety in a bit at a time, just hadn't noticed this
-yet.
+Nevertheless, most of the performance improvement does not need a host SKAS 
+patch. It's only purpose is to avoid creating zilion of threads on the host 
+as in TT mode (which indeed is a bit costly).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-				Jeff
 
 
 -------------------------------------------------------
