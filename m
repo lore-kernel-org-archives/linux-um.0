@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsPHl-0006Jx-Eq
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 08:38:25 -0800
-Received: from neo.wh-stuttgart.de ([141.70.120.50])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AsPEj-0006Cq-5p
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 08:35:17 -0800
-From: Martin =?iso-8859-1?Q?Thei=DF?= <mtheiss@neo.wh-stuttgart.de>
-Message-ID: <20040215163513.GA26606@neo.wh-stuttgart.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
-Content-Disposition: inline
-Subject: [uml-devel] syscall sysinfo error
+	id 1AsQKB-0005OC-3l
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 09:44:59 -0800
+Received: from mail.gmx.net ([213.165.64.20])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AsQCS-0005oX-15
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 09:37:00 -0800
+Message-ID: <1bf401c3f3eb$c35704f0$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+Subject: 2.6.3-rc2 failure - was: Re: [uml-devel] Kernel idles in loop after loading IPv4
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,145 +24,108 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 15 Feb 2004 17:35:13 +0100
+Date: Sun, 15 Feb 2004 18:47:14 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
+hi !
+concerning the uml "hang" after  "NET: Registered protocol family 2":
+
+after some investigation i found, that the problem seems to have been introduced with
+uml-patch-2.6.0-1 (at http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-1.bz2)
+
+uml-patch-2.6.0-test9-1 (at http://prdownloads.sourceforge.net/user-mode-linux/uml-patch-2.6.0-test9-1.bz2?download),
+in conjunction with minor compile-fix http://people.0x63.nu/~andersg/uml-minor-fixes.diff works nicely for me.
+
+seems there has been a major change (lots of merges?) in uml-patch-2.6.0-1 because it`s much more bigger (around 2x) than
+uml-patch-2.6.0-test9-1
+
+btw:
+i use Bryan O'Sullivan`s skas patch on my host kernel. see: http://sourceforge.net/mailarchive/message.php?msg_id=5840691
+since this patch isn`t based on steven james patch (which stephen williams patch is based of), it isn`t a skas issue, but a compiler
+or host-fs issue !? i`m on suse9 host.
+
+any clues?
+
+regards
+roland
 
 
---r5Pyd7+fXNt84Ff3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-recently i tried to run debian-installer on a 2.6.2 uml kernel. it didn't
-work. i determined the problem has to be the syscall sysinfo. it return
-zeroed values for totalram and totalswap. i proved the problem by creating
-an initrd containing this as linuxrc executable:
-
-#include <stdio.h>
-
-struct sysinfo {
-	long uptime;                    /* Seconds since boot */
-	unsigned long loads[3];         /* 1, 5, and 15 minute load averages */
-	unsigned long totalram;         /* Total usable main memory size */
-	unsigned long freeram;          /* Available memory size */
-	unsigned long sharedram;        /* Amount of shared memory */
-	unsigned long bufferram;        /* Memory used by buffers */
-	unsigned long totalswap;        /* Total swap space size */
-	unsigned long freeswap;         /* swap space still available */
-	unsigned short procs;           /* Number of current processes */
-	unsigned short pad;             /* Padding needed for m68k */
-	unsigned long totalhigh;        /* Total high memory size */
-	unsigned long freehigh;         /* Available high memory size */
-	unsigned int mem_unit;          /* Memory unit size in bytes */
-	char _f[20-2*sizeof(long)-sizeof(int)]; /* Padding: libc5 uses this.. */
-};
-
-extern int sysinfo (struct sysinfo* info);
-
-int main(void) {
-	struct sysinfo info;
-	sysinfo(&info);
-	printf("info.mem_unit  =3D %d\n", info.mem_unit);
-	printf("info.totalram  =3D %d\n", info.totalram);
-	printf("info.totalswap =3D %d\n", info.totalswap);
-	return 0;
-}
-
-The output of the kernel is following:
 
 
-Checking for the skas3 patch in the host...found
-Checking for /proc/mm...found
-Linux version 2.6.2-guml-ipt+initrd-1um (mtheiss@scara) (gcc version 3.3.2 =
-(Debian)) #8 Sun Feb 15 16:06:36 CET 2004
-On node 0 totalpages: 32768
-  DMA zone: 32768 pages, LIFO batch:8
-  Normal zone: 0 pages, LIFO batch:1
-  HighMem zone: 0 pages, LIFO batch:1
-Building zonelist for node : 0
-Kernel command line: ubd0=3Drootfs mem=3D128MB ramdisk_size=3D16384 initrd=
-=3Droot.bin root=3D98:0
-PID hash table entries: 16 (order 4: 128 bytes)
-Memory: 119200k available
-Calibrating delay loop... 1340.21 BogoMIPS
-Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
-Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-checking if image is initramfs...it isn't (no cpio magic); looks like an in=
-itrd
-Freeing initrd memory: 6900k freed
-Checking for host processor cmov support...Yes
-Checking for host processor xmm support...No
-Checking that ptrace can change system call numbers...OK
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-Checking for /dev/anon on the host...Not available (open failed with errno =
-2)
-POSIX conformance testing by UNIFIX
-NET: Registered protocol family 16
-mconsole (version 2) initialized on /home/mtheiss/.uml/mkRSl9/mconsole
-ikconfig 0.7 with /proc/config*
-Could not kern_mount tmpfs
-Initializing Cryptographic API
-pty: 256 Unix98 ptys configured
-RAMDISK driver initialized: 16 RAM disks of 16384K size 1024 blocksize
-loop: loaded (max 8 devices)
-NET: Registered protocol family 2
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP: Hash tables configured (established 8192 bind 16384)
-ip_conntrack version 2.1 (932 buckets, 7456 max) - 296 bytes per conntrack
-ip_tables: (C) 2000-2002 Netfilter core team
-ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>.  http://snowman.net/=
-projects/ipt_recent/
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-Initializing software serial port version 1
-Using anticipatory io scheduler
- ubda: unknown partition table
-Initializing stdio console driver
-RAMDISK: ext2 filesystem found at block 0
-RAMDISK: Loading 6900 blocks [1 disk] into ram disk... done.
-EXT2-fs warning: mounting unchecked fs, running e2fsck is recommended
-VFS: Mounted root (ext2 filesystem).
-info.mem_unit  =3D 1
-info.totalram  =3D 0
-info.totalswap =3D 0
-kjournald starting.  Commit interval 5 seconds
-EXT3-fs: mounted filesystem with ordered data mode.
-VFS: Mounted root (ext3 filesystem) readonly.
-Trying to move old root to /initrd ... failed
-Unmounting old root
-Trying to free ramdisk memory ... okay
-Warning: unable to open an initial console.
-Kernel panic: No init found.  Try passing init=3D option to kernel.
 
-Is this a general problem of uml or is it a problem of busybox, which is
-using this method to determine the amount of free memory?
+----- Original Message ----- 
+From: "roland" <for_spam@gmx.de>
+To: "Phil Nadeau" <phil@innercite.com>; <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Saturday, February 14, 2004 10:45 PM
+Subject: Re: [uml-devel] Kernel idles in loop after loading IPv4
 
-Greetings
-Martin
 
---=20
-Martin Thei=DF <mtheiss@neo.wh-stutgart.de>
-GPG-Fingerprint: EC80 53A2 F0A2 6E6C 74D2  CB6E 002A F6D3 E78B 7F45
+> hi !
+> i have the same problem.
+> my uml is 2.6.3-rc2 with jeff`s latest uml patch.
+> host is 2.6.0-test11 with skas patch
+> with 2.6.0-test11 + uml patch i didn`t have such problem.
+> any hints?
+>
+> regards
+> roland
+>
+>
+> ----- Original Message ----- 
+> From: "Phil Nadeau" <phil@innercite.com>
+> To: <user-mode-linux-devel@lists.sourceforge.net>
+> Sent: Tuesday, January 27, 2004 9:54 PM
+> Subject: [uml-devel] Kernel idles in loop after loading IPv4
+>
+>
+> > Hello UML developers,
+> >
+> > I'm trying to use UML to set up a simulator for a high-availability
+> > cluster. I encounter the following unexpected behavior -
+> >
+> > On any kernel that I compile with IPv4 support, the kernel will stop
+> > intializing drivers after loading IPv4 support. The last message I see
+> > from the kernel is:
+> > NET: Registered protocol family 2
+> >
+> > Compiling with debug allows me to single-step through the kernel. I've
+> > traced execution from inet_init(), to synchronize_net(), to
+> > synchronize_kernel(), to a call to wait_for_completion(), to
+> > switch_to_tt(), after which the kernel spends all its time in the idle
+> > loop. This happens whether I'm using SKAS or TT mode.
+> >
+> > Host kernel is 2.6.1 with Stephen William's 2.6.1 SKAS patch (thanks
+> > Stephen). Guest kernel is 2.6.1 with the latest patch from Sourceforge
+> > (January 15th), without modules, and with nearly everything disabled at
+> > compile except core functionality and IPv4.
+> >
+> > I've tried to find similar cases in the FAQ's and the list archives, but
+> > I'm not seeing anything. It seems like the kernel is waiting for an
+> > event related to IPv4 initialization that it never gets, but I'm not
+> > familiar enough with the kernel proper to know what that might be. Does
+> > anyone have any ideas?
+> >
+> > Thanks in advance.
+> >
+> > -- 
+> > Phil Nadeau
+> > Software Services Manager
+> > phil.nadeau@innercite.com
+> > (916)932-3200, (800)921-5513
+> >
+> >
+> >
+> > -------------------------------------------------------
+> > The SF.Net email is sponsored by EclipseCon 2004
+> > Premiere Conference on Open Tools Development and Integration
+> > See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
+> > http://www.eclipsecon.org/osdn
+> > _______________________________________________
+> > User-mode-linux-devel mailing list
+> > User-mode-linux-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> >
 
-The box said 'Requires Windows 95 or better', so I installed Linux - TKK 5
-
---r5Pyd7+fXNt84Ff3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAL5/AACr20+eLf0URAo+4AKCKLhxTyyBJvT/m2bThcvaEeflW3gCgkBQX
-SqAya0HT7EbAFyMZ3bn6o8g=
-=l+of
------END PGP SIGNATURE-----
-
---r5Pyd7+fXNt84Ff3--
 
 
 -------------------------------------------------------
