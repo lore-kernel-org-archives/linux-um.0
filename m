@@ -1,33 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1Ae6e5-0002sS-Ec for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 21:54:21 -0800
-Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ae6e5-0007Sz-2L for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Jan 2004 21:54:21 -0800
-Mime-Version: 1.0
-Message-Id: <a06020411bc214f56bc9e@[192.168.1.10]>
-In-Reply-To: <Pine.LNX.4.58.0401070537580.1840@boston.corp.fedex.com>
-References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com><200401061718.i 
-	06HILtd002620@ccure.user-mode-linux.org><a0602040abc20a9f6862e@[192.16 
-	8.1.10]><200401061918.31447.blaisorblade_spam@yahoo.it>     
-	<a0602040bbc20b325acfd@[192.168.1.10]>
-	<33261.193.212.97.12.1073406789.squirrel@pluto.nixia.no>
-	<a0602040cbc20b788b425@[192.168.1.10]>
-	<a0602040dbc20be564c59@[192.168.1.10]>
-	<Pine.LNX.4.58.0401070325360.1840@boston.corp.fedex.com>
-	<a0602040ebc20d1fee774@[192.168.1.10]>
-	<Pine.LNX.4.58.0401070444370.1840@boston.corp.fedex.com>
-	<a0602040fbc20d995ae8b@[192.168.1.10]>
-	<Pine.LNX.4.58.0401070529520.1840@boston.corp.fedex.com>
-	<a06020410bc20df3e0219@[192.168.1.10]>
-	<Pine.LNX.4.58.0401070537580.1840@boston.corp.fedex.com>
-From: Johannes Formann <johannes@formann.de>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
-Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+	id 1AeB7T-0004wV-5R for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jan 2004 02:40:59 -0800
+Received: from [195.159.42.3] (helo=pluto.nixia.no)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AeB7S-0005Hd-I6 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Jan 2004 02:40:58 -0800
+Message-ID: <33237.193.212.97.12.1073405740.squirrel@pluto.nixia.no>
+In-Reply-To: <Pine.LNX.4.58.0401070150290.1840@boston.corp.fedex.com>
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com><200401060258.i
+	062wuFI023117@ccure.user-mode-linux.org><a06020407bc208b5b5a7a@[192.16
+	8.1.10]> <Pine.LNX.4.58.0401070150290.1840@boston.corp.fedex.com>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip 0x400e51a4
+From: stian@nixia.no
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,22 +28,144 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Jan 2004 06:53:53 +0100
-To: Jeff Chua <jchua@fedex.com>
-Cc: Jeff Chua <jeff98@silk.corp.fedex.com>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 6 Jan 2004 17:15:40 +0100 (CET)
+To: Jeff Chua <jeff98@silk.corp.fedex.com>
+Cc: Jeff Dike <jdike@addtoit.com>, UserModeLinux  <user-mode-linux-devel@lists.sourceforge.net>, Johannes Formann <johannes@formann.de>
 
-At 5:39 Uhr +0800 07.01.2004, Jeff Chua wrote:
->On Tue, 6 Jan 2004, Johannes Formann wrote:
+strace -f klogd
+
+so we can see what happens in the child after the fork could be usefull,
+since the parent after the fork just exists.
+
+
+
+Stian
+
+
+> Ok, here's the strace results.
 >
->>  At 5:32 Uhr +0800 07.01.2004, Jeff Chua wrote:
+> 1st is the working one (without lvm2), 2nd is the problem one (with lvm2
+> -- loaded by "vgscan", "vgchange -a y", "mount /u0/v0").
+>
+> Without loading lvm2, uml works just fine.
+>
+> Host:   	2.4.25-pre4
+> Guest:  	2.4.25-pre4-1um
+> Gcc:		2.95.3 20010315
+> Glibc:		2.2.5-34
+> Binutils:	2.14.90.0.7
+>
+>
+> Both traces are starting the same command "klog" ...
+>
+>
+>
+> Trace 1 (without lvm2)
+>
+> # strace klogd
+> execve("/usr/sbin/klogd", ["klogd"], [/* 34 vars */]) = 0
+> brk(0)                                  = 0x804e750
+> open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
+> directory)
+> open("/etc/ld.so.cache", O_RDONLY)      = 3
+> SYS_197(0x3, 0xbfffec98, 0x40015604, 0x400156ec, 0x3) = 0
+> mmap(0, 1628, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40016000
+> close(3)                                = 0
+> open("/lib/libc.so.6", O_RDONLY)        = 3
+> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3"..., 1024) = 1024
+> SYS_197(0x3, 0xbfffece8, 0x40015604, 0x400156ec, 0x3) = 0
+> mmap(0, 1190528, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40017000
+> mprotect(0x40130000, 39552, PROT_NONE)  = 0
+> mmap(0x40130000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
+> 0x119000) = 0x40130000
+> mmap(0x40136000, 14976, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40136000
+> close(3)                                = 0
+> mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> 0x4013a000
+> munmap(0x40016000, 1628)                = 0
+> brk(0)                                  = 0x804e750
+> brk(0x804e780)                          = 0x804e780
+> brk(0x804f000)                          = 0x804f000
+> chdir("/")                              = 0
+> open("/var/run/klogd.pid", O_RDONLY)    = -1 ENOENT (No such file or
+> directory)
+> fork()                                  = 112
+> _exit(0)                                = ?
+>
+>
+>
+>
+>
+> Trace 2 (with lvm2)
+> # strace klogd
+> execve("/usr/sbin/klogd", ["klogd"], [/* 34 vars */]) = 0
+> brk(0)                                  = 0x804e750
+> open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or
+> directory)
+> open("/etc/ld.so.cache", O_RDONLY)      = 3
+> SYS_197(0x3, 0xbfffec98, 0x40015604, 0x400156ec, 0x3) = 0
+> mmap(0, 1628, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40016000
+> close(3)                                = 0
+> open("/lib/libc.so.6", O_RDONLY)        = 3
+> read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3"..., 1024) = 1024
+> SYS_197(0x3, 0xbfffece8, 0x40015604, 0x400156ec, 0x3) = 0
+> mmap(0, 1190528, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40017000
+> mprotect(0x40130000, 39552, PROT_NONE)  = 0
+> mmap(0x40130000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
+> 0x119000) = 0x40130000
+> mmap(0x40136000, 14976, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x40136000
+> close(3)                                = 0
+> mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> 0x4013a000
+> munmap(0x40016000, 1628)                = 0
+> brk(0)                                  = 0x804e750
+> brk(0x804e780)                          = 0x804e780
+> brk(0x804f000)                          = 0x804f000
+> chdir("/")                              = 0
+> open("/var/run/klogd.pid", O_RDONLY)    = -1 ENOENT (No such file or
+> directory)
+> fork()                                  = 147
+> Kernel panic: Kernel mode fault at addr 0x488b5000, ip 0x400df1a4
+>
+>
+>
+> Thanks,
+> Jeff
+>
+> On Tue, 6 Jan 2004, Johannes Formann wrote:
+>
+>> At 21:58 Uhr -0500 05.01.2004, Jeff Dike wrote:
+>> >jchua@fedex.com said:
+>> >>  Starting daemons: syslogd klogd inetd namedKernel panic: Kernel mode
+>> >>  fault at addr 0x48965000, ip 0x400e51a4
+>> >
+>> >Can you get a stack trace from the panic?
 >>
->>  Well, than this patch does not fix the bug.
+>> a simple strace $comand_to_run_uml?
 >
->Send me your .config.
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IBM Linux Tutorials.
+> Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
+> Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
+> Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+>
+> This mail has been scanned for known viruses on an open, Linux-based
+> mailsystem
+> developed by http://Knowledge-Network.no and http://Nixia.no.
+>
 
-Is on the way.
 
-regards Johannes
+
+This mail has been scanned for known viruses on an open, Linux-based mailsystem
+developed by http://Knowledge-Network.no and http://Nixia.no.
 
 
 -------------------------------------------------------
