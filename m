@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPoIo-0003CR-4n for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 13:01:34 -0700
-Received: from mail.gmx.net ([213.165.64.20])
+	id 1BPoQJ-0004kl-38 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 13:09:19 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BPoIn-0008S2-Hg for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 May 2004 13:01:33 -0700
-Message-ID: <02dc01c43c4a$bb7c0490$2000000a@schlepptopp>
+	id 1BPoQH-0001f6-Qe for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2004 13:09:17 -0700
+Message-ID: <030101c43c4b$cf6bd1a0$2000000a@schlepptopp>
 From: "roland" <for_spam@gmx.de>
-References: <20040229043549.GA8583@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] /dev/fd/62: No such file or directory
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,43 +26,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 May 2004 22:08:33 +0200
+Date: Mon, 17 May 2004 22:16:16 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: LaurentVivier@wanadoo.fr
 
-hi !
-has this / will this be ported to 2.6 ?
-have there been made further performance comparisons ?
+Hi !
+I`m getting the following errors with uml 2.6.6 (2.6.4 had that, too) and suse9 rootfs during boot (see below).
+can anybody give me a hint, what`s the problem, and how to (probably) fix this ?
+networking basically works - but i have to setup the defaultroute manually afterwards and soooo many errors during boot really don`t
+give a good "feeling" :)
+
 regards
 roland
 
 
->Well, we just looked at the context switches. We started 3 UMLs which
->were doing a make world for xfree. Without patches the number of
->context switches per second was around 60k, with the patch it was around
->40k - so it's noticeable, at least from the cs.
->Sven
+Master Resource Control: previous runlevel: N, switching to runlevel: 3
+Setting up network interfaces:
+    lo        /sbin/ifup: line 119: /dev/fd/62: No such file or directory
+/sbin/ifup: line 540: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/61: No such file or directory
+/sbin/ifup: line 171: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+done
+    eth0      /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+/sbin/ifup: line 119: /dev/fd/62: No such file or directory
+/sbin/ifup: line 540: /dev/fd/62: No such file or directory
+/sbin/ifup: line 171: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/61: No such file or directory
+IP/Netmask: 100.1.7.247 / 255.255.252.0
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+done
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
 
------ Original Message ----- 
-From: "Jeff Dike" <jdike@addtoit.com>
-To: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Sunday, February 29, 2004 6:35 AM
-Subject: [uml-devel] [PATCH] host context switch reduction
-
-
-> The patches below are from Laurent Vivier who didn't make them public.  They
-> add a new feature to ptrace on the host which cuts down on the number of
-> context switches needed for a UML system call, plus makes UML use it.
-> 
-> There's some interest in this, so I'm putting it out as-is.  I haven't played
-> with it.
-> 
-> Laurent did some performance testing and found ~40% speedup on a getpid
-> loop, and a 3.5% speedup on a kernel build.
-> 
-> Jeff
-> 
-> 
 
 
 -------------------------------------------------------
