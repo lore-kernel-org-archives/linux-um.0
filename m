@@ -2,24 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B0LTj-0004rK-NG for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Mar 2004 06:11:35 -0800
-Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B0LDq-00054Z-PZ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Mar 2004 05:55:10 -0800
-From: Werner Almesberger <werner@almesberger.net>
-Message-ID: <20040308105502.A11727@almesberger.net>
-References: <20040305100144.E26293@almesberger.net>
-	<4048871F.4080400@sms.ed.ac.uk>
+	id 1B0S8x-00048c-0C for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 08 Mar 2004 13:18:35 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1B0Rss-00050U-Ut
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 08 Mar 2004 13:01:59 -0800
+Message-Id: <200403082133.i28LXpVa022891@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: [uml-user] UNIX socket networking 
+In-Reply-To: Your message of "Sun, 07 Mar 2004 11:54:13 +0100."
+	<20040307105414.EDC363BCB7@home.petschge.de> 
+References: <200402290158.54770.jdizzl@xs4all.nl>
+	<20040301201438.DE4903BCB7@home.petschge.de>
+	<200403021909.47013.blaisorblade_spam@yahoo.it>
+	<200403022240.25616.petschge@gmx.de>
+	<20040307105414.EDC363BCB7@home.petschge.de> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4048871F.4080400@sms.ed.ac.uk>;
-	from j.m.boler@sms.ed.ac.uk on Fri, Mar 05, 2004 at 01:56:47PM
-	+0000
-Subject: [uml-devel] Re: [uml-user] hack: avoid "Registered protocol family 2"
-	hang
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,22 +32,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 8 Mar 2004 10:55:02 -0300
-To: Jonathan Boler <j.m.boler@sms.ed.ac.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 08 Mar 2004 16:33:51 -0500
+To: "Patrick \"Petschge\" Kilian" <petschge@web.de>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-Jonathan Boler wrote:
-> Patch attached
+petschge@web.de said:
+> Here is a new version: 
 
-Thanks a lot ! I've been following the list through the archive, but
-that seems to be very out of sync now :-(
+The basic idea of allocating a socket inside UML and binding it to something
+looks like it should work.  I would put the code that handles input from the
+host side into an interrupt handler rather than the thread, though.
 
-- Werner
+				Jef
 
--- 
-  _________________________________________________________________________
- / Werner Almesberger, Buenos Aires, Argentina     werner@almesberger.net /
-/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
