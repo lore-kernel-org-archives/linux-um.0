@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXQAq-0002DW-K4
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:20:32 -0800
-Received: from main.gmane.org ([80.91.224.249])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXQAq-0000hM-5H
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:20:32 -0800
-Received: from root by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1AXQAn-00057g-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 19 Dec 2003 20:20:29 +0100
-From: Jason Lunz <lunz@falooley.org>
-Message-ID: <slrnbu6j80.6le.lunz@absolut.localnet>
-References: <Pine.LNX.4.58.0312171735540.8123@earth> <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth> <Pine.LNX.4.58.0312172249020.19508@earth> <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312181036220.31295@earth> <Pine.LNX.4.58.0312181122070.32554@earth> <Pine.LNX.4.58.0312181209230.1327@earth> <Pine.LNX.4.58.0312181253460.2378@earth> <Pine.LNX.4.58.0312181514140.7622@earth>
-Subject: [uml-devel] new_mm : /proc/mm copy_segments failed, err = 0
+	id 1AXQDY-0002Sb-3O
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:23:20 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AXQDX-0001vn-ED
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:23:19 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [patch] fix PTRACE_LDT, skas-fix-2.4.23-A0
+References: <Pine.LNX.4.58.0312171735540.8123@earth> <Pine.LNX.4.58.0312181036220.31295@earth> <Pine.LNX.4.58.0312181122070.32554@earth>
+In-Reply-To: <Pine.LNX.4.58.0312181122070.32554@earth>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200312192026.38818.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,36 +25,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 19:09:52 +0000 (UTC)
+Date: Fri, 19 Dec 2003 20:26:38 +0100
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-mingo@elte.hu said:
-> the attached patch makes the combo 2.6.0 patch compile for the
-> !CONFIG_PROC_MM case. (necessary if forcing TT mode by disabling skas.)
->
-> This is also a small cleanup as it moves the architecture-independent
-> ptrace functions into the generic kernel/ptrace.c file.
->
-> i've also uploaded a new combo patch with the alignment fix plus these
-> changes included:
->
->     redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A2
+Alle 11:27, gioved=EC 18 dicembre 2003, Ingo Molnar ha scritto:
+> the patch below (against the 2.4 host-skas patch) fixes a bug in the
+> PTRACE_LDT logic: when modifying the LDT of another MM, the new LDT must
+> not be loaded.
+A previous thread(just above this one) is about a SKAS-caused panic; would =
+you=20
+check if it can be anyhow related to this bug, or try finding the problem?
 
-OK, I've complied a 2.6.0 host with this (and only this) -A2 patch for
-an SMP pentium III. The host is running debian unstable.
-
-I also compiled a 2.4.23 uml kernel using uml-patch-2.4.22-7.bz2 and the
-small ELF_PLAT_INIT fix.
-
-Using a very simple root_fs (it basically only contains a busybox
-/bin/sh and a statically compiled /bin/zsh4), the uml boots and detects
-skas3 and /proc/mm on the host.
-
-The problem is that on every process fork, I see $Subject appear one or
-more times on the console, and subjectively the uml seems to be running
-a little slowly. Is this normal?
-
-Jason
+Bye
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
@@ -61,7 +50,7 @@ Jason
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
