@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AGngA-0002Fn-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 03 Nov 2003 15:00:10 -0800
-Received: from brown.brainfood.com ([146.82.138.61] helo=gradall.private.brainfood.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AGngA-0001Bp-6N
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 03 Nov 2003 15:00:10 -0800
-From: Adam Heath <adam@doogie.org>
-Subject: Re: [uml-devel] [patch] change ubd names 
-In-Reply-To: <200311031744.hA3HiqgX014207@ccure.karaya.com>
-Message-ID: <Pine.LNX.4.44.0311031659540.12324-100000@gradall.private.brainfood.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1AGqxB-0001PW-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 03 Nov 2003 18:29:57 -0800
+Received: from pool-151-203-5-11.bos.east.verizon.net ([151.203.5.11] helo=uml.karaya.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1AGqx9-0002dL-Sz
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 03 Nov 2003 18:29:56 -0800
+Message-Id: <200311021424.hA2EOpti019560@uml.karaya.com>
+Subject: Re: [uml-devel] Sleeping process getting segfault signal 
+In-Reply-To: Your message of "Sat, 01 Nov 2003 21:51:16 GMT."
+             <Pine.GSO.4.58.0311012137370.355@altair.dur.ac.uk> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,18 +26,20 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 3 Nov 2003 17:00:09 -0600 (CST)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sun, 02 Nov 2003 09:24:51 -0500
+To: M A Young <m.a.young@durham.ac.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 3 Nov 2003, Jeff Dike wrote:
+m.a.young@durham.ac.uk said:
+> I have a reproduceable crash, at least with certain host kernels (eg.
+> from RedHat's current beta), and a 2.6 uml kernel, and get errors like
+> sleeping process 1786 got unexpected signal : 11 
 
-> adam@doogie.org said:
-> > When can the drooling public see skas4?
->
-> When I figure out what to do about the new system call numbers.
+I just saw this.  Looked at it a bit and am mystified :-)  Stay tuned...
 
-If that's all, I'd like to play with it now.
+				Jeff
+
+
 
 
 
