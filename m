@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BFVW8-0000wD-LF for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2004 02:56:44 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BFVW7-00082E-T3 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2004 02:56:44 -0700
-Received: from localhost (henrik@localhost)
-	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id i3J9ugM17564
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 19 Apr 2004 11:56:42 +0200
-From: Henrik Nordstrom <uml@henrik.marasystems.com>
-Subject: Re: [uml-devel] Thoughts on HUMFS and metadata
-In-Reply-To: <Pine.LNX.4.44.0404191058380.16955-100000@filer.marasystems.com>
-Message-ID: <Pine.LNX.4.44.0404191106340.17224-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1BFdLT-0005xn-IK for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Apr 2004 11:18:15 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1BFdLS-0002QO-U3
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Apr 2004 11:18:15 -0700
+Message-Id: <200404191858.i3JIwFsP024786@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Thoughts on HUMFS and metadata 
+In-Reply-To: Your message of "Mon, 19 Apr 2004 09:52:49 +0200."
+	<8D87591F-91D6-11D8-8B4A-000A95CD704C@kungfoocoder.org> 
+References: <8D87591F-91D6-11D8-8B4A-000A95CD704C@kungfoocoder.org> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,41 +28,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Apr 2004 11:56:42 +0200 (CEST)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 19 Apr 2004 14:58:15 -0400
+To: Paul Wagland <paul@kungfoocoder.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 19 Apr 2004, Henrik Nordstrom wrote:
+paul@kungfoocoder.org said:
+> 1. Do files really need to exist in data if they are block, character
+>  or sockets? Surely it is enough to just look at the metadata for
+> these   files and create the appropriate dir entry in the UML. 
 
-> On Mon, 19 Apr 2004, Paul Wagland wrote:
-> 
-> > 2. When COW humfs "partitions" are made, will it be possible to  
-> > separately copy metadata and data?
-> 
-> This makes me remember the Overlay Filesystem 
-> <url:http://ovlfs.sourceforge.net>. 
+Permissions are stored with the real file.  This makes "metadata" a bit of a 
+misnomer - I just moved the information that absolutely needed to move.
 
-Looked around a little and there is several of these..
+> 2. When COW humfs "partitions" are made, will it be possible to
+> separately copy metadata and data? For instance, if I change only the
+>  uid, gid and/or permissions, do I need to also create a new copy of
+> the   data, or can I only update my local metadata and use the data
+> from the   parent?
 
-ovlfs Overlay Filesystem
-<url:http://ovlfs.sourceforge.net>
+A suitable implementation could optimize the COWing of permissions and other
+non-data.  I'm not sure how worth-while that would be.
 
-translucency lkm
-<url:http://translucency.sourceforge.net/>
+> 3. When COW humfs "partitions" are made, how will files be deleted in
+>  the second humfs? I would assume (but could easily be wrong ;-) )
+> that   the easiest way to do COW is for every file access, first check
+> your   humfs, if it does not exist, then check your parent humfs. If
+> this is   done, then how do you delete a file? I can see that one easy
+> option is   to introduce a "deleted" metadata node, that only contains
+> the word   deleted, and would signify that this file does not exist in
+> this COWed   copy.
 
-mini_fo Mini Fan-Out filesystems
-<url:http://www.denx.de>
-There is also a good technical paper on the subject.
+That's the plan, more or less.
 
+> 4. Since metadata is basically a copy of "permission data" does it
+> also   make sense for humfs metadata to include things like
+> capabilities and   ACL's? 
 
-Of these the mini_fo looks very promising.
+If they are stored in the filesystem, then it might make sense.
 
-
-A nice collection on information regarding overlay or template filesystems
-can also be found at the TBVFS Virtual Gathering
-<url:http://vserver.13thfloor.at/TBVFS/>
-
-Regards
-Henrik
+				Jeff
 
 
 
