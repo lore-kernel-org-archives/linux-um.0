@@ -2,18 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AL85m-0003cy-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 13:36:30 -0800
-Received: from blacksheep.csh.rit.edu ([129.21.60.6])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AL85l-0008Ng-St
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 15 Nov 2003 13:36:29 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Message-ID: <20031115213627.GL9377@dijkstra.csh.rit.edu>
+	id 1AL8z4-0000yt-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 14:33:38 -0800
+Received: from wavehammer.waldi.eu.org
+	([82.139.196.55] helo=extern.mail.waldi.eu.org ident=postfix)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.24)
+	id 1AL8z4-0007M0-9i
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 15 Nov 2003 14:33:38 -0800
+From: Bastian Blank <bastianb@gmx.de>
+Subject: Re: [uml-devel] arch/um/sys-i386/bugs.c compile error
+Message-ID: <20031115223329.GA24455@wavehammer.waldi.eu.org>
+References: <20031115211955.GA4221@absolom.libra.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] [dan@spaz.org: Re: Bug#220679: user-mode-linux: Fails to Mount Root Filesystem on Reboot]
+In-Reply-To: <20031115211955.GA4221@absolom.libra.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,52 +28,24 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 15 Nov 2003 16:36:27 -0500
+Date: Sat, 15 Nov 2003 23:33:29 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: 220679-forwarded@bugs.debian.org
 
-I looked briefly at the source and didn't see any immediate reason why this
-should work differently after a reboot.  Is there a bug here?
+On Sat, Nov 15, 2003 at 04:19:55PM -0500, Laurence J. Lane wrote:
+> I get the same arch/um/sys-i386/bugs.c compile error on 2.6.0-test9-1-um
+> and 2.4.22-6-um. Anyone have an idea of what causes the error?
 
------ Forwarded message from Daniel Burton <dan@spaz.org> -----
+debian unstable with linux-kernel-headers (2.6.0)?
 
-Date: Sat, 15 Nov 2003 02:48:20 -0800
-From: Daniel Burton <dan@spaz.org>
-To: Matt Zimmerman <mdz@debian.org>
-Cc: 220679@bugs.debian.org
-Subject: Re: Bug#220679: user-mode-linux: Fails to Mount Root Filesystem on
- Reboot
+i get this message since they do that change.
 
-Matt Zimmerman wrote:
-
->On Thu, Nov 13, 2003 at 07:22:50PM -0800, Daniel Burton wrote:
->
-> 
->
->>Package: user-mode-linux
->>Version: 2.4.22-5um-1
->>Severity: normal
->>
->>
->>User Mode Linux will not reboot properly -- it fails to mount the root 
->>filesystem and exits.  Here are my messages:
->>[...]
->>Kernel command line: eth0=daemon,,,/var/run/uml-utilities/uml_switch.ctl 
->>con=pts con0=fd:0,fd:1 ssl0=tty:/dev/ttyS4 mem=512M root=/dev/ubd0
->>   
->>
->
->I assume your root filesystem is named "root_fs" since you are not
->specifying a ubd0= parameter.  Try explicitly assigning a file to the ubd0
->device, i.e.: "ubd0=root_fs" and see if it works in that case.
-> 
->
-Yes, that seems to fix the problem.
-
------ End forwarded message -----
+bastian
 
 -- 
- - mdz
+	"Get back to your stations!"
+	"We're beaming down to the planet, sir."
+		-- Kirk and Mr. Leslie, "This Side of Paradise",
+		   stardate 3417.3
 
 
 -------------------------------------------------------
