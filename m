@@ -1,27 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuTwC-00027B-Ho for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 02:00:44 -0800
-Received: from mail-04.iinet.net.au ([203.59.3.36] helo=mail.iinet.net.au)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AuTpp-0006ng-TT for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 01:54:10 -0800
-Received: from cameron by cp.yi.org with local (Exim 3.36 #1 (Debian))
-	id 1AuThH-0001Bh-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 21 Feb 2004 17:45:19 +0800
-From: Cameron Patrick <cameron@patrick.wattle.id.au>
-Subject: Re: [uml-devel] [PATCH] skas3 for x86_64 arch
-Message-ID: <20040221094519.GB31609@patrick.wattle.id.au>
-References: <1077305069.8412.62.camel@wopr.tektonic.net>
-	<200402202155.44773.blaisorblade_spam@yahoo.it>
-	<1077311125.8412.78.camel@wopr.tektonic.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1077311125.8412.78.camel@wopr.tektonic.net>
+	id 1AuVKJ-0002dP-Qn for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 03:29:43 -0800
+Received: from 62-241-36-148.kunde.vdserver.de ([62.241.36.148] ident=mail)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AuV4O-0005gy-3l for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 03:13:16 -0800
+In-Reply-To: <a0602042ebc27404e43b0@[192.168.1.10]>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
+From: mlmail@formann.de (Johannes Formann)
+Message-ID: <1g9iaa6.1j68jrk15jxbhgM@johannes.formann.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,17 +23,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 21 Feb 2004 17:45:19 +0800
+Date: Sat, 21 Feb 2004 12:23:01 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Chua <jchua@fedex.com>
 
-Matt Ayres wrote:
+Johannes Formann <johannes@formann.de> wrote:
 
-| The x86_64 emulator seems to cost money.
+> Strange, after aplying the 23-1 patch to 2.4.24 and aplying Chuas 
+> (the first and  longer one) patch by hand, everything seems to run no.
 
-Have you tried Bochs?  I've not used it for x86-64 myself but it
-claims to be able to do it.  'tis a bit slow, though.
+Everything has run fine, but I've testet 2.4.24-1um with 2.4.25 sources,
+an the same Bug appered, the same Patch helped.
 
-Cameron.
+regards
+
+Johannes Formann
+
 
 
 -------------------------------------------------------
