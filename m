@@ -2,23 +2,29 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C44fQ-0001V7-V8 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Sep 2004 14:35:20 -0700
-Received: from smtp-vbr15.xs4all.nl ([194.109.24.35])
+	id 1C459C-000410-Ht for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Sep 2004 15:06:06 -0700
+Received: from tharec.debianbase.de ([212.79.163.254] helo=mail2.debianbase.de)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C44fP-0000Lr-A6 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Sep 2004 14:35:20 -0700
-In-Reply-To: <200409041737.29495.blaisorblade_spam@yahoo.it>
-References: <20040903180244.42898.qmail@web54004.mail.yahoo.com>
-	<1094299889.7716.36.camel@localhost>
-	<200409041737.29495.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0 (Apple Message framework v619)
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg=pgp-sha1; boundary="Apple-Mail-10-146602369"
-Message-Id: <5CAA3946-FF7E-11D8-83EF-000A95CD704C@kungfoocoder.org>
+	id 1C459B-0004C5-Rs for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Sep 2004 15:06:06 -0700
+Received: from mail.debianbase.de (tha.vpn.local [192.168.100.1])
+	by mail2.debianbase.de (Postfix) with ESMTP id AFC6C9BB9
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon,  6 Sep 2004 00:05:55 +0200 (CEST)
+Received: from vaiobook.tha.local (vaiobook.tha.local [10.0.0.9])
+	by mail.tha.local (Postfix) with ESMTP id 3E088162CCB
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon,  6 Sep 2004 00:06:05 +0200 (CEST)
+From: Ralph =?iso-8859-1?q?Pa=DFgang?= <ralph@debianbase.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: Paul Wagland <paul@kungfoocoder.org>
-Subject: Re: [uml-devel] Problems compiling any 2.6.x UML
+Content-Disposition: inline
+Message-Id: <200409060005.54577.ralph@debianbase.de>
+Subject: [uml-devel] uml modules broken in 2.6.8 (has something to do with
+	memmove)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,81 +36,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 5 Sep 2004 22:58:39 +0200
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Matt Zimmerman <mdz@debian.org>, =?ISO-8859-1?Q?Dominik_J=FCrgens?= <dcdom@gmx.de>
+Date: Mon, 6 Sep 2004 00:05:54 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
+Hi all,
 
---Apple-Mail-10-146602369
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+I am using user-mode-linux 2.6.6 and 2.6.7 for some time without any big 
+problems. I now tried to build a 2.6.8 debian package for my (and some other) 
+systems and I got problems with some modules now... I used the same script 
+for packaging the uml kernel and changed only the new option in the ".config" 
+file. So that should not be the problem, I guess.
 
+First some version details:
+host system: 2.6.8 (debian source) with skas3, sysemu and reiser4 patch
+uml guest system: 2.6.8 (debian source) with 2.6.8.1-1 patch, sysemu patch and 
+reiser4 patch
 
-On Sep 4, 2004, at 17:37, BlaisorBlade wrote:
+The problems I see while booting my uml are:
 
-> Alle 14:11, sabato 4 settembre 2004, Dominik J=FCrgens ha scritto:
->> Thank you very very much, that really fixed the problem!
->>
->> But why does anyone use the /bin/sh in any script, when he wants to=20=
+...
+ip_tables: (C) 2000-2002 Netfilter core team
+ip_conntrack version 2.1 (464 buckets, 3712 max) - 296 bytes per conntrack
+iptable_nat: Unknown symbol memmove
+...
 
->> use
->> the bash? That is in my opinion a very bad fault!!
->>
->> My /bin/sh was linked to the /bin/dash, not because I linked it, but
->> anything else! It does not seem to be very failure tolerant to =
-suppose
->> that /bin/sh is the bash...
->
-> 1) Someone else got a similar problem, because he used a Debian, too,=20=
+If I then use: depmod -a to fix the problem it actually gets worse...
 
-> and he
-> had /bin/sh -> /bin/dash. Why and when does Debian do this?
+after a reboot I get this error for even more modules, because of the unknown 
+symbol memmove:
 
-Someone has already answered this, but here is a more detailed answer:
+...
+iptable_nat: Unknown symbol memmove
+ipt_MASQUERADE: Unknown symbol ip_nat_setup_info
+iptable_nat: Unknown symbol memmove
+slhc: Unknown symbol memmove
+...
 
-When you install the dash package it will ask you if you want to use=20
-this as your default shell. This should be OK, since dash is posix=20
-compliant, and if you ask for /bin/sh you should only expect posix=20
-compliance. Under debian, any package that specifies /bin/sh and then=20
-uses bash extensions will normally get a level 3 bug raised, which is a=20=
+I also noticed that 2.6.6 (for example, I guess 2.6.7 is equal to 2.6.6) 
+hasn't got the word "memmove" anywhere in the modules. But in the 2.6.8 
+modules the string "memmove" appears quite often:
 
-violation of packaging policy. I.e. Only use /bin/sh if you want a=20
-posix shell, otherwise use /bin/bash.
+#:/lib/modules# ls ; grep memmove * -R
+total 1
+drwxr-xr-x  3 root root 496 Sep  5 14:20 2.6.6-1um
+drwxr-xr-x  3 root root 496 Sep  5 23:51 2.6.8-1um
 
-As to when, dash is the only package that I know of that will do this=20
-for you, and then only if you ask it to. Why? Dash is faster than bash,=20=
+Binary file 2.6.8-1um/kernel/fs/udf/udf.ko matches
+Binary file 2.6.8-1um/kernel/fs/hpfs/hpfs.ko matches
+Binary file 2.6.8-1um/kernel/fs/nfsd/nfsd.ko matches
+Binary file 2.6.8-1um/kernel/fs/ncpfs/ncpfs.ko matches
+Binary file 2.6.8-1um/kernel/fs/hostfs/humfs.ko matches
+Binary file 2.6.8-1um/kernel/fs/hostfs/externfs.ko matches
+Binary file 2.6.8-1um/kernel/fs/hfsplus/hfsplus.ko matches
+Binary file 2.6.8-1um/kernel/net/ipv4/ipvs/ip_vs.ko matches
+Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/ipfwadm.ko matches
+Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/ipchains.ko matches
+Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/ipt_TCPMSS.ko matches
+Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/iptable_nat.ko matches
+Binary file 2.6.8-1um/kernel/net/ipv6/ah6.ko matches
+Binary file 2.6.8-1um/kernel/net/8021q/8021q.ko matches
+Binary file 2.6.8-1um/kernel/drivers/net/slhc.ko matches
+Binary file 2.6.8-1um/kernel/drivers/net/bonding/bonding.ko matches
+Binary file 2.6.8-1um/kernel/drivers/scsi/st.ko matches
 
-and could save up to a second of boot time! ;-) Seriously, some people=20=
+Is it possible that the i386 and the um code is out-of-sync?
 
-use it to ensure package compliance, some people do it because it seems=20=
+I am not a kernel hacker, but I found with google that something changed with 
+memmove in 2.6.8, but I don't know enough of the kernel stuff to know what it 
+means:
 
-right. I do it because it has a very low overhead, and it helps me to=20
-ensure that my scripts are cross platform compatible.
+http://kerneltrap.org/node/view/3443 -> search for memmove and you find: 
+"i386: uninline memmove"
 
-> 2) Well, I'm attaching the patch to fix this.
+Has nobody besides me this problem? I can't use my uml without nat, so I 
+downgraded again to 2.6.6...
 
-Much appreciated :-)
-
-Cheers,
-Paul=
-
---Apple-Mail-10-146602369
-content-type: application/pgp-signature; x-mac-type=70674453;
-	name=PGP.sig
-content-description: This is a digitally signed message part
-content-disposition: inline; filename=PGP.sig
-content-transfer-encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (Darwin)
-
-iD8DBQFBO34Dtch0EvEFvxURAkqPAJ9a/eLgJi2AS125fWlBeznYzpR0iQCggWUU
-ArIpeVG6KQj4L93gXUtKsc0=
-=YS9v
------END PGP SIGNATURE-----
-
---Apple-Mail-10-146602369--
-
+--Ralph
 
 
 -------------------------------------------------------
