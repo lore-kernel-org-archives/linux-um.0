@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CoKBe-0000h6-CO for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 03:27:46 -0800
-Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CoKBb-0004oa-By for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 03:27:45 -0800
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] How stable is hostfs (and UML in general)?
-In-Reply-To: <200501110135.55716.rob@landley.net>
-Message-ID: <Pine.LNX.4.61.0501111222450.12245@filer.marasystems.com>
-References: <200501082106.38306.rob@landley.net>
-	<200501100120.04746.rob@landley.net>
-	<3986.1105370511@marajade.sandelman.ottawa.on.ca>
-	<200501110135.55716.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	id 1CoOxa-0008H6-P6 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 08:33:34 -0800
+Received: from pool-151-203-193-191.bos.east.verizon.net ([151.203.193.191]
+	helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CoOxZ-0001c7-5f
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 08:33:34 -0800
+Message-Id: <200501111855.j0BIt7Wi003586@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] kernel BUG at net/ipv4/tcp_output.c:277! 
+In-Reply-To: Your message of "Tue, 11 Jan 2005 00:49:13 CST."
+	<063e01c4f7a9$aabaf790$0201a8c0@hawk> 
+References: <063e01c4f7a9$aabaf790$0201a8c0@hawk> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +29,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Jan 2005 12:27:36 +0100 (CET)
-To: Rob Landley <rob@landley.net>
-Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 11 Jan 2005 13:55:06 -0500
+To: "Christopher S. Aker" <caker@theshore.net>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, 11 Jan 2005, Rob Landley wrote:
+caker@theshore.net said:
+> kernel BUG at net/ipv4/tcp_output.c:277! 
+> Kernel panic - not syncing: BUG! 
 
-> Don't have a real partition to mount it on, unless I want to cannibalize the
-> host system's swap.  I could try ubd if you think it would help.
+A bit of googling turns up
+	http://kerneltrap.org/node/4119
 
-You are likely to experience less bugs using ubd than hostfs.
+making this look like a generic kernel bug.
 
-> /dev/console attaches to fd0 and fd1.  These are not ttys/ptys but file
-> descriptors, hence they controlling tty sends the kill signal to the running
-> process still attached to that terminal, which is the vmlinux instance I
-> started.
+			Jeff
 
-OK. You won't have any easy way of sending Control-C then.
-
-Try booting with the standard stdio console.
-
-Regards
-Henrik
 
 
 -------------------------------------------------------
