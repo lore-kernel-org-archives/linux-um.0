@@ -1,13 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Subject: Re: [uml-devel] new skas3 patch ready for 2.4.25
-References: <40338C1B.1070800@meisterwerk.net>
-	<200402202125.58574.blaisorblade_spam@yahoo.it>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200402202125.58574.blaisorblade_spam@yahoo.it> (BlaisorBlade's
-	message of "Fri, 20 Feb 2004 21:25:57 +0100")
-Message-ID: <87k72gv3cg.fsf@amaterasu.srvr.nix>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AuZgX-0004Jb-Vj for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 08:08:57 -0800
+Received: from bay14-dav24.bay14.hotmail.com ([64.4.48.81] helo=hotmail.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AuZa2-0000Pr-Ed for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 21 Feb 2004 08:02:14 -0800
+From: "James McMechan" <James_McMechan@hotmail.com>
+References: <20040214015148.26508.qmail@home19.riedel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-ID: <BAY14-DAV24lkDTM9wG00000c82@hotmail.com>
+Subject: [uml-devel] Re: USB and UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,79 +27,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 21 Feb 2004 15:50:39 +0000
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Sat, 21 Feb 2004 07:59:21 -0800
+To: Larry@Riedel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 20 Feb 2004, BlaisorBlade informed the cosmos:
-> Yes, it went away, so a new skas patch must be built. I have one (tested) at 
-> http://www.user-mode-linux.org/~blaisorblade/
+> Hi, sorry to bug-- if you have a second, I have a quick
+> question; I would like to use a UML process for a USB device
+> driver because I think it will eventually lock up or oops
+> and I want to be able to just reconnect the device and
+> restart the UML process.  It looks like at one time you were
+> trying to maintain some code to allow this.  Do you know
+> what is the latest status as far as this kind of capability?
+> I do not care much about the kernel version inside the UML
+> process, but the host would be the close to latest (eg
+> currently 2.4.24).
+That should work, I remember that it was working on 
+2.4.18 and 2.4.19 but then they backported the host controller
+changes from 2.5 which broke the um-usb for 2.4.20
+In the 2.5 tree it worked untill about 2.5.39
+I used it to test out some flaky drivers also, kaweth.o was
+Oopsing on me and also for my smart card reader.
 
-Alas:
+The host kernel can be any recent version I would suggest
+applying the host-skas patch as then it is much faster and
+the host kernel can be run under gdb (or attached to gdb)
+See for example the debugging page at sourceforge
+On a host kernel without skas you can use the debug
+command line option to start a gdb but I haven't tested
+it that way recently.
 
-Checking for the skas3 patch in the host...found
-Checking for /proc/mm...found
-Checking for /dev/anon on the host...Not available (open failed with errno 2)
-Linux version 2.4.24-1um (compiler@loki) (gcc version 2.95.4 20010319 (prerelease)) #1 Wed Feb 18 22:58:16 GMT 
-2004
-On node 0 totalpages: 24576
-zone(0): 24576 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line: con=port:16380 con0=fd:0,fd:1 fakeide mem=96M ubd0=/mirror/uml/esperi-root-cow.image,/mirr
-or/uml/esperi-root.image tty_log_dir=/home/firewall/log/esperi umid=esperi eth0=tuntap,tap0,00:60:97:79:E2:C1 e
-th1=tuntap,tap1 root=/dev/ubd0
-Calibrating delay loop... 465.30 BogoMIPS
-Memory: 94412k available
-Dentry cache hash table entries: 16384 (order: 5, 131072 bytes)
-Inode cache hash table entries: 8192 (order: 4, 65536 bytes)
-Mount cache hash table entries: 512 (order: 0, 4096 bytes)
-Buffer cache hash table entries: 4096 (order: 2, 16384 bytes)
-Page-cache hash table entries: 32768 (order: 5, 131072 bytes)
-Checking for host processor cmov support...No
-Checking for host processor xmm support...No
-Checking that ptrace can change system call numbers...OK
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-POSIX conformance testing by UNIFIX
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-Initializing RT netlink socket
-Starting kswapd
-VFS: Disk quotas vdquot_6.5.1
-Journalled Block Device driver loaded
-pty: 256 Unix98 ptys configured
-Universal TUN/TAP device driver 1.5 (C)1999-2002 Maxim Krasnyansky
-Initializing software serial port version 1
-mconsole (version 2) initialized on /home/firewall/.uml/esperi/mconsole
-Partition check:
- ubda: unknown partition table
-Initializing stdio console driver
-Netdevice 0 (00:60:97:79:e2:c1) : TUN/TAP backend - 
-Netdevice 1 (00:60:97:79:e2:c1) : TUN/TAP backend - 
-NET4: Linux TCP/IP 1.0 for NET4.0
-IP Protocols: ICMP, UDP, TCP, IGMP
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP: Hash tables configured (established 8192 bind 8192)
-ip_conntrack version 2.1 (737 buckets, 5896 max) - 288 bytes per conntrack
-ip_tables: (C) 2000-2002 Netfilter core team
-ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>.  http://snowman.net/projects/ipt_recent/
-NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-NET4: Ethernet Bridge 008 for NET4.0
-VFS: Mounted root (ext2 filesystem) readonly.
-Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 5
-
-That's -EIO.
-
-(Of course, CONFIG_PROC_MM=y on the host and the host is running
-2.4.25+skas-2.4.25.)
-
-The identical UML binary is quite happy on 2.4.24; this email passed
-through it.
-
--- 
-`note to the crown prosecution service: Machine guns dont have a
- 'stun' setting.' --- mjw
+My current patches should be at 
+http://jmcmechan.linuxdriven.net
 
 
 -------------------------------------------------------
