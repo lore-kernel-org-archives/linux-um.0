@@ -2,26 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BWfjq-0008RH-Dv for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Jun 2004 11:17:50 -0700
-Received: from morpheus-adsl.ednet.co.uk ([212.20.233.177]
-	helo=mail.morpheux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BWfjp-0003eL-Ma
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Jun 2004 11:17:50 -0700
-Received: from morpheux.org
-	(IDENT:NqLbFva1lJ2yfKgt62hIGckyzm4eXZbk@sue.morpheux.org
-	[192.168.42.3]) (authenticated bits=0)
-	by mail.morpheux.org (8.12.11/8.12.11) with ESMTP id i55IHemt007435
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 5 Jun 2004 19:17:42 +0100
-Message-ID: <40C20E43.1090305@morpheux.org>
-From: Faye Gibbins <wibble@morpheux.org>
+	id 1BWzcH-0000zH-8o for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Jun 2004 08:31:21 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BWzcG-00012d-K7 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Jun 2004 08:31:20 -0700
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] [PATCH] More hostfs breakage
+In-Reply-To: <20040605010103.GA32113@alcor.net>
+Message-ID: <Pine.LNX.4.44.0406061726470.28866-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] 2.6.6 compile crashing on Fed Core 2
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,93 +25,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 05 Jun 2004 19:17:39 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 6 Jun 2004 17:31:12 +0200 (CEST)
+To: Matt Zimmerman <mdz@debian.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+Hmm.. I thought I had the "always one read-write" issue addressed in my 
+patch to only open read-write if the UML application asks for it.. need to 
+investigate.
 
-Hi,
+  88e48f4e9b8d763f2d13d7a7974a3663  12-hostfs.patch
+  50e3b372d77793ed2a8422f75364422f  13-hostfs_access.patch
 
-Just finished compiling 2.6.6 with UML patch 2.6.6-1. compile crashed with:
+Note that there has been 2 revisions of the 12-hostfs.patch. The first 
+version did not use correct mode when opening files..
 
-snip---
+Regards
+Henrik
 
-gcc -Wl,-T,arch/um/uml.lds.s -static -Wl,--wrap,malloc -Wl,--wrap,free 
--Wl,--wrap,calloc \
-         -o linux arch/um/main.o vmlinux -L/usr/lib -lutil
-vmlinux(.text+0x605f): In function `mem_init':
-arch/um/kernel/mem.c:71: undefined reference to `phys_page'
-vmlinux(.init.text+0x3380): In function `kmap_init':
-include/asm/pgtable.h:394: undefined reference to `pte_offset'
-collect2: ld returned 1 exit status
-make: *** [linux] Error 1
-Died at get_uml_patch.pl line 173.
+On Fri, 4 Jun 2004, Matt Zimmerman wrote:
 
-snip---
-
-gcc 3.3.3
-
-On a PII 233 with a fresh Fed Core 2 install (everythign installed) plus 
-all current updates as of 30 May 04.
-
-Can supply kernel '.config' and build script (perl) upon request, but 
-essentially I'm doing :
-
-snip---
-
-use constant K => '2.6.6';
-use constant TMP => '/tmp/';
-use constant PATCHWWW => 
-'http://heanet.dl.sourceforge.net/sourceforge/user-mode-linux/';
-use constant PATCH => 'uml-patch-'.K.'-1';
-use constant PATCHMD5BZ2 => 'ac6131657b587aba2d306d3708142ec6';
-use constant PATCHMD5 => '7c27d8acc8aa0ea6fe8dec712b0d4462';
-use constant KWWW => 
-'http://www.mirror.ac.uk/sites/ftp.kernel.org/pub/linux/kernel/v2.6/';
-use constant KERNEL => 'linux-'.K.'.tar';
-use constant KMD5BZ2 => '5218790bc3db41e77a7422969639a9ad';
-use constant KMD5 => 'eaf803a496e7b8458ba332b04b89c0c0';
-
-#.....
-
-     chdir TMP || die "$!";
-
-     system("tar","-xf",TMP.KERNEL)&&die"$!";
-
-     chdir TMP."/linux-".K || die "$!";
-
-     print "Patching...";
-     {
-	open(P,"<",TMP.PATCH)||die"$!";
-	my @p = <P>;
-	close P;
-	
-	open(OUT,"| patch -p1")||die"$!";
-	print OUT @p;
-	close OUT || die"$!";
-     }
-
-#.....
-
-copy("$FindBin::Bin/uml.2.6.6",TMP."/linux-".K."/.config")||die"$!";
-
-chdir TMP."/linux-".K || die "$!";
-
-system("make oldconfig ARCH=um") && die "$!";
-system("make linux ARCH=um") && die "$!";
-
-snip---
-
-Any help would be appreciated.
-
--- 
-Yours
-Faye
-
-This time she's the lesser of two evils.
-
-http://www.morpheux.org
-
-
+> Even after applying Henrik's patches, hostfs was still not working for me.
+> I tracked the problem down to this; I'm not exactly sure why it works this
+> way (why does it always try to open the file read/write first?), but this
+> got it working again for me so far.
+> 
+> If this is really the right way to go about this, then it needs to check for
+> other things as well (EROFS?), but it doesn't seem right...
+> 
+> 
 
 
 
