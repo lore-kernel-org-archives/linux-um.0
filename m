@@ -1,32 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2XIy-0000Y2-09 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 07:13:32 -0800
-Received: from main.gmane.org ([80.91.224.249])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2XIw-0002Re-HY for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 07:13:30 -0800
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1B2XIu-0003rN-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 14 Mar 2004 16:13:28 +0100
-Received: from pd9e58e3c.dip.t-dialin.net ([217.229.142.60])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 14 Mar 2004 16:13:28 +0100
-Received: from skoehler by pd9e58e3c.dip.t-dialin.net with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 14 Mar 2004 16:13:28 +0100
-From: =?ISO-8859-15?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <c31sqm$ett$1@sea.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] plenty of "/proc/mm map failed" in syslog
+	id 1B2b0w-0006Mx-4h for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 11:11:10 -0800
+Received: from mail.broadpark.no ([217.13.4.2])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1B2b0s-0001pc-Fa for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 11:11:06 -0800
+References: <c31sqm$ett$1@sea.gmane.org>
+From: Adrian Phillips <adrianp@broadpark.no>
+In-Reply-To: <c31sqm$ett$1@sea.gmane.org> (Sven =?iso-8859-1?q?K=F6hler's?=
+	message of "Sun, 14 Mar 2004 16:11:56 +0100")
+Message-ID: <87u10rjlc0.fsf@grannyogg.localnet>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] plenty of "/proc/mm map failed" in syslog
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,53 +27,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Mar 2004 16:11:56 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 14 Mar 2004 20:10:55 +0100
+Content-Transfer-Encoding: quoted-printable
+To: =?iso-8859-1?q?Sven_K=F6hler?= <skoehler@upb.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+>>>>> "Sven" =3D=3D Sven K=F6hler <skoehler@upb.de> writes:
 
-i wrote a simple test-program to stress-test UML.
+    Sven> While executing it, i got plenty of thos messages in syslog:
+    Sven> Mar 14 15:59:01 localhost kernel: 12 Mar 14 15:59:01
+    Sven> localhost kernel: map : /proc/mm map failed, err =3D 12 Mar 14
+    Sven> 15:59:02 localhost last message repeated 1321 times Mar 14
+    Sven> 15:59:02 localhost kernel: 12 Mar 14 15:59:02 localhost
+    Sven> kernel: map : /proc/mm map failed, err =3D 12 Mar 14 15:59:02
+    Sven> localhost last message repeated 3216 times Mar 14 15:59:02
+    Sven> localhost kernel: 12 Mar 14 15:59:02 localhost kernel: map :
+    Sven> /proc/mm map failed, err =3D 12 Mar 14 15:59:02 localhost last
+    Sven> message repeated 786 times Mar 14 15:59:03 localhost kernel:
+    Sven> 12 Mar 14 15:59:03 localhost kernel: map : /proc/mm map
+    Sven> failed, err =3D 12
 
-#!/usr/bin/perl
-while (true)
-{
-   push @a, "a";
-}
+    Sven> I expected perl to get killed or get an "out of
+    Sven> memory"-error, cause the UML didn't have swap and only 128MB
+    Sven> memory.
 
-While executing it, i got plenty of thos messages in syslog:
-Mar 14 15:59:01 localhost kernel:  12
-Mar 14 15:59:01 localhost kernel: map : /proc/mm map failed, err = 12
-Mar 14 15:59:02 localhost last message repeated 1321 times
-Mar 14 15:59:02 localhost kernel:  12
-Mar 14 15:59:02 localhost kernel: map : /proc/mm map failed, err = 12
-Mar 14 15:59:02 localhost last message repeated 3216 times
-Mar 14 15:59:02 localhost kernel:  12
-Mar 14 15:59:02 localhost kernel: map : /proc/mm map failed, err = 12
-Mar 14 15:59:02 localhost last message repeated 786 times
-Mar 14 15:59:03 localhost kernel:  12
-Mar 14 15:59:03 localhost kernel: map : /proc/mm map failed, err = 12
+Please check the user archives for the last 3 months or google for mm
+map failed.
 
-I expected perl to get killed or get an "out of memory"-error, cause the 
-UML didn't have swap and only 128MB memory.
+Sincerely,
 
-So are those errors normal?
-I'm using 2.6.4-um1 in SKAS-mode running on 2.6.4 host patched with 
-BlaisorBlades's 2.6.3-skas3 patch.
+Adrian Phillips
 
-If i run the script on the host-machine, perl get's killed as expected.
-(the new "kill best process"-stuff is not turned on in the host's 
-kernel-config)
-
-Thx
-   Sven
-
+--=20
+Who really wrote the works of William Shakespeare ?
+http://www.pbs.org/wgbh/pages/frontline/shakespeare/
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
