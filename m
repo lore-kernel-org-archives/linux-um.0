@@ -1,9 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200312060005.hB605SAv008268@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Linux-abi and UML? 
-In-Reply-To: Your message of "Fri, 28 Nov 2003 17:21:53 PST."
-             <20031129012153.GA20038@ice.mudshark.org> 
-References: <20031129012153.GA20038@ice.mudshark.org> 
+Message-Id: <200312060005.hB605WAv008278@ccure.user-mode-linux.org>
+Subject: Re: [uml-user] Re: [uml-devel] How to copy COW files to another machine across the network? 
+In-Reply-To: Your message of "Fri, 28 Nov 2003 09:49:41 +0100."
+             <Pine.LNX.4.44.0311280940300.3315-100000@filer.marasystems.com> 
+References: <Pine.LNX.4.44.0311280940300.3315-100000@filer.marasystems.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -17,17 +17,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 05 Dec 2003 19:05:28 -0500
-To: jack@mudshark.org
-Cc: linux-abi-devel@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 05 Dec 2003 19:05:32 -0500
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: Shao-Lin Joseph Chung <sc57@cs.waikato.ac.nz>, UML User list <user-mode-linux-user@lists.sourceforge.net>, UML Devel list <user-mode-linux-devel@lists.sourceforge.net>
 
-jack@mudshark.org said:
-> I'm curious as to whether it is worthwhile to pursue using Linux-ABI
-> under UML, or if there is too much low level x86 evil to make it
-> worthwhile. 
+hno@marasystems.com said:
+> You can't move COW files around unless you make a tool to adjust the
+> COW file header after the move.
 
-One issue is that lcall system calls can't be intercepted.  Fix that, and
-translating the low-level x86 stuff into UML shouldn't be too hard.
+Ummm, you can move COW files around arbitrarily.  It's the backing files
+you need to be careful with.
 
 				Jeff
 
