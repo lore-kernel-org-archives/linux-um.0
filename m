@@ -1,10 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <403FBD07.9000500@nortelnetworks.com>
-From: Chris Friesen <cfriesen@nortelnetworks.com>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AwuPv-00016r-8L for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Feb 2004 18:41:27 -0800
+Received: from externalmx.valinux.com ([198.186.202.147]
+	helo=externalmx.vasoftware.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Awu0U-0000im-UN for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Feb 2004 18:15:10 -0800
+Received: from mail.tor.primus.ca ([216.254.136.21]:45531 helo=notus.primus.ca)
+	by externalmx.vasoftware.com with esmtp 
+	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 4.24 #1 (Debian))
+	id 1AwuEq-0004OF-EK
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 27 Feb 2004 18:30:00 -0800
+Message-ID: <403FFCED.7060201@users.sourceforge.net>
+From: Kuas <ku4s@users.sourceforge.net>
 MIME-Version: 1.0
+Subject: Re: [uml-devel] System Call Mechanism
+References: <40352B06.3030406@users.sourceforge.net>
+	<200402251652.52680.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200402251652.52680.blaisorblade_spam@yahoo.it>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] BUG REPORT -- getting "registered fd 47 twice"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,76 +35,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 Feb 2004 16:56:23 -0500
-To: User-mode-linux-devel@lists.sourceforge.net, User-mode-linux-user@lists.sourceforge.net
+Date: Fri, 27 Feb 2004 21:29:01 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-Got a bug report for you guys, please CC me since I'm not subscribed...
+Hi Blaisor,
 
-I've got a 2.4.24 kernel with the latest uml patch, running on a 2.4.19 
-host.  UML is running just plain, no skas or /dev/anon.  I'm using a 
-whole bunch of boot args, enough that I had to expand the array in 
-init/main.c.
+Thanks for the response and info. I am still confused in how the system 
+call arrive at process.c->userspace(). I guess the proposal in the 
+presentation 
+(http://user-mode-linux.sourceforge.net/slides/ols2002/img21.html), it 
+said the next implementation would be to convert trap call to signal has 
+never been implemented.
 
-Anyways, when I boot it goes through the startup fine, but when it gives 
-the login prompt I see this:
-
-
-DSC-0-0-0 login: Registering fd 47 twice
-Irqs : 3, 3
-Ids : 0xa0261138, 0xa0261138
-Registering fd 47 twice
-Irqs : 3, 3
-Ids : 0xa0261138, 0xa0261138
-
-
-
-The irq 3 corresponds to CONSOLE_IRQ.  When I try and log in it spits 
-out the following, once per character I type:
-
-
-find_irq_by_fd doesn't have descriptor 47
-
-
-Then it starts spewing out the following message until I kill the process:
-
-
-Failed to forward -1439843404 to pid 17758, err = 9
+I checked in SKAS and TT mode, the idtr value is the same as the host 
+machine and I can see from where you pointed, SKAS and TT has the same 
+trap handler for system_call. But I don't really understand ptrace 
+control, I am not totally sure how the system call is being intercepted 
+and sent back to uml ends up in process.c->userspace(). Does every time 
+interrupt is called, it will be caught by the host kernel ptrace and for 
+system call (int 0x80) will be redirected back to the UML process. How 
+does the information about the process that's requesting system call, 
+syscall#, and arguments being passed to the UML Kernel. I understand 
+since SKAS mode has collection of Virtual Address Spaces. Correct me if 
+I'm wrong, will PTRACE_SWITCH_MM first change to the UML kernel process 
+Address Space. But in SKAS mode, the UML kernel is also in the host 
+address space (>0xc0000000), during this state we are already in the 
+kernel space. So which child memory that PTRACE_SWITCH_MM switches when 
+the system call? I am assuming the active Virtual Memory that's being 
+replaced in UML process is the current uml process that generate the 
+system call.
 
 
-Where 17758 is the pid for bash.  With gdb I set a breakpoint in 
-line_setup_irq, and ran a backtrace just before the first error message 
-above.  This is what I got:
+Kuas
 
 
-Breakpoint 5, line_setup_irq (fd=-1608117768, input=-1608117768,
-     output=-1347667284, data=0xa0261200) at line.c:199
-199     {
-(gdb) bt
-#0  line_setup_irq (fd=-1608117768, input=-1608117768, output=-1347667284,
-     data=0xa0261200) at line.c:199
-#1  0xa0126efe in enable_chan (chans=0xa0261200, data=0xa02611f8)
-     at chan_kern.c:164
-#2  0xa01284af in line_open (lines=0xa0261200, tty=0xaa75c000, opts=0x2f)
-     at line.c:255
-#3  0xa0126971 in open_console (tty=0x2f) at stdio_console.c:135
-#4  0xa00efb07 in tty_open (inode=0xaa60d9e0, filp=0xaa380e20) at 
-tty_io.c:1437
-(gdb)
-bre
+BlaisorBlade wrote:
 
+>>I seems to me the new or current implementation of system call involves
+>>conversion from interupt 80 at the host OS into signals back in UML
+>>kernel. Is this the same mechanism for the current TT and SKAS? Or  TT
+>>mode still using ptrace thread tracing mechanism to intercept the system
+>>call?
+>>    
+>>
+>
+>SKAS mode, the more modern one, still uses the same interception mechanism as 
+>TT: i.e. ptraces the child, intercepts the syscall, nullifies it (i.e. the 
+>host kernel receives a getpid syscall) and goes on. Look at these files:
+>
+>arch/um/kernel/skas/process.c: handle_trap () and userspace().
+>arch/um/kernel/skas/syscall_*.c
+>
+>Only difference is that in SKAS mode you have one single child process being 
+>ptraced, on the host; it runs the virtual processes code, and does syscall 
+>with int 0x80 which are intercepted. To do a context switch, UML uses setjmp 
+>and longjmp to switch the stack state and PTRACE_SWITCH_MM (implemented on 
+>the host inside arch/i386/kernel/ptrace.c, read the skas patch) to switch the 
+>virtual mappings of the child at once. More details about memory handling at 
+>request, since you asked for one exact thing and maybe are not interested in 
+>this.
+>
+>  
+>
 
-So, somehow the generic tty_open stuff is giving strange behaviour.  Any 
-ideas what's going on?
-
-Chris
-
-
-
--- 
-Chris Friesen                    | MailStop: 043/33/F10
-Nortel Networks                  | work: (613) 765-0557
-3500 Carling Avenue              | fax:  (613) 765-2986
-Nepean, ON K2H 8E9 Canada        | email: cfriesen@nortelnetworks.com
 
 
 
