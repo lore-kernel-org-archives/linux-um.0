@@ -1,21 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cuffx-00061e-Io for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Jan 2005 15:37:17 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1Cuffs-0002Pt-PD for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Jan 2005 15:37:17 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501290036.51182.blaisorblade@yahoo.it>
-Subject: [uml-devel] SKAS3: prerelease of V8 (against 2.6.9) uploaded
+Message-Id: <200501290539.j0T5dlwM007191@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Wed, 26 Jan 2005 23:10:48 +0100."
+	<200501262310.49814.blaisorblade@yahoo.it> 
+References: <200501262310.49814.blaisorblade@yahoo.it> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [POLL] Putting UML/2.4 into "fixes-only" mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,28 +18,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 29 Jan 2005 00:36:50 +0100
-To: "Christopher S. Aker" <caker@theshore.net>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 29 Jan 2005 00:39:47 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-Ok, I've uploaded the first prerelease of SKAS3 V8... It's uploaded on the 
-web-site, you can start playing for it if you want:
+blaisorblade@yahoo.it said:
+> It's a huge work, but what is more important, it could obviously hurt
+> stability...
 
-http://www.user-mode-linux.org/~blaisorblade/patches/skas3-2.6/skas-2.6.9-v8-rc1/
+Yes.
 
-if you want, impressions are welcome.... I've not yet tested it thoroughly, 
-but it should work well enough.
+> So, I'd suggest to follow this policy to choose the work to merge:
+>
+> - reduce *a lot* what is going to be merged... no new features, no
+> code  cleanups (especially NOT the Makefiles cleanups)...
+>
+> - concentrate on stability... and on backing out the hostfs rewrite. 
 
-I'm particularly interested in seeing it tested on SMP host systems, since 
-I've added some locking and I want to be sure there is no deadlock 
-possibility.
+This makes all kinds of sense.  But, from my point of view, if I'm going 
+maintain both 2.4 and 2.6 trees, I want them to be as similar as possible.
 
-However, *not* on production systems for now... I want to check it more 
-carefully.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+We can go through the patches, and I got a nice list of them, and I was 
+planning on going through them and applying all of the ones that made sense
+in 2.4.
+
+So, your proposal makes sense from the point of a large number of users,
+but you're signing me up for a whole lot of extra work.  So, I'm not too
+inclined to run a stability 2.4 tree, as much sense as it makes.  
+
+Are you?  Or someone else?  I've got this nice list of patches, and I'll
+be happy to go through them and categorize them in terms of their effects
+on stability.
+
+				Jeff
+
 
 
 -------------------------------------------------------
