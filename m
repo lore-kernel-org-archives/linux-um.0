@@ -2,27 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZi5x-0001xp-2c for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 19:57:29 -0800
-Received: from rimuhosting.com ([69.90.33.248])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CZi5w-0002rW-EV
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 19:57:29 -0800
-Received: from [192.168.0.4] (office.rimuhosting.co.nz [222.152.52.159] (may
-	be forged)) (authenticated bits=0)
-	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id iB23vLY5031539
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 2 Dec 2004 03:57:25 GMT
-Message-ID: <41AE92A0.4020401@rimuhosting.com>
-From: Peter <peter.repliesignored@rimuhosting.com>
+	id 1CZnka-0002cM-Do for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Dec 2004 01:59:48 -0800
+Received: from india.tejasnetworks.com ([164.164.94.83]
+	helo=pop-mail.india.tejasnetworks.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CZnkZ-0006gG-Rm for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Dec 2004 01:59:48 -0800
+Message-ID: <41AE6206.60108@india.tejasnetworks.com>
+From: mohit <mohit@india.tejasnetworks.com>
 MIME-Version: 1.0
-References: <20041130193047.3370F8D743@zion.localdomain>
-In-Reply-To: <20041130193047.3370F8D743@zion.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Kernel panic: Kernel stack overflow
+Subject: [uml-devel] UML upgrade
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,26 +26,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 02 Dec 2004 16:57:20 +1300
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 02 Dec 2004 05:59:58 +0530
+To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, "S. Hebbar" <shebbar@india.tejasnetworks.com>, jdike@addtoit.com
 
-Hi.  I get a "Kernel panic: Kernel stack overflow" error message on the 
-UML instance console.  Then the UML instance exits.
+Hi,
 
-I am running a test where I start up then stop a JBoss server.  (This 
-does a bit of network, file and thread related stuff).  The stack 
-overflow happens every 3-8 JBoss restarts.  i.e. it is relatively 
-reproducible.
+I have uml version 2.4.20-1um with 2.4 kernal Redhat system. I am facing 
+some crash related problems when i am running uml. So i want to upgrade 
+it to 2.6.4-1 UML. The patch i got is with different file system. How 
+should i proceed from my present configuration.
 
-The guest kernel is a 2.4.27-bs1.  The host is a 2.6.8.1.  With 
-host-skas3-2.6.7-v1.patch.  (Hmmm, maybe that's it?  Try v7?)
+Regards
+Mohit
 
-What can I do to gather some more useful information about the error for 
-you all?
-
-Or, better still, is there a known fix?
-
-Cheers, Peter
 
 
 -------------------------------------------------------
