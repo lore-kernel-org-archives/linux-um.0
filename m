@@ -2,24 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DH0qY-0005dF-GB for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Mar 2005 06:40:34 -0800
-Received: from pentafluge.infradead.org ([213.146.154.40])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DH0qX-0008Gg-Et
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Mar 2005 06:40:34 -0800
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [uml-devel] Re: [patch 03/12] uml: export getgid for hostfs
-Message-ID: <20050331144026.GA18248@infradead.org>
-References: <20050322162123.890086BA6F@zion>
-	<200503240302.29153.blaisorblade@yahoo.it>
-	<20050329114529.GA26005@infradead.org>
-	<200503302005.26311.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200503302005.26311.blaisorblade@yahoo.it>
+	id 1DGiHX-000158-L3 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 10:51:11 -0800
+Received: from mail-relay-3.tiscali.it ([213.205.33.43])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DGiHV-0002Zm-UQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Mar 2005 10:51:11 -0800
+From: blaisorblade@yahoo.it
+Message-Id: <20050330173352.720FDEFED2@zion>
+Subject: [uml-devel] [patch 4/8] uml: fixes a build failure with
+	CONFIG_MODE_SKAS disabled [for 2.6.12]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,45 +23,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 31 Mar 2005 15:40:26 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
+Date: Wed, 30 Mar 2005 19:33:52 +0200
+To: torvalds@osdl.org
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-On Wed, Mar 30, 2005 at 08:05:26PM +0200, Blaisorblade wrote:
-> > My unaswered reply to the first submission is at
-> >
-> > http://groups-beta.google.com/group/linux.kernel/messages/de9504fe5963ccd1,
-> >0c05294c599b22b1,eab26a4ed3f8ff17?thread_id=16c905c7e28e7498&mode=thread&noh
-> >eader=1&q=uml-export-getgid-for-hostfs#doc_eab26a4ed3f8ff17
-> >
-> > (sorry, couldn't find it on marc), it's been Cc'ed to the lists you sent
-> > the patch to.
-> Sorry, I wasn't clear... I read *that* answer, but it says "as mentioned in 
-> the discussion about ROOT_DEV", and I couldn't find it.
 
-That'd be:
+This fixes a build failure (and also some warnings) when CONFIG_MODE_SKAS is
+disabled.
 
-http://marc.theaimsgroup.com/?l=linux-fsdevel&m=110664428918937&w=2
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-> Also, I'd like to know whether there's a correct way to implement this (using 
-> something different than root_dev, for instance the init[1] root directory 
-> mount device). I understand that with the possibility for multiple mounts the 
-> "root device" is more difficult to know (and maybe this is the reason for 
-> which ROOT_DEV is bogus, is this?), but at least a check on the param 
-> "rootfstype=hostfs" could be done.
+ linux-2.6.11-paolo/arch/um/include/sysdep-i386/ptrace.h   |   16 +++++++-------
+ linux-2.6.11-paolo/arch/um/include/sysdep-x86_64/ptrace.h |    6 ++---
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-personally I think it's a bad misfeature by itself.  If you absolutely
-want it make it a mount option so it's explicit at least.
-
-And yes, the only place where ROOT_DEV makes sense is in the early boot
-process where the first filesystem in the first namespace is mounted, that's
-why I want to get rid of the export to modules for it.
-
-> Ok, this is nice. I'll repost the (updated) patch CC'ing Ingo Molnar (unless 
-> there's another Ingo).
-
-Yupp, mingo
-
+diff -puN arch/um/include/sysdep-i386/ptrace.h~uml-fix-comp-failure-config-mode-skas-disabled arch/um/include/sysdep-i386/ptrace.h
+--- linux-2.6.11/arch/um/include/sysdep-i386/ptrace.h~uml-fix-comp-failure-config-mode-skas-disabled	2005-03-29 17:02:34.000000000 +0200
++++ linux-2.6.11-paolo/arch/um/include/sysdep-i386/ptrace.h	2005-03-29 17:02:34.000000000 +0200
+@@ -9,15 +9,11 @@
+ #include "uml-config.h"
+ #include "user_constants.h"
+ 
+-#ifdef UML_CONFIG_MODE_TT
+-#include "sysdep/sc.h"
+-#endif
+-
+-#ifdef UML_CONFIG_MODE_SKAS
+-
+ #define MAX_REG_NR (UM_FRAME_SIZE / sizeof(unsigned long))
+ #define MAX_REG_OFFSET (UM_FRAME_SIZE)
+ 
++extern void update_debugregs(int seq);
++
+ /* syscall emulation path in ptrace */
+ 
+ #ifndef PTRACE_SYSEMU
+@@ -28,9 +24,13 @@ void set_using_sysemu(int value);
+ int get_using_sysemu(void);
+ extern int sysemu_supported;
+ 
+-#include "skas_ptregs.h"
++#ifdef UML_CONFIG_MODE_TT
++#include "sysdep/sc.h"
++#endif
+ 
+-extern void update_debugregs(int seq);
++#ifdef UML_CONFIG_MODE_SKAS
++
++#include "skas_ptregs.h"
+ 
+ #define REGS_IP(r) ((r)[HOST_IP])
+ #define REGS_SP(r) ((r)[HOST_SP])
+diff -puN arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-comp-failure-config-mode-skas-disabled arch/um/include/sysdep-x86_64/ptrace.h
+--- linux-2.6.11/arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-comp-failure-config-mode-skas-disabled	2005-03-29 17:02:34.000000000 +0200
++++ linux-2.6.11-paolo/arch/um/include/sysdep-x86_64/ptrace.h	2005-03-29 17:02:34.000000000 +0200
+@@ -10,6 +10,9 @@
+ #include "uml-config.h"
+ #include "user_constants.h"
+ 
++#define MAX_REG_OFFSET (UM_FRAME_SIZE)
++#define MAX_REG_NR ((MAX_REG_OFFSET) / sizeof(unsigned long))
++
+ #ifdef UML_CONFIG_MODE_TT
+ #include "sysdep/sc.h"
+ #endif
+@@ -17,9 +20,6 @@
+ #ifdef UML_CONFIG_MODE_SKAS
+ #include "skas_ptregs.h"
+ 
+-#define MAX_REG_OFFSET (UM_FRAME_SIZE)
+-#define MAX_REG_NR ((MAX_REG_OFFSET) / sizeof(unsigned long))
+-
+ #define REGS_IP(r) ((r)[HOST_IP])
+ #define REGS_SP(r) ((r)[HOST_SP])
+ 
+_
 
 
 -------------------------------------------------------
