@@ -1,12 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200309040230.h842UDFs009565@ccure.karaya.com>
-In-Reply-To: Your message of "Wed, 03 Sep 2003 17:06:26 PDT."
-             <3F568202.2060609@linux-sxs.org> 
-References: <200309032033.h83KXM6b013752@ccure.karaya.com>  <3F568202.2060609@linux-sxs.org> 
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp 
+	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
+	id 19ukav-0002nx-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 03 Sep 2003 20:15:37 -0700
+Received: from smtp01.mrf.mail.rcn.net ([207.172.4.60])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 19ukav-00047U-BN
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 03 Sep 2003 20:15:37 -0700
+Received: from 216-15-124-77.c3-0.smr-ubr3.sbo-smr.ma.cable.rcn.com ([216.15.124.77] helo=mizar.alcor.net)
+	by smtp01.mrf.mail.rcn.net with esmtp (Exim 3.35 #4)
+	id 19ukau-00076L-00
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 03 Sep 2003 23:15:36 -0400
+Received: from mdz by mizar.alcor.net with local (Exim 3.36 #1 (Debian))
+	id 19ukau-0005xk-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 03 Sep 2003 23:15:36 -0400
+From: Matt Zimmerman <mdz@debian.org>
+Subject: Re: [uml-devel] uml-patch-2.4.20-7
+Message-ID: <20030904031536.GD20758@alcor.net>
+References: <200308071929.h77JTo5N017958@uml.karaya.com> <3F512995.4050209@vgertech.com> <200309021900.h82J0YHx001746@ccure.karaya.com> <20030903154506.GL7304@alcor.net> <200309040230.h842UBFs009555@ccure.karaya.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [uml-user] uml_utilities_20030903
+Content-Disposition: inline
+In-Reply-To: <200309040230.h842UBFs009555@ccure.karaya.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -17,17 +33,28 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 03 Sep 2003 22:30:13 -0400
-To: Net Llama! <netllama@linux-sxs.org>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 3 Sep 2003 23:15:36 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-netllama@linux-sxs.org said:
-> Is there a changelog available somewhere for inspection? 
+On Wed, Sep 03, 2003 at 10:30:11PM -0400, Jeff Dike wrote:
 
-From my download page, as usual.
+> mdz@debian.org said:
+> > Maybe it wouldn't be so bad to break the existing
+> >     ubdx=cow-file 
+> > syntax, though?
+> 
+> Dunno, how do I go about figuring out how bad that is?
 
-				Jeff
+Float it on the mailing list, I guess...
 
+*waits*
+
+I don't hear any screaming so far. :-)
+
+(I don't use that syntax, personally)
+
+-- 
+ - mdz
 
 
 -------------------------------------------------------
