@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AbzPS-0008KS-Ej for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Jan 2004 01:46:30 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AbzPR-0006O1-PB for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Jan 2004 01:46:29 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: UML patches against vanilla 2.6.0
-References: <200312261905.48277.blaisorblade_spam@yahoo.it>
-	<200312271927.26870.blaisorblade_spam@yahoo.it>
-	<slrnbv12f4.4rj.lunz@absolut.localnet>
-In-Reply-To: <slrnbv12f4.4rj.lunz@absolut.localnet>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
+From: Ingo Molnar <mingo@elte.hu>
+Message-ID: <20040101191630.GA23954@elte.hu>
+References: <Pine.LNX.4.58.0312171735540.8123@earth>
+	<20031217174901.GA6709@ccure.user-mode-linux.org>
+	<Pine.LNX.4.58.0312171924290.12482@earth>
+	<Pine.LNX.4.58.0312172249020.19508@earth>
+	<200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
+	<Pine.LNX.4.58.0312181036220.31295@earth>
+	<Pine.LNX.4.58.0312181122070.32554@earth>
+	<Pine.LNX.4.58.0312181209230.1327@earth>
+	<Pine.LNX.4.58.0312181304250.3617@earth>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200312311858.02382.blaisorblade_spam@yahoo.it>
+In-Reply-To: <Pine.LNX.4.58.0312181304250.3617@earth>
+Subject: [uml-devel] [UML combo patch] uml-combo-2.6.0-A7
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,58 +26,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 31 Dec 2003 18:58:02 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 1 Jan 2004 20:16:30 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-Alle 21:09, luned=EC 29 dicembre 2003, Jason Lunz ha scritto:
-> blaisorblade_spam@yahoo.it said:
+here's a new combo all-in-one UML patch against the vanilla 2.6.0
+kernel:
 
-> > I have some doubts about the 2.6 host-skas patch. I've searched through
-> > the list for earlier ports to 2.6 and I've seen someone (Bryan O'Sulliv=
-an
-> > <bos@serpentine.com>) complaining:
-> >
-> > "The big issue with the skas patches, though, appears to be that they
-> > don't handle the UML kernel being killed, which results in the host
-> > kernel's memory management being completely trashed."
-> >
-> > Is this a real issue or not?
->
-> I think so. I'm running 2.6.0 vanilla + Ingo's combo -A2 on my host,
-> with 2.4.23 UMLs.
-> I tried to do something in the uml involving lots of
-> tmpfs usage, and the host system crashed.
+ 	redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A7
 
-If you use the Ingo's combo patch, maybe it's not the Skas mode itself.
+i've merged the various fixes collected by Paolo, plus fixed a bug in
+the __do_mmap_pgoff() change that caused host kernel bootup hangs. The
+usual disclaimers wrt. devel patches apply.
 
-There is a change in mm/memory.c which is fine for UML, but IMHO probably
-hurts for the host kernel. Looking at the patch he posts, however, he didn'=
-t=20
-use this change, so beyond the mm/memory.c problem there must be another on=
-e.
-
-To test that, you can either select the changes to that file away from the =
-
-patch, or unapply (with -R option to patch) this patch, which contains=20
-exactly that change:
-
-http://web.tiscali.it/no-redirect-tiscali/blaisorblade/linux/archives/UML/v=
-2/A-04-MM-compile-fix.patch
-
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
-
+	Ingo
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
