@@ -1,18 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASZ0B-0000hX-Re
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 01:45:27 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASZ0B-0000mR-7b
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 01:45:27 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] [PATCH] provide asm/ldt.h 
-In-Reply-To: <200312060005.hB6050Av008225@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.44.0312061043110.13464-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash
+Message-ID: <20031206181815.GA11475@ccure.user-mode-linux.org>
+References: <200312060005.hB605IAv008253@ccure.user-mode-linux.org> <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,21 +17,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 6 Dec 2003 10:45:01 +0100 (CET)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Steve Bennett <steveb@snapgear.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 6 Dec 2003 13:18:15 -0500
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-On Fri, 5 Dec 2003, Jeff Dike wrote:
+On Sat, Dec 06, 2003 at 10:41:43AM +0100, Henrik Nordstrom wrote:
+> If there is a way where the above can be done without having to use 
+> bitkeeper then I am all set.
 
-> I don't think that's a great idea.  UML pretends to be the same arch as the 
-> host to userspace, so you should be compiling against the host's headers.
+There's no requirement at all to use BitKeeper.  Feel free to send me patches
+in any reasonable form you want, which in your case would probably just be
+patches.
 
-Which is a bit troublesome on self-hosted UML systems of when building 
-kernel configuration dependent programs.
+I also make plain patches available, so there's no need for BK in order to
+get my tree.  Also, my 2.4 tree, which is where new stuff is added first
+right now, is just in CVS.
 
-Regards
-Henrik
-
+				Jeff
 
 
 -------------------------------------------------------
