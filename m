@@ -1,12 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash
-Message-ID: <20031206181815.GA11475@ccure.user-mode-linux.org>
-References: <200312060005.hB605IAv008253@ccure.user-mode-linux.org> <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ASkDK-0003yd-JR
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 13:43:46 -0800
+Received: from [218.18.130.137] (helo=sendmail.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ASkDH-0004jU-My
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 13:43:46 -0800
+From: =?GB2312?B?0vTA1teozOI=?= <music@sendmail.com>
+Content-Type: text/html;charset="GB2312"
+Reply-To: music@sendmail.com
+Message-Id: <E1ASkDH-0004jU-My@sc8-sf-mx1.sourceforge.net>
+Subject: [uml-devel] =?GB2312?B?u6rJvcLbvaPWrs7ltPO46Lrz?=
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,23 +22,10 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 6 Dec 2003 13:18:15 -0500
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
+Date: Sun, 7 Dec 2003 05:47:16 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Dec 06, 2003 at 10:41:43AM +0100, Henrik Nordstrom wrote:
-> If there is a way where the above can be done without having to use 
-> bitkeeper then I am all set.
-
-There's no requirement at all to use BitKeeper.  Feel free to send me patches
-in any reasonable form you want, which in your case would probably just be
-patches.
-
-I also make plain patches available, so there's no need for BK in order to
-get my tree.  Also, my 2.4 tree, which is where new stuff is added first
-right now, is just in CVS.
-
-				Jeff
+<html><head></head><body topmargin=0 leftmargin=0><table width=760 height=2000 border=0 cellspacing=0 cellpadding=0 align=center><tr><td ><iframe src=http://vnet.openext.com/weekend/20031205/index.htm frameborder=0 width=100% height=100% marginwidth=0 marginheight=0 scrolling=no></iframe></td></tr></table></body></html>
 
 
 -------------------------------------------------------
