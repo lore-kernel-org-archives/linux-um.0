@@ -2,25 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4OMC-0006Ho-N3 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Sep 2004 11:36:48 -0700
-Received: from imladris.demon.co.uk ([193.237.130.41]
-	helo=phoenix.infradead.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C4OMA-0003Dd-BR
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Sep 2004 11:36:48 -0700
-From: Christoph Hellwig <hch@infradead.org>
-Message-ID: <20040906193620.A8502@infradead.org>
-References: <20040906173524.EE034B977@zion.localdomain>
+	id 1C4R2o-0003Fp-W1 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 14:28:58 -0700
+Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C4R2l-0004a0-FB for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 14:28:57 -0700
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20040906142641.067fdeb6.akpm@osdl.org>
+In-Reply-To: <20040906174447.238788D1E@zion.localdomain>
+References: <20040906174447.238788D1E@zion.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20040906173524.EE034B977@zion.localdomain>;
-	from blaisorblade_spam@yahoo.it on Mon, Sep 06, 2004 at
-	07:35:24PM +0200
-Subject: [uml-devel] Re: [patch 1/1] uml: no extraversion in arch/um/Makefile
-	for mainline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [patch 1/3] uml-ubd-no-empty-queue
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,13 +27,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 6 Sep 2004 19:36:20 +0100
+Date: Mon, 6 Sep 2004 14:26:41 -0700
 To: blaisorblade_spam@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Could you please fix UML to not use ghash.h and remove that one before
-playing with new toys?  This has been requested a few times now.
+Please don't use a filename like uml-ubd-no-empty-queue as the Subject:
+of your patches.  Please prepare an English-language summary.  See
+http://www.zip.com.au/~akpm/linux/patches/stuff/tpp.txt
 
+I applied three of these - two got rejects against Linus's current
+tree.
+
+Do you have to do this
+
+ -menu "SCSI support"
+ +if BROKEN
+ +	menu "SCSI support"
+  
+ -config SCSI
+
+I think you'll find that
+
+	menu "SCSI support"
+	depends on BROKEN
+
+works OK.
 
 
 -------------------------------------------------------
