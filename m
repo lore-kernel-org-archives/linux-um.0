@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AooM7-0004Uu-5o
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 10:36:03 -0800
+	id 1Aooya-0001tB-6i
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 11:15:48 -0800
 Received: from mx1.elte.hu ([157.181.1.137])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1AooM6-0007oy-QI
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 10:36:03 -0800
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AooyZ-0006xb-Ai
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 05 Feb 2004 11:15:47 -0800
 From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040205183624.GA5236@elte.hu>
-References: <20040119082805.GA4412@elte.hu> <Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk> <20040120002301.GA5708@elte.hu> <Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk> <Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk> <Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org> <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk> <20040205123057.GA23555@elte.hu> <Pine.GSO.4.58.0402051236350.5177@algedi.dur.ac.uk>
+Message-ID: <20040205191558.GA6580@elte.hu>
+References: <Pine.GSO.4.58.0401200008240.6442@altair.dur.ac.uk> <20040120002301.GA5708@elte.hu> <Pine.LNX.4.58.0401232125410.8188@vega.dur.ac.uk> <Pine.GSO.4.58.0401232342360.24271@altair.dur.ac.uk> <Pine.LNX.4.58.0401241215200.21419@vega.dur.ac.uk> <200401241820.i0OIKHY3002399@ccure.user-mode-linux.org> <Pine.LNX.4.58.0401241923510.27438@vega.dur.ac.uk> <20040205123057.GA23555@elte.hu> <Pine.GSO.4.58.0402051236350.5177@algedi.dur.ac.uk> <20040205183624.GA5236@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.GSO.4.58.0402051236350.5177@algedi.dur.ac.uk>
+In-Reply-To: <20040205183624.GA5236@elte.hu>
 Subject: [uml-devel] Re: tt mode tls/glibc crash with 2.6 (Was: Re: uml-patch-2.6.0)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -25,23 +25,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 5 Feb 2004 19:36:24 +0100
+Date: Thu, 5 Feb 2004 20:15:58 +0100
 To: M A Young <m.a.young@durham.ac.uk>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Gerd Knorr <kraxel@bytesex.org>
 
 
-* M A Young <m.a.young@durham.ac.uk> wrote:
+* Ingo Molnar <mingo@elte.hu> wrote:
 
-> > in tt mode, booting up into /bin/bash seems to work fine and simple
-> > commands work.
-> 
-> I have a fully booting FC1 image (from a slightly hacked anaconda)
-> with this patch and an additional one to avoid the exec-shield host
-> problems.
+> mind sending the archparam-i386.h diff you have? I commented out the
+> creation of the two vsyscall auxiliary entries in ARCH_DLINFO - is
+> that enough? 
 
-mind sending the archparam-i386.h diff you have? I commented out the
-creation of the two vsyscall auxiliary entries in ARCH_DLINFO - is that
-enough? 
+the crash here seems to be that after fork() the contents of GS are lost
+and the next %gs access segfaults due to the #GPF. (which UML mistakes
+for a pagefault and thus gets into an infinite loop.)
+
+if i boot in via init=/bin/bash and do eg a 'exec /bin/ls' then this
+crash doesnt happen, so it's clearly fork() somehow not inheriting the
+LDT setup properly. (which could very well be due to my LDT hackery in
+the 2.6 host-skas3 patch.)
+
+while glibc seems to be innocent, this is clearly triggered by the TLS
+code in glibc. Older glibc works fine.
+
+tt mode seems to work on the other hand - and it doesnt use the LDT op
+in /proc/mm. So newer host-skas3 is apparently broken to a certain
+degree.
 
 	Ingo
 
