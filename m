@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19vutN-0003jB-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 07 Sep 2003 01:27:29 -0700
-Received: from mail2.sonytel.be ([195.0.45.172] helo=witte.sonytel.be)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19vutM-0000VH-BO
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 07 Sep 2003 01:27:28 -0700
-Received: from waterleaf.sonytel.be (localhost [127.0.0.1])
-	by witte.sonytel.be (8.12.9/8.12.9) with ESMTP id h878QQdY018068
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 7 Sep 2003 10:26:26 +0200 (MEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <Pine.GSO.4.21.0309071024510.10218-100000@waterleaf.sonytel.be>
+	id 19wWh7-00085h-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 08 Sep 2003 17:49:21 -0700
+Received: from tailtiu.davidcoulson.net ([207.166.203.132] helo=mail.mx.davidcoulson.net)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.22)
+	id 19wWh6-00009L-Eu
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 08 Sep 2003 17:49:20 -0700
+Message-ID: <3F5D2369.9090704@davidcoulson.net>
+From: David Coulson <david@davidcoulson.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] UML Community Site?
+Subject: Re: [uml-devel] Kernel panic: I/O op mismatch
+References: <Pine.LNX.4.44.0309081936590.26334-100000@gradall.private.brainfood.com>
+In-Reply-To: <Pine.LNX.4.44.0309081936590.26334-100000@gradall.private.brainfood.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,24 +27,23 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 Sep 2003 10:26:26 +0200 (MEST)
-To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 08 Sep 2003 20:48:41 -0400
+To: Adam Heath <adam@doogie.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+Adam Heath wrote:
+> All these combinations had this problem.  However, Host 2.4.21-1um, UML
+> 2.4.20-6um and host 2.4.22, UML 2.4.20-6um ran fine.
 
-The link to the UML Community Site (http://usermodelinux.org/) on
-http://user-mode-linux.sourceforge.net/ gives 404 Not Found.
+I'd bet the mmap stuff broke it - I was going to try to back out the v3 
+COW stuff and mmap, but I figured that was basically -6um anyway ;-)
 
+David
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+David Coulson                                    email: d@vidcoulson.com
+Linux Developer /                          web: http://davidcoulson.net/
+Network Engineer                                   phone: (216) 533-6967
 
 
 
