@@ -1,16 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFcwl-0001Av-0K for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Oct 2004 11:24:59 -0700
-Received: from mail-relay-3.tiscali.it ([213.205.33.43])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CFcwi-0008I1-5F for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Oct 2004 11:24:58 -0700
+	id 1CFcvc-0000rr-PL for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 11:23:48 -0700
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CFcva-0007a7-9S for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 11:23:48 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041007182257.2D5B7D85E@zion.localdomain>
-Subject: [uml-devel] [patch 2/2] uml: fix major & minor handling in hostfs
+Message-Id: <20041007182254.B3A8A49BA@zion.localdomain>
+Subject: [uml-devel] [patch 1/2] uml: fix fd leak with HostFs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,101 +22,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 07 Oct 2004 20:22:57 +0200
+Date: Thu, 07 Oct 2004 20:22:54 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Currently hostfs passes the rdev value from stat() on the host as rdev value
-to return to stat() on the guest; but we cannot pass rdev as is because glibc
-and the kernel disagree about its definition. So we must decode it in a
-major/minor couple with glibc macros and re-encode it in kernelspace code.
+On 2.4 we used force_delete() to make sure inode were not cached, and we then
+close the host file when the inode is cleared; when porting to 2.6 the
+"force_delete" thing was dropped, and this patch adds a fix for this (by
+setting drop_inode = generic_delete_inode).
+
+Search for drop_inode in the 2.6 Documentation/filesystems/vfs.txt for info
+about this.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.9-current-paolo/fs/hostfs/hostfs.h      |    2 +-
- linux-2.6.9-current-paolo/fs/hostfs/hostfs_kern.c |   11 ++++++++---
- linux-2.6.9-current-paolo/fs/hostfs/hostfs_user.c |   10 +++++++---
- 3 files changed, 16 insertions(+), 7 deletions(-)
+ linux-2.6.9-current-paolo/fs/hostfs/hostfs_kern.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff -puN fs/hostfs/hostfs.h~uml-hostfs-fix-maj-min fs/hostfs/hostfs.h
---- linux-2.6.9-current/fs/hostfs/hostfs.h~uml-hostfs-fix-maj-min	2004-10-07 17:38:01.759274464 +0200
-+++ linux-2.6.9-current-paolo/fs/hostfs/hostfs.h	2004-10-07 17:38:01.763273856 +0200
-@@ -38,7 +38,7 @@ extern int stat_file(const char *path, u
- 		     int *blksize_out, unsigned long long *blocks_out);
- extern int access_file(char *path, int r, int w, int x);
- extern int open_file(char *path, int r, int w, int append);
--extern int file_type(const char *path, int *rdev);
-+extern int file_type(const char *path, int *maj, int *min);
- extern void *open_dir(char *path, int *err_out);
- extern char *read_dir(void *stream, unsigned long long *pos,
- 		      unsigned long long *ino_out, int *len_out);
-diff -puN fs/hostfs/hostfs_kern.c~uml-hostfs-fix-maj-min fs/hostfs/hostfs_kern.c
---- linux-2.6.9-current/fs/hostfs/hostfs_kern.c~uml-hostfs-fix-maj-min	2004-10-07 17:38:01.760274312 +0200
-+++ linux-2.6.9-current-paolo/fs/hostfs/hostfs_kern.c	2004-10-07 17:38:01.764273704 +0200
-@@ -18,6 +18,7 @@
- #include <linux/buffer_head.h>
- #include <linux/root_dev.h>
- #include <linux/statfs.h>
-+#include <linux/kdev_t.h>
- #include <asm/uaccess.h>
- #include "hostfs.h"
- #include "kern_util.h"
-@@ -230,7 +231,7 @@ static int read_inode(struct inode *ino)
- 	if(name == NULL)
- 		goto out;
- 
--	if(file_type(name, NULL) == OS_TYPE_SYMLINK){
-+	if(file_type(name, NULL, NULL) == OS_TYPE_SYMLINK){
- 		name = follow_link(name);
- 		if(IS_ERR(name)){
- 			err = PTR_ERR(name);
-@@ -523,13 +524,17 @@ static struct address_space_operations h
- static int init_inode(struct inode *inode, struct dentry *dentry)
+diff -puN fs/hostfs/hostfs_kern.c~uml-HostFs-2.6-fd_leak fs/hostfs/hostfs_kern.c
+--- linux-2.6.9-current/fs/hostfs/hostfs_kern.c~uml-HostFs-2.6-fd_leak	2004-10-07 17:38:01.075378432 +0200
++++ linux-2.6.9-current-paolo/fs/hostfs/hostfs_kern.c	2004-10-07 20:21:52.868718656 +0200
+@@ -290,7 +290,6 @@ static void hostfs_delete_inode(struct i
  {
- 	char *name;
--	int type, err = -ENOMEM, rdev;
-+	int type, err = -ENOMEM;
-+	int maj, min;
-+	dev_t rdev = 0;
- 
- 	if(dentry){
- 		name = dentry_name(dentry, 0);
- 		if(name == NULL)
- 			goto out;
--		type = file_type(name, &rdev);
-+		type = file_type(name, &maj, &min);
-+		/*Reencode maj and min with the kernel encoding.*/
-+		rdev = MKDEV(maj, min);
- 		kfree(name);
+ 	if(HOSTFS_I(inode)->fd != -1) {
+ 		close_file(&HOSTFS_I(inode)->fd);
+-		printk("Closing host fd in .delete_inode\n");
+ 		HOSTFS_I(inode)->fd = -1;
  	}
- 	else type = OS_TYPE_DIR;
-diff -puN fs/hostfs/hostfs_user.c~uml-hostfs-fix-maj-min fs/hostfs/hostfs_user.c
---- linux-2.6.9-current/fs/hostfs/hostfs_user.c~uml-hostfs-fix-maj-min	2004-10-07 17:38:01.761274160 +0200
-+++ linux-2.6.9-current-paolo/fs/hostfs/hostfs_user.c	2004-10-07 17:38:01.764273704 +0200
-@@ -54,14 +54,18 @@ int stat_file(const char *path, unsigned
- 	return(0);
- }
+ 	clear_inode(inode);
+@@ -301,9 +300,11 @@ static void hostfs_destroy_inode(struct 
+ 	if(HOSTFS_I(inode)->host_filename)
+ 		kfree(HOSTFS_I(inode)->host_filename);
  
--int file_type(const char *path, int *rdev)
-+int file_type(const char *path, int *maj, int *min)
- {
-  	struct stat64 buf;
++	/*XXX: This should not happen, probably. The check is here for
++	 * additional safety.*/
+ 	if(HOSTFS_I(inode)->fd != -1) {
+ 		close_file(&HOSTFS_I(inode)->fd);
+-		printk("Closing host fd in .destroy_inode\n");
++		printk(KERN_DEBUG "Closing host fd in .destroy_inode\n");
+ 	}
  
- 	if(lstat64(path, &buf) < 0)
- 		return(-errno);
--	if(rdev != NULL)
--		*rdev = buf.st_rdev;
-+	/*We cannot pass rdev as is because glibc and the kernel disagree
-+	 *about its definition.*/
-+	if(maj != NULL)
-+		*maj = major(buf.st_rdev);
-+	if(min != NULL)
-+		*min = minor(buf.st_rdev);
- 
- 	if(S_ISDIR(buf.st_mode)) return(OS_TYPE_DIR);
- 	else if(S_ISLNK(buf.st_mode)) return(OS_TYPE_SYMLINK);
+ 	kfree(HOSTFS_I(inode));
 _
 
 
