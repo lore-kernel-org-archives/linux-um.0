@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CySWn-00020a-8h for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 02:23:29 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CySWj-0006Ju-CL for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Feb 2005 02:23:29 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
+	id 1CySo0-0002rO-JR for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 02:41:16 -0800
+Received: from ppsw-8.csi.cam.ac.uk ([131.111.8.138])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CySny-0008CR-Tv for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Feb 2005 02:41:16 -0800
+From: Anton Altaparmakov <aia21@cam.ac.uk>
+In-Reply-To: <200502081122.22613.blaisorblade@yahoo.it>
 References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
-In-Reply-To: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+	<200502081122.22613.blaisorblade@yahoo.it>
+Content-Type: text/plain
+Message-Id: <1107859254.582.4.camel@imp.csi.cam.ac.uk>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200502081122.22613.blaisorblade@yahoo.it>
 Subject: [uml-devel] Re: [BUG report] UML linux-2.6 latest BK doesn't compile
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -29,56 +28,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Feb 2005 11:22:22 +0100
-To: Anton Altaparmakov <aia21@cam.ac.uk>
+Date: Tue, 08 Feb 2005 10:40:54 +0000
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 08 February 2005 11:09, Anton Altaparmakov wrote:
-> Hi,
->
-> With the current linux-2.6 BK tree I get this when trying to compile
-> UML:
->
->   CC      init/version.o
->   LD      init/built-in.o
->   LD      .tmp_vmlinux1
-> arch/um/kernel/built-in.o(__ksymtab+0x2b0): In function `um_execve':
-> arch/um/kernel/exec_kern.c:59: undefined reference to `__bb_init_func'
-> collect2: ld returned 1 exit status
->   KSYM    .tmp_kallsyms1.S
-> nm: '.tmp_vmlinux1': No such file
-> /bin/bash: line 1: 26161 Exit 1                  nm -n .tmp_vmlinux1
->      26162 Segmentation fault      | scripts/kallsyms >.tmp_kallsyms1.S
-> make: *** [.tmp_kallsyms1.S] Error 139
->
-> This is with SKAS mode enabled and TT disabled.  My .config is attached.
+On Tue, 2005-02-08 at 11:22 +0100, Blaisorblade wrote:
+> On Tuesday 08 February 2005 11:09, Anton Altaparmakov wrote:
+> > Hi,
+> >
+> > With the current linux-2.6 BK tree I get this when trying to compile
+> > UML:
+> >
+> >   CC      init/version.o
+> >   LD      init/built-in.o
+> >   LD      .tmp_vmlinux1
+> > arch/um/kernel/built-in.o(__ksymtab+0x2b0): In function `um_execve':
+> > arch/um/kernel/exec_kern.c:59: undefined reference to `__bb_init_func'
+> > collect2: ld returned 1 exit status
+> >   KSYM    .tmp_kallsyms1.S
+> > nm: '.tmp_vmlinux1': No such file
+> > /bin/bash: line 1: 26161 Exit 1                  nm -n .tmp_vmlinux1
+> >      26162 Segmentation fault      | scripts/kallsyms >.tmp_kallsyms1.S
+> > make: *** [.tmp_kallsyms1.S] Error 139
+> >
+> > This is with SKAS mode enabled and TT disabled.  My .config is attached.
+> 
+> Hmm - I do not understand at all where `__bb_init_func' comes from (not from 
+> UML by sure, only from kernel headers possibly). And from preprocessing the 
+> source (of the -bk4 snapshot), nothing similar comes out.
 
-Hmm - I do not understand at all where `__bb_init_func' comes from (not from 
-UML by sure, only from kernel headers possibly). And from preprocessing the 
-source (of the -bk4 snapshot), nothing similar comes out.
+It is from UML.  'bk -r grep __bb_init_func' gives:
 
-long um_execve(char *file, char * *argv, char * *env)
-{
- long err;
+arch/um/kernel/gmon_syms.c      1.1     extern void __bb_init_func(void
+*);
+arch/um/kernel/gmon_syms.c      1.1     EXPORT_SYMBOL(__bb_init_func);
 
- err = execve1(file, argv, env);
- if(!err)
-  do_longjmp((current_thread_info()->task)->thread.exec_buf, 1);
- return(err);
-}
+The kernel compiles fine with the same .config but TT mode also enabled.
 
-make arch/um/kernel/exec_kern.i ARCH=um
+So I suspect that in the non-TT case the gmon_syms binary doesn't get
+linked into the kernel so the symbol is missing or something like
+that...
 
-grep bb_init arch/um/kernel/exec_kern.i
-gives nothing (tested with your config, too).
+Also note I am using the latest BK as pulled about an hour ago.  I don't
+know how old the snapshot you are using is in comparison.  Lots of UML
+changes were pulled in by my pull...
 
-Try adding a "#undef execve1" before the problematic line, and reporting (here 
-I don't get the failure).
+Best regards,
+
+        Anton
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
+Anton Altaparmakov <aia21 at cam.ac.uk> (replace at with @)
+Unix Support, Computing Service, University of Cambridge, CB2 3QH, UK
+Linux NTFS maintainer / IRC: #ntfs on irc.freenode.net
+WWW: http://linux-ntfs.sf.net/ & http://www-stu.christs.cam.ac.uk/~aia21/
 
 
 
