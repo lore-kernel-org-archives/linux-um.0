@@ -2,21 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19wzlH-0003MN-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 10 Sep 2003 00:51:35 -0700
-Received: from gate.in-addr.de
-	([212.8.193.158] helo=mx.in-addr.de ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19wzlF-000472-Fg
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Sep 2003 00:51:33 -0700
-From: Lars Marowsky-Bree <lmb@suse.de>
-Subject: Re: [uml-devel] "Kernel panic: Segfault with no mm"
-Message-ID: <20030910074915.GJ10485@marowsky-bree.de>
-References: <20030909180126.GC10485@marowsky-bree.de> <200309091914.h89JE6ja000983@car.linuxhacker.ru> <20030909193437.GE10485@marowsky-bree.de> <200309092233.h89MXO2J005300@ccure.karaya.com>
+	id 19x3QT-00081k-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 10 Sep 2003 04:46:21 -0700
+Received: from mx04.covadmail.net ([63.65.120.64] helo=smtp.covadmail.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
+	id 19x3QS-0003ld-75
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Sep 2003 04:46:20 -0700
+From: Paul Giordano <giordano@covad.net>
+Content-Type: text/plain
+Message-Id: <1063194344.5333.6.camel@tyan.crapulence.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-In-Reply-To: <200309092233.h89MXO2J005300@ccure.karaya.com>
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: uml-patch-2.6.0-test5
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -27,30 +24,28 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 10 Sep 2003 09:49:15 +0200
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 10 Sep 2003 06:45:44 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
 
-On 2003-09-09T18:33:24,
-   Jeff Dike <jdike@addtoit.com> said:
+Applied to linux-2.6.0-test5-mm1, compile fails with 
 
-> > But on the host, I'd get a panic which said which kernel module
-> > caused it etc. Is that not to be expected in UML?=20
-> UML is lacking some of the debugging stuff present in the other ports.
-> No big problem to add, but I haven't seen any pressing need for it.
+arch/i386/kernel/sys_i386.c: In function `do_mmap2':
+arch/i386/kernel/sys_i386.c:59: warning: passing arg 1 of
+`do_mmap_pgoff' from incompatible pointer type
+arch/i386/kernel/sys_i386.c:59: warning: passing arg 2 of
+`do_mmap_pgoff' makes pointer from integer without a cast
+arch/i386/kernel/sys_i386.c:59: error: too few arguments to function
+`do_mmap_pgoff'
+make[1]: *** [arch/i386/kernel/sys_i386.o] Error 1
+make: *** [arch/i386/kernel] Error 2
 
-Ah, ok, so all is well. I was just wondering about the strange panic.
+Seems all the do_mmap_pgoff's will fail with the change made in
+mmap.c.While I understand the change is to enable compilation of a uml
+kernel, it really shouldn't break the normal compiles as well, should
+it?
 
-Thanks.
-
-
-Sincerely,
-    Lars Marowsky-Br=E9e <lmb@suse.de>
-
---=20
-High Availability & Clustering		ever tried. ever failed. no matter.
-SuSE Labs				try again. fail again. fail better.
-Research & Development, SuSE Linux AG		-- Samuel Beckett
+Regards,
+Gio
 
 
 
