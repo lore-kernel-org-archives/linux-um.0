@@ -1,20 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20040101191630.GA23954@elte.hu>
-References: <Pine.LNX.4.58.0312171735540.8123@earth>
-	<20031217174901.GA6709@ccure.user-mode-linux.org>
-	<Pine.LNX.4.58.0312171924290.12482@earth>
-	<Pine.LNX.4.58.0312172249020.19508@earth>
-	<200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
-	<Pine.LNX.4.58.0312181036220.31295@earth>
-	<Pine.LNX.4.58.0312181122070.32554@earth>
-	<Pine.LNX.4.58.0312181209230.1327@earth>
-	<Pine.LNX.4.58.0312181304250.3617@earth>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0312181304250.3617@earth>
-Subject: [uml-devel] [UML combo patch] uml-combo-2.6.0-A7
+Message-ID: <01a501c3d14d$33b235b0$6f01a8c0@alex>
+From: "Alexander Newald" <alexander@newald.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Suspend to disk of uml session?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,19 +17,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 1 Jan 2004 20:16:30 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 2 Jan 2004 17:26:39 +0100
+To: User-mode-linux-user@lists.sourceforge.net
+Cc: User-mode-linux-devel@lists.sourceforge.net
 
-here's a new combo all-in-one UML patch against the vanilla 2.6.0
-kernel:
+Hello,
 
- 	redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A7
+I wonder if it is possible to add or use a features like "suspend to disk"
+for an uml session.
 
-i've merged the various fixes collected by Paolo, plus fixed a bug in
-the __do_mmap_pgoff() change that caused host kernel bootup hangs. The
-usual disclaimers wrt. devel patches apply.
+Like: Somehow (uml_console) call a feature that will pause the uml and write
+all of its "ram" to a file and than end the uml session. After that I copy
+the disk image, the uml linux binary and the "ram" file to another mashine
+and resume the uml.
 
-	Ingo
+Thanks for reading this litte curious message.
+
+Alexander Newald
+
 
 
 -------------------------------------------------------
