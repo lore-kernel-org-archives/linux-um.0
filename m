@@ -1,15 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Michael Halcrow <uml@halcrow.us>
-Message-ID: <20041118174324.GA8993@halcrow.us>
-Reply-To: Michael Halcrow <uml@halcrow.us>
-References: <20041118160909.GA7630@halcrow.us>
-	<200411181839.26596.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
-Content-Disposition: inline
-In-Reply-To: <200411181839.26596.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] keyring syscalls
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CUrU4-0004NH-SE for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2004 10:58:20 -0800
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CUrU4-0001Nc-6O for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2004 10:58:20 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.58.0411181339460.4151@sparrow>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] UID's no longer carried over hostfs?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,58 +25,79 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Nov 2004 11:43:24 -0600
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: Michael Halcrow <uml@halcrow.us>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 18 Nov 2004 13:57:56 -0500 (EST)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: William Stearns <wstearns@pobox.com>, Jeff Dike <jdike@addtoit.com>
 
+Good day, all,
 
---BOKacYhQ+x31HxR3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	On the host:
 
-On Thu, Nov 18, 2004 at 06:39:26PM +0100, Blaisorblade wrote:
-> On Thursday 18 November 2004 17:09, Michael Halcrow wrote:
-> > Howdy folks,
-> >
-> > I am attempting to use David Howells' new keyring in 2.6.10-rc2
-> > UML and am getting a ``Function not implemented'' error with
-> > keyctl.  I was getting that in my host kernel until I mucked with
-> > the __NR_* #define's in the userspace keyctl.c to align with the
-> > values in the 2.6.10-rc2 entry.S.  I imagine that new syscalls
-> > require some magic in UML that I am unfamiliar with.  I tried
-> > adding some entries to arch/um/include/sysdep-i386/syscalls.h for
-> > keyctl et. al., to no avail, but I'm kind of shooting the dark
-> > here.
->
-> Ok, please list the new syscalls - I see at least add_key() and
-> request_key() too - are these three the only ones? I'll build the
-> patch ASAP when getting your answer.
+drwxr-xr-x    3 spamgate spamgate   184320 Nov 18 13:27 .
+drwxr-xr-x    3 spamgate spamgate     4096 Jun  6 19:20 ..
+drwxr-xr-x    4 spamgate spamgate  2170880 Nov 16 00:05 archives
+-rw-rw-r--    1 spamgate spamgate    55975 Apr  4  2004 bogus-domain-info.txt
+-rw-rw-r--    1 spamgate spamgate   209393 Nov 15  2003 confused_spammer.jpg
+-rw-rw-r--    1 spamgate spamgate     3251 Nov 15  2003 confused_spammer.thumb.jpg
 
-Yes, those are the only three.  Thanks!
+	fstab in the vm:
+-bash-2.05b# cat /etc/fstab
+/dev/ubd/0      /               ext2    defaults 1 1
+/proc           /proc           proc    defaults
+devpts          /dev/pts        devpts  mode=0622 0 0
+/dev/ubd/1      none            swap    sw
+/dev/ubd/2      /home           ext3    defaults 0 0
+none            /shared         hostfs  defaults,/home/shared   0 0
+none            /pub            hostfs  defaults,/home/pub      0 0
+none            /mirrors        hostfs  defaults,/home/mirrors  0 0
 
-Mike
-=2E___________________________________________________________________.
-                         Michael A. Halcrow                         =20
-       Security Software Engineer, IBM Linux Technology Center      =20
-GnuPG Fingerprint: 05B5 08A8 713A 64C1 D35D  2371 2D3C FDDA 3EB6 601D
+	VM booted into 2.4.23:
+-bash-2.05b# uname -a
+Linux spamgate.stearns.org 2.4.23-pre8-5um #2 Sat Oct 25 18:07:50 EDT 2003 
+i686 i686 i386 GNU/Linux
+-bash-2.05b# ls -al /shared/spamgate/sa-blacklist-web/ | head
+total 97160
+drwxr-xr-x  3 processing processing  184320 Nov 18 13:27 .
+drwxr-xr-x  3 processing processing    4096 Jun  6 19:20 ..
+-rw-rw-r--  1 processing processing    3027 Feb  1  2004 README
+-rw-rw-r--  1 processing processing    1865 Dec 14  2003 README.findingspammers.html
+-rw-rw-r--  1 processing processing    2134 Apr 21  2004 README.howtotest.html
+-rw-rw-r--  1 processing processing    7497 Apr 24  2004 README.howtouse.html
+-rw-rw-r--  1 processing processing    1400 Feb  1  2004 README.policy
+-rw-rw-r--  1 processing processing    3315 Apr 24  2004 README.submissions.html
+drwxr-xr-x  4 processing processing 2170880 Nov 16 00:05 archives
 
-"Never go to a doctor whose office plants have died."               =20
- - Erma Bombeck=20
+	VM booted into 2.4.27:
+-bash-2.05b# uname -a
+Linux spamgate.stearns.org 2.4.27-1um #1 Fri Nov 12 11:53:23 EST 2004 i686 i686 i386 GNU/Linux
 
---BOKacYhQ+x31HxR3
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+drwxr-xr-x  3 root root  184320 Nov 15 23:16 .
+drwxr-xr-x  3 root root    4096 Jun  6 19:20 ..
+-rw-rw-r--  5 root root    3027 Feb  1  2004 README
+-rw-rw-r--  5 root root    1865 Dec 14  2003 README.findingspammers.html
+-rw-rw-r--  5 root root    2134 Apr 21  2004 README.howtotest.html
+-rw-rw-r--  5 root root    7497 Apr 24  2004 README.howtouse.html
+-rw-rw-r--  5 root root    1400 Feb  1  2004 README.policy
+-rw-rw-r--  5 root root    3315 Apr 24  2004 README.submissions.html
+drwxr-xr-x  4 root root 2170880 Nov 16 00:05 archives
+-rw-rw-r--  1 root root   55975 Apr  4  2004 bogus-domain-info.txt
+-rw-rw-r--  1 root root  209393 Nov 15  2003 confused_spammer.jpg
+-rw-rw-r--  1 root root    3251 Nov 15  2003 confused_spammer.thumb.jpg
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+	I was used to the behavior that UID's were carried by hostfs 
+verbatim, and this allowed the "processing" user or root to write out to 
+the host.  With 2.4.27 decreeing that all files are owned by root, I can't 
+do this any more.
+	Cheers,
+	- Bill
 
-iD8DBQFBnN88LTz92j62YB0RAjI+AJ4sgHfT3eUNvix3v9rQrW3/ltf+rACfYxux
-yR+AMIGRsfuvlmBVrWz70Ek=
-=nvrE
------END PGP SIGNATURE-----
-
---BOKacYhQ+x31HxR3--
+---------------------------------------------------------------------------
+        "Evil, I think, is the absence of empathy."
+        -- Psychiatrist in the movie "Nuremburg"
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
