@@ -1,22 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9Bu9-0003mu-Do for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 16:51:57 -0800
-Received: from fire.osdl.org ([65.172.181.4] helo=smtp.osdl.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1D9Bu6-000419-Ui
+	id 1D9D6Q-0001FN-N0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Mar 2005 18:08:42 -0800
+Received: from 70-56-134-246.albq.qwest.net ([70.56.134.246]
+	helo=montezuma.fsmlabs.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1D9D6P-0008PM-6c
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2005 16:51:57 -0800
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20050309165122.47221983.akpm@osdl.org>
-In-Reply-To: <200503100216.j2A2G6DN015238@ccure.user-mode-linux.org>
-References: <200503100216.j2A2G6DN015238@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [PATCH 5/9] UML - change semaphores to completions
+	Wed, 09 Mar 2005 18:08:42 -0800
+From: Zwane Mwaikambo <zwane@arm.linux.org.uk>
+In-Reply-To: <Pine.LNX.4.61.0503091840210.22633@chaos.analogic.com>
+Message-ID: <Pine.LNX.4.61.0503091908040.2903@montezuma.fsmlabs.com>
+References: <20050309094234.8FC0C6477@zion>
+	<20050309171231.H25398@flint.arm.linux.org.uk>
+	<200503092052.24803.blaisorblade@yahoo.it>
+	<20050309224259.J25398@flint.arm.linux.org.uk>
+	<20050309145044.764bc056.akpm@osdl.org>
+	<Pine.LNX.4.61.0503091840210.22633@chaos.analogic.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Re: [patch 1/1] unified spinlock initialization
+	arch/um/drivers/port_kern.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,28 +34,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 9 Mar 2005 16:51:22 -0800
-To: Jeff Dike <jdike@addtoit.com>
-Cc: torvalds@osdl.org, simlo@phys.au.dk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 9 Mar 2005 19:09:08 -0700 (MST)
+To: linux-os <linux-os@analogic.com>
+Cc: Andrew Morton <akpm@osdl.org>, Russell King <rmk+lkml@arm.linux.org.uk>, blaisorblade@yahoo.it, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, domen@coderock.org, amitg@calsoftinc.com, gud@eth.net
 
-Jeff Dike <jdike@addtoit.com> wrote:
->
-> @@ -197,13 +197,14 @@
->   		{ .list 	 	= LIST_HEAD_INIT(port->list),
->   		  .wait_count		= ATOMIC_INIT(0),
->   		  .has_connection 	= 0,
->  -		  .sem 			= __SEMAPHORE_INITIALIZER(port->sem, 
->  -								  0),
->   		  .lock 		= SPIN_LOCK_UNLOCKED,
->   		  .port 	 	= port_num,
->   		  .fd  			= fd,
->   		  .pending 		= LIST_HEAD_INIT(port->pending),
->   		  .connections 		= LIST_HEAD_INIT(port->connections) });
->  +
->  +	init_completion(&port->done), 
->  +
+On Wed, 9 Mar 2005, linux-os wrote:
 
-I'll convert that to a semicolon...
+> We need to retain the spin_lock_init(&lock) because not all spin-locks
+> are allocated at compile-time. They might be allocated from kmalloc()
+> on startup, probably in a structure, along with other so-called
+> global data.
+
+Not to worry my good man, it's not going anywhere.
 
 
 -------------------------------------------------------
