@@ -1,28 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BRsyJ-00013P-L7 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 06:24:59 -0700
+	id 1BRu5i-0005e9-WF for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 07:36:43 -0700
 Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BRsyI-00063v-UZ for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 May 2004 06:24:59 -0700
-Message-ID: <07f201c440ca$5686c1e0$2000000a@schlepptopp>
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BRu5i-0004r7-Ag for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 May 2004 07:36:42 -0700
+Message-ID: <081901c440d4$5b703060$2000000a@schlepptopp>
 From: "roland" <for_spam@gmx.de>
-References: <20040229043549.GA8583@ccure.user-mode-linux.org>
-	<02dc01c43c4a$bb7c0490$2000000a@schlepptopp>
-	<1084831251.1230.4.camel@chartreuse>
-	<03ff01c43c5d$7db6e5e0$2000000a@schlepptopp>
-	<20040518175904.GB29114@ccure.user-mode-linux.org>
-	<1084987654.2250.4.camel@chartreuse>
-	<012201c43dcb$402ca6a0$2000000a@schlepptopp>
-	<1084990661.2255.28.camel@chartreuse>
-	<018a01c43dd9$0173f270$2000000a@schlepptopp>
-	<1084996157.2256.36.camel@chartreuse>
-	<05a001c43e12$7affe2a0$2000000a@schlepptopp>
-	<1085057350.1197.2.camel@chartreuse>
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory 
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
@@ -38,83 +26,168 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 May 2004 15:31:59 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Laurent Vivier <LaurentVivier@wanadoo.fr>
+Date: Sun, 23 May 2004 16:43:47 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-hi,
-i know  - i`m an awful bad programmer - but perhaps someone can help me implementing /proc/sysemu ?
-that`s somewhat "cosmetic stuff" for turning sysemu (http://perso.wanadoo.fr/laurent.vivier/UML)
-on/off at runtime. (yes - this isn`t really important feature - but i would like to have that feature
-and i like hacking it for programming exercise purpose) :)
+hi !
 
-i added the following to arch/um/kernel/process.c (that`s, where most of the sysemu patch goes into):
+ > /sbin/ifup: line 540: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 1: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 1: /dev/fd/61: No such file or directory
+> > /sbin/ifup: line 171: /dev/fd/62: No such file or directory
 
-#include "linux/proc_fs.h"
-#include "linux/file.h"
+ahh - found it !
+that`s not an uml bug but a devfs issue.
 
-static struct file_operations proc_sysemu_fops;
+http://linuxfromscratch.org/pipermail/lfs-support/2002-August/009320.html
+gave me the hint.
 
-static int make_proc_sysemu(void)
-{
-    struct proc_dir_entry *ent;
-    ent = create_proc_entry("sysemu", 0x777, &proc_root);
-    if(ent == NULL){
-             printk("Failed to register /proc/sysemu\n");
-             return(0);
-    }
-    ent->proc_fops = &proc_mm_fops;
+suse9.1 doesn`t use devfs - but my uml had devfs compiled in and it was
+switched on during boot.
+so - it`s important to make sure, that devfs isn`t active (devfs=nomount) in uml 
+on distro`s which don`t use devfs.
 
-    return(0);
-}
+if you need devfs and experience that issue, it can be workarounded, though:
 
-compile fails with:
-
-gcc  -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -U__i386__ -Ui386 -D__arch_um__ -DSUBARCH=\"i386\" -D
-_LARGEFILE64_SOURCE   -Iarch/um/include  -I/tmp/uml/2.6.6/linux-2.6.6/arch/um/kernel/tt/include -I/tmp/uml/2.6.6/linux-2.6.6/arch/um
-/kernel/skas/include -D_GNU_SOURCE -Os -g -c -o arch/um/kernel/process.o arch/um/kernel/process.c
-In file included from arch/um/kernel/process.c:47:
-/usr/include/linux/proc_fs.h:244: error: field `vfs_inode' has incomplete type
-/usr/include/linux/proc_fs.h: In function `PROC_I':
-/usr/include/linux/proc_fs.h:249: error: parse error before "struct"
-In file included from arch/um/kernel/process.c:48:
-/usr/include/linux/file.h: At top level:
-/usr/include/linux/file.h:33: error: `BITS_PER_LONG' undeclared here (not in a function)
-arch/um/kernel/process.c: In function `make_proc_sysemu':
-arch/um/kernel/process.c:61: error: `proc_mm_fops' undeclared (first use in this function)
-arch/um/kernel/process.c:61: error: (Each undeclared identifier is reported only once
-arch/um/kernel/process.c:61: error: for each function it appears in.)
-arch/um/kernel/process.c: At top level:
-arch/um/kernel/process.c:313: warning: initialization from incompatible pointer type
-arch/um/kernel/process.c:50: error: storage size of `proc_sysemu_fops' isn't known
-arch/um/kernel/process.c:50: warning: `proc_sysemu_fops' defined but not used
-arch/um/kernel/process.c:53: warning: `make_proc_sysemu' defined but not used
-make[1]: *** [arch/um/kernel/process.o] Error 1
-make: *** [arch/um/kernel] Error 2
-
-
-this looks like the wrong header-files being included.
-scratching my head now.....
-
-can someone give me a hint ?
+ln -snf /proc/self/fd /dev/fd
 
 regards
 roland
 
-ps:
-sorry - maybe this is a dumb error and maybe i shouldn`t start with such complex things -
-but i don`t like to program the tutorials written down in a c-programming book :)
+
 
 
 
 ----- Original Message ----- 
-From: "Laurent Vivier" <LaurentVivier@wanadoo.fr>
-To: "roland" <for_spam@gmx.de>
-Cc: <user-mode-linux-devel@lists.sourceforge.net>; "Jeff Dike" <jdike@addtoit.com>; <blaisorblade_spam@yahoo.it>
-Sent: Thursday, May 20, 2004 2:49 PM
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
+From: "roland" <for_spam@gmx.de>
+To: <uml@hno.marasystems.com>
+Cc: <user-mode-linux-devel@lists.sourceforge.net>; "Jeff Dike" <jdike@addtoit.com>
+Sent: Saturday, May 22, 2004 3:05 PM
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory 
 
 
+> Works here using UML 2.6.6-1um (SuSE9.1) on a 2.6.4 based host(SuSE 9.1), too
+> strange..
+> 
+> ----- Original Message ----- 
+> From: "Henrik Nordstrom" <uml@hno.marasystems.com>
+> To: "roland" <for_spam@gmx.de>
+> Cc: "Jeff Dike" <jdike@addtoit.com>; <user-mode-linux-devel@lists.sourceforge.net>
+> Sent: Thursday, May 20, 2004 8:51 PM
+> Subject: Re: [uml-devel] /dev/fd/62: No such file or directory
+> 
+> 
+> > On Thu, 20 May 2004, roland wrote:
+> >
+> > > my UML is 2.6.6  (but i have seen this on other 2.6.x, too) - it uses devfs
+> > > host seems irrelevent - i have seen this on 2.4 and on 2.6 hosts
+> >
+> > Works here using UML 2.4.26-1um on a 2.4 based host..
+> >
+> > Regards
+> > Henrik
+> >
+> 
+> ----- Original Message ----- 
+> From: "roland" <for_spam@gmx.de>
+> To: "Jeff Dike" <jdike@addtoit.com>
+> Cc: <user-mode-linux-devel@lists.sourceforge.net>
+> Sent: Thursday, May 20, 2004 8:28 PM
+> Subject: Re: [uml-devel] /dev/fd/62: No such file or directory
+> 
+> 
+> > Hi !
+> > I have dig into this and made a repro-case:
+> >
+> > #!/bin/bash
+> > while IFS=- read line ; do
+> >  echo $line
+> > done < <(cat /etc/hosts)
+> >
+> > on HOST this prints the contents of /etc/hosts
+> > on UML this gives:
+> > ./test: line 4: /dev/fd/62: No such file or directory
+> >
+> > it seems,  bash process substitution has problems within UML (at least within my uml)
+> >
+> > i have googled a little bit - maybe this gives a hint:
+> > http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=d6142de0d1ec5cd&rnum=2
+> > http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=161582ba6e79f8c7&rnum=3
+> > http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=94e9a60998cb724c&rnum=3
+> >
+> > anybody able to reproduce ?
+> >
+> > my UML is 2.6.6  (but i have seen this on other 2.6.x, too) - it uses devfs
+> > host seems irrelevent - i have seen this on 2.4 and on 2.6 hosts
+> >
+> > regards
+> > roland
+> >
+> >
+> >
+> >
+> >
+> >
+> > ----- Original Message ----- 
+> > From: "Jeff Dike" <jdike@addtoit.com>
+> > To: "roland" <for_spam@gmx.de>
+> > Cc: <user-mode-linux-devel@lists.sourceforge.net>
+> > Sent: Thursday, May 20, 2004 2:40 AM
+> > Subject: Re: [uml-devel] /dev/fd/62: No such file or directory
+> >
+> >
+> > > for_spam@gmx.de said:
+> > > > can anybody give me a hint, what`s the problem, and how to (probably)
+> > > > fix this ?
+> > >
+> > > Can you trace these back to the system call within which these happen?
+> > >
+> > > Figuring out which command in which script causes it, and putting a strace
+> > > in front of it should do the trick.
+> > >
+> > > Jeff
+> > >
+> >
+> > Hi !
+> > I`m getting the following errors with uml 2.6.6 (2.6.4 had that, too) and suse9 rootfs during boot (see below).
+> > can anybody give me a hint, what`s the problem, and how to (probably) fix this ?
+> > networking basically works - but i have to setup the defaultroute manually afterwards and soooo many errors during boot really
+> don`t
+> > give a good "feeling" :)
+> >
+> > regards
+> > roland
+> >
+> >
+> > Master Resource Control: previous runlevel: N, switching to runlevel: 3
+> > Setting up network interfaces:
+> >     lo        /sbin/ifup: line 119: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 540: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 1: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 1: /dev/fd/61: No such file or directory
+> > /sbin/ifup: line 171: /dev/fd/62: No such file or directory
+> > /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+> > /etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+> > done
+> >     eth0      /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+> > /sbin/ifup: line 119: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 540: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 171: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 1: /dev/fd/62: No such file or directory
+> > /sbin/ifup: line 1: /dev/fd/61: No such file or directory
+> > IP/Netmask: 100.1.7.247 / 255.255.252.0
+> > /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+> > /etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+> > done
+> > /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+> > /etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+> > /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+> > /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+> >
+> >
+> >
+> 
 
 
 -------------------------------------------------------
