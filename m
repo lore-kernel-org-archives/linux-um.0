@@ -1,11 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Adam Heath <adam@doogie.org>
+Message-Id: <200401191940.i0JJeYVW024171@ccure.user-mode-linux.org>
 Subject: Re: [uml-user] Re: [uml-devel] Dynamic remount with variable COW
-	stacking/merging needed, support  for snapshot repilication
-In-Reply-To: <20040119041049.GA21670@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.44.0401191223310.1154-100000@gradall.private.brainfood.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	stacking/merging needed, support for snapshot repilication 
+In-Reply-To: Your message of "Mon, 19 Jan 2004 12:26:17 CST."
+	<Pine.LNX.4.44.0401191223310.1154-100000@gradall.private.brainfood.com>
+References: <Pine.LNX.4.44.0401191223310.1154-100000@gradall.private.brainfood.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,28 +19,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Jan 2004 12:26:17 -0600 (CST)
-To: Jeff Dike <jdike@addtoit.com>
+Date: Mon, 19 Jan 2004 14:40:34 -0500
+To: Adam Heath <adam@doogie.org>
 Cc: James W McMechan <mcmechanjw@juno.com>, sdw@lig.net, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, 18 Jan 2004, Jeff Dike wrote:
+adam@doogie.org said:
+> The problem is that you can't request multiple pages at once with
+> mmap.  Only one page at a time(because the page you requested will
+> fault, which will pause the process while the system pages it in). 
 
-> > A to set AIO mode
->
-> I think this should be auto-detected and used.  Maybe there should be a no-AIO
-> for debugging.  In any case, AIO is a lot less useful with ubd-mmap, unless
-> there is an AIO way to wait to a page to be faulted in.
+No, mmap itself doesn't fault.  It fiddles some data structures and returns
+immediately.  The fault happens when the page is first touched.  That's why
+the ubd IO thread touches the page after a request is satified my mmap - to
+fault the page in in an asynchronous way.
 
-The problem is that you can't request multiple pages at once with mmap.  Only
-one page at a time(because the page you requested will fault, which will pause
-the process while the system pages it in).
+I would love for there to be aio page fault notification.
 
-With AIO, you can request multiple pages at once, and they will return in
-random(or efficient) order.  AIO can actually be faster than mmap in this
-case.
+> In fact, mmap can be slower in some cases than normal reading, if the
+> kernel only pages in one block at a time(because of other reasons). 
 
-In fact, mmap can be slower in some cases than normal reading, if the kernel
-only pages in one block at a time(because of other reasons).
+In a lot of cases, actually.  The tlb operations associated with changing
+mappings are expensive, and can outweigh a lot of copying.
+
+				Jeff
 
 
 
