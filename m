@@ -2,28 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BAvM7-0002oW-Jj for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Apr 2004 11:31:27 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BAvM7-0001ZM-9A
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Apr 2004 11:31:27 -0700
-Received: from zcars0m9.nortelnetworks.com ([47.129.242.157])
-	by externalmx-1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BB2s3-0007jD-2r for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Apr 2004 19:32:55 -0700
-Received: from zbl6c012.us.nortel.com (zbl6c012.corpeast.baynetworks.com
-	[132.245.205.62])
-	by zcars0m9.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with ESMTP
-	id i36ITce21832 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 6 Apr 2004 14:29:39 -0400 (EDT)
-Message-ID: <4072F711.8030209@nortelnetworks.com>
-From: Joe Marzot <gmarzot@nortelnetworks.com>
+	id 1BAz3D-0005ii-M8 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Apr 2004 15:28:11 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BAz3C-0002wq-Uh for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Apr 2004 15:28:11 -0700
+From: Henrik Nordstrom <uml@henrik.marasystems.com>
+Subject: Re: [uml-devel] klogd stimulates kernel panic w/ 2.4.24-1
+In-Reply-To: <4072F711.8030209@nortelnetworks.com>
+Message-ID: <Pine.LNX.4.44.0404070025380.15387-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] klogd stimulates kernel panic w/ 2.4.24-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,21 +25,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 06 Apr 2004 14:29:37 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 7 Apr 2004 00:28:00 +0200 (CEST)
+To: Joe Marzot <gmarzot@nortelnetworks.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On Tue, 6 Apr 2004, Joe Marzot wrote:
 
-I saw some posts which mentioned problems with crashes which were 
-stimulated by using klogd. I am using 2.4.24-1 uml patch and appear to 
-having this problem. I disabled klogd and the crashes went away...
+> There was also mention of a code fix in UML...which would be preferable 
+> since I like klogd :)
+> 
+> Is there a patch for 2.4.24 which supports this?
 
-There was also mention of a code fix in UML...which would be preferable 
-since I like klogd :)
+Still waiting for Jeff to publish the required changes.. have patience.
 
-Is there a patch for 2.4.24 which supports this?
+Apparently it also depends on general Linux fixes outside of UML so 
+probably 2.4.26 will be required to fix this proper, and maybe is why the 
+fix has not been published yet?
 
-thanks for any info, Giovanni Marzot (GSM)
+Regards
+Henrik
 
 
 
