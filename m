@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPWqz-0004jW-V5 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:57 -0800
+	id 1CPWr6-0004jx-UT for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:04 -0800
 Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
 	helo=zion.localdomain)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPWqy-0004Lq-6P for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:57 -0800
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CPWr5-0000N9-5u for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:04 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041103231735.8C1E955C79@zion.localdomain>
-Subject: [uml-devel] [patch 09/20] uml: use SIG_IGN for empty sighandler
+Message-Id: <20041103231716.ABAFA3636F@zion.localdomain>
+Subject: [uml-devel] [patch 01/20] Uml - some comments about forcing /bin/bash
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,42 +23,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 04 Nov 2004 00:17:35 +0100
+Date: Thu, 04 Nov 2004 00:17:15 +0100
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it
 
 
-Avoid creating a dummy no-op procedure instead of using SIG_IGN.
+Changes a comment about forcing /bin/bash as shell for the UML Makefile.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- vanilla-linux-2.6.9-paolo/arch/um/drivers/chan_user.c |    6 +-----
- 1 files changed, 1 insertion(+), 5 deletions(-)
+ vanilla-linux-2.6.9-paolo/arch/um/Makefile |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletion(-)
 
-diff -puN arch/um/drivers/chan_user.c~uml-use-SIG_IGN-for-empty-handling arch/um/drivers/chan_user.c
---- vanilla-linux-2.6.9/arch/um/drivers/chan_user.c~uml-use-SIG_IGN-for-empty-handling	2004-11-03 23:44:59.439523936 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/drivers/chan_user.c	2004-11-03 23:44:59.442523480 +0100
-@@ -37,10 +37,6 @@ int generic_console_write(int fd, const 
- 	return(err);
- }
+diff -puN arch/um/Makefile~uml-need-bash arch/um/Makefile
+--- vanilla-linux-2.6.9/arch/um/Makefile~uml-need-bash	2004-11-03 23:44:35.055230912 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/Makefile	2004-11-03 23:44:35.057230608 +0100
+@@ -5,7 +5,8 @@
  
--static void winch_handler(int sig)
--{
--}
--
- struct winch_data {
- 	int pty_fd;
- 	int pipe_fd;
-@@ -63,7 +59,7 @@ static int winch_thread(void *arg)
- 		printk("winch_thread : failed to write synchronization "
- 		       "byte, err = %d\n", -count);
+ ARCH_DIR = arch/um
+ OS := $(shell uname -s)
+-#We require it or things break.
++# We require bash because the vmlinux link and loader script cpp use bash
++# features.
+ SHELL := /bin/bash
  
--	signal(SIGWINCH, winch_handler);
-+	signal(SIGWINCH, SIG_IGN);
- 	sigfillset(&sigs);
- 	sigdelset(&sigs, SIGWINCH);
- 	if(sigprocmask(SIG_SETMASK, &sigs, NULL) < 0){
+ filechk_gen_header = $<
 _
 
 
