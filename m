@@ -1,10 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200408062246.i76Mk9QW004489@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: Expedted SIGSTOP,
-	got status = <blah> (UML 2.4.24-1um) 
-In-Reply-To: Your message of "Fri, 06 Aug 2004 15:16:59 EDT."
-	<4113D92B.5040602@enterasys.com> 
-References: <410806FE.1000209@enterasys.com> <4113D92B.5040602@enterasys.com> 
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BtCYt-0003Z2-5J for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 Aug 2004 14:47:39 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1BtCYs-0007V4-MC
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 Aug 2004 14:47:39 -0700
+Message-Id: <200408062247.i76MlbQW004502@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] corrections to 2.4 series incrementals:
+	multiple-includes 
+In-Reply-To: Your message of "Fri, 06 Aug 2004 14:56:05 EDT."
+	<4113D445.3050104@enterasys.com> 
+References: <4113D445.3050104@enterasys.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -19,14 +29,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 06 Aug 2004 18:46:09 -0400
+Date: Fri, 06 Aug 2004 18:47:37 -0400
 To: "D. Bahi" <dbahi@enterasys.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 dbahi@enterasys.com said:
-> ok - i have skas hosts - and i'm tired of this occasional hang. 
+> The line in the available patch incorrectly attempts to patch arch/um/
+> os/drivers/ethertap_kern.c instead of um/os-Linux/drivers (a clean
+> tree): 
 
-Have you tried the reboot-signals patch?
+That's been fixed for a couple of days.
 
 				Jeff
 
