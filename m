@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CBrl3-0004aE-AE for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Sep 2004 02:25:21 -0700
+	id 1CCha1-0000hz-N9 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Sep 2004 09:45:25 -0700
 Received: from plam.fujitsu-siemens.com ([217.115.66.9])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CBrl2-0004aN-Gt for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Sep 2004 02:25:21 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CCha0-00018R-Id for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Sep 2004 09:45:25 -0700
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Subject: RE: [uml-devel] (no subject)
-Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C3C@ABGEX01E.abg.fsc.net>
+Subject: RE: [uml-devel] Minor problems with interrupted systemcalls 
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C3D@ABGEX01E.abg.fsc.net>
 From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -26,80 +26,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 27 Sep 2004 11:20:06 +0200
+Date: Wed, 29 Sep 2004 18:34:14 +0200
 Content-Transfer-Encoding: 8bit
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-On Saturday 25 September 2004 21:35, BlaisorBlade wrote: 
-> ...
-> This particular part is Ok, but could you, please, avoid trumpling
-over and removing the sysemu code? It's absolutely not needed.
-> If you enclose the last two ptrace calls in "if (!use_sysemu)" and you
-move the "handle_syscall" after them, you get your fix + no change for
-sysemu.
-Sorry. I didn't intend to break sysemu! Did I miss something or does it
-come from my confusing mail format?
-Here is the code of handle_trap() after applying the patch:
+Jeff Dike <jdike@addtoit.com> said:
+> OK, following is my breakup of your signal patch.  It all looks right
+to me, and cleans up that code nicely.  Let me know if you see any
+problems here.
+> 
+> These are also available from the incremental patches page
+> 	http://user-mode-linux.sourceforge.net/patches.html
+> and I would appreciate testing.
+> 
+> This one changes the do_signal interface to eliminate its argument.
+Also, remove the calls from the system call handlers since they are
+redundant.  In > all cases, pending signals are checked for in the
+interrupt handler.
+> Temporarily, do_signal passes the current error to kern_do_signal.
+> 
+> 				Jeff
 
----
-static void handle_trap(int pid, union uml_pt_regs *regs)
-{
-	int err, syscall_nr, status;
+Thank you.
 
-	syscall_nr = PT_SYSCALL_NR(regs->skas.regs);
-	UPT_SYSCALL_NR(regs) = syscall_nr;
-	if(syscall_nr < 0){
-		relay_signal(SIGTRAP, regs);
-		return;
-	}
+I've tested the patches. AFAICS it works well.
+A small piece of code regarding SA_ONESHOT should be removed only. In
+2.6.9 this is done in get_signal_to_deliver(), and since
+get_signal_to_deliver() writes a copy of the corresponding k_sigaction
+into caller's ka_copy, it is a real NOOP.
 
-	if(!use_sysemu) {
-		err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET,
-__NR_getpid);
-		if(err < 0)
-			panic("handle_trap - nullifying syscall failed,
-errno = %d\n",
-			      errno);
-
-		err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
-		if(err < 0)
-			panic("handle_trap - continuing to end of
-syscall failed, "
-			      "errno = %d\n", errno);
-
-		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
-		if((err < 0) || !WIFSTOPPED(status) || 
-		   (WSTOPSIG(status) != SIGTRAP))
-			panic("handle_trap - failed to wait at end of
-syscall, "
-			      "err = %d, errno = %d, status = %x\n",
-err, errno, status);
-	}
-
-	handle_syscall(regs);
-}
-
-> ...
-> A side note: posting HTML messages is bad (on LKML it is enough to be
-totally & completely ignored, I guess); and the above is what the inline
-patch becomes while answering to an HTML message - could you please
-either send plain-text or move the patches to attachments (I strongly
-prefer the first solution)?
-OK. Thank you for the advice. Unfortunately I'm missing experience in
-writing to mailing lists. And I have to do it with our companies Outlook
-client...
-In the meantime I found a switch to modify the settings to "text only".
-Hope it's better now?
+Still, there is something wrong with error handling in case, that a
+signal handler couldn't be started (i.E. stack limit reached or signal
+stack invalid). This is a problem not only for UML, but with i386, too.
+I will try to fix it for UML with separate patches.
 
 Bodo
 
 
+--- orig/arch/um/kernel/signal_kern.c	2004-09-29 18:15:46.505334183
++0200
++++ new/arch/um/kernel/signal_kern.c	2004-09-29 18:16:37.813855152
++0200
+@@ -88,9 +88,6 @@
+ 					    (unsigned long)
+ka->sa.sa_handler,
+ 					    restorer, regs, oldset);
+ 
+-	if (ka->sa.sa_flags & SA_ONESHOT)
+-		ka->sa.sa_handler = SIG_DFL;
+-
+ 	if (!(ka->sa.sa_flags & SA_NODEFER)) {
+ 		spin_lock_irq(&current->sighand->siglock);
+ 		sigorsets(&current->blocked, &current->blocked, 
+
+
 -------------------------------------------------------
-This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
-Project Admins to receive an Apple iPod Mini FREE for your judgement on
-who ports your project to Linux PPC the best. Sponsored by IBM.
-Deadline: Sept. 24. Go here: http://sf.net/ppc_contest.php
+This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+Use IT products in your business? Tell us what you think of them. Give us
+Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
+http://productguide.itmanagersjournal.com/guidepromo.tmpl
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
