@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DE9MM-0008Nv-QU for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 09:09:34 -0800
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DE9MK-0006g3-8m for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Mar 2005 09:09:34 -0800
-Message-ID: <4241A2C0.2050206@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DECSI-0003VW-Fa for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 12:27:54 -0800
+Received: from server.ispbrasil.com.br ([66.160.135.36] helo=ispbrasil.com.br)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DECSF-0003HF-Dd
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Mar 2005 12:27:54 -0800
+Message-ID: <002001c52fe6$e51158b0$0201a8c0@lualele>
+From: "itamar" <itamar@ispbrasil.com.br>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [patch 02/12] uml: cpu_relax fix
-References: <20050322162121.4295D2125C@zion>
-In-Reply-To: <20050322162121.4295D2125C@zion>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; format=flowed; charset="Windows-1252";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] swap problem solved.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,38 +27,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 23 Mar 2005 18:09:20 +0100
-To: blaisorblade@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 23 Mar 2005 17:28:33 -0300
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net, monsta@monsta.hu
 
-blaisorblade@yahoo.it wrote:
-> Use rep_nop instead of barrier for cpu_relax, following $(SUBARCH)'s doing
-> that (i.e. i386 and x86_64).
+I am found a solution for my problem in this page
 
-IIRC, Jeff had the idea, to use sched_yield() for this (from a discussion on #uml).
-S390 does something similar using a special DIAG-opcode that gives permission to zVM,
-that another Guest might run.
+http://uml.pimb.org/howto/uml-debian-install.html#SWAP
 
-On a host running many UMLs, this might improve performance.
-
-So, I would like to have the small patch below (it's not tested, just an idea).
-
-		Bodo
+You only need to run the following commands the first time you use a copy of 
+the installer. They are needed to configure the ubd device nodes correctly, 
+as the presupplied ones have got the wrong minor numbers
 
 
-> diff -puN include/asm-um/processor-generic.h~uml-cpu_relax include/asm-um/processor-generic.h
-> --- linux-2.6.11/include/asm-um/processor-generic.h~uml-cpu_relax	2005-03-22 16:52:25.000000000 +0100
-> +++ linux-2.6.11-paolo/include/asm-um/processor-generic.h	2005-03-22 16:54:41.000000000 +0100
-> @@ -16,7 +16,8 @@ struct task_struct;
->  
->  struct mm_struct;
->  
-> -#define cpu_relax()   barrier()
-> +#include "kern.h"
-> +#define cpu_relax()   sched_yield()
->  
->  struct thread_struct {
->  	int forking;
+# cd /dev
+# rm ubd*
+# mknod ubd0 b 98 0
+# mknod ubd1 b 98 16
+# mknod ubd2 b 98 32
+# mknod ubd3 b 98 48
+# mknod ubd4 b 98 64
+# mknod ubd5 b 98 80
+# mknod ubd6 b 98 96
+# mknod ubd7 b 98 112
+
+
+Itamar Reis Peixoto
++55 (34) 3238 3845
+e-mail : itamar@ispbrasil.com.br
+http://www.ispbrasil.com.br
+
+
+I am starting my guest machine with ubd1=/uml/clau/swap.img
+
+
+-bash-2.05b# swapon -a
+swapon: /dev/ubd/1: No such device
+-bash-2.05b#
+
+
+my fstab
+/dev/ubd/0      /               ext3    defaults,usrquota 1 1
+/proc           /proc           proc    defaults
+devpts          /dev/pts        devpts  mode=0622 0 0
+/dev/ubd/1      none            swap    sw      0       0
+
+
+How to make my swap working ?
+
+
 
 
 -------------------------------------------------------
