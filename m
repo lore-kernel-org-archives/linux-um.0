@@ -1,34 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CaipN-0003U7-7b for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 04 Dec 2004 14:56:33 -0800
-Received: from main.gmane.org ([80.91.229.2])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CaipK-0005i0-7M for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 04 Dec 2004 14:56:32 -0800
-Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
-	id 1CaipH-0006ro-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 04 Dec 2004 23:56:27 +0100
-Received: from p5484b17b.dip.t-dialin.net ([84.132.177.123])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 04 Dec 2004 23:56:27 +0100
-Received: from skoehler by p5484b17b.dip.t-dialin.net with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 04 Dec 2004 23:56:27 +0100
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <41B240F4.2010108@upb.de>
-References: <005301c4d95b$4bdbe4d0$0201a8c0@hawk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <005301c4d95b$4bdbe4d0$0201a8c0@hawk>
-Subject: [uml-devel] Re: 2.6.9-bb4 released
+	id 1CanIY-0007Jf-0t for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Dec 2004 19:42:58 -0800
+Received: from pike.sandelman.ca ([205.150.200.164])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CanIX-0000TA-2K
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Dec 2004 19:42:57 -0800
+In-Reply-To: Message from Blaisorblade <blaisorblade_spam@yahoo.it> of "Sat,
+	04 Dec 2004 04:52:32 +0100."
+	<200412040452.32722.blaisorblade_spam@yahoo.it> 
+References: <200412040452.32722.blaisorblade_spam@yahoo.it> 
+Message-ID: <29928.1102218163@marajade.sandelman.ottawa.on.ca>
+From: Michael Richardson <mcr@marajade.sandelman.ottawa.on.ca>
+Subject: [uml-devel] Re: What to do with uml_switch?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,23 +27,71 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 04 Dec 2004 23:57:56 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Sat, 04 Dec 2004 20:42:43 -0700
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: Gerd Knorr <kraxel@bytesex.org>, Steve Schmidtke <steve_schmidtke@hotmail.com>, Felix =?iso-8859-15?q?M=FCri?= <uml@uxu.ch>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-> http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.9-bb4/
+-----BEGIN PGP SIGNED MESSAGE-----
 
-runs stable now for about 24 hours, longer than any version before ;-)
 
-> Most notable patches are:
-> - uml-hang-on-2.6.9-host
-> - uml-fix-reboot-skas
+>>>>> "Blaisorblade" == Blaisorblade  <blaisorblade_spam@yahoo.it> writes:
+    Blaisorblade> Michael, could you start posting it here, instead that
+    Blaisorblade> to Jeff (maybe you did and I didn't notice, if it was
+    Blaisorblade> time ago, but now it's the moment to repost it).
 
-well, does this "fix-reboot" mean, that it doesn't reboot anymore? 
-because it doesn't when i tell it to
+  I can repost it if you like. 
+  Give me a day to find my patches again.
 
-sometimes it even segfaults, when halting or rebooting.
+  uml_netjig is a tool which does the following:
+  
+  1) moves packets using "daemon" mode a la uml_switch.
+  2) has an expect-friendly command line interface 
+  3) can create *multiple* switches and keep them seperate
+  4) can record all packets to a .pcap file
+  5) can play packets from a .pcap file at a given rate 
+     (or under command line interface control)
+  6) can optionally answer ARP queries for imaginary nodes.
+  7) can talk to tuntap device(s) as uml_switch could.
 
+  My patches refactor uml_switch to get uml_netjig + uml_switch'
+
+    Blaisorblade> Felix, even if your newer code is not yet
+    Blaisorblade> "releasable", it can help anyway... even just
+    Blaisorblade> describing the changes you did and why... design ideas
+    Blaisorblade> are more important than code itself sometimes.
+
+  Please tell me what your code does...
+
+    Blaisorblade> Steve, merging at least the earlier of your patches
+    Blaisorblade> (they are splitup The Right Way(tm)) might be done
+    Blaisorblade> soon, without lots of discussions.
+
+  I have a lot of refactoring patches.
+  I am willing to spend the time getting consensus among people who
+have done other things, and integrating their patches with mine.
+
+  See http://www.sandelman.ottawa.on.ca/SSW/freeswan/fsumltesting/
+for an OLS paper on how uml_netjig was (and continues to be) used.
+  We invoke about 170 tests every night on the Openswan code base.
+some use as many as 7 UMLs connected via uml_netjig to get the job
+done. 
+
+- -- 
+]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
+]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
+] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
+] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+Comment: Finger me for keys
+
+iQCVAwUBQbKDsoqHRg3pndX9AQHAlQP8COxACR4RJFG6lvmhyGTwU0AVi0Xnm53k
+1fVm6EfEhXid/vde5RbzM1aoKqA9fCOWJ5GyCVZltNxr1S8P9nuHb9UK7BkNQUKd
+ezbjPZ55irSn+yonyOwT/ljHbzh/lFd5kxO5BmregjoRZdOUtqXfHAqQupX6lBix
+XJiG4UVo5pk=
+=wYSb
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
