@@ -1,27 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AMAAP-0004Bu-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 10:01:33 -0800
-Received: from ptb-mailc05.plus.net ([212.159.14.211])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.24)
-	id 1AMAAP-0001ul-DY
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 18 Nov 2003 10:01:33 -0800
-Received: from [81.174.136.75] (helo=gandalf)
-	by ptb-mailc05.plus.net with esmtp (Exim 4.12)
-	id 1AMA93-000HTx-00
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 18 Nov 2003 18:00:09 +0000
-Received: from yipton.net (unknown [192.168.0.4])
-	by gandalf (Postfix) with ESMTP id A629D98464
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 17:59:23 +0000 (GMT)
-Message-ID: <3FBA5E11.6060001@yipton.net>
-From: Peter van Sebille <peter@yipton.net>
+	id 1AMBJH-0000qY-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 11:14:47 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
+	id 1AMBJH-0008T4-G7
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 18 Nov 2003 11:14:47 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Status of UML on WIN32
+Content-Disposition: inline
+Message-Id: <200311182018.21186.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Sorry for broken patch to Uml-tools spec file
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -32,19 +26,16 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 Nov 2003 17:59:45 +0000
+Date: Tue, 18 Nov 2003 20:18:21 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi All,
-
-Looking at: http://umlwin32.sourceforge.net/status.html, the latest update 
-was more than a year ago. Are people still actively working on this?
-Also, does someone have a general feel of the performance differene of UML 
-on Windows NT/2000/XP compared to say running Linux under VMWare with 
-NT/2000/XP being the host OS?
-
-cheers,
-	Pete
+Sorry, I wanted to be smart with the wildcard, but I was foolish, and forgot 
+to setuid /usr/bin/uml_net. I'm very sorry for this.
+-- 
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
