@@ -1,20 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CL50i-0007CF-2z for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Oct 2004 12:23:36 -0700
-Received: from witte.sonytel.be ([80.88.33.193])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CL50h-0002bx-5A for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Oct 2004 12:23:36 -0700
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [uml-devel] [patches] ptrace fix, x11 fb update, minor stuff.
-In-Reply-To: <20041022184126.GA9104@bytesex>
-Message-ID: <Pine.GSO.4.61.0410222117070.11567@waterleaf.sonytel.be>
-References: <20041022184126.GA9104@bytesex>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1CL5Sr-0000bi-EN for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 22 Oct 2004 12:52:41 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CL5Sp-0007xQ-4z
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 22 Oct 2004 12:52:41 -0700
+Message-Id: <200410222102.i9ML2FWY005227@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Fri, 22 Oct 2004 10:12:43 +0200."
+	<4178C0FB.4070108@fujitsu-siemens.com> 
+References: <4177D503.2030409@fujitsu-siemens.com>
+	<200410212209.i9LM92FL005362@ccure.user-mode-linux.org>
+	<4178C0FB.4070108@fujitsu-siemens.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: Bad handling of invalif systemcalls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,36 +30,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 22 Oct 2004 21:23:22 +0200 (MEST)
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 22 Oct 2004 17:02:15 -0400
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 22 Oct 2004, Gerd Knorr wrote:
->  * uml-x11-fb: updated, should be fully functional now, including
->    mmap support.
+bstroesser@fujitsu-siemens.com said:
+> Maybe it would make sense, to change the debugger-code. It could
+> accept (SIGTRAP|0x80) and give it to the real debugger as SIGTRAP
+> normally. Also, it could accept a ptrace(PTRACE_SETOTIONS,,,PTRACE_O_TR
+> ACESYSGOOD) and after this it could relay the (SIGTRAP|0x80) without
+> change. 
 
-Nice! I guess I should give it a try again :-)
+Yeah, it would, but what you have now will work for the time being.
 
->  * other patches: some rediffs, no major stuff.
-> 
-> X11 doesn't run yet, the X-Server wants IOPL access for some obscure
-> reason, it shouldn't need that when running on top of a framebuffer
-> device.  Anyone has an idea on that?
+> You are right, orig_eax on the processes stack is -1. But this *has*
+> to be saved in the tt-regs structure for later use. What I'm doing is
+> the same that
+>      UPT_SYSCALL_NR(TASK_REGS(task)) = PT_SYSCALL_NR(proc_regs); does
+> in the case of a systemcall. I used "-1" instead of
+> "PT_SYSCALL_NR(proc_regs)" because it *is* the same in this situation.
 
-Ugh, that's probably a hardcoded dependency on __i386__ somewhere...
+Right, good point.
 
-Try the good old XF86_FBDev from XFree86 3.x? :-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+				Jeff
 
 
 -------------------------------------------------------
