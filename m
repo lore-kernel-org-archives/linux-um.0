@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPWqy-0004jU-JS for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:56 -0800
+	id 1CPWr6-0004jw-8U for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:04 -0800
 Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
 	helo=zion.localdomain)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CPWqw-0000MY-M8 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 17:55:56 -0800
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CPWr4-0004NL-CA for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 17:56:04 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041103231747.7CCC855C83@zion.localdomain>
-Subject: [uml-devel] [patch 14/20] uml: fix sysemu test at startup
+Message-Id: <20041103231742.8D7B855C7F@zion.localdomain>
+Subject: [uml-devel] [patch 12/20] uml:use kallsyms when dumping stack
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,68 +23,80 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 04 Nov 2004 00:17:47 +0100
+Date: Thu, 04 Nov 2004 00:17:42 +0100
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it, bodo.stroesser@fujitsu-siemens.com
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>, Bodo Stroesser <bodo.stroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
+This patch makes UML use print_symbol() when dumping the stack. It is not yet
+complete (the i386 version uses the frame pointers to walk the stack, for
+instance), but should be at least enough.
 
-Currently, the test for the SYSEMU support on the host is completely wrong, as
-Bodo noticed. We should change the syscall result (inserting the host pid) and
-check if it is received correctly by the guest. What we actually do, without
-this patch, is to overwrite the syscall number.
-
-This went unnoticed because we only check that the getpid() syscall from the
-child does not return its pid. We don't check that it returns the correct
-value.
-
-Also, override the result portably, using the PT_SYSCALL_RET_OFFSET macro
-which abstract away the host stack frame layout (took from Jeff Dike code).
+Also, it uses bust_spinlock() when dumping errors to help them reach the
+console. This appears not to be enough - however I analyzed the UML console
+code, and it seems that UML console don't get flushed *at all* when exiting.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- vanilla-linux-2.6.9-paolo/arch/um/kernel/process.c |   16 ++++++----------
- 1 files changed, 6 insertions(+), 10 deletions(-)
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/sysrq.c   |   13 ++++++-------
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/um_arch.c |    6 +++---
+ 2 files changed, 9 insertions(+), 10 deletions(-)
 
-diff -puN arch/um/kernel/process.c~uml-fix-sysemu-test-startup arch/um/kernel/process.c
---- vanilla-linux-2.6.9/arch/um/kernel/process.c~uml-fix-sysemu-test-startup	2004-11-03 23:45:15.751044208 +0100
-+++ vanilla-linux-2.6.9-paolo/arch/um/kernel/process.c	2004-11-03 23:45:15.754043752 +0100
-@@ -214,8 +214,6 @@ static void __init check_sysemu(void)
- 	sysemu_supported = 0;
- 	pid = start_ptraced_child(&stack);
- 	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) >= 0) {
--		struct user_regs_struct regs;
+diff -puN arch/um/kernel/sysrq.c~uml-use-kallsyms arch/um/kernel/sysrq.c
+--- vanilla-linux-2.6.9/arch/um/kernel/sysrq.c~uml-use-kallsyms	2004-11-03 23:45:00.242401880 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/sysrq.c	2004-11-03 23:45:00.246401272 +0100
+@@ -14,23 +14,23 @@
+ 
+ void show_trace(unsigned long * stack)
+ {
+-        int i;
++	/* XXX: Copy the CONFIG_FRAME_POINTER stack-walking backtrace from
++	 * arch/i386/kernel/traps.c. */
+         unsigned long addr;
+ 
+         if (!stack)
+                 stack = (unsigned long*) &stack;
+ 
+-        printk("Call Trace:\n");
+-        i = 1;
++        printk("Call Trace: \n");
+         while (((long) stack & (THREAD_SIZE-1)) != 0) {
+                 addr = *stack++;
+ 		if (__kernel_text_address(addr)) {
+-			printk("[<%08lx>] ", addr);
+-			print_symbol("%s", addr);
++			printk(" [<%08lx>]", addr);
++			print_symbol(" %s", addr);
+ 			printk("\n");
+-			i++;
+                 }
+         }
++        printk("\n");
+ }
+ 
+ /*
+@@ -48,4 +48,3 @@ void show_stack(struct task_struct *task
+ {
+ 	show_trace(sp);
+ }
 -
- 		CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
- 		if (n < 0)
- 			panic("check_ptrace : wait failed, errno = %d", errno);
-@@ -223,18 +221,16 @@ static void __init check_sysemu(void)
- 			panic("check_ptrace : expected SIGTRAP, "
- 			      "got status = %d", status);
- 
--		if (ptrace(PTRACE_GETREGS, pid, 0, &regs) < 0)
--			panic("check_ptrace : failed to read child "
--			      "registers, errno = %d", errno);
--		regs.orig_eax = pid;
--		if (ptrace(PTRACE_SETREGS, pid, 0, &regs) < 0)
--			panic("check_ptrace : failed to modify child "
--			      "registers, errno = %d", errno);
-+		n = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET,
-+			   os_getpid());
-+		if(n < 0)
-+			panic("check_ptrace : failed to modify system "
-+			      "call return, errno = %d", errno);
- 
- 		stop_ptraced_child(pid, stack, 0);
- 
- 		sysemu_supported = 1;
--		printk("found\n");
-+		printk("OK\n");
- 	}
- 	else
- 	{
+diff -puN arch/um/kernel/um_arch.c~uml-use-kallsyms arch/um/kernel/um_arch.c
+--- vanilla-linux-2.6.9/arch/um/kernel/um_arch.c~uml-use-kallsyms	2004-11-03 23:45:00.243401728 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/um_arch.c	2004-11-03 23:45:00.246401272 +0100
+@@ -405,9 +405,9 @@ extern int uml_exitcode;
+ static int panic_exit(struct notifier_block *self, unsigned long unused1,
+ 		      void *unused2)
+ {
+-#ifdef CONFIG_MAGIC_SYSRQ
+-	handle_sysrq('p', &current->thread.regs, NULL);
+-#endif
++	bust_spinlocks(1);
++	show_regs(&(current->thread.regs));
++	bust_spinlocks(0);
+ 	uml_exitcode = 1;
+ 	machine_halt();
+ 	return(0);
 _
 
 
