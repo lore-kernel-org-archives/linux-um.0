@@ -2,24 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZdqd-0004ZC-UM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 15:25:23 -0800
-Received: from pool-141-154-235-89.bos.east.verizon.net ([141.154.235.89]
-	helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CZdqb-000872-Sf
+	id 1CZi5x-0001xp-2c for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Dec 2004 19:57:29 -0800
+Received: from rimuhosting.com ([69.90.33.248])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1CZi5w-0002rW-EV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Dec 2004 15:25:23 -0800
-Message-Id: <200412020141.iB21f4iT004918@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Tue, 30 Nov 2004 15:20:17 PST."
-	<20041130152017.129e134c.akpm@osdl.org> 
-References: <20041130200845.2C5058BAFE@zion.localdomain>
-	<20041130152017.129e134c.akpm@osdl.org> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [patch 1/2] Uml - first part rework of run_helper()
-	and users.
+	Wed, 01 Dec 2004 19:57:29 -0800
+Received: from [192.168.0.4] (office.rimuhosting.co.nz [222.152.52.159] (may
+	be forged)) (authenticated bits=0)
+	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id iB23vLY5031539
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 2 Dec 2004 03:57:25 GMT
+Message-ID: <41AE92A0.4020401@rimuhosting.com>
+From: Peter <peter.repliesignored@rimuhosting.com>
+MIME-Version: 1.0
+References: <20041130193047.3370F8D743@zion.localdomain>
+In-Reply-To: <20041130193047.3370F8D743@zion.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Kernel panic: Kernel stack overflow
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +34,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 01 Dec 2004 20:41:03 -0500
-To: Andrew Morton <akpm@osdl.org>
-Cc: blaisorblade_spam@yahoo.it, bstroesser@fujitsu-siemens.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 02 Dec 2004 16:57:20 +1300
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-akpm@osdl.org said:
-> That makes five UML patches which I have queued up pending
-> confirmation:
->
-> hostfs-uml-set-sendfile-to-generic_file_sendfile.patch
-> hostfs-uml-add-some-other-pagecache-methods.patch 
-> uml-terminal-cleanup.patch 
-> uml-first-part-rework-of-run_helper-and-users.patch
-> uml-finish-fixing-run_helper-failure-path.patch 
+Hi.  I get a "Kernel panic: Kernel stack overflow" error message on the 
+UML instance console.  Then the UML instance exits.
 
-These are all fine.  Feel free to send them to Linus.
+I am running a test where I start up then stop a JBoss server.  (This 
+does a bit of network, file and thread related stuff).  The stack 
+overflow happens every 3-8 JBoss restarts.  i.e. it is relatively 
+reproducible.
 
-				Jeff
+The guest kernel is a 2.4.27-bs1.  The host is a 2.6.8.1.  With 
+host-skas3-2.6.7-v1.patch.  (Hmmm, maybe that's it?  Try v7?)
 
+What can I do to gather some more useful information about the error for 
+you all?
+
+Or, better still, is there a known fix?
+
+Cheers, Peter
 
 
 -------------------------------------------------------
