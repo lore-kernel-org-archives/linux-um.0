@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQphM-0001RE-6i for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 08:43:08 -0700
-Received: from ns1.auto.ucl.ac.be ([130.104.239.135] helo=zlop.auto.ucl.ac.be)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQphL-0002Jz-SP for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 08:43:08 -0700
-Received: from auto.ucl.ac.be (pc-babaorom.auto.ucl.ac.be [130.104.239.234])
-	by zlop.auto.ucl.ac.be (Postfix) with ESMTP id 3E8A6A4A86
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 20 May 2004 17:42:55 +0200 (CEST)
-Message-ID: <40ACE964.9070004@auto.ucl.ac.be>
-From: Vincent Guffens <guffens@auto.ucl.ac.be>
+	id 1BQsAA-0003Lu-43 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 11:21:02 -0700
+Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1BQsA9-0003An-FY for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 11:21:01 -0700
+Message-ID: <01f901c43e98$304054d0$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
+References: <030101c43c4b$cf6bd1a0$2000000a@schlepptopp>
+	<200405200040.i4K0eYDt002107@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [announce] a wifi layer for UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,51 +28,98 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 May 2004 19:22:44 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 20 May 2004 20:28:02 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+Hi !
+I have dig into this and made a repro-case:
 
-I'm working on a wireless network simulator project based on UML. The 
-idea is to use an existing 802.11 driver and to port it to UML. Every 
-UML machines running this driver are then interconnected by way of a 
-simulator server which emulates the physical transmission. A GUI is also 
-provided to visualise the virtual machines in a 2-dimensional world.
+#!/bin/bash
+while IFS=- read line ; do
+ echo $line
+done < <(cat /etc/hosts)
 
-The driver is the hostap driver and nearly runs unmodified. The pci 
-layer of the driver has been modified to use what I called 'netbus' 
-which is a simple bus implementation replacing a pci bus.
+on HOST this prints the contents of /etc/hosts
+on UML this gives:
+./test: line 4: /dev/fd/62: No such file or directory
 
-This netbus code (available as a patch against linux-2.4.24-um1) exports 
-some symbols similar to those exported by the pci layer like 
-netbus_register_driver and so on. There is also the possibility to 
-read/write byte and word with netbus_readb netbus_writeb.
+it seems,  bash process substitution has problems within UML (at least within my uml)
 
-Netbus connects to the emulated hardware card by way of two tcp/ip 
-connections. One connection is used to transmit the read/write commands 
-and the other is only used by the card to emit interrupt signals.
+i have googled a little bit - maybe this gives a hint:
+http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=d6142de0d1ec5cd&rnum=2
+http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=161582ba6e79f8c7&rnum=3
+http://groups.google.de/groups?hl=de&lr=&ie=UTF-8&th=94e9a60998cb724c&rnum=3
 
-The card is emulated in the simulator server writen in QT/C++. Although 
-the implementation of the card is minimal, it is enough to fool the 
-driver and to have it to initialise a wlan0 interface with wireless 
-extension ! You can then ssh through the air between two machines and 
-see your packets flying between the machines.
+anybody able to reproduce ?
 
+my UML is 2.6.6  (but i have seen this on other 2.6.x, too) - it uses devfs
+host seems irrelevent - i have seen this on 2.4 and on 2.6 hosts
 
-For those interested in trying it :
-http://www.auto.ucl.ac.be/~guffens/uml-wifi/index.html
+regards
+roland
 
 
-Regards,
 
 
--- 
-				Vincent Guffens
-				PhD Student UCL/CESAME
-				tel:   +32 10 47 80 30
-Value your freedom, or you will lose it, teaches history.
-"Don't bother us with politics," respond those who don't want to learn.
-	      	-- Richard M. Stallman
+
+
+----- Original Message ----- 
+From: "Jeff Dike" <jdike@addtoit.com>
+To: "roland" <for_spam@gmx.de>
+Cc: <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Thursday, May 20, 2004 2:40 AM
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory
+
+
+> for_spam@gmx.de said:
+> > can anybody give me a hint, what`s the problem, and how to (probably)
+> > fix this ?
+>
+> Can you trace these back to the system call within which these happen?
+>
+> Figuring out which command in which script causes it, and putting a strace
+> in front of it should do the trick.
+>
+> Jeff
+>
+
+Hi !
+I`m getting the following errors with uml 2.6.6 (2.6.4 had that, too) and suse9 rootfs during boot (see below).
+can anybody give me a hint, what`s the problem, and how to (probably) fix this ?
+networking basically works - but i have to setup the defaultroute manually afterwards and soooo many errors during boot really don`t
+give a good "feeling" :)
+
+regards
+roland
+
+
+Master Resource Control: previous runlevel: N, switching to runlevel: 3
+Setting up network interfaces:
+    lo        /sbin/ifup: line 119: /dev/fd/62: No such file or directory
+/sbin/ifup: line 540: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/61: No such file or directory
+/sbin/ifup: line 171: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+done
+    eth0      /etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+/sbin/ifup: line 119: /dev/fd/62: No such file or directory
+/sbin/ifup: line 540: /dev/fd/62: No such file or directory
+/sbin/ifup: line 171: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/62: No such file or directory
+/sbin/ifup: line 1: /dev/fd/61: No such file or directory
+IP/Netmask: 100.1.7.247 / 255.255.252.0
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+done
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 433: /dev/fd/62: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/61: No such file or directory
+/etc/sysconfig/network/scripts/ifup-route: line 1: /dev/fd/62: No such file or directory
+
+
 
 
 
