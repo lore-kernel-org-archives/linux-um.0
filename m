@@ -1,20 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C1szw-0006jN-Em for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2004 13:43:28 -0700
-Received: from mail-relay-4.tiscali.it ([213.205.33.44])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C1szv-0003sk-MU for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2004 13:43:28 -0700
-Received: from zion.localdomain (62.11.74.135) by mail-relay-4.tiscali.it
-	(7.1.021.3)
-	id 40F3EBEA00A49FAB for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2004 22:43:27 +0200
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20040830203554.6657EBD5A@zion.localdomain>
-Subject: [uml-devel] [patch 4/4] uml-more-EINTR-safety
+	id 1C1ron-0002AH-Fl for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2004 12:27:53 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1C1rom-0007Ys-MA for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2004 12:27:53 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+References: <20040822040821.GA7183@tp.user-mode-linux.org>
+In-Reply-To: <20040822040821.GA7183@tp.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200408301722.56559.blaisorblade_personal@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: sysemu
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,68 +29,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 30 Aug 2004 22:35:54 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: blaisorblade_spam@yahoo.it
+Date: Mon, 30 Aug 2004 20:48:45 +0200
+To: Jeff Dike <jdike@sonycom.com>
+Cc: LaurentVivier@wanadoo.fr, user-mode-linux-devel@lists.sourceforge.net
 
+Alle 06:08, domenica 22 agosto 2004, Jeff Dike ha scritto:
+> Call me a lamer, but I only now got around to looking at the sysemu
+> patch in detail.
+>
+> As it stands, it can't be merged into mainline because it adds two
+> instructions to the system call fast path.  This is the sort of thing
+> that make Linus and others go ballistic.
 
-Add some more EINTR safety with some more uses of CATCH_EINTR.
+> Below, see a patch which tweaks things to eliminate both problems.
+> Now, PT_SCEMU is set in conjunction with PT_TRACESYS, rather than
+> one or the other, but not both, being set.
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+> This means that the PT_TRACESYS test in entry.S covers both cases, and
+> the fast path is unchanged.
 
- uml-linux-2.6.8.1-paolo/arch/um/kernel/helper.c       |    4 ++--
- uml-linux-2.6.8.1-paolo/arch/um/kernel/process.c      |    3 ++-
- uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/process.c |    2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
+> The other change was to make syscall_trace return zero or non-zero,
+> according as it should run the system call or immediately return.
+> This adds a line to syscall_trace and eliminates syscall_emulate.
 
-diff -puN arch/um/kernel/skas/process.c~uml-more-EINTR-safety arch/um/kernel/skas/process.c
---- uml-linux-2.6.8.1/arch/um/kernel/skas/process.c~uml-more-EINTR-safety	2004-08-29 14:40:48.558829712 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/process.c	2004-08-29 14:40:48.563828952 +0200
-@@ -81,7 +81,7 @@ static void handle_trap(int pid, union u
- 			panic("handle_trap - continuing to end of syscall failed, "
- 			      "errno = %d\n", errno);
- 
--		err = waitpid(pid, &status, WUNTRACED);
-+		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
- 		if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
- 			panic("handle_trap - failed to wait at end of syscall, "
- 			      "errno = %d, status = %d\n", errno, status);
-diff -puN arch/um/kernel/process.c~uml-more-EINTR-safety arch/um/kernel/process.c
---- uml-linux-2.6.8.1/arch/um/kernel/process.c~uml-more-EINTR-safety	2004-08-29 14:40:48.560829408 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/process.c	2004-08-29 14:40:48.563828952 +0200
-@@ -216,7 +216,8 @@ static void __init check_sysemu(void)
- 	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) >= 0) {
- 		struct user_regs_struct regs;
- 
--		if (waitpid(pid, &status, WUNTRACED) < 0)
-+		CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
-+		if (n < 0)
- 			panic("check_ptrace : wait failed, errno = %d", errno);
- 		if(!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
- 			panic("check_ptrace : expected SIGTRAP, "
-diff -puN arch/um/kernel/helper.c~uml-more-EINTR-safety arch/um/kernel/helper.c
---- uml-linux-2.6.8.1/arch/um/kernel/helper.c~uml-more-EINTR-safety	2004-08-29 14:40:48.561829256 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/helper.c	2004-08-29 14:40:48.564828800 +0200
-@@ -128,7 +128,7 @@ int run_helper_thread(int (*proc)(void *
- 		return(-errno);
- 	}
- 	if(stack_out == NULL){
--		pid = waitpid(pid, &status, 0);
-+		CATCH_EINTR(pid = waitpid(pid, &status, 0));
- 		if(pid < 0){
- 			printk("run_helper_thread - wait failed, errno = %d\n",
- 			       errno);
-@@ -147,7 +147,7 @@ int helper_wait(int pid, int block)
- {
- 	int ret;
- 
--	ret = waitpid(pid, NULL, WNOHANG);
-+	CATCH_EINTR(ret = waitpid(pid, NULL, WNOHANG));
- 	if(ret < 0){
- 		printk("helper_wait : waitpid failed, errno = %d\n", errno);
- 		return(-errno);
-_
+> The updated patch is 83 lines of diff rather than the original 128.
+
+> I've run it with a small test program, apparently successfully, with
+> good speed increases.  I'm having more trouble getting a tt mode UML
+> running, but I think that's a problem with the UML rather than the
+> host.
+
+> Have a look and see if it looks reasonable.
+
+Yes, it does. You should just rename *_SCEMU to *_SYSEMU (the guest patch uses 
+already *_SYSEMU, which is nicer IMHO, so let's be coherent).
+
+While you are looking at the SYSEMU patch, could you try to understand why 
+when SYSEMU is active (at least in SKAS mode, never done anything in TT mode) 
+strace does not work?
+
+I looked at it with gdb a while ago but I wasn't able to make sense from what 
+I saw.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
