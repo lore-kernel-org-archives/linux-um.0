@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AGqxB-0001PW-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Mon, 03 Nov 2003 18:29:57 -0800
-Received: from pool-151-203-5-11.bos.east.verizon.net ([151.203.5.11] helo=uml.karaya.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	id 1AGwV7-0007iq-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 04 Nov 2003 00:25:21 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
 	(Exim 4.24)
-	id 1AGqx9-0002dL-Sz
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 03 Nov 2003 18:29:56 -0800
-Message-Id: <200311021424.hA2EOpti019560@uml.karaya.com>
-Subject: Re: [uml-devel] Sleeping process getting segfault signal 
-In-Reply-To: Your message of "Sat, 01 Nov 2003 21:51:16 GMT."
-             <Pine.GSO.4.58.0311012137370.355@altair.dur.ac.uk> 
+	id 1AGwV6-0007XW-Q7
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 04 Nov 2003 00:25:20 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] [patch] change ubd names
+Message-ID: <20031104083746.GB407@bytesex.org>
+References: <20031030155757.GA19575@bytesex.org> <20031030162902.GE19575@bytesex.org> <200311030248.hA32mUgX002550@ccure.karaya.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Disposition: inline
+In-Reply-To: <200311030248.hA32mUgX002550@ccure.karaya.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,21 +27,26 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 02 Nov 2003 09:24:51 -0500
-To: M A Young <m.a.young@durham.ac.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 4 Nov 2003 09:37:46 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-m.a.young@durham.ac.uk said:
-> I have a reproduceable crash, at least with certain host kernels (eg.
-> from RedHat's current beta), and a 2.6 uml kernel, and get errors like
-> sleeping process 1786 got unexpected signal : 11 
+> Mostly, I like these.  But you are going to have to maintain the skas fix
+> yourself.  I've got skas4 working, which fixes all known issues with skas3,
+> including the patchability problems.  So, I'm not doing anything with skas3
+> any more.
 
-I just saw this.  Looked at it a bit and am mystified :-)  Stay tuned...
+Fine.
 
-				Jeff
+> If you think you can push that fixmap fix to Linus/Andrew, go right ahead.
+> Strictly speaking, that's not a UML fix.
 
+Well, the block #ifdef'ed out comes from the -test9 uml patch ...
 
+  Gerd
 
+-- 
+You have a new virus in /var/mail/kraxel
 
 
 -------------------------------------------------------
