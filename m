@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASs1S-0007X3-Dt
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 22:04:02 -0800
-Received: from [216.156.129.65] (helo=www.theshore.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ASs1R-0000X2-W0
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Dec 2003 22:04:02 -0800
-Received: from hawk (mothership.theshore.net [68.52.199.4])
-	by www.theshore.net (8.12.9/8.9.1) with SMTP id hB7660m4023065
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 7 Dec 2003 01:06:01 -0500
-Message-ID: <004201c3bc87$e1b1ab30$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <hreb08uo-864t61x4044mesis$86ap70@u3d7i.vp>
+	id 1ASwU0-0007dM-6U
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 07 Dec 2003 02:49:48 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
+	id 1ASwTz-0006ym-LZ
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 07 Dec 2003 02:49:47 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] updating 2.6 to merge 2.4 changes(was: Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash)
+References: <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0312060951220.13277-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] BUG: /proc/ has timestamp of Dec 31, 1969
+Content-Disposition: inline
+Message-Id: <200312071153.33410.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,23 +27,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 Dec 2003 00:03:45 -0600
+Date: Sun, 7 Dec 2003 11:53:33 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hello,
+Alle 10:41, sabato 6 dicembre 2003, Henrik Nordstrom ha scritto:
+> On Fri, 5 Dec 2003, Jeff Dike wrote:
+> > It would be useful for someone to start a new UML tree, collect patches,
+> > merge them in, get testing, and forward them on to me.  But so far,
+> > pretty much no one is in the code but me, so you're limited by the time
+> > that I can put into it.
+I've given a diff to 2.6 vs. 2.4 UML trees, and discovered that the sources, 
+in many sections, are pretty much the same. For instance, in the drivers 
+folder we have many not forwarded diffs, and only one like that was a real 
+difference between them(i.e. a change to use workqueues instead of task 
+queues, IIRC). Do you think using a common code base and insulating the 
+different things inside the 2_5compat.h header(since you created it, I 
+suppose this was the meaning) would be a bad idea?
 
-I've tested this with 2.4.20-3um and the most recent uml patch (6um) against
-2.4.23, on a bunch of different host machines -- all of them mount /proc/ with a
-date of Dec 31, 1969.
+If you saved all the diffs you applied it should be ok, however redoing any 
+change probably isn't worth...
 
-li-20:~# ls -ald /proc/
-dr-xr-xr-x   37 root     root            0 Dec 31  1969 /proc/
-
-There are distros that rely on /proc having a timestamp close to boot time, like
-for cron clearing out /var/cron.
-
-Thanks,
--Chris
+-- 
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
