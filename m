@@ -2,19 +2,33 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19vXpJ-0004BR-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 00:49:45 -0700
-Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
+	id 19va2d-0003Vn-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Sat, 06 Sep 2003 03:11:39 -0700
+Received: from mout2.freenet.de ([194.97.50.155])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19vXpI-0005pb-6c
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 00:49:44 -0700
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Subject: Re: [uml-devel] Hi All.
-In-Reply-To: <20030906050017.95333.qmail@web11005.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.44.0309060347120.9326-100000@sparrow>
+	id 19va2c-0005dR-0Y
+	for User-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 03:11:38 -0700
+Received: from [194.97.50.136] (helo=mx3.freenet.de)
+	by mout2.freenet.de with asmtp (Exim 4.21)
+	id 19va2V-0002Oz-PZ
+	for User-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 12:11:31 +0200
+Received: from b2afe.pppool.de ([213.7.42.254] helo=home.petschge.de)
+	by mx3.freenet.de with esmtp (Exim 4.22 #1)
+	id 19va2U-0004mZ-LV
+	for User-mode-linux-devel@lists.sourceforge.net; Sat, 06 Sep 2003 12:11:31 +0200
+Received: from localhost (localhost.petschge.de [127.0.0.1])
+	by home.petschge.de (Postfix on Linux (i386)) with ESMTP id 1B7063BCE5
+	for <User-mode-linux-devel@lists.sourceforge.net>; Fri,  5 Sep 2003 23:14:52 +0200 (CEST)
+Received: from mars (localhost.petschge.de [127.0.0.1])
+	by home.petschge.de (Postfix on Linux (i386)) with SMTP id BB6C53BCE4
+	for <User-mode-linux-devel@lists.sourceforge.net>; Fri,  5 Sep 2003 23:14:50 +0200 (CEST)
+From: "Patrick \"Petschge\" Kilian" <petschge@web.de>
+Subject: Re: [uml-devel] run away 2.6.0 
+References: <200309021220.13334.petschge@gmx.de> <200309021850.h82Io9Hx001652@ccure.karaya.com> <20030903095811.DD7693BC56@home.petschge.de> <20030904144728.A58113BCE4@home.petschge.de> <200309052012.h85KCSjh001305@ccure.karaya.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7Bit
+Message-Id: <20030905211450.BB6C53BCE4@home.petschge.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -25,49 +39,26 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 6 Sep 2003 03:49:39 -0400 (EDT)
-To: Maltesh Badiger <malteshbadiger@yahoo.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, William Stearns <wstearns@pobox.com>
+Date: Fri, 05 Sep 2003 23:14:50 +0200
+To: User-mode-linux-devel@lists.sourceforge.net
 
-Good day, Maltesh,
+Hi,
 
-On Fri, 5 Sep 2003, Maltesh Badiger wrote:
+Jeff Dike wrote:
+>> Why doesn't gdb show me the function names?
+> Because those are all process addresses.  gdb only knows about UML
+> symbols.
+Ok, I admit, I never used gdb for anything else than debugging uml. Please 
+could anybody give me a hint or some manuals to read, how I can debug this 
+situatuion?
 
-> I am using User Mode Linux (UML).
-> I want to know the following :
-> 
-> 1) How the uml kernel is possible to run in user mode
-> (user space).
+Thanks for your help,
+Patrick "Petschge" Kilian
 
-	It's a _second_ kernel running on the system on top of the 
-original kernel.  It's compiled just like any other program; it is loaded 
-from the command line, initializes itself, and exits.
-
-> 2) When, we apply the patch to a kernel image,
-> Actually what happens to the original kernel?
-> I want to know what changes takes place to the kernel
-> code.
-
-	The original kernel is left just as it is.  We take a complete 
-secnd copy of the kernel sources, apply this patch, and compile that into 
-the UML executable.
-	Take a look at some of the UML documentation; it explains this 
-stuff pretty well.
-	Cheers,
-	- Bill
-
----------------------------------------------------------------------------
-	"... being a Linux user is sort of like living in a house
-inhabited by a large family of carpenters and architects. Every morning
-when you wake up, the house is a little different. Maybe there is a new
-turret, or some walls have moved. Or perhaps someone has temporarily
-removed the floor under your bed." 
-	-- Unix for Dummies, 2nd Edition
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
-Linux articles at:                         http://www.opensourcedigest.com
---------------------------------------------------------------------------
+-- 
+I still think the fastest way to get wholesale IPv6 adoption
+is to write a pr0n server that serves thumbnails over IPv[46]
+and full-size images over IPv6 only.              -- Ingvar
 
 
 
