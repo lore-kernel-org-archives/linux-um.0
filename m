@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CBGBj-0000sL-LA for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Sep 2004 10:18:23 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CBGBf-0005Rm-R6 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Sep 2004 10:18:23 -0700
+	id 1CBGUM-00065m-83 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 25 Sep 2004 10:37:38 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CBGUL-00082W-5R for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 25 Sep 2004 10:37:38 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: [Openswan CVS] openswan-2/linux/net/ipsec
-	addrtot.c, 1.16, 1.17
-References: <20040915214906.02A1F138028@tla.xelerance.com>
-	<26724.1095652408@marajade.sandelman.ottawa.on.ca>
-	<20040920044512.GA6672@zip.com.au>
-In-Reply-To: <20040920044512.GA6672@zip.com.au>
+Subject: Re: [uml-devel] (no subject)
+References: <8B6FF516CBA0194AB0996705076B02520F7C37@ABGEX01E.abg.fsc.net>
+In-Reply-To: <8B6FF516CBA0194AB0996705076B02520F7C37@ABGEX01E.abg.fsc.net>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409251915.25579.blaisorblade_spam@yahoo.it>
+Message-Id: <200409251934.37710.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,48 +29,68 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 25 Sep 2004 19:15:25 +0200
+Date: Sat, 25 Sep 2004 19:34:37 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: CaT <cat@zip.com.au>, Michael Richardson <mcr@sandelman.ottawa.on.ca>, dev@lists.openswan.org
+Cc: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 
-On Monday 20 September 2004 06:45, CaT wrote:
-> On Sun, Sep 19, 2004 at 11:53:28PM -0400, Michael Richardson wrote:
-> >     CaT> In include/asm-i386/string.h for example. Not all arches have
-> >     CaT> it defined but a few do.
-> >
-> >     CaT> With the change btw, the kernel compiled.
-> >
-> >   Using __HAVE_ARCH_STRSTR doesn't work on UML.
-> >   It appears that the strstr.c from arch/i386/lib/strstr.c doesn't get
-> > compiled. I tried to get it compiled, but I seem to be missing some
-> > symbol table magic. (Adding EXPORT_SYMTAB(strstr) to the file didn't
-> > help).
-> >
-> >   Any ideas on this?
+On Monday 20 September 2004 21:55, Stroesser, Bodo wrote:
+> Today I tried testing interrupted systemcalls on UML 2.6.8.1-1 with the
+> incremental patches up to skas-flush-tlb. My host does not yet support
+> the new SYSEMU-ptrace.
+>
+> In skas-mode, the uml system with this kernel doesn't boot! It panics
+> with the message:
 
-> I'm not expert (seriously - this isn't just modesty :) but it looks
-> like that uml is undefining strstr but not __HAVE_ARCH_STRSTR so that
-> when it's compiled on an arch that defines __HAVE_ARCH_STRSTR because
-> it has strstr it's only half undefined.
+> Kernel panic: handle_trap - failed to wait at end of syscall, errno = 4,
+> status = 4479
 
-> If I'm right it appears to 
-> be a bug in the part of uml.
-Ok, that's not a bug, but one UML choice: it will use the host libc version of 
-strstr. 
+> Tracking this down I saw that "errno = 4" from the message is
+> misleading!
 
-> Check linux/arch/um/os-Linux/user_syms.c.
-The problem is just the fact that "EXPORT_SYMBOL(strstr)" is commented out in 
-THAT file. If you compile the code which uses that statically, it will work, 
-so you're not on the right road.
+> It's an old errno, the return value of waitpid() is the pid 
+> of the user-thread. It seems to be stopped by SIGCHLD.
+Yes, I get some similar failures with the misleading "errno = 4"; I guess it's 
+time to fix, maybe, either CATCH_EINTR or just this invocation of it.
+However, the problem that UML should not expect the child getting only those 
+virtual SIGTRAP (see man 2 ptrace); any other signal in that point should 
+IMHO just be ignored. I've not written the patch but it is just adding Yet 
+Another Loop, beyond the CATCH_EINTR one (this time no general macro are 
+needed).
 
-> It includes string.h 
-> which includes asm/string.h which includes asm/arch/string.h which
-> points to asm-i386/string.h which would define the above.
+> I do not understand exactly what happens, but the signal seems to be
+> generated while running handle_syscall() called from handle_trap().
+> Changing back to the sequence of calling waitpid() and handle_syscall()
+> as it has been before the sysemu-patch removed the problem.
 
-> I've CCed the happy-fun folks at UML to be sure because my feeling that
-> I'm talking sheer bollocks is about as strong as my feeling that I am
-> not. :)
-I don't know what "sheer bollocks" means, but I guess this is the case...
+> Here is my patch (I also changed the panic message to include "err" and
+> to print status in Hex):
+This particular part is Ok, but could you, please, avoid trumpling over and 
+removing the sysemu code? It's absolutely not needed.
+If you enclose the last two ptrace calls in "if (!use_sysemu)" and you move 
+the "handle_syscall" after them, you get your fix + no change for sysemu.
+
+
+> --- tmp/linux-2.6.8.1/arch/um/kernel/skas/process.c     2004-09-17
+> 19:20:15.000000000 +0200
+>
+> +++ linux-2.6.8.1/arch/um/kernel/skas/process.c 2004-09-20
+> 21:31:39.451946258 +0200
+>
+> @@ -68,25 +68,25 @@
+>
+>                 return;
+>
+>         }
+>
+>
+>
+> -       handle_syscall(regs);
+>
+A side note: posting HTML messages is bad (on LKML it is enough to be totally 
+& completely ignored, I guess); and the above is what the inline patch 
+becomes while answering to an HTML message - could you please either send 
+plain-text or move the patches to attachments (I strongly prefer the first 
+solution)?
 
 Bye
 -- 
