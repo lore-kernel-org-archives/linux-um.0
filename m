@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQpLG-0004jC-1V for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 08:20:18 -0700
-Received: from mail.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BQpLE-00056U-Qc for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 08:20:17 -0700
-Message-ID: <00c801c43e7e$f0262690$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <Pine.LNX.4.44.0405201609240.7143-100000@filer.marasystems.com>
+	id 1BQpaF-0008FO-Aw for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 08:35:47 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BQpaE-0007dr-KH for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 08:35:46 -0700
+From: Henrik Nordstrom <uml@hno.marasystems.com>
 Subject: Re: [uml-devel] [PATCH] host context switch reduction
+In-Reply-To: <00c801c43e7e$f0262690$2000000a@schlepptopp>
+Message-ID: <Pine.LNX.4.44.0405201727230.11053-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,76 +25,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 May 2004 17:27:17 +0200
-To: Henrik Nordstrom <uml@hno.marasystems.com>
-Cc: Laurent Vivier <LaurentVivier@wanadoo.fr>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 20 May 2004 17:35:10 +0200 (CEST)
+To: roland <for_spam@gmx.de>
+Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Laurent Vivier <LaurentVivier@wanadoo.fr>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-> What can be said is that applications running on the host is by far not as 
-> dependent on context switching responsiveness to "feel good", and a CPU 
-> hog in one UML does not cause any noticeable amount of extra context 
-> switches, not much different from a CPU hog on the host in terms of 
-> performance.
+On Thu, 20 May 2004, roland wrote:
 
-mh - maybe i don`t understand you completely right here - but - for me, most hogging
-processes in uml produces a gazillion of context-switches on the host.
+> mh - maybe i don`t understand you completely right here - but - for me, most hogging
+> processes in uml produces a gazillion of context-switches on the host.
 
-if i run getpid on the host, i cannot see (vmstat) a noticeable raise in the amount 
-of context switches.
+Only if the hoggin process is doing syscalls..
 
-if i run getpid inside an uml - i see cs on the host raise from ~400 to ~230000 !!
-the same getpid in a sysemu-patched uml/host results in a raise from ~400 to ~173000 cs - 
-so this is noticeably better.
+> if i run getpid on the host, i cannot see (vmstat) a noticeable raise in the amount 
+> of context switches.
 
-similar things happen with other "hogs" (idle state is always ~400 cs on host, cs rate
-is from vmstat output on the host) :
+Correct, as normally there is no context switch in a syscall on the host.
 
-"while true; do /bin/true; done"
-host:         ~ 2000
-uml:          ~ 24000
-uml-sysemu:   ~ 17000
+> if i run getpid inside an uml - i see cs on the host raise from ~400 to ~230000 !!
 
-"while true; do find /; done"
-host:        up to ~ 24000 (alternating very much - didn`t measure average value)
-uml:         up to ~ 60000 ( " )       
-uml-sysemu:  up to ~ 48000 ( " )
+Yes.
 
-"dd if=/dev/urandom of=/dev/null"
-host:        no noticeably differnce
-uml:         ~ 16000
-uml-sysemu   ~ 8500
+> the same getpid in a sysemu-patched uml/host results in a raise from ~400 to ~173000 cs - 
+> so this is noticeably better.
 
-regards
-roland
+Good.
 
-
-
------ Original Message ----- 
-From: "Henrik Nordstrom" <uml@hno.marasystems.com>
-To: "roland" <for_spam@gmx.de>
-Cc: "Laurent Vivier" <LaurentVivier@wanadoo.fr>; "Jeff Dike" <jdike@addtoit.com>; <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Thursday, May 20, 2004 4:12 PM
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
-
-
-> On Thu, 20 May 2004, roland wrote:
+> similar things happen with other "hogs" (idle state is always ~400 cs on host, cs rate
+> is from vmstat output on the host) :
 > 
-> > if i run a getpid-loop inside one uml, the other uml`s behaviour becomes
-> > quite sluggish - this doesn`t seem to have a relation to laurents patch - i
-> > just recognized this for the first time, because i never did getpid-loops
-> > inside a uml. :)
-> 
-> I would suspect this is due to the high dependency on context switching by 
-> UML in system calls.. but I do not have a clearcut explanation.
-> 
-> What can be said is that applications running on the host is by far not as 
-> dependent on context switching responsiveness to "feel good", and a CPU 
-> hog in one UML does not cause any noticeable amount of extra context 
-> switches, not much different from a CPU hog on the host in terms of 
-> performance.
-> 
-> Regards
-> Henrik
-> 
+> "while true; do /bin/true; done"
+> host:         ~ 2000
+> uml:          ~ 24000
+> uml-sysemu:   ~ 17000
+
+This is not a CPU hog. This is a syscall hog. Not as intense as the getpid
+hog as there is more overhead, but still..
+
+> "while true; do find /; done"
+
+Same here..
+
+Try
+
+   strace -f sh -c "while true; do /bin/true; done"
+
+and you'll see the very high syscall rate in such hog.
+
+
+Here is a silly example of a pure CPU hog:
+
+perl -e 'while (1) {}'
+
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
