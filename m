@@ -2,34 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWepX-00066M-S8 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:51:55 -0800
-Received: from smtp-vbr10.xs4all.nl ([194.109.24.30])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CWepW-0000va-MI for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 09:51:55 -0800
-Received: from mail (dopez.xs4all.nl [213.84.79.27])
-	by smtp-vbr10.xs4all.nl (8.12.11/8.12.11) with ESMTP id iANHpp4r004699
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 23 Nov 2004 18:51:51 +0100 (CET)
-	(envelope-from lists@dopez.xs4all.nl)
-Received: from lanclt1 ([192.168.2.101] helo=p2800.dopez.hq)
-	by dopez.xs4all.nl with esmtp (Exim 3.35 #1 (Debian))
-	id 1CWepS-0005YP-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 23 Nov 2004 18:51:50 +0100
-From: dopez <lists@dopez.xs4all.nl>
-Subject: Re: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
-References: <000901c4d0e1$e7f998d0$0201a8c0@hawk>
-	<200411222346.36960.blaisorblade_spam@yahoo.it>
-	<001001c4d184$ca00b9f0$0201a8c0@hawk>
-In-Reply-To: <001001c4d184$ca00b9f0$0201a8c0@hawk>
+	id 1CWevn-00020I-Pr for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 09:58:23 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CWevj-0001ze-Cg for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 09:58:23 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200411231853.31315.lists@dopez.xs4all.nl>
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411231900.40463.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] About DevFS
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,24 +27,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 23 Nov 2004 18:53:31 +0100
+Date: Tue, 23 Nov 2004 19:00:40 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Peter <peter@rimuhosting.com>
 
-On Tuesday 23 November 2004 18:49, Christopher S. Aker wrote:
+On Tuesday 23 November 2004 04:09, Peter wrote:
+> How will this affect existing UML setups?  Does it mean they would need
+> to change if we started them up with a new UML kernel after /dev/ubd/0
+> "goes away"?
+The other name (see the FAQ on my page to know which one, linked in my 
+signature) - is available also in the old instances (both 2.4 and 2.6).
 
-> > What the hell! This should *not* happen. What did we (I mean developers)
-> > do?
->
-> Just to be clear, these were zombies *inside* UML, not on the host.  I'm
-> happy to blame it on the older SKAS version.
+> That would mean quite a disruption to operations (i.e. 
+> making changes on lots of UML instances).  Is there a way to acheive
+> what you're doing in a backwards-compatible manner?
 
-i am running 2.6.9-skas3-v7 with 2.6.9-bb3 and i too am seeing zombies in skas 
-mode, inside the UML
+The other name always exists, even on older instances, so the new syntax is 
+backward compatible.
 
-i also saw this with 2.6.9-bb2 btw, is there anything usefull i can send to 
-the list ? (kernel configs, dmesg?)
+However, I hope the removal of /dev/ubd/0 symlinks can be deferred, so that 
+you don't need to rush on this (I'm not sure of this - I don't care, but 
+there are other developers complaining). At least, I need to update the Uml 
+page.
 
-fwiw, running debian sarge on both the host and uml's
+That said, DevFS is unstable (not in UML, but in general), so people should 
+start switching away from it.
+
+Using devfsd probably helps the transiction (i.e. you start using the 
+"standard" non-devfs names without removing access to the DevFS ones until 
+you complete the transiction).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
