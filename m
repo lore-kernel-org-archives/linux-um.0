@@ -1,30 +1,34 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C3DNg-0001U7-Oh for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Sep 2004 05:41:28 -0700
-Received: from ns.lbox.cz ([62.129.50.35])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C3DNe-0007oZ-8m for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Sep 2004 05:41:27 -0700
-Received: from mail.cubenet.cz (mail.cubenet.cz [62.129.60.162])
-	by ns.lbox.cz (8.11.6/8.11.6) with ESMTP id i83CfJZ25806
+	id 1C3DWG-0002jS-AN for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Sep 2004 05:50:20 -0700
+Received: from ip-217-18-179-10.reverse.dsi.net ([217.18.179.10]
+	helo=sindar.exse.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C3DWC-0008VO-VM for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Sep 2004 05:50:19 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by sindar.exse.net (Postfix) with ESMTP id 222BE22F08
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 3 Sep 2004 14:41:19 +0200
-Received: from linuxbox.linuxbox.cz (IDENT:root@[10.76.66.10])
-	by mail.cubenet.cz (8.11.6/8.11.6) with ESMTP id i83CfDQ25224
+	Fri,  3 Sep 2004 14:50:08 +0200 (CEST)
+Received: from sindar.exse.net ([127.0.0.1])
+	by localhost (sindar [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 17427-40
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 3 Sep 2004 14:41:13 +0200
-Received: from [10.76.66.13] (develbox.linuxbox.cz [10.76.66.13])
-	by linuxbox.linuxbox.cz (8.12.8/8.12.8) with ESMTP id i83CfCVM014769
+	Fri, 3 Sep 2004 14:50:07 +0200 (CEST)
+Received: from [10.0.2.5] (pD9E84BC3.dip0.t-ipconnect.de [217.232.75.195])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by sindar.exse.net (Postfix) with ESMTP id 209C622E10
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 3 Sep 2004 14:41:13 +0200
-From: Nikola Ciprich <extmaillist@linuxbox.cz>
-Content-Type: multipart/mixed; boundary="=-ZW2njrF2OLw0hZWQlfmU"
-Message-Id: <1094215272.22770.12.camel@develbox.linuxbox.cz>
-Mime-Version: 1.0
-Subject: [uml-devel] PATCH - add crypto api config options to 2.4.x uml
+	Fri,  3 Sep 2004 14:50:06 +0200 (CEST)
+Message-ID: <41386880.1040303@exse.net>
+From: =?ISO-8859-1?Q?Sebastian_B=F6hm?= <seb@exse.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------010105000704090807050603"
+Subject: [uml-devel] 2.6.8.1-um1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,58 +40,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 03 Sep 2004 14:41:12 +0200
-To: UML devel list <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 03 Sep 2004 14:50:08 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-
---=-ZW2njrF2OLw0hZWQlfmU
-Content-Type: text/plain
+This is a multi-part message in MIME format.
+--------------010105000704090807050603
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi,
-this is just one-line change, cryptoapi seems to work well inside UML
-(I'm using it for ppp_mppe_mppc 1.1)
-Could someone apply it? btw are some special rules for patch submission?
-I could not find any...
-thanks
-Nik.
--- 
--------------------------------------
-Nikola CIPRICH
-LinuxBox.cz, s.r.o.
-28. rijna 168, 709 01 Ostrava
 
-tel.:   +420 596 603 142
-fax:    +420 596 621 273
-mobil:  +420 777 093 799
-www.linuxbox.cz
+after a certain uptime (a few days) all my uml's with 2.6.8.1-um1 
+crashed with "Kernel panic: Kernel stack overflow".
 
-mobil servis: +420 737 238 656
-email servis: servis@linuxbox.cz
--------------------------------------
+How to debug this ?
 
+/sebastian
 
---=-ZW2njrF2OLw0hZWQlfmU
-Content-Disposition: attachment; filename=linux-2.4.27-uml-cfg-cryptoapi.patch
-Content-Type: text/x-patch; name=linux-2.4.27-uml-cfg-cryptoapi.patch;
-	charset=UTF-8
+--------------010105000704090807050603
+Content-Type: text/x-vcard; charset=utf-8;
+ name="seb.vcf"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="seb.vcf"
 
-diff -Naur linux-2.4.27/arch/um/config.in linux-2.4.27-uml-cfg-cryptoapi/arch/um/config.in
---- linux-2.4.27/arch/um/config.in	2004-09-03 14:32:49.341551178 +0200
-+++ linux-2.4.27-uml-cfg-cryptoapi/arch/um/config.in	2004-09-03 13:46:34.000000000 +0200
-@@ -103,6 +103,8 @@
- 
- source lib/Config.in
- 
-+source crypto/Config.in
-+
- mainmenu_option next_comment
- comment 'Kernel hacking'
- bool 'Debug memory allocations' CONFIG_DEBUG_SLAB
+begin:vcard
+fn;quoted-printable:Sebastian B=C3=B6hm
+n;quoted-printable:B=C3=B6hm;Sebastian
+email;internet:seb@exse.net
+tel;work:0351-4758645
+tel;fax:0351-4758645
+tel;home:0351-6526999
+tel;cell:0173-3807351
+note;quoted-printable:get my key:=0D=0A=
+	"gpg --keyserver www.keyserver.net --recv-keys EA996E36"
+x-mozilla-html:TRUE
+version:2.1
+end:vcard
 
---=-ZW2njrF2OLw0hZWQlfmU--
 
+--------------010105000704090807050603--
 
 
 -------------------------------------------------------
