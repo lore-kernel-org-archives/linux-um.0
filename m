@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C2sv0-0004gt-CM for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Sep 2004 07:50:30 -0700
-Received: from pcp242763pcs.howard01.md.comcast.net ([68.55.81.27]
-	helo=mail.freeside.dnsalias.org)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C2suz-0000xY-QC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Sep 2004 07:50:30 -0700
-From: Carl Holtje <lists@freeside.dnsalias.org>
-Message-ID: <Pine.LNX.4.58.0409021039040.26986@fire.freeside.dnsalias.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Processes & ptrace
+	id 1C2tVZ-0003pi-G7 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Sep 2004 08:28:17 -0700
+Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1C2tVY-0002Mk-Om for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Sep 2004 08:28:17 -0700
+From: Dominik =?ISO-8859-1?Q?J=FCrgens?= <dcdom@gmx.de>
+Content-Type: text/plain
+Message-Id: <1094138889.26131.28.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Problems compiling any 2.6.x UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,41 +25,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 2 Sep 2004 10:50:22 -0400 (EDT)
+Date: Thu, 02 Sep 2004 17:28:10 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-All-
+I have a problem with compiling user-mode-linux on my debian sarge
+system. Some importent package versions:
+ 
+Hostkernel 2.6.8.1
+gcc (GCC) 3.3.4 (Debian 1:3.3.4-6sarge1)
+GNU Make 3.80
+GNU binutils version 2.14.90.0.7 20031029 Debian GNU/Linux
 
-I'm looking to port user mode linux (UML) to the ARM platform. To this
-end, I've acquired an iPAQ running the 0.7.2 version of the Familiar linux
-distro (http://familiar.handhelds.org/), running the
-2.4.19-rmk6-pxa1-hh30 kernel.
+Problem: When I try to compile any 2.6.x UML-Kernel I get following
+message:
 
-According to the UML porting page
-(http://user-mode-linux.sourceforge.net/arch-port.html),
-the first step is to ensure system call numbers are changeable by ptrace,
-and they provide small C program to compile and test with. The iPAQ
-"fails" this test as child processes have different pids than their
-parents.
+make ARCH=um linux \n
+...
+<--zip-->
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+  KSYM    .tmp_kallsyms1.S
+  AS      .tmp_kallsyms1.o
+  LD      .tmp_vmlinux2
+  KSYM    .tmp_kallsyms2.S
+  AS      .tmp_kallsyms2.o
+  MAIN    arch/um/main.o
+  LD      vmlinux
+/bin/sh: Syntax error: "(" unexpected
+  CPP     arch/um/uml.lds.s
+gcc -Wl,-T,arch/um/uml.lds.s -static -Wl,--wrap,malloc -Wl,--wrap,free
+-Wl,--wrap,calloc \
+        -o linux arch/um/main.o vmlinux -L/usr/lib -lutil
+/usr/bin/ld:arch/um/uml.lds.s:150: syntax error
+collect2: ld returned 1 exit status
+make: *** [linux] Fehler 1
+</--zip-->
 
-This seems rather contrary, however, to other observations about the
-system. For example, a listing from top shows processes and their
-associated pid and ppid fields -- many processes report proper parents
-(ppid matches reasonable pids). I would certainly hope Familiar is not
-monkeying with things to make it appear this way...
+The content of the 'arch/um/uml.lds.s' file arround line 150:
+<--zip-->
+147:  init.data : { *(init.data) }
+148:  .data :
+149:  {
+150:    . = ALIGN(); /* init_task */
+151:    *(.data.init_task)
+152:    *(.data)
+153:    *(.gnu.linkonce.d*)
+154:    CONSTRUCTORS
+155:  }
+</--zip-->
 
-Admitidly, this sounds like a question for the Familiar folks, but I'm
-wondering if this is a kernel issue, and if it's since been fixed in more
-recent kernel versions. (Familiar hasn't been updated in quite some time)
+I googled for it a longer time and found nothing. 
 
-I'm looking to use the 2.6 kernel for both host and guests, especially
-with 2.6.9-rc1-mm1 containing UML 'natively'. I've looked through the
-kernel changelogs for any helpful nuggets to this end, but have come home
-empty handed.
-
-Thanks in advance for any insight!
-
-Carl
+Thanks for helping me :-)
+Dominik Juergens
 
 
 
