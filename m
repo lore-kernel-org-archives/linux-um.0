@@ -1,32 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bj1TK-00083e-Bv for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Jul 2004 12:55:50 -0700
-Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1Bj1TK-0000k7-4S
+	id 1Bk6fY-0008Vo-CM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 12 Jul 2004 12:40:56 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1Bk6fX-0002eb-TG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Jul 2004 12:55:50 -0700
-Received: from tuxrocks.com (localhost.localdomain [127.0.0.1])
-	by tuxrocks.com (8.12.10/8.12.8) with ESMTP id i69JtnVe020036
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 9 Jul 2004 13:55:49 -0600
-Received: from localhost (frank@localhost)
-	by tuxrocks.com (8.12.10/8.12.8/Submit) with ESMTP id i69Jtn8F020033
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 9 Jul 2004 13:55:49 -0600
-From: Frank Sorenson <frank@tuxrocks.com>
-Subject: Re: [uml-user] Re: [uml-devel] Fixing the 2.4 bugs - patches against
-	2.4.24-1um
-In-Reply-To: <200407081832.39138.blaisorblade_spam@yahoo.it>
-Message-ID: <Pine.LNX.4.60.0407091236400.18897@tuxrocks.com>
-References: <200407012050.14867.blaisorblade_spam@yahoo.it>
-	<Pine.LNX.4.58.0407071420550.9924@tuxrocks.com>
-	<200407081832.39138.blaisorblade_spam@yahoo.it>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	Mon, 12 Jul 2004 12:40:56 -0700
+Message-Id: <200407122036.i6CKa3Ys001604@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] uml_mconsole issue 
+In-Reply-To: Your message of "Wed, 07 Jul 2004 13:43:07 PDT."
+	<IFEIKNDOLFNCKMGAENCFEEIECHAA.Anthony_Brock@ous.edu> 
+References: <IFEIKNDOLFNCKMGAENCFEEIECHAA.Anthony_Brock@ous.edu> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,29 +28,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 9 Jul 2004 13:55:48 -0600 (MDT)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 12 Jul 2004 16:36:03 -0400
+To: Anthony Brock <Anthony_Brock@ous.edu>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 8 Jul 2004, BlaisorBlade wrote:
-> Yes, you are right. Compliments for that - I would have never seen such a
-> panic (I understand you perfectly, but I missed it and would have missed it
-> again). So thanks a lot for helping with it - I'll save that for when I'm
-> back (I'm leaving now, so have no time at all to do anything). Your catch also
-> means that UML will break without -DUM_FASTCALL, which is not nice: the buggy
-> change you see has actually uncovered some other bug; if it weren't so, the
-> bug you have fixed would only have hurted performance.
+Anthony_Brock@ous.edu said:
+> (gdb) bt 
+> #0  0xa00730df in link_path_walk (name=0xa0a59ca9 "uptime", nd=0xa3fd3aa4) 
+> at fs/namei.c:591 
 
-Correct.  I've verified that UML does break without -DUM_FASTCALL, even on 
-the 'stable' 2.4.24-1um patch, so the problem was probably introduced at 
-some point earlier.  Does anyone know the history behind UM_FASTCALL, its' 
-effects, and when related modifications occurred?
+This is known, and I haven't got around to fixing it yet.
 
-Frank
----------------------------------------------------------------------------
-Frank Sorenson - KD7TZK
-Systems Manager, Computer Science Department
-Brigham Young University
-frank@tuxrocks.com
+				Jeff
+
+
+
 
 
 -------------------------------------------------------
