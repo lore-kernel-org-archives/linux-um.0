@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CbgpC-0001M8-Df for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 07:00:22 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CbgpB-0001H5-3h
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Dec 2004 07:00:22 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20041207143541.GA23555@bytesex>
+	id 1Cbhss-0007Ee-JY for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 08:08:14 -0800
+Received: from bay24-f14.bay24.hotmail.com ([64.4.18.64] helo=hotmail.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cbhsq-0006ov-Un for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Dec 2004 08:08:13 -0800
+Message-ID: <BAY24-F14D010172174FC8FBD303F83B50@phx.gbl>
+In-Reply-To: <4972.1102296202@marajade.sandelman.ottawa.on.ca>
+From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] [patch] uml: ramdisk config fix
+Content-Type: text/plain; format=flowed
+Subject: [uml-devel] Re: What to do with uml_switch?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,35 +25,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Dec 2004 15:35:41 +0100
-To: Andrew Morton <akpm@osdl.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, uml devel <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade_spam@yahoo.it>
+Date: Tue, 07 Dec 2004 16:06:44 +0000
+To: mcr@xelerance.com
+Cc: blaisorblade_spam@yahoo.it, kraxel@bytesex.org, uml@uxu.ch, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-ObviouslyCorrect[tm] buildfix ;)
-Should go into 2.6.10.
+Michael Richardson wrote:
+>     Steve> I like these 3, but could you not just connect another UML
+>     Steve> guest to the switch and run arp -s pub and tcpdump to
+>     Steve> accomplish the same thing?
+>
+>   Sure, no problem :-)
+>   Please send:
+>	 a) MORE RAM
+>	    16-way system
+>
+>	 b) Paulo to come and debug why UMLs to "rogue", and clog up
+>	    memory and system state.
+>	    (Remember we start and stop some 1000 of them every night)
+>	    The more that we run, the worse the situation.
+>
+>   Starting a UML to answer ARP and ICMP echo requests is silly.
+>   Particularly since our test system now takes 2-3 hours to run on a
+>multigigahertz box with lots of ram
 
-Signed-off-by: Gerd Knorr <kraxel@bytesex.org>
----
- arch/um/Kconfig_block |    4 ++++
- 1 files changed, 4 insertions(+)
+Agreed, it would be an unwieldy solution.  And it's obvious you need fine 
+grained control to manage packets in your test environment, sorry if it 
+sounded like I was telling you what you should do.  What I was trying to 
+point out (and thinking out loud) is that an ARP generator can be connected 
+*to* uml_switch, it doesn't have to be built *into* uml_switch.  Strip down 
+the UML kernel's daemon_user.c and what you have is a framework to talk 
+socket datagrams to a uml_switch.  Add code to accept and generate arbitrary 
+ethernet frames, add you now have an independant pluggable diagnostic tool 
+anyone can use on the fly.  This is a solution that would probably satisfy 
+95% of us mere mortals.
 
-Index: linux-2.6.10-rc3/arch/um/Kconfig_block
-===================================================================
---- linux-2.6.10-rc3.orig/arch/um/Kconfig_block	2004-12-07 12:12:09.000000000 +0100
-+++ linux-2.6.10-rc3/arch/um/Kconfig_block	2004-12-07 13:41:38.692103167 +0100
-@@ -43,6 +43,10 @@ config BLK_DEV_NBD
- config BLK_DEV_RAM
- 	tristate "RAM disk support"
- 
-+config BLK_DEV_RAM_COUNT
-+	int "Default number of RAM disks" if BLK_DEV_RAM
-+	default "16"
-+
- config BLK_DEV_RAM_SIZE
- 	int "Default RAM disk size"
- 	depends on BLK_DEV_RAM
+Steve Schmidtke
 
--- 
-#define printk(args...) fprintf(stderr, ## args)
+
 
 
 -------------------------------------------------------
