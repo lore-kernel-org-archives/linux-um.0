@@ -1,24 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B3Q3w-0004lF-Un for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Mar 2004 17:41:40 -0800
-Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
-	helo=ash.lnxi.com)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1B3Q3v-00026J-GY for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Mar 2004 17:41:39 -0800
-From: Mike Snitzer <msnitzer@lnxi.com>
-Message-ID: <20040316184108.A14721@lnxi.com>
-References: <Pine.LNX.4.44.0403120222160.2524-100000@sparrow>
-	<20040316151745.B12857@lnxi.com>
-	<30b401c40bbb$a1858ad0$2000000a@schlepptopp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30b401c40bbb$a1858ad0$2000000a@schlepptopp>;
-	from for_spam@gmx.de on Wed, Mar 17, 2004 at 02:03:15AM +0100
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+In-Reply-To: <20040316174518.A14227@lnxi.com>
+Message-ID: <Pine.LNX.4.44.0403162043400.2148-100000@sparrow>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Subject: [uml-devel] Re: 2.6.4 UML kernel available
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -31,36 +17,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 Mar 2004 18:41:08 -0700
-To: roland <for_spam@gmx.de>
-Cc: William Stearns <wstearns@pobox.com>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 16 Mar 2004 20:46:00 -0500 (EST)
+To: Mike Snitzer <msnitzer@lnxi.com>
+Cc: ML-uml-user <User-mode-linux-user@lists.sourceforge.net>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, William Stearns <wstearns@pobox.com>
 
-On Tue, Mar 16 2004 at 18:03,
-roland <for_spam@gmx.de> wrote:
+Good afternoon, Mike,
 
-> could you post the contents of your inittab ?
-> maybe it makes sense to compare your inittab with "ours" (i.e. people successfully booting 2.6.4)
-> i can boot 2.6.4 with my suse9 rootfs
-> regards
-> roland
+On Tue, 16 Mar 2004, Mike Snitzer wrote:
 
-Sure, but like I posted in a previous mail; this appears to be an issue
-with Debian testing's init:
+> On Tue, Mar 16 2004 at 15:17,
+> Mike Snitzer <msnitzer@lnxi.com> wrote:
+> 
+> > On Fri, Mar 12 2004 at 00:27,
+> > William Stearns <wstearns@pobox.com> wrote:
+> > 
+> > > * I'm having trouble finding the right command line to get Debian 3.0's 
+> > > init to hook up to the console devices, but that's most certainly my 
+> > > problem, and not the kernel's.
+> > 
+> > Has anyone had any luck tracking down a solution to Debian's init and
+> > 2.6.4 (and I think 2.6.3) UML?  I'm having the same problem.
+> 
+> FYI, talking with others in #uml it seems that this is a problem specific
+> to Debian testing's init.  Others have been able to boot a Debian stable
+> image using 2.6.x; but can't do so with a Debian testing image.
+> 
+> Any insight/solutions to this would be very welcome.
 
-...
-1:2345:respawn:/sbin/getty 38400 tty1
-2:23:respawn:/sbin/getty 38400 tty2
-3:23:respawn:/sbin/getty 38400 tty3
-#4:23:respawn:/sbin/getty 38400 tty4
-#5:23:respawn:/sbin/getty 38400 tty5
-#6:23:respawn:/sbin/getty 38400 tty6
-...
+	What's changed between the init in stable and the init in testing?  
+Does Debian provide a changelog for the package?  In particular, any 
+references to tty handling?
+	Also, how could one _downgrade_ to the init in stable inside a
+Debian virtual machine?
+	Cheers,
+	- Bill
 
-So Debian's init tries to spawn a getty on each and fails.  I'm not using
-devfs or anything; again the same debian testing FS works great with a
-2.4.24 UML.
+---------------------------------------------------------------------------
+        "What you end up with, after running an operating system concept
+through these many marketing coffee filters, is something not unlike
+plain hot water."
+        -- Matt Welsh
+(Courtesy of Theo Van Dinter <felicity@kluge.net>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
-Mike
 
 
 -------------------------------------------------------
