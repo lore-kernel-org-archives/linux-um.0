@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AjiyE-0001lv-Ec for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 09:50:22 -0800
+	id 1AjjQw-00077P-58 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jan 2004 10:20:02 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AjiyD-00069v-VU
+	(Exim 4.30) id 1AjjQv-0003bP-If
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 09:50:22 -0800
+	Thu, 22 Jan 2004 10:20:01 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Changes to port_user
-Message-ID: <20040122181310.GA3317@ccure.user-mode-linux.org>
-References: <20040122144020.GQ4203@erizo.shearer.org>
-	<20040122154302.GR4203@erizo.shearer.org>
+Subject: Re: [uml-devel] [patch] uml fixes, 2.6.1-mm5-A2
+Message-ID: <20040122184236.GB3317@ccure.user-mode-linux.org>
+References: <20040120191706.GA32711@elte.hu> <20040120194328.GA1518@elte.hu>
+	<20040120200105.GA2289@elte.hu> <20040122162139.GA28167@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040122154302.GR4203@erizo.shearer.org>
+In-Reply-To: <20040122162139.GA28167@elte.hu>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,21 +29,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Jan 2004 13:13:10 -0500
-To: Dan Shearer <dan@shearer.org>
+Date: Thu, 22 Jan 2004 13:42:36 -0500
+To: Ingo Molnar <mingo@elte.hu>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Jan 23, 2004 at 02:13:02AM +1030, Dan Shearer wrote:
-> Jeff, please, what does "winch" stand for?
+On Thu, Jan 22, 2004 at 05:21:39PM +0100, Ingo Molnar wrote:
+> the patch below fixes a bug in UML that i've reproduced under 2.6.1-mm5. 
+> 
+> The bug hits in the following race scenario: if userspace() is just
+> about to handle a SIGTRAP signal that it wants to relay_signal(), and
+> SIGVTALRM hits the context before this happens but after is_user is set
+> to 1 in userspace(), then we get a kernelspace-signal panic. Ought to be
+> rare but definitely triggerable.
 
-SIGWINCH.
+Applied, nice catch.
 
-> And also, if I submit some patches that just contain brief source
-> comments about how things work will you accept them? 
-
-Yup.
-
-				Jeff
+			Jeff
 
 
 -------------------------------------------------------
