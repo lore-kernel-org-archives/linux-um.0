@@ -2,25 +2,29 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFdCZ-0005LW-LK for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Oct 2004 11:41:19 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CFdCX-00029v-Pu for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Oct 2004 11:41:19 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+	id 1CFepf-00084T-2U for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 13:25:47 -0700
+Received: from nudl.linbit.com ([212.69.162.21] helo=mail.linbit.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CFeoj-0002CN-5s for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 13:25:47 -0700
+Received: from minna.local (dialin-145-254-062-109.arcor-ip.net
+	[145.254.62.109])
+	by mail.linbit.com (LINBIT Mail Daemon) with ESMTP id 2E48614365
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu,  7 Oct 2004 22:24:43 +0200 (CEST)
+From: Lars Ellenberg <Lars.Ellenberg@linbit.com>
 Subject: Re: [uml-devel] uml "ip header error" for large (fragmented) udp
 	packets
+Message-ID: <RO4HJxErhAMlOpdbW1UCZm8=lge@web.de>
 References: </ydgn6vAKqzNNA6XYwRcEgI=lge@web.de>
+	<vm4cST3zEEx6OdPLK17ocyg=lge@web.de>
 	<20041006203539.GC22794@wotan.suse.de>
-	<EPVOfiPct8+KnHqiZ4mos5U=lge@web.de>
-In-Reply-To: <EPVOfiPct8+KnHqiZ4mos5U=lge@web.de>
-MIME-Version: 1.0
+	<200410072041.51890.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200410072041.16933.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200410072041.51890.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,55 +36,95 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 7 Oct 2004 20:41:16 +0200
+Date: Thu, 7 Oct 2004 22:24:54 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Lars Ellenberg <Lars.Ellenberg@linbit.com>
 
-On Wednesday 06 October 2004 23:48, Lars Ellenberg wrote:
-> / 2004-10-06 22:35:39 +0200
->
-> \ Andi Kleen:
+/ 2004-10-07 20:41:51 +0200
+\ BlaisorBlade:
+> On Wednesday 06 October 2004 22:35, Andi Kleen wrote:
 > > On Wed, Oct 06, 2004 at 08:48:23PM +0200, Lars Ellenberg wrote:
-> > > > So this could help you for now, while we try to find a clue about
-> > > > this. Quite frankly, I must say that I'm not seeing any network
-> > > > kernel hacker here (correct me if I'm wrong), so it will take some
-> > > > time to debug it. Maybe Gerd Knorr is an exception, actually.
-> > >
-> > > Well, then I take Andi Kleen and Lars Marowsky-Br?e into CC for now.
-> > > Lars, because I expect him to be interessted in having UML as full
-> > > featured cluster simulation tool available, and Andi because I hope he
-> > > might know the network code much better than me...
-> > >
+
 > > > FYI, full thread can be found for example at
 > > > http://thread.gmane.org/gmane.linux.uml.devel/4607
-> >
+> 
 > > Paolo's analysis is basically correct. loopback sets this flag
 > > for better performance.  Actually in 2.6 it probably doesn't help
 > > very much anymore because TCP can do checksum copy RX now, and that
 > > would get the checksum basically for free. But it's still there
 > > and may still make things slightly faster.
-> >
+> First thing: thanks a lot for your quick answer.
+> 
+> My discussion about "lo" was slightly unrelated to the exact problem, and a 
+> bit confusing...
+> 
+> I was at first surprised from Ethereal complaining about the host kernel, so I 
+> thought I could have a buggy Ethereal, and then went checking that it's a 
+> Linux optimization, indeed.
+> 
 > > If UML taps the packets from lo it will see incorrect checksums.
-It does not, so the solution is not the right one.
-> > Using a tun or ethertap device would avoid this. In the worst
+> > Using a tun or ethertap device would avoid this.
+> 
+> > In the worst 
 > > case you could also just delete the flag from the loopback
 > > interface, it's only an optimization.
-> >
-> > -Andi
->
-> unfortunately ethertap transport does not work either,
-> at least if UML is 2.6.6 and host kernel is 2.4.21-suse-whatever...
-> I did not try other combinations yet, but I doubt that changes a thing.
->
-> you suggest that we remove NET_IF_F_NO_CSUM from lo in the host?
-> ok, I'll try recompile my host then, and followup if that helps.
+> 
+> No, inside the Uml kernel they go through a virtual "ethN" interface, which 
+> uses special code. That driver, in turn, will use either ethertap, or TAP (it 
+> sends Ethernet frames), or even other mechanism.
+> 
+> You can find it (in 2.6.9-rc2 at least) in arch/um/drivers/net_*.c and 
+> arch/um/os-Linux/drivers/*tap*.c. The code in *_kern.c files links against 
+> the kernel API and includes, *_user.c against the host userspace includes.
+> 
+> And the problem is, probably, that the UML network drivers never declare their 
+> checksumming status, as I said in the previous mail:
+> 
+> [quote]
+> include/linux/skbuff.h describes the Checksum flags, and UML does not use 
+> them: these two commands return no (relevant) output.
+> 
+> find arch/um/ -name '*.[ch]'|xargs grep NETIF
+> find arch/um/ -name '*.[ch]'|xargs grep CHECKSUM
+> [/quote]
+> 
+> And not even these ones:
+> 
+> find arch/um/ -name '*.[ch]'|xargs grep NETIF
+> find arch/um/ -name '*.[ch]'|xargs grep CHECKSUM
+> 
+> Also, it's possible that there are even other bugs...
 
-No, I think he spoke about the guest; also he misunderstood a bit the problem, 
-since the packets do not go through the "lo" interface inside UML.
+now, what I found:
+arch/um/drivers/net_kern.c:
+struct sk_buff *ether_adjust_skb(struct sk_buff *skb, int extra)
+{
+	if((skb != NULL) && (skb_tailroom(skb) < extra)){
+	  	struct sk_buff *skb2;
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+		skb2 = skb_copy_expand(skb, 0, extra, GFP_ATOMIC);
+		dev_kfree_skb(skb);
+		skb = skb2;
+	}
+	if(skb != NULL) skb_put(skb, extra);
+	return(skb);
+}
+
+net/core/skbuff.c:
+ *	BUG ALERT: ip_summed is not copied. Why does this work? Is it used
+ *	only by netfilter in the cases when checksum is recalculated? --ANK
+ */
+struct sk_buff *skb_copy_expand(const struct sk_buff *skb,
+				int newheadroom, int newtailroom, int gfp_mask)
+{
+
+
+does that trigger something in someones brain maybe?
+someone "sees" it?
+
+otherwise I keep poking around...
+
+	lge
+
 
 
 -------------------------------------------------------
