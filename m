@@ -1,7 +1,5 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [Valgrind-users] Re: [uml-devel] Re: UML and valgrind
-Message-ID: <20040804153541.GA7237@ccure.user-mode-linux.org>
 References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<410EFCDB.8080404@enterasys.com>
 	<200408030517.i735HZUE026250@ccure.user-mode-linux.org>
@@ -12,10 +10,13 @@ References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
 	<410FCC70.1050902@enterasys.com>
 	<200408031931.i73JVkvv003367@ccure.user-mode-linux.org>
 	<yek3c33tk5o.fsf@audi.uk.cyberscience.com>
-Mime-Version: 1.0
+	<20040804153541.GA7237@ccure.user-mode-linux.org>
+From: Tom Hughes <thh@cyberscience.com>
+In-Reply-To: <20040804153541.GA7237@ccure.user-mode-linux.org> (Jeff Dike's
+	message of "Wed, 4 Aug 2004 11:35:41 -0400")
+Message-ID: <yekacxbrlvi.fsf@audi.uk.cyberscience.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yek3c33tk5o.fsf@audi.uk.cyberscience.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,66 +28,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 4 Aug 2004 11:35:41 -0400
-To: Tom Hughes <thh@cyberscience.com>
+Date: Wed, 04 Aug 2004 15:58:09 +0100
+To: Jeff Dike <jdike@addtoit.com>
 Cc: "D. Bahi" <dbahi@enterasys.com>, Nicholas Nethercote <njn25@cam.ac.uk>, user-mode-linux-devel@lists.sourceforge.net, valgrind-users@lists.sourceforge.net
 
-On Wed, Aug 04, 2004 at 08:52:19AM +0100, Tom Hughes wrote:
-> >> @@ -39,6 +40,10 @@
-> >>  # code which copies from baseBlock before the call, into
-> >>  # m_state_static, and back afterwards.
-> >>  
-> >> +.section .data
-> >> +save_ip:
-> >> +        .long   0
-> >> +
-> >>  VG_(do_syscall):
-> >>         # Save all the int registers of the real machines state on the
-> >>         # simulators stack.
-> >> @@ -80,10 +85,27 @@
-> >>         movl    VG_(m_state_static)+48, %esi
-> >>         movl    VG_(m_state_static)+52, %edi
-> >>  
-> >> +       cmpl    $__NR_clone, %eax
-> >> +       jne     not_clone
-> >> +
-> >> +       pushl   %eax
-> >> +       movl    VG_(m_state_static)+60, %eax
-> >> +       movl    %eax, save_ip
-> >> +       popl    %eax
-> >> +
-> >> +       int     $0x80
-> >> +
-> >> +       cmpl    $0, %eax
-> >> +       jne     parent_finish
-> >> +
-> >> +       jmp     *save_ip
-> >> +
-> >> +not_clone:
-> >>         # esp now refers to the simulatees stack
-> >>         # Do the actual system call
-> >>         int     $0x80
-> 
+In message <20040804153541.GA7237@ccure.user-mode-linux.org>
+        Jeff Dike <jdike@addtoit.com> wrote:
 
-> But how did you cope with the fact that valgrind doesn't protect it's
-> internal data structures in any way? You would have all sorts of
-> problems with two threads trying to access the same data.
+>> But how did you cope with the fact that valgrind doesn't protect it's
+>> internal data structures in any way? You would have all sorts of
+>> problems with two threads trying to access the same data.
+>
+> I think I was mistaken about this firing off another valgrind thread, for
+> two reasons.  
+>
+> I remember being concerned about whether the process data was still
+> present in its normal, not running under valgrind, form.  This would
+> only be a problem if you were planning on running a non-valgrind
+> thread in the same address space.
 
-I think I was mistaken about this firing off another valgrind thread, for
-two reasons.  
+Even doing that (if it's still possible) is quite dangerous as
+that thread could accidentally damage valgrind's environment.
 
-I remember being concerned about whether the process data was still present
-in its normal, not running under valgrind, form.  This would only be a problem
-if you were planning on running a non-valgrind thread in the same address
-space.
+> Second, the patch above looks like it extracts the client IP from
+> valigrind's state and branches to it.  This would make the new
+> thread a non-valgrind one.
 
-Second, the patch above looks like it extracts the client IP from valigrind's
-state and branches to it.  This would make the new thread a non-valgrind one.
+That would imply that the newly created thread was left to run on
+the real CPU rather than the simulated CPU. If that's the case then
+I'm not that it is possible anymore - I know we had to take out the
+stuff that allowed valgrind to switch back to the real CPU after
+running a specified number of basic blocks because it could no longer
+be made to work.
 
-So, this being the case, there are no concerns about multi-threading V, just
-UML, which isn't your problem.
+Tom
 
-				Jeff
+-- 
+Tom Hughes (thh@cyberscience.com)
+Software Engineer, Cyberscience Corporation
+http://www.cyberscience.com/
 
 
 -------------------------------------------------------
