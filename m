@@ -1,12 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200404081134.i38BYZB6001887@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] A quick humfs HOWTO 
-In-Reply-To: Your message of "Thu, 08 Apr 2004 10:35:48 +0200."
-	<Pine.LNX.4.44.0404081027360.7910-100000@filer.marasystems.com> 
-References: <Pine.LNX.4.44.0404081027360.7910-100000@filer.marasystems.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BBWRn-0001wT-5y for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Apr 2004 03:07:47 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BBWRm-000156-FS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Apr 2004 03:07:46 -0700
+From: Henrik Nordstrom <uml@henrik.marasystems.com>
+Subject: Re: [uml-devel] A quick humfs HOWTO
+In-Reply-To: <20040408095432.GA10043@axis.demon.co.uk>
+Message-ID: <Pine.LNX.4.44.0404081201120.8462-100000@filer.marasystems.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,50 +25,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 08 Apr 2004 07:34:35 -0400
-To: Henrik Nordstrom <uml@henrik.marasystems.com>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 8 Apr 2004 12:07:38 +0200 (CEST)
+To: Nick Craig-Wood <ncw1@axis.demon.co.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-uml@henrik.marasystems.com said:
-> Can data be a symlink on the host?
+On Thu, 8 Apr 2004, Nick Craig-Wood wrote:
 
-Yup.
+> Do you think it is easy / possible to make UML boot off a loop mounted
+> filesystem which is stored in humfs?  This would be an easy migration
+> path...
 
-> I would suggest adding an option to optionally allow specifying the
-> path to data, this to allow humfs permission shadows to easily be
-> created of existing trees. If data can be a symlink this option can be
-> managed in humfsify.
+Eh? Why a loop mounted filesystem for humfs? The whole point of humfs is
+to be able to emulate full UNIX semantics including ownership,
+permissions, filesystem size etc ontop of a plain file tree without
+requiring root on the host..
 
-With humfsify currently, you set up the data tree, and it takes it from there.
-So you can make data a symlink, and it will just work.
+If you want performance then ubd devices is the path to go.
 
-At some point, I'll have humsify create the data tree as well, and then it
-will be possible to tell it to make it a symlink.
+Please elaborate on what you envision being able to do. Probably I just
+misunderstood something.
 
-> Also, what happens if there is a mismatches between metadata and data
-> content? 
+> Why not make each of the files in the metadata directory a symlink and
+> store the metadata in the symlink itself?  I believe that there is room in
+> the inode for short symlinks so you'll save inodes there.  Lots of
+> dangling symlinks might look a bit untidy, but its a technique thats
+> been used before (eg emacs session files).
 
-Bad things happen.  The filesystem still needs to be hardened against 
-mismatches.
+Good idea for optimization on ext2/ext3 host filesystems.
 
-> I wouldsuggest adding a read-only flag, preventing UML from mounting
-> the  directory read-write. 
+For host filesystems such as reiserfs there is no difference as the same
+kind of optimisation is done on small files as well there (provided the
+notail option is not used)
 
-Good idea.
-
-> How is this information used by humfsify? Can these be made optional
-> (then  use current uid/gid, or don't care) 
-
-Don't care isn't a possibility.  humfsify chowns everything in the data tree
-to this uid and gid.  UML needs write access to everything if root is to
-behave as root.
-
-Possible it could run as a normal user, but my expectation is that people
-will loop-mount ubd volumes as their data sources, and those are filled with
-root-owned files.  The only place that makes sense is when you already have
-a tree which is completely owned by the UML user.
-
-				Jeff
+Regards
+Henrik
 
 
 
