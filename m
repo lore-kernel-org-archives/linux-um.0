@@ -2,15 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CE8ig-0003Yl-7k for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Oct 2004 08:56:18 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	id 1CEA9c-0005Bi-Rp for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 03 Oct 2004 10:28:12 -0700
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CE8iD-00027P-Ku for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Oct 2004 08:56:18 -0700
+	id 1CEA8O-0007Wa-OE for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 03 Oct 2004 10:28:12 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041003134109.248FFCBF1@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml: fix get_user warning
+Message-Id: <20041003134313.E0FF4CC06@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] Uml: add generic ptrace requests
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,32 +22,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 03 Oct 2004 15:41:08 +0200
+Date: Sun, 03 Oct 2004 15:43:13 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Adds some more parenthesis for a macro arg to fix a warning (which was in
-kernel/uid16.c).
+When we don't know how to handle ptrace(2) calls, call the arch-independent
+ptrace_request like i386 (and I guess other archs) do, instead of returning
+-EIO.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.9-current-paolo/include/asm-um/uaccess.h |    2 +-
+ linux-2.6.9-current-paolo/arch/um/kernel/ptrace.c |    2 +-
  1 files changed, 1 insertion(+), 1 deletion(-)
 
-diff -puN include/asm-um/uaccess.h~uml-fix-get_user-warning include/asm-um/uaccess.h
---- linux-2.6.9-current/include/asm-um/uaccess.h~uml-fix-get_user-warning	2004-10-03 15:37:45.654671792 +0200
-+++ linux-2.6.9-current-paolo/include/asm-um/uaccess.h	2004-10-03 15:37:45.657671336 +0200
-@@ -55,7 +55,7 @@
- 
- #define get_user(x, ptr) \
- ({ \
--        const __typeof__((*ptr)) *private_ptr = (ptr); \
-+        const __typeof__((*(ptr))) *private_ptr = (ptr); \
-         (access_ok(VERIFY_READ, private_ptr, sizeof(*private_ptr)) ? \
- 	 __get_user(x, private_ptr) : ((x) = 0, -EFAULT)); \
- })
+diff -puN arch/um/kernel/ptrace.c~uml-add-generic-ptrace-requests arch/um/kernel/ptrace.c
+--- linux-2.6.9-current/arch/um/kernel/ptrace.c~uml-add-generic-ptrace-requests	2004-10-03 15:41:12.023298992 +0200
++++ linux-2.6.9-current-paolo/arch/um/kernel/ptrace.c	2004-10-03 15:41:12.026298536 +0200
+@@ -287,7 +287,7 @@ int sys_ptrace(long request, long pid, l
+ 	}
+ #endif
+ 	default:
+-		ret = -EIO;
++		ret = ptrace_request(child, request, addr, data);
+ 		break;
+ 	}
+  out_tsk:
 _
 
 
