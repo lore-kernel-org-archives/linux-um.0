@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CgviK-0008VZ-Ea for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Dec 2004 17:54:56 -0800
-Received: from ctron-dnm.enterasys.com ([12.25.1.120] ident=firewall-user)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CgviH-00069n-Ne for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Dec 2004 17:54:56 -0800
-Received: (from uucp@localhost)
-	by ctron-dnm.enterasys.com (8.8.7/8.8.7) id VAA01515
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 21 Dec 2004 21:00:16 -0500 (EST)
-Message-ID: <41C8D3BF.6070609@enterasys.com>
-From: "D. Bahi" <dbahi@enterasys.com>
+	id 1Ch5Il-0004WS-B8 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Dec 2004 04:09:11 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Ch5Ij-0007Mu-Mv for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Dec 2004 04:09:11 -0800
+Message-ID: <41C963DC.8060401@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigE87BDC1D1B10D44F766BC3C2"
-Subject: [uml-devel] 2.4 series include path confusion
+Subject: Re: [uml-devel] Memory corruption/errors?
+References: <63806.222.152.52.159.1103583370.squirrel@222.152.52.159>
+In-Reply-To: <63806.222.152.52.159.1103583370.squirrel@222.152.52.159>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,45 +27,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 21 Dec 2004 20:54:07 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 22 Dec 2004 13:09:00 +0100
+To: Carl <lists@outervoid.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE87BDC1D1B10D44F766BC3C2
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Carl wrote:
+> Hi,
+> 
+> Running the piece of code from the URL below is generating errors on
+> various UML kernels:
+> 
+> http://downloads.rimuhosting.com/memtest.c
+> 
+> Kernels tested are: 2.4.27, 2.4.27-bs1, 2.6.9-bb4.
+> 
+> Different UML host servers have been tried too, and only UMLs running on
+> SMP (dual Xeon) servers seem to have the problem (P4s with HT are fine).
+> 
+> Can anyone else reproduce the errors? Any ideas?
+> 
+> Thanks, Carl
+> 
+> 
+> 
+> -------------------------------------------------------
+> SF email is sponsored by - The IT Product Guide
+> Read honest & candid reviews on hundreds of IT Products from real users.
+> Discover which products truly live up to the hype. Start reading now. 
+> http://productguide.itmanagersjournal.com/
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Do you see messages like this one
 
-so, trying to build 3rd party tools against the UML kernel headers and run into 
-things like "can't find sysdep/ptrace.h"
+     "failed at i=17240, k=85 (obs 17240 vs exp 17240)"
 
-poking around a bit - i wonder why there are headers under the arch/um/include 
-directory when we have a perfectly good seperate include/asm-um area to play in?
+with obs and exp being equal?
 
-things that want to build against a set of kernel headers shouldn't know about the 
-arch, right? they should be able to follow UML include paths that are setup during 
-the build stage that does the soft linking of asm and such.
-
-unimportant compared to the scope of 2.6 work i understand, but i thought i'd 
-bring it up and see if you think i'm way off my rocker or if i have a point.
-
-thank you all for keeping at it.
--- 
-db
-
---------------enigE87BDC1D1B10D44F766BC3C2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (MingW32)
-
-iD8DBQFByNPE3XQ4zakZ3z4RAsvqAJ9iU4iU0wXEZmuyLDAh54xyNrXWFgCePTSX
-HMR9YdTmSqjD+ZD2wvgPxfk=
-=kg4w
------END PGP SIGNATURE-----
-
---------------enigE87BDC1D1B10D44F766BC3C2--
+Bodo
 
 
 -------------------------------------------------------
