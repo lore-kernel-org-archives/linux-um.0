@@ -1,21 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBWkX-0005pp-HP for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 03:27:09 -0700
-Received: from [212.62.253.247] (helo=nepa.nlc.no ident=qmailr)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BBWkW-0000iV-Ox for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Apr 2004 03:27:09 -0700
-Message-ID: <64241.82.148.164.122.1081420011.squirrel@nepa.nlc.no>
-In-Reply-To: <20040408095432.GA10043@axis.demon.co.uk>
-References: <200404080207.i3827rbe009294@ccure.user-mode-linux.org> 
-	<20040408095432.GA10043@axis.demon.co.uk>
-Subject: Re: [uml-devel] A quick humfs HOWTO
-From: stian@nixia.no
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Message-Id: <200404081123.i38BN0B6001871@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Thu, 08 Apr 2004 08:58:38 BST."
+	<Pine.LNX.4.58.0404080857520.928@bitch.localdomain> 
+References: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
+	<Pine.LNX.4.58.0404080857520.928@bitch.localdomain> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [uml-user] A quick humfs HOWTO
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,32 +19,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 8 Apr 2004 12:26:51 +0200 (CEST)
-To: Nick Craig-Wood <ncw1@axis.demon.co.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 08 Apr 2004 07:23:00 -0400
+To: Rus Foster <rghf@fsck.me.uk>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-> And an idea...
->
-> Why not make each of the files in the metadata directory a symlink and
-> store the metadata in the symlink itself?  I believe that there is room in
-> the inode for short symlinks so you'll save inodes there.  Lots of
-> dangling symlinks might look a bit untidy, but its a technique thats
-> been used before (eg emacs session files).
->
-> See http://www.charmed.com/txt/ext2.txt and in particular
->
->   Symbolic links are also filesystem objects with inodes.  They
->   deserve special mention because the data for them is stored within
->   the inode itself if the symlink is less than 60 bytes long.  It uses
->   the fields which would normally be used to store the pointers to
->   data blocks.  This is a worthwhile optimisation as it we avoid
->   allocating a full block for the symlink, and most symlinks are less
->   than 60 characters long.
+rghf@fsck.me.uk said:
+> Anyone else getting /usr/include/linux/aio_abi.h not found or is it
+> just me?
 
-What if the place you store all you data does not support symlinks (yes,
-most filesystems supports symlinks, but there are a few that don't).
+It's not just you.  Move the include inside the #ifdef HAVE_AIO_ABI.
 
-Stan
+If you have a 2.6 host and you want to use the new aio stuff, copy aio_abi.h
+from a 2.6 kernel tree (include/linux) to /usr/include/linux.
+
+				Jeff
+
 
 
 -------------------------------------------------------
