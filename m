@@ -1,19 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBLnz-0007g8-3R for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Apr 2004 15:45:59 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BBLny-000119-E6 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Apr 2004 15:45:58 -0700
-From: Henrik Nordstrom <uml@henrik.marasystems.com>
-Subject: Re: [uml-devel] Quick and dirty patch for 2.6.5 + 2.6.4-um1 patch
-In-Reply-To: <200404072351.51418.sikkh@wp.pl>
-Message-ID: <Pine.LNX.4.44.0404080044580.31008-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-Id: <200404080207.i3827rbe009294@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] A quick humfs HOWTO
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,40 +15,92 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 8 Apr 2004 00:45:51 +0200 (CEST)
-To: Piotr Neuman <sikkh@wp.pl>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 07 Apr 2004 22:07:52 -0400
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 7 Apr 2004, Piotr Neuman wrote:
+As the readers of uml-devel are aware by now, there is a new virtual UML 
+filesystem called humfs.  This is a hostfs-like filesystem which does ownerships
+right, by separating them from the actual file, ala umsdos.
 
-> Here it goes:
-> diff -ruN linux/include/asm-i386/system.h uml/linux/include/asm-i386/system.h
-> --- linux/include/asm-i386/system.h	2004-04-07 23:29:03.000000000 +0200
-> +++ uml/linux/include/asm-i386/system.h	2004-04-07 23:24:39.000000000 +0200
-> @@ -243,6 +243,7 @@
->  #define __HAVE_ARCH_CMPXCHG 1
->  #endif
->  
-> +#ifndef __UM_SYSTEM_I386_H 
->  static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
->  				      unsigned long new, int size)
->  {
-> @@ -270,6 +271,8 @@
->  	return old;
->  }
->  
-> +#endif
-> +
->  #define cmpxchg(ptr,o,n)\
->  	((__typeof__(*(ptr)))__cmpxchg((ptr),(unsigned long)(o),\
->  					(unsigned long)(n),sizeof(*(ptr))))
+The reasons for humfs are described in my latest diary entry at 
+	http://user-mode-linux.sourceforge.net/diary.html
 
+This post describes how it works, and how to set it up.  This will be expanded
+upon and added to the UML site.
 
-For others impatient requiring 2.4: Same thing is needed for compiling
-2.4.26-rc2...
+Unlike a hostfs-mounted directory, a humfs filesystem has a definite root, and
+must be prepared ahead of time.  There is a tool in the latest uml_utilities
+called humfsify which does this for you, so don't use the following description
+to set one up by hand.
 
-Regards
-Henrik
+The root contains two directories :
+	data - which contains the files
+	metadata - which shadows "data" and whose files contain ownership 
+		information
+and one file
+	superblock - which contains information about the filesystem as a 
+		whole
+
+For plain files, the corresponding metadata file has the format
+	"<uid> <gid>\n"
+i.e. "0 0\n" for a uid root, gid root file.
+
+For directories, the format is the same, except that ownership is in the 
+"metadata" file in its metadata directory.  In the event that there is a real
+"metadata" file, its ownerships will be on the second line of that file.
+
+For example, the directory /foo/bar/ has both data/foo/bar/ and metadata/foo/bar
+directories.  Its ownerships are in the file metadata/foo/bar/metadata.  If
+there is a /foo/bar/metadata, then its ownerships are also in that file, which
+would then look like
+	"<directory uid> <directory gid>\n<file uid> <file gid>\n"
+
+This second line thing isn't implemented yet, so don't go creating files called
+metadata just now.
+
+For character and block devices the data file exists, but is empty, and the
+metadata file has the format
+	"<uid> <gid> <type> <major> <minor>\n"
+
+uid and gid are as above.  major and minor are self-explanatory.  type is
+either of the characters 'b' and 'c', depending on whether it's a block or
+character device.
+
+Unix sockets are similar, except they have no major and minor numbers, and
+have a type of 's' :
+	"<uid> <gid> s\n"
+
+The superblock file has the format
+	"version <number>\nused <number>\ntotal <number>\n"
+
+The version is currently 1.  used is set to the disk space consumed by 
+everything in the data directory.  total is set arbitrarily when you set
+up the filesystem.  It is the size of the filesystem as seen within UML.
+
+humfsify is in the uml_utilities tarball in ./humfsify/humfsify.  Before running
+it, you need to create an empty directory, then copy the filesystem you want
+to mount to the "data" subdirectory of the new directory.  cd to the new
+directory, and run humfsify as root:
+	humfsify <user> <group> <size>
+
+user and group are the uid and gid that UML will be running as, respectively.
+size is the size of the filesystem as seen inside UML, specified in bytes.
+The suffixes "K", "M", and "G" are accepted, and have the obvious meanings.
+
+humfsify will walk the "data" hierarchy and create the "metadata" hierarchy
+and the superblock file.
+
+Once this is done, it is ready for use a UML which is version 2.4.24-2 or later.
+To boot UML on this, enable CONFIG_HUMFS, and replace the ubd0=... argument
+with 
+	root=/dev/root rootflags=<path to humfs root> rootfstype=humfs
+
+UML will boot as it usually does, and you will see a humfs rootfilesystem
+when you log in.  All file operations should work as usual, and you should
+be able to create files owned by multiple different users and have those
+ownerships preserved.
+
+				Jeff
 
 
 
