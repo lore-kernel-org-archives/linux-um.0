@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8SLJ-0008I4-AU for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Sep 2004 16:40:41 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C8SLH-00031f-TR
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Sep 2004 16:40:41 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: [patch 2/2] add-SIGPROF-get-set_signals
-Message-ID: <20040918004513.GB1351@ccure.user-mode-linux.org>
-References: <20040912182629.3FEC49F37@zion.localdomain>
-	<200409132012.29994.blaisorblade_spam@yahoo.it>
-	<200409141926.i8EJQm4W003530@ccure.user-mode-linux.org>
-	<200409172052.48064.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200409172052.48064.blaisorblade_spam@yahoo.it>
+	id 1C8T0P-00059d-5U for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Sep 2004 17:23:09 -0700
+Received: from brown.brainfood.com ([146.82.138.61]
+	helo=gradall.private.brainfood.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C8T0L-0004IC-Lz for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Sep 2004 17:23:09 -0700
+Received: from localhost ([127.0.0.1] ident=adam)
+	by gradall.private.brainfood.com with esmtp (Exim 3.36 #1 (Debian))
+	id 1C8T0J-0001FV-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 17 Sep 2004 19:23:03 -0500
+From: Adam Heath <doogie@brainfood.com>
+Message-ID: <Pine.LNX.4.58.0409171920470.1171@gradall.private.brainfood.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] uml, ptrace, and BKL
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +30,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Sep 2004 20:45:13 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 17 Sep 2004 19:23:01 -0500 (CDT)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Sep 17, 2004 at 08:52:48PM +0200, BlaisorBlade wrote:
-> Translate "may" to "should". The Uml code already seems very lacking of 
-> comments.
+So, LWN had an article this week in their kernel section about parts of the
+kernel still using the BKL.  I did a little grepping, and to my surprise,
+sys_ptrace() uses the BKL.
 
-Methinks someone missed the joke :-)
+What this means to UML, is that there is an upper-bounds on how many instances
+can be on a server at once.  BKL also keeps preemption from occuring.
 
-> Ah, ok, but I didn't do that because I saw "well, let's add this, too". I took 
-> it from change_signals.
-> 
-> In this case, you should remove SIGPROF from change_signals, too.
-
-Yup, I didn't see that.
-
-				Jeff
+If someone were to look into that, UML could be sped up quite a bit, I am
+thinking.
 
 
 -------------------------------------------------------
