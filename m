@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C4ka7-0005X2-SE for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 11:20:39 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1C4ka6-0001JN-V9 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Sep 2004 11:20:39 -0700
+	id 1C4kYA-0005CC-UP for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 11:18:38 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1C4kY8-00078n-D7 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Sep 2004 11:18:38 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 1/1] uml: no extraversion in
-	arch/um/Makefile for mainline
-References: <20040906173524.EE034B977@zion.localdomain>
-	<20040906193620.A8502@infradead.org>
-In-Reply-To: <20040906193620.A8502@infradead.org>
+Subject: Re: [uml-devel] Current state of UML - some help needed from mainline.
+References: <200408190301.i7J30xek004150@ccure.user-mode-linux.org>
+	<413B76DB.5010600@pobox.com>
+	<200409061956.34557.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200409061956.34557.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200409072016.01749.blaisorblade_spam@yahoo.it>
+Message-Id: <200409072013.49494.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +31,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Sep 2004 20:16:01 +0200
+Date: Tue, 7 Sep 2004 20:13:49 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Christoph Hellwig <hch@infradead.org>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
+Cc: Jeff Garzik <jgarzik@pobox.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-On Monday 06 September 2004 20:36, Christoph Hellwig wrote:
-> Could you please fix UML to not use ghash.h and remove that one before
-> playing with new toys?  This has been requested a few times now.
-Yes, I can try - but I'd like to know the exact reason (I'm not developing UML 
-as long as Jeff does).
+For LKML: I'm not subscribed, so don't forget to CC me.
+On Monday 06 September 2004 19:56, BlaisorBlade wrote:
+> On Sunday 05 September 2004 22:28, Jeff Garzik wrote:
+> > Overall I am really impressed.  Like other arches in the Linux kernel,
+> > it is IMO very important to be able to work "out of the box", without
+> > patches.
+Yes - especially when microAPI changes happen every day, as of 2.6. I've just 
+downloaded a snapshot including the merge, so I'll be able to merge some 
+little fixes which have happened since.
 
-My idea is that ghash.h is just trivial boilerplate which does not deserve 
-generalized code, so that even rewriting the same exact code without using 
-those macros (and maybe embedding some assumptions about this usage) would be 
-a fine solution; also, there is just one user of it 
-(arch/um/kernel/physmem.c, with just one hash defined), so it shouldn't be 
-hard.
+Do you think that keeping a UML tree for new, experimental features is a good 
+idea, or that this role should go to -mm?
 
-However, if the problem with ghash.h is different, I need more explainations.
+I ask this also because I don't know how much would help general review for 
+new features.
+
+For instance, the "hostfs" feature is in the middle of a rewrite and the new 
+code is still very broken (the current release says more or less "VFS: busy 
+inodes after unmount - self destroying in 5 seconds. Have a nice day", but 
+maybe this is fixed; plus has a number of other bugs).
+
+Also, SMP hasn't compiled for a while, so there is a number of locking problem 
+- at least one straight deadlock in the ubd driver when passing ubd=sync. 
+It's not a hard problem - just not yet fixed it.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
