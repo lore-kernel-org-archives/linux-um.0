@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8Na1-0002Dt-8l for user-mode-linux-devel@lists.sourceforge.net;
+	id 1D8Na1-0002Du-AI for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 07 Mar 2005 11:07:49 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D8NZz-0002cp-7R for user-mode-linux-devel@lists.sourceforge.net;
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1D8NZz-0001dk-9a for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 07 Mar 2005 11:07:49 -0800
-Message-Id: <200503072038.j27Kcvbc004013@ccure.user-mode-linux.org>
+Message-Id: <200503072037.j27Kbjbc003962@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 15/16] UML - Improve error reporting
+Subject: [uml-devel] [PATCH 5/16] UML - Fix some usercopy confusion
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,137 +24,98 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 07 Mar 2005 15:38:57 -0500
+Date: Mon, 07 Mar 2005 15:37:45 -0500
 To: Linus Torvalds <torvalds@osdl.org>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This patch adds some errors and warnings where there were none before:
-    If someone typos "ubd" as "udb", that is caught and a warning is printed
-    If a ubd file can't be opened, that now results in an error message
-    If there are more telnet connections to port consoles than there are 
-consoles, then a message will appear in the telnet session explaining why
-there is no login prompt.
+This fixes a couple of copy-user problems spotted by Al Viro.  
+copy_sc_from_user_tt was doing a copy_from_user to do an in-kernel 
+assignment.  I commented this, at the request of Chris Wedgewood.
+sys_ipc had a void *__user ptr which should have been void __user *ptr.
+Finally, there were a couple of bogus __user annotations on unsigned longs, 
+which were never going to be passed into copy_user.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.11/arch/um/drivers/port_kern.c
+Index: linux-2.6.11/arch/um/sys-i386/signal.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/drivers/port_kern.c	2005-03-05 12:07:31.000000000 -0500
-+++ linux-2.6.11/arch/um/drivers/port_kern.c	2005-03-05 12:25:42.000000000 -0500
-@@ -10,6 +10,7 @@
- #include "linux/irq.h"
- #include "linux/spinlock.h"
- #include "linux/errno.h"
-+#include "asm/atomic.h"
- #include "asm/semaphore.h"
- #include "asm/errno.h"
- #include "kern_util.h"
-@@ -22,6 +23,7 @@
+--- linux-2.6.11.orig/arch/um/sys-i386/signal.c	2005-03-05 12:07:34.000000000 -0500
++++ linux-2.6.11/arch/um/sys-i386/signal.c	2005-03-05 12:10:27.000000000 -0500
+@@ -108,6 +108,15 @@
+ #endif
  
- struct port_list {
- 	struct list_head list;
-+	atomic_t wait_count;
- 	int has_connection;
- 	struct semaphore sem;
- 	int port;
-@@ -70,6 +72,13 @@
- 	return(IRQ_HANDLED);
+ #ifdef CONFIG_MODE_TT
++
++/* These copy a sigcontext to/from userspace.  They copy the fpstate pointer,
++ * blowing away the old, good one.  So, that value is saved, and then restored
++ * after the sigcontext copy.  In copy_from, the variable holding the saved
++ * fpstate pointer, and the sigcontext that it should be restored to are both
++ * in the kernel, so we can just restore using an assignment.  In copy_to, the
++ * saved pointer is in the kernel, but the sigcontext is in userspace, so we
++ * copy_to_user it.
++ */
+ int copy_sc_from_user_tt(struct sigcontext *to, struct sigcontext *from,
+ 			 int fpsize)
+ {
+@@ -120,11 +129,9 @@
+ 	sigs = to->oldmask;
+ 	err = copy_from_user(to, from, sizeof(*to));
+ 	to->oldmask = sigs;
+-	if(to_fp != NULL){
+-		err |= copy_from_user(&to->fpstate, &to_fp,
+-				      sizeof(to->fpstate));
++	to->fpstate = to_fp;
++	if(to_fp != NULL)
+ 		err |= copy_from_user(to_fp, from_fp, fpsize);
+-	}
+ 	return(err);
  }
  
-+#define NO_WAITER_MSG \
-+    "****\n" \
-+    "There are currently no UML consoles waiting for port connections.\n" \
-+    "Either disconnect from one to make it available or activate some more\n" \
-+    "by enabling more consoles in the UML /etc/inittab.\n" \
-+    "****\n"
-+
- static int port_accept(struct port_list *port)
- {
- 	struct connection *conn;
-@@ -104,6 +113,10 @@
- 		goto out_free;
+@@ -138,8 +145,7 @@
+ 	from_fp = from->fpstate;
+ 	err = copy_to_user(to, from, sizeof(*to));
+ 	if(from_fp != NULL){
+-		err |= copy_to_user(&to->fpstate, &to_fp,
+-					 sizeof(to->fpstate));
++		err |= copy_to_user(&to->fpstate, &to_fp, sizeof(to->fpstate));
+ 		err |= copy_to_user(to_fp, from_fp, fpsize);
  	}
+ 	return(err);
+@@ -303,7 +309,7 @@
  
-+	if(atomic_read(&port->wait_count) == 0){
-+		os_write_file(fd, NO_WAITER_MSG, sizeof(NO_WAITER_MSG));
-+		printk("No one waiting for port\n");
-+	}
- 	list_add(&conn->list, &port->pending);
- 	return(1);
- 
-@@ -182,6 +195,7 @@
- 
- 	*port = ((struct port_list) 
- 		{ .list 	 	= LIST_HEAD_INIT(port->list),
-+		  .wait_count		= ATOMIC_INIT(0),
- 		  .has_connection 	= 0,
- 		  .sem 			= __SEMAPHORE_INITIALIZER(port->sem, 
- 								  0),
-@@ -220,9 +234,11 @@
- 	struct port_list *port = dev->port;
- 	int fd;
- 
-+        atomic_inc(&port->wait_count);
- 	while(1){
-+		fd = -ERESTARTSYS;
- 		if(down_interruptible(&port->sem))
--			return(-ERESTARTSYS);
-+                        goto out;
- 
- 		spin_lock(&port->lock);
- 
-@@ -254,8 +270,9 @@
- 	dev->helper_pid = conn->helper_pid;
- 	dev->telnetd_pid = conn->telnetd_pid;
- 	kfree(conn);
--
--	return(fd);
-+ out:
-+	atomic_dec(&port->wait_count);
-+	return fd;
- }
- 
- void port_remove_dev(void *d)
-Index: linux-2.6.11/arch/um/drivers/ubd_kern.c
+ long sys_sigreturn(struct pt_regs regs)
+ {
+-	unsigned long __user sp = PT_REGS_SP(&current->thread.regs);
++	unsigned long sp = PT_REGS_SP(&current->thread.regs);
+ 	struct sigframe __user *frame = (struct sigframe *)(sp - 8);
+ 	sigset_t set;
+ 	struct sigcontext __user *sc = &frame->sc;
+Index: linux-2.6.11/arch/um/sys-i386/syscalls.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/drivers/ubd_kern.c	2005-03-05 12:11:43.000000000 -0500
-+++ linux-2.6.11/arch/um/drivers/ubd_kern.c	2005-03-05 12:24:27.000000000 -0500
-@@ -453,6 +453,22 @@
- "    an 's' will cause data to be written to disk on the host immediately.\n\n"
- );
- 
-+static int udb_setup(char *str)
-+{
-+	printk("udb%s specified on command line is almost certainly a ubd -> "
-+	       "udb TYPO\n", str);
-+	return(1);
-+}
-+
-+__setup("udb", udb_setup);
-+__uml_help(udb_setup,
-+"udb\n"
-+"    This option is here solely to catch ubd -> udb typos, which can be\n\n"
-+"    to impossible to catch visually unless you specifically look for\n\n"
-+"    them.  The only result of any option starting with 'udb' is an error\n\n"
-+"    in the boot output.\n\n"
-+);
-+
- static int fakehd_set = 0;
- static int fakehd(char *str)
+--- linux-2.6.11.orig/arch/um/sys-i386/syscalls.c	2005-03-05 12:07:31.000000000 -0500
++++ linux-2.6.11/arch/um/sys-i386/syscalls.c	2005-03-05 12:10:27.000000000 -0500
+@@ -88,7 +88,7 @@
+  * This is really horribly ugly.
+  */
+ long sys_ipc (uint call, int first, int second,
+-	     int third, void *__user ptr, long fifth)
++	     int third, void __user *ptr, long fifth)
  {
-@@ -605,7 +621,11 @@
- 		}
- 	}
+ 	int version, ret;
  
--	if(dev->fd < 0) return(dev->fd);
-+	if(dev->fd < 0){
-+		printk("Failed to open '%s', errno = %d\n", dev->file, 
-+		       -dev->fd);
-+		return(dev->fd);
-+	}
+Index: linux-2.6.11/arch/um/sys-x86_64/signal.c
+===================================================================
+--- linux-2.6.11.orig/arch/um/sys-x86_64/signal.c	2005-03-05 12:07:34.000000000 -0500
++++ linux-2.6.11/arch/um/sys-x86_64/signal.c	2005-03-05 12:10:27.000000000 -0500
+@@ -237,7 +237,7 @@
  
- 	if(dev->cow.file != NULL){
- 		err = -ENOMEM;
+ long sys_rt_sigreturn(struct pt_regs *regs)
+ {
+-	unsigned long __user sp = PT_REGS_SP(&current->thread.regs);
++	unsigned long sp = PT_REGS_SP(&current->thread.regs);
+ 	struct rt_sigframe __user *frame =
+ 		(struct rt_sigframe __user *)(sp - 8);
+ 	struct ucontext __user *uc = &frame->uc;
 
 
 
