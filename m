@@ -1,27 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CHA7d-0007qN-Kt for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:02:33 -0700
-Received: from nudl.linbit.com ([212.69.162.21] helo=mail.linbit.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CHA72-0004AU-83 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:02:33 -0700
-From: Lars Ellenberg <Lars.Ellenberg@linbit.com>
-Subject: Re: [uml-devel] SOLVED: uml "ip header error" for large (fragmented)
-	udp packets
-Message-ID: <xneXIovOv53ZtptO+AU2uyI=lge@web.de>
-References: </ydgn6vAKqzNNA6XYwRcEgI=lge@web.de>
-	<vm4cST3zEEx6OdPLK17ocyg=lge@web.de>
-	<20041006203539.GC22794@wotan.suse.de>
-	<200410072041.51890.blaisorblade_spam@yahoo.it>
-	<RO4HJxErhAMlOpdbW1UCZm8=lge@web.de>
-	<j7l8RdbM+9uLzg0PWMggkBg=lge@web.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <j7l8RdbM+9uLzg0PWMggkBg=lge@web.de>
+	id 1CHALg-0002I1-VZ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:17:04 -0700
+Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
+	helo=zion.localdomain)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CHALa-0008Gs-GN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:17:04 -0700
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20041012001636.12CB88693@zion.localdomain>
+Subject: [uml-devel] [patch 6/6] uml: export more Symbols
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,53 +23,67 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Oct 2004 02:03:03 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 12 Oct 2004 02:16:35 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
-/ 2004-10-11 19:55:12 +0200
-\ Lars Ellenberg:
-> since UML => Host does not work, but
-> Host => UML does, this suggests that
-> the bug is somewhere on the sending side.
-> 
-> I was not able to track it down.
 
-just so you know, finally:
+Adds a lot more EXPORT_SYMBOLS calls.
 
-=======================
---- linux-2.6.6/arch/um/include/sysdep-i386/checksum.h.orig	2004-10-12 01:50:49.000000000 +0200
-+++ linux-2.6.6/arch/um/include/sysdep-i386/checksum.h	2004-10-12 01:50:58.000000000 +0200
-@@ -102,8 +102,7 @@
- 	   are modified, we must also specify them as outputs, or gcc
- 	   will assume they contain their original values. */
- 	: "=r" (sum), "=r" (iph), "=r" (ihl)
--	: "1" (iph), "2" (ihl)
--	: "memory");
-+	: "1" (iph), "2" (ihl));
- 	return(sum);
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ linux-2.6.9-current-paolo/arch/um/kernel/irq.c     |    2 ++
+ linux-2.6.9-current-paolo/arch/um/kernel/ksyms.c   |    1 +
+ linux-2.6.9-current-paolo/arch/um/kernel/physmem.c |    5 +++++
+ 3 files changed, 8 insertions(+)
+
+diff -puN arch/um/kernel/irq.c~uml-export-Symbols arch/um/kernel/irq.c
+--- linux-2.6.9-current/arch/um/kernel/irq.c~uml-export-Symbols	2004-10-12 01:22:08.000000000 +0200
++++ linux-2.6.9-current-paolo/arch/um/kernel/irq.c	2004-10-12 01:22:08.000000000 +0200
+@@ -441,6 +441,8 @@ int um_request_irq(unsigned int irq, int
+ 		err = activate_fd(irq, fd, type, dev_id);
+ 	return(err);
+ }
++EXPORT_SYMBOL(um_request_irq);
++EXPORT_SYMBOL(reactivate_fd);
+ 
+ /* this was setup_x86_irq but it seems pretty generic */
+ int setup_irq(unsigned int irq, struct irqaction * new)
+diff -puN arch/um/kernel/ksyms.c~uml-export-Symbols arch/um/kernel/ksyms.c
+--- linux-2.6.9-current/arch/um/kernel/ksyms.c~uml-export-Symbols	2004-10-12 01:22:08.000000000 +0200
++++ linux-2.6.9-current-paolo/arch/um/kernel/ksyms.c	2004-10-12 01:22:08.000000000 +0200
+@@ -60,6 +60,7 @@ EXPORT_SYMBOL(strncpy_from_user_skas);
+ EXPORT_SYMBOL(copy_to_user_skas);
+ EXPORT_SYMBOL(copy_from_user_skas);
+ #endif
++EXPORT_SYMBOL(uml_strdup);
+ 
+ EXPORT_SYMBOL(os_stat_fd);
+ EXPORT_SYMBOL(os_stat_file);
+diff -puN arch/um/kernel/physmem.c~uml-export-Symbols arch/um/kernel/physmem.c
+--- linux-2.6.9-current/arch/um/kernel/physmem.c~uml-export-Symbols	2004-10-12 01:22:08.000000000 +0200
++++ linux-2.6.9-current-paolo/arch/um/kernel/physmem.c	2004-10-12 01:22:08.000000000 +0200
+@@ -8,6 +8,7 @@
+ #include "linux/slab.h"
+ #include "linux/vmalloc.h"
+ #include "linux/bootmem.h"
++#include "linux/module.h"
+ #include "asm/types.h"
+ #include "asm/pgtable.h"
+ #include "kern_util.h"
+@@ -220,6 +221,10 @@ void physmem_forget_descriptor(int fd)
+ 	kfree(desc);
  }
  
-=======================
-
-that's all, folks. only a missing memory barrier.
-
-WTF :-/
-
-same patch applies to 2.6.8.1 - uml and probably all other umls.
-since that is a one-to-one copy anyways, maybe UML should better use the
-original (in include/asm-i386/checksum.h) right away??
-there may be similar bugs hiding in various areas of uml...
-
-Thanks for now,
-keep it going...
-
-btw,
-anyone wants to give me a hint how to tune it best?
-maybe how to up the mtu of the UML "nics"?
-
-	Lars Ellenberg
-
-"NLRge your UML-UDP" ...
++EXPORT_SYMBOL(physmem_forget_descriptor);
++EXPORT_SYMBOL(physmem_remove_mapping);
++EXPORT_SYMBOL(physmem_subst_mapping);
++
+ void arch_free_page(struct page *page, int order)
+ {
+ 	void *virt;
+_
 
 
 -------------------------------------------------------
