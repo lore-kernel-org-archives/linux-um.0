@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6F07-0000Py-5Q for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 Sep 2004 14:01:39 -0700
-Received: from atrey.karlin.mff.cuni.cz ([195.113.31.123] ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C6F06-0003EE-Ds for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 Sep 2004 14:01:39 -0700
-From: Jan Kara <jack@suse.cz>
-Subject: Re: [uml-devel] UML compile fix
-Message-ID: <20040911205957.GC28557@atrey.karlin.mff.cuni.cz>
-References: <20040904075520.GA5799@atrey.karlin.mff.cuni.cz>
-	<200409100355.i8A3tEg1005654@ccure.user-mode-linux.org>
-	<200409101929.28931.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200409101929.28931.blaisorblade_spam@yahoo.it>
+	id 1C6GLc-0003SW-Dx for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 11 Sep 2004 15:27:56 -0700
+Received: from fmr10.intel.com ([192.55.52.30] helo=fmsfmr003.fm.intel.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C6GLb-0004qi-3N for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 11 Sep 2004 15:27:56 -0700
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Subject: RE: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
+Message-ID: <A06801158AE07847B27A52C1A074BC1D04C913FF@fmsmsx404.amr.corp.intel.com>
+From: "Wichmann, Mats D" <mats.d.wichmann@intel.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +26,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 11 Sep 2004 22:59:57 +0200
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Sat, 11 Sep 2004 15:27:46 -0700
+Content-Transfer-Encoding: 8bit
+To: David Jeffery <djeffery@britsys.net>, ralston@stral.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-> On Friday 10 September 2004 05:55, Jeff Dike wrote:
-> > jack@suse.cz said:
-> > > +HOSTCFLAGS := $(subst -fomit-frame-pointer,,$(HOSTCFLAGS))
-> >
-> > What does this fix?
-> >
-> > 				Jeff
-> It's used for host programs. Actually, however, that line is useless, IMHO. 
-> Nobody else needed it. Jan, can you test not using that line (and using just 
-> the EXPORT_SYMBOL removal) and report the errors you get, if any, or a 
-> success?
-  What does exactly mean "EXPORT_SYMBOL removal"?
+ 
+>It depends on what part of pthreads the programs use.  My patch only 
+>fixes basic thread creation.  If you run the pthread test suite from 
+>LSB, you'll find there is alot still broken.  
 
-						Thanks for help
-								Honza
--- 
-Jan Kara <jack@suse.cz>
-SuSE CR Labs
+I'm glad folks are finding some use for the tests.
+Just to give credit where due, this is VSTH-Lite,
+the "free" version of the official posix threads
+test suite which we (LSB) just repackage. Current
+generic nptl+tls-enabled-glibc do quite well
+on this set of tests (like, one failure, which
+is likely a testsuite problem).
+
+-- mats
 
 
 -------------------------------------------------------
