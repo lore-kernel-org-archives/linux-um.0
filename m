@@ -2,18 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AO3VR-0003He-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 23 Nov 2003 15:19:05 -0800
-Received: from m17.lax.untd.com ([64.136.30.80])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AO3VQ-00055C-SZ
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 23 Nov 2003 15:19:04 -0800
-Subject: Re: [uml-devel] Host panic when UML reads host /dev/shm
-Message-ID: <20031123.150830.-1747969.0.mcmechanjw@juno.com>
+	id 1AO3nA-0004kV-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Sun, 23 Nov 2003 15:37:24 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AO3n9-0007BJ-C8
+	for User-mode-linux-devel@lists.sourceforge.net; Sun, 23 Nov 2003 15:37:23 -0800
+Received: from localhost (henrik@localhost)
+	by filer.marasystems.com (8.11.6/8.11.6) with ESMTP id hANNbKY07334
+	for <User-mode-linux-devel@lists.sourceforge.net>; Mon, 24 Nov 2003 00:37:20 +0100
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] iptables-restore randomly crashes under UML
+In-Reply-To: <Pine.LNX.4.44.0311221347440.20561-100000@filer.marasystems.com>
+Message-ID: <Pine.LNX.4.44.0311232251090.6878-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-From: James W McMechan <mcmechanjw@juno.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,74 +27,97 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 Nov 2003 15:08:27 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 24 Nov 2003 00:37:20 +0100 (CET)
+To: User-mode-linux-devel@lists.sourceforge.net
 
-I have been tracing down the Oops on a vanilla 2.4.22 kernel
-This appears to be a Oops with a semaphore held that will
-lock out all other accesses to the tmpfs/shmfs filesystem.
+On Sat, 22 Nov 2003, Henrik Nordstrom wrote:
 
-I traced it to read_dir in hostfs_user.c by setting
-breakpoints on all the hostfs_user.c functions.
+> We have found what looks like a UML-specific problem when running the 
+> iptables-restore command.
 
-Ok I now have a simple test program which Oops
-the host kernel instantly (3 times through loop)
+Have been looking closely at this one, and from what I can tell everything
+indicates there is something within UML which corrupts the kernel memory
+allocated by iptables.
 
-This is very strange my attached test program when run
-as a unprivileged user Oops the kernel and locks /dev/shm
-in general a unprivileged user should not be able to do this
+The culpit code from net/ipv4/netfilter/ip_tables.c:do_replace() with 
+comments:
 
-It has taken a while in order to check that the kernel I was
-running was without patches (i.e. no skas)
-It still Oops on the third loop :(
+        newinfo = vmalloc(sizeof(struct ipt_table_info)
+                          + SMP_ALIGN(tmp.size) * smp_num_cpus);
+        if (!newinfo)
+                return -ENOMEM;
 
-I have also noted that the tmpfs/shmfs does not have a set
-of files like other filesystems under fs/ it seems to be located
-in mm/shmem.c instead... very strange
+[The allocated size is verified to be correct]
 
-Oh well it is a problem with the vanilla 2.4.22 kernel so
-more testing and off to the LKML...
+        if (copy_from_user(newinfo->entries, user + sizeof(tmp),
+                           tmp.size) != 0) {
+                ret = -EFAULT;
+                goto free_newinfo;
+        }
 
-Anybody have a better guess where to send this?
+[So far everything looks fine and what gdb finds in newinfo->entries
+matches what looks like was sent from userspace. Sizes of the copied data
+has been verified that there is no buffer overflow. newinfo->entries is
+correct even if it looks odd at first sight (array, not a pointer)]
 
-For your Enjoyment the test program
+        counters = vmalloc(tmp.num_counters * sizeof(struct ipt_counters));
+        if (!counters) {
+                ret = -ENOMEM;
+                goto free_newinfo;
+        }
 
-/* by James_McMechan at hotmail com */
-/* test program to Oops shmfs usually mounted at /dev/shm */
-/* yes it is dumb but unprivileged users should not be able */
-/* to Oops the kernel regardless of how dumb the program */
-#include <sys/types.h>                                                   
-      
-#include <dirent.h>
-#include <stdio.h>
+[still everything looks fine, and contents identical to after the 
+copy_from_user call above]
 
-main()
-{
-        DIR *dir;
-        struct dirent *ent;
-        off_t pos = 0;
+        memset(counters, 0, tmp.num_counters * sizeof(struct ipt_counters));
 
-        do {
-                dir = opendir("/dev/shm");
-                seekdir(dir, pos);
-                ent = readdir(dir);
-                if (ent == 0) {
-                        printf("end of directory\n");
-                        perror("readdir ended with");
-                } else {
-                        printf("d_name is %s\n",ent->d_name);
-                        pos = telldir(dir);
-                        if (pos < 0)
-                                perror("telldir failed with");
-                }
-                closedir(dir);
-        } while (ent != 0);
-}
+[here randomly (not always) the data copied has been currupted in
+semi-random ways.  Sometimes this corruption can be seen before the call
+to translate_table(), sometimes early in the start of translate_table()  
+before the memory in question is referenced. There seems to be only two or
+three different patterns of corruption all spread out little here little
+there in the memory aream, but that pattern may also be an artefact of 
+the repetive nature of the test used to trigger the error]
 
-________________________________________________________________
-The best thing to hit the internet in years - Juno SpeedBand!
-Surf the web up to FIVE TIMES FASTER!
-Only $14.95/ month - visit www.juno.com to sign up today!
+        ret = translate_table(tmp.name, tmp.valid_hooks,
+                              newinfo, tmp.size, tmp.num_entries,
+                              tmp.hook_entry, tmp.underflow);
+
+
+I have tried using a watch expression on the data which gets currupted but
+GDB does not seem to detect any writes to this area. The memory just
+"magically" changes content. Using watch expressions on data changes in
+the same are done within the relevant code flow works fine however.
+
+This is seen with Linux-2.4.22 + current UML CVS in TT mode, without any
+other kernel patches.
+
+The only good thing is that I can very easily reproduce the problem within
+a few seconds, and also reliably detect when it happens by using a few
+breakpoints spread out along the code path checksumming the relevant
+memory area for changes.
+
+Bad thing is that I am really out of options what to look for next. To me 
+it looks like my UML is simulating badly broken memory, but I am pretty 
+sure there is some other magics messing around somewhere..
+
+The exact same error is seen on multiple different hosts so I am fully
+confident it is not a cause of broken host memory.
+
+
+
+Hmm.. I just found one odd thing which might hint to where the problem may
+be.. if I break just after vmalloc() but before copy_from_user() then GDB
+can't read the memory area:
+
+(gdb) x/1024b newinfo
+0xa2819000:     Cannot access memory at address 0xa2819000
+
+the same addresses just after copy_from_user() works just fine however..
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
