@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CUaCA-0001oa-Ij for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Nov 2004 16:30:42 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1CUaHx-0002TP-CZ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Nov 2004 16:36:41 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CUaC9-0007J0-7l for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Nov 2004 16:30:42 -0800
+	id 1CUaHw-0008Io-5i for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Nov 2004 16:36:41 -0800
 From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Testing requested - Signal 11 or UML zombies
-References: <200411180156.iAI1uuQ3006539@ccure.user-mode-linux.org>
-In-Reply-To: <200411180156.iAI1uuQ3006539@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [Patch 1/1] uml: fix uml-hang-on-2.6.9-host.patch
+References: <4194CCAD.2020701@fujitsu-siemens.com>
+In-Reply-To: <4194CCAD.2020701@fujitsu-siemens.com>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200411180132.29462.blaisorblade_spam@yahoo.it>
+Message-Id: <200411180137.24171.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,174 +29,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Nov 2004 01:32:29 +0100
+Date: Thu, 18 Nov 2004 01:37:24 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Gerd Knorr <kraxel@bytesex.org>
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
 
-On Thursday 18 November 2004 02:56, Jeff Dike wrote:
-> Below is a patch which I believe fixes the zombies on 2.6.{9,10} bug. 
-> There are other fixes for this, one of which is in -mm and is causing
->  'sleeping process nnnnn got unexpected signal : 11'
-> crashes.
-
-> Bodo proposed what looks like a correct patch, but which I don't like
-> because it involves a round-trip to the tracing thread on every UML context
-> switch, which probably 99%+ of the time is unecessary.
-
-> So, what I do now is have the tracing thread do a PTRACE_KILL, PTRACE_CONT
-> whenever it sees a process getting a SIGKILL.  And for good measure, the
-> PTRACE_CONT ensures that it sees the intercepted SIGKILL.
-
-> So, if you are running on a 2.6.9 or later host, and/or are/were seeing
-> either of the above problems, please give this patch a try and report
-> results.
-
-I'm pasting here this patch from Chris Wedgwood, to get some comments on it. I 
-think this patch may or may not be appropriate, but that it triggers some 
-interesting notes on killing host threads:
-
-kill(..., SIGKILL) doesn't work to kill host-OS processes created in
-the exec path in TT mode --- for this we need PTRACE_KILL (it did work
-in previous kernels, but not by design).  Without this process will
-accumulate on the host-OS (although the won't be visible inside UML).
-
-Signed-off-by: Chris Wedgwood <cw@f00f.org>
----
-
-Yes, there are other fixes along these lines which are needed but one
-at a time as we test these...
-
-Index: cw-current/arch/um/kernel/tt/exec_user.c
-===================================================================
---- cw-current.orig/arch/um/kernel/tt/exec_user.c       2004-11-03 
-02:10:18.064830204 -0800
-+++ cw-current/arch/um/kernel/tt/exec_user.c    2004-11-03 02:12:10.447716745 
--0800
-@@ -35,7 +35,8 @@
-                tracer_panic("do_exec failed to get registers - errno = %d",
-                             errno);
- 
--       kill(old_pid, SIGKILL);
-+       if (ptrace(PTRACE_KILL, old_pid, NULL, NULL))
-+               printk("Warning: ptrace(PTRACE_KILL, %d, ...) saw %d\n", 
-errno);
- 
-        if(ptrace_setregs(new_pid, regs) < 0)
-                tracer_panic("do_exec failed to start new proc - errno = %d",
-
-As you can see, this changes another KILLing of the process. Shouldn't we work 
-on the code above, too?
-
-I first thought that the above kill()ing was not dropped when merging the 
-below code (the kill below was merged in 2.6.7-2um and 2.4.27-1um, so very 
-recently), as suggested by Chris, so thought the change unnecessary, but 
-instead that affects fork()ing code, so it's definitely different. If 
-everything works with Bodo's patch, it means that the threads for exec()ing 
-processes get killed properly in a third place.
-
-And I'm not looking into that because I never studied well TT mode and have no 
-time for this right now.
-
-So, Jeff, could you schedule some cleanup on this area for later?
-
-> Index: 2.6.9/arch/um/kernel/tt/process_kern.c
-> ===================================================================
-> --- 2.6.9.orig/arch/um/kernel/tt/process_kern.c 2004-11-16
-> 12:14:15.000000000 -0500 +++
-> 2.6.9/arch/um/kernel/tt/process_kern.c 2004-11-17 18:24:25.000000000 -0500
-> @@ -65,7 +65,8 @@
->    panic("write of switch_pipe failed, err = %d", -err);
+On Friday 12 November 2004 15:46, Bodo Stroesser wrote:
+> From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 >
->   reading = 1;
-> - if((from->exit_state == EXIT_ZOMBIE) || (from->exit_state == EXIT_DEAD))
-> + if((from->exit_state == EXIT_ZOMBIE) ||
-> +    (from->exit_state == EXIT_DEAD))
->    os_kill_process(os_getpid(), 0);
+> The patch needs to be corrected. The use of
+> os_kill_ptraced_process() is restricted to the tracer-thread!
+> No other process is allowed to do ptrace(PTRACE_KILL).
+> So I had "dead" processes hanging in my host system until UML
+> was shutdown. And I had panic()s, because processes were not
+> stopped.
 
->   err = os_read_file(from->thread.mode.tt.switch_pipe[0], &c, sizeof(c));
-> @@ -82,7 +83,7 @@
->   prev_sched = current->thread.prev_sched;
->   if((prev_sched->exit_state == EXIT_ZOMBIE) ||
->      (prev_sched->exit_state == EXIT_DEAD))
-> -  os_kill_ptraced_process(prev_sched->thread.mode.tt.extern_pid, 1);
-> +  os_kill_process(prev_sched->thread.mode.tt.extern_pid, 1);
->
->   /* This works around a nasty race with 'jail'.  If we are switching
->    * between two threads of a threaded app and the incoming process
+> Thus, I implemented request_kill_ptraced_process(), which lets
+> the tracer do the ptrace(PTRACE_KILL). Sorry, this method is
+> slow, but I didn't see an other solution.
+Hmm, given how slow TT mode is, I think it may not be noticeable. Especially 
+since the signal handling is asynchronous, the exited thread gets "scheduled 
+to be killed when the signal is delivered". However, also look at Jeff Dike 
+patch he's pushing for testing.
 
+A doubt: IIRC, the queue keeps only one instance of each signal, right? Should 
+not we switch all uses of SIGUSR* to real-time signals (which could also 
+reduce latency, maybe)?
 
-> Index: 2.6.9/arch/um/kernel/tt/tracer.c
-> ===================================================================
-> --- 2.6.9.orig/arch/um/kernel/tt/tracer.c 2004-11-16 21:26:03.000000000
-> -0500 +++ 2.6.9/arch/um/kernel/tt/tracer.c 2004-11-17 18:36:15.000000000
-> -0500 @@ -271,10 +271,28 @@
->  #endif
->    else if(WIFSIGNALED(status)){
->     sig = WTERMSIG(status);
-> -   if(sig != 9){
-> +   if(sig == SIGKILL){
-> +    /* This is to make sure that processes die
-> +     * immediately without becoming zombies on
-> +				 * all hosts.  Before 2.6.9, kill(pid, SIGKILL)
-> +				 * was enough to make sure a process went away
-> +				 * immediately.  After 2.6.9, they don't run
-> +				 * any more, but they remain as zombies.  So,
-> +				 * a PTRACE_CONT is necessary in order to put
-> +				 * them in a normal run state so that they die.
-> +				 * I do a PTRACE_KILL here for good measure.
-> +				 * Might as well kill it by all available
-> +				 * means.  These calls will likely fail when
-> +				 * they are not needed because the process has
-> +				 * already disappeared.  However, they don't
-> +				 * hurt.
-> +				 */
-> +				ptrace(PTRACE_KILL, pid, 0, 0);
-> +				ptrace(PTRACE_CONT, pid, 0, sig);
-> +			}
-> +			else
->  				printf("Child %d exited with signal %d\n", pid,
->  				       sig);
-> -			}
->  		}
->  		else if(WIFSTOPPED(status)){
->  			proc_id = pid_to_processor_id(pid);
-> Index: 2.6.9/arch/um/os-Linux/process.c
-> ===================================================================
-> --- 2.6.9.orig/arch/um/os-Linux/process.c	2004-11-16 12:14:15.000000000
-> -0500 +++ 2.6.9/arch/um/os-Linux/process.c	2004-11-17 18:27:52.000000000
-> -0500 @@ -95,9 +95,16 @@
->
->  }
->
-> +/* Kill off a ptraced child by all means available.  kill it normally
-> first, + * then PTRACE_KILL it, then PTRACE_CONT it in case it's in a run
-> state from + * which it can't exit directly.
-> + */
-> +
->  void os_kill_ptraced_process(int pid, int reap_child)
->  {
-> +	kill(pid, SIGKILL);
->  	ptrace(PTRACE_KILL, pid);
-> +	ptrace(PTRACE_CONT, pid);
->  	if(reap_child)
->  		CATCH_EINTR(waitpid(pid, NULL, 0));
->  }
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: InterSystems CACHE
-> FREE OODBMS DOWNLOAD - A multidimensional database that combines
-> robust object and relational technologies, making it a perfect match
-> for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> Also, I modified some other places to use the new call instead
+> of os_kill_process(). But this didn't work on the first step.
+> kill_off_processes_tt() couldn't kill the remaining processes
+> on shutdown. This happens, because ptrace(PTRACE_KILL) doesn't
+> really send a SIGKILL to the process, but writes SIGKILL to the
+> exit_code.
 
+> That does results in send_sig(SIGKILL) for processes 
+> being stopped on a ptrace event only, but not even for all of
+> these events.
+
+> So I added an option to request_kill_ptraced_process() that
+> allows to force an additional os_kill_process() to be executed
+> before the os_kill_ptraced_process().
+
+About this: it's better to use symbolic constants for such usages, never to 
+use numbers. And if you meet code snippets in UML were this is not applied, 
+feel free to fix them.
+
+> Summary: The behavior of 2.6.9 host is very uggly. You need to
+> do kill() and ptrace(PTRACE_KILL) to be shure, a process will
+> really exit.
+Hmm.... could you supply a testcase for this?
+
+No, I've modified the Gerd Knorr testcase, replacing kill(SIGKILL) with 
+ptrace(PTRACE_KILL), and the result was that PTRACE_KILL alone works, in the 
+simplest scenario at least.
+
+> If the host is changed to be more consistent, we 
+> should change all this again.
+
+PTRACE_KILL should always work, on every kernel. If not, then we must fix that 
+in mainline, and also 
+
+PTRACE_KILL not working would be a real bug, but I would rather check if the 
+childs are stopped, and I would happily ask Roland McGrath to fix it and I'd 
+include the fix in the SKAS patch (I'm worried it's getting too big, but so 
+far, so good). We are facing, instead, a correct API change.
+
+The problem is that we used SIGKILL, which should never have worked. I first 
+thought Roland McGrath didn't realize this fact. Now I understand, instead, 
+that the kernel should always disallow a ptraced process to be killed by 
+someone which is not his parent, when it's stopped (when you reboot, you 
+killall everything).
+
+So, the behaviour needed by older UMLs will never be restored - I thought this 
+was possible until now, but no more.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
+
 
 
 -------------------------------------------------------
