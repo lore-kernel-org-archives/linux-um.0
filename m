@@ -1,25 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CuYLE-0001H6-JO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Jan 2005 07:47:24 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CuYKj-000556-Mm for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Jan 2005 07:47:24 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [uml-user] [POLL] Putting UML/2.4 into
-	"fixes-only" mode
-References: <200501262310.49814.blaisorblade@yahoo.it>
-	<41F85058.8050106@enterasys.com>
-In-Reply-To: <41F85058.8050106@enterasys.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200501281646.29630.blaisorblade@yahoo.it>
+	id 1CuZ8C-0004aj-3B for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Jan 2005 08:38:00 -0800
+Received: from copia.dit.ie ([147.252.1.184])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CuZ7g-0008Fp-8q for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Jan 2005 08:38:00 -0800
+Received: from [147.252.1.76] (helo=mercury.dit.ie)
+	by copia.dit.ie with esmtp (Exim 3.35 #1 (Debian))
+	id 1CuZ82-00070b-01
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 28 Jan 2005 16:37:50 +0000
+Received: from ditwebm ([147.252.1.65]) by mail.dit.ie (PMDF V6.2-X27 #30798)
+	with ESMTP id <01LK53XS93CE97FE9A@mail.dit.ie> for
+	user-mode-linux-devel@lists.sourceforge.net; Fri,
+	28 Jan 2005 16:35:37 +0000 (WET)
+From: Greg Furlong <C01386107@student.dit.ie>
+Message-id: <41FA9D7D@ditwebm>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+Subject: [uml-devel] UML remote GUI problems
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,64 +34,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 Jan 2005 16:46:25 +0100
+Date: Fri, 28 Jan 2005 16:30:01 +0000
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "D. Bahi" <dbahi@enterasys.com>
 
-On Thursday 27 January 2005 03:22, D. Bahi wrote:
-> I would like a 2.4 that is stable. with a working hostfs.
-Tried 2.4.27-bs1?
-> (that i can run valgrind against - heh, not umls fault here.)
-I've never seen valgrind actually working against UML - Jeff Dike did some 
-work on Valgrind on this area time ago, but it wasn't merged and the Valgrind 
-author said that Valgrind does not at all supports program using the "clone" 
-call. And UML is one heavy user of this call.
+I am a final year student taking a degree in Computing at Dublin Institute of 
+Technology - Ireland. In my final year project I am doing a project using User 
+Mode Linux. My project has set out to research the capabilities of User
+Mode Linux in a teaching environment. So far I have set up a server and now 
+have users logging on from a terminal. They use a COW file so as not to 
+corrupt the file system. Next I want to investigate and test the capabilities 
+of User Mode Linux over a network using a Graphical User Interface. The 
+problem that I am having is that I am finding it difficult to set up the GUI 
+system. I was wondering if anybody could give me some pointers in the right 
+direction or could tell me of a tutorial on how to set it up. I have already 
+looked at the user mode Linux
+website on sourceforge but have been unable to successfully complete the GUI 
+instructions.
 
-> Also, the uml web site needs to be authoritative. building
-> the above should not require patching from additional
-> sources announced on the list.
+I am running Red Hat Linux 9 2.4.20-8
+User mode Linux Patch 2.4.27-1
+Remote Terminal Putty
 
-> That said, 2.4 and 2.6 are both 'stable' kernel branches
-> that have had quite a bit of UML development in them. So,
-> if it helps future maintaining of both 2.4 and 2.6, at
-> least until 2.7 appears, then do what you need to do.
-> please don't abandon 2.4 until 2.7 is well under way.
-This does not work... nobody knows if 2.7 will ever start *at all* (really).
-> Maybe you could break up the 2.4 patches into 'stable'
-> 'testing' and 'experimental' ?
-Time is limited - managing two trees (in this case, two 2.4 trees) and porting 
-patches back and forth between them is a hard, difficult, error-prone work.
 
-However, I've not claimed "abandoning" the 2.4 tree.
+Regards
 
-However, who uses the 2.4 tree wants stability over everything else (in most 
-cases), otherwise would use the 2.6 tree.
+Greg
 
-So, actually, we cannot debug invasive patches on 2.4: you need lots of users 
-testing and reporting about them and helping to narrow down possible bugs.
-
-So, for instance, it would be useless to backport the /proc/sysemu feature 
-(which was a bit tricky to get right on 2.6 already, especially because 
-uncovered some bugs in the SYSEMU host patch).
-
-> Blaisorblade wrote:
-> >Jeff, I've seen the beginning of your work on back-porting all the patches
-> >from 2.6 to 2.4...
-
-> >It's a huge work, but what is more important, it could obviously hurt
-> >stability...
-
-> >So, I'd suggest to follow this policy to choose the work to merge:
-
-> >- reduce *a lot* what is going to be merged... no new features, no code
-> >cleanups (especially NOT the Makefiles cleanups)...
-
-> >- concentrate on stability... and on backing out the hostfs rewrite.
 
 -- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+This message has been scanned for content and 
+viruses by the DIT Information Services MailScanner 
+Service, and is believed to be clean.
+http://www.dit.ie
+
 
 
 -------------------------------------------------------
