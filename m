@@ -2,26 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ADci4-0000Q4-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 25 Oct 2003 21:41:00 -0700
-Received: from blacksheep.csh.rit.edu ([129.21.60.6])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ADch6-0001Sw-Iu
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 25 Oct 2003 21:40:00 -0700
-Received: from dijkstra (dijkstra.csh.rit.edu [129.21.60.152])
-	by blacksheep.csh.rit.edu (Postfix) with ESMTP id 5A9118B
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 00:39:59 -0400 (EDT)
-Received: from mdz by dijkstra with local (Exim 3.35 #1 (Debian))
-	id 1ADch5-00079X-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 00:39:59 -0400
-From: Matt Zimmerman <mdz@debian.org>
-Subject: Re: [uml-devel] uml on iA-64
-Message-ID: <20031026043958.GN6350@dijkstra.csh.rit.edu>
-References: <OF941872B2.40FC99C5-ONC1256DCA.004792A7@mpsa.com> <200310251703.h9PH3Mkw002305@ccure.karaya.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200310251703.h9PH3Mkw002305@ccure.karaya.com>
+	id 1ADdQE-0006KV-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 25 Oct 2003 22:26:38 -0700
+Received: from ns1.stral.net ([64.213.75.2])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
+	id 1ADdKQ-0005ZP-NX
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 25 Oct 2003 22:20:39 -0700
+Reply-To: <ralston@stral.net>
+From: "Michael Ralston" <ralston@stral.net>
+Message-ID: <000001c39b80$e011fbe0$3d4bd540@celery>
+In-Reply-To: <20031026043958.GN6350@dijkstra.csh.rit.edu>
+Subject: [uml-devel] Problem with Real-Time Scheduling
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -32,25 +23,28 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 26 Oct 2003 00:39:58 -0400
+Date: Sun, 26 Oct 2003 16:20:30 +1100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Oct 25, 2003 at 01:03:22PM -0400, Jeff Dike wrote:
+I've come across a problem with running a user-mode-linux instance with
+RR-Scheduling. When I attempt to start a server with chrt the host
+system panics. I can start a uml in normal (other) scheduling, and then
+change it to RR-Scheduling and it works fine, until I try to stop the
+uml... then I get the same kernel panic.
 
-> pierre.gentile@mpsa.com said:
-> > Has anyone tried to implement user-mode-linux (skas patch and um
-> > architecture) on an Itanium IA-64 machine ? 
-> 
-> Not really.  I have an IA64 box sitting next to me, and starting a port to
-> it is on my list once I acquire some free time.
+I'm using the skas-3 patch on a 2.4.21 kernel, and 2.4.21-6um. If you
+need the specific output of the kernel panic, I can get it...
 
-I did some preliminary investigation into making ia64 UML-friendly as a host
-(the changing syscall numbers bit), and after discovering why it won't work,
-I sent pleas for help to some HP folks to find out if it would be easy to
-fix.  I did get one interested response, but no reply to my followup as yet.
+Just as a related question... how would different scheduling the
+different 'threads' of the UML effect performance? As far as I know..
+the first 'linux' process actually does all the work and the extra
+processes are for the different IO the UML does, eg network, block
+devices etc? Would increasing the priority of the IO over the priority
+of the main process have an effect on network performance for example?
 
--- 
- - mdz
+Michael Ralston
+
+
 
 
 -------------------------------------------------------
