@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQsaH-0001Q5-Rd for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 11:48:01 -0700
+	id 1BQsdW-0002Dd-0I for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 11:51:22 -0700
 Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BQsaG-00055c-6Y for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 May 2004 11:48:00 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1BQsdV-0001aF-Am for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 May 2004 11:51:21 -0700
 From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] [PATCH] host context switch reduction
-In-Reply-To: <01fa01c43e98$4420d510$2000000a@schlepptopp>
-Message-ID: <Pine.LNX.4.44.0405202045310.12468-100000@filer.marasystems.com>
+Subject: Re: [uml-devel] /dev/fd/62: No such file or directory 
+In-Reply-To: <01f901c43e98$304054d0$2000000a@schlepptopp>
+Message-ID: <Pine.LNX.4.44.0405202049420.12468-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -25,20 +25,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 May 2004 20:47:46 +0200 (CEST)
+Date: Thu, 20 May 2004 20:51:07 +0200 (CEST)
 To: roland <for_spam@gmx.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
 On Thu, 20 May 2004, roland wrote:
 
-> i think this would be useful to do better performance comparison and for determining the
-> "real world" benefit of this patch (it`s like applying and releasing the brake)
+> my UML is 2.6.6  (but i have seen this on other 2.6.x, too) - it uses devfs
+> host seems irrelevent - i have seen this on 2.4 and on 2.6 hosts
 
-For a start there should be a boot option for this much like there is for
-most other host dependent options. When there is a boot option one could
-consider adding a proc entry but I don't see any real value for a UML proc
-entry for this, with the sole exception for benchmarking which is only
-marginally much harder with a boot option..
+Works here using UML 2.4.26-1um on a 2.4 based host..
 
 Regards
 Henrik
