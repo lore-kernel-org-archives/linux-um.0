@@ -1,13 +1,11 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: SteX <stefano.melchior@fastwebnet.it>
-Subject: Re: [uml-devel] PPC port availability?
-Message-ID: <20050130082818.GA6963@SteX>
-References: <41F7DF96.8080904@kienhoefer.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
-Content-Disposition: inline
-In-Reply-To: <41F7DF96.8080904@kienhoefer.com>
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] [POLL] Putting UML/2.4 into "fixes-only" mode
+In-Reply-To: <200501262310.49814.blaisorblade@yahoo.it>
+Message-ID: <Pine.LNX.4.61.0501301406390.13409@filer.marasystems.com>
+References: <200501262310.49814.blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,55 +17,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Jan 2005 09:28:18 +0100
-To: Juergen Kienhoefer <juergen@kienhoefer.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Sun, 30 Jan 2005 14:28:54 +0100 (CET)
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
+On Wed, 26 Jan 2005, Blaisorblade wrote:
 
---cWoXeonUoKmBZSoM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> So, I'd suggest to follow this policy to choose the work to merge:
+>
+> - reduce *a lot* what is going to be merged... no new features, no code
+> cleanups (especially NOT the Makefiles cleanups)...
+>
+> - concentrate on stability... and on backing out the hostfs rewrite.
 
-On Wed, Jan 26, 2005 at 10:21:10AM -0800, Juergen Kienhoefer wrote:
-Hi all,
+I am all for this. People wanting "new fetures" should be using the 2.6 
+tree + relevant patches anyway. 2.4 should focus only on stability, 
+nothing else.
 
-> Where and when can we see the PPC port of UML?
-> Maybe you can port a preview patch to the community before you put
-> it into the tree?
-
-look what Jeffe posted:
-
-http://www.usermodelinux.org/modules.php?name=3DNews&file=3Dcategories&op=
-=3Dnewindex&catid=3D8
-
-Great time for UML, I am going to try it :))
+If there is users willing to have new features in 2.4 to the point that 
+they provide these features backported to 2.4 then I am OK with having an 
+"experimental" 2.4 patch with these aplied, but I do not think these 
+belongs in the main 2.4 patch.
 
 Regards
-
-SteX
-
---=20
-GPG key =3D D52DF829   --   Stex   --  <stefano.melchior@openlabs.it>
-Keyserver: http://keyserver.kjsl.com - http://www.openlabs.it/~stex
-Registered user #324592 on the Linux Counter, http://counter.li.org
-
---cWoXeonUoKmBZSoM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iQCVAwUBQfyaoolnkxrVLfgpAQL2sAP/fEISEnK/aPJcKhqa1PJefmhOJAHHJk2J
-V2dLtTOuS0SIsUJW3R3mnbwy+SpeKv/De/JNmlCuWp0swA/NabLBn9OH8QLLd/Ag
-fDsbcOQry8ksWYPQpOpgXtunVne9wQnTuoVwI1hywhidKzxtkouIivMKfHP9+gcu
-v796R7K41u4=
-=2+Xj
------END PGP SIGNATURE-----
-
---cWoXeonUoKmBZSoM--
+Henrik
 
 
 -------------------------------------------------------
