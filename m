@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AriF7-00063y-7H
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 10:40:49 -0800
-Received: from [69.93.28.254] (helo=unix.easyadmin ident=qmailr)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AriDF-0003dO-OG
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 10:38:53 -0800
-Subject: Re: [uml-devel] uml-patch-2.6.3-rc2-1
-From: Matt Ayres <matta@tektonic.net>
-In-Reply-To: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org>
-References: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org>
-Content-Type: text/plain
-Message-Id: <1076697530.20064.21.camel@wopr.tektonic.net>
+	id 1AriKB-0008DE-Gw
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 10:46:03 -0800
+Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AriFG-00033N-GQ
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 10:40:58 -0800
+From: Werner Almesberger <werner@almesberger.net>
+Subject: Re: [uml-devel] Re: patch/RFC: add bypass for "debug" parameter
+Message-ID: <20040213154341.D8503@almesberger.net>
+References: <20040208185334.H9021@almesberger.net> <20040212154958.GB2834@ccure.user-mode-linux.org> <20040212214058.R25203@almesberger.net> <Pine.GSO.4.58.0402131052540.23784@waterleaf.sonytel.be> <20040213141512.C8503@almesberger.net> <Pine.GSO.4.58.0402131817210.29056@waterleaf.sonytel.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.GSO.4.58.0402131817210.29056@waterleaf.sonytel.be>; from geert@linux-m68k.org on Fri, Feb 13, 2004 at 06:18:55PM +0100
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,55 +25,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 13:38:51 -0500
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 13 Feb 2004 15:43:41 -0300
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jeff Dike <jdike@addtoit.com>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-I'm still receiving the "NET: Registered protocol family 2" hang using
-this kernel, FYI.
+Geert Uytterhoeven wrote:
+> All kernel parameters that are not recognized by the kernel are passed
+> to init using its argv[].
 
-On Fri, 2004-02-13 at 13:18, Jeff Dike wrote:
-> This patch updates UML to 2.6.3-rc2.  This breaks with my usual practice of
-> ignoring test patches.  However, when I updated my UML tree, I had forgotten
-> that my stock Linus tree was up to 2.6.3-rc2.  I took this as a sign from a
-> higher power that this was Meant To Be.
-> 
-> As well as catching up, there are some bug fixes and cleanups -
-> 	modules should now work
-> 	worked around a process start time bug
-> 	fixed a bug which caused ps to divide by zero
-> 
-> The 2.6.3-rc2-1 UML patch is available at
-> 	http://www.user-mode-linux.org/mirror/uml-patch-2.6.3-rc2-1.bz2
-> 
-> BK users can pull my 2.5 repository from
-> 	http://www.user-mode-linux.org:5000/uml-2.5
-> 
-> For the other UML mirrors and other downloads, see 
->         http://user-mode-linux.sourceforge.net/dl-sf.html
->  
-> Other links of interest:
->  
->         The UML project home page : http://user-mode-linux.sourceforge.net
->         The UML Community site : http://usermodelinux.org
-> 
-> 				Jeff
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net is sponsored by: Speed Start Your Linux Apps Now.
-> Build and deploy apps & Web services for Linux with
-> a free DVD software kit from IBM. Click Now!
-> http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Ah, that ! I thought you meant some well-hidden feature that
+would work like "--", separating things parsed by the kernel
+from those passed verbatim to init :)
+
+No, there should be no problem. UML actually layers its
+command-line parsing on top of the kernel part. Everything
+not explicitly claimed by UML ends up on the (single) string
+passed to the kernel, which is then processed in a separate
+pass.
+
+- Werner
+
 -- 
-Matt Ayres <matta@tektonic.net>
-TekTonic
-
+  _________________________________________________________________________
+ / Werner Almesberger, Buenos Aires, Argentina     werner@almesberger.net /
+/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
