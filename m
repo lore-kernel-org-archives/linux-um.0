@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ahxw4-0000lY-3r for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 13:24:52 -0800
-Received: from mailgate.uni-paderborn.de ([131.234.22.32])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1Ahxw3-0007cP-Iw
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 13:24:51 -0800
-Message-ID: <4009A7DB.4030409@upb.de>
+	id 1AhySt-0005P2-I2 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 13:58:47 -0800
+Received: from main.gmane.org ([80.91.224.249])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AhySt-0002Fd-6Y for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 13:58:47 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AhySs-0000Iu-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 17 Jan 2004 22:58:46 +0100
 From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] cannot compile 2.6.1 uml-kernel, NPTL?
+Message-ID: <bucb6k$pck$1@sea.gmane.org>
 References: <bua04l$6uo$1@sea.gmane.org>
-	<200401172100.36754.blaisorblade_spam@yahoo.it>
-In-Reply-To: <200401172100.36754.blaisorblade_spam@yahoo.it>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <bua04l$6uo$1@sea.gmane.org>
+Subject: [uml-devel] Re: cannot compile 2.6.1 uml-kernel, NPTL?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,14 +31,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 22:23:39 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 17 Jan 2004 22:57:42 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> assertion failed means a bug. Would you retest with another binutils version? 
+> gcc -Wl,-T,arch/um/uml.lds.s -static -Wl,--wrap,malloc -Wl,--wrap,free 
+> -Wl,--wrap,calloc \
+>         -o linux arch/um/main.o vmlinux -L/usr/lib -lutil
 
-well, i tried it with 2.13.90.0.18, 2.14.90.0.6 and 2.14.90.0.7, nothing 
-works. always the same assertion.
+Since the only file that's included is /usr/lib/libutils.so and this 
+file is part of glibc, i believe that it's my NPTL-patched glibc.
+
+Can somebody with installed NPTL confirm the problem?
+
+BTW: i'm using glibc 2.3.2
+
 
 
 -------------------------------------------------------
