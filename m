@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D9Ip1-0008QC-1W for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Mar 2005 00:15:07 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D9Ip0-00018F-9I
+	id 1D9Sow-0006PU-Rc for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Mar 2005 10:55:42 -0800
+Received: from pike.sandelman.ca ([205.150.200.164])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1D9Sot-0004b6-KE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Mar 2005 00:15:06 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [uml-devel] Re: Fw: [patch] uml: terminal cleanup
-Message-ID: <20050310081340.GC17880@bytesex>
-References: <20041128010910.1b5478c7.akpm@osdl.org>
-	<200503051858.05050.blaisorblade@yahoo.it>
-	<20050308082502.GB23067@bytesex>
-	<200503091938.46936.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200503091938.46936.blaisorblade@yahoo.it>
+	Thu, 10 Mar 2005 10:55:42 -0800
+In-Reply-To: Message from Blaisorblade <blaisorblade@yahoo.it> of "Wed,
+	09 Mar 2005 23:04:14 +0100." <200503092304.14984.blaisorblade@yahoo.it>
+References: <200503091134.03322.blaisorblade@yahoo.it>
+	<14580.1110404371@marajade.sandelman.ottawa.on.ca>
+	<200503092304.14984.blaisorblade@yahoo.it> 
+Message-ID: <6770.1110480936@marajade.sandelman.ottawa.on.ca>
+From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Subject: [uml-devel] Re: Switching uml_utilities to public CVS and
+	no-maintainer model
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,59 +29,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Mar 2005 09:13:40 +0100
+Date: Thu, 10 Mar 2005 13:55:36 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> No, this does not happen... the normal situation currently is that the kernel 
-> skips printing part of the initial output.
-> 
-> $ ./OldKernels/vmlinux-2.6.11-rc3
-> Checking for /proc/mm...found
-> Checking for the skas3 patch in the host...found
-> Checking PROT_EXEC mmap in /tmp...OK
-> ject_hotplug - call_usermodehelper returned -1
-> io scheduler noop registered
-> NET: Registered protocol family 2
-> IP: routing cache hash table of 256 buckets, 4Kbytes
-> TCP established hash table entries: 2048 (order: 3, 32768 bytes)
-> TCP bind hash table entries: 2048 (order: 2, 24576 bytes)
-> TCP: Hash tables configured (established 2048 bind 2048)
-> Initialized stdio console driver
-> Console initialized on /dev/tty0
-> Initializing software serial port version 1
-> Kernel panic - not syncing: VFS: Unable to mount root fs on 
-> unknown-block(98,0)
+-----BEGIN PGP SIGNED MESSAGE-----
 
-Ouch.  I've never seen that myself though, works perfectly fine for me.
-Could be somehow related to the scrambled compiler logs reported a few
-weeks ago, maybe the tty/line buffer handling is broken ...
 
-> $ ./OldKernels/vmlinux-2.6.11-rc3 stderr=1
+>>>>> "Blaisorblade" == Blaisorblade  <blaisorblade@yahoo.it> writes:
+    >> I'm happy to deal with whatever.  More open CVS is a good idea.
+    >> 
+    >> I even have a gForge install at <XXX> if you want.
 
-[ snip ]
+    Blaisorblade> Removed the hostname just in case (I didn't now why
+    Blaisorblade> you mailed me privately, maybe you just forgot to CC
+    Blaisorblade> the list).
 
-as expected ...
+  No, I just didn't want to broadcast the location of the new install
 
-> $ ./vmlinux-2.6.11-rc4-bk-testLock-nofix console=stderr
-> Checking for /proc/mm...found
-> Checking for the skas3 patch in the host...found
-> Checking PROT_EXEC mmap in /tmp...OK
-> [ no more messages ]
+    >> However, there will be some bumps until April 1, at which point
+    >> it goes live.
 
-stderr=1 is needed in any case.  console=stderr might be needed
-additionally in case you want to sent the kernel messages to _two_
-console devices, i.e. something like this (both stderr and the xterm
-for tty1):
+    Blaisorblade> What's gForge?
 
-# linux con=pts con1=xterm stderr=1 console=stderr console=tty1
+  GPL version of what sf.net runs. Supported by _The GForge Group_.
+  (www.gforge.org)
 
-HTH,
+    >> I don't think that anyone ever did merge in my changes to
+    >> uml_switch.  I don't recall who volunteered to do that work.
 
-  Gerd
+    Blaisorblade> Nobody volunteered actually... IIRC, your featureful
+    Blaisorblade> changes just modularized it and allowed part of it to
+    Blaisorblade> be used in uml_netjig, right?
 
--- 
-#define printk(args...) fprintf(stderr, ## args)
+  Yes.
+
+- -- 
+] Michael Richardson          Xelerance Corporation, Ottawa, ON |  firewalls  [
+] mcr @ xelerance.com           Now doing IPsec training, see   |net architect[
+] http://www.sandelman.ca/mcr/    www.xelerance.com/training/   |device driver[
+] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+Comment: Finger me for keys
+
+iQCVAwUBQjCYJoqHRg3pndX9AQHfogP/W0zneT0HJs5+UWDmH16Jcr3t5iGtC6Sf
+z4xWQWouM4Z19dIi62j/Lf1CfHQXDGy2DiAR52iC4NJkV4gpp6tVKSac8PHKu+FI
+RKtMUU7KKDMUFQrGrNPcmbeW4+fvrGkD/AgrsbDAqbwj4z0+NZiYq+g5vXIZQBtx
+1w+p975SkfY=
+=L3qJ
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
