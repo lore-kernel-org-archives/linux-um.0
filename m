@@ -1,15 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Matt Zimmerman <mdz@debian.org>
+From: Adam Heath <doogie@debian.org>
 Subject: Re: [uml-devel] Re: [uml-user] UML hanging at "Activating swap"
-Message-ID: <20040909202453.GT5330@alcor.net>
+In-Reply-To: <20040909194623.GQ5330@alcor.net>
+Message-ID: <Pine.LNX.4.58.0409092144170.1481@gradall.private.brainfood.com>
 References: <7153203.1094632577758.SLOX.WebMail.wwwrun@webmail.helinet.de>
+	<200409092024.17925.blaisorblade_spam@yahoo.it>
+	<20040909184951.GM5330@alcor.net>
 	<200409092133.35518.blaisorblade_spam@yahoo.it>
 	<20040909194623.GQ5330@alcor.net>
-	<200409092206.35798.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200409092206.35798.blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,35 +21,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Sep 2004 13:24:53 -0700
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Dennis Ploeger <ploeger@helinet.de>, Michael West <quagly@mitzit.net>
+Date: Thu, 9 Sep 2004 21:45:46 -0500 (CDT)
+To: Matt Zimmerman <mdz@debian.org>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, Dennis Ploeger <ploeger@helinet.de>, Michael West <quagly@mitzit.net>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Sep 09, 2004 at 10:06:35PM +0200, BlaisorBlade wrote:
+On Thu, 9 Sep 2004, Matt Zimmerman wrote:
 
-> On Thursday 09 September 2004 21:46, Matt Zimmerman wrote:
-> > On Thu, Sep 09, 2004 at 09:33:35PM +0200, BlaisorBlade wrote:
-> > > On Thursday 09 September 2004 20:49, Matt Zimmerman wrote:
-> > > > Yes, I ran into this problem when testing the 2.4.24-3um packages for
-> > > > Debian. With previous UMLs, hwclock would simply produce an error, and
-> > > > the process would continue, but with 2.4.24-3um, it seems to hang.  Any
-> > > > idea why this might be?
-> > >
-> 
-> > UML in Debian has been in bad shape for some time, after the hostfs
-> > breakage, and then all the reports of hangs in tt mode
-> > (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=260111), and I would very
-> > much like to get a stable version in soon.
-> 
-> Please, update to 2.4.26-3. That has the fix! And it's not tt mode related. If 
-> you don't want the full upgrade, the tarball contains already the fix, which 
-> is move-generic_console_write-back.patch.
+> hwclock has caused problems for UML in the past; one of the strange things
+> that it does is to try to open an fd for the console, because some
+> architectures use that as a means to interface to the hardware clock.
 
-I already have; it should be in unstable now.  However, it has this new bug
-with hwclock which is just as bad for Debian users.
+hwclock shouldn't be doing that.  It does it on all archs, even if the current
+doesn't require it, just because some arch *may* require it.
 
--- 
- - mdz
+But, obviously, whatever hwclock doesn't, shouldn't break uml.
 
 
 -------------------------------------------------------
