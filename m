@@ -1,24 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AuZTG-00019o-2m for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 07:55:14 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AuZMk-0006T6-JW for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 07:48:30 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: 2.4.24-1um - exec-shield - [PATCH][RFC] memory
-	shortness fix
-References: <200402162004.i1GK4isq024309@ccure.user-mode-linux.org>
-	<200402201837.13918.blaisorblade_spam@yahoo.it>
-	<Pine.LNX.4.58.0402202219290.23596@vega.dur.ac.uk>
-In-Reply-To: <Pine.LNX.4.58.0402202219290.23596@vega.dur.ac.uk>
+Subject: Re: [uml-devel] new skas3 patch ready for 2.4.25
+References: <40338C1B.1070800@meisterwerk.net>
+	<200402202125.58574.blaisorblade_spam@yahoo.it>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200402202125.58574.blaisorblade_spam@yahoo.it> (BlaisorBlade's
+	message of "Fri, 20 Feb 2004 21:25:57 +0100")
+Message-ID: <87k72gv3cg.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200402211651.27584.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,48 +19,86 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 21 Feb 2004 16:51:27 +0100
-Content-Transfer-Encoding: quoted-printable
-To: M A Young <m.a.young@durham.ac.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 21 Feb 2004 15:50:39 +0000
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-Alle 23:23, venerd=EC 20 febbraio 2004, M A Young ha scritto:
-> On Fri, 20 Feb 2004, BlaisorBlade wrote:
-> > The simple fix would be IMHO to add in setup_physmem:
-> >
-> >   offset -=3D UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end);
->
-> You can't do that because the memory you add to the physmem area isn't
-> empty, but includes memory used for other purposes, and using memory twice
-> isn't good!
+On Fri, 20 Feb 2004, BlaisorBlade informed the cosmos:
+> Yes, it went away, so a new skas patch must be built. I have one (tested) at 
+> http://www.user-mode-linux.org/~blaisorblade/
 
-Yes, you are perfectly right and what I wrote is at all foolish and stupid =
-- I=20
-should have written len +=3D UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end);=
- (or=20
-something similar).
+Alas:
 
-My idea was not about increasing the allocated memory by mmaping at an earl=
-ier=20
-offset, but about just increasing the length.
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+Checking for /dev/anon on the host...Not available (open failed with errno 2)
+Linux version 2.4.24-1um (compiler@loki) (gcc version 2.95.4 20010319 (prerelease)) #1 Wed Feb 18 22:58:16 GMT 
+2004
+On node 0 totalpages: 24576
+zone(0): 24576 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: con=port:16380 con0=fd:0,fd:1 fakeide mem=96M ubd0=/mirror/uml/esperi-root-cow.image,/mirr
+or/uml/esperi-root.image tty_log_dir=/home/firewall/log/esperi umid=esperi eth0=tuntap,tap0,00:60:97:79:E2:C1 e
+th1=tuntap,tap1 root=/dev/ubd0
+Calibrating delay loop... 465.30 BogoMIPS
+Memory: 94412k available
+Dentry cache hash table entries: 16384 (order: 5, 131072 bytes)
+Inode cache hash table entries: 8192 (order: 4, 65536 bytes)
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+Buffer cache hash table entries: 4096 (order: 2, 16384 bytes)
+Page-cache hash table entries: 32768 (order: 5, 131072 bytes)
+Checking for host processor cmov support...No
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Starting kswapd
+VFS: Disk quotas vdquot_6.5.1
+Journalled Block Device driver loaded
+pty: 256 Unix98 ptys configured
+Universal TUN/TAP device driver 1.5 (C)1999-2002 Maxim Krasnyansky
+Initializing software serial port version 1
+mconsole (version 2) initialized on /home/firewall/.uml/esperi/mconsole
+Partition check:
+ ubda: unknown partition table
+Initializing stdio console driver
+Netdevice 0 (00:60:97:79:e2:c1) : TUN/TAP backend - 
+Netdevice 1 (00:60:97:79:e2:c1) : TUN/TAP backend - 
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP, IGMP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 8192 bind 8192)
+ip_conntrack version 2.1 (737 buckets, 5896 max) - 288 bytes per conntrack
+ip_tables: (C) 2000-2002 Netfilter core team
+ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>.  http://snowman.net/projects/ipt_recent/
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+NET4: Ethernet Bridge 008 for NET4.0
+VFS: Mounted root (ext2 filesystem) readonly.
+Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 5
 
-Just like increasing physmem_size but without changing how much memory thin=
-ks=20
-to have: IMHO, even with 256 Mega UML can crash, if it thinks to have 260=20
-mega, but it won't crash if it has 32 Mega and knows it has so little (it=20
-will swap or OOM, not crash). Right?
+That's -EIO.
 
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+(Of course, CONFIG_PROC_MM=y on the host and the host is running
+2.4.25+skas-2.4.25.)
 
+The identical UML binary is quite happy on 2.4.24; this email passed
+through it.
+
+-- 
+`note to the crown prosecution service: Machine guns dont have a
+ 'stun' setting.' --- mjw
 
 
 -------------------------------------------------------
 SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id438&op=CCk
+http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
