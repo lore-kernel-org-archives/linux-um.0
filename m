@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AsOyx-0001oz-Ga
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 08:18:59 -0800
-Received: from postman4.arcor-online.net ([151.189.0.154] helo=postman.arcor.de)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30)
-	id 1AsOvy-0003x9-He
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 08:15:54 -0800
-Received: from server.schwinge.homeip.net (c-180-202-50.n.dial.de.ignite.net [62.180.202.50])
-	(authenticated bits=0)
-	by postman.arcor.de (8.13.0.PreAlpha4/8.13.0.PreAlpha4) with ESMTP id i1FGFhUZ018195
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 15 Feb 2004 17:15:48 +0100 (MET)
-From: Thomas Schwinge <schwinge-lists-sourceforge.net-user-mode-linux-devel@nic-nac-project.de>
-Subject: Re: [uml-devel] uml-patch-2.6.3-rc2-1
-Message-ID: <20040215162156.GA5298@server.schwinge.homeip.net>
-References: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org>
+	id 1AsP6r-0003Wh-LV
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 08:27:09 -0800
+Received: from mailout06.sul.t-online.com ([194.25.134.19])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AsP3s-0004w6-Kc
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 15 Feb 2004 08:24:04 -0800
+Subject: Re: [uml-devel] Changes to port_user
+From: Ulf.Bartelt@t-online.de (Ulf Bartelt)
+In-Reply-To: <163e01c3f3d7$c1762710$2000000a@schlepptopp>
+References: <20040122144020.GQ4203@erizo.shearer.org>
+	 <20040122162014.GA2895@ccure.user-mode-linux.org>
+	 <163e01c3f3d7$c1762710$2000000a@schlepptopp>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Lr/XWPwmbEvBD8il4ZW/"
+Message-Id: <1076862008.2184.14.camel@kira.himalaya.homeip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +26,54 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 15 Feb 2004 17:21:56 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 15 Feb 2004 17:20:09 +0100
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Feb 13, 2004 at 01:18:05PM -0500, Jeff Dike wrote:
-> This patch updates UML to 2.6.3-rc2.
 
-I just wanted to report that your patch also applies and compiles
-cleanly to 2.6.3-rc3:
-#v+
-thomas@uml:~ > uname -a
-Linux uml 2.6.3-rc3-1um #1 Sun Feb 15 16:46:39 CET 2004 i686 User unknown GNU/Linux
-#v-
 
-Regards,
- Thomas
+--=-Lr/XWPwmbEvBD8il4ZW/
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Am So, den 15.02.2004 schrieb roland um 16:24:
+> mhhh - as security oriented person i would like to admit:
+> should such "new technology" like uml really "support" unencrypted remote=
+ logins and should it support exposing "non encrypted
+> communication ports" to the outside world ?
+
+I *am* allowed to duplicate the keys to my home or car and throw them
+arround like sweets on "karneval". No modern software shall keep me away
+from "doing the wrong thing".
+
+> telnet is ancient and IMHO it should be replaced by something more secure=
+ like ssh. sshd is installed by default on all major
+> distro`s and it has an "inetd" mode, too.
+> maybe telnetd can easily be replaced sshd ?
+
+In near to 100% of all cases I'll prefer ssh(d).
+
+I dont want to be forced to do the right thing, I want to be well
+informed and decide on my own.
+
+> just my 10 eurocents....
+
+Added mine now... ;-)
+
+
+--=-Lr/XWPwmbEvBD8il4ZW/
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Dies ist ein digital signierter Nachrichtenteil
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQBAL5w47jl1Ksm0HKMRAhQCAJ9o4C+2xthGOyAJXnM/ruH/wHU2EwCffBui
+K2IMm1UZDXU4qRM9igse3XA=
+=fTiV
+-----END PGP SIGNATURE-----
+
+--=-Lr/XWPwmbEvBD8il4ZW/--
+
 
 
 -------------------------------------------------------
