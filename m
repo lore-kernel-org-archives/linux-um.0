@@ -1,25 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTYGN-0002MT-Q3 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 20:42:31 -0700
-Received: from [218.189.183.34] (helo=lifewood.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTYGN-0000YL-8U for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 May 2004 20:42:31 -0700
-Received: from VAIO ([192.168.38.65])
-	by lifewood.com (8.11.0/8.11.0) with ESMTP id i4S3eda06510
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 28 May 2004 11:40:39 +0800
-Message-Id: <200405280340.i4S3eda06510@lifewood.com>
-From: "Raymond Wong" <raymond@lifewood.com>
+Message-ID: <40BC5C2C.1040009@darkman.de>
+From: "Sven 'Darkman' Michels" <sven@darkman.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <40B62F45.9000204@nortelnetworks.com>
-Subject: [uml-devel] No of ubd
+Subject: [uml-devel] FYI: grsec will probably not longer be maintained
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,18 +16,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 May 2004 11:36:21 +0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 01 Jun 2004 12:36:28 +0200
+To: user-mode-linux-user@lists.sourceforge.net, UML devel list <user-mode-linux-devel@lists.sourceforge.net>
 
-How many ubd drives are available to use?  8? Or 256?  
+Hi there,
 
-Ray
+just if you don't know already:
+Brad Spengler announced yesterday that he stops grsecurity development
+and will shutdown the page etc. on 7th juni. The reason is that some
+sponsor dropped his sponsorship and so on he don't have to money to
+run it any longer. More informations on www.grsecurity.net
 
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.690 / Virus Database: 451 - Release Date: 22/5/2004
- 
+Regards,
+Sven
+
+PS: hopefully someone or the community itself will keep the project
+up'n running...
 
 
 
