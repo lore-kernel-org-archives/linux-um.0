@@ -1,10 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <267988DEACEC5A4D86D5FCD780313FBB0349E050@exch-03.noida.hcltech.com>
-From: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C4F4C8.FF4845E8"
-Subject: [uml-devel] bridge query
+From: Paul Warren <pdw@ex-parrot.com>
+Subject: Re: [uml-devel] bridge query
+Message-ID: <20050107150916.Q330@sphinx.mythic-beasts.com>
+Reply-To: user-mode-linux-user@lists.sourceforge.net
+References: <267988DEACEC5A4D86D5FCD780313FBB0349E050@exch-03.noida.hcltech.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <267988DEACEC5A4D86D5FCD780313FBB0349E050@exch-03.noida.hcltech.com>;
+	from adilm@hcltech.com on Fri, Jan 07, 2005 at 08:25:58PM +0530
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,68 +20,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 7 Jan 2005 20:25:58 +0530
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 7 Jan 2005 15:09:18 +0000
+To: "Adil  Mujeeb, Noida" <adilm@hcltech.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+[ follow up to -user only ]
 
-------_=_NextPart_001_01C4F4C8.FF4845E8
-Content-Type: text/plain;
-	charset="iso-8859-1"
+On Fri, Jan 07, 2005 at 08:25:58PM +0530, Adil  Mujeeb, Noida wrote:
+> what is the use of attaching the host interface in the bridge? Without
+> attaching the host interface in the bridge we can simply bring down the host
+> interface with ip 0.0.0.0 & assign the host interface ip to the bridge.
+> What is the significance of attaching the host interface to the bridge any
+> specific reason??
 
-Hi All,
-i have come again with a question ;-)
- 
-what is the use of attaching the host interface in the bridge? Without
-attaching the host interface in the bridge we can simply bring down the host
-interface with ip 0.0.0.0 & assign the host interface ip to the bridge.
-What is the significance of attaching the host interface to the bridge any
-specific reason??
- 
-Revert back in case confusion in problem statement.
- 
-Thanks in advance.
+If you do not add the host interface to the bridge, then guests
+connected to the bridge will not have access to the external network.
+In order for the bridge to pass packets to particular networks (e.g. the
+ethernet network connected to eth0) the interface connected to that
+network must be part of the bridge.
 
-Thanks and Best Regards,
-Adil Mujeeb
-
-
-
-------_=_NextPart_001_01C4F4C8.FF4845E8
-Content-Type: text/html;
-	charset="iso-8859-1"
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-
-
-<META content="MSHTML 5.00.3821.2800" name=GENERATOR></HEAD>
-<BODY>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=371354113-07012005>Hi 
-All,</SPAN></FONT></DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=371354113-07012005>i have 
-come again with a question ;-)</SPAN></FONT></DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN 
-class=371354113-07012005></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=371354113-07012005>what 
-is the use of attaching the host interface in the bridge? Without attaching the 
-host interface in the bridge we can simply bring down the&nbsp;host interface 
-with ip 0.0.0.0 &amp; assign the host interface ip to the bridge.&nbsp; What is 
-the significance of attaching the host interface to the bridge any specific 
-reason??</SPAN></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=371354113-07012005>Revert 
-back in case confusion in problem statement.</SPAN></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT color=#0000ff face=Arial size=2><SPAN class=371354113-07012005>Thanks 
-in advance.</SPAN></FONT></DIV>
-<P><FONT face="Comic Sans MS" size=2>Thanks and Best Regards,</FONT><FONT 
-face=Arial><BR><B></B></FONT><B><FONT color=#0000ff face="Times New Roman">Adil 
-Mujeeb</FONT></B><BR></P></BODY></HTML>
-
-------_=_NextPart_001_01C4F4C8.FF4845E8--
+Paul
 
 
 -------------------------------------------------------
