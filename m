@@ -2,24 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ClqAb-00055i-Bk for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Jan 2005 07:00:25 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1ClqAU-0000oU-Uy
+	id 1ClqGS-0005Lo-KI for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Jan 2005 07:06:28 -0800
+Received: from pike.sandelman.ca ([205.150.200.164])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1ClqGM-0001vf-Bf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Jan 2005 07:00:25 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20050104143911.GA5248@bytesex>
-References: <200412140958.58402.Armin.Warda@ePost.De>
-	<200501031531.19246.Armin.Warda@gmx.de>
-	<20050104115947.GA3715@bytesex>
-	<200501041506.05104.Armin.Warda@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200501041506.05104.Armin.Warda@gmx.de>
-Subject: [uml-devel] Re: UML fills /tmp irreversibly (2.6.9-bb4 on SuSE 9.2)
+	Tue, 04 Jan 2005 07:06:28 -0800
+Subject: Re: [uml-devel] IPV6 support 
+In-Reply-To: Message from "Adil Mujeeb, Noida" <adilm@hcltech.com> of "Tue,
+	04 Jan 2005 12:25:35 +0530."
+	<267988DEACEC5A4D86D5FCD780313FBB0323A4AA@exch-03.noida.hcltech.com>
+References: <267988DEACEC5A4D86D5FCD780313FBB0323A4AA@exch-03.noida.hcltech.com>
+Message-ID: <2909.1104850235@marajade.sandelman.ottawa.on.ca>
+From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,23 +27,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Jan 2005 15:39:11 +0100
-To: "Armin M. Warda" <Armin.Warda@gmx.de>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Paolo Giarrusso <blaisorblade_personal@yahoo.it>, "Christopher S. Aker" <caker@theshore.net>
+Date: Tue, 04 Jan 2005 09:50:35 -0500
+To: "Adil Mujeeb, Noida" <adilm@hcltech.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> I don't think the problem is in tmpfs! 
+-----BEGIN PGP SIGNED MESSAGE-----
 
-Ok, good to know.
 
-> That was with SuSE-2.6.8-24* Host-Kernels.
+>>>>> "Adil" == Adil Mujeeb, Noida <adilm@hcltech.com> writes:
+    Adil> Hi, Is there IPV6 support in UML?? i.e. ipv6 module is there
+    Adil> or not?
+ 
+  If you build it, packets will flow.
 
-Hmm, it's not reproducable here, I can umount tmpfs after running
-uml just fine.  Any other conditions are needed to trigger it?
+  Perhaps you meant to ask if there is IPv6 support in some distros
+packaging of UML.
 
-  Gerd
+- -- 
+]       ON HUMILITY: to err is human. To moo, bovine.           |  firewalls  [
+]   Michael Richardson,    Xelerance Corporation, Ottawa, ON    |net architect[
+] mcr@xelerance.com      http://www.sandelman.ottawa.on.ca/mcr/ |device driver[
+] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
 
--- 
-#define printk(args...) fprintf(stderr, ## args)
+
+  
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+Comment: Finger me for keys
+
+iQCVAwUBQdqtOoqHRg3pndX9AQGC0gP/TjoqK2gESyRrbLMqOwAa/LDWqz7xmgnB
+IaoKddVkN25IPESVQgUImjY58J66f2IeIOtm3qpxm8Z+oAusJzUD9iIDvmxO65FM
+SxL65do7gx1vF5BUCI/mjNkVXmSseEpUUzUQu9x9o6rncQdL3THEno7IgAfZ4bg8
+skjrnYwdgx0=
+=rnoi
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
