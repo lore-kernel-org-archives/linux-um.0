@@ -1,25 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ct4X4-0004u2-8B for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 05:45:30 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1Ct4X3-0001bf-Mi
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 05:45:30 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] memory
-References: <267988DEACEC5A4D86D5FCD780313FBB03B7317C@exch-03.noida.hcltech.com>
-In-Reply-To: <267988DEACEC5A4D86D5FCD780313FBB03B7317C@exch-03.noida.hcltech.com>
+	id 1Ct6uI-0004LM-PJ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 08:17:38 -0800
+Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Ct6uH-0006Ub-83 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 08:17:38 -0800
+Message-ID: <41F52128.6080202@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: Re: [uml-devel] memory
+References: <267988DEACEC5A4D86D5FCD780313FBB03B12C4B@exch-03.noida.hcltech.com>
+	<200501240111.j0O1BtoI004687@ccure.user-mode-linux.org>
+	<200501240010.23514.rob@landley.net>
+	<Pine.LNX.4.61.0501241103350.5934@filer.marasystems.com>
+	<41F4DC94.7030900@fujitsu-siemens.com>
+	<200501241811.j0OIBYXk002874@ccure.user-mode-linux.org>
+In-Reply-To: <200501241811.j0OIBYXk002874@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <200501240743.48398.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,49 +32,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Jan 2005 07:43:48 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
+Date: Mon, 24 Jan 2005 17:24:08 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>, Doug Dumitru <doug@easyco.com>
 
-On Monday 24 January 2005 03:13 am, Vaibhav  Sharma, Noida wrote:
-> According to the design of UML, it has its own VM system. If I have to
-> check the scalability limits of the "parent kernel" for memory management,
-> will UML be useful..?
+Jeff Dike wrote:
+> bstroesser@fujitsu-siemens.com said:
+> 
+>>But that's not all, what's needed to have *support* for big memory.
+>>Linux needs to have one struct page for each physical mem page, which
+>>in the simple case of UML are placed in one memmap array. 
+> 
+> 
+> The original poster is interested in the memory scalability of Linux, so
+> presumably he'll be looking into things like this :-)
+> 
+> And it's not only this.  It's the kernel stacks and page tables you'll have
+> for all the processes you'll be running on this large machine, inodes and other
+> file system data for all the files they have open, etc.
+Yes. That's the reason, why I estimated 1GB of memory for kernels internal use,
+additionally to the memmap.
 
-Jeff Dike already answered this.  (He's the UML maintainer.)  UML _does_ remap 
-a different chunk out of the physical memory backing file when it schedules a 
-different process.  UML uses mmap to get its memory, so as long as the parent 
-kernel has Large File Support (which lets a 32 bit machine use 64 bit file 
-offsets, this is pretty widely deployed because people need a single file to 
-be larger than INT_MAX, which is 2 gigabytes since file offsets are signed 
-for some reason), and the UML instance is configured to use highmem (which is 
-what unmaps and remaps the memory on a schedule) and at least 3 level page 
-tables (so it doesn't run out of PTEs), UML shouldn't be limited to 32 bits 
-of (simulated) physical memory.  Not that I've tried this. :)
-
-An individual process running under a 32-bit UML would still only be able to 
-access 4 gigabytes or less.  (It has a 32 bit virtual address space, after 
-all...)  And since I'm unaware of any version of UML using the 4 gig/4 gig 
-patch, I suspect UML might fill up its kernel memory area with page table 
-entries eventually...  (Was Dave Jones's shared page table patch ever 
-integrated?  Are linux page tables swappable?)
-
-> When I debug the UML kernel when a process requests a large amount of
-> memory, I will only get the flow used by UML for its VM. Is the code/design
-> of UML very different from the parent kernel..?
-
-UML uses mmap on a file to simulate an MMU.  It shouldn't care what kind of 
-physical memory the parent kernel has.  But Jeff's the expert here.
-
-However running 'find arch/um -name "*.c" | xargs grep mmap' in your linux 
-source directory should get you started.
-
-> (I may be totally wrong in this mail, please do correct me...)
-
-I'm not the world's greatest source of info here either, I've only been 
-playing with UML for a little while...
-
-Rob
+> 
+> 				Jeff
 
 
 -------------------------------------------------------
