@@ -1,18 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AM93J-0007rc-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 08:50:09 -0800
-Received: from stclair.eecs.umich.edu ([141.213.8.40])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.24)
-	id 1AM93I-0000qL-PU
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 18 Nov 2003 08:50:09 -0800
-From: George Washington Dunlap III <dunlapg@umich.edu>
+	id 1AM9hw-0007wR-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 09:32:08 -0800
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AM9hv-00066m-CH
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 18 Nov 2003 09:32:07 -0800
+From: Henrik Nordstrom <hno@marasystems.com>
 Subject: Re: [uml-devel] University project on UML
 In-Reply-To: <1265.141.165.213.235.1069170899.squirrel@email.georgiasouthern.edu>
-Message-ID: <Pine.LNX.4.44.0311181126350.25040-100000@stclair.eecs.umich.edu>
+Message-ID: <Pine.LNX.4.44.0311181808000.10426-100000@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -25,103 +24,70 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 Nov 2003 11:50:00 -0500 (EST)
+Date: Tue, 18 Nov 2003 18:32:02 +0100 (CET)
 To: "Matthew E. Dugan" <matthew_e_dugan@GeorgiaSouthern.edu>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Matthew, your project sounds interesting, but I'm not sure exactly what it
-is that you're trying to do.  
-
-So, by 'virtual machine' you mean the arch-um layer which translates host
-abstractions (threads, mmap/mprotect/munmap, pipes, files) into hardware
-abstractions Linux is used to (processors, physical memory and page
-tables, consoles and serial lines, physical disks), is this correct?
-
-And you're going to strip everything down to arch-um, then add various
-subsystems back in -- memory subsystem, processes and context-switching, 
-device layers, file systems, networking, and so on?
-
-(Because another interpretation of "strip UML down to just a virtual
-machine" would be to strip the *host* kernel down to nothing, just enough
-to run UML and a handful of other services on top of it; but it doesn't
-sound like that's what you're doing.)
-
-And the purpose, in the main, is to pick apart UML and find out how it 
-works?  Do you have any other goals or further research in mind?
-
-Our group at the University of Michigan is using UML for research as well 
-(nothing related to yours, it looks like), and I'd be interested to see 
-what you come up with.
-
-Here's our site:
-  http://www.eecs.umich.edu/CoVirt/
-
-All our research thus far has been on UMLinux (now FAUMachine), but I'm 
-working on porting it over to UML.
-
-Peace,
- -George
-
-
 On Tue, 18 Nov 2003, Matthew E. Dugan wrote:
 
-> 
-> Good day,
-> 
-> Today I start working on a Georgia Southern University (located in the
-> South-East United States) research project covering User Mode Linux.  The
-> professor in charge wants to accomplish the following over the next few
-> weeks:
-> 
 > 1) Strip UML down to a compilable state containing only the virtual machine
+
+UML does not have a virtual machine. It uses the HOST CPU directly for
+running both the UML kernel and applications ontop of the kernel.
+
+UML is an abstract hardware layer to the Linux kernel, allowing it to run
+as an ordinary Linux application with no dedicated hardware (real or
+emulated).
+
+This abstraction layer consists of several components
+
+ * Various device drivers using host Linux system calls instead of 
+hardware (serial devices, networking, console, etc). Many of these are 
+optional and not required for operation.
+
+ * Memory management using virtual memory rather than physical memory
+
+ * Interception of system calls from applications running ontop of the UML 
+kernel to have these calls executed by the UML kernel rather than the host 
+kernel. Note: Between system calls and interrupts the application executes 
+on the host CPU just like an application running outside the UML.
+
+ * Interrupt "emulation" layer, allowing various events (filedescriptor
+ready for reading/writing etc) from the host kernel to be translated into
+a "interrupt" within the UML kernel to fit the device driver model of
+Linux.
+
+ * Timer interrupts for context switching etc using the itimer function 
+provided by the host kernel as interrupt source rather than a hardware 
+timer.
+
+ * Virtual filesystem driver providing transparent access to files on the 
+host. (optional)
+
+ * and many other components I have forgotten above...
+
 > 2) Perform any clean ups and re-organizations
 > 3) Take one of the removed pieces, verify its function
 > 4) Perform any clean ups and re-organizations on the removed piece
 > 5) Add the piece back into the build process
 > 6) Repeat steps 3-5 until finished.
-> 
-> He calls it a "verification process".  At the end of which, he plans to
-> publish a paper documenting what we do along with a detailed
-> representation of the workings of the UML internals.
-> 
-> I appreciate the opportunity to participate in this list server, and look
-> forward to any recommendations any of you may have for this undertaking.
-> 
-> Sincerely,
-> 
-> Matthew Dugan
-> mdugan@georgiasouthern.edu
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF. Net email is sponsored by: GoToMyPC
-> GoToMyPC is the fast, easy and secure way to access your computer from
-> any Web browser or wireless device. Click here to Try it Free!
-> https://www.gotomypc.com/tr/OSDN/AW/Q4_2003/t/g22lp?Target=mm/g22lp.tmpl
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
 
--- 
-+-------------------+----------------------------------------
-| dunlapg@umich.edu | http://www-personal.umich.edu/~dunlapg 
-+-------------------+----------------------------------------
-| "An empty life of luxury is still an empty life"
-|    -- everybodyduck, "Walk the Plank"
-+------------------------------------------------------------
-| Outlaw Junk Email! Support HR 1748 (www.cauce.org)
+
+What I see most interesting with the UML hardware layer in the above is
+that it easily allows the above process to be applied to large parts of
+the Linux kernel in general a lot easier than if using real or even
+emulated hardware.
+
+Regards
+Henrik
 
 
 
 -------------------------------------------------------
-This SF. Net email is sponsored by: GoToMyPC
-GoToMyPC is the fast, easy and secure way to access your computer from
-any Web browser or wireless device. Click here to Try it Free!
-https://www.gotomypc.com/tr/OSDN/AW/Q4_2003/t/g22lp?Target=mm/g22lp.tmpl
+This SF.net email is sponsored by: SF.net Giveback Program.
+Does SourceForge.net help you be more productive?  Does it
+help you create better code?  SHARE THE LOVE, and help us help
+YOU!  Click Here: http://sourceforge.net/donate/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
