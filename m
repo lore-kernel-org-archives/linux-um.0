@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AX3Gl-00049q-Fd
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 10:53:07 -0800
-Received: from mekong.darkman.de ([217.69.160.53] helo=mail.darkman.de)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AX3Gk-0000Cb-JH
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 10:53:07 -0800
-Received: from darkman.de (ezri.darkman.de [23.23.23.42])
-	by mail.darkman.de (Postfix) with ESMTP id 0A1802EF84
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 18 Dec 2003 19:52:43 +0100 (CET)
-Message-ID: <3FE1F7BC.3080402@darkman.de>
-From: "Sven 'Darkman' Michels" <sven@darkman.de>
+	id 1AX3IQ-0004FT-IY
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 10:54:50 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AX3IP-00075R-RO
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 10:54:50 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] skas3 + 2.4.21 oops
+References: <20031216163134.GA30608@axis.demon.co.uk> <200312180115.hBI1F5kS007913@ccure.user-mode-linux.org>
+In-Reply-To: <200312180115.hBI1F5kS007913@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [UML patch] fixes for !CONFIG_PROC_MM, 2.6.0
-References: <Pine.LNX.4.58.0312171735540.8123@earth> <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth>  <Pine.LNX.4.58.0312172249020.19508@earth>  <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312181036220.31295@earth> <Pine.LNX.4.58.0312181122070.32554@earth> <Pine.LNX.4.58.0312181209230.1327@earth> <Pine.LNX.4.58.0312181253460.2378@earth> <Pine.LNX.4.58.0312181514140.7622@earth> <04cc01c3c583$eafe5530$0200000a@schlepptopp>
-In-Reply-To: <04cc01c3c583$eafe5530$0200000a@schlepptopp>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200312181958.43662.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,22 +25,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Dec 2003 19:53:48 +0100
-To: UML devel list <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 18 Dec 2003 19:58:43 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-roland wrote:
-> hi!
-> i need the following additional patch (see below) to sucessfully compile uml on a suse9 box.
-> another candidate for your patchset, ingo? 
-> (or should we blame gcc 3.1.1 ?)
+Alle 02:15, gioved=EC 18 dicembre 2003, Jeff Dike ha scritto:
+> ncw1@axis.demon.co.uk said:
+> > We are running the skas3 patch (host-skas3.patch from the uml website)
+> > on top of a debian 2.4.21 kernel tree with fairsched.  We got these
+> > oopses recently.  After the second the server was basically unusable -
+> > any attempt to use tools like ps to access the process table just
+> > never returned.
+>
+> This might be incidental - one of the oopsing things might have grabbed t=
+he
+> task_list semaphore before crapping out.
 
-did you get the kernel running? I was able to compile on 9.0 but
-the kernel immedially segfaults after mounting /dev (its like
-a deadlock loop where it segfaults endless). I copied the
-sourcetree to another box (8.1) and compiled it there, works.
-Even with newer gcc's etc. the uml runs just fine, only compiled
-on 9.0 doesn't work.
+Check well, Jeff; I remember a mail from you with someone who complained ab=
+out=20
+ps or ls /proc locking, and you answered that someone locked task_list; I'v=
+e=20
+read old messages recently, so maybe it's an old one and you don't remember.
 
+In fact, I've found it on the uml-user list. In fact, it happens on the UML=
+=20
+guest, but since the UML patch bundles the skas one(for nested UML's) I=20
+wouldn't be sure these are not connected...
+
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
@@ -51,7 +64,7 @@ on 9.0 doesn't work.
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
