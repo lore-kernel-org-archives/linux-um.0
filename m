@@ -1,23 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AxQ7X-0004r2-2E for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Feb 2004 04:32:35 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1AxPwM-0004f7-49 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Feb 2004 04:21:02 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] fix writing into /dev/kmem
-References: <20040229023636.GB8272@ccure.user-mode-linux.org>
-In-Reply-To: <20040229023636.GB8272@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	id 1AxRiX-0005sx-Hb for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Feb 2004 06:14:53 -0800
+Received: from main.gmane.org ([80.91.224.249])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AxRH1-0000qw-1d for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Feb 2004 05:46:27 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1AxRXK-0006UB-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 29 Feb 2004 15:03:18 +0100
+Received: from pd9e58ebe.dip.t-dialin.net ([217.229.142.190])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun Feb 29 14:03:18 2004
+Received: from skoehler by pd9e58ebe.dip.t-dialin.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun Feb 29 14:03:18 2004
+From: =?ISO-8859-15?Q?Sven_K=F6hler?= <skoehler@upb.de>
+Message-ID: <c1srf3$vpe$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200402291325.40644.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] bootstrap stage1 with python2.2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,35 +38,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 29 Feb 2004 13:25:40 +0100
+Date: Sun, 29 Feb 2004 15:03:08 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
 
-Alle 03:36, domenica 29 febbraio 2004, Jeff Dike ha scritto:
-> The patch below fixes a bug in the /dev/kmem driver which causes UML to
-> die if you write to it.  Of course, the kernel will die if you write random
-> crap to kernel memory, but at least it doesn't die in a UML-specific way.
+Hi,
 
-> This is a cut'n'paste from an xterm, so apply with patch -l.
+i don't want to report a bug or something like that before i discussed 
+it here, but if you bootstrap the old release-stage1 from 20030910, 
+python 2.3 will be installed, but python 2.2 won't be uninstalled, but 
+python 2.2 isn't listed to be installed. (qpkg -I |grep python only 
+shows python2.3, but not python2.2)
 
-This patch is like the one for the read from /dev/kmem (i.e. the one fixing 
-the panic when one does "cat /dev/kmem": you can reproduce this panic on 
-Uml2.6): it makes it behave like /dev/mem (man 4 mem is indeed helpful!). So 
-it is basically not *the right way*.
+bootstrap.sh should somehow upgrade python to the current version, but i 
+cannot imagine how that should work. python2.2 cannot be unmerged (since 
+qpkg -I doesn't list it), and python2.3 has a lot of dependencies.
 
-Also, someone got a panic with the read patch applied while klogd was reading 
-something. The diagnosys was that the /dev/mem driver checks for overflows, 
-while this patched /dev/kmem driver does not. To read the physical address 
-0x1with /dev/kmem, you are supposed to read 0xc0000001; so with that patch 
-any proper user of /dev/kmem will overflow p.
+I wonder if there are more files like /usr/bin/python2.2/* that don't 
+belong to any package listed by "qpkg -I". These files could be recorded 
+in the database as a package called "stage1" which can be unmerged after 
+the "emerge system".
 
-So, I propose to either return -EFAULT with not accessible addresses (which is 
-the proper fix), or to (at least and as a workaround) correct the "fops" 
-fields of /dev/kmem to redirect it on /dev/mem (at least this avoids the 
-crash better than the current patches).
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+What do you think?
+
+Thx
+   Sven
 
 
 
