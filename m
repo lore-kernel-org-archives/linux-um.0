@@ -1,20 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXIxE-0005d0-8U
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 03:38:00 -0800
-Received: from userbb201.dsl.pipex.com ([62.190.241.201] helo=irishsea.home.craig-wood.com)
+	id 1AXIxN-0005eb-0q
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 03:38:09 -0800
+Received: from hermes.dur.ac.uk ([129.234.4.9])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXIxD-000339-Qb
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 03:38:00 -0800
-From: Nick Craig-Wood <ncw1@axis.demon.co.uk>
-Subject: Re: [uml-devel] [PATCH] - fix for 2.4.22-7um RTC on CPUs faster than 2.1 GHz
-Message-ID: <20031219113757.GA22923@axis.demon.co.uk>
-References: <Pine.LNX.4.58.0312181520100.15701@boston.corp.fedex.com> <000901c3c53e$4a759550$0201a8c0@hawk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000901c3c53e$4a759550$0201a8c0@hawk>
+	id 1AXIxM-00035m-Fp
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 03:38:08 -0800
+From: M A Young <m.a.young@durham.ac.uk>
+Subject: Re: [uml-devel] [UML patch] fixes for !CONFIG_PROC_MM, 2.6.0
+In-Reply-To: <Pine.LNX.4.58.0312191038590.6547@earth>
+Message-ID: <Pine.GSO.4.58.0312191018340.8625@algedi.dur.ac.uk>
+References: <Pine.LNX.4.58.0312171735540.8123@earth>
+ <20031217174901.GA6709@ccure.user-mode-linux.org> <Pine.LNX.4.58.0312171924290.12482@earth>
+  <Pine.LNX.4.58.0312172249020.19508@earth>  <200312180146.hBI1k1kS008213@ccure.user-mode-linux.org>
+ <Pine.LNX.4.58.0312181036220.31295@earth> <Pine.LNX.4.58.0312181122070.32554@earth>
+ <Pine.LNX.4.58.0312181209230.1327@earth> <Pine.LNX.4.58.0312181253460.2378@earth>
+ <Pine.LNX.4.58.0312181514140.7622@earth> <Pine.GSO.4.58.0312190914170.8625@algedi.dur.ac.uk>
+ <Pine.LNX.4.58.0312191038590.6547@earth>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,28 +30,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 11:37:57 +0000
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 19 Dec 2003 11:37:55 +0000 (GMT)
+To: Ingo Molnar <mingo@elte.hu>
+Cc: UML devel list <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Dec 18, 2003 at 02:09:39AM -0600, Christopher S. Aker wrote:
-> Enabling the RTC in 2.4.22-7um produced a hang very soon after INIT at boot time.
-> 
-> I discovered host_hz as an int overflows past 2.1 Ghz (2147483647
-> hz).
+On Fri, 19 Dec 2003, Ingo Molnar wrote:
 
-Ah, I've been wondering why I couldn't get 2.4.22-7um to work - this
-fixes it for me!
+> oops, didnt mean to let this get into the patch. Fixed patch is at:
+>
+>      redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A3
+>
+> also, this patch does not have a number of fixes Jeff has in his tree.
+> It's just a temporary thing for 2.6.0 users. Works for me, but YMMV.
 
-BTW the patch appeared to be whitespace mangled - I had to apply it
-with patch --ignore-whitespace
+I realize that but a combined patch is useful if you want to build both
+host and uml kernels from the same rpm. I was actually trying the host
+part with arjan's 1.103 kernel (with some extra patching to your patch)
+and it seemed to be working until I ran of of diskspace. Incidentally, I
+am not sure doing the same thing with the uml kernel will quite work as I
+seem to recall that uml doesn't build if the exec-shield patch is applied.
 
-Thanks
-
-Nick
--- 
-Nick Craig-Wood
-ncw1@axis.demon.co.uk
+	Michael Young
 
 
 -------------------------------------------------------
