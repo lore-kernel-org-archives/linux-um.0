@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CQH53-00071f-N6 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 19:17:33 -0800
-Received: from alyz.com ([66.220.1.229])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CQH52-0004e7-Rk for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 19:17:33 -0800
-From: Allen Chan <alydar@users.sourceforge.net>
-Subject: Re: [uml-devel] 2.6.9-bb1, 2.4.27-bs1, SKAS3/2.6-V7 released
-References: <200411041932.39733.blaisorblade_spam@yahoo.it>
-	<200411051421.47632.alydar@users.sourceforge.net>
-In-Reply-To: <200411051421.47632.alydar@users.sourceforge.net>
+	id 1CQJkv-0003n6-2Q for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 22:08:57 -0800
+Received: from adsl-b5-232-218.telepac.pt ([82.154.232.218]
+	helo=puma-vgertech.no-ip.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CQJkt-0000LG-Cs for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 22:08:56 -0800
+Message-ID: <418C6A72.4080807@vgertech.com>
+From: Nuno Silva <nuno.silva@vgertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200411052217.42754.alydar@users.sourceforge.net>
+Subject: Re: [uml-devel] Fighting latency
+References: <20041104155015.GA29182@gandalf.intern.marcant.net>
+	<200411050044.59629.blaisorblade_spam@yahoo.it>
+	<418AEB71.1090005@vgertech.com>
+	<200411052038.15491.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411052038.15491.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,36 +31,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 5 Nov 2004 22:17:42 -0500
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Blaisorblade <blaisorblade_spam@yahoo.it>
+Date: Sat, 06 Nov 2004 06:08:50 +0000
+To: Blaisorblade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, nils toedtmann <user-mode-linux-devel@nils.toedtmann.net>
 
-OK.  The problem was due to user error in not setting the=20
-configuration option CONFIG_FD_CHAN properly.  When this option is=20
-set to "Y", everything appears to work fine again.
+Blaisorblade wrote:
+>>Maybe having the linux binary in a ramfs will work better?
+> 
+> Wise idea! But you forgot the UML "RAM" from $TMPDIR.
 
-Just in case anyone else runs into this, here's what happened.  In the=20
-UML Incremental Patches site, the no-chans patch had dealt with this=20
-possible problem by removing the CONFIG_FD_CHAN configuration option=20
-from the config file.  However, the bb1 patch does not contain the=20
-no-chans patch, so it requires that the CONFIG_FD_CHAN option be put=20
-back.  For some reason, CONFIG_FD_CHAN defaulted to "N" when prompted=20
-for on the screen as a new configuration option while doing a "make=20
-oldconfig ARCH=3Dum" using an existing config file.
+No i didn't :-) And i advise against it because of the problems that you 
+point out below (OOM). Anyway, if the data is frequently used it won't 
+be sent to swap... If you only touch that data once every 5 minutes and 
+you have some memory pressure you may get a bigger latency.
 
-On Friday 05 November 2004 02:21 pm, Allen Chan wrote:
-> I just compiled a  2.6.9 + uml-2.6.9-bb1.patch.bz2 guest kernel,
-> but it hangs on my system immediately after:
->    =20
->    =A0    Initializing stdio console driver
+If you must have fast-as-it-gets memory access making several UBDs, one 
+of them very small in ramfs, may be better, YMMV.
+
+...
+
+>>You can also do some creative mount --bind, to mount only one ramfs
+>>instance, if you have many UMLs running.
+> 
+> Not needed I think - use different names for UML binaries as needed. It will 
+> pickup a good name for the RAM file.
+
+I was thinking about chroot environments. And saving some MB by using 
+the same binary - living in ramfs - to run many UMLs.
+
+Regarding double-cacheing you may try NFS or directIO (with directIO the 
+guest can create disk I/O even if it's not needed and ruin the host's 
+I/O performance). Again, YMMV.
+
+Thanks,
+Nuno Silva
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by:
 Sybase ASE Linux Express Edition - download now for FREE
 LinuxWorld Reader's Choice Award Winner for best database on Linux.
-http://ads.osdn.com/?ad_idU88&alloc_id=12065&op=CCk
+http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
