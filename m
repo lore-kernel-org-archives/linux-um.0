@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ahwdb-0001ih-7o for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 12:01:43 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1Ahwda-0005h9-Nd for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 12:01:42 -0800
+	id 1AhwaI-0000dc-0H for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 11:58:18 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1AhwaH-0006LU-GB for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 11:58:17 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: uml-patch-2.6.0
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<200401172009.38339.blaisorblade_spam@yahoo.it>
-	<20040117195019.GA7405@ccure.user-mode-linux.org>
-In-Reply-To: <20040117195019.GA7405@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH]: arch/um/os-Linux/process.c:os_usr1_process()
+References: <16392.14211.847713.994092@laputa.namesys.com>
+In-Reply-To: <16392.14211.847713.994092@laputa.namesys.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200401172103.26457.blaisorblade_spam@yahoo.it>
+Message-Id: <200401172059.59824.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,45 +27,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 21:03:26 +0100
+Date: Sat, 17 Jan 2004 20:59:59 +0100
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Nikita Danilov <Nikita@Namesys.COM>
 
-Alle 20:50, sabato 17 gennaio 2004, Jeff Dike ha scritto:
-> On Sat, Jan 17, 2004 at 08:09:38PM +0100, BlaisorBlade wrote:
-> > Do the apply_alternatives + constants silly fix posted 1000 times and
-> > compile without CONFIG_MODVERSIONS. Then you don't get the kernel panic,
-> > and everything works.
-> >
-> > I've succesfully built kernel with CONFIG_MODVERSIONS, but *maybe* the
-> > Makefile patch is needed for that (since files are post-processed with
-> > genksyms). However, I have fixed some other things which could interact
-> > with this, especially for the link scripts.
+Alle 20:12, venerd=EC 16 gennaio 2004, Nikita Danilov ha scritto:
+> Hello,
 >
-> Did you actually get modules to work?  I was under the impression you
-> hadn't got that far yet, just getting UML to build with CONFIG_MODULES
-> endabled.
+> to compile 2.6.1 UML on the host kernel without tkill (for example,
+> 2.4.21, that I use), I need the following patch (not sure it is right
+> one):
+On Uml 2.4 currently kill is used at that point instead of tkill, so your=20
+patch should probably work... however I don't have here any tkill docs so I=
+=20
+can't check them.
 
-First (answering the other message): thanks for starting merging them!
-
-Modules work perfectly without Modversions (and even /proc/kallsyms works 
-well); with the USER_OBJS thing even modversions works perfectly, even if you 
-don't like it (but I hadn't been clear about the fact the kernel runs with 
-it).
-
-If you are interested in it, I could do a trivial change (i.e. adding to each 
-makefile include arch/um/Makefile.special) to avoid changing the whole 
-Kbuild.
-
-I do remember your discussion about the os- change, but it's a lot longer and 
-I didn't start it. Also, I must check exactly the API to create (i.e. how to 
-abstract os-specific details, which is hard since I've never programmed on 
-Cygwin or Freebsd). And also, if you assume that a file handle is an integer 
-(which is true only on POSIX), why do you wrap open inside os_open_file 
-(which always works on POSIX)? The same question could go for other calls.
+Also, the Jeff Dike's address on the site is out-of-date: use jdike (at)=20
+addtoit (dot) com.
 
 Bye
--- 
+--=20
 cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
 Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
