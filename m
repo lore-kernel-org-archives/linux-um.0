@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aitw0-0005xC-NO for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 03:20:40 -0800
-Received: from house2.arach.net.au ([203.30.44.85] helo=house.arach.net.au)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1Aitw0-0003q5-10 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 03:20:40 -0800
-Received: from unknown (HELO wrath.worlds.end) (202.89.168.12)
-	by house2.arach.net.au with SMTP
+	id 1AiuSj-0002NJ-ET for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 03:54:29 -0800
+Received: from mekong.darkman.de ([217.69.160.53] helo=mail.darkman.de)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AiuSg-0005tl-0Z for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 03:54:29 -0800
+Received: from darkman.de (ezri.darkman.de [23.23.23.42])
+	by mail.darkman.de (Postfix) with ESMTP id 4392C2EF84
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	20 Jan 2004 11:23:29 -0000
-From: nsb034@lostrealm.com
-Message-ID: <20040120112042.GA2916@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] skas mode panic - ltrace strace
+	Tue, 20 Jan 2004 12:51:27 +0100 (CET)
+Message-ID: <400D16C5.4010709@darkman.de>
+From: "Sven 'Darkman' Michels" <sven@darkman.de>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] skas mode panic - ltrace strace
+References: <20040120112042.GA2916@localhost>
+In-Reply-To: <20040120112042.GA2916@localhost>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,42 +31,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Jan 2004 19:20:42 +0800
+Date: Tue, 20 Jan 2004 12:53:41 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi
+nsb034@lostrealm.com wrote:
+> Hi
+> 
+> I have a reproducible kernel panic running the ltrace program.  The
+> panic only occurs when running the uml kernel in skas mode.  mode=tt
+> does not panic.
+> 
+> Running as a normal (non root) user:
+>    $ ltrace strace ls
+> results in:
+>    Kernel panic: Kernel mode signal 5
+> 
+> Is anyone else able to reproduce this?
 
-I have a reproducible kernel panic running the ltrace program.  The
-panic only occurs when running the uml kernel in skas mode.  mode=tt
-does not panic.
+Yes, but not everytime:
+Host: 2.4.22 with skas patch
+UML: 2.4.23-um1
+First test: uml crashed.
+Second: uml didn't crash, finished the ltrace just fine
+(i did the ltrace strace ls two times, just to be sure)
+Third test: uml crashed.
 
-Running as a normal (non root) user:
-   $ ltrace strace ls
-results in:
-   Kernel panic: Kernel mode signal 5
+(reboot between every test).
 
-Is anyone else able to reproduce this?
+So it may be some kind of race condition?
 
+Regards,
+Sven
 
-Details:
-
-UML is debian woody, running vanilla kernel 2.4.22 with
-uml-patch-2.4.22-5.bz2.  Also tested is vanilla kernel 2.4.23 with
-uml-patch-2.4.23-1.bz2.  The kernel panic occures on both of these
-setups.
-
-Host is debian woody 2.4.22 with preemt, lowlatency and skas3 patches
-applied.
-
-The panic occurs because the syscall number gets set to -1.  I have not
-been able to track down exactly where this occurs, and any help on this
-would be warmly received.
-
-Dion.
-
--- 
-Dion's Maxim:  If you are ever surprised at just how stupid people can be,
-               then you haven't understood Dion's Maxim.
 
 
 -------------------------------------------------------
