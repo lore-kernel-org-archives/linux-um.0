@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AL8z4-0000yt-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 14:33:38 -0800
-Received: from wavehammer.waldi.eu.org
-	([82.139.196.55] helo=extern.mail.waldi.eu.org ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	id 1ALCTk-0005q8-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 18:17:32 -0800
+Received: from blabluga.hell.pl ([62.121.102.27])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.24)
-	id 1AL8z4-0007M0-9i
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 15 Nov 2003 14:33:38 -0800
-From: Bastian Blank <bastianb@gmx.de>
-Subject: Re: [uml-devel] arch/um/sys-i386/bugs.c compile error
-Message-ID: <20031115223329.GA24455@wavehammer.waldi.eu.org>
-References: <20031115211955.GA4221@absolom.libra.net>
+	id 1ALCSl-0006Ba-TT
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 15 Nov 2003 18:16:32 -0800
+From: "Artur R. Czechowski" <arturcz@hell.pl>
+Message-ID: <20031116021613.GW22490@blabluga.hell.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/7+LvQqw8N5lf/3J"
 Content-Disposition: inline
-In-Reply-To: <20031115211955.GA4221@absolom.libra.net>
+Subject: [uml-devel] Re: arch/um/sys-i386/bugs.c compile error
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -28,24 +26,88 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 15 Nov 2003 23:33:29 +0100
+Date: Sun, 16 Nov 2003 03:16:13 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: ljlane@debian.org
 
-On Sat, Nov 15, 2003 at 04:19:55PM -0500, Laurence J. Lane wrote:
-> I get the same arch/um/sys-i386/bugs.c compile error on 2.6.0-test9-1-um
-> and 2.4.22-6-um. Anyone have an idea of what causes the error?
 
-debian unstable with linux-kernel-headers (2.6.0)?
 
-i get this message since they do that change.
+--/7+LvQqw8N5lf/3J
+Content-Type: multipart/mixed; boundary="H88uUF932U8Oj0a6"
+Content-Disposition: inline
 
-bastian
 
--- 
-	"Get back to your stations!"
-	"We're beaming down to the planet, sir."
-		-- Kirk and Mr. Leslie, "This Side of Paradise",
-		   stardate 3417.3
+
+--H88uUF932U8Oj0a6
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+Look at http://bugs.debian.org/220724
+
+OTOH, uml 6 has yet another silly error which results in failed
+compilation when built with modules. Patch for arch/um/drivers/hostaudio_ke=
+rn.c=20
+attached.
+
+Cheers
+	Artur
+
+PS. Sorry for breaking the thread. Webarchives do not provide msgid. Well,
+    one more day with trying to run u-m-l on 2.6 host and I will subscribe
+    here :)
+--=20
+Serwer odpowiedzia=B3:
+- Mam trzy i p=F3=B3 macha [...]
+                      http://fun.from.hell.pl/00-ROCZNIK-2001/stare/outlook=
+=2Ejpg
+
+--H88uUF932U8Oj0a6
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: attachment; filename="hostaudio_kern.diff"
+Content-Transfer-Encoding: quoted-printable
+
+22a23,30
+> #define DSP_HELP \
+> "    This is used to specify the host dsp device to the hostaudio driver.=
+\n" \
+> "    The default is \"" HOSTAUDIO_DEV_DSP "\".\n\n"
+>=20
+> #define MIXER_HELP \
+> "    This is used to specify the host mixer device to the hostaudio drive=
+r.\n" \
+> "    The default is \"" HOSTAUDIO_DEV_MIXER "\".\n\n"
+>=20
+30,33d37
+< #define DSP_HELP \
+< "    This is used to specify the host dsp device to the hostaudio driver.=
+\n" \
+< "    The default is \"" HOSTAUDIO_DEV_DSP "\".\n\n"
+<=20
+42,45d45
+< #define MIXER_HELP \
+< "    This is used to specify the host mixer device to the hostaudio drive=
+r.\n" \
+< "    The default is \"" HOSTAUDIO_DEV_MIXER "\".\n\n"
+<=20
+
+--H88uUF932U8Oj0a6--
+
+--/7+LvQqw8N5lf/3J
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/tt3tlk0AXAynaGwRAqSKAJ4hnRHnEZ1h676eqITJxEQ4RIxuYACfRxMK
+eyTk12I5Wu3J3TJN4ZgV2aA=
+=XTOl
+-----END PGP SIGNATURE-----
+
+--/7+LvQqw8N5lf/3J--
 
 
 -------------------------------------------------------
