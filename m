@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj2Js-0001pb-JU for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 12:17:52 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Aj2Js-0005Td-2R
+	id 1Aj3Ro-0005gZ-EG for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 13:30:08 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1Aj3Rn-0000Cx-QX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 12:17:52 -0800
-Message-Id: <200401202040.i0KKeCDG004061@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] uml-patch-2.4.23-2 
-In-Reply-To: Your message of "Tue, 20 Jan 2004 17:35:35 GMT."
-	<20040120173534.GA15399@axis.demon.co.uk> 
-References: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
-	<20040120092050.GA31994@axis.demon.co.uk>
-	<200401201500.i0KF09DG002355@ccure.user-mode-linux.org>
-	<20040120173534.GA15399@axis.demon.co.uk> 
+	Tue, 20 Jan 2004 13:30:08 -0800
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Re: [uml-devel] Re: uml-patch-2.6.0
+Message-ID: <20040120213040.GC25314@bytesex.org>
+References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
+	<200401172009.50449.blaisorblade_spam@yahoo.it>
+	<87vfn7yikh.fsf@bytesex.org>
+	<200401202042.17851.blaisorblade_spam@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+Content-Disposition: inline
+In-Reply-To: <200401202042.17851.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +31,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Jan 2004 15:40:11 -0500
-To: Nick Craig-Wood <ncw1@axis.demon.co.uk>
+Date: Tue, 20 Jan 2004 22:30:40 +0100
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-ncw1@axis.demon.co.uk said:
-> I diffed the hex dump to see what sort of corruptions they were.
-> Nothing obvious springs to mind, other than that the corruptions start
-> on a page boundary, but don't extend for a whole page.  Maybe the page
-> is being re-used before writeout has finished?
+> > G-02-LinkScriptCleanup.patch removes various ksymtab stuff from
+> > common.lds.S (which is in the RODATA #define these days), that one
+> > looks like it could be needed too to make modules work ...
+> 
+> Those repeated sections are harmless, only ugly;
 
-Interesting, but I'm not sure what it means.  I had a 100% reproducable
-test last night, thanks to Chris Aker, but it became somewhat iffy today.
+No: removing those sections made modules work for me. (behaviour may
+depend on the binutils version through ...).
 
-BTW, what filesystem is this?  I'm seeing corruption with ext3, but nothing
-with ext2.
+  Gerd
 
-				Jeff
-
+-- 
+"... und auch das ganze Wochenende oll" -- Wetterbericht auf RadioEins
 
 
 -------------------------------------------------------
