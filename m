@@ -1,19 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1APTH1-0004kx-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 27 Nov 2003 13:02:03 -0800
-Received: from mail.gmx.net ([213.165.64.20])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1APTH0-0001yw-L0
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 27 Nov 2003 13:02:02 -0800
-Message-ID: <002101c3b52a$4a42ede0$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <5.1.0.14.2.20031127102518.02675b90@mail.inboxprotection.com>
+	id 1APTmE-000724-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 27 Nov 2003 13:34:18 -0800
+Received: from mekong.darkman.de ([217.69.160.53] helo=mail.darkman.de)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1APTmD-0002s6-8F
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 27 Nov 2003 13:34:17 -0800
+Received: from darkman.de (ezri.darkman.de [23.23.23.42])
+	by mail.darkman.de (Postfix) with ESMTP id 3920C2EF84
+	for <user-mode-linux-devel@lists.sourceforge.net>; Thu, 27 Nov 2003 22:33:56 +0100 (CET)
+Message-ID: <3FC66DC3.2010909@darkman.de>
+From: "Sven 'Darkman' Michels" <sven@darkman.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Subject: [uml-devel] uml 2.6.0-test9 crash
+References: <5.1.0.14.2.20031127102518.02675b90@mail.inboxprotection.com> <002101c3b52a$4a42ede0$2000000a@schlepptopp>
+In-Reply-To: <002101c3b52a$4a42ede0$2000000a@schlepptopp>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Subject: [uml-devel] Re: [uml-user] uml 2.6.0-test9 crash
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,52 +28,44 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 Nov 2003 22:06:01 +0100
+Date: Thu, 27 Nov 2003 22:33:55 +0100
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-hi !=B4
-i think , i`m able to crash my uml. :(
+roland wrote:
+> hi !=B4
+> i think , i`m able to crash my uml. :(
 
-i did some stress-testing with my uml-2.6.0-test9 on 2.6.0-test9-skas host =
-and i
-unfortunately seem able to crash it very easily.
+i can't ;)
 
-this was the way i recognized it:
-first i executed
-while true;do find /;done >/dev/zero &
-several times and all worked well.
-watched that with "top" inside the uml and found dozens of "finds" sharing =
-the
-cpu as expected(spending most of their time on system calls indeed).
-on host, cpu usage of uml went to ~99% - all fine so far.
 
-then i thought: mhhhh - ok - eat THIS:
-while true;do dd if=3D/dev/zero of=3Dtest.dat bs=3D1k count=3D10000;done &
+> at a second, third, fourth try, i isolated the problem a little bit:
+> one or two non looped "dd if=3D/dev/zero of=3Dtest.dat bs=3D1k count=3D10=
+000" just are enough
+> to produce the same result.(under 2.6.0test9-skas-host and ALSO under 2.4=
+.22-99-default
+> suse9 host, rootfs inside uml is suse9)
+>=20
+> is anybody able to reproduce this?
 
-after executing this, my uml got stuck. no output, no response to input - e=
-ven a
-ping to the uml didn`t=B4give back a sign of life. the uml didn`t crash or =
-panic - it
-just gets stuck and unresponsive - uml process remains at 99% on the host.
+not exactly:
+SuSE 9.0 host, debian 3.0 uml, hostkernel: 2.4.22 with skas, uml: 2.4.22
+with um6, test:
+for i in $(seq 1 5); do dd if=3D/dev/zero of=3Dtest${i}.dat bs=3D1k=20
+count=3D10000; done
 
-at a second, third, fourth try, i isolated the problem a little bit:
-one or two non looped "dd if=3D/dev/zero of=3Dtest.dat bs=3D1k count=3D1000=
-0" just are enough
-to produce the same result.(under 2.6.0test9-skas-host and ALSO under 2.4.2=
-2-99-default
-suse9 host, rootfs inside uml is suse9)
+The UML did the frist two dd's without problems, then it started to
+hang.. i checked outside and saw the process switching states from
+R to D and then back to R... so after a few secs the dd's did all
+succeed and the uml is still running. So it didn't crash or so
+but it also didn't play very well with that.
 
-is anybody able to reproduce this?
-if so - what do do further for analyzing?
-i could make the uml downloadable and could send some output from strace (i=
-f i attach strace
-to the remaining "99% cpu hog", it exits very quickly with a SIGALARM)
+BTW: did you had any problems with building an uml kernel on
+9.0? i wasn't able to get a running kernel on this box, compiling
+on another host (8.1) works fine...
 
-maybe an uml bug or even an issue for lkml?
-
-regards
-roland
+Regards,
+Sven
 
 
 
