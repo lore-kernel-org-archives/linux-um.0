@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1ADu18-0002io-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 15:09:51 -0800
-Received: from fmr01.intel.com ([192.55.52.18] helo=hermes.fm.intel.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ADtzR-0002WE-0c
-	for user-mode-linux-devel@lists.sourceforge.net; Sun, 26 Oct 2003 15:08:05 -0800
-Received: from petasus.fm.intel.com (petasus.fm.intel.com [10.1.192.37])
-	by hermes.fm.intel.com (8.12.9-20030918-01/8.12.9/d: outer.mc,v 1.66 2003/05/22 21:17:36 rfjohns1 Exp $) with ESMTP id h9QN3uOc009734
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 23:03:56 GMT
-Received: from fmsmsxvs040.fm.intel.com (fmsmsxv040-1.fm.intel.com [132.233.48.108])
-	by petasus.fm.intel.com (8.11.6-20030918-01/8.11.6/d: inner.mc,v 1.35 2003/05/22 21:18:01 rfjohns1 Exp $) with SMTP id h9QMxXE00564
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 22:59:33 GMT
-content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Subject: RE: [uml-devel] uml on iA-64
-Message-ID: <A06801158AE07847B27A52C1A074BC1D0247BA2A@fmsmsx404.fm.intel.com>
-From: "Wichmann, Mats D" <mats.d.wichmann@intel.com>
+	id 1ADvfT-0006SJ-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 16:55:36 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
+	id 1ADvaX-00047s-My
+	for user-mode-linux-devel@lists.sourceforge.net; Sun, 26 Oct 2003 16:50:30 -0800
+Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h9R0cbj12925
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sun, 26 Oct 2003 19:38:37 -0500
+Message-Id: <200310270055.h9R0ttCN013420@ccure.karaya.com>
+Subject: Re: [uml-devel] uml on iA-64 
+In-Reply-To: Your message of "Sun, 26 Oct 2003 15:07:56 PST."
+             <A06801158AE07847B27A52C1A074BC1D0247BA2A@fmsmsx404.fm.intel.com> 
+References: <A06801158AE07847B27A52C1A074BC1D0247BA2A@fmsmsx404.fm.intel.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -31,33 +29,20 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 26 Oct 2003 15:07:56 -0800
-Content-Transfer-Encoding: 8bit
-To: Matt Zimmerman <mdz@debian.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 26 Oct 2003 19:55:55 -0500
+To: "Wichmann, Mats D" <mats.d.wichmann@intel.com>
+Cc: Matt Zimmerman <mdz@debian.org>, user-mode-linux-devel@lists.sourceforge.net
 
+mats.d.wichmann@intel.com said:
+> It would be good if we'd be able to collect information like this
+> somewhere.
 
-> > pierre.gentile@mpsa.com said:
-> > > Has anyone tried to implement user-mode-linux (skas patch and um
-> > > architecture) on an Itanium IA-64 machine ? 
-> > 
-> > Not really.  I have an IA64 box sitting next to me, and 
-> > starting a port to it is on my list once I acquire some free time.
-> 
-> I did some preliminary investigation into making ia64 
-> UML-friendly as a host (the changing syscall numbers bit), 
-> and after discovering why it won't work, I sent pleas for 
-> help to some HP folks to find out if it would be easy to
-> fix.  I did get one interested response, but no reply to my 
-> followup as yet.
+It'd be good if someone would just do it.  It's not that hard, and will be
+a lot easier once I get the Opteron port merged.
 
-It would be good if we'd be able to collect information
-like this somewhere.  I know there was a porting effort
-at one of the Gelato member institutions (UIUC, I think),
-that released a preliminary patch earlier this year, but
-it's been silent on that front since.
+A patch will be way more useful than a collection of experiences.
 
-A collection of experiences would be a useful resource,
-I'd think.
+				Jeff
 
 
 
