@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DDKU7-0004ot-Vm for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 Mar 2005 02:50:11 -0800
-Received: from ppsw-2.csi.cam.ac.uk ([131.111.8.132])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DDKU6-0007EG-7E for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 Mar 2005 02:50:11 -0800
-From: Anton Altaparmakov <aia21@cam.ac.uk>
-In-Reply-To: <200503201242.23591.blaisorblade@yahoo.it>
-References: <200503201242.23591.blaisorblade@yahoo.it>
-Content-Type: text/plain
-Message-Id: <1111402190.24494.12.camel@imp.csi.cam.ac.uk>
-Mime-Version: 1.0
+	id 1DDKtW-0006Gb-1u for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Mar 2005 03:16:26 -0800
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DDKtU-0003g9-9b for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Mar 2005 03:16:25 -0800
+Message-ID: <423EAD03.70706@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+References: <200503182202.52723.blaisorblade@yahoo.it>
+In-Reply-To: <200503182202.52723.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: Testing GCOV handling in -bk
+Subject: [uml-devel] Re: Fixing fp-state handling
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,44 +27,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 21 Mar 2005 10:49:49 +0000
+Date: Mon, 21 Mar 2005 12:16:19 +0100
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, 2005-03-20 at 12:42 +0100, Blaisorblade wrote:
-> Anton, would you test the current -bk tree for the CONFIG_GCOV problem and the 
-> patch I and Jeff put together?
+Blaisorblade wrote:
+> From arch/um/os-Linux/sys-i386/registers.c:
 > 
-> http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.11-bk8/patches/weak_gcov_init
+> /* XXX These need to use [GS]ETFPXREGS and copy_sc_{to,from}_user_skas needs
+>  * to pass in a sufficiently large buffer
+>  */
 > 
-> The above should fix the situation for you... for real 3.4 Gcc, however, the 
-> problems are bigger because it also requires to change link flags (and this 
-> interferes with some executables we build). I also get a link failure on 
-> __bb_fork_<something>..., which I haven't been able to solve until now.
+> Could fixing this be the real fix instead of "fp-state" in the incrementals?
+Sorry, no, it could't.
 
-I would test it but UML in current -BK doesn't build at all.  It stops
-with:
+fp-state fixes a wrong handling of fp-/fpx-regs in arch/um/sys-i386/signal.c,
+which causes fp-regs of user's "main" routine to be modified, if a signal-handler
+interrupting "main" uses fp.
 
-  CC      kernel/signal.o
-kernel/signal.c: In function `get_signal_to_deliver':
-kernel/signal.c:1849: error: structure has no member named `eflags'
-kernel/signal.c:1849: error: `TF_MASK' undeclared (first use in this
-function)
-kernel/signal.c:1849: error: (Each undeclared identifier is reported
-only once
-kernel/signal.c:1849: error: for each function it appears in.)
-make[1]: *** [kernel/signal.o] Error 1
-make: *** [kernel] Error 2
+IMHO, the patch is OK in that it fixes the problem (Please note, Jeff had a
+currupted version of the patch in his incrementals for some weeks, that didn't
+work and even resulted in worse behavior. The current one is OK.).
 
-Best regards,
+What I don't like in the patch, is the duplicated code for fp to fpx conversion
+(and vice versa). That code is stolen and modified from arch/um/sys-i386/ptrace.c
+resp. arch/i386/kernel/i387.c. I think, arch/um/sys-i386/ptrace.c should be
+reworked to do fp/fpx conversions in memory as signal.c now does. Doing the rework
+ptrace.c also should be extended to support coredumping fp/fpx-regs. All this
+were the reasons to call fp-state a "quick and dirty" patch.
+Unfortunately I can't do this myself for the moment, because I have to bring up
+UML-s390 as fast as possible. So maybe the best thing currently is to use fp-state.
 
-        Anton
--- 
-Anton Altaparmakov <aia21 at cam.ac.uk> (replace at with @)
-Unix Support, Computing Service, University of Cambridge, CB2 3QH, UK
-Linux NTFS maintainer / IRC: #ntfs on irc.freenode.net
-WWW: http://linux-ntfs.sf.net/ & http://www-stu.christs.cam.ac.uk/~aia21/
+BTW: having fp-state applied, save_fp_registers and restore_fp_registers in
+arch/um/os-Linux/sys-i386/registers.c are no longer needed and might be removed.
 
+		Bodo
 
 
 -------------------------------------------------------
