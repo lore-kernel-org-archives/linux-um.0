@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BPCdK-0006dA-1Z for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 May 2004 20:48:14 -0700
-Received: from mail5.speakeasy.net ([216.254.0.205])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1BPCdJ-0003Gq-PK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 May 2004 20:48:13 -0700
-Received: from dsl081-102-219.den1.dsl.speakeasy.net (HELO speakeasy.net)
-	(dminer@[64.81.102.219]) (envelope-sender <dminer@speakeasy.net>)
-	by mail5.speakeasy.net (qmail-ldap-1.03) with SMTP
+	id 1BPbZu-00014b-Hy for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 16 May 2004 23:26:22 -0700
+Received: from rwcrmhc11.comcast.net ([204.127.198.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BPbZu-0002bv-4P for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 16 May 2004 23:26:22 -0700
+Received: from SCG2 ([10.0.0.29])
+	by www.gspcg.com (8.11.2/8.11.2) with SMTP id i4H6QGW23455
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	16 May 2004 03:48:13 -0000
-Message-ID: <40A6E47C.40404@speakeasy.net>
-From: Dan Miner <dminer@speakeasy.net>
+	Sun, 16 May 2004 23:26:16 -0700
+From: "Anthony Brock" <Anthony_Brock@ous.edu>
+Message-ID: <IFEIKNDOLFNCKMGAENCFGEPBCDAA.Anthony_Brock@ous.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] uml 2.4.26 controlling tty problem
+In-Reply-To: <IFEIKNDOLFNCKMGAENCFOEOICDAA.Anthony_Brock@ous.edu>
+Subject: [uml-devel] RE: [uml-user] UML on 64-Bit AMD
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,35 +31,86 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 15 May 2004 21:48:12 -0600
+Date: Sun, 16 May 2004 23:26:12 -0700
 To: user-mode-linux-devel@lists.sourceforge.net
 
-I'm attempting to build and run UML.  I've been relatively successful at 
-getting UML and utilities to build with 2.4.26 (stock Linus kernel + uml 
-patch).
+I apologize if I am posting to the wrong group. However, troubleshooting a
+compile doesn't seem appropriate for the user list...
 
-However, none of the 'login' type programs work due to stranges errors.
+Given problems with compiling the "evaluation" of UML in 64-bit mode (on a
+64-bit AMD host), I tried to compile a 32-bit version so we could start
+playing. The results are not initially promising. First, it failed to
+compile due to a missing Makefile-x86_64. So I modified the base Makefile to
+assume a subarch of i386:
 
-minigetty reports: no controllying tty: Operation not permiited
-telnetd reports: telnetd: Unable to set controlling terminal: No such 
-device or address
+diff Makefile.orig Makefile
+131c131,132
+<                                 -e s/s390x/s390/ -e s/parisc64/parisc/ )
+---
+>                                 -e s/s390x/s390/ -e s/parisc64/parisc/ \
+>                                 -e s/x86_64/i386/ )
 
-and ssh just dropped the connection :)
+Now, when attempting to compile, I see:
 
-I'm running mdk 10.0 official with their 2.6.3 kernel but I'm building a 
-mdk 10.0 UML image with 2.4.26 UML kernel.  I've also try this same UML 
-kernel on a mdk 9.0 system with the same results.
+  HOSTCC  arch/um/sys-i386/util/mk_sc
+arch/um/sys-i386/util/mk_sc.c: In function `main':
+arch/um/sys-i386/util/mk_sc.c:21: error: structure has no member named `eip'
+arch/um/sys-i386/util/mk_sc.c:22: error: structure has no member named `esp'
+arch/um/sys-i386/util/mk_sc.c:23: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:24: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:25: error: structure has no member named `ds'
+arch/um/sys-i386/util/mk_sc.c:26: error: structure has no member named `es'
+arch/um/sys-i386/util/mk_sc.c:27: error: structure has no member named `ss'
+arch/um/sys-i386/util/mk_sc.c:28: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:29: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:30: error: structure has no member named `eax'
+arch/um/sys-i386/util/mk_sc.c:31: error: structure has no member named `ebx'
+arch/um/sys-i386/util/mk_sc.c:32: error: structure has no member named `ecx'
+arch/um/sys-i386/util/mk_sc.c:33: error: structure has no member named `edx'
+arch/um/sys-i386/util/mk_sc.c:34: error: structure has no member named `edi'
+arch/um/sys-i386/util/mk_sc.c:35: error: structure has no member named `esi'
+arch/um/sys-i386/util/mk_sc.c:36: error: structure has no member named `ebp'
+arch/um/sys-i386/util/mk_sc.c:37: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:38: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:39: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:40: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:41: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:42: error: structure has no member named `cw'
+arch/um/sys-i386/util/mk_sc.c:43: error: structure has no member named `sw'
+arch/um/sys-i386/util/mk_sc.c:44: error: structure has no member named `tag'
+arch/um/sys-i386/util/mk_sc.c:45: error: structure has no member named
+`ipoff'
+arch/um/sys-i386/util/mk_sc.c:46: error: structure has no member named
+`cssel'
+arch/um/sys-i386/util/mk_sc.c:47: error: structure has no member named
+`dataoff'
+arch/um/sys-i386/util/mk_sc.c:48: error: structure has no member named
+`datasel'
+arch/um/sys-i386/util/mk_sc.c:49: warning: int format, different type arg
+(arg 2)
+arch/um/sys-i386/util/mk_sc.c:50: error: structure has no member named
+`_fxsr_env'
+make[1]: *** [arch/um/sys-i386/util/mk_sc] Error 1
+make: *** [arch/um/sys-i386/util/mk_sc] Error 2
 
-I've checked that devfsd is running (it is) and all the dev entrys looks 
-like the ones on my host computer -- so, I'm really confused by this one.
+Any ideas? I'm beginning to remember why it's been over a decade since I
+dealt with the Linux kernel code. Even then I was a poor excuse for a
+programmer...
 
-I configured UML with make xconfig ARCH=um, changed scsi_debug to no and 
-saved.  All default values.
+Thanks again for your patience.
 
-Any clues?
+Tony
 
-    Regards,
-       Dan
+
 
 
 -------------------------------------------------------
