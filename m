@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CYpuX-00086F-Uf for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 10:06:05 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CYpuW-00077p-QL for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Nov 2004 10:06:05 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-References: <267988DEACEC5A4D86D5FCD780313FBB021BB9B1@exch-03.noida.hcltech.com>
-In-Reply-To: <267988DEACEC5A4D86D5FCD780313FBB021BB9B1@exch-03.noida.hcltech.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200411291909.05952.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] /etc/shadow problem
+	id 1CYsEm-0006Zq-OU for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Nov 2004 12:35:08 -0800
+Received: from pool-141-154-235-89.bos.east.verizon.net ([141.154.235.89]
+	helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CYsEl-0002dZ-Pm
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Nov 2004 12:35:08 -0800
+Message-Id: <200411292250.iATMoWOF004837@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] skas mode on a non-skas host
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,24 +26,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 29 Nov 2004 19:09:05 +0100
-To: user-mode-linux-user@lists.sourceforge.net
-Cc: "Adil Mujeeb, Noida" <adilm@hcltech.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 29 Nov 2004 17:50:32 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade_spam@yahoo.it>
 
-On Monday 29 November 2004 16:45, Adil  Mujeeb, Noida wrote:
-> Hi,
-> im trying to change the user password to empty. On normal linux u can do it
-> by making the password field empty in /etc/shadow file. But when im trying
-> to do on UML, it doesnt update and give message login incorrect. How to
-> make it empty??
-Depends on the root_fs distro - the "passwd" command should always work, 
-except on the toms root fs - it rewrites /etc/passwd on each shutdown (I 
-don't remember exactly where).
+Prompted by some questions from Blaisorblade about whether something like skas
+mode might be implemented on unpatched hosts, I went ahead and did exactly
+that.
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+The basic idea is that in place of /proc/mm and PTRACE_FAULTINFO, we have a
+couple of extra pages in the userspace process to hold code that we are going 
+to use to make it change its address space and to handle segfaults so addresses
+and access modes can be reported back to the kernel process.
+
+The end result is something that is very close to skas mode, just as secure,
+loses two pages of address space to UML rather than .5G, should be almost
+as fast, and runs on a stock host kernel.
+
+The patch is available as skas0 from my patches page -
+	http://user-mode-linux.sourceforge.net/patches.html
+and there is a good deal of commentary associated with it.
+
+				Jeff
+
 
 
 -------------------------------------------------------
