@@ -1,22 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BayUq-0003Dq-DA for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jun 2004 08:08:08 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BayUp-00083Q-66 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jun 2004 08:08:07 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: [UML] Performance hit for setting CS segment limit
-References: <200406111954.15283.blaisorblade_spam@yahoo.it>
-	<20040615054545.GB2543@elte.hu>
-In-Reply-To: <20040615054545.GB2543@elte.hu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200406162141.57213.blaisorblade_spam@yahoo.it>
+From: uml <uml@dot1q.net>
+Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
+	3.3.3 similarities to 2.6.6!?
+Message-id: <001e01c45480$c6e99380$dd02a8c0@ferraro>
+MIME-version: 1.0
+Content-type: text/plain; charset="iso-8859-1"
+References: <114001c44bf7$b69ca120$2000000a@schlepptopp>
+	<200406142109.45156.blaisorblade_spam@yahoo.it>
+	<87oenle40x.fsf@amaterasu.srvr.nix>
+	<200406162109.57341.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,67 +20,97 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 16 Jun 2004 21:41:57 +0200
+Date: Thu, 17 Jun 2004 11:35:49 -0400
 Content-Transfer-Encoding: quoted-printable
-To: Ingo Molnar <mingo@elte.hu>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
+Cc: roland <for_spam@gmx.de>
 
-Alle 07:45, marted=EC 15 giugno 2004, Ingo Molnar ha scritto:
-> * BlaisorBlade <blaisorblade_spam@yahoo.it> wrote:
-> > Hi Ingo, I need some help from you about the performance hit of
-> > segmentation, which you probably studied for the exec-shield patch.
-> >
-> > In short: if I reduce the limit of the CS, DS and so on segment
-> > descriptors (let's say it becomes 2,5G instead of 4G), a bit like you
-> > do in the exec-shield patch, will this setting impact on the
-> > performance of the process, apart for the time to set them? I also
-> > assume that segment changes do not flush the TLBs; is this correct?
-> >
-> > I've been told by Jeff Dike (you can check on the ML) that :
-> >
-> > "This is slow, plus ****using segments will cost you a cycle or
-> > something on EVERY memory reference***. Alan Cox warned me off very
-> > strongly against doing this.", though maybe he referred to something
-> > different: is this true in this case?
+Oops, I tried this the other day at the beginning of this thread -- it
+worked great for me.
+
+I'm afraid I just don't know enough about lower level compiling options or
+gcc have ever diagnosed this myself; however, I don't mind recompiling a
+kernel 100 times to see what works -- or doesn't. (=3D
+
+Thanks!
+
+
+----- Original Message -----=20
+From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
+To: "Nix" <nix@esperi.org.uk>
+Cc: "uml" <uml@dot1q.net>; "roland" <for_spam@gmx.de>; "uml-user"
+<user-mode-linux-user@lists.sourceforge.net>;
+<user-mode-linux-devel@lists.sourceforge.net>
+Sent: Wednesday, June 16, 2004 3.09 PM
+Subject: Re: [uml-devel] Re: [uml-user] SuSE 9.1 host + 2.4.26 Kernel + GCC
+3.3.3 similarities to 2.6.6!?
+
+
+Alle 08:20, marted=EC 15 giugno 2004, Nix ha scritto:
+> On Mon, 14 Jun 2004, BlaisorBlade mused:
+
+> > Well, ok, more hints, the first possible answer to this one seems to be
+> > that SuSE enables -funit-at-a-time:
 >
-> this might be true for _data_ segments
+> (unsurprising, given that -funit-at-a-time's primary author is jh@suse
+;} )
 
-Well, sadly I need to know for those also... however I'm going to search=20
-myself.
+Well, someone following gcc development! Compliments! Do you think, too that
+SuSE gcc is a pre-release or heavily patched?
 
->, but not for the code segment.
-> The code segment limit can be checked when an iTLB miss occurs
+> Yep, -funit-at-a-time will definitely break kernels that aren't
+> expecting it, both because of elision of unused statics and because some
+> arches depend on emission of asm's at the top level to emit stuff in the
+> same order in generated code, and with -funit-at-a-time this just
+> doesn't happen anymore. (I don't think i386 is such an architecture,
+> though.)
 
-And so iTLB means instruction TLB, right? (I was wondering about this in yo=
-ur=20
-discussion about 4G/4G patch with Andrea Arcangeli).
+However, I would like to see a successful test-case
+with -fno-unit-at-a-time,
+plus understanding what are the faulting declaration (i.e. adding
+attribute_used where needed), before saying this bug is over.
 
-Also, from some tests, I would guess that also for Celeron, and not only fo=
-r=20
-Xeon, there are at least 64 dTLB. Is this correct? I used this to explain=20
-some benchmark datas.
+> -funit-at-a-time is enabled by default for C and C++ in GCC 3.4.
+>
+> > This is the trick:
+> The sort of thing you want to stash away in a header file and never lay
+> eyes on again. :)
 
-I noticed that when touching more than 64 different pages (i.e. 512 in my=20
-test), flushing or not the TLBs gave almost no "secondary cost" for reloadi=
-ng=20
-them when re-touching those pages, while the secondary cost was very high=20
-with 64 pages.
+Well, this is already done, in the kernel: see the definition of
+attribute_used in linux/compiler-gcc*.h.
 
->, no need
-> to check during code prefetch itself. So there's no overhead.
+> > static const int hello ATTRIBUTE_USED  =3D 56;
+> >
+> > int main()
+> > {
+> >         asm(
+> >         "mov hello, %eax\n"
+> >         );
+>
+> Well, in this *specific* case, hello should be marked as clobbered,
 
-The only difference, here, is that for data segments, which are also import=
-ant=20
-here, on a dTLB (i.e. I guess dTLB =3D data TLB) fault the check is done fo=
-r a=20
-certain segment, so it could have a little overhead (though Intel claims it=
-=20
-is done in parallel with address translation, in their manuals).
+If you mean should be marked by the coder, ok (gcc is not smart).
 
-Thanks a lot!
+> which will also stop the compiler eliding it. But this *was* a contrived
+> testcase...
+
+Bye!
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by The 2004 JavaOne(SM) Conference
+Learn from the experts at JavaOne(SM), Sun's Worldwide Java Developer
+Conference, June 28 - July 1 at the Moscone Center in San Francisco, CA
+REGISTER AND SAVE! http://java.sun.com/javaone/sf Priority Code NWMGYKND
+_______________________________________________
+User-mode-linux-user mailing list
+User-mode-linux-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
+
 
 
 
