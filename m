@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cxd3y-0005zN-Hx for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Feb 2005 19:26:18 -0800
-Received: from smtp205.mail.sc5.yahoo.com ([216.136.129.95])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Cxd3x-0008IV-Qx for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Feb 2005 19:26:18 -0800
-Message-ID: <42058E52.8030306@yahoo.com.au>
-From: Nick Piggin <nickpiggin@yahoo.com.au>
+	id 1CxeBV-0000Ao-AA for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Feb 2005 20:38:09 -0800
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CxeBU-000655-OK for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Feb 2005 20:38:09 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.61.0502052333110.6550@sparrow>
 MIME-Version: 1.0
-References: <42021E35.8050601@fujitsu-siemens.com>	<4202C18F.5010605@yahoo.com.au>	<42036C2C.5040503@fujitsu-siemens.com>	<4203F40C.8040707@yahoo.com.au>
-	<20050204143917.1f9507cb.akpm@osdl.org>
-	<4204020F.2000501@yahoo.com.au> <42044D17.5040703@yahoo.com.au>
-In-Reply-To: <42044D17.5040703@yahoo.com.au>
-Content-Type: multipart/mixed; boundary="------------070507080205010708080905"
-Subject: [uml-devel] [PATCH] fix wait_task_inactive race (was Re: Race
-	condition in ptrace)
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: [uml-devel] linux-2.6.11-rc3-bk2-jdike-uml-compile-fixes;
+	UDF FS won't compile.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,107 +26,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 06 Feb 2005 14:26:10 +1100
-To: Andrew Morton <akpm@osdl.org>
-Cc: bstroesser@fujitsu-siemens.com, roland@redhat.com, jdike@addtoit.com, blaisorblade_spam@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>
+Date: Sat, 5 Feb 2005 23:38:21 -0500 (EST)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: William Stearns <wstearns@pobox.com>
 
-This is a multi-part message in MIME format.
---------------070507080205010708080905
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Nick Piggin wrote:
-
-> Something like the following (untested) extension of Bodo's work
-> could be the minimal fix for 2.6.11. As I've said though, I'd
-> consider it a hack and prefer to do something about the locking.
-> That could be done after 2.6.11 though. Depends how you feel.
-> 
-
-I think this is the right fix.
-
-When a task is put to sleep, it is dequeued from the runqueue
-while it is still running. The problem is that the runqueue
-lock can be dropped and retaken in schedule() before the task
-actually schedules off, and wait_task_inactive did not account
-for this.
-
-I introduced a new function to resolve this state, fixed
-wait_task_inactive, and converted over an open coded test.
-
-I did a quick audit of sched.c, and nothing else seems to have
-made the same mistake.
-
-Signed-off-by: Nick Piggin <nickpiggin@yahoo.com.au>
+Good evening, all,
+ 	Just for reference, if I have the UDF filesystem turned on, I get 
+this error at the end of the compile:
 
 
-Question: why does wait_task_inactive have different semantics
-for UP && PREEMPT than SMP && PREEMPT? I can see that the kthread
-caler probably isn't used in the UP case, but technically it is
-relying on behaviour that it doesn't get with UP and PREEMPT.
-Looks like the ptrace.c caller won't care.
+   LD      .tmp_vmlinux1
+/usr/lib/libc.a(mktime.o)(.rodata+0x0): multiple definition of 
+`__mon_yday'
+fs/built-in.o(.rodata+0x36a0):fs/buffer.c:331: first defined here
+collect2: ld returned 1 exit status
+   KSYM    .tmp_kallsyms1.S
+nm: '.tmp_vmlinux1': No such file
+/bin/bash: line 1:  7871 Exit 1                  nm -n .tmp_vmlinux1
+       7872 Segmentation fault      | scripts/kallsyms >.tmp_kallsyms1.S
+make: *** [.tmp_kallsyms1.S] Error 139
 
-But still, can we either fix it or put a nice comment there?
-Preferably fix, if this isn't a very performance critical path?
+ 	If it makes a difference, /usr/lib/libc.a is owned by 
+glibc-devel-2.3.4-2.fc3 .
+ 	Cheers,
+ 	- Bill
 
-
---------------070507080205010708080905
-Content-Type: text/plain;
- name="sched-fixup-races.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="sched-fixup-races.patch"
-
-
-
-
----
-
- linux-2.6-npiggin/kernel/sched.c |   12 ++++++++++--
- 1 files changed, 10 insertions(+), 2 deletions(-)
-
-diff -puN kernel/sched.c~sched-fixup-races kernel/sched.c
---- linux-2.6/kernel/sched.c~sched-fixup-races	2005-02-06 14:03:53.000000000 +1100
-+++ linux-2.6-npiggin/kernel/sched.c	2005-02-06 14:06:43.000000000 +1100
-@@ -298,6 +298,14 @@ static DEFINE_PER_CPU(struct runqueue, r
- #endif
- 
- /*
-+ * Is the task currently running or on the runqueue
-+ */
-+static int task_onqueue(runqueue_t *rq, task_t *p)
-+{
-+	return (p->array || task_running(rq, p));
-+}
-+
-+/*
-  * task_rq_lock - lock the runqueue a given task resides on and disable
-  * interrupts.  Note the ordering: we can safely lookup the task_rq without
-  * explicitly disabling preemption.
-@@ -836,7 +844,7 @@ static int migrate_task(task_t *p, int d
- 	 * If the task is not on a runqueue (and not running), then
- 	 * it is sufficient to simply update the task's cpu field.
- 	 */
--	if (!p->array && !task_running(rq, p)) {
-+	if (!task_onqueue(rq, p)) {
- 		set_task_cpu(p, dest_cpu);
- 		return 0;
- 	}
-@@ -867,7 +875,7 @@ void wait_task_inactive(task_t * p)
- repeat:
- 	rq = task_rq_lock(p, &flags);
- 	/* Must be off runqueue entirely, not preempted. */
--	if (unlikely(p->array)) {
-+	if (unlikely(task_onqueue(rq, p))) {
- 		/* If it's preempted, we yield.  It could be a while. */
- 		preempted = !task_running(rq, p);
- 		task_rq_unlock(rq, &flags);
-
-_
-
---------------070507080205010708080905--
-
-
+---------------------------------------------------------------------------
+ 	"Any sufficiently advanced technology is indistinguishable from
+magic."
+ 	-- Arthur C. Clark (?)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
