@@ -1,24 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CoIVe-0004J6-FY for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 01:40:18 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CoIVb-0008BN-Co
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Jan 2005 01:40:18 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [uml-devel] [PATCH] Put the check for NULL before the use of a
-	potentially-null value
-Message-ID: <20050111091340.GB16448@bytesex>
-References: <41E2F90C.4020707@tuxrocks.com>
-	<200501110128.38523.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200501110128.38523.blaisorblade@yahoo.it>
+	id 1CoIzg-0005qu-Br for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 02:11:20 -0800
+Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CoIze-0006pT-Sr for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Jan 2005 02:11:20 -0800
+Message-ID: <62845.80.203.0.208.1105438274.squirrel@80.203.0.208>
+From: stian@nixia.no
+MIME-Version: 1.0
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Subject: [uml-devel] df -h and hostfs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,27 +25,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Jan 2005 10:13:40 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Frank Sorenson <frank@tuxrocks.com>
+Date: Tue, 11 Jan 2005 11:11:14 +0100 (CET)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> -       line = tty->driver_data;
->         if (tty != NULL) {
-> +               line = tty->driver_data;
+when df -h does a statfs, hostfs statfs'es /, instead of the mount-source
+directory, so you get the wrong stats about free-space if the mounted
+directory does not originate from the / host partition.
 
-> Sorry, a little question: against what tree does it apply?
 
-Any cutting edge tree (both latest -mm and latest Linus -bk snapshot).
-
-> I hope I'll not forget it...
-
-I think it can go to andrew morton as-is, it's a ObviouslyCorrect[tm] fix.
-
-  Gerd
-
--- 
-#define printk(args...) fprintf(stderr, ## args)
-
+Stian
 
 
 -------------------------------------------------------
