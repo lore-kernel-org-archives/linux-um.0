@@ -1,25 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aj3Ro-0005gZ-EG for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 13:30:08 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.30) id 1Aj3Rn-0000Cx-QX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 13:30:08 -0800
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [uml-devel] Re: uml-patch-2.6.0
-Message-ID: <20040120213040.GC25314@bytesex.org>
-References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<200401172009.50449.blaisorblade_spam@yahoo.it>
-	<87vfn7yikh.fsf@bytesex.org>
-	<200401202042.17851.blaisorblade_spam@yahoo.it>
+	id 1AjCzT-0004zM-0x for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 23:41:31 -0800
+Received: from userbb201.dsl.pipex.com ([62.190.241.201]
+	helo=irishsea.home.craig-wood.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AjCzS-0003Jj-IA for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 23:41:30 -0800
+From: Nick Craig-Wood <ncw1@axis.demon.co.uk>
+Subject: Re: [uml-devel] uml-patch-2.4.23-2
+Message-ID: <20040121074127.GA26168@axis.demon.co.uk>
+References: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
+	<20040120092050.GA31994@axis.demon.co.uk>
+	<200401201500.i0KF09DG002355@ccure.user-mode-linux.org>
+	<20040120173534.GA15399@axis.demon.co.uk>
+	<200401202040.i0KKeCDG004061@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200401202042.17851.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200401202040.i0KKeCDG004061@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,23 +32,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Jan 2004 22:30:40 +0100
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Date: Wed, 21 Jan 2004 07:41:27 +0000
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> > G-02-LinkScriptCleanup.patch removes various ksymtab stuff from
-> > common.lds.S (which is in the RODATA #define these days), that one
-> > looks like it could be needed too to make modules work ...
+On Tue, Jan 20, 2004 at 03:40:11PM -0500, Jeff Dike wrote:
+> ncw1@axis.demon.co.uk said:
+> > I diffed the hex dump to see what sort of corruptions they were.
+> > Nothing obvious springs to mind, other than that the corruptions start
+> > on a page boundary, but don't extend for a whole page.  Maybe the page
+> > is being re-used before writeout has finished?
 > 
-> Those repeated sections are harmless, only ugly;
+> Interesting, but I'm not sure what it means.
 
-No: removing those sections made modules work for me. (behaviour may
-depend on the binutils version through ...).
+fxs tells you what operation caused the problem.  Its output is a
+little hard to decode though!
 
-  Gerd
+> I had a 100% reproducable test last night, thanks to Chris Aker, but
+> it became somewhat iffy today.
+
+fxs has blown up within a minute each time I've tried it with
+ubd=mmap.  Not always in the same place though!
+
+FWIW I left fxs running on 2.4.23-2 without ubd=mmap and it ran fine
+all night.
+
+> BTW, what filesystem is this?  I'm seeing corruption with ext3, but nothing
+> with ext2.
+
+Its ext2
+
+/dev/root / ext2 rw,noatime,nodiratime 0 0
 
 -- 
-"... und auch das ganze Wochenende oll" -- Wetterbericht auf RadioEins
+Nick Craig-Wood
+ncw1@axis.demon.co.uk
 
 
 -------------------------------------------------------
