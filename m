@@ -1,12 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200402110118.i1B1Imip004260@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Tue, 03 Feb 2004 01:16:54 +0100."
-             <401EE876.9090700@darkman.de> 
-References: <401EE876.9090700@darkman.de> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [uml-user] wall on shutdown
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1Aqmgu-0006bh-PP
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 10 Feb 2004 21:13:40 -0800
+Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Aqmfe-0004Lz-Qe
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 10 Feb 2004 21:12:23 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.44.0402102352330.3217-100000@sparrow>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Compiling 2.6.3-rc1-mm1 in UML architecture
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,22 +23,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 10 Feb 2004 20:18:48 -0500
-To: Sven 'Darkman' Michels <sven@darkman.de>
-Cc: UML devel list <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 11 Feb 2004 00:12:41 -0500 (EST)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Jeff Dike <jdike@addtoit.com>, MOLNAR Ingo <mingo@elte.hu>, William Stearns <wstearns@pobox.com>
 
-sven@darkman.de said:
-> But sometimes the shutdown doesn't send the well known wall msg. I
-> tried multiple kernel configs etc., but it seems to be a race
-> condition. 2 times it worked, 3-4-5-6 time it doesn't work. The UML
-> simply goes down (clean shutdown, all ok execpt the missing wall). Now
-> i added a echo bla | wall; shutdown to the inittab, that 'works' but
-> isn't very beautiful ;)
+Good day, Jeff, Ingo, all,
+	Here's number 6713 in my critically acclaimed "Notes from the 
+technically illiterate" series of UML endeavours.
 
-This sounds like a userspace problem.  Does wall (or shutdown) have any delays
-in it which sleep long enough for UML to shut down?
+	Compiling arch/um/kernel/ptrace.c:13:27 gives the error:
+linux/proc_mm.h: no such file or directory.
+	Symlinking arch/um/kernel/skas/include/proc_mm.h into 
+include/linux makes the error go away.
 
-				Jeff
+	Next:
+	In file included from arch/um/kernel/syscall_kern.c:22:
+arch/um/include/sysdep/syscalls.h:17: conflicting types for 
+`sys_ni_syscall'
+include/linux/syscalls.h:453: previous declaration of `sys_ni_syscall' .  
+UM types it as syscall_handler_t, include/linux types it as 
+"asmlinkage long".
+	I'm lost on this one.  No idea on how to resolve it.
+	Cheers,
+	- Bill
+
+---------------------------------------------------------------------------
+	Fortune finishes the great quotations, #21
+
+	Shall I compare thee to a Summer day?
+	No, I guess not.
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 
