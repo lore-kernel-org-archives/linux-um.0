@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AAu3m-0006S5-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 18 Oct 2003 09:36:10 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.22)
-	id 1AAu3W-0007CP-IT
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 18 Oct 2003 09:35:54 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it> (by way of BlaisorBlade <blaisorblade_spam@yahoo.it>)
-Subject: Re: [uml-devel] filemap feature 2.4.22-5um
+	id 1AAz6z-0007Qp-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 18 Oct 2003 14:59:49 -0700
+Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 1AAz6T-0003cV-N2
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 18 Oct 2003 14:59:17 -0700
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [uml-devel] Hardening hostfs
+In-Reply-To: <200310181522.31529.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.LNX.4.44.0310182348320.658-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Disposition: inline
-Message-Id: <200310181834.50216.blaisorblade_spam@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -24,73 +24,46 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 18 Oct 2003 18:34:50 +0200
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 18 Oct 2003 23:56:07 +0200 (CEST)
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 16:08, marted=EC 14 ottobre 2003, Steve Schmidtke ha scritto:
-> Doug Dumitru wrote:
-> >A couple of questions.  I noticed that you are not mapping /proc/mm.
->
-> [...]
->
-> >This looks like one per virtual process (minus threads).  Am I reading
-> > this right.
->
-> yes. The discussion for a previous patch considered a "mm" table to hold a
-> pool of /proc/mm files to handle one fd per process.
-> [....]
+On Sat, 18 Oct 2003, BlaisorBlade wrote:
 
-Nooo! Don't make your like hard!
+> As noted by Steve Schmidtke, in answer to a patch I posted about a different 
+> problem, you cannot make this an option for the module. If inside the Uml you 
+> have root access, you can even omit the option when you load the module(and 
+> to call mount you must be root anyway). So, the only right behaviour is to 
+> make the module read the option supplied at boot time.
 
-Search for this thread "[uml-user] chroot'ing an UML - /proc/mm" on
-http://marc.theaimsgroup.com/ !
-You can use mount --bind inside the host to make /proc/mm visible to UML.
- I.e. it should be something such(NOT TRIED!):
+I don't see the point really from a security perspective, as if you can
+load modules you can just load whatever module you like doing whatever you
+like (or don't like). Nothing guarantees it is this hostfs module which
+checks the kernel command line.
 
-cd <chroot path>
-mkdir proc
-touch proc/mm #You must create the mount point. In this case it's a file.
-(as root)mount --bind /proc/mm proc/mm
-<start Uml binary with "# chroot . linux ...." >
+The only valid use of the hostfs root dir option is to protect the
+administrator within the UML from making stupid mistakes or to simply life
+when the UML data is all isolated in a subtree on the host, it should not
+be viewed a security option providing security for the host, at least not 
+without additional measures taken as discussed elsewhere in this thread.
 
-About the ugliness, it's only a userspace syntax matter. This is the v2 of
- the umlwrap syntax. Instead of this:
-  umlwrap -bind=3D21,/dev/shm/mconsole1 -dir=3D/home/uml -- \
-  /bin/linux mem=3D48M uml_dir=3D/uml/ umid=3Dum1 filemap=3D22,/uml/um1/pid=
- \
-  22</dev/shm/pid filemap=3D21,/uml/um1/mconsole
+Only on a strengthened UML where module loading is probidited and root
+does not have permission to access the kernel is this option of any
+security value for the host, and even then it can just as well be a plain
+module argument if hostfs is a module. The hostfs module then obviously
+needs to be loaded by controlled startup scripts within the UML before it
+is locked down from root, just as is the case for any other module on a
+secured and strengthened system.
 
-We can have this:
-  umlwrap -dir=3D/home/uml -bind=3D/dev/shm/mconsole1,/uml/um1/mconsole \
-  -map=3Dr,/dev/shm/pid,/uml/um1/pid-- /bin/linux mem=3D48M uml_dir=3D/uml/
- umid=3Dum1
-
-umlwrap will then setup the needed "filemap" options, at the end of the
-command line. However, does UML(unlike vanilla kernel) supports so long(>512
-char) command lines in the internal kernel part, (in the userspace part it's
-granted)? If not, we can use a patch out there that is already used by
-Knoppix.
-
-By the way, if umlwrap is smart enough, maybe it can guess whether to use
--map, -bind or -connect by itself(at least partially, i.e. stating the file=
-).
-However this isn't a problem here. And for the length of settings, there is
-scripting!
-
-Bye
---
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
-EOSIGN
+Regards
+Henrik
 
 
 
 -------------------------------------------------------
 This SF.net email sponsored by: Enterprise Linux Forum Conference & Expo
-The Event For Linux Datacenter Solutions & Strategies in The Enterprise=20
-Linux in the Boardroom; in the Front Office; & in the Server Room=20
+The Event For Linux Datacenter Solutions & Strategies in The Enterprise 
+Linux in the Boardroom; in the Front Office; & in the Server Room 
 http://www.enterpriselinuxforum.com
 _______________________________________________
 User-mode-linux-devel mailing list
