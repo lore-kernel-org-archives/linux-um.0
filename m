@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ais48-0000yq-Sh for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 01:20:56 -0800
-Received: from userbb201.dsl.pipex.com ([62.190.241.201]
-	helo=irishsea.home.craig-wood.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ais45-0005Gz-Gp for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2004 01:20:53 -0800
-From: Nick Craig-Wood <ncw1@axis.demon.co.uk>
-Subject: Re: [uml-devel] uml-patch-2.4.23-2
-Message-ID: <20040120092050.GA31994@axis.demon.co.uk>
-References: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
+	id 1Aitw0-0005xC-NO for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 03:20:40 -0800
+Received: from house2.arach.net.au ([203.30.44.85] helo=house.arach.net.au)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1Aitw0-0003q5-10 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2004 03:20:40 -0800
+Received: from unknown (HELO wrath.worlds.end) (202.89.168.12)
+	by house2.arach.net.au with SMTP
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	20 Jan 2004 11:23:29 -0000
+From: nsb034@lostrealm.com
+Message-ID: <20040120112042.GA2916@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200401171547.i0HFlPtk009266@uml.user-mode-linux.org>
+Subject: [uml-devel] skas mode panic - ltrace strace
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,18 +29,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Jan 2004 09:20:50 +0000
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 20 Jan 2004 19:20:42 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-I looked for this on sourceforge - it is linked to on the projects
-page, but it gives a 404 error when you try to download it.  I had a
-look for it on uploads.sourceforge.net also (in the user-mode-linux
-directory and in /incoming) and its not there either!
+Hi
+
+I have a reproducible kernel panic running the ltrace program.  The
+panic only occurs when running the uml kernel in skas mode.  mode=tt
+does not panic.
+
+Running as a normal (non root) user:
+   $ ltrace strace ls
+results in:
+   Kernel panic: Kernel mode signal 5
+
+Is anyone else able to reproduce this?
+
+
+Details:
+
+UML is debian woody, running vanilla kernel 2.4.22 with
+uml-patch-2.4.22-5.bz2.  Also tested is vanilla kernel 2.4.23 with
+uml-patch-2.4.23-1.bz2.  The kernel panic occures on both of these
+setups.
+
+Host is debian woody 2.4.22 with preemt, lowlatency and skas3 patches
+applied.
+
+The panic occurs because the syscall number gets set to -1.  I have not
+been able to track down exactly where this occurs, and any help on this
+would be warmly received.
+
+Dion.
 
 -- 
-Nick Craig-Wood
-ncw1@axis.demon.co.uk
+Dion's Maxim:  If you are ever surprised at just how stupid people can be,
+               then you haven't understood Dion's Maxim.
 
 
 -------------------------------------------------------
