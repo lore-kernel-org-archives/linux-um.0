@@ -1,20 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CQ6R1-00061T-7c for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 07:55:31 -0800
-Received: from web26105.mail.ukl.yahoo.com ([217.12.10.229])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CQ6Qx-00057c-H4 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Nov 2004 07:55:30 -0800
-Message-ID: <20041105155432.49097.qmail@web26105.mail.ukl.yahoo.com>
-From: Roland Kaeser <roli8200@yahoo.de>
+	id 1CQ9eW-0005H9-Ha for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 11:21:40 -0800
+Received: from alyz.com ([66.220.1.229])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CQ9eW-0007ga-3C for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Nov 2004 11:21:40 -0800
+From: Allen Chan <alydar@users.sourceforge.net>
+Subject: Re: [uml-devel] 2.6.9-bb1, 2.4.27-bs1, SKAS3/2.6-V7 released
+References: <200411041932.39733.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200411041932.39733.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] con=port hangs uml guest when it trys to create mingettys
-	for the ttyp's
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411051421.47632.alydar@users.sourceforge.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,42 +29,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 5 Nov 2004 16:54:32 +0100 (CET)
+Date: Fri, 5 Nov 2004 14:21:47 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade_spam@yahoo.it>
 
-Hello
+I just compiled a  2.6.9 + uml-2.6.9-bb1.patch.bz2 guest kernel, but 
+it hangs on my system immediately after:
 
-I try to use con=port:<number> for the local uml guest consoles. But I recognized
-that the uml guest system hangs unless a telnet connection to the port was made,
-while creating the mingettys for the ttyps on startuptime. 
-On Fedora look on /etc/rc.d/rc.sysinit for the section:
+ ...
+ Initializing software serial port version 1
+ Using anticipatory io scheduler
+  /dev/ubd/disc0: unknown partition table
+ Initializing stdio console driver
 
-if [ "$HOSTTYPE" != "s390" -a "$HOSTTYPE" != "s390x" ]; then
-  last=0
-  for i in `LC_ALL=C grep '^[0-9].*respawn:/sbin/mingetty' /etc/inittab | sed 's/^.*
-tty\([0-9][0-9]*\).*/\1/g'`; do
-        > /dev/tty$i
-        last=$i
-  done
-  if [ $last -gt 0 ]; then
-       > /dev/tty$((last+1))
-       > /dev/tty$((last+2))
-  fi
-fi
+My host kernel is 2.6.9-skas-v7 on Debian unstable.  My previous guest 
+kernel (2.6.9 + JDike Incrementals + ptrace() hang patch) works 
+flawlessly under the same conditions.
 
-With uml kernel 2.6.9 and host kernel 2.6.7(SKAS)
+The http://www.user-mode-linux.org/~blaisorblade/ site appears to be 
+inaccessible at this moment.  When the site comes back up, 
+I will try to play with the broken out version of the 2.6.9-bb1 
+patches to see if the cause of this problem can be isolated.
 
-Some ideas?
-
-Roland
-
-
-	
-
-	
-		
-___________________________________________________________
-Gesendet von Yahoo! Mail - Jetzt mit 100MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
+On Thursday 04 November 2004 01:32 pm, Blaisorblade wrote:
+> You can find all on http://www.user-mode-linux.org/~blaisorblade/.
+> Any testing and report is welcome.
 
 
 -------------------------------------------------------
