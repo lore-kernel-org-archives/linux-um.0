@@ -1,13 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200407261954.i6QJs6fL002377@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Incremental patches available 
-In-Reply-To: Your message of "Mon, 26 Jul 2004 18:43:30 +0200."
-	<200407261707.49889.blaisorblade_spam@yahoo.it> 
-References: <20040725001114.GA13469@ccure.user-mode-linux.org>
-	<200407261707.49889.blaisorblade_spam@yahoo.it> 
+Message-Id: <200407262223.i6QMNPfL002845@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] The UML test suite - revived
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,28 +15,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 26 Jul 2004 15:54:06 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 26 Jul 2004 18:23:25 -0400
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> Well, just perfect! I'm very happy about this... Would you please to
-> put there  the splitout version of the patches beyond 2.4.24-1 (the
-> one I already  built and posted)?
+Part two of my trying to make UML development somewhat more transparent and
+make it easier for people to participate is resurrecting the UML test suite.
 
-Working on that.  First, I'm putting together a page about the UML test suite
-to encourage people to use it and contribute to it.
+I used to run it automatically when I released a patch, but I fell out of the
+habit a couple of years ago.
 
-> Also, maybe you should add a -v# to the end of the name (since if a
-> patch is  buggy, you will maybe create a new version); you may prefer
-> to add  patchname-fix containing the changes, as Andrew Morton does,
-> but in this case  probably it is not very useful (it's easier than
-> popping tons of patches and  modifying one, especially if the fix
-> comes from somebody else, but this is  not our case).
+It is now somewhat documented at 
+	http://user-mode-linux.sourceforge.net/tests.html
 
-Maybe, but I'd just as soon fix the broken patch.  In any case, my use of
-quilt is only a day old, and I still have to figure out exactly how I'm
-going to use it.
+I'd like people to start running it and reporting failures.  I'd also appreciate
+new tests, since it is somewhat minimal right now.
+
+An updated tarball is available at 
+	http://prdownloads.sourceforge.net/user-mode-linux/uml_tests_20040726.tar.bz2
+and similar places on the other mirrors.
 
 				Jeff
 
