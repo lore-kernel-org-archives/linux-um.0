@@ -1,12 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200402130523.i1D5NTgR005420@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Thu, 05 Feb 2004 21:07:37 +0100."
-             <200402052107.37625.blaisorblade_spam@yahoo.it> 
-References: <200402052107.37625.blaisorblade_spam@yahoo.it> 
+From: Matt Zimmerman <mdz@debian.org>
+Subject: modify_ldt_ldt_s vs. user_desc (Re: [uml-devel] Re: [uml-user] UML (unofficial) patches against vanilla 2.6.2)
+Message-ID: <20040213071536.GJ19147@alcor.net>
+References: <200402052107.37625.blaisorblade_spam@yahoo.it> <200402130523.i1D5NTgR005420@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [uml-user] UML (unofficial) patches against vanilla 2.6.2
+Content-Disposition: inline
+In-Reply-To: <200402130523.i1D5NTgR005420@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,41 +17,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 00:23:29 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 12 Feb 2004 23:15:36 -0800
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> I've updated my patches for modules and so on to 2.6.2. Since the main
-> Uml  patch against 2.6.1 needs some easy-but-not-trivial changes to
-> work onto  2.6.2
+On Fri, Feb 13, 2004 at 12:23:29AM -0500, Jeff Dike wrote:
 
-OK, I'm finishing merging this in.  
+> As for I-01-Debian_workaround.patch, I had the impression that this was
+> caused by a Debian bug.  If so, they should fix it, and I shouldn't have
+> to put workarounds in UML for it.
 
-I don't understand what you're doing with G-02-LinkScriptCleanup.patch.  The
-stuff you're adding to vmlinux.lds.S is only needed for the final binary, 
-which isn't built by this script.  The next three hunks are also somewhat 
-obscure.  The final one is merged.
+I'm not sure whether this is a bug, but if it is, it is not Debian's bug
+alone.  glibc in Debian testing and unstable just happens to provide newer
+kernel headers, including asm/ldt.h, which has the new name for the struct
+(user_desc vs.  modify_ldt_ldt_s).  There is no provision for backward
+compatibility in ldt.h, so apparently user programs are on their own in
+determining which name to use.
 
-I don't like H-01-Pcap_link_fix.patch.  As much as that fixes pcap, we really
-need to find a fix that's local to arch/um/drivers.  I'll merge this only
-as a last-ditch thing if it becomes clear that there is no other way.
+I was working around this in the debs, but then it was #ifdef'd out
+anyway (2.4.22-7? 2.4.23-1?), and I stopped worrying about it.
 
-H-02-Fixdep-improve.patch is similar, except it's not clear to me what
-you're fixing.  Here also, I don't want to munge the global kbuild with
-UML special cases.
+I don't suppose there would be much harm in adding a macro to ldt.h so that
+existing software could continue to work, but that change belongs in the
+kernel.
 
-In H-04-Kbuild_cleanup.patch, the skas/Makefile patch isn't obviously an
-improvement over what's already there.  In arch/um/Makefile, what's that @:
-doing?  A quiet true?  I left out the commented stuff.  Send it back in when
-you're sure what you want there.
-
-As for I-01-Debian_workaround.patch, I had the impression that this was
-caused by a Debian bug.  If so, they should fix it, and I shouldn't have
-to put workarounds in UML for it.
-
-				Jeff
-
+-- 
+ - mdz
 
 
 -------------------------------------------------------
