@@ -2,20 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CPNt3-0002GE-J8 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 08:21:29 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CPNt2-0006ty-Q3 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Nov 2004 08:21:29 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Subject: Fwd: [uml-devel] devfs_mk_symlink abuse in arch/um/drivers
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200411030156.36319.blaisorblade_spam@yahoo.it>
+	id 1CPNrl-0001we-Vb for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:20:09 -0800
+Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
+	helo=zion.localdomain)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1CPNri-0006dQ-8u for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Nov 2004 08:20:09 -0800
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20041103160621.0707356742@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] uml: fix ptrace() hang on 2.6.9 host due to
+	host changes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,32 +24,96 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Nov 2004 01:56:36 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 03 Nov 2004 17:06:19 +0100
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, blaisorblade_spam@yahoo.it, kraxel@bytesex.org
 
-This is from some time ago. I'm going to implement this and test if this fixed 
-the DevFS problems we are getting.
 
-----------  Forwarded Message  ----------
+From: Gerd Knorr <kraxel@bytesex.org>, Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 
-Subject: [uml-devel] devfs_mk_symlink abuse in arch/um/drivers
-Date: Wednesday 11 June 2003 13:28
-From: Christoph Hellwig <hch@lst.de>
-To: user-mode-linux-devel@lists.sourceforge.net
+Uml was using kill(pid, SIGKILL) instead of ptrace(PTRACE_KILL, pid), which
+used to work, while being probably undocumented. Due to the changes in 2.6.9
+to the ptrace(2) semantics, with the introduction of TASK_TRACED by Roland
+McGrath, this does not more work, so this patch should fix it.
 
-Could you please decide what names to use in devfs for the um
-drivers,. i.e. pick on of
+With help of Gerd Knorr report and analysis, and its early fix of this
+problem. He fixed the problem by sending SIGCONT to the child processes after
+SIGKILL. Which IMHO should not be needed (I think this is a regression, which
+he already reported).
 
-/dev/mmapper0 vs /dev/mmapper
-/dev/serial/* vs /dev/tts/*
-/dev/ttys/* vs  /dev/vc/*
+I improved his one, by replacing the SIGCONT hack with using PTRACE_KILL
+instead.
 
-devfs_mk_symlink as public API will fade away soon.
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+ vanilla-linux-2.6.9-paolo/arch/um/include/os.h             |    1 +
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/process.c    |    2 +-
+ vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/process_kern.c |    2 +-
+ vanilla-linux-2.6.9-paolo/arch/um/os-Linux/process.c       |    8 ++++++++
+ 4 files changed, 11 insertions(+), 2 deletions(-)
 
+diff -puN arch/um/include/os.h~uml-hang-on-2.6.9-host arch/um/include/os.h
+--- vanilla-linux-2.6.9/arch/um/include/os.h~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.232616920 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/include/os.h	2004-10-31 23:46:12.237616160 +0100
+@@ -157,6 +157,7 @@ extern unsigned long os_process_pc(int p
+ extern int os_process_parent(int pid);
+ extern void os_stop_process(int pid);
+ extern void os_kill_process(int pid, int reap_child);
++extern void os_kill_ptraced_process(int pid, int reap_child);
+ extern void os_usr1_process(int pid);
+ extern int os_getpid(void);
+ 
+diff -puN arch/um/os-Linux/process.c~uml-hang-on-2.6.9-host arch/um/os-Linux/process.c
+--- vanilla-linux-2.6.9/arch/um/os-Linux/process.c~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.233616768 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/os-Linux/process.c	2004-10-31 23:52:07.401623024 +0100
+@@ -8,6 +8,7 @@
+ #include <errno.h>
+ #include <signal.h>
+ #include <linux/unistd.h>
++#include <sys/ptrace.h>
+ #include <sys/mman.h>
+ #include <sys/wait.h>
+ #include "os.h"
+@@ -94,6 +95,13 @@ void os_kill_process(int pid, int reap_c
+ 		
+ }
+ 
++void os_kill_ptraced_process(int pid, int reap_child)
++{
++	ptrace(PTRACE_KILL, pid);
++	if(reap_child)
++		CATCH_EINTR(waitpid(pid, NULL, 0));
++}
++
+ void os_usr1_process(int pid)
+ {
+ 	kill(pid, SIGUSR1);
+diff -puN arch/um/kernel/skas/process.c~uml-hang-on-2.6.9-host arch/um/kernel/skas/process.c
+--- vanilla-linux-2.6.9/arch/um/kernel/skas/process.c~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.234616616 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/skas/process.c	2004-10-31 23:51:43.532251720 +0100
+@@ -389,7 +389,7 @@ void switch_mm_skas(int mm_fd)
+ void kill_off_processes_skas(void)
+ {
+ #warning need to loop over userspace_pids in kill_off_processes_skas
+-	os_kill_process(userspace_pid[0], 1);
++	os_kill_ptraced_process(userspace_pid[0], 1);
+ }
+ 
+ void init_registers(int pid)
+diff -puN arch/um/kernel/tt/process_kern.c~uml-hang-on-2.6.9-host arch/um/kernel/tt/process_kern.c
+--- vanilla-linux-2.6.9/arch/um/kernel/tt/process_kern.c~uml-hang-on-2.6.9-host	2004-10-31 23:46:12.235616464 +0100
++++ vanilla-linux-2.6.9-paolo/arch/um/kernel/tt/process_kern.c	2004-10-31 23:46:12.238616008 +0100
+@@ -82,7 +82,7 @@ void *switch_to_tt(void *prev, void *nex
+ 	prev_sched = current->thread.prev_sched;
+	if((prev_sched->exit_state == EXIT_ZOMBIE) ||
+	   (prev_sched->exit_state == EXIT_DEAD))
+-		os_kill_process(prev_sched->thread.mode.tt.extern_pid, 1);
++		os_kill_ptraced_process(prev_sched->thread.mode.tt.extern_pid, 1);
+ 
+ 	/* This works around a nasty race with 'jail'.  If we are switching
+ 	 * between two threads of a threaded app and the incoming process 
+_
 
 
 -------------------------------------------------------
