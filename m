@@ -1,29 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFJfA-0002dB-U4 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 14:49:32 -0700
-Received: from nudl.linbit.com ([212.69.162.21] helo=mail.linbit.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CFJf7-0002Vl-8k for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Oct 2004 14:49:32 -0700
-Received: from minna.local (Ad268.a.pppool.de [213.6.210.104])
-	by mail.linbit.com (LINBIT Mail Daemon) with ESMTP id 755BE14338
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed,  6 Oct 2004 23:49:26 +0200 (CEST)
-From: Lars Ellenberg <Lars.Ellenberg@linbit.com>
-Subject: Re: [uml-devel] uml "ip header error" for large (fragmented) udp
-	packets
-Message-ID: <EPVOfiPct8+KnHqiZ4mos5U=lge@web.de>
-References: </ydgn6vAKqzNNA6XYwRcEgI=lge@web.de>
-	<200410061938.06648.blaisorblade_spam@yahoo.it>
-	<vm4cST3zEEx6OdPLK17ocyg=lge@web.de>
-	<20041006203539.GC22794@wotan.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20041006203539.GC22794@wotan.suse.de>
+	id 1CFS1V-0000OH-Sw for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Oct 2004 23:45:09 -0700
+Received: from [203.199.83.31] (helo=rediffmail.com)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CFS1R-0000xB-5K for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Oct 2004 23:45:09 -0700
+Message-ID: <20041007064432.14876.qmail@webmail46.rediffmail.com>
+MIME-Version: 1.0
+From: "young engineer" <y.engineer@rediffmail.com>
+Reply-To: "young engineer" <y.engineer@rediffmail.com>
+Content-type: multipart/alternative;
+	boundary="Next_1097131472---0-203.199.83.31-14741"
+Subject: [uml-devel] basic queries
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,47 +26,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 6 Oct 2004 23:48:20 +0200
+Date: 7 Oct 2004 06:44:32 -0000
 To: user-mode-linux-devel@lists.sourceforge.net
 
-/ 2004-10-06 22:35:39 +0200
-\ Andi Kleen:
-> On Wed, Oct 06, 2004 at 08:48:23PM +0200, Lars Ellenberg wrote:
-> > > So this could help you for now, while we try to find a clue about this. Quite 
-> > > frankly, I must say that I'm not seeing any network kernel hacker here 
-> > > (correct me if I'm wrong), so it will take some time to debug it. Maybe Gerd 
-> > > Knorr is an exception, actually.
-> > 
-> > Well, then I take Andi Kleen and Lars Marowsky-Br?e into CC for now.
-> > Lars, because I expect him to be interessted in having UML as full
-> > featured cluster simulation tool available, and Andi because I hope he
-> > might know the network code much better than me...
-> > 
-> > FYI, full thread can be found for example at
-> > http://thread.gmane.org/gmane.linux.uml.devel/4607
-> 
-> Paolo's analysis is basically correct. loopback sets this flag
-> for better performance.  Actually in 2.6 it probably doesn't help
-> very much anymore because TCP can do checksum copy RX now, and that
-> would get the checksum basically for free. But it's still there
-> and may still make things slightly faster.
-> 
-> If UML taps the packets from lo it will see incorrect checksums.
-> 
-> Using a tun or ethertap device would avoid this. In the worst
-> case you could also just delete the flag from the loopback
-> interface, it's only an optimization.
-> 
-> -Andi
+ This is a multipart mime message
 
-unfortunately ethertap transport does not work either,
-at least if UML is 2.6.6 and host kernel is 2.4.21-suse-whatever...
-I did not try other combinations yet, but I doubt that changes a thing.
 
-you suggest that we remove NET_IF_F_NO_CSUM from lo in the host?
-ok, I'll try recompile my host then, and followup if that helps.
+--Next_1097131472---0-203.199.83.31-14741
+Content-type: text/html;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-	lge
+<P>=0A&nbsp; hi all<BR>=0Aim new to linux and started using UML. Some basic=
+ queries from my side<BR>=0A1. UML is run as process, is there difference b=
+etweeen other normal linux processes? is it a higher priority process?<BR>=
+=0A2. When UML boots, it does the same things as a linux kernel booting ste=
+ps. But what devices it initializes during this process? It is a process so=
+ how it does these things?<BR>=0A3. What changes makes it a linux OS to lin=
+ux process? what changes makes it a process?<BR>=0A4. Is there abstraction =
+like kernel and process inside a UML which is itself a process? how?<BR>=0A=
+5. How system calls &amp; interrupts are managed in UML?<BR>=0A6. UML is a =
+process so it has process address space. Is it further divided into kernel =
+address space and user address space in which other process can be run in U=
+ML or other processes uses host user address space ?<BR>=0A<BR>=0AIs there =
+any documents abt internals of UML?<BR>=0A<BR>=0APlz reply me back ..thanks=
+ in advance<BR>=0AYoung<BR>=0A=0A</P>=0A<br><br>=0A<A target=3D"_blank" HRE=
+F=3D"http://clients.rediff.com/signature/track_sig.asp"><IMG SRC=3D"http://=
+ads.rediff.com/RealMedia/ads/adstream_nx.cgi/www.rediffmail.com/inbox.htm@B=
+ottom" BORDER=3D0 VSPACE=3D0 HSPACE=3D0></a>=0A
+--Next_1097131472---0-203.199.83.31-14741
+Content-type: text/plain;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+ =A0hi all=0Aim new to linux and started using UML. Some basic queries from=
+ my side=0A1. UML is run as process, is there difference betweeen other nor=
+mal linux processes? is it a higher priority process?=0A2. When UML boots, =
+it does the same things as a linux kernel booting steps. But what devices i=
+t initializes during this process? It is a process so how it does these thi=
+ngs?=0A3. What changes makes it a linux OS to linux process? what changes m=
+akes it a process?=0A4. Is there abstraction like kernel and process inside=
+ a UML which is itself a process? how?=0A5. How system calls & interrupts a=
+re managed in UML?=0A6. UML is a process so it has process address space. I=
+s it further divided into kernel address space and user address space in wh=
+ich other process can be run in UML or other processes uses host user addre=
+ss space ?=0A=0AIs there any documents abt internals of UML?=0A=0APlz reply=
+ me back ..thanks in advance=0AYoung=0A
+--Next_1097131472---0-203.199.83.31-14741--
 
 
 
