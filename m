@@ -1,29 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Auk4D-0008IU-LT for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 19:14:05 -0800
-Received: from mail-10.iinet.net.au ([203.59.3.42] helo=mail.iinet.net.au)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AujnJ-0001aP-3X for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Feb 2004 18:56:37 -0800
-Received: from cameron by cp.yi.org with local (Exim 3.36 #1 (Debian))
-	id 1AujxJ-0002fQ-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 22 Feb 2004 11:06:57 +0800
-From: Cameron Patrick <cameron@patrick.wattle.id.au>
-Subject: Re: [uml-devel] [PATCH] skas3 for x86_64 arch
-Message-ID: <20040222030657.GE5190@patrick.wattle.id.au>
-References: <1077305069.8412.62.camel@wopr.tektonic.net>
-	<200402202155.44773.blaisorblade_spam@yahoo.it>
-	<1077311125.8412.78.camel@wopr.tektonic.net>
-	<20040221094519.GB31609@patrick.wattle.id.au>
-	<51445.68.81.41.201.1077418309.squirrel@www.tektonic.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1AuvXl-00036K-EI for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Feb 2004 07:29:21 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AuvQf-00053U-UB for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Feb 2004 07:22:02 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-user] Re: [uml-devel] new skas3 patch ready for 2.4.25
+References: <40338C1B.1070800@meisterwerk.net>
+	<200402202125.58574.blaisorblade_spam@yahoo.it>
+	<87k72gv3cg.fsf@amaterasu.srvr.nix>
+In-Reply-To: <87k72gv3cg.fsf@amaterasu.srvr.nix>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <51445.68.81.41.201.1077418309.squirrel@www.tektonic.net>
+Message-Id: <200402221516.09898.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,26 +31,99 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 22 Feb 2004 11:06:57 +0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 22 Feb 2004 16:00:38 +0100
+To: Nix <nix@esperi.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-matta@tektonic.net wrote:
+Alle 16:50, sabato 21 febbraio 2004, Nix ha scritto:
+> On Fri, 20 Feb 2004, BlaisorBlade informed the cosmos:
+> > Yes, it went away, so a new skas patch must be built. I have one (tested)
+> > at http://www.user-mode-linux.org/~blaisorblade/
+I'm running that patch and someone else reported success.
 
-| Yes, I installed bochs and just tried the AMD64 kernel provided by SuSe on
-| their site and when it booted up it stated my CPU wasn't capable of
-| 64-bit.  So it looks like it does support it, but only when running under
-| a 64-bit CPU.
+> Checking for the skas3 patch in the host...found
+> Checking for /proc/mm...found
+> Checking for /dev/anon on the host...Not available (open failed with errno
+> 2) Linux version 2.4.24-1um (compiler@loki) (gcc version 2.95.4 20010319
+> (prerelease)) #1 Wed Feb 18 22:58:16 GMT 2004
+> On node 0 totalpages: 24576
+> zone(0): 24576 pages.
+> zone(1): 0 pages.
+> zone(2): 0 pages.
+> Kernel command line: con=port:16380 con0=fd:0,fd:1 fakeide mem=96M
+> ubd0=/mirror/uml/esperi-root-cow.image,/mirr or/uml/esperi-root.image
+> tty_log_dir=/home/firewall/log/esperi umid=esperi
+> eth0=tuntap,tap0,00:60:97:79:E2:C1 e th1=tuntap,tap1 root=/dev/ubd0
+> Calibrating delay loop... 465.30 BogoMIPS
+> Memory: 94412k available
+> Dentry cache hash table entries: 16384 (order: 5, 131072 bytes)
+> Inode cache hash table entries: 8192 (order: 4, 65536 bytes)
+> Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+> Buffer cache hash table entries: 4096 (order: 2, 16384 bytes)
+> Page-cache hash table entries: 32768 (order: 5, 131072 bytes)
+> Checking for host processor cmov support...No
+> Checking for host processor xmm support...No
+> Checking that ptrace can change system call numbers...OK
+> Checking that host ptys support output SIGIO...Yes
+> Checking that host ptys support SIGIO on close...No, enabling workaround
+> POSIX conformance testing by UNIFIX
+> Linux NET4.0 for Linux 2.4
+> Based upon Swansea University Computer Society NET3.039
+> Initializing RT netlink socket
+> Starting kswapd
+> VFS: Disk quotas vdquot_6.5.1
+> Journalled Block Device driver loaded
+> pty: 256 Unix98 ptys configured
+> Universal TUN/TAP device driver 1.5 (C)1999-2002 Maxim Krasnyansky
+> Initializing software serial port version 1
+> mconsole (version 2) initialized on /home/firewall/.uml/esperi/mconsole
+> Partition check:
+>  ubda: unknown partition table
+> Initializing stdio console driver
+> Netdevice 0 (00:60:97:79:e2:c1) : TUN/TAP backend -
+> Netdevice 1 (00:60:97:79:e2:c1) : TUN/TAP backend -
+> NET4: Linux TCP/IP 1.0 for NET4.0
+> IP Protocols: ICMP, UDP, TCP, IGMP
+> IP: routing cache hash table of 512 buckets, 4Kbytes
+> TCP: Hash tables configured (established 8192 bind 8192)
+> ip_conntrack version 2.1 (737 buckets, 5896 max) - 288 bytes per conntrack
+> ip_tables: (C) 2000-2002 Netfilter core team
+> ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>. 
+> http://snowman.net/projects/ipt_recent/ NET4: Unix domain sockets 1.0/SMP
+> for Linux NET4.0.
+> NET4: Ethernet Bridge 008 for NET4.0
+> VFS: Mounted root (ext2 filesystem) readonly.
+> Kernel panic: switch_mm_skas - PTRACE_SWITCH_MM failed, errno = 5
+>
+> That's -EIO.
+>
+> (Of course, CONFIG_PROC_MM=y on the host and the host is running
+> 2.4.25+skas-2.4.25.)
 
-It works for me on my Athlon XP.  (Well, I didn't try to actually do
-anything with it, but the kernel prints out messages and stuff.)  This
-is using the Debian unstable `bochs' package.
+Hmmm, I've looked at the faulting code and IMHO the most probable thing is a 
+compilation problem (forgot make dep after applying the patch, for instance) - 
+try saving your .config, running make mrproper, 
+grepping through .config to check that CONFIG_PROC_MM=y and recompiling the 
+bzImage:
+ $ make dep bzImage
 
-Screenshot- http://cp.yi.org/cameron/bochs.png
+Rebuilding modules *probably* is not necessary, but I'm not sure - rerun 
+depmod with the newly created System.map with the already installed 2.4.25 
+modules to check that symbols can actually be resolved.
 
-That said, a real Opteron would be a lot more practical for most
-things; especially, e.g. running gcc :-)
+More exactly, it seems that arch/i386/kernel/ptrace.c was recompiled after 
+applying the patch but without CONFIG_PROC_MM on.
 
-Cameron.
+Also, IMHO that kind of error cannot be returned by sys_ptrace, unless 
+CONFIG_PROC_MM was off when compiling that file (I've also checked 
+proc_mm_get_mm).
+
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+
+
 
 
 -------------------------------------------------------
