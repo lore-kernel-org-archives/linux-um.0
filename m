@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DCeGA-00006h-DW for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2005 05:44:58 -0800
-Received: from lea.cs.unibo.it ([130.136.1.101])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DCeG6-0003iH-T3 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2005 05:44:58 -0800
-Received: from [137.204.150.59] (unknown [137.204.150.59])
-	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by lea.cs.unibo.it (Postfix) with ESMTP id B3F3C8B42F
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 19 Mar 2005 14:44:46 +0100 (CET)
-Message-ID: <423C2CCC.9040809@cs.unibo.it>
-From: Mattia Belletti <mbellett@cs.unibo.it>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Getting fault address from a SIGSEGV
+	id 1DChzL-000465-Gx for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Mar 2005 09:43:51 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DChzJ-0006Hi-TS for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Mar 2005 09:43:51 -0800
+Message-Id: <200503192015.j2JKFexo002641@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] remap_page_range 
+In-Reply-To: Your message of "Thu, 17 Mar 2005 10:40:01 EST."
+	<EAC7622167479948B614F8B9AD41C505ECA8F5@MAANDMBX2.ets.enterasys.com> 
+References: <EAC7622167479948B614F8B9AD41C505ECA8F5@MAANDMBX2.ets.enterasys.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,29 +27,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 19 Mar 2005 14:44:44 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 19 Mar 2005 15:15:40 -0500
+To: "Tsillas, Demetrios J" <jtsillas@enterasys.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi all, 
+jtsillas@enterasys.com said:
+> The kernel tries to read the value using the virtual address (offset
+> from 0x271f0000) and gets back zeros. I've also tried look at the phys
+> addr (offset from 0x1f1f0000) and that too is zeros. 
 
-   For a project I'm working on, I would need to get the fault address of
-a ptraced child, whose SIGSEGV I've caught. I've tried to dig in UML 
-source code to get how this is done, but I get lost after having 
-followed the chain segv_handler <- sig_info <- sig_handler_common_tt <-
-"r = &TASK_REGS(get_current())->tt;", since there the status I was 
-looking for is stored in the thread_struct.regs, but I don't know where 
-in the code such status is filled, and so where such information is 
-taken from :-)
- 
+Have a look at the process /proc/<pid>/maps on the host to see what it has
+mapped in at 0x404e9000.  The offset column is the offset into the VM file,
+which is the physical address mapped in to that virtual address.
 
-Hope you can light my way through the code ;-) 
+				Jeff
 
-
--- 
-Mat/tia Belletti             - Graduate student @ cs.unibo.it
-ICQ: 33292311                - email: mbellett@cs.unibo.it
-IRC: RedGlow                 - site(s): http://mbellett.web.cs.unibo.it/
-RedGlow@jabber.linux.it/Gaim - Linux user 299762 @ machine 213003
 
 
 -------------------------------------------------------
