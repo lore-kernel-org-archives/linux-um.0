@@ -1,34 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-list2-b.sourceforge.net ([10.3.1.8]
+	helo=sc8-sf-list2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BrkJm-0004kk-0f for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 14:26:02 -0700
-Received: from amsfep12-int.chello.nl ([213.46.243.18]
-	helo=amsfep20-int.chello.nl)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1BrkJl-0000VZ-Cw for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Aug 2004 14:26:01 -0700
-Received: from anakin.of.borg ([62.205.101.209]) by amsfep20-int.chello.nl
-	(InterMail vM.6.00.05.02 201-2115-109-103-20031105) with ESMTP
-	id <20040802212553.OHVX8597.amsfep20-int.chello.nl@anakin.of.borg>
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 2 Aug 2004 23:25:53 +0200
-Received: from anakin.of.borg (geert@localhost [127.0.0.1])
-	by anakin.of.borg (8.12.11/8.12.11/Debian-5) with ESMTP id
-	i72LPmRl001506 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 2 Aug 2004 23:25:48 +0200
-Received: from localhost (geert@localhost)
-	by anakin.of.borg (8.12.11/8.12.11/Debian-5) with ESMTP id
-	i72LPlqF001503 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 2 Aug 2004 23:25:48 +0200
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <Pine.LNX.4.58.0408021210420.23627@anakin>
-Message-ID: <Pine.LNX.4.58.0408022324120.23627@anakin>
-References: <Pine.LNX.4.58.0408021210420.23627@anakin>
+	id 1BrpLL-0001iZ-SC for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Aug 2004 19:47:59 -0700
+Message-ID: <410EFCDB.8080404@enterasys.com>
+From: "D. Bahi" <dbahi@enterasys.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: gdkfb
+References: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
+In-Reply-To: <C28780ABC637504896EB86B4FB75FFBFA26E5E@MAANDMBX1.ets.enterasys.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigD89771905BF2F67F54F36FE4"
+Subject: [uml-devel] Re: UML and valgrind
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,31 +24,99 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 2 Aug 2004 23:25:47 +0200 (CEST)
-To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 02 Aug 2004 22:47:55 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: valgrind-users@lists.sourceforge.net
 
-On Mon, 2 Aug 2004, Geert Uytterhoeven wrote:
->   - On my Athlon XP (2.6.7+SKAS host, config based on the Debian
->     kernel-image-2.6.7-1-k7 config), it crashed very early until I enlarged the
->     stack sizes (STACKSIZE) of the gdkfb threads.  However, even then the
->     update thread still hangs somewhere after the initial repaint. Userland
->     libraries are exactly the same as on the laptop. Strange...
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigD89771905BF2F67F54F36FE4
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-BTW, is there a way to check how much stack a thread really needs? I
-tried poisoning the stack with 0xdeadbeef during initializating, but it
-looks like clone() will clear it to all zeroes, since afterwards gdb
-found zeroes only.
+cc'ing valgrind users to solicit support!
 
-Gr{oetje,eeting}s,
+as of valgrind 2.1.2 is happy as can be within a User Mode
+Linux hosted session. This was tested with 2.4.24-1um and
+2.4.26-2um + incrementals on a RedHat 9 (non-nptl, skas)
+host - and using RH9 UML filesystems.
 
-						Geert
+still trouble with launching a UML itself under valgrind
+(even with MODE_SKAS, ! MODE_TT, and KERNEL_STACK_ORDER=3)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+for starters we have:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+[u2](dbahi)443$ ~/valgrind-2.1.2/bin/valgrind --tool=memcheck 
+/local/dbahi/kernels/linux-2.4.26_uml-patch-2.4.26-2um/linux umid=kickme 
+ubd0=/local/cow/kickmoo,/local/dbahi/root_fs.rh-9-full 
+ubd1=/local/cow/kickmoo2,/local/dbahi/swap_fs.256 
+hostfs=/local/hostfs/kickdir/
+
+Executable is mapped outside of range (nil)-0x52c00000
+valgrind: 
+do_exec(/local/dbahi/kernels/linux-2.4.26_uml-patch-2.4.26-2um/linux) 
+failed: Cannot allocate memory
+
+How does one get around this sudden valgrind exit?
+
+Bahi, David wrote:
+
+> back some time ago it seems like someone had more than a clue as to what
+> was requried to get valgrind working under UML... well as of 2.1.1 it
+> still ain't working.
+> 
+> http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=107066894230633&
+> w=2
+> 
+> I was wondering if a patch was available for our 'community' to make use
+> of this tool... for both running the UML as an application and for
+> running
+> applications within the UML.
+> 
+> It seems that for running valgrind within the UML there is a signal
+> handling
+> problem where 'restorer' is NULL and causes a panic in
+> setup_signal_stack_si
+> 
+> signal_kernel.c
+>   handle_signal()
+> 
+> 	if (ka->sa.sa_flags & SA_RESTORER) restorer =
+> ka->sa.sa_restorer;
+> 	else restorer = NULL;
+> 
+> 	if(ka->sa.sa_flags & SA_SIGINFO)
+> 		err = setup_signal_stack_si(sp, signr, (unsigned long)
+> handler,
+> 					    restorer, regs, info,
+> &save);
+> 
+> thanks for any insight.
+> 
+> db
+> 
+> "The kernel is the only UNIX code that cannot be substituted by a user
+> to his own liking. For this reason, the kernel should make as few real
+> decisions as possible." -- K. Thompson
+
+-- 
+There are two kinds of people in this world: Those that enter a room and 
+turn the television set on, and those that enter a room and turn the 
+television set off. -- Raymond Shaw, The Manchurian Candidate (1962).
+
+--------------enigD89771905BF2F67F54F36FE4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (MingW32)
+
+iD8DBQFBDvzb3XQ4zakZ3z4RAq7DAJ46qhI/Kmj1WTNhIWvDtP+keuslgwCfbNP6
+Q6FrudbHy8vNF3pLEQp3zUc=
+=iAym
+-----END PGP SIGNATURE-----
+
+--------------enigD89771905BF2F67F54F36FE4--
 
 
 -------------------------------------------------------
