@@ -1,21 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BRiCU-0005pr-99 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 May 2004 18:54:54 -0700
-Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BRiCT-00082L-Qq for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 May 2004 18:54:53 -0700
-Message-ID: <064d01c44069$ef2416c0$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <20040522104051.40285.qmail@web40507.mail.yahoo.com>
-Subject: Re: [uml-devel] UML hangs at "INIT: Entering runlevel: 3"
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+In-Reply-To: <Pine.LNX.4.58.0405212008460.4729@sparrow>
+Message-ID: <Pine.LNX.4.58.0405230016170.4597@sparrow>
+References: <Pine.LNX.4.58.0405212008460.4729@sparrow>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Re: Upcoming 64 bit uml coop - half-shares
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,76 +18,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 23 May 2004 04:01:58 +0200
-To: Cheng yong <cheng_lucia@yahoo.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 23 May 2004 00:34:11 -0400 (EDT)
+To: ML-ford <ford@whoopis.com>
+Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
 
-hi lucia, 
+Good evening, all,
 
-- make sure your rootfs is ok - fsck it from outside the uml
-- recompile your uml-kernel after changing "-O2" to "-O1" in 
-all makefiles. (see: https://p0lar.dot1q.net/SuSE-UML-2.6.6-instructions.html)
-- try again
-- report :)
+On Fri, 21 May 2004, William Stearns wrote:
 
-hth
-roland
+> 	As I mentioned a month or so back, Jeff Dike has had some success 
+> with UML on the AMD64 architecture (Opteron and Athlon64).  As part of 
+> shaking out the bugs on that code, we have a new UML coop going up in the 
+> near future - codenamed "Ford".
+[snip]
 
- 
+	Since I wrote that project summary, a number of people have
+written in, either committing a certain amount or at expressing interest
+in the project.  We have enough contributors that this system will be
+purchased - thanks to _everyone_!
+	For some, a full share isn't appropriate at this time - no
+problem!  I had mentioned (on the main web site,
+http://www.stearns.org/ford/ford-project.html ) that we'd consider
+offering "half-shares".  Jeff and I talked it over today and we think it
+would be a postive way to include more people in the project.  A
+half-share contributor would only need to come up with half the normal
+amount, and would get 80M of memory, 4G of disk space, and a virtual
+machine running at a nice level of 5.
+	As always, if you're interested in taking part, please take a look 
+at the above project summary and sign up for the mailing list at 
+http://www.whoopis.com/mailman/listinfo/ford/ .  There's still time to 
+take part - additional members will allow us to increase ram, improve the 
+CPU, buy additional space, or simply bring down the cost of both shares 
+and half-shares.
+	Cheers,
+	- Bill
 
------ Original Message ----- 
-From: "Cheng yong" <cheng_lucia@yahoo.com>
-To: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Saturday, May 22, 2004 12:40 PM
-Subject: [uml-devel] UML hangs at "INIT: Entering runlevel: 3"
-
-
-> Hi, everybody,
-> 
-> my UML hangs at " INIT: Entering runlevel: 3". If I
-> kill the process and restart it, UML will be started
-> with following errors:
-> 
-> fsck.ext2 /dev/ubd0 failed.
-> ...
-> modprobe: modprobe: Can't open dependencies file
-> /lib/modules/2.4.26-1um/modules.dep (no such file or
-> directory) /etc/init.d/kbd: line 274: /dev/tty8: No
-> such device
-> 
-> ... and so on.
-> 
-> 
-> All of these started after I updated my software
-> online. My operating system is Suse 9.0. I compiled
-> the uml kernel with linux-2.4.26.tar.bz2 and
-> uml-patch-2.4.26-1.bz2. The root filesystem was
-> created by uml-install-suse.
-> 
-> I'd appreciate that if you can help me.
-> 
-> best regards
-> 
-> lucia
-> 
-> 
-> 
-> 
-> __________________________________
-> Do you Yahoo!?
-> Yahoo! Domains - Claim yours for only $14.70/year
-> http://smallbusiness.promotions.yahoo.com/offer 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: Oracle 10g
-> Get certified on the hottest thing ever to hit the market... Oracle 10g. 
-> Take an Oracle 10g class now, and we'll give you the exam FREE.
-> http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
+---------------------------------------------------------------------------
+	"It is difficult to produce a television documentary that is both
+incisive and probing when every twelve minutes one is interrupted by
+twelve dancing rabbits singing about toilet paper." 
+	-- Rod Serling
+(Courtesy of Dr. G.W. Wettstein <greg@wind.enjellic.com>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
