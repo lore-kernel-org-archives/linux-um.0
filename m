@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKosR-0000Vf-HG for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 19:09:59 -0700
+	id 1CKpjY-00037K-OO for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 20:04:52 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1CKosP-0000BV-4D
+	(Exim 4.41) id 1CKpjW-0005MI-I9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 19:09:59 -0700
-Message-Id: <200410220319.i9M3JSFL007319@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Wed, 20 Oct 2004 19:40:54 PDT."
-	<20041021024054.GA17968@taniwha.stupidest.org> 
-References: <20041021024054.GA17968@taniwha.stupidest.org> 
+	Thu, 21 Oct 2004 20:04:52 -0700
+Message-Id: <200410220414.i9M4EEFL007389@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Re: Bad handling of invalif systemcalls 
+In-Reply-To: Your message of "Fri, 22 Oct 2004 00:32:27 +0200."
+	<200410220032.27182.blaisorblade_spam@yahoo.it> 
+References: <4177D503.2030409@fujitsu-siemens.com>
+	<200410212209.i9LM92FL005362@ccure.user-mode-linux.org>
+	<200410220032.27182.blaisorblade_spam@yahoo.it> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [PATCH] UML: INITRAMFS_SOURCE noise/build fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,19 +30,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 21 Oct 2004 23:19:28 -0400
-To: Chris Wedgwood <cw@f00f.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 22 Oct 2004 00:14:13 -0400
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-cw@f00f.org said:
-> Trivial patch (copy & yank) so UML builds don't generate a warning
-> from linux/usr/Makefile:gen_cmd_list when CONFIG_INITRAMFS_SOURCE
-> isn't defined (maybe the Makefile shouldn't require
-> CONFIG_INITRAMFS_SOURCE to be set?). 
+blaisorblade_spam@yahoo.it said:
+> It should be | 0x80, not + 0x80 (style issue). See the code in
+> do_syscall_trace. 
 
-Applied, thanks.
-
-I hadn't got around to figuring out what that error was about.
+Right, I was using his style just to not confuse things.
 
 				Jeff
 
