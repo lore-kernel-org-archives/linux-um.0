@@ -1,18 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1ARIDS-0001kZ-TT
-	for User-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 13:37:54 -0800
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1ARIDS-0007k1-6X
-	for User-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 13:37:54 -0800
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [uml-devel] iptables-restore randomly crashes under UML
-In-Reply-To: <20031202185839.GG24954@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.44.0312022225020.30614-100000@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1ARJeY-00078t-HQ
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 15:09:58 -0800
+Received: from hongkong.cs.nmsu.edu ([128.123.64.160] ident=0)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ARJeY-0003KE-4L
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 02 Dec 2003 15:09:58 -0800
+From: Ross Combs <rocombs@cs.nmsu.edu>
+Message-Id: <200312022309.hB2N9pxQ016150@hongkong.cs.nmsu.edu>
+Subject: [uml-devel] compile problem iin 2.4.23 + 2.4.22-6
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,34 +20,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 2 Dec 2003 22:37:46 +0100 (CET)
-To: Jeff Dike <jdike@addtoit.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 2 Dec 2003 17:09:51 -0600
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 2 Dec 2003, Jeff Dike wrote:
+During compilation I get the following error:
 
-> I used to do that.  The problem with it is that doing lookups and updates
-> of the shadow page tables involves allocating memory, which can sleep.  So,
-> when you sleep inside schedule, you schedule again, and sleep in get_free_page
-> again, and that gets ugly rather quickly.
+gcc -D__KERNEL__ -I/var/updates/linux-2.4.23/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -U__i386__ -Ui386 -DUM_FASTCALL  -D__arch_um__ -DSUBARCH="i386" -D_LARGEFILE64_SOURCE -I/var/updates/linux-2.4.23/arch/um/include -Derrno=kernel_errno -I/var/updates/linux-2.4.23/arch/um/kernel/tt/include -I/var/updates/linux-2.4.23/arch/um/kernel/skas/include   -nostdinc -iwithprefix include -DKBUILD_BASENAME=binfmt_elf  -c -o binfmt_elf.o binfmt_elf.c
+binfmt_elf.c:806:44: macro "ELF_PLAT_INIT" passed 2 arguments, but takes just 1
+make[2]: *** [binfmt_elf.o] Error 1
+make[2]: Leaving directory `/var/updates/linux-2.4.23/fs'
+make[1]: *** [first_rule] Error 2
+make[1]: Leaving directory `/var/updates/linux-2.4.23/fs'
+make: *** [_dir_fs] Error 2
 
-Right.
+It looks like every arch uses a macro like this:
 
-> Yup.  This can be optimized somewhat by eliminating some of the munmap parts
-> of the munmap/mmap pairs.
+ ELF_PLAT_INIT(_r, load_addr)
 
-Accorting to my stats about 99% of the kernel vm mmap/munmap is in vain,
-at least in TT mode.. and this was observed with the mm_seq optimization
-enabled. But to optimize these away one needs to know what have changed..
+but uml defines it like this:
 
-What I also noticed was that there seems to be a lot of vm_seq updates
-even without any kernel vm area modifications (at leas not any I could
-notice). So not only did this miss updates on vfree() it also triggered 
-a flush even if there was no updates.
+ ELF_PLAT_INIT(regs)
 
-Regards
-Henrik
+Has anyone updated the patch to 2.4.23 yet?  If not, I'll be backporting
+the missing brk() range check from 2.4.23.
 
+-Ross
 
 
 -------------------------------------------------------
