@@ -1,12 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] UML "Distro" ?
-In-Reply-To: <20041021065935.GB4900@patrick.wattle.id.au>
-Message-ID: <Pine.LNX.4.61.0410211226280.19600@filer.marasystems.com>
-References: <053e01c4b6f4$93f48e90$2000000a@schlepptopp>
-	<20041021065935.GB4900@patrick.wattle.id.au>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1CKb6l-0004Xy-3r for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 04:27:51 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CKb6j-00037i-C2 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 04:27:51 -0700
+Message-ID: <41779E6A.8030706@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Error in incremental patch link-x86-64
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,22 +25,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 21 Oct 2004 12:30:05 +0200 (CEST)
-To: Cameron Patrick <cameron@patrick.wattle.id.au>
-Cc: roland <for_spam@gmx.de>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 21 Oct 2004 13:32:58 +0200
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 21 Oct 2004, Cameron Patrick wrote:
+With this patch installed, UML no longer boots in TT-mode:
 
-> Is having X installed really desirable most of the time?  Most of the
-> uses for this distro would be on servers, and having X on the host
-> makes maintaining the distro harder for relatively little benefit.
+   Checking PROT_EXEC mmap in /tmp...OK
+   Mapping memory: Invalid argument
 
-It would probably make sense to have the X libraries and some clients, but 
-probably not worth it to try to maintain X servers other than virtual 
-ones such as VNC or NX.
+Applied a patch, that fixes it.
 
-Regards
-Henrik
+Bodo
+
+---
+
+--- a/arch/um/Kconfig_i386	2004-10-21 13:01:34.972662948 +0200
++++ b/arch/um/Kconfig_i386	2004-10-21 13:01:49.597246150 +0200
+@@ -4,5 +4,5 @@
+
+  config TOP_ADDR
+  	hex
+-	default 0xc0000000 if HOST_2G_2G
+-	default 0x80000000 if !HOST_2G_2G
++	default 0xc0000000 if !HOST_2G_2G
++	default 0x80000000 if HOST_2G_2G
 
 
 -------------------------------------------------------
