@@ -1,18 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DIUJc-0007O1-8L for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Apr 2005 09:20:40 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DIUJb-0000xV-Ef for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Apr 2005 09:20:40 -0700
-Message-ID: <4251694E.1090403@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DInLH-0001YW-MT for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 05:39:39 -0700
+Received: from motgate8.mot.com ([129.188.136.8])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DInLG-0002Zb-V6 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 05:39:39 -0700
+Received: from il06exr04.mot.com (il06exr04.mot.com [129.188.137.134])
+	by motgate8.mot.com (Motorola/Motgate8) with ESMTP id j35Cfv24015173
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 5 Apr 2005 05:41:57 -0700 (MST)
+Received: from zch07exm05.corp.mot.com (ZCH07EXM05.corp.mot.com [200.3.1.211])
+	by il06exr04.mot.com (8.13.1/8.13.0) with ESMTP id j35Cf82J005886
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 5 Apr 2005 07:41:09 -0500 (CDT)
+Message-ID: <3BCB5FB76AFFF646BCFBC02A889B64F302010341@ZCH07EXM05.corp.mot.com>
+From: Wu Haibao-a15761 <a15761@motorola.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030407070707050003090700"
-Subject: [uml-devel] UML/s390 is up in SKAS0 mode
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C539DC.85090028"
+Subject: [uml-devel] gdb can not start up in UML and signal 11 issues
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,167 +33,112 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 04 Apr 2005 18:20:30 +0200
-To: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Tue, 5 Apr 2005 20:39:33 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------030407070707050003090700
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-The first UML/s390 system is running (in SKAS0).
-
-	Bodo
-
---------------030407070707050003090700
+------_=_NextPart_001_01C539DC.85090028
 Content-Type: text/plain;
- name="UML_s390-logging"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="UML_s390-logging"
+	charset="GB2312"
 
-140lin3:/home2/uml0 # /usr/src/tmp/linux-2.6.11/vmlinux ubd0=sles9.rootfs.img ubd1=swap.img ssl=pts
-Checking that ptrace can change system call numbers...OK
-Checking syscall emulation patch for ptrace...missing
-Checking if syscall restart handling in host can be skipped...OK
-Checking for the skas3 patch in the host:
-  - /proc/mm...not found
-  - PTRACE_FAULTINFO...found
-Checking PROT_EXEC mmap in /tmp...OK
-Host doesn't provide PTRACE_GETREGS, going to use PTRACE_POKEUSR_AREA
-Linux version 2.6.11 (root@s140lin3) (gcc version 3.2.2) #14 Thu Mar 24 16:57:24 CET 2005
-Built 1 zonelists
-Kernel command line: ubd0=sles9.rootfs.img ubd1=swap.img ssl=pts root=98:0
-PID hash table entries: 256 (order: 8, 4096 bytes)
-Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
-Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
-Memory: 28584k available
-Security Framework v1.0.0 initialized
-SELinux:  Initializing.
-SELinux:  Starting in permissive mode
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-Checking for /dev/anon on the host...Not available (open failed with errno 2)
-NET: Registered protocol family 16
-mconsole (version 2) initialized on /root/.uml/EzYeVm/mconsole
-audit: initializing netlink socket (disabled)
-audit(0.230:0): initialized
-VFS: Disk quotas dquot_6.5.1
-Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
-SELinux:  Registering netfilter hooks
-Initializing Cryptographic API
-i8042.c: i8042 controller self test timeout.
-io scheduler noop registered
-io scheduler anticipatory registered
-io scheduler deadline registered
-io scheduler cfq registered
-RAMDISK driver initialized: 16 RAM disks of 64000K size 1024 blocksize
-loop: loaded (max 8 devices)
-mice: PS/2 mouse device common for all mice
-md: md driver 0.90.1 MAX_MD_DEVS=256, MD_SB_DISKS=27
-NET: Registered protocol family 2
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP established hash table entries: 2048 (order: 2, 16384 bytes)
-TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
-TCP: Hash tables configured (established 2048 bind 2048)
-NET: Registered protocol family 1
-NET: Registered protocol family 8
-NET: Registered protocol family 20
-Initialized stdio console driver
-Console initialized on /dev/tty0
-Initializing software serial port version 1
- ubda: unknown partition table
- ubdb: unknown partition table
-md: Autodetecting RAID arrays.
-md: autorun ...
-md: ... autorun DONE.
-VFS: Mounted root (ext2 filesystem) readonly.
-line_ioctl: tty0: ioctl KDSIGACCEPT called
-INIT: version 2.85 booting
-line_ioctl: tty0: unknown ioctl: 0x80045432
-System Boot Control: Running /etc/init.d/boot
-Mounting /proc filesystem                                                   done
-Mounting sysfs on /sys                                                      done
-Mounting /dev/pts                                                           done
-Mounting shared memory FS on /dev/shm                                       done
-Activating swap-devices in /etc/fstab...
-Adding 262136k swap on /dev/ubdb.  Priority:42 extents:1                    done
-line_ioctl: tty0: unknown ioctl: 0x80045432
-showconsole: Warning: the ioctl TIOCGDEV is not known by the kernel
-Checking root file system...
-fsck 1.34 (25-Jul-2003)
-[/sbin/fsck.ext2 (1) -- /] fsck.ext2 -a /dev/ubda
-/dev/ubda: clean, 96800/244320 files, 474491/488279 blocks                  done
-md: Autodetecting RAID arrays.
-md: autorun ...
-md: ... autorun DONE.
-Activating device mapper...
-device-mapper: 4.4.0-ioctl (2005-01-12) initialised: dm-devel@redhat.com
-Creating /dev/mapper/control character device with major:10 minor:63.
-                                                                            done
-Scanning for LVM volume groups...
-  Reading all physical volumes.  This may take a while...
-  No volume groups found
-Activating LVM volume groups...
-  No volume groups found
-                                                                            skipped
-line_ioctl: tty0: unknown ioctl: 0x80045432
-showconsole: Warning: the ioctl TIOCGDEV is not known by the kernel
-Checking file systems...
-fsck 1.34 (25-Jul-2003)
-Checking all file systems.                                                  done
-Setting up                                                                  done
-Mounting local file systems...
-proc on /proc type proc (rw)
-tmpfs on /dev/shm type tmpfs (rw)
-devpts on /dev/pts type devpts (rw,mode=0620,gid=5)
-nothing was mounted                                                         done
-Loading required kernel modules                                             done
-Activating remaining swap-devices in /etc/fstab...                          done
-Restore device permissions                                                  done
-Creating /var/log/boot.msg                                                  done
-Setting up the system clock                                                 done
-Setting up timezone data                                                    done
-Setting scheduling timeslices                                               unused
-Setting up hostname 'sles9s390'                                             done
-Setting up loopback interface     lo
-    lo        IP address: 127.0.0.1/8
-                                                                            done
-Enabling syn flood protection                                               done
-Disabling IP forwarding                                                     done
-                                                                            done
-System Boot Control: The system has been                                    set up
-Skipped features:                                                    boot.sched
-System Boot Control: Running /etc/init.d/boot.local                         done
-INIT: Entering runlevel: 3
+Hi,
+    I'm running UML 2.4.26 on customerized linux 2.4.21, and met the following problems which I can not figure out:
+    1. gdb does not come up with a command line prompt when I add the "debug" option in the uml (in tt mode), it just hang up with these message:
+================================================
+GNU gdb Red Hat Linux (6.1post-1.20040607.17rh)
+Copyright 2004 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i386-redhat-linux-gnu"...Using host libthread_db library "/lib/libthread_db.so.1".
+================================================
+        
+        2. After starting UML without the debug option and running some applications, it hangs up.  I found the the tt thread is working with endless signal 11 (SIGSEGV) from an application. I just wonder why so many SIGSEGV signals are sent.  Actually after I add some log to the UML, I found  that almost every application sent SIGSEGV to tt, why this happens?
+ 
+        Could you please give any suggestion on these?
+        Thanks.
+ 
+Regards,
+Wu Haibao
+ 
 
-... snip ...
+------------------------------------------------------- 
+[ ] General Business Information 
+[x] Motorola Internal Use Only 
+[ ] Motorola Confidential Proprietary 
 
-Starting Name Service Cache Daemon                                          done
-Starting mail service (Postfix)                                             done
-Starting CRON daemon                                                        done
-Master Resource Control: runlevel 3 has been                                reached
-Failed services in runlevel 3:                                      network kbd
-Skipped services in runlevel 3:                                smbfs nfs splash
-Give root password for login:
+ 
 
-... snip ...
+------_=_NextPart_001_01C539DC.85090028
+Content-Type: text/html;
+	charset="GB2312"
+Content-Transfer-Encoding: base64
 
-sles9s390:~ # uname -a
-Linux sles9s390 2.6.11 #14 Thu Mar 24 16:57:24 CET 2005 s390 s390 s390 GNU/Linux
-sles9s390:~ # cat /proc/cpuinfo
-processor       : 0
-vendor_id       : User Mode Linux
-model name      : UML
-mode            : skas
-host            : Linux s120lin3 2.4.21-fsc.11-highmem #13 SMP Thu Mar 24 17:56:19 CET 2005 s390
-bogomips        : 778.24
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgSFRUUC1FUVVJVj0iQ29udGVudC1UeXBlIiBDT05U
+RU5UPSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9R0IyMzEyIj4NCg0KDQo8TUVUQSBjb250ZW50PSJNU0hU
+TUwgNi4wMC4yODAwLjE0OTEiIG5hbWU9R0VORVJBVE9SPjwvSEVBRD4NCjxCT0RZPg0KPERJVj48
+U1BBTiBjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+PEZPTlQgZmFjZT1BcmlhbCANCnNpemU9Mj5I
+aSw8L0ZPTlQ+PC9TUEFOPjwvRElWPg0KPERJVj48U1BBTiBjbGFzcz0wNjI0MjI5MTItMDUwNDIw
+MDU+Jm5ic3A7Jm5ic3A7Jm5ic3A7IDxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+SSdtIHJ1bm5p
+bmcgVU1MIDIuNC4yNiBvbiBjdXN0b21lcml6ZWQgbGludXggMi40LjIxLCBhbmQgbWV0IHRoZSAN
+CmZvbGxvd2luZyBwcm9ibGVtcyB3aGljaCZuYnNwO0kgY2FuIG5vdCBmaWd1cmUgb3V0OjwvRk9O
+VD48L1NQQU4+PC9ESVY+DQo8RElWPjxTUEFOIGNsYXNzPTA2MjQyMjkxMi0wNTA0MjAwNT4mbmJz
+cDsmbmJzcDsmbmJzcDsgPEZPTlQgZmFjZT1BcmlhbCANCnNpemU9Mj4xLiBnZGIgZG9lcyBub3Qg
+Y29tZSB1cCB3aXRoIGEgY29tbWFuZCBsaW5lIHByb21wdCB3aGVuIEkgYWRkIHRoZSAiZGVidWci
+IA0Kb3B0aW9uIGluIHRoZSB1bWwgKGluIHR0IG1vZGUpLCBpdCBqdXN0IGhhbmcgdXAgd2l0aCB0
+aGVzZSANCm1lc3NhZ2U6PC9GT05UPjwvU1BBTj48L0RJVj4NCjxESVY+PFNQQU4gY2xhc3M9MDYy
+NDIyOTEyLTA1MDQyMDA1PjxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PC9GT05UPjwvU1BBTj48L0RJVj4NCjxE
+SVY+PFNQQU4gY2xhc3M9MDYyNDIyOTEyLTA1MDQyMDA1PjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0y
+PkdOVSBnZGIgUmVkIEhhdCANCkxpbnV4ICg2LjFwb3N0LTEuMjAwNDA2MDcuMTdyaCk8QlI+Q29w
+eXJpZ2h0IDIwMDQgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCANCkluYy48QlI+R0RCIGlzIGZy
+ZWUgc29mdHdhcmUsIGNvdmVyZWQgYnkgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlLCBh
+bmQgeW91IA0KYXJlPEJSPndlbGNvbWUgdG8gY2hhbmdlIGl0IGFuZC9vciBkaXN0cmlidXRlIGNv
+cGllcyBvZiBpdCB1bmRlciBjZXJ0YWluIA0KY29uZGl0aW9ucy48QlI+VHlwZSAic2hvdyBjb3B5
+aW5nIiB0byBzZWUgdGhlIGNvbmRpdGlvbnMuPEJSPlRoZXJlIGlzIGFic29sdXRlbHkgDQpubyB3
+YXJyYW50eSBmb3IgR0RCLiZuYnNwOyBUeXBlICJzaG93IHdhcnJhbnR5IiBmb3IgZGV0YWlscy48
+QlI+VGhpcyBHREIgd2FzIA0KY29uZmlndXJlZCBhcyAiaTM4Ni1yZWRoYXQtbGludXgtZ251Ii4u
+LlVzaW5nIGhvc3QgbGlidGhyZWFkX2RiIGxpYnJhcnkgDQoiL2xpYi9saWJ0aHJlYWRfZGIuc28u
+MSIuPC9GT05UPjwvU1BBTj48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+PFNQ
+QU4gDQpjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PC9TUEFOPjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFj
+ZT1BcmlhbCBzaXplPTI+PFNQQU4gDQpjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KPC9TUEFOPjwvRk9OVD48L0RJVj4N
+CjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+PFNQQU4gDQpjbGFzcz0wNjI0MjI5MTItMDUw
+NDIwMDU+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IDIuIEFmdGVy
+IA0Kc3RhcnRpbmcgVU1MIHdpdGhvdXQgdGhlIGRlYnVnIG9wdGlvbiBhbmQgcnVubmluZyBzb21l
+IGFwcGxpY2F0aW9ucywgaXQgaGFuZ3MgDQp1cC4mbmJzcDsgSSBmb3VuZCB0aGUgdGhlIHR0IHRo
+cmVhZCBpcyB3b3JraW5nIHdpdGggZW5kbGVzcyBzaWduYWwgMTEgKFNJR1NFR1YpIA0KZnJvbSBh
+biBhcHBsaWNhdGlvbi4gSSBqdXN0IHdvbmRlciB3aHkgc28gbWFueSBTSUdTRUdWIHNpZ25hbHMg
+YXJlIHNlbnQuJm5ic3A7IA0KQWN0dWFsbHkgYWZ0ZXIgSSBhZGQgc29tZSBsb2cgdG8gdGhlIFVN
+TCwgSSBmb3VuZCZuYnNwOyB0aGF0IGFsbW9zdCBldmVyeSANCmFwcGxpY2F0aW9uIHNlbnQgU0lH
+U0VHViB0byB0dCwgd2h5IHRoaXMgaGFwcGVucz88L1NQQU4+PC9GT05UPjwvRElWPg0KPERJVj48
+Rk9OVCBmYWNlPUFyaWFsIHNpemU9Mj48U1BBTiANCmNsYXNzPTA2MjQyMjkxMi0wNTA0MjAwNT48
+L1NQQU4+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBmYWNlPUFyaWFsIHNpemU9Mj48
+U1BBTiANCmNsYXNzPTA2MjQyMjkxMi0wNTA0MjAwNT4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsgQ291bGQgeW91IA0KcGxlYXNlIGdpdmUgYW55IHN1Z2dlc3Rpb24g
+b24gdGhlc2U/PC9TUEFOPjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXpl
+PTI+PFNQQU4gDQpjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KVGhhbmtzLjwvU1BBTj48L0ZPTlQ+PC9ESVY+DQo8RElW
+PjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0yPjxTUEFOIA0KY2xhc3M9MDYyNDIyOTEyLTA1MDQyMDA1
+PjwvU1BBTj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0y
+PjxTUEFOIA0KY2xhc3M9MDYyNDIyOTEyLTA1MDQyMDA1PlJlZ2FyZHMsPC9TUEFOPjwvRk9OVD48
+L0RJVj4NCjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+PFNQQU4gY2xhc3M9MDYyNDIyOTEy
+LTA1MDQyMDA1Pld1IA0KSGFpYmFvPC9TUEFOPjwvRk9OVD48L0RJVj4NCjxESVY+PFNQQU4gY2xh
+c3M9MDYyNDIyOTEyLTA1MDQyMDA1PjxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+PC9GT05UPjwv
+U1BBTj4mbmJzcDs8L0RJVj4NCjxQPjxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+LS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLTwvRk9OVD4gPEJS
+PjxGT05UIA0KZmFjZT1BcmlhbCBzaXplPTI+WyBdIEdlbmVyYWwgQnVzaW5lc3MgSW5mb3JtYXRp
+b248L0ZPTlQ+IDxCUj48Rk9OVCBmYWNlPUFyaWFsIA0Kc2l6ZT0yPlt4XSBNb3Rvcm9sYSBJbnRl
+cm5hbCBVc2UgT25seTwvRk9OVD4gPEJSPjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0yPlsgXSANCk1v
+dG9yb2xhIENvbmZpZGVudGlhbCBQcm9wcmlldGFyeTwvRk9OVD4gPC9QPg0KPERJVj4mbmJzcDs8
+L0RJVj48L0JPRFk+PC9IVE1MPg0K
 
-sles9s390:~ #
-
---------------030407070707050003090700--
+------_=_NextPart_001_01C539DC.85090028--
 
 
 -------------------------------------------------------
