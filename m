@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CyzqY-0006Sf-LF for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 13:58:06 -0800
-Received: from smtp.gentoo.org ([156.56.111.197])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CyzqV-0006M1-3A
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 13:58:06 -0800
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.42)
-	id 1CyzqT-0004tX-VG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 21:58:02 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.42)
-	id 1CyzqT-00064s-Mn for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Feb 2005 21:58:01 +0000
-From: bugzilla-daemon@gentoo.org
-Message-Id: <E1CyzqT-00064s-Mn@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+	id 1Cz3Dd-00012d-T2 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 17:34:09 -0800
+Received: from wproxy.gmail.com ([64.233.184.206])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cz3Dc-00047U-Ez for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Feb 2005 17:34:09 -0800
+Received: by wproxy.gmail.com with SMTP id 69so42934wra
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 09 Feb 2005 17:34:00 -0800 (PST)
+Message-ID: <d496a7f505020917334199160@mail.gmail.com>
+From: McGroarty <mcgroarty@gmail.com>
+Reply-To: McGroarty <mcgroarty@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] uml 2.4.27-1um lockup at halt/reboot (strace)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,38 +29,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 09 Feb 2005 21:58:01 +0000
+Date: Wed, 9 Feb 2005 19:33:59 -0600
 To: user-mode-linux-devel@lists.sourceforge.net
 
-http://bugs.gentoo.org/show_bug.cgi?id=49277
+One of my machines' guests do not exit properly when "shutdown -h now"
+is run from the guest. Instead the guest locks up forever and needs a
+kill -9.
+
+The offending machine runs 2.6.8.10-skas3 host, 2.4.27-1um guest, and
+is an SMP machine (P4 HT).
 
 
+xent@um-412:~$ tail -20 dumpy.txt
+munmap(0xacbf4000, 4096)                = 0
+munmap(0xacbf5000, 4096)                = 0
+munmap(0xacbf6000, 4096)                = 0
+munmap(0xacbf7000, 4096)                = 0
+munmap(0xacbf8000, 4096)                = 0
+munmap(0xacbf9000, 4096)                = 0
+munmap(0xacbfa000, 4096)                = 0
+munmap(0xacbfb000, 4096)                = 0
+munmap(0xacbfc000, 4096)                = 0
+munmap(0xacbfd000, 4096)                = 0
+munmap(0xacbfe000, 4096)                = 0
+munmap(0xacbff000, 4096)                = 0
+sigreturn()                             = ? (mask now [])
+getdents64(16, /* 3 entries */, 4096)   = 72
+unlink("/home/xent/.uml/xent/pid")      = 0
+getdents64(16, /* 0 entries */, 4096)   = 0
+rmdir("/home/xent/.uml/xent")           = 0
+kill(1386, SIGKILL)                     = 0
+waitpid(1386, NULL, 0)                  = ? ERESTARTSYS (To be restarted)
 
 
+This was the state of process 1386:
 
-------- Additional Comments From blaisorblade_spam@yahoo.it  2005-02-09 13:58 PST -------
-Yes, upgrading would partially help. Alternatively, using a non-NPTL glibc is a workaround (but things get slower); using the latest, ~x86 glibc, built without the nptlonly flag, makes sure that UML is linked against a non-NPTL glibc, so this is also a workaround.
-
-In short, see my previous message, and note that the previous official source (Jeff Dike) for the portage releases has stopped doing releases, since main work happens onto vanilla kernels (UML has been merged into vanilla Linux, finally). He now only maintains a development tree (http://user-mode-linux.sourceforge.net/patches.html, if you want, but it's for development).
-
-Both the 2.6.9-bs6 patchset (which I maintain and is very stable, see at http://www.user-mode-linux.org/~blaisorblade/) and the vanilla 2.6.10 Linux kernel (with a bit of other problems, which are fixed in the upcoming vanilla 2.6.11) have the (partial) fix included: they work if you compile a SKAS-only UML (enable CONFIG_SKAS and disable CONFIG_TT).
-
-Everything fails to compile if you have a NPTL glibc in /lib (necessary condition to experience the bug) and UML is statically linked, i.e. you enable also TT mode or explicitly request static linking (which is implied by TT mode).
-
-For this configuration, no workaround exists at the moment, nor I know anyone who knows enough about linking scripts and glibc details to fix it.
-And note that enabling TT mode is required to run UML onto a vanilla Linux kernel as host system; with the SKAS patch on the host it is possible to run a UML built with only SKAS mode enabled and TT mode disabled.
-
-* Why wasn't the portage tree not updated (I guess):
-The reason is that while previously UML was a separate patch to apply to a vanilla tarball, while starting from 2.6.9 UML has been merged in mainline so a vanilla kernel (should) compile. However, a vanilla 2.6.9 kernel tarball contains the whole UML architecture, but has these problems (they were discovered and fixed later).
-
-I release (when needed) a patchset (the -bb/-bs one) against vanilla kernels, however, for further UML fixes. "When needed" means that if the mainline release is good, and no important fixes are written, or if my time is short, I don't do a release.
-
-Possibly including it inside the portage tree would be good (as usermode-bb-sources, if you want). I both use a Gentoo system and maintain that patchset, so if you want I can help for this.
-
-
-
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
+um-412:~# ps ax |grep 1[3]86
+ 1386 pts/0    T+     0:01 [linux]
 
 
 -------------------------------------------------------
