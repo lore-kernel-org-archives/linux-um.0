@@ -2,19 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AegN1-00029W-0Q for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Jan 2004 12:03:07 -0800
-Received: from thebsh.namesys.com ([212.16.7.65])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AegN0-0000S8-B9 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Jan 2004 12:03:06 -0800
-From: Nikita Danilov <Nikita@Namesys.COM>
+	id 1Aeqwr-0002kY-NA for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Jan 2004 23:20:49 -0800
+Received: from [81.193.166.163] (helo=puma-vgertech.no-ip.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1Aeqwr-0008Fs-4M for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Jan 2004 23:20:49 -0800
+Message-ID: <3FFE56BC.60202@vgertech.com>
+From: Nuno Silva <nuno.silva@vgertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: Resolution (Re: [uml-devel] 2.4.22-[67] problems)
+References: <20031221005257.GF9354@alcor.net> <20031221010656.GH9354@alcor.net>
+	<20031228093317.GK17472@alcor.net>
+	<20031228095115.GL17472@alcor.net>
+	<20031228101240.GN17472@alcor.net>
+	<20031228113042.GO17472@alcor.net>
+	<20031230184330.GD1365@alcor.net>
+	<200401060258.i062wWFI023087@ccure.user-mode-linux.org>
+	<3FFA66B3.501@vgertech.com> <3FFA7DC6.1040403@vgertech.com>
+	<20040106171301.GY28393@alcor.net>
+In-Reply-To: <20040106171301.GY28393@alcor.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <16381.46954.397526.967308@laputa.namesys.com>
-Subject: [uml-devel] [PATCH]: fix UML compilation breakage in
-	fs/proc/task_mmu.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,67 +35,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 8 Jan 2004 23:02:50 +0300
-To: Jeff Dike <JDike@Karaya.COM>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <AKPM@Osdl.ORG>
+Date: Fri, 09 Jan 2004 07:22:36 +0000
+To: Matt Zimmerman <mdz@debian.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org
 
-Hello,
 
-recent change that adds fixmaps to the /proc/<pid>/maps broke
-compilation on the UML, because there FIXADDR_USER_{START,END} are not
-constant.
 
-This patch adds a function to initialize &gate_vmarea.
+Matt Zimmerman wrote:
+>>puma:/uml# fg
+>>./linux
+>>Segmentation fault
+>>puma:/uml#
+> 
+> 
+> This looks quite different from what I and others were seeing in #224431,
+> which was random ENOSYS errors because the system call number in the regs
+> struct was being mysteriously cleared during a context switch on the cost.
 
-Nikita.
-diff -puN fs/proc/task_mmu.c~uml-FIXADDR_USER_START-not-const fs/proc/task_mmu.c
---- lobby/fs/proc/task_mmu.c~uml-FIXADDR_USER_START-not-const	Thu Jan  8 20:56:36 2004
-+++ lobby-nikita/fs/proc/task_mmu.c	Thu Jan  8 20:56:36 2004
-@@ -79,17 +79,27 @@ int task_statm(struct mm_struct *mm, int
- #ifdef AT_SYSINFO_EHDR
- 
- static struct vm_area_struct gate_vmarea = {
--	/* Do _not_ mark this area as readable, cuz not the entire range may be readable
--	   (e.g., due to execute-only pages or holes) and the tools that read
--	   /proc/PID/maps should read the interesting bits from the gate-DSO file
--	   instead.  */
--	.vm_start = FIXADDR_USER_START,
--	.vm_end = FIXADDR_USER_END
-+	/*
-+	 * we cannot initialize fields right here, because on some
-+	 * architectures (on UML to be precise), FIXADDR_USER_* are not
-+	 * constant. See build_gate_map() below.
-+	 */
- };
- 
- # define gate_map()	&gate_vmarea
-+static inline struct vm_area_struct *build_gate_map(void)
-+{
-+	/* Do _not_ mark this area as readable, cuz not the entire range may
-+	   be readable (e.g., due to execute-only pages or holes) and the
-+	   tools that read /proc/PID/maps should read the interesting bits
-+	   from the gate-DSO file instead.  */
-+	gate_vmarea.vm_start = FIXADDR_USER_START;
-+	gate_vmarea.vm_end   = FIXADDR_USER_END;
-+	return &gate_vmarea;
-+}
- #else
- # define gate_map()	NULL
-+# define build_gate_map()	NULL
- #endif
- 
- static int show_map(struct seq_file *m, void *v)
-@@ -146,7 +156,7 @@ static void *m_start(struct seq_file *m,
- 		up_read(&mm->mmap_sem);
- 		mmput(mm);
- 		if (l == -1)
--			map = gate_map();
-+			map = build_gate_map();
- 	}
- 	return map;
- }
+Yes, probably not the same issue.
 
-_
+I've made some new tests and I'd say that my problem relates to NPTL in 
+glibc. (I don't have a fix, yet :( )
+
+I'll open another thread :-)
+
+Regards,
+Nuno Silva
 
 
 
