@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BTjb7-0003O0-P1 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 08:48:41 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	id 1BTlYz-00035g-GE for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 May 2004 10:54:37 -0700
+Received: from smtp05.web.de ([217.72.192.209])
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BTjb7-0000T5-CL
+	(Exim 4.30) id 1BTlYy-0007bn-O3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 May 2004 08:48:41 -0700
-Message-Id: <200405281636.i4SGaHB5001932@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Fri, 28 May 2004 15:58:16 +0200."
-	<20040528135816.GA27837@bytesex.org> 
-References: <20040528135816.GA27837@bytesex.org> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: [2.6 patch] terminal/console cleanups
+	Fri, 28 May 2004 10:54:37 -0700
+Message-ID: <152801c444dd$d2fc0750$2000000a@schlepptopp>
+From: <devzero@web.de>
+References: <3DF9165145FACB4C96977FF650C1E9040C469FD6@its-mail1.its.corp.gwl.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] NX inside UML - WAS: Re: Intel pitches pocket-size
+	'personal server'
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,30 +29,85 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 May 2004 12:36:17 -0400
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 28 May 2004 20:01:37 +0200
+To: nxusers@nomachine.com, nxdevelopers@nomachine.com
+Cc: pinzari@nomachine.com, james.burnes@gwl.com, nj.lee@plumtree.co.nz, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-kraxel@bytesex.org said:
-> The changes in detail:
+hi !
+i made some tests with NX running inside a user-mode-linux machine today.
+i used wmaker as window-manager because i don`t have full kde installed 
+inside my uml. i didn`t do heavy testing, but from my first poing of view:
+RUNS GOOD!
+:)
 
-Excellent!  I've been wanting to do this for a long time, but haven't had the
-spare time.
+> I agree.  A similar component is the "virtual server" concept that
+> represented by programs like User-Mode Linux.  NX seems like it would be
+> the perfect front end to UML.  There are a lot of UML environments that
+> people pay $9-$50/month so they can have their own root server out on
+> the Internet.  
+i agree,too - NX could probably add "real value" to such "dedicated root 
+servers" (personal edition of NX is quite inexpensive).
 
-> The changes in detail:
+> Since these UMLs can be quite remote and are usually running Linux or
+> FreeBSD, NX is the perfect user interface.  Maybe you should have Sarah
+> check out co-marketing NX with these UML environments.
+agree. are there any providers offering dedicated root servers (i mean real 
+machines) with "advanced remote administration facility via NX" at this time  ?
 
-I haven't looked at the actual changes, but this all sounds right.
+regards
+roland
 
-> Note that with this patch applied it is strongly recommended to
-> specify the device you want to use as console on the kernel command
-> line.
+ps:
+uml for testing is suse 9.1 with kernel 2.6.6 + sysemu patch, host is suse 9.0 
+with kernel 2.6.6 + skas3 + sysemu patch.
 
-Except for this.  I don't want to break everyone's scripts.  I think maybe
-some logic similar to the root= might be in order, where it checks to see
-if a console was specified, and if not, adds one to the command line.
 
-				Jeff
 
+----- Original Message ----- 
+From: "Burnes, James" <james.burnes@gwl.com>
+To: <nxdevelopers@nomachine.com>; "NX Users" <nxusers@nomachine.com>
+Sent: Wednesday, May 26, 2004 3:04 PM
+Subject: RE: Intel pitches pocket-size 'personal server'
+
+
+> Gian,
+> 
+> I agree.  A similar component is the "virtual server" concept that
+> represented by programs like User-Mode Linux.  NX seems like it would
+> the perfect front end to UML.  There are a lot of UML environments that
+> people pay $9-$50/month so they can have their own root server out on
+> the Internet.  
+> 
+> Since these UMLs can be quite remote and are usually running Linux or
+> FreeBSD, NX is the perfect user interface.  Maybe you should have Sarah
+> check out co-marketing NX with these UML environments.
+> 
+> Good luck,
+> 
+> jim burnes
+> security engineer
+> great-west, denver
+>  
+> 
+> > -----Original Message-----
+> > From: owner-nxdevelopers@nomachine.com [mailto:owner-
+> > nxdevelopers@nomachine.com] On Behalf Of Gian Filippo Pinzari
+> > Sent: Tuesday, May 25, 2004 2:31 PM
+> > To: NX Users; NX Developers
+> > Subject: Intel pitches pocket-size 'personal server'
+> > 
+> > http://news.com.com/1606-2-5208490.html?tag=ne.guts.vid
+> > 
+> > I just found this on CNET. It's a video showcasing the
+> > Intel's "personal server". I really think that this kind
+> > of devices will represent a shift in how people look at
+> > mobile and personal computing and NX is clearly designed
+> > to be their software complement. What do you think about
+> > this?
+> > 
+> > /Gian Filippo.
+> 
+> 
 
 
 -------------------------------------------------------
