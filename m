@@ -1,21 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CbXq5-0007N2-Hq for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Dec 2004 21:24:41 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CbXq3-0001Wo-Jk for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Dec 2004 21:24:41 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Message-ID: <004301c4dc20$3dbbd280$0201a8c0@hawk>
+From: "Christopher S. Aker" <caker@theshore.net>
+References: <200412070628.26267.blaisorblade_spam@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200412070628.26267.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Any complaints about parallel make in 2.6.10-rc?
+Subject: [uml-devel] Re: [uml-user] Any complaints about parallel make in
+	2.6.10-rc?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,22 +19,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Dec 2004 06:28:25 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: "Christopher S. Aker" <caker@theshore.net>
+Date: Mon, 6 Dec 2004 23:47:28 -0600
+To: Blaisorblade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-I've just tried doing this test on a clean tree 2.6.10-rc3, and it worked very 
-well (I interrupted it after enough progress):
+> Since somebody (maybe Christopher Aker) said that parallel make was broken in
+> 2.6.10-rc, I'm asking to report it in detail, if the complaint is correct.
 
-make ARCH=um -j10
+Odd.. "make ARCH=um -jN" works, but "make -jN ARCH=um" doesn't.  How did I miss that?
 
-Since somebody (maybe Christopher Aker) said that parallel make was broken in 
-2.6.10-rc, I'm asking to report it in detail, if the complaint is correct.
+-Chris
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
