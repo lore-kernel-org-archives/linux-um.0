@@ -2,26 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19xC9n-0003ou-00
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 10 Sep 2003 14:05:43 -0700
-Received: from hermes.dur.ac.uk ([129.234.4.9])
+	id 19xCIf-0004Yt-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 10 Sep 2003 14:14:53 -0700
+Received: from brmea-mail-2.sun.com ([192.18.98.43])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19xC9m-0001L6-QF
-	for User-mode-linux-devel@lists.sourceforge.net; Wed, 10 Sep 2003 14:05:42 -0700
-Received: from mercury.dur.ac.uk (mercury.dur.ac.uk [129.234.4.40])
-	by hermes.dur.ac.uk (8.11.7/8.11.7) with ESMTP id h8AKukL10248
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 10 Sep 2003 21:56:46 +0100 (BST)
-Received: from altair.dur.ac.uk (altair.dur.ac.uk [129.234.4.14])
-	by mercury.dur.ac.uk (8.12.9+Sun/8.11.7) with ESMTP id h8AKuhw3016454
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 10 Sep 2003 21:56:43 +0100 (BST)
-Received: from localhost (dit0may@localhost)
-	by altair.dur.ac.uk (8.11.7+Sun/8.11.1) with ESMTP id h8AKuhx10433
-	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 10 Sep 2003 21:56:43 +0100 (BST)
-From: M A Young <m.a.young@durham.ac.uk>
-Message-ID: <Pine.GSO.4.53.0309102139120.9641@altair.dur.ac.uk>
+	id 19xCIf-0004d1-3K
+	for user-mode-linux-devel@lists.sourceforge.net; Wed, 10 Sep 2003 14:14:53 -0700
+From: Marc.Herbert@ens-lyon.fr
+Message-ID: <Pine.GSO.4.10.10309102222360.23842-100000@reiser>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] uml segfaults on redhat beta "severn"
+Subject: [uml-devel] in 2.6.0-test5: module.c:79:`R_386_32' undeclared
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -32,20 +23,64 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 10 Sep 2003 21:56:43 +0100 (BST)
-To: User-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 10 Sep 2003 23:14:35 +0200 (MEST)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-If you try to run a uml kernel under a 2.4 kernel from the redhat beta
-"severn" in tt mode, you get an almost immediate crash, under
-before_mem_tt, in the final remap_data call. The problem is that it seem
-in these kernels, maybe as a result of the new "exec-shield" feature, that
-the code and data segments are no longer adjacent, which means that from
-__bss_start to sbrk(0) is around 26Mb rather than under 1Mb, including
-bits it presumably has no right to copy, hence the segfault.
-This will presumably also apply to Red Hat's next release, assuming they
-keep the same features.
 
-	Michael Young
+When trying to compile the latest 2.6.0-test5, I get the following error:
+
+arch/um/sys-i386/module.c: In function `apply_relocate':
+arch/um/sys-i386/module.c:79: `R_386_32' undeclared (first use in this function)
+
+A closer look seems to give a explanation: contrary to 2.4.X, in 2.6,
+"R_386_32" is defined in "arch-i386/elf.h" and not in "linux/elf.h"
+anymore.
+
+The attached patch (adding R_386 macros to
+"include/asm-um/archparam-i386.h") solves this issue. So my question
+becomes : how do you guys people succeeded in compiling 2.6.0-test5 ?!
+What did I missed ?
+
+
+Cheers,
+
+Marc.
+
+
+Notes:
+arch/um/sys-i386/module.c: symbolic link to arch/i386/kernel/module.c
+include/asm: symbolic link to asm-um
+include/asm-um/archparam.h: symbolic link to archparam-i386.h
+
+
+  --------
+
+--- include/asm-um/archparam-i386.h	2003/09/10 21:02:28	1.1
++++ include/asm-um/archparam-i386.h	2003/09/10 21:02:41
+@@ -35,6 +35,19 @@
+ 
+ /* Shamelessly stolen from include/asm-i386/elf.h */
+ 
++#define R_386_NONE	0
++#define R_386_32	1
++#define R_386_PC32	2
++#define R_386_GOT32	3
++#define R_386_PLT32	4
++#define R_386_COPY	5
++#define R_386_GLOB_DAT	6
++#define R_386_JMP_SLOT	7
++#define R_386_RELATIVE	8
++#define R_386_GOTOFF	9
++#define R_386_GOTPC	10
++#define R_386_NUM	11
++
+ #define ELF_CORE_COPY_REGS(pr_reg, regs) do {	\
+ 	pr_reg[0] = PT_REGS_EBX(regs);		\
+ 	pr_reg[1] = PT_REGS_ECX(regs);		\
+
+
+
+
 
 
 -------------------------------------------------------
