@@ -2,19 +2,36 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BmQL8-0008E6-Is for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jul 2004 22:05:26 -0700
-Received: from stateless.plumtree.co.nz ([202.89.35.97])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1BmQL8-0001Vz-0Q for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jul 2004 22:05:26 -0700
-From: Nicholas Lee <nj.lee@plumtree.co.nz>
-Message-ID: <20040719050519.GE23215@stateless>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1BmQOR-0000Jh-Tf for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jul 2004 22:08:51 -0700
+Received: from mta9.adelphia.net ([68.168.78.199])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1BmQOR-0001qs-I4 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jul 2004 22:08:51 -0700
+Received: from mizar.alcor.net ([69.167.148.207]) by mta9.adelphia.net
+	(InterMail vM.6.01.03.02 201-2131-111-104-20040324) with ESMTP
+	id <20040719050845.VQZQ2023.mta9.adelphia.net@mizar.alcor.net>
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 19 Jul 2004 01:08:45 -0400
+Received: from mdz by mizar.alcor.net with local (Exim 4.34)
+	id 1BmQOL-0000vd-TA for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jul 2004 22:08:45 -0700
+Resent-Message-ID: <20040719050845.GE4090@mizar.alcor.net>
+Resent-To: user-mode-linux-devel@lists.sourceforge.net
+Reply-To: Allen Chan <alydar@users.sourceforge.net>, 260111@bugs.debian.org
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.260111.B260111.109021086314941@bugs.debian.org>
+From: Allen Chan <alydar@users.sourceforge.net>
+References: <200407181816.39870.alydar@users.sourceforge.net>
+In-Reply-To: <200407181816.39870.alydar@users.sourceforge.net>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [alydar@users.sourceforge.net: Re: user-mode-linux:
-	upgrade hangs at "NET4: Linux TCP/IP 1.0 for NET4.0"]
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200407190021.09363.alydar@users.sourceforge.net>
+Subject: [uml-devel] Bug#260111: user-mode-linux: upgrade hangs at "NET4:
+	Linux TCP/IP 1.0 for NET4.0"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,15 +43,8 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Jul 2004 17:05:19 +1200
-To: user-mode-linux-devel@lists.sourceforge.net
-
------ Forwarded message from Allen Chan <alydar@users.sourceforge.net> -----
-
-From: Allen Chan <alydar@users.sourceforge.net>
-To: 260111@bugs.debian.org
-Subject: Re: user-mode-linux: upgrade hangs at "NET4: Linux TCP/IP 1.0 for NET4.0"
 Date: Mon, 19 Jul 2004 00:20:59 -0400
+To: 260111@bugs.debian.org
 Cc: nic@plumtree.co.nz
 
 Confirming results from Nicolas Lee, the same 2.4.26-2um-1 guest 
@@ -47,9 +57,6 @@ stdout is redirected to a file, or if it is piped to anything that
 does not require additional user interaction (i.e., piping to "cat" 
 works, but piping to "more" caused some other, probably unrelated, 
 problems).
-
-
------ End forwarded message -----
 
 
 -------------------------------------------------------
