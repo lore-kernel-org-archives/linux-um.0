@@ -1,21 +1,35 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D6u1p-0001rH-RL for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 09:22:25 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D6u1V-0004SS-9g for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 09:22:25 -0800
-Message-Id: <200503031853.j23IrNDS003496@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] 2.6.11 + uml.sf.net patches panic 
-In-Reply-To: Your message of "Thu, 03 Mar 2005 15:53:07 +1300."
-	<42267C13.1060703@rimuhosting.com> 
-References: <42267C13.1060703@rimuhosting.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1D70cf-000804-AT for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 16:24:53 -0800
+Received: from mail.scgiservices.com ([198.107.3.67])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1D70cP-0004jS-Ly
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 16:24:53 -0800
+Received: from localhost (localhost [127.0.0.1])
+	by mail.scgiservices.com (Postfix) with ESMTP id 9B6022881B
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu,  3 Mar 2005 16:24:32 -0800 (PST)
+Received: from mail.scgiservices.com ([127.0.0.1])
+	by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 12943-08 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu,  3 Mar 2005 16:24:27 -0800 (PST)
+Received: from SCG2 (c-67-160-159-191.client.comcast.net [67.160.159.191])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mail.scgiservices.com (Postfix) with ESMTP id 1BADB2881A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu,  3 Mar 2005 16:24:26 -0800 (PST)
+From: "Anthony Brock" <brocka@sterlingcgi.com>
+Message-ID: <OJEEKGNKKDLJIEPBEJMIAEIOCAAA.brocka@sterlingcgi.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] SKAS3 v8 for x86_64
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,24 +41,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 03 Mar 2005 13:53:23 -0500
-To: Peter <p.repliesignored@rimuhosting.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 3 Mar 2005 16:24:25 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-p.repliesignored@rimuhosting.com said:
-> I'm happy to carry on using vanilla 2.6.11.  But hopefully the stack
-> trace below triggers some insight into a problem with one of the
-> latest  uml.sf.net patches. 
+Recently some individuals posted a "port" of the SKAS 3 patch to x86_64.
+However, this port was for the 2.4 kernel. Has anyone worked on porting SKAS
+3 (especially v7 or v8) to the x86_64 architecture on 2.6 kernel? Is this
+even on the radar for the current developers?
 
-The write_ldt just above the segfault in both stacks looks suspicious.
+Thanks!
 
-Could you try backing out the ldt patches:
-	skas-hold-own-ldt
-	ldt-use-stub
-
-and see if the panic goes away?
-
-				Jeff
+Tony
 
 
 
