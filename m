@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Bp6Ip-00020u-9E for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jul 2004 07:18:07 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1Bp6Io-0005Up-Mb for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jul 2004 07:18:07 -0700
+	id 1Bp6NX-00032a-9o for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Jul 2004 07:22:59 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1Bp6NW-0004BA-L6 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Jul 2004 07:22:59 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] I ported skas3 to fc2 kernel
-References: <Pine.LNX.4.44.0407221901400.1382-100000@hfuhruhurr.iostream.com>
-In-Reply-To: <Pine.LNX.4.44.0407221901400.1382-100000@hfuhruhurr.iostream.com>
+Subject: Re: [uml-devel] suse 9.1 compilation error: net/ipv4/igmp.c:1192
+References: <20040726080954.43807.qmail@web52101.mail.yahoo.com>
+In-Reply-To: <20040726080954.43807.qmail@web52101.mail.yahoo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200407261620.23840.blaisorblade_spam@yahoo.it>
+Message-Id: <200407261625.21758.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,48 +27,63 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 26 Jul 2004 16:20:23 +0200
+Date: Mon, 26 Jul 2004 16:25:21 +0200
 Content-Transfer-Encoding: quoted-printable
-To: Jinnah Dylan Hosein <jdh66+spam@jdh.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Chris Epicier <seuchato@yahoo.de>, user-mode-linux-devel@lists.sourceforge.net
 
-Alle 01:13, venerd=EC 23 luglio 2004, Jinnah Dylan Hosein ha scritto:
-> I ported the host-skas3-2.6.7-v1.patch to the Fedora Core 2 kernel.
+Alle 10:09, luned=EC 26 luglio 2004, Chris Epicier ha scritto:
+> Hi there
 >
-> I used the latest fc2 2.6.6-1.435.2.3 kernel rpm.
+> I already posted this one  in the user-mode-linux-user
+> maillist but had no reply. Is it a beginners error
+> (possible, sionce I am a newbie in UML)?
 >
-> I've tested it and I was able to run a 2.4.19 uml kernel with a redhat
-> 7.2 rootfs. I wasn't able to make it leak memory by running the "while
-> true" bash line, but I don't understand exactly what triggers the leak so
-> it's likely I didn't properly test.
+> I would like to build a safe server using suse 9.1 and
+> uml. When I try to compile the kernel I get the
+> following error(s):
+>
+> ...
+> CC      net/ipv4/igmp.o
+>   net/ipv4/igmp.c: In function `ip_mc_inc_group':
+>   net/ipv4/igmp.c:1192: error: `multicast_chain'
+> undeclared (first use in this function)
+>   net/ipv4/igmp.c:1192: error: (Each undeclared
+> identifier is reported only once
+>   net/ipv4/igmp.c:1192: error: for each function it
+> appears in.)
+>   net/ipv4/igmp.c: In function `ip_mc_dec_group':
+>   net/ipv4/igmp.c:1219: error: `multicast_chain'
+> undeclared (first use in this function)
+>   make[2]: *** [net/ipv4/igmp.o] Error 1
+>   make[1]: *** [net/ipv4] Error 2
+>   make: *** [net] Error 2
+>
+> I use Suse 9.1:
+> Linux version 2.6.5-7.95-default (geeko@buildhost)
+> (gcc version 3.3.3 (SuSE Linux)) #1 Thu Jul 1 15:23:45
+> UTC 2004
+Well, either you used some strange config option, or more probably you appl=
+ied=20
+the UML patch onto something different from a vanilla kernel (a vendor one)=
+?=20
+I never saw this error, but maybe you are simply the first to compile that =
 
-Well, it's a bit difficult to trigger; to the best of my understanding, it =
-can=20
-be triggered if UML is a child or grandchild of a multi-threaded process=20
-using the TLS, i.e. Thread-Local Storage (as KDE Konsole) running either wi=
-th=20
-LinuxThreads support (i.e. either glibc is not NPTL-aware or is running ont=
-o=20
-a 2.4 host kernel).
+with UML. But I actually am more convinced you are using a somehow buggy=20
+vendor kernel; which is the kernel version and patch version you use? Ask=20
+better specifying such datas (and maybe posting your .config).
 
-More technically, if any process modifies its LDT (by using the modify_ldt(=
-)=20
-syscall), any of its child processes will have the LDT set, and if UML has =
+> I do the following commands:
+> make clean ARCH=3Dum
+> make mrproper ARCH=3Dum
+> make xconfig ARCH=3Dum (saved .config)
+> make linux ARCH=3Dum
 
-the LDT set it will then leak memory.
+> What I tried is to replace -O2 by -O1 compiler option
+> with exactly same result.
 
-That said, I don't have time to look at it well but I don't see anything ba=
-d,=20
-at a quick look; the port is not a simple rediff so there could be some=20
-little changes needed, but if it runs Ok, I wouldn't worry.
+That is needed anyway to fix other stability problems.
 
-For the SKAS + UML patch: it's easy to rebuild it from the splitout version=
-=20
-(you must browse the folders to find it, should be something like=20
-patches/2.6.7-v1), but you can get by without it, so I'll build it only if =
-I=20
-get free time. I've not even had the time to join the SKAS - leak fix with =
-
-the rest of the patch!
+Bye
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
