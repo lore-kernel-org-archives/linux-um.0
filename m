@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C1sRt-0000RR-PB for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2004 13:08:17 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1C1sRq-0004TJ-U8 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2004 13:08:17 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] creash of 2.6.7-bb6
-References: <41324B9B.5040100@exse.net>
-In-Reply-To: <41324B9B.5040100@exse.net>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200408302201.57650.blaisorblade_spam@yahoo.it>
+	id 1C1sbM-0002CF-5o for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2004 13:18:04 -0700
+Received: from mail-relay-1.tiscali.it ([213.205.33.41])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C1sbK-0005tS-99 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2004 13:18:03 -0700
+Received: from zion.localdomain (62.11.74.135) by mail-relay-1.tiscali.it
+	(7.1.021.3)
+	id 40F404C800A31F52 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2004 22:17:55 +0200
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20040830201320.096B54959@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] um-sysemu
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,55 +26,155 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 30 Aug 2004 22:01:57 +0200
+Date: Mon, 30 Aug 2004 22:13:19 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Sebastian <seb@exse.net>, Jeff Dike <jdike@addtoit.com>
+Cc: blaisorblade_spam@yahoo.it
 
-Hmmm, thanks for it, but did the kernel actually crash (it seems a debug 
-message rather than a crash one)? And what was the machine doing in that 
-moment?
 
-The only UML function in the trace is do_buffer_op - could it have some bugs?
+Turns off syscall emulation patch for ptrace (SYSEMU) on.
+SYSEMU is a performance-patch introduced by Laurent Vivier. It changes
+behaviour of ptrace() and helps reducing host context switch rate.
+To make it working, you need a kernel patch for your host, too.
+See http://perso.wanadoo.fr/laurent.vivier/UML/ for further information.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.8.1-paolo/arch/um/kernel/process.c                  |   35 ++++++++++
+ uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/include/ptrace-skas.h |    7 ++
+ uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/process.c             |   22 ++++++
+ 3 files changed, 64 insertions(+)
+
+diff -puN arch/um/kernel/process.c~um-sysemu arch/um/kernel/process.c
+--- uml-linux-2.6.8.1/arch/um/kernel/process.c~um-sysemu	2004-08-29 14:40:46.969071392 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/kernel/process.c	2004-08-29 14:40:46.973070784 +0200
+@@ -19,6 +19,7 @@
+ #include <asm/sigcontext.h>
+ #include <asm/unistd.h>
+ #include <asm/page.h>
++#include <asm/user.h>
+ #include "user_util.h"
+ #include "kern_util.h"
+ #include "user.h"
+@@ -217,6 +218,40 @@ void __init check_ptrace(void)
+ 	}
+ 	stop_ptraced_child(pid, stack, 0);
+ 	printk("OK\n");
++
++#ifdef PTRACE_SYSEMU
++	printk("Checking syscall emulation patch for ptrace...");
++	use_sysemu = 0;
++	pid = start_ptraced_child(&stack);
++	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) >= 0) {
++		struct user_regs_struct regs;
++
++		if (waitpid(pid, &status, WUNTRACED) < 0)
++			panic("check_ptrace : wait failed, errno = %d", errno);
++		if(!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
++			panic("check_ptrace : expected SIGTRAP, "
++			      "got status = %d", status);
++
++		if (ptrace(PTRACE_GETREGS, pid, 0, &regs) < 0)
++			panic("check_ptrace : failed to read child "
++			      "registers, errno = %d", errno);
++		regs.orig_eax = pid;
++		if (ptrace(PTRACE_SETREGS, pid, 0, &regs) < 0)
++			panic("check_ptrace : failed to modify child "
++			      "registers, errno = %d", errno);
++
++		stop_ptraced_child(pid, stack, 0);
++
++		printk("OK\n");
++		use_sysemu = 1;
++	}
++	else
++	{
++		printk("missing\n");
++		stop_ptraced_child(pid, stack, 1);
++	}
++
++# endif /* PTRACE_SYSEMU */
+ }
  
-> Badness in sk_del_node_init at include/net/sock.h:333
-> Call Trace:  [<a01244d8>] __unix_remove_socket+0x68/0x70
->  [<a0124824>] unix_release_sock+0x14/0x1f0
->  [<a002c9ec>] local_bh_enable+0x1c/0x80
->  [<a0019560>] do_buffer_op+0x0/0x150
->  [<a0124ca7>] unix_release+0x27/0x30
-> 
->     [<a00dd3ea>] sock_release+0x5a/0x70
->  [<a00ddd14>] sock_close+0x34/0x50
->  [<a00dea83>] sys_shutdown+0x43/0x50
->  [<a005a96e>] __fput+0xbe/0xd0
->  [<a00591f7>] filp_close+0x57/0x90
->  [<a0059282>] sys_close+0x52/0x70
-> 
->     [<a0018e6a>] execute_syscall_skas+0xaa/0xb0
->  [<a0014832>] unblock_signals+0x12/0x20
->  [<a0015359>] record_syscall_start+0x59/0x70
->  [<a0018eab>] handle_syscall+0x3b/0x90
->  [<a0017caf>] handle_trap+0x2f/0x140
->  [<a00182df>] save_registers+0x3f/0x70
-> 
->     [<a00180ca>] userspace+0x15a/0x1d0
->  [<a0018b20>] fork_handler+0x0/0xb0
->  [<a0018bc1>] fork_handler+0xa1/0xb0
->  [<a0018b20>] fork_handler+0x0/0xb0
->  [<a0018aed>] new_thread_proc+0x1d/0x30
-> 
-> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
-> net/unix/af_unix.c (333)
-> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
-> net/unix/af_unix.c (333)
-> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
-> net/unix/af_unix.c (333)
-> KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at 
-> net/unix/af_unix.c (333)
-> KERNEL: assertion (sk_unhashed(sk)) failed at net/unix/af_unix.c (334)
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+ int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr)
+diff -puN arch/um/kernel/skas/include/ptrace-skas.h~um-sysemu arch/um/kernel/skas/include/ptrace-skas.h
+--- uml-linux-2.6.8.1/arch/um/kernel/skas/include/ptrace-skas.h~um-sysemu	2004-08-29 14:40:46.970071240 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/include/ptrace-skas.h	2004-08-29 14:40:46.974070632 +0200
+@@ -10,6 +10,13 @@
+ 
+ #ifdef UML_CONFIG_MODE_SKAS
+ 
++/* syscall emulation path in ptrace */
++
++#ifndef PTRACE_SYSEMU
++#define PTRACE_SYSEMU 31
++#endif
++extern int use_sysemu;
++
+ #include "skas_ptregs.h"
+ 
+ #define HOST_FRAME_SIZE 17
+diff -puN arch/um/kernel/skas/process.c~um-sysemu arch/um/kernel/skas/process.c
+--- uml-linux-2.6.8.1/arch/um/kernel/skas/process.c~um-sysemu	2004-08-29 14:40:46.971071088 +0200
++++ uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/process.c	2004-08-29 14:40:46.974070632 +0200
+@@ -28,6 +28,10 @@
+ #include "chan_user.h"
+ #include "signal_user.h"
+ 
++#ifdef PTRACE_SYSEMU
++int use_sysemu = 0;
++#endif
++
+ int is_skas_winch(int pid, int fd, void *data)
+ {
+ 	if(pid != getpid())
+@@ -68,6 +72,10 @@ static void handle_trap(int pid, union u
+ 		return;
+ 	}
+ 
++#ifdef PTRACE_SYSEMU
++	if (!use_sysemu)
++	{
++#endif
+ 	err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET, __NR_getpid);
+ 	if(err < 0)
+ 	        panic("handle_trap - nullifying syscall failed errno = %d\n", 
+@@ -82,6 +90,9 @@ static void handle_trap(int pid, union u
+ 	if((err < 0) || !WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
+ 		panic("handle_trap - failed to wait at end of syscall, "
+ 		      "errno = %d, status = %d\n", errno, status);
++#ifdef PTRACE_SYSEMU
++	}
++#endif
+ 
+ 	handle_syscall(regs);
+ }
+@@ -139,6 +150,11 @@ void userspace(union uml_pt_regs *regs)
+ 
+ 	restore_registers(regs);
+ 		
++#ifdef PTRACE_SYSEMU
++	if (use_sysemu)
++		err = ptrace(PTRACE_SYSEMU, pid, 0, 0);
++	else
++#endif
+ 	err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
+ 	if(err)
+ 		panic("userspace - PTRACE_SYSCALL failed, errno = %d\n", 
+@@ -177,6 +193,12 @@ void userspace(union uml_pt_regs *regs)
+ 
+ 		restore_registers(regs);
+ 
++#ifdef PTRACE_SYSEMU
++		if (use_sysemu)
++			op = singlestepping_skas() ? PTRACE_SINGLESTEP :
++				PTRACE_SYSEMU;
++		else
++#endif
+ 		op = singlestepping_skas() ? PTRACE_SINGLESTEP : 
+ 			PTRACE_SYSCALL;
+ 		err = ptrace(op, pid, 0, 0);
+_
 
 
 -------------------------------------------------------
