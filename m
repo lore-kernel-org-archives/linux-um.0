@@ -1,17 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BKewG-0007xc-Kd for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 May 2004 08:01:00 -0700
-Received: from marasystems.com ([213.150.153.194] helo=filer.marasystems.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
-	id 1BKewF-0001DO-VG for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 May 2004 08:01:00 -0700
-From: Henrik Nordstrom <uml@henrik.marasystems.com>
+	id 1BKf24-0000wL-NN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 May 2004 08:07:00 -0700
+Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BKf24-0005VF-Bs
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 May 2004 08:07:00 -0700
+From: Frank Sorenson <frank@tuxrocks.com>
 Subject: Re: [uml-devel] UML kernel panic
-In-Reply-To: <Pine.LNX.4.44.0405022056100.9671-100000@tuxrocks.com>
-Message-ID: <Pine.LNX.4.44.0405031659340.15869-100000@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.44.0405031659340.15869-100000@filer.marasystems.com>
+Message-ID: <Pine.LNX.4.44.0405030903300.18483-100000@tuxrocks.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -25,21 +26,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 3 May 2004 17:00:21 +0200 (CEST)
-To: Frank Sorenson <frank@tuxrocks.com>
+Date: Mon, 3 May 2004 09:06:27 -0600 (MDT)
+To: Henrik Nordstrom <uml@henrik.marasystems.com>
 Cc: roland <for_spam@gmx.de>, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 3 May 2004, Frank Sorenson wrote:
+On Mon, 3 May 2004, Henrik Nordstrom wrote:
+> On Mon, 3 May 2004, Frank Sorenson wrote:
+> 
+> > Any ideas on what's causing UML kernel panics, and thoughts on how to fix
+> > it would be greatly appreciated.  Can the UML kernel panics be caused by
+> > host kernel or system problems, or is it likely a UML kernel problem, or
+> > is there something else?
+> 
+> What does the panics say? Preferably including a gdb backtrace..
 
-> Any ideas on what's causing UML kernel panics, and thoughts on how to fix
-> it would be greatly appreciated.  Can the UML kernel panics be caused by
-> host kernel or system problems, or is it likely a UML kernel problem, or
-> is there something else?
+The panics are "Segfault with no mm"
 
-What does the panics say? Preferably including a gdb backtrace..
+gdb backtraces can be found here:
+http://sco.tuxrocks.com/uml/trace6.txt
+http://sco.tuxrocks.com/uml/trace7.txt
 
-Regards
-Henrik
+A copy of the config file (2.4.24-2 UML kernel) is here:
+http://sco.tuxrocks.com/uml/config
+
+
+Thanks for the help,
+
+Frank
+---------------------------------------------------------------------------
+Frank Sorenson - KD7TZK
+Systems Manager, Computer Science Department
+Brigham Young University
+frank@tuxrocks.com
 
 
 
