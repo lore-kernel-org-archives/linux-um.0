@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CZBz3-0007Uy-3g for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 09:40:13 -0800
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CZBz1-0002xW-3G
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Nov 2004 09:40:13 -0800
-Subject: Re: [uml-devel] skas mode on a non-skas host
-References: <200411292250.iATMoWOF004837@ccure.user-mode-linux.org>
-	<Pine.LNX.4.58.0411291623340.5077@sparrow>
-	<200411301710.15691.blaisorblade_spam@yahoo.it>
-From: Gerd Knorr <kraxel@bytesex.org>
-In-Reply-To: <200411301710.15691.blaisorblade_spam@yahoo.it>
-Message-ID: <871xebdzif.fsf@bytesex.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1CZC3x-00087L-5E for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 09:45:17 -0800
+Received: from bay24-f27.bay24.hotmail.com ([64.4.18.77] helo=hotmail.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CZC3w-0004CO-P3 for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Nov 2004 09:45:17 -0800
+Message-ID: <BAY24-F272A756C4E6200D477EB2F83BE0@phx.gbl>
+In-Reply-To: <20041130103255.GB5593@bytesex>
+From: "Steve Schmidtke" <steve_schmidtke@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Subject: [uml-devel] Re: [PATCH] uml_router: cleanup #2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,23 +25,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 30 Nov 2004 18:20:56 +0100
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: William Stearns <wstearns@pobox.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 30 Nov 2004 17:44:53 +0000
+To: kraxel@bytesex.org
+Cc: User-mode-linux-devel@lists.sourceforge.net, uml@uxu.ch
 
-Blaisorblade <blaisorblade_spam@yahoo.it> writes:
 
-> I don't know the quilt syntax but it won't be totally different - it seems it 
-> is "quilt push 50".
+Gerd Knorr wrote:
+> > Patch 11 turns on the packet queue for the tuntap driver.  For technical
+> > reasons, it's just too much work to implement on the current sockunix
+> > driver.
 
-Either "quilt push" (single patch), "quilt push -a" (all patches) or
-"quilt push <name>" (all up to and including patch "name").  It's a
-very nice tool, I've aliased it to "q" because I'm using it that often.
+>Guess thats the "one socket for all umls" thingy?
 
-  Gerd
+Yup, I now see what you mean by broken by design. :)  I think it is possible 
+to do, but just not worth the effort or complexity when...
 
--- 
-#define printk(args...) fprintf(stderr, ## args)
+>You can create a new
+>socket for every uml instance connecting, at least with protocol v3 (not
+>sure about the older ones, but I think support for them can be dropped
+>without breaking anything by now ...).
+
+Your socket driver looks perfect for the job.   I think Jeff would be happy 
+if both could run side by side.
+
+Steve Schmidtke
+
+
 
 
 -------------------------------------------------------
