@@ -2,17 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BNvsC-0001eM-Vw for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 08:42:20 -0700
-Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1BNvsB-00025w-L1 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 08:42:19 -0700
-Message-ID: <20040512154215.7674.qmail@praize.com>
-From: "gboutwel" <gboutwel@praize.com>
+	id 1BNxRM-0006qR-Jd for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 10:22:44 -0700
+Received: from zrc2s0jx.nortelnetworks.com ([47.103.122.112])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BNxRM-00045d-65 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 May 2004 10:22:44 -0700
+Received: from zsc3c028.us.nortel.com (zsc3c028.us.nortel.com [47.81.138.28])
+	by zrc2s0jx.nortelnetworks.com (Switch-2.2.6/Switch-2.2.0) with
+	ESMTP id i4CHMZ600438
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 12 May 2004 12:22:35 -0500 (CDT)
+Message-ID: <40A25D59.1080802@nortelnetworks.com>
+From: Joe Marzot <gmarzot@nortelnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Patch 2.6.6
-Content-Type: Text/Plain;
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] 2.4.24 Kernel panic (patch 2.4.24-1)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,54 +30,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 12 May 2004 15:42:15 -0000
-To: blaisorblade_spam@yahoo.it
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 12 May 2004 13:22:33 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> > Reversed (or previously applied) patch detected!  Assume
--R? [n]
+The following has been seen for some time on an intermittent basis. less 
+than 1:20 runs. Having trouble debugging it so I added some code to 
+panic.c:panic() to abort() and dump core. Also attached is a back trace 
+from that.
 
-> > Apply anyway? [n] y
+Kernel panic: handle_trap - failed to wait at end of syscall, errno = 2, 
+status = 383
 
-> > Hunk #1 FAILED at 1.
+appreciate any tips or tricks to get more information about this problem.
 
-> > Hunk #2 FAILED at 19.
+I have a core if that helps.
 
-> > 2 out of 2 hunks FAILED -- saving rejects to file include/asm-um/irq.h.rej
+regards, Giovanni
 
-
-
-> same problem here!
-
-> there seems something to be wrong with patching irq.h
-
-
-
-I got an working 2.6.6 UML today.  It's doing an gentoo emerge
-as we speak. :)
-
-
-
-I had to modify the include/asm-um/irq.h file, to remove the
-um_rquest_irq function, after doing that everything build fine.
-
-
-
-HTH,
-
-
-
-George
-
-
-
---------------------------------
-
-Looking for that favorite verse?
-
-Search for it in Praize Bible
-
-http://www.praize.com/bible/
+ps. The kernel I am running is slightly modified but I do not believe 
+that is related. I will look more on a vanilla kernel just to be sure.
 
 
 
