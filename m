@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArLZL-0004a3-4f
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 10:28:11 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30)
-	id 1ArLY4-0005Cz-Bt
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 10:26:52 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20040212185344.GD2834@ccure.user-mode-linux.org>
-References: <200402041926.39098.jeffpc@optonline.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1ArLtZ-0000v8-9p
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 10:49:05 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
+	id 1ArLq4-0007Ul-Kn
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 12 Feb 2004 10:45:28 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200402041926.39098.jeffpc@optonline.net>
-Subject: [uml-devel] Re: [patch] 2.6 uml & CONFIG_SMP fix
+Message-Id: <200402121854.41130.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Hostfs bugs on strange situations
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,23 +25,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 Feb 2004 13:53:44 -0500
-To: Josef 'Jeff' Sipek <jeffpc@optonline.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 12 Feb 2004 18:54:41 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Feb 04, 2004 at 07:26:29PM -0500, Josef 'Jeff' Sipek wrote:
-> 	yesterday, I finally got around to fixing the code. Right now, it
-> compiles, but there are some warnings that I didn't take a look at.
-> This patch makes it compile with CONFIG_SMP, nothing more.
-> I tested the resulting binary, and it works well in tt (I did NOT test
-> skas.) 
-> 
+While running a 2.6 kernel (2.6.2 with all my patches) on a 2.6 host (with the 
+last version of host-skas) ls /mnt/host (with hostfs mounted) listed nothing; 
+now instead (the same guest kernel ran onto 2.4) it works. Someone else 
+reported, with a 2.4.23-2um onto 2.4, that after mounting hostfs the mount 
+directory becomes hidden; here instead it works with 2.4.23-[12]um.
 
-Applied, thanks.  The spinlock.h part wasn't exactly right - the thing to
-do was create one that just includes the arch spinlock.h.  Although, I'm
-not sure that symlinks are a bad idea in the case of those trivial headers.
+However, there seems to really be something strange going on. Has anyone a 
+clue?
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
-				Jeff
 
 
 -------------------------------------------------------
