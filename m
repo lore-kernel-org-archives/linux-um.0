@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19wokD-0001Gn-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 09 Sep 2003 13:05:45 -0700
-Received: from tailtiu.davidcoulson.net ([207.166.203.132] helo=mail.mx.davidcoulson.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.22)
-	id 19wokD-0001jQ-5K
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Sep 2003 13:05:45 -0700
-Message-ID: <3F5E3295.1080004@davidcoulson.net>
-From: David Coulson <david@davidcoulson.net>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Kernel panic: I/O op mismatch
-References: <Pine.LNX.4.44.0309081936590.26334-100000@gradall.private.brainfood.com> <200309091310.h89DAt2J002539@ccure.karaya.com> <20030909164152.GB7799@alcor.net> <3F5E057E.9030209@davidcoulson.net> <20030909170808.GC7799@alcor.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 19woZP-0007ga-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 09 Sep 2003 12:54:35 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
+	id 19woZO-0006n2-Av
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 09 Sep 2003 12:54:34 -0700
+Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h89Jkej14866
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 9 Sep 2003 15:46:40 -0400
+Message-Id: <200309091954.h89JsI2J004617@ccure.karaya.com>
+Subject: Re: [uml-devel] Child exit when booting uml 2.4.20 on 2.6.0-test4 host 
+In-Reply-To: Your message of "Tue, 09 Sep 2003 21:59:40 +0300."
+             <3F5E231C.109@bezeqint.net> 
+References: <3F59DC82.7070900@bezeqint.net> <200309081647.h88Glrjh030128@ccure.karaya.com>  <3F5E231C.109@bezeqint.net> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -26,18 +29,16 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 09 Sep 2003 16:05:41 -0400
-To: Matt Zimmerman <mdz@debian.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 09 Sep 2003 15:54:18 -0400
+To: Etay Meiri <etay-m@bezeqint.net>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Matt Zimmerman wrote:
-> Host filesystem or UML filesystem?  Adam and I were both using ext2 inside
-> UML when we spoke, and I'm using ext3 on the host side.
+etay-m@bezeqint.net said:
+> I tried it with patch 2.6.0-test3-1 (from Aug 15).
 
-Sorry, filesystem was the wrong word to use - 'image file' is more accurate.
+No, I've released a whole lot of patches since then.
 
-David
-
+				Jeff
 
 
 
