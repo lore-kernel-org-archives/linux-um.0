@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Au80s-00039f-JL
+	id 1Au80s-00039g-J7
 	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 02:36:06 -0800
 Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
 	(Exim 4.30)
-	id 1Au7mQ-00072s-Sm
+	id 1Au7mQ-00072p-T5
 	for user-mode-linux-devel@lists.sourceforge.net; Fri, 20 Feb 2004 02:21:11 -0800
-References: <E1AgMua-00075F-00@hermes.virtue>
-	<20040113175635.GE2673@jaa.iki.fi>
-	<1077235841.8412.37.camel@wopr.tektonic.net>
+References: <40338C1B.1070800@meisterwerk.net> <c1360l$eei$1@sea.gmane.org>
 From: Gerd Knorr <kraxel@bytesex.org>
-In-Reply-To: <1077235841.8412.37.camel@wopr.tektonic.net>
-Message-ID: <87fzd63vn6.fsf@bytesex.org>
+In-Reply-To: <c1360l$eei$1@sea.gmane.org>
+Message-ID: <87llmy3vr5.fsf@bytesex.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Subject: [uml-devel] Re: [discuss] UML and AMD-64
+Subject: [uml-devel] Re: skas3 patch fails against vanilla-2.4.25
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,26 +25,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 20 Feb 2004 11:14:37 +0100
+Date: 20 Feb 2004 11:12:14 +0100
 Content-Transfer-Encoding: 8bit
-To: Matt Ayres <matta@tektonic.net>, user-mode-linux-devel@lists.sourceforge.net
+To: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>, user-mode-linux-devel@lists.sourceforge.net
 
-Matt Ayres <matta@tektonic.net> writes:
+Sven Köhler <skoehler@upb.de> writes:
 
-> Did you use the skas3 patch?  My understand from looking at it is that
-> skas3 is written for i386 only, hence you would only be able to run a
-> 32-bit kernel.  
+> Than i applied the SKAS-patch by Gerd Knorr from
+>    http://www.suse.de/~kraxel/uml/patches/
+> and guess what happened when i tried to compile my host-kernel:
+> 
+>    LD      .tmp_vmlinux1
+> mm/built-in.o(.text+0x1d86f): In function `write_proc_mm':
 
-It also runs on 64bit kernels, but in tt mode only due to lacking skas
-support.
+You didn't apply the second patch, did you?
 
   Gerd
 
--- 
-Es geht darum, daß ein Haufen Scriptkiddies gerade dabei sind, USENET in
-Bunt neu zu erfinden, und sie derzeit einen Haufen Fehler neu machen,
-die schon seit 20 Jahren nicht mehr Gegenstand der Forschung sind.
-	-- Kristian Köhntopp über blogs und blogger
 
 
 -------------------------------------------------------
