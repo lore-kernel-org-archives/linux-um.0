@@ -1,30 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B0S99-0004Aq-Uk for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Mar 2004 13:18:47 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B0Rt5-000546-SF
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Mar 2004 13:02:12 -0800
-Message-Id: <200403082134.i28LY5Va022911@ccure.user-mode-linux.org>
-In-Reply-To: Your message of "Wed, 03 Mar 2004 11:49:38 EST."
-	<40460CA2.2000000@nortelnetworks.com> 
-References: <4043B42A.10803@nortelnetworks.com>
-	<200403020100.i2210dM9025649@ccure.user-mode-linux.org>
-	<4044A368.8050406@nortelnetworks.com>
-	<200403022054.i22KslWo003006@ccure.user-mode-linux.org>
-	<40450A08.8090608@nortelnetworks.com>
-	<200403022322.i22NM8Wo003853@ccure.user-mode-linux.org>
-	<40451AAB.5050304@nortelnetworks.com>
-	<200403030133.i231XJWo004412@ccure.user-mode-linux.org>
-	<40460CA2.2000000@nortelnetworks.com> 
+Message-Id: <200403082134.i28LYCVa022916@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Thu, 04 Mar 2004 00:11:32 +0100."
+	<0d2e01c40174$dfda5b40$2000000a@schlepptopp> 
+References: <40430B47.3000004@sms.ed.ac.uk>
+	<200403022005.42635.blaisorblade_spam@yahoo.it>
+	<0d2e01c40174$dfda5b40$2000000a@schlepptopp> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] Re: problems with UML -- new data with memory debugging on
+Subject: [uml-devel] Re: Hang at ipv4 setup is a cpufreq issue!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,15 +20,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 08 Mar 2004 16:34:05 -0500
-To: Chris Friesen <cfriesen@nortelnetworks.com>
-Cc: User-mode-linux-devel <User-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 08 Mar 2004 16:34:12 -0500
+To: roland <for_spam@gmx.de>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-cfriesen@nortelnetworks.com said:
-> I'll test it with the full configuration and see how that goes... 
+for_spam@gmx.de said:
+> THE UML STARTS FINE AND THE HANG AT IPV4 SETUP IS GONE! 
 
-I guess things are working OK since you haven't been complaining, but I
-thought I make sure.  That fix does make the problem totally go away?
+Excellent.  Thanks for tracking it down and letting us know what the problem
+was.
 
 				Jeff
 
