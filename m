@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CHANk-0002hw-Sn for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:19:12 -0700
+	id 1CHANd-0002gD-UM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:19:05 -0700
 Received: from host157-148.pool8289.interbusiness.it ([82.89.148.157]
 	helo=zion.localdomain)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CHANi-0007ZU-H9 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 17:19:12 -0700
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CHANb-0000IC-RI for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 17:19:05 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20041012001749.C0D03868D@zion.localdomain>
-Subject: [uml-devel] [patch 03/10] uml: no extraversion in arch/um/Makefile
-	for mainline
+Message-Id: <20041012001745.11E3B8686@zion.localdomain>
+Subject: [uml-devel] [patch 01/10] uml: Set cflags before including arch
+	Makefile
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,49 +24,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Oct 2004 02:17:49 +0200
+Date: Tue, 12 Oct 2004 02:17:44 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-Extraversion in arch/um/Makefile is not needed in mainline, but just for
-separate patches; also, they should set it in the main Makefile, not elsewhere
-(Jeff Garzik has just complained). Also remove the dependency from version.h
-on arch/um/Makefile: it was added because arch/um/Makefile could change the
-kernel version number.
+If arch/$(ARCH)/Makefile is included before adding -O2 (and the rest) to
+CFLAGS, I must duplicate the addition of it to USER_CFLAGS for UML.
+So let's fix this.
+Also, the below code is useless, since if CONFIG_DEBUG_INFO is y, then
+CONFIG_FRAME_POINTER is always y.
+
+ifeq ($(CONFIG_DEBUG_INFO),y)
+CFLAGS := $(subst -fomit-frame-pointer,,$(CFLAGS))
+endif
+
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.9-current-paolo/arch/um/Makefile |    9 ---------
- 1 files changed, 9 deletions(-)
+ linux-2.6.9-current-paolo/arch/um/Makefile |   21 ---------------------
+ 1 files changed, 21 deletions(-)
 
-diff -puN arch/um/Makefile~uml-no-extraversion-in-mainline arch/um/Makefile
---- linux-2.6.9-current/arch/um/Makefile~uml-no-extraversion-in-mainline	2004-10-12 00:39:57.768983440 +0200
-+++ linux-2.6.9-current-paolo/arch/um/Makefile	2004-10-12 00:40:11.263931896 +0200
-@@ -8,13 +8,6 @@ OS := $(shell uname -s)
- #We require it or things break.
- SHELL := /bin/bash
+diff -puN arch/um/Makefile~uml-Set_cflags_before_arch_Makefile arch/um/Makefile
+--- linux-2.6.9-current/arch/um/Makefile~uml-Set_cflags_before_arch_Makefile	2004-10-12 01:06:01.579248144 +0200
++++ linux-2.6.9-current-paolo/arch/um/Makefile	2004-10-12 01:06:01.582247688 +0200
+@@ -13,10 +13,6 @@ OS := $(shell uname -s)
+ # EXTRAVERSION...
+ MODLIB := $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
  
--# Recalculate MODLIB to reflect the EXTRAVERSION changes (via KERNELRELEASE)
--# The way the toplevel Makefile is written EXTRAVERSION is not supposed
--# to be changed outside the toplevel Makefile, but recalculating MODLIB is
--# a sufficient workaround until we no longer need architecture dependent
--# EXTRAVERSION...
--MODLIB := $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+-ifeq ($(CONFIG_DEBUG_INFO),y)
+-CFLAGS := $(subst -fomit-frame-pointer,,$(CFLAGS))
+-endif
 -
  core-y			+= $(ARCH_DIR)/kernel/		 \
  			   $(ARCH_DIR)/drivers/          \
  			   $(ARCH_DIR)/sys-$(SUBARCH)/
-@@ -73,8 +66,6 @@ ifeq ($(CONFIG_MODE_SKAS), y)
- $(SYS_HEADERS) : $(TOPDIR)/$(ARCH_DIR)/include/skas_ptregs.h
- endif
+@@ -135,23 +131,6 @@ USER_CFLAGS := $(patsubst -D__KERNEL__,,
+ # To get a definition of F_SETSIG
+ USER_CFLAGS += -D_GNU_SOURCE
  
--include/linux/version.h: arch/$(ARCH)/Makefile
+-# From main Makefile, these options are set after including the ARCH makefile.
+-# So copy them here.
 -
- $(ARCH_DIR)/vmlinux.lds.S :
- 	touch $@
- 
+-ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+-USER_CFLAGS		+= -Os
+-else
+-USER_CFLAGS		+= -O2
+-endif
+-
+-ifndef CONFIG_FRAME_POINTER
+-USER_CFLAGS		+= -fomit-frame-pointer
+-endif
+-
+-ifdef CONFIG_DEBUG_INFO
+-USER_CFLAGS		+= -g
+-endif
+-
+ CLEAN_FILES += linux x.i gmon.out $(ARCH_DIR)/uml.lds \
+ 	$(ARCH_DIR)/dyn_link.ld.s $(ARCH_DIR)/include/uml-config.h \
+ 	$(GEN_HEADERS)
 _
 
 
