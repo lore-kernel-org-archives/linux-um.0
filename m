@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D7EQn-0002fF-Rg for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Mar 2005 07:09:33 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1D7EQj-0001y2-Kc for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Mar 2005 07:09:33 -0800
-Message-ID: <422879DE.6050405@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1D7bmD-0000Is-57 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Mar 2005 08:05:13 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1D7bm8-0004PK-5f for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Mar 2005 08:05:12 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] UML freezes at hdd-intensive processes
+References: <37436.128.176.89.137.1109846512.squirrel@128.176.89.137>
+In-Reply-To: <37436.128.176.89.137.1109846512.squirrel@128.176.89.137>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] 2.6.11 + uml.sf.net patches panic
-References: <42267C13.1060703@rimuhosting.com>
-	<200503031853.j23IrNDS003496@ccure.user-mode-linux.org>
-	<42286F4A.30506@fujitsu-siemens.com>
-In-Reply-To: <42286F4A.30506@fujitsu-siemens.com>
-Content-Type: multipart/mixed; boundary="------------070503090402040009030207"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200503051633.16983.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,62 +29,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 04 Mar 2005 16:08:14 +0100
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Peter <p.repliesignored@rimuhosting.com>
+Date: Sat, 5 Mar 2005 16:33:16 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Oliver Baltz <info@oliverbaltz.de>
 
-This is a multi-part message in MIME format.
---------------070503090402040009030207
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thursday 03 March 2005 11:41, Oliver Baltz wrote:
+> Hi @all,
+>
+> my UML hangs while intensive processes that use the HDD. For example:
+> rgrep, upgrade,...
+>
+> UML-Hostsystem: 2.4.27-1-386, Intel ICH5 SATA 150-Controller
+> UML: 2.4.26-3um-1
+>
+> Any ideas?
+Tell us the result:
 
-Bodo Stroesser wrote:
-> Jeff Dike wrote:
-> 
->> The write_ldt just above the segfault in both stacks looks suspicious.
-> 
-> 
-> Yes. There seems to be a problem with this new stuff.
-> 
-> Peter, could you please send a full call trace? I guess, the ones in your
-> mail are truncated, right?
-> 
->           Bodo
-Meanwhile I found a problem in arch/um/sys-i386/ldt.c, which causes UML
-to panic, if LDT-entry number 8 is written, using modify_ldt-syscall.
+grep CONFIG_BLK_DEV_UBD_SYNC .config
 
-This crash is very similar to the one Peter had, so I hope the appended
-oneliner will solve the problem.
-
-        Bodo
-
---------------070503090402040009030207
-Content-Type: text/x-diff;
- name="fix-skas-ldt.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="fix-skas-ldt.patch"
+And search CONFIG_BLK_DEV_UBD_SYNC in the archives at marc.theaimsgroup.com. 
+The problem was discussed for 2.6 only, the solution also applies to 2.4 
+(almost surely).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 
----
-
-
-diff -puN arch/um/sys-i386/ldt.c~fix-skas-ldt arch/um/sys-i386/ldt.c
---- linux-2.6.11-rc3-mm2/arch/um/sys-i386/ldt.c~fix-skas-ldt	2005-03-04 15:51:04.000000000 +0100
-+++ linux-2.6.11-rc3-mm2-root/arch/um/sys-i386/ldt.c	2005-03-04 15:51:27.000000000 +0100
-@@ -208,7 +208,7 @@ static int write_ldt(void __user * ptr, 
- 		goto out_unlock;
- 
- 	if(ldt_info.entry_number >= ldt->entry_count &&
--	   ldt_info.entry_number > LDT_DIRECT_ENTRIES){
-+	   ldt_info.entry_number >= LDT_DIRECT_ENTRIES){
- 		for(i=ldt->entry_count/LDT_ENTRIES_PER_PAGE;
- 		    i*LDT_ENTRIES_PER_PAGE <= ldt_info.entry_number;
- 		    i++){
-_
-
---------------070503090402040009030207--
 
 
 -------------------------------------------------------
