@@ -2,25 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BqhlO-0007AF-QS for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jul 2004 17:30:14 -0700
-Received: from stateless.plumtree.co.nz ([202.89.35.97])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
-	id 1BqhlO-0000Zz-99 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jul 2004 17:30:14 -0700
-From: Nicholas Lee <nj.lee@plumtree.co.nz>
-Subject: Re: [uml-devel] Re: Bug#260111: user-mode-linux: upgrade hangs at
-	"NET4: Linux TCP/IP 1.0 for NET4.0 "
-Message-ID: <20040731003007.GD11490@stateless>
-References: <200407280315.08207.alydar@users.sourceforge.net>
-	<200407281722.i6SHM6eh002963@ccure.user-mode-linux.org>
-	<200407291430.18818.alydar@users.sourceforge.net>
-	<200407292234.04279.alydar@users.sourceforge.net>
-	<200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
+	id 1Bql6T-0000MK-9V for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Jul 2004 21:04:13 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: Incremental patches available
+Message-ID: <20040731050251.GA4909@ccure.user-mode-linux.org>
+References: <200407301924.04914.alydar@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200407301723.i6UHNeUE002844@ccure.user-mode-linux.org>
+In-Reply-To: <200407301924.04914.alydar@users.sourceforge.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,16 +23,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 31 Jul 2004 12:30:07 +1200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, 260111@bugs.debian.org
+Date: Sat, 31 Jul 2004 01:02:51 -0400
+To: Allen Chan <alydar@users.sourceforge.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Jul 30, 2004 at 01:23:40PM -0400, Jeff Dike wrote:
-> Can anyone who's seeing this check that it fixes the hang?
+On Fri, Jul 30, 2004 at 07:24:02PM -0400, Allen Chan wrote:
+> While attempting to build and test a 2.6.7 kernel including the 
+> patches found on the new incremental patches page, I've bumped into 
+> into problems with a couple of the patches:
+> 
+> (1)  remap - apparently, this patch has already been applied as part 
+> of  uml-patch-2.6.7-1.bz2.
 
-Yep.
+Yeah, I released 2.6.7 from after the remap patch.
 
-Nicholas
+> (2)  time - one of the patches included here attempts to modify 
+> um/arch/um/os/Makefile.  However, that file does not exist.  It looks 
+> like that file should be um/arch/um/os-Linux/Makefile.
+
+Oops, /me will fix.  I didn't notice that because I'm playing with a built
+pool which has the symlinks there.  I was trying to make sure I got these
+right, but I missed that.
+
+> Now to compile and beat up on the new test kernel...
+
+Excellent, that's a big reason I did this.
+
+				Jeff
 
 
 -------------------------------------------------------
