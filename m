@@ -2,25 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CJfqn-0000vw-Fp for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2004 15:19:33 -0700
+	id 1CJftr-00016m-DY for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Oct 2004 15:22:43 -0700
 Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CJfqm-0005Tr-Rg for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2004 15:19:33 -0700
+	id 1CJftq-0005sA-OT for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Oct 2004 15:22:43 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-References: <200410120305.24675.blaisorblade_spam@yahoo.it>
-	<200410150044.47234.blaisorblade_spam@yahoo.it>
-	<200410182116.i9ILGQUA013137@ccure.user-mode-linux.org>
-In-Reply-To: <200410182116.i9ILGQUA013137@ccure.user-mode-linux.org>
+References: <4173F1FD.6080004@colitti.com>
+	<200410182118.09005.blaisorblade_spam@yahoo.it>
+	<20041018212612.GA3052@bytesex>
+In-Reply-To: <20041018212612.GA3052@bytesex>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200410190020.09170.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: [patch 0/17] UML updates,
-	which must be merged before 2.6.9
+Message-Id: <200410190023.14067.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] Host processes never terminate on 2.6.9rc3
+	host (stuck in ptrace_stop)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,35 +32,54 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 19 Oct 2004 00:20:09 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 19 Oct 2004 00:23:14 +0200
+To: user-mode-linux-user@lists.sourceforge.net
+Cc: Gerd Knorr <kraxel@bytesex.org>, user-mode-linux-devel@lists.sourceforge.net, Lorenzo Colitti <lorenzo@colitti.com>, Massimo Rimondini <rimondin@dia.uniroma3.it>
 
-On Monday 18 October 2004 23:16, Jeff Dike wrote:
-> blaisorblade_spam@yahoo.it said:
-> > About other work - could you drop the outdated SKAS patches from the
-> > official  page? Updating two sites is slow, and waiting for you to
-> > pull the changes  from CVS makes the CVS actually unusable (plus you
-> > must do the fucking  "SF.net download dance", which I experienced
-> > too!).
+On Monday 18 October 2004 23:26, Gerd Knorr wrote:
+> > > Yes, I see that as well, it actually *is* that ptrace change added in
+> > > patch-2.6.9-rc1-bk16.
+> > >
+> > > IMHO it is a bug, I've reported it to lkml a
+> > > few days ago, no response yet.
+> >
+> > Oh well, did I lost it or you did not CC the UML mailing list? And in the
+> > 2nd case, why?
 
-> I'd still like to be available on the main site, unless you totally don't
-> want that.
-Updating two sites is painful - in fact, currently this is not happening. And 
-making the patches available through SourceForge.net is double-slow.
+> I didn't cc the uml list as it isn't a uml bug, its just that uml
+> triggeres it.
+Hmm - trying to fix that or just reverting the patch inside the SKAS patch (or 
+as attached patch) would have been a possible workaround.
+> > I'm downloading the patches from BitKeeper.
+>
+> I'll attach the offending one for reference, also a short test app
+> showing the buggy behavior.
 
-> In that case, I'll drop the current patches (or make them less 
-> visible) and add a pointer off to your site.
+> > > Problem is that you can't kill -9 processes any more which are ptraced
+> > > _and_ stopped at the same time.
+> >
+> > Sorry, tried kill -CONT? I'm almost sure it works (tried by both Henrik
+> > Normstrod and me, not in this case).
 
-Another idea about this, is for me to have an account on Sourceforge and being 
-a Project Admin (I already have the "blaisorblade" account on 
-sourceforge.net).
+> IMHO it is a clear bug in the (host) kernel, so I didn't attempt yet to
+> workaround that by playing tricks in the UML kernel.  I can't see the
+> bug when reading the patch through, probably the separation of stopped
+> and traced process states triggeres some odd corner case somewhere else
+> in the kernel ...
+>
+> If you send a SIGKILL to the process being stopped & ptraced *nothing*
+> happens.  Neither the process is killed nor the ptracing parent is
+> notified.  That can't be correct.
 
-So I could also make sure that the Web-Site is updated from CVS periodically. 
-The build could happen either before putting stuff in CVS, with build results 
-in CVS, or after (I'd prefer after, but that is no problem).
+Can you try using SIGCONT, please? Even the patch changelog clearly says that 
+you must kill -CONT before kill -KILL (actually, a kill -CONT may make the 
+process notice the SIGKILL), and that behaviour can be reproduced, I think, 
+on every kernel version. There has been a thread on this (t-mode processes) 
+on uml-devel. Quite frankly, I do not know the question myself - but people 
+seem to agree that this is a correct behaviour.
 
-Bye
+That said, I'll give a look to the patch. Have you CC'ed the patch author on 
+your report?
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
