@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AZwq2-0007dS-Bh
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 10:37:30 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	id 1AZxE1-0008N7-3h
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:17 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.24)
-	id 1AZwq1-0006iQ-QQ
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 10:37:29 -0800
+	id 1AZxE0-00032Y-Ir
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:02:16 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] ubd=mmap problem
-References: <3FEAE023.6040908@darkman.de>
-In-Reply-To: <3FEAE023.6040908@darkman.de>
+Subject: Re: [uml-devel] UML patches against vanilla 2.6.0
+References: <200312261905.48277.blaisorblade_spam@yahoo.it> <20031226182737.GK2378@erdos.home>
+In-Reply-To: <20031226182737.GK2378@erdos.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200312261936.46963.blaisorblade_spam@yahoo.it>
+Message-Id: <200312261956.13626.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,30 +25,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Dec 2003 19:36:46 +0100
+Date: Fri, 26 Dec 2003 19:56:13 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 14:03, gioved=EC 25 dicembre 2003, Sven 'Darkman' Michels ha scritto:
-> Hi there,
+Alle 19:27, venerd=EC 26 dicembre 2003, Cameron Patrick ha scritto:
+> On Fri, Dec 26, 2003 at 07:05:48PM +0100, BlaisorBlade wrote:
+> | Go here:
+> |
+> | http://web.tiscali.it/no-redirect-tiscali/blaisorblade/index.html
 >
-> i started uml with udb=3Dmmap, the box runs fine but today i
-> noticed that the box was terminated after a nightly cron
-> run inside the uml.
-This first problem is a known one. Did you mount the host root with hostfs =
+> Which says:
+>
+> 	The only problematic patch is A-04-MM-compile-fix.patch, but
+> 	maybe i386 can live even with it (I don't remember if I got a
+> 	successful compilation with it applied). However, I think it's
+> 	not at all safe even if it compiles.
+>
+> and in the README:
+>
+> 	but I think you'd better avoid doing this or do a complete
+> 	backup, since you'll need it...).
 
-inside Uml? If yes, check /var/log/messages and you should see an Oops from=
-=20
-the host kernel. If that happens, apply on the host the patch in this threa=
+> Eeek!  I just upgraded my home desktop to a 2.6.0 kernel with that patch
+> applied (actually as part of Jeff's 2.6.0-test9 patch) and so far it
+> seems to be working.
+Are you sure? If you compile a stock 2.6.0 with Jeff's 2.6.0-test9 patch an=
 d=20
-on 10 Dec 2003:
+try to compile an i386 kernel, you'll get soon errors about=20
+do_mmap_pgoff(except if you applied a host-skas to your 2.6 tree).
 
-[uml-devel] [PATCH] fix for: Host panic when UML reads host /dev/shm
+> Looking at the patch, it seems innocuous enough -
+> why should it be unsafe on an i386 kernel?
 
-For the second I can't help you, probably it is a still unknown bug, someon=
-e=20
-else will help you or post a fix.
+I don't know actually, but it doesn't seem innocuous.
 
+Instead, FIXADDR_USER_START is replaced by FIXADDR_START(+ some syntactical=
+=20
+changes that do not hurt). And they have a different meaning(see=20
+include/asm-i386/fixmap.h).
+
+Since I'm not a VM hacker, and I don't understand the change, I just say th=
+at=20
+that shouldn't be used, for prudence's sake. That mention about backup is=20
+maybe a bit exaggerated, but it's a form of "no warranty" disclaimer.
+
+*NOTE*: the combo patches from Ingo Molnar contain this, too(I don't know i=
+f=20
+he noticed this change at all), and he probably used this without problem. =
+So=20
+I may be wrong at all.
+
+Bye
 --=20
 cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
