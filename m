@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ct93r-00032k-0J for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 10:35:39 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1Ct9Hu-0003fZ-Bl for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 10:50:10 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Ct93n-0008BV-8S for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Jan 2005 10:35:38 -0800
+	id 1Ct9Hp-00014O-KQ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Jan 2005 10:50:10 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] memory
-References: <267988DEACEC5A4D86D5FCD780313FBB03B12C4B@exch-03.noida.hcltech.com>
-	<200501231325.10021.rob@landley.net>
-	<Pine.LNX.4.61.0501241049100.5934@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.61.0501241049100.5934@filer.marasystems.com>
+References: <267988DEACEC5A4D86D5FCD780313FBB03B7317C@exch-03.noida.hcltech.com>
+In-Reply-To: <267988DEACEC5A4D86D5FCD780313FBB03B7317C@exch-03.noida.hcltech.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501241952.53795.blaisorblade@yahoo.it>
+Message-Id: <200501242007.30317.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,73 +29,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 24 Jan 2005 19:52:53 +0100
+Date: Mon, 24 Jan 2005 20:07:30 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Rob Landley <rob@landley.net>, Doug Dumitru <doug@easyco.com>, "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
+Cc: "Vaibhav Sharma, Noida" <Vaibhavs@noida.hcltech.com>
 
-On Monday 24 January 2005 11:02, Henrik Nordstrom wrote:
-> On Sun, 23 Jan 2005, Rob Landley wrote:
-> > The client kernel's highmem suport is unlikely to do much, I'd think.
-> > Not unless it's unmapping and remapping multiple mmaps.
-It does this, indeed and sadly (that's why it's so slow).
-> > (There's large 
-> > file support, but trying to mmap a 5 gig chunk out of a large file can't
-> > work: what would that mean?  How could you generate an offset into the
-> > last meg? What would the pointer _be_?)
+On Monday 24 January 2005 09:13, Vaibhav  Sharma, Noida wrote:
+> Thank you all for ur valuable discussion (temp dir) and suggestions related
+> to highmem/PAE and x86_64.
+>
+> I have another thing to ask related to debugging...i want to check the
+> routines which will be involved in the memory management.
+>
+> According to the design of UML, it has its own VM system. If I have to
+> check the scalability limits of the "parent kernel" for memory management,
+> will UML be useful..?
 
-> off_t is 64 bits in 64-bit file pointer mode, so there is no problem to
-> mmap portions of an multi-gigabyte "ram" file within a 32-bit address
-> space.
+Well, yes, indeed. UML, indeed, has no special way to request memory on the 
+host*, so the host kernel must be efficient in managing and swapping UML 
+memory. On top of that, using the very same algorithms as any Linux system 
+(or better, as that release compiled for another arch), UML manages his own 
+memory and splits it between processes, swaps part of it, and so on.
 
-Offset can sure be 64-bit wide, but he refers to mmaping a 5G-wide chunk of 
-memory, and to a "pointer offset"... you cannot mmap more than 4G in memory 
-even with 4G/4G. Yes, you can do it like he says (i.e. mmapping back and 
-forth).
+* (if something is thinking to SKAS, it does not account in the discussion - 
+that is a different question, which is about implementation details and not 
+about the conceptual model, as shown by skas0, i.e. UML running in a 
+(limited) SKAS mode without host SKAS support...).
 
-> > The parent kernel's highmem support still doesn't provide more than 4
-> > gigabytes per application, and the UML kernel is one application.
+> When I debug the UML kernel when a process requests a large amount of
+> memory, I will only get the flow used by UML for its VM. Is the code/design
+> of UML very different from the parent kernel..?
+The code is the same, but the data they use for their decision are 
+different... RAM is passed by the host to UML and by UML to the guest, as 
+said above.
 
-> Yes, but with HIGHMEM UML in theory can provide as as much ram to each
-> single process running below it as it can for a single process. So yes,
-> each process in the UML would still be limited, but the total RAM usage of
-> UML would be practically unlimited. And in addition a very good
-> environment for debugging HIGHMEM in general as you could set up things to
-> only provide a very limited directly addressible address space with the
-> rest remapped by HIGHMEM.
+> Is there a way in I can get to code of parent kernel when 2G /3G RAM size
+> is used?
+??? Do you want to understand where the host is limited to 3G for its 
+applications? I don't think you want this... the exact point is the TASK_SIZE 
+macro, which is configurable somehow... however you must be careful...
 
-This point holds actually.
+If you leave 512 M to the kernel and 3,5G to the userspace, all the memory 
+above 512M will be slower... Actually, it's 512 - 128 M at least (the kernel 
+part of the 4G of virtual address space must map physical RAM, AND host some 
+virtual mappings, i.e. 128M of vmalloc()ed memory).
 
-I think however that Henrik will agree that this is not yet implemented, and 
-(maybe) nor in sight... about this, I would add somebody suggested 
-using /proc/mm to this aim: since a single address space is not enough to map 
-all the 64 Giga on a PAE system, he suggested using multiple address spaces 
-and switching between them to use memory as cache for MySQL (IIRC)... this 
-was also posted on this list.
-
-Also, since x86_64 systems are so cheap (I'm writing from one of them), x86_64 
-UML is going to be a reality soon, and we're in short of manpower, the 
-logical conclusion is that this is unlikely to be implemented... unless it's 
-very simple; do you think that making sure the offset inside /tmp/vm_file-*** 
-is 64-bit wide would be enough?
-
-> With HIGHMEM the host process size limitations has an direct effect on the
-> maximum process size possible within the UML, but not on the RAM size of
-> UML. In addition running an UML with HIGHMEM support does not depend on
-> the host HIGHMEM support, but performance will obviously suffer if UML
-> needs to swap..
-
-> > (And that's with the 4 gig kernel/4 gig user patches from...  Ingo
-> > Molnar, I think.)
-I confirm
-> > Highmem lets the system as a whole use PAE (up to 64 
-> > gigs physical memory), but the kernel is basically doing something very
-> > like the old DOS expanded memory behind the scenes, swapping around page
-> > tables so each process sees a different set of physical memory. pages
-> > (The overhead isn't quite so bad since it's doing that anyway as part of
-> > protecting process's memory from each other...)
-
-> Exctaly, and UML can do something very similar with the help of mmap().
-Which is too slow, though...
+You'd probably prefer to use the 4G/4G patch from Ingo Molnar, integrated into 
+Fedora kernels, to allow processes to use 4G of virtual address space.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
