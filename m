@@ -1,24 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BpVGy-0005s7-L9 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jul 2004 09:57:52 -0700
-Received: from smtp.telkom.net.id ([203.130.196.196])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1BpVGx-0001iN-NA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jul 2004 09:57:52 -0700
-From: Mulyadi Santosa <a_mulyadi@telkom.net>
-Reply-To: a_mulyadi@telkom.net
-Subject: Re: [uml-devel] help needed for running uml on a sarge
-References: <1359.157.182.42.226.1090946399.squirrel@www.csee.wvu.edu>
-In-Reply-To: <1359.157.182.42.226.1090946399.squirrel@www.csee.wvu.edu>
+	id 1Bpa85-0007Va-9E for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jul 2004 15:09:01 -0700
+Received: from goliath.nmsrv.com ([69.28.204.18] helo=mail.praize.com)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1Bpa84-0002SL-V5 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jul 2004 15:09:01 -0700
+Message-ID: <20040727220852.11227.qmail@praize.com>
+From: "gboutwel" <gboutwel@praize.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200407272357.02784.a_mulyadi@telkom.net>
+Subject: Re: [uml-devel] uml-2.6.8-rc2 (2.6.8-rc2 w/ uml-patch-2.6.7-01)
+Content-Type: Text/Plain;
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,22 +24,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 27 Jul 2004 23:57:02 +0700
+Date: 27 Jul 2004 22:08:52 -0000
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: atanugul@csee.wvu.edu
 
-Hello :-)
 
-> Please append a correct "root=" boot option
-> Kernel panic: VFS: Unable to mount root fs on 62:00
->  <6>SysRq : Show Regs
 
-have u create root disk image? You can use UMLBuilder of mkrootfs to do 
-that....
+> > Probably something simple, but I wanted to discuss with folks
 
-regards
+> > more in the now on if the above (stdio_console) fix was the
+right
 
-Mulyadi
+> > one, and to find out if anyone else has an idea of how to
+fixe
+
+> > the find_next_zero_bit error.
+
+
+
+> Yes, I saw that error in -mm and I agree that renaming is right;
+about the 
+
+> other one, the reported fix (below) is correct; also, it would
+be nice to 
+
+> delete include/asm-um/bitops.h (which includes the i386 version
+of the 
+
+> include; since those funcs were moved to out-of-line ones,
+the trick must be 
+
+> done that way).
+
+
+
+When I delete include/asm-um/bitops.h I can nolonger compile
+(main.o complains aobut implicit definition of find_next_bit
+& find_next_zero_bit).
+
+
+
+What am I supposed to replace include/asm-um/bitops.h with? 
+Am I somehow supposed to symlink it to an SUBARCH?
+
+
+
+> Note however that we must not hardcode that we steel things
+from i386 arch, 
+
+> but we must use $(SUBARCH) - or it will break for any other
+archs (the only 
+
+> working one, at the moment, is the x86_64 one).
+
+
+
+I've tweaked my 2.6.8-rc2-1um to use $(SUBARCH), as well..  If
+I can figure out how to handle bitops.h similarly, I'll post
+an patch of my changes vs an vanilla 2.6.8-rc2 tree.
+
+
+
+George
+
+
+
+----------------------------------------
+
+Single? Find Christian Singles like you!
+
+http://www.praize.com/singles/
+
+
 
 
 
