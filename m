@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aht0V-0004g9-82 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 08:09:07 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1Aht0U-000502-NY for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 Jan 2004 08:09:06 -0800
+	id 1AhvuM-0000QB-2O for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 11:14:58 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AhvuL-0000fW-Gf for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Jan 2004 11:14:57 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
 Subject: Re: [uml-devel] Re: uml-patch-2.6.0
 References: <200401130505.i0D55XS4026774@ccure.user-mode-linux.org>
-	<Pine.GSO.4.58.0401160957210.23807@algedi.dur.ac.uk>
-	<20040116114204.GA29290@bytesex.org>
-In-Reply-To: <20040116114204.GA29290@bytesex.org>
+	<87y8sbbrup.fsf@bytesex.org>
+	<200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
+In-Reply-To: <200401160233.i0G2Xcrf004288@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200401171710.52817.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <200401172009.38339.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,33 +29,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 17 Jan 2004 17:10:52 +0100
+Date: Sat, 17 Jan 2004 20:09:38 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-Alle 12:42, venerd=EC 16 gennaio 2004, Gerd Knorr ha scritto:
-> On Fri, Jan 16, 2004 at 10:03:11AM +0000, M A Young wrote:
-> > On Thu, 15 Jan 2004, Jeff Dike wrote:
-> > > They still don't work.  I still haven't got around to fixing it.
-> >
-> > But see the patches at
-> > http://web.tiscali.it/no-redirect-tiscali/blaisorblade/
+Alle 03:33, venerd=EC 16 gennaio 2004, Jeff Dike ha scritto:
+> kraxel@bytesex.org said:
+> >  * what is the status of kernel modules in 2.6 kernels?
 >
-> At last picking just the module fixes patch doesn't work for me, it
-> doesn't apply.  There are probably some nasty patch dependencies.
+> They still don't work.  I still haven't got around to fixing it.
 
-IIRC there's no dependency by that patch onto others; however that patch wa=
-s=20
-onto old -test9 Jeff Dike's release, and there are some easy thing to fix (=
-I=20
-hope to update everything today).
+Do the apply_alternatives + constants silly fix posted 1000 times and compi=
+le=20
+without CONFIG_MODVERSIONS. Then you don't get the kernel panic, and=20
+everything works.
 
-Bye
+I've succesfully built kernel with CONFIG_MODVERSIONS, but *maybe* the=20
+Makefile patch is needed for that (since files are post-processed with=20
+genksyms). However, I have fixed some other things which could interact wit=
+h=20
+this, especially for the link scripts.
+
 --=20
 cat <<EOSIGN
 Paolo Giarrusso, aka Blaisorblade
 Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
 EOSIGN
+
 
 
 
