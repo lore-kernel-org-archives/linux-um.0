@@ -1,27 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AZy0Y-0001ZK-22
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:52:26 -0800
-Received: from smtp1.clear.net.nz ([203.97.33.27])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AZy0X-0008G2-LZ
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 11:52:25 -0800
-Received: from 218-101-109-169.dialup.clear.net.nz
- (218-101-109-169.dialup.clear.net.nz [218.101.109.169])
- by smtp1.clear.net.nz (CLEAR Net Mail)
- with ESMTP id <0HQI006F8PVA3L@smtp1.clear.net.nz> for
- user-mode-linux-devel@lists.sourceforge.net; Sat,
- 27 Dec 2003 08:52:24 +1300 (NZDT)
-From: Nigel Cunningham <ncunningham@clear.net.nz>
-Subject: Re: [uml-devel] UML build system: patch ready
-In-reply-to: <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
-Message-id: <1072468270.6872.13.camel@laptop-linux>
-MIME-version: 1.0
-Content-type: text/plain
-Content-transfer-encoding: 7bit
-References: <200312241943.37474.blaisorblade_spam@yahoo.it>
- <Pine.LNX.4.58.0312261606480.18690@boston.corp.fedex.com>
+	id 1Aa5AY-0005cX-MR
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 19:31:14 -0800
+Received: from mx13.sac.fedex.com ([199.81.197.53])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1Aa5AY-0007gg-1s
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 26 Dec 2003 19:31:14 -0800
+Received: from inet03.prod.fedex.com (inet03.prod.fedex.com [199.81.10.43])
+	by mx13.sac.fedex.com (8.12.6p2/8.12.3) with ESMTP id hBR3Ux4R099807
+	for <user-mode-linux-devel@lists.sourceforge.net>; Fri, 26 Dec 2003 21:31:03 -0600 (CST)
+	(envelope-from jchua@fedex.com)
+From: Jeff Chua <jchua@fedex.com>
+Subject: Re: [uml-devel] ubd=mmap problem
+In-Reply-To: <200312261936.46963.blaisorblade_spam@yahoo.it>
+Message-ID: <Pine.LNX.4.58.0312271045240.13416@boston.corp.fedex.com>
+References: <3FEAE023.6040908@darkman.de> <200312261936.46963.blaisorblade_spam@yahoo.it>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,40 +29,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 27 Dec 2003 08:51:10 +1300
-To: Jeff Chua <jeff98@silk.corp.fedex.com>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, UserModeLinux <user-mode-linux-devel@lists.sourceforge.net>
-
-Hi.
-
-On Fri, 2003-12-26 at 21:12, Jeff Chua wrote:
-
-[...]
+Date: Sat, 27 Dec 2003 10:46:08 +0800 (SGT)
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 
-> arch/um/sys-i386/bugs.c ...
-> 	//line 110
-> 	struct modify_ldt_ldt_s ldt;
-> 
-> 	//line 117
-> 	err = modify_ldt(1, &ldt, sizeof(ldt));
-> 
-> 
-> It looks that modify_ldt_ldt_s is not defined anywhere and modify_ldt()
-> cannot be found.
+On Fri, 26 Dec 2003, BlaisorBlade wrote:
 
-If you can get this sorted out (and tell me how), I may be able to get
-software suspend [a bit closer to] working under UML. The lack of
-support for modifying ldts was where I blocked when I briefly looked at
-it a while ago.
+> This first problem is a known one. Did you mount the host root with hostfs
+> inside Uml? If yes, check /var/log/messages and you should see an Oops from
+> the host kernel. If that happens, apply on the host the patch in this thread
+> on 10 Dec 2003:
+>
+> [uml-devel] [PATCH] fix for: Host panic when UML reads host /dev/shm
 
-Regards,
+Can you please repost this patch?
 
-Nigel
-
--- 
-My work on Software Suspend is graciously brought to you by
-LinuxFund.org.
+Thanks,
+Jeff
 
 
 
