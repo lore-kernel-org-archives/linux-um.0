@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXQDY-0002Sb-3O
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:23:20 -0800
+	id 1AXQPL-0003Bd-FN
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:35:31 -0800
 Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
-	id 1AXQDX-0001vn-ED
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:23:19 -0800
+	id 1AXQPK-0006Mv-Rx
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 11:35:31 -0800
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [patch] fix PTRACE_LDT, skas-fix-2.4.23-A0
-References: <Pine.LNX.4.58.0312171735540.8123@earth> <Pine.LNX.4.58.0312181036220.31295@earth> <Pine.LNX.4.58.0312181122070.32554@earth>
-In-Reply-To: <Pine.LNX.4.58.0312181122070.32554@earth>
+Subject: Re: [uml-devel] new_mm : /proc/mm copy_segments failed, err = 0
+References: <Pine.LNX.4.58.0312171735540.8123@earth> <Pine.LNX.4.58.0312181514140.7622@earth> <slrnbu6j80.6le.lunz@absolut.localnet>
+In-Reply-To: <slrnbu6j80.6le.lunz@absolut.localnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Disposition: inline
-Message-Id: <200312192026.38818.blaisorblade_spam@yahoo.it>
+Message-Id: <200312192038.48325.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,18 +25,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 20:26:38 +0100
+Date: Fri, 19 Dec 2003 20:38:48 +0100
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Ingo Molnar <mingo@elte.hu>
 
-Alle 11:27, gioved=EC 18 dicembre 2003, Ingo Molnar ha scritto:
-> the patch below (against the 2.4 host-skas patch) fixes a bug in the
-> PTRACE_LDT logic: when modifying the LDT of another MM, the new LDT must
-> not be loaded.
-A previous thread(just above this one) is about a SKAS-caused panic; would =
-you=20
-check if it can be anyhow related to this bug, or try finding the problem?
+Alle 20:09, venerd=EC 19 dicembre 2003, Jason Lunz ha scritto:
+> The problem is that on every process fork, I see $Subject appear one or
+> more times on the console, and subjectively the uml seems to be running
+> a little slowly. Is this normal?
 
+No, it's a little bug from the host patch; to fix it, edit mm/proc_mm.c and=
+=20
+find this code inside write_proc_mm function:
+
+       /* Not necessary anymore - for compatibility only */
+       case MM_COPY_SEGMENTS:
+               ret =3D 0;
+then replace the line "ret =3D 0; " with "ret =3D count;"
+For Ingo: it's a write() call, after all, so it must return the count of=20
+"written" bytes... see the line above the switch().
 Bye
 --=20
 cat <<EOSIGN
