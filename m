@@ -2,17 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ayfnq-0002Zs-7t for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 15:29:26 -0800
-Received: from mail.gmx.net ([213.165.64.20])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1Ayfaf-0002Ag-BH for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Mar 2004 15:15:49 -0800
-Message-ID: <0d4701c40176$44e14840$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Subject: [uml-devel] Re: Hang at ipv4 setup is a cpufreq issue!
+	id 1Ayfm7-00026l-LJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 15:27:39 -0800
+Received: from i-195-137-100-222.freedom2surf.net ([195.137.100.222]
+	helo=greenrd.org) by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AyfYw-0001jj-S0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Mar 2004 15:14:03 -0800
+From: Robin Green <greenrd@greenrd.org>
+Message-ID: <20040303231401.GM14069@localhost.localdomain>
+References: <20040303200937.GK14069@localhost.localdomain>
+	<Pine.LNX.4.44.0403032227040.17693-100000@filer.marasystems.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Z/kiM2A+9acXa48/"
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0403032227040.17693-100000@filer.marasystems.com>
+Subject: [uml-devel] More security questions (was: Module exploits into the
+	host?)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,113 +30,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 4 Mar 2004 00:21:33 +0100
+Date: Wed, 3 Mar 2004 23:14:01 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
+
+
+
+--Z/kiM2A+9acXa48/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
-Cc: uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-see: http://www.redhat.com/archives/fedora-test-list/2003-July/msg01141.html
+On Wed, Mar 03, 2004 at 10:29:59PM +0100, Henrik Nordstrom wrote:
+> On Wed, 3 Mar 2004, Robin Green wrote:
+> > Even with the skas patch, is it possible for an insmod to allow an atta=
+cker to
+> > break out of a UML?
+>=20
+> Yes.
 
-maybe this is valuable information for all "underclockers" of you :)
+OK thanks.
 
-regards
-roland
+Two more security questions:
 
+1. Has the lcall vulnerability been fixed? By a change in the mainline kern=
+el?
 
+2. I read on some mailing list (not this one) that in tt mode, processes wi=
+thin
+a UML instance can read and write to each other's memory! Ah, here we are,
+=66rom last year:
 
------ Original Message -----=20
-From: "roland" <for_spam@gmx.de>
-To: "BlaisorBlade" <blaisorblade_spam@yahoo.it>; <user-mode-linux-devel@lis=
-ts.sourceforge.net>; "Jeff Dike" <jdike@addtoit.com>
-Cc: "uml-user" <user-mode-linux-user@lists.sourceforge.net>
-Sent: Thursday, March 04, 2004 12:11 AM
-Subject: Hang at ipv4 setup is a cpufreq issue!
+http://www.paul.sladen.org/vserver/archives/200305/0074.html
 
+Is this true, or just a rumour?
 
-> hi paolo,
-> no - this doesnt help fixing the "hang at NET:..." bug.
->
-> but the mail from jonathan boler gave the essential hint and i tried furt=
-her.
-> conclusion: this bug indeed seems to be related to cpu frequency!
->
-> so - what did i do ?
->
-> i did an
-> "modprobe p4-clockmod"
-> and then
-> "echo 0%40%50%performance >/proc/cpufreq"
-> to reduce the speed of my 2.6 ghz p4 (40% minimum, 50% maximum)
->
-> and........
->
-> THE UML STARTS FINE AND THE HANG AT IPV4 SETUP IS GONE!
->
-> so - this is the workaround.
->
-> now we need a patch ;)
->
-> do we need the so called "rtc fix" ?
-> does it exist already for 2.6 kernel ?
->
-> regards
-> roland
->
->
->
-> ----- Original Message -----=20
-> From: "BlaisorBlade" <blaisorblade_spam@yahoo.it>
-> To: <user-mode-linux-user@lists.sourceforge.net>
-> Sent: Tuesday, March 02, 2004 8:05 PM
-> Subject: Re: [uml-user] Hang at ipv4 setup
->
->
-> Alle 11:07, luned=EC 1 marzo 2004, Jonathan Boler ha scritto:
-> > I was just wondering if there has there been any progress in fixing the
-> > hang at NET: Registered protocol family 2 bug ?
-> >
-> > Is there a patch available ?
-> >
-> > Thanks
-> >
-> > Jonathan
->
-> Yes. At least, it should work (that is a fix for what we think is another
-> symptom of the your bug). Get these two patches and apply them with patch=
- -l
-> -p1 (it is a little mangled for spaces by the mailer). So, please report =
-even
-> if you get success. If you have any problem, try using only the first one.
->
-> http://marc.theaimsgroup.com/?l=3Duser-mode-linux-devel&m=3D1077817911238=
-23&w=3D2
->
-> http://marc.theaimsgroup.com/?l=3Duser-mode-linux-devel&m=3D1076991685127=
-07&w=3D2
-> --=20
-> Paolo Giarrusso, aka Blaisorblade
-> Linux registered user n. 292729
->
->
->
-> -------------------------------------------------------
-> SF.Net is sponsored by: Speed Start Your Linux Apps Now.
-> Build and deploy apps & Web services for Linux with
-> a free DVD software kit from IBM. Click Now!
-> http://ads.osdn.com/?ad_id=1356&alloc_id438&op=3Dick
-> _______________________________________________
-> User-mode-linux-user mailing list
-> User-mode-linux-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-user
->
+I have a security proposal to post next, but first I want to understand the
+current state of play of UML security.
 
+--=20
+Robin
+
+--Z/kiM2A+9acXa48/
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFARma5tPCt67UksSYRAouNAJ9y3dP7QSQ7olwcRTw/Jt807zD+nACfWIkR
+kWQQ69n8RZ5McvIUqIiAcUU=
+=64gA
+-----END PGP SIGNATURE-----
+
+--Z/kiM2A+9acXa48/--
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=3D1470&alloc_id=3D3638&op=3Dclick
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
