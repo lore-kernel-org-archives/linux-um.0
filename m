@@ -1,21 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BgoCH-0001JJ-PV for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 03 Jul 2004 10:21:05 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1BgoCG-0002bN-NK for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 03 Jul 2004 10:21:05 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] performance problem
-References: <OF78A78532.F1B0D905-ONC1256EC5.005E41A3-C1256EC5.00604452@mpsa.com>
-In-Reply-To: <OF78A78532.F1B0D905-ONC1256EC5.005E41A3-C1256EC5.00604452@mpsa.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200407031927.31347.blaisorblade_spam@yahoo.it>
+	id 1BgoNC-00024r-FP for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 03 Jul 2004 10:32:22 -0700
+Received: from ppp-62-11-78-69.dialup.tiscali.it ([62.11.78.69]
+	helo=zion.localdomain)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1BgoN5-0003O4-D3 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 03 Jul 2004 10:32:22 -0700
+From: blaisorblade_spam@yahoo.it
+Message-Id: <20040703173237.1E39DEF1@zion.localdomain>
+Subject: [uml-devel] [patch 1/1] Do not flush the whole kernel page table
+	instead of flushing one tlb.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,54 +24,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 3 Jul 2004 19:27:31 +0200
-Content-Transfer-Encoding: quoted-printable
-To: pierre.gentile@mpsa.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 03 Jul 2004 19:32:36 +0200
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
-Alle 19:31, venerd=EC 2 luglio 2004, pierre.gentile@mpsa.com ha scritto:
-> Hello all
->
->  Seems i've got a problem !
->
->  Host :
->  Compaq proliant ML570 (4 700 MHz cpus, 4 GB memory)
->
->  Host kernel:
->  generic 2.4.26 + skas patch from Blaisorbalde + sysemu patch + cpucap
->  patch + Device Mapper patch for EVMS ans EVMS compementary patchs
->
->  UML kernel:
->  generic 2.4.26 + uml-2.4.26 patch + sysemu patch
->
->  The problem is summarized by the 2 following results from unixbench 4.10.
->  The hostname of the host is pyaqqe, the one of the UML VM id pyaqqe02
->
->   (See attached file: bench1.txt)
->
->  A huge lost of performance isn't it ?
->
->  pyaqqe02 was the only one active during the bench
->
->  Questions 1:
->  Do you think it is normal that my VM performs so bad  ?
->
->  Question 2:
->  A soon as I launch 2 benchs simultaneously on 2 VMs, I encounter
->  segmentation faults during sleeps (reproductible). I thought may MVs were
->  waterproof. Do you have an explanation ?
-Where do you get the segfaults? Have you checked for any kernel panic on th=
-e=20
-host in /var/log/messages?
---=20
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
+Do not flush the whole kernel page table instead of flushing only a range in SKAS mode:
+loop from start to end instead than to start_vm to end_vm. To test a lot, since
+it could well be wrong, or some callers could be passing wrong parameters (they
+were ignored!).
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+---
+
+ uml-linux-2.6.7-paolo/arch/um/kernel/skas/tlb.c |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN arch/um/kernel/skas/tlb.c~correct-tlb-fix-range-skas arch/um/kernel/skas/tlb.c
+--- uml-linux-2.6.7/arch/um/kernel/skas/tlb.c~correct-tlb-fix-range-skas	2004-07-03 18:10:10.061305552 +0200
++++ uml-linux-2.6.7-paolo/arch/um/kernel/skas/tlb.c	2004-07-03 18:10:10.064305096 +0200
+@@ -77,7 +77,7 @@ void flush_tlb_kernel_range_skas(unsigne
+ 	int updated = 0, err;
+ 
+ 	mm = &init_mm;
+-	for(addr = start_vm; addr < end_vm;){
++	for(addr = start; addr < end;){
+ 		pgd = pgd_offset(mm, addr);
+ 		pmd = pmd_offset(pgd, addr);
+ 		if(pmd_present(*pmd)){
+_
 
 
 -------------------------------------------------------
 This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 -=20
-digital self defense, top technical experts, no vendor pitches,=20
+Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
+digital self defense, top technical experts, no vendor pitches, 
 unmatched networking opportunities. Visit www.blackhat.com
 _______________________________________________
 User-mode-linux-devel mailing list
