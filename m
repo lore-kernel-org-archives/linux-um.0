@@ -2,29 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C459C-000410-Ht for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Sep 2004 15:06:06 -0700
-Received: from tharec.debianbase.de ([212.79.163.254] helo=mail2.debianbase.de)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C459B-0004C5-Rs for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Sep 2004 15:06:06 -0700
-Received: from mail.debianbase.de (tha.vpn.local [192.168.100.1])
-	by mail2.debianbase.de (Postfix) with ESMTP id AFC6C9BB9
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon,  6 Sep 2004 00:05:55 +0200 (CEST)
-Received: from vaiobook.tha.local (vaiobook.tha.local [10.0.0.9])
-	by mail.tha.local (Postfix) with ESMTP id 3E088162CCB
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon,  6 Sep 2004 00:06:05 +0200 (CEST)
-From: Ralph =?iso-8859-1?q?Pa=DFgang?= <ralph@debianbase.de>
+	id 1C4MsU-0004M2-G5 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 10:02:02 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C4MsS-0004BY-4H for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Sep 2004 10:02:02 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] sysemu
+References: <200408230454.i7N4soOV006652@ccure.user-mode-linux.org>
+In-Reply-To: <200408230454.i7N4soOV006652@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200409060005.54577.ralph@debianbase.de>
-Subject: [uml-devel] uml modules broken in 2.6.8 (has something to do with
-	memmove)
+Message-Id: <200409061224.39494.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,82 +29,134 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 6 Sep 2004 00:05:54 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 6 Sep 2004 13:07:55 +0200
+To: LaurentVivier@wanadoo.fr, Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi all,
+On Monday 23 August 2004 06:54, Jeff Dike wrote:
+> Call me a lamer, but I only now got around to looking at the sysemu
+> patch in detail.
 
-I am using user-mode-linux 2.6.6 and 2.6.7 for some time without any big 
-problems. I now tried to build a 2.6.8 debian package for my (and some other) 
-systems and I got problems with some modules now... I used the same script 
-for packaging the uml kernel and changed only the new option in the ".config" 
-file. So that should not be the problem, I guess.
+> As it stands, it can't be merged into mainline because it adds two
+> instructions to the system call fast path.  This is the sort of thing
+> that make Linus and others go ballistic.
 
-First some version details:
-host system: 2.6.8 (debian source) with skas3, sysemu and reiser4 patch
-uml guest system: 2.6.8 (debian source) with 2.6.8.1-1 patch, sysemu patch and 
-reiser4 patch
+> The duplication of syscall_trace as syscall_emulate is also pretty
+> ugly.
 
-The problems I see while booting my uml are:
+> Below, see a patch which tweaks things to eliminate both problems.
+> Now, PT_SCEMU is set in conjunction with PT_TRACESYS, rather than
+> one or the other, but not both, being set.
 
-...
-ip_tables: (C) 2000-2002 Netfilter core team
-ip_conntrack version 2.1 (464 buckets, 3712 max) - 296 bytes per conntrack
-iptable_nat: Unknown symbol memmove
-...
+This is not needed. You can still set just one of them (which is cleaner) and 
+replace, in the fast path, 
+        testb $0x02,tsk_ptrace(%ebx)    # PT_TRACESYS
+with
+        testb $0x22,tsk_ptrace(%ebx)    # PT_TRACESYS | PT_SYSEMU
 
-If I then use: depmod -a to fix the problem it actually gets worse...
+> This means that the PT_TRACESYS test in entry.S covers both cases, and
+> the fast path is unchanged.
 
-after a reboot I get this error for even more modules, because of the unknown 
-symbol memmove:
+> The other change was to make syscall_trace return zero or non-zero,
+> according as it should run the system call or immediately return.
+> This adds a line to syscall_trace and eliminates syscall_emulate.
 
-...
-iptable_nat: Unknown symbol memmove
-ipt_MASQUERADE: Unknown symbol ip_nat_setup_info
-iptable_nat: Unknown symbol memmove
-slhc: Unknown symbol memmove
-...
 
-I also noticed that 2.6.6 (for example, I guess 2.6.7 is equal to 2.6.6) 
-hasn't got the word "memmove" anywhere in the modules. But in the 2.6.8 
-modules the string "memmove" appears quite often:
+> I've run it with both a little test case, and a tt mode UML.  The getpid()
+> benchmark there showed little improvement (~1-2%), surprisingly.  I'm going
+> to profile to see what's going on there.
+What is the surprising thing? Did you expect more or less improvement?
 
-#:/lib/modules# ls ; grep memmove * -R
-total 1
-drwxr-xr-x  3 root root 496 Sep  5 14:20 2.6.6-1um
-drwxr-xr-x  3 root root 496 Sep  5 23:51 2.6.8-1um
+You ran the getpid() benchmark with TT or with SKAS mode? Also, please note 
+that many people said that glibc caches the getpid() result, so some other 
+benchmark should be used (any sys_ni_syscall should be good, IMHO, especially 
+it if can exist somewhere. 137 is reserved for afs_syscall, so glibc must run 
+the syscall and it's even better for the benchmark.
+Also, saving two context switches for syscall may still be a little saving, 
+compared to the signal delivery. But, still, I don't understand why signal 
+delivering is slower than context switching.
 
-Binary file 2.6.8-1um/kernel/fs/udf/udf.ko matches
-Binary file 2.6.8-1um/kernel/fs/hpfs/hpfs.ko matches
-Binary file 2.6.8-1um/kernel/fs/nfsd/nfsd.ko matches
-Binary file 2.6.8-1um/kernel/fs/ncpfs/ncpfs.ko matches
-Binary file 2.6.8-1um/kernel/fs/hostfs/humfs.ko matches
-Binary file 2.6.8-1um/kernel/fs/hostfs/externfs.ko matches
-Binary file 2.6.8-1um/kernel/fs/hfsplus/hfsplus.ko matches
-Binary file 2.6.8-1um/kernel/net/ipv4/ipvs/ip_vs.ko matches
-Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/ipfwadm.ko matches
-Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/ipchains.ko matches
-Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/ipt_TCPMSS.ko matches
-Binary file 2.6.8-1um/kernel/net/ipv4/netfilter/iptable_nat.ko matches
-Binary file 2.6.8-1um/kernel/net/ipv6/ah6.ko matches
-Binary file 2.6.8-1um/kernel/net/8021q/8021q.ko matches
-Binary file 2.6.8-1um/kernel/drivers/net/slhc.ko matches
-Binary file 2.6.8-1um/kernel/drivers/net/bonding/bonding.ko matches
-Binary file 2.6.8-1um/kernel/drivers/scsi/st.ko matches
+> Have a look and see if it looks reasonable.
 
-Is it possible that the i386 and the um code is out-of-sync?
 
-I am not a kernel hacker, but I found with google that something changed with 
-memmove in 2.6.8, but I don't know enough of the kernel stuff to know what it 
-means:
+> diff -Naur linux-2.4.22-1.2197.nptl/arch/i386/kernel/ptrace.c
+> linux-2.4.22-1.2197.nptl-sysemu/arch/i386/kernel/ptrace.c ---
+> linux-2.4.22-1.2197.nptl/arch/i386/kernel/ptrace.c	2004-07-01
+> 15:04:37.000000000 -0400 +++
+> linux-2.4.22-1.2197.nptl-sysemu/arch/i386/kernel/ptrace.c	2004-08-21
+> 12:05:12.000000000 -0400 @@ -351,6 +351,7 @@
+>  		  }
+>  		  break;
+>
+> +	case PTRACE_SCEMU: /* continue and replace next syscall */
+>  	case PTRACE_SYSCALL: /* continue and stop at next (return from) syscall
+> */ case PTRACE_CONT: { /* restart after signal. */
+>  		long tmp;
+> @@ -360,6 +361,8 @@
+>  			break;
+>  		if (request == PTRACE_SYSCALL)
+>  			child->ptrace |= PT_TRACESYS;
+> +		else if (request == PTRACE_SCEMU)
+> +			child->ptrace |= PT_TRACESYS | PT_SCEMU;
+>  		else
+>  			child->ptrace &= ~PT_TRACESYS;
+Here there needs to be another change:
+ 
+-			child->ptrace &= ~PT_TRACESYS;
++			child->ptrace &= ~(PT_TRACESYS | PT_SCEMU);
 
-http://kerneltrap.org/node/view/3443 -> search for memmove and you find: 
-"i386: uninline memmove"
+Do you agree?
 
-Has nobody besides me this problem? I can't use my uml without nat, so I 
-downgraded again to 2.6.6...
+>  		child->exit_code = data;
+> @@ -396,7 +399,7 @@
+>  		ret = -EIO;
+>  		if ((unsigned long) data > _NSIG)
+>  			break;
+> -		child->ptrace &= ~PT_TRACESYS;
+> +		child->ptrace &= ~(PT_TRACESYS | PT_SCEMU);
+>  		if ((child->ptrace & PT_DTRACE) == 0) {
+>  			/* Spurious delayed TF traps may occur */
+>  			child->ptrace |= PT_DTRACE;
+> @@ -512,7 +515,7 @@
+>  	return ret;
+>  }
+>
+> -asmlinkage void syscall_trace(void)
+> +asmlinkage int syscall_trace(void)
+>  {
+>  	if ((current->ptrace & (PT_PTRACED|PT_TRACESYS)) !=
+>  						(PT_PTRACED|PT_TRACESYS))
+> @@ -534,4 +537,7 @@
+>  		current->exit_code = 0;
+>  	}
+>  	recalc_sigpending();
+> +
+> +	/* 1 if nullifying the syscall, 0 if running it */
+> +	return(current->ptrace & PT_SCEMU);
+>  }
+Well, obviously the comment must say "!= 0", not "1". And return() is not the 
+official coding style. However for 2.4 this does not matter (Marcelo will 
+never merge this).
 
---Ralph
+> +#define PTRACE_SCEMU		  31
+
+> +#define PT_SCEMU	0x00000800	/* syscall emulation for UML */
+As said, please rename them to PTRACE_SYSEMU and PT_SYSEMU; otherwise, I'll 
+change the guest patch to use PTRACE_SCEMU as name (calling "31" in different 
+ways is as good as using 31 directly).
+
+Now I'm doing a similar work for the 2.6 patch, with some bugfixing, and then 
+I'll start sending it on the LKML to review, discuss and eventually merge it.
+
+For instance (luckily I don't see any other bug for now):
+
++               clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE|
+TIF_SYSCALL_EMU);
+will never work, because TIF_* are not bitmasks, unlike _TIF_*. I also don't 
+understand why most code works with this API, but I'll follow it.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
