@@ -2,24 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFrF4-0005s8-F5 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Oct 2004 02:40:50 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CFrF0-0003BJ-Vc for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Oct 2004 02:40:50 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] building from source
-References: <1220.157.182.105.1.1096501625.squirrel@www.csee.wvu.edu>
-	<200410012125.20048.blaisorblade_spam@yahoo.it>
-	<17845.157.182.105.1.1097195659.squirrel@www.csee.wvu.edu>
-In-Reply-To: <17845.157.182.105.1.1097195659.squirrel@www.csee.wvu.edu>
+	id 1CFrmr-0004GG-Qb for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Oct 2004 03:15:45 -0700
+Received: from plam.fujitsu-siemens.com ([217.115.66.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1CFrmo-00013v-Hk for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Oct 2004 03:15:45 -0700
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200410081140.48877.blaisorblade_spam@yahoo.it>
+	charset="us-ascii"
+Subject: RE: [uml-devel] Kernel panic: check_ptrace : child exited with status
+	0x100
+Message-ID: <8B6FF516CBA0194AB0996705076B02520F7C53@ABGEX01E.abg.fsc.net>
+From: "Stroesser, Bodo" <Bodo.Stroesser@fujitsu-siemens.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,121 +27,96 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 8 Oct 2004 11:40:48 +0200
-To: atanugul@csee.wvu.edu
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 8 Oct 2004 12:13:15 +0200
+Content-Transfer-Encoding: 8bit
+To: "Christopher S. Aker" <caker@theshore.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Friday 08 October 2004 02:34, atanugul@csee.wvu.edu wrote:
-> Hi!
-> Building from source worked fine. Thanks for your help, but i am having a
-> problem with my uml.when i tried running it i got the follwing errors. How
-> can i make ti run?
-The messages you get are fine ... the problem is that the version you used is 
-botched. Use 2.4.26-3 and you'll be fine. Alternatively, IIRC if you redirect 
-stdin and stdout somewhere else it will maybe work (use /dev/zero for stdin).
+ 
 
-I.e.
-linux ubd0=/uml/root_fs_debian2.2_small < /dev/zero | tee UmlOutput
+-----Original Message-----
+From: user-mode-linux-devel-admin@lists.sourceforge.net
+[mailto:user-mode-linux-devel-admin@lists.sourceforge.net] On Behalf Of
+Christopher S. Aker
+Sent: Thursday, October 07, 2004 11:17 PM
+To: uml-devel
+Subject: [uml-devel] Kernel panic: check_ptrace : child exited with
+status 0x100
 
-> Debian:~# linux ubd0=/uml/root_fs_debian2.2_small
-> Checking for the skas3 patch in the host...not found
-> Checking for /proc/mm...not found
-> tracing thread pid = 3037
-> Checking for /dev/anon on the host...Not available (open failed with errno
-> 2) Checking for /dev/anon on the host...Not available (open failed with
-> errno 2) Checking for /dev/anon on the host...Not available (open failed
-> with errno 2) Checking for /dev/anon on the host...Not available (open
-> failed with errno 2) Linux version 2.4.26-2um (root@mizar) (gcc version
-> 3.3.4 (Debian
-> 1:3.3.4-3)) #2 Fri Jul 16 17:51:17 PDT 2004On node 0 totalpages: 8192
-> zone(0): 8192 pages.
-> zone(1): 0 pages.
-> zone(2): 0 pages.
-> Kernel command line: ubd0=/uml/root_fs_debian2.2_small root=/dev/ubd0
-> Calibrating delay loop... 3335.78 BogoMIPS
-> Memory: 28148k available
-> Dentry cache hash table entries: 4096 (order: 3, 32768 bytes)
-> Inode cache hash table entries: 2048 (order: 2, 16384 bytes)
-> Mount cache hash table entries: 512 (order: 0, 4096 bytes)
-> Buffer cache hash table entries: 1024 (order: 0, 4096 bytes)
-> Page-cache hash table entries: 8192 (order: 3, 32768 bytes)
-> Checking for host processor cmov support...Yes
-> Checking for host processor xmm support...No
-> Checking that ptrace can change system call numbers...OK
-> Checking that host ptys support output SIGIO...Yes
-> Checking that host ptys support SIGIO on close...No, enabling workaround
-> POSIX conformance testing by UNIFIX
-> Linux NET4.0 for Linux 2.4
-> Based upon Swansea University Computer Society NET3.039
-> Initializing RT netlink socket
-> Starting kswapd
-> VFS: Disk quotas vdquot_6.5.1
-> Journalled Block Device driver loaded
-> devfs: v1.12c (20020818) Richard Gooch (rgooch@atnf.csiro.au)
-> devfs: boot_options: 0x0
-> SGI XFS with ACLs, no debug enabled
-> SGI XFS Quota Management subsystem
-> Disabling 2.6 AIO in tt mode
-> pty: 256 Unix98 ptys configured
-> RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-> loop: loaded (max 8 devices)
-> Initializing Cryptographic API
-> Initializing software serial port version 1
-> mconsole (version 2) initialized on /root/.uml/8V6n5Q/mconsole
-> Partition check:
->  ubda: unknown partition table
-> Initializing stdio console driver
-> NET4: Linux TCP/IP 1.0 for NET4.0
->
-> how can i make it run?
->
-> Thanks,
-> Ashwin
->
-> > On Thursday 30 September 2004 01:47, atanugul@csee.wvu.edu wrote:
-> >> Hi!
-> >> I tried building a uml kernel from source.I have a debian 2.6.6 kernel
-> >> on my system. I downloaded a 2.4.26 kernel and a matching uml patch
-> >> (uml-patch-2.4.26-1.bz2) for it.I followed the steps specified in the
-> >> user-mode-linux.
-> >
-> > You should use either 2.4.26-3 on a 2.4.26 vanilla kernel or 2.4.24-1
-> > on a  2.4.24 vanilla kernel. All the releases between those two have
-> > various  problems. In fact, the 2.4.26-3um patch fixes exactly this
-> > problem (which  happens because you enabled CONFIG_SMP).
-> >
-> > Bye
-> >
-> >> Everything went well till step 5. When I did `make linux
-> >> ARCH=um' I got the following error messages:
-> >>
-> >> gcc -D__KERNEL__ -I/build/kernel-source-2.4.26/include -Wall
-> >> -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
-> >> -O2 -U__i386__ -Ui386 -fprofile-arcs -ftest-coverage -g -D__arch_um__
-> >> -DSUBARCH=\"i386\" -D_LARGEFILE64_SOURCE
-> >> -I/build/kernel-source-2.4.26/arch/um/include -Derrno=kernel_errno
-> >> -I/build/kernel-source-2.4.26/arch/um/kernel/tt/include
-> >> -I/build/kernel-source-2.4.26/arch/um/kernel/skas/include -c
-> >> mk_thread_kern.cIn file included from mk_thread_kern.c:3:
-> >> /build/kernel-source-2.4.26/include/linux/sched.h:366: error:
-> >> `CONFIG_NR_CPUS' undeclared here (not in a
-> >> function)/build/kernel-source-2.4.26/include/linux/sched.h:366: error:
-> >> `CONFIG_NR_CPUS' undeclared here (not in a
-> >> function)/build/kernel-source-2.4.26/include/linux/sched.h:528: error:
-> >> `CONFIG_NR_CPUS' undeclared here (not in a function)make[1]: ***
-> >> [mk_thread_kern.o] Error 1 make[1]: Leaving directory
-> >> `/build/kernel-source-2.4.26/arch/um/sys-i386/util'make: ***
-> >> [arch/um/sys-i386/util/mk_thread] Error 2
-> >>
-> >> Can anyone tell me what i should do?
-> >
-> > --
-> > Paolo Giarrusso, aka Blaisorblade
-> > Linux registered user n. 292729
+Ok, so a new combination.  This is 2.4.27 + 2.4.26-um + all the
+incremental + Bodo's
+sysemu-panic patch.  It works fine on non-sysemu hosts, and on a host
+with the
+original version of sysemu.
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+I think the key here is that this host has the latest (v5) SKAS patch,
+whereas the
+2.6.7 host kernel used the standard sysemu patch.
+
+----
+Checking for the skas3 patch in the host...found
+Checking for /proc/mm...found
+Checking PROT_EXEC mmap in /tmp...OK
+Checking for /dev/anon on the host...Not available (open failed with
+errno 6)
+Linux version 2.4.27-linode35-3um (caker@host4.linode.com) (gcc version
+3.2.2
+20030222 (Red Hat Linux 3.2.2-5)) #1 Wed Oct 6 11:31:28 EDT 2004
+On node 0 totalpages: 16384
+zone(0): 16384 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: mem=64M fake_ide fakehd con=null con0=fd:0,fd:1
+devfs=nomount
+root=/dev/ubda ubda=/linodes/luctourangeau/13588.fs
+ubdb=/linodes/luctourangeau/13586.fs
+eth0=tuntap,luctourangeau_0,fe:fd:46:55:10:64
+token_max=400000 token_refill=512
+fakehd : Changing ubd_gendisk.major_name to "hd".
+Calibrating delay loop... 3787.98 BogoMIPS
+Memory: 59436k available
+Dentry cache hash table entries: 8192 (order: 4, 65536 bytes)
+Inode cache hash table entries: 4096 (order: 3, 32768 bytes)
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+Buffer cache hash table entries: 1024 (order: 0, 4096 bytes)
+Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...<0>Kernel panic:
+check_ptrace : child
+exited with status 0x100
+In idle task - not syncing
+ <6>SysRq : Show Regs
+
+EIP: 0000:[<00000000>] CPU: 0 Not tainted EFLAGS: 00000000
+    Not tainted
+EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 0000 ES: 0000
+Call Trace: [<80315778>] [<80317cb6>] [<800115f3>] [<801adc3a>]
+[<801992f5>]
+   [<8001e3fa>] [<80013cb4>] [<80193f0d>] [<8033efe0>] [<800075c5>]
+[<803178fa>]
+   [<8019d8a0>] [<80007b65>] [<800024b2>] [<8019d8a0>] [<80002459>]
+[<8019d8c5>]
+   [<8019d8a0>] [<80193fad>] [<8019d8a0>] [<80193f88>] [<8019d8a0>]
+[<8019d609>]
+   [<8019d8a0>] [<8019d07d>] [<802b0108>] [<802b0371>]
+
+-Chris
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+Use IT products in your business? Tell us what you think of them. Give
+us
+Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out
+more
+http://productguide.itmanagersjournal.com/guidepromo.tmpl
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
 
 -------------------------------------------------------
