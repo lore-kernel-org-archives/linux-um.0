@@ -1,18 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CwgFl-0006bQ-9z for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 04:38:33 -0800
-Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CwgFi-0007NT-AW for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Feb 2005 04:38:33 -0800
-Message-ID: <42021E35.8050601@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1CwmpB-0006Xu-QD for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 11:39:33 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1Cwmp6-0005rj-V1 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Feb 2005 11:39:33 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] RE: Explaination of system call function flow in TT
+	mode
+References: <021201c5093c$0ec75780$ac655e0a@sha.st.com>
+In-Reply-To: <021201c5093c$0ec75780$ac655e0a@sha.st.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010009020407000307030200"
-Subject: [uml-devel] Race condition in ptrace
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200502032038.37637.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,236 +30,91 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 03 Feb 2005 13:51:01 +0100
-To: Roland Mc Grath <roland@redhat.com>
-Cc: Jeff Dike <jdike@addtoit.com>, BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org
+Date: Thu, 3 Feb 2005 20:38:36 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Alex LIU <alex.liu@st.com>
 
-This is a multi-part message in MIME format.
---------------010009020407000307030200
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wednesday 02 February 2005 16:29, Alex LIU wrote:
+> Hi,Blaisorblade. You wrote:
+> >do_syscall is called, and then this is done:
+> >
+> >                                sig = SIGUSR2;
+> >                                tracing = 0;
+> >... after, this saves the new tracing value inside "task", which is a
+> > struct task_struct.
+> >
+> >                       set_tracing(task, tracing);
+Pre-question: I hope for you that you use a ctags/etags enabled editor (or at 
+least LXR) to help in source browsing, otherwise you'll get lost.
 
-Working with the new UML skas0 mode on my Xeon HT host, sporadically I saw
-some processes on UML segfaulting.
+There is more than one good introduction about ctags (which is supported at 
+least by Vim and Emacs, and maybe even by Kate).
 
-In all cases, I could track this down to be caused by a gs segment register,
-that had the wrong contents.
+> But what's the exact meaning of the task in the tracer function? It is
+> defined as:
+>
+>  task = cpu_tasks[proc_id].task
+>
+> Is it the task struct of the traced thread?
 
-This again is caused by a problem in the host linux: A ptraced child going to
-stop and having woken up its parent, will save some of its registers (on i386
-they are fs, gs and the fp-registers) very late in switch_to. The parent is
-granted access to child's registers as soon, as the child is removed from
-the runqueue. Thus, in rare cases, the parent might access child's register
-savearea before the registers really are saved.
+Yes, it is... proc_id is the ID of the virtual processor (it will be always 0 
+on a uniprocessor UML instance). 
 
-This problem might also be the reason for problems with floatpoint on UML,
-that were reported some time ago.
+If you look at the comment before that line (when it is re-executed) and at 
+do_proc_op(), you'll see that when doing an exec the host process is changed.
 
-I've written a test program, that reproduces the problem on my 2.6.9 vanilla
-host quite quick. Using SuSE kernel 2.6.5-7.97-smp, I can't reproduce the
-problem, although the relevant parts seem to be unchanged. Maybe not related
-changes modify the timing?
+> What's the difference between "task->pid" and
+> "task->thread.mode.tt.extern_pid"?
 
-I also created a patch, that fixes the problem on my 2.6.9 host. This probably
-isn't a sane patch, but is enough to demonstrate, where I think, the bug is.
-Both files are attached.
+> I know in TT mode every thread in UML 
+> will has a corresponding thread in host.
 
-        Bodo
+Yes, and while task->pid (which is a field also existing in i386 Linux) is the 
+pid you see inside UML for that task, extern_pid is the pid of the matching 
+host thread.
 
---------------010009020407000307030200
-Content-Type: text/x-diff;
- name="fix-ptrace-race.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="fix-ptrace-race.patch"
+> But I don't know the exact 
+> relationship between them.
 
---- a/include/linux/sched.h	2005-02-02 22:15:51.000000000 +0100
-+++ b/include/linux/sched.h	2005-02-02 22:22:54.000000000 +0100
-@@ -584,6 +584,7 @@ struct task_struct {
-   	struct mempolicy *mempolicy;
-   	short il_next;		/* could be shared with used_math */
- #endif
-+	volatile long saving;
- };
- 
- static inline pid_t process_group(struct task_struct *tsk)
---- a/kernel/sched.c	2005-02-02 21:32:51.000000000 +0100
-+++ b/kernel/sched.c	2005-02-02 22:12:14.000000000 +0100
-@@ -2689,8 +2689,10 @@ need_resched:
- 		if (unlikely((prev->state & TASK_INTERRUPTIBLE) &&
- 				unlikely(signal_pending(prev))))
- 			prev->state = TASK_RUNNING;
--		else
-+		else {
-+			prev->saving = 1;
- 			deactivate_task(prev, rq);
-+		}
- 	}
- 
- 	cpu = smp_processor_id();
---- a/kernel/ptrace.c	2005-02-02 22:12:33.000000000 +0100
-+++ b/kernel/ptrace.c	2005-02-02 22:20:46.000000000 +0100
-@@ -96,6 +96,7 @@ int ptrace_check_attach(struct task_stru
- 
- 	if (!ret && !kill) {
- 		wait_task_inactive(child);
-+		while ( child->saving ) ;
- 	}
- 
- 	/* All systems go.. */
---- a/arch/i386/kernel/process.c	2005-02-02 22:18:29.000000000 +0100
-+++ b/arch/i386/kernel/process.c	2005-02-02 22:19:22.000000000 +0100
-@@ -577,6 +577,9 @@ struct task_struct fastcall * __switch_t
- 	asm volatile("movl %%fs,%0":"=m" (*(int *)&prev->fs));
- 	asm volatile("movl %%gs,%0":"=m" (*(int *)&prev->gs));
- 
-+	wmb();
-+	prev_p->saving=0;
-+
- 	/*
- 	 * Restore %fs and %gs if needed.
- 	 */
+It's 1-1 I think, and the code does not show sign of working otherwise (even 
+if, probably, it could be changed to make sure that multiple threads have 
+only one corresponding host thread)...
 
---------------010009020407000307030200
-Content-Type: text/plain;
- name="test_ptrace.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="test_ptrace.c"
+I don't know the relation between tracer() running instances and childs... in 
+SKAS mode, the scheduler does a context switch (through sigsetjmp() / 
+siglongjmp()) between multiple tracers (i.e. ; when  a new tracer is 
+scheduled inside UML, it makes the host process switch to the right thread 
+and execute it.
 
-#include <signal.h>
-#include <unistd.h>
-#include <errno.h>
-#include <stdio.h>
-#include <sched.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/mman.h>
-#include <sys/ptrace.h>
-#include <asm/ptrace.h>
-#include <asm/unistd.h>
-#include <asm/ldt.h>
+Instead, in TT mode there is just one tracer, which does a waitpid() on every 
+thread... a process is scheduled away by making it wait on a pipe 
+(task->thread.mode.tt.switch_pipe[]).
 
-void
-write_ldt( int number)
-{
-	struct user_desc desc;
-	int ret;
+> And I didn't found how UML creat the 
+> corresponding thread in host.
 
-	memset(&desc, 0, sizeof( desc));
-	desc.entry_number = number;
-	desc.base_addr = 0x400179a0;
-	desc.limit = 0xffffffff;
-	desc.seg_32bit = 1;
-	desc.limit_in_pages = 1;
-	desc.useable = 1;
-	ret = modify_ldt(1, &desc, sizeof( desc));
-	if ( ret )
-		printf("modify_ldt(write): ret=%d, errno=%d\n", ret, errno);
-}
+To create a process (with fork(), vfork() or clone()) the do_fork() call is 
+executed with appropriate flags...
 
-int
-child_fn( void)
-{
-	unsigned int fs=7, new_fs;
+The arch-dependent hook for the process creation is copy_thread()... and 
+copy_thread_tt() calls start_fork_tramp() which creates the host thread with 
+clone (actually with 2 clone calls, I dunno why) and returns the pid of the 
+newly created thread, which is then assigned inside copy_thread to 
+task->.....extern_pid.
 
-	write_ldt(0);
+Also notice the messages sent with SIGUSR1 named by OP_* (OP_FORK, OP_EXEC...)
+> Thanks a lot!
+Well, this was also an occasion to learn these things myself (I didn't need 
+understanding it in detail until now since I've not been working on TT code, 
+I had a feeling of what happened), so thanks to you.
 
-	asm volatile ("movl %0,%%fs": : "m" (fs));
-
-	if ( ptrace( PTRACE_TRACEME, 0, (void *)0, (void *)0) ) {
-		perror("ptrace( PTRACE_TRACEME, 0, 0, 0)");
-		exit(1);
-	}
-	asm volatile ("int $3");
-
-	asm volatile("movl %%fs,%0":"=m" (new_fs));
-	new_fs &= 0xffff;
-	if ( new_fs != (fs ^ 7) ) {
-		printf("Child: wrong fs = %d\n", new_fs);
-		exit(1);
-	}
-
-	fs = new_fs;
-
-	printf("Child: fs changed to %d\n", fs);
-
-	asm volatile ("int $3");
-}
+Regards
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
-int
-parent_fn( pid_t child)
-{
-	int ret, status;
-	unsigned long regs[FRAME_SIZE];
-
-	ret = waitpid( child, &status, 0);
-	if ( ret != child ) {
-		fprintf( stderr, "Parent: ");
-		perror("waitpid");
-		exit(1);
-	}
-	if ( !WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP ) {
-		printf("\nParent: Childs status is %x: exiting\n", status);
-		fflush( stdout);
-		return (status != 0);
-	}
-	if ( ptrace( PTRACE_GETREGS, child, 0, regs) ) {
-		fprintf( stderr, "Parent: ");
-		perror("ptrace(GETREGS)");
-		exit(1);
-	}
-
-	while (1) {
-		regs[FS] ^= 7;
-		if ( ptrace( PTRACE_SETREGS, child, 0, regs) ) {
-			fprintf( stderr, "Parent: ");
-			perror("ptrace(GETREGS)");
-			exit(1);
-		}
-		if ( ptrace( PTRACE_CONT, child, 0, 0) < 0 ) {
-			fprintf( stderr, "Parent: ");
-			perror("ptrace( PTRACE_CONT, 0, 0, 0)");
-			exit(1);
-		}
-		ret = waitpid( child, &status, 0);
-		if ( ret != child ) {
-			fprintf( stderr, "Parent: ");
-			perror("waitpid");
-			exit(1);
-		}
-		if ( !WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP ) {
-			printf("\nParent: Childs status is %x: exiting\n", status);
-			fflush( stdout);
-			return (status != 0);
-		}
-	}
-}
-
-
-int
-main( int argc, char ** argv)
-{
-	int res;
-	pid_t child;
-
-	child = fork();
-
-	if ( child < 0 ) {
-		perror("fork");
-		exit(1);
-	}
-	else if ( child ) {
-		res = parent_fn( child);
-		return res;
-	} else {
-		res = child_fn();
-		return res;
-	}
-}
-
---------------010009020407000307030200--
 
 
 -------------------------------------------------------
