@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ArnET-0007TV-6D
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 16:00:29 -0800
-Received: from 203-79-92-50.cable.paradise.net.nz ([203.79.92.50] helo=bag.kiwa.co.nz)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
-	id 1ArnCT-0007oH-J0
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 15:58:25 -0800
-From: Nicholas Lee <nj.lee@plumtree.co.nz>
-Subject: Re: [uml-devel] uml-patch-2.6.3-rc2-1
-Message-ID: <20040213235820.GB10191@woodcut.kpac.co.nz>
-References: <200402131818.i1DIIRsq002831@ccure.user-mode-linux.org> <1076697530.20064.21.camel@wopr.tektonic.net>
+	id 1ArnVW-0004Jw-Nd
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 16:18:06 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30)
+	id 1ArnQH-0008II-1a
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 16:12:41 -0800
+Message-Id: <200402140043.i1E0h7sq004297@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [inkblot@movealong.org: Bug#224215: incorrect /proc timestamp] 
+In-Reply-To: Your message of "Sun, 11 Jan 2004 22:46:20 PST."
+             <20040112064620.GU1436@alcor.net> 
+References: <20040112064620.GU1436@alcor.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1076697530.20064.21.camel@wopr.tektonic.net>
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,20 +26,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 14 Feb 2004 12:58:20 +1300
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 13 Feb 2004 19:43:07 -0500
+To: Matt Zimmerman <mdz@debian.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, 224215-forwarded@bugs.debian.org
 
-On Fri, Feb 13, 2004 at 01:38:51PM -0500, Matt Ayres wrote:
-> I'm still receiving the "NET: Registered protocol family 2" hang using
-> this kernel, FYI.
+mdz@debian.org said:
+> The timestamp of /proc after mounting the proc filesystem is fixed at
+> Jan 1, 1970 (likely initialized to 0 in Unix time and then never set).
 
-Is there a workaround for this?
+This will be fixed in the next patch.  The problem was that no timer interrupts
+had fired by the time /proc was first mounted, so xtime, which is used to
+initialize the /proc inode times, was still 0.
 
--- 
-Nicholas Lee - nj.lee at plumtree.co dot nz, somewhere on the fish Maui caught.
-gpg. 8072 4F86 EDCD 4FC1 18EF  5BDD 07B0 9597 6D58 D70C            
+				Jeff
 
-                         Quixotic Eccentricity
+
 
 
 -------------------------------------------------------
