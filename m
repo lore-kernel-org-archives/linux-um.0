@@ -2,27 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D8iDU-0007Ge-TW for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Mar 2005 09:09:56 -0800
+	id 1D8iJu-0007kO-13 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Mar 2005 09:16:34 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D8iDU-0001Tn-C2
+	(Exim 4.41) id 1D8iJm-0002GR-Ch
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Mar 2005 09:09:56 -0800
+	Tue, 08 Mar 2005 09:16:33 -0800
 From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] [BUG: UML 2.6.11-rc4-bk-latest] sleeping function
-	called from invalid context and segmentation fault
-References: <1108381733.10703.5.camel@imp.csi.cam.ac.uk>
-	<200502222141.54891.blaisorblade@yahoo.it>
-	<200503051907.41787.blaisorblade@yahoo.it>
-In-Reply-To: <200503051907.41787.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] how to "freeze" user mode linux
+References: <OF047F9E8E.223EEE65-ON48256FBE.0027DB68-48256FBE.002A9758@cosmobic.com>
+In-Reply-To: <OF047F9E8E.223EEE65-ON48256FBE.0027DB68-48256FBE.002A9758@cosmobic.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200503081107.11787.rob@landley.net>
+Message-Id: <200503081113.32380.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,30 +31,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Mar 2005 11:07:11 -0500
+Date: Tue, 8 Mar 2005 11:13:32 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Blaisorblade <blaisorblade@yahoo.it>
+Cc: siegfried@cosmobic.com
 
-On Saturday 05 March 2005 01:07 pm, Blaisorblade wrote:
-> That said, there must be something else going on... it is easy to get the
-> "repeated chars" problem (cat a file is enough), which I thought linked to
-> this: it's when some data is printed and re-printed many times...
+On Tuesday 08 March 2005 02:45 am, siegfried@cosmobic.com wrote:
+> hello everyone:
 >
-> , and everybody started noticing it just around 2.6.9 / 2.6.10. I'm not
-> sure, but maybe something else is causing the problem...
+> I am a new coder of embed linux app development .I use "User Mode Linux "
+> as host stimulator environment where our applications running  .now I have
+> a big problem !
+> I debug my code which are some processes/threads living in UML with gdb .
+> First, I make a break point on a process living in UML .Once I touch the
+> break point (this process/thread will be suspended)---BUT,other
+> process/thread are still in normal status .Soon ,these process/threads will
+> be suspended one after another because they are  waiting the feedback come
+> from the process/thread which are bing debugged .Unfortunately,when I
+> continue the process/threads, the process/thread can't return to the
+> orginial status because other processes /threads are in error status (time
+> out etc.)
+> How to "freeze" the whole "user mode linux" --all processes/threads in
+> "UML"and "UML" kernel even "UML" system timer!!!
+> and, how to recover it???
 
-Speaking of which, if it'sthe same repeated characters problem I saw I've been 
-meaning to look into that (since I can reproduce it easily), but I just 
-haven't had time due to day-jobness.
-
-I wsa under the vague impression that we were doing a write() into a pipe 
-somewhere that was doing a partial write and returning, and the retry code 
-wasn't skipping the already written bit when it retried the write.  (Could be 
-wrong, but it matches the behavior I saw.  If the xterm it's writing into 
-can't take data for a bit because the system's gone all swap happy, that's 
-when I see the repeats...)
-
-Dunno if this is the problem you've been seeing...
+Does swsusp work under UML? :)
 
 Rob
 
