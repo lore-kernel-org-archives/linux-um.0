@@ -1,15 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Adam Heath <doogie@debian.org>
-Subject: Re: [uml-devel] Re: [uml-user] UML hanging at "Activating swap"
-In-Reply-To: <20040909194623.GQ5330@alcor.net>
-Message-ID: <Pine.LNX.4.58.0409092144170.1481@gradall.private.brainfood.com>
-References: <7153203.1094632577758.SLOX.WebMail.wwwrun@webmail.helinet.de>
-	<200409092024.17925.blaisorblade_spam@yahoo.it>
-	<20040909184951.GM5330@alcor.net>
-	<200409092133.35518.blaisorblade_spam@yahoo.it>
-	<20040909194623.GQ5330@alcor.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1C5bXj-0007Re-TL for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 19:53:43 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C5bXf-0004Ay-6d
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 19:53:42 -0700
+Message-Id: <200409100355.i8A3tNg1005671@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] crash with uml-2.6.8.1-um1 
+In-Reply-To: Your message of "Thu, 02 Sep 2004 12:24:08 +0200."
+	<4136F4C8.4040905@exse.net> 
+References: <4136F4C8.4040905@exse.net> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,20 +28,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Sep 2004 21:45:46 -0500 (CDT)
-To: Matt Zimmerman <mdz@debian.org>
-Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, Dennis Ploeger <ploeger@helinet.de>, Michael West <quagly@mitzit.net>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 09 Sep 2004 23:55:23 -0400
+To: Sebastian <seb@exse.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 9 Sep 2004, Matt Zimmerman wrote:
+seb@exse.net said:
+> I know that this does not help to find the problem, what can I do ?
+> How to produce a stacktrace ? 
 
-> hwclock has caused problems for UML in the past; one of the strange things
-> that it does is to try to open an fd for the console, because some
-> architectures use that as a means to interface to the hardware clock.
+Putting a breakpoint on panic and get a backtrace when it hits.
 
-hwclock shouldn't be doing that.  It does it on all archs, even if the current
-doesn't require it, just because some arch *may* require it.
+				Jeff
 
-But, obviously, whatever hwclock doesn't, shouldn't break uml.
 
 
 -------------------------------------------------------
