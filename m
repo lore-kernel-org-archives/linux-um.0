@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXmPi-0006KX-M0
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 11:05:22 -0800
-Received: from userbb201.dsl.pipex.com ([62.190.241.201] helo=irishsea.home.craig-wood.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXmPi-0007PG-9L
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 11:05:22 -0800
-From: Nick Craig-Wood <ncw1@axis.demon.co.uk>
-Subject: Re: [uml-devel] 2.4.22-[67] problems
-Message-ID: <20031220190519.GA25646@axis.demon.co.uk>
-References: <20031220011323.GW18100@alcor.net>
+	id 1AXqwK-0000MR-Vz
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 15:55:20 -0800
+Received: from mx2.elte.hu ([157.181.151.9])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AXqwJ-0007DC-Eb
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 20 Dec 2003 15:55:19 -0800
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: [uml-devel] skas patch 2.6.0 -A4 mistake
+Message-ID: <20031220235615.GA1710@elte.hu>
+References: <354202003164938-nicospam@sengena.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20031220011323.GW18100@alcor.net>
+In-Reply-To: <354202003164938-nicospam@sengena.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,30 +25,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 20 Dec 2003 19:05:19 +0000
-To: user-mode-linux-devel@lists.sourceforge.net, 224431@bugs.debian.org, 224502@bugs.debian.org
+Date: Sun, 21 Dec 2003 00:56:15 +0100
+To: Nicolas Dimitrijevic <uml-nicospam@sengena.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Dec 19, 2003 at 05:13:23PM -0800, Matt Zimmerman wrote:
-> There definitely seems to be something awry here, even in skas mode.
-> I am getting a lot of ENOSYS errors inside UML:
 
-FYI I had no end of trouble building 2.4.22-7 with Debian testing
-(with gcc 2-95).  I got it to compile OK (with lots of warnings), but
-I couldn't get it to run reliably.
+* Nicolas Dimitrijevic <uml-nicospam@sengena.com> wrote:
 
-I've changed to building it in a woody chroot and it runs perfectly
-now!
+> you have changed the ret=0 to ret=count in the PTRACE_SWITCH_MM case
+> from file kernel/ptrace.c instead of MM_COPY_SEGMENTS case from
+> mm/proc_mm.c
 
-> 2. CONFIG_UML_REAL_TIME_CLOCK=y was added to the configuration
+doh - you are right, -A5 uploaded.
 
-Watch out if running on > 2 GHz CPU - see list archives for patch the
-UML will hang quite early on.
+/me should quit fixing bugs by hand-editing patches ...
 
-Sorry not a very scientific report!
+	Ingo
 
--- 
-Nick Craig-Wood
-ncw1@axis.demon.co.uk
 
 
 -------------------------------------------------------
