@@ -2,22 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BOR2A-0004Hx-NT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 May 2004 17:58:42 -0700
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	id 1BORD9-0007wp-OS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 May 2004 18:10:03 -0700
+Received: from [12.177.129.25] (helo=uml.user-mode-linux.org)
 	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1BOR2A-0007Ox-9S
+	(Exim 4.30) id 1BORD9-0000mv-Au
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 May 2004 17:58:42 -0700
-Message-Id: <200405140143.i4E1hWZB005226@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] uml-patch-2.4.24-3 
-In-Reply-To: Your message of "Thu, 13 May 2004 17:01:11 EDT."
-	<40A3E217.2080104@nortelnetworks.com> 
-References: <200405122208.i4CM8cCe008920@ccure.user-mode-linux.org>
-	<40A3E217.2080104@nortelnetworks.com> 
+	Thu, 13 May 2004 18:10:03 -0700
+Received: from uml.user-mode-linux.org (uml.user-mode-linux.org [127.0.0.1])
+	by uml.user-mode-linux.org (8.12.5/8.12.5) with ESMTP id i4BLWOI0022471
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 11 May 2004 17:32:59 -0400
+Received: from uml.user-mode-linux.org (jdike@localhost)
+	by uml.user-mode-linux.org (8.12.5/8.12.5/Submit) with ESMTP id
+	i4BLWO4x022463 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 11 May 2004 17:32:24 -0400
+Message-Id: <200405112132.i4BLWO4x022463@uml.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] uml-patch-2.4.25-1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,22 +33,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 May 2004 21:43:32 -0400
-To: Joe Marzot <gmarzot@nortelnetworks.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 11 May 2004 17:32:23 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-gmarzot@nortelnetworks.com said:
-> I wonder based on what you say here if two UMLs that hostfs mount the
-> same directory and access the same file...one for reading, and the
-> other  for writing, if the first will see the updates written by the
-> second....or maybe I am misinterpretting.
+This path updates UML to 2.4.25.  It also fixes a couple of bugs, one which was
+introduced in the last patch, and one which I claimed was fixed, but wasn't
+really.
 
-You are correct, the writer will cache the new data, and the reader won't see
-it until it's flushed out somehow.  If you can arrange to have the writer sync 
-the filesystem before the reader reads the files, then it will get up-to-date 
-information.
+The last patch introduced a bug which would cause the helper code to hang.
+This is now fixed.
 
-Otherwise, if this is a problem, we need to make hostfs optionally synchronous.
+The AIO code now compiles on 2.4.  I remembered to check that this time.
 
 				Jeff
 
