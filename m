@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CrNap-00008A-4m for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Jan 2005 13:42:23 -0800
+	id 1CrNsd-0001C9-CW for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Jan 2005 14:00:47 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CrNal-0002Hy-A4 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Jan 2005 13:42:23 -0800
+	id 1CrNsb-00040A-Fm for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Jan 2005 14:00:47 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] question about udp fragmentation under UML
-References: <200501180728.13533.mustang@yadan.org>
-In-Reply-To: <200501180728.13533.mustang@yadan.org>
+Subject: Re: [uml-devel] Progress with -bb4.
+References: <200501151117.12000.rob@landley.net>
+In-Reply-To: <200501151117.12000.rob@landley.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501192254.24207.blaisorblade@yahoo.it>
+Message-Id: <200501192312.52036.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,47 +29,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 Jan 2005 22:54:24 +0100
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 19 Jan 2005 23:12:51 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Yari =?iso-8859-15?q?Ad=E1n_Petralanda?= <mustang@yadan.org>
+Cc: Rob Landley <rob@landley.net>
 
-On Tuesday 18 January 2005 07:28, Yari Ad=E1n Petralanda wrote:
-> Hi,
+On Saturday 15 January 2005 17:17, Rob Landley wrote:
+> Running ptrace under uml found the problem with gcc: UML's default
+> environment includes "." at the end of $PATH, and if you have that gcc
+> doesn't search the path for ld.
 >
-> I'm developing a network block device, which uses both TCP and UDP sockets
-> to transmit it's data. When I try to send UDP frames bigger than the MTU,
-> they are dropped before they hit the wire.
+> So I took "." out of the path, and it started working.  Yay!  (Cool stuff,
+> guys.)
+>
+> Along the way, I found some interesting quirks:
+>
+> 1) I mentioned the gratuitous use of perl earlier.  This is only for
+> --show-config, which could A) be replaced by a sed script,
+I've just answered with a patch.
+> B) should 
+> presumably be wrapped in CONFIG_IKCONFIG anyway.
+No, no more possible - I planned doing that but then the plain-text version 
+went away... in the kernel normally only the gzip'ed version is saved.
+> I ripped it out of the makefile and it built fine without it.  I'll see
+> about patching the makefile with the sed thing and/or the CONFIG option
+> this weekend, although I'm not good at makefiles...
 
-This exact problem (a checksum corruption in fragmented UDP packets) was=20
-already debugged and solved, and even vanilla 2.6.9 includes the fix...=20
-currently the recommended tree is 2.6.9-bb4 on my homepage.
+> 2) Building under uclibc dies with a conflicting definition error, due to
+> arch/um/include/user.h containing "extern int strlcpy(char *, const char *,
+> int);", when uclibc's string.h contains:
 
-I assume that you should first try 2.6.9-bb and, if you still have problems=
-,=20
-ask again... Anyway please post an ack about whether 2.6.9-bb solves this=20
-bug, ok? Thanks.
+> extern size_t strlcpy(char *__restrict dst, const char *__restrict src,
+>                       size_t n) __THROW;
 
-> Trying to debug the problem, I=20
-> ran netcat using udp under a UML. It uses writes of 8192 bytes over a UDP
-> socket. The scenario that made me post here is this:
-> running UML on tracing thread mode, host kernel is 2.6.10, uml kernel is
-> 2.6.8.1-1um,
+> I yanked the strlcpy line from arch/um/include/user.h and everything built
+> fine without it (didn't even see any new warnings), both under both uclibc
+> (more or less 0.9.27, a cvs snapshot a couple weeks before release) and
+> glibc (knoppix 3.6, comes with glibc 2.3.2), possibly because it's still in
+> include/linux/string.h...
+More likely because it's not used in UML "userspace" code - it cannot include 
+include/linux/string.h (it could include the host's version, but I don't 
+think it will do this for <linux/string.h> - it's unlikely).
+> The resulting uclibc binaries seemed to work fine in both environments.  I
+> could even run the uclibc one from within the uclibc chroot environment via
+> "./vmlinux rootfs=hostfs rootflags=/ rw init=/bin/sh" and it behaved pretty
+> well.  (Overmount /proc and /dev/pts and life is good...)
 
-> if I set the MTU of the localhost device (same problem on=20
-> tun/tap) to 1500 bytes, netcat doesn't receive any frames sent to the
-> loopback interface. path_mtu_no_discover is 0. The same scenario, on my
-> host computer, runs fine.
-
-> Seems to me that IP is refusing to fragment the udp datagrams, and drops
-> them.
-I've debugged this with ethereal and the result was that the checksum, in t=
-he=20
-case of fragmented packets, was wrong - so the receiving side dropped the=20
-packets...
-
-Bye
---=20
+> 3) Running my big build script, it hangs between ./configure and make of
+> binutils.  No idea why yet.  Just sits there spinning, with vmlinux eating
+> 100% of the CPU, and if you leave it for half an hour it still won't
+> advance, and this is something that should only take a second or so...
+Well, try doing things at hand, and using sh -x (or the new bash-debugging of 
+3.0, I've not yet learned it but it could be useful maybe).
+> 4) I can get all sorts of things to segfault under uclibc with ptrace -f. 
+You mean strace, right?
+> For example, just try ptrace -f on a shellscript and watch the segfaults
+> fly.  Is it just me?
+No, it's me too, but I never got to understanding what's going on there.
+> #4 makes #3 a bit harder to debug.
+>
+> I'll try upgrading to -bs5 and see if that makes anything better.
+Well, I don't think -bs5 it's worth the effort - the problems fixed from -bb4 
+likely don't affect you in this case (they cause early breakage in the boot).
+> Query: is a 2.6.10-bb likely in future, or should I just try -bk or -mm or
+> some such?
+Watch the site, there will be upgrades on this... raw 2.6.10 isn't good for 
+UML... however the first 2.6.10-bb probably won't be better / stabler than 
+2.6.9-bb, at least until the issue you are experiencing won't be debugged...
+-- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 http://www.user-mode-linux.org/~blaisorblade
