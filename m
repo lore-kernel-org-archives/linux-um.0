@@ -1,23 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DHRG7-0000xD-UU for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Apr 2005 10:52:43 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DHRFm-0002p8-SD for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Apr 2005 10:52:43 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] question about UML sigcontext in tt mode
-References: <003501c535d8$e8574a50$90b3c68a@st.com>
-In-Reply-To: <003501c535d8$e8574a50$90b3c68a@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504012051.31964.blaisorblade@yahoo.it>
+	id 1DHSRg-0004Zi-Qe for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Apr 2005 12:08:44 -0800
+Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DHSRg-0000w1-29 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Apr 2005 12:08:44 -0800
+From: blaisorblade@yahoo.it
+Message-Id: <20050401200547.ED17CA8A2@zion>
+Subject: [uml-devel] [patch 1/1] uml: fix compilation for __CHOOSE_MODE
+	addition
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,64 +23,69 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 1 Apr 2005 20:51:31 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Alex LIU <alex.liu@st.com>
-
-On Thursday 31 March 2005 12:03, Alex LIU wrote:
-> Hi,all:
->
-> I have a question about the sigcontext in tt mode.The union uml_pt_regs is
-> defined as below(in uml-2.6.7):
->
-> --------------------------------
-> union uml_pt_regs {
-> #ifdef UML_CONFIG_MODE_TT
->  struct tt_regs {
->   long syscall;
->   void *sc;
->  } tt;
-> #endif
-> #ifdef UML_CONFIG_MODE_SKAS
->  struct skas_regs {
->   unsigned long regs[HOST_FRAME_SIZE];
->   unsigned long fp[HOST_FP_SIZE];
->   unsigned long xfp[HOST_XFP_SIZE];
->   unsigned long fault_addr;
->   unsigned long fault_type;
->   unsigned long trap_type;
->   long syscall;
->   int is_user;
->  } skas;
-> #endif
-> };
-> -------------------------------------
->
-> Then why the tt.sc is defined as void while not as struct sigcontext?
-> Thanks!
-
-I think because of header inclusion problems... you can't include userspace 
-header in kernelspace files and so on. And the above can be included by both 
-kind of files, being in arch/um/include.
-
-This could be solved however with a:
-struct sigcontext;
-...
-struct sigcontext * sc;
-
-instead of
-
-void* sc;
-
-I've not checked however if sc is actually a sigcontext - I rely on what you 
-say.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Date: Fri, 01 Apr 2005 22:05:46 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
+I had added the __CHOOSE_MODE syntax to fix some warnings with newer GCC's in
+the uml-fix-cond-expr-as-lvalues-warning patch.
+
+Here is the update from the version I sent to make it work also when only one
+mode (TT or SKAS) is enabled.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.11-paolo/arch/um/include/choose-mode.h |   27 ++++++++---------------
+ 1 files changed, 10 insertions(+), 17 deletions(-)
+
+diff -puN arch/um/include/choose-mode.h~uml-fix-cond-expr-as-lvalues-rediffed arch/um/include/choose-mode.h
+--- linux-2.6.11/arch/um/include/choose-mode.h~uml-fix-cond-expr-as-lvalues-rediffed	2005-04-01 21:48:45.000000000 +0200
++++ linux-2.6.11-paolo/arch/um/include/choose-mode.h	2005-04-01 21:50:16.000000000 +0200
+@@ -11,6 +11,13 @@
+ #if defined(UML_CONFIG_MODE_TT) && defined(UML_CONFIG_MODE_SKAS)
+ #define CHOOSE_MODE(tt, skas) (mode_tt ? (tt) : (skas))
+ 
++extern int mode_tt;
++static inline void *__choose_mode(void *tt, void *skas) {
++	return mode_tt ? tt : skas;
++}
++
++#define __CHOOSE_MODE(tt, skas) (*( (typeof(tt) *) __choose_mode(&(tt), &(skas))))
++
+ #elif defined(UML_CONFIG_MODE_SKAS)
+ #define CHOOSE_MODE(tt, skas) (skas)
+ 
+@@ -21,22 +28,8 @@
+ #define CHOOSE_MODE_PROC(tt, skas, args...) \
+ 	CHOOSE_MODE(tt(args), skas(args))
+ 
+-extern int mode_tt;
+-static inline void *__choose_mode(void *tt, void *skas) {
+-	return mode_tt ? tt : skas;
+-}
+-
+-#define __CHOOSE_MODE(tt, skas) (*( (typeof(tt) *) __choose_mode(&(tt), &(skas))))
+-
++#ifndef __CHOOSE_MODE
++#define __CHOOSE_MODE(tt, skas) CHOOSE_MODE(tt, skas)
+ #endif
+ 
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
++#endif
+_
 
 
 -------------------------------------------------------
