@@ -2,25 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CKhM8-0003pC-CT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 11:08:08 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CKhM5-0007M5-Ji for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Oct 2004 11:08:08 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Kernel panic: check_ptrace : child exited with status
-	0x100
-References: <200410081159.i98Bxgr03954@trolli.pdb.fsc.net>
-	<200410142033.06629.blaisorblade_spam@yahoo.it>
-	<417699B2.6090909@fujitsu-siemens.com>
-In-Reply-To: <417699B2.6090909@fujitsu-siemens.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200410212006.05008.blaisorblade_spam@yahoo.it>
+	id 1CKk2A-0003Fj-75 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 13:59:42 -0700
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1CKk28-00021V-DY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Oct 2004 13:59:42 -0700
+Message-Id: <200410212209.i9LM92FL005362@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Thu, 21 Oct 2004 17:25:55 +0200."
+	<4177D503.2030409@fujitsu-siemens.com> 
+References: <4177D503.2030409@fujitsu-siemens.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: Bad handling of invalif systemcalls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,111 +28,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 21 Oct 2004 20:06:05 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, jdike@addtoit.com, "Christopher S. Aker" <caker@theshore.net>
+Date: Thu, 21 Oct 2004 18:09:02 -0400
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 20 October 2004 19:00, Bodo Stroesser wrote:
-> BlaisorBlade wrote:
-> > Yes, I confirm the patch I sent in my previous email for the host. I
-> > still need to test that, but I'll do this soon. It's reattached as
-> > "fix-sysemu-when-changing-state.patch".
+bstroesser@fujitsu-siemens.com said:
+> AFAICS, the only solution for this is using the PTRACE_O_TRACESYSGOOD
+> option. This option seems to be specific for linux, but the problem
+> maybe is specific for linux, too. 
 
-> OK. Now I've had time to test with sysemu. But unfortunately the patch for
-> the 2.6 host isn't enough! It still crashes if sysemu is switched off
-> dynamically via /proc/sysemu.
-Yes, I had seen this, but had not found a clue, even if I came across the 
-problematic code. THANKS FOR FIXING THIS!!!!! YU-UH!
+Another solution is to read the instruction.
 
-> The problem is in arch/i386/kernel/entry.S. The latest host-patch v6
-> inhibits the syscall-handler to be called, but does not prevent
-> do_syscall_trace to be called after this for syscall completion
-> interception. The appended patch fixes this. It reuses the TIF_SINGLESTEP
-> flag to remember "we come from PTRACE_SYSEMU and now are in
-> PTRACE_SYSCALL", since the flag is unused in the depicted situation.
+However TRACESYSGOOD is cleaner.  My only concern is whether that limits the
+hosts that UML will run on.  If TRACESYSGOOD has been around for the 2.4
+series, then that's OK.
 
-> Feel free to change it, if you see the need to use  an other or a new
-> defined flag for this.
+I would be tempted to #define SIGSYSCALL (SIGTRAP + 0x80) or something just
+to make the +0x80 bit less magic-looking.
 
-To use a new one you must be careful - there is interest in this using a 
-little flag number. When you get more than 7 flags, you must test for them 
-with "testw" instead of "testb". And if this happens in the syscall fast 
-path, people on LKML start benchmarking the performance loss (I've actually 
-read something such on kerneltrap.org). Well, at least on the syscall fast 
-path. If the test is done only under ptrace, then it's not a problem.
+> For the third patch I'm quite anxious, that there could go something
+> wrong when using the debugger. I don't understand much about this.
+> Maybe someone else could look into this? 
 
-Btw, the problem IMHO is not actually reading one more byte. The first SYSEMU 
-patch, instead, added one more conditional jump to the fast-path. Which is 
-bad, as noted by Jeff - one conditional jump can cost tens of cycles IIRC 
-(I'm not completely sure, but if branch predition fails, the processor must 
-empty its pipelines - even more costly on Pentium4).
+ 				if(!tracing && (debugger_pid != -1)){
+ 					child_signal(pid, status);
+ 					continue;
+ 				}
+ 				tracing = 0;
+				if(do_syscall(task, pid))
+					sig = SIGUSR2;
 
-So, I'll maybe add another flag.
+OK, what this says is
+	if we are running in the kernel, not userspace (!tracing)
+	and we are debugging UML (debugger_pid != -1)
+	then we fake the syscall-traced gdb into thinking the SIGTRAP was sent
+	to the process
 
-> The patch is tested, AFAICS, it works fine, i.e. sysemu can be switched on
-> and off dynamically without crash.
+	Otherwise we call do_syscall, which will check the syscall number 
+	and return true if it thinks it's handling a syscall.  In that case,
+	we hit the process with SUGUSR2 in order to force it into the UML
+	syscall handler.
 
-> For the 2.4 host, this seems to be not relevant. But I could read the
-> source only. Does anyone know, whether sysemu on/off works on host 2.4?
+So, if we get SIGTRAP + 0x80, we know we have a syscall, and the debugging
+stuff can just go away.  You can look at this sort of mathematically, and
+say SIGTRAP + 0x80 => tracing, so that if(!tracing...) can just be deleted.
 
-Yes, it works. In fact, I developed that with 2.4 hosts. I understand the 
-difference.
+Similarly, do_syscall will always return true, so you don't need to check its
+return, which you have removed.
 
-I'm going to take a look at this and integrate it - at least a comment near 
-the TIF_* definition for this trick is warranted, if not something cleaner. 
-I'd prefer to make it like 2.4 hosts, where the SYSCALL flag is not tested at 
-all in the SYSEMU case. I'll try to do this.
+In the SIGTRAP case, you might as well inline do_sigtrap.  One line functions
+are pretty much a waste.  In any case, I don't understand why you're doing
+that.  orig_eax should already be -1.
+	
+				Jeff
 
-> --- linux-2.6.7-old/arch/i386/kernel/ptrace.c	2004-10-20 16:57:25.148861788
-> +0200 +++ linux-2.6.7/arch/i386/kernel/ptrace.c	2004-10-20
-> 17:08:47.722062593 +0200 @@ -598,6 +598,16 @@
->
->   	if (!test_thread_flag(TIF_SYSCALL_TRACE) && !is_sysemu)
->   		return 0;
-> +	/* We can detect the case of coming from PTRACE_SYSEMU and now
-> +	 * running with PTRACE_SYSCALL, by TIF_SINGLESTEP being set
-> +	 * additionally.
-> +	 * If so let's reset the flag and return without action.
-> +	 */
-> +	if (test_thread_flag(TIF_SINGLESTEP) &&
-> +	    test_thread_flag(TIF_SYSCALL_TRACE)) {
-> +		clear_thread_flag(TIF_SINGLESTEP);
-> +		return 0;
-> +	}
->   	if (!(current->ptrace & PT_PTRACED))
->   		return 0;
->   	/* the 0x80 provides a way for the tracing parent to distinguish
-
-> @@ -605,6 +615,15 @@
->   	ptrace_notify(SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD)
->   				 ? 0x80 : 0));
-This may be the raw 2.6.9 source - but currently (2.6.9-bk4) the source is 
-this
-       ptrace_notify(SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD) &&
-                                 !test_thread_flag(TIF_SINGLESTEP) ? 0x80 : 
-0));
-
-I think that the second version of your patch is safe against this, but I'm 
-not looking at this in detail for now (no time, sorry).
-
-> +	/* If we came here with PTRACE_SYSEMU and now continue with
-> +	 * PTRACE_SYSCALL, entry.S used to intercept the syscall return. But it
-> +	 * shouldn't!
-> +	 * So we additionally use TIF_SINGLESTEP, which is always unused in this
-> +	 * special case, to remember, we came from SYSEMU.
-> +	 */
-> +	if (is_sysemu && test_thread_flag(TIF_SYSCALL_TRACE))
-> +		set_thread_flag(TIF_SINGLESTEP);
-
-Ok, this is run when issuing the first tracing just after switching off 
-SYSEMU.
->   	/*
->   	 * this isn't the same as continuing with a signal, but it will do
->   	 * for normal use.  strace only continues with a signal if the
-
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
 
 
 -------------------------------------------------------
