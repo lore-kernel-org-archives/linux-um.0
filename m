@@ -2,15 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpCz9-0001ai-BF for user-mode-linux-devel@lists.sourceforge.net;
+	id 1CpCz9-0001aj-Ed for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 13 Jan 2005 13:58:31 -0800
 Received: from www.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CpCz8-0001Ue-AB for user-mode-linux-devel@lists.sourceforge.net;
+	id 1CpCz8-0001Uh-AF for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 13 Jan 2005 13:58:31 -0800
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20050113210101.0A34F1FB6F@zion>
-Subject: [uml-devel] [patch 06/11] uml: allow free ubd flag ordering
+Message-Id: <20050113210056.465BEBAB5@zion>
+Subject: [uml-devel] [patch 04/11] uml: refuse to run without skas if no tt
+	mode in
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,108 +23,119 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Jan 2005 22:01:00 +0100
+Date: Thu, 13 Jan 2005 22:00:56 +0100
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
 
 
-When parsing the <flags> section in ubd<n><flags>=file[,file2], instead of
-requiring that the flags are specified in a certain order, just make the code
-smarter.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+
+Return an early error message when no TT support is compiled in and no SKAS
+support is detected.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- linux-2.6.11-paolo/arch/um/drivers/ubd_kern.c |   48 +++++++++++++++-----------
- 1 files changed, 29 insertions(+), 19 deletions(-)
+ linux-2.6.11-paolo/arch/um/kernel/process.c |   35 ++++++++++++++++++++--------
+ linux-2.6.11-paolo/arch/um/kernel/um_arch.c |   10 +++++++-
+ 2 files changed, 35 insertions(+), 10 deletions(-)
 
-diff -puN arch/um/drivers/ubd_kern.c~uml-ubd-free-flag-ordering arch/um/drivers/ubd_kern.c
---- linux-2.6.11/arch/um/drivers/ubd_kern.c~uml-ubd-free-flag-ordering	2005-01-13 03:11:22.564889912 +0100
-+++ linux-2.6.11-paolo/arch/um/drivers/ubd_kern.c	2005-01-13 03:11:22.567889456 +0100
-@@ -250,7 +250,7 @@ static int ubd_setup_common(char *str, i
- 	struct ubd *dev;
- 	struct openflags flags = global_openflags;
- 	char *backing_file;
--	int n, err;
-+	int n, err, i;
- 
- 	if(index_out) *index_out = -1;
- 	n = *str;
-@@ -312,29 +312,40 @@ static int ubd_setup_common(char *str, i
- 	dev = &ubd_dev[n];
- 	if(dev->file != NULL){
- 		printk(KERN_ERR "ubd_setup : device already configured\n");
--		goto out2;
-+		goto out;
- 	}
- 
--	if(index_out) *index_out = n;
-+	if (index_out)
-+		*index_out = n;
- 
--	if (*str == 'r'){
--		flags.w = 0;
--		str++;
--	}
--	if (*str == 's'){
--		flags.s = 1;
--		str++;
--	}
--	if (*str == 'd'){
--		dev->no_cow = 1;
-+	for (i = 0; i < 4; i++) {
-+		switch (*str) {
-+		case 'r':
-+			flags.w = 0;
-+			break;
-+		case 's':
-+			flags.s = 1;
-+			break;
-+		case 'd':
-+			dev->no_cow = 1;
-+			break;
-+		case '=':
-+			str++;
-+			goto break_loop;
-+		default:
-+			printk(KERN_ERR "ubd_setup : Expected '=' or flag letter (r,s or d)\n");
-+			goto out;
-+		}
- 		str++;
- 	}
- 
--	if(*str++ != '='){
-+        if (*str == '=')
-+		printk(KERN_ERR "ubd_setup : Too many flags specified\n");
-+        else
- 		printk(KERN_ERR "ubd_setup : Expected '='\n");
--		goto out2;
--	}
-+	goto out;
- 
-+break_loop:
- 	err = 0;
- 	backing_file = strchr(str, ',');
- 
-@@ -354,7 +365,7 @@ static int ubd_setup_common(char *str, i
- 	dev->file = str;
- 	dev->cow.file = backing_file;
- 	dev->boot_openflags = flags;
-- out2:
-+out:
- 	spin_unlock(&ubd_lock);
- 	return(err);
- }
-@@ -385,8 +396,7 @@ __uml_help(ubd_setup,
- "    machine by running 'dd' on the device. <n> must be in the range\n"
- "    0 to 7. Appending an 'r' to the number will cause that device\n"
- "    to be mounted read-only. For example ubd1r=./ext_fs. Appending\n"
--"    an 's' (has to be _after_ 'r', if there is one) will cause data\n"
--"    to be written to disk on the host immediately.\n\n"
-+"    an 's' will cause data to be written to disk on the host immediately.\n\n"
+diff -puN arch/um/kernel/um_arch.c~uml-refuse-to-run-without-skas-if-no-tt-mode-in arch/um/kernel/um_arch.c
+--- linux-2.6.11/arch/um/kernel/um_arch.c~uml-refuse-to-run-without-skas-if-no-tt-mode-in	2005-01-13 21:25:17.601847632 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/um_arch.c	2005-01-13 21:25:17.605847024 +0100
+@@ -198,7 +198,7 @@ __uml_setup("ncpus=", uml_ncpus_setup,
  );
+ #endif
  
- static int fakehd_set = 0;
+-int force_tt = 0;
++static int force_tt = 0;
+ 
+ #if defined(CONFIG_MODE_TT) && defined(CONFIG_MODE_SKAS)
+ #define DEFAULT_TT 0
+@@ -319,6 +319,14 @@ int linux_main(int argc, char **argv)
+ 	if(have_root == 0) add_arg(saved_command_line, DEFAULT_COMMAND_LINE);
+ 
+ 	mode_tt = force_tt ? 1 : !can_do_skas();
++#ifndef CONFIG_MODE_TT
++	if (mode_tt) {
++		/*Since CONFIG_MODE_TT is #undef'ed, force_tt cannot be 1. So,
++		 * can_do_skas() returned 0, and the message is correct. */
++		printf("Support for TT mode is disabled, and no SKAS support is present on the host.\n");
++		exit(1);
++	}
++#endif
+ 	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas, 0,
+ 				     &host_task_size, &task_size);
+ 
+diff -puN arch/um/kernel/process.c~uml-refuse-to-run-without-skas-if-no-tt-mode-in arch/um/kernel/process.c
+--- linux-2.6.11/arch/um/kernel/process.c~uml-refuse-to-run-without-skas-if-no-tt-mode-in	2005-01-13 21:25:17.602847480 +0100
++++ linux-2.6.11-paolo/arch/um/kernel/process.c	2005-01-13 21:25:17.605847024 +0100
+@@ -375,9 +375,9 @@ void forward_pending_sigio(int target)
+ 		kill(target, SIGIO);
+ }
+ 
+-int can_do_skas(void)
+-{
+ #ifdef UML_CONFIG_MODE_SKAS
++static inline int check_skas3_ptrace_support(void)
++{
+ 	struct ptrace_faultinfo fi;
+ 	void *stack;
+ 	int pid, n, ret = 1;
+@@ -386,29 +386,46 @@ int can_do_skas(void)
+ 	pid = start_ptraced_child(&stack);
+ 
+ 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
+-	if(n < 0){
++	if (n < 0) {
+ 		if(errno == EIO)
+ 			printf("not found\n");
+-		else printf("No (unexpected errno - %d)\n", errno);
++		else {
++			perror("not found");
++		}
+ 		ret = 0;
++	} else {
++		printf("found\n");
+ 	}
+-	else printf("found\n");
+ 
+ 	init_registers(pid);
+ 	stop_ptraced_child(pid, stack, 1, 1);
+ 
++	return(ret);
++}
++
++int can_do_skas(void)
++{
++	int ret = 1;
++
+ 	printf("Checking for /proc/mm...");
+-	if(os_access("/proc/mm", OS_ACC_W_OK) < 0){
++	if (os_access("/proc/mm", OS_ACC_W_OK) < 0) {
+ 		printf("not found\n");
+ 		ret = 0;
++		goto out;
++	} else {
++		printf("found\n");
+ 	}
+-	else printf("found\n");
+ 
+-	return(ret);
++	ret = check_skas3_ptrace_support();
++out:
++	return ret;
++}
+ #else
++int can_do_skas(void)
++{
+ 	return(0);
+-#endif
+ }
++#endif
+ 
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
 _
 
 
