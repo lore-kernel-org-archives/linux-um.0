@@ -1,9 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-Id: <200312060005.hB605YAv008283@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: bug in COW? - Re: [uml-user] uml 2.6.0-test9 crash 
-In-Reply-To: Your message of "Thu, 27 Nov 2003 17:28:59 PST."
-             <Pine.LNX.4.53L0.0311271721550.27408@alpha.temple-baptist.com> 
-References: <Pine.LNX.4.44.0311280047120.28924-100000@filer.marasystems.com> <010c01c3b54d$99552830$2000000a@schlepptopp>  <Pine.LNX.4.53L0.0311271721550.27408@alpha.temple-baptist.com> 
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1ASPjs-0000ev-Rm
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 05 Dec 2003 15:52:00 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.24)
+	id 1ASPjr-0007Wh-GK
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 05 Dec 2003 15:51:59 -0800
+Message-Id: <200312060004.hB604ZAv008193@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Problem with 2.4.22-uml6 & skas... 
+In-Reply-To: Your message of "Mon, 24 Nov 2003 04:02:14 +0100."
+             <3FC174B6.4030908@darkman.de> 
+References: <3FC174B6.4030908@darkman.de> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -17,22 +26,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 05 Dec 2003 19:05:34 -0500
-To: Erik Walthinsen <omega@temple-baptist.com>
-Cc: UML User list <user-mode-linux-user@lists.sourceforge.net>, UML Devel list <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 05 Dec 2003 19:04:35 -0500
+To: Sven 'Darkman' Michels <sven@darkman.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-omega@temple-baptist.com said:
-> I've also run into the fact that something (either UML or the shell)
-> seems to cause any symlinks in the path to be factored out as well.
+sven@darkman.de said:
+> The host: Running vanilla 2.4.22 with host-skas3.patch (applied
+> without any error), PROC_MM enabled. 
 
-It's UML.  I didn't want backing file paths to be invalidated by a component
-of a symlink going away when the backing file is still perfectly accessible.
+>  Problem: i start the uml with: linux-2.4.22 ubd0=/home/uml1/uml/10/
+> root_fs  ubd1=/home/uml1/uml/10/swap.disk mem=64M con1=pts umid=uml10
+> eth0=tuntap,uml10-eth0 devfs=mount and it stops here: VFS: Mounted
+> root (ext2 filesystem) readonly. Mounted devfs on /dev 
 
-> This means that any images I try to locate in the same place at all
-> times, regardless of physical location, still end up being stored as
-> their physical location. 
-
-I don't parse that at all.  Can you try again, maybe with an example or two?
+Every case of this I've seen has been caused by David's 2.4.21 (or so) skas
+patch being applied to 2.4.22.  Applying my 2.4.19 skas patch has fixed
+the problem.
 
 				Jeff
 
