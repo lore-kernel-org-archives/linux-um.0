@@ -2,21 +2,35 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AjO0N-00083U-NK for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Jan 2004 11:27:11 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1AjO0N-0007kF-5P for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Jan 2004 11:27:11 -0800
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: First shrinkage of *_user.c files
-References: <200401202026.19785.blaisorblade_spam@yahoo.it>
-	<200401202034.i0KKY4DG004042@ccure.user-mode-linux.org>
-In-Reply-To: <200401202034.i0KKY4DG004042@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+	id 1AjNkT-0001O9-SD for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jan 2004 11:10:45 -0800
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1AjNez-0004YC-6a
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jan 2004 11:05:05 -0800
+Received: from hirsch.in-berlin.de (localhost [127.0.0.1])
+	by hirsch.in-berlin.de (8.12.10/8.12.10/Debian-6) with ESMTP id
+	i0LJ51rC023448 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 21 Jan 2004 20:05:01 +0100
+Received: (from uucp@localhost)
+	by hirsch.in-berlin.de (8.12.10/8.12.10/Debian-5) with UUCP id
+	i0LJ51KB023426 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jan 2004 20:05:01 +0100
+Received: from bytesex.org (kraxel@localhost [127.0.0.1])
+	by bytesex.org (8.12.3/8.12.3/Debian-6.6) with ESMTP id i0LIwgnW003821
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 21 Jan 2004 19:58:42 +0100
+Received: (from kraxel@localhost)
+	by bytesex.org (8.12.3/8.12.3/Debian-6.6) id i0LIwgNS003820
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jan 2004 19:58:42 +0100
+From: Gerd Knorr <kraxel@bytesex.org>
+Message-ID: <20040121185842.GA3811@bytesex.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200401212029.44947.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] [patch] selinux build fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,45 +42,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Jan 2004 20:29:44 +0100
-Content-Transfer-Encoding: quoted-printable
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 21 Jan 2004 19:58:42 +0100
+To: uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Alle 21:34, marted=EC 20 gennaio 2004, Jeff Dike ha scritto:
-> blaisorblade_spam@yahoo.it said:
-> > I've started removing some functions from the user_objs, and here
-> > there are  the two first patches. Any comment on the style of these
-> > changes is highly  appreciated. The next thing I'm going to do is to
-> > remove entirely  hostaudio_user.c (I've already started this, but I've
-> > not got a successful  test yet, since I also did a little fix in
-> > this).
->
-> Yeah, that's the style I'm looking for.  The goal should be to eliminate
-> anything outside of arch/um/os needing any libc headers.
->
-> Try to extract the essence of the libc dependency into arch/um/os rather
-> than just moving large chunks of code there, which looks like what you're
-> doing.
-I added a function to os- and moved some other ones away from _user files.
+  Hi,
 
-The first is not too tiny because some other system could not have the=20
-termios.h abstraction, so it must be more abstract (for Windows it will=20
-probably be a no-op, since there is no support in the OS IMHO).
+the linker script needs a fix to make uml build with selinux enabled.
 
-The moved functions didn't depend on userspace so I just moved them (they a=
-re=20
-tiny wrappers but are needed for some structures).
+  Gerd
 
-However, see the next patches I posted for more changes.
-
-Bye
---=20
-cat <<EOSIGN
-Paolo Giarrusso, aka Blaisorblade
-Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
-EOSIGN
-
+Index: linux-um-2.6.2-rc1/include/asm-um/common.lds.S
+===================================================================
+--- linux-um-2.6.2-rc1.orig/include/asm-um/common.lds.S	2004-01-21 13:19:18.000000000 +0100
++++ linux-um-2.6.2-rc1/include/asm-um/common.lds.S	2004-01-21 19:32:39.000000000 +0100
+@@ -64,6 +64,7 @@
+   __uml_initcall_start = .;
+   .uml.initcall.init : { *(.uml.initcall.init) }
+   __uml_initcall_end = .;
++  SECURITY_INIT
+   __init_end = .;
+ 
+   __exitcall_begin = .;
 
 
 -------------------------------------------------------
