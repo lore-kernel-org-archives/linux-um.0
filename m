@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C2HhI-0005TH-NX for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 Aug 2004 16:05:52 -0700
-Received: from gateway.trlabs.ualberta.ca ([129.128.129.130]
-	helo=mailhost.edm.trlabs.ca)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1C2HhH-0004T7-BL for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 Aug 2004 16:05:52 -0700
-Message-ID: <007101c48faf$70ecea80$e961b9c7@qinghua>
-Reply-To: "Qinghua(Kevin) Ye" <qye@trlabs.ca>
-From: "Qinghua(Kevin) Ye" <qye@trlabs.ca>
-References: <LEEIJGBJEEABAGOFFGAHCEHMCBAA.brocka@sterlingcgi.com>
+	id 1C2Y8R-00089J-W6 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Sep 2004 09:38:59 -0700
+Received: from brown.brainfood.com ([146.82.138.61]
+	helo=gradall.private.brainfood.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1C2Y8O-0000Yr-FP for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Sep 2004 09:38:57 -0700
+From: Adam Heath <doogie@debian.org>
+Subject: Re: [uml-devel] [patch 2/4] proc_sysemu
+In-Reply-To: <20040830203549.E13DBBD38@zion.localdomain>
+Message-ID: <Pine.LNX.4.58.0409011138180.1678@gradall.private.brainfood.com>
+References: <20040830203549.E13DBBD38@zion.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] UML on AMD 64-Bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,15 +27,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 31 Aug 2004 17:08:34 -0600
-To: Anthony Brock <brocka@sterlingcgi.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 1 Sep 2004 11:38:51 -0500 (CDT)
+To: blaisorblade_spam@yahoo.it
+Cc: user-mode-linux-devel@lists.sourceforge.net, for_spam@gmx.de
 
-Hi, 
+On Mon, 30 Aug 2004,  wrote:
 
-Does there any released patch for AMD 64 system? Thanks.
+>
+> From: "roland" <for_spam@gmx.de> and me.
+> Adds /proc/sysemu to toggle SYSEMU usage at runtime.
 
-Regards,
-Qinghua(Kevin) Ye
+Er, why?  This could cause the emulated system to cause higher load on the
+host, which seems bad to me.
 
 
 -------------------------------------------------------
