@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DAprs-0001WL-NF for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Mar 2005 05:44:24 -0800
+	id 1DAqWY-0003uS-2h for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Mar 2005 06:26:26 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DAprq-0000qE-Dy for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Mar 2005 05:44:24 -0800
-Message-Id: <200503141615.j2EGFbFF002845@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] stdio and serial consoles. 
-In-Reply-To: Your message of "Mon, 14 Mar 2005 00:48:09 EST."
-	<200503140048.09731.rob@landley.net> 
-References: <200503140048.09731.rob@landley.net> 
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DAqWV-0003Tg-Fy for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Mar 2005 06:26:25 -0800
+Message-Id: <200503141613.j2EGDqFF002836@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [patch] Fixing the stdio console stuttering. 
+In-Reply-To: Your message of "Mon, 14 Mar 2005 00:43:49 EST."
+	<200503140043.50163.rob@landley.net> 
+References: <200503140043.50163.rob@landley.net> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -27,21 +27,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 14 Mar 2005 11:15:37 -0500
+Date: Mon, 14 Mar 2005 11:13:52 -0500
 To: Rob Landley <rob@landley.net>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
 rob@landley.net said:
-> Is it just me, or is stdio_console.c and ssl.c basically the same code
-> with a  couple of variables renamed, a different driver structure
-> initialization, and  slightly different header #includes? 
+> I spent far too much of the weekend tracking this sucker down through
+> the guts of the tty code.  The problem turns out to be that drivers/
+> char/n_tty.c has a write_chan that does buffering and retransmitting
+> data, and arch/um/drivers/chan_kern.c ALSO has a write_chan that
+> buffers and retransmits data, and the first calls the second but the
+> second doesn't always return correct status information for the
+> -EAGAIN case.
 
-Yeah, they started off as totally different drivers until I realized that
-there was no reason for them to be different.  So I spent a good amount of
-time factoring out common code until you basically have one code base which
-plugs itself into the kernel in two slightly different ways.
 
-				Jeff
+Excellent, thanks.
+
+		Jeff
 
 
 
