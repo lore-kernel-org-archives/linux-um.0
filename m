@@ -1,20 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2Uv0-000462-2q for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 04:40:38 -0800
-Received: from av5-1-sn1.fre.skanova.net ([81.228.11.111])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2Uuy-0006lO-MR for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 04:40:36 -0800
-References: <200403120313.i2C3DstV005296@ccure.user-mode-linux.org>
-From: Peter Osterlund <petero2@telia.com>
-In-Reply-To: <200403120313.i2C3DstV005296@ccure.user-mode-linux.org>
-Message-ID: <m2brmz1u11.fsf@p4.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] Re: uml-patch-2.6.4-1
+	id 1B2XIy-0000Y2-09 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 07:13:32 -0800
+Received: from main.gmane.org ([80.91.224.249])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1B2XIw-0002Re-HY for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 07:13:30 -0800
+Received: from list by main.gmane.org with local (Exim 3.35 #1 (Debian))
+	id 1B2XIu-0003rN-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 14 Mar 2004 16:13:28 +0100
+Received: from pd9e58e3c.dip.t-dialin.net ([217.229.142.60])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 14 Mar 2004 16:13:28 +0100
+Received: from skoehler by pd9e58e3c.dip.t-dialin.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 14 Mar 2004 16:13:28 +0100
+From: =?ISO-8859-15?Q?Sven_K=F6hler?= <skoehler@upb.de>
+Message-ID: <c31sqm$ett$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] plenty of "/proc/mm map failed" in syslog
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,53 +38,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 14 Mar 2004 13:40:26 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 14 Mar 2004 16:11:56 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike <jdike@addtoit.com> writes:
+Hi,
 
-> This patch updates UML to 2.6.4.  Besides the update, there were the following
-> changes since the last patch:
-> 	a bug which caused either a crash in the kernel or a BUG at exit.c:793
-> was fixed
-> 	a bug which caused a crash when a process tried to dump core was fixed
-> 	the hang early in boot on GHz hosts is gone
-> 	various other
-> 
-> The 2.6.4-1 UML patch is available at
-> 	http://www.user-mode-linux.org/mirror/uml-patch-2.6.4-1.bz2
+i wrote a simple test-program to stress-test UML.
 
-+/*
-+ * Overrides for Emacs so that we follow Linus's tabbing style.
-+ * Emacs will notice this stuff at the end of the file and automatically
-+ * adjust the settings for this buffer only.  This must remain at the end
-+ * of the file.
-+ * ---------------------------------------------------------------------------
-+ * Local variables:
-+ * c-file-style: "linux"
-+ * End:
-+ */
+#!/usr/bin/perl
+while (true)
+{
+   push @a, "a";
+}
 
+While executing it, i got plenty of thos messages in syslog:
+Mar 14 15:59:01 localhost kernel:  12
+Mar 14 15:59:01 localhost kernel: map : /proc/mm map failed, err = 12
+Mar 14 15:59:02 localhost last message repeated 1321 times
+Mar 14 15:59:02 localhost kernel:  12
+Mar 14 15:59:02 localhost kernel: map : /proc/mm map failed, err = 12
+Mar 14 15:59:02 localhost last message repeated 3216 times
+Mar 14 15:59:02 localhost kernel:  12
+Mar 14 15:59:02 localhost kernel: map : /proc/mm map failed, err = 12
+Mar 14 15:59:02 localhost last message repeated 786 times
+Mar 14 15:59:03 localhost kernel:  12
+Mar 14 15:59:03 localhost kernel: map : /proc/mm map failed, err = 12
 
-I think it's cleaner to handle this in your .emacs file. Here is what
-I use:
+I expected perl to get killed or get an "out of memory"-error, cause the 
+UML didn't have swap and only 128MB memory.
 
-(add-to-list 'auto-mode-alist '("/home/petero/kernel.*/.*\\.[ch]$" . linux-c-mode))
+So are those errors normal?
+I'm using 2.6.4-um1 in SKAS-mode running on 2.6.4 host patched with 
+BlaisorBlades's 2.6.3-skas3 patch.
 
-(defun linux-c-mode ()
-  "C mode with adjusted defaults for the Linux kernel."
-  (interactive)
-  (c-mode)
-  (c-set-style "K&R")
-  (setq c-basic-offset 8))
+If i run the script on the host-machine, perl get's killed as expected.
+(the new "kill best process"-stuff is not turned on in the host's 
+kernel-config)
 
-This way it will work for all kernel files, not just the ones
-containing special emacs comments.
+Thx
+   Sven
 
--- 
-Peter Osterlund - petero2@telia.com
-http://w1.894.telia.com/~u89404340
 
 
 -------------------------------------------------------
