@@ -2,15 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C9ocx-0006lz-B7 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Sep 2004 10:40:31 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1C9ocw-00063U-Dt for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Sep 2004 10:40:31 -0700
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20040921161741.297A1CA1D@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml: remove SIGPROF from change_signals
+	id 1C9pc9-0002eS-Av for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 21 Sep 2004 11:43:45 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1C9pc8-0007UH-Ba for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 21 Sep 2004 11:43:45 -0700
+From: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
+Subject: Re: [uml-devel] Managing 2.6 merge - url for the patches sent to merge
+References: <200409181944.58072.blaisorblade_personal@yahoo.it>
+	<200409202030.49422.blaisorblade_personal@yahoo.it>
+	<20040921123704.GA20191@bytesex>
+In-Reply-To: <20040921123704.GA20191@bytesex>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409211955.41103.blaisorblade_personal@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,48 +31,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 21 Sep 2004 18:17:41 +0200
-To: jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Tue, 21 Sep 2004 19:55:41 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Gerd Knorr <kraxel@bytesex.org>, Jeff Dike <jdike@addtoit.com>
 
+On Tuesday 21 September 2004 14:37, Gerd Knorr wrote:
+> On Mon, Sep 20, 2004 at 08:30:49PM +0200, Paolo Giarrusso wrote:
+> > On Monday 20 September 2004 11:38, Gerd Knorr wrote:
+> > > kbuild wishlist item #1: working parallel builds aka "make -j" for UML.
+> >
+> > Done and posted to Jeff - the complete set of patches which I posted him
+> > is now available at this URL (no link in the page, sorry):
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>, Jeff Dike <jdike@addtoit.com>
+> Works great, thanks.
 
-Since local_irq_save() and local_irq_disable() should match (apart from saving
-the flags), get/set_signals must match [un]block_signals, i.e. change_signals;
-since get/set_signals don't enable/disable SIGPROF (and this behaviour is safe
-as explained in the comment the patch adds, since the profiling code does not
-interact with the kernel code), not even change_signals must toggle it.
+> It took some time to figure that the kernel binary 
+> is vmlinux now and not linux any more through, guess that will surprise
+> a few other people as well.  Is there some good reason for that change?
+Making kallsyms work, since that does a post-processing on vmlinux which 
+results become invalid if you later relink it - adding a "mv vmlinux linux" 
+is not a problem to avoid surprising people, I've just been waiting for "what 
+to do here".
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+In fact, now, when UML outputs a stack trace, it also outputs the function 
+names, as 2.6 i386 (and other archs) do. Check also uml-use-kallsyms about 
+this. It should help bug reporters, too.
 
- uml-linux-2.6.8.1-paolo/arch/um/kernel/signal_user.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletion(-)
+Finally, this also fixes the "empty /proc/kallsyms" problem.
 
-diff -puN arch/um/kernel/signal_user.c~uml-remove-SIGPROF-change_signals arch/um/kernel/signal_user.c
---- uml-linux-2.6.8.1/arch/um/kernel/signal_user.c~uml-remove-SIGPROF-change_signals	2004-09-21 18:11:58.659691616 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/signal_user.c	2004-09-21 18:11:58.661691312 +0200
-@@ -57,6 +57,10 @@ int change_sig(int signal, int on)
- 	return(!sigismember(&old, signal));
- }
- 
-+/* Both here and in set/get_signal we don't touch SIGPROF, because we must not
-+ * disable profiling; it's safe because the profiling code does not interact
-+ * with the kernel code at all.*/
-+
- static void change_signals(int type)
- {
- 	sigset_t mask;
-@@ -65,7 +69,6 @@ static void change_signals(int type)
- 	sigaddset(&mask, SIGVTALRM);
- 	sigaddset(&mask, SIGALRM);
- 	sigaddset(&mask, SIGIO);
--	sigaddset(&mask, SIGPROF);
- 	if(sigprocmask(type, &mask, NULL) < 0)
- 		panic("Failed to change signal mask - errno = %d", errno);
- }
-_
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
