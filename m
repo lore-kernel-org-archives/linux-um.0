@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5BvP-0006lx-0H for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 16:32:27 -0700
+	id 1C5C2J-0007xx-A7 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Sep 2004 16:39:35 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C5BvM-0006c0-LQ
+	(Exim 4.34) id 1C5C2I-0007kK-3x
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Sep 2004 16:32:26 -0700
-Message-Id: <200409090035.i890ZYBP016288@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] uml-patch-2.6.7-2 
-In-Reply-To: Your message of "Sun, 05 Sep 2004 17:35:36 +0200."
-	<200408251746.53523.blaisorblade_spam@yahoo.it> 
-References: <200408190301.i7J30xek004150@ccure.user-mode-linux.org>
-	<200408251746.53523.blaisorblade_spam@yahoo.it> 
+	Wed, 08 Sep 2004 16:39:35 -0700
+Message-Id: <200409090042.i890giBP016300@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Compiling UML 2.6.8.1 with Static Linking results in
+	segfault 
+In-Reply-To: Your message of "Wed, 08 Sep 2004 09:57:52 +1000."
+	<200409072357.i87NvPC20122@lakshmi.solana.com> 
+References: <200409072357.i87NvPC20122@lakshmi.solana.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,28 +29,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Sep 2004 20:35:34 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 08 Sep 2004 20:42:44 -0400
+To: ralston@stral.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> * First, please do a "make clean" before releasing the patch. There
-> are some  binaries included in it! And also semaphore.c, which is a
-> symlink normally. 
+ralston@stral.net said:
+> The core is 483k, want me to email that just to you (not the list), or
+> is the gdb output below pretty conclusive? 
 
-I do.  It's just that make clean didn't catch everything.
-
-> * About filehandle_switch: you deleted a line (probably by mistake).
-> Reread  more carefully the separate patches you get with quilt: when
-> you see the  other attached patch (uml-restore-lost-code.patch),
-> you'll agree with me. 
-
-Yuck, I have no idea how that happened.
-
-> However, IMHO, since you cannot close and reopen a pipe, it's
-> braindead that  the switch_pipe[] array is an array of filehandles.
-
-Yeah, this is fixed in my 2.6 tree now.
+No it's not.  Getting a backtrace at that point would have been nice.
 
 				Jeff
 
