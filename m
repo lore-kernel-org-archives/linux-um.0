@@ -1,14 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <50376.130.217.250.13.1069985464.squirrel@webmail.scms.waikato.ac.nz>
-In-Reply-To: <Pine.LNX.4.53L0.0311271721550.27408@alpha.temple-baptist.com>
-References: 
-    <Pine.LNX.4.44.0311280047120.28924-100000@filer.marasystems.com><010c01c3b54d$99552830$2000000a@schlepptopp>
-    <Pine.LNX.4.53L0.0311271721550.27408@alpha.temple-baptist.com>
-From: "Shao-Lin Joseph Chung" <sc57@cs.waikato.ac.nz>
+From: Henrik Nordstrom <hno@marasystems.com>
+In-Reply-To: <010c01c3b54d$99552830$2000000a@schlepptopp>
+Message-ID: <Pine.LNX.4.44.0311280938340.3315-100000@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] How to copy COW files to another machine across the network?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Re: bug in COW? -  Re: [uml-user] uml 2.6.0-test9 crash
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -19,19 +15,26 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 Nov 2003 15:11:04 +1300 (NZDT)
-To: UML User list <user-mode-linux-user@lists.sourceforge.net>
-Cc: UML Devel list <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 28 Nov 2003 09:39:51 +0100 (CET)
+To: roland <for_spam@gmx.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-As the subject says, I'm trying to copy the COW files across the network. 
-But the size of those copies got expanded to the same size of the backing
-file.
+On Fri, 28 Nov 2003, roland wrote:
 
-Is there a way to keep these COWs small & cute?  ;-)
+> after making the rootfs-clone a cow-filesystem (by adding ubd2=rootfsclone.cow,rootfsclone.img),
+> the freeze happened again when doing some heavy writing. so - am i allowed to assume, that
+> there is a bug in the copy-on-write code?
 
-Thanks for help.
+Maybe, maybe not. What does vmstat on the host report while you run this?
 
-Joseph
+> btw: could anybody recommend a general filesystem stresstest-tool which does the worst to
+> filesytems, you can do (besides formatting or overwriting)? :D
+
+bonnie++ is a good one..
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
