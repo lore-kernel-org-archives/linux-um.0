@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D6VED-0001Eo-7m for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Mar 2005 06:53:33 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1D6VEA-0006VT-Dg for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Mar 2005 06:53:33 -0800
+	id 1D6Wwf-0003fl-DL for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Mar 2005 08:43:33 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1D6Wwa-0000Gh-L8 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Mar 2005 08:43:33 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.10 command line longer than 512 characters
+References: <Pine.LNX.4.58.0501071105351.22595@cube.iu.hio.no>
+	<200503012137.j21LagMY009262@ccure.user-mode-linux.org>
+	<Pine.LNX.4.62.0503012048120.6406@cube.iu.hio.no>
+In-Reply-To: <Pine.LNX.4.62.0503012048120.6406@cube.iu.hio.no>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200503021553.14862.blaisorblade@yahoo.it>
-Subject: [uml-devel] uml_switch security fixing
+Message-Id: <200503021743.13026.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,18 +31,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 2 Mar 2005 15:53:14 +0100
-To: Steve Schmidtke <steve_schmidtke@hotmail.com>, Gerd Knorr <kraxel@bytesex.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 2 Mar 2005 17:43:12 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: Kyrre M Begnum <Kyrre.Begnum@iu.hio.no>
 
-Hey, has anyone found the time to put together any patch to workaround the 
-security bug in uml_net?
+On Tuesday 01 March 2005 20:51, Kyrre M Begnum wrote:
+> Thank you, i got a reply on that a while ago pointing me to a patch of
+> that kind. I am gratefull for the follow-up though. If i may ask, is the
+> patch on its way into 2.6.11? Blaisorblade mentioned it being on his list
+> somewhere.
+No, I was going to write a different patch...  Jeff's patch will fix the crash 
+but leave 512 as the limit (Jeff confirmed it in the chat). I was going to 
+extend the limit. We'll merge both patches for 2.6.12 (2.6.11 has just been 
+released).
 
-I think it would be ok also to simply comment out the offending code (even 
-providing some kind of -D configuration option for who really needs SLIP 
-support, and they are few)!
+> >> I have noticed that when I supply a command line longer than 513
+> >> characters (or was it 512?) the kernel crashes. Output supplied at the
+> >> end of mail. This does not seem to be a problem on the old 2.4.24
+> >> guest kernels. Is there a way I can change this, perhaps during kernel
+> >> configuration?
+> >
+> > This is fixed in my long-command-line patch.
 
-Suggestions?
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
