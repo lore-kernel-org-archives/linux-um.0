@@ -2,28 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AL7pr-0000wy-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 13:20:03 -0800
-Received: from snowman.net ([66.93.83.236] helo=relay.snowman.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.24)
-	id 1AL7pr-0006QY-8p
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 15 Nov 2003 13:20:03 -0800
-Received: from ns.snowman.net (ns.snowman.net [10.10.0.2])
-	by relay.snowman.net (8.12.10/8.12.10/Debian-1) with ESMTP id hAFLJutg002343
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 16:19:56 -0500
-Received: from ns.snowman.net (localhost [127.0.0.1])
-	by ns.snowman.net (8.12.10/8.12.10/Debian-1) with ESMTP id hAFLJuOu016634
-	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 16:19:56 -0500
-Received: from localhost (localhost [[UNIX: localhost]])
-	by ns.snowman.net (8.12.10/8.12.10/Debian-1) id hAFLJtL4016625
-	for user-mode-linux-devel@lists.sourceforge.net; Sat, 15 Nov 2003 16:19:55 -0500
-From: "Laurence J. Lane" <ljlane@debian.org>
-Message-ID: <20031115211955.GA4221@absolom.libra.net>
+	id 1AL85m-0003cy-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Sat, 15 Nov 2003 13:36:30 -0800
+Received: from blacksheep.csh.rit.edu ([129.21.60.6])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AL85l-0008Ng-St
+	for user-mode-linux-devel@lists.sourceforge.net; Sat, 15 Nov 2003 13:36:29 -0800
+From: Matt Zimmerman <mdz@debian.org>
+Message-ID: <20031115213627.GL9377@dijkstra.csh.rit.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="FL5UXtIhxfXey3p5"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] arch/um/sys-i386/bugs.c compile error
+Subject: [uml-devel] [dan@spaz.org: Re: Bug#220679: user-mode-linux: Fails to Mount Root Filesystem on Reboot]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -34,45 +24,52 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 15 Nov 2003 16:19:55 -0500
+Date: Sat, 15 Nov 2003 16:36:27 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: 220679-forwarded@bugs.debian.org
 
+I looked briefly at the source and didn't see any immediate reason why this
+should work differently after a reboot.  Is there a bug here?
 
+----- Forwarded message from Daniel Burton <dan@spaz.org> -----
 
---FL5UXtIhxfXey3p5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Date: Sat, 15 Nov 2003 02:48:20 -0800
+From: Daniel Burton <dan@spaz.org>
+To: Matt Zimmerman <mdz@debian.org>
+Cc: 220679@bugs.debian.org
+Subject: Re: Bug#220679: user-mode-linux: Fails to Mount Root Filesystem on
+ Reboot
 
-I get the same arch/um/sys-i386/bugs.c compile error on 2.6.0-test9-1-um
-and 2.4.22-6-um. Anyone have an idea of what causes the error?
+Matt Zimmerman wrote:
 
---FL5UXtIhxfXey3p5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=bugs
+>On Thu, Nov 13, 2003 at 07:22:50PM -0800, Daniel Burton wrote:
+>
+> 
+>
+>>Package: user-mode-linux
+>>Version: 2.4.22-5um-1
+>>Severity: normal
+>>
+>>
+>>User Mode Linux will not reboot properly -- it fails to mount the root 
+>>filesystem and exits.  Here are my messages:
+>>[...]
+>>Kernel command line: eth0=daemon,,,/var/run/uml-utilities/uml_switch.ctl 
+>>con=pts con0=fd:0,fd:1 ssl0=tty:/dev/ttyS4 mem=512M root=/dev/ubd0
+>>   
+>>
+>
+>I assume your root filesystem is named "root_fs" since you are not
+>specifying a ubd0= parameter.  Try explicitly assigning a file to the ubd0
+>device, i.e.: "ubd0=root_fs" and see if it works in that case.
+> 
+>
+Yes, that seems to fix the problem.
 
-[2.4.22-6-um with a stock config ]
+----- End forwarded message -----
 
-make[2]: Entering directory `/u0/work/linux-2.4.22/arch/um/sys-i386'
-gcc   -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -U__i386__ -Ui386 -DUM_FASTCALL -g -D__arch_um__ -DSUBARCH=\"i386\" -D_LARGEFILE64_SOURCE  -I/u0/work/linux-2.4.22/arch/um/include -I/u0/work/linux-2.4.22/arch/um/kernel/tt/include -I/u0/work/linux-2.4.22/arch/um/kernel/skas/include -D_GNU_SOURCE -c -o bugs.o bugs.c
-bugs.c: In function `disable_lcall':
-bugs.c:111: error: storage size of `ldt' isn't known
-bugs.c:118: warning: implicit declaration of function `modify_ldt'
-bugs.c:111: warning: unused variable `ldt'
-make[2]: *** [bugs.o] Error 1
-
-
-
-[2.6.0-test9-1.um stock config, with xfs and module loading disabled]
-
-gcc  -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -U__i386__ -Ui386 -D__arch_um__ -DSUBARCH=\"i386\" -D_LARGEFILE64_SOURCE   -Iarch/um/include -I/u0/work/linux-2.6.0-test9/arch/um/kernel/tt/include -I/u0/work/linux-2.6.0-test9/arch/um/kernel/skas/include -D_GNU_SOURCE -c -o arch/um/sys-i386/bugs.o arch/um/sys-i386/bugs.c
-arch/um/sys-i386/bugs.c: In function `disable_lcall':
-arch/um/sys-i386/bugs.c:110: error: storage size of `ldt' isn't known
-arch/um/sys-i386/bugs.c:117: warning: implicit declaration of function `modify_ldt'
-arch/um/sys-i386/bugs.c:110: warning: unused variable `ldt'
-make[1]: *** [arch/um/sys-i386/bugs.o] Error 1
-
-
---FL5UXtIhxfXey3p5--
+-- 
+ - mdz
 
 
 -------------------------------------------------------
