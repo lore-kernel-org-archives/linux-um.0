@@ -1,27 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D73UB-00015a-RD for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 19:28:19 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1D73Tr-0004XG-Md
+	id 1D6q3n-0004Oz-Jx for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 05:08:11 -0800
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1D6q3l-0005VX-TW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Mar 2005 19:28:19 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Triage on the pending patches
-References: <200503030822.j238MoBY016825@ccure.user-mode-linux.org>
-	<200503030008.51336.rob@landley.net>
-	<200503031844.j23IhmDS003473@ccure.user-mode-linux.org>
-In-Reply-To: <200503031844.j23IhmDS003473@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200503032111.43966.rob@landley.net>
+	Thu, 03 Mar 2005 05:08:11 -0800
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1D6ppd-0001y7-Kr for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Mar 2005 13:53:34 +0100
+Received: from naked.iki.fi ([62.142.249.112])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 03 Mar 2005 13:53:33 +0100
+Received: from naked by naked.iki.fi with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 03 Mar 2005 13:53:33 +0100
+From: Nuutti Kotivuori <naked@iki.fi>
+Message-ID: <87hdjs6gmn.fsf@aka.i.naked.iki.fi>
+References: <200503021553.14862.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [uml-devel] Re: uml_switch security fixing
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,45 +38,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 3 Mar 2005 21:11:36 -0500
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Date: Thu, 03 Mar 2005 14:47:12 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 03 March 2005 01:43 pm, Jeff Dike wrote:
-> rob@landley.net said:
-> > Well, just in case your job was too easy, here's one more.  Using the
-> > "quiet" option shows a couple of lines being printed out by printf
-> > that should be printed out by printk (so they'll _shut_up_ when you
-> > ask it to).
->
-> Those are printfs for a reason.  Early boot mesages (before the kernel is
-> actually running) won't be seen if they are printk-d and the thing crashes
-> before the console is initialized.  The messages will be stuck in the
-> printk buffer, and you will be none the wiser.
->
-> So, they can be made quiet if you really want, but that's not the way.
+blaisorblade@yahoo.it wrote:
+> Suggestions?
 
-I suspected there was a reason, nice to know what it is.  It would be nice if 
-they could be made quiet, because I'm in the process of doing a gross hack to 
-run an independent process wrapped in UML.
+FWIW, we have gone off using switch daemon entirely. We are using
+simply preallocated tap devices, connected to bridges via normal Linux
+bridging controls. Works cleaner and faster, more places to dump the
+traffic from and it allows normal linux traffic queueing and
+firewalling to be used to limit transfers between machines.
 
-Basically, my nefarious scheme is to add the squashfs patch to UML, append a 
-squashfs image to the end of the  UML executable, and have a cpio ramfs init 
-script search through /proc/self/exe for the 32 bytes that were at the start 
-of the squashfs (which includes a 4 byte magic signature thingy) to determine 
-offset to pass to "losetup -o $OFFSET /dev/loop0 /proc/self/exe", and then 
-mount /dev/loop0 / and run the executable I want out of that filesystem.
+All physical networks and virtual network (networks not connected to
+any physical interfaces) are implemented as bridges.
 
-And there's a cheap and dirty way to get a self contained program running 
-under UML.  (I hope to actually have an example working this evening using 
-2.6.11.)
+The only problem was the tap device queue hang (SIGIO problem), which
+was resolved with the one queue option (and hopefully fixed in UML or
+mainline kernel later).
 
-The down side is that UML (even with the quiet option) just won't shut up 
-about its init stuff.  Hence me looking into cleaning that up...
+-- Naked
 
-> 				Jeff
-
-Rob
 
 
 -------------------------------------------------------
