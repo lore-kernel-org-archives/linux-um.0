@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C5Ubo-0001PN-IG for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 12:29:28 -0700
-Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
-	id 1C5Ubi-0003dd-Fn for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Sep 2004 12:29:24 -0700
-From: Chris Wright <chrisw@osdl.org>
-Subject: Re: [uml-devel] Re: [patch 1/1] uml:fix ubd deadlock on SMP
-Message-ID: <20040909122906.N1973@build.pdx.osdl.net>
-References: <20040908172503.384144933@zion.localdomain>
-	<200409092002.19134.blaisorblade_spam@yahoo.it>
-	<20040909113228.M1973@build.pdx.osdl.net>
-	<200409092044.54512.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1C5Uj8-0002qi-4z for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 12:37:02 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
+	id 1C5Uj7-0006Un-Ft for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Sep 2004 12:37:02 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+References: <7153203.1094632577758.SLOX.WebMail.wwwrun@webmail.helinet.de>
+	<200409092024.17925.blaisorblade_spam@yahoo.it>
+	<20040909184951.GM5330@alcor.net>
+In-Reply-To: <20040909184951.GM5330@alcor.net>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200409092044.54512.blaisorblade_spam@yahoo.it>;
-	from blaisorblade_spam@yahoo.it on Thu, Sep 09, 2004 at
-	08:44:54PM +0200
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200409092133.35518.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] UML hanging at "Activating swap"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,96 +31,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Sep 2004 12:29:06 -0700
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: Chris Wright <chrisw@osdl.org>, user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
+Date: Thu, 9 Sep 2004 21:33:35 +0200
+To: Matt Zimmerman <mdz@debian.org>
+Cc: user-mode-linux-user@lists.sourceforge.net, Dennis Ploeger <ploeger@helinet.de>, Michael West <quagly@mitzit.net>, user-mode-linux-devel@lists.sourceforge.net
 
-* BlaisorBlade (blaisorblade_spam@yahoo.it) wrote:
-> Yes, thanks a lot for your help.
+On Thursday 09 September 2004 20:49, Matt Zimmerman wrote:
+> On Thu, Sep 09, 2004 at 08:24:17PM +0200, BlaisorBlade wrote:
+> > On Thursday 09 September 2004 15:48, Dennis Ploeger wrote:
+> > > Hi!
+> > >
+> > > Just for your info: Done it.
+> > >
+> > > I've tried to deactivate swapping (and found out, where I can do that),
+> > > but that wasn't the point after all. It was hwclock (which was
+> > > activated _after_ activating the swap, but didn't show any output).
+> > > After deactivating that, it worked.
+> >
+> > Thanks a lot, that makes a lot of sense. However, since you say you use
+> > Debian 3.1, probably Matt Zimmerman (Debian UML maintainer) should take a
+> > look at this.
+>
+> Yes, I ran into this problem when testing the 2.4.24-3um packages for
+> Debian. With previous UMLs, hwclock would simply produce an error, and the
+> process would continue, but with 2.4.24-3um, it seems to hang.  Any idea
+> why this might be?
 
-Rename ubd_finish() to __ubd_finsh() and remove ubd_io_lock from it.
-Add wrapper, ubd_finish(), which grabs lock before calling __ubd_finish().
-Update do_ubd_request to use the lock free __ubd_finish() to avoid
-deadlock.  Also, apparently prepare_request is called with ubd_io_lock
-held, so remove locks there.
+Not at all - there is a big bug in 2.4.24-3 with modules (any iptables user 
+get crashes), and "rtc" is probably a module; that bug is fixed in 2.4.26-2, 
+which has another critical bug on console I/O fixed in 2.4.26-3, which is 
+safe (apart all the experimental work on humfs and hostfs, which make them 
+break in multiple ways). By the way, I've not heard this with any other 
+distro (on my own I've only a Slack 9.0 root fs), so a look to hwclock could 
+be useful, maybe.
 
-Signed-off-by: Chris Wright <chrisw@osdl.org>
+Also, check for Real Time Clock UML option (enabling/disabling - does it makes 
+difference?).
 
-===== arch/um/drivers/ubd_kern.c 1.38 vs edited =====
---- 1.38/arch/um/drivers/ubd_kern.c	2004-09-07 23:33:13 -07:00
-+++ edited/arch/um/drivers/ubd_kern.c	2004-09-09 12:18:01 -07:00
-@@ -396,14 +396,20 @@
-  */
- int intr_count = 0;
- 
--static void ubd_finish(struct request *req, int error)
-+static inline void ubd_finish(struct request *req, int error)
-+{
-+ 	spin_lock(&ubd_io_lock);
-+	__ubd_finish(req, error);
-+	spin_unlock(&ubd_io_lock);
-+}
-+
-+/* call ubd_finish if you need to serialize */
-+static void __ubd_finish(struct request *req, int error)
- {
- 	int nsect;
- 
- 	if(error){
-- 		spin_lock(&ubd_io_lock);
- 		end_request(req, 0);
-- 		spin_unlock(&ubd_io_lock);
- 		return;
- 	}
- 	nsect = req->current_nr_sectors;
-@@ -412,11 +418,10 @@
- 	req->errors = 0;
- 	req->nr_sectors -= nsect;
- 	req->current_nr_sectors = 0;
--	spin_lock(&ubd_io_lock);
- 	end_request(req, 1);
--	spin_unlock(&ubd_io_lock);
- }
- 
-+/* Called without ubd_io_lock held */
- static void ubd_handler(void)
- {
- 	struct io_thread_req req;
-@@ -965,6 +970,7 @@
- 	return(0);
- }
- 
-+/* Called with ubd_io_lock held */
- static int prepare_request(struct request *req, struct io_thread_req *io_req)
- {
- 	struct gendisk *disk = req->rq_disk;
-@@ -977,9 +983,7 @@
- 	if((rq_data_dir(req) == WRITE) && !dev->openflags.w){
- 		printk("Write attempted on readonly ubd device %s\n", 
- 		       disk->disk_name);
-- 		spin_lock(&ubd_io_lock);
- 		end_request(req, 0);
-- 		spin_unlock(&ubd_io_lock);
- 		return(1);
- 	}
- 
-@@ -1029,6 +1033,7 @@
- 	return(0);
- }
- 
-+/* Called with ubd_io_lock held */
- static void do_ubd_request(request_queue_t *q)
- {
- 	struct io_thread_req io_req;
-@@ -1040,7 +1045,7 @@
- 			err = prepare_request(req, &io_req);
- 			if(!err){
- 				do_io(&io_req);
--				ubd_finish(req, io_req.error);
-+				__ubd_finish(req, io_req.error);
- 			}
- 		}
- 	}
+Here you can find a splitout version of all the changes from 2.4.24-1, so that 
+you can try multiple combination of them. On the page there is the link to 
+patch-scripts, which you'll love for patch-kit management (they are the tools 
+used for the -mm tree). Give also a read to "series" and "rawSeries", inside 
+the patch-scripts folder.
+
+The patch at fault for modules is "optimization-unstable.patch", which is 
+reverted in "revert-optim-broken.patch".
+
+http://www.user-mode-linux.org/~blaisorblade/patches/UML-splitout-2.4.26-2.tar.bz2
+
+Bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
