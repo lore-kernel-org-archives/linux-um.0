@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BO43N-00032H-Gv for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 17:26:25 -0700
-Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.30)
-	id 1BO43M-000833-U0 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 May 2004 17:26:25 -0700
-Message-ID: <10a501c43881$e3fa12d0$2000000a@schlepptopp>
-From: "roland" <for_spam@gmx.de>
-References: <200405122208.i4CM8cCe008920@ccure.user-mode-linux.org>
-	<104b01c43876$36b53c40$2000000a@schlepptopp>
-	<40A2BDDE.90504@darkman.de>
-Subject: Re: [uml-devel] uml-patch-2.4.24-3
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 1BOJIS-0003fL-TK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 May 2004 09:43:00 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.30) id 1BOJIS-0004NO-8a
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 May 2004 09:43:00 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
+Message-ID: <20040513162440.GA28107@bytesex.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [uml-devel] [patch] uml network problem fix.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,50 +26,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 May 2004 02:33:19 +0200
-To: Sven 'Darkman' Michels <sven@darkman.de>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 13 May 2004 18:24:40 +0200
+To: Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-> Well, notice that its still UML 2.4.->24<- ;)
-> If the releases will be for a newer kernel, the patch will be
-> included.
-ok - seems you`re right :)
+  Hi,
 
------ Original Message ----- 
-From: "Sven 'Darkman' Michels" <sven@darkman.de>
-To: <user-mode-linux-devel@lists.sourceforge.net>
-Sent: Thursday, May 13, 2004 2:14 AM
-Subject: Re: [uml-devel] uml-patch-2.4.24-3
+I think I've found a bug in either the uml network driver or the uml
+sigio/irq handling.  Not sure where exactly the bug is.  Here is the
+problem:
 
+  * the uml machine is setup with networking via switch daemon.
+  * uml machine is booted, the network driver connects to the switch
+    daemon and initializes the unix/dgram socket.
+  * the switch daemon forwards packages to the uml machine (broadcasts,
+    when running in "-hub" mode also other stuff), whereas the uml
+    machine ignores these due to the interface still being down.
+  * the unix socket fifo fills up, the switch daemon starts dropping
+    packets due to that.
+  * the uml machine tries to setup the network interface via "dhcpcd
+    eth0", but failes because it doesn't receive any packets.
 
-> roland wrote:
-> > hi jeff, 
-> > compiling a 2.4.26 with uml-patch-2.4.24-3 still seems to have
-> > the __cmpxchg issue.
-> > see:
-> > http://article.gmane.org/gmane.linux.uml.user/3806
-> > 
-> > i attached the mentioned patch and after that,  it compiles cleanly
-> > for me.
-> 
-> Well, notice that its still UML 2.4.->24<- ;)
-> If the releases will be for a newer kernel, the patch will be
-> included.
-> 
-> Regards,
-> Sven
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: SourceForge.net Broadband
-> Sign-up now for SourceForge Broadband and get the fastest
-> 6.0/768 connection for only $19.95/mo for the first 3 months!
-> http://ads.osdn.com/?ad_id=2562&alloc_id=6184&op=click
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
+Further investigations shows that the uml network driver irq handler
+isn't called for some reason.  Maybe because the socket fifo already
+is full and only _new_ data arriving is signaled via SIGIO?
+
+I've cured the issue with the one-liner patch below, which simply
+receives any pending packets after up'ing the interface.  I'm not
+sure if it is the right way to fix that through.
+
+Comments?
+
+  Gerd
+
+--- a/arch/um/drivers/net_kern.c~	2004-05-13 17:21:28.604869781 +0200
++++ b/arch/um/drivers/net_kern.c	2004-05-13 17:39:12.386221066 +0200
+@@ -131,6 +131,7 @@
+ 	list_add(&lp->list, &opened);
+ 	spin_unlock(&opened_lock);
+ 	MOD_INC_USE_COUNT;
++	while((err = uml_net_rx(dev)) > 0) ; /* clear buffer */
+  out:
+ 	spin_unlock(&lp->lock);
+ 	return(err);
 
 
 -------------------------------------------------------
