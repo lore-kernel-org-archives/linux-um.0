@@ -1,17 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1D1ofT-0005pW-Dr for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Feb 2005 08:38:19 -0800
+	id 1D26Y7-0003rV-HI for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Feb 2005 03:43:55 -0800
 Received: from dgate2.fujitsu-siemens.com ([217.115.66.36])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1D1ofQ-00061b-HE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Feb 2005 08:38:19 -0800
-Message-Id: <200502171638.j1HGc3h16087@trolli.pdb.fsc.net>
-From: bstroesser@fujitsu-siemens.com
-Subject: [uml-devel] [patch 1/1] UML: make fix_range_common and
-	flush_tlb_kernel_range_common work correctly
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1D26Y5-0003l9-Vf for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Feb 2005 03:43:55 -0800
+Message-ID: <4215D4F2.4030906@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] latest cross-build patch break UML build, when using -j2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,149 +25,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Feb 2005 17:37:50 +0100
-To: jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, bstroesser@fujitsu-siemens.com
+Date: Fri, 18 Feb 2005 12:43:46 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+
+Using the latest incrementals (Feb, 17),
+I tried to build UML kernel by typing:
+    make clean ARCH=um
+    make -j2 vmlinux ARCH=um
+
+Make stops on the following error:
+
+   CHK     arch/um/user-offsets.h
+   UPD     arch/um/user-offsets.h
+   CHK     arch/um/include/user_constants.h
+   HOSTCC  arch/um/sys-i386/util/mk_sc
+   HOSTCC  arch/um/kernel/skas/util/mk_ptregs-i386.o
+   HOSTLD  arch/um/kernel/skas/util/mk_ptregs
+gcc -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -ffreestanding -O2     -fno-omit-frame-pointer -g -U__i386__ -Ui386 
+-D__arch_um__ -DSUBARCH=\"i386\" -Iarch/um/include  -I/usr/src/tmp/linux-2.6.11-rc3-mm2/arch/um/kernel/tt/include 
+-I/usr/src/tmp/linux-2.6.11-rc3-mm2/arch/um/kernel/skas/include -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask -fno-unit-at-a-time -D_LARGEFILE64_SOURCE 
+    -nostdinc -isystem /usr/lib/gcc-lib/i586-suse-linux/3.3.3/include -D__KERNEL__ -Iinclude  -S -o arch/um/kernel-offsets.s arch/um/sys-i386/kernel-offsets.c
+In file included from include/asm/ptrace.h:9,
+                  from include/asm/processor-generic.h:14,
+                  from include/asm/processor.h:41,
+                  from include/asm/thread_info.h:12,
+                  from include/linux/thread_info.h:21,
+                  from include/linux/spinlock.h:12,
+                  from include/linux/capability.h:45,
+                  from include/linux/sched.h:7,
+                  from arch/um/sys-i386/kernel-offsets.c:3:
+arch/um/include/sysdep/ptrace.h:17:23: sysdep/sc.h: No such file or directory
+arch/um/include/sysdep/ptrace.h:34:25: skas_ptregs.h: No such file or directory
+In file included from include/asm/ptrace.h:9,
+                  from include/asm/processor-generic.h:14,
+                  from include/asm/processor.h:41,
+                  from include/asm/thread_info.h:12,
+                  from include/linux/thread_info.h:21,
+                  from include/linux/spinlock.h:12,
+                  from include/linux/capability.h:45,
+                  from include/linux/sched.h:7,
+                  from arch/um/sys-i386/kernel-offsets.c:3:
+arch/um/include/sysdep/ptrace.h:74: error: `HOST_FRAME_SIZE' undeclared here (not in a function)
+arch/um/include/sysdep/ptrace.h:75: error: `HOST_FP_SIZE' undeclared here (not in a function)
+arch/um/include/sysdep/ptrace.h:76: error: `HOST_XFP_SIZE' undeclared here (not in a function)
+make: *** [arch/um/kernel-offsets.s] Error 1
 
 
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+When using "make vmlinux ARCH=um", UML kernel is built successfully.
 
-fix_range_common and flush_tlb_kernel_range_common don't work correctly,
-if a PGD (or PUD or PMD) is not present and start_addr (resp. start) is not
-aligned to a PGD boundary (or PUD or PMD boundary).
-
-Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
----
-
-
-diff -puN arch/um/kernel/tlb.c~fix_range_common arch/um/kernel/tlb.c
---- linux-2.6.11-rc3-mm2/arch/um/kernel/tlb.c~fix_range_common	2005-02-17 17:07:06.000000000 +0100
-+++ linux-2.6.11-rc3-mm2-root/arch/um/kernel/tlb.c	2005-02-17 17:23:19.000000000 +0100
-@@ -170,46 +170,46 @@ void fix_range_common(struct mm_struct *
- 	for(addr = start_addr; addr < end_addr;){
- 		npgd = pgd_offset(mm, addr);
- 		if(!pgd_present(*npgd)){
-+			end = (addr + PGDIR_SIZE) & ~(PGDIR_SIZE - 1);
-+			if(end > end_addr)
-+				end = end_addr;
- 			if(force || pgd_newpage(*npgd)){
--				end = addr + PGDIR_SIZE;
--				if(end > end_addr)
--					end = end_addr;
- 				op_index = add_munmap(addr, end - addr, ops, 
- 						      op_index, last_op, mmu,
- 						      &flush, do_ops);
- 				pgd_mkuptodate(*npgd);
- 			}
--			addr += PGDIR_SIZE;
-+			addr = end;
- 			continue;
- 		}
- 
- 		npud = pud_offset(npgd, addr);
- 		if(!pud_present(*npud)){
-+			end = (addr + PUD_SIZE) & ~(PUD_SIZE - 1);
-+			if(end > end_addr)
-+				end = end_addr;
- 			if(force || pud_newpage(*npud)){
--				end = addr + PUD_SIZE;
--				if(end > end_addr)
--					end = end_addr;
- 				op_index = add_munmap(addr, end - addr, ops, 
- 						      op_index, last_op, mmu,
- 						      &flush, do_ops);
- 				pud_mkuptodate(*npud);
- 			}
--			addr += PUD_SIZE;
-+			addr = end;
- 			continue;
- 		}
- 
- 		npmd = pmd_offset(npud, addr);
- 		if(!pmd_present(*npmd)){
-+			end = (addr + PMD_SIZE) & ~(PMD_SIZE - 1);
-+			if(end > end_addr)
-+				end = end_addr;
- 			if(force || pmd_newpage(*npmd)){
--				end = addr + PMD_SIZE;
--				if(end > end_addr)
--					end = end_addr;
- 				op_index = add_munmap(addr, end - addr, ops, 
- 						      op_index, last_op, mmu,
- 						      &flush, do_ops);
- 				pmd_mkuptodate(*npmd);
- 			}
--			addr += PMD_SIZE;
-+			addr = end;
- 			continue;
- 		}
- 
-@@ -259,52 +259,52 @@ int flush_tlb_kernel_range_common(unsign
- 	for(addr = start; addr < end;){
- 		pgd = pgd_offset(mm, addr);
-  		if(!pgd_present(*pgd)){
-+ 			last = (addr + PGDIR_SIZE) & ~(PGDIR_SIZE - 1);
-+ 			if(last > end)
-+ 				last = end;
-  			if(pgd_newpage(*pgd)){
- 				updated = 1;
-- 				last = addr + PGDIR_SIZE;
-- 				if(last > end)
-- 					last = end;
- 				err = os_unmap_memory((void *) addr, 
- 						      last - addr);
- 				if(err < 0)
- 					panic("munmap failed, errno = %d\n",
- 					      -err);
- 			}
--			addr += PGDIR_SIZE;
-+			addr = last;
- 			continue;
- 		}
- 
- 		pud = pud_offset(pgd, addr);
- 		if(!pud_present(*pud)){
-+ 			last = (addr + PUD_SIZE) & ~(PUD_SIZE - 1);
-+ 			if(last > end)
-+ 				last = end;
- 			if(pud_newpage(*pud)){
- 				updated = 1;
--				last = addr + PUD_SIZE;
--				if(last > end)
--					last = end;
- 				err = os_unmap_memory((void *) addr,
- 						      last - addr);
- 				if(err < 0)
- 					panic("munmap failed, errno = %d\n",
- 					      -err);
- 			}
--			addr += PUD_SIZE;
-+			addr = last;
- 			continue;
- 		}
- 
- 		pmd = pmd_offset(pud, addr);
- 		if(!pmd_present(*pmd)){
-+ 			last = (addr + PMD_SIZE) & ~(PMD_SIZE - 1);
-+ 			if(last > end)
-+ 				last = end;
- 			if(pmd_newpage(*pmd)){
- 				updated = 1;
--				last = addr + PMD_SIZE;
--				if(last > end)
--					last = end;
- 				err = os_unmap_memory((void *) addr,
- 						      last - addr);
- 				if(err < 0)
- 					panic("munmap failed, errno = %d\n",
- 					      -err);
- 			}
--			addr += PMD_SIZE;
-+			addr = last;
- 			continue;
- 		}
- 
-_
+Bodo
 
 
 -------------------------------------------------------
