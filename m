@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 1AM15U-0007dq-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 00:19:52 -0800
-Received: from avocet.mail.pas.earthlink.net ([207.217.120.50])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.24)
-	id 1AM15T-0007j3-UY
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 18 Nov 2003 00:19:51 -0800
-Message-ID: <3FB9D62A.3070606@spaz.org>
-From: Daniel Burton <dan@spaz.org>
-MIME-Version: 1.0
-References: <E1ALez7-0007q5-Of@frankenstein> <20031117161447.GL9377@dijkstra.csh.rit.edu> <3FB97636.6030107@spaz.org> <20031118040600.GP9377@dijkstra.csh.rit.edu>
-In-Reply-To: <20031118040600.GP9377@dijkstra.csh.rit.edu>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: Bug#220679: user-mode-linux: Fails to Mount Root Filesystem on
- Reboot
+	id 1AM7i6-0007uK-00
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 07:24:10 -0800
+Received: from mail.clemson.edu ([130.127.28.87] helo=CLEMSON.EDU)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.24)
+	id 1AM7i5-0003GW-Q7
+	for user-mode-linux-devel@lists.sourceforge.net; Tue, 18 Nov 2003 07:24:09 -0800
+Received: from LAB2500.clemson.edu (csdhcp37.cs.clemson.edu [130.127.49.181])
+	(authenticated bits=0)
+	by CLEMSON.EDU (8.12.8p1-20030924/8.12.8) with ESMTP id hAIFNg42011727
+	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
+	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 18 Nov 2003 10:23:43 -0500 (EST)
+Message-Id: <5.2.1.1.2.20031118100745.00a77cb8@mail.clemson.edu>
+From: Vinod K Rajasekaran <vrajase@CLEMSON.EDU>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: [uml-devel] Need help
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
@@ -27,36 +29,72 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 Nov 2003 00:19:54 -0800
-To: Matt Zimmerman <mdz@debian.org>
-Cc: 220679@bugs.debian.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 18 Nov 2003 10:23:40 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Matt Zimmerman wrote:
+Hi,
 
->On Mon, Nov 17, 2003 at 05:30:30PM -0800, Daniel Burton wrote:
->
->  
->
->>Matt Zimmerman wrote:
->>
->>    
->>
->>>So you are saying that specifying ubd0= explicitly does _not_, in fact, fix
->>>your problem?  Your previous message seems to have said that it did.
->>>      
->>>
->>All previous command lines I tried with ubd0=root_fs did allow it to 
->>reboot.  For some reason, this command line didn't work.  I have no idea 
->>why.
->>    
->>
->
->In that case, are you sure no other process was locking the file?
->
->  
->
-I'm pretty sure not.  Nothing else was mounting that filesystem, and 
-nothing else should have been accessing the file.
+I am a absolute rank UML beginner.... I got UML installed on my Redhat 9.0 
+box using the  "user_mode_linux-2.4.19.5um-0.i386.rpm"
+
+I then tried to install a file system from the binaries. But it gave a 
+kernel panic! Then I tried installing Redhat 8.0 using the UMLbuilder... 
+but wasn't successful again... I get the same kernel panic... I get the 
+following message..
+
+
+Successful
+Calculating packages, dependencies and install order
+========================================|100% Done.
+Successful
+Working in /home/vinod/UML/vm1
+Making directories
+Making files
+Setting up swapspace version 1, size = 134213 kB
+Populating install filesystem
+========================================|100% Done.
+Successful
+Running install process
+tracing thread pid = 27133
+Linux version 2.4.19-5um (jdike@uml.karaya.com) (gcc version 2.96 20000731 
+(Red
+Hat Linux 7.1 2.96-81)) #2 Mon Sep 16 15:41:15 EDT 2002
+On node 0 totalpages: 16384
+zone(0): 16384 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: rw umid=vm1 ubd0=rootfs root=/dev/ubd0 mem=64m 
+ubd7=install
+fs eth0=tuntap,,,10.0.0.4 root=/dev/ubd7 init=/uml_stage2install.py 
+con0=pts,fd:
+1
+Calibrating delay loop... 3196.70 BogoMIPS
+Memory: 62616k available
+Dentry cache hash table entries: 8192 (order: 4, 65536 bytes)
+Inode cache hash table entries: 4096 (order: 3, 32768 bytes)
+Mount-cache hash table entries: 1024 (order: 1, 8192 bytes)
+Buffer-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Kernel panic: outer trampoline didn't exit with SIGKILL
+
+Install failed
+result of system is 256
+Installation failed.
+
+
+Is this a known issue....Can someone help me with this....
+
+Thanks,
+  -Vinod.
 
 
 
