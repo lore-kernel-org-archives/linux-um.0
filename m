@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Aswl2-0007Av-8T
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 20:22:52 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30)
-	id 1AswhA-0006aZ-BL
-	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 20:18:52 -0800
-Message-Id: <200402170446.i1H4kUsq026113@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Re: Diagnosed and repeatable kernel mode panic in schedule() for 2.6! 
-In-Reply-To: Your message of "Mon, 16 Feb 2004 20:25:24 +0100."
-             <200402162025.24853.blaisorblade_spam@yahoo.it> 
-References: <200402151911.11890.blaisorblade_spam@yahoo.it> <20040216095335.GA27377@elte.hu>  <200402162025.24853.blaisorblade_spam@yahoo.it> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1AszZb-0002yi-Sh
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 23:23:15 -0800
+Received: from 101.24.177.216.inaddr.g4.net ([216.177.24.101] helo=sparrow.stearns.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1AszPe-0004ss-8M
+	for user-mode-linux-devel@lists.sourceforge.net; Mon, 16 Feb 2004 23:12:58 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Subject: Re: [uml-devel] Re: Diagnosed and repeatable kernel mode panic in
+ schedule() for 2.6! 
+In-Reply-To: <200402170446.i1H4kUsq026113@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.44.0402170216570.2428-100000@sparrow>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,33 +25,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 Feb 2004 23:46:30 -0500
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>
+Date: Tue, 17 Feb 2004 02:18:31 -0500 (EST)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: BlaisorBlade <blaisorblade_spam@yahoo.it>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Ingo Molnar <mingo@elte.hu>
 
-blaisorblade_spam@yahoo.it said:
-> while /bin/true ; do /bin/true ; done 
+Good morning, Jeff,
 
-This turned out to be slightly subtle.  It was exposed by the 
-longjmp -> siglongjmp change.  New processes were created with signals 
-enabled, so siglongjmp to a new process context re-enabled signals in the
-middle of the context switch.
+On Mon, 16 Feb 2004, Jeff Dike wrote:
 
-Try the patch below - it seems to fix things for me.
+> blaisorblade_spam@yahoo.it said:
+> > while /bin/true ; do /bin/true ; done 
+> 
+> This turned out to be slightly subtle.  It was exposed by the 
+> longjmp -> siglongjmp change.  New processes were created with signals 
+> enabled, so siglongjmp to a new process context re-enabled signals in the
+> middle of the context switch.
+> 
+> Try the patch below - it seems to fix things for me.
+> 
+> --- 1.9/arch/um/kernel/skas/process_kern.c      Thu Jan  8 07:43:01 2004
+> +++ edited/arch/um/kernel/skas/process_kern.c   Sun Feb 15 10:42:31 2004
+> @@ -76,6 +76,7 @@
+>  
+>  void new_thread_proc(void *stack, void (*handler)(int sig))
+>  {
+> +       local_irq_disable();
+>         init_new_thread_stack(stack, handler);
+>         os_usr1_process(os_getpid());
+>  }
 
-				Jeff
+	I've put this up for the whoopis and cache vm's on Zaphod.  We'll 
+see how things look in the morning.
+	Thanks again for the help, Jeff.
+	Cheers,
+	- Bill
 
-
---- 1.9/arch/um/kernel/skas/process_kern.c      Thu Jan  8 07:43:01 2004
-+++ edited/arch/um/kernel/skas/process_kern.c   Sun Feb 15 10:42:31 2004
-@@ -76,6 +76,7 @@
- 
- void new_thread_proc(void *stack, void (*handler)(int sig))
- {
-+       local_irq_disable();
-        init_new_thread_stack(stack, handler);
-        os_usr1_process(os_getpid());
- }
+---------------------------------------------------------------------------
+	"Nynex.  Iroquois for Moron"
+	-- A well-known Linux kernel hacker.
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 
