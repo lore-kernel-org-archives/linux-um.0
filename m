@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BfNir-0008Ge-1K for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Jun 2004 11:52:49 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	id 1BfOBa-0002BV-OQ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Jun 2004 12:22:30 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1BfNiq-00013p-GC for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Jun 2004 11:52:48 -0700
+	id 1BfOBa-000250-5r for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Jun 2004 12:22:30 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] Re: Bug#254665: uml-utilities: uml_moo produces
-	broken images (short one block)
-References: <200406160822.i5G8Mba1020376@cluon.it.bond.edu.au>
-	<20040628010443.GD5243@alcor.net>
-In-Reply-To: <20040628010443.GD5243@alcor.net>
+References: <200406261905.22710.blaisorblade_spam@yahoo.it>
+	<20040626181048.GA16323@infradead.org>
+	<20040627035311.GA8842@ccure.user-mode-linux.org>
+In-Reply-To: <20040627035311.GA8842@ccure.user-mode-linux.org>
 MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <200406292044.06050.blaisorblade_spam@yahoo.it>
+Message-Id: <200406292129.52093.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Uploaded Uml patchset for 2.6.7(was: Re: Inclusion of UML
+	in 2.6.8)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,52 +32,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Jun 2004 20:44:06 +0200
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 29 Jun 2004 21:29:52 +0200
+To: Jeff Dike <jdike@addtoit.com>, Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@osdl.org>, Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Alle 03:04, luned=EC 28 giugno 2004, Matt Zimmerman ha scritto:
-> On Wed, Jun 16, 2004 at 06:22:37PM +1000, Alexander Zangerl wrote:
-> > Package: uml-utilities
-> > Version: 20020415-3
-SO old?
-> > Severity: normal
+Alle 05:53, domenica 27 giugno 2004, Jeff Dike ha scritto:
+> On Sat, Jun 26, 2004 at 07:10:48PM +0100, Christoph Hellwig wrote:
+> > Please send split patches.  E.g. linux/ghash.h should not ne
+> > reintroduced, it's completely fuly.
 
-> > i've got some ext2 fs images, normal cow-files, and the need to recombi=
-ne
-> > them. but the resulting file is one 1k-block shorter than the original,
+Anyway, I'm going to upload the whole patchset (as it is now); I just tarred 
+my ./patch-scripts folder, containing descriptions, .pc files and actual 
+patches. The updates from Jeff Dike are not very split, but everything I've 
+added is in his own separate patch. Little changes anyway.
 
-One question: since that bug is repeatable, could you try updating your=20
-uml-utilites? I don't have the sources for those ones (if the "2002" is=20
-correct). At http://user-mode-linux.sourceforge.net/dl-ists.html you can fi=
-nd=20
-later ones. Note: don't replace the old ones if you have a old UML binary, =
+I've problems with patch-bomb, so for now here is it:
 
-since newer utilities could not work with it (but you're strongly suggested=
-=20
-to upgrade to 2.4.24-1um Uml kernel, not more since newer patches have bugs=
-).
+http://www.user-mode-linux.org/~blaisorblade/patches/bb/uml-patch-2.6.7-01-bb2.tar.bz2
 
-If the bug shows up again, I have one question: I need to know if, on the f=
-s=20
-holding the image, the block size is 1k? The size to use for COW blocks is =
+The description of things is below (and in the patches headings, mostly).
 
-read from the filesystem.
+Also, my main fear is about 2.7: if it is split before UML is merged, it means 
+it won't be updated for all the API changes in 2.7.x.
+For who want to flame with "better leave it broken than just doing compile 
+fixes": who introduced set_page_count, for instance, grepped and changed it 
+everywhere, even in the UML tree. And there was no reason to do so; so it 
+would help us having UML in mainline, to react well to such updates.
 
-> > and doesn't work at all. the original images were sparse (but that
-> > shouldn't make any difference, IMHO).
-Yes, that cannot make difference.
---=20
+> That requires a little interface work inside UML, and that was the main
+> reason Andrew hasn't seen UML recently.
+>
+> > Also your above arch_free_page needs some more
+> > discussion.
+>
+> I think that can disappear.  In some cases, it might be handy for the arch
+> to see pages being freed, but right now, I believe that UML has no need for
+> it.
+
+Hmm, well, indeed that part was added just to support ubd-mmap, which you seem 
+to have decided to drop*, but removing it would be hard for me, since it 
+would mean doing a lot of checks to physmem handling; and I still don't want 
+to fight against all the bugs I'd create. I'm seeing a lot more ones simply 
+after switching to Mandrake 10 (don't flame me for this!) for my host.
+
+The same thing holds for COW support: I cannot drop it so simply, since there 
+are some references to it in working UBD code. That code should just drop 
+them, since IIRC Jeff wants to make COW act on any two block devices; but 
+I've not time to do it.
+
+I could, instead, safely remove the /proc/mm support (for running nested UMLs 
+in SKAS mode); the patch for this was well tested, so it's included; I'm 
+providing a "combinediffed" version of them, since without removing SKAS the 
+patch will probably not apply. I've also split ghash.h out.
+
+* But when you say "It's vulnerable to the filesystem making changes to data 
+that it intends never to reach the disk" in your diary, you speak about a 
+performance problem, right? Or it is even broken?
+
+-- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 
 
 
-
 -------------------------------------------------------
 This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 -=20
-digital self defense, top technical experts, no vendor pitches,=20
+Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
+digital self defense, top technical experts, no vendor pitches, 
 unmatched networking opportunities. Visit www.blackhat.com
 _______________________________________________
 User-mode-linux-devel mailing list
