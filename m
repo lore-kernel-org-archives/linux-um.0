@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CWfQO-0005ly-Nn for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 10:30:00 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1CWfQM-0007UG-SW for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Nov 2004 10:30:00 -0800
-Message-ID: <000c01c4d18a$683a4dc0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <000901c4d0e1$e7f998d0$0201a8c0@hawk>
-	<200411222346.36960.blaisorblade_spam@yahoo.it>
-	<001001c4d184$ca00b9f0$0201a8c0@hawk>
-	<200411231922.17600.blaisorblade_spam@yahoo.it>
+	id 1CWgLj-00019I-Ec for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 11:29:15 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CWgLi-0002xX-6o for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Nov 2004 11:29:15 -0800
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
 Subject: Re: [uml-devel] Re: 2.6.9-bb3 creates zombie threads in SKAS
+References: <000901c4d0e1$e7f998d0$0201a8c0@hawk>
+	<001001c4d184$ca00b9f0$0201a8c0@hawk>
+	<200411231853.31315.lists@dopez.xs4all.nl>
+In-Reply-To: <200411231853.31315.lists@dopez.xs4all.nl>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200411232030.12531.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,28 +31,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 23 Nov 2004 12:29:44 -0600
-To: Blaisorblade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Tue, 23 Nov 2004 20:30:12 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: dopez <lists@dopez.xs4all.nl>
 
-> > I'm
+On Tuesday 23 November 2004 18:53, dopez wrote:
+> On Tuesday 23 November 2004 18:49, Christopher S. Aker wrote:
+> > > What the hell! This should *not* happen. What did we (I mean
+> > > developers) do?
+> >
+> > Just to be clear, these were zombies *inside* UML, not on the host.  I'm
 > > happy to blame it on the older SKAS version.
-> I'm not, unless your sentence mean that you have a test server on which you
-> verified this is true...
 
-Nope -- I made an assumption, given that I have what could be seen as similar
-problems with this host kernel (mysql segfaults on other UML kernels, but it zombies
-under -bb3)...  I have not tested -bb3 under the latest skas revision.  But, see the
-other post from "dopez".
+> i am running 2.6.9-skas3-v7 with 2.6.9-bb3 and i too am seeing zombies in
+> skas mode, inside the UML
 
-> and even in that case, it can mean that this bug
-> shows on hosts not supporting SYSEMU (like SKAS3/2.6-v1 hosts). Which would
-> be anyway a bug.
+> i also saw this with 2.6.9-bb2 btw, is there anything usefull i can send to
+> the list ? (kernel configs, dmesg?)
+For now let me test this, if I cannot reproduce it then I'll ask you.
+> fwiw, running debian sarge on both the host and uml's
 
-The host kernel in question did have the SYSEMU patches.
-
--Chris
-
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
