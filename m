@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Cf0bo-0005E3-TU for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Dec 2004 10:44:16 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1Cf0bm-0001Du-Iz for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Dec 2004 10:44:16 -0800
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-References: <200412101645.iBAGjWA13367@trolli.pdb.fsc.net>
-	<200412102228.07984.blaisorblade_spam@yahoo.it>
-	<41BD9270.9020102@fujitsu-siemens.com>
-In-Reply-To: <41BD9270.9020102@fujitsu-siemens.com>
+	id 1Cf0ea-0005id-K5 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Dec 2004 10:47:08 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1Cf0eZ-0000we-MA for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Dec 2004 10:47:08 -0800
+From: Paolo Giarrusso <blaisorblade_personal@yahoo.it>
+Subject: Re: [uml-devel] Stranded processes on halt with 2.6.9 host (2.4.26
+	client)
+References: <41BCD1C8.8060701@easyco.com>
+In-Reply-To: <41BCD1C8.8060701@easyco.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200412161924.19431.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] Re: [patch 1/1] make arch/um/kernel/skas/include/skas.h
-	include asm/types.h
+Message-Id: <200412161927.12219.blaisorblade_personal@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,50 +30,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 16 Dec 2004 19:24:19 +0100
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 16 Dec 2004 19:27:12 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Doug Dumitru <doug@easyco.com>
 
-On Monday 13 December 2004 14:00, Bodo Stroesser wrote:
-> Blaisorblade wrote:
-> > On Friday 10 December 2004 17:45, bstroesser@fujitsu-siemens.com wrote:
-> >>From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-> >>
-> >>make arch/um/kernel/skas/include/skas.h include asm/types.h
-> >>This is necessary to have a typedef for __u64
-> >
-> > *Probably* won't work, as headers in arch/um/include.... are also
-> > includable by userspace files, which can't include <asm/types.h>;
->
-> My patch changes arch/um/kernel/skas/include/skas.h, which is included by
-> arch/um/kernel/process.c
-in arch/um/kernel/Makefile, USER_OBJS lists it.
-> , arch/um/sys-XXXX/signal.c
-> and some  
-> arch/um/kernel/skas/XXXX.c. IMHO, this should be safe, or do I miss
-> somesthing?
-Not exactly. The reference is the USER_OBJS content for those makefiles. An 
-_user file is always for userspace, a _kern one for kernelspace, for others 
-no fixed rule from the name.
+On Monday 13 December 2004 00:18, Doug Dumitru wrote:
+> I have been running 2.6.7 on the host for some time in SKAs mode.  When
+> trying to upgrade to 2.6.9, 2.4.26 clients do run correctly, but upon
+> shutdown they leave two processes stranded that cannot be killed (even
+> with kill -9).  Both processes show [halt] so this must be very near the
+> end of UML shutdown.  Any ideas.  I hunted the message list, but did not
+> see anything obvious.
+It's on *any* 2.6.9 host (search "zombie" on the list and you'll find many 
+info). Some UML kernels have been partially patched for that... but some 
+problems are only due to the host kernel and not workaroundable.
+> Server is a Dual P-III running fresh Fedora Core 3.  Kernel.org 2.6.9
+> kernel has been tried with:
 
-> well, it could happen
->
-> > to include the *host* asm/types.h, which will be bad on a x86_64 host,
-> > since you could get a "unsigned long" (which is safe) even when compiling
-> > a 32-bit UML!
-> >
-> > Otherwise, there would not be includes in arch/um! They'd be in
-> > include/asm-um!
-> >
-> > And yes, this sucks, but is reality.
-> >
-> > Workaround it - unsigned long long is always a correct definition.
->
-> This would be another possibility, but then the definition of "void map()"
-> in arch/um/kernel/skas/mem_user.c also should be changed.
-Yes, I agree...
-> I choosed the 
-> option, which changes less. Feel free to choose the other one.
+>      15957 host-skas3-2.6.7-v1.patch
+This particular one would crash IIRC (even Oops the kernel).... at least on 
+2.6.9 prereleases.
+>      23838 host-skas3-2.6.9-rc4-v6.patch
+>      25510 host-skas3-2.6.9-v7.patch
+
+> but they all behave the same way.
 
 -- 
 Paolo Giarrusso, aka Blaisorblade
