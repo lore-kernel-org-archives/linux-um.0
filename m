@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AjhD1-0007UH-9R for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 07:57:31 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1AjhD0-00079q-EA
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 07:57:30 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Changes to port_user
-Message-ID: <20040122162014.GA2895@ccure.user-mode-linux.org>
-References: <20040122144020.GQ4203@erizo.shearer.org>
+	id 1AjhZn-0001qb-SY for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jan 2004 08:21:03 -0800
+Received: from mx1.elte.hu ([157.181.1.137])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AjhZn-0002vl-8w for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jan 2004 08:21:03 -0800
+From: Ingo Molnar <mingo@elte.hu>
+Message-ID: <20040122162139.GA28167@elte.hu>
+References: <20040120191706.GA32711@elte.hu> <20040120194328.GA1518@elte.hu>
+	<20040120200105.GA2289@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040122144020.GQ4203@erizo.shearer.org>
+In-Reply-To: <20040120200105.GA2289@elte.hu>
+Subject: [uml-devel] [patch] uml fixes, 2.6.1-mm5-A2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,48 +28,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Jan 2004 11:20:14 -0500
-To: Dan Shearer <dan@shearer.org>
+Date: Thu, 22 Jan 2004 17:21:39 +0100
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Jan 23, 2004 at 01:10:20AM +1030, Dan Shearer wrote:
-> I've done some minor work in drivers/port_user.c, including replacing
-> the binding to INADDR_ANY with a gethostbyname(passed_ip), so you
-> can specify which single IP to listen on. 
 
-Cool, that's needed doing for a while.
+the patch below fixes a bug in UML that i've reproduced under 2.6.1-mm5. 
+
+The bug hits in the following race scenario: if userspace() is just
+about to handle a SIGTRAP signal that it wants to relay_signal(), and
+SIGVTALRM hits the context before this happens but after is_user is set
+to 1 in userspace(), then we get a kernelspace-signal panic. Ought to be
+rare but definitely triggerable.
+
+	Ingo
+
+--- linux/arch/um/kernel/skas/trap_user.c.orig	
++++ linux/arch/um/kernel/skas/trap_user.c	
+@@ -19,8 +19,10 @@ void sig_handler_common_skas(int sig, vo
+ 	struct skas_regs *r;
+ 	struct signal_info *info;
+ 	int save_errno = errno;
++	int save_user;
  
-> Now what I'm trying to do is replace in.telnetd with something else, for
-> the moment netcat as a simple case, or something that gives the same
-> effect. 
-
-If you want to be able to telnet to the port, then you need something which
-speaks telnet, hence you need telnetd.
-
-If you can connect with something else and have terminal stuff continue
-to work, and replace the telnetd dependency with something that works more
-widely out of the box, then I'm all for it.
-
-> That involves understanding the significance of port_helper and
-> kernel/helper.c, which I don't yet.
-
-What happens is that UML runs telnetd with the port helper as its "login"
-program (problem - not every telnetd out there supports -L, even if it is
-installed, which it often isn't).
-
-When there's a connection, UML gets a descriptor with the telnet on the
-other end.  It needs to get telnetd talking on that to do the telnet
-protocol and another descriptor coming out of telnetd with actual characters
-that the user typed.  So, it does this as follows:
-	it execs telnetd with stdin, stderr, stdout duped from the portal
-file descriptor
-	telnetd also gets a unix socket on descriptor 3
-	port_helper gets the desired telnetd output descriptor on its
-stdin/stdout
-	it passes this back to UML over the unix socket on descriptor 3
-which it inherited from telnetd
-
-				Jeff
+ 	r = &TASK_REGS(get_current())->skas;
++	save_user = r->is_user;
+ 	r->is_user = 0;
+ 	r->fault_addr = SC_FAULT_ADDR(sc);
+ 	r->fault_type = SC_FAULT_TYPE(sc);
+@@ -32,6 +34,7 @@ void sig_handler_common_skas(int sig, vo
+ 
+ 	(*info->handler)(sig, (union uml_pt_regs *) r);
+ 
++	r->is_user = save_user;
+ 	errno = save_errno;
+ }
+ 
 
 
 -------------------------------------------------------
