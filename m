@@ -2,26 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CprZS-0007br-4w for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 Jan 2005 09:18:42 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1CprZR-0005NY-8N
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 Jan 2005 09:18:42 -0800
-Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.12.11/8.12.11) with ESMTP id j0FIRAia005401
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 15 Jan 2005 13:27:11 -0500
-From: Rob Landley <rob@landley.net>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200501151117.12000.rob@landley.net>
-Subject: [uml-devel] Progress with -bb4.
+	id 1Cpwjt-00049N-4y for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 15 Jan 2005 14:49:49 -0800
+Received: from fw.osdl.org ([65.172.181.6] helo=mail.osdl.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Cpwjs-0007ai-J9 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 15 Jan 2005 14:49:49 -0800
+Message-Id: <200501152249.j0FMngl08629@mail.osdl.org>
+From: akpm@osdl.org
+Subject: [uml-devel] [patch 051/122] uml: delete unused header umn.h
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,61 +22,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 15 Jan 2005 11:17:11 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 15 Jan 2005 14:49:23 -0800
+To: torvalds@osdl.org
+Cc: akpm@osdl.org, blaisorblade_spam@yahoo.it, domen@coderock.org, user-mode-linux-devel@lists.sourceforge.net
 
-Running ptrace under uml found the problem with gcc: UML's default environment 
-includes "." at the end of $PATH, and if you have that gcc doesn't search the 
-path for ld.
 
-So I took "." out of the path, and it started working.  Yay!  (Cool stuff, 
-guys.)
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>,
+      Domen Puncer <domen@coderock.org>
 
-Along the way, I found some interesting quirks:
+Remove nowhere referenced header. (egrep "filename\." didn't find anything)
 
-1) I mentioned the gratuitous use of perl earlier.  This is only for 
---show-config, which could A) be replaced by a sed script, B) should 
-presumably be wrapped in CONFIG_IKCONFIG anyway.
+Signed-off-by: Domen Puncer <domen@coderock.org>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+Cc: UML-devel <user-mode-linux-devel@lists.sourceforge.net>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+---
 
-I ripped it out of the makefile and it built fine without it.  I'll see about 
-patching the makefile with the sed thing and/or the CONFIG option this 
-weekend, although I'm not good at makefiles...
+ /dev/null |   27 ---------------------------
+ 1 files changed, 27 deletions(-)
 
-2) Building under uclibc dies with a conflicting definition error, due to
-arch/um/include/user.h containing "extern int strlcpy(char *, const char *, 
-int);", when uclibc's string.h contains:
-
-extern size_t strlcpy(char *__restrict dst, const char *__restrict src,
-                      size_t n) __THROW;
-
-I yanked the strlcpy line from arch/um/include/user.h and everything built 
-fine without it (didn't even see any new warnings), both under both uclibc 
-(more or less 0.9.27, a cvs snapshot a couple weeks before release) and glibc 
-(knoppix 3.6, comes with glibc 2.3.2), possibly because it's still in 
-include/linux/string.h...
-
-The resulting uclibc binaries seemed to work fine in both environments.  I 
-could even run the uclibc one from within the uclibc chroot environment via 
-"./vmlinux rootfs=hostfs rootflags=/ rw init=/bin/sh" and it behaved pretty 
-well.  (Overmount /proc and /dev/pts and life is good...)
-
-3) Running my big build script, it hangs between ./configure and make of 
-binutils.  No idea why yet.  Just sits there spinning, with vmlinux eating 
-100% of the CPU, and if you leave it for half an hour it still won't advance, 
-and this is something that should only take a second or so...
-
-4) I can get all sorts of things to segfault under uclibc with ptrace -f.  For 
-example, just try ptrace -f on a shellscript and watch the segfaults fly.  Is 
-it just me?
-
-#4 makes #3 a bit harder to debug.
-
-I'll try upgrading to -bs5 and see if that makes anything better.
-
-Query: is a 2.6.10-bb likely in future, or should I just try -bk or -mm or 
-some such?
-
-Rob
+diff -L arch/um/include/umn.h -puN arch/um/include/umn.h~uml-delete-unused-header-umnh /dev/null
+--- 25/arch/um/include/umn.h
++++ /dev/null	2003-09-15 06:40:47.000000000 -0700
+@@ -1,27 +0,0 @@
+-/* 
+- * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __UMN_H
+-#define __UMN_H
+-
+-extern int open_umn_tty(int *slave_out, int *slipno_out);
+-extern void close_umn_tty(int master, int slave);
+-extern int umn_send_packet(int fd, void *data, int len);
+-extern int set_umn_addr(int fd, char *addr, char *ptp_addr);
+-extern void slip_unesc(unsigned char s);
+-extern void umn_read(int fd);
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+_
 
 
 -------------------------------------------------------
