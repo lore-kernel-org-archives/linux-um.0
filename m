@@ -1,22 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1AwiXf-0001oY-5t for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 06:00:39 -0800
-Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1Awi8y-0002mO-RW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Feb 2004 05:35:09 -0800
-Message-Id: <200402271419.i1REJtM9001977@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Crash early in boot with 2.4.25+uml-patch-2.4.24-1 
-In-Reply-To: Your message of "Fri, 27 Feb 2004 02:29:41 CST."
-	<200402270829.i1R8TfAX014941@hongkong.cs.nmsu.edu> 
-References: <200402270829.i1R8TfAX014941@hongkong.cs.nmsu.edu> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
+	id 1Awj1G-00049R-BE for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Feb 2004 06:31:14 -0800
+Received: from gort.metaparadigm.com ([203.117.131.12])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
+	id 1AwirF-0003h8-KO for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Feb 2004 06:20:53 -0800
+Received: from localhost (unknown [127.0.0.1])
+	by gort.metaparadigm.com (Postfix) with ESMTP id B20191AC93
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 27 Feb 2004 22:20:44 +0800 (SGT)
+Received: from gort.metaparadigm.com ([127.0.0.1])
+	by localhost (gort [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 04114-03 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 27 Feb 2004 22:20:44 +0800 (SGT)
+Received: from metaparadigm.com (cm210.gamma72.maxonline.com.sg
+	[202.156.72.210])
+	by gort.metaparadigm.com (Postfix) with ESMTP id ECC321AC05
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 27 Feb 2004 22:20:43 +0800 (SGT)
+Message-ID: <403F523B.2090602@metaparadigm.com>
+From: Michael Clark <michael@metaparadigm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] 2.6.3 skas mode host and guest success
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,23 +38,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 Feb 2004 09:19:55 -0500
-To: Ross Combs <rocombs@cs.nmsu.edu>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 27 Feb 2004 22:20:43 +0800
+To: UML Devel <user-mode-linux-devel@lists.sourceforge.net>
 
-rocombs@cs.nmsu.edu said:
-> The boot messages look like this when it dies:
->  Checking for the skas3 patch in the host...not found
->  Checking for /proc/mm...not found
->  make_umid - mkstemp failed, errno = 13
->  tracing thread pid = 22242
->  Segmentation fault 
+Hi All,
 
-Copy /proc/cpuinfo into the jail.  I added a dependency on that when doing
-the RTC change, but forgot to make it behave well when cpuinfo isn't available.
+After hunting through the list. I couldn't find a patch
+that cleanly applies to 2.6.3 (on top of latest uml patch)
+to re-enable skas host support.
 
-				Jeff
+So after merging parts of Paulo's and Ingo's skas patches
+for 2.6.0 and 2.6.2, I now have a single patch that cleanly
+applies and runs for me both as a host and guest with 2.6.3
+rediffed against the latest uml patch.
 
+First apply 2.6.3-rc2.1 uml patch (cleanly applies to 2.6.3)
+
+   http://www.user-mode-linux.org/mirror/uml-patch-2.6.3-rc2-1.bz2
+
+Then apply the skas patch:
+
+   http://www.metaparadigm.com/~mclark/uml/uml-2.6.3-skas-1.patch
+
+It includes the following changes:
+
+   * PROC_MM Kconfig
+   * add back skas ptrace support
+   * export ldt functions with mm argument
+   * export do_mmap2 with mm argument
+   * compatibility wrapper for do_mmap_pgoff
+   * proc_mm now uses __init_new_context
+
+Use at your own risk - it boots and runs skas mode guest here ;)
+
+~mc
 
 
 -------------------------------------------------------
