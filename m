@@ -2,19 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1BzI4H-0001v5-DZ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Aug 2004 09:53:13 -0700
-Received: from marmalade.cyberjellyfish.com ([66.70.117.40])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.34)
-	id 1BzI4F-0007Yr-Vz for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Aug 2004 09:53:13 -0700
-Message-Id: <200408231652.AA01773@winxp.digitalinfra.co.jp>
-From: "Digital Infra, Inc." <okajima@digitalinfra.co.jp>
+	id 1BzXAV-00060V-HX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 24 Aug 2004 02:00:39 -0700
+Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.34) id 1BzXAS-00052u-PO
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 24 Aug 2004 02:00:39 -0700
+From: Gerd Knorr <kraxel@bytesex.org>
 Subject: Re: [uml-devel] gdkfb
-In-Reply-To: <87isb9yjfj.fsf@bytesex.org>
-References: <87isb9yjfj.fsf@bytesex.org>
-MIME-Version: 1.0
+Message-ID: <20040824084755.GA32746@bytesex>
+References: <Pine.LNX.4.58.0408021210420.23627@anakin>
+	<87isb9yjfj.fsf@bytesex.org>
+	<Pine.LNX.4.58.0408232116540.13834@anakin>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0408232116540.13834@anakin>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,133 +30,107 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 24 Aug 2004 01:52:59 +0900
-To: Gerd Knorr <kraxel@bytesex.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 24 Aug 2004 10:47:55 +0200
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
+> > stealing ENTER keys ;)
+> 
+> That's the advantage. The disadvantage is that's it's more difficult to
+> write a GUI for it...
 
+I don't plan to write a GUI.
 
-You know coLinux? Developing a fb is also underway on coLinux devel ML.
-For example, clicking this URL shows you a very rough overview.
-http://www.google.co.jp/search?hl=ja&lr=&ie=UTF-8&c2coff=1&q=+site:article.gmane.org+colinux+frame+buffer
+> My main reason to work on a frame buffer device for UML is debugging the
+> fbdev subsystem. I.e. I want a GUI to tune various parameters
+> (resolution, color depth, pixel format, ...).
 
-                Okajima, Jun. Tokyo, Japan.
+Ok, thats a different focus ;)
 
+> > Size is configurable at boot time.  Runs on TrueColor displays only.
+> > Screen parameters are passed through, i.e. if your X11 display is
+> > 16bpp the fb device inside the uml machine will have 16bpp as well, so
+> > I don't have to convert any data ;)
+> 
+> That's indeed simple. Have you tried running on X with depth 24?
+> So far I tried on my Athlon with Radeon 9200 in depth 24, and I get the
+> attached result (xdpyinfo output attached as well). Colors are a bit
+> off.
 
->
->  Hi,
->
->My framebuffer experiments reached a usable state now as well.  The
->patch should show up shortly at:
->
->        http://www.suse.de/~kraxel/uml/patches/
->
->The terminal cleanup patch is updated as well, see comments below.
->
->Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> Attached is a patch to implement a very preliminary frame buffer device
->> on top of GTK/GDK, as some of you may have seen at OLS.
->
->Mine runs directly on libX11, without any GUI toolkit involved (and
->stealing ENTER keys ;)
->
->>   - Resolution is fixed to 640x480, 256 colors.
->
->Size is configurable at boot time.  Runs on TrueColor displays only.
->Screen parameters are passed through, i.e. if your X11 display is
->16bpp the fb device inside the uml machine will have 16bpp as well, so
->I don't have to convert any data ;)
->
->>   - It uses 2 threads: one for handling widget events, and another one to
->>     update the screen every second.  Calling the update routines from
->>     gdkfb_kern.c when the screen contents are changed using
->>     fillrect/copyarea/imgblt didn't work.
->
->One thread for the communication with the X-Server, any events (fb
->updates, data on the X11 socket) will wake up that thread to handle
->it.  Screen updates can happen much more often than once per second.
->Only changed screen areas will be updated.
->
->>   - Console and penguin logo (special UML logo) works.
->
->Same here (no special logo through).
->
->>   - Userspace access to the frame buffer doesn't work yet.
->
->Same here.  Havn't even looked at that yet.  The memory block for the
->framebuffer is either simply malloced or a shared memory segment,
->depending on whenever sharing memory with the X-Server works or not
->(MIT-SHM Extention).
->
->Q1: Can I map that into the address space of a uml process?
->Q2: Any chance to track the changes (using page faults maybe?),
->    so I can do more clever screen updates than simply blitting
->    the whole screen now and then?
->
->>   - It works (usually ;-) on my Mobile Pentium III laptop (both 2.4.24+SKAS and
->>     2.6.7+SKAS hosts, custom config). I get a window where I can enter
->>     commands. Pressing some keys may make it crash.
->
->I've tested it on one machine only.
->
->>         ./linux ubd0=/home/geert/uml/root_fs init=/bin/bash console=stderr \
->> 	    console=tty0  gdkfb
->
->linux console=tty0 x11=800x600
->
->>   - It needs SKAS, since TT creates a statically linked image (libX11 needs
->>     libpthread when statically linked, and UML crashes when just linked with
->>     libpthread)
->
->Same here ;)
->
->>   - The patch includes Gerd Knorr's (a pity I didn't manage to find you at
->>     OLS!) clean up of the console/terminal code, with some modifications:
->>       o I modified the stdio console (which you don't need for gdkfb) not to
->>         panic if it cannot register its console, since it conflicts with the
->> 	normal CONFIG_VT console subsystem.
->
->The updated patch does that as well now.  There seems to be no way to
->switch at runtime between the stdio console and the vt subsystem, if
->vt is enabled it is registered for /dev/tty<n> unconditionally, even
->without any console driver being activated (no dummy console, no
->fbcon).
->
->>       o I moved the stderr console to a separate file with its own config
->>         option CONFIG_STDERR_CONSOLE, so you can use it even if
->> 	CONFIG_STDIO_CONSOLE is disabled.
->
->Updated the terminal patch to do that as well.  I've also swapped
->ssl.o and stdio_console.o in the Makefile to fixup the link order,
->thus the stdio console is registered first and becomes the default
->console as long as the users don't enable the new config options.
->
->If CONFIG_STDERR_CONSOLE is enabled it will allways be the default
->console through as it registeres _very_ early.  CONFIG_VT will
->conflict with the stdio_console as well (see above).  Note that you
->have to enable CONFIG_EMBEDDED if you want to disable CONFIG_VT.
->
->Jeff, is that good enougth for backward compatibility?
->
->Not sure how to handle that best in the long run.  IMHO we should
->simply drop the stdio_console.
->
->  Gerd
->
->-- 
->return -ENOSIG;
->
->
->-------------------------------------------------------
->SF.Net email is sponsored by Shop4tech.com-Lowest price on Blank Media
->100pk Sonic DVD-R 4x for only $29 -100pk Sonic DVD+R for only $33
->Save 50% off Retail on Ink & Toner - Free Shipping and Free Gift.
->http://www.shop4tech.com/z/Inkjet_Cartridges/9_108_r285
->_______________________________________________
->User-mode-linux-devel mailing list
->User-mode-linux-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
+Yep, here as well.  Looks like the X-Server uses 32 bit/pixel but x11fb
+uses 24 bit/pixel.  I had tested 16bpp only.
+
+> > One thread for the communication with the X-Server, any events (fb
+> > updates, data on the X11 socket) will wake up that thread to handle
+> > it.  Screen updates can happen much more often than once per second.
+> > Only changed screen areas will be updated.
+> 
+> You seem to have much more experience with threads in UML than I have...
+
+It's my first uml kernel thread ;)
+
+But I have both general X11 and kernel programming experience, which
+helps alot, yes.
+
+> > Same here (no special logo through).
+> 
+> So I attached a patch to bring it back ;-)
+
+I'll have a look.
+
+> > >   - Userspace access to the frame buffer doesn't work yet.
+> >
+> > Same here.  Havn't even looked at that yet.  The memory block for the
+> > framebuffer is either simply malloced or a shared memory segment,
+> > depending on whenever sharing memory with the X-Server works or not
+> > (MIT-SHM Extention).
+> >
+> > Q1: Can I map that into the address space of a uml process?
+> 
+> Maybe. It may be safer to use kmalloc() (limited size), or just steal it from
+> the UML system memory, to make sure /dev/fb mmap() can use a similar
+> implementation as /dev/mem mmap() (this assumes /dev/mem mmap() works in
+> UML).
+
+Problem is I _want_ use shared memory (if possible) for performance
+reasons.  And if possible remap that directly into the applications
+address space.  Looking at /dev/mem is a nice idea through ;)
+
+> > Q2: Any chance to track the changes (using page faults maybe?),
+> >     so I can do more clever screen updates than simply blitting
+> >     the whole screen now and then?
+> 
+> BenH told me at OLS that Mac-On-Linux uses page faults.
+
+Do you have details on that?
+
+Device drivers can catch missing pages via ->no_page() handler.  Not
+sure whenever it is possible to catch write access to read-only mappings
+as well, but as apps usually do write-only access to fb memory not
+having read-only mappings shouldn't hurt much.
+
+So one possible way I can see is to map in the pages in the nopage
+handler.  For screen updates you can check which pages are actually
+mapped and only update these.  And also unmap them, so you'll get a new
+page fault if the application writes to them again.
+
+> > The updated patch does that as well now.  There seems to be no way to
+> > switch at runtime between the stdio console and the vt subsystem, if
+> > vt is enabled it is registered for /dev/tty<n> unconditionally, even
+> > without any console driver being activated (no dummy console, no
+> > fbcon).
+> 
+> You can look at the logic of take_over_console().
+
+No, doesn't help.  The current uml stdio console acts one level below
+that.  It doesn't register as linux console driver, but as tty driver
+for the major/minor numbers usually used by the linux console subsystem
+for the virtual consoles.
+
+  Gerd
+
+-- 
+return -ENOSIG;
 
 
 -------------------------------------------------------
