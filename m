@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXNEG-0000kz-Aj
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 08:11:52 -0800
-Received: from mta10.adelphia.net ([68.168.78.202])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXNEF-0002lz-VT
-	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 08:11:52 -0800
-From: Matt Zimmerman <mdz@debian.org>
-Message-ID: <20031219161144.GB18100@alcor.net>
-References: <20031219143655.GA7944@pari.math.u-bordeaux.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1AXPpt-0000wZ-JU
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 10:58:53 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.24)
+	id 1AXPpt-0000zY-23
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 19 Dec 2003 10:58:53 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] [UML combo patch] 2.6.0 host-skas kernel & UML kernel patch
+References: <Pine.LNX.4.58.0312171735540.8123@earth> <Pine.LNX.4.58.0312181209230.1327@earth> <Pine.LNX.4.58.0312181304250.3617@earth>
+In-Reply-To: <Pine.LNX.4.58.0312181304250.3617@earth>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20031219143655.GA7944@pari.math.u-bordeaux.fr>
-Subject: [uml-devel] Re: Bug#224502: FATAL: cannot determine library version
+Message-Id: <200312191959.27377.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,49 +25,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 08:11:44 -0800
+Date: Fri, 19 Dec 2003 19:59:27 +0100
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Bill Allombert <ballombe@debian.org>, 224502-forwarded@bugs.debian.org
 
-On Fri, Dec 19, 2003 at 03:36:55PM +0100, Bill Allombert wrote:
+Alle 13:15, gioved=EC 18 dicembre 2003, Ingo Molnar ha scritto:
+> for the lazy, i've distilled a combo patch that can be applied to a
+> vanilla 2.6.0 kernel:
+>
+> 	redhat.com/~mingo/UML-patches/uml-combo-2.6.0-A1
+>
+> and will compile both as a working 2.6.0 UML kernel and as a working
+> host-skas 2.6.0 kernel. Older UML kernels should work on this host-kernel
+> too.
+>
+> WARNING: this is an experimental patch, UML kernels compiled with this
+> patch wont work in skas mode on older host-skas patched kernels.
 
-> I have upgraded from 2.4.22-5um-1 to 2.4.22-7um-1 and now 
-> user-mode-linux fail to start with 
-> 
-> NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-> VFS: Mounted root (ext2 filesystem) readonly.
-> FATAL: cannot determine library version
+Does this warning refers to any of the other patches you posted? To which o=
+ne=20
+especially? Is this related to the removal of MM_COPY_SEGMENTS ?
 
-Strange.  I think this error message comes from ld.so.
+Also, if there is any incompatibility, it should be named skas4. But since =
 
-> Kernel panic: Attempted to kill init!
-> 
-> The host kernel is 2.4.22+Debian patch+SKAS Debian patch
-> The machine is a bi-processor athlon.
-> The command line is
-> linux ubd0=uml root=/dev/ubd0
-> 
-> 2.4.22-5um-1 work fine.
-> 
-> On another host without the skas patch, rootstrap lead to
-> NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-> VFS: Mounted root (hostfs filesystem) readonly.
-> Mounted devfs on /dev
-> 
-> and then it hang.
+Jeff Dike's will release skas4, even improving skas3 by breaking=20
+compatibility is not useful. And if it is accepted, it should at least be=20
+released also for 2.4(the guest 2.4/2.6 choice must be unrelated to the hos=
+t=20
+choice).
 
-2.4.22-7um-1 works fine for me in skas mode.  There is a problem in tt mode
-which has already been reported (#224431).
+Bye, and thanks for your work here!
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.21/2.6.0-test on an i686; Linux registered user n. 292729
+EOSIGN
 
--- 
- - mdz
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: IBM Linux Tutorials.
 Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
 Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id371&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
