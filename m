@@ -1,12 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Jani Averbach <jaa@jaa.iki.fi>
-Message-ID: <20040113175635.GE2673@jaa.iki.fi>
-References: <E1AgMua-00075F-00@hermes.virtue>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
+	id 1AgT2w-0005Mx-Ib for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Jan 2004 10:13:46 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1AgT2v-0000Dx-Qf for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Jan 2004 10:13:45 -0800
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x48965000, ip0x400e51a4
+References: <Pine.LNX.4.58.0312300027110.24938@silk.corp.fedex.com>
+	<200401111646.16322.blaisorblade_spam@yahoo.it>
+	<Pine.LNX.4.58.0401120702070.4503@silk.corp.fedex.com>
+In-Reply-To: <Pine.LNX.4.58.0401120702070.4503@silk.corp.fedex.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <E1AgMua-00075F-00@hermes.virtue>
-Subject: [uml-devel] Re: [discuss] UML and AMD-64
+Message-Id: <200401131914.27510.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,26 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 13 Jan 2004 10:56:35 -0700
-To: trb@categorical.net
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, discuss@x86-64.org, aj@suse.de
+Date: Tue, 13 Jan 2004 19:14:27 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On 2004-01-13 22:40+1100, Tim Barbour wrote:
-> I am wondering whether an AMD-64 box can host user-mode Linux. I know that an
-> AMD-64 system is supposed to be able to run 32-bit applications, but does that
-> extend as far as running a 32-bit UML virtual machine ?
-> 
-> Is there any possibility of running a 64-bit UML virtual machine on an AMD-64 ?
-> 
+Alle 00:04, luned=EC 12 gennaio 2004, Jeff Chua ha scritto:
+> On Sun, 11 Jan 2004, BlaisorBlade wrote:
+> > Also, Jeff, when you compiled LVM, did you compile it as module(as you
+> > speak about initrd) or statically?
+>
+> LVM dm-mod (device mapper) is module.
+>
+> If I don't load this and not start vgscan, mount lvm devices, I don't see
+> klog segmentation fault.
+Probably building into the kernel that module would work-around your proble=
+m.=20
+LVM is loaded at startup before klog, I guess, right?
 
-I have used an 32bit UML in my AMD64 (pure 64bit system). So it is
-doable. I can't remember any hiccups and installation was really
-straightforward.
+In fact the bug is likely to be with handling of modules, as they go in a=20
+different kernel memory area; *maybe* they are in vmalloc'ed memory.
 
-BR, Jani
-
--- 
-Jani Averbach
+Bye
+--=20
+cat <<EOSIGN
+Paolo Giarrusso, aka Blaisorblade
+Linux Kernel 2.4.23/2.6.0 on an i686; Linux registered user n. 292729
+EOSIGN
 
 
 
