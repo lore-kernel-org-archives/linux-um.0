@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19zmYF-0001tO-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 17:21:39 -0700
+	id 19zmYg-000221-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 17:22:06 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19zmYD-0005wo-Qz
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 17:21:38 -0700
+	id 19zmYe-0006Mm-S1
+	for User-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 17:22:05 -0700
 Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8I0Cwj05396
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 20:12:59 -0400
-Message-Id: <200309180022.h8I0MVNu021681@ccure.karaya.com>
-Subject: Re: [uml-devel] Little heap overflow in mconsole_kern.c 
-In-Reply-To: Your message of "Tue, 16 Sep 2003 15:59:18 +0200."
-             <200309161559.18993.blaisorblade_spam@yahoo.it> 
-References: <200309161559.18993.blaisorblade_spam@yahoo.it> 
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8I0DXj05418
+	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 20:13:34 -0400
+Message-Id: <200309180022.h8I0MfNu021703@ccure.karaya.com>
+Subject: Re: [uml-devel] Re: 2.4.22-4um race condition 
+In-Reply-To: Your message of "Mon, 15 Sep 2003 16:39:50 -0000."
+             <BAY7-F56ob7bOsPTQxH0002321c@hotmail.com> 
+References: <BAY7-F56ob7bOsPTQxH0002321c@hotmail.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,25 +29,27 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Sep 2003 20:22:31 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 17 Sep 2003 20:22:41 -0400
+To: Steve Schmidtke <steve_schmidtke@hotmail.com>
+Cc: rocombs@cs.nmsu.edu, User-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> While new points to a mconsole_entry, the code allocates
-> sizeof(mc_request),  not sizeof(mconsole_entry)
+steve_schmidtke@hotmail.com said:
+> There's a few things I noticed with start_io_thread, though mostly to
+> do  with failing cleanly.  Try the attached patch for 2.4.22-4um. 
 
-Gawd, someone really needs to shoot me before I destroy something...
+I mostly like those changes, except for moving the fd assignments before
+the clone in start_io_thread.  What's up with that?  If they are only
+assigned on the success path, they will remain invalid on any error path
+since they started invalid. 
 
-Needless to say, that is fixed.  Nice spotting.
+A slightly more theoretical justification for this is that it has no business 
+deciding what the caller considers to be invalid.  So, it's best just to
+leave it alone if there's an error.
 
-BTW, It would be a good exercise for someone to go through the code and 
-replace instances of
-	foo = kmalloc(sizeof(type-name), ...)
-with
-	foo = kmalloc(sizeof(*foo), ...)
+A practical reason is that this reduces the code size because you don't have
+to remember to make them invalid on the error paths.
 
-That would have prevented this bug.
+Except for that bit, those changes are merged.
 
 				Jeff
 
