@@ -1,27 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DInLH-0001YW-MT for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 05:39:39 -0700
-Received: from motgate8.mot.com ([129.188.136.8])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DInLG-0002Zb-V6 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Apr 2005 05:39:39 -0700
-Received: from il06exr04.mot.com (il06exr04.mot.com [129.188.137.134])
-	by motgate8.mot.com (Motorola/Motgate8) with ESMTP id j35Cfv24015173
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 5 Apr 2005 05:41:57 -0700 (MST)
-Received: from zch07exm05.corp.mot.com (ZCH07EXM05.corp.mot.com [200.3.1.211])
-	by il06exr04.mot.com (8.13.1/8.13.0) with ESMTP id j35Cf82J005886
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 5 Apr 2005 07:41:09 -0500 (CDT)
-Message-ID: <3BCB5FB76AFFF646BCFBC02A889B64F302010341@ZCH07EXM05.corp.mot.com>
-From: Wu Haibao-a15761 <a15761@motorola.com>
+	id 1DIsTM-0003s4-QN for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 11:08:20 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DIsTL-0008DI-1K for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Apr 2005 11:08:20 -0700
+Message-ID: <4252D40C.9070402@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C539DC.85090028"
-Subject: [uml-devel] gdb can not start up in UML and signal 11 issues
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] UML on s390 (31Bit)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,112 +25,81 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 5 Apr 2005 20:39:33 +0800
-To: user-mode-linux-devel@lists.sourceforge.net
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C539DC.85090028
-Content-Type: text/plain;
-	charset="GB2312"
+Date: Tue, 05 Apr 2005 20:08:12 +0200
+To: linux-kernel@vger.kernel.org
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
 
 Hi,
-    I'm running UML 2.4.26 on customerized linux 2.4.21, and met the following problems which I can not figure out:
-    1. gdb does not come up with a command line prompt when I add the "debug" option in the uml (in tt mode), it just hang up with these message:
-================================================
-GNU gdb Red Hat Linux (6.1post-1.20040607.17rh)
-Copyright 2004 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you are
-welcome to change it and/or distribute copies of it under certain conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for details.
-This GDB was configured as "i386-redhat-linux-gnu"...Using host libthread_db library "/lib/libthread_db.so.1".
-================================================
-        
-        2. After starting UML without the debug option and running some applications, it hangs up.  I found the the tt thread is working with endless signal 11 (SIGSEGV) from an application. I just wonder why so many SIGSEGV signals are sent.  Actually after I add some log to the UML, I found  that almost every application sent SIGSEGV to tt, why this happens?
- 
-        Could you please give any suggestion on these?
-        Thanks.
- 
-Regards,
-Wu Haibao
- 
 
-------------------------------------------------------- 
-[ ] General Business Information 
-[x] Motorola Internal Use Only 
-[ ] Motorola Confidential Proprietary 
+currently I'm porting UML to s390 31-bit.
+A first 2.6.11 UML system already is running in UML-SKAS0 mode,
+which normally should run on an unpatched host (no skas3-patch).
 
- 
+To make UML build and run on s390, I needed to do these two little
+changes (the patches are copy and paste. I hope that doesn't hurt,
+since they are very small):
 
-------_=_NextPart_001_01C539DC.85090028
-Content-Type: text/html;
-	charset="GB2312"
-Content-Transfer-Encoding: base64
+1) UML includes some of the subarch's (s390) headers. I had to
+    change one of them with the following one-liner, to make this
+    compile. AFAICS, this change doesn't break compilation of s390
+    itself.
 
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgSFRUUC1FUVVJVj0iQ29udGVudC1UeXBlIiBDT05U
-RU5UPSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9R0IyMzEyIj4NCg0KDQo8TUVUQSBjb250ZW50PSJNU0hU
-TUwgNi4wMC4yODAwLjE0OTEiIG5hbWU9R0VORVJBVE9SPjwvSEVBRD4NCjxCT0RZPg0KPERJVj48
-U1BBTiBjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+PEZPTlQgZmFjZT1BcmlhbCANCnNpemU9Mj5I
-aSw8L0ZPTlQ+PC9TUEFOPjwvRElWPg0KPERJVj48U1BBTiBjbGFzcz0wNjI0MjI5MTItMDUwNDIw
-MDU+Jm5ic3A7Jm5ic3A7Jm5ic3A7IDxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+SSdtIHJ1bm5p
-bmcgVU1MIDIuNC4yNiBvbiBjdXN0b21lcml6ZWQgbGludXggMi40LjIxLCBhbmQgbWV0IHRoZSAN
-CmZvbGxvd2luZyBwcm9ibGVtcyB3aGljaCZuYnNwO0kgY2FuIG5vdCBmaWd1cmUgb3V0OjwvRk9O
-VD48L1NQQU4+PC9ESVY+DQo8RElWPjxTUEFOIGNsYXNzPTA2MjQyMjkxMi0wNTA0MjAwNT4mbmJz
-cDsmbmJzcDsmbmJzcDsgPEZPTlQgZmFjZT1BcmlhbCANCnNpemU9Mj4xLiBnZGIgZG9lcyBub3Qg
-Y29tZSB1cCB3aXRoIGEgY29tbWFuZCBsaW5lIHByb21wdCB3aGVuIEkgYWRkIHRoZSAiZGVidWci
-IA0Kb3B0aW9uIGluIHRoZSB1bWwgKGluIHR0IG1vZGUpLCBpdCBqdXN0IGhhbmcgdXAgd2l0aCB0
-aGVzZSANCm1lc3NhZ2U6PC9GT05UPjwvU1BBTj48L0RJVj4NCjxESVY+PFNQQU4gY2xhc3M9MDYy
-NDIyOTEyLTA1MDQyMDA1PjxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PC9GT05UPjwvU1BBTj48L0RJVj4NCjxE
-SVY+PFNQQU4gY2xhc3M9MDYyNDIyOTEyLTA1MDQyMDA1PjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0y
-PkdOVSBnZGIgUmVkIEhhdCANCkxpbnV4ICg2LjFwb3N0LTEuMjAwNDA2MDcuMTdyaCk8QlI+Q29w
-eXJpZ2h0IDIwMDQgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCANCkluYy48QlI+R0RCIGlzIGZy
-ZWUgc29mdHdhcmUsIGNvdmVyZWQgYnkgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlLCBh
-bmQgeW91IA0KYXJlPEJSPndlbGNvbWUgdG8gY2hhbmdlIGl0IGFuZC9vciBkaXN0cmlidXRlIGNv
-cGllcyBvZiBpdCB1bmRlciBjZXJ0YWluIA0KY29uZGl0aW9ucy48QlI+VHlwZSAic2hvdyBjb3B5
-aW5nIiB0byBzZWUgdGhlIGNvbmRpdGlvbnMuPEJSPlRoZXJlIGlzIGFic29sdXRlbHkgDQpubyB3
-YXJyYW50eSBmb3IgR0RCLiZuYnNwOyBUeXBlICJzaG93IHdhcnJhbnR5IiBmb3IgZGV0YWlscy48
-QlI+VGhpcyBHREIgd2FzIA0KY29uZmlndXJlZCBhcyAiaTM4Ni1yZWRoYXQtbGludXgtZ251Ii4u
-LlVzaW5nIGhvc3QgbGlidGhyZWFkX2RiIGxpYnJhcnkgDQoiL2xpYi9saWJ0aHJlYWRfZGIuc28u
-MSIuPC9GT05UPjwvU1BBTj48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+PFNQ
-QU4gDQpjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PC9TUEFOPjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFj
-ZT1BcmlhbCBzaXplPTI+PFNQQU4gDQpjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KPC9TUEFOPjwvRk9OVD48L0RJVj4N
-CjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+PFNQQU4gDQpjbGFzcz0wNjI0MjI5MTItMDUw
-NDIwMDU+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IDIuIEFmdGVy
-IA0Kc3RhcnRpbmcgVU1MIHdpdGhvdXQgdGhlIGRlYnVnIG9wdGlvbiBhbmQgcnVubmluZyBzb21l
-IGFwcGxpY2F0aW9ucywgaXQgaGFuZ3MgDQp1cC4mbmJzcDsgSSBmb3VuZCB0aGUgdGhlIHR0IHRo
-cmVhZCBpcyB3b3JraW5nIHdpdGggZW5kbGVzcyBzaWduYWwgMTEgKFNJR1NFR1YpIA0KZnJvbSBh
-biBhcHBsaWNhdGlvbi4gSSBqdXN0IHdvbmRlciB3aHkgc28gbWFueSBTSUdTRUdWIHNpZ25hbHMg
-YXJlIHNlbnQuJm5ic3A7IA0KQWN0dWFsbHkgYWZ0ZXIgSSBhZGQgc29tZSBsb2cgdG8gdGhlIFVN
-TCwgSSBmb3VuZCZuYnNwOyB0aGF0IGFsbW9zdCBldmVyeSANCmFwcGxpY2F0aW9uIHNlbnQgU0lH
-U0VHViB0byB0dCwgd2h5IHRoaXMgaGFwcGVucz88L1NQQU4+PC9GT05UPjwvRElWPg0KPERJVj48
-Rk9OVCBmYWNlPUFyaWFsIHNpemU9Mj48U1BBTiANCmNsYXNzPTA2MjQyMjkxMi0wNTA0MjAwNT48
-L1NQQU4+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBmYWNlPUFyaWFsIHNpemU9Mj48
-U1BBTiANCmNsYXNzPTA2MjQyMjkxMi0wNTA0MjAwNT4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
-bmJzcDsmbmJzcDsmbmJzcDsgQ291bGQgeW91IA0KcGxlYXNlIGdpdmUgYW55IHN1Z2dlc3Rpb24g
-b24gdGhlc2U/PC9TUEFOPjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXpl
-PTI+PFNQQU4gDQpjbGFzcz0wNjI0MjI5MTItMDUwNDIwMDU+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KVGhhbmtzLjwvU1BBTj48L0ZPTlQ+PC9ESVY+DQo8RElW
-PjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0yPjxTUEFOIA0KY2xhc3M9MDYyNDIyOTEyLTA1MDQyMDA1
-PjwvU1BBTj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0y
-PjxTUEFOIA0KY2xhc3M9MDYyNDIyOTEyLTA1MDQyMDA1PlJlZ2FyZHMsPC9TUEFOPjwvRk9OVD48
-L0RJVj4NCjxESVY+PEZPTlQgZmFjZT1BcmlhbCBzaXplPTI+PFNQQU4gY2xhc3M9MDYyNDIyOTEy
-LTA1MDQyMDA1Pld1IA0KSGFpYmFvPC9TUEFOPjwvRk9OVD48L0RJVj4NCjxESVY+PFNQQU4gY2xh
-c3M9MDYyNDIyOTEyLTA1MDQyMDA1PjxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+PC9GT05UPjwv
-U1BBTj4mbmJzcDs8L0RJVj4NCjxQPjxGT05UIGZhY2U9QXJpYWwgDQpzaXplPTI+LS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLTwvRk9OVD4gPEJS
-PjxGT05UIA0KZmFjZT1BcmlhbCBzaXplPTI+WyBdIEdlbmVyYWwgQnVzaW5lc3MgSW5mb3JtYXRp
-b248L0ZPTlQ+IDxCUj48Rk9OVCBmYWNlPUFyaWFsIA0Kc2l6ZT0yPlt4XSBNb3Rvcm9sYSBJbnRl
-cm5hbCBVc2UgT25seTwvRk9OVD4gPEJSPjxGT05UIGZhY2U9QXJpYWwgc2l6ZT0yPlsgXSANCk1v
-dG9yb2xhIENvbmZpZGVudGlhbCBQcm9wcmlldGFyeTwvRk9OVD4gPC9QPg0KPERJVj4mbmJzcDs8
-L0RJVj48L0JPRFk+PC9IVE1MPg0K
+==============================================================================
+--- linux-2.6.11.orig/include/asm-s390/user.h	2004-12-09 18:45:02.000000000 +0100
++++ linux-2.6.11/include/asm-s390/user.h	2004-12-09 18:48:11.000000000 +0100
+@@ -10,7 +10,7 @@
+  #define _S390_USER_H
 
-------_=_NextPart_001_01C539DC.85090028--
+  #include <asm/page.h>
+-#include <linux/ptrace.h>
++#include <asm/ptrace.h>
+  /* Core file format: The core file is written in such a way that gdb
+     can understand it and provide useful information to the user (under
+     linux we use the 'trad-core' bfd).  There are quite a number of
+==============================================================================
+
+2) UML needs to intercept syscalls via ptrace to invalidate the syscall,
+    read syscall's parameters and write the result with the result of
+    UML's syscall processing. Also, UML needs to make sure, that the host
+    does no syscall restart processing. On i386 for example, this can be
+    done by writing -1 to orig_eax on the 2nd syscall interception
+    (orig_eax is the syscall number, which after the interception is used
+    as a "interrupt was a syscall" flag only.
+    Unfortunately, s390 holds syscall number and syscall result in gpr2 and
+    its "interrupt was a syscall" flag (trap) is unreachable via ptrace.
+    So I changed the host to set trap to -1, if the syscall number is written
+    to a negative value on the first syscall interception.
+    I hope, this adds what UML needs without changing ptrace visibly to other
+    ptrace users.
+    (This isn't tested on a 2.6 host yet, because my host still is a 2.4.21 SuSE.
+    But I've adapted this change to 2.4 and tested, it works.)
+
+
+==============================================================================
+--- linux-2.6.11.orig/arch/s390/kernel/ptrace.c	2005-04-04 18:57:38.000000000 +0200
++++ linux-2.6.11/arch/s390/kernel/ptrace.c	2005-04-04 19:01:51.000000000 +0200
+@@ -726,6 +726,13 @@
+				  ? 0x80 : 0));
+
+  	/*
++	 * If debugger has set an invalid syscall number,
++	 * we prepare to skip syscall restart handling
++	 */
++	if (!entryexit && (long )regs->gprs[2] < 0 )
++		regs->trap = -1;
++
++	/*
+  	 * this isn't the same as continuing with a signal, but it will do
+  	 * for normal use.  strace only continues with a signal if the
+  	 * stopping signal is not SIGTRAP.  -brl
+==============================================================================
+
+
+It would be very helpful for me, if these changes could go into s390 mainline.
+If there is something wrong with them, please help me find a better solution.
+
+
+Regards, Bodo
 
 
 -------------------------------------------------------
