@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CpFAW-0008WE-G4 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 16:18:24 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1CpFAU-00074O-IE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jan 2005 16:18:24 -0800
+	id 1CpFGn-0000NI-Hf for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 16:24:53 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CpFGi-0007Qy-RH for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jan 2005 16:24:53 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20050113210051.99326AB30@zion>
-In-Reply-To: <20050113210051.99326AB30@zion>
+Subject: Re: [uml-devel] [PATCH] Fix stack corruption
+References: <200501121856.j0CIuMiZ003766@ccure.user-mode-linux.org>
+	<002001c4f9c7$de282ec0$0201a8c0@hawk>
+In-Reply-To: <002001c4f9c7$de282ec0$0201a8c0@hawk>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200501140120.44329.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [patch 02/11] uml: fix compilation for missing headers
+Message-Id: <200501140127.09333.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,81 +30,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 14 Jan 2005 01:20:43 +0100
-To: blaisorblade_spam@yahoo.it
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 14 Jan 2005 01:27:09 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: "Christopher S. Aker" <caker@theshore.net>
 
-Sorry, I reposted the same patch inside the bunch of ones, hope it's not a 
-problem. However, I've seen some more problems which I didn't fix in the 
-patch:
-> +#if 0
->  #define LAST_GENERIC_SYSCALL __NR_vperfctr_read
-> +#else
-> +#define LAST_GENERIC_SYSCALL __NR_keyctl
-> +#endif
+On Friday 14 January 2005 00:30, Christopher S. Aker wrote:
+> > The fix is obvious:
+> >
+> > Index: 2.6.10/arch/um/kernel/skas/process.c
+> > ===================================================================
+> > --- 2.6.10.orig/arch/um/kernel/skas/process.c 2005-01-12
+> > 11:17:22.000000000 -0500 +++ 2.6.10/arch/um/kernel/skas/process.c
+> > 2005-01-12 11:18:03.000000000 -0500 @@ -323,9 +323,10 @@
+> >   block_signals();
+> >   if(sigsetjmp(fork_buf, 1) == 0)
+> >   new_thread_proc(stack, handler);
+> > - set_signals(flags);
+> >
+> >   remove_sigstack();
+> > +
+> > + set_signals(flags);
+> >  }
+> >
+> >  void thread_wait(void *sw, void *fb)
 >
->  #if LAST_GENERIC_SYSCALL > LAST_ARCH_SYSCALL
->  #define LAST_SYSCALL LAST_GENERIC_SYSCALL
-> @@ -54,11 +58,14 @@ extern syscall_handler_t sys_get_mempoli
->  extern syscall_handler_t sys_set_mempolicy;
->  extern syscall_handler_t sys_sys_kexec_load;
->  extern syscall_handler_t sys_sys_setaltroot;
-> +
-> +#if 0
->  extern syscall_handler_t sys_vperfctr_open;
->  extern syscall_handler_t sys_vperfctr_control;
->  extern syscall_handler_t sys_vperfctr_unlink;
->  extern syscall_handler_t sys_vperfctr_iresume;
->  extern syscall_handler_t sys_vperfctr_read;
-> +#endif
+> Just a follow up on this for the sake of a paper trail...  This doesn't fix
+> the test-case below:
 >
->  syscall_handler_t *sys_call_table[] = {
->   [ __NR_restart_syscall ] = (syscall_handler_t *) sys_restart_syscall,
-> @@ -273,7 +280,10 @@ syscall_handler_t *sys_call_table[] = {
->   [ __NR_mq_timedreceive ] = (syscall_handler_t *) sys_mq_timedreceive,
->   [ __NR_mq_notify ] = (syscall_handler_t *) sys_mq_notify,
->   [ __NR_mq_getsetattr ] = (syscall_handler_t *) sys_mq_getsetattr,
-> +#if 0
->   [ __NR_sys_kexec_load ] = (syscall_handler_t *) sys_kexec_load,
-> +#endif
-> + [ __NR_sys_kexec_load ] = (syscall_handler_t *) sys_ni_syscall,
->   [ __NR_waitid ] = (syscall_handler_t *) sys_waitid,
->  #if 0
->   [ __NR_sys_setaltroot ] = (syscall_handler_t *) sys_sys_setaltroot,
-This is left alone, but this way, the "285" syscall is not set at all, while 
-it should be sys_ni_syscall like for what I commented out (apart the ones at 
-the end).
-> @@ -281,11 +291,14 @@ syscall_handler_t *sys_call_table[] = {
->   [ __NR_add_key ] = (syscall_handler_t *) sys_add_key,
->   [ __NR_request_key ] = (syscall_handler_t *) sys_request_key,
->   [ __NR_keyctl ] = (syscall_handler_t *) sys_keyctl,
-> + /* These syscalls are still in -mm only*/
-> +#if 0
->   [ __NR_vperfctr_open ] = (syscall_handler_t *) sys_vperfctr_open,
->   [ __NR_vperfctr_control ] = (syscall_handler_t *) sys_vperfctr_control,
->   [ __NR_vperfctr_unlink ] = (syscall_handler_t *) sys_vperfctr_unlink,
->   [ __NR_vperfctr_iresume ] = (syscall_handler_t *) sys_vperfctr_iresume,
->   [ __NR_vperfctr_read ] = (syscall_handler_t *) sys_vperfctr_read,
-> +#endif
+> http://www.theshore.net/~caker/uml/crashkit-no-console-output/
 >
->   ARCH_SYSCALLS
->   [ LAST_SYSCALL + 1 ... NR_syscalls ] =
-> _
-While looking at the unistd.h code, I discovered another bug (for i386) - I'm 
-posting it here to avoid forgetting it:
+> readme.txt:
+> ----
+> All you need is an UML guest assigned an IP on your network, iptables, and
+> the two files below in the same directory.  Run the script, while
+> ping-flooding the UML's IP address from the host, or another machine on
+> your network.
+>
+> This script works best with a 2.6 based UML.  I can recreate the crash
+> easily using 2.6.9-linode9 (based on -bb4), also available on this website.
+> ----
+>
+> I believe we've figured out that this is skas3 specific.  Once you start
+> ping-flooding the UML, it crashes within a second.
+I wasn't able to riproduce it... I ran two instances of the above loop + a 
+ping flood from the host, but it didn't crash UML, even after letting it that 
+way for some minutes.
 
-/*
- * user-visible error numbers are in the range -1 - -128: see
- * <asm-i386/errno.h>
- */
-
-But in include/asm-generic/errno.h, there is a problem:
-
-#define EKEYREVOKED     128     /* Key has been revoked */
-#define EKEYREJECTED    129     /* Key was rejected by service */
-
-I.e. the range has changed...
-I think that the max errno value should become a macro defined in errno.h.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
