@@ -2,20 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2b0w-0006Mx-4h for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 11:11:10 -0800
-Received: from mail.broadpark.no ([217.13.4.2])
+	id 1B2c5S-00041q-Nj for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 12:19:54 -0800
+Received: from smtpin.eastlink.ca ([24.222.0.18])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2b0s-0001pc-Fa for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 Mar 2004 11:11:06 -0800
-References: <c31sqm$ett$1@sea.gmane.org>
-From: Adrian Phillips <adrianp@broadpark.no>
-In-Reply-To: <c31sqm$ett$1@sea.gmane.org> (Sven =?iso-8859-1?q?K=F6hler's?=
-	message of "Sun, 14 Mar 2004 16:11:56 +0100")
-Message-ID: <87u10rjlc0.fsf@grannyogg.localnet>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] plenty of "/proc/mm map failed" in syslog
-Content-Type: text/plain; charset="iso-8859-1"
+	id 1B2c5R-0003LH-UJ for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 Mar 2004 12:19:54 -0800
+Received: from murphy.hfx.andara.com ([24.222.9.181])
+	by mx4.eastlink.ca (iPlanet Messaging Server 5.2 HotFix 1.12 (built Feb
+	13 2003)) with ESMTP id <0HUL00HO71SY0T@mx4.eastlink.ca> for
+	user-mode-linux-devel@lists.sourceforge.net; Sun,
+	14 Mar 2004 16:19:48 -0400 (AST)
+From: Chris Watt <cnww@hfx.andara.com>
+Subject: Re: [uml-devel] Cryptolook device?
+In-reply-to: <4053B523.10203@darkman.de>
+Message-id: <5.2.0.9.0.20040314161733.00a7b3c8@crunch>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii; format=flowed
+Content-transfer-encoding: 7BIT
+References: <4053AD51.3030704@upb.de>
+	<5.2.0.9.0.20040313192828.02fdaea0@crunch> <4053AD51.3030704@upb.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,47 +33,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Mar 2004 20:10:55 +0100
-Content-Transfer-Encoding: quoted-printable
-To: =?iso-8859-1?q?Sven_K=F6hler?= <skoehler@upb.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 14 Mar 2004 16:19:46 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Sven 'Darkman' Michels <sven@darkman.de>
 
->>>>> "Sven" =3D=3D Sven K=F6hler <skoehler@upb.de> writes:
+At 02:28 AM 14/03/2004 +0100, you wrote:
+>add:
+>
+>source crypto/Config.in
+>
+>at the end of arch/um/config.in
 
-    Sven> While executing it, i got plenty of thos messages in syslog:
-    Sven> Mar 14 15:59:01 localhost kernel: 12 Mar 14 15:59:01
-    Sven> localhost kernel: map : /proc/mm map failed, err =3D 12 Mar 14
-    Sven> 15:59:02 localhost last message repeated 1321 times Mar 14
-    Sven> 15:59:02 localhost kernel: 12 Mar 14 15:59:02 localhost
-    Sven> kernel: map : /proc/mm map failed, err =3D 12 Mar 14 15:59:02
-    Sven> localhost last message repeated 3216 times Mar 14 15:59:02
-    Sven> localhost kernel: 12 Mar 14 15:59:02 localhost kernel: map :
-    Sven> /proc/mm map failed, err =3D 12 Mar 14 15:59:02 localhost last
-    Sven> message repeated 786 times Mar 14 15:59:03 localhost kernel:
-    Sven> 12 Mar 14 15:59:03 localhost kernel: map : /proc/mm map
-    Sven> failed, err =3D 12
+This adds CryptoAPI, which required for cryptoloop, but not all that's 
+required. In 2.4 you also need to apply one of the cryptoloop patches that 
+are drifting around, otherwise your loopback device won't actually use the 
+CryptoAPI.
 
-    Sven> I expected perl to get killed or get an "out of
-    Sven> memory"-error, cause the UML didn't have swap and only 128MB
-    Sven> memory.
 
-Please check the user archives for the last 3 months or google for mm
-map failed.
 
-Sincerely,
-
-Adrian Phillips
-
---=20
-Who really wrote the works of William Shakespeare ?
-http://www.pbs.org/wgbh/pages/frontline/shakespeare/
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: IBM Linux Tutorials
 Free Linux tutorial presented by Daniel Robbins, President and CEO of
 GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=CCk
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
