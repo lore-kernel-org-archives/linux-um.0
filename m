@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1B2xRR-0001cu-Sq for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Mar 2004 11:08:01 -0800
+	id 1B2xVB-0002wE-Bo for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Mar 2004 11:11:53 -0800
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.30) id 1B2xRR-0006fF-2d
+	(Exim 4.30) id 1B2xVA-0007ay-Gv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Mar 2004 11:08:01 -0800
+	Mon, 15 Mar 2004 11:11:52 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] /dev/random oddity
-Message-ID: <20040315194114.GE23741@ccure.user-mode-linux.org>
-References: <20040313014957.GB13419@speedy.schwinge.homeip.net>
-	<405309FE.6020603@darkman.de>
+Subject: Re: [uml-devel] noexec /tmp & uml
+Message-ID: <20040315194459.GG23741@ccure.user-mode-linux.org>
+References: <20040312225437.GB622@terix.fokus.gmd.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <405309FE.6020603@darkman.de>
+In-Reply-To: <20040312225437.GB622@terix.fokus.gmd.de>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,20 +28,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Mar 2004 14:41:14 -0500
-To: Sven 'Darkman' Michels <sven@darkman.de>
+Date: Mon, 15 Mar 2004 14:44:59 -0500
+To: Cristian CONSTANTIN <constantin@fokus.fraunhofer.de>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Mar 13, 2004 at 02:17:50PM +0100, Sven 'Darkman' Michels wrote:
-> never is wrong, you can 'fill' the pool by doing some work like find /
-> ps aux etc, but this is really slow in filling up the pool. Maybe
-> other things should be used to fill the pool, too. Jeff? Blaisor?
-> anyone? ;)
+On Fri, Mar 12, 2004 at 11:54:37PM +0100, Cristian CONSTANTIN wrote:
+> don't know if anyone else saw it / knew it before, but I found it out
+> the hard way...
+> so, my /tmp is mounted with noexec option. when I start uml (2.4.23) it
+> stops booting, barking like:
+> 
+> Kernel panic: map_memory(0xa2800000, 3, 0x8dc000, 4096, 1, 1, 1) failed,
+> err = -1
 
-That doesn't fill the random pool directly.  What it does do is cause disk
-IO, and the ubd driver will refill the random pool.  It's a bit heavy-weight
-for generating randomness, and I don't really like it anyway.  See my other
-reply in this thread.
+Good find.  I'll stick in a check for that and put out a better error
+message.
 
 				Jeff
 
