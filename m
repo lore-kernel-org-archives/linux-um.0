@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CHB6B-0002j3-OU for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 18:05:07 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1CHBdh-0001E6-WB for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 18:39:45 -0700
+Received: from p15103123.pureserver.info ([217.160.129.185] helo=sektor37.de)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1CHB6A-0006kw-IU for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2004 18:05:07 -0700
-From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+	id 1CHBdg-0004Kp-Fk for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Oct 2004 18:39:45 -0700
+Message-ID: <416B35EA.7030809@sektor37.de>
+From: Julian Scheid <julian@sektor37.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
+Subject: Re: [uml-devel] Default kernel configuration on 2.6.x
+References: <416B07AC.3030308@sektor37.de>
+	<200410120146.06254.blaisorblade_spam@yahoo.it>
+	<416B281C.3090201@sektor37.de>
+	<200410120301.35666.blaisorblade_spam@yahoo.it>
+In-Reply-To: <200410120301.35666.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <200410120305.24675.blaisorblade_spam@yahoo.it>
-Subject: [uml-devel] [patch 0/17] UML updates,
-	which must be merged before 2.6.9
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,38 +30,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Oct 2004 03:05:24 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 12 Oct 2004 03:39:54 +0200
+To: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
-Andrew, sorry for sending these patches so late, but they are (mostly 
-one-liners) needed to fix either warnings in compilation (the patches are 
-safe) or probable bugs which are created by these warnings.
+BlaisorBlade wrote:
+> In fact I used CAPITAL 
+> just to make it clear, not to shout and flame you; again sorry for that.
 
-The Makefile patch are of another kind: actually, when I send that couple of 
-patches merged before -rc3, they were against my tree and absolutely 
-incorrect against Linus tree; sorry for not checking that; in fact UML does 
-not link with neither -rc3 nor -rc4 (also due to a compilation bug I already 
-fixed for -rc3). However, this Makefile fixes fix everything, have been 
-longly tested in public (hanging both in my tree, in SuSE UML tree and in 
-Jeff Dike's tree).
+No problem, I know that you didn't mean it in an offending way, that's 
+why I put a winkie in there. Thanks for your advice, my next patch will 
+be more useful.
 
-Finally, I'm sending a patch for a network corruption which is very nasty; 
-it's a one-liner, a resync against the copied original code and I've actually 
-tested it works perfectly.
+> Yeah - I should be sending this to Sam Ravnborg (Kbuild maintainer) when I 
+> have time to focus on this - now it's 3 a.m. and I think I'll be asleep 
+> shortly :-)
 
-So, please, even if now we are in a hurry after -rc4, merge them. It's the 
-only possibility for UML to actually work "out of the box".
+Great, can I ask you to stick to this thread or CC me when there are 
+(major) news? I won't be able to monitor the whole list all the time. 
+Thanks!
 
-Oh well, and sorry for sending "[uml-devel] [patch 4/6] uml: don't declare 
-cpu_online - fix compilation error" - I just noticed it's included in 
-2.6.9-rc4-mm1. All the rest applies without even any offsets to that tree, 
-too.
+See you
 
-Thanks a lot for your help.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
+Julian
 
 
 -------------------------------------------------------
