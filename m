@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp 
 	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19zkeO-0004lx-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 15:19:52 -0700
+	id 19zke4-0004Xv-00
+	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 15:19:32 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19zkeL-0006VU-0D
-	for user-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 15:19:49 -0700
+	id 19zke3-0006NJ-2L
+	for User-mode-linux-devel@lists.sourceforge.net; Wed, 17 Sep 2003 15:19:31 -0700
 Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8HMBBj04456
-	for <user-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 18:11:15 -0400
-Message-Id: <200309172220.h8HMKRNu021299@ccure.karaya.com>
-Subject: Re: [uml-devel] compile error ...(now tracked down) 
-In-Reply-To: Your message of "Wed, 17 Sep 2003 13:29:57 +0200."
-             <200309171329.57323.blaisorblade_spam@yahoo.it> 
-References: <200309161329.39725.user-mode-linux-devel@goldenspud.com>  <200309171329.57323.blaisorblade_spam@yahoo.it> 
+	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h8HMB0j04400
+	for <User-mode-linux-devel@lists.sourceforge.net>; Wed, 17 Sep 2003 18:11:01 -0400
+Message-Id: <200309172220.h8HMKANu021258@ccure.karaya.com>
+Subject: Re: [uml-devel] Problem with 2.4.22-um4 
+In-Reply-To: Your message of "Wed, 17 Sep 2003 15:08:49 -0000."
+             <BAY7-F103PPYPeOqp2N00015916@hotmail.com> 
+References: <BAY7-F103PPYPeOqp2N00015916@hotmail.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,17 +29,16 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Sep 2003 18:20:27 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, Steve Schmidtke <steve_schmidtke@hotmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 17 Sep 2003 18:20:10 -0400
+To: Steve Schmidtke <steve_schmidtke@hotmail.com>
+Cc: petschge@gmx.de, User-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade_spam@yahoo.it said:
-> # define st_atime st_atim.tv_sec        /* Backward compatibility.  */
-	...
->                 .st_atime   = src->st_atime,   /* time of last access */ 
+steve_schmidtke@hotmail.com said:
+> Jeff didn't like a part of my patch, but didn't back out all of the
+> related  bits.
 
-This is just because of the names of the struct uml_stat.  Changing those
-field names should fix the compile problem.
+Crap.  I backed out the while -> do { ... } while part of that particular
+change, but forgot to keep the read -> os_read_file part.
 
 				Jeff
 
