@@ -1,16 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CFcvc-0000rr-PL for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Oct 2004 11:23:48 -0700
-Received: from mail-relay-4.tiscali.it ([213.205.33.44])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CFcva-0007a7-9S for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Oct 2004 11:23:48 -0700
-From: blaisorblade_spam@yahoo.it
-Message-Id: <20041007182254.B3A8A49BA@zion.localdomain>
-Subject: [uml-devel] [patch 1/2] uml: fix fd leak with HostFs
+	id 1CFdD8-0005Vk-65 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 11:41:54 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1CFdD6-0002bQ-IS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Oct 2004 11:41:54 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+Subject: Re: [uml-devel] uml "ip header error" for large (fragmented) udp
+	packets
+References: </ydgn6vAKqzNNA6XYwRcEgI=lge@web.de>
+	<vm4cST3zEEx6OdPLK17ocyg=lge@web.de>
+	<20041006203539.GC22794@wotan.suse.de>
+In-Reply-To: <20041006203539.GC22794@wotan.suse.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200410072041.51890.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,50 +32,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 07 Oct 2004 20:22:54 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Date: Thu, 7 Oct 2004 20:41:51 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Andi Kleen <ak@suse.de>, Lars Ellenberg <Lars.Ellenberg@linbit.com>, lmb@suse.de
 
+On Wednesday 06 October 2004 22:35, Andi Kleen wrote:
+> On Wed, Oct 06, 2004 at 08:48:23PM +0200, Lars Ellenberg wrote:
+> > > So this could help you for now, while we try to find a clue about this.
+> > > Quite frankly, I must say that I'm not seeing any network kernel hacker
+> > > here (correct me if I'm wrong), so it will take some time to debug it.
+> > > Maybe Gerd Knorr is an exception, actually.
 
-On 2.4 we used force_delete() to make sure inode were not cached, and we then
-close the host file when the inode is cleared; when porting to 2.6 the
-"force_delete" thing was dropped, and this patch adds a fix for this (by
-setting drop_inode = generic_delete_inode).
+> > Well, then I take Andi Kleen and Lars Marowsky-Br?e into CC for now.
+> > Lars, because I expect him to be interessted in having UML as full
+> > featured cluster simulation tool available, and Andi because I hope he
+> > might know the network code much better than me...
 
-Search for drop_inode in the 2.6 Documentation/filesystems/vfs.txt for info
-about this.
+> > FYI, full thread can be found for example at
+> > http://thread.gmane.org/gmane.linux.uml.devel/4607
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
----
+> Paolo's analysis is basically correct. loopback sets this flag
+> for better performance.  Actually in 2.6 it probably doesn't help
+> very much anymore because TCP can do checksum copy RX now, and that
+> would get the checksum basically for free. But it's still there
+> and may still make things slightly faster.
+First thing: thanks a lot for your quick answer.
 
- linux-2.6.9-current-paolo/fs/hostfs/hostfs_kern.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+My discussion about "lo" was slightly unrelated to the exact problem, and a 
+bit confusing...
 
-diff -puN fs/hostfs/hostfs_kern.c~uml-HostFs-2.6-fd_leak fs/hostfs/hostfs_kern.c
---- linux-2.6.9-current/fs/hostfs/hostfs_kern.c~uml-HostFs-2.6-fd_leak	2004-10-07 17:38:01.075378432 +0200
-+++ linux-2.6.9-current-paolo/fs/hostfs/hostfs_kern.c	2004-10-07 20:21:52.868718656 +0200
-@@ -290,7 +290,6 @@ static void hostfs_delete_inode(struct i
- {
- 	if(HOSTFS_I(inode)->fd != -1) {
- 		close_file(&HOSTFS_I(inode)->fd);
--		printk("Closing host fd in .delete_inode\n");
- 		HOSTFS_I(inode)->fd = -1;
- 	}
- 	clear_inode(inode);
-@@ -301,9 +300,11 @@ static void hostfs_destroy_inode(struct 
- 	if(HOSTFS_I(inode)->host_filename)
- 		kfree(HOSTFS_I(inode)->host_filename);
- 
-+	/*XXX: This should not happen, probably. The check is here for
-+	 * additional safety.*/
- 	if(HOSTFS_I(inode)->fd != -1) {
- 		close_file(&HOSTFS_I(inode)->fd);
--		printk("Closing host fd in .destroy_inode\n");
-+		printk(KERN_DEBUG "Closing host fd in .destroy_inode\n");
- 	}
- 
- 	kfree(HOSTFS_I(inode));
-_
+I was at first surprised from Ethereal complaining about the host kernel, so I 
+thought I could have a buggy Ethereal, and then went checking that it's a 
+Linux optimization, indeed.
+
+> If UML taps the packets from lo it will see incorrect checksums.
+> Using a tun or ethertap device would avoid this.
+
+> In the worst 
+> case you could also just delete the flag from the loopback
+> interface, it's only an optimization.
+
+No, inside the Uml kernel they go through a virtual "ethN" interface, which 
+uses special code. That driver, in turn, will use either ethertap, or TAP (it 
+sends Ethernet frames), or even other mechanism.
+
+You can find it (in 2.6.9-rc2 at least) in arch/um/drivers/net_*.c and 
+arch/um/os-Linux/drivers/*tap*.c. The code in *_kern.c files links against 
+the kernel API and includes, *_user.c against the host userspace includes.
+
+And the problem is, probably, that the UML network drivers never declare their 
+checksumming status, as I said in the previous mail:
+
+[quote]
+include/linux/skbuff.h describes the Checksum flags, and UML does not use 
+them: these two commands return no (relevant) output.
+
+find arch/um/ -name '*.[ch]'|xargs grep NETIF
+find arch/um/ -name '*.[ch]'|xargs grep CHECKSUM
+[/quote]
+
+And not even these ones:
+
+find arch/um/ -name '*.[ch]'|xargs grep NETIF
+find arch/um/ -name '*.[ch]'|xargs grep CHECKSUM
+
+Also, it's possible that there are even other bugs...
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
