@@ -1,12 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Subject: Re: modify_ldt_ldt_s vs. user_desc (Re: [uml-devel] Re: [uml-user] UML (unofficial) patches against vanilla 2.6.2)
-Message-ID: <20040213135929.GA27460@fieldses.org>
-References: <200402052107.37625.blaisorblade_spam@yahoo.it> <200402130523.i1D5NTgR005420@ccure.user-mode-linux.org> <20040213071536.GJ19147@alcor.net>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1ArgxC-0003mS-GX
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 09:18:14 -0800
+Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1ArgsM-0005pD-HA
+	for user-mode-linux-devel@lists.sourceforge.net; Fri, 13 Feb 2004 09:13:14 -0800
+From: Werner Almesberger <werner@almesberger.net>
+Subject: Re: [uml-devel] Re: patch/RFC: add bypass for "debug" parameter
+Message-ID: <20040213141512.C8503@almesberger.net>
+References: <20040208185334.H9021@almesberger.net> <20040212154958.GB2834@ccure.user-mode-linux.org> <20040212214058.R25203@almesberger.net> <Pine.GSO.4.58.0402131052540.23784@waterleaf.sonytel.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20040213071536.GJ19147@alcor.net>
-From: "J. Bruce Fields" <bfields@fieldses.org>
+In-Reply-To: <Pine.GSO.4.58.0402131052540.23784@waterleaf.sonytel.be>; from geert@linux-m68k.org on Fri, Feb 13, 2004 at 10:53:52AM +0100
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,22 +25,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 13 Feb 2004 08:59:30 -0500
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 13 Feb 2004 14:15:12 -0300
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jeff Dike <jdike@addtoit.com>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Feb 12, 2004 at 11:15:36PM -0800, Matt Zimmerman wrote:
-> 
-> I don't suppose there would be much harm in adding a macro to ldt.h so that
-> existing software could continue to work, but that change belongs in the
-> kernel.
+Geert Uytterhoeven wrote:
+> Be careful not to break the feature to pass all remaining arguments to init.
 
-The policy as I understand it has always been that userland needs its
-own headers, and that kernel headers are not meant to be usable by
-applications unmodified.
+Hmm, I don't see it. How does it work ?
 
-Looks like a debian bug to me....
+- Werner
 
---Bruce Fields
+-- 
+  _________________________________________________________________________
+ / Werner Almesberger, Buenos Aires, Argentina     werner@almesberger.net /
+/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
