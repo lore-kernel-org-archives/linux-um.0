@@ -1,21 +1,9 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp 
-	(Cipher TLSv1:DES-CBC3-SHA:168) (Exim 3.31-VA-mm2 #1 (Debian))
-	id 19uIq0-00034P-00
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 02 Sep 2003 14:37:20 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.22)
-	id 19uIpz-0005oT-Sm
-	for user-mode-linux-devel@lists.sourceforge.net; Tue, 02 Sep 2003 14:37:20 -0700
-Received: from ccure.karaya.com (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.9.3) with ESMTP id h82LU9j02322
-	for <user-mode-linux-devel@lists.sourceforge.net>; Tue, 2 Sep 2003 17:30:09 -0400
-Message-Id: <200309021850.h82Io9Hx001652@ccure.karaya.com>
-Subject: Re: [uml-devel] run away 2.6.0 
-In-Reply-To: Your message of "Tue, 02 Sep 2003 12:20:13 +0200."
-             <200309021220.13334.petschge@gmx.de> 
-References: <200309021220.13334.petschge@gmx.de> 
+Message-Id: <200309021850.h82Io5Hx001647@ccure.karaya.com>
+Subject: Re: [uml-devel] uml trashes stdin 
+In-Reply-To: Your message of "Fri, 29 Aug 2003 22:03:58 PDT."
+             <000901c36eb4$20db7dd0$6401a8c0@nexxus> 
+References: <000901c36eb4$20db7dd0$6401a8c0@nexxus> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
@@ -29,14 +17,16 @@ List-Id: The user-mode Linux development list <user-mode-linux-devel.lists.sourc
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 02 Sep 2003 14:50:09 -0400
-To: petschge@web.de
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 02 Sep 2003 14:50:05 -0400
+To: sean whalen <swhalen@denature.org>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-petschge@gmx.de said:
-> How  should I proceed to track this bug down?
+swhalen@denature.org said:
+> i'm running uml with a patched 2.5.70 kernel
 
-Figure out what process is causing the hang and get a stack trace from it.
+> i didn't see this in the archives, does anyone have any ideas? 
+
+For starters, try running something more modern.
 
 				Jeff
 
