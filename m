@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1CJcob-0000Ba-73 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2004 12:05:05 -0700
-Received: from dsl-29-66.cofs.net ([68.142.29.66] helo=kevlar.burdell.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1CJcoa-0005Ed-K8 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2004 12:05:05 -0700
-From: Sonny Rao <sonny@burdell.org>
-Subject: Re: [uml-devel] Re: [uml-user] UML on PPC? state of the art
-Message-ID: <20041018190251.GA7836@kevlar.burdell.org>
-References: <415408E40001A675@ms001msg.mail.fw>
-	<200410181948.22460.blaisorblade_spam@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1CJd0m-0002BI-Fv for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Oct 2004 12:17:40 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1CJd0l-0006WE-Jx for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Oct 2004 12:17:40 -0700
+From: BlaisorBlade <blaisorblade_spam@yahoo.it>
+References: <4173F1FD.6080004@colitti.com> <87d5zgrkm2.fsf@bytesex.org>
+In-Reply-To: <87d5zgrkm2.fsf@bytesex.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200410181948.22460.blaisorblade_spam@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200410182118.09005.blaisorblade_spam@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] Host processes never terminate on 2.6.9rc3
+	host (stuck in ptrace_stop)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,51 +30,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 18 Oct 2004 15:02:51 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>, stefano.melchior@fastwebnet.it
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 18 Oct 2004 21:18:08 +0200
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Cc: Gerd Knorr <kraxel@bytesex.org>, Lorenzo Colitti <lorenzo@colitti.com>, Massimo Rimondini <rimondin@dia.uniroma3.it>
 
-On Mon, Oct 18, 2004 at 07:48:22PM +0200, BlaisorBlade wrote:
-> On Monday 18 October 2004 17:58, SteX wrote:
-> > Hi all,
-> > does anyone know if the porting of UML on PPC has still been staled? or
-> > anyone has started working on?
-> > My Apple Powerbook is crying! ((:-((
-> 
-> > I found something about the porting on Chris Emerson's home page, but it
-> > is staled sice july 2001!
-> Where's that page?
-> > Let me know.
-> >
-> > Thank you in advance
-> >
-> > Regards
-> >
-> > SteX
-> Nobody is working on the PPC port. If someone wants to start helping, we will 
-> welcome him. Currently, the interest in UML is increasing, new developers 
-> come in, and after a lot of time, a new architecture (x86_64) is being 
-> supported. Also we've seen messages from people starting work to port UML 
-> even to ARM machines(!). No actual code, yet, so I suppose they stopped.
-> 
-> However, nobody removed the old code from UML. It has even been accepted in 
-> the 2.6 kernel, even if it is completely broken.
-> 
-> If you can bring up this issue on any place where someone could pick it up, 
-> you could find someone helping.
-> 
+On Monday 18 October 2004 19:39, Gerd Knorr wrote:
+> Lorenzo Colitti <lorenzo@colitti.com> writes:
+> > Using a 2.6.8.1 UML kernel on a 2.6.9-rc3 host in tt mode, my "linux"
+> > processes on the host hang around forever, even if I shut the virtual
+> > machine down with halt.
 
-The linuxppc64-dev@ozlabs.org is probably a good place to get help on
-the ppc64 stuff.  Those guys know ppc so I'm guessing that asking
-about ppc32 stuff is cool as well.  
+> > P.S. Might this be due to a change to ptrace committed in 2.6.9rc1?
+> > There's something about ptrace_stop in this changelog:
+> > http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/old/patch-2.6.9-rc1
+> >-bk16.log
 
-I'd be willing to test UML on PPC64 if work commences, I have access
-to some IBM Power[345] machines.  I'd love to help in development, but
-I'm pretty busy right now, so I'll just volunteer to test it. 
+> Yes, I see that as well, it actually *is* that ptrace change added in
+> patch-2.6.9-rc1-bk16.
 
-Sonny Rao
---
-LTC Kernel Performance Team
+> IMHO it is a bug, I've reported it to lkml a 
+> few days ago, no response yet.
+
+Oh well, did I lost it or you did not CC the UML mailing list? And in the 2nd 
+case, why? I'm downloading the patches from BitKeeper. This are the links 
+(not guaranted to work, I should have used "bookmarkable link" but I may have 
+missed some ones):
+
+http://linux.bkbits.net:8080/linux-2.5/cset@413f1c0bviEp6fHuuZpUWED2M7lWWA?nav=index.html|
+tags|ChangeSet@..1.1867
+http://linux.bkbits.net:8080/linux-2.5/cset@413f1c00MHeKsQfqBGA5McsDQ71Rmg?nav=index.html|
+tags|ChangeSet@..1.1867
+http://linux.bkbits.net:8080/linux-2.5/cset@413f1bdabfaQNzIZpU6bPxNlSxdriQ?nav=index.html|
+tags|ChangeSet@..1.1867
+http://linux.bkbits.net:8080/linux-2.5/cset@413f1be9vIHHLGwHUvcNtaZDwKSuig?nav=index.html|
+tags|ChangeSet@..1.1867
+
+There is one patch in particular mentioning ptrace_stop, but the other ones 
+are related to it, too (except the one about strace catching even invalid 
+syscalls).
+
+> Problem is that you can't kill -9 processes any more which are ptraced
+> _and_ stopped at the same time.
+Sorry, tried kill -CONT? I'm almost sure it works (tried by both Henrik 
+Normstrod and me, not in this case).
+
+> skas mode isn't hit that badly by the bug, it "only" hangs on
+> shutdown/reboot.
+
+
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
 
 
 -------------------------------------------------------
