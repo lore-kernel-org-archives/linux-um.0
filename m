@@ -1,14 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <409AF27F.6020207@vgertech.com>
-From: Nuno Silva <nuno.silva@vgertech.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: [uml-user] LTT in UML ?
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1BLzHk-00030I-Qk for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 May 2004 23:56:40 -0700
+Received: from pop.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.30)
+	id 1BLzHk-0002B4-F4 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 May 2004 23:56:40 -0700
+Message-ID: <095801c43401$65f89ca0$2000000a@schlepptopp>
+From: "roland" <for_spam@gmx.de>
 References: <4098FC64.3000607@enterasys.com>
 	<070c01c432f8$1a423000$2000000a@schlepptopp>
-In-Reply-To: <070c01c432f8$1a423000$2000000a@schlepptopp>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig14D5D66899456DA2889E80E3"
+	<409AF27F.6020207@vgertech.com>
+Subject: Re: [uml-devel] Re: [uml-user] LTT in UML ?
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,47 +29,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 07 May 2004 03:20:47 +0100
-To: roland <for_spam@gmx.de>
-Cc: David Bahi <dbahi@enterasys.com>, uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net, info@opersys.com
+Date: Fri, 7 May 2004 09:03:27 +0200
+To: Nuno Silva <nuno.silva@vgertech.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig14D5D66899456DA2889E80E3
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
-roland wrote:
-
-[..]
-
- >
- > probably, having an LTT option for the uml-kernel could give some 
+ > probably, having an LTT option for the uml-kernel could give some
 benefit (performance optimization?)
  > for the uml project ?
  >
+>You can do that already. Run LTT on the host and "trace" the UML
+>processes ;)
 
-You can do that already. Run LTT on the host and "trace" the UML 
-processes ;)
+me idiot :D
 
-Regards,
-Nuno Silva
 
---------------enig14D5D66899456DA2889E80E3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+----- Original Message ----- 
+From: "Nuno Silva" <nuno.silva@vgertech.com>
+To: "roland" <for_spam@gmx.de>
+Cc: "David Bahi" <dbahi@enterasys.com>; "uml-user" <user-mode-linux-user@lists.sourceforge.net>;
+<user-mode-linux-devel@lists.sourceforge.net>; <info@opersys.com>
+Sent: Friday, May 07, 2004 4:20 AM
+Subject: Re: [uml-devel] Re: [uml-user] LTT in UML ?
 
-iD8DBQFAmvKAOPig54MP17wRAhRxAJ9pnnLwH+LduBt9UzE48BNOcdzAtQCgyHSk
-XT9LSC8oTfu6846NzMvWETY=
-=Q4SX
------END PGP SIGNATURE-----
 
---------------enig14D5D66899456DA2889E80E3--
 
 
 -------------------------------------------------------
