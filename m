@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1By7vR-0001dj-P2 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 04:51:17 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.34)
-	id 1By7vP-0002Eh-38 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2004 04:51:17 -0700
+	id 1By8G8-0004Ai-VF for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 05:12:40 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.34)
+	id 1By8G7-0006Gk-8F for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2004 05:12:40 -0700
 From: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Subject: Re: handle_trap - failed to wait at end of syscall [was Re:
-	[uml-devel] debugging UML cores]
-References: <200408120541.i7C5faJd010923@ccure.user-mode-linux.org>
-	<411CE23C.4070903@nortelnetworks.com>
-	<200408132147.i7DLlB2o003883@ccure.user-mode-linux.org>
-In-Reply-To: <200408132147.i7DLlB2o003883@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] PATCH -- Was: link error MODE_SKAS and ! MODE_TT in
+	2.4.26-2 + uml.sf.net patches
+References: <C28780ABC637504896EB86B4FB75FFBFA26E71@MAANDMBX1.ets.enterasys.com>
+	<200408092352.i79Nq8QW026728@ccure.user-mode-linux.org>
+In-Reply-To: <200408092352.i79Nq8QW026728@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <200408201346.53688.blaisorblade_spam@yahoo.it>
+Message-Id: <200408201408.39192.blaisorblade_spam@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,41 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Aug 2004 13:46:53 +0200
+Date: Fri, 20 Aug 2004 14:08:39 +0200
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Joe Marzot <gmarzot@nortelnetworks.com>
+Cc: Jeff Dike <jdike@addtoit.com>, "Bahi, David" <dbahi@enterasys.com>, user-mode-linux-user@lists.sourceforge.net
 
-Alle 23:47, venerd=EC 13 agosto 2004, Jeff Dike ha scritto:
-> gmarzot@nortelnetworks.com said:
-> > WSTOPSIG(err) =3D SIGHUP
-> > does this give any clues...any ideas of what else to look at?
+Alle 01:52, marted=EC 10 agosto 2004, Jeff Dike ha scritto:
+> dbahi@enterasys.com said:
+> > i don't suppose there is some depencency checking  that could be
+> > improved to fix this - requiring a  clean seems obsessive-compulsive
+> > <grin>.
 >
-> Do you have any idea how you're making this happen?  The userspace process
-> is getting a SIGHUP in the middle of having a system call nullified.  This
-> is OK since a SIGHUP can happen any time if you log out on it or somethin=
-g,
-> but I'd like to know exactly what's going on so I can decide what the rig=
-ht
-> reaction to it is.
-I'm getting a similar problem, in another situation. With my current tree (=
-but=20
-also any 2.6.7-bb should do; but you can test it on -bb4, to be sure), on a=
+> Probably.  The UML build is in need of a good reaming.  The other major
+> symptom of this is when you try a -j make.
+I've fixed that very properly in my tree. Please don't work on that right n=
+ow,=20
+I'll be back in a week or two. However I'm uploading a snapshot (2.6.7-bb6)=
 =20
-2.6.7 host with host-skas3-2.6.7-v2.patch (notice -v2, it contains SYSEMU) =
+just now. You will find it here, but please be careful (read comments in th=
+e=20
+series file). And remember I've worked onto 2.6.6-um1, so there is still a =
 
-(never got this on 2.4 host, but I'll retest), if I do "echo 0=20
-> /proc/sysemu" I get the same failure, but with 2943 as status (i.e.=20
-WSTOPSIG=3DSIGSEGV) and EINTR as errno (but I think that's from a previous =
+lot of common stuff.=20
+http://www.user-mode-linux.org/~blaisorblade/patches/bb/uml-2.6.7-bb6.tar.b=
+z2
 
-loop, since I've applied the catch-EINTR patch; i.e. probably it did the=20
-syscall, it was interrupted, and did the syscall again which returned SIGSE=
-GV=20
-as stop status). And this is definitely reproducible with echo 0=20
-> /proc/sysemu. But when booting with nosysemu, it works, and I can even=20
-reenable it with echo 1 > /proc/sysemu; but if I try disabling it again, I =
-
-get the same problem.
+Bye
 --=20
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
