@@ -1,16 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C8yLz-0000p2-3m for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 19 Sep 2004 02:51:31 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1C8yLy-0001Jk-5J for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 19 Sep 2004 02:51:31 -0700
+	id 1C8zs6-0006b8-8Q for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 19 Sep 2004 04:28:46 -0700
+Received: from mail-relay-1.tiscali.it ([213.205.33.41])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1C8zs5-0002kp-1z for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 19 Sep 2004 04:28:46 -0700
 From: blaisorblade_spam@yahoo.it
-Message-Id: <20040919094602.7D09890DD@zion.localdomain>
-Subject: [uml-devel] [patch 1/1] uml-malloc-use-vmalloc-fix-again
+Message-Id: <20040919100618.55FC6BABD@zion.localdomain>
+Subject: [uml-devel] [patch 1/2] Ptrace: adds the host SYSEMU -v4 support,
+	for UML and general usage
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,197 +23,175 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 19 Sep 2004 11:46:01 +0200
+Date: Sun, 19 Sep 2004 12:06:18 +0200
 To: jdike@addtoit.com
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade_spam@yahoo.it, LaurentVivier@wanadoo.fr
 
 
-Since we sometimes disable temporarily kmalloc_ok (don't ask me why), we
-must test, inside __wrap_free, the new CAN_KFREE macro; and then we must update
-every reference to kmalloc_ok to handle correctly even kfree_ok. Also encapsulate
-a bit more this code.
+From: Laurent Vivier <LaurentVivier@wanadoo.fr>, Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
+Adds a new ptrace(2) mode, called PTRACE_SYSEMU (or PTRACE_SYSEMU, this is yet
+to decide properly), resembling PTRACE_SYSCALL except that the kernel does not
+execute the requested syscall; this is useful for virtual environments, like
+UML, which want to run the syscall on their own.
+
+This patch includes some suggestions of Jeff Dike to avoid adding any
+instructions to the syscall fast path, plus some other little changes, by
+myself, to make it work even when the syscall is executed with SYSENTER (but
+I'm unsure about them).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>
 ---
 
- uml-linux-2.6.8.1-paolo/arch/um/include/kern_util.h   |   10 ++++++-
- uml-linux-2.6.8.1-paolo/arch/um/kernel/main.c         |   24 ++++++++++++------
- uml-linux-2.6.8.1-paolo/arch/um/kernel/mem.c          |    5 ++-
- uml-linux-2.6.8.1-paolo/arch/um/kernel/physmem.c      |    2 -
- uml-linux-2.6.8.1-paolo/arch/um/kernel/process_kern.c |    6 ++--
- uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/process.c |    4 +--
- uml-linux-2.6.8.1-paolo/arch/um/kernel/tt/tracer.c    |    2 -
- 7 files changed, 35 insertions(+), 18 deletions(-)
+ vanilla-linux-2.6.8.1-paolo/arch/i386/kernel/entry.S       |    9 ++++--
+ vanilla-linux-2.6.8.1-paolo/arch/i386/kernel/ptrace.c      |   18 ++++++++++---
+ vanilla-linux-2.6.8.1-paolo/include/asm-i386/thread_info.h |    4 ++
+ vanilla-linux-2.6.8.1-paolo/include/linux/ptrace.h         |    1 
+ vanilla-linux-2.6.8.1-paolo/kernel/fork.c                  |    1 
+ 5 files changed, 25 insertions(+), 8 deletions(-)
 
-diff -puN arch/um/include/kern_util.h~uml-malloc-use-vmalloc-fix-again arch/um/include/kern_util.h
---- uml-linux-2.6.8.1/arch/um/include/kern_util.h~uml-malloc-use-vmalloc-fix-again	2004-09-17 17:19:13.946898416 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/include/kern_util.h	2004-09-17 17:19:13.984892640 +0200
-@@ -12,7 +12,15 @@
- extern int ncpus;
- extern char *linux_prog;
- extern char *gdb_init;
--extern int kmalloc_ok;
-+
-+extern int __kmalloc_ok;
-+extern int __kfree_ok;
-+
-+#define KMALLOC_START() ({ __kmalloc_ok = __kfree_ok = 1; })
-+#define KMALLOC_STOP() ({ __kmalloc_ok = __kfree_ok = 0; })
-+#define KMALLOC_SAVE(save) ({ (save) = __kmalloc_ok; __kmalloc_ok = 0; })
-+#define KMALLOC_RESTORE(save) ({ __kmalloc_ok = (save); })
-+
- extern int timer_irq_inited;
- extern int jail;
- extern int nsyscalls;
-diff -puN arch/um/kernel/main.c~uml-malloc-use-vmalloc-fix-again arch/um/kernel/main.c
---- uml-linux-2.6.8.1/arch/um/kernel/main.c~uml-malloc-use-vmalloc-fix-again	2004-09-17 17:19:13.947898264 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/main.c	2004-09-17 17:19:13.984892640 +0200
-@@ -68,7 +68,7 @@ static __init void do_uml_initcalls(void
+diff -puN arch/i386/kernel/entry.S~host-sysemu-2.6.7-4 arch/i386/kernel/entry.S
+--- vanilla-linux-2.6.8.1/arch/i386/kernel/entry.S~host-sysemu-2.6.7-4	2004-09-19 12:03:10.375074144 +0200
++++ vanilla-linux-2.6.8.1-paolo/arch/i386/kernel/entry.S	2004-09-19 12:03:10.409068976 +0200
+@@ -258,7 +258,7 @@ sysenter_past_esp:
+ 	cmpl $(nr_syscalls), %eax
+ 	jae syscall_badsys
  
- static void last_ditch_exit(int sig)
+-	testb $(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT),TI_flags(%ebp)
++	testb $(_TIF_SYSCALL_EMU|_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT),TI_flags(%ebp)
+ 	jnz syscall_trace_entry
+ 	call *sys_call_table(,%eax,4)
+ 	movl %eax,EAX(%esp)
+@@ -280,8 +280,8 @@ ENTRY(system_call)
+ 	GET_THREAD_INFO(%ebp)
+ 	cmpl $(nr_syscalls), %eax
+ 	jae syscall_badsys
+-					# system call tracing in operation
+-	testb $(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT),TI_flags(%ebp)
++					# system call tracing in operation / emulation
++	testb $(_TIF_SYSCALL_EMU|_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT),TI_flags(%ebp)
+ 	jnz syscall_trace_entry
+ syscall_call:
+ 	call *sys_call_table(,%eax,4)
+@@ -340,6 +340,9 @@ syscall_trace_entry:
+ 	movl %esp, %eax
+ 	xorl %edx,%edx
+ 	call do_syscall_trace
++	cmpl $0, %eax
++	jne syscall_exit		# ret != 0 -> running under PTRACE_SCEMU,
++					# so must skip actual syscall
+ 	movl ORIG_EAX(%esp), %eax
+ 	cmpl $(nr_syscalls), %eax
+ 	jnae syscall_call
+diff -puN arch/i386/kernel/ptrace.c~host-sysemu-2.6.7-4 arch/i386/kernel/ptrace.c
+--- vanilla-linux-2.6.8.1/arch/i386/kernel/ptrace.c~host-sysemu-2.6.7-4	2004-09-19 12:03:10.377073840 +0200
++++ vanilla-linux-2.6.8.1-paolo/arch/i386/kernel/ptrace.c	2004-09-19 12:03:10.409068976 +0200
+@@ -358,6 +358,7 @@ asmlinkage int sys_ptrace(long request, 
+ 		  }
+ 		  break;
+ 
++	case PTRACE_SCEMU: /* continue and replace next syscall */
+ 	case PTRACE_SYSCALL: /* continue and stop at next (return from) syscall */
+ 	case PTRACE_CONT: { /* restart after signal. */
+ 		long tmp;
+@@ -365,6 +366,12 @@ asmlinkage int sys_ptrace(long request, 
+ 		ret = -EIO;
+ 		if ((unsigned long) data > _NSIG)
+ 			break;
++		if (request == PTRACE_SCEMU) {
++			set_tsk_thread_flag(child, TIF_SYSCALL_EMU);
++		}
++		else {
++			clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
++		}
+ 		if (request == PTRACE_SYSCALL) {
+ 			set_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
+ 		}
+@@ -405,6 +412,7 @@ asmlinkage int sys_ptrace(long request, 
+ 		ret = -EIO;
+ 		if ((unsigned long) data > _NSIG)
+ 			break;
++		clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
+ 		clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
+ 		if ((child->ptrace & PT_DTRACE) == 0) {
+ 			/* Spurious delayed TF traps may occur */
+@@ -575,7 +583,7 @@ out:
+  * - triggered by current->work.syscall_trace
+  */
+ __attribute__((regparm(3)))
+-void do_syscall_trace(struct pt_regs *regs, int entryexit)
++int do_syscall_trace(struct pt_regs *regs, int entryexit)
  {
--	CHOOSE_MODE(kmalloc_ok = 0, (void) 0);
-+	CHOOSE_MODE(KMALLOC_STOP(), (void) 0);
- 	signal(SIGINT, SIG_DFL);
- 	signal(SIGTERM, SIG_DFL);
- 	signal(SIGHUP, SIG_DFL);
-@@ -172,7 +172,11 @@ int main(int argc, char **argv, char **e
- }
- 
- #define CAN_KMALLOC() \
--	(kmalloc_ok && CHOOSE_MODE((getpid() != tracing_pid), 1))
-+	(__kmalloc_ok && CHOOSE_MODE((getpid() != tracing_pid), 1))
-+
-+/*Must we still check if we are not in the tracing thread? I'm not sure about this.*/
-+#define CAN_KFREE() \
-+	(__kfree_ok && CHOOSE_MODE((getpid() != tracing_pid), 1))
- 
- extern void *__real_malloc(int);
- 
-@@ -211,6 +215,8 @@ extern unsigned long high_physmem;
- void __wrap_free(void *ptr)
- {
- 	unsigned long addr = (unsigned long) ptr;
-+	if (addr == 0)
-+		return;
- 
- 	/* We need to know how the allocation happened, so it can be correctly
- 	 * freed.  This is done by seeing what region of memory the pointer is
-@@ -218,9 +224,10 @@ void __wrap_free(void *ptr)
- 	 * 	physical memory - kmalloc/kfree
- 	 *	kernel virtual memory - vmalloc/vfree
- 	 * 	anywhere else - malloc/free
--	 * If kmalloc is not yet possible, then the kernel memory regions
--	 * may not be set up yet, and the variables not set up.  So,
--	 * free is called.
-+	 * If kmalloc is not yet possible, then high_physmem and end_vm are 0,
-+	 * so we will always use __real_free.
-+	 * And since we disable sometimes __kmalloc_ok while running,
-+	 * we cannot check CAN_KMALLOC. CAN_KFREE is created exactly for this.
- 	 *
- 	 * CAN_KMALLOC is checked because it would be bad to free a buffer
- 	 * with kmalloc/vmalloc after they have been turned off during
-@@ -228,14 +235,15 @@ void __wrap_free(void *ptr)
- 	 */
- 
- 	if((addr >= uml_physmem) && (addr < high_physmem)){
--		if(CAN_KMALLOC())
-+		if(CAN_KFREE())
- 			kfree(ptr);
+ 	if (unlikely(current->audit_context)) {
+ 		if (!entryexit)
+@@ -586,10 +594,10 @@ void do_syscall_trace(struct pt_regs *re
+ 			audit_syscall_exit(current, regs->eax);
  	}
- 	else if((addr >= start_vm) && (addr < end_vm)){
--		if(CAN_KMALLOC())
-+		if(CAN_KFREE())
- 			vfree(ptr);
+ 
+-	if (!test_thread_flag(TIF_SYSCALL_TRACE))
+-		return;
++	if (!test_thread_flag(TIF_SYSCALL_TRACE) && !test_thread_flag(TIF_SYSCALL_EMU))
++		return 0;
+ 	if (!(current->ptrace & PT_PTRACED))
+-		return;
++		return 0;
+ 	/* the 0x80 provides a way for the tracing parent to distinguish
+ 	   between a syscall stop and SIGTRAP delivery */
+ 	ptrace_notify(SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD)
+@@ -604,4 +612,6 @@ void do_syscall_trace(struct pt_regs *re
+ 		send_sig(current->exit_code, current, 1);
+ 		current->exit_code = 0;
  	}
--	else __real_free(ptr);
-+	else
-+		__real_free(ptr);
++	/* != 0 if nullifying the syscall, 0 if running it normally */
++	return test_thread_flag(TIF_SYSCALL_EMU);
  }
+diff -puN include/asm-i386/thread_info.h~host-sysemu-2.6.7-4 include/asm-i386/thread_info.h
+--- vanilla-linux-2.6.8.1/include/asm-i386/thread_info.h~host-sysemu-2.6.7-4	2004-09-19 12:03:10.377073840 +0200
++++ vanilla-linux-2.6.8.1-paolo/include/asm-i386/thread_info.h	2004-09-19 12:03:10.410068824 +0200
+@@ -143,6 +143,7 @@ static inline unsigned long current_stac
+ #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
+ #define TIF_SINGLESTEP		4	/* restore singlestep on return to user mode */
+ #define TIF_IRET		5	/* return with iret */
++#define TIF_SYSCALL_EMU		6	/* syscall emulation active */
+ #define TIF_SYSCALL_AUDIT	7	/* syscall auditing active */
+ #define TIF_POLLING_NRFLAG	16	/* true if poll_idle() is polling TIF_NEED_RESCHED */
+ 
+@@ -152,12 +153,13 @@ static inline unsigned long current_stac
+ #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
+ #define _TIF_SINGLESTEP		(1<<TIF_SINGLESTEP)
+ #define _TIF_IRET		(1<<TIF_IRET)
++#define _TIF_SYSCALL_EMU	(1<<TIF_SYSCALL_EMU)
+ #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
+ #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+ 
+ /* work to do on interrupt/exception return */
+ #define _TIF_WORK_MASK \
+-  (0x0000FFFF & ~(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT))
++  (0x0000FFFF & ~(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SYSCALL_EMU))
+ #define _TIF_ALLWORK_MASK	0x0000FFFF	/* work to do on any return to u-space */
  
  /*
-diff -puN arch/um/kernel/mem.c~uml-malloc-use-vmalloc-fix-again arch/um/kernel/mem.c
---- uml-linux-2.6.8.1/arch/um/kernel/mem.c~uml-malloc-use-vmalloc-fix-again	2004-09-17 17:19:13.948898112 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/mem.c	2004-09-17 17:19:13.984892640 +0200
-@@ -27,7 +27,8 @@ unsigned long *empty_zero_page = NULL;
- unsigned long *empty_bad_page = NULL;
- pgd_t swapper_pg_dir[1024];
- unsigned long highmem;
--int kmalloc_ok = 0;
-+int __kmalloc_ok = 0;
-+int __kfree_ok = 0;
+diff -puN include/linux/ptrace.h~host-sysemu-2.6.7-4 include/linux/ptrace.h
+--- vanilla-linux-2.6.8.1/include/linux/ptrace.h~host-sysemu-2.6.7-4	2004-09-19 12:03:10.378073688 +0200
++++ vanilla-linux-2.6.8.1-paolo/include/linux/ptrace.h	2004-09-19 12:03:10.410068824 +0200
+@@ -20,6 +20,7 @@
+ #define PTRACE_DETACH		0x11
  
- static unsigned long brk_end;
+ #define PTRACE_SYSCALL		  24
++#define PTRACE_SCEMU		  31
  
-@@ -98,7 +99,7 @@ void mem_init(void)
- 	max_pfn = totalram_pages;
- 	printk(KERN_INFO "Memory: %luk available\n", 
- 	       (unsigned long) nr_free_pages() << (PAGE_SHIFT-10));
--	kmalloc_ok = 1;
-+	KMALLOC_START();
+ /* 0x4200-0x4300 are reserved for architecture-independent additions.  */
+ #define PTRACE_SETOPTIONS	0x4200
+diff -puN kernel/fork.c~host-sysemu-2.6.7-4 kernel/fork.c
+--- vanilla-linux-2.6.8.1/kernel/fork.c~host-sysemu-2.6.7-4	2004-09-19 12:03:10.379073536 +0200
++++ vanilla-linux-2.6.8.1-paolo/kernel/fork.c	2004-09-19 12:03:10.410068824 +0200
+@@ -1008,6 +1008,7 @@ struct task_struct *copy_process(unsigne
+ 	 * of CLONE_PTRACE.
+ 	 */
+ 	clear_tsk_thread_flag(p, TIF_SYSCALL_TRACE);
++	clear_tsk_thread_flag(p, TIF_SYSCALL_EMU);
  
- #ifdef CONFIG_HIGHMEM
- 	setup_highmem(end_iomem, highmem);
-diff -puN arch/um/kernel/physmem.c~uml-malloc-use-vmalloc-fix-again arch/um/kernel/physmem.c
---- uml-linux-2.6.8.1/arch/um/kernel/physmem.c~uml-malloc-use-vmalloc-fix-again	2004-09-17 17:19:13.949897960 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/physmem.c	2004-09-17 17:19:13.985892488 +0200
-@@ -291,7 +291,7 @@ int init_maps(unsigned long physmem, uns
- 	total_pages = phys_pages + iomem_pages + highmem_pages;
- 	total_len = phys_len + iomem_pages + highmem_len;
- 
--	if(kmalloc_ok){
-+	if(__kmalloc_ok){
- 		map = kmalloc(total_len, GFP_KERNEL);
- 		if(map == NULL) 
- 			map = vmalloc(total_len);
-diff -puN arch/um/kernel/process_kern.c~uml-malloc-use-vmalloc-fix-again arch/um/kernel/process_kern.c
---- uml-linux-2.6.8.1/arch/um/kernel/process_kern.c~uml-malloc-use-vmalloc-fix-again	2004-09-17 17:19:13.950897808 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/process_kern.c	2004-09-17 17:19:13.985892488 +0200
-@@ -171,12 +171,12 @@ int copy_thread(int nr, unsigned long cl
- 
- void initial_thread_cb(void (*proc)(void *), void *arg)
- {
--	int save_kmalloc_ok = kmalloc_ok;
-+	int save_kmalloc_ok;
- 
--	kmalloc_ok = 0;
-+	KMALLOC_SAVE(save_kmalloc_ok);
- 	CHOOSE_MODE_PROC(initial_thread_cb_tt, initial_thread_cb_skas, proc, 
- 			 arg);
--	kmalloc_ok = save_kmalloc_ok;
-+	KMALLOC_RESTORE(save_kmalloc_ok);
- }
-  
- unsigned long stack_sp(unsigned long page)
-diff -puN arch/um/kernel/skas/process.c~uml-malloc-use-vmalloc-fix-again arch/um/kernel/skas/process.c
---- uml-linux-2.6.8.1/arch/um/kernel/skas/process.c~uml-malloc-use-vmalloc-fix-again	2004-09-17 17:19:13.951897656 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/skas/process.c	2004-09-17 17:19:13.985892488 +0200
-@@ -325,11 +325,11 @@ int start_idle_thread(void *stack, void 
- 		siglongjmp(*cb_back, 1);
- 	}
- 	else if(n == 3){
--		kmalloc_ok = 0;
-+		KMALLOC_STOP();
- 		return(0);
- 	}
- 	else if(n == 4){
--		kmalloc_ok = 0;
-+		KMALLOC_STOP();
- 		return(1);
- 	}
- 	siglongjmp(**switch_buf, 1);
-diff -puN arch/um/kernel/tt/tracer.c~uml-malloc-use-vmalloc-fix-again arch/um/kernel/tt/tracer.c
---- uml-linux-2.6.8.1/arch/um/kernel/tt/tracer.c~uml-malloc-use-vmalloc-fix-again	2004-09-17 17:19:13.952897504 +0200
-+++ uml-linux-2.6.8.1-paolo/arch/um/kernel/tt/tracer.c	2004-09-17 17:19:13.986892336 +0200
-@@ -310,7 +310,7 @@ int tracer(int (*init_proc)(void *), voi
- 				case OP_REBOOT:
- 				case OP_HALT:
- 					unmap_physmem();
--					kmalloc_ok = 0;
-+					KMALLOC_STOP();
- 					ptrace(PTRACE_KILL, pid, 0, 0);
- 					return(op == OP_REBOOT);
- 				case OP_NONE:
+ 	/* Our parent execution domain becomes current domain
+ 	   These must match for thread signalling to apply */
 _
 
 
