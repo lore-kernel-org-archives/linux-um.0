@@ -1,27 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ajgwv-0007fn-2o for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 07:40:53 -0800
-Received: from erizo.shearer.org ([210.10.97.33] helo=shearer.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
-	(Exim 4.30) id 1Ajgwu-0005gY-Ho
+	id 1AjhD1-0007UH-9R for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jan 2004 07:57:31 -0800
+Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.30) id 1AjhD0-00079q-EA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2004 07:40:52 -0800
-Received: from localhost ([127.0.0.1]:33356 helo=shearer.org)
-	by shearer.org with esmtp (Dan's MTA 1.0) id 1Ajgz1-00048z-1U
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jan 2004 02:13:03 +1030
-Received: from dan by erizo.shearer.org with local (Spammer Slammer 3.141)
-	id 1Ajgz0-00048w-A2 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jan 2004 02:13:02 +1030
-From: Dan Shearer <dan@shearer.org>
+	Thu, 22 Jan 2004 07:57:30 -0800
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Changes to port_user
-Message-ID: <20040122154302.GR4203@erizo.shearer.org>
+Message-ID: <20040122162014.GA2895@ccure.user-mode-linux.org>
 References: <20040122144020.GQ4203@erizo.shearer.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20040122144020.GQ4203@erizo.shearer.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -35,32 +28,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 23 Jan 2004 02:13:02 +1030
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 22 Jan 2004 11:20:14 -0500
+To: Dan Shearer <dan@shearer.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 On Fri, Jan 23, 2004 at 01:10:20AM +1030, Dan Shearer wrote:
-> Now, I just want raw data to go from the kernel to the port and back
-> again. So should I:
-> 
-> 	a) just shortcircuit this by hooking the inbound and outbound
-> 	descriptors up, or
+> I've done some minor work in drivers/port_user.c, including replacing
+> the binding to INADDR_ANY with a gethostbyname(passed_ip), so you
+> can specify which single IP to listen on. 
 
-I'm starting to get it, chan_kern is the place to start to understand
-what happens when a read or write irq goes off. I don't think there is a
-short-circuit mechanism for hooking up the internal fd for a tty
-directly to an fd within a channel driver without breaking this design.
-So what if I modified port_task_proc to copy the incoming data in the
-appropriate direction? I'll give that a try next.
+Cool, that's needed doing for a while.
+ 
+> Now what I'm trying to do is replace in.telnetd with something else, for
+> the moment netcat as a simple case, or something that gives the same
+> effect. 
 
-Jeff, please, what does "winch" stand for?
+If you want to be able to telnet to the port, then you need something which
+speaks telnet, hence you need telnetd.
 
-And also, if I submit some patches that just contain brief source
-comments about how things work will you accept them? I notice you don't
-use them much.
+If you can connect with something else and have terminal stuff continue
+to work, and replace the telnetd dependency with something that works more
+widely out of the box, then I'm all for it.
 
--- 
-Dan Shearer
-dan@shearer.org
+> That involves understanding the significance of port_helper and
+> kernel/helper.c, which I don't yet.
+
+What happens is that UML runs telnetd with the port helper as its "login"
+program (problem - not every telnetd out there supports -L, even if it is
+installed, which it often isn't).
+
+When there's a connection, UML gets a descriptor with the telnet on the
+other end.  It needs to get telnetd talking on that to do the telnet
+protocol and another descriptor coming out of telnetd with actual characters
+that the user typed.  So, it does this as follows:
+	it execs telnetd with stdin, stderr, stdout duped from the portal
+file descriptor
+	telnetd also gets a unix socket on descriptor 3
+	port_helper gets the desired telnetd output descriptor on its
+stdin/stdout
+	it passes this back to UML over the unix socket on descriptor 3
+which it inherited from telnetd
+
+				Jeff
 
 
 -------------------------------------------------------
