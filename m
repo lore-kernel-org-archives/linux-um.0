@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1C6gEj-00075S-Pv for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 19:06:33 -0700
+	id 1C6gaL-000184-0b for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2004 19:28:53 -0700
 Received: from [12.177.129.25] (helo=ccure.user-mode-linux.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.34) id 1C6gEg-0004dr-P3
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.34) id 1C6gaH-0000Mg-Lh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2004 19:06:33 -0700
+	Sun, 12 Sep 2004 19:28:52 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH] nptl/sys_clone fix for i386/ppc
-Message-ID: <20040913031014.GA13184@ccure.user-mode-linux.org>
-References: <20040826020626.GA28471@malice.crymeariver.org>
-	<200409111745.18659.blaisorblade_spam@yahoo.it>
-	<20040911182615.GB2966@ccure.user-mode-linux.org>
-	<200409121752.07398.blaisorblade_spam@yahoo.it>
+Message-ID: <20040913033239.GA13207@ccure.user-mode-linux.org>
+References: <20040912182629.3FEC49F37@zion.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200409121752.07398.blaisorblade_spam@yahoo.it>
+In-Reply-To: <20040912182629.3FEC49F37@zion.localdomain>
+Subject: [uml-devel] Re: [patch 2/2] add-SIGPROF-get-set_signals
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,28 +28,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 12 Sep 2004 23:10:14 -0400
-To: BlaisorBlade <blaisorblade_spam@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, David Jeffery <djeffery@britsys.net>, linux-kernel@vger.kernel.org
+Date: Sun, 12 Sep 2004 23:32:39 -0400
+To: blaisorblade_spam@yahoo.it
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Sep 12, 2004 at 05:52:44PM +0200, BlaisorBlade wrote:
-> It worked no worse than current version (which is broken). In fact the 2.4 
-> clone had 2 arguments. So it's obvious.
+On Sun, Sep 12, 2004 at 08:26:29PM +0200, blaisorblade_spam@yahoo.it wrote:
+>  {
+>  	sigset_t mask;
+> +	sigset_t old_mask;
+>  	int ret;
 
-In fact, it worked better.  It worked on a modern Debian filesystem, where
-my old code didn't.  Hence I didn't notice the mistake (although I should 
-have compared what I did with David's patch and justified the differences,
-if any).
+Weren't you just complaining about stack consumption?  Do you know how
+big a sigset_t is?
 
-> However, this is non-standard. I've added just a comment for now, since you 
-> may have reason to keep the current code, but such behaviour calls for 
-> breakage when things change.
+	(gdb) p sizeof(sigset_t)
+	$1 = 128
 
-Yeah, I not sure why I did things the way I did.  That's very old code, and
-there may have been some good reason for it which has since disappeared.
+I went to a reasonable amount of trouble to get that function to only
+use one sigset_t and now you are proposing to add the old one back.  
 
-Offhand, it looks like doing things in the standard way will clean up
-copy_thread a bit.
+Fix the patch and I'll put it in.
+
+Also, if you're going to fix something, send a patch which does
+nothing but make the fix, and save whatever cleanups you want to make
+for a differet patch.
 
 				Jeff
 
