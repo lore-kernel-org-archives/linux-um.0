@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11] helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.24)
-	id 1AXB0y-0004Dr-Nj
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 19:09:20 -0800
+	id 1AXB7I-0004Pw-1O
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 19:15:52 -0800
 Received: from godel.catalyst.net.nz ([202.49.159.12] helo=mail2.catalyst.net.nz)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
 	(Exim 4.24)
-	id 1AXB0y-0005rF-CF
-	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 19:09:20 -0800
-Message-ID: <3FE26BD8.9070104@catalyst.net.nz>
+	id 1AXB7H-0007f4-Ku
+	for user-mode-linux-devel@lists.sourceforge.net; Thu, 18 Dec 2003 19:15:51 -0800
+Message-ID: <3FE26D5F.3040109@catalyst.net.nz>
 From: Srdjan <srdjan@catalyst.net.nz>
 MIME-Version: 1.0
 References: <1071789754.763978.973.nullmailer@nietzsche.wgtn.cat-it.co.nz> <20031219002949.GX18100@alcor.net> <3FE25502.2010205@catalyst.net.nz> <20031219015812.GS18100@alcor.net>
@@ -26,14 +26,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 Dec 2003 16:09:12 +1300
+Date: Fri, 19 Dec 2003 16:15:43 +1300
 To: Matt Zimmerman <mdz@debian.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net, 224431-forwarded@bugs.debian.org
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
+To add:
 
+- - although config con1 returns OK xterm I don't get an xterm opened
+- - cad doesn't work, but halt does
 
 Matt Zimmerman wrote:
 | On Fri, Dec 19, 2003 at 02:31:46PM +1300, Srdjan wrote:
@@ -51,19 +54,24 @@ Matt Zimmerman wrote:
 | 
 | 
 | What does "config con1" say?
-
-(ZMuPmc) config con1
-OK xterm
-(ZMuPmc)
-
-
+| 
+| 
+|>It worked yesterday with 2.4.22-5um-1, I only could not make network go,
+|>which I hoped to resolve today (but then I upgraded...:) I've installed
+|>kernel-patch-skas, but it refused to patch my 2.4.22 kernel. Any
+|>suggestions?
+| 
+| 
+| Make sure you have the latest version of kernel-patch-skas; that version
+| works fine with 2.4.22.
+| 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
-iD8DBQE/4mvYX4ZD19jq88YRAuQRAJ4piK24o5BcA0FC/3OUn/yjV9NsQACfaR3N
-ZkHPSPOaODaySYVQt2TwP/U=
-=/Wg3
+iD8DBQE/4m1fX4ZD19jq88YRAsMfAJ92zjs+smpmC9Y1rbRv8rkC7Nvk5QCgucdK
+WXSgRJH/QpC8w3LFnD9aAL8=
+=MTm7
 -----END PGP SIGNATURE-----
 
 
