@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Byqhu-0002gw-PV for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Aug 2004 04:40:18 -0700
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.34) id 1Byqht-0008G4-45
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Aug 2004 04:40:18 -0700
-From: Gerd Knorr <kraxel@bytesex.org>
-Message-ID: <20040822111745.GA10736@bytesex>
+	id 1BysIY-0004Fv-Th for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Aug 2004 06:22:14 -0700
+Received: from almesberger.net ([63.105.73.238] helo=host.almesberger.net)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.34)
+	id 1BysIX-0003o8-UM for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Aug 2004 06:22:15 -0700
+From: Werner Almesberger <wa@almesberger.net>
+Subject: Re: [uml-devel] Re: [ann] kraxel's 2.6.8 uml patch kit
+Message-ID: <20040822102202.A6143@almesberger.net>
 References: <20040820122445.GA21790@bytesex>
 	<200408201901.i7KJ1eIF003843@ccure.user-mode-linux.org>
+	<Pine.GSO.4.58.0408202303460.16715@waterleaf.sonytel.be>
+	<20040821192842.GC27073@bytesex>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200408201901.i7KJ1eIF003843@ccure.user-mode-linux.org>
-Subject: [uml-devel] Re: [ann] kraxel's 2.6.8 uml patch kit
+In-Reply-To: <20040821192842.GC27073@bytesex>;
+	from kraxel@bytesex.org on Sat, Aug 21, 2004 at 09:28:43PM +0200
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,49 +31,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 22 Aug 2004 13:17:46 +0200
-To: Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sun, 22 Aug 2004 10:22:02 -0300
+To: Gerd Knorr <kraxel@bytesex.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>, uml devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Aug 20, 2004 at 03:01:40PM -0400, Jeff Dike wrote:
-> kraxel@bytesex.org said:
-> > uml-core-on-panic
-> > 	Make the uml kernel dump core on kernel panics for later analysis.
-> > 	Default: off, there is a kernel cmd line arg to enable that. 
-> 
-> I like this, but I think it would be better done in a panic_notifier.
+Gerd Knorr wrote:
+> And I don't want to change that as having printk work early is a cool
+> debugging feature.
 
-I'll have a look.
+Yeah ! I had a quick look at the code, and it seems that you
+could still occasionally lose printk data in non-catastrophic
+situations, e.g. when writing to a pipe. I've made a (less nice)
+patch a while ago that doesn't loses data unless it really
+really has to:
 
-> > uml-fix-mconsole-proc
-> > 	fix kernel crash triggered by running "uml_mconsole <umid> proc
-> > <some-file>"
-> > 	multipole times. 
-> 
-> I didn't do it this way on purpose.  I create an internal procfs mount in
-> case the UML root user has mounted something else on /proc.  I don't want
-> the mconsole on the host to be faked out by that.
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=108093851702249&w=2
 
-I guessed that from reading the code already ;)
+BTW, do the console changes also remove the requirement that
+stdin must be a tty, e.g. so that one could do
+./linux </dev/null  and that UML doesn't alter terminal
+settings ? (I've just worked around the latter problem in
+umlsim, but it's rather messy.)
 
-I'm happy with any other fix for the kernel crash as well.  I'm no VFS
-expert through and don't know what exactly is wrong in the original
-code.  I know that my version has the drawback that it depends on procfs
-actually being mounted on /proc, but it's better that than being able to
-kill the kernel by calling "uml_mconsole proc <file>" a few timers ;)
-
-> > uml-terminal-cleanup
-> 
-> I like this one, but it's big and I'm going to have to take a good look at it.
-> I'm somewhat unhappy about the command line change, where you need to specify
-> a console or UML doesn't boot.  That'll break everyone's scripts.  Is it 
-> possible to provide a default console if there isn't one on the command line?
-
-See Geert's and my other mail.
-
-  Gerd
+- Werner
 
 -- 
-return -ENOSIG;
+  _________________________________________________________________________
+ / Werner Almesberger, Buenos Aires, Argentina         wa@almesberger.net /
+/_http://www.almesberger.net/____________________________________________/
 
 
 -------------------------------------------------------
