@@ -2,23 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJTiN-0005cb-RC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 02:54:19 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DJTiN-0000bj-BQ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 02:54:19 -0700
-Message-ID: <42550348.1070309@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DJTzX-0006W9-13 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 03:12:03 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DJTzV-0002PF-2S
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 03:12:02 -0700
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Broken compiling under 2.6.12-rc2 on my machine
+References: <cbec11ac050405205173f18157@mail.gmail.com>
+	<200504062136.26895.blaisorblade@yahoo.it>
+	<cbec11ac05040616556d6a71d8@mail.gmail.com>
+In-Reply-To: <cbec11ac05040616556d6a71d8@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: UML-patches to prepare UML/s390
-References: <4253E3D6.2000809@fujitsu-siemens.com>
-	<200504062117.45623.blaisorblade@yahoo.it>
-	<425437F0.70804@fujitsu-siemens.com>
-	<200504062150.36496.blaisorblade@yahoo.it>
-In-Reply-To: <200504062150.36496.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Message-Id: <200504070408.30964.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,66 +33,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 07 Apr 2005 11:54:16 +0200
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Thu, 7 Apr 2005 04:08:30 -0400
+To: Ian McDonald <imcdnzl@gmail.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> On Wednesday 06 April 2005 21:26, Bodo Stroesser wrote:
->>Currently they are the same for 2.4 and 2.6, but worst case that might
->>change in future versions.
-> 
-> Yes maybe in principle, however the errno values are part of the ABI.
-I agree.
-> 
->>Only debugger could note this, as ERESTART_XXXX 
->>is unvisible to user programs.
-> 
-> Well, the debugger is a user program, so even this one, which is almost 
-> internal, is part of the ABI.
-I agree.
+On Wednesday 06 April 2005 07:55 pm, Ian McDonald wrote:
+> > As you see, there is a fourth expression, *here*. But it's -e '}'.
+> >
+> > This patch went in after 2.6.11, I'm noticing - wow, are releases getting
+> > so slow?
+> >
+> > > > System is Debian Woody,
+> >
+> > Can you post your sed version? and Rob, can you then test it and fix the
+> > code?
+>
+> GNU sed version 3.02
 
-> #ifndef ERESTARTNOINTR
-> #define ERESTARTNOINTR KERN_ERESTARTNOINTR
-> #endif
-This is the solution, I like.
-Here is, what strace programmers do, to decode ERESTARTXXXXX
-results (from syscall.c):
+According to this:
 
-... snip ...
-#include <errno.h>
-... snip ...
-#ifdef LINUX
-#ifndef ERESTARTSYS
-#define ERESTARTSYS     512
-#endif
-#ifndef ERESTARTNOINTR
-#define ERESTARTNOINTR  513
-#endif
-#ifndef ERESTARTNOHAND
-#define ERESTARTNOHAND  514     /* restart if no handler.. */
-#endif
-#ifndef ENOIOCTLCMD
-#define ENOIOCTLCMD     515     /* No ioctl command */
-#endif
-#ifndef ERESTART_RESTARTBLOCK
-#define ERESTART_RESTARTBLOCK 516       /* restart by calling sys_restart_syscall */
-#endif
-#ifndef NSIG
-#define NSIG 32
-#endif
-#ifdef ARM
-#undef NSIG
-#define NSIG 32
-#undef NR_SYSCALL_BASE
-#define NR_SYSCALL_BASE __NR_SYSCALL_BASE
-#endif
-#endif /* LINUX */
-... snip ...
+ftp://ftp.gnu.org/gnu/sed
 
-So, I'll modify my patch as you suggested.
+That's from august 1998.  It's even older than gcc 2.95, the tarball of which 
+contains files dated 7/29/99 (a full year later).  Saying we should support 
+that is roughly equivalent to saying we should be able to build with gcc 
+2.8.1, the compiler that was released six months before that was.
 
-	Bodo
+That said, the change I posted earlier would probably make it work.  The 
+question is, do we care?   Documentation/Changes doesn't list a required sed 
+version (even though other things in the kernel build use it), but perhaps it 
+should.
+
+> > > > And UML does compile under 2.6.11 with a patch for gcc
+> >
+> > The __va_copy fix, right? I'm trying to merge that in 2.6.11.7, it's
+> > under review. The only problem is that somebody complains about the fact
+> > Linux still supports 2.95. Luckily for you, Linus already shut them off
+> > once, so the support won't go away soon.
+>
+> Yes lucky for me as I don't have root access to my box here and can't
+> alter....
+
+Documentation/Changes says the kernel actually requires gcc 2.95.3, which has 
+the newest file on 3/16/2001.
+
+Not my call, and I posted a fix that should work on the ancient stuff (I'm 
+curious if it actually does).  It's not a hard fix at all, just pointing out 
+some context...
+
+Rob
 
 
 -------------------------------------------------------
