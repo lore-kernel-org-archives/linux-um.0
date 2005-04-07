@@ -2,24 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJSlP-0002vZ-LO for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 01:53:23 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DJSlO-0002Fm-3E
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 01:53:23 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Broken compiling under 2.6.12-rc2 on my machine
-References: <cbec11ac050405205173f18157@mail.gmail.com>
-	<200504060145.24555.rob@landley.net>
-	<200504062136.26895.blaisorblade@yahoo.it>
-In-Reply-To: <200504062136.26895.blaisorblade@yahoo.it>
+	id 1DJTUb-00056N-81 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 02:40:05 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DJTUZ-0006PY-HF for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 02:40:05 -0700
+Message-ID: <4254FFEF.1020900@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <200504070250.10873.rob@landley.net>
+Subject: Re: [uml-devel] Re: UML-patches to prepare UML/s390
+References: <4253E3D6.2000809@fujitsu-siemens.com>
+	<20050406203558.GA3307@ccure.user-mode-linux.org>
+	<20050406191623.GA10085@wavehammer.waldi.eu.org>
+	<425439A4.2030006@fujitsu-siemens.com>
+	<20050406200257.GB24438@wavehammer.waldi.eu.org>
+In-Reply-To: <20050406200257.GB24438@wavehammer.waldi.eu.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,75 +31,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 7 Apr 2005 02:50:10 -0400
-Content-Transfer-Encoding: quoted-printable
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Ian McDonald <imcdnzl@gmail.com>
+Date: Thu, 07 Apr 2005 11:39:59 +0200
+To: Bastian Blank <bastian@waldi.eu.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 06 April 2005 03:36 pm, Blaisorblade wrote:
+Bastian Blank wrote:
+> But anyway, this errno is internal.  So there exists
+> no "host's ERESTARTNOINTR".
+As Blaisorblade pointed out, ptrace interface also is
+part of the ABI. User programs using ptrace *can* see
+ERESTARTNOINTR and all the other ERESTARTXXXX.
+So there exists "host's ERESTARTNOINTR", but sometimes it's
+missing in the headers.
+See, what strace-programmers do in syscall.c to define the
+possibly missing ERESTARTXXXX macros.
+We will have to do something similar in UML.
 
-> Anyway, from looking at what you quote, it's identical to the code in
-> arch/um/kernel/Makefile. Quoting the correct code:
->
-> quiet_cmd_quote2 =3D QUOTE   $@
-> cmd_quote2 =3D sed -e '/CONFIG/{'          \
->                   -e 's/"CONFIG"\;/""/'        \
->                   -e 'r $(obj)/config.tmp'     \
->                   -e 'a""\;'                   \
->                   -e '}'                       \
->                   $< > $@
->
-> As you see, there is a fourth expression, *here*. But it's -e '}'.
->
-> This patch went in after 2.6.11, I'm noticing - wow, are releases getting
-> so slow?
->
-> > > System is Debian Woody,
->
-> Can you post your sed version? and Rob, can you then test it and fix the
-> code? Please save the correct config.c currently created and check it for
-> reference.
-
-I enabled SKAS mode and the build finished.  The sed bit didn't break for m=
-e:
-
-  CHK     usr/initramfs_list
-  QUOTE   arch/um/kernel/config.tmp
-  QUOTE   arch/um/kernel/config.c
-  CC      arch/um/kernel/config.o
-
-And I'm using knoppix, which is based on debian.
-
-From the error message, it seems to be complaining about the "a" command. =
- If=20
-you're using a really really really old version of sed, it might insist on =
-a=20
-gratuitous line break before the line to be added.  (I know it did back in =
-
-the 1970's, but I didn't think anything remotely modern had that limitation=
-.) =20
-So try splitting the command in half like this:
-
-cmd_quote2 =3D sed -e '/CONFIG/{'          \
-                  -e 's/"CONFIG"\;/""/'        \
-                  -e 'r $(obj)/config.tmp'     \
-                  -e 'a \'                   \
-                  -e '""\;'                  \
-                  -e '}'                       \
-                  $< > $@
-
-I just tried that here and it behaved the same way as the other version, fo=
-r=20
-me...
-
-Rob
+	Bodo
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_ide95&alloc_id=14396&op=CCk
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
