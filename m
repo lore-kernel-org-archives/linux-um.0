@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJkww-0002Ok-MW for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 21:18:30 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DJkws-00039m-K6 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 21:18:30 -0700
+	id 1DJlkX-0004Rl-OJ for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 22:09:45 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DJlkT-0002Lu-1A for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 22:09:45 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: BUG with proposed fix Re: [uml-devel] Can't compile under vanilla
-	2.6.11
-References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
-	<200503241203.57593.blaisorblade@yahoo.it>
-	<cbec11ac05040721047a6dea90@mail.gmail.com>
-In-Reply-To: <cbec11ac05040721047a6dea90@mail.gmail.com>
+Subject: Re: [uml-devel] Broken compiling under 2.6.12-rc2 on my machine
+References: <cbec11ac050405205173f18157@mail.gmail.com>
+	<200504072022.47474.blaisorblade@yahoo.it>
+	<cbec11ac0504071621298678da@mail.gmail.com>
+In-Reply-To: <cbec11ac0504071621298678da@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504080624.38124.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_IOhVCfuxd9iBn6n"
+Message-Id: <200504080715.52655.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,45 +29,86 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 8 Apr 2005 06:24:37 +0200
+Date: Fri, 8 Apr 2005 07:15:52 +0200
 To: user-mode-linux-devel@lists.sourceforge.net, Ian McDonald <imcdnzl@gmail.com>
 Cc: Rob Landley <rob@landley.net>
 
-On Friday 08 April 2005 06:04, Ian McDonald wrote:
-> On Mar 24, 2005 11:03 PM, Blaisorblade <blaisorblade@yahoo.it> wrote:
-> > On Monday 21 March 2005 06:30, Ian McDonald wrote:
-> > > The other problem with not linking va_copy has been resolved by
-> > > changing to __va_copy in skas/uaccess.c. This seems to be a known
-> > > problem with older compilers and there is a patch out there but not in
-> > > 2.6.11 or by the looks of it 2.6.12 rc1 by my reading of the log (nor
-> > > for one for my previous e-mail)
-> >
-> > Ok, I'm taking that patch and merging it in my tree and in 2.6.12. I hope
-> > it can go also in 2.6.11.6 (or .7, whatever).
-> >
-> > --
-> > Paolo Giarrusso, aka Blaisorblade
-> > Linux registered user n. 292729
-> > http://www.user-mode-linux.org/~blaisorblade
->
-> Here is an update:
-> 2.6.12-rc2 has both va_copy patch and syscall patch and works for me
-> once a patch is applied to arch/um/kernel/Makefile for some sed syntax
-> 2.6.11.7 has va_copy patch only and works for me once I apply the
-> syscall patch that I started and Paolo made much better.
-I've sent it for merging, and I hope it will be in .8.
-> Environment is Debian Woody, gcc 2.95.4, sed 3.02
->
-> Thanks again for all involved in helping me to this state.
-I'll put these changes also in the -bs tree. Actually, -bs1 should work for 
-you because has the syscall and va_copy changes; -bb2 does not work because I 
-merged the sed usage which bites you.
+--Boundary-00=_IOhVCfuxd9iBn6n
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I'll now merge the sed fix for -bs3.
+On Friday 08 April 2005 01:21, Ian McDonald wrote:
+> OK.
+>
+> Tested this change to arch/um/kernel/Makefile:
+> cmd_quote2 = sed -e '/CONFIG/{'          \
+>                  -e 's/"CONFIG"\;/""/'        \
+>                  -e 'r $(obj)/config.tmp'     \
+>                  -e 'a \'                   \
+>                  -e '""\;'                  \
+>                  -e '}'                       \
+>                  $< > $@
+>
+> and can report that it fixes my problems.
+>
+> I can also report that vacopy patch works (which is also in 2.6.11.7 I
+> notice but I haven't tested yet - I will post a note when I have but
+> that may be next week) and syscall patch works (which is not yet in
+> 2.6.11.x).
+Test it from -bs3, please.
+> Paolo I agree from my angle that this should go forwards as a confirmed
+> patch.
+Please make sure that the attached patch produces the same makefile as the 
+manual change you did (yes, I'm a bit overzealous maybe, but copy and paste 
+isn't perfect from mailers, patches are much better).
+
+For me, I tested it on my Gentoo and produces the same output as the unpatched 
+code.
+
+Ah, Rob, I've re-read the code and re-understood pipes are not enough, and we 
+must keep the temp step. Sorry (even if I blamed both, so I hope I've not 
+been impolite).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
 http://www.user-mode-linux.org/~blaisorblade
+
+--Boundary-00=_IOhVCfuxd9iBn6n
+Content-Type: text/x-diff; charset="iso-8859-1";
+	name="uml-workaround-sed-behaviour.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="uml-workaround-sed-behaviour.patch"
+
+
+From: Rob Landley <rob@landley.net>
+
+It is apparent that the sed 3.02 (from august 1998) is still used on Debian Woody, and
+it is stricter on input expressions for the "a" command. So change the code to
+make it work - it's not a big change.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.11-paolo/arch/um/kernel/Makefile |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletion(-)
+
+diff -puN arch/um/kernel/Makefile~uml-workaround-sed-behaviour arch/um/kernel/Makefile
+--- linux-2.6.11/arch/um/kernel/Makefile~uml-workaround-sed-behaviour	2005-04-08 07:00:07.000000000 +0200
++++ linux-2.6.11-paolo/arch/um/kernel/Makefile	2005-04-08 07:05:40.000000000 +0200
+@@ -53,6 +53,7 @@ quiet_cmd_quote2 = QUOTE   $@
+       cmd_quote2 = sed -e '/CONFIG/{'          \
+ 		  -e 's/"CONFIG"\;/""/'        \
+ 		  -e 'r $(obj)/config.tmp'     \
+-		  -e 'a""\;'                   \
++		  -e 'a \'                     \
++		  -e '""\;'                    \
+ 		  -e '}'                       \
+ 		  $< > $@
+_
+
+--Boundary-00=_IOhVCfuxd9iBn6n--
 
 
 
