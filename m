@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJxn5-0000Pd-ML for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Apr 2005 11:01:11 -0700
-Received: from smtp.gentoo.org ([134.68.220.30])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DJxn4-00037D-6Y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Apr 2005 11:01:11 -0700
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.43)
-	id 1DJxmm-0002xi-ED for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Apr 2005 18:00:52 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
-	id 1DJxmu-0008HQ-MH for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Apr 2005 18:01:00 +0000
-From: bugzilla-daemon@gentoo.org
-Message-Id: <E1DJxmu-0008HQ-MH@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+	id 1DJxzc-00011f-1F for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Apr 2005 11:14:08 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DJxzX-0004H0-J3 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Apr 2005 11:14:07 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200504082020.18943.blaisorblade@yahoo.it>
+Subject: [uml-devel] My personal -devel tree snapshotted out on my homepage!
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,24 +27,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 08 Apr 2005 18:01:00 +0000
+Date: Fri, 8 Apr 2005 20:20:18 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-http://bugs.gentoo.org/show_bug.cgi?id=49277
-
-
-
-
-
-------- Additional Comments From blaisorblade_spam@yahoo.it  2005-04-08 11:01 PST -------
-I'm maintaining some external patches for UML, as "fix after release" a bit like the -stable tree, but for UML only.
-
-What about adding it to portage? I can help if needed.
+Go and see it. There is a lot of interesting stuff... I'll give more info the 
+next time, I'm in a hurry now.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
-
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
