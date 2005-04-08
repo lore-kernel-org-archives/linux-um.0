@@ -2,22 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJlkX-0004Rl-OJ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 22:09:45 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DJlkT-0002Lu-1A for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 22:09:45 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	id 1DJmXm-0006dg-Dt for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 23:00:38 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DJmXl-0006Mi-TS
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 23:00:38 -0700
+From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Broken compiling under 2.6.12-rc2 on my machine
 References: <cbec11ac050405205173f18157@mail.gmail.com>
-	<200504072022.47474.blaisorblade@yahoo.it>
-	<cbec11ac0504071621298678da@mail.gmail.com>
-In-Reply-To: <cbec11ac0504071621298678da@mail.gmail.com>
+	<200504070250.10873.rob@landley.net>
+	<200504072019.14693.blaisorblade@yahoo.it>
+In-Reply-To: <200504072019.14693.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_IOhVCfuxd9iBn6n"
-Message-Id: <200504080715.52655.blaisorblade@yahoo.it>
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200504080057.52012.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,88 +33,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 8 Apr 2005 07:15:52 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, Ian McDonald <imcdnzl@gmail.com>
-Cc: Rob Landley <rob@landley.net>
+Date: Fri, 8 Apr 2005 00:57:52 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Ian McDonald <imcdnzl@gmail.com>
 
---Boundary-00=_IOhVCfuxd9iBn6n
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Thursday 07 April 2005 02:19 pm, Blaisorblade wrote:
 
-On Friday 08 April 2005 01:21, Ian McDonald wrote:
-> OK.
+> >   CHK     usr/initramfs_list
+> >   QUOTE   arch/um/kernel/config.tmp
+> >   QUOTE   arch/um/kernel/config.c
+> >   CC      arch/um/kernel/config.o
+> >
+> > And I'm using knoppix, which is based on debian.
 >
-> Tested this change to arch/um/kernel/Makefile:
-> cmd_quote2 = sed -e '/CONFIG/{'          \
->                  -e 's/"CONFIG"\;/""/'        \
->                  -e 'r $(obj)/config.tmp'     \
->                  -e 'a \'                   \
->                  -e '""\;'                  \
->                  -e '}'                       \
->                  $< > $@
+> But with updated packages (i.e. unstable/testing). If the patch is so
+> little and without downsides, there's no point in not merging it.
+
+Agreed.
+
+> > From the error message, it seems to be complaining about the "a" command.
+> > If you're using a really really really old version of sed, it might
+> > insist on a gratuitous line break before the line to be added.  (I know
+> > it did back in the 1970's, but I didn't think anything remotely modern
+> > had that limitation.) So try splitting the command in half like this:
+> >
+> > cmd_quote2 = sed -e '/CONFIG/{'          \
+> >                   -e 's/"CONFIG"\;/""/'        \
+> >                   -e 'r $(obj)/config.tmp'     \
+> >                   -e 'a \'                   \
+> >                   -e '""\;'                  \
+> >                   -e '}'                       \
+> >                   $< > $@
+> >
+> > I just tried that here and it behaved the same way as the other version,
+> > for me...
 >
-> and can report that it fixes my problems.
->
-> I can also report that vacopy patch works (which is also in 2.6.11.7 I
-> notice but I haven't tested yet - I will post a note when I have but
-> that may be next week) and syscall patch works (which is not yet in
-> 2.6.11.x).
-Test it from -bs3, please.
-> Paolo I agree from my angle that this should go forwards as a confirmed
-> patch.
-Please make sure that the attached patch produces the same makefile as the 
-manual change you did (yes, I'm a bit overzealous maybe, but copy and paste 
-isn't perfect from mailers, patches are much better).
+> Ok, Rob, finish handling this issue this and email me the patch (with a
+> suitable changelog) when it's ready.
 
-For me, I tested it on my Gentoo and produces the same output as the unpatched 
-code.
+Just waiting to hear back from Ian that it does indeed fix the problem, and I 
+see a reply from further down the list...
 
-Ah, Rob, I've re-read the code and re-understood pipes are not enough, and we 
-must keep the temp step. Sorry (even if I blamed both, so I hope I've not 
-been impolite).
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
---Boundary-00=_IOhVCfuxd9iBn6n
-Content-Type: text/x-diff; charset="iso-8859-1";
-	name="uml-workaround-sed-behaviour.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="uml-workaround-sed-behaviour.patch"
-
-
-From: Rob Landley <rob@landley.net>
-
-It is apparent that the sed 3.02 (from august 1998) is still used on Debian Woody, and
-it is stricter on input expressions for the "a" command. So change the code to
-make it work - it's not a big change.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.11-paolo/arch/um/kernel/Makefile |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletion(-)
-
-diff -puN arch/um/kernel/Makefile~uml-workaround-sed-behaviour arch/um/kernel/Makefile
---- linux-2.6.11/arch/um/kernel/Makefile~uml-workaround-sed-behaviour	2005-04-08 07:00:07.000000000 +0200
-+++ linux-2.6.11-paolo/arch/um/kernel/Makefile	2005-04-08 07:05:40.000000000 +0200
-@@ -53,6 +53,7 @@ quiet_cmd_quote2 = QUOTE   $@
-       cmd_quote2 = sed -e '/CONFIG/{'          \
- 		  -e 's/"CONFIG"\;/""/'        \
- 		  -e 'r $(obj)/config.tmp'     \
--		  -e 'a""\;'                   \
-+		  -e 'a \'                     \
-+		  -e '""\;'                    \
- 		  -e '}'                       \
- 		  $< > $@
-_
-
---Boundary-00=_IOhVCfuxd9iBn6n--
-
-
+Rob
 
 
 -------------------------------------------------------
