@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJi7C-0002x1-5u for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 18:16:54 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DJi77-0006Ok-GH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 18:16:54 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] UML-patches to prepare UML/s390
-References: <4253E3D6.2000809@fujitsu-siemens.com>
-In-Reply-To: <4253E3D6.2000809@fujitsu-siemens.com>
+	id 1DJicI-0004Jy-2g for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 18:49:02 -0700
+Received: from [209.67.213.234] (helo=ispbrasil.com.br)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DJicG-0000An-DG
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 18:49:01 -0700
+Message-ID: <007801c53bdd$5015bbe0$0201a8c0@lualele>
+From: "itamar" <itamar@ispbrasil.com.br>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; format=flowed; charset="Windows-1252";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504080322.50532.blaisorblade@yahoo.it>
+Subject: [uml-devel] error compilng uml-2.4.27-bs2-pre9
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,90 +27,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 8 Apr 2005 03:22:45 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>
+Date: Thu, 7 Apr 2005 22:50:11 -0300
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wednesday 06 April 2005 15:27, Bodo Stroesser wrote:
-> Here are the patches (tarball attached), that I've applied to
-> UML 2.6.11 + incrementals, before adding s390-files.
-> These patches are tested a bit on x86, but not on x86_64.
->
-> s390 implementation is *not* included in tarball, this will
-> be posted later, when thing are more stable.
->
-> Please see patches and commented series-file for further
-> information.
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.27/include -Wall -Wstrict-prototypes -Wno-trigraphs 
+ -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -U__i386__ -Ui386 
+ -DUM_FASTCALL  -D__arch_um__ -DSUBARCH="i386" -D_LARGEFILE64_SOURCE -I/usr/src/linux-2.4.27/arch/um/include 
+ -Derrno=kernel_errno -I/usr/src/linux-2.4.27/arch/um/kernel/tt/include -I/usr/src/linux-2.4.27/arch/um/kernel/skas/include 
+    -nostdinc -iwithprefix include -DKBUILD_BASENAME=smp  -c -o smp.o smp.c
+gcc -D__KERNEL__ -I/usr/src/linux-2.4.27/include -Wall -Wstrict-prototypes -Wno-trigraphs 
+ -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -U__i386__ -Ui386 
+ -DUM_FASTCALL  -D__arch_um__ -DSUBARCH="i386" -D_LARGEFILE64_SOURCE -I/usr/src/linux-2.4.27/arch/um/include 
+ -Derrno=kernel_errno -I/usr/src/linux-2.4.27/arch/um/kernel/tt/include -I/usr/src/linux-2.4.27/arch/um/kernel/skas/include 
+    -nostdinc -iwithprefix include -DKBUILD_BASENAME=syscall_kern  -c -o 
+syscall_kern.o syscall_kern.c
+syscall_kern.c: In function `do_mmap2':
+syscall_kern.c:82: warning: passing arg 1 of `do_mmap_pgoff' from 
+incompatible pointer type
+syscall_kern.c:82: warning: passing arg 2 of `do_mmap_pgoff' makes integer 
+from pointer without a cast
+syscall_kern.c:82: error: too many arguments to function `do_mmap_pgoff'
+make[2]: *** [syscall_kern.o] Error 1
+make[2]: Leaving directory `/usr/src/linux-2.4.27/arch/um/kernel'
+make[1]: *** [first_rule] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.4.27/arch/um/kernel'
+make: *** [_dir_arch/um/kernel] Error 2
 
-add-stub-vmas has already your notes in it, and I agree with the notes.
-
-delay-pure-arch: forgot EXPORT_SYMBOL on x86_64, also if every arch will 
-provide them leave the EXPORT inside arch-independent ksyms.c. Also I don't 
-like a function copied over subarchs. Move them to generic code with an ifdef 
-ARCH_WANT_WHATEVER.
-
-Copied code *always* gets out of sync (and that's not only in UML, I found by 
-accident a case where ext2 was updated and ext3 wasn't and didn't use 
-i_size_read, leading to possible race conditions). Btw, that's why Andi Kleen 
-delayed a lot the merge of Xen, refusing that it be a separate arch/xen 
-folder.
-
-elf.h-symlink.patch: other includes also have a -generic.h file, like 
-processor-generic.h, for common stuff.
-
-insert-ARCH_SIGHDLR_PARAM.patch: this coding is very awkward (not mentioned in 
-CodingStyle because they didn't think to it) - I don't know the handle's use. 
-However, some commenting will be needed, as this is *not* a widespread 
-construct. You'll also tell me how you'll handle the different params if the 
-code stays the same...
-I'd instead use a "do_alarm_handler" that takes everything as a param and an 
-arch-specific caller passing the params, in general... but I don't really 
-realize what will you do there. I fear a hidden param in 
-ARCH_GET_SIGCONTEXT...
-
-ptrace-subarch: forgot the "#if 0" for x86_64, possibly preventing it from 
-compiling. Actually, from looking to /usr/include/sys/user.h, it will compile 
-but be bogus. Keep the XXX comment but change the "addr >>= 2" to "addr >>= 
-3" (because the various debug regs are each 8 and not 4 bytes long). I'll 
-have to additionally check the manuals, however, this is why I ask to keep 
-the comment.
-
-rename-COMMAND_LINE_SIZE.patch: it's against an outdated part of Jeff's tree 
-(i.e. code movements). I patched it in a different way in mainline - I thinl 
-that code-movements patches should be merged the day they are written, or one 
-day they are written. I.e. they must be rewritten when merging them, to avoid 
-moving outdated code.
-
-split-sys_call_table.patch: the current way of maintaining it has lead to too 
-many problems, so I'm converting the code to a different way, i.e. including 
-directly the original syscall table (with some defines, for instance
-
-#define sys_iopl sys_ni_syscall
-
-).
-I didn't send them because I need that Jeff tests the x86_64 ones.
-
-In i386 case, I split away the table from entry.S. In the s390 case, they 
-already did this for theirselves and for us. You'll have to check if any 
-function has been renamed in a strange way. I'll maybe do the check myself...
-
-Also, the below is just bogus, 
--#ifdef CONFIG_NFSD
-+#if defined(CONFIG_NFSD) || defined(CONFIG_NFSD_MODULE)
- #define NFSSERVCTL sys_nfsservctl
- #else
- #define NFSSERVCTL sys_ni_syscall
- #endif
-because the correct code is this:
- #define NFSSERVCTL sys_nfsservctl
-
-kernel/sys_ni.c will alias sys_nfsservctl (and *MANY* other syscalls) to 
-sys_ni_syscall if needed, through weak symbols.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
+Itamar Reis Peixoto
++55 (34) 3238 3845
+e-mail : itamar@ispbrasil.com.br
+http://www.ispbrasil.com.br 
 
 
 
