@@ -2,22 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DJiuA-0004re-NL for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 19:07:30 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DJiu7-00055e-2W for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Apr 2005 19:07:30 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] error compilng uml-2.4.27-bs2-pre9
-References: <007801c53bdd$5015bbe0$0201a8c0@lualele>
-In-Reply-To: <007801c53bdd$5015bbe0$0201a8c0@lualele>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="windows-1252"
+	id 1DJkjE-0001mL-5c for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 21:04:20 -0700
+Received: from zproxy.gmail.com ([64.233.162.207])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DJkjA-0006Ci-OX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Apr 2005 21:04:20 -0700
+Received: by zproxy.gmail.com with SMTP id 9so402101nzo
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 07 Apr 2005 21:04:08 -0700 (PDT)
+Message-ID: <cbec11ac05040721047a6dea90@mail.gmail.com>
+From: Ian McDonald <imcdnzl@gmail.com>
+Reply-To: Ian McDonald <imcdnzl@gmail.com>
+Subject: Re: BUG with proposed fix Re: [uml-devel] Can't compile under vanilla
+	2.6.11
+In-Reply-To: <200503241203.57593.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504080413.29612.blaisorblade@yahoo.it>
+References: <cbec11ac05031719187cb8e7d2@mail.gmail.com>
+	<cbec11ac05032020433867d95e@mail.gmail.com>
+	<cbec11ac05032021301a9083f7@mail.gmail.com>
+	<200503241203.57593.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,41 +35,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 8 Apr 2005 04:13:25 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: itamar <itamar@ispbrasil.com.br>
+Date: Fri, 8 Apr 2005 16:04:08 +1200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>
 
-On Friday 08 April 2005 03:50, itamar wrote:
-> gcc -D__KERNEL__ -I/usr/src/linux-2.4.27/include -Wall -Wstrict-prototypes
-> -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer
-> -U__i386__ -Ui386 -DUM_FASTCALL  -D__arch_um__ -DSUBARCH="i386"
-> -D_LARGEFILE64_SOURCE -I/usr/src/linux-2.4.27/arch/um/include
-> -Derrno=kernel_errno -I/usr/src/linux-2.4.27/arch/um/kernel/tt/include
-> -I/usr/src/linux-2.4.27/arch/um/kernel/skas/include -nostdinc -iwithprefix
-> include -DKBUILD_BASENAME=smp  -c -o smp.o smp.c gcc -D__KERNEL__
-> -I/usr/src/linux-2.4.27/include -Wall -Wstrict-prototypes -Wno-trigraphs
-> -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -U__i386__ -Ui386
-> -DUM_FASTCALL  -D__arch_um__ -DSUBARCH="i386" -D_LARGEFILE64_SOURCE
-> -I/usr/src/linux-2.4.27/arch/um/include -Derrno=kernel_errno
-> -I/usr/src/linux-2.4.27/arch/um/kernel/tt/include
-> -I/usr/src/linux-2.4.27/arch/um/kernel/skas/include -nostdinc -iwithprefix
-> include -DKBUILD_BASENAME=syscall_kern  -c -o syscall_kern.o syscall_kern.c
-> syscall_kern.c: In function `do_mmap2':
-> syscall_kern.c:82: warning: passing arg 1 of `do_mmap_pgoff' from
-> incompatible pointer type
-> syscall_kern.c:82: warning: passing arg 2 of `do_mmap_pgoff' makes integer
-> from pointer without a cast
-> syscall_kern.c:82: error: too many arguments to function `do_mmap_pgoff'
-Remove the first param at that line.... I'm sorry, in my tree the func was 
-correct, but in the exported patch it was not.
+On Mar 24, 2005 11:03 PM, Blaisorblade <blaisorblade@yahoo.it> wrote:
+> On Monday 21 March 2005 06:30, Ian McDonald wrote:
+> > The other problem with not linking va_copy has been resolved by
+> > changing to __va_copy in skas/uaccess.c. This seems to be a known
+> > problem with older compilers and there is a patch out there but not in
+> > 2.6.11 or by the looks of it 2.6.12 rc1 by my reading of the log (nor
+> > for one for my previous e-mail)
+> Ok, I'm taking that patch and merging it in my tree and in 2.6.12. I hope it
+> can go also in 2.6.11.6 (or .7, whatever).
+> 
+> --
+> Paolo Giarrusso, aka Blaisorblade
+> Linux registered user n. 292729
+> http://www.user-mode-linux.org/~blaisorblade
+> 
+Here is an update:
+2.6.12-rc2 has both va_copy patch and syscall patch and works for me
+once a patch is applied to arch/um/kernel/Makefile for some sed syntax
+2.6.11.7 has va_copy patch only and works for me once I apply the
+syscall patch that I started and Paolo made much better.
 
-I'm uploading -pre10, with only this fix. Bye
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Environment is Debian Woody, gcc 2.95.4, sed 3.02
 
-
+Thanks again for all involved in helping me to this state.
 
 
 -------------------------------------------------------
