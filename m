@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DKHtG-0004Kn-Pm for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Apr 2005 08:28:54 -0700
-Received: from pike.sandelman.ca ([205.150.200.164])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1DKHtE-0003zw-9X
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Apr 2005 08:28:54 -0700
-Received: from sandelman.ottawa.on.ca (wlan232.sandelman.ca [205.150.200.232])
-	by pike.sandelman.ca (Postfix) with ESMTP id B154560AE9
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat,  9 Apr 2005 11:28:43 -0400 (EDT)
-Received: from marajade.sandelman.ottawa.on.ca (marajade [127.0.0.1])
-	by sandelman.ottawa.on.ca (Postfix) with ESMTP id 0C70CBD7C
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat,  9 Apr 2005 11:28:43 -0400 (EDT)
-From: "Michael Richardson" <mcr@sandelman.ottawa.on.ca>
-Message-ID: <5595.1113060523@marajade.sandelman.ottawa.on.ca>
-Subject: [uml-devel] debugging skas kernels
+	id 1DKZt1-0006nY-Hh for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 03:41:51 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DKZsx-0007Tz-MR for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 03:41:51 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200504091903.58712.blaisorblade@yahoo.it>
+Subject: [uml-devel] Wiki status and reachability
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,40 +27,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 09 Apr 2005 11:28:43 -0400
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 9 Apr 2005 19:03:58 +0200
+To: dave pearson <dp@harlowhill.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
+I've seen that the last week, the Wiki site was unavailable. I've been fearing 
+that it had been shut up for any bad reason (hardware problems, lost data, 
+anything).
+
+So I've been asking again if it should (or not) be hosted on the main project 
+page (IIRC I already added the link).
+
+I don't want to "centralize" anything, just to offer the better support to 
+this. Actually, I just want to ask your opinion (actually, I don't know 
+exactly who admins the main web sites, nor if ).
+
+BTW, looking in archives, I found this from Jeff Dike:
+> Start it, and it may become the "official" site if it serves a need.  There
+> are several UML domain floating around, so I imagine it wouldn't be hard to 
+> get wiki.usermodelinux.org or something pointed to your site.
+I think that now we should actually do this. Agreed?
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
-I know that I can invoke skas kernels like any other process.
-However, I find this a bit of a pain. I like to debug under Xemacs, and
-I don't want the terminal directed to my emacs buffer, and the command
-line arguments are kind of complex.
-
-Is there a reason I can't just "attach" the process? 
-Could we make "debug" or "gdb" command line cause a pause() in the code,
-near startup?
-
-I'll do that and submit a patch if there isn't something I'm missing.
-
-- -- 
-] Michael Richardson          Xelerance Corporation, Ottawa, ON |  firewalls  [
-] mcr @ xelerance.com           Now doing IPsec training, see   |net architect[
-] http://www.sandelman.ca/mcr/    www.xelerance.com/training/   |device driver[
-] panic("Just another Debian GNU/Linux using, kernel hacking, security guy"); [
-
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-Comment: Finger me for keys
-
-iQCVAwUBQlf0qYqHRg3pndX9AQF8lQQA5o1EB2Kt7veqCpSjCNZf8ztdohSwMNA6
-wD2K9H5MRZ8cgy1bIBCopOb5Is2Xogk7t2FnMwojecQLZX6HfBBTkBcsTDA73uPt
-VghywKS4ClNhBYBTiub1oCnGtsR/OOS++kIvsEoyRTJP8fwTQ6Q/hQYYQ7txP4KU
-z/9cmvp7t68=
-=uRWI
------END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
