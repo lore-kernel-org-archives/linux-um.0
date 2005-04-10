@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DKZzY-0004Pp-JN for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Apr 2005 03:48:36 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DKZzX-0006sP-Pr for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Apr 2005 03:48:36 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.4.27 + uml-2.4.27-bs2-pre10 compile error.
-References: <000501c53c97$5a00b050$0201a8c0@lualele>
-In-Reply-To: <000501c53c97$5a00b050$0201a8c0@lualele>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="windows-1252"
+	id 1DKc48-0007ks-Vu for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 06:01:28 -0700
+Received: from heisenberg.zen.co.uk ([212.23.3.141])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DKc46-0002sE-Ht for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 06:01:28 -0700
+Received: from [82.68.193.217] (helo=192.168.1.107)
+	by heisenberg.zen.co.uk with esmtp (Exim 4.30) id 1DKc43-0005BO-0i
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 13:01:23 +0000
+From: Dave Pearson <dp@harlowhill.com>
+Content-Type: text/plain
+Message-Id: <1113138083.9976.13.camel@smithers>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504101255.04117.blaisorblade@yahoo.it>
+Subject: [uml-devel] [Fwd: Re: Wiki status and reachability]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,121 +29,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 10 Apr 2005 12:55:02 +0200
+Date: Sun, 10 Apr 2005 14:01:23 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: itamar <itamar@ispbrasil.com.br>
 
-On Saturday 09 April 2005 02:01, itamar wrote:
-> I am trying to compile, but I am getting this error.
-Try the patch on a more recent kernel. As I said (and as I'll think unless 
-proved wrong), vanilla 2.4.27 cannot compile with GCC 3.4 (which is what you 
-use). Currently I use a GCC 3.3. And I don't have a >2.4.27 kernel to try the 
-patch on.
+-------- Forwarded Message --------
+From: Dave Pearson <dp@harlowhill.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: Wiki status and reachability
+Date: Sun, 10 Apr 2005 13:58:46 +0100
 
-> make all_targets
-> make[2]: Entering directory `/usr/src/linux-2.4.27/kernel'
-> gcc -D__KERNEL__ -I/usr/src/linux-2.4.27/include -Wall -Wstrict-prototypes
-> -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer
-> -U__i386__ -Ui386 -DUM_FASTCALL  -D__arch_um__ -DSUBARCH="i386"
-> -D_LARGEFILE64_SOURCE -I/usr/src/linux-2.4.27/arch/um/include
-> -Derrno=kernel_errno -I/usr/src/linux-2.4.27/arch/um/kernel/tt/include
-> -I/usr/src/linux-2.4.27/arch/um/kernel/skas/include -fno-unit-at-a-time  
-> -nostdinc -iwithprefix
-> include -DKBUILD_BASENAME=sched  -fno-omit-frame-pointer -c -o sched.o
-> sched.c
-> sched.c:213: error: conflicting types for 'reschedule_idle'
-> sched.c:210: error: previous declaration of 'reschedule_idle' was here
-> sched.c:213: error: conflicting types for 'reschedule_idle'
-> sched.c:210: error: previous declaration of 'reschedule_idle' was here
-> sched.c:371: error: conflicting types for 'wake_up_process'
-> /usr/src/linux-2.4.27/include/linux/sched.h:603: error: previous
-> declaration of 'wake_up_process' was here
-> sched.c:371: error: conflicting types for 'wake_up_process'
-> /usr/src/linux-2.4.27/include/linux/sched.h:603: error: previous
-> declaration of 'wake_up_process' was here
-> sched.c:409: error: conflicting types for 'schedule_timeout'
-> /usr/src/linux-2.4.27/include/linux/sched.h:148: error: previous
-> declaration of 'schedule_timeout' was here
-> sched.c:409: error: conflicting types for 'schedule_timeout'
-> /usr/src/linux-2.4.27/include/linux/sched.h:148: error: previous
-> declaration of 'schedule_timeout' was here
-> sched.c:739: error: conflicting types for '__wake_up'
-> /usr/src/linux-2.4.27/include/linux/sched.h:595: error: previous
-> declaration of '__wake_up' was here
-> sched.c:739: error: conflicting types for '__wake_up'
-> /usr/src/linux-2.4.27/include/linux/sched.h:595: error: previous
-> declaration of '__wake_up' was here
-> sched.c:749: error: conflicting types for '__wake_up_sync'
-> /usr/src/linux-2.4.27/include/linux/sched.h:596: error: previous
-> declaration of '__wake_up_sync' was here
-> sched.c:749: error: conflicting types for '__wake_up_sync'
-> /usr/src/linux-2.4.27/include/linux/sched.h:596: error: previous
-> declaration of '__wake_up_sync' was here
-> sched.c:759: error: conflicting types for 'complete'
-> /usr/src/linux-2.4.27/include/linux/completion.h:31: error: previous
-> declaration of 'complete' was here
-> sched.c:759: error: conflicting types for 'complete'
-> /usr/src/linux-2.4.27/include/linux/completion.h:31: error: previous
-> declaration of 'complete' was here
-> sched.c:769: error: conflicting types for 'wait_for_completion'
-> /usr/src/linux-2.4.27/include/linux/completion.h:30: error: previous
-> declaration of 'wait_for_completion' was here
-> sched.c:769: error: conflicting types for 'wait_for_completion'
-> /usr/src/linux-2.4.27/include/linux/completion.h:30: error: previous
-> declaration of 'wait_for_completion' was here
-> sched.c:804: error: conflicting types for 'interruptible_sleep_on'
-> /usr/src/linux-2.4.27/include/linux/sched.h:600: error: previous
-> declaration of 'interruptible_sleep_on' was here
-> sched.c:804: error: conflicting types for 'interruptible_sleep_on'
-> /usr/src/linux-2.4.27/include/linux/sched.h:600: error: previous
-> declaration of 'interruptible_sleep_on' was here
-> sched.c:815: error: conflicting types for 'interruptible_sleep_on_timeout'
-> /usr/src/linux-2.4.27/include/linux/sched.h:601: error: previous
-> declaration of 'interruptible_sleep_on_timeout' was here
-> sched.c:815: error: conflicting types for 'interruptible_sleep_on_timeout'
-> /usr/src/linux-2.4.27/include/linux/sched.h:601: error: previous
-> declaration of 'interruptible_sleep_on_timeout' was here
-> sched.c:828: error: conflicting types for 'sleep_on'
-> /usr/src/linux-2.4.27/include/linux/sched.h:597: error: previous
-> declaration of 'sleep_on' was here
-> sched.c:828: error: conflicting types for 'sleep_on'
-> /usr/src/linux-2.4.27/include/linux/sched.h:597: error: previous
-> declaration of 'sleep_on' was here
-> sched.c:839: error: conflicting types for 'sleep_on_timeout'
-> /usr/src/linux-2.4.27/include/linux/sched.h:598: error: previous
-> declaration of 'sleep_on_timeout' was here
-> sched.c:839: error: conflicting types for 'sleep_on_timeout'
-> /usr/src/linux-2.4.27/include/linux/sched.h:598: error: previous
-> declaration of 'sleep_on_timeout' was here
-> sched.c:210: warning: 'reschedule_idle' declared `static' but never defined
-> make[2]: *** [sched.o] Error 1
-> make[2]: Leaving directory `/usr/src/linux-2.4.27/kernel'
-> make[1]: *** [first_rule] Error 2
-> make[1]: Leaving directory `/usr/src/linux-2.4.27/kernel'
-> make: *** [_dir_kernel] Error 2
->
-> Itamar Reis Peixoto
-> +55 (34) 3238 3845
-> e-mail : itamar@ispbrasil.com.br
-> http://www.ispbrasil.com.br
->
->
->
-> -------------------------------------------------------
-> SF email is sponsored by - The IT Product Guide
-> Read honest & candid reviews on hundreds of IT Products from real users.
-> Discover which products truly live up to the hype. Start reading now.
-> http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+May as well send to the list as well...
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+On Sat, 2005-04-09 at 19:03 +0200, Blaisorblade wrote: 
+> I've seen that the last week, the Wiki site was unavailable. I've been fearing 
+> that it had been shut up for any bad reason (hardware problems, lost data, 
+> anything).
+> 
 
+Hi BlaisorBlade
+
+Yup, I was rewiring the server room in the office last week so it was
+down for an hour or so, but I have no plans to take it down again any
+time soon. I'll happily continue hosting it for as long as people use
+it.
+
+I have uml.jfdi.org pointing to it too, and if anyone wants to point
+wiki.usermodelinux.org to 82.69.138.146 its OK with me. All my machines
+are backed up every day, and a backup gets taken off site too.
+
+Of course uml.harlowhill.com is running inside a UML (gentoo) on a
+gentoo 2.6 host - 2.8Ghz P4/1.5G ram. 
+
+If you have any more trouble please let me know. 
+
+Best Regards
+
+Dave Pearson.
+
+> So I've been asking again if it should (or not) be hosted on the main project 
+> page (IIRC I already added the link).
+> 
+> I don't want to "centralize" anything, just to offer the better support to 
+> this. Actually, I just want to ask your opinion (actually, I don't know 
+> exactly who admins the main web sites, nor if ).
+> 
+> BTW, looking in archives, I found this from Jeff Dike:
+> > Start it, and it may become the "official" site if it serves a need.  There
+> > are several UML domain floating around, so I imagine it wouldn't be hard to 
+> > get wiki.usermodelinux.org or something pointed to your site.
+> I think that now we should actually do this. Agreed?
 
 
 
