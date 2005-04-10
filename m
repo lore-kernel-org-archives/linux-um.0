@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DKliF-00080p-Hq for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Apr 2005 16:19:31 -0700
-Received: from zproxy.gmail.com ([64.233.162.206])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DKliC-00051I-2k for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Apr 2005 16:19:31 -0700
-Received: by zproxy.gmail.com with SMTP id 40so807314nzk
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 10 Apr 2005 16:19:20 -0700 (PDT)
-Message-ID: <cbec11ac0504101619cfd1bf1@mail.gmail.com>
-From: Ian McDonald <imcdnzl@gmail.com>
-Reply-To: Ian McDonald <imcdnzl@gmail.com>
-Subject: Re: [uml-devel] My personal -devel tree snapshotted out on my
-	homepage!
-In-Reply-To: <200504082020.18943.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1DKkSk-0004TG-5L for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 14:59:26 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DKkSi-0008Sq-Ju
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 14:59:26 -0700
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Wiki status and reachability
+References: <200504091903.58712.blaisorblade@yahoo.it>
+In-Reply-To: <200504091903.58712.blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-References: <200504082020.18943.blaisorblade@yahoo.it>
+Message-Id: <200504101656.28854.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,37 +31,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 11 Apr 2005 11:19:20 +1200
-To: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 10 Apr 2005 16:56:28 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade@yahoo.it>
 
-With this patch applied to 2.6.11.7 it is my first kernel that
-compiles straight off :-)
-
-It does not apply one patch because it is already applied which is fine.
-
-I did a quick test against 2.6.12-rc2 and it didn't like that at all
-(many rejected patches). That is to be expected though as that is not
-the target but it does mean a reasonable amount of work ahead for
-Paolo :-(
-
-On Apr 9, 2005 6:20 AM, Blaisorblade <blaisorblade@yahoo.it> wrote:
-> Go and see it. There is a lot of interesting stuff... I'll give more info the
-> next time, I'm in a hurry now.
-> --
-> Paolo Giarrusso, aka Blaisorblade
-> Linux registered user n. 292729
-> http://www.user-mode-linux.org/~blaisorblade
-> 
-> -------------------------------------------------------
-> SF email is sponsored by - The IT Product Guide
-> Read honest & candid reviews on hundreds of IT Products from real users.
-> Discover which products truly live up to the hype. Start reading now.
-> http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+On Saturday 09 April 2005 01:03 pm, Blaisorblade wrote:
+> I've seen that the last week, the Wiki site was unavailable. I've been
+> fearing that it had been shut up for any bad reason (hardware problems,
+> lost data, anything).
 >
+> So I've been asking again if it should (or not) be hosted on the main
+> project page (IIRC I already added the link).
+>
+> I don't want to "centralize" anything, just to offer the better support to
+> this. Actually, I just want to ask your opinion (actually, I don't know
+> exactly who admins the main web sites, nor if ).
+>
+> BTW, looking in archives, I found this from Jeff Dike:
+> > Start it, and it may become the "official" site if it serves a need. 
+> > There are several UML domain floating around, so I imagine it wouldn't be
+> > hard to get wiki.usermodelinux.org or something pointed to your site.
+>
+> I think that now we should actually do this. Agreed?
+
+There's a wiki?
+
+Rob
 
 
 -------------------------------------------------------
