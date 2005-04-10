@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DKc48-0007ks-Vu for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Apr 2005 06:01:28 -0700
-Received: from heisenberg.zen.co.uk ([212.23.3.141])
+	id 1DKliF-00080p-Hq for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 16:19:31 -0700
+Received: from zproxy.gmail.com ([64.233.162.206])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DKc46-0002sE-Ht for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Apr 2005 06:01:28 -0700
-Received: from [82.68.193.217] (helo=192.168.1.107)
-	by heisenberg.zen.co.uk with esmtp (Exim 4.30) id 1DKc43-0005BO-0i
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Apr 2005 13:01:23 +0000
-From: Dave Pearson <dp@harlowhill.com>
-Content-Type: text/plain
-Message-Id: <1113138083.9976.13.camel@smithers>
+	id 1DKliC-00051I-2k for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Apr 2005 16:19:31 -0700
+Received: by zproxy.gmail.com with SMTP id 40so807314nzk
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 10 Apr 2005 16:19:20 -0700 (PDT)
+Message-ID: <cbec11ac0504101619cfd1bf1@mail.gmail.com>
+From: Ian McDonald <imcdnzl@gmail.com>
+Reply-To: Ian McDonald <imcdnzl@gmail.com>
+Subject: Re: [uml-devel] My personal -devel tree snapshotted out on my
+	homepage!
+In-Reply-To: <200504082020.18943.blaisorblade@yahoo.it>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [Fwd: Re: Wiki status and reachability]
+References: <200504082020.18943.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,56 +32,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 10 Apr 2005 14:01:23 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 11 Apr 2005 11:19:20 +1200
+To: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
--------- Forwarded Message --------
-From: Dave Pearson <dp@harlowhill.com>
-To: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: Wiki status and reachability
-Date: Sun, 10 Apr 2005 13:58:46 +0100
+With this patch applied to 2.6.11.7 it is my first kernel that
+compiles straight off :-)
 
-May as well send to the list as well...
+It does not apply one patch because it is already applied which is fine.
 
-On Sat, 2005-04-09 at 19:03 +0200, Blaisorblade wrote: 
-> I've seen that the last week, the Wiki site was unavailable. I've been fearing 
-> that it had been shut up for any bad reason (hardware problems, lost data, 
-> anything).
+I did a quick test against 2.6.12-rc2 and it didn't like that at all
+(many rejected patches). That is to be expected though as that is not
+the target but it does mean a reasonable amount of work ahead for
+Paolo :-(
+
+On Apr 9, 2005 6:20 AM, Blaisorblade <blaisorblade@yahoo.it> wrote:
+> Go and see it. There is a lot of interesting stuff... I'll give more info the
+> next time, I'm in a hurry now.
+> --
+> Paolo Giarrusso, aka Blaisorblade
+> Linux registered user n. 292729
+> http://www.user-mode-linux.org/~blaisorblade
 > 
-
-Hi BlaisorBlade
-
-Yup, I was rewiring the server room in the office last week so it was
-down for an hour or so, but I have no plans to take it down again any
-time soon. I'll happily continue hosting it for as long as people use
-it.
-
-I have uml.jfdi.org pointing to it too, and if anyone wants to point
-wiki.usermodelinux.org to 82.69.138.146 its OK with me. All my machines
-are backed up every day, and a backup gets taken off site too.
-
-Of course uml.harlowhill.com is running inside a UML (gentoo) on a
-gentoo 2.6 host - 2.8Ghz P4/1.5G ram. 
-
-If you have any more trouble please let me know. 
-
-Best Regards
-
-Dave Pearson.
-
-> So I've been asking again if it should (or not) be hosted on the main project 
-> page (IIRC I already added the link).
-> 
-> I don't want to "centralize" anything, just to offer the better support to 
-> this. Actually, I just want to ask your opinion (actually, I don't know 
-> exactly who admins the main web sites, nor if ).
-> 
-> BTW, looking in archives, I found this from Jeff Dike:
-> > Start it, and it may become the "official" site if it serves a need.  There
-> > are several UML domain floating around, so I imagine it wouldn't be hard to 
-> > get wiki.usermodelinux.org or something pointed to your site.
-> I think that now we should actually do this. Agreed?
-
+> -------------------------------------------------------
+> SF email is sponsored by - The IT Product Guide
+> Read honest & candid reviews on hundreds of IT Products from real users.
+> Discover which products truly live up to the hype. Start reading now.
+> http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
 
 -------------------------------------------------------
