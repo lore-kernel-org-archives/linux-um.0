@@ -2,23 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DLP21-0002Ge-AG for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Apr 2005 10:18:33 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1DLPS1-0003bK-HE for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Apr 2005 10:45:25 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DLP1y-0002Hc-2x for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Apr 2005 10:18:33 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Wiki status and reachability
-References: <200504091903.58712.blaisorblade@yahoo.it>
-	<200504101656.28854.rob@landley.net>
-In-Reply-To: <200504101656.28854.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504121926.04866.blaisorblade@yahoo.it>
+	id 1DLPRw-0005Y5-81 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Apr 2005 10:45:25 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050412175209.10A11126095@zion>
+Subject: [uml-devel] [patch 1/1] uml: add nfsd syscall when nfsd is modular
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +22,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Apr 2005 19:26:04 +0200
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
-On Sunday 10 April 2005 22:56, Rob Landley wrote:
-> On Saturday 09 April 2005 01:03 pm, Blaisorblade wrote:
-> > I've seen that the last week, the Wiki site was unavailable. I've been
-> > fearing that it had been shut up for any bad reason (hardware problems,
-> > lost data, anything).
-> >
-> > So I've been asking again if it should (or not) be hosted on the main
-> > project page (IIRC I already added the link).
-> >
-> > I don't want to "centralize" anything, just to offer the better support
-> > to this. Actually, I just want to ask your opinion (actually, I don't
-> > know exactly who admins the main web sites, nor if ).
-> >
-> > BTW, looking in archives, I found this from Jeff Dike:
-> > > Start it, and it may become the "official" site if it serves a need.
-> > > There are several UML domain floating around, so I imagine it wouldn't
-> > > be hard to get wiki.usermodelinux.org or something pointed to your
-> > > site.
-> >
-> > I think that now we should actually do this. Agreed?
->
-> There's a wiki?
-http://uml.harlowhill.com/ ..., I thought I'd added a link from the main UML 
-page but I didn't yet.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Date: Tue, 12 Apr 2005 19:52:08 +0200
+To: akpm@osdl.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, blaisorblade@yahoo.it, stable@kernel.org
 
 
+CC: <stable@kernel.org>
+
+This trick is useless, because sys_ni.c will handle this problem by itself,
+like it does even on UML for other syscalls.
+Also, it does not provide the NFSD syscall when NFSD is compiled as a module,
+which is a big problem.
+
+This should be merged currently in both 2.6.11-stable and the current tree.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ clean-linux-2.6.11-paolo/arch/um/kernel/sys_call_table.c |    8 +-------
+ 1 files changed, 1 insertion(+), 7 deletions(-)
+
+diff -puN arch/um/kernel/sys_call_table.c~uml-nfsd-syscall arch/um/kernel/sys_call_table.c
+--- clean-linux-2.6.11/arch/um/kernel/sys_call_table.c~uml-nfsd-syscall	2005-04-10 13:50:29.000000000 +0200
++++ clean-linux-2.6.11-paolo/arch/um/kernel/sys_call_table.c	2005-04-10 13:51:19.000000000 +0200
+@@ -14,12 +14,6 @@
+ #include "sysdep/syscalls.h"
+ #include "kern_util.h"
+ 
+-#ifdef CONFIG_NFSD
+-#define NFSSERVCTL sys_nfsservctl
+-#else
+-#define NFSSERVCTL sys_ni_syscall
+-#endif
+-
+ #define LAST_GENERIC_SYSCALL __NR_keyctl
+ 
+ #if LAST_GENERIC_SYSCALL > LAST_ARCH_SYSCALL
+@@ -190,7 +184,7 @@ syscall_handler_t *sys_call_table[] = {
+ 	[ __NR_getresuid ] = (syscall_handler_t *) sys_getresuid16,
+ 	[ __NR_query_module ] = (syscall_handler_t *) sys_ni_syscall,
+ 	[ __NR_poll ] = (syscall_handler_t *) sys_poll,
+-	[ __NR_nfsservctl ] = (syscall_handler_t *) NFSSERVCTL,
++	[ __NR_nfsservctl ] = (syscall_handler_t *) sys_nfsservctl,
+ 	[ __NR_setresgid ] = (syscall_handler_t *) sys_setresgid16,
+ 	[ __NR_getresgid ] = (syscall_handler_t *) sys_getresgid16,
+ 	[ __NR_prctl ] = (syscall_handler_t *) sys_prctl,
+_
 
 
 -------------------------------------------------------
