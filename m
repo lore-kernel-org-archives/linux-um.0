@@ -1,27 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DLfjh-0004kS-FR for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Apr 2005 04:08:45 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DLfja-0001UQ-TS
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Apr 2005 04:08:45 -0700
-Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j3DCOLso022683
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 13 Apr 2005 08:24:21 -0400
-From: Rob Landley <rob@landley.net>
+	id 1DLP0H-0002E4-Cx for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Apr 2005 10:16:45 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DLOzx-0002Dj-DB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Apr 2005 10:16:45 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] My personal -devel tree snapshotted out on my
+	homepage!
+References: <200504082020.18943.blaisorblade@yahoo.it>
+	<cbec11ac0504101619cfd1bf1@mail.gmail.com>
+In-Reply-To: <cbec11ac0504101619cfd1bf1@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200504130605.44419.rob@landley.net>
-Subject: [uml-devel] The sickest thing that's been done with UML yet.
+Content-Disposition: inline
+Message-Id: <200504121923.34999.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,17 +31,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 13 Apr 2005 06:05:43 -0400
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 12 Apr 2005 19:23:34 +0200
+To: Ian McDonald <imcdnzl@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Remember when I talked about making UML and its root filesystem be one file 
-you can just run?  Well, I made one as a proof of concept...
+On Monday 11 April 2005 01:19, Ian McDonald wrote:
+> With this patch applied to 2.6.11.7 it is my first kernel that
+> compiles straight off :-)
+Ok, that's the -bs tree, not the one I announced here (the -devel one) but 
+it's ok anyway.
+> It does not apply one patch because it is already applied which is fine.
+Yes, I merged that, it's the va_copy fix.
+> I did a quick test against 2.6.12-rc2 and it didn't like that at all
+> (many rejected patches). That is to be expected though as that is not
+> the target but it does mean a reasonable amount of work ahead for
+> Paolo :-(
+No; luckily, I'm mainly working on -rc2 and I've backported the needed stuff 
+to 2.6.11.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-http://www.landley.net/code/firmware/notes.html
 
-You have been warned...
-
-Rob
 
 
 -------------------------------------------------------
