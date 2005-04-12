@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DLMX0-0002MS-5R for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Apr 2005 07:38:22 -0700
-Received: from [209.67.213.234] (helo=ispbrasil.com.br)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DLMWf-0006sy-0z
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Apr 2005 07:38:22 -0700
-Message-ID: <000501c53f6d$3b936df0$0201a8c0@lualele>
-From: "itamar" <itamar@ispbrasil.com.br>
+	id 1DLP8I-0002cQ-Qo for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Apr 2005 10:25:02 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DLP8F-00033H-LJ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Apr 2005 10:25:02 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] guest performance
+References: <000501c53f6d$3b936df0$0201a8c0@lualele>
+In-Reply-To: <000501c53f6d$3b936df0$0201a8c0@lualele>
 MIME-Version: 1.0
-Content-Type: text/plain; format="flowed"; charset="windows-1252"; reply-type="original"
-Subject: [uml-devel] guest performance
+Content-Type: text/plain; charset="windows-1252"
+Content-Disposition: inline
+Message-Id: <200504121932.31338.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,23 +27,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Apr 2005 11:37:58 -0300
+Date: Tue, 12 Apr 2005 19:32:31 +0200
 Content-Transfer-Encoding: quoted-printable
-To: uml-user <user-mode-linux-user@lists.sourceforge.net>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: itamar <itamar@ispbrasil.com.br>, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-How to make a guest machine running more fast ?
+On Tuesday 12 April 2005 16:37, itamar wrote:
+> How to make a guest machine running more fast ?
+>
+>
+> CONFIG_BLK_DEV_UBD_SYNC =3DY or CONFIG_BLK_DEV_UBD_SYNC=3DN
+The second is surely faster but less safe.
+> What=B4s the best for a uml provider ?
+For recent (IIRC >=3D 2.6.9, at least) the difference of performance is=20
+acceptable; however, in case of a host crash (a guest crash shouldn't creat=
+e=20
+a problem), with the second one you would get big problems on guest reboot =
 
+(especially if you use journaled filesystems, especially like reiserfs,=20
+because they want to be able to force datas out on the disk).
+--=20
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-CONFIG_BLK_DEV_UBD_SYNC =3DY or CONFIG_BLK_DEV_UBD_SYNC=3DN
-
-What=B4s the best for a uml provider ?
-
-
-Itamar Reis Peixoto
-+55 (34) 3238 3845
-e-mail : itamar@ispbrasil.com.br
-http://www.ispbrasil.com.br=20
 
 
 
@@ -49,7 +58,7 @@ http://www.ispbrasil.com.br=20
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_ide95&alloc_id=14396&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
