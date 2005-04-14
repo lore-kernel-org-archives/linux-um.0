@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DLrOU-0003Ky-OU for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Apr 2005 16:35:38 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DLrOR-0001Mw-3m
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Apr 2005 16:35:38 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] The sickest thing that's been done with UML yet.
-References: <200504130605.44419.rob@landley.net>
-	<20050413152711.GB5089@ccure.user-mode-linux.org>
-In-Reply-To: <20050413152711.GB5089@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200504131832.16766.rob@landley.net>
+	id 1DLvuz-0004VJ-Ms for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Apr 2005 21:25:29 -0700
+Received: from zproxy.gmail.com ([64.233.162.195])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DLvux-0004wI-LF for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Apr 2005 21:25:29 -0700
+Received: by zproxy.gmail.com with SMTP id 9so559409nzo
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 13 Apr 2005 21:25:18 -0700 (PDT)
+Message-ID: <cbec11ac0504132125779afc07@mail.gmail.com>
+From: Ian McDonald <imcdnzl@gmail.com>
+Reply-To: Ian McDonald <imcdnzl@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_3725_15504080.1113452718056"
+Subject: [uml-devel] Problems with UML on Debian Sarge 64 host
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,87 +29,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 13 Apr 2005 18:32:16 -0400
-To: jdike@addtoit.com
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 14 Apr 2005 16:25:18 +1200
+To: UML Developer <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wednesday 13 April 2005 11:27 am, jdike@addtoit.com wrote:
-> On Wed, Apr 13, 2005 at 06:05:43AM -0400, Rob Landley wrote:
-> > Remember when I talked about making UML and its root filesystem be one
-> > file you can just run?  Well, I made one as a proof of concept...
-> >
-> > http://www.landley.net/code/firmware/notes.html
->
-> Hehe, nice.  I've been considering doing this with an initramfs.  It sounds
-> like you're doing something different (I couldn't find a one-or-two line
-> here's-how-it-works on your page :-).
+------=_Part_3725_15504080.1113452718056
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I _really_ need to update that page.  I've been busy getting the build script 
-and source tarball cleaned up for release (possibly even tonight, but don't 
-hold your breath)...
+Hi there,
 
-How it works: 
+In my continuing saga (which some are becoming familiar with) to get
+UML 2.6.x working at all I have been given access to another machine
+to develop on and my old machine is going to disappear.
 
-It's a squashfs root partition (over 11 of the 13.7 megs), where the initramfs 
-script does "mount -t hostfs -o / / /sub", examines sub/proc/self/exe to find 
-the running executable, reads bytes 12-15 of that (where I wrote the length 
-of the original UML exe; note that the 16 byte elf header ends with 6 bytes 
-of padding, I grabbed the last four), and then does an "losetup -o 
-$OFFSET /dev/loop0 sub/proc/self/exe", mounts that, pivot_root, and 
-exec /bin/sh or /sbin/init or whatever you want...
+This machine is Debian Sarge with gcc 3.3.5 on an AMD64 with 32 bit
+userspace although 64 bit compiles can also occur.
 
-The reality is slightly more complicated due to details like /proc/self/exe 
-being a symlink to an absolute path while hostfs is mounted in a 
-subdirectory.  And I had to patch busybox losetup to have a readonly option 
-because if losetup tries to open a running executable file read-write it dies 
-with a "text file busy" error.  But they weren't too hard to fix.  (Just time 
-consuming.)
+I am doing all my UML builds with ARCH=3Dum SUBARCH=3Di386 at this point in=
+ time.
 
-The main advantage of doing this rather than a huge initramfs is that we don't 
-eat so much memory.  The squashfs naturally uses the host file as backing 
-store.
+The problem is that my bootup dies very early on and this is the total outp=
+ut:
+Checking for /proc/mm...not found
+Checking PROT_EXEC mmap in /tmp...OK
+tracing thread pid =3D 20981
+OP_FORK failed to attach pid
 
-P.S.  Hang the UML kernel!  When it comes up, try "mount 
---move /mnt/proc /proc".  Apparently, when rootfs moves and afterwards you 
-try to relocate a mount point that's bound under it, something gets very, 
-very confused.
+I suspect that this is something to do with my mixed 32/64 bit
+environment but I am not sure... Can anybody shed some light on this?
 
-Here's the UML options I used:
+BTW I have also written a patch which I think is worth submitting into
+the kernel tree as it gives better debugging of error messages in
+arch/um/kernel/tt/tracer.c for where my process is dying.
 
-> make ARCH=um allnoconfig &&
-> cat >> .config << EOF &&
-> CONFIG_MODE_TT=y
-> CONFIG_LD_SCRIPT_STATIC=y
-> CONFIG_BINFMT_ELF=y
-> CONFIG_HOSTFS=y
-> CONFIG_SYSCTL=y
-> CONFIG_STDERR_CONSOLE=y
-> CONFIG_UNIX98_PTYS=y
-> CONFIG_BLK_DEV_LOOP=y
-> CONFIG_INITRAMFS_SOURCE="initramfs/initramfs.txt"
-> CONFIG_LBD=y
-> CONFIG_EXT2_FS=y
-> CONFIG_PROC_FS=y
-> CONFIG_SQUASHFS=y
-> CONFIG_ZLIB_INFLATE=y
-> EOF
-> yes "" | make ARCH=um oldconfig &&
-> make ARCH=um &&
-> mv linux .. &&
-> cd ..
+When I run with my patch it shows that it is dying on the
+PTRACE_ATTACH with an error EPERM but I can run other processes etc
+like gdb which attach to processes.
 
-Yes, tt.  It's portable.
+Any help would be greatly appreciated.
 
-Hopefully this weekend I can get this up and running on my server upstairs, 
-and thus get my website moved onto my spiffy 3 megabit (symmetrical!) cable 
-modem.  Then it should be a much much faster download.  Right now it's on a 
-friend's DSL connection...
+Ian
 
-Of course to do that, I have to learn about UML network bridging... :)
+------=_Part_3725_15504080.1113452718056
+Content-Type: text/x-patch; name="tracer.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="tracer.diff"
 
-> 				Jeff
-
-Rob
+LS0tIGFyY2gvdW0va2VybmVsL3R0L3RyYWNlci5jLnNhdgkyMDA1LTA0LTE0IDE1OjAyOjUwLjAw
+MDAwMDAwMCArMTIwMAorKysgYXJjaC91bS9rZXJuZWwvdHQvdHJhY2VyLmMJMjAwNS0wNC0xNCAx
+NTo0NToxMy4xNTE4Njg1NTIgKzEyMDAKQEAgLTY4LDE0ICs2OCwxNyBAQAogCiB2b2lkIGF0dGFj
+aF9wcm9jZXNzKGludCBwaWQpCiB7Ci0JaWYoKHB0cmFjZShQVFJBQ0VfQVRUQUNILCBwaWQsIDAs
+IDApIDwgMCkgfHwKLQkgICAocHRyYWNlKFBUUkFDRV9DT05ULCBwaWQsIDAsIDApIDwgMCkpCi0J
+CXRyYWNlcl9wYW5pYygiT1BfRk9SSyBmYWlsZWQgdG8gYXR0YWNoIHBpZCIpOworCWludCBlcnI7
+CisKKwlpZiAoIShlcnIgPSBwdHJhY2UoUFRSQUNFX0FUVEFDSCwgcGlkLCAwLCAwKSkpCisJCXRy
+YWNlcl9wYW5pYygiT1BfRk9SSzogUFRSQUNFX0FUVEFDSCBmYWlsZWQsIHBpZCA9ICVkLCBlcnIg
+PSAlZFxuIiwgcGlkLCAtZXJyKTsKKwlpZiAoIShlcnIgPSBwdHJhY2UoUFRSQUNFX0NPTlQsIHBp
+ZCwgMCwgMCkpKQorCQl0cmFjZXJfcGFuaWMoIk9QX0ZPUks6IFBUUkFDRV9DT05UIGZhaWxlZCwg
+cGlkID0gJWQsIGVyciA9ICVkXG4iLCBwaWQsIC1lcnIpOwogCXdhaXRfZm9yX3N0b3AocGlkLCBT
+SUdTVE9QLCBQVFJBQ0VfQ09OVCwgTlVMTCk7Ci0JaWYgKHB0cmFjZShQVFJBQ0VfT0xEU0VUT1BU
+SU9OUywgcGlkLCAwLCAodm9pZCAqKVBUUkFDRV9PX1RSQUNFU1lTR09PRCkgPCAwKQotCQl0cmFj
+ZXJfcGFuaWMoIk9QX0ZPUks6IFBUUkFDRV9TRVRPUFRJT05TIGZhaWxlZCwgZXJybm8gPSAlZCIs
+IGVycm5vKTsKLQlpZihwdHJhY2UoUFRSQUNFX0NPTlQsIHBpZCwgMCwgMCkgPCAwKQotCQl0cmFj
+ZXJfcGFuaWMoIk9QX0ZPUksgZmFpbGVkIHRvIGNvbnRpbnVlIHByb2Nlc3MiKTsKKwlpZiAoIShl
+cnIgPSBwdHJhY2UoUFRSQUNFX09MRFNFVE9QVElPTlMsIHBpZCwgMCwgKHZvaWQgKilQVFJBQ0Vf
+T19UUkFDRVNZU0dPT0QpKSkKKwkJdHJhY2VyX3BhbmljKCJPUF9GT1JLOiBQVFJBQ0VfU0VUT1BU
+SU9OUyBmYWlsZWQsIHBpZCA9ICVkLCBlcnIgPSAlZFxuIiwgcGlkLCAtZXJyKTsKKwlpZiAoIShl
+cnIgPSBwdHJhY2UoUFRSQUNFX0NPTlQsIHBpZCwgMCwgMCkpKQorCQl0cmFjZXJfcGFuaWMoIk9Q
+X0ZPUks6IFBUUkFDRV9DT05UICgyKSBmYWlsZWQsIHBpZCA9ICVkLCBlcnIgPSAlZFxuIiwgcGlk
+LCAtZXJyKTsKIH0KIAogdm9pZCB0cmFjZXJfcGFuaWMoY2hhciAqZm9ybWF0LCAuLi4pCg==
+------=_Part_3725_15504080.1113452718056--
 
 
 -------------------------------------------------------
