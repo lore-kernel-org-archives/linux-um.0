@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DNybW-0003IW-6j for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Apr 2005 12:41:50 -0700
+	id 1DNybX-0003Id-TM for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Apr 2005 12:41:51 -0700
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DNybT-0000cA-DN for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Apr 2005 12:41:50 -0700
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DNybV-0001AN-Tb for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Apr 2005 12:41:51 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <4B144766191813520D8327A4@Johannes-Formanns-G4.local>
-	<200504161857.49991.blaisorblade@yahoo.it>
-	<42298CF0A91CA74C36CCECD5@Johannes-Formanns-G4.local>
-In-Reply-To: <42298CF0A91CA74C36CCECD5@Johannes-Formanns-G4.local>
+Subject: Re: [uml-devel] UML-patches to prepare UML/s390
+References: <4253E3D6.2000809@fujitsu-siemens.com>
+	<200504171937.05846.blaisorblade@yahoo.it>
+	<426391FB.5020303@fujitsu-siemens.com>
+In-Reply-To: <426391FB.5020303@fujitsu-siemens.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-6"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200504191816.01659.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: memory leak with 2.4.30 and uml-2.4.27-bs2-pre10?
+  charset="iso-8859-1"
+Message-Id: <200504191845.33730.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,80 +30,144 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 19 Apr 2005 18:16:01 +0200
-To: Johannes Formann <johannes@formann.de>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 19 Apr 2005 18:45:32 +0200
+Content-Transfer-Encoding: 8bit
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 16 April 2005 18:59, Johannes Formann wrote:
-> --On 16. April 2005 18:57:49 +0200 Blaisorblade <blaisorblade@yahoo.it>
+On Monday 18 April 2005 12:54, Bodo Stroesser wrote:
+> Blaisorblade wrote:
+> > On Friday 08 April 2005 09:12, Bodo Stroesser wrote:
+
+> > * ARCH_SIGHDLR_PARAM works like I feared - you'd probably need {} (or do
+> > {} while (0)) around the ARCH_GET_SIGCONTEXT because you declare a var at
+> > the beginning... and that function will likely break if not commented
+> > (because who patches the code won't go checking what actually happens).
+
+> There is a reason for my decision, not to use "{}" here.
+
+> s390 doesn't have fields for error-address and trap_no in its sigcontext.
+> Because of alignment, there is an empty area in the sigcontext, that is big
+> enough to hold an additional pointer. But there isn't enough place for
+> error-address and trap_no. So I create a local struct faultinfo, write
+> error-address and trap_no to it and add its address to the sigcontext. Now
+> the sigcontext containing all info can be passed to the routine, which has
+> to handle the signal.
 >
-> wrote:
-> > On Saturday 16 April 2005 18:33, Johannes Formann wrote:
-> >> Hi,
-> >>
-> >> I've testing your uml-2.4.27-bs2-pre10-patch with 2.4.30, it compiles
-> >> fine, but there seems to be a memory-leak.
-Hmm, there should not be any difference with 2.4.26-3um/2.4.27-1um (apart the 
-hostfs code, which is the one from 2.4.24-1um).
-> >> After running a few days a not very heavily loaded guest (only sshd,
-> >> exim and rsyn daemon) needs 80 MB of RAM.
+> If the additional struct faultinfo would be declared inside of a "{}", I
+> guess there would be no guarantee, that this structure still is valid
+> outside the "{}".
+There is the guarantee that the identifier is NOT valid, and so the datas may 
+be invalidated...
 
+> But it needs to be valid at the same level, from where 
+> sigcontext is passed to the called handler.
 
-> >> $ free -m
-> >>              total       used       free     shared    buffers    
-> >> cached Mem:            95         93          1          0          1   
-> >>       8 -/+ buffers/cache:         83         11
-> >> Swap:          131          0        131
+Ok...
+
+> The current solution should be used immediately after definition of local
+> variables. Maybe, this should be commented, too.
+
+Yes, it's the minimum needed... as said we *will* get that broken by somebody 
+otherwise.
+
+> > I also understand why you can't use the trick used elsewhere... I have no
+> > better solution than long comments.
+
+> s390 fault information is complex to handle only regarding sighandlers /
+> sigcontext. Else it is even more simple than i386, as i386 has address,
+> fault_type and trap, while s390 has address and trap_no only.
+> What is the faultinfo used for in UML? First, it is used to handle
+> pagefaults. Second, it is used to give error-information to sighandlers of
+> UML-user-programs. So, PTRACE_FAULTINFO should give the caller *all*
+> information, that a sighandler would get. All this info should be stored in
+> thread_struct.
+
+> Then, UML internally uses arch-specific macros to extract "is_write" and to
+> see, if segment violation might be fixable.
+
+> PTRACE_FAULTINFO on i386 unfortunately doesn't give UML all info. This
+> should be fixed in a mainline solution, as the current implementation can't
+> distinguish between a page-fault and a segment-fault. So a user-program in
+> SKAS3 might loop on a segment-fault instead of being interrupted by
+> SIGSEGV.
+
+> (See use of PTRACE_FULL_FAULTINFO in 
+> arch/um/kernel/skas/process.c)
+>
+> > Also, I've given a look and it wouldn't be difficult making
+> > PTRACE_SIGPENDING, just a bit long: update asm-generic/siginfo.h: struct
+> > siginfo : _sigfault (maybe depending on the arch), and all the callers.
+>
+> PTRACE_SIGPENDING currently is unused. I don't know, if there will be need
+> for it in future. IMHO, this should be removed.
+Agreed, even Jeff confirmed it should be removed... but in the above lines I 
+was really referring to PTRACE_SIGINFO.
+
+> > * for glibc-bug.c, you might as well use an "alias, weak" attribute - see
+> > the below from asm-i386/unistd.h:
 > >
-> > Post the content of /proc/slabinfo and /proc/meminfo on a such situation
-> > for  verification.
+> > /*
+> >  * "Conditional" syscalls
+> >  *
+> >  * What we want is __attribute__((weak,alias("sys_ni_syscall"))),
+> >  * but it doesn't work on all toolchains, so we just do it by hand
+> >  */
+> > #ifndef cond_syscall
+> > #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x
+> > ",sys_ni_syscall"); #endif
+> >
+> > Note that the asm code only contains pseudo-op so it should work as-is on
+> > s390, right?
 >
-> $ cat /proc/meminfo
->         total:    used:    free:  shared: buffers:  cached:
-> Mem:  99897344 98086912  1810432        0  1740800  8069120
-> Swap: 138403840   643072 137760768
+> I've experimented with __attribute__((weak)) in C-code and had no success.
+> IIRC, the "weak" simply was ignored.
+From my experience, it's possible that you used a declaration instead of a 
+definition:
 
+This:
 
-> cat /proc/slabinfo
+int proc() __attribute__((weak));
 
-> blkdev_requests     1024   1040     96   26   26    1
-This is just a bit high.
+does not work when it's actually called, but it does not give "unresolved 
+symbol" when you take its address;
 
-Now, here are the culprits
-> inode_cache       117046 123102    512 17586 17586    1
-> dentry_cache       61074  80580    128 2686 2686    1
-This is a lot of allocated memory by these two caches. If this increases over 
-time, it's this the cause of the leak. In this case, try not using hostfs (or 
-HPPFS, if you use it; it's even less stable than hostfs) and the leak should 
-disappear; in this case, I'll know 
-it's a hostfs bug.
+while this:
+int proc() __attribute__((weak)) {
+}
+works in any case and does not give "already defined symbol" errors.
 
-To calculate the total size, read man slabinfo - I don't remember well which 
-columns gives the interesting numbers. It should be like the 2nd * the 3rd 
-number... so about 64M for inode_cache and 8M for dentry_cache (which could 
-be normal if rsync is used a lot, maybe).
+> So I decided to go forward and make 
+> s390 run, before clearing those "minor" problems.
 
-However, before talking about "memory leak", maybe you should trying flushing 
-out these caches (by running some kind of memory-intensive process). Even a 
-program mallocing and using lots of memory is ok...
+> > * important changes for TLS support, clone(), and so on.
+>
+> I've seen, that I'll have to implement the small support of TLS in s390.
+> That's on my todo
 
-> buffer_head         7236   8440     96  211  211    1
-A bit high, too (800k). That's related with not flushed datas, IIRC.
+> > * add a CHOOSE_MODE to arch_switch (since the current code is used only
+> > in TT mode) - I'm going to start calling it from SKAS mode and actually
+> > needing it for TLS support. Some changes to ptrace_user.c will also
+> > happen.
 
-> size-32             4796   5537     32   49   49    1
-I think this item should be normal... It's just 160k
+> Great. I also want to have arch_switch for skas, as I would like to have
+> full debugging support in skas.
 
-> >> Have you tested/expericend something like that?
+> > * CONFIG_64_BIT must become CONFIG_64BIT, as I'm doing for the other UML
+> > subarchs (the '_' is bogus, by comparison with other 64-bit archs). Also
+> > I'll have to clean up the Makefiles (USER_OBJS got fixed finally - they
+> > got dependency tracking, and the common boilerplate code is now in
+> > arch/um/scripts/Makefile.rules - more stuff has shifted there since when
+> > you did the patch). And there's no need to readd the end "Emacs"
+> > comments, we are gradually getting rid of them. However, I'll take care
+> > myself of all these trivial QA (quality assurance) issues.
 
-> > No, even because I have not time to do a lot of testing on the 2.4
-> > branch...  I'm working mostly on 2.6, and it actually feels better most
-> > of the times.
+> Your help is very welcome. I also have to scan all the new file to add some
+> correct Copyright comments. This is a further reason for not publishing
+> s390 yet.
 
-> hmm, sounds like I should consider switching to 2.6 in the near future.
-Probably yes, unless you have a very confortable setup currently and problems 
-with 2.6.
+> 		Bodo
 
-However, there are also the famous security problems which have not yet been 
-fixed well in 2.4.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Linux registered user n. 292729
