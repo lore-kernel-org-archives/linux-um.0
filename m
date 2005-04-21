@@ -1,27 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DOD4u-0002B5-JK for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Apr 2005 04:09:08 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DOD4t-00072U-2t
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Apr 2005 04:09:08 -0700
-Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j3KCPP24018119
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 20 Apr 2005 08:25:26 -0400
-From: Rob Landley <rob@landley.net>
+	id 1DOHQp-0002qT-US for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Apr 2005 08:48:03 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DOHQl-0000EH-0Y for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Apr 2005 08:48:03 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Problems with UML on Debian Sarge 64 host
+References: <cbec11ac0504132125779afc07@mail.gmail.com>
+	<200504191805.35299.blaisorblade@yahoo.it>
+	<cbec11ac0504191851267763d8@mail.gmail.com>
+In-Reply-To: <cbec11ac0504191851267763d8@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200504200606.06828.rob@landley.net>
-Subject: [uml-devel] The source to that firmware-uml thing is now up...
+Content-Disposition: inline
+Message-Id: <200504211747.58890.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,31 +31,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 20 Apr 2005 06:06:06 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 21 Apr 2005 17:47:58 +0200
+To: Ian McDonald <imcdnzl@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-http://www.landley.net/code/firmware/notes.html
+On Wednesday 20 April 2005 03:51, Ian McDonald wrote:
+> > Comments inline
 
-It's a ~80 meg tarball (half of which is the gcc, binutils, and linux-2.6.11 
-source tarballs) on a friend's machine, so don't hit the poor server too 
-hard.  I intend to move it to a faster connection after I get back from 
-Penguicon...
 
-Yeah, I know the versions of most things are out of date, but the build worked 
-when I ran it, and as a proof of concept it shows you what I did.
+> > Also, tried compiling UML itself on a real 32-bit box (with static
+> > linking, obviously)?
+>
+> Yes - work.
+What I really meant was whether that UML, compiled on that environemnt, works 
+in that situation - however this is no more relevant, since it was solved the 
+other way.
 
-By the way, I've toyed with the idea of running this sucker in an otherwise 
-empty chroot environment (/proc/self/fd is likely to exist and have fairly 
-uninteresting contents.  As a chroot environment, it just has symlinks that 
-point to nothing), but to chroot the UML kernel process from inside the 
-initramfs, I need to come up with a new syscall.  Can't do it before running 
-the UML kernel because A) it needs to make its memory file, 2) it needs to 
-access /proc/self/exe, III) it needs to loopback mount its executable file to 
-pull the trick I just did.
+> Yes I did succeed on my 32 bit Woody but that machine is being turned
+> off in next couple of weeks :-(
 
-Does a new "chroot UML" syscall sound like a worthwhile idea?
+> The UML appears now to be working (once I can do more tests) on 64 bit
+> once host kernel was upgraded to 2.6.11.7 (guess is 2.6.11.4+bs4 32
+> bit).
 
-Rob
+> Thanks for your help. Unfortunately I don't have much time to help
+> write patches at present or too many tests as my UML testing has
+> slowed down my project and I have acquired two dedicated machines to
+> help me out... I will certainly try to help though whenever I get
+> bored (which is quite often!)
+Ok, don't worry and thanks a lot!
+Good bye
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
+
+
 
 
 -------------------------------------------------------
