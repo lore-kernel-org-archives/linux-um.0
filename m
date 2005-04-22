@@ -1,21 +1,10 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DOn7X-000055-HF for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Apr 2005 18:38:15 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DOn7W-00088O-0w for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Apr 2005 18:38:15 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050422013246.GA19730@ccure.user-mode-linux.org>
-References: <4253E3D6.2000809@fujitsu-siemens.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4253E3D6.2000809@fujitsu-siemens.com>
-Subject: [uml-devel] Re: UML-patches to prepare UML/s390
+Message-ID: <3BCB5FB76AFFF646BCFBC02A889B64F3027D46E3@ZCH07EXM05.corp.mot.com>
+From: Wu Haibao-a15761 <a15761@motorola.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="GB2312"
+Subject: [uml-devel] UML 2.4.26um panic
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,25 +16,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 21 Apr 2005 21:32:46 -0400
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: blaisorblade@yahoo.it, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 22 Apr 2005 18:56:17 +0800
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Wed, Apr 06, 2005 at 03:27:50PM +0200, Bodo Stroesser wrote:
-> Here are the patches (tarball attached), that I've applied to
-> UML 2.6.11 + incrementals, before adding s390-files.
-> These patches are tested a bit on x86, but not on x86_64.
+Hi,
+	I encountered a panic in linux-2.4.26um, and it happends almost all the time. I will appreciate it if any one could help as this is really a trouble for us.
 
-The COMMAND_LINE_SIZE patch was required because this was conflicting with
-the userspace s390 COMMAND_LINE_SIZE?  I think this is true because in the
-kernel, asm-s390/setup.h doesn't get pulled in.
+	Here are the stacks printed by gdb,
+stack1:
+==================
+#0  panic (fmt=0xa01de769 "kernel BUG at %s:%d!\n") at panic.c:60
+#1  0xa000daba in schedule () at sched.h:770
+#2  0xa00e69ee in __down (sem=0xa0228b9c) at semaphore.c:80
+#3  0xa00e6b64 in __down_failed () at proc_fs.h:150
+#4  0xa0228b9c in vts ()
+==================
+stack2:
+==================
+#0  0xa019af4d in read () at proc_fs.h:154
+#1  0xa3274000 in ?? ()
+#2  0xa00e7d13 in file_io (fd=76, buf=0xa329bc6f, len=1, 
+    io_proc=0xa019af30 <read>, copy_user_proc=0xa00da418 <copy_from_user_proc>)
+    at file.c:491
+#3  0xa00e7d8a in os_read_file (fd=76, buf=0xa329bc6f, len=1) at file.c:507
+#4  0xa00dfe71 in _switch_to_tt (prev=0xa3298000, next=0xa3274000)
+    at process_kern.c:71
+#5  0xa000da6a in schedule () at sched.c:695
+#6  0xa00d9f75 in interrupt_end () at process_kern.c:142
+#7  0xa00e2041 in sig_handler_common_tt (sig=12, sc_ptr=0xa329bd28)
+    at trap_user.c:46
+#8  0xa00de7f3 in sig_handler (sig=1, sc=
+      {gs = 7, __gsh = 0, fs = 0, __fsh = 0, es = 43, __esh = 0, ds = 43, __dsh = 0, edi = 1073831144, esi = 3, ebp = 2684349128, esp = 2684349036, ebx = 2684349152, edx = 0, ecx = 0, eax = 4294967294, trapno = 14, err = 4, eip = 1073812260, cs = 35, __csh = 0, eflags = 2097798, esp_at_signal = 2684349036, ss = 43, __ssh = 0, fpstate = 0xa329bd80, oldmask = 134283264, cr2 = 1073771440})
+    at trap_user.c:109
+#9  <signal handler called>
+#10 0x40011324 in ?? ()
+Previous frame inner to this frame (corrupt stack?)
+=================
 
-This stems from the fact that my tree had add_arg in os-Linux/util.c, which
-seems wrong.  Blaisorblade had it moved to um_arch.c, which is right, and
-where it is in my tree now.  So, I think UML_COMMAND_LINE_SIZE is not needed,
-and I've removed it.
+	Only one thread's stack is like stack 2, while all the other threads' stacks are like stack 1.
 
-				Jeff
+
+Regards,
+Wu Haibao
+===============================
+Tel:65641776
+------------------------------------------------------ 
+[X ] General Business Information 
+[] Motorola Internal Use Only 
+[ ] Motorola Confidential Proprietary 
+
 
 
 -------------------------------------------------------
