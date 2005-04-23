@@ -1,10 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <3BCB5FB76AFFF646BCFBC02A889B64F3027D46E3@ZCH07EXM05.corp.mot.com>
-From: Wu Haibao-a15761 <a15761@motorola.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="GB2312"
-Subject: [uml-devel] UML 2.4.26um panic
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1DPOyV-0001bg-Bz for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 23 Apr 2005 11:03:27 -0700
+Received: from mout0.freenet.de ([194.97.50.131])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DPOyQ-0003HD-OY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 23 Apr 2005 11:03:27 -0700
+Received: from [194.97.55.191] (helo=mx7.freenet.de)
+	by mout0.freenet.de with esmtpa (Exim 4.51) id 1DPOyI-0004bB-6h
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 23 Apr 2005 20:03:14 +0200
+Received: from ib6b6.i.pppool.de ([85.73.182.182] helo=bakunin.copyleft.de)
+	by mx7.freenet.de with esmtpsa (ID freenet_bakunin@freenet.de)
+	(TLSv1:AES256-SHA:256) (Exim 4.51 #8) id 1DPOyH-0002r3-W3
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 23 Apr 2005 20:03:14 +0200
+Received: from kraehe by bakunin.copyleft.de with local (Exim 4.50)
+	id 1DPOyI-0004d8-WD for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 23 Apr 2005 20:03:15 +0200
+From: kraehe <kraehe@copyleft.de>
+Message-ID: <20050423180314.GA17743@copyleft.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [uml-devel] uml 2.4 (32 bit) on skas 2.6 (64 bit)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,55 +38,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 22 Apr 2005 18:56:17 +0800
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Sat, 23 Apr 2005 20:03:14 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
-	I encountered a panic in linux-2.4.26um, and it happends almost all the time. I will appreciate it if any one could help as this is really a trouble for us.
+Moin Guru's,
 
-	Here are the stacks printed by gdb,
-stack1:
-==================
-#0  panic (fmt=0xa01de769 "kernel BUG at %s:%d!\n") at panic.c:60
-#1  0xa000daba in schedule () at sched.h:770
-#2  0xa00e69ee in __down (sem=0xa0228b9c) at semaphore.c:80
-#3  0xa00e6b64 in __down_failed () at proc_fs.h:150
-#4  0xa0228b9c in vts ()
-==================
-stack2:
-==================
-#0  0xa019af4d in read () at proc_fs.h:154
-#1  0xa3274000 in ?? ()
-#2  0xa00e7d13 in file_io (fd=76, buf=0xa329bc6f, len=1, 
-    io_proc=0xa019af30 <read>, copy_user_proc=0xa00da418 <copy_from_user_proc>)
-    at file.c:491
-#3  0xa00e7d8a in os_read_file (fd=76, buf=0xa329bc6f, len=1) at file.c:507
-#4  0xa00dfe71 in _switch_to_tt (prev=0xa3298000, next=0xa3274000)
-    at process_kern.c:71
-#5  0xa000da6a in schedule () at sched.c:695
-#6  0xa00d9f75 in interrupt_end () at process_kern.c:142
-#7  0xa00e2041 in sig_handler_common_tt (sig=12, sc_ptr=0xa329bd28)
-    at trap_user.c:46
-#8  0xa00de7f3 in sig_handler (sig=1, sc=
-      {gs = 7, __gsh = 0, fs = 0, __fsh = 0, es = 43, __esh = 0, ds = 43, __dsh = 0, edi = 1073831144, esi = 3, ebp = 2684349128, esp = 2684349036, ebx = 2684349152, edx = 0, ecx = 0, eax = 4294967294, trapno = 14, err = 4, eip = 1073812260, cs = 35, __csh = 0, eflags = 2097798, esp_at_signal = 2684349036, ss = 43, __ssh = 0, fpstate = 0xa329bd80, oldmask = 134283264, cr2 = 1073771440})
-    at trap_user.c:109
-#9  <signal handler called>
-#10 0x40011324 in ?? ()
-Previous frame inner to this frame (corrupt stack?)
-=================
+  i purchased an AMD64 box recently - so i now have a 64bit system
+  running 2.6.11.7 in 64bit mode and 32bit emulation. I've tried the
+  skas-2.6.11-v9-pre1.patch on the 64bit host and I now have 
 
-	Only one thread's stack is like stack 2, while all the other threads' stacks are like stack 1.
+durruti:/usr/src/linux-2.6.11.7-skas3-v9-amd64 $ l /proc/mm*
+--w--w--w-  1 root root 0 2005-04-23 19:57 /proc/mm
+--w--w--w-  1 root root 0 2005-04-23 19:57 /proc/mm64
 
+  but, when old UMLs are runing into problems after mounting root,
+  e.g. 2.4.22 (with some old patch) :
 
-Regards,
-Wu Haibao
-===============================
-Tel:65641776
------------------------------------------------------- 
-[X ] General Business Information 
-[] Motorola Internal Use Only 
-[ ] Motorola Confidential Proprietary 
+TCP: Hash tables configured (established 4096 bind 4096)
+Linux IP multicast router 0.06 plus PIM-SM
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+VFS: Mounted root (ext2 filesystem) readonly.
+Unable to load interpreter
+Kernel panic: kernel BUG at memory.c:377!
 
+  or 2.4.30 (with uml-2.4.28-bs2-pre11.patch) :
+
+Linux IP multicast router 0.06 plus PIM-SM
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+VFS: Mounted root (ext2 filesystem) readonly.
+  [ ... system goes up to full load without any work ]
+
+  any idea where/how to proceed ? any new better/newer patches to
+  addess the idea of running a 32bit UML on a 64bit SKAS host ?
+
+Bye Michael
+-- 
+  mailto:kraehe@copyleft.de             UNA:+.? 'CED+2+:::Linux:2.4.29'UNZ+1'
+  http://www.xml-edifact.org/           CETERUM CENSEO WINDOWS ESSE DELENDAM
 
 
 -------------------------------------------------------
