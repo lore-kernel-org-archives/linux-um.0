@@ -2,15 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DPlk0-00054U-R7 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 11:22:00 -0700
-Received: from mail-relay-1.tiscali.it ([213.205.33.41])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DPlk0-0003WW-17 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 11:22:00 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050424181010.78C2D55D03@zion>
-Subject: [uml-devel] [patch 6/6] uml: move va_copy conditional def
+	id 1DPm4O-0005yQ-9P for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 11:43:04 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DPm4K-00056Q-JW for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 11:43:04 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200504242039.57025.blaisorblade@yahoo.it>
+Subject: [uml-devel] [patch 0/7] uml: some invasive changes for -mm
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,56 +27,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 24 Apr 2005 20:10:10 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Sun, 24 Apr 2005 20:39:55 +0200
+To: akpm@osdl.org, jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+
+This is the first of a series of 7 invasive patches for the -mm tree, which 
+are to be reviewed (not only by UML folks), and possibly merged for the 
+2.6.13 cycle.
+
+The first one splits the i386 syscall table out of entry.S, without any real 
+change for them (the file is included in the old place); if there are any 
+syscall table changes, please be careful; this maybe means place *this* one 
+before the others (or even merge now the i386 code movement part); I don't 
+want that this patch is modified and that subtle bugs are introduced. The 
+code movement is a really trivial code movement, however (no hidden changes).
+
+This is needed to enable us to include the i386 syscall table, so that we are 
+sure that they match. I already handled the real differences between i386 and 
+UML (see the patch).
+
+uml-fix-syscall-table-i386.patch
+  uml: fix syscall table by including $(SUBARCH)'s one, for i386
+
+uml-quick-fix-syscall-table-x86_64.patch
+  uml: quick fix syscall table for x86_64
+
+uml-fix-syscall-table-rem-for-x86-64.patch
+  uml: fix syscall table by including $(SUBARCH)'s one, for x86-64
+
+uml-console-redo-locking.patch
+  uml: redo console locking
+[ It's invasive, but seems to work well; wide testing is needed ]
+
+uml-hostfs-avoid-buffers.patch
+  uml - hostfs: avoid buffers
+[ This is something which should work, even because you said that; I've 
+partially verified this myself ]
+
+uml-commentary-about-forking-flag.patch
+  uml: commentary about forking flag
+[ Jeff, give a look and possibly correct it. ]
+
+uml-ubd-handle-readonly.patch
+  uml ubd: handle readonly status
+[ I cc'ed Jens Axboe ]
+
+They are not to be confused with the previous series of 6 patches I also sent 
+today, which are mostly little or already tested patches (list below); the 
+explicitly marked one are urgent for 2.6.12, while for the other just take 
+your choice (they should be trivial and have been tested):
+
+[LIST of patches TO MERGE]:
+uml-workaround-sed-behaviour.patch
+  uml: workaround old problematic sed behaviour [compile-fix, for 2.6.12]
+
+uml-nfsd-syscall.patch
+  uml: add nfsd syscall when nfsd is modular [for 2.6.12]
+
+uml-crypto-i586.patch
+  uml: support AES i586 crypto driver [for 2.6.12]
+
+uml-Makefile-avoid-rebuild.patch
+  uml kbuild: avoid useless rebuilds [for 2.6.13]
+
+uml-inline-empty.patch
+  uml: inline empty proc
+
+uml-move-va-copy-conditional.patch
+  uml: move va_copy conditional def
+
+Thanks a lot for the attention and regards.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
-GCC 2.95 uses __va_copy instead of va_copy. Handle it inside compiler.h
-instead of in a casual file, and avoid the risk that this breaks with a
-newer compiler (which it could do).
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.12-paolo/arch/um/kernel/skas/uaccess.c |    4 ++--
- linux-2.6.12-paolo/include/linux/compiler-gcc2.h |    5 +++++
- 2 files changed, 7 insertions(+), 2 deletions(-)
-
-diff -puN arch/um/kernel/skas/uaccess.c~uml-move-va-copy-conditional arch/um/kernel/skas/uaccess.c
---- linux-2.6.12/arch/um/kernel/skas/uaccess.c~uml-move-va-copy-conditional	2005-04-24 19:32:18.000000000 +0200
-+++ linux-2.6.12-paolo/arch/um/kernel/skas/uaccess.c	2005-04-24 19:32:18.000000000 +0200
-@@ -3,6 +3,7 @@
-  * Licensed under the GPL
-  */
- 
-+#include "linux/compiler.h"
- #include "linux/stddef.h"
- #include "linux/kernel.h"
- #include "linux/string.h"
-@@ -61,8 +62,7 @@ static void do_buffer_op(void *jmpbuf, v
- 	void *arg;
- 	int *res;
- 
--	/* Some old gccs recognize __va_copy, but not va_copy */
--	__va_copy(args, *(va_list *)arg_ptr);
-+	va_copy(args, *(va_list *)arg_ptr);
- 	addr = va_arg(args, unsigned long);
- 	len = va_arg(args, int);
- 	is_write = va_arg(args, int);
-diff -puN include/linux/compiler-gcc2.h~uml-move-va-copy-conditional include/linux/compiler-gcc2.h
---- linux-2.6.12/include/linux/compiler-gcc2.h~uml-move-va-copy-conditional	2005-04-24 19:32:18.000000000 +0200
-+++ linux-2.6.12-paolo/include/linux/compiler-gcc2.h	2005-04-24 19:32:18.000000000 +0200
-@@ -22,3 +22,8 @@
- # define __attribute_pure__	__attribute__((pure))
- # define __attribute_const__	__attribute__((__const__))
- #endif
-+
-+/* GCC 2.95.x/2.96 recognize __va_copy, but not va_copy. Actually later GCC's
-+ * define both va_copy and __va_copy, but the latter may go away, so limit this
-+ * to this header */
-+#define va_copy			__va_copy
-_
 
 
 -------------------------------------------------------
