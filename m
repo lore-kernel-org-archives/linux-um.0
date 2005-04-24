@@ -2,24 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DPm8A-00064R-BJ for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 11:46:58 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DPm89-0000Np-Ml for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 11:46:58 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <4253E3D6.2000809@fujitsu-siemens.com>
-	<200504241644.38016.blaisorblade@yahoo.it>
-	<20050424165112.GA4598@ccure.user-mode-linux.org>
-In-Reply-To: <20050424165112.GA4598@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504242044.04625.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: UML-patches to prepare UML/s390
+	id 1DPmLV-0006kE-0o for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 12:00:45 -0700
+Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DPmLT-0001Yl-AF for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 12:00:44 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050424181922.631D255D03@zion>
+Subject: [uml-devel] [patch 6/7] uml: commentary about forking flag
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,53 +22,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 24 Apr 2005 20:44:04 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
-
-On Sunday 24 April 2005 18:51, Jeff Dike wrote:
-> On Sun, Apr 24, 2005 at 04:44:37PM +0200, Blaisorblade wrote:
-> > Btw, many of the code movement things are just cut'n'paste things, so for
-> > them there is no reason to delay them. Now we are going to merge them for
-> > 2.6.13-rc1 (for .12 it's too late), but every other delay increases the
-> > possibility that we fix somehow the code we are moving and forget to do
-> > the same on the moved code.
-
-> Yeah, that's a concern.  I'm holding onto the code movement because I want
-> to look at the os interface that resulted from it, and see if it can be
-> cleaned up.
-Happy for that.
-
-> > Finally, about the syscall table patches for s390: I'm going to merge
-> > into -mm the syscall table patches you can find in the last -devel
-> > snapshot I put on my page (the uploaded ones maybe are out-of-date, but
-> > I'll cc you on patches).
-
-> What patch is this?  All I see is a patch which makes some small fixes to
-> the sys_call_table.
-No, I don't mean -bs, I mean the DEVEL snapshot. It's under 
-patches/devel-guest/, and other will follow (when I have broad-band).
-
-However the updated patches are flying to you (plural, since they also relate 
-with s390 port).
-
-> > They entirely remove the UML syscall table to replace it with the
-> > $(SUBARCH) one (there is some hand-work to do for each subarch but it's
-> > much less than before). While doing this I also fixed various little bugs
-> > about this subject.
->
-> Don't send that anywhere until I've seen it.  Your description of it makes
-> me nervous.
-I'm sending it for -mm only, and it's marked as such. Also it won't silently 
-slip since it acts a bit on i386.
-
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Date: Sun, 24 Apr 2005 20:19:22 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
+Add some commentary about UML internals, for a strange trick.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.12-paolo/include/asm-um/processor-generic.h |    4 ++++
+ 1 files changed, 4 insertions(+)
+
+diff -puN include/asm-um/processor-generic.h~uml-commentary-about-forking-flag include/asm-um/processor-generic.h
+--- linux-2.6.12/include/asm-um/processor-generic.h~uml-commentary-about-forking-flag	2005-04-24 20:17:06.000000000 +0200
++++ linux-2.6.12-paolo/include/asm-um/processor-generic.h	2005-04-24 20:17:06.000000000 +0200
+@@ -17,6 +17,10 @@ struct task_struct;
+ struct mm_struct;
+ 
+ struct thread_struct {
++	/* This flag is set to 1 before calling do_fork (and analyzed in
++	 * copy_thread) to mark that we are begin called from userspace (fork /
++	 * vfork / clone), and reset to 0 after. It is left to 0 when called
++	 * from kernelspace (i.e. kernel_thread() or fork_idle(), as of 2.6.11). */
+ 	int forking;
+ 	int nsyscalls;
+ 	struct pt_regs regs;
+_
 
 
 -------------------------------------------------------
