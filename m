@@ -1,16 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DPmLV-0006kE-0o for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 12:00:45 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DPmLT-0001Yl-AF for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 12:00:44 -0700
+	id 1DPmLW-0006kJ-JK for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 12:00:46 -0700
+Received: from mail-relay-1.tiscali.it ([213.205.33.41])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DPmLT-0006VT-Qk for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 12:00:46 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050424181922.631D255D03@zion>
-Subject: [uml-devel] [patch 6/7] uml: commentary about forking flag
+Message-Id: <20050424181924.EAFCB55D06@zion>
+Subject: [uml-devel] [patch 7/7] uml ubd: handle readonly status
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,33 +22,81 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 24 Apr 2005 20:19:22 +0200
+Date: Sun, 24 Apr 2005 20:19:24 +0200
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Cc: jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, axboe@suse.de
 
 
-Add some commentary about UML internals, for a strange trick.
+CC: Jens Axboe <axboe@suse.de>
+
+Use the set_disk_ro() API when the backing file is read-only, to mark the disk
+read-only, during the ->open(). The current hack does not work when doing a
+mount -o remount.
+
+Also, upgrade some warnings to WARN_ON(1) statements. They should actually
+become BUG()s probably but I'll avoid that since I'm not so sure the change
+works so well. I gave it only some limited testing.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.12-paolo/include/asm-um/processor-generic.h |    4 ++++
- 1 files changed, 4 insertions(+)
+ linux-2.6.12-paolo/arch/um/drivers/ubd_kern.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
 
-diff -puN include/asm-um/processor-generic.h~uml-commentary-about-forking-flag include/asm-um/processor-generic.h
---- linux-2.6.12/include/asm-um/processor-generic.h~uml-commentary-about-forking-flag	2005-04-24 20:17:06.000000000 +0200
-+++ linux-2.6.12-paolo/include/asm-um/processor-generic.h	2005-04-24 20:17:06.000000000 +0200
-@@ -17,6 +17,10 @@ struct task_struct;
- struct mm_struct;
+diff -puN arch/um/drivers/ubd_kern.c~uml-ubd-handle-readonly arch/um/drivers/ubd_kern.c
+--- linux-2.6.12/arch/um/drivers/ubd_kern.c~uml-ubd-handle-readonly	2005-04-24 20:17:06.000000000 +0200
++++ linux-2.6.12-paolo/arch/um/drivers/ubd_kern.c	2005-04-24 20:17:06.000000000 +0200
+@@ -156,6 +156,7 @@ static struct gendisk *fake_gendisk[MAX_
+ static struct openflags global_openflags = OPEN_FLAGS;
  
- struct thread_struct {
-+	/* This flag is set to 1 before calling do_fork (and analyzed in
-+	 * copy_thread) to mark that we are begin called from userspace (fork /
-+	 * vfork / clone), and reset to 0 after. It is left to 0 when called
-+	 * from kernelspace (i.e. kernel_thread() or fork_idle(), as of 2.6.11). */
- 	int forking;
- 	int nsyscalls;
- 	struct pt_regs regs;
+ struct cow {
++	/* This is the backing file, actually */
+ 	char *file;
+ 	int fd;
+ 	unsigned long *bitmap;
+@@ -927,10 +928,14 @@ static int ubd_open(struct inode *inode,
+ 		}
+ 	}
+ 	dev->count++;
+-	if((filp->f_mode & FMODE_WRITE) && !dev->openflags.w){
++	set_disk_ro(disk, !dev->openflags.w);
++
++	/* This should no more be needed. And it didn't work anyway to exclude
++	 * read-write remounting of filesystems.*/
++	/*if((filp->f_mode & FMODE_WRITE) && !dev->openflags.w){
+ 	        if(--dev->count == 0) ubd_close(dev);
+ 	        err = -EROFS;
+-	}
++	}*/
+  out:
+ 	return(err);
+ }
+@@ -1099,6 +1104,7 @@ static int prepare_request(struct reques
+ 	if((rq_data_dir(req) == WRITE) && !dev->openflags.w){
+ 		printk("Write attempted on readonly ubd device %s\n", 
+ 		       disk->disk_name);
++		WARN_ON(1); /* This should be impossible now */
+ 		end_request(req, 0);
+ 		return(1);
+ 	}
+@@ -1252,6 +1258,7 @@ static int ubd_check_remapped(int fd, un
+ 			 */
+ 			printk("Write access to mapped page from readonly ubd "
+ 			       "device %d\n", i);
++			WARN_ON(1); /* This should be impossible now */
+ 			return(0);
+ 		}
+ 
+@@ -1605,8 +1612,7 @@ void do_io(struct io_thread_req *req)
+ 				}
+ 			} while((n < len) && (n != 0));
+ 			if (n < len) memset(&buf[n], 0, len - n);
+-		}
+-		else {
++		} else {
+ 			n = os_write_file(req->fds[bit], buf, len);
+ 			if(n != len){
+ 				printk("do_io - write failed err = %d "
 _
 
 
