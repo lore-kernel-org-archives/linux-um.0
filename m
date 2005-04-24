@@ -2,23 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DPhqN-0002uR-4g for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 07:12:19 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1DPiRl-0004ap-OD for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 07:50:57 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DPhqM-0003wZ-Fp for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 07:12:19 -0700
+	id 1DPiRi-0000RH-3X for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 07:50:57 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: uml 2.4 (32 bit) on skas 2.6 (64 bit) - add on
-References: <20050423180314.GA17743@copyleft.de>
-	<20050423184032.GA17889@copyleft.de>
-In-Reply-To: <20050423184032.GA17889@copyleft.de>
+References: <4253E3D6.2000809@fujitsu-siemens.com>
+	<20050422013246.GA19730@ccure.user-mode-linux.org>
+In-Reply-To: <20050422013246.GA19730@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200504241609.02850.blaisorblade@yahoo.it>
+Message-Id: <200504241644.38016.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: UML-patches to prepare UML/s390
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,22 +30,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 24 Apr 2005 16:09:00 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: kraehe <kraehe@copyleft.de>
+Date: Sun, 24 Apr 2005 16:44:37 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Saturday 23 April 2005 20:40, kraehe wrote:
-> Moin Guru's,
+On Friday 22 April 2005 03:32, Jeff Dike wrote:
+> On Wed, Apr 06, 2005 at 03:27:50PM +0200, Bodo Stroesser wrote:
+> > Here are the patches (tarball attached), that I've applied to
+> > UML 2.6.11 + incrementals, before adding s390-files.
+> > These patches are tested a bit on x86, but not on x86_64.
 >
->   I've just tried that, 2.4.30 with uml-2.4.28-bs2-pre11.patch works
->   on a 2.6.11.7-amd64 host without any SKAS patches. So TT mode is
->   fine.
-Well, fine. SKAS64 still does not work yet, with any guest. I don't know yet 
-what the hell happens, but I hope I can do some *real* debugging soon. And 
-not even -v9-pre2 solves this problem.
+> The COMMAND_LINE_SIZE patch was required because this was conflicting with
+> the userspace s390 COMMAND_LINE_SIZE?  I think this is true because in the
+> kernel, asm-s390/setup.h doesn't get pulled in.
+>
+> This stems from the fact that my tree had add_arg in os-Linux/util.c, which
+> seems wrong.  Blaisorblade had it moved to um_arch.c, which is right, and
+> where it is in my tree now.  So, I think UML_COMMAND_LINE_SIZE is not
+> needed, and I've removed it.
+The patch moving add_arg() was *before* the os-* work, so you might move (if 
+needed, which I don't know) it again to os-Linux/util.c if you want (which 
+didn't exist at that time). It came from arch/um/kernel/user_util.c, in fact.
 
-Interesting enough, the problem I get with 2.6 guests is almost the same. 
-Which makes sense.
+Btw, many of the code movement things are just cut'n'paste things, so for them 
+there is no reason to delay them. Now we are going to merge them for 
+2.6.13-rc1 (for .12 it's too late), but every other delay increases the 
+possibility that we fix somehow the code we are moving and forget to do the 
+same on the moved code.
+
+Finally, about the syscall table patches for s390: I'm going to merge into -mm 
+the syscall table patches you can find in the last -devel snapshot I put on 
+my page (the uploaded ones maybe are out-of-date, but I'll cc you on 
+patches).
+
+They entirely remove the UML syscall table to replace it with the $(SUBARCH) 
+one (there is some hand-work to do for each subarch but it's much less than 
+before). While doing this I also fixed various little bugs about this 
+subject.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
