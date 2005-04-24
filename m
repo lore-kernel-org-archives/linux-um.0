@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DPli4-0004rl-4R for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 11:20:00 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	id 1DPliP-0004st-Py for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 11:20:21 -0700
+Received: from mail-relay-3.tiscali.it ([213.205.33.43])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DPli2-0006Sx-Cx for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Apr 2005 11:20:00 -0700
+	id 1DPliN-0006Ve-28 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Apr 2005 11:20:21 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050424180959.3F78A55CFB@zion>
-Subject: [uml-devel] [patch 2/6] uml: add nfsd syscall when nfsd is modular
-	[for 2.6.12]
+Message-Id: <20050424180955.0C70C33AED@zion>
+Subject: [uml-devel] [patch 1/6] uml: workaround old problematic sed behaviour
+	[compile-fix, for 2.6.12]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,53 +23,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 24 Apr 2005 20:09:58 +0200
+Date: Sun, 24 Apr 2005 20:09:53 +0200
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, rob@landley.net, imcdnzl@gmail.com
 
 
-This trick is useless, because sys_ni.c will handle this problem by itself,
-like it does even on UML for other syscalls.
-Also, it does not provide the NFSD syscall when NFSD is compiled as a module,
-which is a big problem.
+From: Rob Landley <rob@landley.net>
 
-This should be merged currently in both 2.6.11-stable and the current tree.
+Old versions of sed from 1998 (predating the first release of gcc 2.95, but 
+still in use by debian stable) don't understand the single-line version of 
+the sed append command.  Since newer versions of sed still understand the... 
+ahem, "vintage" form of the command, change our code to use that.
 
-I already sent it for -stable, it's already in -mm but not in -rc3, now it
-should be merged in 2.6.12. It has already been tested in 2.6.11-bs4 and it's
-fairly trivial.
-
+Signed-off-by: Rob Landley <rob@landley.net>
+Acked-by: Ian McDonald <imcdnzl@gmail.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.12-paolo/arch/um/kernel/sys_call_table.c |    8 +-------
- 1 files changed, 1 insertion(+), 7 deletions(-)
+ linux-2.6.12-paolo/arch/um/kernel/Makefile |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletion(-)
 
-diff -puN arch/um/kernel/sys_call_table.c~uml-nfsd-syscall arch/um/kernel/sys_call_table.c
---- linux-2.6.12/arch/um/kernel/sys_call_table.c~uml-nfsd-syscall	2005-04-24 19:32:15.000000000 +0200
-+++ linux-2.6.12-paolo/arch/um/kernel/sys_call_table.c	2005-04-24 19:32:15.000000000 +0200
-@@ -14,12 +14,6 @@
- #include "sysdep/syscalls.h"
- #include "kern_util.h"
- 
--#ifdef CONFIG_NFSD
--#define NFSSERVCTL sys_nfsservctl
--#else
--#define NFSSERVCTL sys_ni_syscall
--#endif
--
- #define LAST_GENERIC_SYSCALL __NR_keyctl
- 
- #if LAST_GENERIC_SYSCALL > LAST_ARCH_SYSCALL
-@@ -189,7 +183,7 @@ syscall_handler_t *sys_call_table[] = {
- 	[ __NR_getresuid ] = (syscall_handler_t *) sys_getresuid16,
- 	[ __NR_query_module ] = (syscall_handler_t *) sys_ni_syscall,
- 	[ __NR_poll ] = (syscall_handler_t *) sys_poll,
--	[ __NR_nfsservctl ] = (syscall_handler_t *) NFSSERVCTL,
-+	[ __NR_nfsservctl ] = (syscall_handler_t *) sys_nfsservctl,
- 	[ __NR_setresgid ] = (syscall_handler_t *) sys_setresgid16,
- 	[ __NR_getresgid ] = (syscall_handler_t *) sys_getresgid16,
- 	[ __NR_prctl ] = (syscall_handler_t *) sys_prctl,
+diff -puN arch/um/kernel/Makefile~uml-workaround-sed-behaviour arch/um/kernel/Makefile
+--- linux-2.6.12/arch/um/kernel/Makefile~uml-workaround-sed-behaviour	2005-04-24 19:32:15.000000000 +0200
++++ linux-2.6.12-paolo/arch/um/kernel/Makefile	2005-04-24 19:32:15.000000000 +0200
+@@ -53,6 +53,7 @@ quiet_cmd_quote2 = QUOTE   $@
+       cmd_quote2 = sed -e '/CONFIG/{'          \
+ 		  -e 's/"CONFIG"\;/""/'        \
+ 		  -e 'r $(obj)/config.tmp'     \
+-		  -e 'a""\;'                   \
++		  -e 'a \'                     \
++		  -e '""\;'                    \
+ 		  -e '}'                       \
+ 		  $< > $@
 _
 
 
