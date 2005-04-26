@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DQ9iQ-0003Lx-1S for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Apr 2005 12:57:58 -0700
-Received: from mailfe05.swip.net ([212.247.154.129] helo=swip.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DQ9iO-0002fh-ER for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Apr 2005 12:57:57 -0700
-From: Alexander Nyberg <alexn@dsv.su.se>
-In-Reply-To: <20050425191253.B9FE045EBB@zion>
-References: <20050425191253.B9FE045EBB@zion>
-Content-Type: text/plain; charset="iso-8859-1"
-Message-Id: <1114459067.983.22.camel@localhost.localdomain>
+	id 1DQLLZ-00088C-Jh for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Apr 2005 01:23:09 -0700
+Received: from ns.virtualhost.dk ([195.184.98.160] helo=virtualhost.dk)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1DQLLY-0000cd-2W
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Apr 2005 01:23:09 -0700
+From: Jens Axboe <axboe@suse.de>
+Message-ID: <20050426082247.GB1851@suse.de>
+References: <20050424181924.EAFCB55D06@zion> <20050425101625.GD1671@suse.de>
+	<200504252120.15493.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Subject: [uml-devel] Re: [patch 1/1] uml: fix handling of no fpx_regs
-	[critical, for 2.6.12]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200504252120.15493.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [patch 7/7] uml ubd: handle readonly status
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,57 +29,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 25 Apr 2005 21:57:47 +0200
-Content-Transfer-Encoding: quoted-printable
-To: blaisorblade@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, aleidenf@bigpond.net.au
+Date: Tue, 26 Apr 2005 10:22:48 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: akpm@osdl.org, jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-m=E5n 2005-04-25 klockan 21:12 +0200 skrev blaisorblade@yahoo.it:
-> From: Andree Leidenfrost <aleidenf@bigpond.net.au>, Paolo 'Blaisorblade' =
-Giarrusso <blaisorblade@yahoo.it>
->=20
-> Fix the error path, which is triggered when the processor misses the fpx =
-regs
-> (i.e. the "fxsr" cpuinfo feature). For instance by VIA C3 Samuel2. Tested=
- and
-> obvious, please merge ASAP.
->=20
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> ---
->=20
->  linux-2.6.12-paolo/arch/um/os-Linux/sys-i386/registers.c |    7 ++++---
->  1 files changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff -puN arch/um/os-Linux/sys-i386/registers.c~uml-fix-no_fpx_regs_handl=
-ing arch/um/os-Linux/sys-i386/registers.c
-> --- linux-2.6.12/arch/um/os-Linux/sys-i386/registers.c~uml-fix-no_fpx_reg=
-s_handling	2005-04-25 21:03:11.000000000 +0200
-> +++ linux-2.6.12-paolo/arch/um/os-Linux/sys-i386/registers.c	2005-04-25 2=
-1:08:07.000000000 +0200
-> @@ -105,14 +105,15 @@ void init_registers(int pid)
->  		panic("check_ptrace : PTRACE_GETREGS failed, errno =3D %d",
->  		      err);
-> =20
-> +	errno =3D 0;
->  	err =3D ptrace(PTRACE_GETFPXREGS, pid, 0, exec_fpx_regs);
->  	if(!err)
->  		return;
-> +	if(errno !=3D EIO)
-> +		panic("check_ptrace : PTRACE_GETFPXREGS failed, errno =3D %d",
-> +		      errno);
+On Mon, Apr 25 2005, Blaisorblade wrote:
+> On Monday 25 April 2005 12:16, Jens Axboe wrote:
+> > On Sun, Apr 24 2005, blaisorblade@yahoo.it wrote:
+> > > @@ -1099,6 +1104,7 @@ static int prepare_request(struct reques
+> > >  	if((rq_data_dir(req) == WRITE) && !dev->openflags.w){
+> > >  		printk("Write attempted on readonly ubd device %s\n",
+> > >  		       disk->disk_name);
+> > > +		WARN_ON(1); /* This should be impossible now */
+> > >  		end_request(req, 0);
+> > >  		return(1);
+> > >  	}
+> >
+> > I don't think that's a sound change. The WARN_ON() is strictly only
+> > really useful for when you need the stack trace for something
+> > interesting. As the io happens async, you will get a boring trace that
+> > doesn't contain any valuable information.
+> Ok, removed, and resending the patch, is the rest ok? I.e. is that
+> supposed to work? I gave a walk around and it seemed that the code
+> handles set_{disk,device}_ro() even during the open, but I'm no block
+> layer expert.
 
-Looks like you mean "if (err !=3D EIO)" here
+I'd keep the checks for sanity. Although the set_disk/device_ro prevents
+regular fs write mounts, a buggy layered drive could still send down a
+write by accident.
 
-
->  	have_fpx_regs =3D 0;
-> -	if(err !=3D EIO)
-> -		panic("check_ptrace : PTRACE_GETFPXREGS failed, errno =3D %d",
-> -		      err);
-> =20
->  	err =3D ptrace(PTRACE_GETFPREGS, pid, 0, exec_fp_regs);
->  	if(err)
-
-
+-- 
+Jens Axboe
 
 
 
@@ -85,7 +67,7 @@ Looks like you mean "if (err !=3D EIO)" here
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_ide95&alloc_id=14396&op=CCk
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
