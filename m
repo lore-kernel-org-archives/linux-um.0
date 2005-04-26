@@ -2,16 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DQ953-0001Gg-Si for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Apr 2005 12:17:17 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	id 1DQOHo-00029Y-3E for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Apr 2005 04:31:28 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DQ94j-0007Ma-Fw for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Apr 2005 12:17:16 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050425191253.B9FE045EBB@zion>
-Subject: [uml-devel] [patch 1/1] uml: fix handling of no fpx_regs [critical,
-	for 2.6.12]
+	id 1DQOHm-00062n-JS for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Apr 2005 04:31:28 -0700
+Message-ID: <426E2688.1050203@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] UML-patches to prepare UML/s390
+References: <4253E3D6.2000809@fujitsu-siemens.com>
+	<200504080322.50532.blaisorblade@yahoo.it>
+	<42562EC4.7040903@fujitsu-siemens.com>
+	<200504171937.05846.blaisorblade@yahoo.it>
+In-Reply-To: <200504171937.05846.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,46 +30,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 25 Apr 2005 21:12:51 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, aleidenf@bigpond.net.au
+Date: Tue, 26 Apr 2005 13:31:20 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
+Blaisorblade wrote:
+> Other issues follow, which refer to copied code going out-of-date wrt. my 
+> local tree (which I have snapshotted some time ago, after I started writing 
+> this mail). This is the problem with copying code - and you're starting 
+> experiencing it!
+> 
+> * important changes for TLS support, clone(), and so on.
+I'm going to implement TLS support in UML/s390. I could do this in
+arch/um/sys-s390/syscalls.c/sys_clone() without any need to change generic
+UML code.
+But I guess, for i386 there will be a need for arch-specific code in copy_thread(),
+maybe something like arch_copy_thread().
+If so, s390 TLS support should be inserted using in the same manner.
+Do you already have some code for this, that I could base on?
 
-From: Andree Leidenfrost <aleidenf@bigpond.net.au>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-
-Fix the error path, which is triggered when the processor misses the fpx regs
-(i.e. the "fxsr" cpuinfo feature). For instance by VIA C3 Samuel2. Tested and
-obvious, please merge ASAP.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.12-paolo/arch/um/os-Linux/sys-i386/registers.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
-
-diff -puN arch/um/os-Linux/sys-i386/registers.c~uml-fix-no_fpx_regs_handling arch/um/os-Linux/sys-i386/registers.c
---- linux-2.6.12/arch/um/os-Linux/sys-i386/registers.c~uml-fix-no_fpx_regs_handling	2005-04-25 21:03:11.000000000 +0200
-+++ linux-2.6.12-paolo/arch/um/os-Linux/sys-i386/registers.c	2005-04-25 21:08:07.000000000 +0200
-@@ -105,14 +105,15 @@ void init_registers(int pid)
- 		panic("check_ptrace : PTRACE_GETREGS failed, errno = %d",
- 		      err);
- 
-+	errno = 0;
- 	err = ptrace(PTRACE_GETFPXREGS, pid, 0, exec_fpx_regs);
- 	if(!err)
- 		return;
-+	if(errno != EIO)
-+		panic("check_ptrace : PTRACE_GETFPXREGS failed, errno = %d",
-+		      errno);
- 
- 	have_fpx_regs = 0;
--	if(err != EIO)
--		panic("check_ptrace : PTRACE_GETFPXREGS failed, errno = %d",
--		      err);
- 
- 	err = ptrace(PTRACE_GETFPREGS, pid, 0, exec_fp_regs);
- 	if(err)
-_
+		Bodo
 
 
 -------------------------------------------------------
