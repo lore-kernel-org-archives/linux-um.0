@@ -2,45 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DQiYF-0002uW-D7 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Apr 2005 02:09:47 -0700
-Received: from fra-del-03.spheriq.net ([195.46.51.99])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1DQiYC-0007tN-N2
+	id 1DQqQy-0001qD-MA for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Apr 2005 10:34:48 -0700
+Received: from [81.2.110.250] (helo=lxorguk.ukuu.org.uk)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41) id 1DQqQw-00073T-Vm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Apr 2005 02:09:47 -0700
-Received: from fra-out-02.spheriq.net (fra-out-02.spheriq.net [195.46.51.130])
-	by fra-del-03.spheriq.net with ESMTP id j3R99Wmn022848
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 27 Apr 2005 09:09:32 GMT
-Received: from fra-cus-02.spheriq.net (fra-cus-02.spheriq.net [195.46.51.38])
-	by fra-out-02.spheriq.net with ESMTP id j3R99VQk024286
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 27 Apr 2005 09:09:31 GMT
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by fra-cus-02.spheriq.net with ESMTP id j3R99Qi7031784
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 27 Apr 2005 09:09:30 GMT
-Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 390B1DA42
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 27 Apr 2005 09:09:09 +0000 (GMT)
-Received: from zeta.dmz-ap.st.com (localhost [127.0.0.1])
-	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id A4463520C1
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 27 Apr 2005 09:04:46 +0000 (UTC)
-Received: from mail1.sha.st.com (mail1.sha.st.com [10.94.100.2])
-	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 1A2F21336A
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 27 Apr 2005 09:04:45 +0000 (GMT)
-From: Alex LIU <alex.liu@st.com>
-Message-ID: <002901c54b08$223494a0$90b3c68a@SHZ.ST.COM>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
+	Wed, 27 Apr 2005 10:34:48 -0700
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <20050427171552.GB3195@kroah.com>
+References: <20050427171446.GA3195@kroah.com> <20050427171552.GB3195@kroah.com>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Question about UML gdb
+Message-Id: <1114619612.18355.113.camel@localhost.localdomain>
+Mime-Version: 1.0
+Subject: [uml-devel] Re: [01/07] uml: add nfsd syscall when nfsd is modular
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -52,22 +28,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 27 Apr 2005 17:04:34 +0800
-To: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 27 Apr 2005 17:33:34 +0100
+To: Greg KH <gregkh@suse.de>
+Cc: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, stable@kernel.org, Justin Forbes <jmforbes@linuxtx.org>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, Cliff White <cliffw@osdl.org>, Theodore Ts'o <tytso@mit.edu>, "Randy.Dunlap" <rddunlap@osdl.org>, Chuck Wolber <chuckw@quantumlinux.com>, torvalds@osdl.org, akpm@osdl.org
 
-Hi all:
+On Mer, 2005-04-27 at 18:15, Greg KH wrote:
+> -stable review patch.  If anyone has any objections, please let us know.
 
-I have 2 questions about UML gdb:
+Don't see why this one is a critical bug.
 
-1.how to get the address of current process UML gdb?
-It seems "esp & 0xffffe000" is not the correct address.
-
-2.how to read the contents of a file in UML gdb?
-The file is an object of struct file. I only know the address of the file.
-
-Thanks a lot!
-
-Alex
 
 
 
