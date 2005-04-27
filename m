@@ -2,25 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DQcGk-0005Em-MX for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Apr 2005 19:27:18 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41) id 1DQcGi-0007ZL-Ja
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Apr 2005 19:27:18 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] The source to that firmware-uml thing is now up...
-References: <200504200606.06828.rob@landley.net>
-	<200504231457.19798.blaisorblade@yahoo.it>
-In-Reply-To: <200504231457.19798.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	id 1DQcqe-00078t-3L for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Apr 2005 20:04:24 -0700
+Received: from sccrmhc11.comcast.net ([204.127.202.55])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DQcqb-0002ND-MT for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Apr 2005 20:04:24 -0700
+From: Ryan Anderson <ryan@michonline.com>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Message-Id: <200504262123.44365.rob@landley.net>
+Message-Id: <1114570958.5983.50.camel@mythical>
+Mime-Version: 1.0
+Subject: [uml-devel] [UML] Compile error when building with seperate source
+	and object directories
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,49 +26,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 26 Apr 2005 21:23:44 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 26 Apr 2005 23:02:38 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, sam@ravnborg.org
 
-On Saturday 23 April 2005 08:57 am, Blaisorblade wrote:
+I've been seeing a build error when trying to build User Mode Linux on
+an x86-32 host (Athlon, fwiw).  The kernel I'm building is a 1-day old
+pull from git.  This error is not new, though.  I thought it was merely
+an artifact of a patch stuck in a queue at first so I didn't mention it
+right away.
 
-> > By the way, I've toyed with the idea of running this sucker in an
-> > otherwise empty chroot environment (/proc/self/fd is likely to exist and
-> > have fairly uninteresting contents.  As a chroot environment, it just has
-> > symlinks that point to nothing), but to chroot the UML kernel process
-> > from inside the initramfs, I need to come up with a new syscall.
->
-> Ok, I now understand... chrooting it on the host!
+ryan@mythryan2 ~/dev/linux/linux-git$ make O=/home/ryan/dev/linux/output/uml ARCH="um" -j4 CC="ccache distcc" clean
+/bin/bash: line 1: cd: arch/um: No such file or directory
+ryan@mythryan2 ~/dev/linux/linux-git$ make O=/home/ryan/dev/linux/output/uml ARCH="um" -j4 CC="ccache distcc" oldconfig
+/bin/bash: line 1: cd: arch/um: No such file or directory
+  HOSTCC  scripts/basic/fixdep
+  GEN    /home/ryan/dev/linux/output/uml/Makefile
+  HOSTCC  scripts/basic/split-include
+  HOSTCC  scripts/basic/docproc
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/mconf.o
+  HOSTCC  scripts/kconfig/zconf.tab.o
+  HOSTLD  scripts/kconfig/conf
+scripts/kconfig/conf -o arch/um/Kconfig
+arch/um/Kconfig:71: can't open file "arch/um/Kconfig_arch"
+make[2]: *** [oldconfig] Error 1
+make[1]: *** [oldconfig] Error 2
+make: *** [oldconfig] Error 2
 
-Yup.
 
-> > Can't do it before
-> > running the UML kernel because A) it needs to make its memory file, 2) it
-> > needs to access /proc/self/exe, III) it needs to loopback mount its
-> > executable file to pull the trick I just did.
->
-> Not sure about this... you'll need to be root anyway to chroot, so you can
-> also (bind)mount what you need inside the chroot and unmount it later.
+ryan@mythryan2 ~/dev/linux/linux-git$ ls -al /home/ryan/dev/linux/output/uml/
+total 60
+drwxr-xr-x  5 ryan ryan  4096 Apr 13 11:15 .
+drwxr-xr-x  4 ryan ryan  4096 Apr 23 02:38 ..
+-rw-r--r--  1 ryan ryan 15445 Apr 13 11:15 .config
+-rw-r--r--  1 ryan ryan  1812 Apr 13 11:15 .config.cmd
+-rw-r--r--  1 ryan ryan 15855 Mar 29 03:20 .config.old
+-rw-r--r--  1 ryan ryan   351 Apr 26 22:56 Makefile
+drwxr-xr-x  4 ryan ryan  4096 Apr 13 11:15 include
+drwxr-xr-x  2 ryan ryan  4096 Apr 13 11:15 include2
+drwxr-xr-x  4 ryan ryan  4096 Mar 29 03:21 scripts
 
-Hmmm.  You're right, that's sucks.
+I'm not quite sure what's going on here - but something seems broken.
 
-I've also been thinking about some kind of wrapper that would be root, set up 
-the environment, and run UML as a non-priviledged child process.  Working out 
-the details is a bit tough, though...
+My gut feeling is that arch/um/Kconfig_arch is supposed to be a symlink
+(or something else magical) pointing at arch/um/Kconfig_i386, but this
+doesn't seem to be working.
 
-> You 
-> still need to ask UML to do this, yes, but it's different (also you could
-> even provide a simple module to load to do this, if the other ideas are
-> rejected at any level).
+I can provide my .config if it matters - but since the above failure
+happens almost instantly, I don't think it will matter much.
 
-Hmmm...  I suppose I could always have a wrapper script that runs UML as a 
-non-root process in the chroot environment and opens a named pipe that we can 
-write into via hostfs when we want the chroot environment depopulated.  (I 
-vaguely recall there's a way to tell UML where to drop its memory file...)
+Thanks!
 
-Better not to modify UML at all, if possible...
-
-Rob
+-- 
+Ryan Anderson <ryan@michonline.com>
 
 
 -------------------------------------------------------
