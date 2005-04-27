@@ -1,20 +1,45 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DQcqe-00078t-3L for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Apr 2005 20:04:24 -0700
-Received: from sccrmhc11.comcast.net ([204.127.202.55])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DQcqb-0002ND-MT for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Apr 2005 20:04:24 -0700
-From: Ryan Anderson <ryan@michonline.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Message-Id: <1114570958.5983.50.camel@mythical>
-Mime-Version: 1.0
-Subject: [uml-devel] [UML] Compile error when building with seperate source
-	and object directories
+	id 1DQiMM-0002Ju-K0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Apr 2005 01:57:30 -0700
+Received: from lon-del-02.spheriq.net ([195.46.50.98])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1DQiMJ-0006Gy-Jo
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Apr 2005 01:57:30 -0700
+Received: from lon-out-03.spheriq.net ([195.46.50.131])
+	by lon-del-02.spheriq.net with ESMTP id j3R8vID7022537
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 27 Apr 2005 08:57:18 GMT
+Received: from lon-cus-02.spheriq.net (lon-cus-02.spheriq.net [195.46.50.38])
+	by lon-out-03.spheriq.net with ESMTP id j3R8vIDV004819
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 27 Apr 2005 08:57:18 GMT
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by lon-cus-02.spheriq.net with ESMTP id j3R8vE5R013510
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 27 Apr 2005 08:57:17 GMT
+Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 632A9DA43
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 27 Apr 2005 08:57:12 +0000 (GMT)
+Received: from zeta.dmz-ap.st.com (localhost [127.0.0.1])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 61306520C1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 27 Apr 2005 08:56:58 +0000 (UTC)
+Received: from mail1.sha.st.com (mail1.sha.st.com [10.94.100.2])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7D2E31329E
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 27 Apr 2005 08:56:57 +0000 (GMT)
+From: Alex LIU <alex.liu@st.com>
+Message-ID: <002801c54b07$0cdde490$90b3c68a@SHZ.ST.COM>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [uml-devel] Question about syscall in UML tt mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,67 +51,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 26 Apr 2005 23:02:38 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, sam@ravnborg.org
+Date: Wed, 27 Apr 2005 16:56:47 +0800
+Content-Transfer-Encoding: 8bit
+To: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
 
-I've been seeing a build error when trying to build User Mode Linux on
-an x86-32 host (Athlon, fwiw).  The kernel I'm building is a 1-day old
-pull from git.  This error is not new, though.  I thought it was merely
-an artifact of a patch stuck in a queue at first so I didn't mention it
-right away.
+Hi all:
 
-ryan@mythryan2 ~/dev/linux/linux-git$ make O=/home/ryan/dev/linux/output/uml ARCH="um" -j4 CC="ccache distcc" clean
-/bin/bash: line 1: cd: arch/um: No such file or directory
-ryan@mythryan2 ~/dev/linux/linux-git$ make O=/home/ryan/dev/linux/output/uml ARCH="um" -j4 CC="ccache distcc" oldconfig
-/bin/bash: line 1: cd: arch/um: No such file or directory
-  HOSTCC  scripts/basic/fixdep
-  GEN    /home/ryan/dev/linux/output/uml/Makefile
-  HOSTCC  scripts/basic/split-include
-  HOSTCC  scripts/basic/docproc
-  HOSTCC  scripts/kconfig/conf.o
-  HOSTCC  scripts/kconfig/mconf.o
-  HOSTCC  scripts/kconfig/zconf.tab.o
-  HOSTLD  scripts/kconfig/conf
-scripts/kconfig/conf -o arch/um/Kconfig
-arch/um/Kconfig:71: can't open file "arch/um/Kconfig_arch"
-make[2]: *** [oldconfig] Error 1
-make[1]: *** [oldconfig] Error 2
-make: *** [oldconfig] Error 2
+Now I added a system call in UML which should use pt_regs as its parameter. So the system call is "sys_XXX(struct pt_regs)" just like sys_fork(struct pt_regs) under i386 architecture. But I didn't find any syscall under UML which use pt_regs as its parameter. 
 
+I found the EXECUTE_SYSCALL(syscall,regs) in UML is defined only with 6 parameters which are ebx,ecx.... So I think I can't use pt_regs as my syscall parameter,right?
 
-ryan@mythryan2 ~/dev/linux/linux-git$ ls -al /home/ryan/dev/linux/output/uml/
-total 60
-drwxr-xr-x  5 ryan ryan  4096 Apr 13 11:15 .
-drwxr-xr-x  4 ryan ryan  4096 Apr 23 02:38 ..
--rw-r--r--  1 ryan ryan 15445 Apr 13 11:15 .config
--rw-r--r--  1 ryan ryan  1812 Apr 13 11:15 .config.cmd
--rw-r--r--  1 ryan ryan 15855 Mar 29 03:20 .config.old
--rw-r--r--  1 ryan ryan   351 Apr 26 22:56 Makefile
-drwxr-xr-x  4 ryan ryan  4096 Apr 13 11:15 include
-drwxr-xr-x  2 ryan ryan  4096 Apr 13 11:15 include2
-drwxr-xr-x  4 ryan ryan  4096 Mar 29 03:21 scripts
+So I directly use current->thread.regs in my system call. It seems worked.
 
-I'm not quite sure what's going on here - but something seems broken.
+I want to know whether it's safe to do that. Thanks!
 
-My gut feeling is that arch/um/Kconfig_arch is supposed to be a symlink
-(or something else magical) pointing at arch/um/Kconfig_i386, but this
-doesn't seem to be working.
+Alex
 
-I can provide my .config if it matters - but since the above failure
-happens almost instantly, I don't think it will matter much.
-
-Thanks!
-
--- 
-Ryan Anderson <ryan@michonline.com>
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Tell us your software development plans!
 Take this survey and enter to win a one-year sub to SourceForge.net
 Plus IDC's 2005 look-ahead and a copy of this survey
-Click here to start!  http://www.idcswdc.com/cgi-bin/survey?id=105hix
+Click here to start!  http://www.idcswdc.com/cgi-bin/survey?id5hix
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
