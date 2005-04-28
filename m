@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRG00-0002gg-CP	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:52:40 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DRFzz-0005zC-Lw	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:52:40 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Hostfs permission checks are all wonky.
-References: <200503201417.59739.rob@landley.net>
-	<200503241153.56262.blaisorblade@yahoo.it>
-	<200503281448.22110.rob@landley.net>
-In-Reply-To: <200503281448.22110.rob@landley.net>
-MIME-Version: 1.0
+	id 1DRG6I-0002uB-Ib	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:59:10 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DRG6G-0006lR-VZ	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:59:10 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: [patch 1/7] uml: fix syscall table by including
+	$(SUBARCH)'s one, for i386
+Message-ID: <20050428204858.GD25451@ccure.user-mode-linux.org>
+References: <20050424181909.81B8F33AED@zion>
+	<20050428181053.GQ23013@shell0.pdx.osdl.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200504292253.45547.blaisorblade@yahoo.it>
+In-Reply-To: <20050428181053.GQ23013@shell0.pdx.osdl.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,92 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 29 Apr 2005 22:53:45 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>
+Date: Thu, 28 Apr 2005 16:48:58 -0400
+To: Chris Wright <chrisw@osdl.org>
+Cc: blaisorblade@yahoo.it, akpm@osdl.org, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 28 March 2005 21:48, Rob Landley wrote:
-> On Thursday 24 March 2005 05:53 am, Blaisorblade wrote:
-> > > You mean like this darn bug I've been seeing for weeks?
-> > >
-> > > io scheduler noop registered
-> > > loop: loaded (max 8 devices)
-> > > Initialized stdio console driver
-> > > Console initialized on /dev/tty0
-> > > VFS: Mounted root (hostfs filesystem).
-> > > idr_remove called for id=3 which is not allocated.
-> > > Call Trace:
-> > > a01fba48:  [<a007cbec>]
-> > > a01fba84:  [<a007cc13>]
-> > > a01fba9c:  [<a0085eaa>]
-> > > a01fbb04:  [<a0085697>]
-> > > a01fbb4c:  [<a00860a4>]
-> > > a01fbb68:  [<a007d09d>]
-> > > a01fbb74:  [<a004cc5e>]
-> > > a01fbb7c:  [<a004cdb6>]
-> > > a01fbb80:  [<a008e193>]
-> > > a01fbba8:  [<a004cd31>]
-> > > a01fbbc8:  [<a004526c>]
-> > > a01fbbe4:  [<a00451bf>]
-> > > a01fbc24:  [<a0045365>]
-> > > a01fbc38:  [<a0045445>]
-> > > a01fbc54:  [<a0011de9>]
-> > > a01fbcc0:  [<a0011e30>]
-> > > a01fbce4:  [<a0012d18>]
-> > > a01fbd14:  [<a0017887>]
-> > > a01fbd20:  [<a0097808>]
-> > >
-> > > sh-2.05b#
-> > >
-> > > It does that all the time.  (The id=? bit changes with each run.)
-> > > Somewhere around here I've got a trace from when I built it with debug
-> > > symbols, I can get that for you at the same time I try out your
-> > > patch...
-> >
-> > I'd like that a lot, and also your .config - I've never seen that message
-> > nor I know the users of that kernel internal API (but probably UML itself
-> > isn't using that).
->
-> VFS: Mounted root (hostfs filesystem).
-> idr_remove called for id=1 which is not allocated.
-> Call Trace:
-> a086fa1c:  [<a00784c2>] sub_remove+0xe0/0xe9
-> a086fa58:  [<a00784ea>] idr_remove+0x1f/0x8b
-> a086fa74:  [<a007f1d0>] release_dev+0x64f/0x665
-> a086fae0:  [<a007e918>] init_dev+0x37e/0x472
-> a086fb28:  [<a007f3b7>] tty_open+0x1d1/0x300
-> a086fb38:  [<a00789cb>] kobject_get+0x14/0x1c
-> a086fb48:  [<a004d6bb>] cdev_get+0xb/0xe
-> a086fb54:  [<a004d830>] exact_lock+0xb/0x17
-> a086fb5c:  [<a0087911>] kobj_lookup+0x90/0xba
-> a086fb6c:  [<a004d81d>] exact_match+0x0/0x8
-> a086fb88:  [<a004d79c>] chrdev_open+0xcb/0xe8
-> a086fbac:  [<a0045b77>] dentry_open+0xa7/0x151
-> a086fbcc:  [<a0045acb>] filp_open+0x40/0x45
-> a086fc0c:  [<a0045c76>] get_unused_fd+0x55/0x9d
-> a086fc24:  [<a0045d5e>] sys_open+0x32/0x6c
-> a086fc44:  [<a0011f57>] execute_syscall_tt+0xd3/0xe0
-> a086fcb4:  [<a0011fa2>] syscall_handler_tt+0x3e/0x66
-> a086fcdc:  [<a0012e8f>] sig_handler_common_tt+0x93/0xe4
-> a086fd10:  [<a0017a48>] sig_handler+0x18/0x27
-> a086fd20:  [<a0091728>] __restore+0x0/0x8
-While doing other stuff, I've understood how UML reaches that code:
+On Thu, Apr 28, 2005 at 11:10:53AM -0700, Chris Wright wrote:
+> * blaisorblade@yahoo.it (blaisorblade@yahoo.it) wrote:
+> > 
+> > Split the i386 entry.S files into entry.S and syscall_table.S which
+> > is included in the previous one (so actually there is no difference between
+> > them) and use the syscall_table.S in the UML build, instead of tracking by
+> > hand the syscall table changes (which is inherently error-prone).
+> 
+> Xen can use this as well (it was on my todo list).
 
-hostfs_read_sb->get_sb_nodev->set_anon_super()->idr_XXX. However, I can't 
-understand why the hell UML could have bugs in this path. Probably running it 
-with a root hostfs will trigger this, but for now I haven't the time to play 
-with this.
+Maybe talking out of my ass here, but would it make sense to have the
+generic syscalls in asm-generic, in the form of something like:
+	SYSCALL(__NR_getpid, sys_getpid)
+?
 
-Also, I've seen somebody else with a "idr" problem, related to devpts (recent 
-posts, titled "ssh again" IIRC). Still I don't understand what's going on.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+The arch include this into its syscall table, would continue to define
+__NR_*, and it would define SYSCALL (but all the syscall tables I've
+seen are just arrays of pointers).  This would allow the arches to
+automatically get all the generic system calls, and they'd continue to
+define on their own any arch-specific things.
 
-
-
+				Jeff
 
 
 -------------------------------------------------------
