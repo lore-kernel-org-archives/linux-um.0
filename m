@@ -1,21 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRI4k-0001x8-TY	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 16:05:42 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DRI4j-000346-Dj	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 16:05:42 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Kernel panic with 2.6.11.6
-Message-ID: <20050428212950.GA26596@ccure.user-mode-linux.org>
-References: <20050427133324.7alyoigzdn74osg8@www.scgiservices.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1DRJa8-0008NU-8I	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 17:42:12 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DRJa4-0002A1-6A
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 17:42:12 -0700
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] The source to that firmware-uml thing is now up...
+References: <200504200606.06828.rob@landley.net>
+	<200504262123.44365.rob@landley.net>
+	<200504292116.30483.blaisorblade@yahoo.it>
+In-Reply-To: <200504292116.30483.blaisorblade@yahoo.it>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20050427133324.7alyoigzdn74osg8@www.scgiservices.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200504281938.45043.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,25 +33,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Apr 2005 17:29:50 -0400
-To: Anthony Brock <brocka@sterlingcgi.com>
-Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 28 Apr 2005 19:38:44 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Apr 27, 2005 at 01:33:24PM -0700, Anthony Brock wrote:
-> Kernel panic - not syncing: Kernel mode fault at addr 0x19, ip 0x402eb2d2
-> 
-> This only happens when I reconnect to the guest console by attaching to the
-> associated "screen" session. Also, it is erradic at best and happens about once
-> out of every 15-20 times I reconnect to the screen. Fortunately, the apparent
-> trigger (connecting to the console) ensures that I'm aware of the crash and
-> able to immediately restart the instance.
-> 
-> Any ideas on how to troubleshoot this? Is it a known issue that I've somehow
-> missed on the list? Thanks!
+On Friday 29 April 2005 03:16 pm, Blaisorblade wrote:
 
-My usual request - can you get a stack trace from it?
+> > Hmmm...  I suppose I could always have a wrapper script
+>
+> which can't be setuid if in bash, could if in Perl and perlsuid is
+> installed.
 
-				Jeff
+Actually you can run bash setuid with the -p option.  From bash's "flags.c":
+
+/* Non-zero means that this shell is running in `privileged' mode.  This
+   is required if the shell is to run setuid.  If the `-p' option is
+   not supplied at startup, and the real and effective uids or gids
+   differ, disable_priv_mode is called to relinquish setuid status. */
+int privileged_mode = 0;
+
+(That said, if you do use -p to get get a setuid bash, there's several other 
+things you should do to make this marginally less dangerous.  And I wouldn't 
+trust myself to remember them all off the top of my head...)
+
+That said, I wasn't thinking of using bash for the wrapper but either python 
+or C.  It's just easier to secure them...
+
+> > that runs UML as a
+> > non-root process in the chroot environment and opens a named pipe that we
+> > can write into via hostfs when we want the chroot environment
+> > depopulated.
+>
+> No, that must be a regular file... Linux does not pass requests to work on
+> device nodes, named pipes, sockets down to the filesystem, so none of them
+> can pass datas between the machines. You'd need a real IP socket
+> (TCP/UDP),, or maybe something mconsole-based.
+
+Okay, the disgusting way to do this:
+
+Mount a ramfs somewhere.  CD into it, make subdirectories and bind mount in 
+enough of the parent environment to run UML and open the memory file.  Run 
+UML.  Have UML create a new file in the ramfs to signal when it's up enough 
+that the host filesystem can go away.  The parent program detects the file's 
+creation, unmounts all the directories, deletes the empty directories, 
+remounts the ramfs read-only, and then does a lazy unmount of the ramfs.
+
+I can come up with a _more_ disgusting way to do this if necessary. :)
+
+> You can pass the location through a normal assignment on the cmd.line
+> (which will become a env.var, or you might parse /proc/cmdline).
+
+Creating a temporary file in the ramfs is good enough...
+
+> > (I vaguely recall there's a way to tell UML where to drop its memory
+> > file...)
+>
+> Setting TMPDIR.
+
+Cool.
+
+Rob
 
 
 -------------------------------------------------------
