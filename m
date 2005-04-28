@@ -1,21 +1,45 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DR5iw-0003if-4K for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 02:54:22 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DR5iv-0003TF-Gd for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 02:54:21 -0700
-Message-ID: <4270B2C9.2030603@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DR5pg-0004A3-FX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 03:01:20 -0700
+Received: from lon-del-02.spheriq.net ([195.46.50.98])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41) id 1DR5pf-0008GH-Aa
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 03:01:20 -0700
+Received: from lon-out-03.spheriq.net ([195.46.50.131])
+	by lon-del-02.spheriq.net with ESMTP id j3SA15Vi027255
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 28 Apr 2005 10:01:05 GMT
+Received: from lon-cus-02.spheriq.net (lon-cus-02.spheriq.net [195.46.50.38])
+	by lon-out-03.spheriq.net with ESMTP id j3SA152J030281
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 28 Apr 2005 10:01:05 GMT
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by lon-cus-02.spheriq.net with ESMTP id j3SA10Zo019614
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 28 Apr 2005 10:01:04 GMT
+Received: from zeta.dmz-ap.st.com (ns6.st.com [138.198.234.13])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id C275BDA44
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 28 Apr 2005 10:00:58 +0000 (GMT)
+Received: from zeta.dmz-ap.st.com (localhost [127.0.0.1])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 58C4A520C1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 28 Apr 2005 10:00:58 +0000 (UTC)
+Received: from mail1.sha.st.com (mail1.sha.st.com [10.94.100.2])
+	by zeta.dmz-ap.st.com (STMicroelectronics) with ESMTP id B14D6132A3
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 28 Apr 2005 10:00:57 +0000 (GMT)
+From: Alex LIU <alex.liu@st.com>
+Message-ID: <000b01c54bd9$24d32150$90b3c68a@SHZ.ST.COM>
 MIME-Version: 1.0
-References: <OF558C84FC.0C649F6F-ONC1256FF1.002D4CEF-C1256FF1.002F4B2C@de.ibm.com>
-In-Reply-To: <OF558C84FC.0C649F6F-ONC1256FF1.002D4CEF-C1256FF1.002F4B2C@de.ibm.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: Again: UML on s390 (31Bit)
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [uml-devel] Question about kernel_thread in UML TT mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,91 +51,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Apr 2005 11:54:17 +0200
-To: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 28 Apr 2005 18:00:40 +0800
+Content-Transfer-Encoding: 8bit
+To: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
 
-Martin Schwidefsky wrote:
-> Bodo Stroesser <bstroesser@fujitsu-siemens.com> wrote on 04/27/2005
-> 10:21:58 PM:
->>1) UML includes some of the subarch's (s390) headers. I had to
->>    change one of them with the following one-liner, to make this
->>    compile. AFAICS, this change doesn't break compilation of s390
->>    itself.
-> 
-> 
-> This one isn't a problem. I'll add it to the repository.
-Thank you!
+Hi,all:
 
-> 
-> 
->>==============================================================================
->>--- linux-2.6.11.orig/arch/s390/kernel/ptrace.c   2005-04-04 18:57:
->>38.000000000 +0200
->>+++ linux-2.6.11/arch/s390/kernel/ptrace.c   2005-04-04 19:01:51.
->>000000000 +0200
->>@@ -726,6 +726,13 @@
->>              ? 0x80 : 0));
->>
->>     /*
->>+    * If debugger has set an invalid syscall number,
->>+    * we prepare to skip syscall restart handling
->>+    */
->>+   if (!entryexit && (long )regs->gprs[2] < 0 )
->>+      regs->trap = -1;
->>+
->>+   /*
->>      * this isn't the same as continuing with a signal, but it will do
->>      * for normal use.  strace only continues with a signal if the
->>      * stopping signal is not SIGTRAP.  -brl
->>==============================================================================
-> 
-> 
-> This patch is not good. !entryexit indicates that you want to change the trap
-> indication on the first of the two calls of syscall_trace for a system call. The
-> second condition is gprs[2] < 0 but that can be true for a normal system call as
-> well, like sys_exit(-1).
-Sorry, that's not right. At that point, gprs[2] holds the syscall number, while the
-first argument of the syscall is in origgpr2. If the debugger sets the syscall number
-to -1, which is an invalid syscall, changing trap to -1 will result in a changed
-behavior only in case, that the debugger on the second syscall interception also sets
-the syscall result to ERESTARTXXXXX (This again is modifying gprs[2]). ERESTARTXXXXX
-normally would/could be handled by do_signal(), but with the patch it no longer will.
-So, I think the patch doesn't hurt in normal cases, but does the trick for UML.
+I found UML only implement its own kernel_thread function but doesn't implement kernel_thread_helper function.
+Then how does UML start a kernel thread in TT mode? Is there any other functions being called? Thanks a lot!
 
-> It might even be true for user addresses if we really
-> extent the virtual address space to full 64 bit one day (and the hardware can do
-> it with a 5 level paging table). To change regs->trap to -1 with the current
-> condition is definitly wrong.
-> Independent from that it do not understand why you need it at all. If the
-> uml host intercepted and invalidated the guest system call the system restart
-> indication bit _TIF_RESTART_SVC shouldn't be set because the guest didn't
-> execute a system call.
-Let my explain a bit more. UML invalidates UML-user's syscalls on the host, processes
-the syscall itself and inserts the result into gprs[2] on the second syscall
-interception. For nearly all syscalls ERESTARTXXXXX is a result not returned to user,
-but handled in UML kernel internally. But that's not true for sys_(rt_)sigreturn.
-The "result" of those is the original contents of gpr2 of the interrupted routine,
-which accidentally also might be ERESTARTXXXXXXX (BTW, that's the reason for
-sys_(rt_)sigreturn setting trap to -1 also). We skip UML's syscall restart handling
-in this case, but we need to skip it in the host, too.
+Alex
 
-> 
-> blue skies,
->    Martin
-> 
-> Martin Schwidefsky
-> Linux for zSeries Development & Services
-> IBM Deutschland Entwicklung GmbH
 
-Regards,  Bodo
+
+
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Tell us your software development plans!
 Take this survey and enter to win a one-year sub to SourceForge.net
 Plus IDC's 2005 look-ahead and a copy of this survey
-Click here to start!  http://www.idcswdc.com/cgi-bin/survey?id=105hix
+Click here to start!  http://www.idcswdc.com/cgi-bin/survey?id5hix
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
