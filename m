@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRFeg-00012g-4n	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:30:38 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DRFed-0003SC-PY	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:30:38 -0700
+	id 1DRFwu-0002Kb-6S	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:49:28 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DRFws-000485-GV	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:49:28 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Kernel panic with 2.6.11.6
-References: <20050427133324.7alyoigzdn74osg8@www.scgiservices.com>
-In-Reply-To: <20050427133324.7alyoigzdn74osg8@www.scgiservices.com>
+Subject: Re: [uml-devel] UML-patches to prepare UML/s390
+References: <4253E3D6.2000809@fujitsu-siemens.com>
+	<200504171937.05846.blaisorblade@yahoo.it>
+	<426E2688.1050203@fujitsu-siemens.com>
+In-Reply-To: <426E2688.1050203@fujitsu-siemens.com>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504292231.41440.blaisorblade@yahoo.it>
+Message-Id: <200504292250.32383.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,30 +31,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 29 Apr 2005 22:31:41 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
-Cc: Anthony Brock <brocka@sterlingcgi.com>
+Date: Fri, 29 Apr 2005 22:50:32 +0200
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 27 April 2005 22:33, Anthony Brock wrote:
-> I have a 2.6.11.6 guest kernel (with the bs3 patches) running on a 2.6.10
-> host kernel (with the SKAS3 v7 patches). The guest distribution is SuSE
-> 9.1. For the most part, this UML functions perfectly.
+On Tuesday 26 April 2005 13:31, Bodo Stroesser wrote:
+> Blaisorblade wrote:
+> > Other issues follow, which refer to copied code going out-of-date wrt. my
+> > local tree (which I have snapshotted some time ago, after I started
+> > writing this mail). This is the problem with copying code - and you're
+> > starting experiencing it!
+> >
+> > * important changes for TLS support, clone(), and so on.
 >
-> However, since upgrading the guest kernel from a 2.6.9 (bb4 patches)
-> version, the guest will periodically abort with something like:
->
-> Kernel panic - not syncing: Kernel mode fault at addr 0x19, ip 0x402eb2d2
->
-> This only happens when I reconnect to the guest console by attaching to the
-> associated "screen" session. Also, it is erradic at best and happens about
-> once out of every 15-20 times I reconnect to the screen. Fortunately, the
-> apparent trigger (connecting to the console) ensures that I'm aware of the
-> crash and able to immediately restart the instance.
->
-> Any ideas on how to troubleshoot this? Is it a known issue that I've
-> somehow missed on the list? Thanks!
-Hmm, maybe this could be related with the sigwinch problem that Jeff has a 
-patch for ? It should be in the incrementals page.
+> I'm going to implement TLS support in UML/s390. I could do this in
+> arch/um/sys-s390/syscalls.c/sys_clone() without any need to change generic
+> UML code.
+> But I guess, for i386 there will be a need for arch-specific code in
+> copy_thread(), maybe something like arch_copy_thread().
+> If so, s390 TLS support should be inserted using in the same manner.
+> Do you already have some code for this, that I could base on?
+
+On my web-site I've uploaded my personal devel-tree snapshot against -rc3. 
+Currently I've had to add a "clear_flushed_tls()" to copy_thread(), which 
+probably should be wrapped in a arch_copy_thread() (with a macro/inline in 
+some header).
+
+As a side note: the TLS code currently does not work yet, so don't rely on it. 
+There are also some issues to (later?) consider, which are indicated in the 
+patch itself; and there will be something to add to the host SKAS patch, 
+because the current implementation would be a bit too slow probably.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
