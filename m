@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRDTZ-0001X3-My	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 11:11:01 -0700
-Received: from fire.osdl.org ([65.172.181.4] helo=smtp.osdl.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1DRDTZ-0004pN-3U
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 11:11:01 -0700
-From: Chris Wright <chrisw@osdl.org>
-Message-ID: <20050428181053.GQ23013@shell0.pdx.osdl.net>
-References: <20050424181909.81B8F33AED@zion>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1DRDt2-0003AE-9v	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 11:37:20 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DRDsy-0007hq-CN	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 11:37:20 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] bugs in line.c and stdio_console.c
+References: <3BCB5FB76AFFF646BCFBC02A889B64F301799B27@ZCH07EXM05.corp.mot.com>
+In-Reply-To: <3BCB5FB76AFFF646BCFBC02A889B64F301799B27@ZCH07EXM05.corp.mot.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20050424181909.81B8F33AED@zion>
-Subject: [uml-devel] Re: [patch 1/7] uml: fix syscall table by including
-	$(SUBARCH)'s one, for i386
+Message-Id: <200504292145.19573.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,23 +29,89 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Apr 2005 11:10:53 -0700
-To: blaisorblade@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, bstroesser@fujitsu-siemens.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 29 Apr 2005 21:45:18 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Yu Dong-W4760C <W4760C@motorola.com>
 
-* blaisorblade@yahoo.it (blaisorblade@yahoo.it) wrote:
-> 
-> Split the i386 entry.S files into entry.S and syscall_table.S which
-> is included in the previous one (so actually there is no difference between
-> them) and use the syscall_table.S in the UML build, instead of tracking by
-> hand the syscall table changes (which is inherently error-prone).
+On Thursday 28 April 2005 03:24, Yu Dong-W4760C wrote:
+> same bugs in the two files (uml-linux-2.4.26-3):
+> arch/um/drivers/line.c
 
-Xen can use this as well (it was on my todo list).
+>  down(&line->sem);  ========================> may cause shedule in
+> interrrupt 
 
-thanks,
--chris
+> in arch/um/drivers/stdio_console.c
+> static void console_write(struct console *console, const char *string,
+>      unsigned len)
+> {
+
+>  if(con_init_done)
+>   down(&line->sem);  ========================> may cause shedule in
+> interrrupt console_write_chan(&line->chan_list, string, len);
+>  if(con_init_done)
+>   up(&line->sem);
+> }
+>
+> my fix is change
+> [w4760c@w4760c-x3 drivers]$ diff -Nru line.c line.c.old
+> --- line.c      2005-04-28 09:22:29.000000000 +0800
+> +++ line.c.old  2005-04-26 09:38:18.000000000 +0800
+> @@ -134,9 +134,7 @@
+>         i = minor(tty->device) - tty->driver.minor_start;
+>         line = &lines[i];
+>
+> -       if(!in_interrupt())
+> -               down(&line->sem);
+> -
+> +       down(&line->sem);
+>         if(line->head != line->tail){
+>                 local_irq_save(flags);
+>                 ret += buffer_data(line, buf, len);
+> @@ -159,8 +157,7 @@
+>                         ret += buffer_data(line, buf + n, len);
+>         }
+>   out_up:
+> -       if(!in_interrupt())
+> -               up(&line->sem);
+> +       up(&line->sem);
+>
+>   out_free:
+>         if(from_user)
+>
+>
+> --- stdio_console.c     2005-04-26 14:41:05.000000000 +0800
+> +++ stdio_console.c.bak 2005-04-26 14:33:30.000000000 +0800
+> @@ -188,10 +188,10 @@
+>  {
+>         struct line *line = &vts[console->index];
+>
+> -       if(con_init_done && !in_interrupt())
+> +       if(con_init_done)
+>                 down(&line->sem);
+>         console_write_chan(&line->chan_list, string, len);
+> -       if(con_init_done && !in_interrupt())
+> +       if(con_init_done)
+>                 up(&line->sem);
+>  }
+>
+
+> please help to confirm if it's correct?
+
+1) The patch is reversed, and after noticing this it seems a bit more 
+meaningful.
+
+2)But that's not the correct fix, because data corruption is as bad as 
+schedule in interrupt.
+
+3) The correct fix (which I just sent in with the title "uml: redo console 
+locking" to this list) is to replace that semaphore with a spinlock.
 -- 
-Linux Security Modules     http://lsm.immunix.org     http://lsm.bkbits.net
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
+
+
 
 
 -------------------------------------------------------
