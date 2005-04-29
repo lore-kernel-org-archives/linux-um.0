@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRFPt-0000JW-5v	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:15:21 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	id 1DRFU8-0000Rq-0n	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:19:44 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DRFPo-0000jj-Hm	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:15:21 -0700
+	id 1DRFU6-00019H-BO	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:19:43 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] UML Kernel support for NPTL
-References: <29D15BBCA340DA4D8146D38B4924FC7A104FD6@zcarhxm0.corp.nortel.com>
-In-Reply-To: <29D15BBCA340DA4D8146D38B4924FC7A104FD6@zcarhxm0.corp.nortel.com>
+Subject: Re: [uml-devel] Question about kernel_thread in UML TT mode
+References: <000b01c54bd9$24d32150$90b3c68a@SHZ.ST.COM>
+In-Reply-To: <000b01c54bd9$24d32150$90b3c68a@SHZ.ST.COM>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200504292323.15454.blaisorblade@yahoo.it>
+Message-Id: <200504292220.48040.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,24 +29,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 29 Apr 2005 23:23:15 +0200
+Date: Fri, 29 Apr 2005 22:20:47 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Majid Salame <msalame@nortel.com>
+Cc: Alex LIU <alex.liu@st.com>
 
-On Thursday 28 April 2005 21:17, Majid Salame wrote:
-> Hi,
+On Thursday 28 April 2005 12:00, Alex LIU wrote:
+> Hi,all:
 >
-> Did anyone implement the UML kernel support  for the NPTL thread library?
-> Or specifically implemented the set_thread_area system call in UML.
+> I found UML only implement its own kernel_thread function but doesn't
+> implement kernel_thread_helper function.
+??? What's kernel_thread_helper? kernel_thread calls the arch-independent 
+do_fork(), which works like the rest. In particular, it will call the 
+arch-specific copy_thread; and copy_thread_tt will do the necessary work.
+> Then how does UML start a kernel 
+> thread in TT mode? Is there any other functions being called? Thanks a lot!
 
-> I am interested to boot UML with a rootfs with packages built with a
-> version of glibc that was compiled with Native POSIX Thread Library (NPTL)
-> support.
+> Alex
 
-> Thanks.
-> Majid.
-Well, I've started working on this, even if this does not still work. The code 
-is fairly complete, I hope I can finish it within two weeks.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
