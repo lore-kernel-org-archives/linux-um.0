@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRFz3-0002eD-LO	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:51:41 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	id 1DRG00-0002gg-CP	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:52:40 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DRFz3-0005pI-0K	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 13:51:41 -0700
+	id 1DRFzz-0005zC-Lw	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Apr 2005 13:52:40 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: Segfault 2.6.11-rc1-mm1
-References: <200504241945.51674.lil_tux@web.de>
-	<200504242059.15078.blaisorblade@yahoo.it> <200504242204.09786.lil_tux@web.de>
-In-Reply-To: <200504242204.09786.lil_tux@web.de>
+Subject: Re: [uml-devel] Hostfs permission checks are all wonky.
+References: <200503201417.59739.rob@landley.net>
+	<200503241153.56262.blaisorblade@yahoo.it>
+	<200503281448.22110.rob@landley.net>
+In-Reply-To: <200503281448.22110.rob@landley.net>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200504292252.47087.blaisorblade@yahoo.it>
+Message-Id: <200504292253.45547.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,52 +31,84 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 29 Apr 2005 22:52:46 +0200
-To: lil_tux@web.de, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 29 Apr 2005 22:53:45 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>
 
-On Sunday 24 April 2005 22:04, Heiko Przybyl wrote:
-> > > Could be the problem the position independent code or native posix
-> > > thread library? I've got both enabled, but i don't want to recompile my
-> > > whole system..
-> >
-> > Well, I have
->
-> You have recompiled your system or enabled those options?
-Sorry, I forgot to finish the sentence. I have NPTL on my system, so that's 
-not the culprit. The hardened toolchain may be, I'll investigate on this.
-> > > It doesn't matter if I turn on the 2G/2G or not. Or doesn't uml work
-> > > without skas, anymore?
-> >
-> > Well, playing with all possible settings of MODE_TT, MODE_SKAS and
-> > STATIC_LINKING is welcome.
->
-> Ok I'll have a look at this. Currently, I'm trying an other binutils
-> version, cause the old one gave me the following error, several times:
->
-> /usr/lib/gcc/i686-pc-linux-gnu/3.4.3/../../../../i686-pc-linux-gnu/bin/ld:
-> `__strtol_ul_max_tab' referenced in section `.text'
-> of /usr/lib/libc.a(strtol_l.o): defined in discarded section
-> `.gnu.linkonce.r.__strtol_ul_max_tab' of /usr/lib/libc.a(strtoul_l.o)
->
-> > > Thx, Heiko.
+On Monday 28 March 2005 21:48, Rob Landley wrote:
+> On Thursday 24 March 2005 05:53 am, Blaisorblade wrote:
+> > > You mean like this darn bug I've been seeing for weeks?
 > > >
-> > > > --  There are no patches that I can think of.  If it"s any help, I"m
-> > > >  running gentoo.  I"m listing the output of gcc and libc in case my
-> > > >  configuration of them might be a problem.
-> > > >
-> > > >  gcc --version
-> > > >  gcc (GCC) 3.3.4 20040623 (Gentoo Hardened Linux 3.3.4-r1,
-> > > > ssp-3.3.2-2, pie-8.7.6)
+> > > io scheduler noop registered
+> > > loop: loaded (max 8 devices)
+> > > Initialized stdio console driver
+> > > Console initialized on /dev/tty0
+> > > VFS: Mounted root (hostfs filesystem).
+> > > idr_remove called for id=3 which is not allocated.
+> > > Call Trace:
+> > > a01fba48:  [<a007cbec>]
+> > > a01fba84:  [<a007cc13>]
+> > > a01fba9c:  [<a0085eaa>]
+> > > a01fbb04:  [<a0085697>]
+> > > a01fbb4c:  [<a00860a4>]
+> > > a01fbb68:  [<a007d09d>]
+> > > a01fbb74:  [<a004cc5e>]
+> > > a01fbb7c:  [<a004cdb6>]
+> > > a01fbb80:  [<a008e193>]
+> > > a01fbba8:  [<a004cd31>]
+> > > a01fbbc8:  [<a004526c>]
+> > > a01fbbe4:  [<a00451bf>]
+> > > a01fbc24:  [<a0045365>]
+> > > a01fbc38:  [<a0045445>]
+> > > a01fbc54:  [<a0011de9>]
+> > > a01fbcc0:  [<a0011e30>]
+> > > a01fbce4:  [<a0012d18>]
+> > > a01fbd14:  [<a0017887>]
+> > > a01fbd20:  [<a0097808>]
+> > >
+> > > sh-2.05b#
+> > >
+> > > It does that all the time.  (The id=? bit changes with each run.)
+> > > Somewhere around here I've got a trace from when I built it with debug
+> > > symbols, I can get that for you at the same time I try out your
+> > > patch...
 > >
-> > Hmm, Gentoo Hardened... I'd like to cross-check this with the other
-> > report, but unfortunately I cannot find it. Can you forward it me,
-> > please?
+> > I'd like that a lot, and also your .config - I've never seen that message
+> > nor I know the users of that kernel internal API (but probably UML itself
+> > isn't using that).
 >
-> This ist'n actually my system. It was some other users post, I found on the
-> user mailing-list on your sourceforge project page
-> (http://sourceforge.net/mailarchive/message.php?msg_id=10605445 and the
-> previous posts). I'm not using the hardened toolchain at all.
-Ok, you're not replying to the thread I thought.
+> VFS: Mounted root (hostfs filesystem).
+> idr_remove called for id=1 which is not allocated.
+> Call Trace:
+> a086fa1c:  [<a00784c2>] sub_remove+0xe0/0xe9
+> a086fa58:  [<a00784ea>] idr_remove+0x1f/0x8b
+> a086fa74:  [<a007f1d0>] release_dev+0x64f/0x665
+> a086fae0:  [<a007e918>] init_dev+0x37e/0x472
+> a086fb28:  [<a007f3b7>] tty_open+0x1d1/0x300
+> a086fb38:  [<a00789cb>] kobject_get+0x14/0x1c
+> a086fb48:  [<a004d6bb>] cdev_get+0xb/0xe
+> a086fb54:  [<a004d830>] exact_lock+0xb/0x17
+> a086fb5c:  [<a0087911>] kobj_lookup+0x90/0xba
+> a086fb6c:  [<a004d81d>] exact_match+0x0/0x8
+> a086fb88:  [<a004d79c>] chrdev_open+0xcb/0xe8
+> a086fbac:  [<a0045b77>] dentry_open+0xa7/0x151
+> a086fbcc:  [<a0045acb>] filp_open+0x40/0x45
+> a086fc0c:  [<a0045c76>] get_unused_fd+0x55/0x9d
+> a086fc24:  [<a0045d5e>] sys_open+0x32/0x6c
+> a086fc44:  [<a0011f57>] execute_syscall_tt+0xd3/0xe0
+> a086fcb4:  [<a0011fa2>] syscall_handler_tt+0x3e/0x66
+> a086fcdc:  [<a0012e8f>] sig_handler_common_tt+0x93/0xe4
+> a086fd10:  [<a0017a48>] sig_handler+0x18/0x27
+> a086fd20:  [<a0091728>] __restore+0x0/0x8
+While doing other stuff, I've understood how UML reaches that code:
+
+hostfs_read_sb->get_sb_nodev->set_anon_super()->idr_XXX. However, I can't 
+understand why the hell UML could have bugs in this path. Probably running it 
+with a root hostfs will trigger this, but for now I haven't the time to play 
+with this.
+
+Also, I've seen somebody else with a "idr" problem, related to devpts (recent 
+posts, titled "ssh again" IIRC). Still I don't understand what's going on.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
