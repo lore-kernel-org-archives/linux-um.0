@@ -2,25 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRMzi-0004w6-2X	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 21:20:50 -0700
-Received: from mail.kroah.org ([69.55.234.183] helo=perch.kroah.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DRMzg-0005iO-LK	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Apr 2005 21:20:50 -0700
-From: Greg KH <greg@kroah.com>
-Message-ID: <20050429041613.GB25474@kroah.com>
-References: <20050427171446.GA3195@kroah.com>
-	<20050427171552.GB3195@kroah.com>
-	<1114619612.18355.113.camel@localhost.localdomain>
-	<20050427174652.GL23013@shell0.pdx.osdl.net>
-	<1114622596.18809.120.camel@localhost.localdomain>
-	<20050427184733.GW493@shell0.pdx.osdl.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050427184733.GW493@shell0.pdx.osdl.net>
-Subject: [uml-devel] Re: [01/07] uml: add nfsd syscall when nfsd is modular
+	id 1DRg3a-00072g-Ik	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Apr 2005 17:42:06 -0700
+Received: from smtp.gentoo.org ([134.68.220.30])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DRg3Z-00013r-0j
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Apr 2005 17:42:06 -0700
+Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
+	helo=nuthatch.gentoo.org)	by smtp.gentoo.org with esmtp (Exim 4.43)
+	id 1DRg3S-00086o-GM	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Apr 2005 00:41:58 +0000
+Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
+	id 1DRg3S-0007IO-4o	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Apr 2005 00:41:58 +0000
+From: bugzilla-daemon@gentoo.org
+Message-Id: <E1DRg3S-0007IO-4o@nuthatch.gentoo.org>
+Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,27 +30,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Apr 2005 21:16:14 -0700
-To: Chris Wright <chrisw@osdl.org>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Greg KH <gregkh@suse.de>, blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, stable@kernel.org, Justin Forbes <jmforbes@linuxtx.org>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, Cliff White <cliffw@osdl.org>, Theodore Ts'o <tytso@mit.edu>, "Randy.Dunlap" <rddunlap@osdl.org>, Chuck Wolber <chuckw@quantumlinux.com>, torvalds@osdl.org, akpm@osdl.org
+Date: Sat, 30 Apr 2005 00:41:58 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Apr 27, 2005 at 11:47:33AM -0700, Chris Wright wrote:
-> * Alan Cox (alan@lxorguk.ukuu.org.uk) wrote:
-> > On Mer, 2005-04-27 at 18:46, Chris Wright wrote:
-> > > > Don't see why this one is a critical bug.
-> > > 
-> > > I guess without it, modular nfsd has no syscall interface (for UML, or
-> > > course).
-> > 
-> > And the trivial zero risk fix is to compile it in. Its hardly pressing
-> 
-> OK, let's drop it.
+http://bugs.gentoo.org/show_bug.cgi?id=49277
 
-Dropped.
 
-thanks,
 
-greg k-h
+
+
+------- Additional Comments From dsd@gentoo.org  2005-04-29 17:41 PST -------
+Added 2.6.11-bs4 to portage under name usermode-sources-2.6.11 - thanks. I'd appreciate it if someone could test it and let me know if it works, I'm not a UML user myself.
+
+
+
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
