@@ -2,18 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DSE1Q-0002SP-MY	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 May 2005 05:58:08 -0700
-Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DSE1P-0003yp-7R	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 May 2005 05:58:08 -0700
-Message-ID: <52841.80.203.9.198.1114952281.squirrel@80.203.9.198>
-From: stian@nixia.no
-MIME-Version: 1.0
-Content-Type: text/plain;charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] getdents problem upon SIGALRM
+	id 1DSGy6-0001DX-6e	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 May 2005 09:06:54 -0700
+Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] ident=93)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DSGy4-00030U-Ky
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 May 2005 09:06:54 -0700
+From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [uml-devel] Re: [UML] Compile error when building with seperate
+	source and object directories
+Message-ID: <20050501160707.GI13052@parcelfarce.linux.theplanet.co.uk>
+References: <1114570958.5983.50.camel@mythical>
+	<20050428202647.GA25451@ccure.user-mode-linux.org>
+	<20050428215328.GC13052@parcelfarce.linux.theplanet.co.uk>
+	<200505011330.58205.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200505011330.58205.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,21 +32,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 1 May 2005 14:58:01 +0200 (CEST)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 1 May 2005 17:07:07 +0100
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, sam@ravnborg.org, Ryan Anderson <ryan@michonline.com>
 
+On Sun, May 01, 2005 at 01:30:57PM +0200, Blaisorblade wrote:
+> For now I've added an #ifdef to re-include that code for x86, while excluding 
+> it for x86_64. Also, is that up-to-date wrt. 2.6.12-rc3?
 
-Just a quick question. Have anybody seen hostfs randomly failing to list
-files when doing ls on samba-filesystems on the host, or other
-filesystems?
-
-
-Just wondering if I'm alone in the world being bother by this kernel-bug:
-http://bugzilla.kernel.org/show_bug.cgi?id=4497
-
-
-
-Stian Skjelstad aka mw|
+Yes, it is.  As for the ptrace.c...  IMO the right thing is per-architecture
+helper here.  Such ifdefs are OK when it's just i386 and amd64.  As soon
+as e.g. uml/s390 gets merged or uml/ia64 and uml/ppc get resurrected...
 
 
 -------------------------------------------------------
