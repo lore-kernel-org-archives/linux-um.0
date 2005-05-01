@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DRg3a-00072g-Ik	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Apr 2005 17:42:06 -0700
-Received: from smtp.gentoo.org ([134.68.220.30])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DRg3Z-00013r-0j
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Apr 2005 17:42:06 -0700
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org)	by smtp.gentoo.org with esmtp (Exim 4.43)
-	id 1DRg3S-00086o-GM	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Apr 2005 00:41:58 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
-	id 1DRg3S-0007IO-4o	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Apr 2005 00:41:58 +0000
-From: bugzilla-daemon@gentoo.org
-Message-Id: <E1DRg3S-0007IO-4o@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+	id 1DSC7Q-0005Q7-M2	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 May 2005 03:56:12 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DSC7Q-0008Up-1B	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 May 2005 03:56:12 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] The source to that firmware-uml thing is now up...
+References: <200504200606.06828.rob@landley.net>
+	<200504292116.30483.blaisorblade@yahoo.it>
+	<200504281938.45043.rob@landley.net>
+In-Reply-To: <200504281938.45043.rob@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200505011306.39277.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,22 +31,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 30 Apr 2005 00:41:58 +0000
+Date: Sun, 1 May 2005 13:06:38 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>
 
-http://bugs.gentoo.org/show_bug.cgi?id=49277
+On Friday 29 April 2005 01:38, Rob Landley wrote:
+> On Friday 29 April 2005 03:16 pm, Blaisorblade wrote:
+> > > Hmmm...  I suppose I could always have a wrapper script
+> >
+> > which can't be setuid if in bash, could if in Perl and perlsuid is
+> > installed.
+>
+> Actually you can run bash setuid with the -p option.  From bash's
+> "flags.c":
+>
+> /* Non-zero means that this shell is running in `privileged' mode.  This
+>    is required if the shell is to run setuid.  If the `-p' option is
+>    not supplied at startup, and the real and effective uids or gids
+>    differ, disable_priv_mode is called to relinquish setuid status. */
+> int privileged_mode = 0;
+>
+> (That said, if you do use -p to get get a setuid bash, there's several
+> other things you should do to make this marginally less dangerous.  And I
+> wouldn't trust myself to remember them all off the top of my head...)
+No, I'm not saying that a setuid bash won't work because of the bash special 
+code.
+
+I'm saying that setuid script plain don't work (the kernel ignores the setuid 
+bit). Except for perl, which has a special mechanism to make them work 
+anyway.
+> That said, I wasn't thinking of using bash for the wrapper but either
+> python or C.  It's just easier to secure them...
+Ok, for C no problem. No idea if python supports a similar trick.
+
+> Okay, the disgusting way to do this:
+>
+> Mount a ramfs somewhere.  CD into it, make subdirectories and bind mount in
+> enough of the parent environment to run UML and open the memory file.  Run
+> UML.  Have UML create a new file in the ramfs to signal when it's up enough
+> that the host filesystem can go away.  The parent program detects the
+> file's creation, unmounts all the directories, deletes the empty
+> directories, remounts the ramfs read-only, and then does a lazy unmount of
+> the ramfs.
+>
+> I can come up with a _more_ disgusting way to do this if necessary. :)
+No, I don't even think _this_ way is disgusting. It's nice IMHO.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
 
-
-
-
-------- Additional Comments From dsd@gentoo.org  2005-04-29 17:41 PST -------
-Added 2.6.11-bs4 to portage under name usermode-sources-2.6.11 - thanks. I'd appreciate it if someone could test it and let me know if it works, I'm not a UML user myself.
-
-
-
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
