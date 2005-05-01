@@ -1,26 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DSgNX-0003QD-90	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 May 2005 12:14:51 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DSgNV-0005Q0-KG	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 May 2005 12:14:51 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [UML] Compile error when building with seperate
-	source and object directories
-References: <1114570958.5983.50.camel@mythical>
-	<200505011330.58205.blaisorblade@yahoo.it>
-	<20050501160707.GI13052@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20050501160707.GI13052@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200505022114.06062.blaisorblade@yahoo.it>
+	id 1DSgSU-0003gW-5q	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 May 2005 12:19:58 -0700
+Received: from mail-relay-3.tiscali.it ([213.205.33.43])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DSgST-0003TO-DE	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 May 2005 12:19:58 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050501163818.142A3400F1@zion>
+Subject: [uml-devel] [patch 1/1] uml: remove jail mode + other leftovers
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,29 +22,96 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 2 May 2005 21:14:05 +0200
-To: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, sam@ravnborg.org, Ryan Anderson <ryan@michonline.com>
-
-On Sunday 01 May 2005 18:07, Al Viro wrote:
-> On Sun, May 01, 2005 at 01:30:57PM +0200, Blaisorblade wrote:
-> > For now I've added an #ifdef to re-include that code for x86, while
-> > excluding it for x86_64. Also, is that up-to-date wrt. 2.6.12-rc3?
->
-> Yes, it is.  As for the ptrace.c...  IMO the right thing is
-> per-architecture helper here.  Such ifdefs are OK when it's just i386 and
-> amd64.  As soon as e.g. uml/s390 gets merged or uml/ia64 and uml/ppc get
-> resurrected...
-Agreed, I've done it this way to reintroduce for now the code for i386. It's 
-anyway kludgy, since amd64 has too its debug registers to handle (at least it 
-should); it's just that UML does not handle them yet.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Date: Sun, 01 May 2005 18:38:15 +0200
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
+This var is currently useless, as it's apparent from reading the code. Until
+2.6.11 it was used in some code related to jail mode, in the same proc.:
+
+        if(jail){
+		while(!reading) sched_yield();
+	}
+
+jail mode has been dropped, together with that use, so let's finish dropping
+this.
+
+Also, remove some other useless definitions I met.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.12-paolo/arch/um/kernel/tt/process_kern.c |    6 ------
+ linux-2.6.12-paolo/arch/um/kernel/um_arch.c         |    6 ------
+ linux-2.6.12-paolo/include/asm-um/pgtable.h         |    8 --------
+ 3 files changed, 20 deletions(-)
+
+diff -puN arch/um/kernel/tt/process_kern.c~uml-remove-jail-rem arch/um/kernel/tt/process_kern.c
+--- linux-2.6.12/arch/um/kernel/tt/process_kern.c~uml-remove-jail-rem	2005-05-01 18:34:35.000000000 +0200
++++ linux-2.6.12-paolo/arch/um/kernel/tt/process_kern.c	2005-05-01 18:34:35.000000000 +0200
+@@ -32,10 +32,6 @@ void *switch_to_tt(void *prev, void *nex
+ 	unsigned long flags;
+ 	int err, vtalrm, alrm, prof, cpu;
+ 	char c;
+-	/* jailing and SMP are incompatible, so this doesn't need to be 
+-	 * made per-cpu 
+-	 */
+-	static int reading;
+ 
+ 	from = prev;
+ 	to = next;
+@@ -59,12 +55,10 @@ void *switch_to_tt(void *prev, void *nex
+ 	c = 0;
+ 	set_current(to);
+ 
+-	reading = 0;
+ 	err = os_write_file(to->thread.mode.tt.switch_pipe[1], &c, sizeof(c));
+ 	if(err != sizeof(c))
+ 		panic("write of switch_pipe failed, err = %d", -err);
+ 
+-	reading = 1;
+ 	if((from->exit_state == EXIT_ZOMBIE) ||
+ 	   (from->exit_state == EXIT_DEAD))
+ 		os_kill_process(os_getpid(), 0);
+diff -puN arch/um/kernel/um_arch.c~uml-remove-jail-rem arch/um/kernel/um_arch.c
+--- linux-2.6.12/arch/um/kernel/um_arch.c~uml-remove-jail-rem	2005-05-01 18:34:54.000000000 +0200
++++ linux-2.6.12-paolo/arch/um/kernel/um_arch.c	2005-05-01 18:36:42.000000000 +0200
+@@ -110,12 +110,6 @@ struct seq_operations cpuinfo_op = {
+ 	.show	= show_cpuinfo,
+ };
+ 
+-pte_t * __bad_pagetable(void)
+-{
+-	panic("Someone should implement __bad_pagetable");
+-	return(NULL);
+-}
+-
+ /* Set in linux_main */
+ unsigned long host_task_size;
+ unsigned long task_size;
+diff -puN include/asm-um/pgtable.h~uml-remove-jail-rem include/asm-um/pgtable.h
+--- linux-2.6.12/include/asm-um/pgtable.h~uml-remove-jail-rem	2005-05-01 18:35:18.000000000 +0200
++++ linux-2.6.12-paolo/include/asm-um/pgtable.h	2005-05-01 18:36:33.000000000 +0200
+@@ -114,17 +114,9 @@ extern unsigned long end_iomem;
+ extern unsigned long pg0[1024];
+ 
+ /*
+- * BAD_PAGETABLE is used when we need a bogus page-table, while
+- * BAD_PAGE is used for a bogus page.
+- *
+  * ZERO_PAGE is a global shared page that is always zero: used
+  * for zero-mapped memory areas etc..
+  */
+-extern pte_t __bad_page(void);
+-extern pte_t * __bad_pagetable(void);
+-
+-#define BAD_PAGETABLE __bad_pagetable()
+-#define BAD_PAGE __bad_page()
+ 
+ #define ZERO_PAGE(vaddr) virt_to_page(empty_zero_page)
+ 
+_
 
 
 -------------------------------------------------------
