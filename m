@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DSz6h-0007Iy-JU	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 08:14:43 -0700
+	id 1DT0IT-0005YN-5F	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 May 2005 09:30:57 -0700
 Received: from orange.ous.edu ([140.211.15.17])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DSz6f-0005x5-SR	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 08:14:43 -0700
-Message-Id: <s2773351.083@ORANGE.OUS.EDU>
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DT0IQ-0005PH-Gr	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 May 2005 09:30:57 -0700
+Message-Id: <s277452e.080@ORANGE.OUS.EDU>
 From: "Anthony Brock" <Anthony_Brock@ous.edu>
 Subject: Re: [uml-devel] Kernel panic with 2.6.11.6
 Mime-Version: 1.0
@@ -25,11 +25,120 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 03 May 2005 08:16:02 -0700
+Date: Tue, 03 May 2005 09:32:19 -0700
 Content-Transfer-Encoding: 8bit
 To: jdike@addtoit.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+Well, debug information didn't seem to have any positive effect. Here are the additional configure parameters I turned on:
+
+CONFIG_DEBUG_KERNEL=y
+CONFIG_DEBUG_INFO=y
+CONFIG_FRAME_POINTER=y
+
+Let me know if I'm missing something or need to turn on additional parameters. Also, please note that this crash never seemed to end! It kept hitting breakpoints! Here are the start of the messages:
+
+myserver:~# 
+Program received signal SIGSEGV, Segmentation fault.
+0x0806b21f in chan_interrupt ()
+(gdb) bt
+#0  0x0806b21f in chan_interrupt ()
+#1  0x00000000 in ?? ()
+(gdb) c
+Continuing.
+
+Breakpoint 1, 0x0807d0c0 in panic ()
+(gdb) bt
+#0  0x0807d0c0 in panic ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0807d0c4 in panic ()
+(gdb) bt
+#0  0x0807d0c4 in panic ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0807d0cb in panic ()
+(gdb) bt
+#0  0x0807d0cb in panic ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fdd0 in bust_spinlocks ()
+(gdb) bt
+#0  0x0818fdd0 in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fdd3 in bust_spinlocks ()
+(gdb) bt
+#0  0x0818fdd3 in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fdd7 in bust_spinlocks ()
+(gdb) bt
+#0  0x0818fdd7 in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fddb in bust_spinlocks ()
+(gdb) bt
+#0  0x0818fddb in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fddd in bust_spinlocks ()
+(gdb) bt
+#0  0x0818fddd in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fddf in bust_spinlocks ()
+(gdb) bt
+#0  0x0818fddf in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fde4 in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fdea in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fdee in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0818fdf1 in bust_spinlocks ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0807d0d0 in panic ()
+(gdb) 
+
+
+I eventually killed the process. It never actually reached the previous error message. Also, this crash occurred a few seconds after I had finished typing my last command (ls -l /etc/network/).
+
+Tony
+
+>>> "Anthony Brock" <Anthony_Brock@ous.edu> 05/03/05 08:16AM >>>
 Hmmm, I think I need to recompile the kernel with debug information. In any case, here are the results:
 
 myserver:~# 
@@ -131,6 +240,17 @@ This SF.Net email is sponsored by: NEC IT Guy Games.
 Get your fingers limbered up and give it your best shot. 4 great events, 4
 opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
 win an NEC 61 plasma display. Visit http://www.necitguy.com/?r=20 
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net 
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel 
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: NEC IT Guy Games.
+Get your fingers limbered up and give it your best shot. 4 great events, 4
+opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
+win an NEC 61 plasma display. Visit http://www.necitguy.com/?r 
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net 
