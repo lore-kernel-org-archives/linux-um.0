@@ -1,14 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DT0IT-0005YN-5F	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 09:30:57 -0700
+	id 1DT0Pi-0006On-T7	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 May 2005 09:38:26 -0700
 Received: from orange.ous.edu ([140.211.15.17])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DT0IQ-0005PH-Gr	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 09:30:57 -0700
-Message-Id: <s277452e.080@ORANGE.OUS.EDU>
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DT0Pi-0005aO-2q	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 May 2005 09:38:26 -0700
+Message-Id: <s27746f6.084@ORANGE.OUS.EDU>
 From: "Anthony Brock" <Anthony_Brock@ous.edu>
 Subject: Re: [uml-devel] Kernel panic with 2.6.11.6
 Mime-Version: 1.0
@@ -25,11 +25,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 03 May 2005 09:32:19 -0700
+Date: Tue, 03 May 2005 09:39:53 -0700
 Content-Transfer-Encoding: 8bit
 To: jdike@addtoit.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+One final test. The following allowed the crash to finish. Also, the crash occurred as soon as I hit the "down" arrow on my keyboard. I'm beginning to wonder if this is somehow related to the readline libraries or bash:
+
+myserver:~# 
+Program received signal SIGSEGV, Segmentation fault.
+0x0806b21f in chan_interrupt ()
+(gdb) bt
+#0  0x0806b21f in chan_interrupt ()
+#1  0x00000000 in ?? ()
+(gdb) c
+Continuing.
+
+Breakpoint 1, 0x0807d0c0 in panic ()
+(gdb) bt
+#0  0x0807d0c0 in panic ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0807d0c4 in panic ()
+(gdb) c
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0807d0cb in panic ()
+(gdb) handle SIGTRAP pass nostop noprint
+SIGTRAP is used by the debugger.
+Are you sure you want to change it? (y or n) y
+Signal        Stop      Print   Pass to program Description
+SIGTRAP       No        No      Yes             Trace/breakpoint trap
+(gdb) c
+Continuing.
+
+Breakpoint 1, 0x0807d0c0 in panic ()
+(gdb) bt
+#0  0x0807d0c0 in panic ()
+#1  0x08066ac4 in relay_signal ()
+#2  0x08256923 in __func__.5 ()
+#3  0x00000005 in ?? ()
+#4  0x08298ee8 in init_task ()
+#5  0x08064f0f in unblock_signals ()
+#6  0x00000001 in ?? ()
+#7  0x08298ee8 in init_task ()
+#8  0x00000028 in ?? ()
+#9  0x080697f0 in sig_handler_common_skas ()
+#10 0x00000000 in ?? ()
+#11 0x00000000 in ?? ()
+#12 0x00000016 in ?? ()
+#13 0x40139b54 in ?? ()
+#14 0xfffffff2 in ?? ()
+#15 0x00000000 in ?? ()
+#16 0x00000000 in ?? ()
+#17 0x08075e87 in sig_handler ()
+#18 0x00000005 in ?? ()
+#19 0x08297088 in init_thread_union ()
+#20 0x40139b54 in ?? ()
+#21 <signal handler called>
+#22 0x0807d0cb in panic ()
+(gdb) c
+Continuing.
+
+Program terminated with signal SIGTRAP, Trace/breakpoint trap.
+The program no longer exists.
+(gdb) quit
+
+
+>>> "Anthony Brock" <Anthony_Brock@ous.edu> 05/03/05 09:32AM >>>
 Well, debug information didn't seem to have any positive effect. Here are the additional configure parameters I turned on:
 
 CONFIG_DEBUG_KERNEL=y
@@ -240,6 +306,17 @@ This SF.Net email is sponsored by: NEC IT Guy Games.
 Get your fingers limbered up and give it your best shot. 4 great events, 4
 opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
 win an NEC 61 plasma display. Visit http://www.necitguy.com/?r=20 
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net 
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel 
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: NEC IT Guy Games.
+Get your fingers limbered up and give it your best shot. 4 great events, 4
+opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
+win an NEC 61 plasma display. Visit http://www.necitguy.com/?r 
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net 
