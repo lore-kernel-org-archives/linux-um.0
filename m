@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DSrjD-0004oa-JD	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 00:21:59 -0700
-Received: from fire.osdl.org ([65.172.181.4] helo=smtp.osdl.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1DSrjD-0002BH-2n
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 00:21:59 -0700
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20050503002126.1f40f5bf.akpm@osdl.org>
-In-Reply-To: <20050501190851.5FD5B45EBB@zion>
-References: <20050501190851.5FD5B45EBB@zion>
+	id 1DSz6h-0007Iy-JU	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 May 2005 08:14:43 -0700
+Received: from orange.ous.edu ([140.211.15.17])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DSz6f-0005x5-SR	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 May 2005 08:14:43 -0700
+Message-Id: <s2773351.083@ORANGE.OUS.EDU>
+From: "Anthony Brock" <Anthony_Brock@ous.edu>
+Subject: Re: [uml-devel] Kernel panic with 2.6.11.6
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [patch 1/1] x86_64: make string func definition work
-	as intended
+Content-Disposition: inline
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,50 +25,104 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 3 May 2005 00:21:26 -0700
-To: blaisorblade@yahoo.it
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, ak@suse.de
+Date: Tue, 03 May 2005 08:16:02 -0700
+Content-Transfer-Encoding: 8bit
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-blaisorblade@yahoo.it wrote:
->
-> In include/asm-x86_64/string.h there are such comments:
-> 
->  /* Use C out of line version for memcmp */ 
->  #define memcmp __builtin_memcmp
->  int memcmp(const void * cs,const void * ct,size_t count);
-> 
->  This would mean that if the compiler does not decide to use __builtin_memcmp,
->  it emits a call to memcmp to be satisfied by the C out-of-line version in
->  lib/string.c. What happens is that after preprocessing, in lib/string.i you
->  may find the definition of "__builtin_strcmp".
-> 
->  Actually, by accident, in the object you will find the definition of
->  strcmp and such (maybe a trick intended to redirect calls to __builtin_memcmp
->  to the default memcmp when the definition is not expanded); however, this
->  particular case is not a documented feature as far as I can see.
-> 
->  Also, the EXPORT_SYMBOL does not work, so it's duplicated in the arch.
+Hmmm, I think I need to recompile the kernel with debug information. In any case, here are the results:
 
-This breaks the x86 build.  I guess the below is right.
-
-You wanna check other architectures please?
-
-
-diff -puN arch/i386/kernel/i386_ksyms.c~x86_64-make-string-func-definition-work-as-intended-fix arch/i386/kernel/i386_ksyms.c
---- 25/arch/i386/kernel/i386_ksyms.c~x86_64-make-string-func-definition-work-as-intended-fix	2005-05-03 00:16:36.000000000 -0700
-+++ 25-akpm/arch/i386/kernel/i386_ksyms.c	2005-05-03 00:16:44.000000000 -0700
-@@ -169,10 +169,6 @@ EXPORT_SYMBOL(rtc_lock);
- EXPORT_SYMBOL_GPL(set_nmi_callback);
- EXPORT_SYMBOL_GPL(unset_nmi_callback);
+myserver:~# 
+Program received signal SIGSEGV, Segmentation fault.
+0x0806b21f in chan_interrupt ()
+(gdb) bt   
+#0  0x0806b21f in chan_interrupt ()
+#1  0x00000000 in ?? ()
+(gdb) c
+Continuing.
+Kernel panic - not syncing: Kernel mode fault at addr 0xd, ip 0x0
  
--#undef memcmp
--extern int memcmp(const void *,const void *,__kernel_size_t);
--EXPORT_SYMBOL(memcmp);
--
- EXPORT_SYMBOL(register_die_notifier);
- #ifdef CONFIG_HAVE_DEC_LOCK
- EXPORT_SYMBOL(_atomic_dec_and_lock);
-_
+EIP: 0000:[<00000000>] CPU: 0 Not tainted EFLAGS: 00000000
+    Not tainted
+EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 0000 ES: 0000
+Call Trace: 
+08297338:  [<0808c30d>] notifier_call_chain+0x2d/0x50
+08297348:  [<0818fe16>] bust_spinlocks+0x46/0x50
+08297358:  [<0807d131>] panic+0x71/0x120
+08297378:  [<08066997>] segv+0x217/0x250
+082973d8:  [<08064eb5>] change_signals+0x65/0x90
+08297468:  [<08066cb7>] segv_handler+0xd7/0xe0
+08297488:  [<080697f0>] sig_handler_common_skas+0x90/0xe0
+082974b8:  [<08075e87>] sig_handler+0x17/0x20
+08297508:  [<0806b21f>] chan_interrupt+0xf/0x130
+08297530:  [<08064f70>] enable_mask+0x50/0x70
+08297550:  [<08064fc3>] get_signals+0x33/0x50
+082975b0:  [<0806505d>] set_signals+0x7d/0x130
+08297620:  [<0806505d>] set_signals+0x7d/0x130
+082976b0:  [<0806505d>] set_signals+0x7d/0x130
+08297710:  [<0806505d>] set_signals+0x7d/0x130
+08297740:  [<08064eb5>] change_signals+0x65/0x90
+082977d0:  [<0806b85f>] line_interrupt+0x2f/0x40
+082977f0:  [<08099900>] handle_IRQ_event+0x30/0x80
+08297820:  [<080999f8>] __do_IRQ+0xa8/0xf0
+08297840:  [<0805fea3>] do_IRQ+0x33/0x50
+08297850:  [<0806004a>] sigio_handler+0xda/0x140
+08297870:  [<080697f0>] sig_handler_common_skas+0x90/0xe0
+08297894:  [<080690e0>] start_kernel_proc+0x0/0x40
+0829789c:  [<08068cc0>] new_thread_handler+0x0/0x120
+082978a0:  [<08075e87>] sig_handler+0x17/0x20
+082978cc:  [<080690e0>] start_kernel_proc+0x0/0x40
+082978d0:  [<08068cc0>] new_thread_handler+0x0/0x120
+08297a40:  [<08068937>] switch_threads+0x87/0x90
+08297a70:  [<08064eb5>] change_signals+0x65/0x90
+08297b10:  [<08064f0f>] unblock_signals+0xf/0x20
+08297b20:  [<080799e7>] finish_task_switch+0x27/0x70
+08297b40:  [<08244353>] schedule+0x2e3/0x4e0
+08297b90:  [<08065e93>] idle_sleep+0x23/0x30
+08297bac:  [<08068cc0>] new_thread_handler+0x0/0x120
+08297bb0:  [<08062f37>] default_idle+0x67/0x70
+08297bd0:  [<080690d8>] init_idle_skas+0x28/0x30
+08297bd4:  [<0805f210>] init+0x0/0x110
+08297be0:  [<080495b3>] start_kernel+0x163/0x1a0
+08297bf4:  [<08049130>] unknown_bootoption+0x0/0x200
+08297c00:  [<0806910b>] start_kernel_proc+0x2b/0x40
+08297c04:  [<080690e0>] start_kernel_proc+0x0/0x40
+08297c10:  [<08062978>] run_kernel_thread+0x78/0x80
+08297c28:  [<080690e0>] start_kernel_proc+0x0/0x40
+08297c30:  [<08068cc0>] new_thread_handler+0x0/0x120
+08297c38:  [<08062940>] run_kernel_thread+0x40/0x80
+08297cd4:  [<080690e0>] start_kernel_proc+0x0/0x40
+08297cdc:  [<08068cc0>] new_thread_handler+0x0/0x120
+08297ce0:  [<08068d8e>] new_thread_handler+0xce/0x120
+08297ce4:  [<080690e0>] start_kernel_proc+0x0/0x40
+08297d40:  [<08068cc0>] new_thread_handler+0x0/0x120
+
+ 
+
+Program exited with code 01.
+(gdb) 
+
+
+>>> Jeff Dike <jdike@addtoit.com> 05/02/05 08:13PM >>>
+brocka@sterlingcgi.com said:
+> Is this your "stack trace"? 
+
+Close.  What I'd really like is to get it to crash when it's running under
+gdb, with a breakpoint on panic.  Then, 'bt' to gdb at that point.
+
+That gives the true call trace, plus line number information.
+
+> 08297488:  [<080697f0>] sig_handler_common_skas+0x90/0xe0
+> 082974b8:  [<08075e87>] sig_handler+0x17/0x20
+> 08297508:  [<0806b21f>] chan_interrupt+0xf/0x130
+> 08297530:  [<08064f70>] enable_mask+0x50/0x70
+
+This tells me that chan_interrupt segfaulted, but not necessarily exactly
+where, and a lot of the other stuff on the stack isn't in the true call
+chain.
+
+				Jeff
 
 
 
@@ -80,7 +130,18 @@ _
 This SF.Net email is sponsored by: NEC IT Guy Games.
 Get your fingers limbered up and give it your best shot. 4 great events, 4
 opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
-win an NEC 61 plasma display. Visit http://www.necitguy.com/?r=20
+win an NEC 61 plasma display. Visit http://www.necitguy.com/?r=20 
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net 
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: NEC IT Guy Games.
+Get your fingers limbered up and give it your best shot. 4 great events, 4
+opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
+win an NEC 61 plasma display. Visit http://www.necitguy.com/?r 
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
