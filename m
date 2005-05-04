@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DTP8s-00038w-8S	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 May 2005 12:02:42 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DTP8q-0005U9-Lw	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 May 2005 12:02:42 -0700
-Message-ID: <42791C49.7010206@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DTPBB-0003HH-J5	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 12:05:05 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DTPB7-0005tm-8j	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 12:05:05 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Kernel panic with 2.6.11.6
+References: <s277452e.080@ORANGE.OUS.EDU>
+In-Reply-To: <s277452e.080@ORANGE.OUS.EDU>
 MIME-Version: 1.0
-References: <20050504160437.GA573@mschwid3.boeblingen.de.ibm.com>
-In-Reply-To: <20050504160437.GA573@mschwid3.boeblingen.de.ibm.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: Again: UML on s390 (31Bit)
+Content-Disposition: inline
+Message-Id: <200505042100.15770.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,99 +29,268 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 May 2005 21:02:33 +0200
-To: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 4 May 2005 21:00:15 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anthony Brock <Anthony_Brock@ous.edu>, jdike@addtoit.com
 
-Martin Schwidefsky wrote:
-> I talked with Uli about the problem and we came up with a more
-> elegant solution. We already have a debugger specific code in
-> do_signal that sets up the registers for system call restarting
-> BEFORE calling the debugger. Only if the debugger did not change
-> the restart psw and the return value still indicates 
-> -ERESTARTNOHAND or -ERESTARTSYS we undo this change. In the case
-> that the debugger did change the psw or the return value we do
-> not want to restart a system call if another signal is pending.
-> This is in fact a bug in the signal delivery code. To fix it we
-> have to set regs->traps to something != __LC_SVC_OLD_PSW while
-> the debugger has control. regs->traps is reset to the value
-> indicating a system call if the system call is not restarted
-> after all.
-> 
-> Will that make UML happy?
-Unfortunately, I guess this will not help. But maybe I'm missing
-something, as I don't even understand, what the effect of the
-attached patch should be. AFAICS, after each call to do_signal(),
-entry.S will return to user without regs->trap being checked again.
-do_signal() is the only place, where regs->trap is checked, and
-it will be called on return to user exactly once.
+On Tuesday 03 May 2005 18:32, Anthony Brock wrote:
+> Well, debug information didn't seem to have any positive effect. Here are
+> the additional configure parameters I turned on:
+>
+> CONFIG_DEBUG_KERNEL=y
+> CONFIG_DEBUG_INFO=y
+> CONFIG_FRAME_POINTER=y
+>
+> Let me know if I'm missing something or need to turn on additional
+> parameters.
+Those options will improve the kernel backtrace you get with an additional 
+patch I'll merge shortly. For now, they only (should) improve the output of 
+GDB's "backtrace".
 
-What does UML need? It needs a way to prohibit host's do_signal()
-from doing *any* changes in regs->psw or regs->gprs[2], no matter
-if the kernel was entered by a syscall or what value is in gprs[2].
+> Also, please note that this crash never seemed to end! It kept 
+> hitting breakpoints! Here are the start of the messages:
+No, they're not breakpoints, it's more like some bug causes it to enter 
+singlestepping. It's the 3rd time in a few days this bug is reported.
+> myserver:~#
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x0806b21f in chan_interrupt ()
+> (gdb) bt
+> #0  0x0806b21f in chan_interrupt ()
+> #1  0x00000000 in ?? ()
+> (gdb) c
+> Continuing.
+>
+> Breakpoint 1, 0x0807d0c0 in panic ()
+> (gdb) bt
+> #0  0x0807d0c0 in panic ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0807d0c4 in panic ()
+> (gdb) bt
+> #0  0x0807d0c4 in panic ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0807d0cb in panic ()
+> (gdb) bt
+> #0  0x0807d0cb in panic ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fdd0 in bust_spinlocks ()
+> (gdb) bt
+> #0  0x0818fdd0 in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fdd3 in bust_spinlocks ()
+> (gdb) bt
+> #0  0x0818fdd3 in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fdd7 in bust_spinlocks ()
+> (gdb) bt
+> #0  0x0818fdd7 in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fddb in bust_spinlocks ()
+> (gdb) bt
+> #0  0x0818fddb in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fddd in bust_spinlocks ()
+> (gdb) bt
+> #0  0x0818fddd in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fddf in bust_spinlocks ()
+> (gdb) bt
+> #0  0x0818fddf in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fde4 in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fdea in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fdee in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0818fdf1 in bust_spinlocks ()
+> (gdb) c
+> Continuing.
+>
+> Program received signal SIGTRAP, Trace/breakpoint trap.
+> 0x0807d0d0 in panic ()
+> (gdb)
+>
+>
+> I eventually killed the process. It never actually reached the previous
+> error message. Also, this crash occurred a few seconds after I had finished
+> typing my last command (ls -l /etc/network/).
+>
+> Tony
+>
+> >>> "Anthony Brock" <Anthony_Brock@ous.edu> 05/03/05 08:16AM >>>
+>
+> Hmmm, I think I need to recompile the kernel with debug information. In any
+> case, here are the results:
+>
+> myserver:~#
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x0806b21f in chan_interrupt ()
+> (gdb) bt
+> #0  0x0806b21f in chan_interrupt ()
+> #1  0x00000000 in ?? ()
+> (gdb) c
+> Continuing.
+> Kernel panic - not syncing: Kernel mode fault at addr 0xd, ip 0x0
+>
+> EIP: 0000:[<00000000>] CPU: 0 Not tainted EFLAGS: 00000000
+>     Not tainted
+> EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+> ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 0000 ES: 0000
+> Call Trace:
+> 08297338:  [<0808c30d>] notifier_call_chain+0x2d/0x50
+> 08297348:  [<0818fe16>] bust_spinlocks+0x46/0x50
+> 08297358:  [<0807d131>] panic+0x71/0x120
+> 08297378:  [<08066997>] segv+0x217/0x250
+> 082973d8:  [<08064eb5>] change_signals+0x65/0x90
+> 08297468:  [<08066cb7>] segv_handler+0xd7/0xe0
+> 08297488:  [<080697f0>] sig_handler_common_skas+0x90/0xe0
+> 082974b8:  [<08075e87>] sig_handler+0x17/0x20
+> 08297508:  [<0806b21f>] chan_interrupt+0xf/0x130
+> 08297530:  [<08064f70>] enable_mask+0x50/0x70
+> 08297550:  [<08064fc3>] get_signals+0x33/0x50
+> 082975b0:  [<0806505d>] set_signals+0x7d/0x130
+> 08297620:  [<0806505d>] set_signals+0x7d/0x130
+> 082976b0:  [<0806505d>] set_signals+0x7d/0x130
+> 08297710:  [<0806505d>] set_signals+0x7d/0x130
+> 08297740:  [<08064eb5>] change_signals+0x65/0x90
+> 082977d0:  [<0806b85f>] line_interrupt+0x2f/0x40
+> 082977f0:  [<08099900>] handle_IRQ_event+0x30/0x80
+> 08297820:  [<080999f8>] __do_IRQ+0xa8/0xf0
+> 08297840:  [<0805fea3>] do_IRQ+0x33/0x50
+> 08297850:  [<0806004a>] sigio_handler+0xda/0x140
+> 08297870:  [<080697f0>] sig_handler_common_skas+0x90/0xe0
+> 08297894:  [<080690e0>] start_kernel_proc+0x0/0x40
+> 0829789c:  [<08068cc0>] new_thread_handler+0x0/0x120
+> 082978a0:  [<08075e87>] sig_handler+0x17/0x20
+> 082978cc:  [<080690e0>] start_kernel_proc+0x0/0x40
+> 082978d0:  [<08068cc0>] new_thread_handler+0x0/0x120
+> 08297a40:  [<08068937>] switch_threads+0x87/0x90
+> 08297a70:  [<08064eb5>] change_signals+0x65/0x90
+> 08297b10:  [<08064f0f>] unblock_signals+0xf/0x20
+> 08297b20:  [<080799e7>] finish_task_switch+0x27/0x70
+> 08297b40:  [<08244353>] schedule+0x2e3/0x4e0
+> 08297b90:  [<08065e93>] idle_sleep+0x23/0x30
+> 08297bac:  [<08068cc0>] new_thread_handler+0x0/0x120
+> 08297bb0:  [<08062f37>] default_idle+0x67/0x70
+> 08297bd0:  [<080690d8>] init_idle_skas+0x28/0x30
+> 08297bd4:  [<0805f210>] init+0x0/0x110
+> 08297be0:  [<080495b3>] start_kernel+0x163/0x1a0
+> 08297bf4:  [<08049130>] unknown_bootoption+0x0/0x200
+> 08297c00:  [<0806910b>] start_kernel_proc+0x2b/0x40
+> 08297c04:  [<080690e0>] start_kernel_proc+0x0/0x40
+> 08297c10:  [<08062978>] run_kernel_thread+0x78/0x80
+> 08297c28:  [<080690e0>] start_kernel_proc+0x0/0x40
+> 08297c30:  [<08068cc0>] new_thread_handler+0x0/0x120
+> 08297c38:  [<08062940>] run_kernel_thread+0x40/0x80
+> 08297cd4:  [<080690e0>] start_kernel_proc+0x0/0x40
+> 08297cdc:  [<08068cc0>] new_thread_handler+0x0/0x120
+> 08297ce0:  [<08068d8e>] new_thread_handler+0xce/0x120
+> 08297ce4:  [<080690e0>] start_kernel_proc+0x0/0x40
+> 08297d40:  [<08068cc0>] new_thread_handler+0x0/0x120
+>
+>
+>
+> Program exited with code 01.
+> (gdb)
+>
+> >>> Jeff Dike <jdike@addtoit.com> 05/02/05 08:13PM >>>
+>
+> brocka@sterlingcgi.com said:
+> > Is this your "stack trace"?
+>
+> Close.  What I'd really like is to get it to crash when it's running under
+> gdb, with a breakpoint on panic.  Then, 'bt' to gdb at that point.
+>
+> That gives the true call trace, plus line number information.
+>
+> > 08297488:  [<080697f0>] sig_handler_common_skas+0x90/0xe0
+> > 082974b8:  [<08075e87>] sig_handler+0x17/0x20
+> > 08297508:  [<0806b21f>] chan_interrupt+0xf/0x130
+> > 08297530:  [<08064f70>] enable_mask+0x50/0x70
+>
+> This tells me that chan_interrupt segfaulted, but not necessarily exactly
+> where, and a lot of the other stuff on the stack isn't in the true call
+> chain.
+>
+> 				Jeff
+>
+>
+>
+> -------------------------------------------------------
+> This SF.Net email is sponsored by: NEC IT Guy Games.
+> Get your fingers limbered up and give it your best shot. 4 great events, 4
+> opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
+> win an NEC 61 plasma display. Visit http://www.necitguy.com/?r=20
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+>
+> -------------------------------------------------------
+> This SF.Net email is sponsored by: NEC IT Guy Games.
+> Get your fingers limbered up and give it your best shot. 4 great events, 4
+> opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
+> win an NEC 61 plasma display. Visit http://www.necitguy.com/?r
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+>
+> -------------------------------------------------------
+> This SF.Net email is sponsored by: NEC IT Guy Games.
+> Get your fingers limbered up and give it your best shot. 4 great events, 4
+> opportunities to win big! Highest score wins.NEC IT Guy Games. Play to
+> win an NEC 61 plasma display. Visit http://www.necitguy.com/?r
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-You know, the problem is a sigreturn syscall done by a process
-that runs inside of UML. UML intercepts the syscall and executes
-its own sys_(rt_)sigreturn. At the second syscall interception it
-restores the registers to the values that were saved in
-sigcontext. Maybe, regs->gprs[2] now is -ERESTARTXXXXX. Next, UML
-resumes the process with ptrace(PTRACE_SYSCALL).
-UML can't know, whether the host will or will not call do_signal().
-Whether a signal is pending or not in most cases isn't related to
-the syscall.
-So a practical solution should allow to reset regs->trap while the
-child is on the first or second syscall interception.
-This could be "PTRACE_SETTRAP" or the "magic syscall number".
-The latter I would prefer.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-BTW:
-There would be a very nasty way to work around all this. At the
-second syscall interception UML could write a "safe" dummy value
-(e.g. 0) as the result of sys_(rt_)sigreturn to regs->gprs[2].
-Then, it could send an additional signal to the child, to make
-sure, that do_signal *will* be called by the host. Next, it
-resumes the child with ptrace(PTRACE_SYSCALL) and waits for the
-interception of signal delivery. Now it writes the *real* result
-and resumes the child while suppressing delivery of the additional
-signal.
-Other signals might be pending at the same time and might be
-intercepted before the additional one. They need to be suppressed
-also, but have to be send again, after the additional one was
-nullified. This really is nasty and slow, but would not need any
-change in host.
-I hope, I will not have to use it ;-)
 
-Regards,
-    Bodo
-> 
-> blue skies,
->   Martin.
-> 
-> ---
-> 
-> Index: arch/s390/kernel/signal.c
-> ===================================================================
-> RCS file: /home/cvs/linux-2.5/arch/s390/kernel/signal.c,v
-> retrieving revision 1.22
-> diff -u -p -r1.22 signal.c
-> --- arch/s390/kernel/signal.c	23 Mar 2005 08:30:01 -0000	1.22
-> +++ arch/s390/kernel/signal.c	4 May 2005 14:51:31 -0000
-> @@ -482,6 +482,7 @@ int do_signal(struct pt_regs *regs, sigs
->  		} else if (retval == -ERESTART_RESTARTBLOCK) {
->  			regs->gprs[2] = -EINTR;
->  		}
-> +		regs->trap = -1;
->  	}
->  
->  	/* Get signal to deliver.  When running under ptrace, at this point
-> @@ -497,6 +498,7 @@ int do_signal(struct pt_regs *regs, sigs
->  			      & SA_RESTART))) {
->  			regs->gprs[2] = -EINTR;
->  			regs->psw.addr = continue_addr;
-> +			regs->trap = __LC_SVC_OLD_PSW;
->  		}
->  	}
->  
 
 
 -------------------------------------------------------
