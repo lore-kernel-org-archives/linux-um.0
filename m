@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DT8lS-0005qs-IG	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 18:33:26 -0700
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DT8lR-0004zr-5f	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 May 2005 18:33:26 -0700
-Received: from hawk (mothership.theshore.net [69.137.82.201])
-	by www.theshore.net (8.12.9/8.9.1) with SMTP id j441XItI024035
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 3 May 2005 21:33:18 -0400
-Message-ID: <002501c5504a$18852c70$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
+	id 1DTG9d-0007HX-JO	for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 02:26:53 -0700
+Received: from mailhost.cs.man.ac.uk ([130.88.192.14])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DTG9c-0003cf-3o	for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 02:26:53 -0700
+Received: from trinidad ([130.88.195.238])
+	by mailhost with esmtp (Exim 4.14)	id 1DTG9O-0000jN-NO
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 10:26:38 +0100
+Message-ID: <427895BC.2050201@manchester.ac.uk>
+From: Ian Rogers <ian.rogers@manchester.ac.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Status of 2.6.[10-11] constant 1 loadavg?
+Subject: [uml-devel] Using SKAS, any examples?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,17 +29,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 3 May 2005 20:39:20 -0500
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 04 May 2005 10:28:28 +0100
+To: User-mode-linux-devel@lists.sourceforge.net
 
-Has the constant "loadavg of 1" bug been resolved, or has the patch been accepted
-into 2.6.12?
+Hi,
 
-Blaisorblade -- it appears to be back.  My recent tests with 2.6.11 vanilla still
-exhibit this problem.
+I'm relatively new to this but I've not found any information in the 
+FAQ... What I'm hoping to do is to use SKAS to create a second address 
+space I can, map, unmap, peek and poke from the first. The reason for 
+this is to allow an emulator to live in the first address space and the 
+emulated data... to live in the second. I hope to be able to access the 
+second by altering the i386 selector value. If I am successful in this I 
+will put the information available to all on my website or the uml 
+wiki... I was wondering if anyone already had some code to do this or if 
+someone has an strace of the calls involved or failing that any 
+advice/suggestions/...
 
--Chris
+Many thanks,
 
+Ian Rogers
 
 
 -------------------------------------------------------
