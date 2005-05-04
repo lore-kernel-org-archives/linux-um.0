@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DTPID-0004QB-K7	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 May 2005 12:12:21 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DTPIA-0007bR-Rf	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 May 2005 12:12:21 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <1115024342.4275ebd65688e@imapwww.epfl.ch>
-	<200505022142.30860.blaisorblade@yahoo.it>
-	<1115103532.4277212cae0ab@imapwww.epfl.ch>
-In-Reply-To: <1115103532.4277212cae0ab@imapwww.epfl.ch>
+	id 1DTQki-0006Al-U5	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 13:45:52 -0700
+Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DTQkh-0007Ac-Ev	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 13:45:52 -0700
+Received: from zrtpd0jn.us.nortel.com (zrtpd0jn.us.nortel.com [47.140.202.35])
+	id j44KjgU17977	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 4 May 2005 16:45:42 -0400 (EDT)
+Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A104FE4@zcarhxm0.corp.nortel.com>
+From: "Majid Salame" <msalame@nortel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200505042108.16375.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [uml-user] Debugging kernel: break on every
-	instruction?
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C550EA.36F54862"
+Subject: [uml-devel] Scheduling latency in UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,40 +28,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 4 May 2005 21:08:16 +0200
-To: urs.hunkeler@epfl.ch, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 4 May 2005 16:45:32 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 03 May 2005 08:58, urs.hunkeler@epfl.ch wrote:
-> Hi,
->
-> Thanks for your answer.
->
-> > Maybe this is related to the SYSEMU patch... can you use the splitout
-> > version
-> > and remove the SYSEMU code to verify this? Which host kernel version are
-> > you using?
->
-> I am really no kernel expert and to be honest, I don't know how to do that.
->  Can you give me some hints?
-In the splitout version, if you don't apply the host-sysemu-XXX patch (and any 
-other patch depending on that, i.e. which fail without that one), you get a 
-kernel without SYSEMU. Alternatively, you can test if passing nosysemu on the 
-UML command line makes any difference to this problem.
-> Anyway, as I wrote in another mail yesterday, it's working with the host
-> kernel being 2.6.6, but not with 2.6.11.[58]. So currently I have a working
-> solution, but a newer kernel would be nice :-)
-Can you experiment a bit with versions in the middle, with binary search 
-(don't bother with 2.6.x.y kernels as they won't change *this* behaviour I 
-think)? Please also include in the reports the SKAS patch version you used. 
-Thanks
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+------_=_NextPart_001_01C550EA.36F54862
+Content-Type: text/plain
+
+Has anyone measured the worst case scheduling latency in UML?
+What is the main cause of process starvations in UML, To what degree is the
+UML scheduler is efficient? 
 
 
+Thanks,
+Majid.
+
+------_=_NextPart_001_01C550EA.36F54862
+Content-Type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2658.2">
+<TITLE>Scheduling latency in UML</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=2>Has anyone measured the worst case scheduling latency in UML?</FONT>
+<BR><FONT SIZE=2>What is the main cause of process starvations in UML, To what degree is the UML scheduler is efficient? </FONT>
+</P>
+<BR>
+
+<P><FONT SIZE=2>Thanks,</FONT>
+<BR><FONT SIZE=2>Majid.</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C550EA.36F54862--
 
 
 -------------------------------------------------------
