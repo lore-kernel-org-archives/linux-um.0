@@ -1,22 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DTQki-0006Al-U5	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 May 2005 13:45:52 -0700
-Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DTQkh-0007Ac-Ev	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 May 2005 13:45:52 -0700
-Received: from zrtpd0jn.us.nortel.com (zrtpd0jn.us.nortel.com [47.140.202.35])
-	id j44KjgU17977	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 4 May 2005 16:45:42 -0400 (EDT)
-Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A104FE4@zcarhxm0.corp.nortel.com>
-From: "Majid Salame" <msalame@nortel.com>
+	id 1DTWWB-0008Hh-Cs	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 19:55:15 -0700
+Received: from h190.c26.b96.tor.eicat.ca ([66.96.26.190]
+	helo=moraine.clusterfs.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DTWW9-000283-Rb	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 May 2005 19:55:15 -0700
+Received: from [137.186.136.18] (d137-186-136-18.abhsia.telus.net
+	[137.186.136.18])	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by moraine.clusterfs.com (Postfix) with ESMTP id 7FEAD31026D
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed,  4 May 2005 22:55:03 -0400 (EDT)
+Message-ID: <42798ADD.5070607@yahoo.com.cn>
+From: "Mei,Jia" <cfs_eric@yahoo.com.cn>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C550EA.36F54862"
-Subject: [uml-devel] Scheduling latency in UML
+Subject: Re: [uml-devel] gdb debugging problem on uml-2.6.10
+References: <4271073D.3030800@yahoo.com.cn>
+	<200505011216.27331.blaisorblade@yahoo.it>
+In-Reply-To: <200505011216.27331.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,47 +35,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 4 May 2005 16:45:32 -0400
+Date: Wed, 04 May 2005 20:54:21 -0600
 To: user-mode-linux-devel@lists.sourceforge.net
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Blaisorblade wrote:
+>>When I try gdb-5.3.90 with uml in vanilla-2.6.10 kernel. I found a problem.
+>>
+>>When I set a breakpoint somewhere, and after some step, uml will
+>>always get a SIGTRAP signal and trap into gdb.
+>>
+>>Does anyone met the same problem as me? Any known fix for it?
+> 
+> No, I don't think there is any known fix for it. However, does this problem 
+> keep on and makes debugging impossible (i.e., after you "cont", does it keep 
+> stopping)?
+> 
+> Hmm, are you doing debugging in SKAS or in TT mode? In the second case, then 
+> it can be a bug in the ptrace proxy (which has a big bug with some gdb 
+> releases >= 6.0).
+> 
+> In the first case, maybe it's something I observed too (I'm not sure because I 
+> don't use a lot gdb with UML)... Better, I've observed breakpoints being 
+> *skipped* by gdb.
 
-------_=_NextPart_001_01C550EA.36F54862
-Content-Type: text/plain
+I'm sorry for the late response since away for a few days. It turn out 
+to be the rootfs problem, although I don't know why (not related to 
+tls), change to a new rootfs fixed it. Maybe don't need to chase more on 
+this.
+And appreciate you and Jeff's reply.
 
-Has anyone measured the worst case scheduling latency in UML?
-What is the main cause of process starvations in UML, To what degree is the
-UML scheduler is efficient? 
-
-
-Thanks,
-Majid.
-
-------_=_NextPart_001_01C550EA.36F54862
-Content-Type: text/html
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2658.2">
-<TITLE>Scheduling latency in UML</TITLE>
-</HEAD>
-<BODY>
-
-<P><FONT SIZE=2>Has anyone measured the worst case scheduling latency in UML?</FONT>
-<BR><FONT SIZE=2>What is the main cause of process starvations in UML, To what degree is the UML scheduler is efficient? </FONT>
-</P>
-<BR>
-
-<P><FONT SIZE=2>Thanks,</FONT>
-<BR><FONT SIZE=2>Majid.</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C550EA.36F54862--
+Eric
 
 
 -------------------------------------------------------
