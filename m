@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUC1n-0001KX-L8	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 16:14:39 -0700
+	id 1DUC1p-0001Kf-Bq	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 May 2005 16:14:41 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUC1m-00088n-Rp	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 16:14:39 -0700
-Message-Id: <200505062249.j46Mnbpo010490@ccure.user-mode-linux.org>
+	id 1DUC1o-000897-FE	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 May 2005 16:14:41 -0700
+Message-Id: <200505062248.j46MmuD9010439@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 11/12] UML - Fix process exit race
+Subject: [uml-devel] [PATCH 2/12] UML - Remove include/asm-um/elf.h
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,130 +24,216 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 06 May 2005 18:49:37 -0400
+Date: Fri, 06 May 2005 18:48:56 -0400
 To: torvalds@osdl.org, akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+I accidentally included include/asm-um/elf.h as a real file in a previous
+patch.  This patch eliminates it.
 
-tt-mode closes switch_pipes in exit_thread_tt and kills
-processes in switch_to_tt, if the exit_state is 
-EXIT_DEAD or EXIT_ZOMBIE.
-In very rare cases the exiting process can be scheduled out
-after having set exit_state and closed switch_pipes (from
-release_task it calls proc_pid_flush, which might sleep).
-If this process is to be restarted, UML failes in
-switch_to_tt with:
-   write of switch_pipe failed, err = 9
-We fix this by closing switch_pipes not in exit_thread_tt,
-but later in release_thread_tt. Additionally, we set
-switch_pipe[0] = 0 after closing. switch_to_tt must not
-kill "from" process depending on its exit_state, but must
-kill it after release_thread was processed only, so it
-examines switch_pipe[0] for its decision.
-
-Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/process_kern.c
+Index: linux-2.6.12-rc3-mm/include/asm-um/elf.h
 ===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/process_kern.c	2005-05-06 14:52:11.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/process_kern.c	2005-05-06 14:53:03.000000000 -0400
-@@ -143,7 +143,6 @@
-  
- void exit_thread(void)
- {
--	CHOOSE_MODE(exit_thread_tt(), exit_thread_skas());
- 	unprotect_stack((unsigned long) current_thread);
- }
-  
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/skas/include/mode_kern-skas.h
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/skas/include/mode_kern-skas.h	2005-05-06 14:35:08.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/skas/include/mode_kern-skas.h	2005-05-06 14:53:03.000000000 -0400
-@@ -18,7 +18,6 @@
- 			    unsigned long sp, unsigned long stack_top,
- 			    struct task_struct *p, struct pt_regs *regs);
- extern void release_thread_skas(struct task_struct *task);
--extern void exit_thread_skas(void);
- extern void initial_thread_cb_skas(void (*proc)(void *), void *arg);
- extern void init_idle_skas(void);
- extern void flush_tlb_kernel_range_skas(unsigned long start,
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/skas/process_kern.c
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/skas/process_kern.c	2005-05-06 14:35:08.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/skas/process_kern.c	2005-05-06 14:53:03.000000000 -0400
-@@ -83,10 +83,6 @@
- {
- }
- 
--void exit_thread_skas(void)
--{
+--- linux-2.6.12-rc3-mm.orig/include/asm-um/elf.h	2005-05-05 12:19:14.000000000 -0400
++++ linux-2.6.12-rc3-mm/include/asm-um/elf.h	2003-09-15 09:40:47.000000000 -0400
+@@ -1,196 +0,0 @@
+-/*
+- * Copyright (C) 2000 - 2003 Jeff Dike (jdike@addtoit.com)
+- * Licensed under the GPL
+- */
+-#ifndef __UM_ELF_I386_H
+-#define __UM_ELF_I386_H
+-
+-#include "user.h"
+-
+-#if defined(CONFIG_UML_X86) && !defined(CONFIG_64BIT)
+-
+-#define R_386_NONE	0
+-#define R_386_32	1
+-#define R_386_PC32	2
+-#define R_386_GOT32	3
+-#define R_386_PLT32	4
+-#define R_386_COPY	5
+-#define R_386_GLOB_DAT	6
+-#define R_386_JMP_SLOT	7
+-#define R_386_RELATIVE	8
+-#define R_386_GOTOFF	9
+-#define R_386_GOTPC	10
+-#define R_386_NUM	11
+-
+-#elif defined(CONFIG_UML_X86) && defined(CONFIG_64BIT)
+-
+-/* x86-64 relocation types */
+-#define R_X86_64_NONE		0	/* No reloc */
+-#define R_X86_64_64		1	/* Direct 64 bit  */
+-#define R_X86_64_PC32		2	/* PC relative 32 bit signed */
+-#define R_X86_64_GOT32		3	/* 32 bit GOT entry */
+-#define R_X86_64_PLT32		4	/* 32 bit PLT address */
+-#define R_X86_64_COPY		5	/* Copy symbol at runtime */
+-#define R_X86_64_GLOB_DAT	6	/* Create GOT entry */
+-#define R_X86_64_JUMP_SLOT	7	/* Create PLT entry */
+-#define R_X86_64_RELATIVE	8	/* Adjust by program base */
+-#define R_X86_64_GOTPCREL	9	/* 32 bit signed pc relative
+-					   offset to GOT */
+-#define R_X86_64_32		10	/* Direct 32 bit zero extended */
+-#define R_X86_64_32S		11	/* Direct 32 bit sign extended */
+-#define R_X86_64_16		12	/* Direct 16 bit zero extended */
+-#define R_X86_64_PC16		13	/* 16 bit sign extended pc relative */
+-#define R_X86_64_8		14	/* Direct 8 bit sign extended  */
+-#define R_X86_64_PC8		15	/* 8 bit sign extended pc relative */
+-
+-#define R_X86_64_NUM		16
+-
+-#endif
+-
+-typedef unsigned long elf_greg_t;
+-
+-#define ELF_NGREG (sizeof (struct user_regs_struct) / sizeof(elf_greg_t))
+-typedef elf_greg_t elf_gregset_t[ELF_NGREG];
+-
+-typedef struct user_i387_struct elf_fpregset_t;
+-
+-/*
+- * This is used to ensure we don't load something for the wrong architecture.
+- */
+-#define elf_check_arch(x) \
+-	(((x)->e_machine == EM_386) || ((x)->e_machine == EM_486))
+-
+-#define ELF_CLASS	ELFCLASS32
+-#define ELF_DATA        ELFDATA2LSB
+-#define ELF_ARCH        EM_386
+-
+-#define ELF_PLAT_INIT(regs, load_addr) do { \
+-	PT_REGS_EBX(regs) = 0; \
+-	PT_REGS_ECX(regs) = 0; \
+-	PT_REGS_EDX(regs) = 0; \
+-	PT_REGS_ESI(regs) = 0; \
+-	PT_REGS_EDI(regs) = 0; \
+-	PT_REGS_EBP(regs) = 0; \
+-	PT_REGS_EAX(regs) = 0; \
+-} while(0)
+-
+-#define USE_ELF_CORE_DUMP
+-#define ELF_EXEC_PAGESIZE 4096
+-
+-#define ELF_ET_DYN_BASE (2 * TASK_SIZE / 3)
+-
+-/* Shamelessly stolen from include/asm-i386/elf.h */
+-
+-#define ELF_CORE_COPY_REGS(pr_reg, regs) do {	\
+-	pr_reg[0] = PT_REGS_EBX(regs);		\
+-	pr_reg[1] = PT_REGS_ECX(regs);		\
+-	pr_reg[2] = PT_REGS_EDX(regs);		\
+-	pr_reg[3] = PT_REGS_ESI(regs);		\
+-	pr_reg[4] = PT_REGS_EDI(regs);		\
+-	pr_reg[5] = PT_REGS_EBP(regs);		\
+-	pr_reg[6] = PT_REGS_EAX(regs);		\
+-	pr_reg[7] = PT_REGS_DS(regs);		\
+-	pr_reg[8] = PT_REGS_ES(regs);		\
+-	/* fake once used fs and gs selectors? */	\
+-	pr_reg[9] = PT_REGS_DS(regs);		\
+-	pr_reg[10] = PT_REGS_DS(regs);		\
+-	pr_reg[11] = PT_REGS_SYSCALL_NR(regs);	\
+-	pr_reg[12] = PT_REGS_IP(regs);		\
+-	pr_reg[13] = PT_REGS_CS(regs);		\
+-	pr_reg[14] = PT_REGS_EFLAGS(regs);	\
+-	pr_reg[15] = PT_REGS_SP(regs);		\
+-	pr_reg[16] = PT_REGS_SS(regs);		\
+-} while(0);
+-
+-extern long elf_aux_hwcap;
+-#define ELF_HWCAP (elf_aux_hwcap)
+-
+-extern char * elf_aux_platform;
+-#define ELF_PLATFORM (elf_aux_platform)
+-
+-#define SET_PERSONALITY(ex, ibcs2) do ; while(0)
+-
+-extern unsigned long vsyscall_ehdr;
+-extern unsigned long vsyscall_end;
+-extern unsigned long __kernel_vsyscall;
+-
+-#define VSYSCALL_BASE vsyscall_ehdr
+-#define VSYSCALL_END vsyscall_end
+-
+-/*
+- * This is the range that is readable by user mode, and things
+- * acting like user mode such as get_user_pages.
+- */
+-#define FIXADDR_USER_START      VSYSCALL_BASE
+-#define FIXADDR_USER_END        VSYSCALL_END
+-
+-/*
+- * Architecture-neutral AT_ values in 0-17, leave some room
+- * for more of them, start the x86-specific ones at 32.
+- */
+-#define AT_SYSINFO		32
+-#define AT_SYSINFO_EHDR		33
+-
+-#define ARCH_DLINFO						\
+-do {								\
+-	if ( vsyscall_ehdr ) {					\
+-		NEW_AUX_ENT(AT_SYSINFO,	__kernel_vsyscall);	\
+-		NEW_AUX_ENT(AT_SYSINFO_EHDR, vsyscall_ehdr);	\
+-	}							\
+-} while (0)
+-
+-/*
+- * These macros parameterize elf_core_dump in fs/binfmt_elf.c to write out
+- * extra segments containing the vsyscall DSO contents.  Dumping its
+- * contents makes post-mortem fully interpretable later without matching up
+- * the same kernel and hardware config to see what PC values meant.
+- * Dumping its extra ELF program headers includes all the other information
+- * a debugger needs to easily find how the vsyscall DSO was being used.
+- */
+-#define ELF_CORE_EXTRA_PHDRS						      \
+-	(vsyscall_ehdr ? (((struct elfhdr *)vsyscall_ehdr)->e_phnum) : 0 )
+-
+-#define ELF_CORE_WRITE_EXTRA_PHDRS					      \
+-if ( vsyscall_ehdr ) {							      \
+-	const struct elfhdr *const ehdrp = (struct elfhdr *)vsyscall_ehdr;    \
+-	const struct elf_phdr *const phdrp =				      \
+-		(const struct elf_phdr *) (vsyscall_ehdr + ehdrp->e_phoff);   \
+-	int i;								      \
+-	Elf32_Off ofs = 0;						      \
+-	for (i = 0; i < ehdrp->e_phnum; ++i) {				      \
+-		struct elf_phdr phdr = phdrp[i];			      \
+-		if (phdr.p_type == PT_LOAD) {				      \
+-			ofs = phdr.p_offset = offset;			      \
+-			offset += phdr.p_filesz;			      \
+-		}							      \
+-		else							      \
+-			phdr.p_offset += ofs;				      \
+-		phdr.p_paddr = 0; /* match other core phdrs */		      \
+-		DUMP_WRITE(&phdr, sizeof(phdr));			      \
+-	}								      \
+-}
+-#define ELF_CORE_WRITE_EXTRA_DATA					      \
+-if ( vsyscall_ehdr ) {							      \
+-	const struct elfhdr *const ehdrp = (struct elfhdr *)vsyscall_ehdr;    \
+-	const struct elf_phdr *const phdrp =				      \
+-		(const struct elf_phdr *) (vsyscall_ehdr + ehdrp->e_phoff);   \
+-	int i;								      \
+-	for (i = 0; i < ehdrp->e_phnum; ++i) {				      \
+-		if (phdrp[i].p_type == PT_LOAD)				      \
+-			DUMP_WRITE((void *) phdrp[i].p_vaddr,		      \
+-				   phdrp[i].p_filesz);			      \
+-	}								      \
 -}
 -
- void fork_handler(int sig)
- {
-         change_sig(SIGUSR1, 1);
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/tt/include/mode_kern-tt.h
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/tt/include/mode_kern-tt.h	2005-05-06 14:35:08.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/tt/include/mode_kern-tt.h	2005-05-06 14:53:03.000000000 -0400
-@@ -19,7 +19,6 @@
- 			  unsigned long stack_top, struct task_struct *p,
- 			  struct pt_regs *regs);
- extern void release_thread_tt(struct task_struct *task);
--extern void exit_thread_tt(void);
- extern void initial_thread_cb_tt(void (*proc)(void *), void *arg);
- extern void init_idle_tt(void);
- extern void flush_tlb_kernel_range_tt(unsigned long start, unsigned long end);
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/tt/process_kern.c
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/tt/process_kern.c	2005-05-06 14:35:08.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/tt/process_kern.c	2005-05-06 14:54:39.000000000 -0400
-@@ -65,8 +65,7 @@
- 		panic("write of switch_pipe failed, err = %d", -err);
- 
- 	reading = 1;
--	if((from->exit_state == EXIT_ZOMBIE) ||
--	   (from->exit_state == EXIT_DEAD))
-+        if(from->thread.mode.tt.switch_pipe[0] == -1)
- 		os_kill_process(os_getpid(), 0);
- 
- 	err = os_read_file(from->thread.mode.tt.switch_pipe[0], &c, sizeof(c));
-@@ -81,8 +80,7 @@
- 	 * in case it has not already killed itself.
- 	 */
- 	prev_sched = current->thread.prev_sched;
--	if((prev_sched->exit_state == EXIT_ZOMBIE) ||
--	   (prev_sched->exit_state == EXIT_DEAD))
-+        if(prev_sched->thread.mode.tt.switch_pipe[0] == -1)
- 		os_kill_process(prev_sched->thread.mode.tt.extern_pid, 1);
- 
- 	change_sig(SIGVTALRM, vtalrm);
-@@ -101,14 +99,18 @@
- {
- 	int pid = task->thread.mode.tt.extern_pid;
- 
-+	/*
-+         * We first have to kill the other process, before
-+         * closing its switch_pipe. Else it might wake up
-+         * and receive "EOF" before we could kill it.
-+         */
- 	if(os_getpid() != pid)
- 		os_kill_process(pid, 0);
--}
- 
--void exit_thread_tt(void)
--{
--	os_close_file(current->thread.mode.tt.switch_pipe[0]);
--	os_close_file(current->thread.mode.tt.switch_pipe[1]);
-+        os_close_file(task->thread.mode.tt.switch_pipe[0]);
-+        os_close_file(task->thread.mode.tt.switch_pipe[1]);
-+	/* use switch_pipe as flag: thread is released */
-+        task->thread.mode.tt.switch_pipe[0] = -1;
- }
- 
- void suspend_new_thread(int fd)
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 
 
