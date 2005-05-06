@@ -2,17 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUC1j-0001KB-Jo	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1DUC1j-0001KC-KY	for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 06 May 2005 16:14:35 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUC1i-00088L-TI	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1DUC1i-00088H-U4	for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 06 May 2005 16:14:35 -0700
-Message-Id: <200505062249.j46Mn112010445@ccure.user-mode-linux.org>
+Message-Id: <200505062249.j46MnRLX010469@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/12] UML - command line handling cleanup
+Subject: [uml-devel] [PATCH 7/12] UML - Turn literal numbers into symbolic
+	constants
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,74 +25,101 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 06 May 2005 18:49:01 -0400
+Date: Fri, 06 May 2005 18:49:27 -0400
 To: torvalds@osdl.org, akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Command line handling cleanups - a couple of things made static and an 
-unused declaration removed from header.
+So, there I was, looking at my own code, wondering what the magic setjmp
+return values did.  This patch turns the constants that are used to make 
+requests of the initial thread into meaningful symbols.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12-rc3-mm/arch/um/include/user_util.h
+Index: linux-2.6.11/arch/um/kernel/skas/process.c
 ===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/include/user_util.h	2005-05-02 14:47:52.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/include/user_util.h	2005-05-06 14:35:06.000000000 -0400
-@@ -67,7 +67,6 @@
- extern int switcheroo(int fd, int prot, void *from, void *to, int size);
- extern void setup_machinename(char *machine_out);
- extern void setup_hostinfo(void);
--extern void add_arg(char *arg);
- extern void init_new_thread_stack(void *sig_stack, void (*usr1_handler)(int));
- extern void init_new_thread_signals(int altstack);
- extern void do_exec(int old_pid, int new_pid);
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/um_arch.c
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/um_arch.c	2005-05-02 14:47:52.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/um_arch.c	2005-05-06 14:37:21.000000000 -0400
-@@ -23,6 +23,7 @@
- #include "asm/ptrace.h"
- #include "asm/elf.h"
- #include "asm/user.h"
-+#include "asm/setup.h"
- #include "ubd_user.h"
- #include "asm/current.h"
- #include "asm/setup.h"
-@@ -42,9 +43,9 @@
- #define DEFAULT_COMMAND_LINE "root=98:0"
- 
- /* Changed in linux_main and setup_arch, which run before SMP is started */
--char command_line[COMMAND_LINE_SIZE] = { 0 };
-+static char command_line[COMMAND_LINE_SIZE] = { 0 };
- 
--void add_arg(char *arg)
-+static void add_arg(char *arg)
- {
- 	if (strlen(command_line) + strlen(arg) + 1 > COMMAND_LINE_SIZE) {
- 		printf("add_arg: Too many command line arguments!\n");
-@@ -449,7 +450,7 @@
- {
- 	notifier_chain_register(&panic_notifier_list, &panic_exit_notifier);
- 	paging_init();
-- 	strlcpy(saved_command_line, command_line, COMMAND_LINE_SIZE);
-+        strlcpy(saved_command_line, command_line, COMMAND_LINE_SIZE);
-  	*cmdline_p = command_line;
- 	setup_hostinfo();
+--- linux-2.6.11.orig/arch/um/kernel/skas/process.c	2005-04-29 15:03:57.000000000 -0400
++++ linux-2.6.11/arch/um/kernel/skas/process.c	2005-04-29 15:08:28.000000000 -0400
+@@ -201,6 +201,11 @@
+ 		}
+ 	}
  }
-Index: linux-2.6.12-rc3-mm/include/asm-um/setup.h
-===================================================================
---- linux-2.6.12-rc3-mm.orig/include/asm-um/setup.h	2005-05-02 14:47:52.000000000 -0400
-+++ linux-2.6.12-rc3-mm/include/asm-um/setup.h	2005-05-05 12:32:59.000000000 -0400
-@@ -2,7 +2,8 @@
- #define SETUP_H_INCLUDED
++#define INIT_JMP_NEW_THREAD 0
++#define INIT_JMP_REMOVE_SIGSTACK 1
++#define INIT_JMP_CALLBACK 2
++#define INIT_JMP_HALT 3
++#define INIT_JMP_REBOOT 4
  
- /* POSIX mandated with _POSIX_ARG_MAX that we can rely on 4096 chars in the
-- * command line, so this choice is ok.*/
-+ * command line, so this choice is ok.
-+ */
+ void new_thread(void *stack, void **switch_buf_ptr, void **fork_buf_ptr,
+ 		void (*handler)(int))
+@@ -236,7 +241,7 @@
+ 	*switch_buf = &buf;
+ 	fork_buf = fb;
+ 	if(sigsetjmp(buf, 1) == 0)
+-		siglongjmp(*fork_buf, 1);
++		siglongjmp(*fork_buf, INIT_JMP_REMOVE_SIGSTACK);
+ }
  
- #define COMMAND_LINE_SIZE 4096
+ void switch_threads(void *me, void *next)
+@@ -266,21 +271,25 @@
  
+ 	*fork_buf_ptr = &initial_jmpbuf;
+ 	n = sigsetjmp(initial_jmpbuf, 1);
+-	if(n == 0)
+-		new_thread_proc((void *) stack, new_thread_handler);
+-	else if(n == 1)
+-		remove_sigstack();
+-	else if(n == 2){
++        switch(n){
++        case INIT_JMP_NEW_THREAD:
++                new_thread_proc((void *) stack, new_thread_handler);
++                break;
++        case INIT_JMP_REMOVE_SIGSTACK:
++                remove_sigstack();
++                break;
++        case INIT_JMP_CALLBACK:
+ 		(*cb_proc)(cb_arg);
+ 		siglongjmp(*cb_back, 1);
+-	}
+-	else if(n == 3){
++                break;
++        case INIT_JMP_HALT:
+ 		kmalloc_ok = 0;
+ 		return(0);
+-	}
+-	else if(n == 4){
++        case INIT_JMP_REBOOT:
+ 		kmalloc_ok = 0;
+ 		return(1);
++        default:
++                panic("Bad sigsetjmp return in start_idle_thread - %d\n", n);
+ 	}
+ 	siglongjmp(**switch_buf, 1);
+ }
+@@ -305,7 +314,7 @@
+ 
+ 	block_signals();
+ 	if(sigsetjmp(here, 1) == 0)
+-		siglongjmp(initial_jmpbuf, 2);
++		siglongjmp(initial_jmpbuf, INIT_JMP_CALLBACK);
+ 	unblock_signals();
+ 
+ 	cb_proc = NULL;
+@@ -316,13 +325,13 @@
+ void halt_skas(void)
+ {
+ 	block_signals();
+-	siglongjmp(initial_jmpbuf, 3);
++	siglongjmp(initial_jmpbuf, INIT_JMP_HALT);
+ }
+ 
+ void reboot_skas(void)
+ {
+ 	block_signals();
+-	siglongjmp(initial_jmpbuf, 4);
++	siglongjmp(initial_jmpbuf, INIT_JMP_REBOOT);
+ }
+ 
+ void switch_mm_skas(int mm_fd)
 
 
 
