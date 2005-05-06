@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUBi7-0008AY-Lv	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 15:54:19 -0700
+	id 1DUBi5-0008AT-Na	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 May 2005 15:54:17 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUBi6-0004u5-UM	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 15:54:19 -0700
-Message-Id: <200505062249.j46MncJb010495@ccure.user-mode-linux.org>
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DUBi5-0005Nt-75	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 May 2005 15:54:17 -0700
+Message-Id: <200505062249.j46MnZqk010485@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 12/12] UML - x86_64 fixes
+Subject: [uml-devel] [PATCH 10/12] UML - S390 preparation, arch_align_stack
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,98 +24,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 06 May 2005 18:49:38 -0400
+Date: Fri, 06 May 2005 18:49:35 -0400
 To: torvalds@osdl.org, akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-This fixes some x86_64 bugs -
-    maybe_map returns -1 on error instead of 0, which is interpretted as
-physical address 0
-    removed an include of ipc.h, which isn't needed
-    fixed the calculation of signal frame location
-    the signal delivery code is now immune to the stack expansion check
-    added a missing include
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Only x86 and x86_64 use arch_align_stack(), all other subarches
+have:
+ #define arch_align_stack(x) (x)
+So, if this definition is found, UML's own arch_align_stack()
+should be skipped.
 
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/skas/uaccess.c
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Index: linux-2.6.11-mm/arch/um/kernel/process_kern.c
 ===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/skas/uaccess.c	2005-05-05 12:19:04.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/skas/uaccess.c	2005-05-05 12:43:02.000000000 -0400
-@@ -29,9 +29,12 @@
- 	if(IS_ERR(phys) || (is_write && !pte_write(pte))){
- 		err = handle_page_fault(virt, 0, is_write, 1, &dummy_code);
- 		if(err)
--			return(0);
-+			return(-1UL);
- 		phys = um_virt_to_phys(current, virt, NULL);
- 	}
-+        if(IS_ERR(phys))
-+                phys = (void *) -1;
-+
- 	return((unsigned long) phys);
+--- linux-2.6.11-mm.orig/arch/um/kernel/process_kern.c	2005-04-30 13:13:04.000000000 -0400
++++ linux-2.6.11-mm/arch/um/kernel/process_kern.c	2005-04-30 13:20:41.000000000 -0400
+@@ -462,12 +462,21 @@
+ 	return 2;
  }
  
-@@ -42,7 +45,7 @@
- 	int n;
- 
- 	addr = maybe_map(addr, is_write);
--	if(addr == -1)
-+	if(addr == -1UL)
- 		return(-1);
- 
- 	page = phys_to_page(addr);
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/syscall_kern.c
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/syscall_kern.c	2005-05-02 14:47:52.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/syscall_kern.c	2005-05-05 12:43:02.000000000 -0400
-@@ -17,7 +17,6 @@
- #include "linux/utime.h"
- #include "asm/mman.h"
- #include "asm/uaccess.h"
--#include "asm/ipc.h"
- #include "kern_util.h"
- #include "user_util.h"
- #include "sysdep/syscalls.h"
-Index: linux-2.6.12-rc3-mm/arch/um/kernel/trap_kern.c
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/kernel/trap_kern.c	2005-05-05 12:19:04.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/kernel/trap_kern.c	2005-05-05 12:43:02.000000000 -0400
-@@ -48,7 +48,7 @@
- 		goto good_area;
- 	else if(!(vma->vm_flags & VM_GROWSDOWN)) 
- 		goto out;
--	else if(!ARCH_IS_STACKGROW(address))
-+	else if(is_user && !ARCH_IS_STACKGROW(address))
- 		goto out;
- 	else if(expand_stack(vma, address)) 
- 		goto out;
-Index: linux-2.6.12-rc3-mm/arch/um/sys-x86_64/signal.c
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/sys-x86_64/signal.c	2005-05-05 12:19:04.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/sys-x86_64/signal.c	2005-05-05 12:43:02.000000000 -0400
-@@ -168,7 +168,7 @@
- 
- 	frame = (struct rt_sigframe __user *)
- 		round_down(stack_top - sizeof(struct rt_sigframe), 16) - 8;
--	frame -= 128;
-+	((unsigned char *) frame) -= 128;
- 
- 	if (!access_ok(VERIFY_WRITE, fp, sizeof(struct _fpstate)))
- 		goto out;
-Index: linux-2.6.12-rc3-mm/arch/um/sys-x86_64/syscalls.c
-===================================================================
---- linux-2.6.12-rc3-mm.orig/arch/um/sys-x86_64/syscalls.c	2005-05-05 12:19:04.000000000 -0400
-+++ linux-2.6.12-rc3-mm/arch/um/sys-x86_64/syscalls.c	2005-05-05 12:43:02.000000000 -0400
-@@ -44,6 +44,8 @@
- #ifdef CONFIG_MODE_SKAS
- extern int userspace_pid[];
- 
-+#include "skas_ptrace.h"
-+
- long sys_modify_ldt_skas(int func, void *ptr, unsigned long bytecount)
++/*
++ * Only x86 and x86_64 have an arch_align_stack().
++ * All other arches have "#define arch_align_stack(x) (x)"
++ * in their asm/system.h
++ * As this is included in UML from asm-um/system-generic.h,
++ * we can use it to behave as the subarch does.
++ */
++#ifndef arch_align_stack
+ unsigned long arch_align_stack(unsigned long sp)
  {
- 	struct ptrace_ldt ldt;
+ 	if (randomize_va_space)
+ 		sp -= get_random_int() % 8192;
+ 	return sp & ~0xf;
+ }
++#endif
+ 
+ 
+ /*
 
 
 
