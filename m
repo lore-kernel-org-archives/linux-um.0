@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUC1j-0001KC-KY	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 16:14:35 -0700
+	id 1DUC1m-0001KR-74	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 May 2005 16:14:38 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUC1i-00088H-U4	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 16:14:35 -0700
-Message-Id: <200505062249.j46MnRLX010469@ccure.user-mode-linux.org>
+	id 1DUC1k-00088d-Lz	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 May 2005 16:14:38 -0700
+Message-Id: <200505062249.j46MnXqg010480@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/12] UML - Turn literal numbers into symbolic
-	constants
+Subject: [uml-devel] [PATCH 9/12] UML - Use CONFIG variable for address space
+	size
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,101 +25,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 06 May 2005 18:49:27 -0400
+Date: Fri, 06 May 2005 18:49:33 -0400
 To: torvalds@osdl.org, akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-So, there I was, looking at my own code, wondering what the magic setjmp
-return values did.  This patch turns the constants that are used to make 
-requests of the initial thread into meaningful symbols.
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
+tt/mem.c still uses hardcoded TOP for i386 instead of
+CONFIG_TOP_ADDR provided by subarch's Kconfig_XXXX,
+which would be right.
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.11/arch/um/kernel/skas/process.c
+Index: linux-2.6.11/arch/um/kernel/tt/mem.c
 ===================================================================
---- linux-2.6.11.orig/arch/um/kernel/skas/process.c	2005-04-29 15:03:57.000000000 -0400
-+++ linux-2.6.11/arch/um/kernel/skas/process.c	2005-04-29 15:08:28.000000000 -0400
-@@ -201,6 +201,11 @@
- 		}
- 	}
- }
-+#define INIT_JMP_NEW_THREAD 0
-+#define INIT_JMP_REMOVE_SIGSTACK 1
-+#define INIT_JMP_CALLBACK 2
-+#define INIT_JMP_HALT 3
-+#define INIT_JMP_REBOOT 4
- 
- void new_thread(void *stack, void **switch_buf_ptr, void **fork_buf_ptr,
- 		void (*handler)(int))
-@@ -236,7 +241,7 @@
- 	*switch_buf = &buf;
- 	fork_buf = fb;
- 	if(sigsetjmp(buf, 1) == 0)
--		siglongjmp(*fork_buf, 1);
-+		siglongjmp(*fork_buf, INIT_JMP_REMOVE_SIGSTACK);
+--- linux-2.6.11.orig/arch/um/kernel/tt/mem.c	2005-04-29 13:44:51.000000000 -0400
++++ linux-2.6.11/arch/um/kernel/tt/mem.c	2005-04-29 15:11:21.000000000 -0400
+@@ -21,14 +21,8 @@
+ 	remap_data(UML_ROUND_DOWN(&__bss_start), UML_ROUND_UP(&_end), 1);
  }
  
- void switch_threads(void *me, void *next)
-@@ -266,21 +271,25 @@
+-#ifdef CONFIG_HOST_2G_2G
+-#define TOP 0x80000000
+-#else
+-#define TOP 0xc0000000
+-#endif
+-
+ #define SIZE ((CONFIG_NEST_LEVEL + CONFIG_KERNEL_HALF_GIGS) * 0x20000000)
+-#define START (TOP - SIZE)
++#define START (CONFIG_TOP_ADDR - SIZE)
  
- 	*fork_buf_ptr = &initial_jmpbuf;
- 	n = sigsetjmp(initial_jmpbuf, 1);
--	if(n == 0)
--		new_thread_proc((void *) stack, new_thread_handler);
--	else if(n == 1)
--		remove_sigstack();
--	else if(n == 2){
-+        switch(n){
-+        case INIT_JMP_NEW_THREAD:
-+                new_thread_proc((void *) stack, new_thread_handler);
-+                break;
-+        case INIT_JMP_REMOVE_SIGSTACK:
-+                remove_sigstack();
-+                break;
-+        case INIT_JMP_CALLBACK:
- 		(*cb_proc)(cb_arg);
- 		siglongjmp(*cb_back, 1);
--	}
--	else if(n == 3){
-+                break;
-+        case INIT_JMP_HALT:
- 		kmalloc_ok = 0;
- 		return(0);
--	}
--	else if(n == 4){
-+        case INIT_JMP_REBOOT:
- 		kmalloc_ok = 0;
- 		return(1);
-+        default:
-+                panic("Bad sigsetjmp return in start_idle_thread - %d\n", n);
- 	}
- 	siglongjmp(**switch_buf, 1);
- }
-@@ -305,7 +314,7 @@
- 
- 	block_signals();
- 	if(sigsetjmp(here, 1) == 0)
--		siglongjmp(initial_jmpbuf, 2);
-+		siglongjmp(initial_jmpbuf, INIT_JMP_CALLBACK);
- 	unblock_signals();
- 
- 	cb_proc = NULL;
-@@ -316,13 +325,13 @@
- void halt_skas(void)
- {
- 	block_signals();
--	siglongjmp(initial_jmpbuf, 3);
-+	siglongjmp(initial_jmpbuf, INIT_JMP_HALT);
- }
- 
- void reboot_skas(void)
- {
- 	block_signals();
--	siglongjmp(initial_jmpbuf, 4);
-+	siglongjmp(initial_jmpbuf, INIT_JMP_REBOOT);
- }
- 
- void switch_mm_skas(int mm_fd)
+ unsigned long set_task_sizes_tt(int arg, unsigned long *host_size_out, 
+ 				unsigned long *task_size_out)
 
 
 
