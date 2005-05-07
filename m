@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUGYo-00023A-U8	for User-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 21:05:02 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUGYn-00067G-Cg	for User-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2005 21:05:02 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Using SKAS, any examples?
-Message-ID: <20050507031144.GD14445@ccure.user-mode-linux.org>
-References: <427895BC.2050201@manchester.ac.uk>
-	<20050504132701.GA3755@ccure.user-mode-linux.org>
-	<427A51F9.2060208@manchester.ac.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1DUR8T-000692-1Y	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 08:22:33 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DUR8N-0004aQ-GQ	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 08:22:32 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Status of 2.6.[10-11] constant 1 loadavg?
+References: <002501c5504a$18852c70$0201a8c0@hawk>
+	<001901c551eb$eb6dc050$0201a8c0@hawk>
+In-Reply-To: <001901c551eb$eb6dc050$0201a8c0@hawk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <427A51F9.2060208@manchester.ac.uk>
+Message-Id: <200505071716.23243.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,32 +30,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 6 May 2005 23:11:44 -0400
-To: Ian Rogers <ian.rogers@manchester.ac.uk>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 7 May 2005 17:16:23 +0200
+To: "Christopher S. Aker" <caker@theshore.net>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, May 05, 2005 at 06:03:53PM +0100, Ian Rogers wrote:
-> I've attached the test/example I'm working on to create and manipulate 
-> address spaces uses skas - as I want to allow an emulator to. There are 
-> a few missing functions (that can be pretty much cloned from mem_user.c) 
-> and I've not worked out how to calculate the descriptor value yet. 
-> Please could you have a look and suggest how to create the descriptor 
-> value and why when I look in /proc/<pid>/maps I can't see the asid_mmap 
-> that's being done as part of the test.
+On Friday 06 May 2005 05:30, Christopher S. Aker wrote:
+> > Has the constant "loadavg of 1" bug been resolved, or has the patch been
+> > accepted into 2.6.12?
+> >
+> > Blaisorblade -- it appears to be back.  My recent tests with 2.6.11
+> > vanilla still exhibit this problem.
+>
+> It appears as though uml-fix-update_process_times-call.patch fixes the
+> values in /proc/stat, but the loadavg of 1 problem still exists.
+In fact, what I saw with "top" is that the loadavg. is 1, ksoftirqd is always 
+running, but the CPU time it gets is always 0.
 
-Just one little point that would seem to indicate a lack of understanding.
+It's really strange, I'll have to ask on LKML. However, a question: does it 
+show up also on 2.6.10 or not?
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-You seem to be interested in manipulating many address spaces, but you
-have a global mm_fd which you open ones, and on which all operations happen.
 
-Opening /proc/mm gives you a handle to an address space.  If you want two
-new address spaces, you open it twice.  You close one when you don't need
-the address space any more.
-
-Why are you fixated on descriptor values?  At this level, that's something
-you just don't care about.
-
-				Jeff
 
 
 -------------------------------------------------------
