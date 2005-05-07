@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DURK9-0007A6-Ru	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 08:34:37 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DURK9-0006fo-4p	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 08:34:37 -0700
+	id 1DURMR-0007Ge-1M	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 08:36:59 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DURMQ-0006Wp-BV	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 08:36:58 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <200505051214.45279.blaisorblade@yahoo.it>
-	<427B4F4B.5040909@fujitsu-siemens.com>
-In-Reply-To: <427B4F4B.5040909@fujitsu-siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200505071728.35739.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: NACK on shift-MM_COPY_SEGMENTS for API change
+Message-Id: <200505071730.54818.blaisorblade@yahoo.it>
+Subject: [uml-devel] Generating patches with --show-c-functions
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +27,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 7 May 2005 17:28:35 +0200
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 7 May 2005 17:30:54 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 06 May 2005 13:04, Bodo Stroesser wrote:
-> Blaisorblade wrote:
-> > I understand the purpose of the patch; however, without any mention about
-> > the effects (which would be IMHO bad) we no more copy LDT segments on
-> > fork/clone, which is bad.
->
-> No. The patch shifts code only, but AFAICS it doesn't alter the bahavior of
-> UML/i386. If it does, that would be a bug in the patch!
->
-> > The patch moves that to the call of modify_ldt, but that's an hack, since
-> > currently it's perfectly legitimate that a child uses the father's LDT,
-> > though maybe uncommon.
->
-> No. Let's read the code before and after the change:
->
-> Before the change, father's LDT is copied in new_mm() using
-> MM_COPY_SEGMENTS. new_mm() only has one caller, which is
-> init_new_context_skas().
+Jeff, can you make sure that quilt uses --show-c-functions (aka -p) when 
+generating diffs? In my system, I have this:
 
-> After the change, father's LDT is copied in init_new_ldt(), again
-> using MM_COPY_SEGMENTS.
-Ok, it turns out that I was simply misreading the patch (I didn't apply the 
-patch, since I don't have the time to work on Jeff's tree too, beyond the 
-release tree).
+# Example /etc/quilt.quiltrc
+
+# Options passed to GNU diff when generating patches
+QUILT_DIFF_OPTS="--show-c-function"
+
+(It can be put into ~/.quiltrc, IIRC). That would help a lot patch readability 
+(I'm mailing this because I just misunderstood a Bodo's patch, thus sending a 
+NACK on it).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
 Linux registered user n. 292729
 http://www.user-mode-linux.org/~blaisorblade
-
 
 
 
