@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUVgu-0005dg-8u	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 13:14:24 -0700
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUVgs-00064d-Sp	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 13:14:24 -0700
-Message-ID: <00b701c55342$1f2543d0$0201a8c0@hawk>
-From: "Christopher S. Aker" <caker@theshore.net>
-References: <002501c5504a$18852c70$0201a8c0@hawk>
-	<001901c551eb$eb6dc050$0201a8c0@hawk>
-	<200505071716.23243.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Status of 2.6.[10-11] constant 1 loadavg?
+	id 1DUVxw-0006ao-Gh	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 13:32:00 -0700
+Received: from smtpout17.mailhost.ntl.com ([212.250.162.17]
+	helo=mta09-winn.mailhost.ntl.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DUVxu-00022f-Rv	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 13:32:00 -0700
+Message-ID: <427D259D.3050306@manchester.ac.uk>
+From: Ian Rogers <ian.rogers@manchester.ac.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Subject: Re: [uml-devel] Using SKAS, any examples?
+References: <427895BC.2050201@manchester.ac.uk>
+	<20050504132701.GA3755@ccure.user-mode-linux.org>
+	<427A51F9.2060208@manchester.ac.uk>
+	<20050507031144.GD14445@ccure.user-mode-linux.org>
+In-Reply-To: <20050507031144.GD14445@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -29,17 +31,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 7 May 2005 15:19:49 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 07 May 2005 21:31:25 +0100
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-> It's really strange, I'll have to ask on LKML. However, a question: does it 
-> show up also on 2.6.10 or not?
+Jeff Dike wrote:
 
-Yes, it started with 2.6.10.  Fine in 2.6.9.
+> Just one little point that would seem to indicate a lack of understanding.
+>
+>You seem to be interested in manipulating many address spaces, but you
+>have a global mm_fd which you open ones, and on which all operations happen.
+>
+>Opening /proc/mm gives you a handle to an address space.  If you want two
+>new address spaces, you open it twice.  You close one when you don't need
+>the address space any more.
+>  
+>
+Thanks, there's a lack of documentation so the purpose of the example is 
+to try to determine this kind of information.
 
--Chris
+>Why are you fixated on descriptor values?  At this level, that's something
+>you just don't care about.
+>  
+>
+In an emulator the peek and poke routines will be inlined into the 
+dynamically generated code. I'm essentially after a multi-segment model. 
+I want CS/DS/ES to be in the same flat address space. This means the 
+generated code and any spill/fill of register value code will be in the 
+controlling address space, I want to then address the second address 
+space/segment by just using a segment over-ride.
 
+Thanks for the help,
+
+Ian Rogers
 
 
 -------------------------------------------------------
