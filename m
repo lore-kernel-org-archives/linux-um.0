@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUVxw-0006ao-Gh	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 13:32:00 -0700
-Received: from smtpout17.mailhost.ntl.com ([212.250.162.17]
-	helo=mta09-winn.mailhost.ntl.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUVxu-00022f-Rv	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 13:32:00 -0700
-Message-ID: <427D259D.3050306@manchester.ac.uk>
-From: Ian Rogers <ian.rogers@manchester.ac.uk>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Using SKAS, any examples?
-References: <427895BC.2050201@manchester.ac.uk>
-	<20050504132701.GA3755@ccure.user-mode-linux.org>
-	<427A51F9.2060208@manchester.ac.uk>
-	<20050507031144.GD14445@ccure.user-mode-linux.org>
-In-Reply-To: <20050507031144.GD14445@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1DUco5-00014M-Oa	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 20:50:17 -0700
+Received: from ozlabs.org ([203.10.76.45])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DUco3-0007G1-T9
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 20:50:17 -0700
+From: Rusty Russell <rusty@rustcorp.com.au>
+In-Reply-To: <20050507182728.GA29592@in.ibm.com>
+References: <20050507182728.GA29592@in.ibm.com>
+Content-Type: text/plain
+Message-Id: <1115524211.17482.23.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [RFC] (How to) Let idle CPUs sleep
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,38 +28,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 07 May 2005 21:31:25 +0100
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 08 May 2005 13:50:10 +1000
+To: vatsa@in.ibm.com
+Cc: schwidefsky@de.ibm.com, jdike@addtoit.com, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, Nick Piggin <nickpiggin@yahoo.com.au>, rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
+On Sat, 2005-05-07 at 23:57 +0530, Srivatsa Vaddagiri wrote:
+> Two solutions have been proposed so far:
+> 
+> 	A. As per Nick's suggestion, impose a max limit (say some 100 ms or
+> 	   say a second, Nick?) on how long a idle CPU can avoid taking
+> 	   local-timer ticks. As a result, the load imbalance could exist only
+> 	   for this max duration, after which the sleeping CPU will wake up
+> 	   and balance itself. If there is no imbalance, it can go and sleep
+> 	   again for the max duration.
+> 
+>  	   For ex, lets say a idle CPU found that it doesn't have any near timer
+> 	   for the next 1 minute. Instead of letting it sleep for 1 minute in
+> 	   a single stretch, we let it sleep in bursts of 100 msec (or whatever
+> 	   is the max. duration chosen). This still is better than having
+> 	   the idle CPU take HZ ticks a second.
+> 
+> 	   As a special case, when all the CPUs of an image go idle, we
+> 	   could consider completely shutting off local timer ticks
+> 	   across all CPUs (till the next non-timer interrupt).
+> 
+> 
+> 	B. Don't impose any max limit on how long a idle CPU can sleep.
+> 	   Here we let the idle CPU sleep as long as it wants. It is
+> 	   woken up by a "busy" CPU when it detects an imbalance. The
+> 	   busy CPU acts as a watchdog here. If there are no such
+> 	   busy CPUs, then it means that nobody will acts as watchdogs
+> 	   and idle CPUs sleep as long as they want. A possible watchdog
+> 	   implementation has been discussed at:
+> 
+> 	http://marc.theaimsgroup.com/?l=linux-kernel&m=111287808905764&w=2
 
-> Just one little point that would seem to indicate a lack of understanding.
->
->You seem to be interested in manipulating many address spaces, but you
->have a global mm_fd which you open ones, and on which all operations happen.
->
->Opening /proc/mm gives you a handle to an address space.  If you want two
->new address spaces, you open it twice.  You close one when you don't need
->the address space any more.
->  
->
-Thanks, there's a lack of documentation so the purpose of the example is 
-to try to determine this kind of information.
+My preference would be the second: fix the scheduler so it doesn't rely
+on regular polling.  However, as long as the UP case runs with no timer
+interrupts when idle, many people will be happy (eg. most embedded).
 
->Why are you fixated on descriptor values?  At this level, that's something
->you just don't care about.
->  
->
-In an emulator the peek and poke routines will be inlined into the 
-dynamically generated code. I'm essentially after a multi-segment model. 
-I want CS/DS/ES to be in the same flat address space. This means the 
-generated code and any spill/fill of register value code will be in the 
-controlling address space, I want to then address the second address 
-space/segment by just using a segment over-ride.
+Rusty.
+-- 
+A bad analogy is like a leaky screwdriver -- Richard Braakman
 
-Thanks for the help,
-
-Ian Rogers
 
 
 -------------------------------------------------------
