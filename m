@@ -1,36 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUkkN-0006ff-JG	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2005 05:18:59 -0700
-Received: from e35.co.us.ibm.com ([32.97.110.133])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1DUkkM-0008BD-Pi
+	id 1DUlsC-0003gH-CH	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2005 06:31:08 -0700
+Received: from one.firstfloor.org ([213.235.205.2])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DUlsA-0004Bm-Hw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2005 05:18:59 -0700
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e35.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j48CIkT9385578
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 8 May 2005 08:18:46 -0400
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com
-	[9.17.195.168])j48CIkjQ170784
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 8 May 2005 06:18:46 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	j48CIjcL017459	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 8 May 2005 06:18:45 -0600
-From: Srivatsa Vaddagiri <vatsa@in.ibm.com>
-Message-ID: <20050508121932.GA3055@in.ibm.com>
-Reply-To: vatsa@in.ibm.com
+	Sun, 08 May 2005 06:31:08 -0700
 References: <20050507182728.GA29592@in.ibm.com>
-	<1115524211.17482.23.camel@localhost.localdomain>
-	<427D921F.8070602@yahoo.com.au>
-Mime-Version: 1.0
+From: Andi Kleen <ak@muc.de>
+In-Reply-To: <20050507182728.GA29592@in.ibm.com> (Srivatsa Vaddagiri's
+ message of "Sat, 7 May 2005 23:57:28 +0530")
+Message-ID: <m1vf5tvo8b.fsf@muc.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <427D921F.8070602@yahoo.com.au>
 Subject: [uml-devel] Re: [RFC] (How to) Let idle CPUs sleep
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -43,329 +28,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 8 May 2005 17:49:32 +0530
-To: Nick Piggin <nickpiggin@yahoo.com.au>
-Cc: Rusty Russell <rusty@rustcorp.com.au>, schwidefsky@de.ibm.com, jdike@addtoit.com, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 08 May 2005 15:31:00 +0200
+To: vatsa@in.ibm.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, May 08, 2005 at 02:14:23PM +1000, Nick Piggin wrote:
-> Yeah probably something around that order of magnitude. I suspect
-> there will fast be a point where either you'll get other timers
-> going off more frequently, and / or you simply get very quickly
-> diminishing returns on the amount of power saving gained from
-> increasing the period.
+Srivatsa Vaddagiri <vatsa@in.ibm.com> writes:
 
-I am looking at it from the other perspective also i.e, virtualized
-env. Any amount of unnecessary timer ticks will lead to equivalent amount
-of unnecessary context switches among the guest OSes.
-
-> It is not so much a matter of "fixing" the scheduler as just adding
-> more heuristics. When are we too busy? When should we wake another
-> CPU? What if that CPU is an SMT sibling? What if it is across the
-> other side of the topology, and other CPUs closer to it are busy
-> as well? What if they're busy but not as busy as we are? etc.
-> 
-> We've already got that covered in the existing periodic pull balancing,
-> so instead of duplicating this logic and moving this extra work to busy
-> CPUs, we can just use the existing framework.
-
-I don't think we have to duplicate the logic, just "reuse" whatever logic
-exists (in find_busiest_group etc). However I do agree there is movement
-of extra work to busy CPUs, but that is only to help the idle CPU sleep longer.
-Whether it justifies the additional complexity or not is what this RFC is
-about I guess!
-
-FWIW, I have also made some modifications in the original proposal 
-for reducing the watchdog workload (instead of the same non-idle cpu waking 
-up all the sleeping CPUs it finds in the same rebalance_tick, the task
-is spread over multiple non-idle tasks in different rebalance_ticks).
-New (lightly tested) patch is in the mail below.
+> Hello,
+> 	I need some inputs from the community (specifically from virtual
+> machine and embedded/power-management folks) on something that I am working on.
 
 
-> At least we should try method A first, and if that isn't good enough
-> (though I suspect it will be), then think about adding more complexity
-> to the scheduler.
+I think the best way is to let other CPUs handle the load balancing
+for idle CPUs. Basically when a CPU goes fully idle then you mark
+this in some global data structure, and CPUs doing load balancing
+after doing their own thing look for others that need to be balanced
+too and handle them too. When no CPU is left non idle then nothing needs
+to be load balanced anyways. When a idle CPU gets a task it just gets
+an reschedule IPI as usual, that wakes it up. 
 
-What would be good to measure between the two approaches is the CPU utilization 
-(over a period of time - say 10 hrs) of somewhat lightly loaded SMP guest OSes 
-(i.e some CPUs are idle and other CPUs of the same guest are not idle), when 
-multiple such guest OSes are running simultaneously on the same box.  This 
-means I need a port of VST to UML :(
+I call this the "scoreboard".
 
-> Well in the UP case, both A and B should basically degenerate to the
-> same thing.
+The trick is to evenly load balance the work over the remaining CPUs.
+Something simple like never doing work for more than 1/idlecpus is
+probably enough. In theory one could even use machine NUMA topology
+information for this, but that would be probably overkill for the
+first implementation.
 
-I agree.
+With the scoreboard implementation CPus could be virtually idle
+forever, which I think is best for virtualization.
 
-> Probably the more important case for the scheduler is to be able to
-> turn off idle SMP hypervisor clients, Srivatsa?
+BTW we need a very similar thing for RCU too.
 
-True. To make a distinction, these SMP clients can be either completely
-idle (all their CPUs idle) or partially idle (only fraction of CPUs idle).
-It would be good to cater to both kind of clients.
-
-My latest watchdog implementation is below for reference:
-
----
-
- linux-2.6.12-rc3-mm2-vatsa/include/linux/sched.h |    1 
- linux-2.6.12-rc3-mm2-vatsa/kernel/sched.c        |  150 ++++++++++++++++++++++-
- 2 files changed, 146 insertions(+), 5 deletions(-)
-
-diff -puN kernel/sched.c~sched-nohz kernel/sched.c
---- linux-2.6.12-rc3-mm2/kernel/sched.c~sched-nohz	2005-05-04 18:23:30.000000000 +0530
-+++ linux-2.6.12-rc3-mm2-vatsa/kernel/sched.c	2005-05-07 22:09:04.000000000 +0530
-@@ -1875,6 +1875,25 @@ out:
- 	return pulled;
- }
- 
-+static inline struct sched_domain *
-+sched_domain_ptr(int dst_cpu, int src_cpu, struct sched_domain *src_ptr)
-+{
-+	struct sched_domain *tmp, *dst_ptr;
-+
-+	dst_ptr = cpu_rq(dst_cpu)->sd;
-+
-+	for_each_domain(src_cpu, tmp) {
-+		if (tmp == src_ptr || !dst_ptr)
-+			break;
-+		dst_ptr = dst_ptr->parent;
-+	}
-+
-+	if (tmp == NULL)
-+		dst_ptr = NULL;
-+
-+	return dst_ptr;
-+}
-+
- /*
-  * find_busiest_group finds and returns the busiest CPU group within the
-  * domain. It calculates and returns the number of tasks which should be
-@@ -1882,11 +1901,18 @@ out:
-  */
- static struct sched_group *
- find_busiest_group(struct sched_domain *sd, int this_cpu,
--		   unsigned long *imbalance, enum idle_type idle)
-+		   unsigned long *imbalance, enum idle_type idle,
-+		   cpumask_t *wakemaskp)
- {
- 	struct sched_group *busiest = NULL, *this = NULL, *group = sd->groups;
- 	unsigned long max_load, avg_load, total_load, this_load, total_pwr;
- 	int load_idx;
-+#ifdef CONFIG_NO_IDLE_HZ
-+	int grp_sleeping = 0, woken = 0;
-+	cpumask_t tmpmask;
-+	struct sched_domain *sd1;
-+	unsigned long interval;
-+#endif
- 
- 	max_load = this_load = total_load = total_pwr = 0;
- 	if (idle == NOT_IDLE)
-@@ -1896,6 +1922,11 @@ find_busiest_group(struct sched_domain *
- 	else
- 		load_idx = sd->idle_idx;
- 
-+#ifdef CONFIG_NO_IDLE_HZ
-+	if (wakemaskp)
-+		cpus_clear(*wakemaskp);
-+#endif
-+
- 	do {
- 		unsigned long load;
- 		int local_group;
-@@ -1906,6 +1937,17 @@ find_busiest_group(struct sched_domain *
- 		/* Tally up the load of all CPUs in the group */
- 		avg_load = 0;
- 
-+#ifdef CONFIG_NO_IDLE_HZ
-+		grp_sleeping = 0;
-+		woken = 0;
-+		if (wakemaskp && idle == NOT_IDLE) {
-+			/* Are all CPUs in the group sleeping ? */
-+			cpus_and(tmpmask, group->cpumask, nohz_cpu_mask);
-+			if (cpus_equal(tmpmask, group->cpumask))
-+				grp_sleeping = 1;
-+		}
-+#endif
-+
- 		for_each_cpu_mask(i, group->cpumask) {
- 			/* Bias balancing toward cpus of our domain */
- 			if (local_group)
-@@ -1914,6 +1956,36 @@ find_busiest_group(struct sched_domain *
- 				load = source_load(i, load_idx);
- 
- 			avg_load += load;
-+
-+#ifdef CONFIG_NO_IDLE_HZ
-+			/* Try to find a CPU that can be woken up from the
-+			 * sleeping group. After we wake up one CPU, we will let
-+			 * it wakeup others in its group.
-+			 */
-+			if (!grp_sleeping || woken)
-+				continue;
-+
-+			sd1 = sched_domain_ptr(i, this_cpu, sd);
-+
-+			if (!sd1 || !sd1->flags & SD_LOAD_BALANCE)
-+				continue;
-+
-+			interval = sd1->balance_interval;
-+			/* scale ms to jiffies */
-+			interval = msecs_to_jiffies(interval);
-+	                if (unlikely(!interval))
-+        	                interval = 1;
-+
-+			if (jiffies - sd1->last_balance >= interval) {
-+				/* Lets record this CPU as a possible target
-+				 * to be woken up. Whether we actually wake it
-+				 * up or not depends on the CPU's imbalance wrt
-+				 * others in the domain.
-+				 */
-+				woken = 1;
-+				cpu_set(i, *wakemaskp);
-+			}
-+#endif
- 		}
- 
- 		total_load += avg_load;
-@@ -2050,11 +2122,15 @@ static int load_balance(int this_cpu, ru
- 	unsigned long imbalance;
- 	int nr_moved, all_pinned = 0;
- 	int active_balance = 0;
-+	cpumask_t wakemask;
-+#ifdef CONFIG_NO_IDLE_HZ
-+	struct sched_domain *sd1;
-+#endif
- 
- 	spin_lock(&this_rq->lock);
- 	schedstat_inc(sd, lb_cnt[idle]);
- 
--	group = find_busiest_group(sd, this_cpu, &imbalance, idle);
-+	group = find_busiest_group(sd, this_cpu, &imbalance, idle, &wakemask);
- 	if (!group) {
- 		schedstat_inc(sd, lb_nobusyg[idle]);
- 		goto out_balanced;
-@@ -2130,9 +2206,11 @@ static int load_balance(int this_cpu, ru
- 			sd->balance_interval *= 2;
- 	}
- 
--	return nr_moved;
-+	goto out_nohz;
- 
- out_balanced:
-+	nr_moved = 0;
-+
- 	spin_unlock(&this_rq->lock);
- 
- 	schedstat_inc(sd, lb_balanced[idle]);
-@@ -2143,7 +2221,36 @@ out_balanced:
- 			(sd->balance_interval < sd->max_interval))
- 		sd->balance_interval *= 2;
- 
--	return 0;
-+out_nohz:
-+#ifdef CONFIG_NO_IDLE_HZ
-+	if (!cpus_empty(wakemask)) {
-+		int i;
-+
-+		/* Lets try to wakeup one CPU from the mask. Rest of the cpus
-+		 * in the mask can be woken up by other CPUs when they do load
-+		 * balancing in this domain. That way, the overhead of watchdog
-+		 * functionality is spread across (non-idle) CPUs in the domain.
-+		 */
-+
-+		for_each_cpu_mask(i, wakemask) {
-+
-+			sd1 = sched_domain_ptr(i, this_cpu, sd);
-+
-+			if (!sd1)
-+				continue;
-+
-+			find_busiest_group(sd1, i, &imbalance, SCHED_IDLE,
-+					   			NULL);
-+			if (imbalance > 0) {
-+				spin_lock(&cpu_rq(i)->lock);
-+				resched_task(cpu_rq(i)->idle);
-+				spin_unlock(&cpu_rq(i)->lock);
-+				break;
-+			}
-+		}
-+	}
-+#endif
-+	return nr_moved;
- }
- 
- /*
-@@ -2162,7 +2269,7 @@ static int load_balance_newidle(int this
- 	int nr_moved = 0;
- 
- 	schedstat_inc(sd, lb_cnt[NEWLY_IDLE]);
--	group = find_busiest_group(sd, this_cpu, &imbalance, NEWLY_IDLE);
-+	group = find_busiest_group(sd, this_cpu, &imbalance, NEWLY_IDLE, NULL);
- 	if (!group) {
- 		schedstat_inc(sd, lb_nobusyg[NEWLY_IDLE]);
- 		goto out_balanced;
-@@ -2323,6 +2430,39 @@ static void rebalance_tick(int this_cpu,
- 		}
- 	}
- }
-+
-+#ifdef CONFIG_NO_IDLE_HZ
-+/*
-+ * Try hard to pull tasks. Called by idle task before it sleeps cutting off
-+ * local timer ticks.  This clears the various load counters and tries to pull
-+ * tasks.
-+ *
-+ * Returns 1 if tasks were pulled over, 0 otherwise.
-+ */
-+int idle_balance_retry(void)
-+{
-+	int j, moved = 0, this_cpu = smp_processor_id();
-+	runqueue_t *this_rq = this_rq();
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+
-+	for (j = 0; j < 3; j++)
-+		this_rq->cpu_load[j] = 0;
-+
-+	rebalance_tick(this_cpu, this_rq, SCHED_IDLE);
-+
-+	if (this_rq->nr_running) {
-+		moved = 1;
-+		set_tsk_need_resched(current);
-+	}
-+
-+	local_irq_restore(flags);
-+
-+	return moved;
-+}
-+#endif
-+
- #else
- /*
-  * on UP we do not need to balance between CPUs:
-diff -puN include/linux/sched.h~sched-nohz include/linux/sched.h
---- linux-2.6.12-rc3-mm2/include/linux/sched.h~sched-nohz	2005-05-04 18:23:30.000000000 +0530
-+++ linux-2.6.12-rc3-mm2-vatsa/include/linux/sched.h	2005-05-04 18:23:37.000000000 +0530
-@@ -897,6 +897,7 @@ extern int task_curr(const task_t *p);
- extern int idle_cpu(int cpu);
- extern int sched_setscheduler(struct task_struct *, int, struct sched_param *);
- extern task_t *idle_task(int cpu);
-+extern int idle_balance_retry(void);
- 
- void yield(void);
- 
-
-_
-
--- 
-
-
-Thanks and Regards,
-Srivatsa Vaddagiri,
-Linux Technology Center,
-IBM Software Labs,
-Bangalore, INDIA - 560017
+-Andi
 
 
 -------------------------------------------------------
