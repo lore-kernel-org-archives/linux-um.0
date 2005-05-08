@@ -2,21 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUco5-00014M-Oa	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 20:50:17 -0700
-Received: from ozlabs.org ([203.10.76.45])
+	id 1DUd2B-0002aO-RP	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 May 2005 21:04:51 -0700
+Received: from www.tuxrocks.com ([64.62.190.123] helo=tuxrocks.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DUco3-0007G1-T9
+	(Exim 4.41)	id 1DUd2A-0001Kk-FA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 May 2005 20:50:17 -0700
-From: Rusty Russell <rusty@rustcorp.com.au>
-In-Reply-To: <20050507182728.GA29592@in.ibm.com>
-References: <20050507182728.GA29592@in.ibm.com>
-Content-Type: text/plain
-Message-Id: <1115524211.17482.23.camel@localhost.localdomain>
-Mime-Version: 1.0
+	Sat, 07 May 2005 21:04:51 -0700
+Received: from [10.0.0.10] (sorenson.dsl.csolutions.net [216.190.206.130])
+	(authenticated bits=0)
+	by tuxrocks.com (8.13.1/8.13.1) with ESMTP id j4844kqk026428
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 7 May 2005 22:04:48 -0600
+Message-ID: <427D8FDB.9000703@tuxrocks.com>
+From: Frank Sorenson <frank@tuxrocks.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [RFC] (How to) Let idle CPUs sleep
+Subject: [uml-devel] SKAS patch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,49 +32,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 08 May 2005 13:50:10 +1000
-To: vatsa@in.ibm.com
-Cc: schwidefsky@de.ibm.com, jdike@addtoit.com, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, Nick Piggin <nickpiggin@yahoo.com.au>, rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 07 May 2005 22:04:43 -0600
+To: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, 2005-05-07 at 23:57 +0530, Srivatsa Vaddagiri wrote:
-> Two solutions have been proposed so far:
-> 
-> 	A. As per Nick's suggestion, impose a max limit (say some 100 ms or
-> 	   say a second, Nick?) on how long a idle CPU can avoid taking
-> 	   local-timer ticks. As a result, the load imbalance could exist only
-> 	   for this max duration, after which the sleeping CPU will wake up
-> 	   and balance itself. If there is no imbalance, it can go and sleep
-> 	   again for the max duration.
-> 
->  	   For ex, lets say a idle CPU found that it doesn't have any near timer
-> 	   for the next 1 minute. Instead of letting it sleep for 1 minute in
-> 	   a single stretch, we let it sleep in bursts of 100 msec (or whatever
-> 	   is the max. duration chosen). This still is better than having
-> 	   the idle CPU take HZ ticks a second.
-> 
-> 	   As a special case, when all the CPUs of an image go idle, we
-> 	   could consider completely shutting off local timer ticks
-> 	   across all CPUs (till the next non-timer interrupt).
-> 
-> 
-> 	B. Don't impose any max limit on how long a idle CPU can sleep.
-> 	   Here we let the idle CPU sleep as long as it wants. It is
-> 	   woken up by a "busy" CPU when it detects an imbalance. The
-> 	   busy CPU acts as a watchdog here. If there are no such
-> 	   busy CPUs, then it means that nobody will acts as watchdogs
-> 	   and idle CPUs sleep as long as they want. A possible watchdog
-> 	   implementation has been discussed at:
-> 
-> 	http://marc.theaimsgroup.com/?l=linux-kernel&m=111287808905764&w=2
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-My preference would be the second: fix the scheduler so it doesn't rely
-on regular polling.  However, as long as the UP case runs with no timer
-interrupts when idle, many people will be happy (eg. most embedded).
+Has anyone fixed up the SKAS patch for 2.6.12-rc4 yet?  There were some
+changes in ptrace.c (see
+http://www.kernel.org/git/gitweb.cgi?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=2fd6f58ba6efc82ea2c9c2630f7ff5ed9eeaf34a)
+that I'm having a hard time wrapping my head around in order to apply
+the patch cleanly.  If anyone has done it, I'd love to see the resulting
+do_syscall_trace() implementation.
 
-Rusty.
--- 
-A bad analogy is like a leaky screwdriver -- Richard Braakman
+Thanks,
 
+Frank
+- --
+Frank Sorenson - KD7TZK
+Systems Manager, Computer Science Department
+Brigham Young University
+frank@tuxrocks.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFCfY/baI0dwg4A47wRAqCuAJ4ic98YV6SuCwmutp+xpvjaj7hgnQCgyCk3
+HRv92QPFQvotBAK+gzcsUFA=
+=BR3o
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
