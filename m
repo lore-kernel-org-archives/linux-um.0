@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUio1-00069N-VW	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2005 03:14:37 -0700
-Received: from pentafluge.infradead.org ([213.146.154.40])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DUio0-00064k-GE
+	id 1DUkNm-000589-DS	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2005 04:55:38 -0700
+Received: from smtp.gentoo.org ([134.68.220.30])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DUkNl-0006xd-0g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2005 03:14:37 -0700
-From: Arjan van de Ven <arjan@infradead.org>
-In-Reply-To: <1115524211.17482.23.camel@localhost.localdomain>
-References: <20050507182728.GA29592@in.ibm.com>
-	 <1115524211.17482.23.camel@localhost.localdomain>
-Content-Type: text/plain
-Message-Id: <1115547230.5998.10.camel@laptopd505.fenrus.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [RFC] (How to) Let idle CPUs sleep
+	Sun, 08 May 2005 04:55:38 -0700
+Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
+	helo=nuthatch.gentoo.org)	by smtp.gentoo.org with esmtp (Exim 4.43)
+	id 1DUkNd-0004qo-M3	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2005 11:55:29 +0000
+Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
+	id 1DUkNd-0003RB-4X	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2005 11:55:29 +0000
+From: bugzilla-daemon@gentoo.org
+Message-Id: <E1DUkNd-0003RB-4X@nuthatch.gentoo.org>
+Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,25 +30,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 08 May 2005 12:13:50 +0200
-To: Rusty Russell <rusty@rustcorp.com.au>
-Cc: vatsa@in.ibm.com, schwidefsky@de.ibm.com, jdike@addtoit.com, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, Nick Piggin <nickpiggin@yahoo.com.au>, rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 08 May 2005 11:55:29 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, 2005-05-08 at 13:50 +1000, Rusty Russell wrote:
-> My preference would be the second: fix the scheduler so it doesn't rely
-> on regular polling.  However, as long as the UP case runs with no timer
-> interrupts when idle, many people will be happy (eg. most embedded).
+http://bugs.gentoo.org/show_bug.cgi?id=49277
 
-alternatively; if a CPU is idle a long time we could do a software level
-hotunplug on it (after setting it to the lowest possible frequency and
-power state), and have some sort of thing that keeps track of "spare but
-unplugged" cpus that can plug cpus back in on demand.
 
-That also be nice for all the virtual environments where this could
-interact with the hypervisor etc
+dsd@gentoo.org changed:
+
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+             Status|NEW                         |RESOLVED
+         Resolution|                            |UPSTREAM
 
 
 
+
+------- Additional Comments From dsd@gentoo.org  2005-05-08 04:55 PST -------
+No bug reports, I assume this is OK. The NPTL compilation issue still exists (I believe?) so closing as UPSTREAM. Hopefully someone will find the time and resources to fix it soon.
+
+
+
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
