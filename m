@@ -2,16 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DVHZC-0002Y8-NT	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 16:21:38 -0700
+	id 1DVHZD-0002YM-8C	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 May 2005 16:21:39 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DVHZA-0006W7-Qn	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 16:21:38 -0700
+	id 1DVHZB-0006W3-Bm	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 May 2005 16:21:39 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050509224520.C9E9613C21A@zion>
-Subject: [uml-devel] [patch 5/6] uml: split CONFIG_FRAME_POINTER from
-	DEBUG_INFO
+Message-Id: <20050509224518.0695F13C218@zion>
+Subject: [uml-devel] [patch 4/6] uml: add MOD_LICENSE to random driver
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,48 +22,62 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 10 May 2005 00:45:20 +0200
+Date: Tue, 10 May 2005 00:45:17 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-Until now, FRAME_POINTER was set = DEBUG_INFO for UML. Change it to be the
-default way, so that it can be enabled alone (for instance to get better
-backtraces on crashes).
-The call-trace dumper which uses the frame pointer is not yet in, I'm going to
-introduce it in a separate patch.
+Add a MODULE_LICENSE("GPL") to the driver, remove some unused macros and
+add the GPL license (it's GPL-licensed anyway since it's a GPL-derivative,
+apart that Jeff Dike releases GPL software, in case anybody is wondering).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
+ linux-2.6.12-paolo/arch/um/drivers/random.c |   16 +++++++++++-----
+ 1 files changed, 11 insertions(+), 5 deletions(-)
 
-diff -puN arch/um/Kconfig.debug~uml-split-frame-pointer-option arch/um/Kconfig.debug
---- linux-2.6.git/arch/um/Kconfig.debug~uml-split-frame-pointer-option	2005-05-07 18:00:23.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/Kconfig.debug	2005-05-07 18:00:23.000000000 +0200
-@@ -2,10 +2,6 @@ menu "Kernel hacking"
- 
- source "lib/Kconfig.debug"
- 
--config FRAME_POINTER
--	bool
--	default y if DEBUG_INFO
+diff -puN arch/um/drivers/random.c~uml-random-mod-license arch/um/drivers/random.c
+--- linux-2.6.12/arch/um/drivers/random.c~uml-random-mod-license	2005-05-02 15:45:03.000000000 +0200
++++ linux-2.6.12-paolo/arch/um/drivers/random.c	2005-05-02 15:53:46.000000000 +0200
+@@ -1,5 +1,10 @@
+-/* Much of this ripped from hw_random.c */
 -
- config PT_PROXY
- 	bool "Enable ptrace proxy"
- 	depends on XTERM_CHAN && DEBUG_INFO && MODE_TT
-diff -puN lib/Kconfig.debug~uml-split-frame-pointer-option lib/Kconfig.debug
---- linux-2.6.git/lib/Kconfig.debug~uml-split-frame-pointer-option	2005-05-07 18:00:23.000000000 +0200
-+++ linux-2.6.git-paolo/lib/Kconfig.debug	2005-05-07 18:00:23.000000000 +0200
-@@ -151,7 +151,8 @@ config DEBUG_FS
++/* Copyright (C) 2005 Jeff Dike <jdike@addtoit.com> */
++/* Much of this ripped from drivers/char/hw_random.c, see there for other
++ * copyright.
++ *
++ * This software may be used and distributed according to the terms
++ * of the GNU General Public License, incorporated herein by reference.
++ */
+ #include <linux/module.h>
+ #include <linux/fs.h>
+ #include <linux/miscdevice.h>
+@@ -12,8 +17,6 @@
+  */
+ #define RNG_VERSION "1.0.0"
+ #define RNG_MODULE_NAME "random"
+-#define RNG_DRIVER_NAME   RNG_MODULE_NAME " virtual driver " RNG_VERSION
+-#define PFX RNG_MODULE_NAME ": "
  
- config FRAME_POINTER
- 	bool "Compile the kernel with frame pointers"
--	depends on DEBUG_KERNEL && ((X86 && !X86_64) || CRIS || M68K || M68KNOMMU || FRV)
-+	depends on DEBUG_KERNEL && ((X86 && !X86_64) || CRIS || M68K || M68KNOMMU || FRV || UML)
-+	default y if DEBUG_INFO && UML
- 	help
- 	  If you say Y here the resulting kernel image will be slightly larger
- 	  and slower, but it will give very useful debugging information.
+ #define RNG_MISCDEV_MINOR		183 /* official */
+ 
+@@ -98,7 +101,7 @@ static int __init rng_init (void)
+ 
+ 	err = misc_register (&rng_miscdev);
+ 	if (err) {
+-		printk (KERN_ERR PFX "misc device register failed\n");
++		printk (KERN_ERR RNG_MODULE_NAME ": misc device register failed\n");
+ 		goto err_out_cleanup_hw;
+ 	}
+ 
+@@ -120,3 +123,6 @@ static void __exit rng_cleanup (void)
+ 
+ module_init (rng_init);
+ module_exit (rng_cleanup);
++
++MODULE_DESCRIPTION("UML Host Random Number Generator (RNG) driver");
++MODULE_LICENSE("GPL");
 _
 
 
