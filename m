@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DUqEJ-0000yt-OG	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2005 11:10:15 -0700
-Received: from smtpout19.mailhost.ntl.com ([212.250.162.19]
-	helo=mta13-winn.mailhost.ntl.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DUqEJ-0005IQ-2s	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2005 11:10:15 -0700
-Message-ID: <427E55E6.2000503@manchester.ac.uk>
-From: Ian Rogers <ian.rogers@manchester.ac.uk>
+	id 1DV1js-0001Pa-Dg	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2005 23:27:36 -0700
+Received: from smtp201.mail.sc5.yahoo.com ([216.136.129.91])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DV1jq-0006aD-Pw	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2005 23:27:36 -0700
+Message-ID: <427F02CE.7080108@yahoo.com.au>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Using SKAS, any examples?
-References: <427895BC.2050201@manchester.ac.uk>
-	<20050507031144.GD14445@ccure.user-mode-linux.org>
-	<427D259D.3050306@manchester.ac.uk> <200505081902.25146.blaisorblade@yahoo.it>
-In-Reply-To: <200505081902.25146.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+References: <20050507182728.GA29592@in.ibm.com>
+	<1115524211.17482.23.camel@localhost.localdomain>
+	<427D921F.8070602@yahoo.com.au> <20050508121932.GA3055@in.ibm.com>
+In-Reply-To: <20050508121932.GA3055@in.ibm.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [RFC] (How to) Let idle CPUs sleep
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,66 +29,85 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 08 May 2005 19:09:42 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Mon, 09 May 2005 16:27:26 +1000
+To: vatsa@in.ibm.com
+Cc: Rusty Russell <rusty@rustcorp.com.au>, schwidefsky@de.ibm.com, jdike@addtoit.com, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
+Srivatsa Vaddagiri wrote:
+> On Sun, May 08, 2005 at 02:14:23PM +1000, Nick Piggin wrote:
+> 
+>>Yeah probably something around that order of magnitude. I suspect
+>>there will fast be a point where either you'll get other timers
+>>going off more frequently, and / or you simply get very quickly
+>>diminishing returns on the amount of power saving gained from
+>>increasing the period.
+> 
+> 
+> I am looking at it from the other perspective also i.e, virtualized
+> env. Any amount of unnecessary timer ticks will lead to equivalent amount
+> of unnecessary context switches among the guest OSes.
+> 
 
->Hmm, no, that's not what SKAS allows. It simply allows to switch to *another* 
->address space. Yes, you can make arbitrary mmaps, so to replicate the 
->original address space and add some other maps, that you access even through 
->%fs if you want.
->
->But that's nothing special to SKAS; the advantage it gives is that:
->a) the parent can easily alter the child's address space (not the original one 
->it inherits at startup, but only the newly created one).
->b) the parent can switch the child's current address space through 
->PTRACE_SWITCH_MM (this could be emulated with running many childs).
->  
->
-Thanks. I will implment an emulator through this mechanism. My current 
-mechanism performs:
+Yep.
 
-loadByte(addr) {
- pte = addr >> 12;
- offset = addr & 0xFFF;
- result = memory[ptr][offset]
-}
+> 
+>>It is not so much a matter of "fixing" the scheduler as just adding
+>>more heuristics. When are we too busy? When should we wake another
+>>CPU? What if that CPU is an SMT sibling? What if it is across the
+>>other side of the topology, and other CPUs closer to it are busy
+>>as well? What if they're busy but not as busy as we are? etc.
+>>
+>>We've already got that covered in the existing periodic pull balancing,
+>>so instead of duplicating this logic and moving this extra work to busy
+>>CPUs, we can just use the existing framework.
+> 
+> 
+> I don't think we have to duplicate the logic, just "reuse" whatever logic
+> exists (in find_busiest_group etc). However I do agree there is movement
 
-you can imagine the store... mechanisms. Obviously the cost of the 
-ptrace calls is going to be a slow down compared to this.
+OK, that may possibly be an option... however:
 
-I hope to look into creating a patch to allow multiple segments in a 
-linux process. So an extension to skas on i386 and I can get my %fs wish :-)
+> of extra work to busy CPUs, but that is only to help the idle CPU sleep longer.
+> Whether it justifies the additional complexity or not is what this RFC is
+> about I guess!
+> 
 
-btw: a similar thing should be possible on PowerPC given that 
-segmentation can be disabled for either or both the instruction and data 
-cache. It would be neat to wrap this up in a module for the performance 
-improvement of emulators.
+Yeah, this is a bit worrying. In general we should not be loading
+up busy CPUs with any more work, and sleeping idle CPUs should be
+done as a blunt "slowpath" operation. Ie. something that works well
+enough.
 
->Now, the example almost work. The child can execute the syscalls, even if the 
->verification of the datas it gets is currently failing (I'll be verifying 
->that later).
->
->The main problem yesterday's version had was that the mmap's had a offset of 
->0, since the asid_mmap() loops will always stop at the first entry of 
->AddressSpaces[ASID].map_info, which had a 0 offset. Currently I set the 
->offset equal to the virtual address it's mapped to.
->
->Thanks a lot for posting the original version: the finished one will be very 
->useful for the testing of SKAS for x86-64, to debug it and get it working 
->soon. Bye
->  
->
-Glad it was useful and thanks for your help - it's taught me what to do 
-for my emulator code. I hope I can post some more things back in the 
-future. Would the multi-segment stuff be useful for more people? Is 
-there an obvious reason to avoid multi-segments?
+> FWIW, I have also made some modifications in the original proposal 
+> for reducing the watchdog workload (instead of the same non-idle cpu waking 
+> up all the sleeping CPUs it finds in the same rebalance_tick, the task
+> is spread over multiple non-idle tasks in different rebalance_ticks).
+> New (lightly tested) patch is in the mail below.
+> 
 
-Regards,
+Mmyeah, I'm not a big fan :)
 
-Ian Rogers
+I could probably find some time to do my implementation if you have
+a complete working patch for eg. UML.
+
+> 
+> 
+>>At least we should try method A first, and if that isn't good enough
+>>(though I suspect it will be), then think about adding more complexity
+>>to the scheduler.
+> 
+> 
+> What would be good to measure between the two approaches is the CPU utilization 
+> (over a period of time - say 10 hrs) of somewhat lightly loaded SMP guest OSes 
+> (i.e some CPUs are idle and other CPUs of the same guest are not idle), when 
+> multiple such guest OSes are running simultaneously on the same box.  This 
+> means I need a port of VST to UML :(
+> 
+
+Yeah that would be good.
+
+-- 
+SUSE Labs, Novell Inc.
+
 
 
 
