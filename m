@@ -2,15 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DVHZD-0002YM-8C	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 16:21:39 -0700
+	id 1DVHZE-0002YR-Fl	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 May 2005 16:21:40 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DVHZB-0006W3-Bm	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 16:21:39 -0700
+	id 1DVHZA-0006W4-Sn	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 May 2005 16:21:40 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050509224518.0695F13C218@zion>
-Subject: [uml-devel] [patch 4/6] uml: add MOD_LICENSE to random driver
+Message-Id: <20050509224515.4EF5F13C216@zion>
+Subject: [uml-devel] [patch 3/6] uml: add modversions support
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,62 +22,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 10 May 2005 00:45:17 +0200
+Date: Tue, 10 May 2005 00:45:15 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-Add a MODULE_LICENSE("GPL") to the driver, remove some unused macros and
-add the GPL license (it's GPL-licensed anyway since it's a GPL-derivative,
-apart that Jeff Dike releases GPL software, in case anybody is wondering).
+Actually, the real support was added by some earlier patches. Now we simply
+re-enable the config. option. I've actually tested it and it works well.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.12-paolo/arch/um/drivers/random.c |   16 +++++++++++-----
- 1 files changed, 11 insertions(+), 5 deletions(-)
+ linux-2.6.git-paolo/init/Kconfig |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
 
-diff -puN arch/um/drivers/random.c~uml-random-mod-license arch/um/drivers/random.c
---- linux-2.6.12/arch/um/drivers/random.c~uml-random-mod-license	2005-05-02 15:45:03.000000000 +0200
-+++ linux-2.6.12-paolo/arch/um/drivers/random.c	2005-05-02 15:53:46.000000000 +0200
-@@ -1,5 +1,10 @@
--/* Much of this ripped from hw_random.c */
--
-+/* Copyright (C) 2005 Jeff Dike <jdike@addtoit.com> */
-+/* Much of this ripped from drivers/char/hw_random.c, see there for other
-+ * copyright.
-+ *
-+ * This software may be used and distributed according to the terms
-+ * of the GNU General Public License, incorporated herein by reference.
-+ */
- #include <linux/module.h>
- #include <linux/fs.h>
- #include <linux/miscdevice.h>
-@@ -12,8 +17,6 @@
-  */
- #define RNG_VERSION "1.0.0"
- #define RNG_MODULE_NAME "random"
--#define RNG_DRIVER_NAME   RNG_MODULE_NAME " virtual driver " RNG_VERSION
--#define PFX RNG_MODULE_NAME ": "
+diff -puN init/Kconfig~uml-modversions-resupport init/Kconfig
+--- linux-2.6.git/init/Kconfig~uml-modversions-resupport	2005-05-10 00:38:21.000000000 +0200
++++ linux-2.6.git-paolo/init/Kconfig	2005-05-10 00:38:21.000000000 +0200
+@@ -442,7 +442,7 @@ config OBSOLETE_MODPARM
  
- #define RNG_MISCDEV_MINOR		183 /* official */
- 
-@@ -98,7 +101,7 @@ static int __init rng_init (void)
- 
- 	err = misc_register (&rng_miscdev);
- 	if (err) {
--		printk (KERN_ERR PFX "misc device register failed\n");
-+		printk (KERN_ERR RNG_MODULE_NAME ": misc device register failed\n");
- 		goto err_out_cleanup_hw;
- 	}
- 
-@@ -120,3 +123,6 @@ static void __exit rng_cleanup (void)
- 
- module_init (rng_init);
- module_exit (rng_cleanup);
-+
-+MODULE_DESCRIPTION("UML Host Random Number Generator (RNG) driver");
-+MODULE_LICENSE("GPL");
+ config MODVERSIONS
+ 	bool "Module versioning support (EXPERIMENTAL)"
+-	depends on MODULES && EXPERIMENTAL && !UML
++	depends on MODULES && EXPERIMENTAL
+ 	help
+ 	  Usually, you have to use modules compiled with your kernel.
+ 	  Saying Y here makes it sometimes possible to use modules
 _
 
 
