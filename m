@@ -1,24 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DVIBt-0005Hy-22	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 17:01:37 -0700
-Received: from fire.osdl.org ([65.172.181.4] helo=smtp.osdl.org)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1DVIBr-0003p9-60
+	id 1DVII7-0006Sq-Vg	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 May 2005 17:08:03 -0700
+Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DVII5-0000S4-JU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 17:01:36 -0700
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20050509170208.6c70a3ba.akpm@osdl.org>
-In-Reply-To: <200505100139.02512.blaisorblade@yahoo.it>
-References: <200505100110.16920.blaisorblade@yahoo.it>
-	<20050509164546.0d6d136b.akpm@osdl.org>
-	<200505100139.02512.blaisorblade@yahoo.it>
+	Mon, 09 May 2005 17:08:03 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DVIHy-0008Vm-8v	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 May 2005 17:07:54 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050509235755.GB14295@ccure.user-mode-linux.org>
+References: <200505100051.26918.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [patch 0/6] latest bugfixes for 2.6.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200505100051.26918.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: 3-level pagetables broken on i386
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,19 +32,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 9 May 2005 17:02:08 -0700
+Date: Mon, 9 May 2005 19:57:55 -0400
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, bstroesser@fujitsu-siemens.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade <blaisorblade@yahoo.it> wrote:
->
-> > Jeff sent in fixes which were dependent on other things I had, we're maybe
-> > several weeks away from 2.6.12,
-> Several weeks away?
+On Tue, May 10, 2005 at 12:51:26AM +0200, Blaisorblade wrote:
+> If 3-level pagetables is only for x86-64, then let me know and I'll add an 
+> appropriate dependency. If not (and IIRC it worked some time ago), then 
+> choose how to fix that.
 
-Hope so.  We lost a lot of testing due to lack of daily snapshots and
-general SCM churn.  Plus I have a boatload of bug reports to follow up on
-here.
+It did work, and I'd like it to continue working.  It's just something that's
+not exercised much.
+  
+				Jeff
 
 
 -------------------------------------------------------
