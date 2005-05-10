@@ -2,24 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DVXCv-00077o-HF	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 May 2005 09:03:41 -0700
-Received: from terminus.zytor.com ([209.128.68.124])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DVXCu-0005Ga-50
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 May 2005 09:03:41 -0700
-Message-ID: <4280DB48.70908@zytor.com>
-From: "H. Peter Anvin" <hpa@zytor.com>
-MIME-Version: 1.0
-References: <200505100110.16920.blaisorblade@yahoo.it>
-	<200505101217.56252.blaisorblade@yahoo.it>
-	<20050510034212.0d1e0799.akpm@osdl.org>
-	<200505101243.38102.blaisorblade@yahoo.it>
-In-Reply-To: <200505101243.38102.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: Restoring the link to snapshots on kernel.org
+	id 1DVZ85-0008Dl-ND	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 10 May 2005 11:06:49 -0700
+Received: from ppp-217-133-42-200.cust-adsl.tiscali.it ([217.133.42.200]
+	helo=g5.random)	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DVZ83-0004ik-U7	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 10 May 2005 11:06:49 -0700
+From: Andrea Arcangeli <andrea@suse.de>
+Message-ID: <20050510180642.GY6313@g5.random>
+References: <20050509224509.0C105416E4@zion>
+	<20050509183401.28082cbc.akpm@osdl.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050509183401.28082cbc.akpm@osdl.org>
+Subject: [uml-devel] Re: [patch 1/6] uml: remove elf.h [ compile-fix, for
+	2.6.12 ]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,26 +29,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 10 May 2005 09:03:20 -0700
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: webmaster@kernel.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@osdl.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 10 May 2005 20:06:42 +0200
+To: Andrew Morton <akpm@osdl.org>
+Cc: blaisorblade@yahoo.it, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> 
->>Nope.  They started again five days ago.
-> 
-> Would anybody restore the link from the main www.kernel.org/ page, then? I 
-> only see there (and in the finger banner) the 2.4 snapshots, not the 2.6 
-> ones.
-> 
-> I just found
-> http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/, but only by knowing 
-> there were the snapshots somewhere.
+On Mon, May 09, 2005 at 06:34:01PM -0700, Andrew Morton wrote:
+> I'll just ask Linus to delete it ;)
 
-It's because there is no snapshots against -rc4, simply because Linus is 
-on vacation and thus there hasn't been any changes since -rc4.
-
-	-hpa
+make distclean should delete it too. I never worry about zero length
+file, they'll be deleted eventually.
 
 
 -------------------------------------------------------
