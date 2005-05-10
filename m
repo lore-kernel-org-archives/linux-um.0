@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DVII7-0006Sq-Vg	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 17:08:03 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DVII5-0000S4-JU
+	id 1DVJdv-0007bo-6c	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 May 2005 18:34:39 -0700
+Received: from fire.osdl.org ([65.172.181.4] helo=smtp.osdl.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41)	id 1DVJdt-00037v-2D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 17:08:03 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DVIHy-0008Vm-8v	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 May 2005 17:07:54 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050509235755.GB14295@ccure.user-mode-linux.org>
-References: <200505100051.26918.blaisorblade@yahoo.it>
+	Mon, 09 May 2005 18:34:39 -0700
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20050509183401.28082cbc.akpm@osdl.org>
+In-Reply-To: <20050509224509.0C105416E4@zion>
+References: <20050509224509.0C105416E4@zion>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200505100051.26918.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: 3-level pagetables broken on i386
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [patch 1/6] uml: remove elf.h [ compile-fix, for
+	2.6.12 ]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,19 +29,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 9 May 2005 19:57:55 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 9 May 2005 18:34:01 -0700
+To: blaisorblade@yahoo.it
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, May 10, 2005 at 12:51:26AM +0200, Blaisorblade wrote:
-> If 3-level pagetables is only for x86-64, then let me know and I'll add an 
-> appropriate dependency. If not (and IIRC it worked some time ago), then 
-> choose how to fix that.
+blaisorblade@yahoo.it wrote:
+>
+> 
+> Actually remove elf.h in the tree. The previous patch, due to a quilt
+> bug/misuse, left it in the tree as a 0-length file, preventing the build to
+> see it as missing and to generate a symlink in its place.
+> 
+> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> ---
+> 
+>   |    0 
+>  1 files changed
+> 
+> diff -L include/asm-um/elf.h -puN include/asm-um/elf.h~uml-remove-elf-h /dev/null
 
-It did work, and I'd like it to continue working.  It's just something that's
-not exercised much.
-  
-				Jeff
+hmm, that's exciting.  How to tell diff and patch to remove a zero-length
+file?
+
+bix:/home/akpm> mkdir a b
+bix:/home/akpm> touch a/a
+bix:/home/akpm> diff -uNr a b
+bix:/home/akpm> diff -u a b  
+Only in a: a
+bix:/home/akpm> diff -ur a b
+Only in a: a
+bix:/home/akpm> diff -uPr a b
+Only in a: a
+
+I'll just ask Linus to delete it ;)
 
 
 -------------------------------------------------------
