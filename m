@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DVUw6-0003Pz-B8	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 May 2005 06:38:10 -0700
-Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DVUw3-000212-3I	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 May 2005 06:38:10 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] Re: [patch 1/6] uml: remove elf.h [ compile-fix,
- for 2.6.12 ]
-In-Reply-To: <20050509183401.28082cbc.akpm@osdl.org>
-Message-ID: <Pine.LNX.4.61.0505101525360.16461@filer.marasystems.com>
-References: <20050509224509.0C105416E4@zion>
-	<20050509183401.28082cbc.akpm@osdl.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	id 1DVXKu-0007SX-BH	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 10 May 2005 09:11:56 -0700
+Received: from viper.oldcity.dca.net ([216.158.38.4])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DVXKt-0006Xc-Ip	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 10 May 2005 09:11:56 -0700
+From: Lee Revell <rlrevell@joe-job.com>
+In-Reply-To: <4280DB48.70908@zytor.com>
+References: <200505100110.16920.blaisorblade@yahoo.it>
+	<200505101217.56252.blaisorblade@yahoo.it>
+	<20050510034212.0d1e0799.akpm@osdl.org><4280DB48.70908@zytor.com>
+Content-Type: text/plain
+Message-Id: <1115741511.12402.16.camel@mindpipe>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: Restoring the link to snapshots on kernel.org
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,24 +29,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 10 May 2005 15:37:33 +0200 (CEST)
-To: Andrew Morton <akpm@osdl.org>
-Cc: blaisorblade@yahoo.it, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 10 May 2005 12:11:50 -0400
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, webmaster@kernel.org, linux-kernel@vger.kernel.org, Andrew Morton <akpm@osdl.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 9 May 2005, Andrew Morton wrote:
+On Tue, 2005-05-10 at 09:03 -0700, H. Peter Anvin wrote:
+> Blaisorblade wrote:
+> > 
+> >>Nope.  They started again five days ago.
+> > 
+> > Would anybody restore the link from the main www.kernel.org/ page, then? I 
+> > only see there (and in the finger banner) the 2.4 snapshots, not the 2.6 
+> > ones.
+> > 
+> > I just found
+> > http://www.kernel.org/pub/linux/kernel/v2.6/snapshots/, but only by knowing 
+> > there were the snapshots somewhere.
+> 
+> It's because there is no snapshots against -rc4, simply because Linus is 
+> on vacation and thus there hasn't been any changes since -rc4.
+> 
 
->> diff -L include/asm-um/elf.h -puN include/asm-um/elf.h~uml-remove-elf-h /dev/null
->
-> hmm, that's exciting.  How to tell diff and patch to remove a zero-length
-> file?
+How about cleaning up the v2.6/testing directory?
 
-This has to be instructed by the patch.. If the new file is an empty file 
-with timestamp of 1 Jan 1970 then it is supposed to be deleted.
+ [   ]  ChangeLog-2.6.9-rc4                10-Oct-2004 22:15   115k
+ [   ]  LATEST-IS-2.6.11-rc5               24-Feb-2005 10:58     0k
+ [   ]  LATEST-IS-2.6.12-rc1               17-Mar-2005 20:41     0k
+ [   ]  LATEST-IS-2.6.12-rc2               04-Apr-2005 11:41     0k
+ [   ]  LATEST-IS-2.6.12-rc3               20-Apr-2005 19:21     0k
+ [   ]  LATEST-IS-2.6.12-rc4               07-May-2005 00:41     0k
+ [DIR]  cset/                              04-Apr-2005 12:16      -
 
-The /dev/null trick only works well for adding files, not removing them.
+Lee
 
-Regards
-Henrik
 
 
 -------------------------------------------------------
