@@ -2,27 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DVvmK-0005cO-UF	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 May 2005 11:17:52 -0700
-Received: from ylpvm12-ext.prodigy.net ([207.115.57.43]
-	helo=ylpvm12.prodigy.net)
+	id 1DWEyZ-0005VF-Ix	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 May 2005 07:47:47 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DVvmJ-00078t-Oo	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 May 2005 11:17:52 -0700
-Received: from pimout6-ext.prodigy.net (pimout6-ext.prodigy.net
-	[207.115.63.78])j4BI5Aeo022191
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 11 May 2005 14:05:12 -0400
-From: Tony Lindgren <tony@atomide.com>
-Message-ID: <20050511180349.GG15479@atomide.com>
-References: <20050507182728.GA29592@in.ibm.com>
-	<1115524211.17482.23.camel@localhost.localdomain>
-	<427D921F.8070602@yahoo.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <427D921F.8070602@yahoo.com.au>
-Subject: [uml-devel] Re: [RFC] (How to) Let idle CPUs sleep
+	id 1DWEyX-0000ZM-Nr	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 May 2005 07:47:47 -0700
+Message-ID: <42836C88.6030106@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------050708070907030600090008"
+Subject: [uml-devel] Wrong ordering of IP addresses
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,96 +25,155 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 11 May 2005 11:03:49 -0700
-To: Nick Piggin <nickpiggin@yahoo.com.au>
-Cc: Rusty Russell <rusty@rustcorp.com.au>, vatsa@in.ibm.com, schwidefsky@de.ibm.com, jdike@addtoit.com, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, rmk+lkml@arm.linux.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 12 May 2005 16:47:36 +0200
+To: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Jeff Dike <jdike@addtoit.com>
 
-* Nick Piggin <nickpiggin@yahoo.com.au> [050507 21:15]:
-> Rusty Russell wrote:
-> >On Sat, 2005-05-07 at 23:57 +0530, Srivatsa Vaddagiri wrote:
-> >
-> >>Two solutions have been proposed so far:
-> >>
-> >>	A. As per Nick's suggestion, impose a max limit (say some 100 ms or
-> >>	   say a second, Nick?) on how long a idle CPU can avoid taking
-> 
-> Yeah probably something around that order of magnitude. I suspect
-> there will fast be a point where either you'll get other timers
-> going off more frequently, and / or you simply get very quickly
-> diminishing returns on the amount of power saving gained from
-> increasing the period.
-> 
-> >>	   local-timer ticks. As a result, the load imbalance could exist 
-> >>	   only
-> >>	   for this max duration, after which the sleeping CPU will wake up
-> >>	   and balance itself. If there is no imbalance, it can go and sleep
-> >>	   again for the max duration.
-> >>
-> >>	   For ex, lets say a idle CPU found that it doesn't have any near 
-> >>	   timer
-> >>	   for the next 1 minute. Instead of letting it sleep for 1 minute in
-> >>	   a single stretch, we let it sleep in bursts of 100 msec (or 
-> >>	   whatever
-> >>	   is the max. duration chosen). This still is better than having
-> >>	   the idle CPU take HZ ticks a second.
-> >>
-> >>	   As a special case, when all the CPUs of an image go idle, we
-> >>	   could consider completely shutting off local timer ticks
-> >>	   across all CPUs (till the next non-timer interrupt).
-> >>
-> >>
-> >>	B. Don't impose any max limit on how long a idle CPU can sleep.
-> >>	   Here we let the idle CPU sleep as long as it wants. It is
-> >>	   woken up by a "busy" CPU when it detects an imbalance. The
-> >>	   busy CPU acts as a watchdog here. If there are no such
-> >>	   busy CPUs, then it means that nobody will acts as watchdogs
-> >>	   and idle CPUs sleep as long as they want. A possible watchdog
-> >>	   implementation has been discussed at:
-> >>
-> >>	http://marc.theaimsgroup.com/?l=linux-kernel&m=111287808905764&w=2
-> >
-> >
-> >My preference would be the second: fix the scheduler so it doesn't rely
-> >on regular polling.
-> 
-> It is not so much a matter of "fixing" the scheduler as just adding
-> more heuristics. When are we too busy? When should we wake another
-> CPU? What if that CPU is an SMT sibling? What if it is across the
-> other side of the topology, and other CPUs closer to it are busy
-> as well? What if they're busy but not as busy as we are? etc.
-> 
-> We've already got that covered in the existing periodic pull balancing,
-> so instead of duplicating this logic and moving this extra work to busy
-> CPUs, we can just use the existing framework.
-> 
-> At least we should try method A first, and if that isn't good enough
-> (though I suspect it will be), then think about adding more complexity
-> to the scheduler.
-> 
-> > However, as long as the UP case runs with no timer
-> >interrupts when idle, many people will be happy (eg. most embedded).
-> >
-> 
-> Well in the UP case, both A and B should basically degenerate to the
-> same thing.
-> 
-> Probably the more important case for the scheduler is to be able to
-> turn off idle SMP hypervisor clients, Srivatsa?
+This is a multi-part message in MIME format.
+--------------050708070907030600090008
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Sorry to jump in late. For embedded stuff we should be able to skip
-ticks until something _really_ happens, like an interrupt.
+UML's networking diesn't work on bigendian s390.
+IP addresses taken from ifa->ifa_address or ifa->ifa_mask
+are swapped.
 
-So we need to be able to skip ticks several seconds at a time. Ticks
-should be event driven. For embedded systems option B is really
-the only way to go to take advantage of the power savings.
+The appended patch fixes this, it is shortly tested on s390
+and i386.
 
-Of course the situation is different on servers, where the goal is
-to save ticks to be able to run more virtual machines. And then
-cutting down the ticks down to few per second does the trick.
+	Bodo
 
-Regards,
 
-Tony
+--------------050708070907030600090008
+Content-Type: text/x-diff;
+ name="fix-net-ordering.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="fix-net-ordering.patch"
+
+
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+
+ifa->ifa_address and ifa->ifa_mask are defined as __u32,
+but used as if they were char[4].
+Network code uses htons() to convert it.
+So UML's method to access these fields is wrong for bigendians
+(e.g. s390)
+I replaced bytewise copying by memcpy(), maybe even that might
+be removed, if ifa->ifa_address/mask may be used immediately.
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+---
+
+
+diff -puN arch/um/drivers/net_kern.c~fix-net-ordering arch/um/drivers/net_kern.c
+--- linux-2.6.12-rc4/arch/um/drivers/net_kern.c~fix-net-ordering	2005-05-11 15:07:20.000000000 +0200
++++ linux-2.6.12-rc4-root/arch/um/drivers/net_kern.c	2005-05-11 15:28:43.000000000 +0200
+@@ -95,7 +95,6 @@ irqreturn_t uml_net_interrupt(int irq, v
+ static int uml_net_open(struct net_device *dev)
+ {
+ 	struct uml_net_private *lp = dev->priv;
+-	char addr[sizeof("255.255.255.255\0")];
+ 	int err;
+ 
+ 	spin_lock(&lp->lock);
+@@ -106,7 +105,7 @@ static int uml_net_open(struct net_devic
+ 	}
+ 
+ 	if(!lp->have_mac){
+- 		dev_ip_addr(dev, addr, &lp->mac[2]);
++ 		dev_ip_addr(dev, &lp->mac[2]);
+  		set_ether_mac(dev, lp->mac);
+ 	}
+ 
+@@ -653,8 +652,6 @@ static int uml_inetaddr_event(struct not
+ 			      void *ptr)
+ {
+ 	struct in_ifaddr *ifa = ptr;
+-	u32 addr = ifa->ifa_address;
+-	u32 netmask = ifa->ifa_mask;
+ 	struct net_device *dev = ifa->ifa_dev->dev;
+ 	struct uml_net_private *lp;
+ 	void (*proc)(unsigned char *, unsigned char *, void *);
+@@ -674,14 +671,8 @@ static int uml_inetaddr_event(struct not
+ 		break;
+ 	}
+ 	if(proc != NULL){
+-		addr_buf[0] = addr & 0xff;
+-		addr_buf[1] = (addr >> 8) & 0xff;
+-		addr_buf[2] = (addr >> 16) & 0xff;
+-		addr_buf[3] = addr >> 24;
+-		netmask_buf[0] = netmask & 0xff;
+-		netmask_buf[1] = (netmask >> 8) & 0xff;
+-		netmask_buf[2] = (netmask >> 16) & 0xff;
+-		netmask_buf[3] = netmask >> 24;
++		memcpy(addr_buf, &ifa->ifa_address, sizeof(addr_buf));
++		memcpy(netmask_buf, &ifa->ifa_mask, sizeof(netmask_buf));
+ 		(*proc)(addr_buf, netmask_buf, &lp->user);
+ 	}
+ 	return(NOTIFY_DONE);
+@@ -763,27 +754,18 @@ int setup_etheraddr(char *str, unsigned 
+ 	return(1);
+ }
+ 
+-void dev_ip_addr(void *d, char *buf, char *bin_buf)
++void dev_ip_addr(void *d, unsigned char *bin_buf)
+ {
+ 	struct net_device *dev = d;
+ 	struct in_device *ip = dev->ip_ptr;
+ 	struct in_ifaddr *in;
+-	u32 addr;
+ 
+ 	if((ip == NULL) || ((in = ip->ifa_list) == NULL)){
+ 		printk(KERN_WARNING "dev_ip_addr - device not assigned an "
+ 		       "IP address\n");
+ 		return;
+ 	}
+-	addr = in->ifa_address;
+-	sprintf(buf, "%d.%d.%d.%d", addr & 0xff, (addr >> 8) & 0xff, 
+-		(addr >> 16) & 0xff, addr >> 24);
+-	if(bin_buf){
+-		bin_buf[0] = addr & 0xff;
+-		bin_buf[1] = (addr >> 8) & 0xff;
+-		bin_buf[2] = (addr >> 16) & 0xff;
+-		bin_buf[3] = addr >> 24;
+-	}
++	memcpy(bin_buf, &in->ifa_address, sizeof(in->ifa_address));
+ }
+ 
+ void set_ether_mac(void *d, unsigned char *addr)
+@@ -818,14 +800,8 @@ void iter_addresses(void *d, void (*cb)(
+ 	if(ip == NULL) return;
+ 	in = ip->ifa_list;
+ 	while(in != NULL){
+-		address[0] = in->ifa_address & 0xff;
+-		address[1] = (in->ifa_address >> 8) & 0xff;
+-		address[2] = (in->ifa_address >> 16) & 0xff;
+-		address[3] = in->ifa_address >> 24;
+-		netmask[0] = in->ifa_mask & 0xff;
+-		netmask[1] = (in->ifa_mask >> 8) & 0xff;
+-		netmask[2] = (in->ifa_mask >> 16) & 0xff;
+-		netmask[3] = in->ifa_mask >> 24;
++		memcpy(address, &in->ifa_address, sizeof(address));
++		memcpy(netmask, &in->ifa_mask, sizeof(netmask));
+ 		(*cb)(address, netmask, arg);
+ 		in = in->ifa_next;
+ 	}
+diff -puN arch/um/include/net_user.h~fix-net-ordering arch/um/include/net_user.h
+--- linux-2.6.12-rc4/arch/um/include/net_user.h~fix-net-ordering	2005-05-11 15:27:01.000000000 +0200
++++ linux-2.6.12-rc4-root/arch/um/include/net_user.h	2005-05-11 15:27:41.000000000 +0200
+@@ -25,7 +25,7 @@ struct net_user_info {
+ };
+ 
+ extern void ether_user_init(void *data, void *dev);
+-extern void dev_ip_addr(void *d, char *buf, char *bin_buf);
++extern void dev_ip_addr(void *d, unsigned char *bin_buf);
+ extern void set_ether_mac(void *d, unsigned char *addr);
+ extern void iter_addresses(void *d, void (*cb)(unsigned char *, 
+ 					       unsigned char *, void *), 
+_
+
+--------------050708070907030600090008--
 
 
 -------------------------------------------------------
