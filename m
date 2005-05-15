@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DWFBD-0006HK-87	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 May 2005 08:00:51 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DWFBC-0002aw-Nt	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 May 2005 08:00:51 -0700
-Message-ID: <42836F9F.4080804@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DXg1U-0004HL-4F	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 06:52:44 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DXg1P-0000Mw-Qe	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 06:52:44 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Deadlock in ubd-aio
+Content-Disposition: inline
+Message-Id: <200505152044.44400.blaisorblade@yahoo.it>
+Subject: [uml-devel] Removing call to function pointer in inner loop of
+	copy_from_user()
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,28 +28,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 May 2005 17:00:47 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sun, 15 May 2005 20:44:44 +0200
+To: Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi Jeff,
+copy_from_user() loops, in SKAS mode, calls do_op inside the inner loop; do_op 
+acts on 4k at once, so with modern pipelines, the potential cost of the 
+function call can be very big.
 
-there is a problem in ubd / aio on host 2.4, that I can
-reproduce easily.
-I inserted some counters into submit_aio(), not_aio_thread()
-and ubd_intr(). If the problem occurs, both
-submit_aio_24() and not_aio_thread() are waiting for a write to
-pipe to complete, while both pipes are filled with 57 entries each.
+Beyond that, we also call setjmp_wrapper, which simply puts a sigjmp_buf on 
+the stack.
 
-Since SIGIO is blocked at that time, ubd_intr() isn't started,
-and the system hangs.
+Wouldn't the code be cleaner if we rip that out, together with the va_arg() 
+calls, and do everything inside do_buffer_op? Doh, those are from userspace 
+headers. However it looks they would be includable from kernel code (no 
+reference to kernel headers), by adding them at the end of the include search 
+path.
 
-I think, we have to add some "flowcontrol", but have no idea how
-to do this.
+Also, could I then turn it into a macro taking a param, and then inline the 
+do_op calls (which are very little ones), or at least turn them into normal 
+calls (i.e. faster ones). I feel like the resulting code could even be 
+cleaner to read. Yes, more wasted space, but I think we win in the trade-off.
 
-I don't know, if this could be problem on 2.6 host also.
+What's your opinion? I'm ready to work on this.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-	Bodo
+
 
 
 -------------------------------------------------------
