@@ -2,27 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXkhl-0003Ny-Rb	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 11:52:41 -0700
-Received: from rproxy.gmail.com ([64.233.170.192])
+	id 1DXkj4-0003Ri-PX	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 11:54:02 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DXkhi-0000hr-5v	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 11:52:41 -0700
-Received: by rproxy.gmail.com with SMTP id j1so942409rnf
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 16 May 2005 11:52:37 -0700 (PDT)
-Message-ID: <3524bf1f05051611528eb7bc1@mail.gmail.com>
-From: Young Koh <young.koh@gmail.com>
-Reply-To: Young Koh <young.koh@gmail.com>
-Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
-In-Reply-To: <200505161908.08373.blaisorblade@yahoo.it>
+	id 1DXkj2-0001XR-13	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 11:54:02 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Removing call to function pointer in inner loop of
+	copy_from_user()
+Message-ID: <20050516184857.GA8171@ccure.user-mode-linux.org>
+References: <200505152044.44400.blaisorblade@yahoo.it>
+	<20050516150055.GA4977@ccure.user-mode-linux.org>
+	<200505161904.14197.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
-	 <200501282010.50020.blaisorblade@yahoo.it>
-	 <3524bf1f05051607085609e111@mail.gmail.com>
-	 <200505161908.08373.blaisorblade@yahoo.it>
+In-Reply-To: <200505161904.14197.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,52 +30,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 May 2005 14:52:37 -0400
-Content-Transfer-Encoding: quoted-printable
+Date: Mon, 16 May 2005 14:48:57 -0400
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Hi, Thanks for the reply. Let me have one following question.=20
+On Mon, May 16, 2005 at 07:04:13PM +0200, Blaisorblade wrote:
+> I could move maybe move sigsetjmp to kernelspace code; 
 
-As my understand, in SKAS mode, tracer and tracee are different host
-processes, and they have UML kernel code and application code
-respectively. (in TT mode, tracee has both kernel and application
-code)
+How are you going to get a definition of jmp_buf in there?
 
-Suppose the tracee attmpts to invoke a host system call. then, it will
-be intercepted by the tracer as in TT mode. (In TT mode, the tracer
-turns off tracing and sends SIGUSR2 to the tracee, and then, the
-signal handler in the tracee will execute the system call.) but, in
-SKAS mode, because the tracee doesn't have the UML kernel code, only
-the tracer knows about the system call code. The tracer cannot simply
-send a signal to make the tracee execute the system call. Then how
-does it do? Does the tracer execute the system call for the tracee?
+> however, another 
+> possibility would be to use the exception handler tables we've always 
+> supported without using them (only drawback is that the code *must* be 
+> inlined, and possibly the need for some assembler code, which however is 
+> probably avoidable).
 
-Thank you,
+Maybe.  That's worth looking in to.  I've used the setjmp scheme in preference
+to that because it's portable, but maybe we should switch back in some places.
 
->=20
-> In SKAS mode, instead, the UML scheduler switches back and forth between
-> various "processes" (inside UML) which are all running inside userspace, =
-and
-> ptrace the various host threads (actually collapsed into one userspace
-> thread, thanks to SKAS mode) which run only the real userspace code. So t=
-he
-> ptraced context always executes userspace code and we never turn ptracing
-> off.
-> --
-> Paolo Giarrusso, aka Blaisorblade
-> Skype user "PaoloGiarrusso"
-> Linux registered user n. 292729
-> http://www.user-mode-linux.org/~blaisorblade
->=20
->
+				Jeff
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Oracle Space Sweepstakes
 Want to be the first software developer in space?
 Enter now for the Oracle Space Sweepstakes!
-http://ads.osdn.com/?ad_idt12&alloc_id=16344&op=CCk
+http://ads.osdn.com/?ad_id=7412&alloc_id=16344&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
