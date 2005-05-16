@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXj2t-0003K2-Ea	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 10:06:23 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DXj2o-0000kd-IF	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 10:06:23 -0700
+	id 1DXj5O-0003ep-Ta	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 10:08:58 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DXj5N-0004r9-3L	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 10:08:58 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Removing call to function pointer in inner loop of
-	copy_from_user()
-References: <200505152044.44400.blaisorblade@yahoo.it>
-	<20050516150055.GA4977@ccure.user-mode-linux.org>
-In-Reply-To: <20050516150055.GA4977@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
+References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
+	<200501282010.50020.blaisorblade@yahoo.it>
+	<3524bf1f05051607085609e111@mail.gmail.com>
+In-Reply-To: <3524bf1f05051607085609e111@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200505161904.14197.blaisorblade@yahoo.it>
+Message-Id: <200505161908.08373.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,41 +31,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 May 2005 19:04:13 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Mon, 16 May 2005 19:08:06 +0200
+To: Young Koh <young.koh@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 16 May 2005 17:00, Jeff Dike wrote:
-> On Sun, May 15, 2005 at 08:44:44PM +0200, Blaisorblade wrote:
-> > copy_from_user() loops, in SKAS mode, calls do_op inside the inner loop;
-> > do_op acts on 4k at once, so with modern pipelines, the potential cost of
-> > the function call can be very big.
+On Monday 16 May 2005 16:08, Young Koh wrote:
+> Hi,
+>
+> Could you explain what happens in SKAS mode, then? How a UML kenel in
+> SKAS mode handles the UML system calls differently from one in TT
+> mode? i tried to understand from the code, but i had hard time to
+> understand.
+The usage of PTRACE_SYSCALL is not very different in SKAS mode, the different 
+thing is about the handling of child address spaces... however I'm going to 
+publish some info on my site.
 
-> > Beyond that, we also call setjmp_wrapper, which simply puts a sigjmp_buf
-> > on the stack.
+About the below, tracing in SKAS mode is simpler, because you don't switch 
+tracing on and off. In TT mode, the tracing thread (which does not run kernel 
+code, in fact in it current is invalid) ptraces the host threads, which run 
+both the UML userspace code, and the UML kernelspace code (which runs in 
+signal handlers).
 
-> > Wouldn't the code be cleaner if we rip that out, together with the
-> > va_arg() calls, and do everything inside do_buffer_op? Doh, those are
-> > from userspace headers. However it looks they would be includable from
-> > kernel code (no reference to kernel headers), by adding them at the end
-> > of the include search path.
-
-> > What's your opinion? I'm ready to work on this.
-
-> I was unhappy about adding the setjmp there, but it turns out that the
-> kernel data might not be present and so can segfault.  So, when that
-> happens, we need to get out of there and return an error, and the way
-> that's done is by the page fault handler longjmping back out.
-
-Yes, I remember it, I worked with you on diagnosing the /dev/kmem crash.
-
-> If you can think of a better way to do it, go ahead.
-
-I could move maybe move sigsetjmp to kernelspace code; however, another 
-possibility would be to use the exception handler tables we've always 
-supported without using them (only drawback is that the code *must* be 
-inlined, and possibly the need for some assembler code, which however is 
-probably avoidable).
+In SKAS mode, instead, the UML scheduler switches back and forth between 
+various "processes" (inside UML) which are all running inside userspace, and 
+ptrace the various host threads (actually collapsed into one userspace 
+thread, thanks to SKAS mode) which run only the real userspace code. So the 
+ptraced context always executes userspace code and we never turn ptracing 
+off.
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
