@@ -1,25 +1,30 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXpnE-0007dP-4U	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 17:18:40 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DXpmj-0007yl-8u	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 17:18:39 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	id 1DXqZA-0006L2-He	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 18:08:12 -0700
+Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DXn1e-00031P-RP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 14:28:15 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DXn1Z-0006zr-SM	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 14:21:20 -0700
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
+Message-ID: <20050516205233.GA9668@ccure.user-mode-linux.org>
 References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
-	<200505162324.37749.blaisorblade@yahoo.it>
-	<3524bf1f0505161709476c4940@mail.gmail.com>
-In-Reply-To: <3524bf1f0505161709476c4940@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	<200501282010.50020.blaisorblade@yahoo.it>
+	<3524bf1f05051607085609e111@mail.gmail.com>
+	<200505161908.08373.blaisorblade@yahoo.it>
+	<3524bf1f05051611528eb7bc1@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200505170217.23138.blaisorblade@yahoo.it>
+In-Reply-To: <3524bf1f05051611528eb7bc1@mail.gmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,38 +36,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 May 2005 02:17:22 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
+Date: Mon, 16 May 2005 16:52:33 -0400
+To: Young Koh <young.koh@gmail.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 17 May 2005 02:09, Young Koh wrote:
-> Ok, now i'm getting close. Thanks a lot!!!
-> but i have two more :)
->
-> 1) in SKAS mode, the tracer (UML kernel) will execute a system call
-> for the tracee (the user process). But what if the system call blocks?
-> then, the tracer, the UML kernel, will be blocked, too, right? it
-> means the whole UML system will be blocked?
-Good question. However the tracee is one of the threads running inside UML, 
-i.e. switch_to_skas switches between the different tracees. However, that's 
-done only on timer interrupts, and possibly those interrupts are blocked by 
-the syscall execution.
+On Mon, May 16, 2005 at 02:52:37PM -0400, Young Koh wrote:
+> Suppose the tracee attmpts to invoke a host system call. then, it will
+> be intercepted by the tracer as in TT mode. (In TT mode, the tracer
+> turns off tracing and sends SIGUSR2 to the tracee, and then, the
+> signal handler in the tracee will execute the system call.) but, in
+> SKAS mode, because the tracee doesn't have the UML kernel code, only
+> the tracer knows about the system call code. The tracer cannot simply
+> send a signal to make the tracee execute the system call. Then how
+> does it do? Does the tracer execute the system call for the tracee?
 
-Indeed, I remember that when the UBD I/O is run by the UML kernel and not by a 
-separate thread (this has been removed) the whole system becomes *really* 
-slow, so probably the answer to your question is "Yes, but UML tries to avoid 
-this".
+The tracer is the kernel, so it just executes the system call.
 
-> 2) in TT mode, what if the user process (tracee) installs its own
-> signal handler for SIGUSR2?
-The syscall is intercepted so it can't install signal handlers; the one it 
-installs are handled inside the UML kernel.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
-
+				Jeff
 
 
 -------------------------------------------------------
