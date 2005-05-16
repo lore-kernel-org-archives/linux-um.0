@@ -2,21 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXnyr-0001w1-Gd	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 15:22:33 -0700
+	id 1DXoBt-000352-BT	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 15:36:01 -0700
 Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DXnpl-0003vc-BW	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 15:16:50 -0700
+	id 1DXnVO-00073G-U4	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 14:54:48 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
+References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
+	<200505161908.08373.blaisorblade@yahoo.it>
+	<3524bf1f05051611528eb7bc1@mail.gmail.com>
+In-Reply-To: <3524bf1f05051611528eb7bc1@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200505170005.43629.blaisorblade@yahoo.it>
-Subject: [uml-devel] uml-general-protection-fault even more kludgy but
-	mergeable
+Content-Disposition: inline
+Message-Id: <200505162324.37749.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,42 +31,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 May 2005 00:05:43 +0200
-To: Gerd Knorr <kraxel@bytesex.org>, Jeff Dike <jdike@addtoit.com>
+Date: Mon, 16 May 2005 23:24:37 +0200
+To: Young Koh <young.koh@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-About 2.6.11-rc4/uml-general-protection-fault:
+On Monday 16 May 2005 20:52, Young Koh wrote:
+> Hi, Thanks for the reply. Let me have one following question.
+>
+> As my understand, in SKAS mode, tracer and tracee are different host
+> processes, and they have UML kernel code and application code
+> respectively. (in TT mode, tracee has both kernel and application
+> code)
+Yes, exactly.
+> Suppose the tracee attmpts to invoke a host system call. then, it will
+> be intercepted by the tracer as in TT mode. (In TT mode, the tracer
+> turns off tracing and sends SIGUSR2 to the tracee, and then, the
+> signal handler in the tracee will execute the system call.)
+Ok, perfect.
+> but, in 
+> SKAS mode, because the tracee doesn't have the UML kernel code, only
+> the tracer knows about the system call code. The tracer cannot simply
+> send a signal to make the tracee execute the system call. Then how
+> does it do? Does the tracer execute the system call for the tracee?
 
-Ok, today I was looking a bit more to this patch and I even looked in the 
-Intel manuals.
+Exactly. in arch/um/kernel/skas/process.c, userspace() loops doing 
+PTRACE_SYSCALL, and when SIGTRAP | 0x80 is received by waiting on the tracee, 
+and it's handled by handle_trap(), which reads the syscall params in the 
+registers saved by userspace. You'll probably find the 0x80 strange, since 
+ptrace(2) documents SIGTRAP; but in recent UML kernels we set 
+PTRACE_O_SYSGOOD so we get the additional 0x80 (which does not happen on 
+normal SIGTRAP, due for instance to singlestepping).
 
-I effectively verified that, in case of a page fault (do_page_fault) the 
-kernel only sends a SIGSEGV to the process if (error_code & 4 != 0), as 
-expected.
-
-So, if (!(error_code & 4)), we cannot be handling a page fault at all.
-
-However, the comment in the patch is a bit misleading (or misleaded) because 
-error_code has a different format for everything else than protection faults. 
-(See section 5.13, Error code, of manual "Intel System Programming Guide - 
-253668 -15.pdf", order number 253668-15).
-
-In that case, in fact, it will be unused (and hence, probably, set to 0) when 
-the error code references the IDT descriptor, it will be clear when the GDT 
-is referenced, it will be set when the LDT is referenced (always by the error 
-code).
-
-So, in practice, it's correct to call bad_segv() as done in the patch, but we 
-miss some cases. Only this time I've verified this well enough that I feel we 
-could merge your patch. However, I've not found any possible *realistic* 
-source of general protection faults. Especially I didn't find what expected 
-(i.e. I/O errors).
+See, in arch/i386/kernel/ptrace.c:do_syscall_trace(), the call to 
+ptrace_notify().
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
 Linux registered user n. 292729
 http://www.user-mode-linux.org/~blaisorblade
-
 
 
 
