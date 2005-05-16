@@ -1,22 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXkDD-0000uO-68	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 11:21:07 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DXkDC-0000QA-Di	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 11:21:07 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	id 1DXkhl-0003Ny-Rb	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 11:52:41 -0700
+Received: from rproxy.gmail.com ([64.233.170.192])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DXkhi-0000hr-5v	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 11:52:41 -0700
+Received: by rproxy.gmail.com with SMTP id j1so942409rnf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 16 May 2005 11:52:37 -0700 (PDT)
+Message-ID: <3524bf1f05051611528eb7bc1@mail.gmail.com>
+From: Young Koh <young.koh@gmail.com>
+Reply-To: Young Koh <young.koh@gmail.com>
+Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
+In-Reply-To: <200505161908.08373.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200505162020.19993.blaisorblade@yahoo.it>
-Subject: [uml-devel] Uploaded new version of the test program and x86-64 SKAS
-	patch working with it
+References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
+	 <200501282010.50020.blaisorblade@yahoo.it>
+	 <3524bf1f05051607085609e111@mail.gmail.com>
+	 <200505161908.08373.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,31 +34,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 May 2005 20:20:19 +0200
-To: Ian Rogers <ian.rogers@manchester.ac.uk>, Jeff Dike <jdike@addtoit.com>
+Date: Mon, 16 May 2005 14:52:37 -0400
+Content-Transfer-Encoding: quoted-printable
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-First: the new SKAS patch does not yet support UML. However, it should support 
-both modes for the test program. Jeff, I guess you might want to take a look 
-at it (I'm working on this too).
+Hi, Thanks for the reply. Let me have one following question.=20
 
-Actually, the test program should use EX_FAULTINFO instead of FAULTINFO for 
-x86-64 (including trap_no) but I've not yet changed the test program, only 
-the patch (which does not support FAULTINFO for 64-bit processes).
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+As my understand, in SKAS mode, tracer and tracee are different host
+processes, and they have UML kernel code and application code
+respectively. (in TT mode, tracee has both kernel and application
+code)
 
+Suppose the tracee attmpts to invoke a host system call. then, it will
+be intercepted by the tracer as in TT mode. (In TT mode, the tracer
+turns off tracing and sends SIGUSR2 to the tracee, and then, the
+signal handler in the tracee will execute the system call.) but, in
+SKAS mode, because the tracee doesn't have the UML kernel code, only
+the tracer knows about the system call code. The tracer cannot simply
+send a signal to make the tracee execute the system call. Then how
+does it do? Does the tracer execute the system call for the tracee?
 
+Thank you,
+
+>=20
+> In SKAS mode, instead, the UML scheduler switches back and forth between
+> various "processes" (inside UML) which are all running inside userspace, =
+and
+> ptrace the various host threads (actually collapsed into one userspace
+> thread, thanks to SKAS mode) which run only the real userspace code. So t=
+he
+> ptraced context always executes userspace code and we never turn ptracing
+> off.
+> --
+> Paolo Giarrusso, aka Blaisorblade
+> Skype user "PaoloGiarrusso"
+> Linux registered user n. 292729
+> http://www.user-mode-linux.org/~blaisorblade
+>=20
+>
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Oracle Space Sweepstakes
 Want to be the first software developer in space?
 Enter now for the Oracle Space Sweepstakes!
-http://ads.osdn.com/?ad_id=7412&alloc_id=16344&op=click
+http://ads.osdn.com/?ad_idt12&alloc_id=16344&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
