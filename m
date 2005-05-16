@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXjGR-0004WG-43	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 10:20:23 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DXjGP-0008Ry-9m	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 10:20:22 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] The UML scheduler
-Message-ID: <20050516165830.GA6731@ccure.user-mode-linux.org>
-References: <3524bf1f05051607306756dcfc@mail.gmail.com>
-	<20050516150648.GB4977@ccure.user-mode-linux.org>
-	<3524bf1f05051608377420ae37@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1DXkDD-0000uO-68	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 11:21:07 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DXkDC-0000QA-Di	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 11:21:07 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <3524bf1f05051608377420ae37@mail.gmail.com>
+Message-Id: <200505162020.19993.blaisorblade@yahoo.it>
+Subject: [uml-devel] Uploaded new version of the test program and x86-64 SKAS
+	patch working with it
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,25 +28,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 May 2005 12:58:30 -0400
-To: Young Koh <young.koh@gmail.com>
+Date: Mon, 16 May 2005 20:20:19 +0200
+To: Ian Rogers <ian.rogers@manchester.ac.uk>, Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, May 16, 2005 at 11:37:49AM -0400, Young Koh wrote:
-> Thank you for your reply. I have one following question.
-> 
-> in native Linux, a timer tick goes to the kernel, which has the
-> previliege to save the current context and switch the running process.
-> But UML kernel is just another user level process, even though it is
-> tracing the application processes. in UML case, when a timer tick goes
-> to the UML kernel, how does it stop the running process, which is
-> another process?
+First: the new SKAS patch does not yet support UML. However, it should support 
+both modes for the test program. Jeff, I guess you might want to take a look 
+at it (I'm working on this too).
 
-Look at switch_to_{skas,tt}.  In tt mode, it's one process waking another
-by writing to a pipe, then sleeping by reading its own pipe.  In skas mode,
-it's a longjmp and a memory switch.
+Actually, the test program should use EX_FAULTINFO instead of FAULTINFO for 
+x86-64 (including trap_no) but I've not yet changed the test program, only 
+the patch (which does not support FAULTINFO for 64-bit processes).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-				Jeff
+
 
 
 -------------------------------------------------------
