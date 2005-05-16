@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXgGa-0005Xn-Sx	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 07:08:20 -0700
-Received: from rproxy.gmail.com ([64.233.170.204])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DXgGM-00050U-7a	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 May 2005 07:08:20 -0700
-Received: by rproxy.gmail.com with SMTP id j1so866020rnf
+	id 1DXgc6-00075r-U8	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 07:30:34 -0700
+Received: from rproxy.gmail.com ([64.233.170.202])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DXgc6-0001YD-HC	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 May 2005 07:30:34 -0700
+Received: by rproxy.gmail.com with SMTP id j1so871581rnf
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 16 May 2005 07:08:05 -0700 (PDT)
-Message-ID: <3524bf1f05051607085609e111@mail.gmail.com>
+	Mon, 16 May 2005 07:30:33 -0700 (PDT)
+Message-ID: <3524bf1f05051607306756dcfc@mail.gmail.com>
 From: Young Koh <young.koh@gmail.com>
 Reply-To: Young Koh <young.koh@gmail.com>
-Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
-In-Reply-To: <200501282010.50020.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
-	 <200501282010.50020.blaisorblade@yahoo.it>
+Subject: [uml-devel] The UML scheduler
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,167 +29,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 May 2005 10:08:05 -0400
+Date: Mon, 16 May 2005 10:30:33 -0400
 Content-Transfer-Encoding: quoted-printable
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
 Hi,
 
-Could you explain what happens in SKAS mode, then? How a UML kenel in
-SKAS mode handles the UML system calls differently from one in TT
-mode? i tried to understand from the code, but i had hard time to
-understand.
+I have studied the UML kernel a bit but it was hard to understand from
+the code and some document in the web site. I have some questions
+about the scheduling in UML. so, if anyone answer these, i really
+appreciate it. Thank you!
 
-Thank you very much!
+As long as i know, each process running on top of UML kernel is viewed
+as a process to the host kernel. then, the host kernel will try to
+schedule the UML processes as normal processes. well, i'll have an
+example.
 
-On 1/28/05, Blaisorblade <blaisorblade@yahoo.it> wrote:
-> On Wednesday 26 January 2005 15:33, Alex LIU wrote:
-> > Hi,Blaisorblade:
->=20
-> > I have studied the TT mode of UML source code 2.6.7 for some time.But I
-> > still can't work out the system call function flow in TT mode.I have re=
-ad
-> > some documents and comments on that but all of them are very rough...
->=20
-> > Is there any more detailed document about the system call function flow=
- in
-> > UML TT mode?(had better to the function level)
-> I don't know if the slides on the main site could be of help for you (I d=
-on't
-> think so, but you might try).
->=20
-> However, I've decided to post a thorough description of the flow to the l=
-ist
-> and to you... To be correct, I've studied the source while writing this
-> mail... I had a rough idea of what happens, I just didn't dig enough to
-> discover all details because I didn't need it yet.
->=20
-> First study man 2 ptrace, especially about PTRACE_SYSCALL.
->=20
-> However, the core mechanism is that tracer() ptrace()s the child:
->=20
-> (around line 235 of
-> arch/um/kernel/tt/tracer.c, sorry but references are from around 2.6.9, it
-> should not be too difficult).
->=20
->         while(1){ //this is executed for the whole lifetime of the child.
->                 CATCH_EINTR(pid =3D waitpid(-1, &status, WUNTRACED));
-> ...
->                 else if(WIFSTOPPED(status)){
-> ...
->                         sig =3D WSTOPSIG(status);
-> ...
->                         switch(sig){
->=20
->  and when the tracee executes a syscall, as explained in ptrace docs,
-> waitpid() will return that the child was stopped by a SIGTRAP, so we get
-> here:
->=20
->                         case SIGTRAP: //this has changed in recent kernel=
-s to
->                         case (SIGTRAP + 0x80):
->=20
-> do_syscall is called, and then this is done:
->=20
->                                 sig =3D SIGUSR2;
->                                 tracing =3D 0;
-> ... after, this saves the new tracing value inside "task", which is a str=
-uct
-> task_struct.
->=20
->                        set_tracing(task, tracing);
->=20
-> afterwards, the set value of sig is used so:
->=20
-> //cont_type is normally set to PTRACE_SYSCALL, but since now tracing =3D=
-=3D 0, it
-> will be PTRACE_CONT.
->=20
->                        if(ptrace(cont_type, pid, 0, sig) !=3D 0){
->    }
->=20
-> and this makes sure with ptraces that the child sees a SIGUSR2 signal when
-> resuming. (it's not done through kill(), see sig =3D SIGUSR2 and the ptra=
-ce()
-> call near the end using it.) Since the signal is sent this way, it will be
-> received and handled by the child thread. Now, we are resuming with
-> PTRACE_CONT, because we are going to execute the UML code which will hand=
-le
-> the syscall, so we don't want syscalls to be intercepted.
->=20
-> Then, the SIGUSR2 signal handler is invoked (it's sig_handler_common_tt w=
-hich
-> calls sig_info[SIGUSR2]-> handler, i.e. usr2_handler). It will call
-> syscall_handler_tt, which will do the syscall execution (with tracing tur=
-ned
-> off) and saves the actual result (through SC_SET_SYSCALL_RETURN(sc, resul=
-t),
-> which manipulates the saved registers, specifically the value which will =
-be
-> stored back in EAX).
->=20
-> Finally, to switch back to the user mode, during the return path of
-> sig_handler_common_tt(), set_user_mode(NULL) is called; if it sees that
-> tracing is 0 (what it reads is the value set by set_tracing()) it sends a
-> SIGUSR1 signal:
->=20
-> int set_user_mode(void *t)
-> {
->         struct task_struct *task;
->=20
->         task =3D t ? t : current;
->         if(task->thread.mode.tt.tracing)
->                 return(1);
->         task->thread.request.op =3D OP_TRACE_ON;
->         os_usr1_process(os_getpid()); /*this is a wrapper for the kill() =
-to
-> send the signal.*/
->         return(0);
-> }
->=20
-> Now, this signal is handled by tracer(): in fact, the child (who gets the
-> signal) is ptraced, so the ptracer can examine each signal and decide wha=
-t to
-> do. (Above, for SIGUSR2, we said there was an exception, but it happened
-> because the signal was sent using ptrace()).
->=20
-> Here is the piece of code:
->=20
->                         switch(sig){
->                         case SIGUSR1:
->                                 sig =3D 0; // so the child won't see the =
-signal.
->                                 op =3D do_proc_op(task, proc_id);
->                                 switch(op){
->                                 case OP_TRACE_ON:
->                                         arch_leave_kernel(task, pid);
->                                         tracing =3D 1;
->                                         break;
->=20
-> As you see, tracing is switched back to 1, so at the end this iteration we
-> will resume the child with PTRACE_SYSCALL in user mode... and he will see=
- the
-> syscall return value. I hope I didn't miss anything.
->=20
-> > Thanks a lot!
->=20
-> > Alex
-> --
-> Paolo Giarrusso, aka Blaisorblade
-> Linux registered user n. 292729
-> http://www.user-mode-linux.org/~blaisorblade
->=20
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-> Tool for open source databases. Create drag-&-drop reports. Save time
-> by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-> Download a FREE copy at http://www.intelliview.com/go/osdn_nl
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
+suppose there are 2 processes on top of UML and 3 host processes.
+then, the host kernel sees 5 processes total, so, each of the process
+will get 20% of the CPU time? is that right?
+
+Or, UML is somehow viewed as a group of processes and UML get 25% of
+the CPU and each UML got 12.5% of the CPU time? if so, how is it
+possible?
+
+one more question, when the UML kernel wants to schedule its
+processes, how does it preempt UML processes?
+
+this way of scheduling and preemption will be different from TT mode
+and SKAS mode? if so, how?
+
+Thank you,
 
 
 -------------------------------------------------------
