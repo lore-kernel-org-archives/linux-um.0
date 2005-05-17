@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DXzoB-00045R-TA	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 May 2005 04:00:19 -0700
-Received: from hirsch.in-berlin.de ([192.109.42.6] ident=root)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DXzoA-0005m4-5s
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 May 2005 04:00:19 -0700
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [uml-devel] Re: uml-general-protection-fault even more kludgy but
-	mergeable
-Message-ID: <20050517105934.GD20584@bytesex>
-References: <200505170005.43629.blaisorblade@yahoo.it>
-	<20050517100317.GB20584@bytesex> <4289C66C.9000709@fujitsu-siemens.com>
+	id 1DY4t9-0000kB-Vh	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 May 2005 09:25:47 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DY4t8-0000v2-Cj	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 May 2005 09:25:47 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Question about the kernel thread in UML TT mode
+Message-ID: <20050517155357.GA5872@ccure.user-mode-linux.org>
+References: <006101c55ac4$2ccbf0e0$9eb3c68a@SHZ.ST.COM>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4289C66C.9000709@fujitsu-siemens.com>
+In-Reply-To: <006101c55ac4$2ccbf0e0$9eb3c68a@SHZ.ST.COM>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,46 +27,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 May 2005 12:59:34 +0200
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 17 May 2005 11:53:57 -0400
+To: Alex LIU <alex.liu@st.com>
+Cc: UML-dev <user-mode-linux-devel@lists.sourceforge.net>
 
-> >The case I trapped into was an attempt to access I/O ports of a
-> >process running inside the uml.  The uml kernel then tried to
-> >handle that as page fault, which didn't work very well ...
+On Tue, May 17, 2005 at 05:38:21PM +0800, Alex LIU wrote:
+> In UML,when do_fork was called,the new process P will be created in UML. Then in copy_thread_tt(in fact in start_fork_tramp)the corresponding process Q will be created in the host linux. I know the pid of the corresponding host process Q is appointed as the extern_pid of the UML process P. But then how will the 2 processes do next individually?
 
-> Unfortunately, I can't find the previous mails about this. So, maybe I'm
-> totally wrong. If so, please discard this mail.
+They aren't really two processes.  But they set up signal handlers, and the 
+timer, and then go to sleep until that process is scheduled.
 
-Yes, was discussed quite some time ago, more than half a year
-IIRC.
+> In UML,the function copy_thread_tt call start_fork_tramp, which cloned a thread. Once the thread was created it will run the outer_tramp function,in which cloned another thread. Once the second thread was created it will run the tramp function(fork_tramp or new_thread_proc). In fact the first thread is a temp one.it will kill itself later.Then why does UML clone 2 threads in copy_thread_tt?
 
-> Gerd, did you see the problem in SKAS3 on i386? If so, it would be nice to
-> see what happens in SKAS0.
+To avoid zombies - the parent process is expected to reap exited children,
+but as far as UML is concerned, the parent may not wake up for along time,
+leaving the child as a zombie for an arbitrary time.
 
-Not tested yet.
+The two threads are the double-fork trick.  The parent of the new process
+is the first temporary thread, which exits immediately, leaving the new child
+to be inherited by init, which will reap children immediately, eliminating 
+zombies.
 
-> I saw similar problems regarding bad LDT-descriptors. Processes using a bad
-> descriptor loop on page_fault.
-> 
-> The real fix for this is to add trap_no to the info, that is read from host
-> by PTRACE_FAULTINFO. With this info, UML can distinguish between real page
-> faults and other SIGSEGVs.
+> In UML,when the kernel_thread was called,the UML kernel thread P will be created in copy_process. And the corresponding host thread Q will be create in copy_thread_tt. Then the host thread Q will run its SIGUSR1 signal handler new_thread_handler,which will call run_kernel_thread function and exited at last. But I think it should be the UML kernel thread P that call run_kernel_thread function, any problems? 
 
-Yes, that conclusion we came to as well, the real fix would be
-pass on trap_no.  The patch mentioned in $subject is a band-aid
-fix to deal with it a bit better without having the trap number.
+P and Q are the same thing, so it makes no sense to say the handler should be
+run in one rather than the other.
 
-> In SKAS0, UML already has the full info, as it retrieves the info from a
-> sigcontext.
-
-Then skas0 should do fine in theory ;)
-
-  Gerd
-
--- 
--mm seems unusually stable at present.
-	-- akpm about 2.6.12-rc3-mm3
+				Jeff
 
 
 -------------------------------------------------------
