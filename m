@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYAEW-0007Rn-3g	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 May 2005 15:08:12 -0700
+	id 1DYBRe-0006OJ-Vu	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 May 2005 16:25:50 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DYAEU-0002ug-BR	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 May 2005 15:08:11 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DYBRb-0001jl-B5	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 May 2005 16:25:50 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH] page.h warning fix
-Message-ID: <20050517220301.GB10144@ccure.user-mode-linux.org>
-References: <Pine.LNX.4.61.0505172033050.4083@mercury.foo>
+Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
+Message-ID: <20050517220053.GA10144@ccure.user-mode-linux.org>
+References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
+	<200505162324.37749.blaisorblade@yahoo.it>
+	<3524bf1f0505161709476c4940@mail.gmail.com>
+	<200505170217.23138.blaisorblade@yahoo.it>
+	<3524bf1f050517105676c6c051@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0505172033050.4083@mercury.foo>
+In-Reply-To: <3524bf1f050517105676c6c051@mail.gmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,19 +31,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 May 2005 18:03:01 -0400
-To: Dominik Hackl <dominik@hackl.dhs.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 17 May 2005 18:00:53 -0400
+To: Young Koh <young.koh@gmail.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, May 17, 2005 at 09:09:45PM +0200, Dominik Hackl wrote:
-> 
-> 
-> This patch removes a warning, caused by a cast of different sized types. 
-> This patch simply adds a second cast to avoid the warning.
-> 
-> 	Signed-off-by: Dominik Hackl <dominik@hackl.dhs.org>
+On Tue, May 17, 2005 at 01:56:55PM -0400, Young Koh wrote:
+> the tracer (UML kernel) saves and restores the tracee's registers
+> using ptrace() in order to get syscall paramaters and save the return
+> value. while doing this, the tracer would need to care about only six
+> registers(eax, ebx, ecx, edx, esi, and edi) used for the syscall
+> parameter passing. I think, the tracer doesn't have to save all the
+> registers of the tracee, because the tracer will execute the syscall
+> for the tracee and the context of tracee will not be affected.
 
-Yup, I already have this patch in my tree, and it's going to Andrew soon.
+This is true, but it's easier to get all of the GP registers than it is to
+selectively grab the syscall-related ones.
+
+> but, in arch/um/kernel/skas/process.c, move_registers() function gets
+> and sets even floating point registers, which i don't think will be
+> affected by the system call execution.
+> i tested and ran a UML kernel with the second ptrace() (used for
+> floating point registers) commented out, it seems to work. (probably
+> only for SKAS mode)
+
+Yeah, this is reasonable.  You have to be careful that you save and restore
+any registers that might be used by one of the stubs, but they don't use
+FP.
 
 				Jeff
 
