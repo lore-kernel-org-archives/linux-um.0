@@ -1,27 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYJzE-0001tr-Pr	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 01:33:04 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DYJzD-0005OR-De
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 01:33:04 -0700
-Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] ident=93)
-	by externalmx-1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DYH7b-0000Jt-RK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 May 2005 22:29:32 -0700
-From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <20050518052940.GE29811@parcelfarce.linux.theplanet.co.uk>
-References: <200505180420.j4I4K5CS017303@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200505180420.j4I4K5CS017303@ccure.user-mode-linux.org>
-Subject: [uml-devel] Re: [PATCH 1/9] UML - small fixes left over from rc4
+	id 1DYL9G-00087z-9M	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 02:47:30 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DYL9E-0001pN-Kq	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 02:47:30 -0700
+Message-ID: <428B0F2B.3060503@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
+References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
+	<200505162324.37749.blaisorblade@yahoo.it>
+	<3524bf1f0505161709476c4940@mail.gmail.com>
+	<200505170217.23138.blaisorblade@yahoo.it>
+	<3524bf1f050517105676c6c051@mail.gmail.com>
+	<20050517220053.GA10144@ccure.user-mode-linux.org>
+In-Reply-To: <20050517220053.GA10144@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,26 +32,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 May 2005 06:29:40 +0100
+Date: Wed, 18 May 2005 11:47:23 +0200
 To: Jeff Dike <jdike@addtoit.com>
-Cc: akpm@osdl.org, torvalds@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Young Koh <young.koh@gmail.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, May 18, 2005 at 12:20:05AM -0400, Jeff Dike wrote:
-> --- linux-2.6.12-rc.orig/arch/um/Kconfig_x86_64	2005-05-17 16:36:27.000000000 -0400
-> +++ linux-2.6.12-rc/arch/um/Kconfig_x86_64	2005-05-17 16:37:06.000000000 -0400
-> @@ -6,6 +6,10 @@ config 64BIT
->  	bool
->  	default y
->  
-> +config TOP_ADDR
-> + 	hex
-> +	default 0x60000000
-> +
+Jeff Dike wrote:
+> On Tue, May 17, 2005 at 01:56:55PM -0400, Young Koh wrote:
+> 
+>>the tracer (UML kernel) saves and restores the tracee's registers
+>>using ptrace() in order to get syscall paramaters and save the return
+>>value. while doing this, the tracer would need to care about only six
+>>registers(eax, ebx, ecx, edx, esi, and edi) used for the syscall
+>>parameter passing. I think, the tracer doesn't have to save all the
+>>registers of the tracee, because the tracer will execute the syscall
+>>for the tracee and the context of tracee will not be affected.
+> 
+> 
+> This is true, but it's easier to get all of the GP registers than it is to
+> selectively grab the syscall-related ones.
+> 
+> 
+>>but, in arch/um/kernel/skas/process.c, move_registers() function gets
+>>and sets even floating point registers, which i don't think will be
+>>affected by the system call execution.
+>>i tested and ran a UML kernel with the second ptrace() (used for
+>>floating point registers) commented out, it seems to work. (probably
+>>only for SKAS mode)
+> 
+> 
+> Yeah, this is reasonable.  You have to be careful that you save and restore
+> any registers that might be used by one of the stubs, but they don't use
+> FP.
+I also thought about not saving FP-regs on each kernel entry. But if you do
+this optimization, you need to save / restore FP-regs on switch_to. Also you
+need to get the FP-regs when setting up a signal-handler stackframe. And they
+have to be restored on sys_(rt_)sigreturn from the values found in the
+stackframe.
+I hope, I didn't miss some other places that would need adaption.
 
-Wrong.  If you want it to work, you need 0x80000000 here (or changed START
-in x86_64 makefile.
+As s390 can give me regs and FP-regs in one single ptrace call, I decided to
+not do this optimization. Maybe for i386 and x86_64 it would be worth the cost.
 
-ACK for the rest.
+	Bodo
+> 
+> 				Jeff
 
 
 -------------------------------------------------------
