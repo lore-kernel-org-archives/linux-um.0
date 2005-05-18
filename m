@@ -1,24 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYQK4-0003Tk-RK	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 08:19:00 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DYQK0-0006lp-4A	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 08:19:00 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [patch 1/1] uml: replace pause with sigsuspend
-References: <20050516180143.95BDB1993E0@zion.home.lan>
-	<4289C3F9.9020105@fujitsu-siemens.com>
-In-Reply-To: <4289C3F9.9020105@fujitsu-siemens.com>
+	id 1DYQLS-0003ZI-MJ	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 08:20:26 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DYQLQ-00063N-VE	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 08:20:26 -0700
+Message-ID: <428B5D30.6080706@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
+References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
+	<200505162324.37749.blaisorblade@yahoo.it>
+	<3524bf1f0505161709476c4940@mail.gmail.com>
+	<200505170217.23138.blaisorblade@yahoo.it>
+	<3524bf1f050517105676c6c051@mail.gmail.com>
+	<20050517220053.GA10144@ccure.user-mode-linux.org>
+	<428B0F2B.3060503@fujitsu-siemens.com>
+	<20050518133331.GB3925@ccure.user-mode-linux.org>
+In-Reply-To: <20050518133331.GB3925@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200505181718.18455.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,37 +34,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 May 2005 17:18:17 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, jdike@addtoit.com
+Date: Wed, 18 May 2005 17:20:16 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Young Koh <young.koh@gmail.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 17 May 2005 12:14, Bodo Stroesser wrote:
-> I didn't have the time to test the patch, but I guess, it won't work.
->
-> Maybe, the man pages for sigsuspend are somewhat missleading, saying:
->
->         The sigsuspend call temporarily replaces the signal mask for
->         the process with that given by mask and then suspends the
->         process until a signal is received.
-In fact, I assumed that was correct...
-> Reading the code of sys_sigsuspend() in arch/i386/kernel/signal.c,
-> you'll find that it will return to user only, if do_signal() returns 1.
-> This will happen, if there was a signal to deliver. Ignored signals
-> will not be delivered, so sys_sigsupend will not return on SIGWINCH,
-> if SIGWINCH handler is set to SIG_IGN.
-Doh! You're right, actually.
-> So, for UML's winch_handler, there is no difference between pause()
-> and sigsuspend(), because sigsuspend's feature of accepting a sigmask
-> for use while waiting, in fact isn't needed here as the same mask is
-> set already before with sigprocmask().
-Ok, seems like I'll drop this patch. Thanks for the review.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+Jeff Dike wrote:
+> On Wed, May 18, 2005 at 11:47:23AM +0200, Bodo Stroesser wrote:
+> 
+>>I also thought about not saving FP-regs on each kernel entry. But if you do
+>>this optimization, you need to save / restore FP-regs on switch_to. Also you
+>>need to get the FP-regs when setting up a signal-handler stackframe. And 
+>>they
+>>have to be restored on sys_(rt_)sigreturn from the values found in the
+>>stackframe.
+> 
+> 
+> True, but these are much less frequent than kernel entries/exits.
+Yes, so it makes sense to optimize this for i386 and x86_64.
 
+On s390, I'm not sure, what to do. Using s390's PTRACE_PEEK/POKEUSR_AREA
+UML can read or write all regs including FP in a single ptrace call.
+So, the change would speed up that call a bit, but would that be enough
+to pay the cost of additional ptrace calls in switch_to or signal handling?
 
+What do you think?
+
+	Bodo
+> 
+> 
+>>I hope, I didn't miss some other places that would need adaption.
+> 
+> 
+> Offhand, this sounds right.
+> 
+> 				Jeff
 
 
 -------------------------------------------------------
