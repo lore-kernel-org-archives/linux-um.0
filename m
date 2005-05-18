@@ -2,27 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYQr8-0000P8-IU	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1DYQr8-0000P7-IR	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 18 May 2005 08:53:10 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DYQr5-0006C0-Rr	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1DYQr5-0006CZ-Ts	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 18 May 2005 08:53:10 -0700
 From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
-Message-ID: <20050518150346.GA18740@ccure.user-mode-linux.org>
+Message-ID: <20050518150946.GC18740@ccure.user-mode-linux.org>
 References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
-	<200505162324.37749.blaisorblade@yahoo.it>
-	<3524bf1f0505161709476c4940@mail.gmail.com>
-	<200505170217.23138.blaisorblade@yahoo.it>
-	<3524bf1f050517105676c6c051@mail.gmail.com>
-	<20050517220053.GA10144@ccure.user-mode-linux.org>
 	<428B0F2B.3060503@fujitsu-siemens.com>
 	<3524bf1f050518062432e093d6@mail.gmail.com>
+	<200505181657.49102.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3524bf1f050518062432e093d6@mail.gmail.com>
+In-Reply-To: <200505181657.49102.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,37 +30,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 May 2005 11:03:46 -0400
-To: Young Koh <young.koh@gmail.com>
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 18 May 2005 11:09:46 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Wed, May 18, 2005 at 09:24:07AM -0400, Young Koh wrote:
-> Thanks for the replies. let me understand them. In a SKAS mode UML
-> kernel, the pseudo code of a system call invocation would be like the
-> following.
-> 
-> wait4(); // wait until a user process raises a syscall
-> save_registers(); // copy the user process' registers to UML kernel space
-> execute_syscall(); // execute the syscall in UML kernel context
-> restore_registers(); // copy the user registers back to the user process
+On Wed, May 18, 2005 at 04:57:47PM +0200, Blaisorblade wrote:
+> In this case, instead, for SKAS mode, we must switch the registers manually, 
+> since we have collapsed everything in one host process. For TT and SKAS0 
+> mode, instead, it's not needed, right Jeff and Bodo?
 
 Correct.
 
-> but, during execute_syscall(), even if its stubs use all the registers
-> and/or it happens to invoke switch_to(), it will happen all in the UML
-> kernel's context. that means the user process's context will be
-> protected by host kernel's context switching mechanism. doesn't it?
-> because the host kernel will automatically save/restore a process'
-> registers when the process is stopped and resumed, all we care about
-> in the above routine should be to get system call parameters from the
-> tracee and save the return value to it. shouldn't it? (again, only for
-> SKAS)
-
-No, because (in skas mode) there is only one host process for all the UML
-processes.  So the process registers have to be saved and restored across a 
-context switch.
-
-				Jeff
+	Jeff
 
 
 -------------------------------------------------------
