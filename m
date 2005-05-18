@@ -2,25 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYL9G-00087z-9M	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 02:47:30 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	id 1DYO2z-0006Tz-GZ	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 05:53:13 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DYL9E-0001pN-Kq	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 02:47:30 -0700
-Message-ID: <428B0F2B.3060503@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Explaination of system call function flow in TT mode
-References: <003e01c503b3$f3e46cb0$ac655e0a@sha.st.com>
-	<200505162324.37749.blaisorblade@yahoo.it>
-	<3524bf1f0505161709476c4940@mail.gmail.com>
-	<200505170217.23138.blaisorblade@yahoo.it>
-	<3524bf1f050517105676c6c051@mail.gmail.com>
-	<20050517220053.GA10144@ccure.user-mode-linux.org>
-In-Reply-To: <20050517220053.GA10144@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1DYO2w-0002bw-Rf	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 05:53:13 -0700
+Message-Id: <200505180420.j4I4KDvv017310@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 2/9] UML - Page fault fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,50 +24,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 May 2005 11:47:23 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Young Koh <young.koh@gmail.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 18 May 2005 00:20:13 -0400
+To: akpm@osdl.org, torvalds@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> On Tue, May 17, 2005 at 01:56:55PM -0400, Young Koh wrote:
-> 
->>the tracer (UML kernel) saves and restores the tracee's registers
->>using ptrace() in order to get syscall paramaters and save the return
->>value. while doing this, the tracer would need to care about only six
->>registers(eax, ebx, ecx, edx, esi, and edi) used for the syscall
->>parameter passing. I think, the tracer doesn't have to save all the
->>registers of the tracee, because the tracer will execute the syscall
->>for the tracee and the context of tracee will not be affected.
-> 
-> 
-> This is true, but it's easier to get all of the GP registers than it is to
-> selectively grab the syscall-related ones.
-> 
-> 
->>but, in arch/um/kernel/skas/process.c, move_registers() function gets
->>and sets even floating point registers, which i don't think will be
->>affected by the system call execution.
->>i tested and ran a UML kernel with the second ptrace() (used for
->>floating point registers) commented out, it seems to work. (probably
->>only for SKAS mode)
-> 
-> 
-> Yeah, this is reasonable.  You have to be careful that you save and restore
-> any registers that might be used by one of the stubs, but they don't use
-> FP.
-I also thought about not saving FP-regs on each kernel entry. But if you do
-this optimization, you need to save / restore FP-regs on switch_to. Also you
-need to get the FP-regs when setting up a signal-handler stackframe. And they
-have to be restored on sys_(rt_)sigreturn from the values found in the
-stackframe.
-I hope, I didn't miss some other places that would need adaption.
+Any access to a PROT_NONE page should segfault the process.  A JVM seems to
+do this on purpose.  Also, Al noticed some bogus code, which is now deleted.
 
-As s390 can give me regs and FP-regs in one single ptrace call, I decided to
-not do this optimization. Maybe for i386 and x86_64 it would be worth the cost.
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-	Bodo
-> 
-> 				Jeff
+Index: linux-2.6.12-rc/arch/um/kernel/trap_kern.c
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/kernel/trap_kern.c	2005-05-17 16:34:45.000000000 -0400
++++ linux-2.6.12-rc/arch/um/kernel/trap_kern.c	2005-05-17 18:03:10.000000000 -0400
+@@ -57,10 +57,11 @@ int handle_page_fault(unsigned long addr
+ 	*code_out = SEGV_ACCERR;
+ 	if(is_write && !(vma->vm_flags & VM_WRITE)) 
+ 		goto out;
++
++        if(!(vma->vm_flags & (VM_READ | VM_EXEC)))
++                goto out;
++
+ 	page = address & PAGE_MASK;
+-	pgd = pgd_offset(mm, page);
+-	pud = pud_offset(pgd, page);
+-	pmd = pmd_offset(pud, page);
+ 	do {
+  survive:
+ 		switch (handle_mm_fault(mm, vma, address, is_write)){
+
 
 
 -------------------------------------------------------
