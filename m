@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYOzQ-0003JS-MT	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 06:53:36 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DYOzP-0004yt-RC	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 06:53:36 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Question about the kernel thread in UML TT mode
-Message-ID: <20050518133128.GA3925@ccure.user-mode-linux.org>
-References: <20050517155357.GA5872@ccure.user-mode-linux.org>
-	<000e01c55b91$039466d0$9eb3c68a@SHZ.ST.COM>
+	id 1DYPOB-0005uy-J6	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 07:19:11 -0700
+Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] ident=93)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DYPOA-0005kG-07
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 07:19:11 -0700
+From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20050518141925.GF29811@parcelfarce.linux.theplanet.co.uk>
+References: <200505180420.j4I4KQ6H017322@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000e01c55b91$039466d0$9eb3c68a@SHZ.ST.COM>
+In-Reply-To: <200505180420.j4I4KQ6H017322@ccure.user-mode-linux.org>
+Subject: [uml-devel] Re: [PATCH 4/9] UML - Delay loop cleanups
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,48 +28,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 May 2005 09:31:28 -0400
-To: Alex LIU <alex.liu@st.com>
-Cc: 'UML-dev' <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 18 May 2005 15:19:26 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, torvalds@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, May 18, 2005 at 06:04:31PM +0800, Alex LIU wrote:
-> But P and Q are different threads and they will be scheduled
-> differently,right?
+On Wed, May 18, 2005 at 12:20:26AM -0400, Jeff Dike wrote:
+> This patch cleans up the delay implementations a bit, makes the loops
+> unoptimizable, and exports __udelay and __const_udelay.
 
-No, they're two different ways of looking at the same thread.  They're 
-scheduled somewhat differently, but that's just reflecting the two ways
-of looking at it.  If it's runnable on the host, it's runnable inside UML,
-but not the other way around.
-
-> Another question:
-> when a kernel thread is created in UML, in the function outer_tramp the temp
-> thread A will clone the corresponding host thread B and then wait for it to
-> stop. The code is following:
-> 
-> 	t->pid = clone(t->tramp, (void *) t->temp_stack + page_size()/2,
-> 		       t->flags, t->tramp_data);
-> 	if(t->pid > 0) wait_for_stop(t->pid, SIGSTOP, PTRACE_CONT, NULL);
-> 
-> And once the host thread B is created it will run new_thread_proc,in the
-> function the thread send the signal SIGUSR1 to itself:
-> 
-> 	os_usr1_process(os_getpid());
-> 	change_sig(SIGUSR1, 1);
-> 	return(0);
-> 
-> But I found the thread B will be blocked in the function change_sig(SIGUSR1,
-> 1). Why?
-
-It's not blocked there.  That makes it enter the SIGUSR1 handler, which puts
-it on its kernel stack.
-
-> And in the function outer_tramp, the thread A see the thread B was stopped
-> with a SIGSTOP signal. Why? Since the thread B is blocked by the signal
-> SIGUSR1...
-
-The handler calls suspend_new_thread, which stops itself.
-
-				Jeff
+	If you do exports in i386 delay.c, remove them from
+arch/um/sys-i386/ksyms.c...
 
 
 -------------------------------------------------------
