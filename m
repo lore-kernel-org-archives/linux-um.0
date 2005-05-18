@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYT9o-0005Lo-QJ	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 11:20:36 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DYT9i-0001Xq-Na	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 May 2005 11:20:36 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	id 1DYU4u-0002kE-UJ	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 12:19:36 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DYU4u-0007BO-8B	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 May 2005 12:19:36 -0700
+Message-ID: <428B9544.60902@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200505182019.52676.blaisorblade@yahoo.it>
-Subject: [uml-devel] Saving a signal delivery to improve fork() performance in
-	SKAS mode
+Subject: Re: [uml-devel] [patch 1/1] uml: replace pause with sigsuspend
+References: <20050516180143.95BDB1993E0@zion.home.lan>
+	<4289C3F9.9020105@fujitsu-siemens.com>
+	<200505181718.18455.blaisorblade@yahoo.it>
+In-Reply-To: <200505181718.18455.blaisorblade@yahoo.it>
+Content-Type: multipart/mixed;
+ boundary="------------050407040501000203040404"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,70 +29,113 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 May 2005 20:19:52 +0200
-To: Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 18 May 2005 21:19:32 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
 
-Currently, for what I can see in SKAS code (better say I can't, since the code 
-is quite convolute) for each do_fork() call, we need a (slow) signal 
-delivery, and that is needed only to place the new stack on the allocated 
-memory. In fact, this affects fork() performance, which is what makes us so 
-slow when executing shell scripts, together with execve().
+This is a multi-part message in MIME format.
+--------------050407040501000203040404
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-We can verify the latter is slow through UnixBench, and for the former there 
-are the Xen microbenchmarks.
+Blaisorblade wrote:
+> On Tuesday 17 May 2005 12:14, Bodo Stroesser wrote:
+> 
+>>I didn't have the time to test the patch, but I guess, it won't work.
+>>
+>>Maybe, the man pages for sigsuspend are somewhat missleading, saying:
+>>
+>>        The sigsuspend call temporarily replaces the signal mask for
+>>        the process with that given by mask and then suspends the
+>>        process until a signal is received.
+> 
+> In fact, I assumed that was correct...
+> 
+>>Reading the code of sys_sigsuspend() in arch/i386/kernel/signal.c,
+>>you'll find that it will return to user only, if do_signal() returns 1.
+>>This will happen, if there was a signal to deliver. Ignored signals
+>>will not be delivered, so sys_sigsupend will not return on SIGWINCH,
+>>if SIGWINCH handler is set to SIG_IGN.
+> 
+> Doh! You're right, actually.
+> 
+>>So, for UML's winch_handler, there is no difference between pause()
+>>and sigsuspend(), because sigsuspend's feature of accepting a sigmask
+>>for use while waiting, in fact isn't needed here as the same mask is
+>>set already before with sigprocmask().
+> 
+> Ok, seems like I'll drop this patch. Thanks for the review.
 
-We end the signal handler with either do_exit(0) (in case of a kernel thread) 
-or userspace (which never returns), so the "signal handler invocation" is 
-just a costly jump (not even a call).
+Maybe, we really should use sigsuspend() instead of pause(), but the
+reason for this isn't to remove the winch_handler.
+The current loop in winch_thread() might miss a SIGWINCH, if a SIGWINCH
+comes in while winch_thread() isn't waiting in wait().
+So I think, winch_thread() should block all signals including SIGWINCH.
+In its loop it should call sigsuspend() with a mask as argument, that
+unblocks SIGWINCH while sigsuspend() waits.
 
-It's maybe true also in TT mode but I've not investigated a lot.
+I've attached a patch (tested a bit only).
 
-Can't we do that more roughly? An idea is this:
-
-- save the stack address in one register, the target IP address into another;
-- jmp (not call) a routine which sets ESP to the new value, and jumps where 
-needed
-(maybe the first jmp can even be removed and the routine be inlined, I don't 
-remember why I complicated things)
-- do what's needed (i.e. call the handler which then calls userspace(), which 
-never returns).
-
-The handler will work fine that way I think: a thread_wait(), which does not 
-need anything saved on the stack. Nor I think sigsetjmp can have difficult 
-requirements on the stack it runs onto (but it's to verify).
-
-About setjmp: looking at the definitions in the header (and looking at the 
-actual code), it simply saves/restores six registers, i.e. PC (EIP), ESP and 
-EBP, EBX, ESI and EDI, and then does a call to sigprocmask into jmp_buf.
-
-Below, a description of what happens during copy_thread_skas.
-
-After copy_thread_skas->new_thread->new_thread_proc, we go running on the 
-signal stack, and we (fork_handler or new_thread_handler), through 
-thread_wait(), longjmp to the fork_buf on the father's stack (inside 
-new_thread), which is saved in current->thread.fork_buf;
-
-new_thread then disables the signal stack and returns to the caller (i.e. the 
-forking thread), which can continue;
-
-btw, this way it frees the switch_buf value it saved in current->thread; 
-luckily, it's actually unused because it's replaced by the one inside 
-thread_wait(), which is on the new stack.
-
-Actually, this "sigjmp" scheme does not seem to be too overloaded and 
-simplifiable, after understanding it.
-
-Finally, the newly created thread is suspended during thread_wait is then 
-resumed by the scheduler's call to switch_to that jumps in there.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+	Bodo
 
 
 
+
+--------------050407040501000203040404
+Content-Type: text/x-diff;
+ name="fix-winch_thread.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="fix-winch_thread.patch"
+
+
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+
+If a SIGWINCH comes in, while winch_thread() isn't waiting
+in wait(), winch_thread could miss signals.
+It isn't very probable, that anyone will see this causing
+trouble, as it would need a very special timing, that a
+missed SIGWINCH results in a wrong window size.
+
+So, this is a minor problem. But why not fix, as it can
+be done so easy?
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+---
+
+
+diff -puN arch/um/drivers/chan_user.c~fix-winch_thread arch/um/drivers/chan_user.c
+--- linux-2.6.12-rc4/arch/um/drivers/chan_user.c~fix-winch_thread	2005-05-18 20:53:32.000000000 +0200
++++ linux-2.6.12-rc4-root/arch/um/drivers/chan_user.c	2005-05-18 21:16:55.000000000 +0200
+@@ -98,13 +98,14 @@ static int winch_thread(void *arg)
+ 
+ 	signal(SIGWINCH, winch_handler);
+ 	sigfillset(&sigs);
+-	sigdelset(&sigs, SIGWINCH);
+-	/* Block anything else than SIGWINCH. */
++	/* Block all signals possible. */
+ 	if(sigprocmask(SIG_SETMASK, &sigs, NULL) < 0){
+ 		printk("winch_thread : sigprocmask failed, errno = %d\n", 
+ 		       errno);
+ 		exit(1);
+ 	}
++	/* In sigsuspend(), block anything else than SIGWINCH. */
++	sigdelset(&sigs, SIGWINCH);
+ 
+ 	if(setsid() < 0){
+ 		printk("winch_thread : setsid failed, errno = %d\n", errno);
+@@ -129,7 +130,7 @@ static int winch_thread(void *arg)
+ 	while(1){
+ 		/* This will be interrupted by SIGWINCH only, since other signals
+ 		 * are blocked.*/
+-		pause();
++		sigsuspend(&sigs);
+ 
+ 		count = os_write_file(pipe_fd, &c, sizeof(c));
+ 		if(count != sizeof(c))
+_
+
+--------------050407040501000203040404--
 
 
 -------------------------------------------------------
