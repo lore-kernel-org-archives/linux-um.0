@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYl8A-0004yu-F2	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 May 2005 06:32:06 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DYl87-0006pn-G8	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 May 2005 06:32:06 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Question about the kernel thread in UML TT mode
-References: <000c01c55c59$37dd1e50$9eb3c68a@SHZ.ST.COM>
-In-Reply-To: <000c01c55c59$37dd1e50$9eb3c68a@SHZ.ST.COM>
+	id 1DYlFd-0005Qn-6P	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 May 2005 06:39:49 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DYlFb-000775-KR	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 May 2005 06:39:49 -0700
+Message-ID: <428C971C.9030604@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: Re: [uml-devel] [patch 1/1] uml: replace pause with sigsuspend
+References: <20050516180143.95BDB1993E0@zion.home.lan>
+	<200505181718.18455.blaisorblade@yahoo.it>
+	<428B9544.60902@fujitsu-siemens.com>
+	<200505191535.51279.blaisorblade@yahoo.it>
+In-Reply-To: <200505191535.51279.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200505191531.31247.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,51 +30,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 May 2005 15:31:30 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Alex LIU <alex.liu@st.com>, 'Jeff Dike' <jdike@addtoit.com>
+Date: Thu, 19 May 2005 15:39:40 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
 
-On Thursday 19 May 2005 11:57, Alex LIU wrote:
-> On May 18, 2005 9:31 PM, Jeff wrote:
-> >> But P and Q are different threads and they will be scheduled
-> >> differently,right?
+Blaisorblade wrote:
+> On Wednesday 18 May 2005 21:19, Bodo Stroesser wrote:
+> 
+>>Maybe, we really should use sigsuspend() instead of pause(), but the
+>>reason for this isn't to remove the winch_handler.
+>>The current loop in winch_thread() might miss a SIGWINCH, if a SIGWINCH
+>>comes in while winch_thread() isn't waiting in wait().
+> 
+> 
+> wait()? You mean the pause()/sigsuspend() call, right? Then I probably agree.
+> 
+Yes. You are right. Stupid typo.
 
-> > No, they're two different ways of looking at the same thread.  They're
-> > scheduled somewhat differently, but that's just reflecting the two ways
-> > of
-
-> looking at it.  If it's runnable on the host, it's runnable inside UML, but
-> not the other way around.
-
-> Then how does the UML thread interact with its corresponding host thread in
-> TT mode? Also use the switch_pipe?
-
-> >> And in the function outer_tramp, the thread A see the thread B was
-> >> stopped with a SIGSTOP signal. Why? Since the thread B is blocked by
-> >> the signal SIGUSR1...
-
-> > The handler calls suspend_new_thread, which stops itself.
-
-> Exactly! I'm wrong...
-
-> Then I have another question:
-
-> In UML function new_thread_handler, the current sigcontext is defined as
-> following:
-
-> 	UPT_SC(&current->thread.regs.regs) = (void *) (&sig + 1);
-
-> Why? What does "&sig + 1" mean?
-I think that's because sig is on the stack, and &sig + 1 points to the datas 
-saved by the kernel when entering the signal handler, i.e. the registers of 
-the caller, saved to be restored on return.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
-
-
+	Bodo
 
 
 -------------------------------------------------------
