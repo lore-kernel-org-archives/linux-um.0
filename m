@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DYmXU-000324-RO	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 May 2005 08:02:20 -0700
+	id 1DYpRg-0008Px-Bp	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 May 2005 11:08:32 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DYmXT-0005ep-0w	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 May 2005 08:02:20 -0700
+	id 1DYpRe-0002bq-QW	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 May 2005 11:08:32 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Question about the kernel thread in UML TT mode
-Message-ID: <20050519145654.GA4018@ccure.user-mode-linux.org>
-References: <000c01c55c59$37dd1e50$9eb3c68a@SHZ.ST.COM>
-	<200505191531.31247.blaisorblade@yahoo.it>
+Message-ID: <20050519180155.GA7020@ccure.user-mode-linux.org>
+References: <200505180420.j4I4K5CS017303@ccure.user-mode-linux.org>
+	<20050518052940.GE29811@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200505191531.31247.blaisorblade@yahoo.it>
+In-Reply-To: <20050518052940.GE29811@parcelfarce.linux.theplanet.co.uk>
+Subject: [uml-devel] Re: [PATCH 1/9] UML - small fixes left over from rc4
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,17 +28,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 May 2005 10:56:54 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Alex LIU <alex.liu@st.com>
+Date: Thu, 19 May 2005 14:01:55 -0400
+To: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, May 19, 2005 at 03:31:30PM +0200, Blaisorblade wrote:
-> > Why? What does "&sig + 1" mean?
-> I think that's because sig is on the stack, and &sig + 1 points to the datas 
-> saved by the kernel when entering the signal handler, i.e. the registers of 
-> the caller, saved to be restored on return.
+On Wed, May 18, 2005 at 06:29:40AM +0100, Al Viro wrote:
+> Wrong.  If you want it to work, you need 0x80000000 here (or changed START
+> in x86_64 makefile.
 
-Officially, it's the sigcontext structure.
+Oops, missed that.  That'll be in the next set of patches.
 
 				Jeff
 
