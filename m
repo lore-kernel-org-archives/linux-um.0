@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DZ4lK-0005uV-C3	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 May 2005 03:29:50 -0700
-Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DZ4lG-0000mx-MH	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 May 2005 03:29:50 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] applying a .diff.bz2 patch
-In-Reply-To: <838f7c500505191230655a04a0@mail.gmail.com>
-Message-ID: <Pine.LNX.4.61.0505201227450.17086@filer.marasystems.com>
-References: <838f7c500505191230655a04a0@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+	id 1DZ8gs-0004sy-Hw	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 May 2005 07:41:30 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DZ8gq-0004MX-Ue	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 May 2005 07:41:30 -0700
+Message-Id: <200505201436.j4KEZxjh006235@ccure.user-mode-linux.org>
+In-Reply-To: Your message of "Wed, 18 May 2005 14:18:00 PDT."
+             <20050518141800.299476d9.akpm@osdl.org> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] Re: [PATCH 4/9] UML - Delay loop cleanups
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,28 +26,117 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 May 2005 12:29:26 +0200 (CEST)
-To: ashwin tanugula <ashwin.tanugula@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 20 May 2005 10:35:57 -0400
+To: Andrew Morton <akpm@osdl.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Arjan van de Ven <arjan@infradead.org>
 
-On Thu, 19 May 2005, ashwin tanugula wrote:
+akpm@osdl.org said:
+> I'll drop this in light of the review comments - pls redo&&resend 
 
-> Hi
-> How do i apply a .diff.bz2 patch to a linux kernel?
+Here 'tis.
 
-Usually by
+This patch cleans up the delay implementations a bit, makes the loops
+unoptimizable, and exports __udelay and __const_udelay.
 
-cd linux-x.y.z
-bzcat /path/to/patchfile.diff.bz2 | patch -p1 -s
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-then rebuild the kernel.
+Index: linux-2.6.11/arch/um/sys-i386/delay.c
+===================================================================
+--- linux-2.6.11.orig/arch/um/sys-i386/delay.c	2005-05-19 13:18:50.000000000 -0400
++++ linux-2.6.11/arch/um/sys-i386/delay.c	2005-05-19 13:19:40.000000000 -0400
+@@ -1,5 +1,7 @@
+-#include "linux/delay.h"
+-#include "asm/param.h"
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <asm/param.h>
+ 
+ void __delay(unsigned long time)
+ {
+@@ -20,13 +22,19 @@ void __udelay(unsigned long usecs)
+ 	int i, n;
+ 
+ 	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-	for(i=0;i<n;i++) ;
++        for(i=0;i<n;i++)
++                cpu_relax();
+ }
+ 
++EXPORT_SYMBOL(__udelay);
++
+ void __const_udelay(unsigned long usecs)
+ {
+ 	int i, n;
+ 
+ 	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-	for(i=0;i<n;i++) ;
++        for(i=0;i<n;i++)
++                cpu_relax();
+ }
++
++EXPORT_SYMBOL(__const_udelay);
+Index: linux-2.6.11/arch/um/sys-x86_64/delay.c
+===================================================================
+--- linux-2.6.11.orig/arch/um/sys-x86_64/delay.c	2005-05-19 13:18:50.000000000 -0400
++++ linux-2.6.11/arch/um/sys-x86_64/delay.c	2005-05-19 13:19:40.000000000 -0400
+@@ -5,40 +5,37 @@
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/delay.h"
+-#include "asm/processor.h"
+-#include "asm/param.h"
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <asm/processor.h>
++#include <asm/param.h>
+ 
+ void __delay(unsigned long loops)
+ {
+ 	unsigned long i;
+ 
+-	for(i = 0; i < loops; i++) ;
++        for(i = 0; i < loops; i++)
++                cpu_relax();
+ }
+ 
+ void __udelay(unsigned long usecs)
+ {
+-	int i, n;
++	unsigned long i, n;
+ 
+ 	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-	for(i=0;i<n;i++) ;
++        for(i=0;i<n;i++)
++                cpu_relax();
+ }
+ 
++EXPORT_SYMBOL(__udelay);
++
+ void __const_udelay(unsigned long usecs)
+ {
+-	int i, n;
++	unsigned long i, n;
+ 
+ 	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-	for(i=0;i<n;i++) ;
++        for(i=0;i<n;i++)
++                cpu_relax();
+ }
+ 
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
++EXPORT_SYMBOL(__const_udelay);
 
-
-Sometimes -p0 is required instead of -p1, but very rarely (depends on who 
-made the patch and how, see "man patch" for details)
-
-Regards
-Henrik
 
 
 -------------------------------------------------------
