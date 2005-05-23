@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DaGls-0005Ko-F1	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 May 2005 10:31:20 -0700
+	id 1DaGot-0005TS-7G	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 May 2005 10:34:27 -0700
 Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DaGln-00048N-FS	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 May 2005 10:31:20 -0700
+	id 1DaGor-0004fj-FT	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 May 2005 10:34:27 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH] UML - 2.6.12-rc4-mm2 Compile error
 References: <200505201436.j4KEZxjh006235@ccure.user-mode-linux.org>
-	<4290E1C6.9070709@gmail.com>
-In-Reply-To: <4290E1C6.9070709@gmail.com>
+	<200505231609.48425.blaisorblade@yahoo.it>
+	<E1DaDj3-0002Xf-00@dorka.pomaz.szeredi.hu>
+In-Reply-To: <E1DaDj3-0002Xf-00@dorka.pomaz.szeredi.hu>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200505231932.48146.blaisorblade@yahoo.it>
+Message-Id: <200505231936.01102.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,20 +31,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 23 May 2005 19:32:47 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, eric.begot@gmail.com
-Cc: Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org
+Date: Mon, 23 May 2005 19:36:00 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Miklos Szeredi <miklos@szeredi.hu>, eric.begot@gmail.com, jdike@addtoit.com, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Sunday 22 May 2005 21:47, Eric BEGOT wrote:
-> Here is a patch to correct a compile error on linux 2.6.12-rc4-mm2 for uml.
-> At the compilation of init/main.c, it complains because it doens't find
-> the 2 constants FIXADDR_USER_START and FIXADDR_USER_END
-On mainline it's defined by either include/asm-um/archparam-x86_64.h or 
-include/asm-um/elf-i386.h.
+On Monday 23 May 2005 16:16, Miklos Szeredi wrote:
+> > > Here is a patch to correct a compile error on linux 2.6.12-rc4-mm2 for
+> > > uml. At the compilation of init/main.c, it complains because it doens't
+> > > find the 2 constants FIXADDR_USER_START and FIXADDR_USER_END
+> >
+> > Why deleting FIXADDR_START? Also FIXADDR_USER_* are defined, just in a
+> > different way (and the patch below is IIRC uncorrect).
+>
+> I've seen this error too after 'make menuconfig ARCH=um' on a clean
+> tree.
+>
+> The following fixes it:
+>
+>   cp .config /tmp
+>   make mrproper ARCH=um
+>   cp /tmp/.config .
+>   make ARCH=um
+>
+> So there's definitely something wrong with the build on UML.
+Yes, an empty include/asm-um/elf.h which is not by default replaced by a 
+symlink. Sadly a patch which should have been deleted it simply emptied it 
+(courtesy of quilt). So
 
-Make sure you used a clean tree and a correct command line (make init/main.o 
-ARCH=um wouldn't work because it would not create the needed header 
-symlinks).
+include/asm-um/elf.h:
+	$(call create_the_symlink)
+(which is pseudo-code) won't create it.
+
+As a last resort I'll force that symlink to be unconditional (I hope not 
+needing this).
 -- 
 Paolo Giarrusso, aka Blaisorblade
 Skype user "PaoloGiarrusso"
