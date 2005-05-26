@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DbWKZ-0005sC-US	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 21:20:19 -0700
-Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] ident=93)
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DbWKX-0004oj-Ka
+	id 1DbRXQ-0007gc-76	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 16:13:16 -0700
+Received: from newmail.brainfood.com ([146.82.138.14] ident=Debian-exim)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:RC4-SHA:128)
+	(Exim 4.41)	id 1DbRXO-0004PI-QY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 21:20:19 -0700
-From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <20050527042041.GC29811@parcelfarce.linux.theplanet.co.uk>
-References: <20050527004024.606961AEE9A@zion.home.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050527004024.606961AEE9A@zion.home.lan>
-Subject: [uml-devel] Re: [patch 4/4] uml: make it link in tt mode against NPTL
-	glibc
+	Thu, 26 May 2005 16:13:16 -0700
+From: Adam Heath <doogie@debian.org>
+Subject: Re: [uml-devel] [PATCH 3/7] UML - Turn off kmalloc always on a fatal
+ signal
+In-Reply-To: <200505262230.j4QMUQ5m014682@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.58.0505261812230.1625@gradall.private.brainfood.com>
+References: <200505262230.j4QMUQ5m014682@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,23 +28,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 May 2005 05:20:41 +0100
-To: blaisorblade@yahoo.it
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 26 May 2005 18:13:02 -0500 (CDT)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, May 27, 2005 at 02:40:24AM +0200, blaisorblade@yahoo.it wrote:
-> 
-> To make sure switcheroo() can execute when we remap all the executable image,
-> we used a trick to make it use a local copy of errno... this trick does not
-> work with NPTL glibc, only with LinuxThreads, so use another (simpler) one to
-> make it work anyway.
-> 
-> Might need compile testing on different host archs, since it changes
-> __syscall_return from <asm/unistd.h>.
+On Thu, 26 May 2005, Jeff Dike wrote:
 
-For one thing, it's broken since mmap2() doesn't exist on amd64.  This stuff
-*is* low-level - as low-level as it gets.  It's clearly per-architecture.
-See ftp.linux.org.uk/pub/people/viro/UM14-unmap-RC12-rc4 for a fix...
+> We should turn off kmalloc when getting a fatal signal regardless of the
+> mode we're in.
+>
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+>
+> Index: linux-2.6.11/arch/um/kernel/main.c
+> ===================================================================
+> --- linux-2.6.11.orig/arch/um/kernel/main.c	2005-05-26 16:51:14.000000000 -0400
+> +++ linux-2.6.11/arch/um/kernel/main.c	2005-05-26 17:05:40.000000000 -0400
+> @@ -71,7 +71,7 @@ static __init void do_uml_initcalls(void
+>
+>  static void last_ditch_exit(int sig)
+>  {
+> -	CHOOSE_MODE(kmalloc_ok = 0, (void) 0);
+> +        kmalloc_ok = 0;
+>  	signal(SIGINT, SIG_DFL);
+>  	signal(SIGTERM, SIG_DFL);
+>  	signal(SIGHUP, SIG_DFL);
+
+This and some of the other patches are changing the formatting.  The new line
+above is using spaces instead of a tab.
 
 
 -------------------------------------------------------
