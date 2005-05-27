@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DbTnH-0007rG-Un	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 18:37:47 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DbTnF-0000i3-8k	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 18:37:46 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH 3/7] UML - Turn off kmalloc always on a fatal
-	signal
-Message-ID: <20050527011648.GA16539@ccure.user-mode-linux.org>
-References: <200505262230.j4QMUQ5m014682@ccure.user-mode-linux.org>
-	<Pine.LNX.4.58.0505261812230.1625@gradall.private.brainfood.com>
+	id 1DbWKZ-0005sC-US	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 21:20:19 -0700
+Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] ident=93)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DbWKX-0004oj-Ka
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 21:20:19 -0700
+From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20050527042041.GC29811@parcelfarce.linux.theplanet.co.uk>
+References: <20050527004024.606961AEE9A@zion.home.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0505261812230.1625@gradall.private.brainfood.com>
+In-Reply-To: <20050527004024.606961AEE9A@zion.home.lan>
+Subject: [uml-devel] Re: [patch 4/4] uml: make it link in tt mode against NPTL
+	glibc
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,20 +29,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 May 2005 21:16:48 -0400
-To: Adam Heath <doogie@debian.org>
-Cc: akpm@osdl.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 27 May 2005 05:20:41 +0100
+To: blaisorblade@yahoo.it
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, May 26, 2005 at 06:13:02PM -0500, Adam Heath wrote:
-> This and some of the other patches are changing the formatting.  The new line
-> above is using spaces instead of a tab.
+On Fri, May 27, 2005 at 02:40:24AM +0200, blaisorblade@yahoo.it wrote:
+> 
+> To make sure switcheroo() can execute when we remap all the executable image,
+> we used a trick to make it use a local copy of errno... this trick does not
+> work with NPTL glibc, only with LinuxThreads, so use another (simpler) one to
+> make it work anyway.
+> 
+> Might need compile testing on different host archs, since it changes
+> __syscall_return from <asm/unistd.h>.
 
-On purpose - I'm making UML more CodingStyle conformant, and doing it as I'm
-modifying stuff anyway.  The alternative is a set of whitespace patches, 
-which will gratuitously make a barrier across which patches need to be
-hand-merged.
-
-				Jeff
+For one thing, it's broken since mmap2() doesn't exist on amd64.  This stuff
+*is* low-level - as low-level as it gets.  It's clearly per-architecture.
+See ftp.linux.org.uk/pub/people/viro/UM14-unmap-RC12-rc4 for a fix...
 
 
 -------------------------------------------------------
