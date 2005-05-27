@@ -1,18 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DbQx2-0005Bq-CF	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 15:35:40 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DbQx0-0007hj-QR	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 15:35:40 -0700
-Message-Id: <200505262230.j4QMUVwq014693@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 5/7] UML - single-space a help message
+	id 1DbTGy-0006O9-IB	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:04:24 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DbTGw-0006kO-Oe	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:04:24 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <20050527003843.433BA1AEE88@zion.home.lan>
+In-Reply-To: <20050527003843.433BA1AEE88@zion.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200505270306.09425.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [patch 4/8] irq code: Add coherence test for
+	PREEMPT_ACTIVE
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,31 +30,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 May 2005 18:30:31 -0400
-To: akpm@osdl.org, torvalds@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 27 May 2005 03:06:09 +0200
+To: akpm@osdl.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, linuxsh-shmedia-dev@lists.sourceforge.net, linux-sh@m17n.org, dhowells@redhat.com
 
-One of the ubd driver help strings was bust.
+On Friday 27 May 2005 02:38, blaisorblade@yahoo.it wrote:
+> After porting this fixlet to UML:
+>
+> http://linux.bkbits.net:8080/linux-2.5/cset@41791ab52lfMuF2i3V-eTIGRBbDYKQ
+>
+> , I've also added a warning which should refuse compilation with insane
+> values for PREEMPT_ACTIVE... maybe we should simply move PREEMPT_ACTIVE out
+> of architectures using GENERIC_IRQS.
+Ok, a grep shows that possible culprits (i.e. giving success to
+grep GENERIC_HARDIRQS arch/*/Kconfig, and using 0x4000000 as PREEMPT_ACTIVE, 
+as given by grep PREEMPT_ACTIVE include/asm-*/thread_info.h) are (at a first 
+glance): frv, sh, sh64.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+After a bit of checking, I also verified if they had overriden the value of 
+HARDIRQ_BITS. Which they haven't (it seems it's defined exactly where 
+CONFIG_HARDIRQS is not used, i.e. nobody is using the ability to override it 
+currently).
 
-Index: linux-2.6.11/arch/um/drivers/ubd_kern.c
-===================================================================
---- linux-2.6.11.orig/arch/um/drivers/ubd_kern.c	2005-05-26 17:17:01.000000000 -0400
-+++ linux-2.6.11/arch/um/drivers/ubd_kern.c	2005-05-26 17:23:52.000000000 -0400
-@@ -439,9 +439,9 @@ static int udb_setup(char *str)
- __setup("udb", udb_setup);
- __uml_help(udb_setup,
- "udb\n"
--"    This option is here solely to catch ubd -> udb typos, which can be\n\n"
--"    to impossible to catch visually unless you specifically look for\n\n"
--"    them.  The only result of any option starting with 'udb' is an error\n\n"
-+"    This option is here solely to catch ubd -> udb typos, which can be\n"
-+"    to impossible to catch visually unless you specifically look for\n"
-+"    them.  The only result of any option starting with 'udb' is an error\n"
- "    in the boot output.\n\n"
- );
- 
+This was not a very deep investigation, however, so feel free to verify this 
+better.
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
