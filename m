@@ -2,23 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DbTGy-0006O9-IB	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 18:04:24 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1DbTHy-0006Pz-Lu	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:05:26 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DbTGw-0006kO-Oe	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 18:04:24 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20050527003843.433BA1AEE88@zion.home.lan>
-In-Reply-To: <20050527003843.433BA1AEE88@zion.home.lan>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200505270306.09425.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [patch 4/8] irq code: Add coherence test for
-	PREEMPT_ACTIVE
+	id 1DbTHx-0006tU-Sq	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:05:26 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050527004018.7DEB01AEE96@zion.home.lan>
+Subject: [uml-devel] [patch 2/4] uml: consolidate modify_ldt
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,44 +22,200 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 May 2005 03:06:09 +0200
-To: akpm@osdl.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, linuxsh-shmedia-dev@lists.sourceforge.net, linux-sh@m17n.org, dhowells@redhat.com
+Date: Fri, 27 May 2005 02:40:18 +0200
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-On Friday 27 May 2005 02:38, blaisorblade@yahoo.it wrote:
-> After porting this fixlet to UML:
->
-> http://linux.bkbits.net:8080/linux-2.5/cset@41791ab52lfMuF2i3V-eTIGRBbDYKQ
->
-> , I've also added a warning which should refuse compilation with insane
-> values for PREEMPT_ACTIVE... maybe we should simply move PREEMPT_ACTIVE out
-> of architectures using GENERIC_IRQS.
-Ok, a grep shows that possible culprits (i.e. giving success to
-grep GENERIC_HARDIRQS arch/*/Kconfig, and using 0x4000000 as PREEMPT_ACTIVE, 
-as given by grep PREEMPT_ACTIVE include/asm-*/thread_info.h) are (at a first 
-glance): frv, sh, sh64.
 
-After a bit of checking, I also verified if they had overriden the value of 
-HARDIRQ_BITS. Which they haven't (it seems it's defined exactly where 
-CONFIG_HARDIRQS is not used, i.e. nobody is using the ability to override it 
-currently).
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-This was not a very deep investigation, however, so feel free to verify this 
-better.
--- 
-Paolo Giarrusso, aka Blaisorblade
-Skype user "PaoloGiarrusso"
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+*) Reorganize the two cases of sys_modify_ldt to share all the reasonably
+common code.
 
-	
+*) Avoid memory allocation when unneeded (i.e. when we are writing and the
+passed buffer size is known), thus not returning ENOMEM (which isn't allowed
+for this syscall, even if there is no strict "specification").
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+*) Add copy_{from,to}_user to modify_ldt for TT mode.
 
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.git-paolo/arch/um/sys-i386/ldt.c |  112 +++++++++++++++--------------
+ linux-2.6.git-paolo/include/asm-um/ldt.h   |    5 +
+ 2 files changed, 66 insertions(+), 51 deletions(-)
+
+diff -puN arch/um/sys-i386/ldt.c~uml-modify-ldt-consolidate arch/um/sys-i386/ldt.c
+--- linux-2.6.git/arch/um/sys-i386/ldt.c~uml-modify-ldt-consolidate	2005-05-10 00:34:03.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/sys-i386/ldt.c	2005-05-10 00:36:24.000000000 +0200
+@@ -4,96 +4,106 @@
+  */
+ 
+ #include "linux/config.h"
++#include "linux/sched.h"
+ #include "linux/slab.h"
++#include "linux/types.h"
+ #include "asm/uaccess.h"
+ #include "asm/ptrace.h"
++#include "asm/smp.h"
++#include "asm/ldt.h"
+ #include "choose-mode.h"
+ #include "kern.h"
++#include "mode_kern.h"
+ 
+ #ifdef CONFIG_MODE_TT
+-extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
+ 
+-/* XXX this needs copy_to_user and copy_from_user */
++extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
+ 
+-int sys_modify_ldt_tt(int func, void __user *ptr, unsigned long bytecount)
++static int do_modify_ldt_tt(int func, void *ptr, unsigned long bytecount)
+ {
+-	if (!access_ok(VERIFY_READ, ptr, bytecount))
+-		return -EFAULT;
+-
+ 	return modify_ldt(func, ptr, bytecount);
+ }
++
+ #endif
+ 
+ #ifdef CONFIG_MODE_SKAS
+-extern int userspace_pid[];
+ 
++#include "skas.h"
+ #include "skas_ptrace.h"
+ 
+-int sys_modify_ldt_skas(int func, void __user *ptr, unsigned long bytecount)
++static int do_modify_ldt_skas(int func, void *ptr, unsigned long bytecount)
+ {
+ 	struct ptrace_ldt ldt;
+-	void *buf;
+-	int res, n;
++	u32 cpu;
++	int res;
++
++	ldt = ((struct ptrace_ldt) { .func	= func,
++				     .ptr	= ptr,
++				     .bytecount = bytecount });
+ 
+-	buf = kmalloc(bytecount, GFP_KERNEL);
+-	if(buf == NULL)
+-		return(-ENOMEM);
++	cpu = get_cpu();
++	res = ptrace(PTRACE_LDT, userspace_pid[cpu], 0, (unsigned long) &ldt);
++	put_cpu();
+ 
+-	res = 0;
++	return res;
++}
++#endif
++
++int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
++{
++	struct user_desc info;
++	int res = 0;
++	void *buf = NULL;
++	void *p = NULL; /* What we pass to host. */
+ 
+ 	switch(func){
+ 	case 1:
+-	case 0x11:
+-		res = copy_from_user(buf, ptr, bytecount);
++	case 0x11: /* write_ldt */
++		/* Do this check now to avoid overflows. */
++		if (bytecount != sizeof(struct user_desc)) {
++			res = -EINVAL;
++			goto out;
++		}
++
++		if(copy_from_user(&info, ptr, sizeof(info))) {
++			res = -EFAULT;
++			goto out;
++		}
++
++		p = &info;
+ 		break;
+-	}
++	case 0:
++	case 2: /* read_ldt */
+ 
+-	if(res != 0){
+-		res = -EFAULT;
++		/* The use of info avoids kmalloc on the write case, not on the
++		 * read one. */
++		buf = kmalloc(bytecount, GFP_KERNEL);
++		if (!buf) {
++			res = -ENOMEM;
++			goto out;
++		}
++		p = buf;
++	default:
++		res = -ENOSYS;
+ 		goto out;
+ 	}
+ 
+-	ldt = ((struct ptrace_ldt) { .func	= func,
+-				     .ptr	= buf,
+-				     .bytecount = bytecount });
+-#warning Need to look up userspace_pid by cpu
+-	res = ptrace(PTRACE_LDT, userspace_pid[0], 0, (unsigned long) &ldt);
++	res = CHOOSE_MODE_PROC(do_modify_ldt_tt, do_modify_ldt_skas, func,
++				p, bytecount);
+ 	if(res < 0)
+ 		goto out;
+ 
+ 	switch(func){
+ 	case 0:
+ 	case 2:
+-		n = res;
+-		res = copy_to_user(ptr, buf, n);
+-		if(res != 0)
++		/* Modify_ldt was for reading and returned the number of read
++		 * bytes.*/
++		if(copy_to_user(ptr, p, res))
+ 			res = -EFAULT;
+-		else 
+-			res = n;
+ 		break;
+ 	}
+ 
+- out:
++out:
+ 	kfree(buf);
+-	return(res);
+-}
+-#endif
+-
+-int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
+-{
+-	return(CHOOSE_MODE_PROC(sys_modify_ldt_tt, sys_modify_ldt_skas, func, 
+-				ptr, bytecount));
++	return res;
+ }
+-
+-
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN /dev/null include/asm-um/ldt.h
+--- /dev/null	2005-05-09 17:36:13.454367832 +0200
++++ linux-2.6.git-paolo/include/asm-um/ldt.h	2005-05-10 00:37:00.000000000 +0200
+@@ -0,0 +1,5 @@
++#ifndef __UM_LDT_H
++#define __UM_LDT_H
++
++#include "asm/arch/ldt.h"
++#endif
+_
 
 
 -------------------------------------------------------
