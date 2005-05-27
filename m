@@ -2,21 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DbN5j-0001KJ-7g	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 11:28:23 -0700
-Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DbN5h-0005vq-FO	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 11:28:22 -0700
-Received: from zrtpd0jn.us.nortel.com (zrtpd0jn.us.nortel.com [47.140.202.35])
-	id j4QISDN01987	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 26 May 2005 14:28:13 -0400 (EDT)
-Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A10504B@zcarhxm0.corp.nortel.com>
-From: "Majid Salame" <msalame@nortel.com>
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C56220.A7569078"
-Subject: [uml-devel] RHEL3 Skas patch with sysemu
+	id 1DbTIP-0006RG-0b	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:05:53 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DbTHs-0006sj-VE	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:05:52 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050527003840.7A4A41AEE86@zion.home.lan>
+Subject: [uml-devel] [patch 3/8] uml: fix PREEMPT_ACTIVE
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,43 +22,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 May 2005 14:28:03 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
-
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C56220.A7569078
-Content-Type: text/plain
-
-Does anyone have a Skas patch for Red hat enterprise with Sysemu support?
-
-Thanks,
-Majid.
+Date: Fri, 27 May 2005 02:38:40 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, paulus@samba.org, mingo@elte.hu
 
 
-------_=_NextPart_001_01C56220.A7569078
-Content-Type: text/html
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Cc: Paul Mackerras <paulus@samba.org>, Ingo Molnar <mingo@elte.hu>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2658.2">
-<TITLE>RHEL3 Skas patch with sysemu</TITLE>
-</HEAD>
-<BODY>
+This is a continuation for UML of:
 
-<P><FONT SIZE=2>Does anyone have a Skas patch for Red hat enterprise with Sysemu support?</FONT>
-</P>
+http://linux.bkbits.net:8080/linux-2.5/cset@41791ab52lfMuF2i3V-eTIGRBbDYKQ
 
-<P><FONT SIZE=2>Thanks,</FONT>
-<BR><FONT SIZE=2>Majid.</FONT>
-</P>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-</BODY>
-</HTML>
-------_=_NextPart_001_01C56220.A7569078--
+ linux-2.6.git-paolo/include/asm-um/thread_info.h |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN include/asm-um/thread_info.h~uml-fix-interrupts include/asm-um/thread_info.h
+--- linux-2.6.git/include/asm-um/thread_info.h~uml-fix-interrupts	2005-05-27 02:30:48.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/thread_info.h	2005-05-27 02:36:42.000000000 +0200
+@@ -62,7 +62,7 @@ static inline struct thread_info *curren
+ 
+ #endif
+ 
+-#define PREEMPT_ACTIVE		0x4000000
++#define PREEMPT_ACTIVE		0x10000000
+ 
+ #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
+ #define TIF_SIGPENDING		1	/* signal pending */
+_
 
 
 -------------------------------------------------------
