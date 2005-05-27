@@ -2,15 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DbTIT-0006RT-0K	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 18:05:57 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
+	id 1DbTD4-0006AJ-3g	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:00:22 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DbTHz-0004oJ-At	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 18:05:56 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050527003846.909B81AEE8A@zion.home.lan>
-Subject: [uml-devel] [patch 5/8] uml: fixlet for arch_prctl_skas
+	id 1DbTCz-0003xr-Tc	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:00:21 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200505270302.07501.blaisorblade@yahoo.it>
+Subject: [uml-devel] [patch 0/8] uml: some fixes for 2.6.12
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,62 +27,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 May 2005 02:38:46 +0200
+Date: Fri, 27 May 2005 03:02:06 +0200
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
+Now I'm sending some other fixes intended for 2.6.12... they are either very 
+simple or potentially critical (as the PREEMPT_ACTIVE fix). Some of these 
+are/were still in -mm queue, but since they seem to have been dropped and 
+anyway haven't been merged, I'm resending them anyway.
 
-Fix it a bit (after some cross checking with "man arch_prctl"). There were:
-*) typos FS/GS and back
-*) FS in place of FS_BASE (and the same for GS)
-*) the procedure used put_user on &addr, where addr was the parameter (i.e.
-changed its param with put_user, completely useless) rather than interpreting
-addr as a pointer, as requested in this case (see the man page).
+Also, we have one big 2.6.10 regression which is still unfixed: top always 
+shows ksoftirqd/0 as runnable, while it gets 0% cpu time, and loadavg goes 
+then to 1.0, while no real load is generated...
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+Possible culprits could be the IRQ code rewrite, maybe; I've not found what 
+the hell can be arch-specific for this (except that UML does not support 
+PREEMPT and that SMP, and locking in general, isn't well tested yet, even if 
+the biggest problems are just theoretical, luckily).
 
- linux-2.6.git-paolo/arch/um/sys-x86_64/syscalls.c |   16 ++++++++++------
- 1 files changed, 10 insertions(+), 6 deletions(-)
+I've not yet had the time to analyze it successfully (but while looking at 
+this I saw the PREEMPT_ACTIVE problem, which also extends to other archs, see 
+my other mail).
+-- 
+Paolo Giarrusso, aka Blaisorblade
+Skype user "PaoloGiarrusso"
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
 
-diff -puN arch/um/sys-x86_64/syscalls.c~uml-fixlet-arch-prctl arch/um/sys-x86_64/syscalls.c
---- linux-2.6.git/arch/um/sys-x86_64/syscalls.c~uml-fixlet-arch-prctl	2005-05-25 01:13:20.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/sys-x86_64/syscalls.c	2005-05-25 01:14:05.000000000 +0200
-@@ -133,23 +133,27 @@ static long arch_prctl_tt(int code, unsi
- 
- #ifdef CONFIG_MODE_SKAS
- 
-+/* XXX: Must also call arch_prctl in the host, beside saving the segment bases! */
- static long arch_prctl_skas(int code, unsigned long addr)
- {
- 	long ret = 0;
- 
- 	switch(code){
--	case ARCH_SET_GS:
--		current->thread.regs.regs.skas.regs[GS_BASE / sizeof(unsigned long)] = addr;
--		break;
- 	case ARCH_SET_FS:
- 		current->thread.regs.regs.skas.regs[FS_BASE / sizeof(unsigned long)] = addr;
- 		break;
-+	case ARCH_SET_GS:
-+		current->thread.regs.regs.skas.regs[GS_BASE / sizeof(unsigned long)] = addr;
-+		break;
- 	case ARCH_GET_FS:
--		ret = put_user(current->thread.regs.regs.skas.regs[GS / sizeof(unsigned long)], &addr);
-+		ret = put_user(current->thread.regs.regs.skas.
-+				regs[FS_BASE / sizeof(unsigned long)],
-+				(unsigned long __user *)addr);
- 	        break;
- 	case ARCH_GET_GS:
--		ret = put_user(current->thread.regs.regs.skas.regs[FS / sizeof(unsigned \
--long)], &addr);
-+		ret = put_user(current->thread.regs.regs.skas.
-+				regs[GS_BASE / sizeof(unsigned long)],
-+				(unsigned long __user *)addr);
- 	        break;
- 	default:
- 		ret = -EINVAL;
-_
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
