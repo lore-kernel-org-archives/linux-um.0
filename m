@@ -1,18 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DbQxT-0005Cn-AD	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 15:36:07 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DbQxS-0007l0-Ip	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 May 2005 15:36:07 -0700
-Message-Id: <200505262230.j4QMUXjF014699@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 6/7] UML - Fix segfault on exit with CONFIG_GCOV
+	id 1DbTHw-0006Pt-M5	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:05:24 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DbTHv-0006sz-4X	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 May 2005 18:05:24 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050527004015.F3AE11AEE94@zion.home.lan>
+Subject: [uml-devel] [patch 1/4] uml: do_fork calling cleanup
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,76 +22,230 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 26 May 2005 18:30:33 -0400
-To: akpm@osdl.org, torvalds@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 27 May 2005 02:40:15 +0200
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-We need to disable signals on exit in all cases, not just when rebooting.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Fix the do_fork calling convention: normal arch pass the regs and the new sp
+value to do_fork instead of NULL.
 
-Index: linux-2.6.11/arch/um/kernel/main.c
-===================================================================
---- linux-2.6.11.orig/arch/um/kernel/main.c	2005-05-26 17:16:46.000000000 -0400
-+++ linux-2.6.11/arch/um/kernel/main.c	2005-05-26 17:29:27.000000000 -0400
-@@ -87,7 +87,7 @@ int main(int argc, char **argv, char **e
+Currently the arch-independent code ignores these values, while the UML code
+(actually it's copy_thread) gets the right values by itself.
+
+With this patch, things are fixed up.
+
+Low-priority.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.git-paolo/arch/um/kernel/process_kern.c      |   17 ++-----------
+ linux-2.6.git-paolo/arch/um/kernel/skas/process_kern.c |   13 ----------
+ linux-2.6.git-paolo/arch/um/kernel/syscall_kern.c      |   19 +++-----------
+ linux-2.6.git-paolo/arch/um/kernel/tt/process_kern.c   |   15 +----------
+ linux-2.6.git-paolo/arch/um/sys-i386/syscalls.c        |   22 ++---------------
+ linux-2.6.git-paolo/arch/um/sys-x86_64/syscalls.c      |   22 ++---------------
+ 6 files changed, 17 insertions(+), 91 deletions(-)
+
+diff -puN arch/um/sys-i386/syscalls.c~uml-do_fork-param-cleanup arch/um/sys-i386/syscalls.c
+--- linux-2.6.git/arch/um/sys-i386/syscalls.c~uml-do_fork-param-cleanup	2005-05-27 02:39:32.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/sys-i386/syscalls.c	2005-05-27 02:39:32.000000000 +0200
+@@ -69,15 +69,10 @@ long sys_clone(unsigned long clone_flags
  {
- 	char **new_argv;
- 	sigset_t mask;
--	int ret, i;
-+	int ret, i, err;
+ 	long ret;
  
- 	/* Enable all signals except SIGIO - in some environments, we can
- 	 * enter with some signals blocked
-@@ -160,27 +160,29 @@ int main(int argc, char **argv, char **e
- 	 */
- 	change_sig(SIGPROF, 0);
+-	/* XXX: normal arch do here this pass, and also pass the regs to
+-	 * do_fork, instead of NULL. Currently the arch-independent code
+-	 * ignores these values, while the UML code (actually it's
+-	 * copy_thread) does the right thing. But this should change,
+-	 probably. */
+-	/*if (!newsp)
+-		newsp = UPT_SP(current->thread.regs);*/
++	if (!newsp)
++		newsp = UPT_SP(&current->thread.regs.regs);
+ 	current->thread.forking = 1;
+-	ret = do_fork(clone_flags, newsp, NULL, 0, parent_tid, child_tid);
++	ret = do_fork(clone_flags, newsp, &current->thread.regs, 0, parent_tid, child_tid);
+ 	current->thread.forking = 0;
+ 	return(ret);
+ }
+@@ -197,14 +192,3 @@ long sys_sigaction(int sig, const struct
  
-+        /* This signal stuff used to be in the reboot case.  However, 
-+         * sometimes a SIGVTALRM can come in when we're halting (reproducably
-+         * when writing out gcov information, presumably because that takes
-+         * some time) and cause a segfault.
-+         */
-+
-+        /* stop timers and set SIG*ALRM to be ignored */
-+        disable_timer();
-+        
-+        /* disable SIGIO for the fds and set SIGIO to be ignored */
-+        err = deactivate_all_fds();
-+        if(err)
-+                printf("deactivate_all_fds failed, errno = %d\n", -err);
-+
-+        /* Let any pending signals fire now.  This ensures
-+         * that they won't be delivered after the exec, when
-+         * they are definitely not expected.
-+         */
-+        unblock_signals();
-+
- 	/* Reboot */
- 	if(ret){
--		int err;
+ 	return ret;
+ }
 -
- 		printf("\n");
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN arch/um/kernel/tt/process_kern.c~uml-do_fork-param-cleanup arch/um/kernel/tt/process_kern.c
+--- linux-2.6.git/arch/um/kernel/tt/process_kern.c~uml-do_fork-param-cleanup	2005-05-27 02:39:32.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/kernel/tt/process_kern.c	2005-05-27 02:39:32.000000000 +0200
+@@ -266,8 +266,8 @@ int copy_thread_tt(int nr, unsigned long
+ 	}
+ 
+ 	if(current->thread.forking){
+-		sc_to_sc(UPT_SC(&p->thread.regs.regs), 
+-			 UPT_SC(&current->thread.regs.regs));
++		sc_to_sc(UPT_SC(&p->thread.regs.regs),
++			 UPT_SC(&regs->regs));
+ 		SC_SET_SYSCALL_RETURN(UPT_SC(&p->thread.regs.regs), 0);
+ 		if(sp != 0) SC_SP(UPT_SC(&p->thread.regs.regs)) = sp;
+ 	}
+@@ -459,14 +459,3 @@ int is_valid_pid(int pid)
+ 	read_unlock(&tasklist_lock);
+ 	return(0);
+ }
 -
--		/* stop timers and set SIG*ALRM to be ignored */
--		disable_timer();
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN arch/um/kernel/skas/process_kern.c~uml-do_fork-param-cleanup arch/um/kernel/skas/process_kern.c
+--- linux-2.6.git/arch/um/kernel/skas/process_kern.c~uml-do_fork-param-cleanup	2005-05-27 02:39:32.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/kernel/skas/process_kern.c	2005-05-27 02:39:32.000000000 +0200
+@@ -107,7 +107,7 @@ int copy_thread_skas(int nr, unsigned lo
+ 
+ 	if(current->thread.forking){
+ 	  	memcpy(&p->thread.regs.regs.skas, 
+-		       &current->thread.regs.regs.skas, 
++		       &regs->regs.skas,
+ 		       sizeof(p->thread.regs.regs.skas));
+ 		REGS_SET_SYSCALL_RETURN(p->thread.regs.regs.skas.regs, 0);
+ 		if(sp != 0) REGS_SP(p->thread.regs.regs.skas.regs) = sp;
+@@ -196,14 +196,3 @@ int thread_pid_skas(struct task_struct *
+ #warning Need to look up userspace_pid by cpu
+ 	return(userspace_pid[0]);
+ }
 -
--		/* disable SIGIO for the fds and set SIGIO to be ignored */
--		err = deactivate_all_fds();
--		if(err)
--			printf("deactivate_all_fds failed, errno = %d\n",
--			       -err);
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN arch/um/kernel/syscall_kern.c~uml-do_fork-param-cleanup arch/um/kernel/syscall_kern.c
+--- linux-2.6.git/arch/um/kernel/syscall_kern.c~uml-do_fork-param-cleanup	2005-05-27 02:39:32.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/kernel/syscall_kern.c	2005-05-27 02:39:32.000000000 +0200
+@@ -31,7 +31,8 @@ long sys_fork(void)
+ 	long ret;
+ 
+ 	current->thread.forking = 1;
+-        ret = do_fork(SIGCHLD, 0, NULL, 0, NULL, NULL);
++	ret = do_fork(SIGCHLD, UPT_SP(&current->thread.regs.regs),
++			&current->thread.regs, 0, NULL, NULL);
+ 	current->thread.forking = 0;
+ 	return(ret);
+ }
+@@ -41,8 +42,9 @@ long sys_vfork(void)
+ 	long ret;
+ 
+ 	current->thread.forking = 1;
+-	ret = do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, 0, NULL, 0, NULL,
+-		      NULL);
++	ret = do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD,
++			UPT_SP(&current->thread.regs.regs), &current->thread.regs, 0,
++			NULL, NULL);
+ 	current->thread.forking = 0;
+ 	return(ret);
+ }
+@@ -162,14 +164,3 @@ int next_syscall_index(int limit)
+ 	spin_unlock(&syscall_lock);
+ 	return(ret);
+ }
 -
--		/* Let any pending signals fire now.  This ensures
--		 * that they won't be delivered after the exec, when
--		 * they are definitely not expected.
--		 */
--		unblock_signals();
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN arch/um/kernel/process_kern.c~uml-do_fork-param-cleanup arch/um/kernel/process_kern.c
+--- linux-2.6.git/arch/um/kernel/process_kern.c~uml-do_fork-param-cleanup	2005-05-27 02:39:32.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/kernel/process_kern.c	2005-05-27 02:39:32.000000000 +0200
+@@ -108,8 +108,9 @@ int kernel_thread(int (*fn)(void *), voi
+ 
+ 	current->thread.request.u.thread.proc = fn;
+ 	current->thread.request.u.thread.arg = arg;
+-	pid = do_fork(CLONE_VM | CLONE_UNTRACED | flags, 0, NULL, 0, NULL,
+-		      NULL);
++	pid = do_fork(CLONE_VM | CLONE_UNTRACED | flags,
++			0, &current->thread.regs, 0,
++			NULL, NULL);
+ 	if(pid < 0)
+ 		panic("do_fork failed in kernel_thread, errno = %d", pid);
+ 	return(pid);
+@@ -480,15 +481,3 @@ unsigned long arch_align_stack(unsigned 
+ 	return sp & ~0xf;
+ }
+ #endif
 -
- 		execvp(new_argv[0], new_argv);
- 		perror("Failed to exec kernel");
- 		ret = 1;
-
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN arch/um/sys-x86_64/syscalls.c~uml-do_fork-param-cleanup arch/um/sys-x86_64/syscalls.c
+--- linux-2.6.git/arch/um/sys-x86_64/syscalls.c~uml-do_fork-param-cleanup	2005-05-27 02:39:32.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/sys-x86_64/syscalls.c	2005-05-27 02:39:32.000000000 +0200
+@@ -174,26 +174,10 @@ long sys_clone(unsigned long clone_flags
+ {
+ 	long ret;
+ 
+-	/* XXX: normal arch do here this pass, and also pass the regs to
+-	 * do_fork, instead of NULL. Currently the arch-independent code
+-	 * ignores these values, while the UML code (actually it's
+-	 * copy_thread) does the right thing. But this should change,
+-	 probably. */
+-	/*if (!newsp)
+-		newsp = UPT_SP(current->thread.regs);*/
++	if (!newsp)
++		newsp = UPT_SP(&current->thread.regs.regs);
+ 	current->thread.forking = 1;
+-	ret = do_fork(clone_flags, newsp, NULL, 0, parent_tid, child_tid);
++	ret = do_fork(clone_flags, newsp, &current->thread.regs, 0, parent_tid, child_tid);
+ 	current->thread.forking = 0;
+ 	return(ret);
+ }
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+_
 
 
 -------------------------------------------------------
