@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DcoTA-00030k-9D	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 May 2005 10:54:32 -0700
-Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DcoT5-0005vz-Vb	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 May 2005 10:54:31 -0700
-Received: from zrtpd0jn.us.nortel.com (zrtpd0jn.us.nortel.com [47.140.202.35])
-	id j4UHsJP16343	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 30 May 2005 13:54:19 -0400 (EDT)
-Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A105057@zcarhxm0.corp.nortel.com>
-From: "Majid Salame" <msalame@nortel.com>
+	id 1Dcp74-0004uQ-Dq	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 May 2005 11:35:46 -0700
+Received: from nepa.nlc.no ([195.159.31.6] ident=qmailr)
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1Dcp72-0003N8-EJ	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 May 2005 11:35:46 -0700
+Message-ID: <38187.82.164.126.70.1117478138.squirrel@82.164.126.70>
+In-Reply-To: 
+     <29D15BBCA340DA4D8146D38B4924FC7A105057@zcarhxm0.corp.nortel.com>
+References: 
+    <29D15BBCA340DA4D8146D38B4924FC7A105057@zcarhxm0.corp.nortel.com>
+Subject: Re: [uml-devel] Slower system call with SMP
+From: stian@nixia.no
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C56540.97E6B129"
-Subject: [uml-devel] Slower system call with SMP
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,58 +29,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 30 May 2005 13:54:15 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 30 May 2005 20:35:38 +0200 (CEST)
+To: Majid Salame <msalame@nortel.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+> Doe that make sense ? Doing the same test by disabling SMP on the host,
+> and
+> results are much faster.
+> NOTE SMP is turned off for the UML.
 
-------_=_NextPart_001_01C56540.97E6B129
-Content-Type: text/plain
+This is a shot from the hip, but
 
+UML uses multiple processes for it's buisness. When host is SMP, these can
+be mapped to different cpu's, and when interprocess stuff is to occure,
+cpu's have to sync.
 
-The cost of a system call it seems to be higher when
-Running a RHE host with dual CPU (SMP turned on) and the image is patched
-with skas patch.
+Also, some few kernel things is slower on SMP, while user-space things
+that are not related, and multithreaded apps run faster.
 
-Doe that make sense ? Doing the same test by disabling SMP on the host, and
-results are much faster.
-NOTE SMP is turned off for the UML.
-
-Thanks,
-Majid.
-
-
-
-------_=_NextPart_001_01C56540.97E6B129
-Content-Type: text/html
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2658.2">
-<TITLE>Slower system call with SMP</TITLE>
-</HEAD>
-<BODY>
-<BR>
-
-<P><FONT SIZE=2>The cost of a system call it seems to be higher when</FONT>
-<BR><FONT SIZE=2>Running a RHE host with dual CPU (SMP turned on) and the image is patched with skas patch.</FONT>
-</P>
-
-<P><FONT SIZE=2>Doe that make sense ? Doing the same test by disabling SMP on the host, and results are much faster.</FONT>
-<BR><FONT SIZE=2>NOTE SMP is turned off for the UML.</FONT>
-</P>
-
-<P><FONT SIZE=2>Thanks,</FONT>
-<BR><FONT SIZE=2>Majid.</FONT>
-</P>
-<BR>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C56540.97E6B129--
+Stian
 
 
 -------------------------------------------------------
