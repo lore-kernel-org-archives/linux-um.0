@@ -1,35 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DcgLP-0002sj-8f	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 May 2005 02:13:59 -0700
-Received: from mail.scgiservices.com ([198.107.3.67])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DcgKp-0003Gz-Va
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 May 2005 02:13:59 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by mail.scgiservices.com (Postfix) with ESMTP id 93F1A2A07A
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 30 May 2005 02:13:22 -0700 (PDT)
-Received: from mail.scgiservices.com ([127.0.0.1])
- by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
- id 13549-01 for <user-mode-linux-devel@lists.sourceforge.net>;
- Mon, 30 May 2005 02:13:21 -0700 (PDT)
-Received: from SCG2 (c-67-160-154-69.hsd1.or.comcast.net [67.160.154.69])
-	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by mail.scgiservices.com (Postfix) with ESMTP id A8D162A06A
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 30 May 2005 02:13:20 -0700 (PDT)
-From: "Anthony Brock" <brocka@sterlingcgi.com>
-Subject: RE: [uml-devel] Kernel panic with 2.6.11.6
-Message-ID: <LEEIJGBJEEABAGOFFGAHKECJCIAA.brocka@sterlingcgi.com>
+	id 1DcoTA-00030k-9D	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 May 2005 10:54:32 -0700
+Received: from zcars04f.nortelnetworks.com ([47.129.242.57])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DcoT5-0005vz-Vb	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 May 2005 10:54:31 -0700
+Received: from zrtpd0jn.us.nortel.com (zrtpd0jn.us.nortel.com [47.140.202.35])
+	id j4UHsJP16343	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 30 May 2005 13:54:19 -0400 (EDT)
+Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A105057@zcarhxm0.corp.nortel.com>
+From: "Majid Salame" <msalame@nortel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <IFEIKNDOLFNCKMGAENCFIEMNDDAA.Anthony.Brock@oregonstate.edu>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C56540.97E6B129"
+Subject: [uml-devel] Slower system call with SMP
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,208 +28,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 30 May 2005 02:13:32 -0700
-Content-Transfer-Encoding: 8bit
+Date: Mon, 30 May 2005 13:54:15 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Never mind. The issue is still present. The instance, while lasting longer,
-crashed once I reconnect to the "screen" via a "screen -r my-uml-instance"
-command on day 4. Was the previous information enough, or should I generate
-another backtrace?
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Also, this seems to be prevalent when the host (SKAS v8) has been running
-for an extended period.
-
-Tony
+------_=_NextPart_001_01C56540.97E6B129
+Content-Type: text/plain
 
 
-> -----Original Message-----
-> From: user-mode-linux-devel-admin@lists.sourceforge.net
-> [mailto:user-mode-linux-devel-admin@lists.sourceforge.net]On Behalf Of
-> Anthony Brock
-> Sent: Friday, May 27, 2005 9:31 AM
-> To: user-mode-linux-devel@lists.sourceforge.net
-> Subject: RE: [uml-devel] Kernel panic with 2.6.11.6
->
->
-> Blaisor,
->
-> I've been testing your 2.6.11.8-bs5 release applied to a 2.6.11.10 source
-> tree. So far (3 days), it fixes the problem with kernel panics!
-> Did I miss a
-> message from you concerning this? Or is this an "accidental" fix to the
-> console issues I've been having?
->
-> In any case, thanks!
->
-> Tony
->
->
-> > -----Original Message-----
-> > From: user-mode-linux-devel-admin@lists.sourceforge.net
-> > [mailto:user-mode-linux-devel-admin@lists.sourceforge.net]On Behalf Of
-> > Anthony Brock
-> > Sent: Tuesday, May 17, 2005 10:58 AM
-> > To: user-mode-linux-devel@lists.sourceforge.net
-> > Subject: Re: [uml-devel] Kernel panic with 2.6.11.6
-> >
-> >
-> > Any ideas concerning this crash? Would any more information help?
-> > While this only affects the console, it is VERY annoying when
-> > trying to deploy a new server.
-> >
-> > Thanks!
-> >
-> > Tony
-> >
-> >
-> > >>> "Anthony Brock" <Anthony_Brock@ous.edu> 05/10/05 09:04AM >>>
-> > Well, the new version didn't waste any time! It crashed on my
-> > first keystroke. The output is below. This is on a 2.6.12-rc4
-> > guest with the full patch set from
-> > http://user-mode-linux.sourceforge.net/patches.html applied.
-> > Finally, I deleted 'include/asm-um/elf.h' from the source tree
-> > prior to compile.
-> >
-> > Let me know if you need any further details.
-> >
-> > Tony
-> >
-> > Breakpoint 1, panic (fmt=0x0) at kernel/panic.c:66
-> > 66      kernel/panic.c: No such file or directory.
-> >         in kernel/panic.c
-> > (gdb) bt
-> > #0  panic (fmt=0x0) at kernel/panic.c:66
-> > #1  0x08064e38 in segv (fi={error_code = 4, cr2 = 7, trap_no =
-> > 14}, ip=0, is_user=0, sc=0x0) at arch/um/kernel/trap_kern.c:176
-> > #2  0x080650ee in segv_handler (sig=11, regs=0x82a8fc4) at
-> > arch/um/kernel/trap_kern.c:277
-> > #3  0x080788a9 in sig_handler_common_skas (sig=11,
-> > sc_ptr=0x8065020) at arch/um/os-Linux/skas/trap.c:52
-> > #4  0x08074038 in sig_handler (sig=11) at arch/um/os-Linux/signal.c:31
-> > #5  <signal handler called>
-> > #6  chan_interrupt (chans=0x7, task=0x27, tty=0xbd36000, irq=2)
-> > at arch/um/drivers/chan_kern.c:533
-> > #7  0x08068260 in line_interrupt (irq=7, data=0xbd36000,
-> > unused=0x82a8fc4) at arch/um/drivers/line.c:30
-> > #8  0x0809efa3 in handle_IRQ_event (irq=2, regs=0x82a8fc4,
-> > action=0xbd877a0) at kernel/irq/handle.c:87
-> > #9  0x0809f09b in __do_IRQ (irq=2, regs=0x82a8fc4) at
-> > kernel/irq/handle...c:172
-> > #10 0x08060460 in do_IRQ (irq=7, regs=0xffffffff) at
-> > arch/um/kernel/irq...c:91
-> > #11 0x08060647 in sigio_handler (sig=29, regs=0x82a8fc4) at
-> > arch/um/kernel/irq.c:221
-> > #12 0x080788a9 in sig_handler_common_skas (sig=29,
-> > sc_ptr=0x80605e0) at arch/um/os-Linux/skas/trap.c:52
-> > #13 0x08074038 in sig_handler (sig=29) at arch/um/os-Linux/signal.c:31
-> > #14 <signal handler called>
-> > #15 0xb7f5a5bb in nanosleep () from /lib/tls/libc.so.6
-> > #16 0x08075794 in idle_sleep (secs=-4) at arch/um/os-Linux/time.c:155
-> > #17 0x080621d6 in default_idle () at arch/um/kernel/process_kern.c:206
-> > #18 0x08065ea8 in init_idle_skas () at
-> > arch/um/kernel/skas/process_kern.c:144
-> > #19 0x08049643 in start_kernel () at init/main.c:526
-> > #20 0x08065edc in start_kernel_proc (unused=0x0) at
-> > arch/um/kernel/skas/process_kern.c:161
-> > #21 0x08073949 in run_kernel_thread (fn=0x8065eb0
-> > <start_kernel_proc>, arg=0x0, jmp_ptr=0xfffffffc)
-> >     at arch/um/os-Linux/process.c:215
-> > #22 0x08065bea in new_thread_handler (sig=10) at thread_info.h:46
-> > #23 <signal handler called>
-> > #24 0xb7ed9ab1 in kill () from /lib/tls/libc.so.6
-> > #25 0x0000000e in ?? ()
-> > #26 0x0000001a in ?? ()
-> > #27 0xffffffff in ?? ()
-> > #28 0xbffff118 in ?? ()
-> > #29 0x080785ea in start_idle_thread (stack=0x82a7ad4,
-> > switch_buf_ptr=0x1, fork_buf_ptr=0x0) at
-> > arch/um/os-Linux/skas/process.c:507
-> > #30 0x080785ea in start_idle_thread (stack=0x82a4000,
-> > switch_buf_ptr=0x82a92d4, fork_buf_ptr=0x0)
-> >     at arch/um/os-Linux/skas/process.c:507
-> > #31 0x08065f41 in start_uml_skas () at
-> > arch/um/kernel/skas/process_kern.c:177
-> > #32 0x0806556d in linux_main (argc=137271040, argv=0x8000000) at
-> > arch/um/kernel/um_arch.c:437
-> > #33 0x08072d6b in main (argc=0, argv=0xbffff2a4, envp=0x0) at
-> > arch/um/os-Linux/main.c:154
-> >
-> >
-> > >>> Blaisorblade <blaisorblade@yahoo.it> 05/10/05 03:19AM >>>
-> > On Monday 09 May 2005 18:40, Anthony Brock wrote:
-> > > First, I would appreciate it if someone can remind me of where
-> > to download
-> > > the '-mm' tree.
-> > >
-> > > Second, I downloaded at attempted to compile 2.6.12-rc4.
-> > Unfortunately, I'm
-> > > unable to compile it due to the following error:
-> > Remove include/asm-um/elf.h, which is a 0-length file, and it
-> > will work. And
-> > this is the real fix...
-> > --
-> > Paolo Giarrusso, aka Blaisorblade
-> > Skype user "PaoloGiarrusso"
-> > Linux registered user n. 292729
-> > http://www.user-mode-linux.org/~blaisorblade
-> >
-> >
-> >
-> >
-> > -------------------------------------------------------
-> > This SF.Net email is sponsored by Oracle Space Sweepstakes
-> > Want to be the first software developer in space?
-> > Enter now for the Oracle Space Sweepstakes!
-> > http://ads.osdn.com/?ad_id=7393&alloc_id=16281&op=click
-> > _______________________________________________
-> > User-mode-linux-devel mailing list
-> > User-mode-linux-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> >
-> >
-> > -------------------------------------------------------
-> > This SF.Net email is sponsored by Oracle Space Sweepstakes
-> > Want to be the first software developer in space?
-> > Enter now for the Oracle Space Sweepstakes!
-> > http://ads.osdn.com/?ad_ids93&alloc_id281&op=click
-> > _______________________________________________
-> > User-mode-linux-devel mailing list
-> > User-mode-linux-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> >
-> >
-> > -------------------------------------------------------
-> > This SF.Net email is sponsored by Oracle Space Sweepstakes
-> > Want to be the first software developer in space?
-> > Enter now for the Oracle Space Sweepstakes!
-> > http://ads.osdn.com/?ad_idt12&alloc_id344&op=ick
-> > _______________________________________________
-> > User-mode-linux-devel mailing list
-> > User-mode-linux-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> >
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by Yahoo.
-> Introducing Yahoo! Search Developer Network - Create apps using Yahoo!
-> Search APIs Find out how you can build Yahoo! directly into your own
-> Applications - visit http://developer.yahoo.net/?fr=fad-ysdn-ostg-q22005
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
+The cost of a system call it seems to be higher when
+Running a RHE host with dual CPU (SMP turned on) and the image is patched
+with skas patch.
 
+Doe that make sense ? Doing the same test by disabling SMP on the host, and
+results are much faster.
+NOTE SMP is turned off for the UML.
+
+Thanks,
+Majid.
+
+
+
+------_=_NextPart_001_01C56540.97E6B129
+Content-Type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
+<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2658.2">
+<TITLE>Slower system call with SMP</TITLE>
+</HEAD>
+<BODY>
+<BR>
+
+<P><FONT SIZE=2>The cost of a system call it seems to be higher when</FONT>
+<BR><FONT SIZE=2>Running a RHE host with dual CPU (SMP turned on) and the image is patched with skas patch.</FONT>
+</P>
+
+<P><FONT SIZE=2>Doe that make sense ? Doing the same test by disabling SMP on the host, and results are much faster.</FONT>
+<BR><FONT SIZE=2>NOTE SMP is turned off for the UML.</FONT>
+</P>
+
+<P><FONT SIZE=2>Thanks,</FONT>
+<BR><FONT SIZE=2>Majid.</FONT>
+</P>
+<BR>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C56540.97E6B129--
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Yahoo.
 Introducing Yahoo! Search Developer Network - Create apps using Yahoo!
 Search APIs Find out how you can build Yahoo! directly into your own
-Applications - visit http://developer.yahoo.net/?fr_______________________________________________
+Applications - visit http://developer.yahoo.net/?fr=offad-ysdn-ostg-q22005
+_______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
