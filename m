@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DcpTj-00065z-VZ	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 May 2005 11:59:11 -0700
-Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DcpTi-0006cl-3j	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 May 2005 11:59:11 -0700
-Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A105059@zcarhxm0.corp.nortel.com>
-From: "Majid Salame" <msalame@nortel.com>
-Subject: RE: [uml-devel] Slower system call with SMP
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C56549.A26CA839"
+	id 1Dd7OG-0001HS-74	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 31 May 2005 07:06:44 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Dd7OE-0004MR-B9	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 31 May 2005 07:06:44 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Slower system call with SMP
+Message-ID: <20050531135731.GA9909@ccure.user-mode-linux.org>
+References: <29D15BBCA340DA4D8146D38B4924FC7A105057@zcarhxm0.corp.nortel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29D15BBCA340DA4D8146D38B4924FC7A105057@zcarhxm0.corp.nortel.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,76 +27,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 30 May 2005 14:58:58 -0400
-To: "'stian@nixia.no'" <stian@nixia.no>
+Date: Tue, 31 May 2005 09:57:31 -0400
+To: Majid Salame <msalame@nortel.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_001_01C56549.A26CA839
-Content-Type: text/plain
-
-
-
-> UML uses multiple processes for it's buisness. 
-With Skas UML is just one process as it appears on the Host, or do you mean
-something else.
-
->When host is 
-> SMP, these can be mapped to different cpu's, and when 
-> interprocess stuff is to occure, cpu's have to sync.
+> The cost of a system call it seems to be higher when
+> Running a RHE host with dual CPU (SMP turned on) and the image is patched
+> with skas patch.
 > 
-I saw the syscall about 300% slower, it does not make sense due to
-interprocess.
-IT should not be that slow, unless missing UML implementation
+> Doe that make sense ? Doing the same test by disabling SMP on the host, and
+> results are much faster.
 
-> Also, some few kernel things is slower on SMP, while 
-> user-space things that are not related, and multithreaded 
-> apps run faster.
-> 
-> Stian
-> 
-> 
+What exactly was the test?  A getpid loop?
 
-------_=_NextPart_001_01C56549.A26CA839
-Content-Type: text/html
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2658.2">
-<TITLE>RE: [uml-devel] Slower system call with SMP</TITLE>
-</HEAD>
-<BODY>
-<BR>
-<BR>
-
-<P><FONT SIZE=2>&gt; UML uses multiple processes for it's buisness. </FONT>
-<BR><FONT SIZE=2>With Skas UML is just one process as it appears on the Host, or do you mean something else.</FONT>
-</P>
-
-<P><FONT SIZE=2>&gt;When host is </FONT>
-<BR><FONT SIZE=2>&gt; SMP, these can be mapped to different cpu's, and when </FONT>
-<BR><FONT SIZE=2>&gt; interprocess stuff is to occure, cpu's have to sync.</FONT>
-<BR><FONT SIZE=2>&gt; </FONT>
-<BR><FONT SIZE=2>I saw the syscall about 300% slower, it does not make sense due to interprocess.</FONT>
-<BR><FONT SIZE=2>IT should not be that slow, unless missing UML implementation</FONT>
-</P>
-
-<P><FONT SIZE=2>&gt; Also, some few kernel things is slower on SMP, while </FONT>
-<BR><FONT SIZE=2>&gt; user-space things that are not related, and multithreaded </FONT>
-<BR><FONT SIZE=2>&gt; apps run faster.</FONT>
-<BR><FONT SIZE=2>&gt; </FONT>
-<BR><FONT SIZE=2>&gt; Stian</FONT>
-<BR><FONT SIZE=2>&gt; </FONT>
-<BR><FONT SIZE=2>&gt; </FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C56549.A26CA839--
+				Jeff
 
 
 -------------------------------------------------------
