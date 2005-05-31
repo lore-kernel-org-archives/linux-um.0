@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dd7w2-0003PG-99	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 May 2005 07:41:38 -0700
-Received: from zrtps0kp.nortelnetworks.com ([47.140.192.56])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Dd7w0-0002H5-Hg	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 May 2005 07:41:38 -0700
-Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A10505B@zcarhxm0.corp.nortel.com>
-From: "Majid Salame" <msalame@nortel.com>
-Subject: RE: [uml-devel] Slower system call with SMP
+	id 1Dd9eO-0001FO-DL	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 31 May 2005 09:31:32 -0700
+Received: from 81-223-63-139.dynamic.adsl-line.inode.at ([81.223.63.139]
+	helo=mercury.foo)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1Dd9eN-0004kO-Cx
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 31 May 2005 09:31:32 -0700
+From: Dominik Hackl <dominik@hackl.dhs.org>
+Message-ID: <Pine.LNX.4.61.0505311804570.10685@mercury.foo>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C565EE.D661107C"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] [PATCH 2.6.12-rc5] UML + UDF duplicated symbol
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,97 +26,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 31 May 2005 10:41:32 -0400
-To: 'Jeff Dike' <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 31 May 2005 18:31:51 +0200 (CEST)
+To: bfennema@falcon.csc.calpoly.edu
+Cc: linux_udf@hpesjro.fc.hp.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
 
-------_=_NextPart_001_01C565EE.D661107C
-Content-Type: text/plain
 
-Yes. And I am trying fork stress test.
+Linux with UDF compiled in, can't be linked against the libc (needed for 
+UML).
 
-Majid.
+This patch makes the variable __mon_yday static and avoids a namespace 
+conflict with the libc.
 
-> -----Original Message-----
-> From: Jeff Dike [mailto:jdike@addtoit.com] 
-> Sent: Tuesday, May 31, 2005 9:58 AM
-> To: Salame, Majid [CAR:2V62:EXCH]
-> Cc: user-mode-linux-devel@lists.sourceforge.net
-> Subject: Re: [uml-devel] Slower system call with SMP
-> 
-> 
-> > The cost of a system call it seems to be higher when
-> > Running a RHE host with dual CPU (SMP turned on) and the image is 
-> > patched with skas patch.
-> > 
-> > Doe that make sense ? Doing the same test by disabling SMP on the 
-> > host, and results are much faster.
-> 
-> What exactly was the test?  A getpid loop?
-> 
-> 				Jeff
-> 
-> 
 
-------_=_NextPart_001_01C565EE.D661107C
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+	Signed-off-by: Dominik Hackl <dominik@hackl.dhs.org>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-5.5.2658.2">
-<TITLE>RE: [uml-devel] Slower system call with SMP</TITLE>
-</HEAD>
-<BODY>
 
-<P><FONT SIZE=3D2>Yes. And I am trying fork stress test.</FONT>
-</P>
 
-<P><FONT SIZE=3D2>Majid.</FONT>
-</P>
-
-<P><FONT SIZE=3D2>&gt; -----Original Message-----</FONT>
-<BR><FONT SIZE=3D2>&gt; From: Jeff Dike [<A =
-HREF=3D"mailto:jdike@addtoit.com">mailto:jdike@addtoit.com</A>] </FONT>
-<BR><FONT SIZE=3D2>&gt; Sent: Tuesday, May 31, 2005 9:58 AM</FONT>
-<BR><FONT SIZE=3D2>&gt; To: Salame, Majid [CAR:2V62:EXCH]</FONT>
-<BR><FONT SIZE=3D2>&gt; Cc: =
-user-mode-linux-devel@lists.sourceforge.net</FONT>
-<BR><FONT SIZE=3D2>&gt; Subject: Re: [uml-devel] Slower system call =
-with SMP</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; The cost of a system call it seems to be =
-higher when</FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; Running a RHE host with dual CPU (SMP =
-turned on) and the image is </FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; patched with skas patch.</FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; Doe that make sense ? Doing the same test =
-by disabling SMP on the </FONT>
-<BR><FONT SIZE=3D2>&gt; &gt; host, and results are much faster.</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; What exactly was the test?&nbsp; A getpid =
-loop?</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jeff</FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-<BR><FONT SIZE=3D2>&gt; </FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C565EE.D661107C--
+--- linux-2.6.12-rc5.orig/fs/udf/udftime.c	2005-05-25 20:37:16.000000000 +0200
++++ linux-2.6.12-rc5/fs/udf/udftime.c	2005-05-31 16:51:11.000000000 +0200
+@@ -46,7 +46,7 @@
+ #endif
+ 
+ /* How many days come before each month (0-12).  */
+-const unsigned short int __mon_yday[2][13] =
++const static unsigned short int __mon_yday[2][13] =
+ {
+ 	/* Normal years.  */
+ 	{ 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 },
 
 
 -------------------------------------------------------
