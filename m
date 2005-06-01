@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DdZxU-0003vc-RP	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Jun 2005 13:37:00 -0700
+	id 1Ddajr-00064X-Fb	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Jun 2005 14:26:59 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DdZxQ-0007HO-9L	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Jun 2005 13:37:00 -0700
+	id 1Ddajp-0006UG-Of	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Jun 2005 14:26:59 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Problems applying patches to 2.6.12-rc5-mm1
-Message-ID: <20050601203142.GB14652@ccure.user-mode-linux.org>
-References: <s29d95a6.056@ORANGE.OUS.EDU>
+Subject: Re: [uml-devel] Problem with /dev/random and rngd daemon
+Message-ID: <20050601204212.GC14652@ccure.user-mode-linux.org>
+References: <s29d8993.000@ORANGE.OUS.EDU>
+	<200506012025.30912.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s29d95a6.056@ORANGE.OUS.EDU>
+In-Reply-To: <200506012025.30912.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,19 +28,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 1 Jun 2005 16:31:42 -0400
-To: Anthony Brock <Anthony_Brock@ous.edu>
-Cc: user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, jdike@addtoit.com
+Date: Wed, 1 Jun 2005 16:42:12 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Anthony Brock <Anthony_Brock@ous.edu>
 
-On Wed, Jun 01, 2005 at 11:01:33AM -0700, Anthony Brock wrote:
-> I'm now seeing new messages appear on the console with the
-> 2.6.12-rc5-mm1 kernel that I haven't seen with the 2.6.11.x series
-> kernels: 
-> 
-> sigio_handler: os_waiting_for_events: poll returned -1, errno = 4
+On Wed, Jun 01, 2005 at 08:25:30PM +0200, Blaisorblade wrote:
+> Maybe the host /dev/random supports only one user at any given moment.
 
-That's EINTR, should be harmless.  I just need to check for that and
-retry the poll.
+No, when I was testing it, I had concurrent dd if=/dev/random going on the
+host and UML to check that they got about the same amount of data.
 
 				Jeff
 
