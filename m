@@ -2,28 +2,34 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DeEu3-0000FP-0l	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Jun 2005 09:20:11 -0700
-Received: from mail.nagafix.co.uk ([213.228.237.37])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DeEu2-0003bL-0z	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Jun 2005 09:20:10 -0700
-Subject: Re: [uml-devel] Re: 2.6.11.8 + UML/x86_64 (2.6.12-rc3+) = oops
-From: antoine <antoine@nagafix.co.uk>
-In-Reply-To: <20050603023809.GA28818@ccure.user-mode-linux.org>
-References: <1115481468.925.9.camel@localhost.localdomain>
-	<20050507180356.GA10793@ccure.user-mode-linux.org>
-	<1115573839.10373.42.camel@cobra>
-	<20050508183533.GA27251@ccure.user-mode-linux.org>
-	<1115590823.10373.68.camel@cobra> <1115600253.10373.74.camel@cobra>
-	<1117691482.10122.107.camel@localhost>
-	<20050602210649.GA24306@ccure.user-mode-linux.org>
-	<1117766016.10122.202.camel@localhost>
-	<20050603023809.GA28818@ccure.user-mode-linux.org>
-Content-Type: text/plain
-Message-Id: <1117826890.10090.48.camel@localhost>
-Mime-Version: 1.0
+	id 1DeFlT-0003Ah-10	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Jun 2005 10:15:23 -0700
+Received: from mail.scgiservices.com ([198.107.3.67])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DeFlQ-0004s8-Pu
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Jun 2005 10:15:22 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by mail.scgiservices.com (Postfix) with ESMTP id E56252A08B
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri,  3 Jun 2005 10:15:17 -0700 (PDT)
+Received: from mail.scgiservices.com ([127.0.0.1])
+ by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+ id 04110-01 for <user-mode-linux-devel@lists.sourceforge.net>;
+ Fri,  3 Jun 2005 10:15:12 -0700 (PDT)
+Received: from SCG2 (c-67-160-154-69.hsd1.or.comcast.net [67.160.154.69])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mail.scgiservices.com (Postfix) with ESMTP id EB6592A086
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri,  3 Jun 2005 10:15:11 -0700 (PDT)
+From: "Anthony Brock" <Anthony.Brock@oregonstate.edu>
+Message-ID: <OJEEKGNKKDLJIEPBEJMIMEKPCAAA.Anthony.Brock@oregonstate.edu>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Problems applying patches to 2.6.12-rc5-mm2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,124 +41,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 03 Jun 2005 20:28:10 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 3 Jun 2005 10:15:08 -0700
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 2005-06-02 at 22:38 -0400, Jeff Dike wrote:
-> On Fri, Jun 03, 2005 at 03:33:36AM +0100, antoine wrote:
-> > Thanks, almost all applied cleanly - I skipped the s390 ones for now.
-> 
-> I wouldn't cherry-pick patches.  You may be right, but it also means you're
-> running different code than me.
-I wouldn't normally do that, but there is a patch that does not apply
-cleanly: fp-state (can't find file to patch at input line 28 ...)
-So I started thinking that there were things I did not necessarily need
-or want (s390, x11fb, audio, etc) - I guess I was wrong...
-
-I started again, applying everything else, some files complained about
-missing skas.h or proc_mm.h, another case of empty file, easy fix:
-rm ./arch/um/kernel/skas/include/skas.h
-
-I got tired of doing the same steps over and over again (to be sure I
-wasn't reporting my own mistakes) so I made this very simple script to
-untar kernel source + apply MM + apply UML patches:
-http://213.228.237.37/uml/2.6.12-rc5-mm2/make-uml64.sh
-I've also dumped the compile errors, kernel binary, .config in the same
-directory.
-
-Everything kinda works now! And it is *very* fast (compared to TT x86
-guest) And this time it is a bit more stable.
-I think there is still a memory leak lurking, OOM seems to kick in (see
-bottom of this email)
-
-Very minor thing: I noticed that the TT threads generally do not show
-which process they are running inside the UML (as it used to), any way
-to restore this?
-
-Thanks
-Antoine
+In the event that something "wierd" happened to my guest binary, I've decide
+to try recompiling again. However, I'm now seeing new (and old) compilation
+errors with Jeff's tree. The steps were:
 
 
-> 
-> > I can bring the network up manually (ifconfig) and ping (in and out),
-> > but running any of the /etc/init.d/ scripts locks up, same goes for
-> > starting sshd or even "Hello World" in hello.sh
-> 
-> Dunno, it works here, and I've beat on it a bunch.  If you can get stack
-> traces or anything from the hangs, that might help.
-> 
-> 				Jeff
-*********
-* OOM
-* 128RAM + 128swap should be enough to emerge things...
-*********
+# tar -jxvf linux-2.6.12-rc5.tar.bz2
+# cd linux-2.6.12-rc5/
+# bzip2 -dc ../2.6.12-rc5-mm2.bz2 |patch -p1
+# tar -xvf ../2.6.12-rc5-mm2-20050602-patches.tar
+# quilt push -a
+# cp -a ../.config .
+# make oldconfig ARCH=um
+# make ARCH=um && make modules ARCH=um
 
-[42951416.180000] oom-killer: gfp_mask=0xd2
-[42951416.180000] DMA per-cpu:
-[42951416.180000] cpu 0 hot: low 30, high 90, batch 15
-[42951416.180000] cpu 0 cold: low 0, high 30, batch 15
-[42951416.180000] Normal per-cpu: empty
-[42951416.180000] HighMem per-cpu: empty
-[42951416.180000]
-[42951416.180000] Free pages:        1432kB (0kB HighMem)
-[42951416.180000] Active:166 inactive:333 dirty:0 writeback:0 unstable:0
-free:358 slab:999 mapped:82 pagetables:9547
-[42951416.180000] DMA free:1432kB min:1448kB low:1808kB high:2172kB
-active:664kB inactive:1332kB present:131072kB pages_scanned:1301
-[42951416.180000] lowmem_reserve[]: 0 0 0
-[42951416.180000] Normal free:0kB min:0kB low:0kB high:0kB active:0kB
-inactive:0kB present:0kB pages_scanned:0
-[42951416.180000] lowmem_reserve[]: 0 0 0
-[42951416.180000] HighMem free:0kB min:128kB low:160kB high:192kB
-active:0kB inactive:0kB present:0kB pages_scanned:0
-[42951416.180000] lowmem_reserve[]: 0 0 0
-[42951416.180000] DMA: 0*4kB 5*8kB 1*16kB 1*32kB 1*64kB 0*128kB 1*256kB
-0*512kB 1*1024kB 0*2048kB 0*4096kB = 1432kB
-[42951416.180000] Normal: empty
-[42951416.180000] HighMem: empty
-[42951416.180000] Swap cache: add 314384, delete 314009, find
-48066/104534, race 0+0
-[42951416.180000] Free swap  = 112048kB
-[42951416.180000] Total swap = 131064kB
-[42951416.180000] Out of Memory: Killed process 978 (emerge).
-[42951416.180000] oom-killer: gfp_mask=0xd2
-[42951416.180000] DMA per-cpu:
-[42951416.180000] cpu 0 hot: low 30, high 90, batch 15
-[42951416.180000] cpu 0 cold: low 0, high 30, batch 15
-[42951416.180000] Normal per-cpu: empty
-[42951416.180000] HighMem per-cpu: empty
-[42951416.180000]
-[42951416.180000] Free pages:        1432kB (0kB HighMem)
-[42951416.180000] Active:166 inactive:333 dirty:0 writeback:0 unstable:0
-free:358 slab:1000 mapped:82 pagetables:9519
-[42951416.180000] DMA free:1432kB min:1448kB low:1808kB high:2172kB
-active:664kB inactive:1332kB present:131072kB pages_scanned:1301
-[42951416.180000] lowmem_reserve[]: 0 0 0
-[42951416.180000] Normal free:0kB min:0kB low:0kB high:0kB active:0kB
-inactive:0kB present:0kB pages_scanned:0
-[42951416.180000] lowmem_reserve[]: 0 0 0
-[42951416.180000] HighMem free:0kB min:128kB low:160kB high:192kB
-active:0kB inactive:0kB present:0kB pages_scanned:0
-[42951416.180000] lowmem_reserve[]: 0 0 0
-[42951416.180000] DMA: 0*4kB 5*8kB 1*16kB 1*32kB 1*64kB 0*128kB 1*256kB
-0*512kB 1*1024kB 0*2048kB 0*4096kB = 1432kB
-[42951416.180000] Normal: empty
-[42951416.180000] HighMem: empty
-[42951416.180000] Swap cache: add 314384, delete 314009, find
-48066/104535, race 0+0
-[42951416.180000] Free swap  = 123236kB
-[42951416.180000] Total swap = 131064kB
-[42951416.180000] Out of Memory: Killed process 5713 (portageq).
+<*** OUTPUT SNIPPED ***>
 
+  CC      arch/um/sys-i386/sigcontext.o
+  AS      arch/um/sys-i386/stub.o
+  CC      arch/um/sys-i386/stub_segv.o
+fixdep: arch/um/sys-i386/.stub_segv.o.d: No such file or directory
+make[1]: *** [arch/um/sys-i386/stub_segv.o] Error 2
+make: *** [arch/um/sys-i386] Error 2
+#
+
+
+So, this problem is back. I then removed the 'av-skas0' patch with:
+
+
+# cat patches/av-skas0|patch -p1 -R
+patching file arch/um/Makefile
+Hunk #1 succeeded at 64 (offset 1 line).
+patching file arch/um/sys-i386/Makefile
+patching file arch/um/sys-x86_64/Makefile
+Hunk #1 succeeded at 32 (offset 2 lines).
+#
+
+
+Once more, I tried the compile:
+
+
+# make ARCH=um && make modules ARCH=um
+
+<*** OUTPUT SNIPPED ***>
+
+  CC      kernel/futex.o
+  CC      kernel/uid16.o
+  CC      kernel/module.o
+kernel/module.c: In function `module_add_modinfo_attrs':
+kernel/module.c:1078: error: `modinfo_attrs' undeclared (first use in this
+function)
+kernel/module.c:1078: error: (Each undeclared identifier is reported only
+once
+kernel/module.c:1078: error: for each function it appears in.)
+kernel/module.c: In function `module_remove_modinfo_attrs':
+kernel/module.c:1091: error: `modinfo_attrs' undeclared (first use in this
+function)
+kernel/module.c: In function `setup_modinfo':
+kernel/module.c:1387: error: `modinfo_attrs' undeclared (first use in this
+function)
+make[1]: *** [kernel/module.o] Error 1
+make: *** [kernel] Error 2
+#
+
+
+Idea? - Tony
 
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by Yahoo.
-Introducing Yahoo! Search Developer Network - Create apps using Yahoo!
-Search APIs Find out how you can build Yahoo! directly into your own
-Applications - visit http://developer.yahoo.net/?fr=offad-ysdn-ostg-q22005
+This SF.Net email is sponsored by: NEC IT Guy Games.  How far can you shotput
+a projector? How fast can you ride your desk chair down the office luge track?
+If you want to score the big prize, get to know the little guy.  
+Play to win an NEC 61" plasma display: http://www.necitguy.com/?r=20
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
