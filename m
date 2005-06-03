@@ -2,28 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DeGRr-0005O1-DP	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Jun 2005 10:59:11 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DeGRn-0003dm-UQ	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Jun 2005 10:59:11 -0700
-Message-ID: <42A09A63.9090002@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+	id 1DeKIo-0000cn-5q	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Jun 2005 15:06:06 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DeKIj-00005l-W4	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Jun 2005 15:06:06 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Problems applying patches to 2.6.12-rc5-mm1
+References: <CBELIFGMBIEPIEOFCJFAEEHBCAAA.Anthony.Brock@oregonstate.edu>
+In-Reply-To: <CBELIFGMBIEPIEOFCJFAEEHBCAAA.Anthony.Brock@oregonstate.edu>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: 2.6.11.8 + UML/x86_64 (2.6.12-rc3+) = oops
-References: <1115573839.10373.42.camel@cobra>
-	<20050508183533.GA27251@ccure.user-mode-linux.org>
-	<1115590823.10373.68.camel@cobra> <1115600253.10373.74.camel@cobra>
-	<1117307236.10041.4.camel@localhost> <1117691482.10122.107.camel@localhost>
-	<20050602210649.GA24306@ccure.user-mode-linux.org>
-	<1117766016.10122.202.camel@localhost>
-	<20050603023809.GA28818@ccure.user-mode-linux.org>
-	<1117826890.10090.48.camel@localhost>
-	<20050603164910.GA20908@ccure.user-mode-linux.org>
-In-Reply-To: <20050603164910.GA20908@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200506040008.42890.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,51 +29,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 03 Jun 2005 19:58:59 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: antoine <antoine@nagafix.co.uk>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 4 Jun 2005 00:08:42 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anthony Brock <Anthony.Brock@oregonstate.edu>, jdike@addtoit.com, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Jeff Dike wrote:
-> On Fri, Jun 03, 2005 at 08:28:10PM +0100, antoine wrote:
-> 
->>I think there is still a memory leak lurking, OOM seems to kick in (see
->>bottom of this email)
-> 
-> 
-> Yeah, it's a page leak, I think from page tables, which I haven't tracked
-> down yet.
-> 
-> 
->>Very minor thing: I noticed that the TT threads generally do not show
->>which process they are running inside the UML (as it used to), any way
->>to restore this?
-> 
-> 
-> Those aren't tt threads, they are skas0 threads, and we could probably restore 
-> the command names, but I haven't bothered doing so.
-I thought about doing so, as the output of ps really looks bad.
-Unfortunately, I found only very nasty ways.
-On older host's, we could try to expand or strip down the environment in a similar
-way as is used it tt. Then, names could be placed into stub-(stack?)-page.
-Nasty, but it could work.
-An even worse case is a host using stack-randomization. We need a pointer in the
-host poining to stub-pages. If the host has left a "hole" above the stack, would
-we have to "exec" until accidentally we get a stack starting at upper address-range
-limit?
-		Bodo
-> 
-> 				Jeff
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: NEC IT Guy Games.  How far can you shotput
-> a projector? How fast can you ride your desk chair down the office luge track?
-> If you want to score the big prize, get to know the little guy.  
-> Play to win an NEC 61" plasma display: http://www.necitguy.com/?r=20
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+On Friday 03 June 2005 04:52, Anthony Brock wrote:
+> I shutdown the process and, just to confirm, restarted it. I received the
+> following on the console:
+>
+>
+> Checking that ptrace can change system call numbers...OK
+> Checking syscall emulation patch for ptrace...OK
+> Checking advanced syscall emulation patch for ptrace...check_sysemu :
+> expected SIGTRAP or (SIGTRAP|0x80), got status = 7295
+
+WSTOPSIG(status) is 28
+The signal is: Window changed
+
+Jeff, what has happened with the SIGWINCH problems? Also I remember a patch 
+from Bodo about not losting SIGWINCH (or something like that)...
+> After checking the process table, I confirmed that the kernel had fully
+> crashed. So I attempted to launch it again. Once more, I have extraneous
+> processes in the table:
+
+
+> So, I decided to down-grade to the older 2.6.11.11-bs5 kernel. This is what
+> I see when trying to launch:
+>
+
+> $ TMP=/dev/shm /var/run/ramfs/linux-2.6.11.11-00-32bit-bs5 umid=bind2
+> hwprobe=-sys mem=64M con=pts con0=fd:0,fd:1
+> ubd0s=/opt/images/instances/bindsec_root.img
+> ubd1s=/opt/images/instances/bindsec_swap.img
+> eth0=tuntap,bind2-0,fe:fd:aa:aa:aa:3d root=98:0
+> Checking for /proc/mm...not found
+> Support for TT mode is disabled, and no SKAS support is present on the
+> host. $
+
+> I am now truly baffled. I'm assuming that this means I have problems on the
+> host. How do I generate information that will help with trouble-shooting?
+> Thanks!
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
