@@ -1,35 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DeFlT-0003Ah-10	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Jun 2005 10:15:23 -0700
-Received: from mail.scgiservices.com ([198.107.3.67])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DeFlQ-0004s8-Pu
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Jun 2005 10:15:22 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by mail.scgiservices.com (Postfix) with ESMTP id E56252A08B
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  3 Jun 2005 10:15:17 -0700 (PDT)
-Received: from mail.scgiservices.com ([127.0.0.1])
- by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
- id 04110-01 for <user-mode-linux-devel@lists.sourceforge.net>;
- Fri,  3 Jun 2005 10:15:12 -0700 (PDT)
-Received: from SCG2 (c-67-160-154-69.hsd1.or.comcast.net [67.160.154.69])
-	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by mail.scgiservices.com (Postfix) with ESMTP id EB6592A086
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  3 Jun 2005 10:15:11 -0700 (PDT)
-From: "Anthony Brock" <Anthony.Brock@oregonstate.edu>
-Message-ID: <OJEEKGNKKDLJIEPBEJMIMEKPCAAA.Anthony.Brock@oregonstate.edu>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Problems applying patches to 2.6.12-rc5-mm2
+	id 1DeG9K-0004Ud-Fa	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Jun 2005 10:40:02 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DeG9I-00085u-3B	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Jun 2005 10:40:02 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: 2.6.11.8 + UML/x86_64 (2.6.12-rc3+) = oops
+Message-ID: <20050603164910.GA20908@ccure.user-mode-linux.org>
+References: <1115573839.10373.42.camel@cobra>
+	<20050508183533.GA27251@ccure.user-mode-linux.org>
+	<1115590823.10373.68.camel@cobra> <1115600253.10373.74.camel@cobra>
+	<1117307236.10041.4.camel@localhost> <1117691482.10122.107.camel@localhost>
+	<20050602210649.GA24306@ccure.user-mode-linux.org>
+	<1117766016.10122.202.camel@localhost>
+	<20050603023809.GA28818@ccure.user-mode-linux.org>
+	<1117826890.10090.48.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1117826890.10090.48.camel@localhost>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,75 +34,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 3 Jun 2005 10:15:08 -0700
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 3 Jun 2005 12:49:10 -0400
+To: antoine <antoine@nagafix.co.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-In the event that something "wierd" happened to my guest binary, I've decide
-to try recompiling again. However, I'm now seeing new (and old) compilation
-errors with Jeff's tree. The steps were:
+On Fri, Jun 03, 2005 at 08:28:10PM +0100, antoine wrote:
+> I think there is still a memory leak lurking, OOM seems to kick in (see
+> bottom of this email)
 
+Yeah, it's a page leak, I think from page tables, which I haven't tracked
+down yet.
 
-# tar -jxvf linux-2.6.12-rc5.tar.bz2
-# cd linux-2.6.12-rc5/
-# bzip2 -dc ../2.6.12-rc5-mm2.bz2 |patch -p1
-# tar -xvf ../2.6.12-rc5-mm2-20050602-patches.tar
-# quilt push -a
-# cp -a ../.config .
-# make oldconfig ARCH=um
-# make ARCH=um && make modules ARCH=um
+> Very minor thing: I noticed that the TT threads generally do not show
+> which process they are running inside the UML (as it used to), any way
+> to restore this?
 
-<*** OUTPUT SNIPPED ***>
+Those aren't tt threads, they are skas0 threads, and we could probably restore 
+the command names, but I haven't bothered doing so.
 
-  CC      arch/um/sys-i386/sigcontext.o
-  AS      arch/um/sys-i386/stub.o
-  CC      arch/um/sys-i386/stub_segv.o
-fixdep: arch/um/sys-i386/.stub_segv.o.d: No such file or directory
-make[1]: *** [arch/um/sys-i386/stub_segv.o] Error 2
-make: *** [arch/um/sys-i386] Error 2
-#
-
-
-So, this problem is back. I then removed the 'av-skas0' patch with:
-
-
-# cat patches/av-skas0|patch -p1 -R
-patching file arch/um/Makefile
-Hunk #1 succeeded at 64 (offset 1 line).
-patching file arch/um/sys-i386/Makefile
-patching file arch/um/sys-x86_64/Makefile
-Hunk #1 succeeded at 32 (offset 2 lines).
-#
-
-
-Once more, I tried the compile:
-
-
-# make ARCH=um && make modules ARCH=um
-
-<*** OUTPUT SNIPPED ***>
-
-  CC      kernel/futex.o
-  CC      kernel/uid16.o
-  CC      kernel/module.o
-kernel/module.c: In function `module_add_modinfo_attrs':
-kernel/module.c:1078: error: `modinfo_attrs' undeclared (first use in this
-function)
-kernel/module.c:1078: error: (Each undeclared identifier is reported only
-once
-kernel/module.c:1078: error: for each function it appears in.)
-kernel/module.c: In function `module_remove_modinfo_attrs':
-kernel/module.c:1091: error: `modinfo_attrs' undeclared (first use in this
-function)
-kernel/module.c: In function `setup_modinfo':
-kernel/module.c:1387: error: `modinfo_attrs' undeclared (first use in this
-function)
-make[1]: *** [kernel/module.o] Error 1
-make: *** [kernel] Error 2
-#
-
-
-Idea? - Tony
-
+				Jeff
 
 
 -------------------------------------------------------
