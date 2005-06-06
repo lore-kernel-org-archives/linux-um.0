@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DfNfu-0005kq-0P	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 12:54:18 -0700
-Received: from orange.ous.edu ([140.211.15.17])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DfNfq-000267-GI	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 12:54:17 -0700
-Message-Id: <s2a447e1.042@ORANGE.OUS.EDU>
-From: "Anthony Brock" <Anthony_Brock@ous.edu>
-Subject: Re: [uml-devel] Problems applying patches to 2.6.12-rc5-mm2
+	id 1DfNyP-0006l1-5h	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 13:13:25 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DfNyM-0007Vl-88	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 13:13:24 -0700
+Message-Id: <200506062008.j56K8BKG008967@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 5/5] UML - clean up error path
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,94 +24,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 06 Jun 2005 12:55:29 -0700
-Content-Transfer-Encoding: 8bit
-To: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, viro@parcelfarce.linux.theplanet.co.uk, blaisorblade@yahoo.it
-Cc: Anthony.Brock@oregonstate.edu
+Date: Mon, 06 Jun 2005 16:08:11 -0400
+To: akpm@osdl.org, torvalds@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisor,
+This cleans an error path which used to leak file descriptors by returning
+without trying to tidy up.
 
-Thanks! Any ideas on the second compile problem? The output is:
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-  CC      kernel/futex.o
-  CC      kernel/uid16.o
-  CC      kernel/module.o
-kernel/module.c: In function `module_add_modinfo_attrs':
-kernel/module.c:1078: error: `modinfo_attrs' undeclared (first use in this function)
-kernel/module.c:1078: error: (Each undeclared identifier is reported only once
-kernel/module.c:1078: error: for each function it appears in.)
-kernel/module.c: In function `module_remove_modinfo_attrs':
-kernel/module.c:1091: error: `modinfo_attrs' undeclared (first use in this function)
-kernel/module.c: In function `setup_modinfo':
-kernel/module.c:1387: error: `modinfo_attrs' undeclared (first use in this function)
-make[1]: *** [kernel/module.o] Error 1
-make: *** [kernel] Error 2
-
-
-Tony
-
-
->>> Blaisorblade <blaisorblade@yahoo.it> 06/05/05 08:54AM >>>
-On Friday 03 June 2005 19:15, Anthony Brock wrote:
-> In the event that something "wierd" happened to my guest binary, I've
-> decide to try recompiling again. However, I'm now seeing new (and old)
-> compilation errors with Jeff's tree. The steps were:
-
-> # tar -jxvf linux-2.6.12-rc5.tar.bz2
-> # cd linux-2.6.12-rc5/
-> # bzip2 -dc ../2.6.12-rc5-mm2.bz2 |patch -p1
-> # tar -xvf ../2.6.12-rc5-mm2-20050602-patches.tar
-> # quilt push -a
-> # cp -a ../.config .
-> # make oldconfig ARCH=um
-> # make ARCH=um && make modules ARCH=um
->
-> <*** OUTPUT SNIPPED ***>
->
->   CC      arch/um/sys-i386/sigcontext.o
->   AS      arch/um/sys-i386/stub.o
->   CC      arch/um/sys-i386/stub_segv.o
-> fixdep: arch/um/sys-i386/.stub_segv.o.d: No such file or directory
-Ok, the other time I just looked at patch changelogs, now here's a more 
-definite answer. The patch does not work because the .d file is not created.
-
-Probably it works for you, Jeff, because you have that file as a residual from 
-a previous compile...
-
-In this section of the patch (both for i386 and x86_64), affecting 
-arch/um/sys-*/Makefile, the last line:
-
-+# _cflags works with kernel files, not with userspace ones, but c_flags does,
-+# why ask why?
-+$(obj)/stub_segv.o : c_flags = $(call unprofile,$(USER_CFLAGS))
-
-should become (without the break):
-+$(obj)/stub_segv.o : c_flags = -Wp,-MD,$(depfile) $(call unprofile,
-$(USER_CFLAGS))
-
-See for comparison the content of arch/um/scripts/Makefile.rules (and for the 
-difference between _c_flags and c_flags, scripts/Makefile.lib).
-
-Beyond that, for such tricks with .S files we would use a_flags (or 
-_a_flags)... currently this is not needed, but just in case you need it.
-
-
-> make[1]: *** [arch/um/sys-i386/stub_segv.o] Error 2
-> make: *** [arch/um/sys-i386] Error 2
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade 
-
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it 
+Index: linux-2.6.12-rc/arch/um/drivers/chan_user.c
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/chan_user.c	2005-06-02 17:04:11.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/chan_user.c	2005-06-03 17:46:17.000000000 -0400
+@@ -143,22 +143,22 @@ static int winch_tramp(int fd, struct tt
+ {
+ 	struct winch_data data;
+ 	unsigned long stack;
+-	int fds[2], pid, n, err;
++	int fds[2], n, err;
+ 	char c;
+ 
+ 	err = os_pipe(fds, 1, 1);
+ 	if(err < 0){
+ 		printk("winch_tramp : os_pipe failed, err = %d\n", -err);
+-		return(err);
++		goto out;
+ 	}
+ 
+ 	data = ((struct winch_data) { .pty_fd 		= fd,
+ 				      .pipe_fd 		= fds[1],
+ 				      .close_me 	= fds[0] } );
+-	pid = run_helper_thread(winch_thread, &data, 0, &stack, 0);
+-	if(pid < 0){
++	err = run_helper_thread(winch_thread, &data, 0, &stack, 0);
++	if(err < 0){
+ 		printk("fork of winch_thread failed - errno = %d\n", errno);
+-		return(pid);
++		goto out_close;
+ 	}
+ 
+ 	os_close_file(fds[1]);
+@@ -168,14 +168,22 @@ static int winch_tramp(int fd, struct tt
+ 		printk("winch_tramp : failed to read synchronization byte\n");
+ 		printk("read failed, err = %d\n", -n);
+ 		printk("fd %d will not support SIGWINCH\n", fd);
+-                pid = -1;
++                err = -EINVAL;
++		goto out_close1;
+ 	}
+-	return(pid);
++	return err ;
++
++ out_close:
++	os_close_file(fds[1]);
++ out_close1:
++	os_close_file(fds[0]);
++ out:
++	return err;
+ }
+ 
+ void register_winch(int fd, struct tty_struct *tty)
+ {
+-	int pid, thread, thread_fd;
++	int pid, thread, thread_fd = -1;
+ 	int count;
+ 	char c = 1;
+ 
 
 
 
@@ -120,19 +98,7 @@ http://mail.yahoo.it
 This SF.Net email is sponsored by: NEC IT Guy Games.  How far can you shotput
 a projector? How fast can you ride your desk chair down the office luge track?
 If you want to score the big prize, get to know the little guy.  
-Play to win an NEC 61" plasma display: http://www.necitguy.com/?r=20 
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net 
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: NEC IT Guy Games.  How far can you shotput
-a projector? How fast can you ride your desk chair down the office luge track?
-If you want to score the big prize, get to know the little guy.  
-Play to win an NEC 61" plasma display: http://www.necitguy.com/?r 
+Play to win an NEC 61" plasma display: http://www.necitguy.com/?r=20
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
