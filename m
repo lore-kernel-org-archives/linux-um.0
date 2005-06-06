@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DfNyP-0006l1-5h	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 13:13:25 -0700
+	id 1DfQ02-0005zu-CP	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 15:23:14 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DfNyM-0007Vl-88	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 13:13:24 -0700
-Message-Id: <200506062008.j56K8BKG008967@ccure.user-mode-linux.org>
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DfQ00-0007HD-C1	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 15:23:14 -0700
+Message-Id: <200506062008.j56K8AaI008962@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 5/5] UML - clean up error path
+Subject: [uml-devel] [PATCH 4/5] UML - Fix strace -f
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,72 +24,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 06 Jun 2005 16:08:11 -0400
+Date: Mon, 06 Jun 2005 16:08:10 -0400
 To: akpm@osdl.org, torvalds@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This cleans an error path which used to leak file descriptors by returning
-without trying to tidy up.
+It turns out that we need to check for pending signals when a newly forked 
+process is run for the first time.  With strace -f, strace needs to know
+about the forked process before it gets going.  If it doesn't, then it
+ptraces some bogus values into its registers, and the process segfaults.
+So, I added calls to interrupt_end, which does that, plus checks for 
+reschedules.  There shouldn't be any of those, but x86 does the same thing,
+so I'm copying that behavior to be safe.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12-rc/arch/um/drivers/chan_user.c
+Index: linux-2.6.12-rc/arch/um/kernel/skas/process_kern.c
 ===================================================================
---- linux-2.6.12-rc.orig/arch/um/drivers/chan_user.c	2005-06-02 17:04:11.000000000 -0400
-+++ linux-2.6.12-rc/arch/um/drivers/chan_user.c	2005-06-03 17:46:17.000000000 -0400
-@@ -143,22 +143,22 @@ static int winch_tramp(int fd, struct tt
- {
- 	struct winch_data data;
- 	unsigned long stack;
--	int fds[2], pid, n, err;
-+	int fds[2], n, err;
- 	char c;
- 
- 	err = os_pipe(fds, 1, 1);
- 	if(err < 0){
- 		printk("winch_tramp : os_pipe failed, err = %d\n", -err);
--		return(err);
-+		goto out;
- 	}
- 
- 	data = ((struct winch_data) { .pty_fd 		= fd,
- 				      .pipe_fd 		= fds[1],
- 				      .close_me 	= fds[0] } );
--	pid = run_helper_thread(winch_thread, &data, 0, &stack, 0);
--	if(pid < 0){
-+	err = run_helper_thread(winch_thread, &data, 0, &stack, 0);
-+	if(err < 0){
- 		printk("fork of winch_thread failed - errno = %d\n", errno);
--		return(pid);
-+		goto out_close;
- 	}
- 
- 	os_close_file(fds[1]);
-@@ -168,14 +168,22 @@ static int winch_tramp(int fd, struct tt
- 		printk("winch_tramp : failed to read synchronization byte\n");
- 		printk("read failed, err = %d\n", -n);
- 		printk("fd %d will not support SIGWINCH\n", fd);
--                pid = -1;
-+                err = -EINVAL;
-+		goto out_close1;
- 	}
--	return(pid);
-+	return err ;
-+
-+ out_close:
-+	os_close_file(fds[1]);
-+ out_close1:
-+	os_close_file(fds[0]);
-+ out:
-+	return err;
+--- linux-2.6.12-rc.orig/arch/um/kernel/skas/process_kern.c	2005-06-02 17:16:46.000000000 -0400
++++ linux-2.6.12-rc/arch/um/kernel/skas/process_kern.c	2005-06-02 17:16:50.000000000 -0400
+@@ -68,8 +68,11 @@ void new_thread_handler(int sig)
+ 	 * 0 if it just exits
+ 	 */
+ 	n = run_kernel_thread(fn, arg, &current->thread.exec_buf);
+-	if(n == 1)
++	if(n == 1){
++		/* Handle any immediate reschedules or signals */
++		interrupt_end();
+ 		userspace(&current->thread.regs.regs);
++	}
+ 	else do_exit(0);
  }
  
- void register_winch(int fd, struct tty_struct *tty)
- {
--	int pid, thread, thread_fd;
-+	int pid, thread, thread_fd = -1;
- 	int count;
- 	char c = 1;
+@@ -96,6 +99,8 @@ void fork_handler(int sig)
+ 	schedule_tail(current->thread.prev_sched);
+ 	current->thread.prev_sched = NULL;
+ 
++	/* Handle any immediate reschedules or signals */
++	interrupt_end();
+ 	userspace(&current->thread.regs.regs);
+ }
  
 
 
