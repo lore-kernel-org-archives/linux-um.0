@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DfQWB-0007tq-RA	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 15:56:27 -0700
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DfQWA-0003DD-Au	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 15:56:27 -0700
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-In-Reply-To: <1118098104.10147.38.camel@localhost>
-Message-ID: <Pine.LNX.4.62.0506061854010.5707@sparrow>
-References: <20050606224201.1557CFD31@sc8-sf-spam2.sourceforge.net>
- <1118098104.10147.38.camel@localhost>
+	id 1DfQc0-0008Dz-1m	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 16:02:28 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DfQbx-0004tP-4O	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 16:02:27 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 3/5] UML - Clean up tt mode remapping of UML
+	binary
+References: <200506062008.j56K89YA008957@ccure.user-mode-linux.org>
+In-Reply-To: <200506062008.j56K89YA008957@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: [uml-devel] Re: 2.6.12-rc5-mm2-patches20050605 build issues, run
-	issues, backtrace
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200506070105.20422.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,45 +30,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 6 Jun 2005 18:55:51 -0400 (EDT)
-To: antoine <antoine@nagafix.co.uk>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, William Stearns <wstearns@pobox.com>
+Date: Tue, 7 Jun 2005 01:05:19 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, torvalds@osdl.org, linux-kernel@vger.kernel.org
 
-Good evening, Antoine,
+On Monday 06 June 2005 22:08, Jeff Dike wrote:
+> From Al Viro - this turns the tt mode remapping of the binary into arch
+> code.
+NACK at all, definitely, don't apply this one please. This patch:
 
-On Mon, 6 Jun 2005, antoine wrote:
+1) On i386 does not fix the problem it was supposed to fix when I originately 
+sent the first version (i.e. avoiding to create a .thread_private section to 
+allow linking against NPTL glibc). It's done on x86_64 and forgot on i386.
+2) Splitting the linker script for subarchs is definitely not needed.
+3) This removes the fix (done through objcopy -G switcheroo) to a link time 
+conflict happening on some weird glibc combinations.
 
->> [uml-devel] 2.6.12-rc5-mm2-patches20050605 build issues, run issues, backtrace
->>
->>  	Trying to build 2.6.5-rc5-mm2 on x86_64.  This is with all the
->> patches in Jeff's quilt tarball from 20050605:
->>
->> fs/externfs/externfs.c:20:23: 2_5compat.h: No such file or directory
->> make[2]: *** [fs/externfs/externfs.o] Error 1
->> make[1]: *** [fs/externfs] Error 2
->> make: *** [fs] Error 2
->
-> You are missing at least one patch, apply all of them except the testing
-> one (which does not apply cleanly anyway)
+I'll merge this work when it's ready.
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
- 	That's possible.
- 	I don't seem to see any references to 2.5_compat in any of the 
-patches I have from yesterday's tarball, but I could believe that there's 
-an indirect reference somewhere.
- 	Thanks for the help!
- 	Cheers,
- 	- Bill
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
 
----------------------------------------------------------------------------
- 	"It is difficult to produce a television documentary that is both
-incisive and probing when every twelve minutes one is interrupted by
-twelve dancing rabbits singing about toilet paper."
- 	-- Rod Serling
-(Courtesy of Dr. G.W. Wettstein <greg@wind.enjellic.com>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
 
 
 -------------------------------------------------------
