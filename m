@@ -1,18 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DfeCv-0001ud-JL	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 06:33:29 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DfeCs-0000Eb-Hc
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 06:33:28 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050607004216.72956EB2A@zion.home.lan>
-Subject: [uml-devel] [patch 1/2] uml: complete "[RFC] uml: add and use generic
-	hw_controller_type->release"
+	id 1Dff7O-0006Tl-Sk	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Jun 2005 07:31:50 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user79083)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Dff7N-0002DA-4g	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Jun 2005 07:31:50 -0700
+Subject: Re: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+References: <E1DfSPm-0008Vv-Va@nuthatch.gentoo.org>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <E1DfSPm-0008Vv-Va@nuthatch.gentoo.org>
+	(bugzilla-daemon@gentoo.org's
+	message of "Tue, 07 Jun 2005 00:57:58 +0000")
+Message-ID: <87psuy5jcj.fsf@amaterasu.srvr.nix>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,32 +29,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Jun 2005 02:42:16 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, mingo@redhat.com, blaisorblade@yahoo.it
+Date: Tue, 07 Jun 2005 15:31:40 +0100
+To: bugzilla-daemon@gentoo.org
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Tue, 07 Jun 2005, bugzilla-daemon@gentoo.org gibbered uncontrollably:
+> Ok, I hope there is still somebody using UML on a NPTL-only system. The 
+> workaround suggested last time was to avoid enabling CONFIG_MODE_TT; now I 
+> think I've got over this problem, too. So, when I release 2.6.11.8-bs6 (which 
+> will happen very shortly, I hope), I'd like to get some testing from you about 
+> this issue. 
 
-This occurrence of free_irq_by_irq_and_dev() was missed when converting UML to
-the use of hw_controller_type->release.
+I can give it a try if you like.
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+(That's a MODE_TT build on a system with NPTL headers, right?)
 
- linux-2.6.git-paolo/arch/um/drivers/line.c |    1 -
- 1 files changed, 1 deletion(-)
-
-diff -puN arch/um/drivers/line.c~uml-gen-irq-release-missed arch/um/drivers/line.c
---- linux-2.6.git/arch/um/drivers/line.c~uml-gen-irq-release-missed	2005-06-07 02:25:22.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/drivers/line.c	2005-06-07 02:25:22.000000000 +0200
-@@ -756,7 +756,6 @@ static void unregister_winch(struct tty_
-         if(winch->pid != -1)
-                 os_kill_process(winch->pid, 1);
- 
--        free_irq_by_irq_and_dev(WINCH_IRQ, winch);
-         free_irq(WINCH_IRQ, winch);
-         list_del(&winch->list);
-         kfree(winch);
-_
+-- 
+`It's as bizarre an intrusion as, I don't know, the hobbits coming home
+ to find that the Shire has been taken over by gangsta rappers.'
 
 
 -------------------------------------------------------
