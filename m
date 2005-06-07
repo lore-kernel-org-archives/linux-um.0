@@ -2,24 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DfSPw-00009g-Tr	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 17:58:08 -0700
-Received: from smtp.gentoo.org ([134.68.220.30])
+	id 1DfSQy-0000Ro-9U	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 17:59:12 -0700
+Received: from parcelfarce.linux.theplanet.co.uk ([195.92.249.252] ident=93)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DfSPt-0005yR-II
+	(Exim 4.41)	id 1DfSQw-00069Q-K4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 17:58:07 -0700
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org)	by smtp.gentoo.org with esmtp (Exim 4.43)
-	id 1DfSPn-0000zx-9b	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 00:57:59 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
-	id 1DfSPm-0008Vv-Va	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 00:57:58 +0000
-From: bugzilla-daemon@gentoo.org
-In-Reply-To: <bug-49277@bugs.gentoo.org>
-Message-Id: <E1DfSPm-0008Vv-Va@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+	Mon, 06 Jun 2005 17:59:12 -0700
+From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [uml-devel] [PATCH 3/5] UML - Clean up tt mode remapping of UML
+	binary
+Message-ID: <20050607005958.GK29811@parcelfarce.linux.theplanet.co.uk>
+References: <200506062008.j56K89YA008957@ccure.user-mode-linux.org>
+	<200506070105.20422.blaisorblade@yahoo.it>
+	<20050606235321.GJ29811@parcelfarce.linux.theplanet.co.uk>
+	<200506070256.43104.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200506070256.43104.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,29 +32,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Jun 2005 00:57:58 +0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 7 Jun 2005 01:59:58 +0100
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, torvalds@osdl.org, linux-kernel@vger.kernel.org
 
-Clear-Text: http://bugs.gentoo.org/show_bug.cgi?id=49277
-Secure: https://bugs.gentoo.org/show_bug.cgi?id=49277
+On Tue, Jun 07, 2005 at 02:56:36AM +0200, Blaisorblade wrote:
+> > Per-subarch - perhaps not.  Per-glibc-type - definitely needed.
+> No, because the setup for NPTL glibc works also on non-NPTL one. Actually, to 
+> be exact, I've tested it *only* on normal glibc. I'm still waiting to get 
+> some testing in NPTL environments, but I expect it to work.
 
+Now, that is interesting.  Which script are you using for i386 and which
+libc version does it work with?
 
+> P.S: is it only me or you've sent about 20 copies of your last message?
 
-
-
-------- Additional Comments From blaisorblade_spam@yahoo.it  2005-06-06 17:57 PDT -------
-Ok, I hope there is still somebody using UML on a NPTL-only system. The 
-workaround suggested last time was to avoid enabling CONFIG_MODE_TT; now I 
-think I've got over this problem, too. So, when I release 2.6.11.8-bs6 (which 
-will happen very shortly, I hope), I'd like to get some testing from you about 
-this issue. 
- 
-Thanks a lot. 
-
--- 
-Configure bugmail: http://bugs.gentoo.org/userprefs.cgi?tab=email
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
+Headers?
 
 
 -------------------------------------------------------
