@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DfeCu-0001uY-6n	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 06:33:28 -0700
+	id 1DfeCv-0001ud-JL	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Jun 2005 06:33:29 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DfeCt-0000Ec-0I
+	(Exim 4.41)	id 1DfeCs-0000Eb-Hc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 06:33:27 -0700
+	Tue, 07 Jun 2005 06:33:28 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050607004221.5CC9BEB33@zion.home.lan>
-Subject: [uml-devel] [patch 2/2] uml: make hw_controller_type->release exist
-	only for archs needing it
+Message-Id: <20050607004216.72956EB2A@zion.home.lan>
+Subject: [uml-devel] [patch 1/2] uml: complete "[RFC] uml: add and use generic
+	hw_controller_type->release"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,79 +24,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Jun 2005 02:42:19 +0200
+Date: Tue, 07 Jun 2005 02:42:16 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, cw@f00f.org, mingo@redhat.com, blaisorblade@yahoo.it
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Chris Wedgwood <cw@f00f.org>
-CC: Ingo Molnar <mingo@redhat.com>
-
-As suggested by Chris, we can make the "just added" method ->release
-conditional to UML only (better: to archs requesting it, i.e. only UML
-currently), so that other archs don't get this unneeded crud, and if UML won't
-need it any more we can kill this.
+This occurrence of free_irq_by_irq_and_dev() was missed when converting UML to
+the use of hw_controller_type->release.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/um/Kconfig     |    5 +++++
- linux-2.6.git-paolo/include/linux/irq.h |    3 +++
- linux-2.6.git-paolo/kernel/irq/manage.c |    4 ++++
- 3 files changed, 12 insertions(+)
+ linux-2.6.git-paolo/arch/um/drivers/line.c |    1 -
+ 1 files changed, 1 deletion(-)
 
-diff -puN arch/um/Kconfig~uml-gen-irq-conditionalize arch/um/Kconfig
---- linux-2.6.git/arch/um/Kconfig~uml-gen-irq-conditionalize	2005-06-07 02:25:25.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/Kconfig	2005-06-07 02:25:25.000000000 +0200
-@@ -35,6 +35,11 @@ config GENERIC_CALIBRATE_DELAY
- 	bool
- 	default y
+diff -puN arch/um/drivers/line.c~uml-gen-irq-release-missed arch/um/drivers/line.c
+--- linux-2.6.git/arch/um/drivers/line.c~uml-gen-irq-release-missed	2005-06-07 02:25:22.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/drivers/line.c	2005-06-07 02:25:22.000000000 +0200
+@@ -756,7 +756,6 @@ static void unregister_winch(struct tty_
+         if(winch->pid != -1)
+                 os_kill_process(winch->pid, 1);
  
-+# Used in kernel/irq/manage.c and include/linux/irq.h
-+config IRQ_RELEASE_METHOD
-+	bool
-+	default y
-+
- menu "UML-specific options"
- 
- config MODE_TT
-diff -puN kernel/irq/manage.c~uml-gen-irq-conditionalize kernel/irq/manage.c
---- linux-2.6.git/kernel/irq/manage.c~uml-gen-irq-conditionalize	2005-06-07 02:25:25.000000000 +0200
-+++ linux-2.6.git-paolo/kernel/irq/manage.c	2005-06-07 02:25:25.000000000 +0200
-@@ -6,6 +6,7 @@
-  * This file contains driver APIs to the irq subsystem.
-  */
- 
-+#include <linux/config.h>
- #include <linux/irq.h>
- #include <linux/module.h>
- #include <linux/random.h>
-@@ -256,8 +257,11 @@ void free_irq(unsigned int irq, void *de
- 			/* Found it - now remove it from the list of entries */
- 			*pp = action->next;
- 
-+			/* Currently used only by UML, might disappear one day.*/
-+#ifdef CONFIG_IRQ_RELEASE_METHOD
- 			if (desc->handler->release)
- 				desc->handler->release(irq, dev_id);
-+#endif
- 
- 			if (!desc->action) {
- 				desc->status |= IRQ_DISABLED;
-diff -puN include/linux/irq.h~uml-gen-irq-conditionalize include/linux/irq.h
---- linux-2.6.git/include/linux/irq.h~uml-gen-irq-conditionalize	2005-06-07 02:25:25.000000000 +0200
-+++ linux-2.6.git-paolo/include/linux/irq.h	2005-06-07 02:25:25.000000000 +0200
-@@ -47,7 +47,10 @@ struct hw_interrupt_type {
- 	void (*ack)(unsigned int irq);
- 	void (*end)(unsigned int irq);
- 	void (*set_affinity)(unsigned int irq, cpumask_t dest);
-+	/* Currently used only by UML, might disappear one day.*/
-+#ifdef CONFIG_IRQ_RELEASE_METHOD
- 	void (*release)(unsigned int irq, void *dev_id);
-+#endif
- };
- 
- typedef struct hw_interrupt_type  hw_irq_controller;
+-        free_irq_by_irq_and_dev(WINCH_IRQ, winch);
+         free_irq(WINCH_IRQ, winch);
+         list_del(&winch->list);
+         kfree(winch);
 _
 
 
