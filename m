@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DfSLr-0008Q2-6T	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 17:53:55 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DfSLn-0005Ol-Aq	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Jun 2005 17:53:54 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 3/5] UML - Clean up tt mode remapping of UML
-	binary
-References: <200506062008.j56K89YA008957@ccure.user-mode-linux.org>
-	<200506070105.20422.blaisorblade@yahoo.it>
-	<20050606235321.GJ29811@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20050606235321.GJ29811@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200506070256.43104.blaisorblade@yahoo.it>
+	id 1DfSPw-00009g-Tr	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 17:58:08 -0700
+Received: from smtp.gentoo.org ([134.68.220.30])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DfSPt-0005yR-II
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Jun 2005 17:58:07 -0700
+Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
+	helo=nuthatch.gentoo.org)	by smtp.gentoo.org with esmtp (Exim 4.43)
+	id 1DfSPn-0000zx-9b	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Jun 2005 00:57:59 +0000
+Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
+	id 1DfSPm-0008Vv-Va	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Jun 2005 00:57:58 +0000
+From: bugzilla-daemon@gentoo.org
+In-Reply-To: <bug-49277@bugs.gentoo.org>
+Message-Id: <E1DfSPm-0008Vv-Va@nuthatch.gentoo.org>
+Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,53 +31,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 7 Jun 2005 02:56:36 +0200
+Date: Tue, 07 Jun 2005 00:57:58 +0000
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>, Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, torvalds@osdl.org, linux-kernel@vger.kernel.org
 
-On Tuesday 07 June 2005 01:53, Al Viro wrote:
-> On Tue, Jun 07, 2005 at 01:05:19AM +0200, Blaisorblade wrote:
-> > On Monday 06 June 2005 22:08, Jeff Dike wrote:
-> > > From Al Viro - this turns the tt mode remapping of the binary into arch
-> > > code.
-> >
-> > NACK at all, definitely, don't apply this one please. This patch:
-> >
-> > 1) On i386 does not fix the problem it was supposed to fix when I
-> > originately sent the first version (i.e. avoiding to create a
-> > .thread_private section to allow linking against NPTL glibc). It's done
-> > on x86_64 and forgot on i386.
->
-> True.  i386 still assumes non-NPTL (as it is on the box I'm working on -
-> such setups *do* exist).
-Yes, it's the most common one, and it's even the setup for my box currently.
-> > 2) Splitting the linker script for subarchs is definitely not needed.
->
-> Per-subarch - perhaps not.  Per-glibc-type - definitely needed.
-No, because the setup for NPTL glibc works also on non-NPTL one. Actually, to 
-be exact, I've tested it *only* on normal glibc. I'm still waiting to get 
-some testing in NPTL environments, but I expect it to work.
-> > 3) This removes the fix (done through objcopy -G switcheroo) to a link
-> > time conflict happening on some weird glibc combinations.
+Clear-Text: http://bugs.gentoo.org/show_bug.cgi?id=49277
+Secure: https://bugs.gentoo.org/show_bug.cgi?id=49277
 
-> *What* link-time conflict?  We don't link libc into switcheroo anymore.
-Hmm, yes, I noted this... and maybe it could even be good (it makes sense, at 
-least). Probably you are right on this, too.
 
-P.S: is it only me or you've sent about 20 copies of your last message?
+
+
+
+------- Additional Comments From blaisorblade_spam@yahoo.it  2005-06-06 17:57 PDT -------
+Ok, I hope there is still somebody using UML on a NPTL-only system. The 
+workaround suggested last time was to avoid enabling CONFIG_MODE_TT; now I 
+think I've got over this problem, too. So, when I release 2.6.11.8-bs6 (which 
+will happen very shortly, I hope), I'd like to get some testing from you about 
+this issue. 
+ 
+Thanks a lot. 
+
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+Configure bugmail: http://bugs.gentoo.org/userprefs.cgi?tab=email
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
