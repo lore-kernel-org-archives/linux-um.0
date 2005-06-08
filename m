@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dfk3E-0001d4-63	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 12:47:52 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user81758)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Dfk3B-0003SM-7f	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Jun 2005 12:47:51 -0700
+	id 1DfoTf-0002OL-QA	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Jun 2005 17:31:27 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DfoTb-0005nh-R8	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Jun 2005 17:31:27 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
 References: <E1DfSPm-0008Vv-Va@nuthatch.gentoo.org>
-	<200506071811.52440.blaisorblade@yahoo.it>
-	<87acm25e9j.fsf@amaterasu.srvr.nix>
-	<200506071844.58916.blaisorblade@yahoo.it>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200506071844.58916.blaisorblade@yahoo.it>
-	(blaisorblade@yahoo.it's message of "Tue, 7 Jun 2005 18:44:41 +0200")
-Message-ID: <871x7e54pv.fsf@amaterasu.srvr.nix>
+	<200506071844.58916.blaisorblade@yahoo.it> <871x7e54pv.fsf@amaterasu.srvr.nix>
+In-Reply-To: <871x7e54pv.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_V0jpCou4eEtXuMy"
+Message-Id: <200506080234.29043.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,167 +28,213 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 07 Jun 2005 20:47:40 +0100
+Date: Wed, 8 Jun 2005 02:34:28 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Nix <nix@esperi.org.uk>
+
+--Boundary-00=_V0jpCou4eEtXuMy
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Content-Disposition: inline
 
-On Tue, 7 Jun 2005, blaisorblade@yahoo.it suggested tentatively:
-> On Tuesday 07 June 2005 18:21, Nix wrote:
->> OK, so it's a -static TT build that's failing?
-> Exactly.
+On Tuesday 07 June 2005 21:47, Nix wrote:
+> On Tue, 7 Jun 2005, blaisorblade@yahoo.it suggested tentatively:
+> > On Tuesday 07 June 2005 18:21, Nix wrote:
+> >> OK, so it's a -static TT build that's failing?
+> >
+> > Exactly.
+>
+> Built, with a randomly selected .config (that is, a .config I use for
+> other things, not a .config with the values set at random!)
+Hmm, broken-out in the archives works perfectly (with patch-scripts). Go un=
+til=20
+uml-link-tt-mode-against-nptl.patch and retry, and possibly even with the=20
+previous one... please.
 
-Built, with a randomly selected .config (that is, a .config I use for
-other things, not a .config with the values set at random!)
+> Not quite built without problems. Can you guess the cause of this?
 
-Not quite built without problems. Can you guess the cause of this?
-
-        gcc -static -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc -o =
-.tmp_vmlinux1 -Wl,-T,arch/um/kernel/vmlinux.lds   init/built-in.o -Wl,--sta=
-art-group  usr/built-in.o  arch/um/kernel/built-in.o  arch/um/drivers/built=
--in.o  arch/um/os-Linux/built-in.o  arch/um/sys-i386/built-in.o  arch/i386/=
-crypto/built-in.o  kernel/built-in.o  mm/built-in.o  fs/built-in.o  ipc/bui=
-lt-in.o  security/built-in.o  crypto/built-in.o  lib/lib.a  lib/built-in.o =
- drivers/built-in.o  sound/built-in.o  net/built-in.o -Wl,--end-group -luti=
-l  ; rm -f linux
-/usr/bin/ld: cannot find -lutil
-
-Guess where the static libutil.a is. That's right, /usr/lib. Are
-we searching it in that linker script? No :(
-
-diff -durN linux-2.6.11.10-bs6-orig/arch/um/kernel/uml.lds.S linux-2.6.11.1=
-0-bs6/arch/um/kernel/uml.lds.S
---- linux-2.6.11.10-bs6-orig/arch/um/kernel/uml.lds.S	2005-06-07 20:23:58.0=
-00000000 +0100
-+++ linux-2.6.11.10-bs6/arch/um/kernel/uml.lds.S	2005-06-07 20:41:45.000000=
-000 +0100
-@@ -4,6 +4,7 @@
- OUTPUT_ARCH(ELF_ARCH)
- ENTRY(_start)
- jiffies =3D jiffies_64;
-+SEARCH_DIR("/usr/lib"); SEARCH_DIR("/lib");
+> Guess where the static libutil.a is. That's right, /usr/lib. Are
+> we searching it in that linker script? No :(
+Ok, wait that I emerge that newer version and build starts failing here too=
 =20
- SECTIONS
- {
+and you'll get that fixed. A proper patch (ok for whatever SUBARCH you need=
+)=20
+would be ok, either... Ok, it's doable because I must now link in=20
+arch/um/sys-SUBARCH/unmap_fin.o (it's done in -bs6 too), by passing=20
+=2DDSUBARCH=3D$(SUBARCH). You can pass a define for the path, too.
 
-With that applied, it builds...
+>
+> With that applied, it builds...
+>
+> ... and segfaults almost at once on invocation:
+>
+> execve("./vmlinux", ["./vmlinux"], [/* 49 vars */]) =3D 0
+> uname({sys=3D"Linux", node=3D"hades", ...}) =3D 0
+> brk(0)                                  =3D 0xa0343000
+> brk(0xa0343834)                         =3D 0xa0343834
+> set_thread_area({entry_number:-1 -> 6, base_addr:0xa034381c, limit:104857=
+5,
+> seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1,
+> seg_not_present:0, useable:1}) =3D 0 --- SIGSEGV (Segmentation fault) @ 0=
+ (0)
 
-... and segfaults almost at once on invocation:
+Hmm, gdb would be more helpful... I was getting a SIGBUS somewhere on x86_6=
+4=20
+(with a native binary) here, and maybe it could be the same thing (no, it=20
+can't, your error is different, so I'm talking to myself):
 
-execve("./vmlinux", ["./vmlinux"], [/* 49 vars */]) =3D 0
-uname({sys=3D"Linux", node=3D"hades", ...}) =3D 0
-brk(0)                                  =3D 0xa0343000
-brk(0xa0343834)                         =3D 0xa0343834
-set_thread_area({entry_number:-1 -> 6, base_addr:0xa034381c, limit:1048575,=
- seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_prese=
-nt:0, useable:1}) =3D 0
---- SIGSEGV (Segmentation fault) @ 0 (0) ---
-+++ killed by SIGSEGV +++
+(gdb) c
+Continuing.
+Checking for /proc/mm...found
+Checking for the skas3 patch in the host...not found
+Checking PROT_EXEC mmap in /tmp...OK
 
-#0  0xa01a16a7 in ptmalloc_init ()
-#1  0x00000000 in ?? ()
-#2  0x00000000 in ?? ()
-#3  0x00000000 in ?? ()
-#4  0x00000000 in ?? ()
-#5  0x00000000 in ?? ()
-#6  0x00000000 in ?? ()
-#7  0x00000000 in ?? ()
-#8  0x00000000 in ?? ()
-#9  0x00000000 in ?? ()
-#10 0x00000000 in ?? ()
-#11 0x00000000 in ?? ()
-#12 0xbffff2b2 in ?? ()
-#13 0xa0343000 in ?? ()
-#14 0x0000000c in ?? ()
-#15 0xbffff444 in ?? ()
-#16 0x0000000c in ?? ()
-#17 0xbffff1a0 in ?? ()
-#18 0xa01a19a7 in malloc_hook_ini ()
-#19 0xa0213f3f in xdigits.0 ()
-#20 0xa01a0e4a in malloc ()
-#21 0x0000000c in ?? ()
-#22 0xa01ccb7c in _dl_init_paths ()
-#23 0xa01aa42c in _dl_non_dynamic_init ()
-#24 0x000fffff in ?? ()
-#25 0xbffff44c in ?? ()
-#26 0xbffff444 in ?? ()
-#27 0x00000001 in ?? ()
-#28 0xbffff2b2 in ?? ()
-#29 0xa01aa76b in init ()
-#30 0x0000037f in ?? ()
-#31 0x00000003 in ?? ()
-#32 0xbffff2b2 in ?? ()
-#33 0xa018dbc7 in __pthread_initialize_minimal ()
-#34 0x00000000 in ?? ()
-#35 0x0002060b in ?? ()
-#36 0x00000003 in ?? ()
-#37 0xa018d6bd in __libc_start_main ()
-#38 0x00000000 in ?? ()
+Program received signal SIGBUS, Bus error.
+0x00000000601fee40 in memset ()
+(gdb) where
+#0  0x00000000601fee40 in memset ()
+#1  0x0000000060006f4e in init_bootmem_core ()
+#2  0x0000000060011259 in setup_physmem ()
+#3  0x000000006001870d in linux_main ()
+#4  0x000000006000fe91 in main ()
 
-Looks like a thread initialization problem to *me*. And there be very
-serious and nasty snarling dragons with sharp pointy carborundum teeth
-:(
+=46rom the value in memset registers and from the code, it's this call in=20
+init_bootmem_core():
+        memset(bdata->node_bootmem_map, 0xff, mapsize);
 
-(this box, btw, is an AMD Athlon 4: it *does* have CMOV support. Not
-that that could plausibly be the problem here.)
+And here is the memory map... whoops! The code is trying to read from=20
+60c00000, which is mapped... but from an absurd address! And from a differe=
+nt=20
+file from all the rest!
 
->> Patch mis-rolled, I guess: arch/um/scripts/Makefile.rules is missing,
->> yet included from multiple places:
-> Not only that, dear boy, not only that... I now looked=20
->=20
-> combinediff: hunk-splitting is required in this case, but is not yet impl=
-emented
-> combinediff: use the -U option to work around this
+$ cat /proc/904/maps
+60000000-60001000 rwxp 00000000 fe:02=20
+1173995                            /home/paolo/Admin/kernel/6/clean-linux-2=
+=2E6.11/vmlinux
+60001000-60238000 rwxs 00000000 00:0e=20
+1383099                            /tmp/vm_file-VOy5x5 (deleted)
+60238000-60325000 rwxs 00000000 00:0e=20
+1383100                            /tmp/vm_file-16FWOn (deleted)
+60325000-6045b000 rwxs 00000000 00:0e=20
+1383101                            /tmp/vm_file-8DBi6F (deleted)
+6045b000-6047c000 rwxp 6045b000 00:00 0                                 =20
+[heap]
+60c00000-a2000000 rwxs ffffffffc0c00000 00:0e=20
+1383102                    /tmp/vm_file-JmW1nY (deleted)
+2aaaaaaab000-2aaaaaaac000 rwxp 2aaaaaaab000 00:00 0
+7fffffae1000-7fffffaf6000 rwxp 7fffffae1000 00:00 0                     =20
+[stack]
+ffffffffff600000-ffffffffffe00000 ---p 00000000 00:00 0                 =20
+[vdso]
 
-Whoops!
+> Looks like a thread initialization problem to *me*. And there be very
+> serious and nasty snarling dragons with sharp pointy carborundum teeth
+Hmm, can you pass those along to kill the Computer against which I'm playin=
+g=20
+at Warcraft III?
+> :(
+This kind of problems is normally caused from wrong alignments in the linke=
+r=20
+script.
 
-I guess not many people have tried to build -bs6, then: I doubt that would =
-work
-terribly well in skas mode, either ;)
+> (this box, btw, is an AMD Athlon 4: it *does* have CMOV support. Not
+> that that could plausibly be the problem here.)
 
-> Seems like I'll have to resort to something bad... which is attached, i.e=
-.=20
-> black magic (using -U from time to time).
+> Whoops!
 
-Black magic during debugging makes me nervous, so...
+> I guess not many people have tried to build -bs6, then: I doubt that would
+> work terribly well in skas mode, either ;)
+Guess it wouldn't build stop.
+> > Seems like I'll have to resort to something bad... which is attached,
+> > i.e. black magic (using -U from time to time).
+>
+> Black magic during debugging makes me nervous, so...
 
-> Alternatively, use patch1.bz2 and patch2.bz2, which have normal context (=
-the=20
-> final patch has been generated by merging them).
+> > Alternatively, use patch1.bz2 and patch2.bz2, which have normal context
+> > (the final patch has been generated by merging them).
+>
+> ... I used these, which applied fine.
+Btw, I forgot that broken-out is in perfect state and would help more for=20
+debug...
 
-... I used these, which applied fine.
 
->> [fixed one bug in a local administrative script at 04:00 this morning...
->>  insomnia sucks, hay fever sucks, temperatures above 15C suck...]
-> I share with you insomnia and hay fever (if I do the right guess). For=20
+> `Seasonal allergic rhinitis',
+Exactly.
+> i.e., plants trying to have sex with my=20
+> nose over my violent protests.
 
-`Seasonal allergic rhinitis', i.e., plants trying to have sex with my
-nose over my violent protests.
-
-> temperatures above 15C, I don't: I live in Sicily, so here we're at about=
+> Well, it's done that in the south-east of England, too, but I don't have
+> to like it, and it's `exceptional' (i.e. `has happened almost every year
+> for the last decade' :( )
+Global warming, isn't it? However don't worry, the Gulf Current is going to=
 =20
+stop so you'll get refreshed of -10 degrees...
+=2D-=20
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-I guessed that. Merely .it is a preetty big clue. Myself, I've carefully
-steered clear of southern Europe and points south in the summer. April
-Rome temperatures are about the most I'm comfortable with.
+--Boundary-00=_V0jpCou4eEtXuMy
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="uml-pcap-on-64bit-host.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="uml-pcap-on-64bit-host.patch"
 
-> 25=B0-30=B0 C, and it'll go up to 40=B0C...
 
-Well, it's done that in the south-east of England, too, but I don't have
-to like it, and it's `exceptional' (i.e. `has happened almost every year
-for the last decade' :( )
 
---=20
-`It's as bizarre an intrusion as, I don't know, the hobbits coming home
- to find that the Shire has been taken over by gangsta rappers.'
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ clean-linux-2.6.11-paolo/arch/um/drivers/Makefile       |    4 ++--
+ clean-linux-2.6.11-paolo/arch/um/scripts/Makefile.unmap |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff -puN arch/um/drivers/Makefile~uml-pcap-on-64bit-host arch/um/drivers/Makefile
+--- clean-linux-2.6.11/arch/um/drivers/Makefile~uml-pcap-on-64bit-host	2005-06-08 02:09:55.000000000 +0200
++++ clean-linux-2.6.11-paolo/arch/um/drivers/Makefile	2005-06-08 02:09:55.000000000 +0200
+@@ -17,10 +17,10 @@ ubd-objs := ubd_kern.o ubd_user.o
+ port-objs := port_kern.o port_user.o
+ harddog-objs := harddog_kern.o harddog_user.o
+ 
+-LDFLAGS_pcap.o := -r -lpcap -L/usr/lib
++LDFLAGS_pcap.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libpcap.a)
+ 
+ $(obj)/pcap.o: $(obj)/pcap_kern.o $(obj)/pcap_user.o
+-	$(LD) -r -dp -o $@ $^ $(LDFLAGS_pcap.o)
++	$(LD) -r -dp -o $@ $^ $(LDFLAGS) $(LDFLAGS_pcap.o)
+ #XXX: The call below does not work because the flags are added before the
+ # object name, so nothing from the library gets linked.
+ #$(call if_changed,ld)
+diff -puN arch/um/scripts/Makefile.unmap~uml-pcap-on-64bit-host arch/um/scripts/Makefile.unmap
+--- clean-linux-2.6.11/arch/um/scripts/Makefile.unmap~uml-pcap-on-64bit-host	2005-06-08 02:09:55.000000000 +0200
++++ clean-linux-2.6.11-paolo/arch/um/scripts/Makefile.unmap	2005-06-08 02:09:55.000000000 +0200
+@@ -15,7 +15,7 @@ $(obj)/unmap.o: _c_flags = $(__UNMAP_CFL
+ 
+ quiet_cmd_wrapld = LD      $@
+ define cmd_wrapld
+-	$(LD) $(LDFLAGS) -r -o $(obj)/unmap_tmp.o $< $(shell $(CC) -print-file-name=libc.a); \
++	$(LD) $(LDFLAGS) -r -o $(obj)/unmap_tmp.o $< $(shell $(CC) $(CFLAGS) -print-file-name=libc.a); \
+ 	$(OBJCOPY) $(UML_OBJCOPYFLAGS) $(obj)/unmap_tmp.o $@ -G switcheroo
+ endef
+ 
+_
+
+--Boundary-00=_V0jpCou4eEtXuMy--
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: NEC IT Guy Games.  How far can you shotp=
-ut
-a projector? How fast can you ride your desk chair down the office luge tra=
-ck?
-If you want to score the big prize, get to know the little guy. =20
+This SF.Net email is sponsored by: NEC IT Guy Games.  How far can you shotput
+a projector? How fast can you ride your desk chair down the office luge track?
+If you want to score the big prize, get to know the little guy.  
 Play to win an NEC 61" plasma display: http://www.necitguy.com/?r=20
 _______________________________________________
 User-mode-linux-devel mailing list
