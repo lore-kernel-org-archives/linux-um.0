@@ -1,18 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DgBg2-0003gh-EO	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Jun 2005 18:17:46 -0700
-Received: from mail.nagafix.co.uk ([213.228.237.37])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DgBfz-0005yX-8l	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Jun 2005 18:17:46 -0700
-From: antoine <antoine@nagafix.co.uk>
-Content-Type: multipart/mixed; boundary="=-B6xY5+1yy3pU7Xpu/pKW"
-Message-Id: <1118280325.10107.124.camel@localhost>
-Mime-Version: 1.0
-Subject: [uml-devel] 2.6.12-rc6-mm1 patches testing
+	id 1DgOqU-0006Kf-9S	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Jun 2005 08:21:26 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DgOqQ-0000AO-3O	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Jun 2005 08:21:26 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.12-rc6-mm1 patches testing
+References: <1118280325.10107.124.camel@localhost>
+In-Reply-To: <1118280325.10107.124.camel@localhost>
+MIME-Version: 1.0
+Content-Type: multipart/signed;
+  boundary="nextPart372782041.apLsc9pp30";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200506091724.50908.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,1161 +30,344 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 09 Jun 2005 02:25:25 +0100
+Date: Thu, 9 Jun 2005 17:24:41 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Blaisorblade <blaisorblade@yahoo.it>
+Cc: antoine <antoine@nagafix.co.uk>
 
-
---=-B6xY5+1yy3pU7Xpu/pKW
-Content-Type: text/plain
+--nextPart372782041.apLsc9pp30
+Content-Type: multipart/mixed;
+  boundary="Boundary-01=_68FqCPr/8LzHWDd"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I noticed a new set of patches were out, so I gave it usual bashing.
-Maybe this will be useful to someone else:
-1) as before fp-state does not apply.
-2) os-main gave me a reject on arch/um/kernel/main.c
-fixed by simply removing the file.
+--Boundary-01=_68FqCPr/8LzHWDd
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Built ok (no tweaks needed this time!).
-Runs ok, but it is still loosing memory fast.
+On Thursday 09 June 2005 03:25, antoine wrote:
+> I noticed a new set of patches were out, so I gave it usual bashing.
+> Maybe this will be useful to someone else:
+> 1) as before fp-state does not apply.
+> 2) os-main gave me a reject on arch/um/kernel/main.c
+> fixed by simply removing the file.
+>
+> Built ok (no tweaks needed this time!).
+> Runs ok, but it is still loosing memory fast.
+>
+> Then I tried adding some more experimental features...
+> Attached is a stacktrace I encountered (pcap related):
+It happens only when inside the chroot, right?
+> Seems like the pcap patch
+? You applied it on your own, or have I merged it somewhere without noticin=
+g?=20
+See my signature about that.
+> is causing some problems when running in a=20
+> chroot which does not have the libraries required by pcap (nss?)
+Yes, it's related to the compilation-time warning somebody (either you or N=
+ix)=20
+got...
+> Some processes were still running when I got back to the shell.
+Well, it was segfaulting on exit, so it's a bit normal. Well, it shouldn't=
+=20
+segfault in that case but simply handle the error gracefully.
+> Btw, how do I figure out which libs I need to copy to the chroot?
+Hmm, look at /etc/nsswitch.conf (to copy inside) and /lib/libnss_* (to copy=
+=20
+too, you can limit what you copy by looking at the configuration).
+> But apart from that slight problem, when running outside the chroot it
+> works exactly as expected.
 
-Then I tried adding some more experimental features...
-Attached is a stacktrace I encountered (pcap related):
-Seems like the pcap patch is causing some problems when running in a
-chroot which does not have the libraries required by pcap (nss?)
-Some processes were still running when I got back to the shell.
-Btw, how do I figure out which libs I need to copy to the chroot?
+> I vote for including it in the next release=20
+> with appropriate warnings about runtime libraries issues.
 
-But apart from that slight problem, when running outside the chroot it
-works exactly as expected. I vote for including it in the next release
-with appropriate warnings about runtime libraries issues.
-Now, if someone could have a look at hppfs I could resurect my
-honeypots.
+> Now, if someone could have a look at hppfs I could resurect my
+> honeypots.
+I've not the time, however test the attached patches. The first one fixes t=
+he=20
+basical bugs; the second one could be needed to fix a fd leak... but I don'=
+t=20
+think it's needed at all, so test with only the first and let me know if th=
+e=20
+2nd is needed, or if there are any problems (in that case, a ready-to-use=20
+hppfs configuration + explaination would be happily accepted, I've really=20
+little time now).
 
-Also, is anyone interested in some SELinux policies for UML? They need a
-little bit of tidying up but seem to work. See below (I extracted the
-generic part - unfortunately some parts are specific to my setup).
+I had marked it as CONFIG_BROKEN because it was giving some bad compilation=
+=20
+warnings, which showed its almost non-existant usage (because those warning=
+s=20
+showed that it would not work *absolutely*).
 
-Antoine
+Actually I'm now seeing that they were caused by this patch:
 
-type um_t, domain, privowner;
-type um_kernel_t, domain, privowner;
+http://linux.bkbits.net:8080/linux-2.5/cset%40412b86aaOElFX7HLh6UrLu-E1hQJS=
+A?nav=3Dindex.html|
+src/.|src/fs|src/fs/hppfs|related/fs/hppfs/hppfs_kern.c
 
-type um_admin_t, file_type, sysadmfile;
-type um_exec_t, file_type, exec_type;
-type um_kernel_exec_t, file_type, sysadmfile, exec_type;
-type um_home_t, file_type;
-type um_fs_t, file_type;
-type um_tmp_t, file_type, tmpfile;
-type um_proc_t, file_type;
-type um_tundev_t, device_type, dev_fs;
+which forgots some cleanups... so I guess it worked before and will work wi=
+th=20
+this mini-patch.
+
+  SPLIT   include/linux/autoconf.h -> include/config/*
+  CC      fs/hppfs/hppfs_kern.o
+fs/hppfs/hppfs_kern.c: In function `hppfs_open':
+fs/hppfs/hppfs_kern.c:495: warning: passing arg 3 of `hppfs_get_data' from=
+=20
+incompatible pointer type
+fs/hppfs/hppfs_kern.c: In function `hppfs_llseek':
+fs/hppfs/hppfs_kern.c:546: warning: initialization from incompatible pointe=
+r=20
+type
+fs/hppfs/hppfs_kern.c: In function `hppfs_readdir':
+fs/hppfs/hppfs_kern.c:589: warning: initialization from incompatible pointe=
+r=20
+type
+
+> Also, is anyone interested in some SELinux policies for UML?
+I guess yes, it would be very useful.... but against which distro policy ar=
+e=20
+they prepared? Fedora, I guess, correct?
+
+IIRC, in fact, policies "link" together, for instance your one below refers=
+ to=20
+tmp_t...
+
+Also, I guess this policy needs some security label settings on files, righ=
+t?
+
+Would you put it on the Wiki, please? Thanks
+
+> They need a=20
+> little bit of tidying up but seem to work. See below (I extracted the
+> generic part - unfortunately some parts are specific to my setup).
+
+Wow! Is this the "assembler-like language" that lwn.net mentioned?
+
+> Antoine
+
+> type um_t, domain, privowner;
+> type um_kernel_t, domain, privowner;
+
+> type um_admin_t, file_type, sysadmfile;
+> type um_exec_t, file_type, exec_type;
+> type um_kernel_exec_t, file_type, sysadmfile, exec_type;
+> type um_home_t, file_type;
+> type um_fs_t, file_type;
+This should be restricted somewhere to UML root_fs's, right (or maybe that =
+is=20
+done with Security labels...)?
+> type um_tmp_t, file_type, tmpfile;
+"tmpfile" is already assigned to files in /tmp...
+> type um_proc_t, file_type;
+> type um_tundev_t, device_type, dev_fs;
+
+> file_type_auto_trans(um_t, tmp_t, um_tmp_t)
+> file_type_auto_trans(um_kernel_t, tmp_t, um_tmp_t)
+
+> domain_auto_trans(initrc_t, um_exec_t, um_t)
+> domain_auto_trans(sysadm_t, um_exec_t, um_t)
+> domain_auto_trans(um_t, um_kernel_exec_t, um_kernel_t)
+
+> # network
+> allow um_kernel_t netif_t:netif { tcp_recv tcp_send };
+> allow um_kernel_t node_t:node { tcp_recv tcp_send };
+> allow um_kernel_t port_t:socket { recv_msg send_msg };
+> # sockets
+> allow um_kernel_t self:packet_socket create;
+> allow um_kernel_t self:unix_dgram_socket { bind create ioctl };
+> allow um_kernel_t self:unix_stream_socket { create ioctl read write };
+> # process
+> allow um_kernel_t self:process { execmem fork ptrace sigchld sigkill sign=
+al
+> sigstop }; # devices
+> allow um_kernel_t device_t:dir search;
+> allow um_kernel_t null_device_t:chr_file { ioctl read write };
+> allow um_kernel_t um_tundev_t:chr_file { ioctl read write };
+> allow um_kernel_t random_device_t:chr_file read;
+
+> # files
+> allow um_kernel_t um_tmp_t:file execute;
+Allow execution of temporary files? Guess this is needed to avoid /tmp bein=
+g=20
+like noexec, but does this allow to exec a random process on the host being=
+=20
+put inside tmp?
+> allow um_kernel_t um_fs_t:file { getattr lock read write };
+> allow um_kernel_t um_fs_t:lnk_file read;
+> # proc
+> allow um_kernel_t um_proc_t:file read;
+> allow um_kernel_t um_proc_t:dir search;
+> # home
+> allow um_kernel_t um_home_t:dir { add_name create getattr read remove_name
+> rmdir write search}; allow um_kernel_t um_home_t:file { create getattr lo=
+ck
+> read unlink write }; allow um_kernel_t um_home_t:sock_file { create unlink
+> };
+> # all other dirs:
+> allow um_kernel_t um_admin_t:dir search;
+
+=2D-=20
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+--Boundary-01=_68FqCPr/8LzHWDd
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="uml-hppfs-fd-leak.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="uml-hppfs-fd-leak.patch"
 
 
-file_type_auto_trans(um_t, tmp_t, um_tmp_t)
-file_type_auto_trans(um_kernel_t, tmp_t, um_tmp_t)
+Don't think it's needed...
+We also delete hppfs_delete_inode since it just implements the default
+behaviour.
 
-domain_auto_trans(initrc_t, um_exec_t, um_t)
-domain_auto_trans(sysadm_t, um_exec_t, um_t)
-domain_auto_trans(um_t, um_kernel_exec_t, um_kernel_t)
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+=2D--
+
+ clean-linux-2.6.11-paolo/fs/hppfs/hppfs_kern.c |    7 +------
+ 1 files changed, 1 insertion(+), 6 deletions(-)
+
+diff -puN fs/hppfs/hppfs_kern.c~uml-hppfs-fd-leak fs/hppfs/hppfs_kern.c
+=2D-- clean-linux-2.6.11/fs/hppfs/hppfs_kern.c~uml-hppfs-fd-leak	2005-06-09=
+ 16:54:56.000000000 +0200
++++ clean-linux-2.6.11-paolo/fs/hppfs/hppfs_kern.c	2005-06-09 17:01:09.0000=
+00000 +0200
+@@ -640,11 +640,6 @@ static struct inode *hppfs_alloc_inode(s
+ 	return(&hi->vfs_inode);
+ }
+=20
+=2Dvoid hppfs_delete_inode(struct inode *ino)
+=2D{
+=2D	clear_inode(ino);
+=2D}
+=2D
+ static void hppfs_destroy_inode(struct inode *inode)
+ {
+ 	kfree(HPPFS_I(inode));
+@@ -652,9 +647,9 @@ static void hppfs_destroy_inode(struct i
+=20
+ static struct super_operations hppfs_sbops =3D {
+ 	.alloc_inode	=3D hppfs_alloc_inode,
++	.drop_inode	=3D generic_delete_inode,
+ 	.destroy_inode	=3D hppfs_destroy_inode,
+ 	.read_inode	=3D hppfs_read_inode,
+=2D	.delete_inode	=3D hppfs_delete_inode,
+ 	.statfs		=3D hppfs_statfs,
+ };
+=20
+_
+
+--Boundary-01=_68FqCPr/8LzHWDd
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="uml-hppfs.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="uml-hppfs.patch"
 
 
-# network
-allow um_kernel_t netif_t:netif { tcp_recv tcp_send };
-allow um_kernel_t node_t:node { tcp_recv tcp_send };
-allow um_kernel_t port_t:socket { recv_msg send_msg };
-# sockets
-allow um_kernel_t self:packet_socket create;
-allow um_kernel_t self:unix_dgram_socket { bind create ioctl };
-allow um_kernel_t self:unix_stream_socket { create ioctl read write };
-# process
-allow um_kernel_t self:process { execmem fork ptrace sigchld sigkill signal sigstop };
-# devices
-allow um_kernel_t device_t:dir search;
-allow um_kernel_t null_device_t:chr_file { ioctl read write };
-allow um_kernel_t um_tundev_t:chr_file { ioctl read write };
-allow um_kernel_t random_device_t:chr_file read;
-# files
-allow um_kernel_t um_tmp_t:file execute;
-allow um_kernel_t um_fs_t:file { getattr lock read write };
-allow um_kernel_t um_fs_t:lnk_file read;
-# proc
-allow um_kernel_t um_proc_t:file read;
-allow um_kernel_t um_proc_t:dir search;
-# home
-allow um_kernel_t um_home_t:dir { add_name create getattr read remove_name rmdir write search};
-allow um_kernel_t um_home_t:file { create getattr lock read unlink write };
-allow um_kernel_t um_home_t:sock_file { create unlink };
-# all other dirs:
-allow um_kernel_t um_admin_t:dir search;
 
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+=2D--
 
---=-B6xY5+1yy3pU7Xpu/pKW
-Content-Description: 
-Content-Disposition: inline; filename=2.6.12-rc6-mm1.bug
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+ clean-linux-2.6.11-paolo/arch/um/Kconfig       |    6 +++---
+ clean-linux-2.6.11-paolo/fs/hppfs/hppfs_kern.c |    7 ++++---
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-[42949587.660000] 67d9fb48:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9fb78:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9fb98:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9fbb8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9fbd8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9fbe8:  [<60056864>] sys_reboot+0x234/0x240
-[42949587.660000] 67d9fc08:  [<60052f27>] kill_proc_info+0x37/0x50
-[42949587.660000] 67d9fc28:  [<60052f7c>] kill_something_info+0x3c/0x140
-[42949587.660000] 67d9fcc8:  [<6008a29b>] filp_close+0x4b/0x90
-[42949587.660000] 67d9fd18:  [<6001aed6>] execute_syscall_skas+0xc6/0xd0
-[42949587.660000] 67d9fd38:  [<6001aefb>] handle_syscall+0x1b/0x40
-[42949587.660000] 67d9fd58:  [<6003d1fb>] userspace+0x15b/0x2f0
-[42949587.660000] 67d9fdb8:  [<6001b0a4>] fix_range+0x34/0x40
-[42949587.660000] 67d9fdf8:  [<6001aac2>] fork_handler+0xc2/0xd0
-[42949587.660000] 67d9fe38:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9fee8:  [<602160c9>] __kill+0x9/0x20
-[42949587.660000]
-[42949587.660000]  <0>Kernel panic - not syncing: Kernel mode fault at addr 0x100, ip 0x401c69d7
-[42949587.660000]
-[42949587.660000] Pid: 3288, comm: halt Not tainted 2.6.12-rc6-mm1
-[42949587.660000] RIP: 0033:[<00000000401c69d7>]
-[42949587.660000] RSP: 0000007fbfc37bb0  EFLAGS: 00000202
-[42949587.660000] RAX: ffffffffffffffda RBX: 0000007fbfc37c68 RCX: ffffffffffffffff
-[42949587.660000] RDX: 000000004321fedc RSI: 0000000028121969 RDI: fffffffffee1dead
-[42949587.660000] RBP: 0000000000000002 R08: 000000000000004c R09: 0000000000000000
-[42949587.660000] R10: 00000000401159a8 R11: 0000000000000202 R12: 0000000000000000
-[42949587.660000] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-[42949587.660000] Call Trace:
-[42949587.660000] 67d9d9d8:  [<6001755f>] panic_exit+0x2f/0x50
-[42949587.660000] 67d9d9f8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9da28:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9da68:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9da98:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9dac8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dad8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9db18:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9db28:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9db38:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9db88:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dba8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9dbb8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9dc28:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9dc58:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9dc68:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9dca8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dcb8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9dd50:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9dd58:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9dd68:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9ddd8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ddf8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9de88:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9dea8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dec8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dee8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9df08:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9df28:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9df48:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9df68:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9df78:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9df88:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9dfa8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9dfd8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e018:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e048:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e078:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e088:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e0c8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e0d8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e0e8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e138:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e158:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e168:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e1d8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e208:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e218:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e258:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e268:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e300:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e308:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e318:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e388:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e3a8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e438:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9e458:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e478:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e498:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9e4b8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9e4d8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9e4f8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9e518:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9e528:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9e538:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9e558:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9e588:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e5c8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e5f8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e628:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e638:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e678:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e688:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e698:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e6e8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e708:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e718:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e788:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e7b8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e7c8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e808:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e818:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e8b0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e8b8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e8c8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e938:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e958:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e9e8:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9ea08:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea28:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea48:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9ea68:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9ea88:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9eaa8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9eac8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9ead8:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9eae8:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9eb08:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9eb38:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9eb78:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eba8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9ebd8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9ebe8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ec28:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9ec38:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ec48:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9ec98:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ecb8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ecc8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9ed38:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9ed68:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9ed78:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9edb8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9edc8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ee60:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9ee68:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9ee78:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9eee8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ef08:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9ef98:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9efb8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9efd8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eff8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f018:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f038:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f058:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f078:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f088:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f098:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f0b8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f0e8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f128:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f158:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f188:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f198:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f1d8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f1e8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f1f8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f248:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f268:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f278:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f2e8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f318:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f328:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f368:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f378:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f410:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f418:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f428:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9f498:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9f4b8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9f548:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9f568:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f588:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f5a8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f5c8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f5e8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f608:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f628:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f638:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f648:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f668:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f698:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f6d8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f708:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f748:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f788:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f798:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f7a8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f808:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f818:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f828:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f898:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f8c8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f8d8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f918:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f928:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f9c0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f9c8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f9d8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9fa78:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9fab8:  [<60039123>] enable_mask+0x43/0x60
-[42949587.660000] 67d9fac8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9fb08:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9fb48:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9fb78:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9fb98:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9fbb8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9fbd8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9fbe8:  [<60056864>] sys_reboot+0x234/0x240
-[42949587.660000] 67d9fc08:  [<60052f27>] kill_proc_info+0x37/0x50
-[42949587.660000] 67d9fc28:  [<60052f7c>] kill_something_info+0x3c/0x140
-[42949587.660000] 67d9fcc8:  [<6008a29b>] filp_close+0x4b/0x90
-[42949587.660000] 67d9fd18:  [<6001aed6>] execute_syscall_skas+0xc6/0xd0
-[42949587.660000] 67d9fd38:  [<6001aefb>] handle_syscall+0x1b/0x40
-[42949587.660000] 67d9fd58:  [<6003d1fb>] userspace+0x15b/0x2f0
-[42949587.660000] 67d9fdb8:  [<6001b0a4>] fix_range+0x34/0x40
-[42949587.660000] 67d9fdf8:  [<6001aac2>] fork_handler+0xc2/0xd0
-[42949587.660000] 67d9fe38:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9fee8:  [<602160c9>] __kill+0x9/0x20
-[42949587.660000]
-[42949587.660000]  <0>Kernel panic - not syncing: Kernel mode fault at addr 0x100, ip 0x401c69d7
-[42949587.660000]
-[42949587.660000] Pid: 3288, comm: halt Not tainted 2.6.12-rc6-mm1
-[42949587.660000] RIP: 0033:[<00000000401c69d7>]
-[42949587.660000] RSP: 0000007fbfc37bb0  EFLAGS: 00000202
-[42949587.660000] RAX: ffffffffffffffda RBX: 0000007fbfc37c68 RCX: ffffffffffffffff
-[42949587.660000] RDX: 000000004321fedc RSI: 0000000028121969 RDI: fffffffffee1dead
-[42949587.660000] RBP: 0000000000000002 R08: 000000000000004c R09: 0000000000000000
-[42949587.660000] R10: 00000000401159a8 R11: 0000000000000202 R12: 0000000000000000
-[42949587.660000] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-[42949587.660000] Call Trace:
-[42949587.660000] 67d9d428:  [<6001755f>] panic_exit+0x2f/0x50
-[42949587.660000] 67d9d448:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9d478:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9d4b8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d4e8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9d518:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d528:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d568:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9d578:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d588:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9d5d8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d5f8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d608:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9d678:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9d6a8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9d6b8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9d6f8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d708:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d7a0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9d7a8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9d7b8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9d828:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9d848:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9d8d8:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9d8f8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d918:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d938:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9d958:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9d978:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9d998:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9d9b8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9d9c8:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9d9d8:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9d9f8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9da28:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9da68:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9da98:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9dac8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dad8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9db18:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9db28:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9db38:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9db88:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dba8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9dbb8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9dc28:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9dc58:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9dc68:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9dca8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dcb8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9dd50:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9dd58:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9dd68:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9ddd8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ddf8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9de88:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9dea8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dec8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dee8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9df08:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9df28:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9df48:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9df68:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9df78:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9df88:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9dfa8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9dfd8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e018:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e048:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e078:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e088:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e0c8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e0d8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e0e8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e138:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e158:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e168:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e1d8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e208:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e218:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e258:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e268:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e300:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e308:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e318:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e388:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e3a8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e438:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9e458:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e478:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e498:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9e4b8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9e4d8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9e4f8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9e518:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9e528:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9e538:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9e558:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9e588:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e5c8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e5f8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e628:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e638:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e678:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e688:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e698:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e6e8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e708:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e718:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e788:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e7b8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e7c8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e808:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e818:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e8b0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e8b8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e8c8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e938:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e958:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e9e8:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9ea08:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea28:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea48:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9ea68:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9ea88:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9eaa8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9eac8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9ead8:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9eae8:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9eb08:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9eb38:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9eb78:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eba8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9ebd8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9ebe8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ec28:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9ec38:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ec48:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9ec98:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ecb8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ecc8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9ed38:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9ed68:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9ed78:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9edb8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9edc8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ee60:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9ee68:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9ee78:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9eee8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ef08:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9ef98:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9efb8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9efd8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eff8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f018:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f038:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f058:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f078:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f088:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f098:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f0b8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f0e8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f128:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f158:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f188:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f198:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f1d8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f1e8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f1f8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f248:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f268:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f278:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f2e8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f318:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f328:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f368:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f378:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f410:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f418:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f428:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9f498:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9f4b8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9f548:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9f568:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f588:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f5a8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f5c8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f5e8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f608:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f628:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f638:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f648:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f668:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f698:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f6d8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f708:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f748:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f788:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f798:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f7a8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f808:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f818:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f828:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f898:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f8c8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f8d8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f918:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f928:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f9c0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f9c8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f9d8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9fa78:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9fab8:  [<60039123>] enable_mask+0x43/0x60
-[42949587.660000] 67d9fac8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9fb08:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9fb48:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9fb78:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9fb98:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9fbb8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9fbd8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9fbe8:  [<60056864>] sys_reboot+0x234/0x240
-[42949587.660000] 67d9fc08:  [<60052f27>] kill_proc_info+0x37/0x50
-[42949587.660000] 67d9fc28:  [<60052f7c>] kill_something_info+0x3c/0x140
-[42949587.660000] 67d9fcc8:  [<6008a29b>] filp_close+0x4b/0x90
-[42949587.660000] 67d9fd18:  [<6001aed6>] execute_syscall_skas+0xc6/0xd0
-[42949587.660000] 67d9fd38:  [<6001aefb>] handle_syscall+0x1b/0x40
-[42949587.660000] 67d9fd58:  [<6003d1fb>] userspace+0x15b/0x2f0
-[42949587.660000] 67d9fdb8:  [<6001b0a4>] fix_range+0x34/0x40
-[42949587.660000] 67d9fdf8:  [<6001aac2>] fork_handler+0xc2/0xd0
-[42949587.660000] 67d9fe38:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9fee8:  [<602160c9>] __kill+0x9/0x20
-[42949587.660000]
-[42949587.660000]  <0>Kernel panic - not syncing: Kernel mode fault at addr 0x100, ip 0x401c69d7
-[42949587.660000]
-[42949587.660000] Pid: 3288, comm: halt Not tainted 2.6.12-rc6-mm1
-[42949587.660000] RIP: 0033:[<00000000401c69d7>]
-[42949587.660000] RSP: 0000007fbfc37bb0  EFLAGS: 00000202
-[42949587.660000] RAX: ffffffffffffffda RBX: 0000007fbfc37c68 RCX: ffffffffffffffff
-[42949587.660000] RDX: 000000004321fedc RSI: 0000000028121969 RDI: fffffffffee1dead
-[42949587.660000] RBP: 0000000000000002 R08: 000000000000004c R09: 0000000000000000
-[42949587.660000] R10: 00000000401159a8 R11: 0000000000000202 R12: 0000000000000000
-[42949587.660000] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-[42949587.660000] Call Trace:
-[42949587.660000] 67d9ce78:  [<6001755f>] panic_exit+0x2f/0x50
-[42949587.660000] 67d9ce98:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9cec8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9cf08:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9cf38:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9cf68:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9cf78:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9cfb8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9cfc8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9cfd8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9d028:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d048:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d058:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9d0c8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9d0f8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9d108:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9d148:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d158:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d1f0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9d1f8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9d208:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9d278:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9d298:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9d328:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9d348:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d368:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d388:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9d3a8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9d3c8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9d3e8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9d408:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9d418:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9d428:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9d448:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9d478:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9d4b8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d4e8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9d518:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d528:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d568:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9d578:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d588:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9d5d8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d5f8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d608:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9d678:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9d6a8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9d6b8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9d6f8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d708:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d7a0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9d7a8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9d7b8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9d828:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9d848:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9d8d8:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9d8f8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d918:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d938:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9d958:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9d978:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9d998:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9d9b8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9d9c8:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9d9d8:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9d9f8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9da28:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9da68:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9da98:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9dac8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dad8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9db18:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9db28:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9db38:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9db88:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dba8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9dbb8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9dc28:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9dc58:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9dc68:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9dca8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dcb8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9dd50:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9dd58:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9dd68:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9ddd8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ddf8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9de88:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9dea8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dec8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dee8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9df08:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9df28:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9df48:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9df68:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9df78:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9df88:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9dfa8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9dfd8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e018:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e048:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e078:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e088:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e0c8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e0d8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e0e8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e138:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e158:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e168:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e1d8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e208:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e218:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e258:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e268:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e300:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e308:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e318:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e388:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e3a8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e438:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9e458:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e478:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e498:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9e4b8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9e4d8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9e4f8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9e518:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9e528:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9e538:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9e558:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9e588:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e5c8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e5f8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e628:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e638:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e678:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e688:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e698:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e6e8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e708:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e718:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e788:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e7b8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e7c8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e808:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e818:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e8b0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e8b8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e8c8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e938:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e958:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e9e8:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9ea08:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea28:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea48:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9ea68:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9ea88:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9eaa8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9eac8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9ead8:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9eae8:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9eb08:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9eb38:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9eb78:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eba8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9ebd8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9ebe8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ec28:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9ec38:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ec48:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9ec98:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ecb8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ecc8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9ed38:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9ed68:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9ed78:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9edb8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9edc8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ee60:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9ee68:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9ee78:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9eee8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ef08:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9ef98:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9efb8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9efd8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eff8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f018:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f038:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f058:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f078:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f088:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f098:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f0b8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f0e8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f128:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f158:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f188:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f198:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f1d8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f1e8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f1f8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f248:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f268:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f278:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f2e8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f318:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f328:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f368:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f378:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f410:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f418:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f428:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9f498:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9f4b8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9f548:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9f568:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f588:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f5a8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f5c8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f5e8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f608:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f628:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f638:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f648:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f668:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f698:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f6d8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f708:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f748:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f788:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f798:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f7a8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f808:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f818:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f828:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f898:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f8c8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f8d8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f918:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f928:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f9c0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f9c8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f9d8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9fa78:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9fab8:  [<60039123>] enable_mask+0x43/0x60
-[42949587.660000] 67d9fac8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9fb08:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9fb48:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9fb78:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9fb98:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9fbb8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9fbd8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9fbe8:  [<60056864>] sys_reboot+0x234/0x240
-[42949587.660000] 67d9fc08:  [<60052f27>] kill_proc_info+0x37/0x50
-[42949587.660000] 67d9fc28:  [<60052f7c>] kill_something_info+0x3c/0x140
-[42949587.660000] 67d9fcc8:  [<6008a29b>] filp_close+0x4b/0x90
-[42949587.660000] 67d9fd18:  [<6001aed6>] execute_syscall_skas+0xc6/0xd0
-[42949587.660000] 67d9fd38:  [<6001aefb>] handle_syscall+0x1b/0x40
-[42949587.660000] 67d9fd58:  [<6003d1fb>] userspace+0x15b/0x2f0
-[42949587.660000] 67d9fdb8:  [<6001b0a4>] fix_range+0x34/0x40
-[42949587.660000] 67d9fdf8:  [<6001aac2>] fork_handler+0xc2/0xd0
-[42949587.660000] 67d9fe38:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9fee8:  [<602160c9>] __kill+0x9/0x20
-[42949587.660000]
-[42949587.660000]  <0>Kernel panic - not syncing: Kernel mode fault at addr 0x100, ip 0x401c69d7
-[42949587.660000]
-[42949587.660000] Pid: 3288, comm: halt Not tainted 2.6.12-rc6-mm1
-[42949587.660000] RIP: 0033:[<00000000401c69d7>]
-[42949587.660000] RSP: 0000007fbfc37bb0  EFLAGS: 00000202
-[42949587.660000] RAX: ffffffffffffffda RBX: 0000007fbfc37c68 RCX: ffffffffffffffff
-[42949587.660000] RDX: 000000004321fedc RSI: 0000000028121969 RDI: fffffffffee1dead
-[42949587.660000] RBP: 0000000000000002 R08: 000000000000004c R09: 0000000000000000
-[42949587.660000] R10: 00000000401159a8 R11: 0000000000000202 R12: 0000000000000000
-[42949587.660000] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-[42949587.660000] Call Trace:
-[42949587.660000] 67d9c8c8:  [<6001755f>] panic_exit+0x2f/0x50
-[42949587.660000] 67d9c8e8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9c918:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9c958:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9c988:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9c9b8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9c9c8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ca08:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9ca18:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ca28:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9ca78:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ca98:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9caa8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9cb18:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9cb48:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9cb58:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9cb98:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9cba8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9cc40:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9cc48:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9cc58:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9ccc8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9cce8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9cd78:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9cd98:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9cdb8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9cdd8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9cdf8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9ce18:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9ce38:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9ce58:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9ce68:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9ce78:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9ce98:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9cec8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9cf08:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9cf38:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9cf68:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9cf78:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9cfb8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9cfc8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9cfd8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9d028:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d048:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d058:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9d0c8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9d0f8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9d108:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9d148:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d158:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d1f0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9d1f8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9d208:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9d278:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9d298:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9d328:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9d348:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d368:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d388:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9d3a8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9d3c8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9d3e8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9d408:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9d418:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9d428:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9d448:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9d478:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9d4b8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d4e8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9d518:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d528:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d568:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9d578:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d588:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9d5d8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d5f8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9d608:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9d678:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9d6a8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9d6b8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9d6f8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9d708:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9d7a0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9d7a8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9d7b8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9d828:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9d848:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9d8d8:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9d8f8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d918:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9d938:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9d958:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9d978:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9d998:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9d9b8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9d9c8:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9d9d8:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9d9f8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9da28:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9da68:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9da98:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9dac8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dad8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9db18:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9db28:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9db38:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9db88:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dba8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9dbb8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9dc28:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9dc58:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9dc68:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9dca8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9dcb8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9dd50:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9dd58:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9dd68:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9ddd8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ddf8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9de88:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9dea8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dec8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9dee8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9df08:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9df28:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9df48:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9df68:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9df78:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9df88:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9dfa8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9dfd8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e018:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e048:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e078:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e088:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e0c8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e0d8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e0e8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e138:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e158:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e168:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e1d8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e208:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e218:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e258:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e268:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e300:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e308:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e318:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e388:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e3a8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e438:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9e458:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e478:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e498:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9e4b8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9e4d8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9e4f8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9e518:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9e528:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9e538:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9e558:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9e588:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9e5c8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e5f8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9e628:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e638:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e678:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9e688:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e698:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9e6e8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9e708:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9e718:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9e788:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9e7b8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9e7c8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9e808:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9e818:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9e8b0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9e8b8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9e8c8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9e938:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9e958:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9e9e8:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9ea08:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea28:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ea48:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9ea68:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9ea88:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9eaa8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9eac8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9ead8:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9eae8:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9eb08:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9eb38:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9eb78:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eba8:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9ebd8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9ebe8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ec28:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9ec38:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ec48:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9ec98:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9ecb8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9ecc8:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9ed38:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9ed68:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9ed78:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9edb8:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9edc8:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9ee60:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9ee68:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9ee78:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9eee8:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9ef08:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9ef98:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9efb8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9efd8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9eff8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f018:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f038:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f058:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f078:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f088:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f098:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f0b8:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f0e8:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f128:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f158:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f188:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f198:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f1d8:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f1e8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f1f8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f248:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f268:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f278:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f2e8:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f318:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f328:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f368:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f378:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f410:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f418:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f428:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9f498:  [<600434ac>] release_console_sem+0x7c/0xc0
-[42949587.660000] 67d9f4b8:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9f548:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9f568:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f588:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f5a8:  [<6022d765>] __libc_waitpid+0x95/0xc0
-[42949587.660000] 67d9f5c8:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9f5e8:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9f608:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9f628:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9f638:  [<600140a9>] machine_halt+0x9/0x10
-[42949587.660000] 67d9f648:  [<60017575>] panic_exit+0x45/0x50
-[42949587.660000] 67d9f668:  [<6005602b>] notifier_call_chain+0x2b/0x50
-[42949587.660000] 67d9f698:  [<600423c4>] panic+0xe4/0x180
-[42949587.660000] 67d9f6d8:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f708:  [<600165f8>] handle_page_fault+0xf8/0x2b0
-[42949587.660000] 67d9f748:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f788:  [<6001699a>] segv+0x1ea/0x2b0
-[42949587.660000] 67d9f798:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f7a8:  [<60039021>] change_sig+0x61/0x80
-[42949587.660000] 67d9f808:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9f818:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9f828:  [<60039091>] change_signals+0x51/0x80
-[42949587.660000] 67d9f898:  [<60016da8>] segv_handler+0x148/0x1c0
-[42949587.660000] 67d9f8c8:  [<60016c60>] segv_handler+0x0/0x1c0
-[42949587.660000] 67d9f8d8:  [<6003dbae>] sig_handler_common_skas+0xee/0x140
-[42949587.660000] 67d9f918:  [<60038cb5>] sig_handler+0x25/0x30
-[42949587.660000] 67d9f928:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9f9c0:  [<60020770>] pcap_remove+0x0/0x40
-[42949587.660000] 67d9f9c8:  [<6022d709>] __libc_waitpid+0x39/0xc0
-[42949587.660000] 67d9f9d8:  [<60022654>] pcap_close+0x4/0x40
-[42949587.660000] 67d9fa78:  [<6004326c>] vprintk+0x15c/0x260
-[42949587.660000] 67d9fab8:  [<60039123>] enable_mask+0x43/0x60
-[42949587.660000] 67d9fac8:  [<60216155>] sigemptyset+0x15/0x40
-[42949587.660000] 67d9fb08:  [<60043100>] printk+0xa0/0xb0
-[42949587.660000] 67d9fb48:  [<60216091>] __sigprocmask+0x11/0x40
-[42949587.660000] 67d9fb78:  [<6002078e>] pcap_remove+0x1e/0x40
-[42949587.660000] 67d9fb98:  [<6002f6e5>] close_devices+0x55/0x60
-[42949587.660000] 67d9fbb8:  [<60013292>] do_uml_exitcalls+0x22/0x40
-[42949587.660000] 67d9fbd8:  [<60014079>] machine_power_off+0x9/0x30
-[42949587.660000] 67d9fbe8:  [<60056864>] sys_reboot+0x234/0x240
-[42949587.660000] 67d9fc08:  [<60052f27>] kill_proc_info+0x37/0x50
-[42949587.660000] 67d9fc28:  [<60052f7c>] kill_something_info+0x3c/0x140
-[42949587.660000] 67d9fcc8:  [<6008a29b>] filp_close+0x4b/0x90
-[42949587.660000] 67d9fd18:  [<6001aed6>] execute_syscall_skas+0xc6/0xd0
-[42949587.660000] 67d9fd38:  [<6001aefb>] handle_syscall+0x1b/0x40
-[42949587.660000] 67d9fd58:  [<6003d1fb>] userspace+0x15b/0x2f0
-[42949587.660000] 67d9fdb8:  [<6001b0a4>] fix_range+0x34/0x40
-[42949587.660000] 67d9fdf8:  [<6001aac2>] fork_handler+0xc2/0xd0
-[42949587.660000] 67d9fe38:  [<60215e10>] __restore_rt+0x0/0x10
-[42949587.660000] 67d9fee8:  [<602160c9>] __kill+0x9/0x20
-[42949587.660000]
-[42949587.660000]  <0>Kernel panic - not syncing: Kernel mode fault at addr 0x100, ip 0x401c69d7
-/uml/start.sh: line 1:  3487 Segmentation fault      /kernel-4 umid=4 mem=128M ubd0=/uml/root_fs
+diff -puN arch/um/Kconfig~uml-hppfs arch/um/Kconfig
+=2D-- clean-linux-2.6.11/arch/um/Kconfig~uml-hppfs	2005-06-09 16:37:42.0000=
+00000 +0200
++++ clean-linux-2.6.11-paolo/arch/um/Kconfig	2005-06-09 16:38:22.000000000 =
++0200
+@@ -122,7 +122,6 @@ config HOSTFS
+=20
+ config HPPFS
+ 	tristate "HoneyPot ProcFS (EXPERIMENTAL)"
+=2D	depends on BROKEN
+ 	help
+ 	hppfs (HoneyPot ProcFS) is a filesystem which allows UML /proc
+ 	entries to be overridden, removed, or fabricated from the host.
+@@ -135,8 +134,9 @@ config HPPFS
+ 	You only need this if you are setting up a UML honeypot.  Otherwise,
+ 	it is safe to say 'N' here.
+=20
+=2D	If you are actively using it, please ask for it to be fixed. In this
+=2D	moment, it does not work on 2.6 (it works somehow on 2.4).
++	If you are actively using it, please report any problems, since it's
++	getting fixed. In this moment, it does not work on 2.6 (it works somehow
++	on 2.4).
+=20
+ config MCONSOLE
+ 	bool "Management console"
+diff -puN fs/hppfs/hppfs_kern.c~uml-hppfs fs/hppfs/hppfs_kern.c
+=2D-- clean-linux-2.6.11/fs/hppfs/hppfs_kern.c~uml-hppfs	2005-06-09 16:37:4=
+2.000000000 +0200
++++ clean-linux-2.6.11-paolo/fs/hppfs/hppfs_kern.c	2005-06-09 16:54:20.0000=
+00000 +0200
+@@ -4,6 +4,7 @@
+  */
+=20
+ #include <linux/fs.h>
++#include <linux/file.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+@@ -491,7 +492,7 @@ static int hppfs_open(struct inode *inod
+ 		fd =3D open_host_sock(host_file, &filter);
+ 		if(fd > 0){
+ 			data->contents =3D hppfs_get_data(fd, filter,
+=2D							&data->proc_file,
++							data->proc_file,
+ 							file, &data->len);
+ 			if(!IS_ERR(data->contents))
+ 				data->host_fd =3D fd;
+@@ -543,7 +544,7 @@ static int hppfs_dir_open(struct inode *
+ static loff_t hppfs_llseek(struct file *file, loff_t off, int where)
+ {
+ 	struct hppfs_private *data =3D file->private_data;
+=2D	struct file *proc_file =3D &data->proc_file;
++	struct file *proc_file =3D data->proc_file;
+ 	loff_t (*llseek)(struct file *, loff_t, int);
+ 	loff_t ret;
+=20
+@@ -586,7 +587,7 @@ static int hppfs_filldir(void *d, const=20
+ static int hppfs_readdir(struct file *file, void *ent, filldir_t filldir)
+ {
+ 	struct hppfs_private *data =3D file->private_data;
+=2D	struct file *proc_file =3D &data->proc_file;
++	struct file *proc_file =3D data->proc_file;
+ 	int (*readdir)(struct file *, void *, filldir_t);
+ 	struct hppfs_dirent dirent =3D ((struct hppfs_dirent)
+ 		                      { .vfs_dirent  	=3D ent,
+_
 
---=-B6xY5+1yy3pU7Xpu/pKW--
+--Boundary-01=_68FqCPr/8LzHWDd--
+
+--nextPart372782041.apLsc9pp30
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBCqF9CqH9OHC+5NscRArWaAJ4+9k68DX9tbdYnnPHJKPgvM5LtOACfdwkQ
+ELxEJCzDT0gdpGOqpsco7xM=
+=QI78
+-----END PGP SIGNATURE-----
+
+--nextPart372782041.apLsc9pp30--
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
