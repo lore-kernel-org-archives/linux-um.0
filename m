@@ -2,35 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DgTxq-0001f3-N2	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Jun 2005 13:49:22 -0700
-Received: from smtp2.wanadoo.fr ([193.252.22.29])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DgTxp-0001OY-6q	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Jun 2005 13:49:22 -0700
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf0204.wanadoo.fr (SMTP Server) with ESMTP id 4F6F31C00233
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu,  9 Jun 2005 22:48:26 +0200 (CEST)
-Received: from doggy.fute.lan (AMontsouris-151-1-13-139.w82-123.abo.wanadoo.fr
-	[82.123.138.139])
-	by mwinf0204.wanadoo.fr (SMTP Server) with ESMTP id 1C5101C0022D
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu,  9 Jun 2005 22:48:26 +0200 (CEST)
-Received: from snide by doggy.fute.lan with local (Exim 3.36 #1 (Debian))
-	id 1DgTwv-0000aH-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 09 Jun 2005 22:48:25 +0200
-From: Steve Schnepp <snide@free.fr>
-Subject: Re: [uml-devel] CowLoop
-Message-ID: <20050609204825.GA2217@fute.lan>
-References: <007a01c5426c$ee241350$2000000a@schlepptopp>
-	<20050416134809.GA3711@ccure.user-mode-linux.org>
-	<000801c5429f$b58babb0$2000000a@schlepptopp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1DgV8w-0005jC-83	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Jun 2005 15:04:54 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DgV8r-0003W9-75	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Jun 2005 15:04:54 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+References: <E1DfSPm-0008Vv-Va@nuthatch.gentoo.org>
+	<871x7e54pv.fsf@amaterasu.srvr.nix> <200506080234.29043.blaisorblade@yahoo.it>
+In-Reply-To: <200506080234.29043.blaisorblade@yahoo.it>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <000801c5429f$b58babb0$2000000a@schlepptopp>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200506100008.14664.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -42,33 +30,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Jun 2005 22:48:25 +0200
+Date: Fri, 10 Jun 2005 00:08:14 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Nix <nix@esperi.org.uk>
 
-On Sat, Apr 16, 2005 at 06:16:55PM +0200, roland wrote:
-> Did anyone try it yet ?
+On Wednesday 08 June 2005 02:34, Blaisorblade wrote:
+> On Tuesday 07 June 2005 21:47, Nix wrote:
+> > On Tue, 7 Jun 2005, blaisorblade@yahoo.it suggested tentatively:
+> > > On Tuesday 07 June 2005 18:21, Nix wrote:
+> > >> OK, so it's a -static TT build that's failing?
+> > >
+> > > Exactly.
+> >
+> > Built, with a randomly selected .config (that is, a .config I use for
+> > other things, not a .config with the values set at random!)
+>
+> Hmm, broken-out in the archives works perfectly (with patch-scripts). Go
+> until uml-link-tt-mode-against-nptl.patch and retry, and possibly even with
+> the previous one... please.
+Hmm, ok, it works perfectly here in SKAS mode, not in TT mode (I'm enabling 
+both), but it's different, so there is something wrong there... maybe it is 
+the NPTL glibc. If you can confirm that, I'll have one less problem (fixing 
+things for NPTL glibc will still be an issue, but that is not urgent).
 
-As usual with open source, many people say they'll do many things. So one
-time I said that i'll eventually finish a little project ULDD, which is
-an userspace loop device (such as lufs [1], but for block devices).
-
-But then, i didn't have much interest in UML anymore [ I changed job :) ], 
-and I crossed FUSD [2] which seems much more advanced at the time...
-
-At the time I put some ugly piece of code online [3]. It was my first
-attempt to create a kernel block driver, but unfortunatly, I didn't have
-the time to investigate to port the driver to 2.6 :-(
-
-[1] http://lufs.sourceforge.net/lufs/
-[2] http://www.circlemud.org/~jelson/software/fusd/
-[3] http://snide.free.fr/uldd/
-
-	Steve
-
+Urgency is the keyword here.... I have the exam season now so I *must* study.
 -- 
-GPG public key available from http://snide.free.fr/gpg/snide.free.fr.asc
-   Or by email to "snide at free.fr" with "send key pub" as subject
-   Fingerprint: 19D7 12ED 5A37 4F29 8FDA  19B0 6DFD 3A54 A753 EA6F 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
 
 
 
