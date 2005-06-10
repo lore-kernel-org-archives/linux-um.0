@@ -1,31 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dgl0W-0007TH-I3	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Jun 2005 08:01:16 -0700
-Received: from mail.nagafix.co.uk ([213.228.237.37])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Dgl0H-0002ad-7X	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Jun 2005 08:01:08 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 711C8AEF83
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 10 Jun 2005 15:21:30 +0100 (BST)
-Received: from mail.nagafix.co.uk ([127.0.0.1])
- by localhost (viper [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
- id 22199-12 for <user-mode-linux-devel@lists.sourceforge.net>;
- Fri, 10 Jun 2005 15:21:28 +0100 (BST)
-Received: from [192.168.0.1] (unknown [81.1.90.211])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 36745AEF82
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 10 Jun 2005 15:21:28 +0100 (BST)
-Subject: [Fwd: Re: [uml-devel] 2.6.12-rc6-mm1 patches testing]
-From: antoine <antoine@nagafix.co.uk>
-Content-Type: text/plain
-Message-Id: <1118416536.10190.340.camel@localhost>
+	id 1DglWt-0000eq-U2	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 10 Jun 2005 08:34:43 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DglWr-00059c-4Z	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 10 Jun 2005 08:34:42 -0700
+Message-Id: <200506101529.j5AFTVut008287@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 4/4] UML - slirp and slip driver cleanups and
+	fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,67 +25,814 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 10 Jun 2005 16:15:36 +0100
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 10 Jun 2005 11:29:31 -0400
+To: akpm@osdl.org, torvalds@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-I thought this could be of interest to all UML devs:
+This patch merges a lot of duplicated code in the slip and slirp drivers,
+abstracts out the slip protocol, and makes the slip driver work in 2.6.
 
-(as far as I'm concerned, the /tmp is already in its own space in a chroot so
-this is not an issue)
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
--------- Forwarded Message --------
-> From: Stephen Smalley <sds@tycho.nsa.gov>
-> To: Blaisorblade <blaisorblade@yahoo.it>
-> Cc: antoine <antoine@nagafix.co.uk>, SELinux <selinux@tycho.nsa.gov>
-> Subject: Re: [uml-devel] 2.6.12-rc6-mm1 patches testing
-> Date: Fri, 10 Jun 2005 09:35:27 -0400
-> On Fri, 2005-06-10 at 00:57 +0200, Blaisorblade wrote:
-> > However, since UML is a virtual kernel, between its task there is executing 
-> > programs, in the memory of the virtual guest; this memory is represented by a 
-> > host file, because it must be shareable by different threads (each of them 
-> > matches one process/thread executed inside UML; actually there are 
-> > complications but this is the base idea).
-> 
-> Shared anon mapping?
-> 
-> > A note: this file is later deleted to avoid it being touched by the host; what 
-> > I was thinking was if this could be extended to deleting the directory it's 
-> > in (it could, and this would work); then, maybe the execute permission could 
-> > be given only to the directory, and the creation of such directories could be 
-> > restricted to UML (well, given that you make UML put his files not in /tmp 
-> > but in a reserved place). I.e.:
-> 
-> It is already the case that a separate type (um_tmp_t) is being applied
-> to the file, and I presume that the policy only allows um_kernel_t to
-> create/modify files with this type, so policy should ensure that no
-> other process can touch the file and that no other process can trick uml
-> into using a different file (because um_kernel_t will lack execute
-> permission to any other xxx_tmp_t type, and thus the mmap would fail).
-> 
-> > only the UML "role" (I don't know SELinux so please correct me) can create a 
-> > folder under /chroot/mem; those folders become of a different role
-> > with auto_trans, inside those folders you get execute permission with "allow 
-> > um_kernel_t um_tmp_t:file execute;", and those folders get deleted as soon as 
-> > the file has been created, opened and deleted, so only UML can create an 
-> > mmap'able file; race condition to check here if the attacker creates a file 
-> > while the directory exists but not difficult to solve; I guess this is 
-> > possible with SELinux.
-> 
-> Moving from /tmp to a dedicated location with its own type or using a
-> shared anon mapping would make it clear that we are dealing with
-> something other than a normal /tmp file, as well as fixing the
-> noexec /tmp problem.  As far as an attacker creating a file, policy
-> should prevent them from being able to create a file in the necessary
-> type to allow execution, so that shouldn't be a problem.  Naturally, if
-> uml itself is subverted, it may be induced to execute arbitrary code
-> from the memory.
-> 
-> > I don't understand the domain concept... however, by "indirect execution" you 
-> > mean simply running /lib/ld.so <fileName>, don't you? In this case, since the 
-> > kernel must just mmap() ld.so and not execve() it, couldn't we deny 
-> > execve("/lib/ld-linux.so") via the checks you mentioned above?
-> 
-> Yes, execute_no_trans would also apply there.
+Index: linux-2.6.12-rc/arch/um/drivers/Makefile
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/Makefile	2005-06-08 12:21:17.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/Makefile	2005-06-08 12:54:43.000000000 -0400
+@@ -22,8 +22,8 @@ obj-y := stdio_console.o fd.o chan_kern.
+ obj-$(CONFIG_SSL) += ssl.o
+ obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
+ 
+-obj-$(CONFIG_UML_NET_SLIP) += slip.o
+-obj-$(CONFIG_UML_NET_SLIRP) += slirp.o
++obj-$(CONFIG_UML_NET_SLIP) += slip.o slip_common.o
++obj-$(CONFIG_UML_NET_SLIRP) += slirp.o slip_common.o
+ obj-$(CONFIG_UML_NET_DAEMON) += daemon.o 
+ obj-$(CONFIG_UML_NET_MCAST) += mcast.o 
+ #obj-$(CONFIG_UML_NET_PCAP) += pcap.o $(PCAP)
+@@ -41,6 +41,6 @@ obj-$(CONFIG_UML_WATCHDOG) += harddog.o
+ obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
+ obj-$(CONFIG_UML_RANDOM) += random.o
+ 
+-USER_OBJS := fd.o null.o pty.o tty.o xterm.o
++USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o
+ 
+ include arch/um/scripts/Makefile.rules
+Index: linux-2.6.12-rc/arch/um/drivers/slip.h
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slip.h	2005-06-07 10:24:53.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slip.h	2005-06-08 12:54:43.000000000 -0400
+@@ -1,10 +1,7 @@
+ #ifndef __UM_SLIP_H
+ #define __UM_SLIP_H
+ 
+-#define BUF_SIZE 1500
+- /* two bytes each for a (pathological) max packet of escaped chars +  * 
+-  * terminating END char + initial END char                            */
+-#define ENC_BUF_SIZE (2 * BUF_SIZE + 2)
++#include "slip_common.h"
+ 
+ struct slip_data {
+ 	void *dev;
+@@ -12,28 +9,12 @@ struct slip_data {
+ 	char *addr;
+ 	char *gate_addr;
+ 	int slave;
+-	unsigned char ibuf[ENC_BUF_SIZE];
+-	unsigned char obuf[ENC_BUF_SIZE];
+-	int more; /* more data: do not read fd until ibuf has been drained */
+-	int pos;
+-	int esc;
++	struct slip_proto slip;
+ };
+ 
+ extern struct net_user_info slip_user_info;
+ 
+-extern int set_umn_addr(int fd, char *addr, char *ptp_addr);
+ extern int slip_user_read(int fd, void *buf, int len, struct slip_data *pri);
+ extern int slip_user_write(int fd, void *buf, int len, struct slip_data *pri);
+ 
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.12-rc/arch/um/drivers/slip_common.c
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slip_common.c	2005-06-08 06:19:43.393768952 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slip_common.c	2005-06-08 12:54:43.000000000 -0400
+@@ -0,0 +1,54 @@
++#include <string.h>
++#include "slip_common.h"
++#include "net_user.h"
++
++int slip_proto_read(int fd, void *buf, int len, struct slip_proto *slip)
++{
++	int i, n, size, start;
++
++	if(slip->more > 0){
++		i = 0;
++		while(i < slip->more){
++			size = slip_unesc(slip->ibuf[i++], slip->ibuf, 
++					  &slip->pos, &slip->esc);
++			if(size){
++				memcpy(buf, slip->ibuf, size);
++				memmove(slip->ibuf, &slip->ibuf[i], 
++					slip->more - i);
++				slip->more = slip->more - i; 
++				return size;
++			}
++		}
++		slip->more = 0;
++	}
++
++	n = net_read(fd, &slip->ibuf[slip->pos], 
++		     sizeof(slip->ibuf) - slip->pos);
++	if(n <= 0) 
++		return n;
++
++	start = slip->pos;
++	for(i = 0; i < n; i++){
++		size = slip_unesc(slip->ibuf[start + i], slip->ibuf,&slip->pos,
++				  &slip->esc);
++		if(size){
++			memcpy(buf, slip->ibuf, size);
++			memmove(slip->ibuf, &slip->ibuf[start+i+1], 
++				n - (i + 1));
++			slip->more = n - (i + 1); 
++			return size;
++		}
++	}
++	return 0;
++}
++
++int slip_proto_write(int fd, void *buf, int len, struct slip_proto *slip)
++{
++	int actual, n;
++
++	actual = slip_esc(buf, slip->obuf, len);
++	n = net_write(fd, slip->obuf, actual);
++	if(n < 0) 
++		return n;
++	else return len;
++}
+Index: linux-2.6.12-rc/arch/um/drivers/slip_common.h
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slip_common.h	2005-06-08 06:19:43.393768952 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slip_common.h	2005-06-08 12:54:43.000000000 -0400
+@@ -0,0 +1,104 @@
++#ifndef __UM_SLIP_COMMON_H
++#define __UM_SLIP_COMMON_H
++
++#define BUF_SIZE 1500
++ /* two bytes each for a (pathological) max packet of escaped chars +  * 
++  * terminating END char + initial END char                            */
++#define ENC_BUF_SIZE (2 * BUF_SIZE + 2)
++
++/* SLIP protocol characters. */
++#define SLIP_END             0300	/* indicates end of frame	*/
++#define SLIP_ESC             0333	/* indicates byte stuffing	*/
++#define SLIP_ESC_END         0334	/* ESC ESC_END means END 'data'	*/
++#define SLIP_ESC_ESC         0335	/* ESC ESC_ESC means ESC 'data'	*/
++
++static inline int slip_unesc(unsigned char c, unsigned char *buf, int *pos,
++                             int *esc)
++{
++	int ret;
++
++	switch(c){
++	case SLIP_END:
++		*esc = 0;
++		ret=*pos;
++		*pos=0;
++		return(ret);
++	case SLIP_ESC:
++		*esc = 1;
++		return(0);
++	case SLIP_ESC_ESC:
++		if(*esc){
++			*esc = 0;
++			c = SLIP_ESC;
++		}
++		break;
++	case SLIP_ESC_END:
++		if(*esc){
++			*esc = 0;
++			c = SLIP_END;
++		}
++		break;
++	}
++	buf[(*pos)++] = c;
++	return(0);
++}
++
++static inline int slip_esc(unsigned char *s, unsigned char *d, int len)
++{
++	unsigned char *ptr = d;
++	unsigned char c;
++
++	/*
++	 * Send an initial END character to flush out any
++	 * data that may have accumulated in the receiver
++	 * due to line noise.
++	 */
++
++	*ptr++ = SLIP_END;
++
++	/*
++	 * For each byte in the packet, send the appropriate
++	 * character sequence, according to the SLIP protocol.
++	 */
++
++	while (len-- > 0) {
++		switch(c = *s++) {
++		case SLIP_END:
++			*ptr++ = SLIP_ESC;
++			*ptr++ = SLIP_ESC_END;
++			break;
++		case SLIP_ESC:
++			*ptr++ = SLIP_ESC;
++			*ptr++ = SLIP_ESC_ESC;
++			break;
++		default:
++			*ptr++ = c;
++			break;
++		}
++	}
++	*ptr++ = SLIP_END;
++	return (ptr - d);
++}
++
++struct slip_proto {
++	unsigned char ibuf[ENC_BUF_SIZE];
++	unsigned char obuf[ENC_BUF_SIZE];
++	int more; /* more data: do not read fd until ibuf has been drained */
++	int pos;
++	int esc;
++};
++
++#define SLIP_PROTO_INIT { \
++	.ibuf  	= { '\0' }, \
++	.obuf  	= { '\0' }, \
++        .more	= 0, \
++	.pos	= 0, \
++	.esc	= 0 \
++}
++
++extern int slip_proto_read(int fd, void *buf, int len, 
++			   struct slip_proto *slip);
++extern int slip_proto_write(int fd, void *buf, int len, 
++			    struct slip_proto *slip);
++
++#endif
+Index: linux-2.6.12-rc/arch/um/drivers/slip_kern.c
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slip_kern.c	2005-06-08 11:56:11.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slip_kern.c	2005-06-08 14:18:59.000000000 -0400
+@@ -26,16 +26,16 @@ void slip_init(struct net_device *dev, v
+ 		  .addr		= NULL,
+ 		  .gate_addr 	= init->gate_addr,
+ 		  .slave  	= -1,
+-		  .ibuf  	= { '\0' },
+-		  .obuf  	= { '\0' },
+-		  .pos 		= 0,
+-		  .esc 		= 0,
++		  .slip		= SLIP_PROTO_INIT,
+ 		  .dev 		= dev });
+ 
+ 	dev->init = NULL;
++	dev->header_cache_update = NULL;
++	dev->hard_header_cache = NULL;
++	dev->hard_header = NULL;
+ 	dev->hard_header_len = 0;
+-	dev->addr_len = 4;
+-	dev->type = ARPHRD_ETHER;
++	dev->addr_len = 0;
++	dev->type = ARPHRD_SLIP;
+ 	dev->tx_queue_len = 256;
+ 	dev->flags = IFF_NOARP;
+ 	printk("SLIP backend - SLIP IP = %s\n", spri->gate_addr);
+Index: linux-2.6.12-rc/arch/um/drivers/slip_proto.h
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slip_proto.h	2005-06-07 10:24:53.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slip_proto.h	2005-06-08 06:19:43.393768952 -0400
+@@ -1,94 +0,0 @@
+-/* 
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __UM_SLIP_PROTO_H__
+-#define __UM_SLIP_PROTO_H__
+-
+-/* SLIP protocol characters. */
+-#define SLIP_END             0300	/* indicates end of frame	*/
+-#define SLIP_ESC             0333	/* indicates byte stuffing	*/
+-#define SLIP_ESC_END         0334	/* ESC ESC_END means END 'data'	*/
+-#define SLIP_ESC_ESC         0335	/* ESC ESC_ESC means ESC 'data'	*/
+-
+-static inline int slip_unesc(unsigned char c, unsigned char *buf, int *pos,
+-                             int *esc)
+-{
+-	int ret;
+-
+-	switch(c){
+-	case SLIP_END:
+-		*esc = 0;
+-		ret=*pos;
+-		*pos=0;
+-		return(ret);
+-	case SLIP_ESC:
+-		*esc = 1;
+-		return(0);
+-	case SLIP_ESC_ESC:
+-		if(*esc){
+-			*esc = 0;
+-			c = SLIP_ESC;
+-		}
+-		break;
+-	case SLIP_ESC_END:
+-		if(*esc){
+-			*esc = 0;
+-			c = SLIP_END;
+-		}
+-		break;
+-	}
+-	buf[(*pos)++] = c;
+-	return(0);
+-}
+-
+-static inline int slip_esc(unsigned char *s, unsigned char *d, int len)
+-{
+-	unsigned char *ptr = d;
+-	unsigned char c;
+-
+-	/*
+-	 * Send an initial END character to flush out any
+-	 * data that may have accumulated in the receiver
+-	 * due to line noise.
+-	 */
+-
+-	*ptr++ = SLIP_END;
+-
+-	/*
+-	 * For each byte in the packet, send the appropriate
+-	 * character sequence, according to the SLIP protocol.
+-	 */
+-
+-	while (len-- > 0) {
+-		switch(c = *s++) {
+-		case SLIP_END:
+-			*ptr++ = SLIP_ESC;
+-			*ptr++ = SLIP_ESC_END;
+-			break;
+-		case SLIP_ESC:
+-			*ptr++ = SLIP_ESC;
+-			*ptr++ = SLIP_ESC_ESC;
+-			break;
+-		default:
+-			*ptr++ = c;
+-			break;
+-		}
+-	}
+-	*ptr++ = SLIP_END;
+-	return (ptr - d);
+-}
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.12-rc/arch/um/drivers/slip_user.c
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slip_user.c	2005-06-08 11:56:11.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slip_user.c	2005-06-08 14:18:59.000000000 -0400
+@@ -13,7 +13,7 @@
+ #include "user.h"
+ #include "net_user.h"
+ #include "slip.h"
+-#include "slip_proto.h"
++#include "slip_common.h"
+ #include "helper.h"
+ #include "os.h"
+ 
+@@ -77,41 +77,51 @@ static int slip_tramp(char **argv, int f
+ 	err = os_pipe(fds, 1, 0);
+ 	if(err < 0){
+ 		printk("slip_tramp : pipe failed, err = %d\n", -err);
+-		return(err);
++		goto out;
+ 	}
+ 
+ 	err = 0;
+ 	pe_data.stdin = fd;
+ 	pe_data.stdout = fds[1];
+ 	pe_data.close_me = fds[0];
+-	pid = run_helper(slip_pre_exec, &pe_data, argv, NULL);
+-
+-	if(pid < 0) err = pid;
+-	else {
+-		output_len = page_size();
+-		output = um_kmalloc(output_len);
+-		if(output == NULL)
+-			printk("slip_tramp : failed to allocate output "
+-			       "buffer\n");
+-
+-		os_close_file(fds[1]);
+-		read_output(fds[0], output, output_len);
+-		if(output != NULL){
+-			printk("%s", output);
+-			kfree(output);
+-		}
+-		CATCH_EINTR(err = waitpid(pid, &status, 0));
+-		if(err < 0)
+-			err = errno;
+-		else if(!WIFEXITED(status) || (WEXITSTATUS(status) != 0)){
+-			printk("'%s' didn't exit with status 0\n", argv[0]);
+-			err = -EINVAL;
+-		}
++	err = run_helper(slip_pre_exec, &pe_data, argv, NULL);
++	if(err < 0) 
++		goto out_close;
++	pid = err;
++
++	output_len = page_size();
++	output = um_kmalloc(output_len);
++	if(output == NULL){
++		printk("slip_tramp : failed to allocate output buffer\n");
++		os_kill_process(pid, 1);
++		err = -ENOMEM;
++		goto out_free;
++	}
++
++	os_close_file(fds[1]);
++	read_output(fds[0], output, output_len);
++	printk("%s", output);
++
++	CATCH_EINTR(err = waitpid(pid, &status, 0));
++	if(err < 0)
++		err = errno;
++	else if(!WIFEXITED(status) || (WEXITSTATUS(status) != 0)){
++		printk("'%s' didn't exit with status 0\n", argv[0]);
++		err = -EINVAL;
+ 	}
++	else err = 0;
+ 
+ 	os_close_file(fds[0]);
+ 
+-	return(err);
++out_free:
++	kfree(output);
++	return err;
++
++out_close:
++	os_close_file(fds[0]);
++	os_close_file(fds[1]);
++out:
++	return err;
+ }
+ 
+ static int slip_open(void *data)
+@@ -123,21 +133,26 @@ static int slip_open(void *data)
+ 			 NULL };
+ 	int sfd, mfd, err;
+ 
+-	mfd = get_pty();
+-	if(mfd < 0){
+-		printk("umn : Failed to open pty, err = %d\n", -mfd);
+-		return(mfd);
++	err = get_pty();
++	if(err < 0){
++		printk("slip-open : Failed to open pty, err = %d\n", -err);
++		goto out;
+ 	}
+-	sfd = os_open_file(ptsname(mfd), of_rdwr(OPENFLAGS()), 0);
+-	if(sfd < 0){
+-		printk("Couldn't open tty for slip line, err = %d\n", -sfd);
+-		os_close_file(mfd);
+-		return(sfd);
++	mfd = err;
++
++	err = os_open_file(ptsname(mfd), of_rdwr(OPENFLAGS()), 0);
++	if(err < 0){
++		printk("Couldn't open tty for slip line, err = %d\n", -err);
++		goto out_close;
+ 	}
+-	if(set_up_tty(sfd)) return(-1);
++	sfd = err;
++
++	if(set_up_tty(sfd)) 
++		goto out_close2;
++
+ 	pri->slave = sfd;
+-	pri->pos = 0;
+-	pri->esc = 0;
++	pri->slip.pos = 0;
++	pri->slip.esc = 0;
+ 	if(pri->gate_addr != NULL){
+ 		sprintf(version_buf, "%d", UML_NET_VERSION);
+ 		strcpy(gate_buf, pri->gate_addr);
+@@ -146,12 +161,12 @@ static int slip_open(void *data)
+ 
+ 		if(err < 0){
+ 			printk("slip_tramp failed - err = %d\n", -err);
+-			return(err);
++			goto out_close2;
+ 		}
+ 		err = os_get_ifname(pri->slave, pri->name);
+ 		if(err < 0){
+ 			printk("get_ifname failed, err = %d\n", -err);
+-			return(err);
++			goto out_close2;
+ 		}
+ 		iter_addresses(pri->dev, open_addr, pri->name);
+ 	}
+@@ -160,10 +175,16 @@ static int slip_open(void *data)
+ 		if(err < 0){
+ 			printk("Failed to set slip discipline encapsulation - "
+ 			       "err = %d\n", -err);
+-			return(err);
++			goto out_close2;
+ 		}
+ 	}
+ 	return(mfd);
++out_close2:
++	os_close_file(sfd);
++out_close:
++	os_close_file(mfd);
++out:
++	return err;
+ }
+ 
+ static void slip_close(int fd, void *data)
+@@ -190,48 +211,12 @@ static void slip_close(int fd, void *dat
+ 
+ int slip_user_read(int fd, void *buf, int len, struct slip_data *pri)
+ {
+-	int i, n, size, start;
+-
+-	if(pri->more>0) {
+-		i = 0;
+-		while(i < pri->more) {
+-			size = slip_unesc(pri->ibuf[i++],
+-					pri->ibuf, &pri->pos, &pri->esc);
+-			if(size){
+-				memcpy(buf, pri->ibuf, size);
+-				memmove(pri->ibuf, &pri->ibuf[i], pri->more-i);
+-				pri->more=pri->more-i; 
+-				return(size);
+-			}
+-		}
+-		pri->more=0;
+-	}
+-
+-	n = net_read(fd, &pri->ibuf[pri->pos], sizeof(pri->ibuf) - pri->pos);
+-	if(n <= 0) return(n);
+-
+-	start = pri->pos;
+-	for(i = 0; i < n; i++){
+-		size = slip_unesc(pri->ibuf[start + i],
+-				pri->ibuf, &pri->pos, &pri->esc);
+-		if(size){
+-			memcpy(buf, pri->ibuf, size);
+-			memmove(pri->ibuf, &pri->ibuf[start+i+1], n-(i+1));
+-			pri->more=n-(i+1); 
+-			return(size);
+-		}
+-	}
+-	return(0);
++	return slip_proto_read(fd, buf, len, &pri->slip);
+ }
+ 
+ int slip_user_write(int fd, void *buf, int len, struct slip_data *pri)
+ {
+-	int actual, n;
+-
+-	actual = slip_esc(buf, pri->obuf, len);
+-	n = net_write(fd, pri->obuf, actual);
+-	if(n < 0) return(n);
+-	else return(len);
++	return slip_proto_write(fd, buf, len, &pri->slip);
+ }
+ 
+ static int slip_set_mtu(int mtu, void *data)
+@@ -267,14 +252,3 @@ struct net_user_info slip_user_info = {
+ 	.delete_address = slip_del_addr,
+ 	.max_packet	= BUF_SIZE
+ };
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.12-rc/arch/um/drivers/slirp.h
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slirp.h	2005-06-07 10:24:53.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slirp.h	2005-06-08 12:54:43.000000000 -0400
+@@ -1,10 +1,7 @@
+ #ifndef __UM_SLIRP_H
+ #define __UM_SLIRP_H
+ 
+-#define BUF_SIZE 1500
+- /* two bytes each for a (pathological) max packet of escaped chars +  * 
+-  * terminating END char + initial END char                            */
+-#define ENC_BUF_SIZE (2 * BUF_SIZE + 2)
++#include "slip_common.h"
+ 
+ #define SLIRP_MAX_ARGS 100
+ /*
+@@ -24,28 +21,13 @@ struct slirp_data {
+ 	struct arg_list_dummy_wrapper argw;
+ 	int pid;
+ 	int slave;
+-	unsigned char ibuf[ENC_BUF_SIZE];
+-	unsigned char obuf[ENC_BUF_SIZE];
+-	int more; /* more data: do not read fd until ibuf has been drained */
+-	int pos;
+-	int esc;
++	struct slip_proto slip;
+ };
+ 
+ extern struct net_user_info slirp_user_info;
+ 
+-extern int set_umn_addr(int fd, char *addr, char *ptp_addr);
+ extern int slirp_user_read(int fd, void *buf, int len, struct slirp_data *pri);
+-extern int slirp_user_write(int fd, void *buf, int len, struct slirp_data *pri);
++extern int slirp_user_write(int fd, void *buf, int len, 
++			    struct slirp_data *pri);
+ 
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.12-rc/arch/um/drivers/slirp_kern.c
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slirp_kern.c	2005-06-08 11:56:11.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slirp_kern.c	2005-06-08 14:18:51.000000000 -0400
+@@ -25,10 +25,7 @@ void slirp_init(struct net_device *dev, 
+ 		{ .argw 	= init->argw,
+ 		  .pid  	= -1,
+ 		  .slave  	= -1,
+-		  .ibuf  	= { '\0' },
+-		  .obuf  	= { '\0' },
+-		  .pos 		= 0,
+-		  .esc 		= 0,
++		  .slip		= SLIP_PROTO_INIT,
+ 		  .dev 		= dev });
+ 
+ 	dev->init = NULL;
+Index: linux-2.6.12-rc/arch/um/drivers/slirp_user.c
+===================================================================
+--- linux-2.6.12-rc.orig/arch/um/drivers/slirp_user.c	2005-06-08 11:56:11.000000000 -0400
++++ linux-2.6.12-rc/arch/um/drivers/slirp_user.c	2005-06-08 12:54:43.000000000 -0400
+@@ -12,7 +12,7 @@
+ #include "user.h"
+ #include "net_user.h"
+ #include "slirp.h"
+-#include "slip_proto.h"
++#include "slip_common.h"
+ #include "helper.h"
+ #include "os.h"
+ 
+@@ -48,47 +48,32 @@ static int slirp_tramp(char **argv, int 
+ 	return(pid);
+ }
+ 
+-/* XXX This is just a trivial wrapper around os_pipe */
+-static int slirp_datachan(int *mfd, int *sfd)
+-{
+-	int fds[2], err;
+-
+-	err = os_pipe(fds, 1, 1);
+-	if(err < 0){
+-		printk("slirp_datachan: Failed to open pipe, err = %d\n", -err);
+-		return(err);
+-	}
+-
+-	*mfd = fds[0];
+-	*sfd = fds[1];
+-	return(0);
+-}
+-
+ static int slirp_open(void *data)
+ {
+ 	struct slirp_data *pri = data;
+-	int sfd, mfd, pid, err;
++	int fds[2], pid, err;
+ 
+-	err = slirp_datachan(&mfd, &sfd);
++	err = os_pipe(fds, 1, 1);
+ 	if(err)
+ 		return(err);
+ 
+-	pid = slirp_tramp(pri->argw.argv, sfd);
+-
+-	if(pid < 0){
+-		printk("slirp_tramp failed - errno = %d\n", -pid);
+-		os_close_file(sfd);	
+-		os_close_file(mfd);	
+-		return(pid);
++	err = slirp_tramp(pri->argw.argv, fds[1]);
++	if(err < 0){
++		printk("slirp_tramp failed - errno = %d\n", -err);
++		goto out;
+ 	}
++	pid = err;
+ 
+-	pri->slave = sfd;
+-	pri->pos = 0;
+-	pri->esc = 0;
+-
+-	pri->pid = pid;
+-
+-	return(mfd);
++	pri->slave = fds[1];
++	pri->slip.pos = 0;
++	pri->slip.esc = 0;
++	pri->pid = err;
++
++	return(fds[0]);
++out:
++	os_close_file(fds[0]);
++	os_close_file(fds[1]);
++	return err;
+ }
+ 
+ static void slirp_close(int fd, void *data)
+@@ -129,48 +114,12 @@ static void slirp_close(int fd, void *da
+ 
+ int slirp_user_read(int fd, void *buf, int len, struct slirp_data *pri)
+ {
+-	int i, n, size, start;
+-
+-	if(pri->more>0) {
+-		i = 0;
+-		while(i < pri->more) {
+-			size = slip_unesc(pri->ibuf[i++],
+-					pri->ibuf,&pri->pos,&pri->esc);
+-			if(size){
+-				memcpy(buf, pri->ibuf, size);
+-				memmove(pri->ibuf, &pri->ibuf[i], pri->more-i);
+-				pri->more=pri->more-i; 
+-				return(size);
+-			}
+-		}
+-		pri->more=0;
+-	}
+-
+-	n = net_read(fd, &pri->ibuf[pri->pos], sizeof(pri->ibuf) - pri->pos);
+-	if(n <= 0) return(n);
+-
+-	start = pri->pos;
+-	for(i = 0; i < n; i++){
+-		size = slip_unesc(pri->ibuf[start + i],
+-				pri->ibuf,&pri->pos,&pri->esc);
+-		if(size){
+-			memcpy(buf, pri->ibuf, size);
+-			memmove(pri->ibuf, &pri->ibuf[start+i+1], n-(i+1));
+-			pri->more=n-(i+1); 
+-			return(size);
+-		}
+-	}
+-	return(0);
++	return slip_proto_read(fd, buf, len, &pri->slip);
+ }
+ 
+ int slirp_user_write(int fd, void *buf, int len, struct slirp_data *pri)
+ {
+-	int actual, n;
+-
+-	actual = slip_esc(buf, pri->obuf, len);
+-	n = net_write(fd, pri->obuf, actual);
+-	if(n < 0) return(n);
+-	else return(len);
++	return slip_proto_write(fd, buf, len, &pri->slip);
+ }
+ 
+ static int slirp_set_mtu(int mtu, void *data)
+@@ -188,14 +137,3 @@ struct net_user_info slirp_user_info = {
+ 	.delete_address = NULL,
+ 	.max_packet	= BUF_SIZE
+ };
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 
 
