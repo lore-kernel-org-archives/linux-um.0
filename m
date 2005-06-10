@@ -1,25 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DgWOV-0001Mf-HJ	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Jun 2005 16:25:03 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DgWOP-0005MG-RG	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Jun 2005 16:25:03 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.12-rc6-mm1 patches testing
-References: <1118280325.10107.124.camel@localhost>
-	<200506091917.48234.blaisorblade@yahoo.it>
-	<1118345008.10190.145.camel@localhost>
-In-Reply-To: <1118345008.10190.145.camel@localhost>
+	id 1Dgc9b-0004wM-8s	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Jun 2005 22:34:03 -0700
+Received: from quack.cs.berkeley.edu ([128.32.132.234] helo=quack.quarl.org)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Dgc9X-0006mB-J1	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Jun 2005 22:34:00 -0700
+From: Karl Chen <quarl@cs.berkeley.edu>
+Message-ID: <quack.20050609T2234.87is0msrl6@meow.quarl.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200506100128.28937.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=us-ascii
+Subject: [uml-devel] hostfs permissions
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,69 +24,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 10 Jun 2005 01:28:28 +0200
-To: antoine <antoine@nagafix.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 09 Jun 2005 22:34:13 -0700
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 09 June 2005 21:23, antoine wrote:
-> On Thu, 2005-06-09 at 19:17 +0200, Blaisorblade wrote:
-> > On Thursday 09 June 2005 18:53, antoine wrote:
-> > > On Thu, 2005-06-09 at 17:31 +0100, antoine wrote:
-> > > > > > Now, if someone could have a look at hppfs I could resurect my
-> > > > > > honeypots.
-> > > > >
-> > > > > I've not the time, however test the attached patches. The first one
-> > > > > fixes the basical bugs; the second one could be needed to fix a fd
-> > > > > leak... but I don't think it's needed at all, so test with only the
-> > > > > first and let me know if the 2nd is needed, or if there are any
-> > > > > problems (in that case, a ready-to-use hppfs configuration +
-> > > > > explaination would be happily accepted, I've really little time
-> > > > > now).
-> > > >
-> > > > Works fine with just the first patch. Thank you very much!
-> > >
-> > > Small correction: local file override works fine (files in the host's
-> > > fake proc appear in the guest's /proc)
-> >
-> > That is allowed, too? The daemon uses normal files only to forcibly
-> > "remove" entries, while it uses sockets for the rest.
->
-> AFAIK That has always been the case. I was using it to hardcode the
-> cpuinfo and cmdline shown in honeypots.
->
-> > Also, have you tested if it's the chroot and/or SELinux interacting? The
-> > daemon communicates through a Unix domain socket when host contents are
-> > supplied ... the base path is $ARGV[0], i.e. the first parameter...
->
-> Yep, I was running this instance outside of the chroot for now (because
-> of the libcap lib dependency) and not where the honeypot.pl expected it.
-> Also, the path was wrong chroot/proc/proc, 'lsof' showed me what I was
-> doing wrong, but it still isn't working as expected - more on this
-> later.
->
-> BTW, I copied /lib/libnss* to the chroot but the pcap interface does not
-> come up:
-Try also /lib/libresolv.so.2...
-> ifconfig eth1 0.0.0.0 promisc up
-> SIOCSIFFLAGS: No such device
-> SIOCSIFFLAGS: No such device
-> So something else must be missing... Any ideas?
 
-In general, post what appears on dmesg (if anything appears), then strace / 
-ltrace the UML process to see what's going on, + boot log and command line as 
-normally. Strace could suffice, however...
-> Antoine
+Hi, I'm doing some large-scale security experiments on Debian
+security.  I'm using UML to do the whole thing on a cluster.
+
+Hostfs seems to make everything owned by root -- even files
+created by non-root users.  I'm currently using 2.4.26-3 (Debian
+package).  I found a few posts via Google mentioning a patch to
+fix this, but no other information.  What is the modified behavior
+of hostfs permissions?  Has this been integrated into a newer
+version, or is it in cvs, or if not, are there plans to?
+
+[I think the ideal behavior, if UML is running as non-root, would
+be if there were a temporary mapping of ownership (e.g. so chown
+works) -- but that would be a lot of work to implement.]
+
+I would be happy if there were uid and gid mount options as many
+other fs types have -- to treat all files in the entire mount as
+owned by a particular user/group.
 
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.beta.messenger.yahoo.com
-
+Karl 2005-06-09 22:10
 
 
 -------------------------------------------------------
