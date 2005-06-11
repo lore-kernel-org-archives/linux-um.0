@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dgrtp-0003T5-3K	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Jun 2005 15:22:49 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1Dgrtl-0007OX-8H	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Jun 2005 15:22:49 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	id 1DguAa-0002V6-Uw	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 10 Jun 2005 17:48:16 -0700
+Received: from quack.cs.berkeley.edu ([128.32.132.234] helo=quack.quarl.org)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DguAZ-0002GV-CV	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 10 Jun 2005 17:48:16 -0700
 Subject: Re: [uml-devel] hostfs permissions
 References: <quack.20050609T2234.87is0msrl6@meow.quarl.org>
 	<200506101803.21108.blaisorblade@yahoo.it>
 	<quack.20050610T1314.87aclyvuim@quack.cs.berkeley.edu>
-In-Reply-To: <quack.20050610T1314.87aclyvuim@quack.cs.berkeley.edu>
+	<200506110026.24655.blaisorblade@yahoo.it>
+From: Karl Chen <quarl@cs.berkeley.edu>
+In-Reply-To: <200506110026.24655.blaisorblade@yahoo.it>
+	(blaisorblade@yahoo.it's message of "Sat, 11 Jun 2005 00:26:24 +0200")
+Message-ID: <quack.20050610T1748.87psutn2gh@quack.cs.berkeley.edu>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200506110026.24655.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,55 +30,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 11 Jun 2005 00:26:24 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Karl Chen <quarl@cs.berkeley.edu>
+Date: Fri, 10 Jun 2005 17:48:14 -0700
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 10 June 2005 22:14, Karl Chen wrote:
-> >>>>> On 2005-06-10 09:03 PDT, Blaisorblade  writes:
->     >> Hostfs seems to make everything owned by root -- even files
->     >> created by non-root users.
->
->     Blaisorblade> So you are running uml as root?
->
->     Blaisorblade> Or you are running UML as non-root but with
->     Blaisorblade> hostfs as root filesystem?
->
-> I'm running uml as non-root (that's part of the reason for using
-> UML, so I can do everything as non-root), and not using hostfs as
-> the root file system.  I just need to share one directory tree,
-> and some processes inside the uml need to run as non-root.
-Ok, in this case there's probably a simpler road: simply use a 2.4.27-1bs 
-kernel. The implemented behaviour is that all created files will have the ID 
-they have on the host, i.e. the ID of the user running UML.
->     Blaisorblade> 1) HUMFS, implementing the ideal behaviour below
->
-> Humfs looks promising; I'm investigating - thanks.
+>>>>> On 2005-06-10 15:26 PDT, Blaisorblade  writes:
 
->     >> I would be happy if there were uid and gid mount options as
->     >> many other fs types have -- to treat all files in the
->     >> entire mount as owned by a particular user/group.
->
->     Blaisorblade> Well, I'm going to add those options to UML 2.6
->     Blaisorblade> but I'll be able to work on this only next
->     Blaisorblade> week... However this should not be too much
->     Blaisorblade> work.
->
-> Great! Thanks!  Let me know if I can help with anything.
+    Blaisorblade> Ok, in this case there's probably a simpler
+    Blaisorblade> road: simply use a 2.4.27-1bs kernel. The
+    Blaisorblade> implemented behaviour is that all created files
+    Blaisorblade> will have the ID they have on the host, i.e. the
+    Blaisorblade> ID of the user running UML.
+
+Thanks for the tip!  I will be running UML under different user
+IDs but I'd rather it always be the same uid inside the UML.  I
+used this micropatch to get exactly the behavior I want.  It's
+obviously for this particular experiment only; I still think
+uid,gid mount options would be better in general.  I guess that's
+only 5 or 10 more lines of code...
+
+
+diff -u /home/quarl/proj/uml/linux/linux-2.4.27/arch/um/fs/hostfs/.backup/hostfs_kern.c.\~1\~ /home/quarl/proj/uml/linux/linux-2.4.27/arch/um/fs/hostfs/hostfs_kern.c
+--- /home/quarl/proj/uml/linux/linux-2.4.27/arch/um/fs/hostfs/.backup/hostfs_kern.c.~1~	2005-06-10 16:58:51.000000000 -0700
++++ /home/quarl/proj/uml/linux/linux-2.4.27/arch/um/fs/hostfs/hostfs_kern.c	2005-06-10 17:35:01.829485585 -0700
+@@ -1,3 +1,6 @@
++#define KLUDGE_FS_UID 7777
++#define KLUDGE_FS_GID 7777
++
+ /*
+  * Copyright (C) 2000 - 2003 Jeff Dike (jdike@addtoit.com)
+  * Licensed under the GPL
+@@ -142,6 +145,10 @@
+ 	ino->i_blocks = i_blocks;
+ 	if(kdev_same(ino->i_sb->s_dev, ROOT_DEV) && (ino->i_uid == getuid()))
+ 		ino->i_uid = 0;
++        else if (ino->i_uid == getuid()) {          /* KC KLUDGE */
++                ino->i_uid = KLUDGE_FS_UID;         /* KC KLUDGE */
++                ino->i_gid = KLUDGE_FS_GID;         /* KC KLUDGE */
++        }                                           /* KC KLUDGE */
+ 	return(0);
+ }
+ 
+@@ -760,13 +767,17 @@
+ 		if(kdev_same(dentry->d_inode->i_sb->s_dev, ROOT_DEV) &&
+ 		   (attr->ia_uid == 0))
+ 			attr->ia_uid = getuid();
++                else if (attr->ia_uid == KLUDGE_FS_UID) { /* KC KLUDGE */
++                        attr->ia_uid = getuid();          /* KC KLUDGE */
++                        attr->ia_gid = getgid();          /* KC KLUDGE */
++                }                                         /* KC KLUDGE */
+ 		attrs.ia_valid |= HOSTFS_ATTR_UID;
+ 		attrs.ia_uid = attr->ia_uid;
+ 	}
+ 	if(attr->ia_valid & ATTR_GID){
+ 		if(kdev_same(dentry->d_inode->i_sb->s_dev, ROOT_DEV) &&
+ 		   (attr->ia_gid == 0))
+-			attr->ia_gid = getuid();
++			attr->ia_gid = getgid();
+ 		attrs.ia_valid |= HOSTFS_ATTR_GID;
+ 		attrs.ia_gid = attr->ia_gid;
+ 	}
+
 
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+Karl 2005-06-10 17:44
 
 
 -------------------------------------------------------
