@@ -1,27 +1,30 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DhAXL-0000rk-Du	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 Jun 2005 11:16:51 -0700
-Received: from cobalt.cs.wisc.edu ([128.105.121.30])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DhAXJ-00058R-EC	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 Jun 2005 11:16:51 -0700
-Received: from cobalt.cs.wisc.edu (localhost [127.0.0.1])
-	by cobalt.cs.wisc.edu (8.13.1/8.13.1) with ESMTP id j5BIFHFi032550
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 11 Jun 2005 13:15:17 -0500
-Received: (from epaulson@localhost)
-	by cobalt.cs.wisc.edu (8.13.1/8.13.1/Submit) id j5BIFH2B032549
+	id 1Dhk4H-0002Gz-Gb	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 13 Jun 2005 01:13:13 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1Dhk4F-0004aG-IP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 Jun 2005 13:15:17 -0500
-From: Erik Paulson <epaulson@cs.wisc.edu>
-Message-ID: <20050611181516.GA32532@cobalt.cs.wisc.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Mon, 13 Jun 2005 01:13:12 -0700
+Received: from knoppix (grelber.thyrsus.com [192.168.1.31])
+	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j5D9XqXh016678
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 13 Jun 2005 05:33:56 -0400
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] compile error on 2.6.11.8-bs6 guest
+References: <000501c56c37$c5abf830$0201a8c0@lualele>
+	<200506081654.54332.blaisorblade@yahoo.it>
+In-Reply-To: <200506081654.54332.blaisorblade@yahoo.it>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] UML on Win32
+Content-Type: text/plain;
+  charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200506130309.24243.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,25 +36,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 11 Jun 2005 13:15:17 -0500
+Date: Mon, 13 Jun 2005 03:09:24 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
 
-I dusted off the UMLWin32 port a little while ago, and got it to build
-with the current release of Cygwin. It's really no different than the
-last version, except that this one builds, so the credit for it remains
-with Chandan and the other previous authors. 
+On Wednesday 08 June 2005 10:54 am, Blaisorblade wrote:
+> Yes, patch generation was "a bit" problematic, I met a nice bug in
+> combinediff from patchutils... anyhow I'll release (cleanly) -bs7 when I
+> get more time. I also updated the news page to track this.
 
-It's still based on an ancient version of UML (2.4.18-um20) and it panics
-on bootup (which is better than the binaries on the umlwin32 sourceforge
-page, which just do nothing for me), but it's at least a start. My plan was 
-to get something that built again with 2.4, and then move on to a modern 2.6 
-release and use the 2.4 patch as a reference for a starting point. 
+Where's the news page?
 
-I stuck my version of the diff here.
-
-http://www.cs.wisc.edu/~epaulson/umlwin32/
-
--Erik
+Rob
 
 
 -------------------------------------------------------
