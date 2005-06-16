@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dj2r2-0000zQ-Ar	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Jun 2005 15:28:56 -0700
+	id 1Dj2wg-0001Qy-R1	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2005 15:34:46 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Dj2r0-00053c-JO	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Jun 2005 15:28:56 -0700
+	id 1Dj2wf-0005sq-9j	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2005 15:34:46 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Recent patches of note
-Message-ID: <20050616222340.GF9792@ccure.user-mode-linux.org>
-References: <20050616160728.GA6040@ccure.user-mode-linux.org>
-	<200506162041.27013.blaisorblade@yahoo.it>
-	<42B1C787.6010402@fujitsu-siemens.com>
-	<200506162051.21441.blaisorblade@yahoo.it>
+Message-ID: <20050616221615.GE9792@ccure.user-mode-linux.org>
+References: <Pine.LNX.4.63.0506161543280.6638@sparrow>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200506162051.21441.blaisorblade@yahoo.it>
+In-Reply-To: <Pine.LNX.4.63.0506161543280.6638@sparrow>
+Subject: [uml-devel] Re: x86_64, TT mode, no tmpfs - steadily growing number
+	of threads
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,39 +28,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 16 Jun 2005 18:23:40 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Thu, 16 Jun 2005 18:16:15 -0400
+To: William Stearns <wstearns@pobox.com>
+Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Jun 16, 2005 at 08:51:20PM +0200, Blaisorblade wrote:
-> > And also it makes tt a bit more removable, if Jeff decides to.
-> Well, on this point I'd be cautious.
-> 
-> Currently there is no way to even test UML in SMP mode other than using TT 
-> mode, so at least this must be solved.
+On Thu, Jun 16, 2005 at 03:49:43PM -0400, William Stearns wrote:
+> Good afternoon, all,
+> 	With a FC2 x86_64 host with no skas patch (stock RH kernel) and no 
+> tmpfs, I find that a 2.6.6 uml vm (happens to be i386 slackware) keeps 
+> getting more and more pids out on the host.  By mounting /tmp as tmpfs, 
+> this effect goes away; the vm stays around 140 pids and doesn't appear 
+> to grow any further.
 
-Yeah, we need to provide SMP on skas.  That, and the performance of page fault
-handling were the only two things stopping me from removing tt mode in favor
-of skas0.
+From the usage of an x86 filesystem, I gather that this is the 2.6.4 UML
+that has the compatibility code in it.  No idea why it's leaking processes
+(nor am I too interested in figuring it out unless it's still happening :-).
 
-Bodo and have talked about this, and it seems that skas0 SMP is impractical
-because a malicious threaded app could interfere with the stub operation.
+> 	The reason why I didn't have tmpfs mounted on that host was that 
+> uml.ctl ends up there and for some reason I could not get networking to 
+> work on x86_64 when /tmp was mounted tmpfs.  By convincing uml_switch and 
+> the vm itself to use /var/tmp/uml_ctl, networking worked again.
 
-However, skas3 SMP is quite doable, and I think an unsafe skas0 SMP mode
-that you can enable with a switch might be OK, too.
-
-I've since decided that page fault performance is not a show-stopper.  It
-appears that tt mode is not supportable in recent libcs due to the errno
-problem. 
-
-We can get page fault performance back by pushing PTRACE_FAULTINFO into 
-mainline, which should have been done a long time ago.  Same for sysemu, 
-BTW.
-
-At this point, I'm -><- this close to deciding to get rid of tt mode in
-2.6.13 or 2.6.14.  I want skas0 in mainline early in 2.6.13 so it can
-be exercised.  Getting skas SMP fixed, and PTRACE_FAULTINFO in mainline
-would make me happy about trashing tt mode at some later point.
+You can specify the sockets you want uml_switch to use.  /tmp is just the
+default.
 
 				Jeff
 
