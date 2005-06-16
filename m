@@ -1,18 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dil9V-0006YH-Rt	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Jun 2005 20:34:49 -0700
-Received: from quack.cs.berkeley.edu ([128.32.132.234] helo=quack.quarl.org)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1Dil9U-0007fg-BY	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Jun 2005 20:34:49 -0700
-From: Karl Chen <quarl@cs.berkeley.edu>
-Message-ID: <quack.20050615T2034.878y1bx9d3@quack.cs.berkeley.edu>
-MIME-Version: 1.0
+	id 1Diwz0-00043S-So	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2005 09:12:46 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Diwz0-0007kd-9f	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2005 09:12:46 -0700
+Received: from ccure.user-mode-linux.org (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.11.2) with ESMTP id j5GFHCm01018
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 16 Jun 2005 11:17:13 -0400
+Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	j5GG7U5H006362	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 16 Jun 2005 12:07:30 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050616160728.GA6040@ccure.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [uml-devel] cr/nl tty settings for serial lines
+Content-Disposition: inline
+Subject: [uml-devel] Recent patches of note
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,19 +32,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 15 Jun 2005 20:34:48 -0700
-To: User-Mode-Linux Devel List <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 16 Jun 2005 12:07:28 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
+I'd like to call attention to some recent patches that may be of interest
+to people before they hit mainline.  These are all on my incremental patches
+page, http://user-mode-linux.sf.net/patches.html
 
-Hi, I'm connecting serial lines in the UML to file descriptors in
-the host to pipe information out of my UML.  I'd like to get data
-without carriage returns, but whatever stty settings I use, it
-translates nl to crnl.  Any ideas?  Would I have to use pty + stty
-on host input pty?  I'm kludging it s/\r\n/\n/g for now...
+First, sched-starve (http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.12-rc6-mm1/patches/sched-starve)
 
+This fixes a timer initialization botch which resulted in soft lockup
+warnings in recent kernels, total non-responsiveness (i.e. nothing
+else would be scheduled) under any workload which avoided idling the
+kernel, and may be responsible for the load average >= 1 problem.
 
--- 
-Karl 2005-06-15 20:27
+I don't see that last here for some reason, so I'd like some
+confirmation (or not) that this patch fixes that.
+
+Second, I implemented soft interrupts, which reimplements interrupt
+enabling and disabling with a flag rather than with sigprocmask.  This
+cuts down hugely on the number of system calls that UML makes,
+resulting in a very noticable performance increase.  This patch, plus
+the other system call reducing patches which immediately follow it,
+speed up my kernel builds by 20-25%.  By far the largest piece of this
+is softints, although skas-no-flush-kernel also is noticable.
+
+I'd like people to check out softints, at least, and report any
+problems.  It's running fine here, but interrupt handling is a
+sensitive area, so I'd like to know people are running it without
+problems before pushing it to mainline.
+
+				Jeff
 
 
 -------------------------------------------------------
