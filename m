@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DiyOr-0001Og-RT	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Jun 2005 10:43:33 -0700
-Received: from zrtps0kn.nortelnetworks.com ([47.140.192.55])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DiyOq-0007Hm-Cn	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Jun 2005 10:43:33 -0700
-Received: from zrtpd0jn.us.nortel.com (zrtpd0jn.us.nortel.com [47.140.202.35])
-	id j5GHhMm12243	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 16 Jun 2005 13:43:22 -0400 (EDT)
-Message-ID: <29D15BBCA340DA4D8146D38B4924FC7A1050A9@zcarhxm0.corp.nortel.com>
-From: "Majid Salame" <msalame@nortel.com>
+	id 1Diz99-000436-Tq	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2005 11:31:23 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1Diz98-00023f-DA	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2005 11:31:23 -0700
+Message-ID: <42B1C572.5070705@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C5729A.DFCE5242"
-Subject: [uml-devel] UML patch for red hat entreprise 3.0
+Subject: Re: [uml-devel] Recent patches of note
+References: <20050616160728.GA6040@ccure.user-mode-linux.org>
+	<20050616174735.GB7532@ccure.user-mode-linux.org>
+	<42B1BD11.7050806@fujitsu-siemens.com>
+	<200506162009.35357.blaisorblade@yahoo.it>
+In-Reply-To: <200506162009.35357.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,42 +30,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 16 Jun 2005 13:43:15 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 16 Jun 2005 20:31:14 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Blaisorblade wrote:
+> arch_switch already exists (wasn't used for SKAS). About improving it and 
+> making it more "general-purpose" (I've written this for the TLS code needs), 
+> could you have a look to the attached patches? do_fork-* is another thing (a 
+> cleanup discussed some time ago with Jeff) but may be needed to apply the 
+> second.
+Wouldn't it be better to have separate arch_switch_tt and arch_switch_skas?
+I think, arch_switch has to do different things for tt and skas (and maybe even
+for skas0 and skas3)
 
-------_=_NextPart_001_01C5729A.DFCE5242
-Content-Type: text/plain
-
-
-Does anyone have a patch for red hat enterprise 3.0?
-
-Majid.
-
-------_=_NextPart_001_01C5729A.DFCE5242
-Content-Type: text/html
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-<META NAME="Generator" CONTENT="MS Exchange Server version 5.5.2658.2">
-<TITLE> UML patch for red hat entreprise 3.0</TITLE>
-</HEAD>
-<BODY>
-<BR>
-
-<P><FONT SIZE=2>Does anyone have a patch for red hat enterprise 3.0?</FONT>
-</P>
-
-<P><FONT SIZE=2>Majid.</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C5729A.DFCE5242--
+	Bodo
 
 
 -------------------------------------------------------
