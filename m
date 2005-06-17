@@ -2,24 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DjCqc-0001sy-2e	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Jun 2005 02:09:10 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DjCqa-0006Qc-G1	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Jun 2005 02:09:10 -0700
-Message-ID: <42B29330.6050006@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
+	id 1DjLsO-0008OY-Ee	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Jun 2005 11:47:36 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DjLsJ-0002c7-PJ	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Jun 2005 11:47:36 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Recent patches of note
 References: <20050616160728.GA6040@ccure.user-mode-linux.org>
-	<200506162041.27013.blaisorblade@yahoo.it>
-	<42B1C787.6010402@fujitsu-siemens.com>
-	<200506162051.21441.blaisorblade@yahoo.it>
-	<20050616222340.GF9792@ccure.user-mode-linux.org>
-In-Reply-To: <20050616222340.GF9792@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	<200506162009.35357.blaisorblade@yahoo.it>
+	<20050617003516.GA12344@ccure.user-mode-linux.org>
+In-Reply-To: <20050617003516.GA12344@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200506172040.20564.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,49 +31,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Jun 2005 11:09:04 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 17 Jun 2005 20:40:20 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Jeff Dike wrote:
-> On Thu, Jun 16, 2005 at 08:51:20PM +0200, Blaisorblade wrote:
-> 
->>>And also it makes tt a bit more removable, if Jeff decides to.
->>
->>Well, on this point I'd be cautious.
->>
->>Currently there is no way to even test UML in SMP mode other than using TT 
->>mode, so at least this must be solved.
-> 
-> 
-> Yeah, we need to provide SMP on skas.  That, and the performance of page fault
-> handling were the only two things stopping me from removing tt mode in favor
-> of skas0.
-> 
-> Bodo and have talked about this, and it seems that skas0 SMP is impractical
-> because a malicious threaded app could interfere with the stub operation.
-> 
-> However, skas3 SMP is quite doable, and I think an unsafe skas0 SMP mode
-> that you can enable with a switch might be OK, too.
-> 
-> I've since decided that page fault performance is not a show-stopper.  It
-> appears that tt mode is not supportable in recent libcs due to the errno
-> problem. 
-> 
-> We can get page fault performance back by pushing PTRACE_FAULTINFO into 
-> mainline, which should have been done a long time ago.  Same for sysemu, 
-> BTW.
-> 
-> At this point, I'm -><- this close to deciding to get rid of tt mode in
-> 2.6.13 or 2.6.14.  I want skas0 in mainline early in 2.6.13 so it can
-> be exercised.  Getting skas SMP fixed, and PTRACE_FAULTINFO in mainline
-> would make me happy about trashing tt mode at some later point.
-> 
-> 				Jeff
-To make skas3 consistent, we should have a mainline version of add-stub-vmas.
-Also, the LDT-changes should go in at the same time.
+On Friday 17 June 2005 02:35, Jeff Dike wrote:
+> On Thu, Jun 16, 2005 at 08:09:34PM +0200, Blaisorblade wrote:
+> > +struct task_struct;
+> > +extern void arch_switch(struct task_struct *from, struct task_struct
+> > *to);
 
-	Bodo
+> Is the task_struct; needed, considering that there is get_task returning
+> one a few lines higher?
+I've not checked the rest of the header; if it compiles without the line it's 
+ok.
+> > +	/* XXX: This is bogus, it's already done in local_irq_enable. Or does
+> > +	 * ordering matters? */
+>
+> No, my signal handler initialization is confused and redundant in places.
+> Just fix that and resend.
+>
+> > Fix the do_fork calling convention: normal arch pass the regs and the new
+> > sp value to do_fork instead of NULL.
+> >
+> > Currently the arch-independent code ignores these values, while the UML
+> > code (actually it's copy_thread) gets the right values by itself.
+> >
+> > With this patch, things are fixed up.
+> >
+> > Low-priority.
+>
+> But long-overdue.  This one is applied.
+Please retest in all configurations, the first version did an innocent change 
+to kernel_thread() which killed TT mode. And I did a change to switch_to(), 
+replacing prev_sched with current->thread.prev_sched (or something like that) 
+after the last testing (if I understood things properly, it won't change 
+anything, but give it a bit of testing; it should fail loudly if I did 
+something wrong).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
