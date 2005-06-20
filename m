@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkTKo-0005f2-FD	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 13:57:34 -0700
+	id 1DkTiX-0008Ur-AD	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 14:22:05 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DkTKm-0005Ok-V6	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 13:57:34 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DkTiS-0001bx-Sh	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 14:22:05 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Recent patches of note
-Message-ID: <20050620201107.GA9641@ccure.user-mode-linux.org>
-References: <s2b6982e.048@ORANGE.OUS.EDU>
+Subject: Re: [uml-devel] Entropy on boot
+Message-ID: <20050620211638.GB10675@ccure.user-mode-linux.org>
+References: <20050620202549.A6907@sphinx.mythic-beasts.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s2b6982e.048@ORANGE.OUS.EDU>
+In-Reply-To: <20050620202549.A6907@sphinx.mythic-beasts.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,22 +27,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Jun 2005 16:11:07 -0400
-To: Anthony Brock <Anthony_Brock@ous.edu>
-Cc: user-mode-linux-devel@lists.sourceforge.net, wstearns@pobox.com
+Date: Mon, 20 Jun 2005 17:16:38 -0400
+To: Paul Warren <pdw@ex-parrot.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Jun 20, 2005 at 10:19:12AM -0700, Anthony Brock wrote:
-> Strange. This option doesn't seem to be available. I'm seeing the following in my .config file:
+On Mon, Jun 20, 2005 at 08:25:49PM +0100, Paul Warren wrote:
+> We've recently prepared a filesystem image for the latest Debian
+> distribution, and hit a problem with it hanging on starting Apache2.  We
+> traced this to a lack of entropy to feed /dev/random, causing the
+> Apache's startssl to block.
+> 
+> Chris Lightfoot has developed this patch to feed the guest's entropy
+> pool with data read from the host's /dev/random on boot:
+> 
+> 	http://mythic-beasts.com/uml/random-seed.patch
+> 
+> Paul
 
-> # Hardware I/O ports
-> #
-> # CONFIG_SERIO is not set
-
-It would have been here if you didn't have CONFIG_SERIO disabled.  So that's 
-not your problem.
-
-What might be your problem is that the softints patch had a bug which broke
-signal handling on x86_64.  Pull the current patchset and try that.
+Are you using UML's hwrng driver?  Did it not help?
 
 				Jeff
 
