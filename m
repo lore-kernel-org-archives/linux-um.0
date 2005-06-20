@@ -2,21 +2,28 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkNM6-0005Mk-C2	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 07:34:30 -0700
-Received: from mailgate2.dslextreme.com ([66.51.199.95])
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DkNM6-0001Yr-0r	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 07:34:30 -0700
-Received: from www.dslextreme.com (unknown [192.168.7.122])
-	by mailgate2.dslextreme.com (Postfix) with SMTP id CDF533A659E
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 20 Jun 2005 06:35:28 -0700 (PDT)
-Message-ID: <7920a17820a19800a14b80a.20050620073424.pbqrznpuvar@www.dslextreme.com>
-From: codemachine@dslextreme.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Subject: [uml-devel] problem booting uml without xterms
+	id 1DkNV3-00066w-H4	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 07:43:45 -0700
+Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DkNV1-0003Vl-5R
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 07:43:45 -0700
+Received: from sphinx.mythic-beasts.com ([212.69.37.6])
+	by externalmx-1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41)	id 1DkNUx-0005XA-Nn
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 07:43:40 -0700
+From: Paul Warren <pdw@ex-parrot.com>
+Subject: Re: [uml-devel] problem booting uml without xterms
+Message-ID: <20050620154329.F19306@sphinx.mythic-beasts.com>
+References: <7920a17820a19800a14b80a.20050620073424.pbqrznpuvar@www.dslextreme.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: 
+	<7920a17820a19800a14b80a.20050620073424.pbqrznpuvar@www.dslextreme.com>; from
+	codemachine@dslextreme.com on Mon, Jun 20, 2005 at 07:34:24AM -0700
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,41 +35,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Jun 2005 07:34:24 -0700 (PDT)
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 20 Jun 2005 15:43:29 +0100
+To: codemachine@dslextreme.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Mon, Jun 20, 2005 at 07:34:24AM -0700, codemachine@dslextreme.com wrote:
+> I'm trying to  boot uml on a server, and I don't want to have to have X
+> installed to do it, so I want to boot without the xterm consoles.
+> 
+> For the life if me I can't figure out the right con=* command line params
+> and/or get them to work per:
 
+We use:
 
-Hi,
+con=null con0=fd:0,fd:1
 
-I'm trying to  boot uml on a server, and I don't want to have to have X
-installed to do it, so I want to boot without the xterm consoles.
+but you'll need to tweak your root image so that:
 
-For the life if me I can't figure out the right con=3D* command line params
-and/or get them to work per:
-http://user-mode-linux.sourceforge.net/input.html
+1. inittab brings up a getty on tty0
+2. tty0 is listed in /etc/securetty.
 
-I've spent about 4 hours trying every possible combination i think ;/
+This is probably one for the user list, BTW.
 
-I don't care if uml's available via tty pty or whatever, I think my
-preference would be to attach via a screen. So long as I don't have to
-have X to load it i'm happy.
-
-Could someone perhaps provide a current working example?
-
-If it matters, my host is ubuntu with 2.6.12-rc4-skas3-v9-pre4, the uml is
-gentoo I built 2.6.11-gentoo-r11, I'm not using devfs.
-
-thanks!
-Calin
+Paul
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_idt77&alloc_id=16492&op=CCk
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
