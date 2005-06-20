@@ -2,28 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkNV3-00066w-H4	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 07:43:45 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DkNV1-0003Vl-5R
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 07:43:45 -0700
-Received: from sphinx.mythic-beasts.com ([212.69.37.6])
-	by externalmx-1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1DkNUx-0005XA-Nn
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 07:43:40 -0700
-From: Paul Warren <pdw@ex-parrot.com>
-Subject: Re: [uml-devel] problem booting uml without xterms
-Message-ID: <20050620154329.F19306@sphinx.mythic-beasts.com>
-References: <7920a17820a19800a14b80a.20050620073424.pbqrznpuvar@www.dslextreme.com>
+	id 1DkNiS-0006zD-Co	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 07:57:36 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DkNiR-0006De-Qz	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 07:57:36 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Recent patches of note
+Message-ID: <20050620144747.GA5530@ccure.user-mode-linux.org>
+References: <s2b1a1ed.010@ORANGE.OUS.EDU>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: 
-	<7920a17820a19800a14b80a.20050620073424.pbqrznpuvar@www.dslextreme.com>; from
-	codemachine@dslextreme.com on Mon, Jun 20, 2005 at 07:34:24AM -0700
+In-Reply-To: <s2b1a1ed.010@ORANGE.OUS.EDU>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,29 +27,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Jun 2005 15:43:29 +0100
-To: codemachine@dslextreme.com
+Date: Mon, 20 Jun 2005 10:47:47 -0400
+To: Anthony Brock <Anthony_Brock@ous.edu>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Jun 20, 2005 at 07:34:24AM -0700, codemachine@dslextreme.com wrote:
-> I'm trying to  boot uml on a server, and I don't want to have to have X
-> installed to do it, so I want to boot without the xterm consoles.
-> 
-> For the life if me I can't figure out the right con=* command line params
-> and/or get them to work per:
+On Thu, Jun 16, 2005 at 03:59:24PM -0700, Anthony Brock wrote:
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x080b86d0 in __vmalloc_area (area=0xbd15be0, gfp_mask=210, prot={pgprot = 0}) at string.h:363
 
-We use:
+Segfaults in vmalloc are completely normal.  They are just page faults.
 
-con=null con0=fd:0,fd:1
+> BUG: soft lockup detected on CPU#0!
 
-but you'll need to tweak your root image so that:
+The soft lockups should be fixed by the sched-starve patch.  This one is
+likely caused by you sitting in the debugger.
 
-1. inittab brings up a getty on tty0
-2. tty0 is listed in /etc/securetty.
+If you do see any that don't involve gdb, and you have sched-starve applied,
+let me know.
 
-This is probably one for the user list, BTW.
-
-Paul
+				Jeff
 
 
 -------------------------------------------------------
