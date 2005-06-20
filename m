@@ -2,27 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkRuC-0004IW-3x	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 12:26:00 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DkRu9-0005zK-Gf
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 12:25:59 -0700
-Received: from sphinx.mythic-beasts.com ([212.69.37.6])
-	by externalmx-1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1DkRu6-0005jH-Fw
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 12:25:57 -0700
-Received: from pdw by sphinx.mythic-beasts.com with local (Exim 4.51)
-	id 1DkRu1-000341-Uz	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 20:25:49 +0100
-From: Paul Warren <pdw@ex-parrot.com>
-Message-ID: <20050620202549.A6907@sphinx.mythic-beasts.com>
+	id 1DkTKo-0005f2-FD	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 13:57:34 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DkTKm-0005Ok-V6	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 13:57:34 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Recent patches of note
+Message-ID: <20050620201107.GA9641@ccure.user-mode-linux.org>
+References: <s2b6982e.048@ORANGE.OUS.EDU>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] Entropy on boot
+In-Reply-To: <s2b6982e.048@ORANGE.OUS.EDU>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,20 +27,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Jun 2005 20:25:49 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 20 Jun 2005 16:11:07 -0400
+To: Anthony Brock <Anthony_Brock@ous.edu>
+Cc: user-mode-linux-devel@lists.sourceforge.net, wstearns@pobox.com
 
-We've recently prepared a filesystem image for the latest Debian
-distribution, and hit a problem with it hanging on starting Apache2.  We
-traced this to a lack of entropy to feed /dev/random, causing the
-Apache's startssl to block.
+On Mon, Jun 20, 2005 at 10:19:12AM -0700, Anthony Brock wrote:
+> Strange. This option doesn't seem to be available. I'm seeing the following in my .config file:
 
-Chris Lightfoot has developed this patch to feed the guest's entropy
-pool with data read from the host's /dev/random on boot:
+> # Hardware I/O ports
+> #
+> # CONFIG_SERIO is not set
 
-	http://mythic-beasts.com/uml/random-seed.patch
+It would have been here if you didn't have CONFIG_SERIO disabled.  So that's 
+not your problem.
 
-Paul
+What might be your problem is that the softints patch had a bug which broke
+signal handling on x86_64.  Pull the current patchset and try that.
+
+				Jeff
 
 
 -------------------------------------------------------
