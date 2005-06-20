@@ -1,18 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkRSy-0000xm-TU	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 11:57:52 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DkRSy-0007cy-CU	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 11:57:52 -0700
-Message-Id: <200506201851.j5KIpBBc008473@ccure.user-mode-linux.org>
+	id 1DkRuC-0004IW-3x	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 12:26:00 -0700
+Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DkRu9-0005zK-Gf
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 12:25:59 -0700
+Received: from sphinx.mythic-beasts.com ([212.69.37.6])
+	by externalmx-1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41)	id 1DkRu6-0005jH-Fw
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 12:25:57 -0700
+Received: from pdw by sphinx.mythic-beasts.com with local (Exim 4.51)
+	id 1DkRu1-000341-Uz	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 20:25:49 +0100
+From: Paul Warren <pdw@ex-parrot.com>
+Message-ID: <20050620202549.A6907@sphinx.mythic-beasts.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/8] UML - Fix sizeof usage
+Content-Disposition: inline
+Subject: [uml-devel] Entropy on boot
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,33 +34,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Jun 2005 14:51:11 -0400
-To: akpm@osdl.org, torvalds@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, domen@coderock.org
+Date: Mon, 20 Jun 2005 20:25:49 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-From: Domen Puncer <domen@coderock.org>
-Subject: [KJ] [patch] um: copy_from_user size fix in signal.c
+We've recently prepared a filesystem image for the latest Debian
+distribution, and hit a problem with it hanging on starting Apache2.  We
+traced this to a lack of entropy to feed /dev/random, causing the
+Apache's startssl to block.
 
-Size of pointer doesn't seem right, but maybe my solution isn't
-either (sig_size maybe?).
+Chris Lightfoot has developed this patch to feed the guest's entropy
+pool with data read from the host's /dev/random on boot:
 
-Signed-off-by: Domen Puncer <domen@coderock.org>
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+	http://mythic-beasts.com/uml/random-seed.patch
 
-Index: linux-2.6.12/arch/um/sys-i386/signal.c
-===================================================================
---- linux-2.6.12.orig/arch/um/sys-i386/signal.c	2005-06-20 11:54:53.000000000 -0400
-+++ linux-2.6.12/arch/um/sys-i386/signal.c	2005-06-20 11:55:47.000000000 -0400
-@@ -312,7 +312,7 @@ long sys_sigreturn(struct pt_regs regs)
- 	unsigned long __user *extramask = frame->extramask;
- 	int sig_size = (_NSIG_WORDS - 1) * sizeof(unsigned long);
- 
--	if(copy_from_user(&set.sig[0], oldmask, sizeof(&set.sig[0])) ||
-+	if(copy_from_user(&set.sig[0], oldmask, sizeof(set.sig[0])) ||
- 	   copy_from_user(&set.sig[1], extramask, sig_size))
- 		goto segfault;
- 
-
+Paul
 
 
 -------------------------------------------------------
