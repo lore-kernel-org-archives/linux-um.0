@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkVC9-0006mU-8y	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 15:56:45 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DkVC4-0006Ys-IO	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 15:56:45 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 6/8] UML - Kill some useless vmalloc tlb
-	flushing
-References: <200506201851.j5KIpKPr008499@ccure.user-mode-linux.org>
-In-Reply-To: <200506201851.j5KIpKPr008499@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 1DkVjA-0000kC-9X	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 16:30:52 -0700
+Received: from coderock.org
+	([193.77.147.115] helo=trashy.coderock.org ident=postfix)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DkVj9-0003mv-Nj	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 16:30:52 -0700
+From: Domen Puncer <domen@coderock.org>
+Subject: Re: [uml-devel] [patch 1/1] um: copy_from_user size fix in signal.c
+Message-ID: <20050620233041.GG3906@nd47.coderock.org>
+References: <20050620215041.767887000@nd47.coderock.org>
+	<200506210038.23729.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200506210101.17338.blaisorblade@yahoo.it>
+In-Reply-To: <200506210038.23729.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,80 +29,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 21 Jun 2005 01:01:16 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, torvalds@osdl.org, linux-kernel@vger.kernel.org
+Date: Tue, 21 Jun 2005 01:30:41 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
-On Monday 20 June 2005 20:51, Jeff Dike wrote:
-> There is absolutely no reason to flush the kernel's VM area during a
-> tlb_flush_mm.
->
-> This results in a noticable performance increase in the kernel build
-> benchmark.
-Andrew: hold off this one, definitely.
+On 21/06/05 00:38 +0200, Blaisorblade wrote:
+> On Monday 20 June 2005 23:50, domen@coderock.org wrote:
+> > From: Domen Puncer <domen@coderock.org>
+> >
+> >
+> > Size of pointer doesn't seem right, but maybe my solution isn't
+> > either (sig_size maybe?).
+> Your patch had already been submitted by Jeff a couple of hours before this 
+> mail. Thanks!
 
-Jeff: Have you verified this with both modules enabled and iptables (a vmalloc 
-user) compiled modularly? Maybe even non-modular iptables will trigger the 
-bug but let's go for sure.
+And a put it in my dontsend file; another bug to be killed, i guess.
+Sorry for the noise!
 
-This situation killed a conceptually similar patch in 2.4.24-2um (which did 
-apply until 2.6.11):
-
-diff -puN arch/um/kernel/skas/tlb.c~optimization-unstable 
-arch/um/kernel/skas/tlb.c
---- UmWorklinux-2.4.24/arch/um/kernel/skas/tlb.c~optimization-unstable  
-2004-07-02 13:45:07.057643968 +0200
-+++ UmWorklinux-2.4.24-paolo/arch/um/kernel/skas/tlb.c  2004-07-02 
-13:45:14.098573584 +0200
-@@ -132,7 +132,9 @@ void flush_tlb_range_skas(struct mm_stru
-
- void flush_tlb_mm_skas(struct mm_struct *mm)
- {
-+#if 0
-        flush_tlb_kernel_vm_skas();
-+#endif
-        fix_range(mm, 0, host_task_size, 0);
- }
-
-Given that:
-
-void flush_tlb_kernel_vm_skas(void)
-{
-        flush_tlb_kernel_range_skas(start_vm, end_vm);
-}
-
-and flush_tlb_kernel_range_skas was renamed to _common, I argue that this 
-patch is exactly the same one and will have the same bad effect.
-
-> Signed-off-by: Jeff Dike <jdike@addtoit.com>
->
-> Index: linux-2.6.12/arch/um/kernel/skas/tlb.c
-> ===================================================================
-> --- linux-2.6.12.orig/arch/um/kernel/skas/tlb.c	2005-06-20
-> 11:54:56.000000000 -0400 +++
-> linux-2.6.12/arch/um/kernel/skas/tlb.c	2005-06-20 12:11:00.000000000 -0400
-> @@ -76,7 +76,6 @@ void flush_tlb_mm_skas(struct mm_struct
->                  return;
->
->          fix_range(mm, 0, host_task_size, 0);
-> -        flush_tlb_kernel_range_common(start_vm, end_vm);
->  }
->
->  void force_flush_all_skas(void)
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+> > Signed-off-by: Domen Puncer <domen@coderock.org>
+> >
+> > ---
+> >  signal.c |    2 +-
+> >  1 files changed, 1 insertion(+), 1 deletion(-)
+> >
+> > Index: quilt/arch/um/sys-i386/signal.c
 
 
 -------------------------------------------------------
