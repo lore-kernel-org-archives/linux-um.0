@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkRSn-0000uc-7M	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 11:57:41 -0700
+	id 1DkRSy-0000xm-TU	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 11:57:52 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
 	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DkRSl-0007Zn-GR	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 11:57:40 -0700
-Message-Id: <200506201851.j5KIpDav008478@ccure.user-mode-linux.org>
+	id 1DkRSy-0007cy-CU	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 11:57:52 -0700
+Message-Id: <200506201851.j5KIpBBc008473@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/8] UML - kfree cleanup
+Subject: [uml-devel] [PATCH 1/8] UML - Fix sizeof usage
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,33 +24,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Jun 2005 14:51:13 -0400
+Date: Mon, 20 Jun 2005 14:51:11 -0400
 To: akpm@osdl.org, torvalds@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, juhl-lkml@dif.dk
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, domen@coderock.org
 
-Here's a small patch to remove a few unnessesary NULL pointer checks
-before kfree() in arch/um/drivers/daemon_user.c
+From: Domen Puncer <domen@coderock.org>
+Subject: [KJ] [patch] um: copy_from_user size fix in signal.c
 
-Signed-off-by: Jesper Juhl <juhl-lkml@dif.dk>
+Size of pointer doesn't seem right, but maybe my solution isn't
+either (sig_size maybe?).
+
+Signed-off-by: Domen Puncer <domen@coderock.org>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12/arch/um/drivers/daemon_user.c
+Index: linux-2.6.12/arch/um/sys-i386/signal.c
 ===================================================================
---- linux-2.6.12.orig/arch/um/drivers/daemon_user.c	2005-06-19 21:11:24.000000000 -0400
-+++ linux-2.6.12/arch/um/drivers/daemon_user.c	2005-06-19 21:35:38.000000000 -0400
-@@ -157,9 +157,9 @@ static void daemon_remove(void *data)
+--- linux-2.6.12.orig/arch/um/sys-i386/signal.c	2005-06-20 11:54:53.000000000 -0400
++++ linux-2.6.12/arch/um/sys-i386/signal.c	2005-06-20 11:55:47.000000000 -0400
+@@ -312,7 +312,7 @@ long sys_sigreturn(struct pt_regs regs)
+ 	unsigned long __user *extramask = frame->extramask;
+ 	int sig_size = (_NSIG_WORDS - 1) * sizeof(unsigned long);
  
- 	os_close_file(pri->fd);
- 	os_close_file(pri->control);
--	if(pri->data_addr != NULL) kfree(pri->data_addr);
--	if(pri->ctl_addr != NULL) kfree(pri->ctl_addr);
--	if(pri->local_addr != NULL) kfree(pri->local_addr);
-+	kfree(pri->data_addr);
-+	kfree(pri->ctl_addr);
-+	kfree(pri->local_addr);
- }
+-	if(copy_from_user(&set.sig[0], oldmask, sizeof(&set.sig[0])) ||
++	if(copy_from_user(&set.sig[0], oldmask, sizeof(set.sig[0])) ||
+ 	   copy_from_user(&set.sig[1], extramask, sig_size))
+ 		goto segfault;
  
- int daemon_user_write(int fd, void *buf, int len, struct daemon_data *pri)
 
 
 
