@@ -1,22 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkWm5-0005qx-GE	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 17:37:57 -0700
-Received: from mail.simonsenconsulting.com ([66.81.238.163]
-	helo=main.srihosting.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DkWm4-00061X-6E
+	id 1DkXli-00033j-Lk	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 18:41:38 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DkXlf-0001zP-Qm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 17:37:57 -0700
-Message-ID: <33534.69.239.18.89.1119314275.squirrel@69.239.18.89>
-From: "Matt Simonsen" <matt@mattsimonsen.com>
-Reply-To: matt@mattsimonsen.com
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: [uml-devel] loadavg at 1.00 when 0.00 is "correct' load
+	Mon, 20 Jun 2005 18:41:38 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050621013522.678D355FCD@zion.home.lan>
+Subject: [uml-devel] [patch 1/1] uml: add profile_pc for i386
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,29 +23,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Jun 2005 17:37:55 -0700 (PDT)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 21 Jun 2005 03:35:21 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-Hello all,
 
-I am running
+Cope with a conditional i386 definition, which is wrong for UML. Before we
+just used that one, but it wasn't defined for CONFIG_SMP, so in that case we
+got link errors.
 
-2.6.11-skas3-v8-rc2
-2.6.12 and bs4 guest kernels
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-I see a load in the UML client of 1.00, that should be 0.00. I saw several
-posts from early May. If any of you have found the solution to this, I
-would greatly appreciate any pointers.
+ linux-2.6.git-paolo/include/asm-um/ptrace-i386.h |    4 ++++
+ 1 files changed, 4 insertions(+)
 
-This process is the key... it's always running:
-
-2 ?        RWN    0:00 [ksoftirqd/0]
-
-If this is still an issue, I would be happy to help report on kernels or
-do testing.
-
-Matt Simonsen
-
+diff -puN include/asm-um/ptrace-i386.h~uml-add-profile-pc-i386 include/asm-um/ptrace-i386.h
+--- linux-2.6.git/include/asm-um/ptrace-i386.h~uml-add-profile-pc-i386	2005-06-07 18:57:00.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/ptrace-i386.h	2005-06-07 18:59:26.000000000 +0200
+@@ -32,6 +32,10 @@
+ #define PT_REGS_SYSCALL_RET(r) PT_REGS_EAX(r)
+ #define PT_FIX_EXEC_STACK(sp) do ; while(0)
+ 
++/* Cope with a conditional i386 definition. */
++#undef profile_pc
++#define profile_pc(regs) PT_REGS_IP(regs)
++
+ #define user_mode(r) UPT_IS_USER(&(r)->regs)
+ 
+ #endif
+_
 
 
 -------------------------------------------------------
