@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DkVjA-0000kC-9X	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 16:30:52 -0700
-Received: from coderock.org
-	([193.77.147.115] helo=trashy.coderock.org ident=postfix)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DkVj9-0003mv-Nj	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Jun 2005 16:30:52 -0700
-From: Domen Puncer <domen@coderock.org>
-Subject: Re: [uml-devel] [patch 1/1] um: copy_from_user size fix in signal.c
-Message-ID: <20050620233041.GG3906@nd47.coderock.org>
-References: <20050620215041.767887000@nd47.coderock.org>
-	<200506210038.23729.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200506210038.23729.blaisorblade@yahoo.it>
+	id 1DkWm5-0005qx-GE	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 17:37:57 -0700
+Received: from mail.simonsenconsulting.com ([66.81.238.163]
+	helo=main.srihosting.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
+	(Exim 4.41)	id 1DkWm4-00061X-6E
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Jun 2005 17:37:57 -0700
+Message-ID: <33534.69.239.18.89.1119314275.squirrel@69.239.18.89>
+From: "Matt Simonsen" <matt@mattsimonsen.com>
+Reply-To: matt@mattsimonsen.com
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: [uml-devel] loadavg at 1.00 when 0.00 is "correct' load
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,30 +28,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 21 Jun 2005 01:30:41 +0200
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
+Date: Mon, 20 Jun 2005 17:37:55 -0700 (PDT)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On 21/06/05 00:38 +0200, Blaisorblade wrote:
-> On Monday 20 June 2005 23:50, domen@coderock.org wrote:
-> > From: Domen Puncer <domen@coderock.org>
-> >
-> >
-> > Size of pointer doesn't seem right, but maybe my solution isn't
-> > either (sig_size maybe?).
-> Your patch had already been submitted by Jeff a couple of hours before this 
-> mail. Thanks!
+Hello all,
 
-And a put it in my dontsend file; another bug to be killed, i guess.
-Sorry for the noise!
+I am running
 
-> > Signed-off-by: Domen Puncer <domen@coderock.org>
-> >
-> > ---
-> >  signal.c |    2 +-
-> >  1 files changed, 1 insertion(+), 1 deletion(-)
-> >
-> > Index: quilt/arch/um/sys-i386/signal.c
+2.6.11-skas3-v8-rc2
+2.6.12 and bs4 guest kernels
+
+I see a load in the UML client of 1.00, that should be 0.00. I saw several
+posts from early May. If any of you have found the solution to this, I
+would greatly appreciate any pointers.
+
+This process is the key... it's always running:
+
+2 ?        RWN    0:00 [ksoftirqd/0]
+
+If this is still an issue, I would be happy to help report on kernels or
+do testing.
+
+Matt Simonsen
+
 
 
 -------------------------------------------------------
