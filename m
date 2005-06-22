@@ -1,32 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dkqzp-0002Mx-Lm	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Jun 2005 15:13:29 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1Dkqzn-0006rZ-UK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Jun 2005 15:13:29 -0700
-Received: from sphinx.mythic-beasts.com ([212.69.37.6])
-	by externalmx-1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1Dkqzk-00042I-On
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Jun 2005 15:13:27 -0700
-From: Paul Warren <pdw@ex-parrot.com>
-Subject: Re: [uml-devel] Entropy on boot
-Message-ID: <20050621231322.A10809@sphinx.mythic-beasts.com>
-References: <20050620202549.A6907@sphinx.mythic-beasts.com>
-	<20050620211638.GB10675@ccure.user-mode-linux.org>
-	<20050621195047.B14716@sphinx.mythic-beasts.com>
-	<20050621210236.GA30220@ccure.user-mode-linux.org>
-	<KtYwDh/N3TrS.sWA8tvTfm+hGkj7X7pkSEw@sphinx.mythic-beasts.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <KtYwDh/N3TrS.sWA8tvTfm+hGkj7X7pkSEw@sphinx.mythic-beasts.com>;
-	from chris@ex-parrot.com on Tue, Jun 21, 2005 at 10:19:08PM +0100
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Subject: FC4/i386 and FC3/x86_64, was Re: [uml-devel] Fedora core 3 root
+ filesystem available
+In-Reply-To: <Pine.LNX.4.62.0506051331590.7040@sparrow>
+Message-ID: <Pine.LNX.4.63.0506220104280.7206@sparrow>
+References: <Pine.LNX.4.62.0506051331590.7040@sparrow>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,31 +19,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 21 Jun 2005 23:13:22 +0100
-To: Chris Lightfoot <chris@ex-parrot.com>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 22 Jun 2005 14:04:50 -0400 (EDT)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, ML-uml-user <User-mode-linux-user@lists.sourceforge.net>, David Coulson <david@davidcoulson.net>
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Tue, Jun 21, 2005 at 10:19:08PM +0100, Chris Lightfoot wrote:
-> On Tue, Jun 21, 2005 at 05:02:36PM -0400, Jeff Dike wrote:
-> > That would never make it anywhere near mainline, so you would have a
-> > choice of dumping that into every UML pool you build or fixing your
-> > filesystems to use the rngtools.
-> 
-> Yeah -- it comes down to how often you build new
-> distributions vs how often you build new kernels. Oh, and
-> whether you anticipate tech support load from people who
-> disable the hwrng userland tools and then discover that
-> their virtual machine hangs on boot.
+Good morning, all,
+ 	I have a fedora core 4/i386 filesystem available at 
+http://www.stearns.org/uml-root/ , with some brief install notes at 
+http://www.stearns.org/uml-root/root_fs.fc-4-base.pristine.20050622.note . 
+I haven't booted it yet, but it seemed fine with chroot.
+ 	The filesystem deliberately has a relatively small number of 
+installed packages.  You can install additional packages with rpm or yum.
 
-Quite - supporting kernel patches is much easier than O/S changes.  This
-is why we now enforce cad = halt by disabling reboot functionality in
-the kernel, rather than maintaining a change to /etc/inittab.
+ 	Also, as I don't think I announced it, there's an fc4/x86_64 root 
+filesystem in the same place.
 
-I admit that a proper pass-through drive for /dev/random might be a
-nicer solution, but for us, hwrng is not.
+ 	Dave, would you be so kind as to announce these three filesystems 
+on www.usermodelinux.org?  Thanks in advance...
+ 	Cheers,
+ 	- Bill
 
-Paul
-
+---------------------------------------------------------------------------
+         "Quote of the day: '"
+(Courtesy of Martin Mares <mj@suse.cz>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
