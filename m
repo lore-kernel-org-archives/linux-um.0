@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DlPzA-0003Dv-Ls	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Jun 2005 04:35:08 -0700
-Received: from mailgate1.dslextreme.com ([66.51.199.94])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DlPz8-0002v2-3P	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Jun 2005 04:35:08 -0700
-Message-ID: <208a0a2ca0a15620a725a0a.20050623043456.pbqrznpuvar@www.dslextreme.com>
-In-Reply-To: <20050620154329.F19306@sphinx.mythic-beasts.com>
-References: 
-    <7920a17820a19800a14b80a.20050620073424.pbqrznpuvar@www.dslextreme.com>
-    <20050620154329.F19306@sphinx.mythic-beasts.com>
-Subject: Re: [uml-devel] problem booting uml without xterms
-From: codemachine@dslextreme.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+	id 1DlS3J-00040b-4F	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Jun 2005 06:47:33 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DlS3H-0002Rw-Gj	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Jun 2005 06:47:33 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: Skas0 general testing?
+Message-ID: <20050623031135.GA16989@ccure.user-mode-linux.org>
+References: <200506230238.35960.blaisorblade@yahoo.it>
+	<20050623011255.GB15548@ccure.user-mode-linux.org>
+	<200506230336.28927.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200506230336.28927.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,49 +29,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Jun 2005 04:34:56 -0700 (PDT)
-Content-Transfer-Encoding: quoted-printable
-To: Paul Warren <pdw@ex-parrot.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 22 Jun 2005 23:11:35 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux-devel@lists.sourceforge.net
 
+On Thu, Jun 23, 2005 at 03:36:26AM +0200, Blaisorblade wrote:
+> I specified "operations done on the host" exactly for this purpose. That patch 
+> will touch SKAS3 code, but if I set all three options to "yes" the code 
+> should do the same things (again, in terms of strace output).
+> 
+> But however, if to keep the code clean we change (let's say) where a certain 
+> signal handler is set to later in the boot process, *hoping* that it does not 
+> hurt, that's against my definition.
 
-Thanks! i put tty0 in /etc/securetty without even testing the con
-parameters and that lets me login from where i launched it which is fine
-by me.
+OK, you sounded at first like you wanted stronger guarantees of no changes.
+strace output being the same isn't that strong, but if you're happy with it,
+that's fine by me.
 
-my bad on the list. thanks again
+You're OK with sending in skas0 and skas0-clone without first having a
+complete, fully-polished patchset?
 
-Paul Warren
-> On Mon, Jun 20, 2005 at 07:34:24AM -0700, codemachine@dslextreme.com
-> wrote:
->> I'm trying to  boot uml on a server, and I don't want to have to have X
->> installed to do it, so I want to boot without the xterm consoles.
->>
->> For the life if me I can't figure out the right con=3D* command line
->> params
->> and/or get them to work per:
->
-> We use:
->
-> con=3Dnull con0=3Dfd:0,fd:1
->
-> but you'll need to tweak your root image so that:
->
-> 1. inittab brings up a getty on tty0
-> 2. tty0 is listed in /etc/securetty.
->
-> This is probably one for the user list, BTW.
->
-> Paul
->
-
+				Jeff
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_idt77&alloc_id=16492&op=CCk
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
