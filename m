@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DlhPh-0005RB-IJ	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Jun 2005 23:11:41 -0700
+	id 1DlhbU-000620-Nu	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Jun 2005 23:23:52 -0700
 Received: from frolch.speech-design.de ([213.69.58.201])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DlhPg-0007MP-QK	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Jun 2005 23:11:41 -0700
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
+	id 1DlhbU-0001LY-8W	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Jun 2005 23:23:52 -0700
 Received: from uranus.sdg.speech-design.de ([10.250.8.12])
 	by einstein.sdg.speech-design.de with esmtp (Exim 4.50)
-	id 1DlhPY-0004Pa-6k	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Jun 2005 08:11:32 +0200
-Message-ID: <42BBA415.20407@gmx.de>
+	id 1DlhbM-0004Pp-6J	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jun 2005 08:23:44 +0200
+Message-ID: <42BBA6F1.9080704@gmx.de>
 From: Raphael Bossek <raphael.bossek@gmx.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060204030204070703080407"
-Subject: [uml-devel] [PATCH] UML - TT_MODE build fix
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [uml-devel] Linking  .tmp_vmlinuux1 fails with 2.6.12-mm1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,96 +29,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Jun 2005 08:11:33 +0200
+Date: Fri, 24 Jun 2005 08:23:45 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
+Hi,
 
---------------060204030204070703080407
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=us-ascii; format=flowed
+after applying the TT_MODE build patch I run into the following problem
+with linux 2.6.12-mm1:
 
-Using of the preprocessor define SUBARCH as part of an directory
-name does not work in linux-2.6.12/arch/um/kernel/uml.lds.S:
+   gcc-2.95 -Wp,-MD,init/.version.o.d  -nostdinc -isystem 
+/usr/lib/gcc-lib/i386-linux/2.95.4/include -D__KERNEL__ -Iinclude  -Wall 
+-Wstri
+    ld   -r -o init/built-in.o init/main.o init/version.o init/mounts.o 
+init/initramfs.o init/calibrate.o
+         gcc-2.95 -static -Wl,--wrap,malloc -Wl,--wrap,free 
+-Wl,--wrap,calloc -o .tmp_vmlinux1 -Wl,-T,arch/um/kernel/vmlinux.lds 
+init/b
+arch/um/sys-i386/built-in.o(*ABS*+0x73c706fe): In function `__crc_kunmap':
+module.c: multiple definition of `__crc_kunmap'
+arch/um/sys-i386/built-in.o(*ABS*+0xe7c48b45): In function 
+`__crc_kmap_atomic':
+module.c: multiple definition of `__crc_kmap_atomic'
+arch/um/sys-i386/built-in.o(*ABS*+0x1889f5f3): In function 
+`__crc_kmap_atomic_to_page':
+module.c: multiple definition of `__crc_kmap_atomic_to_page'
+arch/um/sys-i386/built-in.o(*ABS*+0xd837acb7): In function `__crc_kmap':
+module.c: multiple definition of `__crc_kmap'
+collect2: ld returned 1 exit status
 
-arch/um/sys-SUBARCH/unmap_fin.o => arch/um/sys- i386 /unmap_fin.o
-
-This patch works with linux 2.6.12-mm1 and gcc 2.95.
-
---------------060204030204070703080407
-Content-Type: text/x-patch;
- name="uml-2.6.12-mm1+fixttmode.diff"
-Content-Disposition: inline;
- filename="uml-2.6.12-mm1+fixttmode.diff"
-Content-Transfer-Encoding: base64
-
-Qmlu5HJkYXRlaWVuIGxpbnV4LTIuNi4xMi5vcmlnL2FyY2gvdW0va2VybmVsL3NrYXMvdXRpbC9t
-a19wdHJlZ3MgYW5kIGxpbnV4LTIuNi4xMi9hcmNoL3VtL2tlcm5lbC9za2FzL3V0aWwvbWtfcHRy
-ZWdzIHNpbmQgdmVyc2NoaWVkZW4uDQpkaWZmIC1OcnUgbGludXgtMi42LjEyLm9yaWcvYXJjaC91
-bS9rZXJuZWwvdW1sLmxkcy5TIGxpbnV4LTIuNi4xMi9hcmNoL3VtL2tlcm5lbC91bWwubGRzLlMN
-Ci0tLSBsaW51eC0yLjYuMTIub3JpZy9hcmNoL3VtL2tlcm5lbC91bWwubGRzLlMJMjAwNS0wNi0y
-MiAxNjoxNjoxNS4wMDAwMDAwMDAgKzAyMDANCisrKyBsaW51eC0yLjYuMTIvYXJjaC91bS9rZXJu
-ZWwvdW1sLmxkcy5TCTIwMDUtMDYtMjMgMTA6MDU6MTQuMDAwMDAwMDAwICswMjAwDQpAQCAtMTUs
-MTIgKzE1LDcgQEANCiAgICAqIGlzIHJlbWFwcGVkLiovDQogICBfX2JpbmFyeV9zdGFydCA9IC47
-DQogDQotI2lmZGVmIE1PREVfVFQNCi0gIC5yZW1hcF9kYXRhIDogeyBhcmNoL3VtL3N5cy1TVUJB
-UkNIL3VubWFwX2Zpbi5vICguZGF0YSAuYnNzKSB9DQotICAucmVtYXAgOiB7IGFyY2gvdW0vc3lz
-LVNVQkFSQ0gvdW5tYXBfZmluLm8gKC50ZXh0KSB9DQotDQotICAuID0gQUxJR04oNDA5Nik7CQkv
-KiBJbml0IGNvZGUgYW5kIGRhdGEgKi8NCi0jZW5kaWYNCisjaW5jbHVkZSAibW9kZV90dC5sZHMi
-DQogDQogICBfc3RleHQgPSAuOw0KICAgX19pbml0X2JlZ2luID0gLjsNCkJpbuRyZGF0ZWllbiBs
-aW51eC0yLjYuMTIub3JpZy9hcmNoL3VtL29zLUxpbnV4L3V0aWwvbWtfdXNlcl9jb25zdGFudHMg
-YW5kIGxpbnV4LTIuNi4xMi9hcmNoL3VtL29zLUxpbnV4L3V0aWwvbWtfdXNlcl9jb25zdGFudHMg
-c2luZCB2ZXJzY2hpZWRlbi4NCmRpZmYgLU5ydSBsaW51eC0yLjYuMTIub3JpZy9hcmNoL3VtL3Nj
-cmlwdHMvTWFrZWZpbGUucnVsZXMgbGludXgtMi42LjEyL2FyY2gvdW0vc2NyaXB0cy9NYWtlZmls
-ZS5ydWxlcw0KLS0tIGxpbnV4LTIuNi4xMi5vcmlnL2FyY2gvdW0vc2NyaXB0cy9NYWtlZmlsZS5y
-dWxlcwkyMDA1LTA2LTIyIDE2OjE2OjE1LjAwMDAwMDAwMCArMDIwMA0KKysrIGxpbnV4LTIuNi4x
-Mi9hcmNoL3VtL3NjcmlwdHMvTWFrZWZpbGUucnVsZXMJMjAwNS0wNi0yMyAxMDo1NDowNi4wMDAw
-MDAwMDAgKzAyMDANCkBAIC02LDYgKzYsNyBAQA0KIAkkKGZvcmVhY2ggZiwkKHBhdHN1YnN0ICUu
-bywlLCQob2JqLXkpICQob2JqLW0pKSwkKCQoZiktb2JqcykpDQogVVNFUl9PQkpTICs9ICQoZmls
-dGVyICVfdXNlci5vLCQob2JqLXkpICQob2JqLW0pICAkKFVTRVJfU0lOR0xFX09CSlMpKQ0KIFVT
-RVJfT0JKUyA6PSAkKGZvcmVhY2ggZmlsZSwkKFVTRVJfT0JKUyksJChvYmopLyQoZmlsZSkpDQor
-Q1BQRkxBR1MgKz0gLUlhcmNoL3VtL3N5cy0kKFNVQkFSQ0gpDQogDQogJChVU0VSX09CSlMpIDog
-Y19mbGFncyA9IC1XcCwtTUQsJChkZXBmaWxlKSAkKFVTRVJfQ0ZMQUdTKSBcDQogCSQoQ0ZMQUdT
-XyQobm90ZGlyICRAKSkNCmRpZmYgLU5ydSBsaW51eC0yLjYuMTIub3JpZy9hcmNoL3VtL3N5cy1p
-Mzg2L21vZGVfdHQubGRzIGxpbnV4LTIuNi4xMi9hcmNoL3VtL3N5cy1pMzg2L21vZGVfdHQubGRz
-DQotLS0gbGludXgtMi42LjEyLm9yaWcvYXJjaC91bS9zeXMtaTM4Ni9tb2RlX3R0LmxkcwkxOTcw
-LTAxLTAxIDAxOjAwOjAwLjAwMDAwMDAwMCArMDEwMA0KKysrIGxpbnV4LTIuNi4xMi9hcmNoL3Vt
-L3N5cy1pMzg2L21vZGVfdHQubGRzCTIwMDUtMDYtMjMgMTA6MDU6MDIuMDAwMDAwMDAwICswMjAw
-DQpAQCAtMCwwICsxLDYgQEANCisjaWZkZWYgTU9ERV9UVA0KKyAgLnJlbWFwX2RhdGEgOiB7IGFy
-Y2gvdW0vc3lzLWkzODYvdW5tYXBfZmluLm8gKC5kYXRhIC5ic3MpIH0NCisgIC5yZW1hcCA6IHsg
-YXJjaC91bS9zeXMtaTM4Ni91bm1hcF9maW4ubyAoLnRleHQpIH0NCisNCisgIC4gPSBBTElHTig0
-MDk2KTsJCS8qIEluaXQgY29kZSBhbmQgZGF0YSAqLw0KKyNlbmRpZg0KQmlu5HJkYXRlaWVuIGxp
-bnV4LTIuNi4xMi5vcmlnL2FyY2gvdW0vc3lzLWkzODYvdXRpbC9ta19zYyBhbmQgbGludXgtMi42
-LjEyL2FyY2gvdW0vc3lzLWkzODYvdXRpbC9ta19zYyBzaW5kIHZlcnNjaGllZGVuLg0KQmlu5HJk
-YXRlaWVuIGxpbnV4LTIuNi4xMi5vcmlnL2FyY2gvdW0vc3lzLWkzODYvdXRpbC9ta190aHJlYWQg
-YW5kIGxpbnV4LTIuNi4xMi9hcmNoL3VtL3N5cy1pMzg2L3V0aWwvbWtfdGhyZWFkIHNpbmQgdmVy
-c2NoaWVkZW4uDQpkaWZmIC1OcnUgbGludXgtMi42LjEyLm9yaWcvYXJjaC91bS9zeXMtaWE2NC9t
-b2RlX3R0LmxkcyBsaW51eC0yLjYuMTIvYXJjaC91bS9zeXMtaWE2NC9tb2RlX3R0Lmxkcw0KLS0t
-IGxpbnV4LTIuNi4xMi5vcmlnL2FyY2gvdW0vc3lzLWlhNjQvbW9kZV90dC5sZHMJMTk3MC0wMS0w
-MSAwMTowMDowMC4wMDAwMDAwMDAgKzAxMDANCisrKyBsaW51eC0yLjYuMTIvYXJjaC91bS9zeXMt
-aWE2NC9tb2RlX3R0LmxkcwkyMDA1LTA2LTIzIDEwOjA2OjAyLjAwMDAwMDAwMCArMDIwMA0KQEAg
-LTAsMCArMSw2IEBADQorI2lmZGVmIE1PREVfVFQNCisgIC5yZW1hcF9kYXRhIDogeyBhcmNoL3Vt
-L3N5cy1pYTY0L3VubWFwX2Zpbi5vICguZGF0YSAuYnNzKSB9DQorICAucmVtYXAgOiB7IGFyY2gv
-dW0vc3lzLWlhNjQvdW5tYXBfZmluLm8gKC50ZXh0KSB9DQorDQorICAuID0gQUxJR04oNDA5Nik7
-CQkvKiBJbml0IGNvZGUgYW5kIGRhdGEgKi8NCisjZW5kaWYNCmRpZmYgLU5ydSBsaW51eC0yLjYu
-MTIub3JpZy9hcmNoL3VtL3N5cy1wcGMvbW9kZV90dC5sZHMgbGludXgtMi42LjEyL2FyY2gvdW0v
-c3lzLXBwYy9tb2RlX3R0Lmxkcw0KLS0tIGxpbnV4LTIuNi4xMi5vcmlnL2FyY2gvdW0vc3lzLXBw
-Yy9tb2RlX3R0LmxkcwkxOTcwLTAxLTAxIDAxOjAwOjAwLjAwMDAwMDAwMCArMDEwMA0KKysrIGxp
-bnV4LTIuNi4xMi9hcmNoL3VtL3N5cy1wcGMvbW9kZV90dC5sZHMJMjAwNS0wNi0yMyAxMDowNjoy
-MC4wMDAwMDAwMDAgKzAyMDANCkBAIC0wLDAgKzEsNiBAQA0KKyNpZmRlZiBNT0RFX1RUDQorICAu
-cmVtYXBfZGF0YSA6IHsgYXJjaC91bS9zeXMtcHBjL3VubWFwX2Zpbi5vICguZGF0YSAuYnNzKSB9
-DQorICAucmVtYXAgOiB7IGFyY2gvdW0vc3lzLXBwYy91bm1hcF9maW4ubyAoLnRleHQpIH0NCisN
-CisgIC4gPSBBTElHTig0MDk2KTsJCS8qIEluaXQgY29kZSBhbmQgZGF0YSAqLw0KKyNlbmRpZg0K
-ZGlmZiAtTnJ1IGxpbnV4LTIuNi4xMi5vcmlnL2FyY2gvdW0vc3lzLXg4Nl82NC9tb2RlX3R0Lmxk
-cyBsaW51eC0yLjYuMTIvYXJjaC91bS9zeXMteDg2XzY0L21vZGVfdHQubGRzDQotLS0gbGludXgt
-Mi42LjEyLm9yaWcvYXJjaC91bS9zeXMteDg2XzY0L21vZGVfdHQubGRzCTE5NzAtMDEtMDEgMDE6
-MDA6MDAuMDAwMDAwMDAwICswMTAwDQorKysgbGludXgtMi42LjEyL2FyY2gvdW0vc3lzLXg4Nl82
-NC9tb2RlX3R0LmxkcwkyMDA1LTA2LTIzIDEwOjA2OjQ1LjAwMDAwMDAwMCArMDIwMA0KQEAgLTAs
-MCArMSw2IEBADQorI2lmZGVmIE1PREVfVFQNCisgIC5yZW1hcF9kYXRhIDogeyBhcmNoL3VtL3N5
-cy14ODZfNjQvdW5tYXBfZmluLm8gKC5kYXRhIC5ic3MpIH0NCisgIC5yZW1hcCA6IHsgYXJjaC91
-bS9zeXMteDg2XzY0L3VubWFwX2Zpbi5vICgudGV4dCkgfQ0KKw0KKyAgLiA9IEFMSUdOKDQwOTYp
-OwkJLyogSW5pdCBjb2RlIGFuZCBkYXRhICovDQorI2VuZGlmDQo=
-
-
---------------060204030204070703080407--
+--
+Raphael Bossek
 
 
 -------------------------------------------------------
