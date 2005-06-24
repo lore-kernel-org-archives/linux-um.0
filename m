@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DloXx-0006bE-82	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Jun 2005 06:48:41 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
-	id 1DloXv-0002ma-Cj	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Jun 2005 06:48:40 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Linking  .tmp_vmlinuux1 fails with 2.6.12-mm1
-Message-ID: <20050624134316.GB4117@ccure.user-mode-linux.org>
-References: <42BBA6F1.9080704@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1DlsiG-0005nN-P6	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jun 2005 11:15:36 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DlsiF-0001Wc-1A	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jun 2005 11:15:36 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] UML - TT_MODE build fix
+References: <42BBA415.20407@gmx.de>
+In-Reply-To: <42BBA415.20407@gmx.de>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <42BBA6F1.9080704@gmx.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200506242020.37951.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,32 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Jun 2005 09:43:16 -0400
-To: Raphael Bossek <raphael.bossek@gmx.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 24 Jun 2005 20:20:37 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Raphael Bossek <raphael.bossek@gmx.de>
 
-On Fri, Jun 24, 2005 at 08:23:45AM +0200, Raphael Bossek wrote:
-> after applying the TT_MODE build patch I run into the following problem
-> with linux 2.6.12-mm1:
+On Friday 24 June 2005 08:11, Raphael Bossek wrote:
+> Using of the preprocessor define SUBARCH as part of an directory
+> name does not work in linux-2.6.12/arch/um/kernel/uml.lds.S:
+>
+> arch/um/sys-SUBARCH/unmap_fin.o => arch/um/sys- i386 /unmap_fin.o
+>
+> This patch works with linux 2.6.12-mm1 and gcc 2.95.
+I.e. there is this difference with gcc-2.95? Oh hell, it works with 3.4 (even 
+though it has other problems, which I'm going to solve shortly (I hope)).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-> arch/um/sys-i386/built-in.o(*ABS*+0x73c706fe): In function `__crc_kunmap':
-> module.c: multiple definition of `__crc_kunmap'
-> arch/um/sys-i386/built-in.o(*ABS*+0xe7c48b45): In function 
-> `__crc_kmap_atomic':
-> module.c: multiple definition of `__crc_kmap_atomic'
-> arch/um/sys-i386/built-in.o(*ABS*+0x1889f5f3): In function 
-> `__crc_kmap_atomic_to_page':
-> module.c: multiple definition of `__crc_kmap_atomic_to_page'
-> arch/um/sys-i386/built-in.o(*ABS*+0xd837acb7): In function `__crc_kmap':
-> module.c: multiple definition of `__crc_kmap'
-> collect2: ld returned 1 exit status
+	
 
-You failed to mention the zillion errors from make config that resulted
-from trying to use the host's config rather than UML's defconfig.
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
-Run mrproper, cp arch/um/defconfig .config, then rebuild as before.
-
-				Jeff
 
 
 -------------------------------------------------------
