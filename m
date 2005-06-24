@@ -1,35 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dltie-0000w4-T7	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Jun 2005 12:20:04 -0700
-Received: from agminet04.oracle.com ([141.146.126.231])
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41)	id 1Dltib-0002Xp-O9
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Jun 2005 12:20:04 -0700
-Received: from agminet04.oracle.com (localhost [127.0.0.1])
-	j5OJJtY0019121	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 24 Jun 2005 14:19:55 -0500
-Received: from rgmsgw300.us.oracle.com (rgmsgw300.us.oracle.com
-	[138.1.186.49])j5OJJs0P019092
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 24 Jun 2005 14:19:54 -0500
-Received: from rgmsgw300.us.oracle.com (localhost [127.0.0.1])
-	j5OJJsPv011453	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 24 Jun 2005 13:19:54 -0600
-Received: from [138.2.230.92] (agraves-lnx.us.oracle.com [138.2.230.92])
-	j5OJJrb0011446
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 24 Jun 2005 13:19:53 -0600
-Message-ID: <42BC5CD9.2080005@oracle.com>
-From: Allan Graves <allan.graves@oracle.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060807010904080105080303"
-Subject: [uml-devel] os_lock_file removal
+	id 1DlwBn-0001FM-EQ	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jun 2005 14:58:19 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1DlwBl-0005fA-JL	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jun 2005 14:58:19 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] os_lock_file removal
+Message-ID: <20050624211533.GA10972@ccure.user-mode-linux.org>
+References: <42BC5CD9.2080005@oracle.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42BC5CD9.2080005@oracle.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,45 +27,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Jun 2005 15:19:53 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 24 Jun 2005 17:15:33 -0400
+To: Allan Graves <allan.graves@oracle.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------060807010904080105080303
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Fri, Jun 24, 2005 at 03:19:53PM -0400, Allan Graves wrote:
+> Hi guys.  I'm working on developing a cluster file system and I'd like 
+> to simulate concurrent shared storage access using uml and disk files.  
+> I traced down the file locking, and it seems that (assuming I have a 
+> cluster file system that keeps things up to date in the metadata of the 
+> filesystem) if I remove this function I should be able to have more than 
+> 1 instance accessing storage at the same time.  
 
-Hi guys.  I'm working on developing a cluster file system and I'd like 
-to simulate concurrent shared storage access using uml and disk files.  
-I traced down the file locking, and it seems that (assuming I have a 
-cluster file system that keeps things up to date in the metadata of the 
-filesystem) if I remove this function I should be able to have more than 
-1 instance accessing storage at the same time.  I realize this is a bit 
-dangerous, since it involves *all* block devices,  but I don't see a 
-much better way.  COW is not what I'm looking for, and that seems to be 
-the standard answer.  Can anyone provide positive or negative feedback 
-on this approach?  Possibly a better approach? 
-Thanks,
-Allan Graves
+Feel free to remove it if you personally guarantee that you will not run
+two UMLs on the same host file without using a clusterfs.
 
---------------060807010904080105080303
-Content-Type: text/x-vcard; charset=utf8;
- name="allan.graves.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="allan.graves.vcf"
+It's purely a safety measure - if you're doing development using scratch
+filesystems, it's not really benefitting you.
 
-begin:vcard
-fn:Allan Graves
-n:Graves;Allan
-email;internet:allan.graves@oracle.com
-tel;work:603-8973276
-x-mozilla-html:FALSE
-version:2.1
-end:vcard
-
-
---------------060807010904080105080303--
+				Jeff
 
 
 -------------------------------------------------------
