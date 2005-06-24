@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DllBB-0002QQ-8a	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Jun 2005 03:12:57 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	id 1Dlllq-0004oP-7W	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jun 2005 03:50:50 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DllB9-0002zN-He	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Jun 2005 03:12:57 -0700
+	id 1Dlllo-0000P5-Gy	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jun 2005 03:50:50 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Question about the unexpected signal 11 when fork in
-	UML-2.6.7 TT mode
-References: <000301c578a3$2cc33480$9eb3c68a@SHZ.ST.COM>
-In-Reply-To: <000301c578a3$2cc33480$9eb3c68a@SHZ.ST.COM>
+Subject: Re: [uml-devel] Linking  .tmp_vmlinuux1 fails with 2.6.12-mm1
+References: <42BBA6F1.9080704@gmx.de>
+In-Reply-To: <42BBA6F1.9080704@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200506241217.56423.blaisorblade@yahoo.it>
+Message-Id: <200506241255.46532.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,48 +29,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Jun 2005 12:17:56 +0200
+Date: Fri, 24 Jun 2005 12:55:45 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Alex LIU <alex.liu@st.com>
+Cc: Raphael Bossek <raphael.bossek@gmx.de>
 
-On Friday 24 June 2005 11:57, Alex LIU wrote:
-> I just let the SIGSEVG go and return from the sleeping_process_signal
-> function instead of tracer_panic and hanging the UML. It seems ok. Is it
-> dangerous? Thanks a lot!
-The sleeping process will get the SIGSEGV, with whatever content it has; 
-hopefully it should handle it in kernel code but I'm not too sure about the 
-situation. To ignore the signal you'll need a PTRACE_CONT (or PTRACE_SYSCALL, 
-depending on the situation) with a 0 signal value.
+On Friday 24 June 2005 08:23, Raphael Bossek wrote:
+> Hi,
+>
+> after applying the TT_MODE build patch I run into the following problem
+> with linux 2.6.12-mm1:
+Does that happen with 2.6.12-current? Here it seems it doesn't; so I'll have 
+to look into -mm only; otherwise I'll look at gcc-2.95 differences.
 
-However, is this related to the below problem? Did you try the other way 
-around (i.e. upgrading) to solve it?
-> Alex
-
-> -----Original Message-----
-> From: Blaisorblade [mailto:blaisorblade@yahoo.it]
-> Sent: Tuesday, June 21, 2005 11:42 PM
-> To: user-mode-linux-devel@lists.sourceforge.net
-> Cc: Alex LIU
-> Subject: Re: [uml-devel] Question about the unexpected signal 11 when fork
-> in UML-2.6.7 TT mode
+>    gcc-2.95 -Wp,-MD,init/.version.o.d  -nostdinc -isystem
+> /usr/lib/gcc-lib/i386-linux/2.95.4/include -D__KERNEL__ -Iinclude  -Wall
+> -Wstri
+>     ld   -r -o init/built-in.o init/main.o init/version.o init/mounts.o
+> init/initramfs.o init/calibrate.o
+>          gcc-2.95 -static -Wl,--wrap,malloc -Wl,--wrap,free
+> -Wl,--wrap,calloc -o .tmp_vmlinux1 -Wl,-T,arch/um/kernel/vmlinux.lds
+> init/b
+> arch/um/sys-i386/built-in.o(*ABS*+0x73c706fe): In function `__crc_kunmap':
+> module.c: multiple definition of `__crc_kunmap'
+> arch/um/sys-i386/built-in.o(*ABS*+0xe7c48b45): In function
+> `__crc_kmap_atomic':
+> module.c: multiple definition of `__crc_kmap_atomic'
+> arch/um/sys-i386/built-in.o(*ABS*+0x1889f5f3): In function
+> `__crc_kmap_atomic_to_page':
+> module.c: multiple definition of `__crc_kmap_atomic_to_page'
+> arch/um/sys-i386/built-in.o(*ABS*+0xd837acb7): In function `__crc_kmap':
+> module.c: multiple definition of `__crc_kmap'
+> collect2: ld returned 1 exit status
 >
-> On Tuesday 21 June 2005 12:05, Alex LIU wrote:
-> > Hi,all:
-> >
-> > When I fork() in UML TT mode,it always said "the sleeping process xxx
-> > received unexpedted signal 11" and the UML hang...before fork I also
-> > set the signal handler... My UML is 2.6.7 and I used TT mode.Thanks a
-> > lot!
-> >
-> > Alex
->
-> Have you a good reason to use UML 2.6.7? We can't know by heart the list of
-> all fixed bugs in previous UML releases, really, and you'll be doing
-> yourself a favor by upgrading to 2.6.11-bs5 or 2.6.12 (which contains
-> almost everything from -bs).
->
-> That said, you are talking about userspace code, right? It's anyway strange
-> that your system boots but you can't write a simple code that fork()'s.
+> --
+> Raphael Bossek
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
