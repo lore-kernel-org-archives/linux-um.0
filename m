@@ -1,18 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.91] (helo=sc8-sf-mx1-new.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dn0vn-0008JT-GO	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Jun 2005 14:14:15 -0700
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by sc8-sf-mx1-new.sourceforge.net with esmtp (Exim 4.44)
-	id 1Dn0vh-0000qk-K3	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Jun 2005 14:14:15 -0700
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Message-ID: <Pine.LNX.4.63.0506271708560.6415@sparrow>
+	id 1Dn139-0000LB-Hb	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 Jun 2005 14:21:51 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1Dn133-0008QM-An	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 Jun 2005 14:21:51 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] NPTL can't be disabled in fc4?
+References: <Pine.LNX.4.63.0506271708560.6415@sparrow>
+In-Reply-To: <Pine.LNX.4.63.0506271708560.6415@sparrow>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: [uml-devel] NPTL can't be disabled in fc4?
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200506272327.05908.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,54 +29,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 27 Jun 2005 17:13:24 -0400 (EDT)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: William Stearns <wstearns@pobox.com>, Jeff Dike <jdike@addtoit.com>
+Date: Mon, 27 Jun 2005 23:27:05 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, William Stearns <wstearns@pobox.com>
+Cc: Jeff Dike <jdike@addtoit.com>
 
-Good afternoon, all,
- 	I tried to boot an fc4 VM ( http://www.stearns.org/uml-root/ )on 
-zaphod.
- 	I compiled 2.6.12-mm1-um26121_20050627 at Jeff's suggestion, and 
-still get:
+On Monday 27 June 2005 23:13, William Stearns wrote:
+> Good afternoon, all,
+>  	I tried to boot an fc4 VM ( http://www.stearns.org/uml-root/ )on
+> zaphod.
 
-Setting hostname placeholder.stearns.org:  [  OK  ]
-set_thread_area failed when setting up thread-local storage
+>  	Is there _any_ way to convince an fc4 userspace to not use NPTL?
+Yes, it's indicated on the FC4 release notes, I already posted this link 
+(http://fedora.redhat.com/docs/release-notes/fc4/).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
- 	It doesn't appear that any of the patches in Jeff's current 2.6 
-quilt patch set refer to set_thread_area (Although I could believe that 
-one of them addresses it indirectly so the string doesn't show up in the 
-patches.)
- 	Even adding LD_ASSUME_KERNEL=2.4.1 to the end of the kernel 
-command line (which, according to doc/kernel-parameters.txt passes that 
-environment variable on to the environment inside the VM) doesn't help. 
-LD_ASSUME_KERNEL=2.2.5 on the kernel command line also exhibits 
-set_thread_area failed....
- 	I've also tried disabling nptl from userspace with the following 
-added lines:
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
 
-/etc/profile.d/glibc.sh
-export LD_ASSUME_KERNEL=2.4.19
-
-/etc/init.d/functions
-export LD_ASSUME_KERNEL=2.4.19
-
-/etc/initscript : (make mode 755)
-export LD_ASSUME_KERNEL=2.4.19
-eval exec "$4"
-
- 	Still hitting that set_thread_area error.
-
- 	Is there _any_ way to convince an fc4 userspace to not use NPTL?
- 	Cheers,
- 	- Bill
-
----------------------------------------------------------------------------
-         "Revolutions do not require corporate support."
-(Courtesy of Matthew Wilcox <willy@debian.org>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
 
 
 -------------------------------------------------------
