@@ -1,20 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.92] (helo=sc8-sf-mx2-new.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DnHwp-0000oQ-Pi	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Jun 2005 08:24:27 -0700
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by sc8-sf-mx2-new.sourceforge.net with esmtp (Exim 4.44)
-	id 1DnHwo-0005Qo-CY	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Jun 2005 08:24:27 -0700
-Message-ID: <42C16BA1.4060902@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
+	id 1Dnl2D-0001Wz-FX	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Jun 2005 15:27:57 -0700
+Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1Dnl2C-0002Jb-F9	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Jun 2005 15:27:57 -0700
+Received: from luthien by zitrone.obstwiese with local (Exim 4.50)
+	id 1Dnkjq-0000ic-8z	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Jun 2005 00:08:58 +0200
+From: Dominik Vogt <dominik.vogt@gmx.de>
 Subject: Re: [uml-devel] Kernel panic in dump fpu with 2.6.11.11
-References: <6028.1119969442@www81.gmx.net>
-In-Reply-To: <6028.1119969442@www81.gmx.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20050629220858.GA2709@gmx.de>
+Reply-To: dominik.vogt@gmx.de
+References: <6028.1119969442@www81.gmx.net> <42C169D0.50206@tuxrocks.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
+Content-Disposition: inline
+In-Reply-To: <42C169D0.50206@tuxrocks.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,43 +32,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 28 Jun 2005 17:24:17 +0200
-To: Dominik Vogt <dominik.vogt@gmx.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Thu, 30 Jun 2005 00:08:58 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Dominik Vogt wrote:
-> When I run a certain mulithreaded application in a virtual
-> machine, I get a UML kernel panic.  The host and the VM are both
-> running Debian-3.1r0a (sarge) on i386.  The application gets a
-> SIGSEGV after a couple of seconds and generates a core dump.  In
-> this process, the UML kernel panics un the dump_fpu() function at
-> position 0x61 with a NULL pointer reference:
-> 
->   C: (ptrace.c, line 333, inline function copy_fpu_fxsave_tt)
->   struct i387_fxsave_struct *fpu = SC_FXSR_ENV(PT_REGS_SC(regs));
-> 
->   assembler: (eax being 0)
->   0xa0031b4d <dump_fpu+61>:       mov    0x4(%eax),%eax
-> 
-> I can prevent the kernel panic by commenting out the line
-> 
->   copy_fpu_fxsave(regs, (struct user_i387_struct *) fpu);
-> 
-> in dump_fpu(), so that copy_fpu_fxsave_tt() is never called.  The
-> application always coredumps in
-> 
->   /lib/tls/libc.so.6(__clone+0x5a)[0x4026118a]
-> 
-> which I guess is part of the threading library in libc.  This
-> crash is 100% reproducable.
-The kernel panic in case UML/tt tries to core dump is a known bug.
 
-The reason is host's kernel not providing the fp-regs in sigcontext,
-of the SIGSEGV, if fp-regs were not used before the SIGSEGV happens.
-In sigcontext the pointer to the fp-regs is NULL in this case, which
-makes UML crash, as the pointer is used without a check.
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	Bodo
+On Tue, Jun 28, 2005 at 09:16:32AM -0600, Frank Sorenson wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>=20
+> Dominik Vogt wrote:
+> > in dump_fpu(), so that copy_fpu_fxsave_tt() is never called.  The
+> > application always coredumps in
+> >=20
+> >   /lib/tls/libc.so.6(__clone+0x5a)[0x4026118a]
+> >=20
+> > which I guess is part of the threading library in libc.  This
+> > crash is 100% reproducable.
+>=20
+> UML doesn't support TLS yet.  Try disabling it by moving /lib/tls out of
+> the way ("mv /lib/tls /lib/tls.disabled" for example).
+
+Ah!  Thanks a lot.  This information saved me a lot of further
+debugging.  I didn't even notice I had a /lib/tls directory.  The
+application works fine without it.
+
+Ciao
+
+Dominik ^_^  ^_^
+
+ --
+Dominik Vogt, dominik.vogt@gmx.de
+
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFCwxv6meSprTOr4tgRAvdVAJ9jI3GWgifI/S+M+KtPidxvez+YogCg60r+
+KxcT8akC3KyT8oZ2w0NwRN0=
+=Ozxo
+-----END PGP SIGNATURE-----
+
+--opJtzjQTFsWo+cga--
 
 
 -------------------------------------------------------
