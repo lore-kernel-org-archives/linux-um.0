@@ -2,25 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dnl2D-0001Wz-FX	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Jun 2005 15:27:57 -0700
-Received: from imap.gmx.net ([213.165.64.20] helo=mail.gmx.net)
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1Dnl2C-0002Jb-F9	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Jun 2005 15:27:57 -0700
-Received: from luthien by zitrone.obstwiese with local (Exim 4.50)
-	id 1Dnkjq-0000ic-8z	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Jun 2005 00:08:58 +0200
-From: Dominik Vogt <dominik.vogt@gmx.de>
-Subject: Re: [uml-devel] Kernel panic in dump fpu with 2.6.11.11
-Message-ID: <20050629220858.GA2709@gmx.de>
-Reply-To: dominik.vogt@gmx.de
-References: <6028.1119969442@www81.gmx.net> <42C169D0.50206@tuxrocks.com>
+	id 1Do0Eb-0008Dt-Ch	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Jun 2005 07:41:45 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.41)
+	id 1Do0Ea-0005yB-MN	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Jun 2005 07:41:45 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050630143119.GA4337@ccure.user-mode-linux.org>
+References: <200506230238.35960.blaisorblade@yahoo.it>
+	<20050623011255.GB15548@ccure.user-mode-linux.org>
+	<200506230336.28927.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <42C169D0.50206@tuxrocks.com>
+In-Reply-To: <200506230336.28927.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: Skas0 general testing?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,56 +29,65 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 30 Jun 2005 00:08:58 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 30 Jun 2005 10:31:19 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux-devel@lists.sourceforge.net
 
+On Thu, Jun 23, 2005 at 03:36:26AM +0200, Blaisorblade wrote:
+> I specified "operations done on the host" exactly for this purpose. That patch 
+> will touch SKAS3 code, but if I set all three options to "yes" the code 
+> should do the same things (again, in terms of strace output).
+> 
+> But however, if to keep the code clean we change (let's say) where a certain 
+> signal handler is set to later in the boot process, *hoping* that it does not 
+> hurt, that's against my definition.
 
---opJtzjQTFsWo+cga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, I straced UML booting and shutting down on a skas3 host, with and without
+the skas0 patch.
 
-On Tue, Jun 28, 2005 at 09:16:32AM -0600, Frank Sorenson wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->=20
-> Dominik Vogt wrote:
-> > in dump_fpu(), so that copy_fpu_fxsave_tt() is never called.  The
-> > application always coredumps in
-> >=20
-> >   /lib/tls/libc.so.6(__clone+0x5a)[0x4026118a]
-> >=20
-> > which I guess is part of the threading library in libc.  This
-> > crash is 100% reproducable.
->=20
-> UML doesn't support TLS yet.  Try disabling it by moving /lib/tls out of
-> the way ("mv /lib/tls /lib/tls.disabled" for example).
+I looked at the initialization, syscall interception, and page fault handing,
+and they are identical in the two runs:
 
-Ah!  Thanks a lot.  This information saved me a lot of further
-debugging.  I didn't even notice I had a /lib/tls directory.  The
-application works fine without it.
+Initialization:
 
-Ciao
+	access("/proc/mm", W_OK)                = 0
+	write(1, "Checking for /proc/mm...found\n", 30) = 30
+	fork()                                  = 25144
+	wait4(25144, [WIFSTOPPED(s) && WSTOPSIG(s) == SIGSTOP], WUNTRACED, NULL) = 25144
+	--- SIGCHLD (Child exited) ---
+	ptrace(PTRACE_???, 25144, 0, 0xbffff7e0) = 0
+	write(1, "Checking for the skas3 patch in "..., 49) = 49
+	ptrace(PTRACE_???, 25144, 0, 0x823c100) = 0
+	ptrace(PTRACE_???, 25144, 0, 0x823c1e0) = 0
+	ptrace(PTRACE_CONT, 25144, 0, SIG_0)    = 0
 
-Dominik ^_^  ^_^
+Syscall interception:
 
- --
-Dominik Vogt, dominik.vogt@gmx.de
+	wait4(25145, [WIFSTOPPED(s) && WSTOPSIG(s) == SIGSEGV], WUNTRACED, NULL) = 25145
+	ptrace(PTRACE_???, 25145, 0, 0x8a41888) = 0
+	ptrace(PTRACE_???, 25145, 0, 0x8a41938) = 0
+	ptrace(PTRACE_???, 25145, 0, 0x8a41b38) = 0
+	write(14, "6\0\0\0\0\20\0@\0\20\0\0\5\0\0\0\21\0\0\0\3\0\0\0\0p\270"..., 28) = 28
+	ptrace(PTRACE_???, 25145, 0, 0x8a41888) = 0
+	ptrace(PTRACE_???, 25145, 0, 0x8a41938) = 0
+	ptrace(PTRACE_SYSCALL, 25145, 0, SIG_0) = 0
 
---opJtzjQTFsWo+cga
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Page fault:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+	wait4(25145, [WIFSTOPPED(s) && WSTOPSIG(s) == 133], WUNTRACED, NULL) = 25145
+	ptrace(PTRACE_???, 25145, 0, 0x8a41888) = 0
+	ptrace(PTRACE_???, 25145, 0, 0x8a41938) = 0
+	ptrace(PTRACE_POKEUSER, 25145, 4*ORIG_EAX, 0x14) = 0
+	ptrace(PTRACE_SYSCALL, 25145, 0, SIG_0) = 0
+	--- SIGCHLD (Child exited) ---
+	wait4(25145, [WIFSTOPPED(s) && WSTOPSIG(s) == 133], WUNTRACED, NULL) = 25145
+	ptrace(PTRACE_???, 25145, 0, 0x8a41888) = 0
+	ptrace(PTRACE_???, 25145, 0, 0x8a41938) = 0
+	ptrace(PTRACE_SYSCALL, 25145, 0, SIG_0) = 0
 
-iD8DBQFCwxv6meSprTOr4tgRAvdVAJ9jI3GWgifI/S+M+KtPidxvez+YogCg60r+
-KxcT8akC3KyT8oZ2w0NwRN0=
-=Ozxo
------END PGP SIGNATURE-----
+With this, are you OK with skas0 being sent to Andrew?
 
---opJtzjQTFsWo+cga--
+				Jeff
 
 
 -------------------------------------------------------
