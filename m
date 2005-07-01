@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DoV8e-0008A3-2a	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Jul 2005 16:41:40 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.41)
-	id 1DoV8c-00069A-8L	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Jul 2005 16:41:39 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050701225623.GA28413@ccure.user-mode-linux.org>
+	id 1DoVIc-00005i-0u	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Jul 2005 16:51:58 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
+	id 1DoVIY-0006sw-1n	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Jul 2005 16:51:57 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [PATCH 1/2] UML - skas0 - separate kernel address
+	space on stock hosts
 References: <200507012131.j61LVCLi027276@ccure.user-mode-linux.org>
 	<20050701145802.5cebabd2.akpm@osdl.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20050701145802.5cebabd2.akpm@osdl.org>
-Subject: [uml-devel] Re: [PATCH 1/2] UML - skas0 - separate kernel address
-	space on stock hosts
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200507020157.37593.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,29 +31,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 1 Jul 2005 18:56:23 -0400
-To: Andrew Morton <akpm@osdl.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, "blaisorblade@yahoo.it" <blaisorblade_spam@yahoo.it>
+Date: Sat, 2 Jul 2005 01:57:36 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, "blaisorblade@yahoo.it" <blaisorblade_spam@yahoo.it>
 
-On Fri, Jul 01, 2005 at 02:58:02PM -0700, Andrew Morton wrote:
+On Friday 01 July 2005 23:58, Andrew Morton wrote:
+> Jeff Dike <jdike@addtoit.com> wrote:
+> > This patch implements something very close to skas mode for hosts
+> > which don't support skas - I'm calling this skas0.
+>
 > I note that this patch assumes that
 > uml-kill-some-useless-vmalloc-tlb-flushing.patch is applied.
-> 
+You're fixing the conflict anyway since it's little, correct?
 > AFAIK that patch is still in limbo due to objections from Paolo.  Can we
 > sort that out please?
+Ok, I'm going to test that out in the offending configuration. If that works, 
+then Jeff will explain us why the same (rephrased) patch didn't work in 2.4 
+and works in 2.6. When we have an explaination about that, I'll be very happy 
+about merging the patch.
 
-I did some testing to check that vmalloc is OK.  
+For myself, I don't even know why it didn't work in 2.4, I 
+hadn't the knowledge and haven't the time.
 
-First, boot and do a kernel build on COWed devices, which uses vmalloc space
-for the block bitmaps.
+People got breakage and when searching for it that looked the most invasive 
+change, so I suggested removing and tests confirmed that.
 
-Second, modprobed all modules, and made sure that one of them actually worked.
-Ran a kernel build to induce lots of context switches, made sure it still 
-worked.
+However, for now it seems that I can't reproduce anyway the iptables crash, 
+and even Jeff did some testing... so it seems it's ok.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-It sure seems OK to me.
+	
 
-				Jeff
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
