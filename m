@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DoVIc-00005i-0u	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Jul 2005 16:51:58 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.41)
-	id 1DoVIY-0006sw-1n	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Jul 2005 16:51:57 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [PATCH 1/2] UML - skas0 - separate kernel address
-	space on stock hosts
+	id 1DoVWA-0000dZ-Ez	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Jul 2005 17:05:58 -0700
+Received: from smtp.osdl.org ([65.172.181.4])
+	by sc8-sf-mx2.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.41)	id 1DoVW9-0001fw-RX
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Jul 2005 17:05:58 -0700
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: [uml-devel] Re: [PATCH 1/2] UML - skas0 - separate kernel
+ address space on stock hosts
+Message-Id: <20050701170648.2762c702.akpm@osdl.org>
+In-Reply-To: <200507020157.37593.blaisorblade@yahoo.it>
 References: <200507012131.j61LVCLi027276@ccure.user-mode-linux.org>
 	<20050701145802.5cebabd2.akpm@osdl.org>
-In-Reply-To: <20050701145802.5cebabd2.akpm@osdl.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	<200507020157.37593.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <200507020157.37593.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,45 +31,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 2 Jul 2005 01:57:36 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, "blaisorblade@yahoo.it" <blaisorblade_spam@yahoo.it>
+Date: Fri, 1 Jul 2005 17:06:48 -0700
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com, linux-kernel@vger.kernel.org, blaisorblade_spam@yahoo.it
 
-On Friday 01 July 2005 23:58, Andrew Morton wrote:
-> Jeff Dike <jdike@addtoit.com> wrote:
-> > This patch implements something very close to skas mode for hosts
-> > which don't support skas - I'm calling this skas0.
+Blaisorblade <blaisorblade@yahoo.it> wrote:
 >
-> I note that this patch assumes that
-> uml-kill-some-useless-vmalloc-tlb-flushing.patch is applied.
-You're fixing the conflict anyway since it's little, correct?
-> AFAIK that patch is still in limbo due to objections from Paolo.  Can we
-> sort that out please?
-Ok, I'm going to test that out in the offending configuration. If that works, 
-then Jeff will explain us why the same (rephrased) patch didn't work in 2.4 
-and works in 2.6. When we have an explaination about that, I'll be very happy 
-about merging the patch.
+> On Friday 01 July 2005 23:58, Andrew Morton wrote:
+> > Jeff Dike <jdike@addtoit.com> wrote:
+> > > This patch implements something very close to skas mode for hosts
+> > > which don't support skas - I'm calling this skas0.
+> >
+> > I note that this patch assumes that
+> > uml-kill-some-useless-vmalloc-tlb-flushing.patch is applied.
+>
+> You're fixing the conflict anyway since it's little, correct?
 
-For myself, I don't even know why it didn't work in 2.4, I 
-hadn't the knowledge and haven't the time.
+Well I can fix the reject if we decide that
+uml-kill-some-useless-vmalloc-tlb-flushing.patch is not to be applied, but
+it seems that there's no need.
 
-People got breakage and when searching for it that looked the most invasive 
-change, so I suggested removing and tests confirmed that.
+> However, for now it seems that I can't reproduce anyway the iptables crash, 
+> and even Jeff did some testing... so it seems it's ok.
 
-However, for now it seems that I can't reproduce anyway the iptables crash, 
-and even Jeff did some testing... so it seems it's ok.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+OK..
 
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Now what about uml-remove-winch-sem.patch?  I have a "keep this in -mm"
+sign next to it.
 
 
 
