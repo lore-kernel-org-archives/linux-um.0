@@ -1,17 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.11]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DpTzv-00056L-WB	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jul 2005 09:40:43 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by sc8-sf-mx1.sourceforge.net with esmtp (TLSv1:AES256-SHA:256)
-	(Exim 4.41)	id 1DpTzv-0005Qx-9a
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jul 2005 09:40:43 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050704164619.8F6FC1D8B91@zion.home.lan>
-Subject: [uml-devel] [patch 1/1] uml: restore hppfs support
+	id 1DpU6G-0005T0-9Z	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jul 2005 09:47:16 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DpU6E-0004UO-HW	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jul 2005 09:47:16 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
+	<1119614544.4643.9.camel@FC3-bernhard-1.acousta.local>
+	<20050624134118.GA4117@ccure.user-mode-linux.org>
+In-Reply-To: <20050624134118.GA4117@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200507041853.13469.blaisorblade@yahoo.it>
+Subject: [uml-devel] Problems about fork-not-clone (was: Re: [uml-user] UML
+	exits after "tracing thread pid")
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,87 +32,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 04 Jul 2005 18:46:19 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Mon, 4 Jul 2005 18:53:12 +0200
+To: user-mode-linux-user@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
+On Friday 24 June 2005 15:41, Jeff Dike wrote:
+> On Fri, Jun 24, 2005 at 02:02:24PM +0200, Bernhard Schauer wrote:
+> > Checking for host processor xmm support...No
+> > Checking that ptrace can change system call numbers...<0>Kernel panic -
+> > not syncing: Segfault with no mm
+>
+> Revert the fork-not-clone patch:
+> 	http://www.ussg.iu.edu/hypermail/linux/kernel/0506.1/0665.html
+>
+> The patch isn't wrong exactly - as far as I can see, the compiler is
+> compiling it slightly differently so that it hits the tt mode vs new libc
+> errno incompatibility.
+Ok, can you describe it a bit more detailedly?
 
-Some time ago a trivial patch broke HPPFS (one var became a pointer, not all
-uses were updated). It wasn't fixed at that time because not very used, now
-it's been requested so I've fixed this, and it has been tested positively (at
-least partially).
+Also, are you going to drop this patch (or allow me to do this) for now? Since 
+it isn't getting fixed, it seems me a good idea.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-Good for merging now.
+	
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
- linux-2.6.git-paolo/arch/um/Kconfig       |    6 +++---
- linux-2.6.git-paolo/fs/hppfs/hppfs_kern.c |    7 ++++---
- 2 files changed, 7 insertions(+), 6 deletions(-)
-
-diff -puN arch/um/Kconfig~uml-hppfs arch/um/Kconfig
---- linux-2.6.git/arch/um/Kconfig~uml-hppfs	2005-07-04 18:37:37.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/Kconfig	2005-07-04 18:46:13.000000000 +0200
-@@ -128,7 +128,6 @@ config HOSTFS
- 
- config HPPFS
- 	tristate "HoneyPot ProcFS (EXPERIMENTAL)"
--	depends on BROKEN
- 	help
- 	hppfs (HoneyPot ProcFS) is a filesystem which allows UML /proc
- 	entries to be overridden, removed, or fabricated from the host.
-@@ -141,8 +140,9 @@ config HPPFS
- 	You only need this if you are setting up a UML honeypot.  Otherwise,
- 	it is safe to say 'N' here.
- 
--	If you are actively using it, please ask for it to be fixed. In this
--	moment, it does not work on 2.6 (it works somehow on 2.4).
-+	If you are actively using it, please report any problems, since it's
-+	getting fixed. In this moment, it is experimental on 2.6 (it works on
-+	2.4).
- 
- config MCONSOLE
- 	bool "Management console"
-diff -puN fs/hppfs/hppfs_kern.c~uml-hppfs fs/hppfs/hppfs_kern.c
---- linux-2.6.git/fs/hppfs/hppfs_kern.c~uml-hppfs	2005-07-04 18:37:37.000000000 +0200
-+++ linux-2.6.git-paolo/fs/hppfs/hppfs_kern.c	2005-07-04 18:37:37.000000000 +0200
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/fs.h>
-+#include <linux/file.h>
- #include <linux/module.h>
- #include <linux/init.h>
- #include <linux/slab.h>
-@@ -491,7 +492,7 @@ static int hppfs_open(struct inode *inod
- 		fd = open_host_sock(host_file, &filter);
- 		if(fd > 0){
- 			data->contents = hppfs_get_data(fd, filter,
--							&data->proc_file,
-+							data->proc_file,
- 							file, &data->len);
- 			if(!IS_ERR(data->contents))
- 				data->host_fd = fd;
-@@ -543,7 +544,7 @@ static int hppfs_dir_open(struct inode *
- static loff_t hppfs_llseek(struct file *file, loff_t off, int where)
- {
- 	struct hppfs_private *data = file->private_data;
--	struct file *proc_file = &data->proc_file;
-+	struct file *proc_file = data->proc_file;
- 	loff_t (*llseek)(struct file *, loff_t, int);
- 	loff_t ret;
- 
-@@ -586,7 +587,7 @@ static int hppfs_filldir(void *d, const 
- static int hppfs_readdir(struct file *file, void *ent, filldir_t filldir)
- {
- 	struct hppfs_private *data = file->private_data;
--	struct file *proc_file = &data->proc_file;
-+	struct file *proc_file = data->proc_file;
- 	int (*readdir)(struct file *, void *, filldir_t);
- 	struct hppfs_dirent dirent = ((struct hppfs_dirent)
- 		                      { .vfs_dirent  	= ent,
-_
 
 
 -------------------------------------------------------
