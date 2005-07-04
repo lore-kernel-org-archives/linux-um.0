@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.91] (helo=sc8-sf-mx1-new.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DpVJ5-0008Ru-Hw	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1DpVJ5-0008Rw-IS	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 04 Jul 2005 11:04:35 -0700
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1-new.sourceforge.net with smtp (Exim 4.44)
-	id 1DpVJ1-0004xx-0e	for user-mode-linux-devel@lists.sourceforge.net;
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
+	id 1DpVJ0-0002WA-OE	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 04 Jul 2005 11:04:35 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200507042008.39422.blaisorblade@yahoo.it>
+Message-Id: <200507042010.30973.blaisorblade@yahoo.it>
 Subject: [uml-devel] Updates for 2.6.12 kernel: -bs1, SKAS3-v8 and -v9-pre4
 	released
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -27,8 +28,9 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 4 Jul 2005 20:08:38 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
+Date: Mon, 4 Jul 2005 20:10:30 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
 
 Ok, for SKAS they are just updates, so there's nothing to note (except that 
 for now I recommend sticking to -V8 rather than SKAS prereleases; I am 
@@ -38,13 +40,12 @@ Then, I've included the fix for the recent TT mode problem into -bs1, as
 previously announced. I hope you enjoy it. There's also the HPPFS fix.
 
 Then, I'm going to release a version of the SKAS0 patch 2.6.12, so that it can 
-be tested widely. I will include also the list of known bugs with the 
-announcement (some of them are fixed by patches still to clean up a bit).
+be tested widely. I will include also the list of known bugs within the 
+announcement.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
-
 
 	
 
