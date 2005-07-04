@@ -1,26 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from [10.3.1.91] (helo=sc8-sf-mx1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DpU6G-0005T0-9Z	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jul 2005 09:47:16 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.41)
-	id 1DpU6E-0004UO-HW	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jul 2005 09:47:16 -0700
+	id 1DpVJ5-0008Ru-Hw	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jul 2005 11:04:35 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by sc8-sf-mx1-new.sourceforge.net with smtp (Exim 4.44)
+	id 1DpVJ1-0004xx-0e	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jul 2005 11:04:35 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
-	<1119614544.4643.9.camel@FC3-bernhard-1.acousta.local>
-	<20050624134118.GA4117@ccure.user-mode-linux.org>
-In-Reply-To: <20050624134118.GA4117@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200507041853.13469.blaisorblade@yahoo.it>
-Subject: [uml-devel] Problems about fork-not-clone (was: Re: [uml-user] UML
-	exits after "tracing thread pid")
+Message-Id: <200507042008.39422.blaisorblade@yahoo.it>
+Subject: [uml-devel] Updates for 2.6.12 kernel: -bs1, SKAS3-v8 and -v9-pre4
+	released
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,30 +27,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 4 Jul 2005 18:53:12 +0200
-To: user-mode-linux-user@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 4 Jul 2005 20:08:38 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
 
-On Friday 24 June 2005 15:41, Jeff Dike wrote:
-> On Fri, Jun 24, 2005 at 02:02:24PM +0200, Bernhard Schauer wrote:
-> > Checking for host processor xmm support...No
-> > Checking that ptrace can change system call numbers...<0>Kernel panic -
-> > not syncing: Segfault with no mm
->
-> Revert the fork-not-clone patch:
-> 	http://www.ussg.iu.edu/hypermail/linux/kernel/0506.1/0665.html
->
-> The patch isn't wrong exactly - as far as I can see, the compiler is
-> compiling it slightly differently so that it hits the tt mode vs new libc
-> errno incompatibility.
-Ok, can you describe it a bit more detailedly?
+Ok, for SKAS they are just updates, so there's nothing to note (except that 
+for now I recommend sticking to -V8 rather than SKAS prereleases; I am 
+suspicious of SKAS for the breakpoints problem while debugging UML).
 
-Also, are you going to drop this patch (or allow me to do this) for now? Since 
-it isn't getting fixed, it seems me a good idea.
+Then, I've included the fix for the recent TT mode problem into -bs1, as 
+previously announced. I hope you enjoy it. There's also the HPPFS fix.
+
+Then, I'm going to release a version of the SKAS0 patch 2.6.12, so that it can 
+be tested widely. I will include also the list of known bugs with the 
+announcement (some of them are fixed by patches still to clean up a bit).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
+
 
 	
 
