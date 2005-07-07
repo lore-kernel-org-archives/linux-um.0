@@ -1,20 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.91] (helo=sc8-sf-mx1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DqEHJ-0001ru-7D	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jul 2005 11:05:45 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by sc8-sf-mx1-new.sourceforge.net with smtp (Exim 4.44)
-	id 1DqEHG-0007a6-Pi	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jul 2005 11:05:45 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050707115908.GA6043@ccure.user-mode-linux.org>
+References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
+	<1119614544.4643.9.camel@FC3-bernhard-1.acousta.local>
+	<20050624134118.GA4117@ccure.user-mode-linux.org>
+	<200507041853.13469.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200507062011.58619.blaisorblade@yahoo.it>
-Subject: [uml-devel] SKAS0 test tree against 2.6.12
+In-Reply-To: <200507041853.13469.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: Problems about fork-not-clone (was: Re: [uml-user]
+	UML exits after "tracing thread pid")
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,34 +22,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 6 Jul 2005 20:11:58 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 7 Jul 2005 07:59:08 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Ok, it's there. I've simply adapted the two SKAS0 patches for 2.6.12 
-(backporting a cleanup and fixing some trivial rejects). More info at the web 
-page.
+> Ok, can you describe it a bit more detailedly?
+> 
+> Also, are you going to drop this patch (or allow me to do this) for now? 
+> Since it isn't getting fixed, it seems me a good idea.
 
-Testing is welcome. In particular, any regression in SKAS3 mode should be 
-prompty reported to me and Jeff, because they are not expected at all.
+I still think the patch is correct.  Ben LaHaise sent me a UML binary
+which crashes, which I can send you if you want to look at it.
 
-I'll add a simplified "proc_mm=0" switch (it's not the Bodo's patch because 
-that is more intrusive and splits that further into proc_mm and faultinfo 
-switches).
+This thing was looking at errno after the first call to fork even if
+it succeeded.  This leads me to believe that this is a compiler oddity
+rather than a compiler bug, and that this is causing UML to hit the
+tt-specific errno crash with recent libcs.  You understand that
+problem more than I do.
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+So, I would say that skas0 is more a fix for this problem than
+reverting the fork-not-clone patch is.
 
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+				Jeff
 
 
 -------------------------------------------------------
