@@ -1,16 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050707115908.GA6043@ccure.user-mode-linux.org>
-References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
-	<1119614544.4643.9.camel@FC3-bernhard-1.acousta.local>
-	<20050624134118.GA4117@ccure.user-mode-linux.org>
-	<200507041853.13469.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200507041853.13469.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Problems about fork-not-clone (was: Re: [uml-user]
-	UML exits after "tracing thread pid")
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1DqYdP-0001Fp-PP	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jul 2005 08:49:55 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by sc8-sf-mx1-new.sourceforge.net with esmtp (Exim 4.44)
+	id 1DqYdM-0000sQ-Rt	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jul 2005 08:49:55 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050707155353.2AC3521AD6C@zion.home.lan>
+Subject: [uml-devel] [patch 1/1] uml:remove user_constants.h on clean
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,28 +22,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 7 Jul 2005 07:59:08 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 07 Jul 2005 17:53:50 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-> Ok, can you describe it a bit more detailedly?
-> 
-> Also, are you going to drop this patch (or allow me to do this) for now? 
-> Since it isn't getting fixed, it seems me a good idea.
 
-I still think the patch is correct.  Ben LaHaise sent me a UML binary
-which crashes, which I can send you if you want to look at it.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-This thing was looking at errno after the first call to fork even if
-it succeeded.  This leads me to believe that this is a compiler oddity
-rather than a compiler bug, and that this is causing UML to hit the
-tt-specific errno crash with recent libcs.  You understand that
-problem more than I do.
+make clean ARCH=um does not remove the generated file
+arch/um/include/user_constants.h, fix this.
 
-So, I would say that skas0 is more a fix for this problem than
-reverting the fork-not-clone patch is.
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-				Jeff
+ linux-2.6.git-paolo/arch/um/Makefile |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletion(-)
+
+diff -puN arch/um/Makefile~uml-remove-user-constants_h arch/um/Makefile
+--- linux-2.6.git/arch/um/Makefile~uml-remove-user-constants_h	2005-07-07 17:52:09.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/Makefile	2005-07-07 17:52:09.000000000 +0200
+@@ -140,7 +140,8 @@ endef
+ #When cleaning we don't include .config, so we don't include
+ #TT or skas makefiles and don't clean skas_ptregs.h.
+ CLEAN_FILES += linux x.i gmon.out $(ARCH_DIR)/include/uml-config.h \
+-	$(GEN_HEADERS) $(ARCH_DIR)/include/skas_ptregs.h
++	$(GEN_HEADERS) $(ARCH_DIR)/include/skas_ptregs.h \
++	$(ARCH_DIR)/include/user_constants.h
+ 
+ MRPROPER_FILES += $(SYMLINK_HEADERS) $(ARCH_SYMLINKS) \
+ 	$(addprefix $(ARCH_DIR)/kernel/,$(KERN_SYMLINKS)) $(ARCH_DIR)/os \
+_
 
 
 -------------------------------------------------------
