@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DrDBH-00009a-4K	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Jul 2005 04:07:35 -0700
-Received: from caramon.arm.linux.org.uk ([212.18.232.186])
+	id 1DrO1F-0001q3-V1	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Jul 2005 15:41:57 -0700
+Received: from smtp.gentoo.org ([134.68.220.30])
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
-	id 1DrDBF-0001uz-LH	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Jul 2005 04:07:35 -0700
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-Message-ID: <20050709120703.C2175@flint.arm.linux.org.uk>
-References: <20050709110143.D59181E9EA4@zion.home.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050709110143.D59181E9EA4@zion.home.lan>;
-	from blaisorblade@yahoo.it on Sat, Jul 09, 2005 at 01:01:33PM +0200
-Subject: [uml-devel] Re: [patch 1/1] uml: fix lvalue for gcc4
+	id 1DrO1C-0003Zz-LD	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Jul 2005 15:41:58 -0700
+Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
+	helo=nuthatch.gentoo.org)	by smtp.gentoo.org with esmtp (Exim 4.43)
+	id 1DrO16-0006fH-KD	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Jul 2005 22:41:48 +0000
+Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
+	id 1DrO16-0002dS-Az	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Jul 2005 22:41:48 +0000
+From: bugzilla-daemon@gentoo.org
+In-Reply-To: <bug-49277@bugs.gentoo.org>
+Message-Id: <E1DrO16-0002dS-Az@nuthatch.gentoo.org>
+Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,36 +30,92 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 9 Jul 2005 12:07:03 +0100
-To: blaisorblade@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 09 Jul 2005 22:41:48 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jul 09, 2005 at 01:01:33PM +0200, blaisorblade@yahoo.it wrote:
-> diff -puN arch/um/sys-x86_64/signal.c~uml-fix-for-gcc4-lvalue arch/um/sys-x86_64/signal.c
-> --- linux-2.6.git/arch/um/sys-x86_64/signal.c~uml-fix-for-gcc4-lvalue	2005-07-09 13:01:03.000000000 +0200
-> +++ linux-2.6.git-paolo/arch/um/sys-x86_64/signal.c	2005-07-09 13:01:03.000000000 +0200
-> @@ -168,7 +168,7 @@ int setup_signal_stack_si(unsigned long 
->  
->  	frame = (struct rt_sigframe __user *)
->  		round_down(stack_top - sizeof(struct rt_sigframe), 16) - 8;
-> -	((unsigned char *) frame) -= 128;
-> +	frame -= 128 / sizeof(frame);
+Clear-Text: http://bugs.gentoo.org/show_bug.cgi?id=49277
+Secure: https://bugs.gentoo.org/show_bug.cgi?id=49277
 
-Are you sure these two are identical?
 
-The above code fragment looks suspicious anyway, particularly:
 
- 	frame = (struct rt_sigframe __user *)
- 		round_down(stack_top - sizeof(struct rt_sigframe), 16) - 8;
 
-which will put the frame at 8 * sizeof(struct rt_sigframe) below
-the point which round_down() would return (which would be 1 struct
-rt_sigframe below stack_top, rounded down).
+
+------- Additional Comments From x-drum@libero.it  2005-07-09 15:41 PDT -------
+(In reply to comment #52)
+> usermode-sources-2.6.12 is in portage. Please test it (see comment #51) as it
+> should solve the NPTL issues.
+
+Hi,
+I'm using glibc-2.3.4.20041102-r1 compiled with the USE="nptl nptlonly".
+
+Finally i was able to build an uml kernel from the source with this "mix"!!!
+i patched the host kernel (gentoo-sources-2.6.12-r4)
+with this patch:
+http://www.user-mode-linux.org/~blaisorblade/patches/skas3-2.6/skas-2.6.12-rc4-v9-pre4/skas-2.6.12-rc4-v9-pre4.patch.bz2
+
+then i emerged the usermode-sources-2.6.12
+and in the kernel configuration 
+i disabled CONFIG_MODE_TT 
+and enabled CONFIG_SKAS 
+(see comment #41 by BlaisorBlade)
+
+NOTE1: when CONFIG_MODE_TT is disabled in the guest kernel (uml)
+the host kernel must be patched with the skas patch.
+
+NOTE2: i would like to thank you all! :D
+
+my emerge info:
+-----------------------------------------------------------------
+Portage 2.0.51.19 (default-linux/x86/2005.0, gcc-3.3.5-20050130,
+glibc-2.3.4.20041102-r1, 2.6.12-gentoo-r4-skas3-v9-pre4 i686)
+=================================================================
+System uname: 2.6.12-gentoo-r4-skas3-v9-pre4 i686 Intel(R) Pentium(R) 4 CPU 2.53GHz
+Gentoo Base System version 1.6.12
+Python:              dev-lang/python-2.3.5 [2.3.5 (#1, Apr 28 2005, 17:46:54)]
+dev-lang/python:     2.3.5
+sys-apps/sandbox:    [Not Present]
+sys-devel/autoconf:  2.59-r6, 2.13
+sys-devel/automake:  1.7.9-r1, 1.8.5-r3, 1.5, 1.4_p6, 1.6.3, 1.9.5
+sys-devel/binutils:  2.15.92.0.2-r10
+sys-devel/libtool:   1.5.18-r1
+virtual/os-headers:  2.6.11-r2
+ACCEPT_KEYWORDS="x86"
+AUTOCLEAN="yes"
+CFLAGS="-march=pentium4 -O2 -pipe -fomit-frame-pointer"
+CHOST="i686-pc-linux-gnu"
+CONFIG_PROTECT="/etc /usr/kde/2/share/config /usr/kde/3.4/env
+/usr/kde/3.4/share/config /usr/kde/3.4/shutdown /usr/kde/3/share/config
+/usr/lib/X11/xkb /usr/share/config /var/qmail/control"
+CONFIG_PROTECT_MASK="/etc/gconf /etc/splash /etc/terminfo /etc/env.d"
+CXXFLAGS="-O2 -mcpu=i686 -pipe"
+DISTDIR="/usr/portage/distfiles"
+FEATURES="autoaddcvs autoconfig ccache distlocks sandbox sfperms strict"
+GENTOO_MIRRORS="http://distfiles.gentoo.org
+http://distro.ibiblio.org/pub/Linux/distributions/gentoo"
+LANG="it_IT@euro"
+LINGUAS="it"
+MAKEOPTS="-j1"
+PKGDIR="/usr/portage/packages"
+PORTAGE_TMPDIR="/var/tmp"
+PORTDIR="/usr/portage"
+PORTDIR_OVERLAY="/usr/local/portage"
+SYNC="rsync://rsync1.it.gentoo.org/gentoo-portage"
+USE="x86 X aalib acpi alsa apm arts avi berkdb bitmap-fonts cdr crypt cups curl
+dvd dvdr emboss encode esd fam flac foomaticdb fortran gdbm gif gnome gpm gtk
+gtk2 imagemagick imlib ipv6 java jpeg junit kde libg++ libwww mad mikmod mmx
+motif mp3 mpeg mysql ncurses nls nptl nptlonly odbc ogg oggvorbis opengl oss pam
+pdflib perl png python qt quicktime readline samba sdl slang spell ssl svga tcpd
+tiff truetype truetype-fonts type1-fonts unicode usb vorbis xine xinerama xml
+xml2 xmms xv zlib linguas_it userland_GNU kernel_linux elibc_glibc"
+Unset:  ASFLAGS, CBUILD, CTARGET, LC_ALL, LDFLAGS
+
+
+
 
 -- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 Serial core
+Configure bugmail: http://bugs.gentoo.org/userprefs.cgi?tab=email
+------- You are receiving this mail because: -------
+You are on the CC list for the bug, or are watching someone who is.
 
 
 -------------------------------------------------------
