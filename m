@@ -1,16 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DrD1p-00084s-5Z	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Jul 2005 03:57:49 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.44)
-	id 1DrD1n-0007BS-Dd	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Jul 2005 03:57:49 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050709110143.D59181E9EA4@zion.home.lan>
-Subject: [uml-devel] [patch 1/1] uml: fix lvalue for gcc4
+	id 1DrDBH-00009a-4K	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Jul 2005 04:07:35 -0700
+Received: from caramon.arm.linux.org.uk ([212.18.232.186])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
+	id 1DrDBF-0001uz-LH	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Jul 2005 04:07:35 -0700
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Message-ID: <20050709120703.C2175@flint.arm.linux.org.uk>
+References: <20050709110143.D59181E9EA4@zion.home.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050709110143.D59181E9EA4@zion.home.lan>;
+	from blaisorblade@yahoo.it on Sat, Jul 09, 2005 at 01:01:33PM +0200
+Subject: [uml-devel] Re: [patch 1/1] uml: fix lvalue for gcc4
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,32 +28,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 09 Jul 2005 13:01:33 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Sat, 9 Jul 2005 12:07:03 +0100
+To: blaisorblade@yahoo.it
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
+On Sat, Jul 09, 2005 at 01:01:33PM +0200, blaisorblade@yahoo.it wrote:
+> diff -puN arch/um/sys-x86_64/signal.c~uml-fix-for-gcc4-lvalue arch/um/sys-x86_64/signal.c
+> --- linux-2.6.git/arch/um/sys-x86_64/signal.c~uml-fix-for-gcc4-lvalue	2005-07-09 13:01:03.000000000 +0200
+> +++ linux-2.6.git-paolo/arch/um/sys-x86_64/signal.c	2005-07-09 13:01:03.000000000 +0200
+> @@ -168,7 +168,7 @@ int setup_signal_stack_si(unsigned long 
+>  
+>  	frame = (struct rt_sigframe __user *)
+>  		round_down(stack_top - sizeof(struct rt_sigframe), 16) - 8;
+> -	((unsigned char *) frame) -= 128;
+> +	frame -= 128 / sizeof(frame);
 
-This construct is refused by GCC 4, so here's the fix.
+Are you sure these two are identical?
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+The above code fragment looks suspicious anyway, particularly:
 
- linux-2.6.git-paolo/arch/um/sys-x86_64/signal.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
-
-diff -puN arch/um/sys-x86_64/signal.c~uml-fix-for-gcc4-lvalue arch/um/sys-x86_64/signal.c
---- linux-2.6.git/arch/um/sys-x86_64/signal.c~uml-fix-for-gcc4-lvalue	2005-07-09 13:01:03.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/sys-x86_64/signal.c	2005-07-09 13:01:03.000000000 +0200
-@@ -168,7 +168,7 @@ int setup_signal_stack_si(unsigned long 
- 
  	frame = (struct rt_sigframe __user *)
  		round_down(stack_top - sizeof(struct rt_sigframe), 16) - 8;
--	((unsigned char *) frame) -= 128;
-+	frame -= 128 / sizeof(frame);
- 
- 	if (!access_ok(VERIFY_WRITE, fp, sizeof(struct _fpstate)))
- 		goto out;
-_
+
+which will put the frame at 8 * sizeof(struct rt_sigframe) below
+the point which round_down() would return (which would be 1 struct
+rt_sigframe below stack_top, rounded down).
+
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 Serial core
 
 
 -------------------------------------------------------
