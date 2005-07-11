@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ds683-0008Cx-DB	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Jul 2005 14:47:55 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	id 1Ds6HJ-000080-JS	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2005 14:57:29 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
 	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.44)
-	id 1Ds681-0000zF-W4	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Jul 2005 14:47:55 -0700
+	id 1Ds6HF-0003FM-7p	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2005 14:57:29 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: SKAS0 test tree against 2.6.12
+References: <20050707182817.9601389260@sc8-sf-spam1.sourceforge.net>
+	<200507091240.46934.blaisorblade@yahoo.it>
+	<200507112346.17413.blaisorblade@yahoo.it>
+In-Reply-To: <200507112346.17413.blaisorblade@yahoo.it>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200507112355.05642.blaisorblade@yahoo.it>
-Subject: [uml-devel] Big SKAS3 bug found with 2.6/CONFIG_REGPARM - please
-	upgrade
+Message-Id: <200507120004.35828.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,48 +29,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 11 Jul 2005 23:55:05 +0200
+Date: Tue, 12 Jul 2005 00:04:35 +0200
+Content-Transfer-Encoding: 8bit
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+Cc: antoine <antoine@nagafix.co.uk>
 
-I've worked during this weekend to diagnose the problem I reported earlier, in 
-the thread " Please test 2.6.13-rc2 in TT mode! Big problem with syscall 
-parameters clobbering".
-
-It can affect an application when these conditions are verified:
-*) the host is running a 2.6 kernel with SKAS patch and is compiled with 
-CONFIG_REGPARM
-*) it is calling sys_mmap2, old_mmap, sys_mprotect or sys_modify_ldt
-*) the call happens via int 0x80
-*) on return, the application relies on the values stored in registers 
-(actually on some specific registers, depending on the exact situation).
-
-Condition 3 means that a dynamically linked app with NPTL glibc won't incur in 
-this problem, nor will statically linked app compiled on NPTL-only distros.
-
-I've tested 2.6.9-V7, 2.6.11-V8/-V9-pre4 and 2.6.12-V8/-V9-pre4, all with 
-CONFIG_REGPARM enabled, and compiled with gcc 3.3.4, and they all show this 
-bug. Analysis with CONFIG_REGPARM disabled show that the problem won't happen.
-
-Probably gcc 3.4 triggers it as well; the buggy code is present 
-unchanged even in SKAS3-V1 against 2.6.3, although maybe it wouldn't be 
-triggered by such an old kernel (because CONFIG_REGPARM wasn't present IIRC).
-
-The solution, for user, is to upgrade to SKAS3-V8.2, or to SKAS3-v9-pre7 
-(which is still to consider as *experimental*).
+On Monday 11 July 2005 23:46, Blaisorblade wrote:
+> On Saturday 09 July 2005 12:40, Blaisorblade wrote:
+> > On Friday 08 July 2005 12:29, antoine wrote:
+> > > Don't know if you're interested in this report but it does not build
+> > > for x86_64:
+> > >   SYMLINK arch/um/sys-x86_64/semaphore.c
+> > >   CC      arch/um/sys-x86_64/semaphore.o
+> > >   CC      arch/um/sys-x86_64/sigcontext.o
+> > >   CC      arch/um/sys-x86_64/signal.o
+> > > arch/um/sys-x86_64/signal.c: In function ‘setup_signal_stack_si’:
+> > > arch/um/sys-x86_64/signal.c:171: error: invalid lvalue in assignment
+> > > make[1]: *** [arch/um/sys-x86_64/signal.o] Error 1
+> > > make: *** [arch/um/sys-x86_64] Error 2
+> >
+> > I remember this report, only I just suggested the fix and didn't post it
+> > (was busy at that time). It's SKAS0 - unrelated I think (I may be wrong,
+> > but the whole patchset does not include it) but triggered by GCC4.
+>
+> Please keep remembering I *am* stupid, as just noted by Russell King (ARM
+> maintainer) :-(.
+>
+> The attached patch makes more sense... however it seems that the affected
+> code is anyway buggy, so I hope Jeff will help fixing this (unless I get to
+> understand this magically).
+Correction: the affected should be improved, but it anyway works.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
 
 
 
