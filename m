@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ds5bS-0006ZH-EU	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Jul 2005 14:14:14 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.44)
-	id 1Ds5bM-0002mZ-Qs	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Jul 2005 14:14:14 -0700
+	id 1Ds5cM-0006bj-RQ	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2005 14:15:10 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.44)
+	id 1Ds5cL-0003Vw-8W	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2005 14:15:10 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: Problems about fork-not-clone (was: Re:
-	[uml-user] UML exits after "tracing thread pid")
-References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
-	<20050707115908.GA6043@ccure.user-mode-linux.org>
-	<1121068129.4682.15.camel@FC3-bernhard-1.acousta.local>
-In-Reply-To: <1121068129.4682.15.camel@FC3-bernhard-1.acousta.local>
+Subject: Re: [uml-devel] SKAS0 test tree against 2.6.12
+References: <200507062011.58619.blaisorblade@yahoo.it>
+	<200507102330.12790.rob@landley.net>
+In-Reply-To: <200507102330.12790.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200507112321.20457.blaisorblade@yahoo.it>
+Message-Id: <200507112322.22845.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,41 +30,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 11 Jul 2005 23:21:20 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, schauer@acousta.at
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net
+Date: Mon, 11 Jul 2005 23:22:22 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>
 
-On Monday 11 July 2005 09:48, Bernhard Schauer wrote:
-> On Thu, 2005-07-07 at 07:59 -0400, Jeff Dike wrote:
-> > So, I would say that skas0 is more a fix for this problem than
-> > reverting the fork-not-clone patch is.
+On Monday 11 July 2005 06:30, Rob Landley wrote:
+> On Wednesday 06 July 2005 13:11, Blaisorblade wrote:
+> > Ok, it's there. I've simply adapted the two SKAS0 patches for 2.6.12
 
-> No it isn't. Its an other method not a fix for anything.
-I agree on this point, even because SKAS0 is not yet widely deployed / tested.
-> As long as 
-> skas0 is not in kernel mainline and enabled in main distributions, it
-> has no relevance for corporate level (at least in my case).
+> I still haven't figured out how to get it to run in skas0 mode, but
+> 2.6.12.2 with your -skas0 patch still seems to work in tt mode.  (With the
+> usual bootup idiosyncrasies, such as)...
+Can you send me a binary + complete output, if possible with debug-info put 
+inside, SKAS mode enabled and PT_PROXY enabled (for what it's worth)?
+> VFS: Mounted root (hostfs filesystem).
+> idr_remove called for id=3 which is not allocated.
+> a08fb980:  [<a009af8f>] sub_remove+0xef/0x100
+> a08fb9e0:  [<a009afcf>] idr_remove+0x2f/0xc0
+> a08fba00:  [<a00a35e2>] release_dev+0x5d2/0x6f0
+> a08fba80:  [<a00a2aa5>] init_dev+0x1b5/0x5b0
+> a08fbad0:  [<a00a385c>] tty_open+0x15c/0x3a0
+> a08fbae0:  [<a009b69a>] kobject_get+0x1a/0x30
+> a08fbaf0:  [<a006333f>] cdev_get+0xf/0x20
+> a08fbb00:  [<a006350f>] exact_lock+0xf/0x20
+> a08fbb10:  [<a00ad0a0>] kobj_lookup+0xe0/0xf0
+> a08fbb38:  [<a00a3700>] tty_open+0x0/0x3a0
+> a08fbb40:  [<a006340e>] chrdev_open+0x9e/0x120
+> a08fbb70:  [<a00593da>] dentry_open+0x10a/0x190
+> a08fbb90:  [<a00592c8>] filp_open+0x68/0x70
+> a08fbbf0:  [<a0059609>] sys_open+0x49/0x90
+> a08fbc00:  [<a0011ef5>] change_signals+0x65/0x90
+> a08fbc10:  [<a00167a3>] execute_syscall_tt+0xa3/0xb0
+> a08fbc90:  [<a00167df>] syscall_handler_tt+0x2f/0x60
+> a08fbca0:  [<a0011f4f>] unblock_signals+0xf/0x20
+> a08fbcb0:  [<a001798b>] sig_handler_common_tt+0xbb/0x150
+> a08fbd10:  [<a001c337>] sig_handler+0x17/0x20
+> a08fbd20:  [<a00b9bd8>] __restore+0x0/0x8
+>
+> But once past that, it gives me my shell prompt and I can mount /proc and
+> confirm this is indeed UML running.  Haven't played with it much beyond
+> that yet...
+>
+> Rob
+>
+> Rob
 
-> UML gives us the chance to build a compile and debug environment without
-> a relevance on which distribution it runs. The image used to boot UML is
-> a copy for each developer and each of them could compile applications
-> having the same environment as on the target system.
-
-There's a bit of misunderstanding: SKAS0 is a patch for UML only, not an host 
-patch. It's numbered "0" because it has "0" dependencies, or because it does 
-not depend on host SKAS patch (nor SKAS1, nor SKAS2, nor SKAS3).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
 
 
 
