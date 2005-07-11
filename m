@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ds64U-0007xj-BE	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Jul 2005 14:44:14 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.44)
-	id 1Ds64S-0000GT-St	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Jul 2005 14:44:14 -0700
+	id 1Ds683-0008Cx-DB	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2005 14:47:55 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.44)
+	id 1Ds681-0000zF-W4	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2005 14:47:55 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Please test 2.6.13-rc2 in TT mode! Big problem with
-	syscall parameters clobbering
-References: <200507072031.43862.blaisorblade@yahoo.it>
-In-Reply-To: <200507072031.43862.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200507112351.25230.blaisorblade@yahoo.it>
+Message-Id: <200507112355.05642.blaisorblade@yahoo.it>
+Subject: [uml-devel] Big SKAS3 bug found with 2.6/CONFIG_REGPARM - please
+	upgrade
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,36 +28,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 11 Jul 2005 23:51:24 +0200
+Date: Mon, 11 Jul 2005 23:55:05 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Thursday 07 July 2005 20:31, Blaisorblade wrote:
-> For this kernel (and for -rc1), I've been getting almost no reports (except
-> a problem with GCC 2.95 I now solved) in TT mode, so I'd like some more
-> testing, especially for users which have the latest SKAS patch installed.
-> At least positive / negative reports.
+I've worked during this weekend to diagnose the problem I reported earlier, in 
+the thread " Please test 2.6.13-rc2 in TT mode! Big problem with syscall 
+parameters clobbering".
 
-[...]
-> But on my system the comparison fails, because the compiler keeps "to"
-> inside EBX and after the syscall return the content of EBX is altered!
+It can affect an application when these conditions are verified:
+*) the host is running a 2.6 kernel with SKAS patch and is compiled with 
+CONFIG_REGPARM
+*) it is calling sys_mmap2, old_mmap, sys_mprotect or sys_modify_ldt
+*) the call happens via int 0x80
+*) on return, the application relies on the values stored in registers 
+(actually on some specific registers, depending on the exact situation).
 
-> So, this seems a kernel bug, but it does not happen in the previous form of
-> the code (which didn't use a direct syscall but rather the glibc version)!
+Condition 3 means that a dynamically linked app with NPTL glibc won't incur in 
+this problem, nor will statically linked app compiled on NPTL-only distros.
 
-> And my system works pretty well, I think;
->
-> * I get only some crashes from some KDE components, but I consider them
-> normal,
-> * and a lot of problems with GDB and debugging (still looking for the
-> cause).
+I've tested 2.6.9-V7, 2.6.11-V8/-V9-pre4 and 2.6.12-V8/-V9-pre4, all with 
+CONFIG_REGPARM enabled, and compiled with gcc 3.3.4, and they all show this 
+bug. Analysis with CONFIG_REGPARM disabled show that the problem won't happen.
 
-Ok, I found the problem, it was due indeed to a SKAS3 bug. I could verify it 
-in patch releases as old as 2.6.9-v7 by testing, and I didn't went testing 
-further back. In all kernels I tested, CONFIG_REGPARM was enabled, and this 
-is related with the problem.
+Probably gcc 3.4 triggers it as well; the buggy code is present 
+unchanged even in SKAS3-V1 against 2.6.3, although maybe it wouldn't be 
+triggered by such an old kernel (because CONFIG_REGPARM wasn't present IIRC).
 
-The solution is to upgrade to -V8.2.
+The solution, for user, is to upgrade to SKAS3-V8.2, or to SKAS3-v9-pre7 
+(which is still to consider as *experimental*).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
