@@ -2,25 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DsN1q-00083b-LU	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 08:50:38 -0700
+	id 1DsNKA-0000Uj-8h	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 09:09:34 -0700
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
 	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.44)
-	id 1DsN1p-0003A8-9l	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 08:50:38 -0700
+	id 1DsNK6-0007Zj-Fx	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 09:09:34 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: Problems about fork-not-clone (was: Re:
-	[uml-user] UML exits after "tracing thread pid")
+Subject: Re: [uml-user] Re: [uml-devel] Re: Problems about fork-not-clone
 References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
-	<200507120304.58283.rob@landley.net>
-	<1121160835.4718.3.camel@FC3-bernhard-1.acousta.local>
-In-Reply-To: <1121160835.4718.3.camel@FC3-bernhard-1.acousta.local>
+	<200507112321.20457.blaisorblade@yahoo.it> <42D3778A.20703@acousta.at>
+In-Reply-To: <42D3778A.20703@acousta.at>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200507121757.55572.blaisorblade@yahoo.it>
+Message-Id: <200507121816.49410.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,23 +30,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Jul 2005 17:57:55 +0200
-To: user-mode-linux-user@lists.sourceforge.net, schauer@acousta.at
-Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Tue, 12 Jul 2005 18:16:49 +0200
+To: user-mode-linux-user@lists.sourceforge.net
+Cc: Bernhard Schauer <schauer@acousta.at>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Tuesday 12 July 2005 11:33, Bernhard Schauer wrote:
-> > Checking PROT_EXEC mmap in /tmp...OK
-> > tracing thread pid = 11687
-> >
-> > And then exits with no further explanation or printout.
->
-> That sounds like the behaviour described in the first message. If you
-> apply the
-> "uml-revert-fork-instead-of-clone.patch" posted by Blaisorblade in the
-> same thread on 2nd July, everything should work as expected with TT mode
-> only.
-Exact, that's included in -bs which is included in the -skas0 patchset, so 
-this is the explaination.
+On Tuesday 12 July 2005 09:55, Bernhard Schauer wrote:
+> Blaisorblade wrote:
+> > There's a bit of misunderstanding: SKAS0 is a patch for UML only, not an
+> > host patch. It's numbered "0" because it has "0" dependencies, or because
+> > it does not depend on host SKAS patch (nor SKAS1, nor SKAS2, nor SKAS3).
+
+> Sorry for that, I should have read about it - especially before writing.
+
+> _IMO:_
+
+> In any case it should be in the kernel mainline, or in other words:
+
+> A mainline kernel should run without any patches required whether SKAS0
+> nor reverted fork-not-clone.
+
+> If this specific failure is caught by reverted fork-not-clone patch this
+> is THE correction and should also be in mainline kernel.
+> If SKAS0 is better than TT mode, TT mode could be replaced with 2.6.14.
+
+Don't worry, I make the same kind of reasoning, so fork-not-clone will be 
+reverted for now, until it's made to work on newer systems... and TT mode and 
+SKAS0 mode are not incompatible, so SKAS0 will not be dropped so early (for 
+now I consider 2.6.14 early, yes).
+
+There were some problems about TT mode which appeared unsolvable on newer 
+distros, and that was a reason to drop TT mode, but I just solved them, so 
+there's no hurry in dropping it.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
