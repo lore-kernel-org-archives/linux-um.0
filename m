@@ -1,17 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=sc8-sf-mx1.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DsORt-0004JD-9t	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 10:21:37 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
-	id 1DsORs-0003Jq-0Z	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 10:21:37 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050712172838.271E8D9A84@zion.home.lan>
-Subject: [uml-devel] [patch 1/1] uml: fix TT mode by reverting "use fork
-	instead of clone"
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Message-ID: <F47F4E3B83BE854AA0BCB998C69295169D2BB4@tiki.fastmail.usf.edu>
+From: "Gaspar, Alessio (USF Lakeland)" <alessio@lklnd.usf.edu>
+Subject: [uml-devel] RE: 2.6.12-bb2-skas0 hanging after INIT  (CORRECTION
+	PREVIOUS POST)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,212 +18,207 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Jul 2005 19:28:37 +0200
-To: stable@kernel.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Tue, 12 Jul 2005 14:15:49 -0400
+Content-Transfer-Encoding: 8bit
+To: user-mode-linux-user@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+
+> On Tuesday 12 July 2005 18:45, Gaspar, Alessio (USF Lakeland) wrote:
+> > err... please read 2.6.12-bb2-skas0 in my previous post instead of
+> > 2.6.12-bs1-skas0. I did try too many patches lately :)
+> Granted, but what about using plain -bs1? SKAS0 is still development
+code
+> (and
+> I'm not very acquainted with it), so I would avoid it in case of
+problems.
+> 
+> After that, UML has not a lovely relation with 2.6.10 and 2.6.9, so if
+you
+> can
+> go to either 2.6.8.1 or 2.6.11 it would be mairveillous...
+
+Sorry can't do (trust me I'd prefer too :)
+I just browsed again openSSI.org and we need their 1.9.x version which,
+of course, is based on 2.6.10.
+
+Concerning 2.6.12-bs1, I already tried it before but, since I couldn't
+recall what went wrong, I re-compiled the guest uml kernel using this
+time various options (support for SKAS and/or TT) and re-tested the
+whole thing
+
+Each version was compiled by doing a 
+make ARCH=um mrproper
+make ARCH=um defconfig
+make ARCH=um menuconfig (to edit changes between trials)
+make ARCH=um linux 
+
+Summary of results
+
+SKAS + TT			./linux-tt-skas
+hangs  
+				./linux-tt-skas mode=tt		hangs
+TT only			./linux-tt 				hangs
 
 
-From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+In all cases, boot hangs on sleeping process gets unexpected signal 10
+This is the original bug I bumped into and which led me to try the skas0
+approach to escape any TT mode related problem
 
-Revert the following patch, because of miscompilation problems in different
-environments leading to UML not working *at all* in TT mode; it was merged
-lately in 2.6 development cycle, a little after being written, and has caused
-problems to lots of people; I know it's a bit too long, but it shouldn't have
-been merged in first place, so I still apply for inclusion in the -stable
-tree. Anyone using this feature currently is either using some older kernel
-(some reports even used 2.6.12-rc4-mm2) or using this patch, as included in my
--bs patchset.
+SKAS 	(dyn linking)	./linux-skas-dynamic		
+	(stat linking)	./linux-skas-static	
 
-For now there's not yet a fix for this patch, so for now the best thing is to
-drop it (which was widely reported to give a working kernel).
+These are useless since there is no skas support in the host kernel
 
-"Convert the boot-time host ptrace testing from clone to fork.  They were
-essentially doing fork anyway.  This cleans up the code a bit, and makes
-valgrind a bit happier about grinding it."
+I don't know if this info helps but it may spare others useless
+compilations at least.
 
-URL:
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=98fdffccea6cc3fe9dba32c0fcc310bcb5d71529
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
 
- vanilla-linux-2.6.12-paolo/arch/um/kernel/process.c |   48 ++++++++++++--------
- 1 files changed, 29 insertions(+), 19 deletions(-)
+Details & snapshots below
+____________________________________________
+Compiled w/ SKAS & TT support (defconfig defaults)
+./linux-tt-skas
 
-diff -puN arch/um/kernel/process.c~uml-revert-fork-instead-of-clone arch/um/kernel/process.c
---- vanilla-linux-2.6.12/arch/um/kernel/process.c~uml-revert-fork-instead-of-clone	2005-07-12 18:22:03.000000000 +0200
-+++ vanilla-linux-2.6.12-paolo/arch/um/kernel/process.c	2005-07-12 18:22:03.000000000 +0200
-@@ -130,7 +130,7 @@ int start_fork_tramp(void *thread_arg, u
- 	return(arg.pid);
- }
- 
--static int ptrace_child(void)
-+static int ptrace_child(void *arg)
- {
- 	int ret;
- 	int pid = os_getpid(), ppid = getppid();
-@@ -159,16 +159,20 @@ static int ptrace_child(void)
- 	_exit(ret);
- }
- 
--static int start_ptraced_child(void)
-+static int start_ptraced_child(void **stack_out)
- {
-+	void *stack;
-+	unsigned long sp;
- 	int pid, n, status;
- 	
--	pid = fork();
--	if(pid == 0)
--		ptrace_child();
--
-+	stack = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE | PROT_EXEC,
-+		     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if(stack == MAP_FAILED)
-+		panic("check_ptrace : mmap failed, errno = %d", errno);
-+	sp = (unsigned long) stack + PAGE_SIZE - sizeof(void *);
-+	pid = clone(ptrace_child, (void *) sp, SIGCHLD, NULL);
- 	if(pid < 0)
--		panic("check_ptrace : fork failed, errno = %d", errno);
-+		panic("check_ptrace : clone failed, errno = %d", errno);
- 	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
- 	if(n < 0)
- 		panic("check_ptrace : wait failed, errno = %d", errno);
-@@ -176,6 +180,7 @@ static int start_ptraced_child(void)
- 		panic("check_ptrace : expected SIGSTOP, got status = %d",
- 		      status);
- 
-+	*stack_out = stack;
- 	return(pid);
- }
- 
-@@ -183,12 +188,12 @@ static int start_ptraced_child(void)
-  * just avoid using sysemu, not panic, but only if SYSEMU features are broken.
-  * So only for SYSEMU features we test mustpanic, while normal host features
-  * must work anyway!*/
--static int stop_ptraced_child(int pid, int exitcode, int mustexit)
-+static int stop_ptraced_child(int pid, void *stack, int exitcode, int mustpanic)
- {
- 	int status, n, ret = 0;
- 
- 	if(ptrace(PTRACE_CONT, pid, 0, 0) < 0)
--		panic("stop_ptraced_child : ptrace failed, errno = %d", errno);
-+		panic("check_ptrace : ptrace failed, errno = %d", errno);
- 	CATCH_EINTR(n = waitpid(pid, &status, 0));
- 	if(!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
- 		int exit_with = WEXITSTATUS(status);
-@@ -199,13 +204,15 @@ static int stop_ptraced_child(int pid, i
- 		printk("check_ptrace : child exited with exitcode %d, while "
- 		      "expecting %d; status 0x%x", exit_with,
- 		      exitcode, status);
--		if (mustexit)
-+		if (mustpanic)
- 			panic("\n");
- 		else
- 			printk("\n");
- 		ret = -1;
- 	}
- 
-+	if(munmap(stack, PAGE_SIZE) < 0)
-+		panic("check_ptrace : munmap failed, errno = %d", errno);
- 	return ret;
- }
- 
-@@ -227,11 +234,12 @@ __uml_setup("nosysemu", nosysemu_cmd_par
- 
- static void __init check_sysemu(void)
- {
-+	void *stack;
- 	int pid, syscall, n, status, count=0;
- 
- 	printk("Checking syscall emulation patch for ptrace...");
- 	sysemu_supported = 0;
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 
- 	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) < 0)
- 		goto fail;
-@@ -249,7 +257,7 @@ static void __init check_sysemu(void)
- 		panic("check_sysemu : failed to modify system "
- 		      "call return, errno = %d", errno);
- 
--	if (stop_ptraced_child(pid, 0, 0) < 0)
-+	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
- 		goto fail_stopped;
- 
- 	sysemu_supported = 1;
-@@ -257,7 +265,7 @@ static void __init check_sysemu(void)
- 	set_using_sysemu(!force_sysemu_disabled);
- 
- 	printk("Checking advanced syscall emulation patch for ptrace...");
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 	while(1){
- 		count++;
- 		if(ptrace(PTRACE_SYSEMU_SINGLESTEP, pid, 0, 0) < 0)
-@@ -282,7 +290,7 @@ static void __init check_sysemu(void)
- 			break;
- 		}
- 	}
--	if (stop_ptraced_child(pid, 0, 0) < 0)
-+	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
- 		goto fail_stopped;
- 
- 	sysemu_supported = 2;
-@@ -293,17 +301,18 @@ static void __init check_sysemu(void)
- 	return;
- 
- fail:
--	stop_ptraced_child(pid, 1, 0);
-+	stop_ptraced_child(pid, stack, 1, 0);
- fail_stopped:
- 	printk("missing\n");
- }
- 
- void __init check_ptrace(void)
- {
-+	void *stack;
- 	int pid, syscall, n, status;
- 
- 	printk("Checking that ptrace can change system call numbers...");
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 
- 	if (ptrace(PTRACE_OLDSETOPTIONS, pid, 0, (void *)PTRACE_O_TRACESYSGOOD) < 0)
- 		panic("check_ptrace: PTRACE_SETOPTIONS failed, errno = %d", errno);
-@@ -330,7 +339,7 @@ void __init check_ptrace(void)
- 			break;
- 		}
- 	}
--	stop_ptraced_child(pid, 0, 1);
-+	stop_ptraced_child(pid, stack, 0, 1);
- 	printk("OK\n");
- 	check_sysemu();
- }
-@@ -362,10 +371,11 @@ void forward_pending_sigio(int target)
- static inline int check_skas3_ptrace_support(void)
- {
- 	struct ptrace_faultinfo fi;
-+	void *stack;
- 	int pid, n, ret = 1;
- 
- 	printf("Checking for the skas3 patch in the host...");
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 
- 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
- 	if (n < 0) {
-@@ -380,7 +390,7 @@ static inline int check_skas3_ptrace_sup
- 	}
- 
- 	init_registers(pid);
--	stop_ptraced_child(pid, 1, 1);
-+	stop_ptraced_child(pid, stack, 1, 1);
- 
- 	return(ret);
- }
-_
+Checking for /proc/mm...not found
+Checking PROT_EXEC mmap in /tmp...OK
+tracing thread pid = 70910
+Linux version 2.6.12.2-bs1 (alessio@xxx) (gcc version 3.3.5 (Debian
+1:3.3.5-13)) #1 Tue Jul 12 13:34:18 EDT 2005
+Built 1 zonelists
+Kernel command line: root=98:0
+PID hash table entries: 256 (order: 8, 4096 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 28884k available
+Mount-cache hash table entries: 512
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking that host ptys support output SIGIO...No, enabling workaround
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with
+errno 2)
+NET: Registered protocol family 16
+mconsole (version 2) initialized on /home/alessio/.uml/1WQ0b8/mconsole
+ubd: Synchronous mode
+VFS: Disk quotas dquot_6.5.1
+Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP established hash table entries: 2048 (order: 2, 16384 bytes)
+TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
+TCP: Hash tables configured (established 2048 bind 2048)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+Initialized stdio console driver
+Console initialized on /dev/tty0
+Initializing software serial port version 1
+ ubda: unknown partition table
+VFS: Mounted root (ext2 filesystem) readonly.
+sleeping process 70915 got unexpected signal : 10
+
+
+./linux-tt-skas mode=tt
+
+
+
+Checking PROT_EXEC mmap in /tmp...OK
+tracing thread pid = 71470
+Linux version 2.6.12.2-bs1 (alessio@xxx) (gcc version 3.3.5 (Debian
+1:3.3.5-13)) #1 Tue Jul 12 13:34:18 EDT 2005
+Built 1 zonelists
+Kernel command line: mode=tt root=98:0
+PID hash table entries: 256 (order: 8, 4096 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 28884k available
+Mount-cache hash table entries: 512
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking that host ptys support output SIGIO...No, enabling workaround
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with
+errno 2)
+NET: Registered protocol family 16
+mconsole (version 2) initialized on /home/alessio/.uml/qvG0sg/mconsole
+ubd: Synchronous mode
+VFS: Disk quotas dquot_6.5.1
+Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP established hash table entries: 2048 (order: 2, 16384 bytes)
+TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
+TCP: Hash tables configured (established 2048 bind 2048)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+Initialized stdio console driver
+Console initialized on /dev/tty0
+Initializing software serial port version 1
+ ubda: unknown partition table
+VFS: Mounted root (ext2 filesystem) readonly.
+sleeping process 71475 got unexpected signal : 10
+
+
+____________________________________________
+Compiled w/ TT support only
+./linux-tt
+
+
+Checking PROT_EXEC mmap in /tmp...OK
+tracing thread pid = 72054
+Linux version 2.6.12.2-bs1 (alessio@xxx) (gcc version 3.3.5 (Debian
+1:3.3.5-13)) #1 Tue Jul 12 13:43:37 EDT 2005
+Built 1 zonelists
+Kernel command line: root=98:0
+PID hash table entries: 256 (order: 8, 4096 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Memory: 28952k available
+Mount-cache hash table entries: 512
+Checking for host processor cmov support...Yes
+Checking for host processor xmm support...No
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking that host ptys support output SIGIO...No, enabling workaround
+Checking that host ptys support SIGIO on close...No, enabling workaround
+Checking for /dev/anon on the host...Not available (open failed with
+errno 2)
+NET: Registered protocol family 16
+mconsole (version 2) initialized on /home/alessio/.uml/8LF8r7/mconsole
+ubd: Synchronous mode
+VFS: Disk quotas dquot_6.5.1
+Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+NET: Registered protocol family 2
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP established hash table entries: 2048 (order: 2, 16384 bytes)
+TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
+TCP: Hash tables configured (established 2048 bind 2048)
+NET: Registered protocol family 1
+NET: Registered protocol family 17
+Initialized stdio console driver
+Console initialized on /dev/tty0
+Initializing software serial port version 1
+ ubda: unknown partition table
+VFS: Mounted root (ext2 filesystem) readonly.
+sleeping process 72059 got unexpected signal : 10
+
+
+
 
 
 -------------------------------------------------------
