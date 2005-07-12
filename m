@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DsNKA-0000Uj-8h	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 09:09:34 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.44)
-	id 1DsNK6-0007Zj-Fx	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 09:09:34 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-user] Re: [uml-devel] Re: Problems about fork-not-clone
-References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
-	<200507112321.20457.blaisorblade@yahoo.it> <42D3778A.20703@acousta.at>
-In-Reply-To: <42D3778A.20703@acousta.at>
+	id 1DsNbS-0001Or-0Y	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 09:27:26 -0700
+Received: from rproxy.gmail.com ([64.233.170.198])
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
+	id 1DsNbR-0000aZ-PO	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 09:27:26 -0700
+Received: by rproxy.gmail.com with SMTP id b11so1069275rne
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 12 Jul 2005 09:27:22 -0700 (PDT)
+Message-ID: <42D3EEF9.2020404@gmail.com>
+From: Victor Condino <un1tz3r0@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: Re: [uml-devel] host cpu frequency scaling and guest bogomips
+References: <42D3549D.50308@gmail.com>
+	<200507121756.40169.blaisorblade@yahoo.it>
+In-Reply-To: <200507121756.40169.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200507121816.49410.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,50 +31,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Jul 2005 18:16:49 +0200
-To: user-mode-linux-user@lists.sourceforge.net
-Cc: Bernhard Schauer <schauer@acousta.at>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Tue, 12 Jul 2005 12:25:29 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade@yahoo.it>
 
-On Tuesday 12 July 2005 09:55, Bernhard Schauer wrote:
-> Blaisorblade wrote:
-> > There's a bit of misunderstanding: SKAS0 is a patch for UML only, not an
-> > host patch. It's numbered "0" because it has "0" dependencies, or because
-> > it does not depend on host SKAS patch (nor SKAS1, nor SKAS2, nor SKAS3).
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Sorry for that, I should have read about it - especially before writing.
+Blaisorblade wrote:
+> Hmm, bogomips are calculated at startup and that won't change easily. However, 
+> they become inaccurate in a much wider variety of situation, for instance 
+> when there's some load on the host; so, using CONFIG_UML_REAL_TIME_CLOCK 
+> (IIRC) uses the host clock for time calculation.
+> 
+> When you disable this option, I guess that a "sleep 10" when host is at 600, 
+> if UML was started at 1800, might last 30 seconds more or less...
 
-> _IMO:_
+hmm... so the moral is, CONFIG_UML_REAL_TIME_CLOCK is a "good thing"(tm)
+if your host is going to vary it's core freq?
 
-> In any case it should be in the kernel mainline, or in other words:
+- - V.C.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-> A mainline kernel should run without any patches required whether SKAS0
-> nor reverted fork-not-clone.
-
-> If this specific failure is caught by reverted fork-not-clone patch this
-> is THE correction and should also be in mainline kernel.
-> If SKAS0 is better than TT mode, TT mode could be replaced with 2.6.14.
-
-Don't worry, I make the same kind of reasoning, so fork-not-clone will be 
-reverted for now, until it's made to work on newer systems... and TT mode and 
-SKAS0 mode are not incompatible, so SKAS0 will not be dropped so early (for 
-now I consider 2.6.14 early, yes).
-
-There were some problems about TT mode which appeared unsolvable on newer 
-distros, and that was a reason to drop TT mode, but I just solved them, so 
-there's no hurry in dropping it.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+iD8DBQFC0+73W5g8mX2/4TYRAvv3AJ9uA3HzbsM27evJHwUofX+1WOViMACfRL3J
+AqZgxrkfanj50IaQxjdcyec=
+=K/Cr
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
