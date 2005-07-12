@@ -1,22 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DsPq4-0000WV-Ov	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 11:50:40 -0700
-Received: from smtp.osdl.org ([65.172.181.4])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.44)
-	id 1DsPq4-0007zx-KG	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 11:50:40 -0700
-From: Chris Wright <chrisw@osdl.org>
-Message-ID: <20050712185023.GY19052@shell0.pdx.osdl.net>
-References: <20050712172838.271E8D9A84@zion.home.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Re: Problems about fork-not-clone (was: Re:
+	[uml-user] UML exits after "tracing thread pid")
+References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
+	<200507120304.58283.rob@landley.net>
+	<1121160835.4718.3.camel@FC3-bernhard-1.acousta.local>
+In-Reply-To: <1121160835.4718.3.camel@FC3-bernhard-1.acousta.local>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20050712172838.271E8D9A84@zion.home.lan>
-Subject: [uml-devel] Re: [stable] [patch 1/1] uml: fix TT mode by reverting
-	"use fork instead of clone"
+Message-Id: <200507121354.11313.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,27 +23,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Jul 2005 11:50:23 -0700
-To: blaisorblade@yahoo.it
-Cc: stable@kernel.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 12 Jul 2005 13:54:10 -0500
+To: user-mode-linux-devel@lists.sourceforge.net, schauer@acousta.at
+Cc: Blaisorblade <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net
 
-* blaisorblade@yahoo.it (blaisorblade@yahoo.it) wrote:
-> Revert the following patch, because of miscompilation problems in different
-> environments leading to UML not working *at all* in TT mode; it was merged
-> lately in 2.6 development cycle, a little after being written, and has caused
-> problems to lots of people; I know it's a bit too long, but it shouldn't have
-> been merged in first place, so I still apply for inclusion in the -stable
-> tree. Anyone using this feature currently is either using some older kernel
-> (some reports even used 2.6.12-rc4-mm2) or using this patch, as included in my
-> -bs patchset.
-> 
-> For now there's not yet a fix for this patch, so for now the best thing is to
-> drop it (which was widely reported to give a working kernel).
+On Tuesday 12 July 2005 04:33, Bernhard Schauer wrote:
+> > Checking PROT_EXEC mmap in /tmp...OK
+> > tracing thread pid = 11687
+> >
+> > And then exits with no further explanation or printout.
+>
+> That sounds like the behaviour described in the first message. If you
+> apply the
+> "uml-revert-fork-instead-of-clone.patch" posted by Blaisorblade in the
+> same thread on 2nd July, everything should work as expected with TT mode
+> only.
 
-And upstream will leave this in, working to real fix?
+Cool.  Thanks.
 
-thanks,
--chris
+Query; Now that UML has been merged and mainline is mostly caught up, is there 
+some kind of "current-stable" URL out there where I can get a patch fixing 
+known issues against the current stable linux kernel?
+
+I'd have tested it a couple weeks back, but I was fighting with my new laptop.  
+(An unknown number of kbuntu reinstalls, three power supplies, and a lid 
+replacement that gave me a new screen later, it seems to all be working.  And 
+thus, I'm trying to catch up...)
+
+Rob
 
 
 -------------------------------------------------------
