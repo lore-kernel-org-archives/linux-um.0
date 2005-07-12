@@ -1,24 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DsOKH-0003rZ-6H	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 10:13:45 -0700
-Received: from smtp.gentoo.org ([134.68.220.30])
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.44)
-	id 1DsOKF-00052G-Ri	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 10:13:45 -0700
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org)	by smtp.gentoo.org with esmtp (Exim 4.43)
-	id 1DsOK6-00013M-Dw	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 17:13:34 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.43)
-	id 1DsOK5-0001pU-N7	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 17:13:33 +0000
-From: bugzilla-daemon@gentoo.org
-In-Reply-To: <bug-49277@bugs.gentoo.org>
-Message-Id: <E1DsOK5-0001pU-N7@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
+	id 1DsORt-0004JD-9t	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 10:21:37 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
+	id 1DsORs-0003Jq-0Z	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 10:21:37 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050712172838.271E8D9A84@zion.home.lan>
+Subject: [uml-devel] [patch 1/1] uml: fix TT mode by reverting "use fork
+	instead of clone"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,33 +23,212 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Jul 2005 17:13:33 +0000
-To: user-mode-linux-devel@lists.sourceforge.net
-
-Clear-Text: http://bugs.gentoo.org/show_bug.cgi?id=49277
-Secure: https://bugs.gentoo.org/show_bug.cgi?id=49277
+Date: Tue, 12 Jul 2005 19:28:37 +0200
+To: stable@kernel.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
+From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
+Revert the following patch, because of miscompilation problems in different
+environments leading to UML not working *at all* in TT mode; it was merged
+lately in 2.6 development cycle, a little after being written, and has caused
+problems to lots of people; I know it's a bit too long, but it shouldn't have
+been merged in first place, so I still apply for inclusion in the -stable
+tree. Anyone using this feature currently is either using some older kernel
+(some reports even used 2.6.12-rc4-mm2) or using this patch, as included in my
+-bs patchset.
 
+For now there's not yet a fix for this patch, so for now the best thing is to
+drop it (which was widely reported to give a working kernel).
 
-------- Additional Comments From blaisorblade_spam@yahoo.it  2005-07-12 10:13 PDT -------
-Ok, a couple of notes: 
-1) You'll probably like to upgrade your SKAS patch to V8.2 or V9-pre7, since  
-they fix an important bug which could affect apps other than UML (difficult to  
-trigger since you use NPTL, anyway).  
-  
-2) With the latest patch for UML on my site, 2.6.12-bs5, you should be able to 
-enable TT mode and still get a successful compile, it was tested on FC4. That 
-tree will be probably added in portage (see bug #98785). 
+"Convert the boot-time host ptrace testing from clone to fork.  They were
+essentially doing fork anyway.  This cleans up the code a bit, and makes
+valgrind a bit happier about grinding it."
+
+URL:
+http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=98fdffccea6cc3fe9dba32c0fcc310bcb5d71529
+
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ vanilla-linux-2.6.12-paolo/arch/um/kernel/process.c |   48 ++++++++++++--------
+ 1 files changed, 29 insertions(+), 19 deletions(-)
+
+diff -puN arch/um/kernel/process.c~uml-revert-fork-instead-of-clone arch/um/kernel/process.c
+--- vanilla-linux-2.6.12/arch/um/kernel/process.c~uml-revert-fork-instead-of-clone	2005-07-12 18:22:03.000000000 +0200
++++ vanilla-linux-2.6.12-paolo/arch/um/kernel/process.c	2005-07-12 18:22:03.000000000 +0200
+@@ -130,7 +130,7 @@ int start_fork_tramp(void *thread_arg, u
+ 	return(arg.pid);
+ }
  
-3) I think that even in past releases UML compiled for NPTL-only systems, if 
-enabling SKAS and disabling TT. 
-
--- 
-Configure bugmail: http://bugs.gentoo.org/userprefs.cgi?tab=email
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
+-static int ptrace_child(void)
++static int ptrace_child(void *arg)
+ {
+ 	int ret;
+ 	int pid = os_getpid(), ppid = getppid();
+@@ -159,16 +159,20 @@ static int ptrace_child(void)
+ 	_exit(ret);
+ }
+ 
+-static int start_ptraced_child(void)
++static int start_ptraced_child(void **stack_out)
+ {
++	void *stack;
++	unsigned long sp;
+ 	int pid, n, status;
+ 	
+-	pid = fork();
+-	if(pid == 0)
+-		ptrace_child();
+-
++	stack = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE | PROT_EXEC,
++		     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	if(stack == MAP_FAILED)
++		panic("check_ptrace : mmap failed, errno = %d", errno);
++	sp = (unsigned long) stack + PAGE_SIZE - sizeof(void *);
++	pid = clone(ptrace_child, (void *) sp, SIGCHLD, NULL);
+ 	if(pid < 0)
+-		panic("check_ptrace : fork failed, errno = %d", errno);
++		panic("check_ptrace : clone failed, errno = %d", errno);
+ 	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
+ 	if(n < 0)
+ 		panic("check_ptrace : wait failed, errno = %d", errno);
+@@ -176,6 +180,7 @@ static int start_ptraced_child(void)
+ 		panic("check_ptrace : expected SIGSTOP, got status = %d",
+ 		      status);
+ 
++	*stack_out = stack;
+ 	return(pid);
+ }
+ 
+@@ -183,12 +188,12 @@ static int start_ptraced_child(void)
+  * just avoid using sysemu, not panic, but only if SYSEMU features are broken.
+  * So only for SYSEMU features we test mustpanic, while normal host features
+  * must work anyway!*/
+-static int stop_ptraced_child(int pid, int exitcode, int mustexit)
++static int stop_ptraced_child(int pid, void *stack, int exitcode, int mustpanic)
+ {
+ 	int status, n, ret = 0;
+ 
+ 	if(ptrace(PTRACE_CONT, pid, 0, 0) < 0)
+-		panic("stop_ptraced_child : ptrace failed, errno = %d", errno);
++		panic("check_ptrace : ptrace failed, errno = %d", errno);
+ 	CATCH_EINTR(n = waitpid(pid, &status, 0));
+ 	if(!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
+ 		int exit_with = WEXITSTATUS(status);
+@@ -199,13 +204,15 @@ static int stop_ptraced_child(int pid, i
+ 		printk("check_ptrace : child exited with exitcode %d, while "
+ 		      "expecting %d; status 0x%x", exit_with,
+ 		      exitcode, status);
+-		if (mustexit)
++		if (mustpanic)
+ 			panic("\n");
+ 		else
+ 			printk("\n");
+ 		ret = -1;
+ 	}
+ 
++	if(munmap(stack, PAGE_SIZE) < 0)
++		panic("check_ptrace : munmap failed, errno = %d", errno);
+ 	return ret;
+ }
+ 
+@@ -227,11 +234,12 @@ __uml_setup("nosysemu", nosysemu_cmd_par
+ 
+ static void __init check_sysemu(void)
+ {
++	void *stack;
+ 	int pid, syscall, n, status, count=0;
+ 
+ 	printk("Checking syscall emulation patch for ptrace...");
+ 	sysemu_supported = 0;
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 
+ 	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) < 0)
+ 		goto fail;
+@@ -249,7 +257,7 @@ static void __init check_sysemu(void)
+ 		panic("check_sysemu : failed to modify system "
+ 		      "call return, errno = %d", errno);
+ 
+-	if (stop_ptraced_child(pid, 0, 0) < 0)
++	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
+ 		goto fail_stopped;
+ 
+ 	sysemu_supported = 1;
+@@ -257,7 +265,7 @@ static void __init check_sysemu(void)
+ 	set_using_sysemu(!force_sysemu_disabled);
+ 
+ 	printk("Checking advanced syscall emulation patch for ptrace...");
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 	while(1){
+ 		count++;
+ 		if(ptrace(PTRACE_SYSEMU_SINGLESTEP, pid, 0, 0) < 0)
+@@ -282,7 +290,7 @@ static void __init check_sysemu(void)
+ 			break;
+ 		}
+ 	}
+-	if (stop_ptraced_child(pid, 0, 0) < 0)
++	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
+ 		goto fail_stopped;
+ 
+ 	sysemu_supported = 2;
+@@ -293,17 +301,18 @@ static void __init check_sysemu(void)
+ 	return;
+ 
+ fail:
+-	stop_ptraced_child(pid, 1, 0);
++	stop_ptraced_child(pid, stack, 1, 0);
+ fail_stopped:
+ 	printk("missing\n");
+ }
+ 
+ void __init check_ptrace(void)
+ {
++	void *stack;
+ 	int pid, syscall, n, status;
+ 
+ 	printk("Checking that ptrace can change system call numbers...");
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 
+ 	if (ptrace(PTRACE_OLDSETOPTIONS, pid, 0, (void *)PTRACE_O_TRACESYSGOOD) < 0)
+ 		panic("check_ptrace: PTRACE_SETOPTIONS failed, errno = %d", errno);
+@@ -330,7 +339,7 @@ void __init check_ptrace(void)
+ 			break;
+ 		}
+ 	}
+-	stop_ptraced_child(pid, 0, 1);
++	stop_ptraced_child(pid, stack, 0, 1);
+ 	printk("OK\n");
+ 	check_sysemu();
+ }
+@@ -362,10 +371,11 @@ void forward_pending_sigio(int target)
+ static inline int check_skas3_ptrace_support(void)
+ {
+ 	struct ptrace_faultinfo fi;
++	void *stack;
+ 	int pid, n, ret = 1;
+ 
+ 	printf("Checking for the skas3 patch in the host...");
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 
+ 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
+ 	if (n < 0) {
+@@ -380,7 +390,7 @@ static inline int check_skas3_ptrace_sup
+ 	}
+ 
+ 	init_registers(pid);
+-	stop_ptraced_child(pid, 1, 1);
++	stop_ptraced_child(pid, stack, 1, 1);
+ 
+ 	return(ret);
+ }
+_
 
 
 -------------------------------------------------------
