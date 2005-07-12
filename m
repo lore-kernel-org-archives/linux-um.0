@@ -1,23 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DsN0g-0007y8-Ue	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 08:49:26 -0700
+	id 1DsN1q-00083b-LU	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 08:50:38 -0700
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.44)
-	id 1DsN0d-0000T6-E2	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jul 2005 08:49:27 -0700
+	by sc8-sf-mx2.sourceforge.net with smtp (Exim 4.44)
+	id 1DsN1p-0003A8-9l	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jul 2005 08:50:38 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] host cpu frequency scaling and guest bogomips
-References: <42D3549D.50308@gmail.com>
-In-Reply-To: <42D3549D.50308@gmail.com>
+Subject: Re: [uml-devel] Re: Problems about fork-not-clone (was: Re:
+	[uml-user] UML exits after "tracing thread pid")
+References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
+	<200507120304.58283.rob@landley.net>
+	<1121160835.4718.3.camel@FC3-bernhard-1.acousta.local>
+In-Reply-To: <1121160835.4718.3.camel@FC3-bernhard-1.acousta.local>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200507121756.40169.blaisorblade@yahoo.it>
+Message-Id: <200507121757.55572.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,43 +32,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 12 Jul 2005 17:56:39 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Victor Condino <un1tz3r0@gmail.com>
+Date: Tue, 12 Jul 2005 17:57:55 +0200
+To: user-mode-linux-user@lists.sourceforge.net, schauer@acousta.at
+Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Tuesday 12 July 2005 07:26, Victor Condino wrote:
-> just noticed something interesting while testing out my gentoo/uml
-> root-fs generation script on my laptop. my l/t is an thinkpad T42p,
-> which has a p3 centrino with speedstep. i use cpufreqd to throttle the
-> cpu when not on ac between 600 and 1800MHz based on load. what i noticed
-> is that when I fired up UML while the host's core frequency was at
-> 600mhz, /proc/cpuinfo reported ~600 bogomips in the guest, but when i
-> put some load on the host and cpufreq stepped up the core frequency, UML
-> still reports ~600 bogomips. likewise, when I fired up UML while the
-> host was under load and it's core at 1200MHz, UML reports higher
-> bogomips, but then when the host drops back down to the lower core freq,
-> UML still reports the same higher bogomips.
-
-> Not that this actually affects anything I do or would affect most
-> people... just thought you guys might want to know =D
-Hmm, bogomips are calculated at startup and that won't change easily. However, 
-they become inaccurate in a much wider variety of situation, for instance 
-when there's some load on the host; so, using CONFIG_UML_REAL_TIME_CLOCK 
-(IIRC) uses the host clock for time calculation.
-
-When you disable this option, I guess that a "sleep 10" when host is at 600, 
-if UML was started at 1800, might last 30 seconds more or less...
-> - V. Condino
-
+On Tuesday 12 July 2005 11:33, Bernhard Schauer wrote:
+> > Checking PROT_EXEC mmap in /tmp...OK
+> > tracing thread pid = 11687
+> >
+> > And then exits with no further explanation or printout.
+>
+> That sounds like the behaviour described in the first message. If you
+> apply the
+> "uml-revert-fork-instead-of-clone.patch" posted by Blaisorblade in the
+> same thread on 2nd July, everything should work as expected with TT mode
+> only.
+Exact, that's included in -bs which is included in the -skas0 patchset, so 
+this is the explaination.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+	
+
+	
 		
 ___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.beta.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
