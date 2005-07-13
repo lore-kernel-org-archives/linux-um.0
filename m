@@ -1,15 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dsp5L-00046A-BK	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2005 14:48:07 -0700
+	id 1Dsp8T-0004H2-BD	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Jul 2005 14:51:21 -0700
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
-	by sc8-sf-mx1.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1Dsp5J-0006sE-Om
+	by sc8-sf-mx2.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1Dsp8S-0004yX-5D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2005 14:48:07 -0700
+	Wed, 13 Jul 2005 14:51:21 -0700
 From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Am I doing something wrong with -skas0?
 References: <200507122346.40320.rob@landley.net>
@@ -20,7 +20,7 @@ Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200507131647.53822.rob@landley.net>
+Message-Id: <200507131651.07755.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,7 +32,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 13 Jul 2005 16:47:53 -0500
+Date: Wed, 13 Jul 2005 16:51:07 -0500
 To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
@@ -48,27 +48,11 @@ On Wednesday 13 July 2005 07:11, Bodo Stroesser wrote:
 >
 >  Bodo
 
-I'm guessing you want objdump -d, and here's stub_segv_handler from that:
+In fact I just put a bzip of the complete dump at:
 
-081020b0 <stub_segv_handler>:
- 81020b0:       8b 44 24 5c             mov    0x5c(%esp),%eax
- 81020b4:       a3 04 f0 ff bf          mov    %eax,0xbffff004
- 81020b9:       8b 44 24 3c             mov    0x3c(%esp),%eax
- 81020bd:       a3 00 f0 ff bf          mov    %eax,0xbffff000
- 81020c2:       8b 44 24 38             mov    0x38(%esp),%eax
- 81020c6:       a3 08 f0 ff bf          mov    %eax,0xbffff008
- 81020cb:       b8 14 00 00 00          mov    $0x14,%eax
- 81020d0:       cd 80                   int    $0x80
- 81020d2:       89 c3                   mov    %eax,%ebx
- 81020d4:       b8 25 00 00 00          mov    $0x25,%eax
- 81020d9:       b9 0a 00 00 00          mov    $0xa,%ecx
- 81020de:       cd 80                   int    $0x80
- 81020e0:       58                      pop    %eax
- 81020e1:       58                      pop    %eax
- 81020e2:       58                      pop    %eax
- 81020e3:       b8 77 00 00 00          mov    $0x77,%eax
- 81020e8:       cd 80                   int    $0x80
- 81020ea:       c3                      ret
+http://www.landley.net/linux.S.bz2
+
+And the executable at linux-skas0 in the same place.
 
 Rob
 
