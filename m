@@ -2,15 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DslX9-0000xr-Pt	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2005 11:00:35 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
+	id 1DsmE5-00037l-Ad	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Jul 2005 11:44:57 -0700
+Received: from mail.kroah.org ([69.55.234.183] helo=perch.kroah.org)
 	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
-	id 1DslX9-0005nF-8o	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2005 11:00:36 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050713180219.EDC8B21E737@zion.home.lan>
-Subject: [uml-devel] [patch 3/9] uml: consolidate modify_ldt
+	id 1DsmE5-0005ye-20	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Jul 2005 11:44:57 -0700
+From: Greg KH <gregkh@suse.de>
+Message-ID: <20050713184406.GK9330@kroah.com>
+References: <20050713184130.GA9330@kroah.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050713184130.GA9330@kroah.com>
+Subject: [uml-devel] [09/11] uml: fix TT mode by reverting "use fork instead
+	of clone"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,200 +28,214 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 13 Jul 2005 20:02:19 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Wed, 13 Jul 2005 11:44:06 -0700
+To: blaisorblade@yahoo.it, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, stable@kernel.org, Justin Forbes <jmforbes@linuxtx.org>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, rdunlap@xenotime.net, Chuck Wolber <chuckw@quantumlinux.com>, torvalds@osdl.org, akpm@osdl.org, alan@lxorguk.ukuu.org.uk
 
+-stable review patch.  If anyone has any objections, please let us know.
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+------------------
 
-*) Reorganize the two cases of sys_modify_ldt to share all the reasonably
-common code.
+From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-*) Avoid memory allocation when unneeded (i.e. when we are writing and the
-passed buffer size is known), thus not returning ENOMEM (which isn't allowed
-for this syscall, even if there is no strict "specification").
+Revert the following patch, because of miscompilation problems in different
+environments leading to UML not working *at all* in TT mode; it was merged
+lately in 2.6 development cycle, a little after being written, and has caused
+problems to lots of people; I know it's a bit too long, but it shouldn't have
+been merged in first place, so I still apply for inclusion in the -stable
+tree. Anyone using this feature currently is either using some older kernel
+(some reports even used 2.6.12-rc4-mm2) or using this patch, as included in my
+-bs patchset.
 
-*) Add copy_{from,to}_user to modify_ldt for TT mode.
+For now there's not yet a fix for this patch, so for now the best thing is to
+drop it (which was widely reported to give a working kernel).
 
+"Convert the boot-time host ptrace testing from clone to fork.  They were
+essentially doing fork anyway.  This cleans up the code a bit, and makes
+valgrind a bit happier about grinding it."
+
+URL:
+http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=98fdffccea6cc3fe9dba32c0fcc310bcb5d71529
+
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Signed-off-by: Chris Wright <chrisw@osdl.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 ---
+ arch/um/kernel/process.c |   48 ++++++++++++++++++++++++++++-------------------
+ 1 files changed, 29 insertions(+), 19 deletions(-)
 
- linux-2.6.git-broken-paolo/arch/um/sys-i386/ldt.c |  112 +++++++++++-----------
- linux-2.6.git-broken-paolo/include/asm-um/ldt.h   |    5 
- 2 files changed, 66 insertions(+), 51 deletions(-)
-
-diff -puN arch/um/sys-i386/ldt.c~uml-modify-ldt-consolidate arch/um/sys-i386/ldt.c
---- linux-2.6.git-broken/arch/um/sys-i386/ldt.c~uml-modify-ldt-consolidate	2005-07-13 19:41:00.000000000 +0200
-+++ linux-2.6.git-broken-paolo/arch/um/sys-i386/ldt.c	2005-07-13 19:41:00.000000000 +0200
-@@ -4,96 +4,106 @@
-  */
- 
- #include "linux/config.h"
-+#include "linux/sched.h"
- #include "linux/slab.h"
-+#include "linux/types.h"
- #include "asm/uaccess.h"
- #include "asm/ptrace.h"
-+#include "asm/smp.h"
-+#include "asm/ldt.h"
- #include "choose-mode.h"
- #include "kern.h"
-+#include "mode_kern.h"
- 
- #ifdef CONFIG_MODE_TT
--extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
- 
--/* XXX this needs copy_to_user and copy_from_user */
-+extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
- 
--int sys_modify_ldt_tt(int func, void __user *ptr, unsigned long bytecount)
-+static int do_modify_ldt_tt(int func, void *ptr, unsigned long bytecount)
- {
--	if (!access_ok(VERIFY_READ, ptr, bytecount))
--		return -EFAULT;
--
- 	return modify_ldt(func, ptr, bytecount);
+--- linux-2.6.12.2.orig/arch/um/kernel/process.c	2005-06-17 12:48:29.000000000 -0700
++++ linux-2.6.12.2/arch/um/kernel/process.c	2005-07-13 10:56:41.000000000 -0700
+@@ -130,7 +130,7 @@
+ 	return(arg.pid);
  }
-+
- #endif
  
- #ifdef CONFIG_MODE_SKAS
--extern int userspace_pid[];
- 
-+#include "skas.h"
- #include "skas_ptrace.h"
- 
--int sys_modify_ldt_skas(int func, void __user *ptr, unsigned long bytecount)
-+static int do_modify_ldt_skas(int func, void *ptr, unsigned long bytecount)
+-static int ptrace_child(void)
++static int ptrace_child(void *arg)
  {
- 	struct ptrace_ldt ldt;
--	void *buf;
--	int res, n;
-+	u32 cpu;
-+	int res;
-+
-+	ldt = ((struct ptrace_ldt) { .func	= func,
-+				     .ptr	= ptr,
-+				     .bytecount = bytecount });
+ 	int ret;
+ 	int pid = os_getpid(), ppid = getppid();
+@@ -159,16 +159,20 @@
+ 	_exit(ret);
+ }
  
--	buf = kmalloc(bytecount, GFP_KERNEL);
--	if(buf == NULL)
--		return(-ENOMEM);
-+	cpu = get_cpu();
-+	res = ptrace(PTRACE_LDT, userspace_pid[cpu], 0, (unsigned long) &ldt);
-+	put_cpu();
+-static int start_ptraced_child(void)
++static int start_ptraced_child(void **stack_out)
+ {
++	void *stack;
++	unsigned long sp;
+ 	int pid, n, status;
+ 	
+-	pid = fork();
+-	if(pid == 0)
+-		ptrace_child();
+-
++	stack = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE | PROT_EXEC,
++		     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	if(stack == MAP_FAILED)
++		panic("check_ptrace : mmap failed, errno = %d", errno);
++	sp = (unsigned long) stack + PAGE_SIZE - sizeof(void *);
++	pid = clone(ptrace_child, (void *) sp, SIGCHLD, NULL);
+ 	if(pid < 0)
+-		panic("check_ptrace : fork failed, errno = %d", errno);
++		panic("check_ptrace : clone failed, errno = %d", errno);
+ 	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
+ 	if(n < 0)
+ 		panic("check_ptrace : wait failed, errno = %d", errno);
+@@ -176,6 +180,7 @@
+ 		panic("check_ptrace : expected SIGSTOP, got status = %d",
+ 		      status);
  
--	res = 0;
-+	return res;
-+}
-+#endif
-+
-+int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
-+{
-+	struct user_desc info;
-+	int res = 0;
-+	void *buf = NULL;
-+	void *p = NULL; /* What we pass to host. */
++	*stack_out = stack;
+ 	return(pid);
+ }
  
- 	switch(func){
- 	case 1:
--	case 0x11:
--		res = copy_from_user(buf, ptr, bytecount);
-+	case 0x11: /* write_ldt */
-+		/* Do this check now to avoid overflows. */
-+		if (bytecount != sizeof(struct user_desc)) {
-+			res = -EINVAL;
-+			goto out;
-+		}
-+
-+		if(copy_from_user(&info, ptr, sizeof(info))) {
-+			res = -EFAULT;
-+			goto out;
-+		}
-+
-+		p = &info;
- 		break;
--	}
-+	case 0:
-+	case 2: /* read_ldt */
+@@ -183,12 +188,12 @@
+  * just avoid using sysemu, not panic, but only if SYSEMU features are broken.
+  * So only for SYSEMU features we test mustpanic, while normal host features
+  * must work anyway!*/
+-static int stop_ptraced_child(int pid, int exitcode, int mustexit)
++static int stop_ptraced_child(int pid, void *stack, int exitcode, int mustpanic)
+ {
+ 	int status, n, ret = 0;
  
--	if(res != 0){
--		res = -EFAULT;
-+		/* The use of info avoids kmalloc on the write case, not on the
-+		 * read one. */
-+		buf = kmalloc(bytecount, GFP_KERNEL);
-+		if (!buf) {
-+			res = -ENOMEM;
-+			goto out;
-+		}
-+		p = buf;
-+	default:
-+		res = -ENOSYS;
- 		goto out;
+ 	if(ptrace(PTRACE_CONT, pid, 0, 0) < 0)
+-		panic("stop_ptraced_child : ptrace failed, errno = %d", errno);
++		panic("check_ptrace : ptrace failed, errno = %d", errno);
+ 	CATCH_EINTR(n = waitpid(pid, &status, 0));
+ 	if(!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
+ 		int exit_with = WEXITSTATUS(status);
+@@ -199,13 +204,15 @@
+ 		printk("check_ptrace : child exited with exitcode %d, while "
+ 		      "expecting %d; status 0x%x", exit_with,
+ 		      exitcode, status);
+-		if (mustexit)
++		if (mustpanic)
+ 			panic("\n");
+ 		else
+ 			printk("\n");
+ 		ret = -1;
  	}
  
--	ldt = ((struct ptrace_ldt) { .func	= func,
--				     .ptr	= buf,
--				     .bytecount = bytecount });
--#warning Need to look up userspace_pid by cpu
--	res = ptrace(PTRACE_LDT, userspace_pid[0], 0, (unsigned long) &ldt);
-+	res = CHOOSE_MODE_PROC(do_modify_ldt_tt, do_modify_ldt_skas, func,
-+				p, bytecount);
- 	if(res < 0)
- 		goto out;
++	if(munmap(stack, PAGE_SIZE) < 0)
++		panic("check_ptrace : munmap failed, errno = %d", errno);
+ 	return ret;
+ }
  
- 	switch(func){
- 	case 0:
- 	case 2:
--		n = res;
--		res = copy_to_user(ptr, buf, n);
--		if(res != 0)
-+		/* Modify_ldt was for reading and returned the number of read
-+		 * bytes.*/
-+		if(copy_to_user(ptr, p, res))
- 			res = -EFAULT;
--		else 
--			res = n;
- 		break;
+@@ -227,11 +234,12 @@
+ 
+ static void __init check_sysemu(void)
+ {
++	void *stack;
+ 	int pid, syscall, n, status, count=0;
+ 
+ 	printk("Checking syscall emulation patch for ptrace...");
+ 	sysemu_supported = 0;
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 
+ 	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) < 0)
+ 		goto fail;
+@@ -249,7 +257,7 @@
+ 		panic("check_sysemu : failed to modify system "
+ 		      "call return, errno = %d", errno);
+ 
+-	if (stop_ptraced_child(pid, 0, 0) < 0)
++	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
+ 		goto fail_stopped;
+ 
+ 	sysemu_supported = 1;
+@@ -257,7 +265,7 @@
+ 	set_using_sysemu(!force_sysemu_disabled);
+ 
+ 	printk("Checking advanced syscall emulation patch for ptrace...");
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 	while(1){
+ 		count++;
+ 		if(ptrace(PTRACE_SYSEMU_SINGLESTEP, pid, 0, 0) < 0)
+@@ -282,7 +290,7 @@
+ 			break;
+ 		}
+ 	}
+-	if (stop_ptraced_child(pid, 0, 0) < 0)
++	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
+ 		goto fail_stopped;
+ 
+ 	sysemu_supported = 2;
+@@ -293,17 +301,18 @@
+ 	return;
+ 
+ fail:
+-	stop_ptraced_child(pid, 1, 0);
++	stop_ptraced_child(pid, stack, 1, 0);
+ fail_stopped:
+ 	printk("missing\n");
+ }
+ 
+ void __init check_ptrace(void)
+ {
++	void *stack;
+ 	int pid, syscall, n, status;
+ 
+ 	printk("Checking that ptrace can change system call numbers...");
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 
+ 	if (ptrace(PTRACE_OLDSETOPTIONS, pid, 0, (void *)PTRACE_O_TRACESYSGOOD) < 0)
+ 		panic("check_ptrace: PTRACE_SETOPTIONS failed, errno = %d", errno);
+@@ -330,7 +339,7 @@
+ 			break;
+ 		}
+ 	}
+-	stop_ptraced_child(pid, 0, 1);
++	stop_ptraced_child(pid, stack, 0, 1);
+ 	printk("OK\n");
+ 	check_sysemu();
+ }
+@@ -362,10 +371,11 @@
+ static inline int check_skas3_ptrace_support(void)
+ {
+ 	struct ptrace_faultinfo fi;
++	void *stack;
+ 	int pid, n, ret = 1;
+ 
+ 	printf("Checking for the skas3 patch in the host...");
+-	pid = start_ptraced_child();
++	pid = start_ptraced_child(&stack);
+ 
+ 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
+ 	if (n < 0) {
+@@ -380,7 +390,7 @@
  	}
  
-- out:
-+out:
- 	kfree(buf);
--	return(res);
--}
--#endif
--
--int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
--{
--	return(CHOOSE_MODE_PROC(sys_modify_ldt_tt, sys_modify_ldt_skas, func, 
--				ptr, bytecount));
-+	return res;
+ 	init_registers(pid);
+-	stop_ptraced_child(pid, 1, 1);
++	stop_ptraced_child(pid, stack, 1, 1);
+ 
+ 	return(ret);
  }
--
--
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-diff -puN /dev/null include/asm-um/ldt.h
---- /dev/null	2005-07-13 17:18:22.594346552 +0200
-+++ linux-2.6.git-broken-paolo/include/asm-um/ldt.h	2005-07-13 19:41:00.000000000 +0200
-@@ -0,0 +1,5 @@
-+#ifndef __UM_LDT_H
-+#define __UM_LDT_H
-+
-+#include "asm/arch/ldt.h"
-+#endif
-_
 
 
 -------------------------------------------------------
