@@ -1,17 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DslX9-0000xl-FN	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1DslX9-0000xr-Pt	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 13 Jul 2005 11:00:35 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.44)
-	id 1DslX8-0002fE-VD	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2005 11:00:35 -0700
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
+	id 1DslX9-0005nF-8o	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Jul 2005 11:00:36 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050713180235.CF8A021E746@zion.home.lan>
-Subject: [uml-devel] [patch 7/9] uml: allow building as 32-bit binary on 64bit
-	host
+Message-Id: <20050713180219.EDC8B21E737@zion.home.lan>
+Subject: [uml-devel] [patch 3/9] uml: consolidate modify_ldt
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,157 +22,199 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 13 Jul 2005 20:02:35 +0200
+Date: Wed, 13 Jul 2005 20:02:19 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-This patch makes the command:
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-make ARCH=um SUBARCH=i386
+*) Reorganize the two cases of sys_modify_ldt to share all the reasonably
+common code.
 
-work on x86_64 hosts (with support for building 32-bit binaries). This is
-especially needed since 64-bit UMLs don't support 32-bit emulation for guest
-binaries, currently. This has been tested in all possible cases and works.
+*) Avoid memory allocation when unneeded (i.e. when we are writing and the
+passed buffer size is known), thus not returning ENOMEM (which isn't allowed
+for this syscall, even if there is no strict "specification").
 
-Only exception is that I've built but not tested a 64-bit binary, because I
-hadn't a 64-bit filesystem available.
+*) Add copy_{from,to}_user to modify_ldt for TT mode.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-broken-paolo/arch/um/Makefile               |   11 +----
- linux-2.6.git-broken-paolo/arch/um/Makefile-i386          |   30 +++++++++-----
- linux-2.6.git-broken-paolo/arch/um/Makefile-x86_64        |    6 +-
- linux-2.6.git-broken-paolo/arch/um/scripts/Makefile.unmap |    4 -
- 4 files changed, 31 insertions(+), 20 deletions(-)
+ linux-2.6.git-broken-paolo/arch/um/sys-i386/ldt.c |  112 +++++++++++-----------
+ linux-2.6.git-broken-paolo/include/asm-um/ldt.h   |    5 
+ 2 files changed, 66 insertions(+), 51 deletions(-)
 
-diff -puN arch/um/Makefile-i386~uml-build-on-64bit-host arch/um/Makefile-i386
---- linux-2.6.git-broken/arch/um/Makefile-i386~uml-build-on-64bit-host	2005-07-13 19:46:33.000000000 +0200
-+++ linux-2.6.git-broken-paolo/arch/um/Makefile-i386	2005-07-13 19:46:33.000000000 +0200
-@@ -1,4 +1,4 @@
--SUBARCH_CORE := arch/um/sys-i386/ arch/i386/crypto/
-+core-y += arch/um/sys-i386/ arch/i386/crypto/
+diff -puN arch/um/sys-i386/ldt.c~uml-modify-ldt-consolidate arch/um/sys-i386/ldt.c
+--- linux-2.6.git-broken/arch/um/sys-i386/ldt.c~uml-modify-ldt-consolidate	2005-07-13 19:41:00.000000000 +0200
++++ linux-2.6.git-broken-paolo/arch/um/sys-i386/ldt.c	2005-07-13 19:41:00.000000000 +0200
+@@ -4,96 +4,106 @@
+  */
  
- TOP_ADDR := $(CONFIG_TOP_ADDR)
+ #include "linux/config.h"
++#include "linux/sched.h"
+ #include "linux/slab.h"
++#include "linux/types.h"
+ #include "asm/uaccess.h"
+ #include "asm/ptrace.h"
++#include "asm/smp.h"
++#include "asm/ldt.h"
+ #include "choose-mode.h"
+ #include "kern.h"
++#include "mode_kern.h"
  
-@@ -8,21 +8,33 @@ ifeq ($(CONFIG_MODE_SKAS),y)
-   endif
- endif
+ #ifdef CONFIG_MODE_TT
+-extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
  
-+LDFLAGS			+= -m elf_i386
-+ELF_ARCH		:= $(SUBARCH)
-+ELF_FORMAT 		:= elf32-$(SUBARCH)
-+OBJCOPYFLAGS  		:= -O binary -R .note -R .comment -S
+-/* XXX this needs copy_to_user and copy_from_user */
++extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
+ 
+-int sys_modify_ldt_tt(int func, void __user *ptr, unsigned long bytecount)
++static int do_modify_ldt_tt(int func, void *ptr, unsigned long bytecount)
+ {
+-	if (!access_ok(VERIFY_READ, ptr, bytecount))
+-		return -EFAULT;
+-
+ 	return modify_ldt(func, ptr, bytecount);
+ }
 +
-+ifeq ("$(origin SUBARCH)", "command line")
-+ifneq ("$(shell uname -m | sed -e s/i.86/i386/)", "$(SUBARCH)")
-+CFLAGS			+= $(call cc-option,-m32)
-+USER_CFLAGS		+= $(call cc-option,-m32)
-+HOSTCFLAGS		+= $(call cc-option,-m32)
-+HOSTLDFLAGS		+= $(call cc-option,-m32)
-+AFLAGS			+= $(call cc-option,-m32)
-+LINK-y			+= $(call cc-option,-m32)
-+UML_OBJCOPYFLAGS	+= -F $(ELF_FORMAT)
+ #endif
+ 
+ #ifdef CONFIG_MODE_SKAS
+-extern int userspace_pid[];
+ 
++#include "skas.h"
+ #include "skas_ptrace.h"
+ 
+-int sys_modify_ldt_skas(int func, void __user *ptr, unsigned long bytecount)
++static int do_modify_ldt_skas(int func, void *ptr, unsigned long bytecount)
+ {
+ 	struct ptrace_ldt ldt;
+-	void *buf;
+-	int res, n;
++	u32 cpu;
++	int res;
 +
-+export LDFLAGS HOSTCFLAGS HOSTLDFLAGS UML_OBJCOPYFLAGS
-+endif
-+endif
++	ldt = ((struct ptrace_ldt) { .func	= func,
++				     .ptr	= ptr,
++				     .bytecount = bytecount });
+ 
+-	buf = kmalloc(bytecount, GFP_KERNEL);
+-	if(buf == NULL)
+-		return(-ENOMEM);
++	cpu = get_cpu();
++	res = ptrace(PTRACE_LDT, userspace_pid[cpu], 0, (unsigned long) &ldt);
++	put_cpu();
+ 
+-	res = 0;
++	return res;
++}
++#endif
 +
- CFLAGS += -U__$(SUBARCH)__ -U$(SUBARCH)
--ARCH_USER_CFLAGS :=
++int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
++{
++	struct user_desc info;
++	int res = 0;
++	void *buf = NULL;
++	void *p = NULL; /* What we pass to host. */
  
- ifneq ($(CONFIG_GPROF),y)
- ARCH_CFLAGS += -DUM_FASTCALL
- endif
- 
--ELF_ARCH := $(SUBARCH)
--ELF_FORMAT := elf32-$(SUBARCH)
--
--OBJCOPYFLAGS  := -O binary -R .note -R .comment -S
--
- SYS_UTIL_DIR	:= $(ARCH_DIR)/sys-i386/util
--
--SYS_HEADERS := $(SYS_DIR)/sc.h $(SYS_DIR)/thread.h
-+SYS_HEADERS	:= $(SYS_DIR)/sc.h $(SYS_DIR)/thread.h
- 
- prepare: $(SYS_HEADERS)
- 
-diff -puN arch/um/Makefile~uml-build-on-64bit-host arch/um/Makefile
---- linux-2.6.git-broken/arch/um/Makefile~uml-build-on-64bit-host	2005-07-13 19:46:33.000000000 +0200
-+++ linux-2.6.git-broken-paolo/arch/um/Makefile	2005-07-13 19:46:33.000000000 +0200
-@@ -51,11 +51,6 @@ MRPROPER_DIRS	+= $(ARCH_DIR)/include2
- endif
- SYS_DIR		:= $(ARCH_DIR)/include/sysdep-$(SUBARCH)
- 
--include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
--
--core-y += $(SUBARCH_CORE)
--libs-y += $(SUBARCH_LIBS)
--
- # -Dvmap=kernel_vmap affects everything, and prevents anything from
- # referencing the libpcap.o symbol so named.
- 
-@@ -64,7 +59,7 @@ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSU
- 
- USER_CFLAGS := $(patsubst -I%,,$(CFLAGS))
- USER_CFLAGS := $(patsubst -D__KERNEL__,,$(USER_CFLAGS)) $(ARCH_INCLUDE) \
--	$(MODE_INCLUDE) $(ARCH_USER_CFLAGS)
-+	$(MODE_INCLUDE)
- 
- # -Derrno=kernel_errno - This turns all kernel references to errno into
- # kernel_errno to separate them from the libc errno.  This allows -fno-common
-@@ -74,6 +69,8 @@ USER_CFLAGS := $(patsubst -D__KERNEL__,,
- CFLAGS += -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask
- CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
- 
-+include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
+ 	switch(func){
+ 	case 1:
+-	case 0x11:
+-		res = copy_from_user(buf, ptr, bytecount);
++	case 0x11: /* write_ldt */
++		/* Do this check now to avoid overflows. */
++		if (bytecount != sizeof(struct user_desc)) {
++			res = -EINVAL;
++			goto out;
++		}
 +
- #This will adjust *FLAGS accordingly to the platform.
- include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
++		if(copy_from_user(&info, ptr, sizeof(info))) {
++			res = -EFAULT;
++			goto out;
++		}
++
++		p = &info;
+ 		break;
+-	}
++	case 0:
++	case 2: /* read_ldt */
  
-@@ -132,7 +129,7 @@ CPPFLAGS_vmlinux.lds = -U$(SUBARCH) \
- #The wrappers will select whether using "malloc" or the kernel allocator.
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
+-	if(res != 0){
+-		res = -EFAULT;
++		/* The use of info avoids kmalloc on the write case, not on the
++		 * read one. */
++		buf = kmalloc(bytecount, GFP_KERNEL);
++		if (!buf) {
++			res = -ENOMEM;
++			goto out;
++		}
++		p = buf;
++	default:
++		res = -ENOSYS;
+ 		goto out;
+ 	}
  
--CFLAGS_vmlinux = $(LINK-y) $(LINK_WRAPS)
-+CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS)
- define cmd_vmlinux__
- 	$(CC) $(CFLAGS_vmlinux) -o $@ \
- 	-Wl,-T,$(vmlinux-lds) $(vmlinux-init) \
-diff -puN arch/um/Makefile-x86_64~uml-build-on-64bit-host arch/um/Makefile-x86_64
---- linux-2.6.git-broken/arch/um/Makefile-x86_64~uml-build-on-64bit-host	2005-07-13 19:46:33.000000000 +0200
-+++ linux-2.6.git-broken-paolo/arch/um/Makefile-x86_64	2005-07-13 19:46:33.000000000 +0200
-@@ -1,11 +1,13 @@
- # Copyright 2003 - 2004 Pathscale, Inc
- # Released under the GPL
+-	ldt = ((struct ptrace_ldt) { .func	= func,
+-				     .ptr	= buf,
+-				     .bytecount = bytecount });
+-#warning Need to look up userspace_pid by cpu
+-	res = ptrace(PTRACE_LDT, userspace_pid[0], 0, (unsigned long) &ldt);
++	res = CHOOSE_MODE_PROC(do_modify_ldt_tt, do_modify_ldt_skas, func,
++				p, bytecount);
+ 	if(res < 0)
+ 		goto out;
  
--SUBARCH_LIBS := arch/um/sys-x86_64/
-+libs-y += arch/um/sys-x86_64/
- START := 0x60000000
+ 	switch(func){
+ 	case 0:
+ 	case 2:
+-		n = res;
+-		res = copy_to_user(ptr, buf, n);
+-		if(res != 0)
++		/* Modify_ldt was for reading and returned the number of read
++		 * bytes.*/
++		if(copy_to_user(ptr, p, res))
+ 			res = -EFAULT;
+-		else 
+-			res = n;
+ 		break;
+ 	}
  
-+#We #undef __x86_64__ for kernelspace, not for userspace where
-+#it's needed for headers to work!
- CFLAGS += -U__$(SUBARCH)__ -fno-builtin
--ARCH_USER_CFLAGS := -D__x86_64__
-+USER_CFLAGS += -fno-builtin
- 
- ELF_ARCH := i386:x86-64
- ELF_FORMAT := elf64-x86-64
-diff -puN arch/um/scripts/Makefile.unmap~uml-build-on-64bit-host arch/um/scripts/Makefile.unmap
---- linux-2.6.git-broken/arch/um/scripts/Makefile.unmap~uml-build-on-64bit-host	2005-07-13 19:46:33.000000000 +0200
-+++ linux-2.6.git-broken-paolo/arch/um/scripts/Makefile.unmap	2005-07-13 19:46:33.000000000 +0200
-@@ -12,8 +12,8 @@ $(obj)/unmap.o: _c_flags = $(call unprof
- 
- quiet_cmd_wrapld = LD      $@
- define cmd_wrapld
--	$(LD) -r -o $(obj)/unmap_tmp.o $< $(shell $(CC) -print-file-name=libc.a); \
--	$(OBJCOPY) $(obj)/unmap_tmp.o $@ -G switcheroo
-+	$(LD) $(LDFLAGS) -r -o $(obj)/unmap_tmp.o $< $(shell $(CC) $(CFLAGS) -print-file-name=libc.a); \
-+	$(OBJCOPY) $(UML_OBJCOPYFLAGS) $(obj)/unmap_tmp.o $@ -G switcheroo
- endef
- 
- $(obj)/unmap_fin.o : $(obj)/unmap.o FORCE
+- out:
++out:
+ 	kfree(buf);
+-	return(res);
+-}
+-#endif
+-
+-int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
+-{
+-	return(CHOOSE_MODE_PROC(sys_modify_ldt_tt, sys_modify_ldt_skas, func, 
+-				ptr, bytecount));
++	return res;
+ }
+-
+-
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+diff -puN /dev/null include/asm-um/ldt.h
+--- /dev/null	2005-07-13 17:18:22.594346552 +0200
++++ linux-2.6.git-broken-paolo/include/asm-um/ldt.h	2005-07-13 19:41:00.000000000 +0200
+@@ -0,0 +1,5 @@
++#ifndef __UM_LDT_H
++#define __UM_LDT_H
++
++#include "asm/arch/ldt.h"
++#endif
 _
 
 
