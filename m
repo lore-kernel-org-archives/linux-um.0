@@ -1,26 +1,31 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DtADz-0007VT-Au	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 13:22:27 -0700
+	id 1DtALb-0007tE-Jr	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jul 2005 13:30:19 -0700
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
-	by sc8-sf-mx2.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1DtADx-0007KL-Sm
+	by sc8-sf-mx1.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1DtALb-0004oO-A5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 13:22:27 -0700
+	Thu, 14 Jul 2005 13:30:19 -0700
+Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
+	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j6ELreFB017841
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 14 Jul 2005 17:53:41 -0400
 From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] [Bug 49277] Compile of usermode-sources-2.6.x fails
-References: <E1DsyoW-00058q-2G@nuthatch.gentoo.org>
-	<200507141457.53127.rob@landley.net>
-In-Reply-To: <200507141457.53127.rob@landley.net>
+Subject: Re: [uml-devel] Am I doing something wrong with -skas0?
+References: <200507122346.40320.rob@landley.net>
+	<20050714123720.GA25689@ccure.user-mode-linux.org>
+	<200507141316.38969.rob@landley.net>
+In-Reply-To: <200507141316.38969.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200507141522.17231.rob@landley.net>
+Message-Id: <200507141530.11249.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +37,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 14 Jul 2005 15:22:17 -0500
+Date: Thu, 14 Jul 2005 15:30:11 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: bugzilla-daemon@gentoo.org
 
-On Thursday 14 July 2005 14:57, Rob Landley wrote:
-> On Thursday 14 July 2005 03:11, bugzilla-daemon@gentoo.org wrote:
-> > Clear-Text: http://bugs.gentoo.org/show_bug.cgi?id=49277
-> > Secure: https://bugs.gentoo.org/show_bug.cgi?id=49277
-> >
-> >
-> >
-> >
-> >
-> > ------- Additional Comments From x-drum@libero.it  2005-07-14 01:11 PDT
-> > ------- UML patch 2.6.12-bs5 also worked with usermode-sources-2.6.12
-> > (that includes the gentoo patchset)
->
-> Since when did sending a "go look at this URL" message to a development
-> mailing list, with no further information outside of the message subject,
-> not count as spam?  Especially when three or four further follow-ups are
-> equally unintelligible if you don't follow the link to the URL in question?
->
-> Just curious...
->
-> Rob
+On Thursday 14 July 2005 13:16, Rob Landley wrote:
+> Bodo's patch seems to have fixed the problem (albeit in a way that reveals
+> ubuntu is using thread-local storage, so I can't use it anyway).
 
-Ah, I see.  I was thrown off by the formatting, there is a little info at the 
-bottom there.  (Mentally edited it out as a signature.)  Ok...
+Hang on a sec, if TLS is screwing up -skas0, then why does -tt mode work?
+
+Is this expected?
 
 Rob
 
