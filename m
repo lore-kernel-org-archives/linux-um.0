@@ -1,25 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=sc8-sf-mx2.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dt5Xt-0000Si-Vk	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 08:22:41 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.44)
-	id 1Dt5Xr-0008Lj-Ip	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 08:22:42 -0700
-From: Jeff Dike <jdike@addtoit.com>
+	id 1Dt7z0-0000Aw-KA	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jul 2005 10:58:50 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by sc8-sf-mx1.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1Dt7yz-0001u5-Et
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jul 2005 10:58:50 -0700
+From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Am I doing something wrong with -skas0?
-Message-ID: <20050714142333.GA3752@ccure.user-mode-linux.org>
 References: <200507122346.40320.rob@landley.net>
-	<42D504D8.1010606@fujitsu-siemens.com> <200507131647.53822.rob@landley.net>
-	<42D6459B.6080702@fujitsu-siemens.com> <42D654F7.2080608@fujitsu-siemens.com>
-	<20050714134327.GB26655@ccure.user-mode-linux.org>
-	<42D67282.4020601@fujitsu-siemens.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<200507131647.53822.rob@landley.net> <42D6459B.6080702@fujitsu-siemens.com>
+In-Reply-To: <42D6459B.6080702@fujitsu-siemens.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <42D67282.4020601@fujitsu-siemens.com>
+Message-Id: <200507141258.18828.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,19 +32,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 14 Jul 2005 10:23:33 -0400
+Date: Thu, 14 Jul 2005 12:58:18 -0500
 To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Jul 14, 2005 at 04:11:14PM +0200, Bodo Stroesser wrote:
-> Do you know _what_ makes the problem happen? Is it depended on the
-> compiler version (gcc 3.3.5) or is there any CONFIG_XXXXX, that lets
-> make use some special compiler option?
+On Thursday 14 July 2005 05:59, Bodo Stroesser wrote:
+> Hi Jeff,
+>
+> stub_segv_handler misses the "push ebp" at the beginning. As you
+> do the normally corresponding "pop eax" explicitly, I think stack
+> pointer is wrong on call of sigreturn.
+>
+> I have no idea, what makes happen this. Maybe it depends on compiler
+> version?
+>
+>  Bodo
 
-CONFIG_FRAME_POINTER (or maybe CONFIG_DEBUG_INFO enables frame pointers)
-would be my guess.
+It's the current ("Hoary Hedgehog", I think) ubuntu/kbuntu gcc 3.3:
 
-				Jeff
+landley@driftwood:~/busybox_stable$ gcc -v
+Reading specs from /usr/lib/gcc-lib/i486-linux/3.3.5/specs
+Configured with: ../src/configure -v 
+--enable-languages=c,c++,java,f77,pascal,objc,ada,treelang --prefix=/usr 
+--mandir=/usr/share/man --infodir=/usr/share/info 
+--with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared 
+--with-system-zlib --enable-nls --without-included-gettext 
+--enable-__cxa_atexit --enable-clocale=gnu --enable-debug 
+--enable-java-gc=boehm --enable-java-awt=xlib --enable-objc-gc i486-linux
+Thread model: posix
+gcc version 3.3.5 (Debian 1:3.3.5-8ubuntu2)
 
 
 -------------------------------------------------------
