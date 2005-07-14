@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dsztm-0001NS-FL	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 02:20:54 -0700
-Received: from rimuhosting.com ([69.90.33.248])
-	by sc8-sf-mx1.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1Dsztk-0006U8-0h
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 02:20:54 -0700
-Message-ID: <42D62E66.8070709@rimuhosting.com>
-From: Peter <peter.spamcatcher@rimuhosting.com>
+	id 1Dt1RZ-0005BK-J0	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jul 2005 03:59:53 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.44)
+	id 1Dt1RZ-0004Hr-7Y	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jul 2005 03:59:53 -0700
+Message-ID: <42D6459B.6080702@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: unregister_netdevice: waiting for tap24 to become
- free
-References: <20050709110143.D59181E9EA4@zion.home.lan>
-	<200507120020.52418.blaisorblade@yahoo.it> <42D2F22C.3060102@rimuhosting.com>
-	<200507120047.33064.blaisorblade@yahoo.it>
-In-Reply-To: <200507120047.33064.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Subject: Re: [uml-devel] Am I doing something wrong with -skas0?
+References: <200507122346.40320.rob@landley.net>
+	<42D504D8.1010606@fujitsu-siemens.com> <200507131647.53822.rob@landley.net>
+In-Reply-To: <200507131647.53822.rob@landley.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -31,43 +28,85 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 14 Jul 2005 21:20:38 +1200
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Thu, 14 Jul 2005 12:59:39 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net
 
-I just tried 2.6.12.2 with skas-V8.2.  The server (otherwise reliable), 
-had a kernel crash (which I was unable to capture) within a couple of 
-hours of boot up.
+Rob Landley wrote:
+> On Wednesday 13 July 2005 07:11, Bodo Stroesser wrote:
+> 
+>>Rob Landley wrote:
+>>
+>>>Am I doing it right?  Is there anything I can do to help track this down?
+>>>
+>>>Rob
+>>
+>>The value of EIP reported in your earlier mail is quite surprising.
+>>Could you please "objdump" vmlinux and send the part of
+>>"stub_segv_handler"?
+>>
+>> Bodo
+> 
+> 
+> I'm guessing you want objdump -d, and here's stub_segv_handler from that:
+> 
+> 081020b0 <stub_segv_handler>:
+>  81020b0:       8b 44 24 5c             mov    0x5c(%esp),%eax
+>  81020b4:       a3 04 f0 ff bf          mov    %eax,0xbffff004
+>  81020b9:       8b 44 24 3c             mov    0x3c(%esp),%eax
+>  81020bd:       a3 00 f0 ff bf          mov    %eax,0xbffff000
+>  81020c2:       8b 44 24 38             mov    0x38(%esp),%eax
+>  81020c6:       a3 08 f0 ff bf          mov    %eax,0xbffff008
+>  81020cb:       b8 14 00 00 00          mov    $0x14,%eax
+>  81020d0:       cd 80                   int    $0x80
+>  81020d2:       89 c3                   mov    %eax,%ebx
+>  81020d4:       b8 25 00 00 00          mov    $0x25,%eax
+>  81020d9:       b9 0a 00 00 00          mov    $0xa,%ecx
+>  81020de:       cd 80                   int    $0x80
+>  81020e0:       58                      pop    %eax
+>  81020e1:       58                      pop    %eax
+>  81020e2:       58                      pop    %eax
+>  81020e3:       b8 77 00 00 00          mov    $0x77,%eax
+>  81020e8:       cd 80                   int    $0x80
+>  81020ea:       c3                      ret
+> 
+> Rob
+Hi Jeff,
 
-Regards, Peter
+stub_segv_handler misses the "push ebp" at the beginning. As you
+do the normally corresponding "pop eax" explicitly, I think stack
+pointer is wrong on call of sigreturn.
 
-Blaisorblade wrote:
-> On Tuesday 12 July 2005 00:26, Peter wrote:
-> 
->>Nothing in the logs prior to the first error message.
->>
->>I've hit this before at different times on other servers.  If there are
->>some commands I can run to gather more diagnostics on the problem,
->>please let me know and I'll capture more information next time.
->>
->>I see the error was reported with older 2.6 kernels and a patch was
->>floating around.  I'm not sure if that is integrated into the current
->>2.6.11 kernel.
-> 
-> The patch named there has been integrated, verifyable at 
-> http://linux.bkbits.net:8080/linux-2.6/cset@4129735fMSVl0_RA4uNcNBWHFjT-zw
-> 
-> However this time the bug is probably due to something entirely different, the 
-> message is not very specific.
-> 
-> Tried 2.6.12? SKAS has been already updated (plus there's an important update 
-> for SKAS, from -V8 to -V8.2).
-> 
->>http://www.google.com/search?q=unregister_netdevice%3A+waiting
->>
->>Regards, Peter
-> 
-> 
+I have no idea, what makes happen this. Maybe it depends on compiler
+version?
+
+	Bodo
+
+P.S.:
+Normally, stub_segv_handler should look like this:
+
+a02090d0 <stub_segv_handler>:
+a02090d0:       55                      push   %ebp
+a02090d1:       89 e5                   mov    %esp,%ebp
+a02090d3:       8b 45 60                mov    0x60(%ebp),%eax
+a02090d6:       a3 04 f0 ff bf          mov    %eax,0xbffff004
+a02090db:       8b 45 40                mov    0x40(%ebp),%eax
+a02090de:       a3 00 f0 ff bf          mov    %eax,0xbffff000
+a02090e3:       8b 45 3c                mov    0x3c(%ebp),%eax
+a02090e6:       a3 08 f0 ff bf          mov    %eax,0xbffff008
+a02090eb:       b8 14 00 00 00          mov    $0x14,%eax
+a02090f0:       cd 80                   int    $0x80
+a02090f2:       89 c3                   mov    %eax,%ebx
+a02090f4:       b8 25 00 00 00          mov    $0x25,%eax
+a02090f9:       b9 0a 00 00 00          mov    $0xa,%ecx
+a02090fe:       cd 80                   int    $0x80
+a0209100:       58                      pop    %eax
+a0209101:       58                      pop    %eax
+a0209102:       58                      pop    %eax
+a0209103:       b8 77 00 00 00          mov    $0x77,%eax
+a0209108:       cd 80                   int    $0x80
+a020910a:       5d                      pop    %ebp
+a020910b:       c3                      ret
 
 
 -------------------------------------------------------
