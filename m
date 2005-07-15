@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=sc8-sf-mx1.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=sc8-sf-mx2.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DtYBe-0002sP-Cp	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Jul 2005 14:57:38 -0700
+	id 1DtYY1-0003ud-6H	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 15 Jul 2005 15:20:45 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
-	id 1DtYBc-0003Qv-8F	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Jul 2005 14:57:38 -0700
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.44)
+	id 1DtYXy-0002BN-OI	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 15 Jul 2005 15:20:45 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050715215126.GA9234@ccure.user-mode-linux.org>
-References: <29D15BBCA340DA4D8146D38B4924FC7A105113@zcarhxm0.corp.nortel.com>
+Message-ID: <20050715204957.GE8069@ccure.user-mode-linux.org>
+References: <20050714222007.568784000@homer>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <29D15BBCA340DA4D8146D38B4924FC7A105113@zcarhxm0.corp.nortel.com>
-Subject: [uml-devel] Re: prot |= _PAGE_PCD | _PAGE_PWT;
+In-Reply-To: <20050714222007.568784000@homer>
+Subject: [uml-devel] Re: [patch 1/1] printk : arch/um/
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,23 +27,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 15 Jul 2005 17:51:26 -0400
-To: Majid Salame <msalame@nortel.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 15 Jul 2005 16:49:57 -0400
+To: domen@coderock.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, Christophe Lucas <clucas@rotomalug.org>
 
-On Fri, Jul 15, 2005 at 03:26:54PM -0400, Majid Salame wrote:
->  in asm-um/pgtable.h we do not have definitions and may be for good
-> reason for PAGE_PCD and _PAGE_PWT.
-> 
-> #define _PAGE_PWT	0x008
-> #define _PAGE_PCD	0x010
-> 
-> Can I in UML recode this statement in much same way drivers/char/mem.c
->      prot |= _PAGE_PCD | _PAGE_PWT;
+On Fri, Jul 15, 2005 at 12:20:08AM +0200, domen@coderock.org wrote:
+> printk() calls should include appropriate KERN_* constant.
 
-What do they mean?
+Queued, thanks.  It may wait till after KS/OLS to get merged.
 
-			Jeff
+				Jeff
 
 
 -------------------------------------------------------
