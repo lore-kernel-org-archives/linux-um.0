@@ -2,17 +2,34 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DtC4I-0004f6-RC	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 15:20:34 -0700
-Received: from coderock.org
-	([193.77.147.115] helo=trashy.coderock.org ident=postfix)
-	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
-	id 1DtC4H-0007i9-5A	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jul 2005 15:20:34 -0700
-Message-Id: <20050714222007.568784000@homer>
-From: domen@coderock.org
-Content-Disposition: inline; filename=printk-arch_um_
-Subject: [uml-devel] [patch 1/1] printk : arch/um/
+	id 1DtI0d-0005Mx-89	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jul 2005 21:41:11 -0700
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by sc8-sf-mx1.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1DtI0a-0002lu-Hv
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jul 2005 21:41:11 -0700
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1DtI04-0003hD-Sl	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 15 Jul 2005 06:40:37 +0200
+Received: from desk.marajade.sandelman.ca ([205.150.200.247])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 15 Jul 2005 06:40:36 +0200
+Received: from mcr by desk.marajade.sandelman.ca with local (Gmexim 0.1
+	(Debian))        id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 15 Jul 2005 06:40:36 +0200
+From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Subject: Re: [uml-user] Re: [uml-devel] Re: Problems about fork-not-clone
+Message-ID: <v0br54n4zm.fsf@marajade.sandelman.ottawa.on.ca>
+References: <1119527920.4679.15.camel@FC3-bernhard-1.acousta.local>
+	<200507112321.20457.blaisorblade@yahoo.it>
+	<200507121816.49410.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,65 +41,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 15 Jul 2005 00:20:08 +0200
-To: jdike@karaya.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, Christophe Lucas <clucas@rotomalug.org>, domen@coderock.org
+Date: Thu, 14 Jul 2005 23:05:33 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-From: Christophe Lucas <clucas@rotomalug.org>
-
-
-printk() calls should include appropriate KERN_* constant.
+--=-=-=
 
 
-Signed-off-by: Christophe Lucas <clucas@rotomalug.org>
-Signed-off-by: Domen Puncer <domen@coderock.org>
----
- drivers/mconsole_kern.c |    2 +-
- kernel/exitcode.c       |    2 +-
- kernel/process_kern.c   |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+>>>>> "Paolo" == Blaisorblade  <blaisorblade@yahoo.it> writes:
+    Paolo> There were some problems about TT mode which appeared unsolvable
+    Paolo> on newer distros, and that was a reason to drop TT mode, but I
+    Paolo> just solved them, so  there's no hurry in dropping it.
 
-Index: quilt/arch/um/drivers/mconsole_kern.c
-===================================================================
---- quilt.orig/arch/um/drivers/mconsole_kern.c
-+++ quilt/arch/um/drivers/mconsole_kern.c
-@@ -557,7 +557,7 @@ static int create_proc_mconsole(void)
+  Good. I find that it is a LOT easier to debug in the TT mode.
+
+  I really prefer running GDB in a seperate window (under xemacs), and
+attaching to the process. I haven't found a useful way to do this with SKAS.
  
- 	ent = create_proc_entry("mconsole", S_IFREG | 0200, NULL);
- 	if(ent == NULL){
--		printk("create_proc_mconsole : create_proc_entry failed\n");
-+		printk(KERN_INFO "create_proc_mconsole : create_proc_entry failed\n");
- 		return(0);
- 	}
- 
-Index: quilt/arch/um/kernel/exitcode.c
-===================================================================
---- quilt.orig/arch/um/kernel/exitcode.c
-+++ quilt/arch/um/kernel/exitcode.c
-@@ -48,7 +48,7 @@ static int make_proc_exitcode(void)
- 
- 	ent = create_proc_entry("exitcode", 0600, &proc_root);
- 	if(ent == NULL){
--		printk("make_proc_exitcode : Failed to register "
-+		printk(KERN_WARNING "make_proc_exitcode : Failed to register "
- 		       "/proc/exitcode\n");
- 		return(0);
- 	}
-Index: quilt/arch/um/kernel/process_kern.c
-===================================================================
---- quilt.orig/arch/um/kernel/process_kern.c
-+++ quilt/arch/um/kernel/process_kern.c
-@@ -412,7 +412,7 @@ int __init make_proc_sysemu(void)
- 
- 	if (ent == NULL)
- 	{
--		printk("Failed to register /proc/sysemu\n");
-+		printk(KERN_WARNING "Failed to register /proc/sysemu\n");
- 		return(0);
- 	}
- 
+  One thing I'd also like is a way to completely turn off the scheduler when
+debugging. It just gets in my way when I'm single stepping for 2 hours at a
+time :-)
 
---
+-- 
+] Michael Richardson          Xelerance Corporation, Ottawa, ON |  firewalls  [
+] mcr @ xelerance.com           Now doing IPsec training, see   |net architect[
+] http://www.sandelman.ca/mcr/    www.xelerance.com/training/   |device driver[
+]                    I'm a dad: http://www.sandelman.ca/lrmr/                 [
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iQCVAwUAQtcoA4qHRg3pndX9AQFd1AP+OAYctEVmKUjT7fyOjCKwHRvsfWXYoM8t
+1ndccL1No6gv08XE5zaOHZhNJ8gv56IRn+9t7hRw+LDhxEtRNeNibWR1QHNb+m8A
+Zenw3NtpKcbVCdE4ghwqSY1k8MbCLK2r+1q4c4zS3Cw0XpwS1TkYoDbfaBsJU4aO
+jCgqcnu7g3o=
+=M2J9
+-----END PGP SIGNATURE-----
+--=-=-=--
+
 
 
 -------------------------------------------------------
