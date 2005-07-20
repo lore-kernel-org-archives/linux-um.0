@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=sc8-sf-mx1.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DuY1z-0004z8-OC	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Jul 2005 08:59:47 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by sc8-sf-mx1.sourceforge.net with smtp (Exim 4.44)
-	id 1DuY1w-00051A-CG	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Jul 2005 08:59:48 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] prot |= _PAGE_PCD | _PAGE_PWT;
-References: <29D15BBCA340DA4D8146D38B4924FC7A105113@zcarhxm0.corp.nortel.com>
-In-Reply-To: <29D15BBCA340DA4D8146D38B4924FC7A105113@zcarhxm0.corp.nortel.com>
+	id 1Dv9gq-0000jr-AA	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Jul 2005 01:12:28 -0700
+Received: from web131873-3.gw.connect.com.au ([210.11.57.5]
+	helo=newbushfire.webwombat.com.au)
+	by sc8-sf-mx1.sourceforge.net with esmtp (Exim 4.44)
+	id 1Dv9gp-0002qM-Kv	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Jul 2005 01:12:28 -0700
+Received: from phill2knb ([10.1.1.60])j6K8CKg19257
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 20 Jul 2005 18:12:20 +1000
+Message-ID: <003e01c58d02$c06c6f30$3c01010a@webwombat.com.au>
+From: "Phill Wombat" <uml@webwombat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200507181807.33907.blaisorblade@yahoo.it>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_003B_01C58D56.920174C0"
+Subject: [uml-devel] RE:2.6.12-bs7 hanging after init
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,64 +29,112 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 18 Jul 2005 18:07:33 +0200
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 20 Jul 2005 18:12:20 +1000
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Majid Salame <msalame@nortel.com>, Jeff Dike <jdike@addtoit.com>
 
-On Friday 15 July 2005 21:26, Majid Salame wrote:
->  in asm-um/pgtable.h we do not have definitions and may be for good
-> reason for PAGE_PCD and _PAGE_PWT.
+This is a multi-part message in MIME format.
 
-From what I see, they're about uncacheability of memory, which isn't proba=
-bly=20
-supportable at all in UML (we might go to using madvise but I don't think=20
-it's worth).
+------=_NextPart_000_003B_01C58D56.920174C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-And as done in drivers/char/mem.c, there an access macro to use it, i.e.=20
-pgprot_noncached, to use only if defined (I guess on arch missing it it=20
-should be defined as a no-op).
+Hi Alessio,
 
-> #define _PAGE_PWT	0x008
-> #define _PAGE_PCD	0x010
+I have precisly what you describe here.
 
-> Can I in UML recode this statement in much same way drivers/char/mem.c
->      prot |=3D _PAGE_PCD | _PAGE_PWT;
+I'm using Fedora Core 4 with SKAS3 on both a twin 686 Dell and also in =
+x86_64 mode on an IBM x336.
 
-So, what's the question? The answer is obviously yes. Note that I'm referri=
-ng=20
-to this version of the sources (taken from latest git snapshot):
+The UML kernel is 2.6.12 patched with bs7.
 
-static int mmap_mem(struct file * file, struct vm_area_struct * vma)
-{
-#if defined(__HAVE_PHYS_MEM_ACCESS_PROT)
-        unsigned long offset =3D vma->vm_pgoff << PAGE_SHIFT;
+When running in tt mode both systems hang at init.
 
-        vma->vm_page_prot =3D phys_mem_access_prot(file, offset,
-                                                 vma->vm_end - vma->vm_star=
-t,
-                                                 vma->vm_page_prot);
-#elif defined(pgprot_noncached)
-        unsigned long offset =3D vma->vm_pgoff << PAGE_SHIFT;
-        int uncached;
+Like you I also can run /bin/sh, /bin/bash, and even init=3D"/bin/ls =
+-lsa" and it all works, *until* it needs to start another process.
 
-        uncached =3D uncached_access(file, offset);
-        if (uncached)
-                vma->vm_page_prot =3D pgprot_noncached(vma->vm_page_prot);
-#endif
+I have FC4 running in SKAS mode on the dell twin in 32 bit mode. =
+However, SKAS3 is not up and running yet (from what I understand) on =
+x86_64 hosts, so I only have TT mode available to me for that machine =
+architecture (eventhough SKAS3 compiled in ok and is detected).
 
---=20
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+From what you've done and what I've done (which I posted on the =
+user-list) it seems your conclusions are pretty close to the mark from =
+my reading.
 
-=09
+Everything you describe is happening to me.
 
-=09
-	=09
-___________________________________=20
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB=20
-http://mail.yahoo.it
+Sorry this doesn't help. I think right now your only option is to go =
+SKAS3 on a 32 bit host, and SMP works ok. It's also beyond my =
+understanding to into the guts of the kernel and figure it out.
+
+Cheers
+Phill.
+------=_NextPart_000_003B_01C58D56.920174C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1498" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi Alessio,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have precisly what you describe=20
+here.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I'm using Fedora Core 4 with SKAS3 on =
+both a twin=20
+686 Dell and also in x86_64 mode on an IBM x336.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>The UML kernel is 2.6.12 patched with=20
+bs7.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>When running in tt mode both systems =
+hang at=20
+init.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Like you I also can run /bin/sh, =
+/bin/bash, and=20
+even init=3D"/bin/ls -lsa" and it all works, *until* it needs to start =
+another=20
+process.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have FC4 running in SKAS mode on the =
+dell twin in=20
+32 bit mode. However, SKAS3 is not&nbsp;up and running yet (from what I=20
+understand) on x86_64 hosts, so I only have TT mode available to me for =
+that=20
+machine architecture (eventhough&nbsp;SKAS3 compiled in ok and is=20
+detected).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>From what you've done and what I've =
+done (which I=20
+posted on the user-list) it seems your conclusions are pretty close to =
+the mark=20
+from my reading.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Everything you describe is happening to =
+
+me.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Sorry this doesn't help. I think right =
+now your=20
+only option is to go SKAS3 on&nbsp;a 32 bit&nbsp;host, and SMP works ok. =
+It's=20
+also beyond my understanding to into the guts of the kernel and figure =
+it=20
+out.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Cheers</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Phill.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_003B_01C58D56.920174C0--
 
 
 
@@ -92,7 +142,7 @@ http://mail.yahoo.it
 SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
 from IBM. Find simple to follow Roadmaps, straightforward articles,
 informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_idt77&alloc_id=16492&op=CCk
+speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
