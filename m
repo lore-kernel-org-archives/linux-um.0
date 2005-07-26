@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DxVkv-0005V8-1q	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Jul 2005 13:10:25 -0700
+	id 1DxVpd-0005na-Qs	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Jul 2005 13:15:17 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DxVku-0007y6-Hv
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DxVpb-0004mB-3w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Jul 2005 13:10:24 -0700
-Message-Id: <200507262004.j6QK4DH8010080@ccure.user-mode-linux.org>
+	Tue, 26 Jul 2005 13:15:17 -0700
+Message-Id: <200507262004.j6QK483G010074@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 4/4] UML - Fix misdeclared function
+Subject: [uml-devel] [PATCH 3/4] UML - Update module interface
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,51 +24,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 26 Jul 2005 16:04:13 -0400
+Date: Tue, 26 Jul 2005 16:04:08 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Dominik Hackl <dominik@hackl.dhs.org>
 
-This fixes an interface which differed from its declaration, and includes
-the relevant header so that this doesn't happen again.
+From: Dominik Hackl <dominik@hackl.dhs.org>
 
+This patch replaces the deprecated MODULE_PARM function by the new 
+module_param function.
+
+Signed-off-by: Dominik Hackl <dominik@hackl.dhs.org>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12/arch/um/kernel/helper.c
+Index: linux-2.6.12/arch/um/drivers/hostaudio_kern.c
 ===================================================================
---- linux-2.6.12.orig/arch/um/kernel/helper.c	2005-07-25 17:22:14.000000000 -0400
-+++ linux-2.6.12/arch/um/kernel/helper.c	2005-07-26 16:01:52.000000000 -0400
-@@ -13,6 +13,7 @@
- #include "user.h"
- #include "kern_util.h"
- #include "user_util.h"
-+#include "helper.h"
- #include "os.h"
+--- linux-2.6.12.orig/arch/um/drivers/hostaudio_kern.c	2005-07-19 12:03:09.000000000 -0400
++++ linux-2.6.12/arch/um/drivers/hostaudio_kern.c	2005-07-19 12:09:04.000000000 -0400
+@@ -57,10 +57,10 @@
  
- struct helper_data {
-@@ -149,7 +150,7 @@
- 	return(pid);
- }
+ #else /*MODULE*/
  
--int helper_wait(int pid, int block)
-+int helper_wait(int pid)
- {
- 	int ret;
+-MODULE_PARM(dsp, "s");
++module_param(dsp, charp, 0644);
+ MODULE_PARM_DESC(dsp, DSP_HELP);
  
-@@ -160,14 +161,3 @@
- 	}
- 	return(ret);
- }
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
+-MODULE_PARM(mixer, "s");
++module_param(mixer, charp, 0644);
+ MODULE_PARM_DESC(mixer, MIXER_HELP);
+ 
+ #endif
 
 
 
