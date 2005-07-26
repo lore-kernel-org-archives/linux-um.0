@@ -2,17 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DxoIZ-00043r-55	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Jul 2005 08:58:23 -0700
+	id 1DxoIa-0003yu-5Y	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Jul 2005 08:58:24 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1DxoDd-0000uE-9v
+	(Exim 4.44)	id 1DxoDU-0000uF-4x
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Jul 2005 08:53:19 -0700
+	Wed, 27 Jul 2005 08:53:09 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050726184352.2F0FD21DC1E@zion.home.lan>
-Subject: [uml-devel] [patch 3/4] Uml support: add PTRACE_SYSEMU_SINGLESTEP
-	option to i386
+Message-Id: <20050726184349.53E4D21DC1C@zion.home.lan>
+Subject: [uml-devel] [patch 2/4] Uml support: reorganize PTRACE_SYSEMU support
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,93 +23,137 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 26 Jul 2005 20:43:52 +0200
+Date: Tue, 26 Jul 2005 20:43:49 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, bstroesser@fujitsu-siemens.com
 
 
 From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-This patch implements the new ptrace option PTRACE_SYSEMU_SINGLESTEP, which
-can be used by UML to singlestep a process: it will receive SINGLESTEP
-interceptions for normal instructions and syscalls, but syscall execution will
-be skipped just like with PTRACE_SYSEMU.
+With this patch, we change the way we handle switching from PTRACE_SYSEMU to
+PTRACE_{SINGLESTEP,SYSCALL}, to free TIF_SYSCALL_EMU from double use as a
+preparation for PTRACE_SYSEMU_SINGLESTEP extension, without changing the
+behavior of the host kernel.
 
 Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/i386/kernel/ptrace.c |   21 +++++++++++++++++----
- linux-2.6.git-paolo/include/linux/ptrace.h    |    1 +
- 2 files changed, 18 insertions(+), 4 deletions(-)
+ linux-2.6.git-paolo/arch/i386/kernel/entry.S  |    8 ++++
+ linux-2.6.git-paolo/arch/i386/kernel/ptrace.c |   43 ++++++++------------------
+ 2 files changed, 21 insertions(+), 30 deletions(-)
 
-diff -puN arch/i386/kernel/ptrace.c~sysemu-add-SYSEMU_SINGLESTEP arch/i386/kernel/ptrace.c
---- linux-2.6.git/arch/i386/kernel/ptrace.c~sysemu-add-SYSEMU_SINGLESTEP	2005-07-26 20:27:45.000000000 +0200
-+++ linux-2.6.git-paolo/arch/i386/kernel/ptrace.c	2005-07-26 20:39:55.000000000 +0200
-@@ -547,11 +547,17 @@ asmlinkage int sys_ptrace(long request, 
- 		wake_up_process(child);
- 		break;
+diff -puN arch/i386/kernel/entry.S~sysemu-reorganize arch/i386/kernel/entry.S
+--- linux-2.6.git/arch/i386/kernel/entry.S~sysemu-reorganize	2005-07-26 20:25:58.000000000 +0200
++++ linux-2.6.git-paolo/arch/i386/kernel/entry.S	2005-07-26 20:25:58.000000000 +0200
+@@ -339,12 +339,18 @@ syscall_trace_entry:
+ 	xorl %edx,%edx
+ 	call do_syscall_trace
+ 	cmpl $0, %eax
+-	jne syscall_exit		# ret != 0 -> running under PTRACE_SYSEMU,
++	jne syscall_skip		# ret != 0 -> running under PTRACE_SYSEMU,
+ 					# so must skip actual syscall
+ 	movl ORIG_EAX(%esp), %eax
+ 	cmpl $(nr_syscalls), %eax
+ 	jnae syscall_call
+ 	jmp syscall_exit
++syscall_skip:
++	cli				# make sure we don't miss an interrupt
++					# setting need_resched or sigpending
++					# between sampling and the iret
++	movl TI_flags(%ebp), %ecx
++	jmp work_pending
  
-+	case PTRACE_SYSEMU_SINGLESTEP: /* Same as SYSEMU, but singlestep if not syscall */
- 	case PTRACE_SINGLESTEP:	/* set the trap flag. */
+ 	# perform syscall exit tracing
+ 	ALIGN
+diff -puN arch/i386/kernel/ptrace.c~sysemu-reorganize arch/i386/kernel/ptrace.c
+--- linux-2.6.git/arch/i386/kernel/ptrace.c~sysemu-reorganize	2005-07-26 20:25:58.000000000 +0200
++++ linux-2.6.git-paolo/arch/i386/kernel/ptrace.c	2005-07-26 20:39:57.000000000 +0200
+@@ -515,21 +515,14 @@ asmlinkage int sys_ptrace(long request, 
  		ret = -EIO;
  		if (!valid_signal(data))
  			break;
--		clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
-+
-+		if (request == PTRACE_SYSEMU_SINGLESTEP)
-+			set_tsk_thread_flag(child, TIF_SYSCALL_EMU);
-+		else
+-		/* If we came here with PTRACE_SYSEMU and now continue with
+-		 * PTRACE_SYSCALL, entry.S used to intercept the syscall return.
+-		 * But it shouldn't!
+-		 * So we don't clear TIF_SYSCALL_EMU, which is always unused in
+-		 * this special case, to remember, we came from SYSEMU. That
+-		 * flag will be cleared by do_syscall_trace().
+-		 */
+ 		if (request == PTRACE_SYSEMU) {
+ 			set_tsk_thread_flag(child, TIF_SYSCALL_EMU);
+-		} else if (request == PTRACE_CONT) {
+-			clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
+-		}
+-		if (request == PTRACE_SYSCALL) {
++			clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
++		} else if (request == PTRACE_SYSCALL) {
+ 			set_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
 +			clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
-+
+ 		} else {
++			clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
+ 			clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
+ 		}
+ 		child->exit_code = data;
+@@ -558,8 +551,7 @@ asmlinkage int sys_ptrace(long request, 
+ 		ret = -EIO;
+ 		if (!valid_signal(data))
+ 			break;
+-		/*See do_syscall_trace to know why we don't clear
+-		 * TIF_SYSCALL_EMU.*/
++		clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
  		clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
  		set_singlestep(child);
  		child->exit_code = data;
-@@ -686,7 +692,10 @@ void send_sigtrap(struct task_struct *ts
+@@ -694,7 +686,7 @@ void send_sigtrap(struct task_struct *ts
  __attribute__((regparm(3)))
  int do_syscall_trace(struct pt_regs *regs, int entryexit)
  {
--	int is_sysemu, is_singlestep, ret = 0;
-+	int is_sysemu = test_thread_flag(TIF_SYSCALL_EMU), ret = 0;
-+	/* With TIF_SYSCALL_EMU set we want to ignore TIF_SINGLESTEP */
-+	int is_singlestep = !is_sysemu && test_thread_flag(TIF_SINGLESTEP);
-+
+-	int is_sysemu, is_systrace, is_singlestep, ret = 0;
++	int is_sysemu, is_singlestep, ret = 0;
  	/* do the secure computing check first */
  	secure_computing(regs->orig_eax);
  
-@@ -696,8 +705,11 @@ int do_syscall_trace(struct pt_regs *reg
- 	if (!(current->ptrace & PT_PTRACED))
+@@ -705,25 +697,13 @@ int do_syscall_trace(struct pt_regs *reg
  		goto out;
  
--	is_sysemu = test_thread_flag(TIF_SYSCALL_EMU);
--	is_singlestep = test_thread_flag(TIF_SINGLESTEP);
-+	/* If a process stops on the 1st tracepoint with SYSCALL_TRACE
-+	 * and then is resumed with SYSEMU_SINGLESTEP, it will come in
-+	 * here. We have to check this and return */
-+	if (is_sysemu && entryexit)
-+		return 0;
+ 	is_sysemu = test_thread_flag(TIF_SYSCALL_EMU);
+-	is_systrace = test_thread_flag(TIF_SYSCALL_TRACE);
+ 	is_singlestep = test_thread_flag(TIF_SINGLESTEP);
  
+-	/* We can detect the case of coming from PTRACE_SYSEMU and now running
+-	 * with PTRACE_SYSCALL or PTRACE_SINGLESTEP, by TIF_SYSCALL_EMU being
+-	 * set additionally.
+-	 * If so let's reset the flag and return without action (no singlestep
+-	 * nor syscall tracing, since no actual step has been executed).
+-	 */
+-	if (is_sysemu && (is_systrace || is_singlestep)) {
+-		clear_thread_flag(TIF_SYSCALL_EMU);
+-		goto out;
+-	}
+-
  	/* Fake a debug trap */
- 	if (is_singlestep)
-@@ -728,6 +740,7 @@ int do_syscall_trace(struct pt_regs *reg
- 	if (ret == 0)
- 		return 0;
+-	if (test_thread_flag(TIF_SINGLESTEP))
++	if (is_singlestep)
+ 		send_sigtrap(current, regs, 0);
  
-+	regs->orig_eax = -1; /* force skip of syscall restarting */
- 	if (unlikely(current->audit_context))
- 		audit_syscall_exit(current, AUDITSC_RESULT(regs->eax), regs->eax);
- 	return 1;
-diff -puN include/linux/ptrace.h~sysemu-add-SYSEMU_SINGLESTEP include/linux/ptrace.h
---- linux-2.6.git/include/linux/ptrace.h~sysemu-add-SYSEMU_SINGLESTEP	2005-07-26 20:27:45.000000000 +0200
-+++ linux-2.6.git-paolo/include/linux/ptrace.h	2005-07-26 20:27:45.000000000 +0200
-@@ -21,6 +21,7 @@
+-	if (!is_systrace && !is_sysemu)
++ 	if (!test_thread_flag(TIF_SYSCALL_TRACE) && !is_sysemu)
+ 		goto out;
  
- #define PTRACE_SYSCALL		  24
- #define PTRACE_SYSEMU		  31
-+#define PTRACE_SYSEMU_SINGLESTEP  32
- 
- /* 0x4200-0x4300 are reserved for architecture-independent additions.  */
- #define PTRACE_SETOPTIONS	0x4200
+ 	/* the 0x80 provides a way for the tracing parent to distinguish
+@@ -745,5 +725,10 @@ int do_syscall_trace(struct pt_regs *reg
+ 	if (unlikely(current->audit_context) && !entryexit)
+ 		audit_syscall_entry(current, AUDIT_ARCH_I386, regs->orig_eax,
+ 				    regs->ebx, regs->ecx, regs->edx, regs->esi);
+-	return ret;
++	if (ret == 0)
++		return 0;
++
++	if (unlikely(current->audit_context))
++		audit_syscall_exit(current, AUDITSC_RESULT(regs->eax), regs->eax);
++	return 1;
+ }
 _
 
 
