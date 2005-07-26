@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DxVkv-0005V9-3L	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1DxVkv-0005V8-1q	for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 26 Jul 2005 13:10:25 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DxVku-0007x3-FU
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DxVku-0007y6-Hv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Jul 2005 13:10:25 -0700
-Message-Id: <200507262004.j6QK45Fn010068@ccure.user-mode-linux.org>
+	Tue, 26 Jul 2005 13:10:24 -0700
+Message-Id: <200507262004.j6QK4DH8010080@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/4] UML - Add skas0 command-line option
+Subject: [uml-devel] [PATCH 4/4] UML - Fix misdeclared function
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,149 +24,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 26 Jul 2005 16:04:05 -0400
+Date: Tue, 26 Jul 2005 16:04:13 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+This fixes an interface which differed from its declaration, and includes
+the relevant header so that this doesn't happen again.
 
-This adds the "skas0" parameter to force skas0 operation on SKAS3 host and
-shows which operating mode has been selected.
-
-Not intrusive, much more trivial than Bodo's patch, to merge for 2.6.13.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12/arch/um/kernel/process.c
+Index: linux-2.6.12/arch/um/kernel/helper.c
 ===================================================================
---- linux-2.6.12.orig/arch/um/kernel/process.c	2005-07-23 09:27:27.000000000 -0400
-+++ linux-2.6.12/arch/um/kernel/process.c	2005-07-23 10:56:54.000000000 -0400
-@@ -212,12 +212,26 @@
+--- linux-2.6.12.orig/arch/um/kernel/helper.c	2005-07-25 17:22:14.000000000 -0400
++++ linux-2.6.12/arch/um/kernel/helper.c	2005-07-26 16:01:52.000000000 -0400
+@@ -13,6 +13,7 @@
+ #include "user.h"
+ #include "kern_util.h"
+ #include "user_util.h"
++#include "helper.h"
+ #include "os.h"
  
- static int force_sysemu_disabled = 0;
+ struct helper_data {
+@@ -149,7 +150,7 @@
+ 	return(pid);
+ }
  
-+int ptrace_faultinfo = 1;
-+int proc_mm = 1;
-+
-+static int __init skas0_cmd_param(char *str, int* add)
-+{
-+	ptrace_faultinfo = proc_mm = 0;
-+	return 0;
-+}
-+
- static int __init nosysemu_cmd_param(char *str, int* add)
+-int helper_wait(int pid, int block)
++int helper_wait(int pid)
  {
- 	force_sysemu_disabled = 1;
- 	return 0;
- }
+ 	int ret;
  
-+__uml_setup("skas0", skas0_cmd_param,
-+		"skas0\n"
-+		"    Disables SKAS3 usage, so that SKAS0 is used, unless you \n"
-+		"    specify mode=tt.\n\n");
-+
- __uml_setup("nosysemu", nosysemu_cmd_param,
- 		"nosysemu\n"
- 		"    Turns off syscall emulation patch for ptrace (SYSEMU) on.\n"
-@@ -359,12 +373,10 @@
- 		kill(target, SIGIO);
+@@ -160,14 +161,3 @@
+ 	}
+ 	return(ret);
  }
- 
--int ptrace_faultinfo = 0;
--int proc_mm = 1;
 -
- extern void *__syscall_stub_start, __syscall_stub_end;
- 
- #ifdef UML_CONFIG_MODE_SKAS
-+
- static inline void check_skas3_ptrace_support(void)
- {
- 	struct ptrace_faultinfo fi;
-@@ -375,6 +387,7 @@
- 
- 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
- 	if (n < 0) {
-+		ptrace_faultinfo = 0;
- 		if(errno == EIO)
- 			printf("not found\n");
- 		else {
-@@ -382,8 +395,10 @@
- 		}
- 	}
- 	else {
--		ptrace_faultinfo = 1;
--		printf("found\n");
-+		if (!ptrace_faultinfo)
-+			printf("found but disabled on command line\n");
-+		else
-+			printf("found\n");
- 	}
- 
- 	init_registers(pid);
-@@ -396,13 +411,13 @@
- 	if (os_access("/proc/mm", OS_ACC_W_OK) < 0) {
- 		proc_mm = 0;
- 		printf("not found\n");
--		goto out;
--	}
--	else {
--		printf("found\n");
-+	} else {
-+		if (!proc_mm)
-+			printf("found but disabled on command line\n");
-+		else
-+			printf("found\n");
- 	}
- 
--out:
- 	check_skas3_ptrace_support();
- 	return 1;
- }
-Index: linux-2.6.12/arch/um/kernel/um_arch.c
-===================================================================
---- linux-2.6.12.orig/arch/um/kernel/um_arch.c	2005-07-23 09:27:27.000000000 -0400
-+++ linux-2.6.12/arch/um/kernel/um_arch.c	2005-07-23 10:59:25.000000000 -0400
-@@ -38,6 +38,9 @@
- #include "choose-mode.h"
- #include "mode_kern.h"
- #include "mode.h"
-+#ifdef UML_CONFIG_MODE_SKAS
-+#include "skas.h"
-+#endif
- 
- #define DEFAULT_COMMAND_LINE "root=98:0"
- 
-@@ -318,6 +321,7 @@
- 	unsigned long avail, diff;
- 	unsigned long virtmem_size, max_physmem;
- 	unsigned int i, add;
-+	char * mode;
- 
- 	for (i = 1; i < argc; i++){
- 		if((i == 1) && (argv[i][0] == ' ')) continue;
-@@ -338,6 +342,21 @@
- 		exit(1);
- 	}
- #endif
-+
-+#ifndef CONFIG_MODE_SKAS
-+	mode = "TT";
-+#else
-+	/* Show to the user the result of selection */
-+	if (mode_tt)
-+		mode = "TT";
-+	else if (proc_mm && ptrace_faultinfo)
-+		mode = "SKAS3";
-+	else
-+		mode = "SKAS0";
-+#endif
-+
-+	printf("UML running in %s mode\n", mode);
-+
- 	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas, 0,
- 				     &host_task_size, &task_size);
- 
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 
 
