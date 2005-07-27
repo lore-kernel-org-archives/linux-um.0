@@ -2,17 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DxVpa-0005nW-Ke	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Jul 2005 13:15:14 -0700
+	id 1Dxb6H-00069z-BX	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Jul 2005 18:52:49 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DxVpX-0000qA-94
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1Dxb6H-0001cC-4y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Jul 2005 13:15:14 -0700
-Message-Id: <200507262003.j6QK3oZU010061@ccure.user-mode-linux.org>
+	Tue, 26 Jul 2005 18:52:49 -0700
+Received: from ccure.user-mode-linux.org (lakshmi.solana.com [127.0.0.1])
+	by lakshmi.solana.com (8.11.2/8.11.2) with ESMTP id j6R0rfm13262
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 26 Jul 2005 20:53:46 -0400
+Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	j6R1gi4e014263	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 26 Jul 2005 21:42:44 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050727014243.GA14161@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/4] UML - Fix rc3-mm1 build
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] load ave >= 1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,35 +32,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 26 Jul 2005 16:03:50 -0400
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, olh@suse.de
+Date: Tue, 26 Jul 2005 21:42:43 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-From: Olaf Hering <olh@suse.de>
+The patch below might fix the ksoftirqd load average >= 1 problem.
 
-New in 2.6.13-rc3-git4:
+I can't reproduce it, but in chasing it in one of Chris Aker's
+non-debuggable images, I uncovered this bug.
 
-scripts/Makefile.build:13: /Makefile: No such file or directory
-scripts/Makefile.build:64: kbuild: Makefile.build is included improperly
+Testing and feedback are welcome.
 
-the define was removed, but its still required to build some targets.
+It's applied against my incrementals, but it should be easy to apply
+in any other UML.
 
-Signed-off-by: Olaf Hering <olh@suse.de>
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+				Jeff
 
-Index: linux-2.6.12/arch/um/Makefile-i386
+Index: linux-2.6.12/arch/um/kernel/time_kern.c
 ===================================================================
---- linux-2.6.12.orig/arch/um/Makefile-i386	2005-07-18 11:53:17.000000000 -0400
-+++ linux-2.6.12/arch/um/Makefile-i386	2005-07-18 11:54:30.000000000 -0400
-@@ -33,6 +33,7 @@
- ARCH_CFLAGS += -DUM_FASTCALL
- endif
- 
-+SYS_UTIL_DIR	:= $(ARCH_DIR)/sys-i386/util
- SYS_HEADERS	:= $(SYS_DIR)/sc.h $(SYS_DIR)/thread.h
- 
- prepare: $(SYS_HEADERS)
-
+--- linux-2.6.12.orig/arch/um/kernel/time_kern.c	2005-07-26 16:46:19.000000000 -0400
++++ linux-2.6.12/arch/um/kernel/time_kern.c	2005-07-26 18:46:09.000000000 -0400
+@@ -189,8 +189,10 @@
+ void timer_handler(int sig, union uml_pt_regs *regs)
+ {
+ 	local_irq_disable();
++	irq_enter();
+ 	update_process_times(CHOOSE_MODE(user_context(UPT_SP(regs)), 
+ 					 (regs)->skas.is_user));
++	irq_exit();
+ 	local_irq_enable();
+ 	if(current_thread->cpu == 0)
+ 		timer_irq(regs);
 
 
 -------------------------------------------------------
