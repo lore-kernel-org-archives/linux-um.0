@@ -2,17 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DxoIZ-0003yu-J0	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Jul 2005 08:58:23 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1DxoDa-0000uJ-8R
+	id 1Dxovz-00083S-M6	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Jul 2005 09:39:07 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1DxovX-00013Q-6t
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Jul 2005 08:53:17 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050726184346.E7C9121DC1A@zion.home.lan>
-Subject: [uml-devel] [patch 1/4] UML Support - Ptrace: adds the host SYSEMU
-	support, for UML and general usage
+	Wed, 27 Jul 2005 09:39:07 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] NEW compile errors for UMLPPC
+References: <838f7c50050720115954d28b25@mail.gmail.com>
+	<838f7c5005072412315f9113fe@mail.gmail.com>
+	<838f7c5005072511283b6b2d41@mail.gmail.com>
+In-Reply-To: <838f7c5005072511283b6b2d41@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200507271733.47007.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,306 +31,133 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 26 Jul 2005 20:43:46 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, LaurentVivier@wanadoo.fr, blaisorblade_spam@yahoo.it, bstroesser@fujitsu-siemens.com
+Date: Wed, 27 Jul 2005 17:33:46 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, ashwin tanugula <ashwin.tanugula@gmail.com>
+Cc: jdike@addtoit.com, user-mode-linux-user@lists.sourceforge.net
+
+On Monday 25 July 2005 20:28, ashwin tanugula wrote:
+> Hi,
+> I think those errors came due to the inclusion of
+> include/asm/processor-i386.h. I remover that inclusion and included
+> the structure arch_thread in processor-generic.h, which removed the
+> previous errors.
+>
+> Now I am getting the following errors
+> - Show quoted text -
+>
+>
+> root@slemieux:/home/ashwin/Desktop/ashwin/linux-2.6.0-test9 # make
+> linux ARCH=um  CHK     include/linux/version.h
+>  UPD     include/linux/version.h
+>  SYMLINK include/asm -> include/asm-um
+>  HOSTCC  scripts/genksyms/genksyms.o
+>  SHIPPED scripts/genksyms/lex.c
+>  SHIPPED scripts/genksyms/parse.h
+>  SHIPPED scripts/genksyms/keywords.c
+>  HOSTCC  scripts/genksyms/lex.o
+>  SHIPPED scripts/genksyms/parse.c
+>  HOSTCC  scripts/genksyms/parse.o
+>  HOSTLD  scripts/genksyms/genksyms
+>  HOSTCC  scripts/split-include
+>  HOSTCC  scripts/conmakehash
+>  HOSTCC  scripts/docproc
+>  HOSTCC  scripts/kallsyms
+>  CC      scripts/empty.o
+>  HOSTCC  scripts/mk_elfconfig
+>  MKELF   scripts/elfconfig.h
+>  HOSTCC  scripts/file2alias.o
+>  HOSTCC  scripts/modpost.o
+>  HOSTLD  scripts/modpost
+>  HOSTCC  scripts/pnmtologo
+>  HOSTCC  scripts/bin2c
+>  SPLIT   include/linux/autoconf.h -> include/config/*
+> sed 's/ CONFIG/ UML_CONFIG/'
+> /home/ashwin/Desktop/ashwin/linux-2.6.0-test9/include/linux/autoconf.h
+>
+> > arch/um/include/uml-config.h
+>
+> make -f scripts/Makefile.build obj=arch/um/util
+> gcc -o arch/um/util/mk_task_user.o -c arch/um/util/mk_task_user.c
+>  CC      arch/um/util/mk_task_kern.o
+> In file included from include/asm/processor.h:13,
+>                 from include/asm/thread_info.h:11,
+>                 from include/linux/thread_info.h:21,
+>                 from include/linux/spinlock.h:12,
+>                 from include/linux/capability.h:45,
+>                 from include/linux/sched.h:7,
+>                 from arch/um/util/mk_task_kern.c:1:
+> include/asm/processor-generic.h:118: warning: `struct user' declared
+> inside parameter list
+> include/asm/processor-generic.h:118: warning: its scope is only this
+> definition or declaration, which is probably not what you want
+Means that you should have "struct user;" somewhere before that:
+when you have this:
+
+void foo(struct bar * foobar);
+the compiler assumes an implicit "struct bar;" declaration ending there, which 
+won't match with anything else.
+> In file included from include/asm/arch/semaphore.h:21,
+I'm sure this (asm/arch) still points to asm-i386. Will you do a "make 
+mrproper ARCH=um" first? It causes all those "regparm" errors.
+
+For the below one, don't know, sort it out somehow. Since it's declared in 
+archparam, update it, comparing with the other ones (it's the only one to 
+still define irq_enter/exit).
+> include/asm/arch/hardirq.h:82:1: warning: "irq_enter" redefined
+
+> include/asm/archparam.h:34:1: warning: this is the location of the
+> previous definition
+
+> include/asm/arch/hardirq.h:91:1: warning: "irq_exit" redefined
+
+> include/asm/archparam.h:35:1: warning: this is the location of the
+> previous definition
+
+> ignored In file included from include/linux/bootmem.h:7,
+>                 from init/main.c:29:
+> include/asm/pgtable.h: In function `pte_file':
+> include/asm/pgtable.h:277: error: request for member `pte_low' in
+> something not a structure or union
+Means that for ppc pte_t is not a struct, which probably has to be fixed.
+
+typedef struct { unsigned long pte; } pte_t;
+
+> In file included from include/linux/skbuff.h:26,
+>                 from include/linux/security.h:34,
+>                 from init/main.c:34:
+
+On the below one, I don't know, but I would disable HIGHMEM for now, probably 
+it doesn't work for i386 either in such a old UML version. Btw, are you at  
+least using Jeff DIke's patch? Also, why not updating to a more recent UML 
+release? Do as you like, but surely you'll meet the bugs affecting UML itself 
+(independent from arch ports) which were already fixed in later releases (for 
+instance, module support and HIGHMEM, I guess).
+> include/asm/arch/highmem.h: In function `kmap_atomic':
+> include/asm/arch/highmem.h:89: error: `CONFIG_HIGHMEM_START'
+> undeclared (first use in this function)
+> include/asm/arch/highmem.h:89: error: (Each undeclared identifier is
+> reported only once
+> include/asm/arch/highmem.h:89: error: for each function it appears in.)
+> include/asm/arch/highmem.h: In function `kunmap_atomic':
+> include/asm/arch/highmem.h:106: error: `CONFIG_HIGHMEM_START'
+> undeclared (first use in this function)
+> include/asm/arch/highmem.h: In function `kmap_atomic_to_page':
+> include/asm/arch/highmem.h:128: error: `CONFIG_HIGHMEM_START'
+> undeclared (first use in this function)
+> make[1]: *** [init/main.o] Error 1
+> make: *** [init] Error 2
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
 
-From: Laurent Vivier <LaurentVivier@wanadoo.fr>,
-Jeff Dike <jdike@addtoit.com>,
-Paolo 'Blaisorblade' Giarrusso <blaisorblade_spam@yahoo.it>,
-Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
 
-Adds a new ptrace(2) mode, called PTRACE_SYSEMU, resembling PTRACE_SYSCALL
-except that the kernel does not execute the requested syscall; this is useful
-to improve performance for virtual environments, like UML, which want to run
-the syscall on their own.
-
-In fact, using PTRACE_SYSCALL means stopping child execution twice, on entry
-and on exit, and each time you also have two context switches; with SYSEMU you
-avoid the 2nd stop and so save two context switches per syscall.
-
-Also, some architectures don't have support in the host for changing the
-syscall number via ptrace(), which is currently needed to skip syscall
-execution (UML turns any syscall into getpid() to avoid it being executed on
-the host). Fixing that is hard, while SYSEMU is easier to implement.
-
-* This version of the patch includes some suggestions of Jeff Dike to avoid
-  adding any instructions to the syscall fast path, plus some other little
-  changes, by myself, to make it work even when the syscall is executed with
-  SYSENTER (but I'm unsure about them). It has been widely tested for quite a
-  lot of time.
-
-* Various fixed were included to handle the various switches between
-  various states, i.e. when for instance a syscall entry is traced with one of
-  PT_SYSCALL / _SYSEMU / _SINGLESTEP and another one is used on exit.
-  Basically, this is done by remembering which one of them was used even after
-  the call to ptrace_notify().
-
-* We're combining TIF_SYSCALL_EMU with TIF_SYSCALL_TRACE or TIF_SINGLESTEP
-  to make do_syscall_trace() notice that the current syscall was started with
-  SYSEMU on entry, so that no notification ought to be done in the exit path;
-  this is a bit of a hack, so this problem is solved in another way in next
-  patches.
-
-* Also, the effects of the patch:
-"Ptrace - i386: fix Syscall Audit interaction with singlestep"
-are cancelled; they are restored back in the last patch of this series.
-
-Detailed descriptions of the patches doing this kind of processing follow (but
-I've already summed everything up).
-
-* Fix behaviour when changing interception kind #1.
-
-In do_syscall_trace(), we check the status of the TIF_SYSCALL_EMU flag only
-after doing the debugger notification; but the debugger might have changed the
-status of this flag because he continued execution with PTRACE_SYSCALL, so
-this is wrong. This patch fixes it by saving the flag status before calling
-ptrace_notify().
-
-* Fix behaviour when changing interception kind #2:
-  avoid intercepting syscall on return when using SYSCALL again.
-
-A guest process switching from using PTRACE_SYSEMU to PTRACE_SYSCALL crashes.
-
-The problem is in arch/i386/kernel/entry.S. The current SYSEMU patch inhibits
-the syscall-handler to be called, but does not prevent do_syscall_trace() to
-be called after this for syscall completion interception.
-
-The appended patch fixes this. It reuses the flag TIF_SYSCALL_EMU to remember
-"we come from PTRACE_SYSEMU and now are in PTRACE_SYSCALL", since the flag is
-unused in the depicted situation.
-
-* Fix behaviour when changing interception kind #3:
-  avoid intercepting syscall on return when using SINGLESTEP.
-
-When testing 2.6.9 and the skas3.v6 patch, with my latest
-patch and had problems with singlestepping on UML in SKAS with SYSEMU.
-It looped receiving SIGTRAPs without moving forward. EIP of the traced
-process was the same for all SIGTRAPs.
-
-What's missing is to handle switching from PTRACE_SYSCALL_EMU to
-PTRACE_SINGLESTEP in a way very similar to what is done for the change
-from PTRACE_SYSCALL_EMU to PTRACE_SYSCALL_TRACE.
-
-I.e., after calling ptrace(PTRACE_SYSEMU), on the return path, the debugger is
-notified and then wake ups the process; the syscall is executed (or skipped,
-when do_syscall_trace() returns 0, i.e. when using PTRACE_SYSEMU), and
-do_syscall_trace() is called again. Since we are on the return path of a
-SYSEMU'd syscall, if the wake up is performed through ptrace(PTRACE_SYSCALL),
-we must still avoid notifying the parent of the syscall exit. Now, this
-behaviour is extended even to resuming with PTRACE_SINGLESTEP.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.git-paolo/arch/i386/kernel/entry.S       |    9 ++-
- linux-2.6.git-paolo/arch/i386/kernel/ptrace.c      |   57 ++++++++++++++-------
- linux-2.6.git-paolo/include/asm-i386/thread_info.h |    5 +
- linux-2.6.git-paolo/include/linux/ptrace.h         |    1 
- linux-2.6.git-paolo/kernel/fork.c                  |    3 +
- 5 files changed, 53 insertions(+), 22 deletions(-)
-
-diff -puN arch/i386/kernel/ptrace.c~host-sysemu arch/i386/kernel/ptrace.c
---- linux-2.6.git/arch/i386/kernel/ptrace.c~host-sysemu	2005-07-26 20:24:57.000000000 +0200
-+++ linux-2.6.git-paolo/arch/i386/kernel/ptrace.c	2005-07-26 20:39:59.000000000 +0200
-@@ -509,15 +509,27 @@ asmlinkage int sys_ptrace(long request, 
- 		  }
- 		  break;
- 
-+	case PTRACE_SYSEMU: /* continue and stop at next syscall, which will not be executed */
- 	case PTRACE_SYSCALL:	/* continue and stop at next (return from) syscall */
- 	case PTRACE_CONT:	/* restart after signal. */
- 		ret = -EIO;
- 		if (!valid_signal(data))
- 			break;
-+		/* If we came here with PTRACE_SYSEMU and now continue with
-+		 * PTRACE_SYSCALL, entry.S used to intercept the syscall return.
-+		 * But it shouldn't!
-+		 * So we don't clear TIF_SYSCALL_EMU, which is always unused in
-+		 * this special case, to remember, we came from SYSEMU. That
-+		 * flag will be cleared by do_syscall_trace().
-+		 */
-+		if (request == PTRACE_SYSEMU) {
-+			set_tsk_thread_flag(child, TIF_SYSCALL_EMU);
-+		} else if (request == PTRACE_CONT) {
-+			clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
-+		}
- 		if (request == PTRACE_SYSCALL) {
- 			set_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		}
--		else {
-+		} else {
- 			clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
- 		}
- 		child->exit_code = data;
-@@ -546,6 +558,8 @@ asmlinkage int sys_ptrace(long request, 
- 		ret = -EIO;
- 		if (!valid_signal(data))
- 			break;
-+		/*See do_syscall_trace to know why we don't clear
-+		 * TIF_SYSCALL_EMU.*/
- 		clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
- 		set_singlestep(child);
- 		child->exit_code = data;
-@@ -678,37 +692,43 @@ void send_sigtrap(struct task_struct *ts
-  * - triggered by current->work.syscall_trace
-  */
- __attribute__((regparm(3)))
--void do_syscall_trace(struct pt_regs *regs, int entryexit)
-+int do_syscall_trace(struct pt_regs *regs, int entryexit)
- {
-+	int is_sysemu, is_systrace, is_singlestep, ret = 0;
- 	/* do the secure computing check first */
- 	secure_computing(regs->orig_eax);
- 
--	if (unlikely(current->audit_context)) {
--		if (entryexit)
--			audit_syscall_exit(current, AUDITSC_RESULT(regs->eax), regs->eax);
--
--		/* Debug traps, when using PTRACE_SINGLESTEP, must be sent only
--		 * on the syscall exit path. Normally, when TIF_SYSCALL_AUDIT is
--		 * not used, entry.S will call us only on syscall exit, not
--		 * entry ; so when TIF_SYSCALL_AUDIT is used we must avoid
--		 * calling send_sigtrap() on syscall entry.
--		 */
--		else if (is_singlestep)
--			goto out;
--	}
-+	if (unlikely(current->audit_context) && entryexit)
-+		audit_syscall_exit(current, AUDITSC_RESULT(regs->eax), regs->eax);
- 
- 	if (!(current->ptrace & PT_PTRACED))
- 		goto out;
- 
-+	is_sysemu = test_thread_flag(TIF_SYSCALL_EMU);
-+	is_systrace = test_thread_flag(TIF_SYSCALL_TRACE);
-+	is_singlestep = test_thread_flag(TIF_SINGLESTEP);
-+
-+	/* We can detect the case of coming from PTRACE_SYSEMU and now running
-+	 * with PTRACE_SYSCALL or PTRACE_SINGLESTEP, by TIF_SYSCALL_EMU being
-+	 * set additionally.
-+	 * If so let's reset the flag and return without action (no singlestep
-+	 * nor syscall tracing, since no actual step has been executed).
-+	 */
-+	if (is_sysemu && (is_systrace || is_singlestep)) {
-+		clear_thread_flag(TIF_SYSCALL_EMU);
-+		goto out;
-+	}
-+
- 	/* Fake a debug trap */
- 	if (test_thread_flag(TIF_SINGLESTEP))
- 		send_sigtrap(current, regs, 0);
- 
--	if (!test_thread_flag(TIF_SYSCALL_TRACE))
-+	if (!is_systrace && !is_sysemu)
- 		goto out;
- 
- 	/* the 0x80 provides a way for the tracing parent to distinguish
- 	   between a syscall stop and SIGTRAP delivery */
-+	/* Note that the debugger could change the result of test_thread_flag!*/
- 	ptrace_notify(SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD) ? 0x80 : 0));
- 
- 	/*
-@@ -720,9 +740,10 @@ void do_syscall_trace(struct pt_regs *re
- 		send_sig(current->exit_code, current, 1);
- 		current->exit_code = 0;
- 	}
-+	ret = is_sysemu;
-  out:
- 	if (unlikely(current->audit_context) && !entryexit)
- 		audit_syscall_entry(current, AUDIT_ARCH_I386, regs->orig_eax,
- 				    regs->ebx, regs->ecx, regs->edx, regs->esi);
--
-+	return ret;
- }
-diff -puN arch/i386/kernel/entry.S~host-sysemu arch/i386/kernel/entry.S
---- linux-2.6.git/arch/i386/kernel/entry.S~host-sysemu	2005-07-26 20:24:57.000000000 +0200
-+++ linux-2.6.git-paolo/arch/i386/kernel/entry.S	2005-07-26 20:39:59.000000000 +0200
-@@ -203,7 +203,7 @@ sysenter_past_esp:
- 	GET_THREAD_INFO(%ebp)
- 
- 	/* Note, _TIF_SECCOMP is bit number 8, and so it needs testw and not testb */
--	testw $(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SECCOMP),TI_flags(%ebp)
-+	testw $(_TIF_SYSCALL_EMU|_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT),TI_flags(%ebp)
- 	jnz syscall_trace_entry
- 	cmpl $(nr_syscalls), %eax
- 	jae syscall_badsys
-@@ -226,9 +226,9 @@ ENTRY(system_call)
- 	pushl %eax			# save orig_eax
- 	SAVE_ALL
- 	GET_THREAD_INFO(%ebp)
--					# system call tracing in operation
-+					# system call tracing in operation / emulation
- 	/* Note, _TIF_SECCOMP is bit number 8, and so it needs testw and not testb */
--	testw $(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SECCOMP),TI_flags(%ebp)
-+	testw $(_TIF_SYSCALL_EMU|_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT),TI_flags(%ebp)
- 	jnz syscall_trace_entry
- 	cmpl $(nr_syscalls), %eax
- 	jae syscall_badsys
-@@ -338,6 +338,9 @@ syscall_trace_entry:
- 	movl %esp, %eax
- 	xorl %edx,%edx
- 	call do_syscall_trace
-+	cmpl $0, %eax
-+	jne syscall_exit		# ret != 0 -> running under PTRACE_SYSEMU,
-+					# so must skip actual syscall
- 	movl ORIG_EAX(%esp), %eax
- 	cmpl $(nr_syscalls), %eax
- 	jnae syscall_call
-diff -puN include/asm-i386/thread_info.h~host-sysemu include/asm-i386/thread_info.h
---- linux-2.6.git/include/asm-i386/thread_info.h~host-sysemu	2005-07-26 20:24:57.000000000 +0200
-+++ linux-2.6.git-paolo/include/asm-i386/thread_info.h	2005-07-26 20:24:57.000000000 +0200
-@@ -139,6 +139,7 @@ register unsigned long current_stack_poi
- #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
- #define TIF_SINGLESTEP		4	/* restore singlestep on return to user mode */
- #define TIF_IRET		5	/* return with iret */
-+#define TIF_SYSCALL_EMU		6	/* syscall emulation active */
- #define TIF_SYSCALL_AUDIT	7	/* syscall auditing active */
- #define TIF_SECCOMP		8	/* secure computing */
- #define TIF_POLLING_NRFLAG	16	/* true if poll_idle() is polling TIF_NEED_RESCHED */
-@@ -150,13 +151,15 @@ register unsigned long current_stack_poi
- #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
- #define _TIF_SINGLESTEP		(1<<TIF_SINGLESTEP)
- #define _TIF_IRET		(1<<TIF_IRET)
-+#define _TIF_SYSCALL_EMU	(1<<TIF_SYSCALL_EMU)
- #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
- #define _TIF_SECCOMP		(1<<TIF_SECCOMP)
- #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
- 
- /* work to do on interrupt/exception return */
- #define _TIF_WORK_MASK \
--  (0x0000FFFF & ~(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SINGLESTEP|_TIF_SECCOMP))
-+  (0x0000FFFF & ~(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SINGLESTEP|\
-+		  _TIF_SECCOMP|_TIF_SYSCALL_EMU))
- /* work to do on any return to u-space */
- #define _TIF_ALLWORK_MASK	(0x0000FFFF & ~_TIF_SECCOMP)
- 
-diff -puN include/linux/ptrace.h~host-sysemu include/linux/ptrace.h
---- linux-2.6.git/include/linux/ptrace.h~host-sysemu	2005-07-26 20:24:57.000000000 +0200
-+++ linux-2.6.git-paolo/include/linux/ptrace.h	2005-07-26 20:39:57.000000000 +0200
-@@ -20,6 +20,7 @@
- #define PTRACE_DETACH		0x11
- 
- #define PTRACE_SYSCALL		  24
-+#define PTRACE_SYSEMU		  31
- 
- /* 0x4200-0x4300 are reserved for architecture-independent additions.  */
- #define PTRACE_SETOPTIONS	0x4200
-diff -puN kernel/fork.c~host-sysemu kernel/fork.c
---- linux-2.6.git/kernel/fork.c~host-sysemu	2005-07-26 20:24:57.000000000 +0200
-+++ linux-2.6.git-paolo/kernel/fork.c	2005-07-26 20:24:57.000000000 +0200
-@@ -994,6 +994,9 @@ static task_t *copy_process(unsigned lon
- 	 * of CLONE_PTRACE.
- 	 */
- 	clear_tsk_thread_flag(p, TIF_SYSCALL_TRACE);
-+#ifdef TIF_SYSCALL_EMU
-+	clear_tsk_thread_flag(p, TIF_SYSCALL_EMU);
-+#endif
- 
- 	/* Our parent execution domain becomes current domain
- 	   These must match for thread signalling to apply */
-_
 
 
 -------------------------------------------------------
