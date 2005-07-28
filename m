@@ -1,18 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DyBQY-0000o6-Mi	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 09:40:10 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DyBQY-0001z4-DY
+	id 1DyBvh-0002iI-BN	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2005 10:12:21 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1DyBvc-0004DH-MJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 09:40:10 -0700
-Message-Id: <200507281626.j6SGQmup009486@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 4/7] UML - Fix load average >=1
+	Thu, 28 Jul 2005 10:12:21 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 1/7] UML - -mm3 compile fix
+References: <200507281626.j6SGQgsI009471@ccure.user-mode-linux.org>
+In-Reply-To: <200507281626.j6SGQgsI009471@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200507281929.26273.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,31 +29,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Jul 2005 12:26:48 -0400
+Date: Thu, 28 Jul 2005 19:29:25 +0200
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-update_process_times was missing its irq_enter/irq_exit wrapper.  This caused
-ksoftirqd to be scheduled on every clock tick.
+On Thursday 28 July 2005 18:26, Jeff Dike wrote:
+> -mm3 adds an include of asm/vm86.h in include/asm-i386/ptrace.h.  Since UML
+> includes the underlying arch's ptrace.h, it needs an asm/vm86.h in order
+> to build.
+Note for both Jeff and Akpm: this is also for the current Linus' git 
+repository (just since today).
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12-rc3-mm2/arch/um/kernel/time_kern.c
-===================================================================
---- linux-2.6.12-rc3-mm2.orig/arch/um/kernel/time_kern.c	2005-07-28 11:06:35.000000000 -0400
-+++ linux-2.6.12-rc3-mm2/arch/um/kernel/time_kern.c	2005-07-28 11:26:17.000000000 -0400
-@@ -137,7 +137,10 @@
- void timer_handler(int sig, union uml_pt_regs *regs)
- {
- 	local_irq_disable();
--	update_process_times(CHOOSE_MODE(user_context(UPT_SP(regs)), (regs)->skas.is_user));
-+	irq_enter();
-+	update_process_times(CHOOSE_MODE(user_context(UPT_SP(regs)), 
-+					 (regs)->skas.is_user));
-+	irq_exit();
- 	local_irq_enable();
- 	if(current_thread->cpu == 0)
- 		timer_irq(regs);
+> Index: linux-2.6.12-rc3-mm2/include/asm-um/vm86.h
+> ===================================================================
+> --- linux-2.6.12-rc3-mm2.orig/include/asm-um/vm86.h	2005-07-28
+> 05:04:34.593890552 -0400 +++
+> linux-2.6.12-rc3-mm2/include/asm-um/vm86.h	2005-07-28 11:13:32.000000000
+> -0400 @@ -0,0 +1,6 @@
+> +#ifndef __UM_VM86_H
+> +#define __UM_VM86_H
+> +
+> +#include "asm/arch/vm86.h"
+> +
+> +#endif
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
