@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DyBKc-0000Ro-G4	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 09:34:02 -0700
+	id 1DyBLW-0000Tl-KY	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2005 09:34:58 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DyBKK-0001km-Ez
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DyBLS-0000Vh-6l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 09:34:02 -0700
-Message-Id: <200507281626.j6SGQrKe009502@ccure.user-mode-linux.org>
+	Thu, 28 Jul 2005 09:34:58 -0700
+Message-Id: <200507281626.j6SGQgsI009471@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/7] UML - Clean up prink calls
+Subject: [uml-devel] [PATCH 1/7] UML - -mm3 compile fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,57 +24,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Jul 2005 12:26:53 -0400
+Date: Thu, 28 Jul 2005 12:26:42 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Christophe Lucas <clucas@rotomalug.org>, Domen Puncer <domen@coderock.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Christophe Lucas <clucas@rotomalug.org>
+-mm3 adds an include of asm/vm86.h in include/asm-i386/ptrace.h.  Since UML
+includes the underlying arch's ptrace.h, it needs an asm/vm86.h in order
+to build.
 
-printk() calls should include appropriate KERN_* constant.
-
-Signed-off-by: Christophe Lucas <clucas@rotomalug.org>
-Signed-off-by: Domen Puncer <domen@coderock.org>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.12/arch/um/drivers/mconsole_kern.c
+Index: linux-2.6.12-rc3-mm2/include/asm-um/vm86.h
 ===================================================================
---- linux-2.6.12.orig/arch/um/drivers/mconsole_kern.c	2005-07-27 16:39:27.000000000 -0400
-+++ linux-2.6.12/arch/um/drivers/mconsole_kern.c	2005-07-27 16:39:53.000000000 -0400
-@@ -557,7 +557,7 @@
- 
- 	ent = create_proc_entry("mconsole", S_IFREG | 0200, NULL);
- 	if(ent == NULL){
--		printk("create_proc_mconsole : create_proc_entry failed\n");
-+		printk(KERN_INFO "create_proc_mconsole : create_proc_entry failed\n");
- 		return(0);
- 	}
- 
-Index: linux-2.6.12/arch/um/kernel/exitcode.c
-===================================================================
---- linux-2.6.12.orig/arch/um/kernel/exitcode.c	2005-07-27 16:39:26.000000000 -0400
-+++ linux-2.6.12/arch/um/kernel/exitcode.c	2005-07-27 16:39:53.000000000 -0400
-@@ -48,7 +48,7 @@
- 
- 	ent = create_proc_entry("exitcode", 0600, &proc_root);
- 	if(ent == NULL){
--		printk("make_proc_exitcode : Failed to register "
-+		printk(KERN_WARNING "make_proc_exitcode : Failed to register "
- 		       "/proc/exitcode\n");
- 		return(0);
- 	}
-Index: linux-2.6.12/arch/um/kernel/process_kern.c
-===================================================================
---- linux-2.6.12.orig/arch/um/kernel/process_kern.c	2005-07-27 16:39:29.000000000 -0400
-+++ linux-2.6.12/arch/um/kernel/process_kern.c	2005-07-27 16:39:53.000000000 -0400
-@@ -412,7 +412,7 @@
- 
- 	if (ent == NULL)
- 	{
--		printk("Failed to register /proc/sysemu\n");
-+		printk(KERN_WARNING "Failed to register /proc/sysemu\n");
- 		return(0);
- 	}
- 
+--- linux-2.6.12-rc3-mm2.orig/include/asm-um/vm86.h	2005-07-28 05:04:34.593890552 -0400
++++ linux-2.6.12-rc3-mm2/include/asm-um/vm86.h	2005-07-28 11:13:32.000000000 -0400
+@@ -0,0 +1,6 @@
++#ifndef __UM_VM86_H
++#define __UM_VM86_H
++
++#include "asm/arch/vm86.h"
++
++#endif
 
 
 
