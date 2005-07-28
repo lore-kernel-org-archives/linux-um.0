@@ -1,21 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DyAOx-00060x-6v	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 08:34:27 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1DyAOt-0000NS-Bu
+	id 1DyBKc-0000Ro-G4	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2005 09:34:02 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DyBKK-0001km-Ez
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 08:34:27 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200507281751.16894.blaisorblade@yahoo.it>
-Subject: [uml-devel] Your "host" scheduler for UML and CKRM
+	Thu, 28 Jul 2005 09:34:02 -0700
+Message-Id: <200507281626.j6SGQrKe009502@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 7/7] UML - Clean up prink calls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,33 +24,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Jul 2005 17:51:14 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 28 Jul 2005 12:26:53 -0400
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Christophe Lucas <clucas@rotomalug.org>, Domen Puncer <domen@coderock.org>
 
-You talked about the usage of the host scheduler for correct resource sharing 
-between UMLs (i.e. an UML in TT/SKAS0 mode should not get more time for each 
-process it has).
+From: Christophe Lucas <clucas@rotomalug.org>
 
-Well, I think that the CKRM project has done exactly something which would be 
-useful for this purpose, it's already working, they're actively maintaining 
-it and it may be merged soon (at least, it seems they're trying to do this).
+printk() calls should include appropriate KERN_* constant.
 
-Yes, with that project it's the host admin which must define the UML cpu share 
-(at least I guess, but this may prove false), but that sounds reasonable... 
-what do you think?
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+Signed-off-by: Christophe Lucas <clucas@rotomalug.org>
+Signed-off-by: Domen Puncer <domen@coderock.org>
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Index: linux-2.6.12/arch/um/drivers/mconsole_kern.c
+===================================================================
+--- linux-2.6.12.orig/arch/um/drivers/mconsole_kern.c	2005-07-27 16:39:27.000000000 -0400
++++ linux-2.6.12/arch/um/drivers/mconsole_kern.c	2005-07-27 16:39:53.000000000 -0400
+@@ -557,7 +557,7 @@
+ 
+ 	ent = create_proc_entry("mconsole", S_IFREG | 0200, NULL);
+ 	if(ent == NULL){
+-		printk("create_proc_mconsole : create_proc_entry failed\n");
++		printk(KERN_INFO "create_proc_mconsole : create_proc_entry failed\n");
+ 		return(0);
+ 	}
+ 
+Index: linux-2.6.12/arch/um/kernel/exitcode.c
+===================================================================
+--- linux-2.6.12.orig/arch/um/kernel/exitcode.c	2005-07-27 16:39:26.000000000 -0400
++++ linux-2.6.12/arch/um/kernel/exitcode.c	2005-07-27 16:39:53.000000000 -0400
+@@ -48,7 +48,7 @@
+ 
+ 	ent = create_proc_entry("exitcode", 0600, &proc_root);
+ 	if(ent == NULL){
+-		printk("make_proc_exitcode : Failed to register "
++		printk(KERN_WARNING "make_proc_exitcode : Failed to register "
+ 		       "/proc/exitcode\n");
+ 		return(0);
+ 	}
+Index: linux-2.6.12/arch/um/kernel/process_kern.c
+===================================================================
+--- linux-2.6.12.orig/arch/um/kernel/process_kern.c	2005-07-27 16:39:29.000000000 -0400
++++ linux-2.6.12/arch/um/kernel/process_kern.c	2005-07-27 16:39:53.000000000 -0400
+@@ -412,7 +412,7 @@
+ 
+ 	if (ent == NULL)
+ 	{
+-		printk("Failed to register /proc/sysemu\n");
++		printk(KERN_WARNING "Failed to register /proc/sysemu\n");
+ 		return(0);
+ 	}
+ 
 
 
 
