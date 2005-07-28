@@ -2,22 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DyBvh-0002iI-BN	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 10:12:21 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1DyBvc-0004DH-MJ
+	id 1DyC8C-0003IK-1s	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2005 10:25:16 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1DyC8B-0007ab-FK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 10:12:21 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 1/7] UML - -mm3 compile fix
-References: <200507281626.j6SGQgsI009471@ccure.user-mode-linux.org>
-In-Reply-To: <200507281626.j6SGQgsI009471@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200507281929.26273.blaisorblade@yahoo.it>
+	Thu, 28 Jul 2005 10:25:16 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050728174208.A017EA3@zion.home.lan>
+Subject: [uml-devel] [patch 1/1] uml: implement hostfs syncing
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,45 +23,90 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Jul 2005 19:29:25 +0200
+Date: Thu, 28 Jul 2005 19:42:06 +0200
 To: akpm@osdl.org
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-On Thursday 28 July 2005 18:26, Jeff Dike wrote:
-> -mm3 adds an include of asm/vm86.h in include/asm-i386/ptrace.h.  Since UML
-> includes the underlying arch's ptrace.h, it needs an asm/vm86.h in order
-> to build.
-Note for both Jeff and Akpm: this is also for the current Linus' git 
-repository (just since today).
 
-> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-> Index: linux-2.6.12-rc3-mm2/include/asm-um/vm86.h
-> ===================================================================
-> --- linux-2.6.12-rc3-mm2.orig/include/asm-um/vm86.h	2005-07-28
-> 05:04:34.593890552 -0400 +++
-> linux-2.6.12-rc3-mm2/include/asm-um/vm86.h	2005-07-28 11:13:32.000000000
-> -0400 @@ -0,0 +1,6 @@
-> +#ifndef __UM_VM86_H
-> +#define __UM_VM86_H
-> +
-> +#include "asm/arch/vm86.h"
-> +
-> +#endif
+Actually implement the hostfs "sync" method.
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-	
+ linux-2.6.git-paolo/arch/um/os-Linux/user_syms.c |    3 +++
+ linux-2.6.git-paolo/fs/hostfs/hostfs.h           |    1 +
+ linux-2.6.git-paolo/fs/hostfs/hostfs_kern.c      |    2 +-
+ linux-2.6.git-paolo/fs/hostfs/hostfs_user.c      |   16 +++++++++++++++-
+ 4 files changed, 20 insertions(+), 2 deletions(-)
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+diff -puN fs/hostfs/hostfs_kern.c~uml-hostfs-syncing fs/hostfs/hostfs_kern.c
+--- linux-2.6.git/fs/hostfs/hostfs_kern.c~uml-hostfs-syncing	2005-07-28 18:27:31.000000000 +0200
++++ linux-2.6.git-paolo/fs/hostfs/hostfs_kern.c	2005-07-28 18:27:31.000000000 +0200
+@@ -382,7 +382,7 @@ int hostfs_file_open(struct inode *ino, 
+ 
+ int hostfs_fsync(struct file *file, struct dentry *dentry, int datasync)
+ {
+-	return(0);
++	return fsync_file(HOSTFS_I(dentry->d_inode)->fd, datasync);
+ }
+ 
+ static struct file_operations hostfs_file_fops = {
+diff -puN fs/hostfs/hostfs_user.c~uml-hostfs-syncing fs/hostfs/hostfs_user.c
+--- linux-2.6.git/fs/hostfs/hostfs_user.c~uml-hostfs-syncing	2005-07-28 18:27:31.000000000 +0200
++++ linux-2.6.git-paolo/fs/hostfs/hostfs_user.c	2005-07-28 18:27:31.000000000 +0200
+@@ -153,10 +153,24 @@ int lseek_file(int fd, long long offset,
+ 	int ret;
+ 
+ 	ret = lseek64(fd, offset, whence);
+-	if(ret < 0) return(-errno);
++	if(ret < 0)
++		return(-errno);
+ 	return(0);
+ }
+ 
++int fsync_file(int fd, int datasync)
++{
++	int ret;
++	if (datasync)
++		ret = fdatasync(fd);
++	else
++		ret = fsync(fd);
++
++	if (ret < 0)
++		return -errno;
++	return 0;
++}
++
+ void close_file(void *stream)
+ {
+ 	close(*((int *) stream));
+diff -puN fs/hostfs/hostfs.h~uml-hostfs-syncing fs/hostfs/hostfs.h
+--- linux-2.6.git/fs/hostfs/hostfs.h~uml-hostfs-syncing	2005-07-28 18:27:31.000000000 +0200
++++ linux-2.6.git-paolo/fs/hostfs/hostfs.h	2005-07-28 18:27:31.000000000 +0200
+@@ -69,6 +69,7 @@ extern int read_file(int fd, unsigned lo
+ extern int write_file(int fd, unsigned long long *offset, const char *buf,
+ 		      int len);
+ extern int lseek_file(int fd, long long offset, int whence);
++extern int fsync_file(int fd, int datasync);
+ extern int file_create(char *name, int ur, int uw, int ux, int gr,
+ 		       int gw, int gx, int or, int ow, int ox);
+ extern int set_attr(const char *file, struct hostfs_iattr *attrs);
+diff -puN arch/um/os-Linux/user_syms.c~uml-hostfs-syncing arch/um/os-Linux/user_syms.c
+--- linux-2.6.git/arch/um/os-Linux/user_syms.c~uml-hostfs-syncing	2005-07-28 18:27:31.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/os-Linux/user_syms.c	2005-07-28 18:27:31.000000000 +0200
+@@ -83,6 +83,9 @@ EXPORT_SYMBOL_PROTO(statfs64);
+ 
+ EXPORT_SYMBOL_PROTO(getuid);
+ 
++EXPORT_SYMBOL_PROTO(fsync);
++EXPORT_SYMBOL_PROTO(fdatasync);
++
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+  * Emacs will notice this stuff at the end of the file and automatically
+_
 
 
 -------------------------------------------------------
