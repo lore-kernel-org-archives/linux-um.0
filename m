@@ -1,18 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DyC8C-0003IM-CO	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 10:25:16 -0700
+	id 1DyC8G-0003Ie-Ol	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2005 10:25:20 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1DyC8B-0007aa-FQ
+	(Exim 4.44)	id 1DyC8G-0005ct-6o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 10:25:16 -0700
+	Thu, 28 Jul 2005 10:25:20 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050728160527.5A33D3ED@zion.home.lan>
-Subject: [uml-devel] [patch 1/1] uml: fix TT mode by reverting "use fork
-	instead of clone"
+Message-Id: <20050728160555.EA9C23EF@zion.home.lan>
+Subject: [uml-devel] [patch 1/1] uml: avoid unnecessary pcap rebuild
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,212 +23,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Jul 2005 18:05:25 +0200
+Date: Thu, 28 Jul 2005 18:05:55 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Just a Kbuild subtlety, not listing a target file inside targets causes it to
+be rebuilt each time, and as a consequence everything depending on it is
+rebuilt.
 
-Revert the following patch, because of miscompilation problems in different
-environments leading to UML not working *at all* in TT mode; it was merged
-lately in 2.6 development cycle, a little after being written, and has caused
-problems to lots of people; I know it's a bit too long, but it shouldn't have
-been merged in first place, so I still apply for inclusion in the -stable
-tree. Anyone using this feature currently is either using some older kernel
-(some reports even used 2.6.12-rc4-mm2) or using this patch, as included in my
--bs patchset.
-
-For now there's not yet a fix for this patch, so for now the best thing is to
-drop it (which was widely reported to give a working kernel, and as such was
-even merged in -stable tree).
-
-"Convert the boot-time host ptrace testing from clone to fork.  They were
-essentially doing fork anyway.  This cleans up the code a bit, and makes
-valgrind a bit happier about grinding it."
-
-URL:
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=98fdffccea6cc3fe9dba32c0fcc310bcb5d71529
-
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/um/kernel/process.c |   48 ++++++++++++++++-----------
- 1 files changed, 29 insertions(+), 19 deletions(-)
+ linux-2.6.git-paolo/arch/um/drivers/Makefile |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletion(-)
 
-diff -puN arch/um/kernel/process.c~uml-revert-fork-instead-of-clone arch/um/kernel/process.c
---- linux-2.6.git/arch/um/kernel/process.c~uml-revert-fork-instead-of-clone	2005-07-28 18:01:39.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/kernel/process.c	2005-07-28 18:01:39.000000000 +0200
-@@ -131,7 +131,7 @@ int start_fork_tramp(void *thread_arg, u
- 	return(arg.pid);
- }
+diff -puN arch/um/drivers/Makefile~uml-avoid-rebuild arch/um/drivers/Makefile
+--- linux-2.6.git/arch/um/drivers/Makefile~uml-avoid-rebuild	2005-07-28 18:05:35.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/drivers/Makefile	2005-07-28 18:05:35.000000000 +0200
+@@ -19,6 +19,8 @@ harddog-objs := harddog_kern.o harddog_u
  
--static int ptrace_child(void)
-+static int ptrace_child(void *arg)
- {
- 	int ret;
- 	int pid = os_getpid(), ppid = getppid();
-@@ -160,16 +160,20 @@ static int ptrace_child(void)
- 	_exit(ret);
- }
+ LDFLAGS_pcap.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libpcap.a)
  
--static int start_ptraced_child(void)
-+static int start_ptraced_child(void **stack_out)
- {
-+	void *stack;
-+	unsigned long sp;
- 	int pid, n, status;
- 	
--	pid = fork();
--	if(pid == 0)
--		ptrace_child();
--
-+	stack = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE | PROT_EXEC,
-+		     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if(stack == MAP_FAILED)
-+		panic("check_ptrace : mmap failed, errno = %d", errno);
-+	sp = (unsigned long) stack + PAGE_SIZE - sizeof(void *);
-+	pid = clone(ptrace_child, (void *) sp, SIGCHLD, NULL);
- 	if(pid < 0)
--		panic("check_ptrace : fork failed, errno = %d", errno);
-+		panic("check_ptrace : clone failed, errno = %d", errno);
- 	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
- 	if(n < 0)
- 		panic("check_ptrace : wait failed, errno = %d", errno);
-@@ -177,6 +181,7 @@ static int start_ptraced_child(void)
- 		panic("check_ptrace : expected SIGSTOP, got status = %d",
- 		      status);
++targets := pcap_kern.o pcap_user.o
++
+ $(obj)/pcap.o: $(obj)/pcap_kern.o $(obj)/pcap_user.o
+ 	$(LD) -r -dp -o $@ $^ $(LDFLAGS) $(LDFLAGS_pcap.o)
+ #XXX: The call below does not work because the flags are added before the
+@@ -26,7 +28,7 @@ $(obj)/pcap.o: $(obj)/pcap_kern.o $(obj)
+ #$(call if_changed,ld)
  
-+	*stack_out = stack;
- 	return(pid);
- }
+ # When the above is fixed, don't forget to add this too!
+-#targets := $(obj)/pcap.o
++#targets += $(obj)/pcap.o
  
-@@ -184,12 +189,12 @@ static int start_ptraced_child(void)
-  * just avoid using sysemu, not panic, but only if SYSEMU features are broken.
-  * So only for SYSEMU features we test mustpanic, while normal host features
-  * must work anyway!*/
--static int stop_ptraced_child(int pid, int exitcode, int mustexit)
-+static int stop_ptraced_child(int pid, void *stack, int exitcode, int mustpanic)
- {
- 	int status, n, ret = 0;
- 
- 	if(ptrace(PTRACE_CONT, pid, 0, 0) < 0)
--		panic("stop_ptraced_child : ptrace failed, errno = %d", errno);
-+		panic("check_ptrace : ptrace failed, errno = %d", errno);
- 	CATCH_EINTR(n = waitpid(pid, &status, 0));
- 	if(!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
- 		int exit_with = WEXITSTATUS(status);
-@@ -200,13 +205,15 @@ static int stop_ptraced_child(int pid, i
- 		printk("check_ptrace : child exited with exitcode %d, while "
- 		      "expecting %d; status 0x%x", exit_with,
- 		      exitcode, status);
--		if (mustexit)
-+		if (mustpanic)
- 			panic("\n");
- 		else
- 			printk("\n");
- 		ret = -1;
- 	}
- 
-+	if(munmap(stack, PAGE_SIZE) < 0)
-+		panic("check_ptrace : munmap failed, errno = %d", errno);
- 	return ret;
- }
- 
-@@ -228,11 +235,12 @@ __uml_setup("nosysemu", nosysemu_cmd_par
- 
- static void __init check_sysemu(void)
- {
-+	void *stack;
- 	int pid, syscall, n, status, count=0;
- 
- 	printk("Checking syscall emulation patch for ptrace...");
- 	sysemu_supported = 0;
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 
- 	if(ptrace(PTRACE_SYSEMU, pid, 0, 0) < 0)
- 		goto fail;
-@@ -250,7 +258,7 @@ static void __init check_sysemu(void)
- 		panic("check_sysemu : failed to modify system "
- 		      "call return, errno = %d", errno);
- 
--	if (stop_ptraced_child(pid, 0, 0) < 0)
-+	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
- 		goto fail_stopped;
- 
- 	sysemu_supported = 1;
-@@ -258,7 +266,7 @@ static void __init check_sysemu(void)
- 	set_using_sysemu(!force_sysemu_disabled);
- 
- 	printk("Checking advanced syscall emulation patch for ptrace...");
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 	while(1){
- 		count++;
- 		if(ptrace(PTRACE_SYSEMU_SINGLESTEP, pid, 0, 0) < 0)
-@@ -283,7 +291,7 @@ static void __init check_sysemu(void)
- 			break;
- 		}
- 	}
--	if (stop_ptraced_child(pid, 0, 0) < 0)
-+	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
- 		goto fail_stopped;
- 
- 	sysemu_supported = 2;
-@@ -294,17 +302,18 @@ static void __init check_sysemu(void)
- 	return;
- 
- fail:
--	stop_ptraced_child(pid, 1, 0);
-+	stop_ptraced_child(pid, stack, 1, 0);
- fail_stopped:
- 	printk("missing\n");
- }
- 
- void __init check_ptrace(void)
- {
-+	void *stack;
- 	int pid, syscall, n, status;
- 
- 	printk("Checking that ptrace can change system call numbers...");
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 
- 	if (ptrace(PTRACE_OLDSETOPTIONS, pid, 0, (void *)PTRACE_O_TRACESYSGOOD) < 0)
- 		panic("check_ptrace: PTRACE_SETOPTIONS failed, errno = %d", errno);
-@@ -331,7 +340,7 @@ void __init check_ptrace(void)
- 			break;
- 		}
- 	}
--	stop_ptraced_child(pid, 0, 1);
-+	stop_ptraced_child(pid, stack, 0, 1);
- 	printk("OK\n");
- 	check_sysemu();
- }
-@@ -368,10 +377,11 @@ extern void *__syscall_stub_start, __sys
- static inline void check_skas3_ptrace_support(void)
- {
- 	struct ptrace_faultinfo fi;
-+	void *stack;
- 	int pid, n;
- 
- 	printf("Checking for the skas3 patch in the host...");
--	pid = start_ptraced_child();
-+	pid = start_ptraced_child(&stack);
- 
- 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
- 	if (n < 0) {
-@@ -387,7 +397,7 @@ static inline void check_skas3_ptrace_su
- 	}
- 
- 	init_registers(pid);
--	stop_ptraced_child(pid, 1, 1);
-+	stop_ptraced_child(pid, stack, 1, 1);
- }
- 
- int can_do_skas(void)
+ obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
+ obj-$(CONFIG_SSL) += ssl.o
 _
 
 
