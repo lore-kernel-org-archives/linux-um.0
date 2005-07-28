@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DyC8G-0003Ie-Ol	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 10:25:20 -0700
+	id 1DyDKW-00071M-9i	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2005 11:42:04 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1DyC8G-0005ct-6o
+	(Exim 4.44)	id 1DyDKU-0007o9-R3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Jul 2005 10:25:20 -0700
+	Thu, 28 Jul 2005 11:42:04 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050728160555.EA9C23EF@zion.home.lan>
-Subject: [uml-devel] [patch 1/1] uml: avoid unnecessary pcap rebuild
+Message-Id: <20050728185702.B5CB95EFD@zion.home.lan>
+Subject: [uml-devel] [patch 3/3] uml: fix tlb flushing for accessed bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,42 +23,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 28 Jul 2005 18:05:55 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Thu, 28 Jul 2005 20:57:02 +0200
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-Just a Kbuild subtlety, not listing a target file inside targets causes it to
-be rebuilt each time, and as a consequence everything depending on it is
-rebuilt.
+Mark a page with _PAGE_NEWPROT on pte_mkold() to get it remapped not-readable
+on the host when it is not marked as accessed, to be able to emulate correctly
+the accessed bit.
+
+This patch, as said in the comment for the previous one (fixing this for
+pte_mkclean()) should be merged only after benchmarking, since the additional
+costs for the read faults are very big (a lot bigger than on the host).
+
+Possibly, increasing the timeout for scanning pages and marking them as
+accessed could be useful for us.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/um/drivers/Makefile |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletion(-)
+ linux-2.6.git-paolo/include/asm-um/pgtable.h |    3 +++
+ 1 files changed, 3 insertions(+)
 
-diff -puN arch/um/drivers/Makefile~uml-avoid-rebuild arch/um/drivers/Makefile
---- linux-2.6.git/arch/um/drivers/Makefile~uml-avoid-rebuild	2005-07-28 18:05:35.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/drivers/Makefile	2005-07-28 18:05:35.000000000 +0200
-@@ -19,6 +19,8 @@ harddog-objs := harddog_kern.o harddog_u
+diff -puN include/asm-um/pgtable.h~uml-fix-tlb-flushing-accessed include/asm-um/pgtable.h
+--- linux-2.6.git/include/asm-um/pgtable.h~uml-fix-tlb-flushing-accessed	2005-07-28 20:53:57.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/pgtable.h	2005-07-28 20:53:57.000000000 +0200
+@@ -268,6 +268,9 @@ static inline pte_t pte_mkclean(pte_t pt
+ static inline pte_t pte_mkold(pte_t pte)	
+ { 
+ 	pte_clear_bits(pte, _PAGE_ACCESSED);
++	/* We want that next flush makes this page again not-readable, so we'll
++	 * mark it as accessed again */
++	pte_set_bits(pte, _PAGE_NEWPROT);
+ 	return(pte);
+ }
  
- LDFLAGS_pcap.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libpcap.a)
- 
-+targets := pcap_kern.o pcap_user.o
-+
- $(obj)/pcap.o: $(obj)/pcap_kern.o $(obj)/pcap_user.o
- 	$(LD) -r -dp -o $@ $^ $(LDFLAGS) $(LDFLAGS_pcap.o)
- #XXX: The call below does not work because the flags are added before the
-@@ -26,7 +28,7 @@ $(obj)/pcap.o: $(obj)/pcap_kern.o $(obj)
- #$(call if_changed,ld)
- 
- # When the above is fixed, don't forget to add this too!
--#targets := $(obj)/pcap.o
-+#targets += $(obj)/pcap.o
- 
- obj-y := stdio_console.o fd.o chan_kern.o chan_user.o line.o
- obj-$(CONFIG_SSL) += ssl.o
 _
 
 
