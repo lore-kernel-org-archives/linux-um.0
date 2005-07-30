@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dz0dp-0003Ph-Hl	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 16:21:17 -0700
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1Dz0dp-0000l2-8e
+	id 1DzDGY-0007cv-KX	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 31 Jul 2005 05:50:06 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DzDGW-0007cn-DJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 16:21:17 -0700
-Message-ID: <42EC0C04.1050307@linode.com>
-From: "Christopher S. Aker" <caker@linode.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] skas v8.2 results
-References: <42EBEFAC.90208@rimuhosting.com>
-In-Reply-To: <42EBEFAC.90208@rimuhosting.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	Sun, 31 Jul 2005 05:50:06 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050730160218.GB4585@ccure.user-mode-linux.org>
+References: <20050728185655.9C6ADA3@zion.home.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050728185655.9C6ADA3@zion.home.lan>
+Subject: [uml-devel] Re: [patch 1/3] uml: share page bits handling between 2
+	and 3 level pagetables
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,32 +28,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 30 Jul 2005 18:23:48 -0500
-To: Peter <peter.spamcatcher@rimuhosting.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 30 Jul 2005 12:02:18 -0400
+To: blaisorblade@yahoo.it
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Peter wrote:
-> Hi.
-> 
-> We tried 2.6.12.3-skas3-v8.2 on a host server.  It kernel paniced (could 
-> not capture the panic) after about 90 minutes.  I'd tried a 2.6.12 
-> skasv8.2 a week or so back on another server and got the same result.
+On Thu, Jul 28, 2005 at 08:56:53PM +0200, blaisorblade@yahoo.it wrote:
+> As obvious, a "core code nice cleanup" is not a "stability-friendly patch" so
+> usual care applies.
 
-I had a similar problem a few weeks back when I attempted to run 
-2.6.12.1 and skas-2.6.12-rc4-v9-pre4.  Crashed within 30 minutes or so, 
-so I reverted back to 2.6.11.11 and skas-v8.  I haven't had the time to 
-narrow down the problem.  It's on my to-do list for this week.
+These look reasonable, as they are what we discussed in Ottawa.
 
-Incidentally, I've had kernel stability problems with the last dozen 
-hosts I've placed online.  These machines crash with no console output 
-after a few days to a few weeks uptime.  Haven't been able to track it 
-down yet, but my hope is whatever it might be is fixed in more recent 
-kernels.  It seems like a hardware or CPU speed and kernel version 
-issue, since the identical kernel runs flawlessly on other, slower hosts.
+I'll put them in my tree and see if I see any problems.  I would
+suggest sending these in early after 2.6.13 if they seem OK.
 
-I'll post more details in a few days.
-
--Chris
+				Jeff
 
 
 -------------------------------------------------------
