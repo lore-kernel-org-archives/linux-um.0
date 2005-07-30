@@ -2,15 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dywbu-0002iQ-Lz	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 12:03:02 -0700
+	id 1Dywbv-0002iR-LB	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Jul 2005 12:03:03 -0700
 Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1Dywbu-0005sg-3y
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1Dywbu-0005sh-42
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 12:03:02 -0700
+	Sat, 30 Jul 2005 12:03:03 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050730190537.22C771AE9B@zion.home.lan>
-Subject: [uml-devel] [patch 2/3] uml: workaround GDB problems on debugging
+Message-Id: <20050730190539.DA3481AEA0@zion.home.lan>
+Subject: [uml-devel] [patch 3/3] uml: fix SIGWINCH handler race while waiting
+	for signals.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,91 +23,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 30 Jul 2005 21:05:36 +0200
+Date: Sat, 30 Jul 2005 21:05:39 +0200
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, bstroesser@fujitsu-siemens.com
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Apparently, GDB gets confused when we do an execvp() on ourselves.
+If a SIGWINCH comes in, while winch_thread() isn't waiting
+in wait(), winch_thread could miss signals.
+It isn't very probable, that anyone will see this causing
+trouble, as it would need a very special timing, that a
+missed SIGWINCH results in a wrong window size.
 
-Since it's simply done to allocate further space for command line arguments
-(which we'll use to allow gathering the startup command line for guest
-processes through the host), allow the user to disable that to get a
-debuggable UML binary.
+So, this is a minor problem. But why not fix, as it can
+be done so easy?
 
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/um/Kconfig.debug    |   11 +++++++++++
- linux-2.6.git-paolo/arch/um/kernel/main.c    |    2 +-
- linux-2.6.git-paolo/arch/um/kernel/um_arch.c |    6 +++---
- 3 files changed, 15 insertions(+), 4 deletions(-)
+ linux-2.6.git-paolo/arch/um/drivers/chan_user.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
 
-diff -puN arch/um/Kconfig.debug~uml-fix-host-debug-on-TT-binaries arch/um/Kconfig.debug
---- linux-2.6.git/arch/um/Kconfig.debug~uml-fix-host-debug-on-TT-binaries	2005-07-30 16:50:53.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/Kconfig.debug	2005-07-30 16:58:52.000000000 +0200
-@@ -2,6 +2,17 @@ menu "Kernel hacking"
+diff -puN arch/um/drivers/chan_user.c~uml-fix-winch_thread arch/um/drivers/chan_user.c
+--- linux-2.6.git/arch/um/drivers/chan_user.c~uml-fix-winch_thread	2005-07-30 18:03:31.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/drivers/chan_user.c	2005-07-30 18:03:31.000000000 +0200
+@@ -63,7 +63,7 @@ error:
+  *
+  * SIGWINCH can't be received synchronously, so you have to set up to receive it
+  * as a signal.  That being the case, if you are going to wait for it, it is
+- * convenient to sit in a pause() and wait for the signal to bounce you out of
++ * convenient to sit in sigsuspend() and wait for the signal to bounce you out of
+  * it (see below for how we make sure to exit only on SIGWINCH).
+  */
  
- source "lib/Kconfig.debug"
+@@ -94,18 +94,19 @@ static int winch_thread(void *arg)
+ 		       "byte, err = %d\n", -count);
  
-+config CMDLINE_ON_HOST
-+	bool "Show command line arguments on the host in TT mode"
-+	depends on MODE_TT
-+	default !DEBUG_INFO
-+	help
-+	This controls whether arguments in guest processes should be shown on
-+	the host's ps output.
-+	Enabling this option hinders debugging on some recent GDB versions
-+	(because GDB gets "confused" when we do an execvp()). So probably you
-+	should disable it.
-+
- config PT_PROXY
- 	bool "Enable ptrace proxy"
- 	depends on XTERM_CHAN && DEBUG_INFO && MODE_TT
-diff -puN arch/um/kernel/main.c~uml-fix-host-debug-on-TT-binaries arch/um/kernel/main.c
---- linux-2.6.git/arch/um/kernel/main.c~uml-fix-host-debug-on-TT-binaries	2005-07-30 16:50:53.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/kernel/main.c	2005-07-30 16:50:53.000000000 +0200
-@@ -97,7 +97,7 @@ int main(int argc, char **argv, char **e
+ 	/* We are not using SIG_IGN on purpose, so don't fix it as I thought to
+-	 * do! If using SIG_IGN, the pause() call below would not stop on
++	 * do! If using SIG_IGN, the sigsuspend() call below would not stop on
+ 	 * SIGWINCH. */
+ 
+ 	signal(SIGWINCH, winch_handler);
+ 	sigfillset(&sigs);
+-	sigdelset(&sigs, SIGWINCH);
+-	/* Block anything else than SIGWINCH. */
++	/* Block all signals possible. */
+ 	if(sigprocmask(SIG_SETMASK, &sigs, NULL) < 0){
+ 		printk("winch_thread : sigprocmask failed, errno = %d\n", 
+ 		       errno);
  		exit(1);
  	}
++	/* In sigsuspend(), block anything else than SIGWINCH. */
++	sigdelset(&sigs, SIGWINCH);
  
--#ifdef UML_CONFIG_MODE_TT
-+#ifdef UML_CONFIG_CMDLINE_ON_HOST
- 	/* Allocate memory for thread command lines */
- 	if(argc < 2 || strlen(argv[1]) < THREAD_NAME_LEN - 1){
+ 	if(setsid() < 0){
+ 		printk("winch_thread : setsid failed, errno = %d\n", errno);
+@@ -130,7 +131,7 @@ static int winch_thread(void *arg)
+ 	while(1){
+ 		/* This will be interrupted by SIGWINCH only, since other signals
+ 		 * are blocked.*/
+-		pause();
++		sigsuspend(&sigs);
  
-diff -puN arch/um/kernel/um_arch.c~uml-fix-host-debug-on-TT-binaries arch/um/kernel/um_arch.c
---- linux-2.6.git/arch/um/kernel/um_arch.c~uml-fix-host-debug-on-TT-binaries	2005-07-30 16:50:53.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/kernel/um_arch.c	2005-07-30 16:50:53.000000000 +0200
-@@ -126,7 +126,7 @@ unsigned long start_vm;
- unsigned long end_vm;
- int ncpus = 1;
- 
--#ifdef CONFIG_MODE_TT
-+#ifdef CONFIG_CMDLINE_ON_HOST
- /* Pointer set in linux_main, the array itself is private to each thread,
-  * and changed at address space creation time so this poses no concurrency
-  * problems.
-@@ -141,7 +141,7 @@ long physmem_size = 32 * 1024 * 1024;
- 
- void set_cmdline(char *cmd)
- {
--#ifdef CONFIG_MODE_TT
-+#ifdef CONFIG_CMDLINE_ON_HOST
- 	char *umid, *ptr;
- 
- 	if(CHOOSE_MODE(honeypot, 0)) return;
-@@ -385,7 +385,7 @@ int linux_main(int argc, char **argv)
- 
- 	setup_machinename(system_utsname.machine);
- 
--#ifdef CONFIG_MODE_TT
-+#ifdef CONFIG_CMDLINE_ON_HOST
- 	argv1_begin = argv[1];
- 	argv1_end = &argv[1][strlen(argv[1])];
- #endif
+ 		count = os_write_file(pipe_fd, &c, sizeof(c));
+ 		if(count != sizeof(c))
 _
 
 
