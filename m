@@ -2,24 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DyxEG-0004D2-Nw	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 12:42:40 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1DyxEC-0006EX-9Y
+	id 1DyynM-0007rB-7D	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Jul 2005 14:23:00 -0700
+Received: from rimuhosting.com ([69.90.33.248])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1DyynK-0000PZ-SM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 12:42:40 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20050730190534.6FB5B843@zion.home.lan>
-	<20050730193532.GA19768@mars.ravnborg.org>
-In-Reply-To: <20050730193532.GA19768@mars.ravnborg.org>
+	Sat, 30 Jul 2005 14:23:00 -0700
+Received: from [192.168.1.102] (222-153-41-3.jetstream.xtra.co.nz
+	[222.153.41.3])	(authenticated bits=0)
+	by rimuhosting.com (8.12.8/8.12.8) with ESMTP id j6ULMrTa016121
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 30 Jul 2005 21:22:56 GMT
+Message-ID: <42EBEFAC.90208@rimuhosting.com>
+From: Peter <peter.spamcatcher@rimuhosting.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200507302147.06440.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [patch 1/3] uml: add dwarf sections to static link
-	script
+Subject: [uml-devel] skas v8.2 results
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,36 +32,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 30 Jul 2005 21:47:05 +0200
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 31 Jul 2005 09:22:52 +1200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 30 July 2005 21:35, Sam Ravnborg wrote:
-> On Sat, Jul 30, 2005 at 09:05:33PM +0200, blaisorblade@yahoo.it wrote:
-> > From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> >
-> > Inside the linker script, insert the code for DWARF debug info sections.
-> > This may help GDB'ing a Uml binary. Actually, it seems that ld is able to
-> > guess what I added correctly, but normal linker scripts include this
-> > section so it should be correct anyway adding it.
+Hi.
 
-> Can we please have this added to include/asm-generic/vmlinux.lds.h so we
-> can share the definition.
-Hmm, I'm going to leave for now, so I won't be able to handle this soon. If 
-you can do that it'd be nice. Thanks and sorry for this request.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+We tried 2.6.12.3-skas3-v8.2 on a host server.  It kernel paniced (could 
+not capture the panic) after about 90 minutes.  I'd tried a 2.6.12 
+skasv8.2 a week or so back on another server and got the same result.
 
-	
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+2.6.11.12-skas3-v8.2 has been running fine for 20 odd hours.
 
+Has anyone had success with 2.6.12 skas v8.2?  If so I'd be interested 
+in a kernel .config.  FWIW our hosts are dual xeons.
+
+Regards, Peter
 
 
 -------------------------------------------------------
