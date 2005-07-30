@@ -1,22 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DywP1-0002Bg-Qu	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 11:49:43 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1DywOy-0003Qb-0z
+	id 1Dywbk-0002hc-C8	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Jul 2005 12:02:52 -0700
+Received: from mail-relay-3.tiscali.it ([213.205.33.43])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1Dywbj-00076F-SD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 11:49:44 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200507302134.20394.blaisorblade@yahoo.it>
-Subject: [uml-devel] Fwd: Re: [patch 1/4] UML Support - Ptrace: adds the host
-	SYSEMU support, for UML and general usage
+	Sat, 30 Jul 2005 12:02:52 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050730190534.6FB5B843@zion.home.lan>
+Subject: [uml-devel] [patch 1/3] uml: add dwarf sections to static link script
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,121 +22,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 30 Jul 2005 21:34:20 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
+Date: Sat, 30 Jul 2005 21:05:33 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-----------  Forwarded Message  ----------
+Inside the linker script, insert the code for DWARF debug info sections. This
+may help GDB'ing a Uml binary. Actually, it seems that ld is able to guess
+what I added correctly, but normal linker scripts include this section so it
+should be correct anyway adding it.
 
-Subject: Re: [patch 1/4] UML Support - Ptrace: adds the host SYSEMU support, 
-for UML and general usage
-Date: Wednesday 27 July 2005 20:40
-From: Blaisorblade <blaisorblade@yahoo.it>
-To: "Charles P. Wright" <cwright@cs.sunysb.edu>
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike 
-<jdike@addtoit.com>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-On Wednesday 27 July 2005 19:19, Charles P. Wright wrote:
-> Paolo,
->
-> I'm also using ptrace to emulate system calls for a file system project
-> that I'm working on, so needless to say this patch is quite interesting
-> for me.
->
-> However, I'm not quite sure how the user-level interface is
-> supposed to work from the comments.
->
-> Normally the flow looks something like the following:
->
-> pid = wait();  	/* To trap the syscall entry. */
-> if (emulation) {
-> 	/* Set the eax value to something invalid. */
-> }
-> ptrace(PTRACE_SYSCALL, pid); /* Let the call execute. */
-> pid = wait();  	/* To trap the syscall exit. */
-> if (emualation) {
-> 	/* Force a return value. */
-> }
-> ptrace(PTRACE_SYSCALL);	/* To go back to user code. */
->
-> Ideally,
->
-> I would like to do the following as I only emulate some of the
-> system calls,
+ linux-2.6.git-paolo/arch/um/kernel/uml.lds.S |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+)
 
-Hmm, yes, this is a problem in the current SYSEMU interface, if to be used in
-this way.
-
-> and from the code, it seems like I should be able to:
->
-> pid = wait();  	/* To trap the syscall entry. */
-> if (emulation) {
-> 	/* Force a return value. */
-> 	ptrace(PTRACE_SYSEMU, pid); /* Go back to user code */
-> } else {
-> 	ptrace(PTRACE_SYSCALL); /* Let the call execute. */
-> 	pid = wait();  	/* To trap the syscall exit. */
-> 	ptrace(PTRACE_SYSCALL); /* To go back to user code. */
-> }
->
-> The comment here seems to indicate the interface is different:
-> +       case PTRACE_SYSEMU: /* continue and stop at next syscall, which
-> will not be executed */
->
-> That would indicate to me that we run SYSEMU to get stopped at the next
-> entry, and that call won't be executed (before we even know what it is).
-
-Ok, yes, this is true.
-
-Currently, SYSEMU allows us to switch from SYSEMU to SYSCALL, but the
-execution mode for a syscall is determined from which mode was used on
-syscall entry; if you use PTRACE_SYSCALL after syscall entry, this syscall is
-completed as usual, and next syscall will run as under PTRACE_SYSCALL.
-
-Actually, as a general purpose patch this might be a bit broken, I have to
-admit, but it was written for UML's usage at the beginning. On 2.4 it
-provided this behaviour automatically, on 2.6 it was fixed to conform to the
-same interface.
-
-But I think this is fixable; for the patch itself it should be trivial, the
-problem is supporting it in UML: whether the syscall is executed or not, is
-determined from the return value of do_syscall_trace(); as easily seen in the
-code, the return value is read on syscall entry, and reused even after
-running the debugger.
-
-Also, I'm not that happy to change again UML to support yet another
- interface, but if needed it may be done I hope.
-
-I think that this may be basically fixed in UML by using the same syscall
-interception even for completing the syscall... at no performance cost.
-
-The only cost would be adding yet another startup test for this new feature -
-however, it is greatly outweighted by mainline inclusion.
-
-> Charles
-
---
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
--------------------------------------------------------
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+diff -puN arch/um/kernel/uml.lds.S~uml-add-dwarf-sections-to-static-link-script arch/um/kernel/uml.lds.S
+--- linux-2.6.git/arch/um/kernel/uml.lds.S~uml-add-dwarf-sections-to-static-link-script	2005-07-30 13:41:40.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/kernel/uml.lds.S	2005-07-30 13:41:40.000000000 +0200
+@@ -103,4 +103,29 @@ SECTIONS
+   .stab.index 0 : { *(.stab.index) }
+   .stab.indexstr 0 : { *(.stab.indexstr) }
+   .comment 0 : { *(.comment) }
++  /* DWARF debug sections.
++     Symbols in the DWARF debugging sections are relative to the beginning
++     of the section so we begin them at 0.  */
++  /* DWARF 1 */
++  .debug          0 : { *(.debug) }
++  .line           0 : { *(.line) }
++  /* GNU DWARF 1 extensions */
++  .debug_srcinfo  0 : { *(.debug_srcinfo) }
++  .debug_sfnames  0 : { *(.debug_sfnames) }
++  /* DWARF 1.1 and DWARF 2 */
++  .debug_aranges  0 : { *(.debug_aranges) }
++  .debug_pubnames 0 : { *(.debug_pubnames) }
++  /* DWARF 2 */
++  .debug_info     0 : { *(.debug_info .gnu.linkonce.wi.*) }
++  .debug_abbrev   0 : { *(.debug_abbrev) }
++  .debug_line     0 : { *(.debug_line) }
++  .debug_frame    0 : { *(.debug_frame) }
++  .debug_str      0 : { *(.debug_str) }
++  .debug_loc      0 : { *(.debug_loc) }
++  .debug_macinfo  0 : { *(.debug_macinfo) }
++  /* SGI/MIPS DWARF 2 extensions */
++  .debug_weaknames 0 : { *(.debug_weaknames) }
++  .debug_funcnames 0 : { *(.debug_funcnames) }
++  .debug_typenames 0 : { *(.debug_typenames) }
++  .debug_varnames  0 : { *(.debug_varnames) }
+ }
+_
 
 
 -------------------------------------------------------
