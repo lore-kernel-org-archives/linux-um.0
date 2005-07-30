@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DzDGY-0007cv-KX	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 31 Jul 2005 05:50:06 -0700
+	id 1DzDGZ-0007d0-GP	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 31 Jul 2005 05:50:07 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DzDGW-0007cn-DJ
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DzDGZ-0007cn-AG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 31 Jul 2005 05:50:06 -0700
+	Sun, 31 Jul 2005 05:50:07 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050730160218.GB4585@ccure.user-mode-linux.org>
-References: <20050728185655.9C6ADA3@zion.home.lan>
+Message-ID: <20050730155454.GA4585@ccure.user-mode-linux.org>
+References: <42D7D802.2080100@fujitsu-siemens.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20050728185655.9C6ADA3@zion.home.lan>
-Subject: [uml-devel] Re: [patch 1/3] uml: share page bits handling between 2
-	and 3 level pagetables
+In-Reply-To: <42D7D802.2080100@fujitsu-siemens.com>
+Subject: [uml-devel] Re: Some changes in SKAS0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,20 +27,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 30 Jul 2005 12:02:18 -0400
-To: blaisorblade@yahoo.it
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 30 Jul 2005 11:54:54 -0400
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-On Thu, Jul 28, 2005 at 08:56:53PM +0200, blaisorblade@yahoo.it wrote:
-> As obvious, a "core code nice cleanup" is not a "stability-friendly patch" so
-> usual care applies.
+>   Thus I added SA_NOMASK to the flags for the handler.
 
-These look reasonable, as they are what we discussed in Ottawa.
+This patch causes sleep to hang sometimes for me.  A sleep during
+shutdown reproducably hangs, as does the sleep before a reboot after a
+fsck found errors.
 
-I'll put them in my tree and see if I see any problems.  I would
-suggest sending these in early after 2.6.13 if they seem OK.
+I had to track it down by bisection.  I'm somewhat mystified by this.
+The only situation where this could cause a change in behavior is one
+that shouldn't happen, as far as I can see.
+
+But it's definitely the cause.  Pop the patch, the hangs go away, push
+it, they come back.  I did this a couple times to be sure.
+
+I'll debug this and figure out what's happening.
 
 				Jeff
+
+
 
 
 -------------------------------------------------------
