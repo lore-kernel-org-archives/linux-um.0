@@ -1,16 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Dywbk-0002hd-EX	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 12:02:52 -0700
-Received: from mail-relay-3.tiscali.it ([213.205.33.43])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1Dywbj-00076E-Ud
+	id 1Dywbu-0002iQ-Lz	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Jul 2005 12:03:02 -0700
+Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1Dywbu-0005sg-3y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Jul 2005 12:02:52 -0700
+	Sat, 30 Jul 2005 12:03:02 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050730190546.810CA1AEA4@zion.home.lan>
-Subject: [uml-devel] [patch 1/1] uml: avoid fixing faults while atomic
+Message-Id: <20050730190537.22C771AE9B@zion.home.lan>
+Subject: [uml-devel] [patch 2/3] uml: workaround GDB problems on debugging
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,73 +22,91 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 30 Jul 2005 21:05:46 +0200
-To: jdike@addtoit.com
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Date: Sat, 30 Jul 2005 21:05:36 +0200
+To: akpm@osdl.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Following i386, we should maybe refuse trying to fault in pages when we're
-doing atomic operations, because to handle the fault we could need to take
-already taken spinlocks.
+Apparently, GDB gets confused when we do an execvp() on ourselves.
 
-Also, if we're doing an atomic operation (in the sense of in_atomic()) we're
-surely in kernel mode and we're surely going to handle adequately the failed
-fault, so it's safe to behave this way.
-
-Currently, on UML SMP is rarely used, and we don't support PREEMPT, so this is
-unlikely to create problems right now, but it might in the future.
+Since it's simply done to allocate further space for command line arguments
+(which we'll use to allow gathering the startup command line for guest
+processes through the host), allow the user to disable that to get a
+debuggable UML binary.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/um/kernel/trap_kern.c |   11 ++++++++---
- 1 files changed, 8 insertions(+), 3 deletions(-)
+ linux-2.6.git-paolo/arch/um/Kconfig.debug    |   11 +++++++++++
+ linux-2.6.git-paolo/arch/um/kernel/main.c    |    2 +-
+ linux-2.6.git-paolo/arch/um/kernel/um_arch.c |    6 +++---
+ 3 files changed, 15 insertions(+), 4 deletions(-)
 
-diff -puN arch/um/kernel/trap_kern.c~uml-avoid-faults-while-atomic arch/um/kernel/trap_kern.c
---- linux-2.6.git/arch/um/kernel/trap_kern.c~uml-avoid-faults-while-atomic	2005-07-30 17:04:10.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/kernel/trap_kern.c	2005-07-30 17:04:10.000000000 +0200
-@@ -39,6 +39,10 @@ int handle_page_fault(unsigned long addr
- 	int err = -EFAULT;
+diff -puN arch/um/Kconfig.debug~uml-fix-host-debug-on-TT-binaries arch/um/Kconfig.debug
+--- linux-2.6.git/arch/um/Kconfig.debug~uml-fix-host-debug-on-TT-binaries	2005-07-30 16:50:53.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/Kconfig.debug	2005-07-30 16:58:52.000000000 +0200
+@@ -2,6 +2,17 @@ menu "Kernel hacking"
  
- 	*code_out = SEGV_MAPERR;
+ source "lib/Kconfig.debug"
+ 
++config CMDLINE_ON_HOST
++	bool "Show command line arguments on the host in TT mode"
++	depends on MODE_TT
++	default !DEBUG_INFO
++	help
++	This controls whether arguments in guest processes should be shown on
++	the host's ps output.
++	Enabling this option hinders debugging on some recent GDB versions
++	(because GDB gets "confused" when we do an execvp()). So probably you
++	should disable it.
 +
-+	if (in_atomic()) //If the fault was during atomic operation, don't take the fault.
-+		goto out_nosemaphore;
-+
- 	down_read(&mm->mmap_sem);
- 	vma = find_vma(mm, address);
- 	if(!vma) 
-@@ -52,7 +56,7 @@ int handle_page_fault(unsigned long addr
- 	else if(expand_stack(vma, address)) 
- 		goto out;
+ config PT_PROXY
+ 	bool "Enable ptrace proxy"
+ 	depends on XTERM_CHAN && DEBUG_INFO && MODE_TT
+diff -puN arch/um/kernel/main.c~uml-fix-host-debug-on-TT-binaries arch/um/kernel/main.c
+--- linux-2.6.git/arch/um/kernel/main.c~uml-fix-host-debug-on-TT-binaries	2005-07-30 16:50:53.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/kernel/main.c	2005-07-30 16:50:53.000000000 +0200
+@@ -97,7 +97,7 @@ int main(int argc, char **argv, char **e
+ 		exit(1);
+ 	}
  
-- good_area:
-+good_area:
- 	*code_out = SEGV_ACCERR;
- 	if(is_write && !(vma->vm_flags & VM_WRITE)) 
- 		goto out;
-@@ -62,7 +66,7 @@ int handle_page_fault(unsigned long addr
+-#ifdef UML_CONFIG_MODE_TT
++#ifdef UML_CONFIG_CMDLINE_ON_HOST
+ 	/* Allocate memory for thread command lines */
+ 	if(argc < 2 || strlen(argv[1]) < THREAD_NAME_LEN - 1){
  
- 	page = address & PAGE_MASK;
- 	do {
-- survive:
-+survive:
- 		switch (handle_mm_fault(mm, vma, address, is_write)){
- 		case VM_FAULT_MINOR:
- 			current->min_flt++;
-@@ -88,8 +92,9 @@ int handle_page_fault(unsigned long addr
- 	*pte = pte_mkyoung(*pte);
- 	if(pte_write(*pte)) *pte = pte_mkdirty(*pte);
- 	flush_tlb_page(vma, page);
-- out:
-+out:
- 	up_read(&mm->mmap_sem);
-+out_nosemaphore:
- 	return(err);
+diff -puN arch/um/kernel/um_arch.c~uml-fix-host-debug-on-TT-binaries arch/um/kernel/um_arch.c
+--- linux-2.6.git/arch/um/kernel/um_arch.c~uml-fix-host-debug-on-TT-binaries	2005-07-30 16:50:53.000000000 +0200
++++ linux-2.6.git-paolo/arch/um/kernel/um_arch.c	2005-07-30 16:50:53.000000000 +0200
+@@ -126,7 +126,7 @@ unsigned long start_vm;
+ unsigned long end_vm;
+ int ncpus = 1;
  
- /*
+-#ifdef CONFIG_MODE_TT
++#ifdef CONFIG_CMDLINE_ON_HOST
+ /* Pointer set in linux_main, the array itself is private to each thread,
+  * and changed at address space creation time so this poses no concurrency
+  * problems.
+@@ -141,7 +141,7 @@ long physmem_size = 32 * 1024 * 1024;
+ 
+ void set_cmdline(char *cmd)
+ {
+-#ifdef CONFIG_MODE_TT
++#ifdef CONFIG_CMDLINE_ON_HOST
+ 	char *umid, *ptr;
+ 
+ 	if(CHOOSE_MODE(honeypot, 0)) return;
+@@ -385,7 +385,7 @@ int linux_main(int argc, char **argv)
+ 
+ 	setup_machinename(system_utsname.machine);
+ 
+-#ifdef CONFIG_MODE_TT
++#ifdef CONFIG_CMDLINE_ON_HOST
+ 	argv1_begin = argv[1];
+ 	argv1_end = &argv[1][strlen(argv[1])];
+ #endif
 _
 
 
