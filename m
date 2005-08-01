@@ -2,17 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1DzIDR-0001et-24	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 31 Jul 2005 11:07:13 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1DzICt-00061e-V1
+	id 1DzPFX-0008ON-Ar	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 31 Jul 2005 18:37:51 -0700
+Received: from motgate8.mot.com ([129.188.136.8])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1DzPF4-0001EJ-3o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 31 Jul 2005 11:07:13 -0700
-From: blaisorblade@yahoo.it
-Message-Id: <20050731181134.4D98721D458@zion.home.lan>
-Subject: [uml-devel] [patch 1/1] UML Support - SYSEMU: slight cleanup and
-	speedup
+	Sun, 31 Jul 2005 18:37:51 -0700
+Received: from il06exr02.mot.com (il06exr02.mot.com [129.188.137.132])
+	by motgate8.mot.com (8.12.11/Motgate7) with ESMTP id j711kwAH009943
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 31 Jul 2005 18:46:58 -0700 (MST)
+Received: from zch07exm01.corp.mot.com (zch07exm01.corp.mot.com [200.3.1.220])
+	by il06exr02.mot.com (8.13.1/8.13.0) with ESMTP id j711h53N020876
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 31 Jul 2005 20:43:06 -0500 (CDT)
+Message-ID: <AD266326EC54D9118CE700110A9E2BE205CB82B7@zch07exm01.corp.mot.com>
+From: Zhu Tom-a2289c <A2289c@motorola.com>
+Subject: RE: [uml-devel] NPTL pthread_create() cannot work.
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,58 +32,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 31 Jul 2005 20:11:31 +0200
-To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, cwright@cs.sunysb.edu
+Date: Mon, 1 Aug 2005 09:37:16 +0800
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+> Yes, I already fixed that recently - that patch is a development one and you're the first tester I heard of.
+:-)
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-CC: Charles P. Wright <cwright@cs.sunysb.edu>
+> I've succeeded in fixing even this...
+Can I get your fix for the further test?
 
-As a follow-up to "UML Support - Ptrace: adds the host SYSEMU support, for UML
-and general usage" (i.e. uml-support-* in current mm).
+> Is that compiled with NPTL / TLS support? Has 2.3.2 any TLS support at all?
+It is said to support NPTL 0.29.
 
-Avoid unconditionally jumping to work_pending and code copying, just reuse the
-already existing resume_userspace path.
-
-About those patches, they should stay in -mm only for now - I expect to get
-them reviewed.
-
-One interesting note, from Charles P. Wright, suggested that the API is
-improvable with no downsides for UML (except that it will have to support yet
-another host API, since dropping support for the current API, for UML, is not
-reasonable from users' point of view).
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- linux-2.6.git-paolo/arch/i386/kernel/entry.S |    8 +-------
- 1 files changed, 1 insertion(+), 7 deletions(-)
-
-diff -puN arch/i386/kernel/entry.S~sysemu-cleanup-speedup arch/i386/kernel/entry.S
---- linux-2.6.git/arch/i386/kernel/entry.S~sysemu-cleanup-speedup	2005-07-31 20:03:19.000000000 +0200
-+++ linux-2.6.git-paolo/arch/i386/kernel/entry.S	2005-07-31 20:03:19.000000000 +0200
-@@ -339,18 +339,12 @@ syscall_trace_entry:
- 	xorl %edx,%edx
- 	call do_syscall_trace
- 	cmpl $0, %eax
--	jne syscall_skip		# ret != 0 -> running under PTRACE_SYSEMU,
-+	jne resume_userspace		# ret != 0 -> running under PTRACE_SYSEMU,
- 					# so must skip actual syscall
- 	movl ORIG_EAX(%esp), %eax
- 	cmpl $(nr_syscalls), %eax
- 	jnae syscall_call
- 	jmp syscall_exit
--syscall_skip:
--	cli				# make sure we don't miss an interrupt
--					# setting need_resched or sigpending
--					# between sampling and the iret
--	movl TI_flags(%ebp), %ecx
--	jmp work_pending
- 
- 	# perform syscall exit tracing
- 	ALIGN
-_
+Thanks,
+Tom
 
 
 -------------------------------------------------------
