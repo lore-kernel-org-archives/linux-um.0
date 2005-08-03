@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E0NFe-0006mB-QK	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Aug 2005 10:41:58 -0700
-Received: from mail.nagafix.co.uk ([213.228.237.37])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E0NFc-0002eA-D8
+	id 1E0NW1-0007dC-5B	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Aug 2005 10:58:53 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E0NVy-0006pd-LR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Aug 2005 10:41:58 -0700
-Subject: Re: [uml-devel] 2.6.12-bs7 vs 2.6.12-bb8
-From: antoine <antoine@nagafix.co.uk>
-In-Reply-To: <200507222020.55873.blaisorblade@yahoo.it>
-References: <20050721220839.F01B389B90@sc8-sf-spam1.sourceforge.net>
-	 <1122032119.13225.9.camel@dhcp-192-168-22-217.internal>
-	 <200507222020.55873.blaisorblade@yahoo.it>
-Content-Type: text/plain
-Message-Id: <1123090843.5177.38.camel@dhcp-192-168-22-217.internal>
-Mime-Version: 1.0
+	Wed, 03 Aug 2005 10:58:53 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] NPTL pthread_create() cannot work.
+References: <AD266326EC54D9118CE700110A9E2BE205D707D7@zch07exm01.corp.mot.com>
+In-Reply-To: <AD266326EC54D9118CE700110A9E2BE205D707D7@zch07exm01.corp.mot.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200508032003.48667.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,20 +29,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 03 Aug 2005 18:40:43 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 3 Aug 2005 20:03:48 +0200
+To: Zhu Tom-a2289c <A2289c@motorola.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> > I've just stared testing your latest patches on a amd64 box running
-> > 2.6.13-rc3-git4, bb8 seems to run (so far)
-> Using TT or SKAS0 mode? And is this specific to that host release wrt 2.6.12?
-> > but bs7 comes up with: 
-(...)
-bs works fine on 2.6.13-rc4 now, must have been a host bug?
-But all guest 64-bit kernels are still loosing memory fast, gentoo's
-"emerge --sync" is enough to eat 300+ MB of ram! (in about 5 minutes)
+On Tuesday 02 August 2005 12:05, Zhu Tom-a2289c wrote:
+> Hi Blaisor,
+>
+> I see your new patch on
+> http://www.user-mode-linux.org/~blaisorblade/patches/devel-guest/uml-2.6.13
+>-rc3-git-bb-20050731-19:08/ Does this fix the problem?
 
-Antoine
+> I used vinilla 2.6.13-rc3 kernel, no matter whether adding git patch,
+> I cannot apply all the patches.
+Applying *all* the patches won't work, but until *TLS* it should
+> Could you indicate which kernel version I should base?
+Well, that should be something along -rc4-git3/4, I gave some indications on 
+the "NEWS page".
+> Thanks,
+> Tom
+>
+>
+>
+> -----Original Message-----
+> From: Zhu Tom-a2289c
+> Sent: 2005年8月1日 9:37
+> To: 'Blaisorblade'
+> Cc: user-mode-linux-devel@lists.sourceforge.net
+> Subject: RE: [uml-devel] NPTL pthread_create() cannot work.
+>
+> > Yes, I already fixed that recently - that patch is a development one and
+> > you're the first tester I heard of.
+> >
+> :-)
+> :
+> > I've succeeded in fixing even this...
+>
+> Can I get your fix for the further test?
+>
+> > Is that compiled with NPTL / TLS support? Has 2.3.2 any TLS support at
+> > all?
+>
+> It is said to support NPTL 0.29.
+>
+> Thanks,
+> Tom
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
