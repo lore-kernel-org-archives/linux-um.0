@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E0LLV-00085X-Qa	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Aug 2005 08:39:53 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E0LLU-0006CR-Hx
+	id 1E0NFe-0006mB-QK	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Aug 2005 10:41:58 -0700
+Received: from mail.nagafix.co.uk ([213.228.237.37])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E0NFc-0002eA-D8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Aug 2005 08:39:53 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Host kernel requirements for UML
-Message-ID: <20050803143957.GB4701@ccure.user-mode-linux.org>
-References: <20050803094805.GA6090@in.ibm.com>
+	Wed, 03 Aug 2005 10:41:58 -0700
+Subject: Re: [uml-devel] 2.6.12-bs7 vs 2.6.12-bb8
+From: antoine <antoine@nagafix.co.uk>
+In-Reply-To: <200507222020.55873.blaisorblade@yahoo.it>
+References: <20050721220839.F01B389B90@sc8-sf-spam1.sourceforge.net>
+	 <1122032119.13225.9.camel@dhcp-192-168-22-217.internal>
+	 <200507222020.55873.blaisorblade@yahoo.it>
+Content-Type: text/plain
+Message-Id: <1123090843.5177.38.camel@dhcp-192-168-22-217.internal>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050803094805.GA6090@in.ibm.com>
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,25 +29,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Aug 2005 10:39:57 -0400
-To: Srivatsa Vaddagiri <vatsa@in.ibm.com>
+Date: Wed, 03 Aug 2005 18:40:43 +0100
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Aug 03, 2005 at 03:18:05PM +0530, Srivatsa Vaddagiri wrote:
-> Hi,
-> 	I am trying to get a quick answer for a question I had on UML.
-> As I understand, UML kernel makes use of host kernel's 
-> system call interface for its functionality. The questions is, does the
-> host kernel need to support *all* system calls or only a subset?
+> > I've just stared testing your latest patches on a amd64 box running
+> > 2.6.13-rc3-git4, bb8 seems to run (so far)
+> Using TT or SKAS0 mode? And is this specific to that host release wrt 2.6.12?
+> > but bs7 comes up with: 
+(...)
+bs works fine on 2.6.13-rc4 now, must have been a host bug?
+But all guest 64-bit kernels are still loosing memory fast, gentoo's
+"emerge --sync" is enough to eat 300+ MB of ram! (in about 5 minutes)
 
-Only a small subset.
+Antoine
 
-> Does UML rely on /proc or any other such filesystems on host?
-
-It looks at /proc/cpuinfo for some information about cmov and xmm support
-on the processor.
-
-				Jeff
 
 
 -------------------------------------------------------
