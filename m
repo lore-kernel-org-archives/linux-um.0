@@ -1,23 +1,41 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E0NW1-0007dC-5B	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Aug 2005 10:58:53 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E0NVy-0006pd-LR
+	id 1E0Vbw-00011d-RG	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Aug 2005 19:37:32 -0700
+Received: from e32.co.us.ibm.com ([32.97.110.130])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1E0Vbw-0003xK-Gf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Aug 2005 10:58:53 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] NPTL pthread_create() cannot work.
-References: <AD266326EC54D9118CE700110A9E2BE205D707D7@zch07exm01.corp.mot.com>
-In-Reply-To: <AD266326EC54D9118CE700110A9E2BE205D707D7@zch07exm01.corp.mot.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+	Wed, 03 Aug 2005 19:37:32 -0700
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e32.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j742bGkQ787766
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 3 Aug 2005 22:37:16 -0400
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com
+	[9.17.195.168])j742bOxJ189344
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 3 Aug 2005 20:37:24 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	j742bGlF008622	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 3 Aug 2005 20:37:16 -0600
+Received: from snowy.in.ibm.com ([9.182.63.175])j742bDkm008581
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 3 Aug 2005 20:37:15 -0600
+From: Srivatsa Vaddagiri <vatsa@in.ibm.com>
+Subject: Re: [uml-devel] Host kernel requirements for UML
+Message-ID: <20050803171507.GA15047@in.ibm.com>
+Reply-To: vatsa@in.ibm.com
+References: <20050803094805.GA6090@in.ibm.com>
+	<20050803143957.GB4701@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200508032003.48667.blaisorblade@yahoo.it>
+In-Reply-To: <20050803143957.GB4701@ccure.user-mode-linux.org>
+Resent-To: user-mode-linux-devel@lists.sourceforge.net
+Resent-Message-Id: <20050803171620.7123E250E0@snowy.in.ibm.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,72 +47,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 3 Aug 2005 20:03:48 +0200
-To: Zhu Tom-a2289c <A2289c@motorola.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 3 Aug 2005 22:45:07 +0530
+To: Jeff Dike <jdike@addtoit.com>
 
-On Tuesday 02 August 2005 12:05, Zhu Tom-a2289c wrote:
-> Hi Blaisor,
->
-> I see your new patch on
-> http://www.user-mode-linux.org/~blaisorblade/patches/devel-guest/uml-2.6.13
->-rc3-git-bb-20050731-19:08/ Does this fix the problem?
+On Wed, Aug 03, 2005 at 10:39:57AM -0400, Jeff Dike wrote:
+> On Wed, Aug 03, 2005 at 03:18:05PM +0530, Srivatsa Vaddagiri wrote:
+> > Hi,
+> > 	I am trying to get a quick answer for a question I had on UML.
+> > As I understand, UML kernel makes use of host kernel's 
+> > system call interface for its functionality. The questions is, does the
+> > host kernel need to support *all* system calls or only a subset?
+> 
+> Only a small subset.
 
-> I used vinilla 2.6.13-rc3 kernel, no matter whether adding git patch,
-> I cannot apply all the patches.
-Applying *all* the patches won't work, but until *TLS* it should
-> Could you indicate which kernel version I should base?
-Well, that should be something along -rc4-git3/4, I gave some indications on 
-the "NEWS page".
-> Thanks,
-> Tom
->
->
->
-> -----Original Message-----
-> From: Zhu Tom-a2289c
-> Sent: 2005年8月1日 9:37
-> To: 'Blaisorblade'
-> Cc: user-mode-linux-devel@lists.sourceforge.net
-> Subject: RE: [uml-devel] NPTL pthread_create() cannot work.
->
-> > Yes, I already fixed that recently - that patch is a development one and
-> > you're the first tester I heard of.
-> >
-> :-)
-> :
-> > I've succeeded in fixing even this...
->
-> Can I get your fix for the further test?
->
-> > Is that compiled with NPTL / TLS support? Has 2.3.2 any TLS support at
-> > all?
->
-> It is said to support NPTL 0.29.
->
-> Thanks,
-> Tom
+Thanks for the info. Is there any place where this subset is documented?
+I was hoping to avoid looking at the unresoled symbols in UML binary to 
+get this info!
 
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
 
-	
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+Thanks and Regards,
+Srivatsa Vaddagiri,
+Linux Technology Center,
+IBM Software Labs,
+Bangalore, INDIA - 560017
 
 
 -------------------------------------------------------
-SF.Net email is sponsored by: Discover Easy Linux Migration Strategies
-from IBM. Find simple to follow Roadmaps, straightforward articles,
-informative Webcasts and more! Get everything you need to get up to
-speed, fast. http://ads.osdn.com/?ad_id=7477&alloc_id=16492&op=click
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
