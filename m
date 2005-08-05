@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E0ypq-0005zd-JT	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Aug 2005 02:49:50 -0700
-Received: from fallback.mail.elte.hu ([157.181.151.13])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E0ypp-0000BO-6U
+	id 1E10cP-0001lE-KJ	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Aug 2005 04:44:05 -0700
+Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E10cO-0003R2-Cc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Aug 2005 02:49:50 -0700
-Received: from mx2.elte.hu (mx2.elte.hu [157.181.151.9])
-	by fallback.mail.elte.hu (Postfix) with ESMTP id B6A4650378
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  5 Aug 2005 10:11:47 +0200 (CEST)
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20050805081013.GB6409@elte.hu>
-References: <200508042124.36786.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200508042124.36786.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Bugs on your remap_file_pages protections
-	implementations
+	Fri, 05 Aug 2005 04:44:05 -0700
+Message-ID: <42F350F9.5050306@fujitsu-siemens.com>
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+MIME-Version: 1.0
+References: <42D7D802.2080100@fujitsu-siemens.com>
+	<20050730155454.GA4585@ccure.user-mode-linux.org>
+In-Reply-To: <20050730155454.GA4585@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: Some changes in SKAS0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,38 +28,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 5 Aug 2005 10:10:13 +0200
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 05 Aug 2005 13:43:53 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>, BlaisorBlade <blaisorblade_spam@yahoo.it>
 
-
-* Blaisorblade <blaisorblade@yahoo.it> wrote:
-
-> Hi Ingo, I'm the young UML hacker you met at OLS and who got your UML 
-> patches sent ;-)
+Jeff Dike wrote:
+>>  Thus I added SA_NOMASK to the flags for the handler.
 > 
-> I've been studying your patch (and the whole Linux VM, indeed) in the 
-> past days, and I have some remarks, about the version of the code in 
-> 2.6.4-rc2-mm1 (which is the same you sent me) - I've now downloaded 
-> the version dropped from 2.6.5-mm1, but it doesn't seem to address 
-> those problems.
 > 
-> Btw, I've now seen why that patch was dropped, but not why it wasn't 
-> resubmit.
+> This patch causes sleep to hang sometimes for me.  A sleep during
+> shutdown reproducably hangs, as does the sleep before a reboot after a
+> fsck found errors.
+> 
+> I had to track it down by bisection.  I'm somewhat mystified by this.
+> The only situation where this could cause a change in behavior is one
+> that shouldn't happen, as far as I can see.
+> 
+> But it's definitely the cause.  Pop the patch, the hangs go away, push
+> it, they come back.  I did this a couple times to be sure.
+> 
+> I'll debug this and figure out what's happening.
+> 
+> 				Jeff
+> 
+Could you already find out what happens? On what subarch did you see the problem?
+If I understand correctly, a sleep() done by a UML userspace-task hangs?
 
-was not resubmitted due to me only having 30 hours available to hack, 
-per day ;) Feel free to pick the patch up.
-
-> *) with your patch, remapped pages without MAP_INHERIT are IMHO not 
-> safe across swapout; re-swapping them in will pass through the 
-> arch-specific fault handler, which will check VMA's protections, and 
-> fail if the VMA originally had MAP_NONE. Or am I missing something?
-
-not sure, was a long time ago. I have checked swap-safeness, but only 
-once. UML did work though, but i dont think i ever pushed it into 
-swapping out its RAM-file.
-
-	Ingo
+	Bodo
 
 
 -------------------------------------------------------
