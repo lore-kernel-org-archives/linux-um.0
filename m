@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E0pCp-0006DU-Ki	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Aug 2005 16:32:55 -0700
-Received: from newmail.brainfood.com ([146.82.138.14] ident=Debian-exim)
-	by mail.sourceforge.net with esmtps (TLSv1:RC4-SHA:128)	(Exim 4.44)
-	id 1E0pCp-0004fv-FE	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Aug 2005 16:32:55 -0700
-Received: from brown.brainfood.com ([146.82.138.61]
-	helo=gradall.private.brainfood.com)
-	(TLS-1.0:DHE_RSA_3DES_EDE_CBC_SHA:24)	(Exim 4.31)	id 1E0pAN-0002xu-1v
+	id 1E0rnK-0006i7-Jw	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 04 Aug 2005 19:18:46 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E0rnJ-0002zx-5N
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Aug 2005 18:30:23 -0500
-From: Adam Heath <doogie@brainfood.com>
+	Thu, 04 Aug 2005 19:18:46 -0700
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Host kernel requirements for UML (fwd)
-Message-ID: <Pine.LNX.4.58.0508041832400.20176@gradall.private.brainfood.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20050805011850.GA12633@ccure.user-mode-linux.org>
+References: <Pine.LNX.4.58.0508041832400.20176@gradall.private.brainfood.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0508041832400.20176@gradall.private.brainfood.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,24 +27,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 4 Aug 2005 18:32:48 -0500 (CDT)
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 4 Aug 2005 21:18:50 -0400
+To: Adam Heath <doogie@brainfood.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Thu, Aug 04, 2005 at 06:32:48PM -0500, Adam Heath wrote:
+> Wouldn't it make more sense to actually test for those instructions instead of
+> parsing proc, for use on systems without a linux compatible /proc.
 
+Yes, it would, and the code would probably be simpler.
 
----------- Forwarded message ----------
-Date: Thu, 4 Aug 2005 18:30:09 -0500 (CDT)
-From: Adam Heath <adam@doogie.org>
-Cc: Srivatsa Vaddagiri <vatsa@in.ibm.com>
-Subject: Re: [uml-devel] Host kernel requirements for UML
-
-On Wed, 3 Aug 2005, Jeff Dike wrote:
-
-> It looks at /proc/cpuinfo for some information about cmov and xmm support
-> on the processor.
-
-Wouldn't it make more sense to actually test for those instructions instead of
-parsing proc, for use on systems without a linux compatible /proc.
+				Jeff
 
 
 -------------------------------------------------------
