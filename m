@@ -1,26 +1,35 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E1t1r-0001iC-9o	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Aug 2005 14:49:59 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
+	id 1E1u52-00051H-Ug	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 Aug 2005 15:57:20 -0700
+Received: from mail.scgiservices.com ([198.107.3.67])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1E1t1q-0006wi-2W
+	(Exim 4.44)	id 1E1u51-00031J-UD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Aug 2005 14:49:59 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] NPTL pthread_create() cannot work.
-References: <AD266326EC54D9118CE700110A9E2BE205EA47EA@zch07exm01.corp.mot.com>
-	<200508051754.34058.blaisorblade@yahoo.it>
-In-Reply-To: <200508051754.34058.blaisorblade@yahoo.it>
+	Sun, 07 Aug 2005 15:57:21 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by mail.scgiservices.com (Postfix) with ESMTP id 99E792881C
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun,  7 Aug 2005 15:57:16 -0700 (PDT)
+Received: from mail.scgiservices.com ([127.0.0.1])
+ by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+ id 18812-02 for <user-mode-linux-devel@lists.sourceforge.net>;
+ Sun,  7 Aug 2005 15:57:14 -0700 (PDT)
+Received: from sterling (c-67-160-154-69.hsd1.or.comcast.net [67.160.154.69])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mail.scgiservices.com (Postfix) with ESMTP id 6A27C2881A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun,  7 Aug 2005 15:57:14 -0700 (PDT)
+From: "Anthony Brock" <brocka@sterlingcgi.com>
+Message-ID: <CBELIFGMBIEPIEOFCJFAGEIPCAAA.brocka@sterlingcgi.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200508071649.40752.rob@landley.net>
+Subject: [uml-devel] 'soft lockup' issue on shutdown
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,38 +41,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 Aug 2005 16:49:40 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Blaisorblade <blaisorblade@yahoo.it>, Zhu Tom-a2289c <A2289c@motorola.com>
+Date: Sun, 7 Aug 2005 15:57:48 -0700
+To: UML Developer's List <user-mode-linux-devel@lists.sourceforge.net>
 
-On Friday 05 August 2005 10:54, Blaisorblade wrote:
-> On Friday 05 August 2005 09:34, Zhu Tom-a2289c wrote:
-> > 1.
-> > I still fail to use these patches on git3/4,
->
-> Hm, ok... there will be probably some trivial reject...I cannot update
-> those patches right now since I haven't enough bandwidth.
->
-> Just to make sure: you got errors applying until TLS patches, right?
-> Anyhow, to get the TLS changes only, you need to apply only the following 4
-> patches:
->
-> uml-clean-arch_switch
-> uml-tls-support-sc-tables
-> uml-add-tls-support
-> uml-add-tls-support-debug
+I've been encountering a "freeze" on shutdown with guest kernel
+2.6.12-rc5-mm1. Today, I was busy with other things so I left it frozen for
+a while. When I returned, I saw the following:
 
-Um, query:
+Turning off swap
+BUG: soft lockup detected on CPU#0!
 
-If somebody wants to test out -skas0 to see if it can be made to work on an 
-unmodified kbuntu "horny hedgehog" release, which version should one use?  
-(The july 28 thing?  The july 31 snapshot?  Or can one just apply those four 
-patches to 2.6.12 and have some reasonable expectation of something good?)
+EIP: 0000:[<00000000>] CPU: 0 Not tainted EFLAGS: 00000000
+    Not tainted
+EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 0000 ES: 0000
+082976f0:  [<080789a9>] show_regs+0xc9/0xf0
+08297710:  [<0809bb60>] softlockup_tick+0x50/0x60
+08297730:  [<08087d44>] do_timer+0x44/0x110
+08297750:  [<08062750>] um_timer+0x10/0x50
+08297770:  [<0809bd86>] handle_IRQ_event+0x36/0x90
+082977a0:  [<0809be8e>] __do_IRQ+0xae/0x110
+082977c0:  [<0805f2df>] do_IRQ+0x2f/0x40
+082977d0:  [<080626cb>] timer_irq+0x11b/0x170
+08297800:  [<080628d9>] timer_handler+0x49/0x60
+08297820:  [<080759ca>] sig_handler_common_skas+0xaa/0x100
+08297850:  [<08071b93>] alarm_handler+0x23/0x50
+08297870:  [<ffffe420>] _etext+0xf7db7406/0x0
+08297b80:  [<08060e2a>] default_idle+0x6a/0x80
+08297bb0:  [<08064744>] init_idle_skas+0x24/0x30
+08297bc0:  [<08060e4a>] cpu_idle+0xa/0x10
+08297bd0:  [<0805e22f>] rest_init+0x1f/0x30
+08297be0:  [<080495d6>] start_kernel+0x176/0x1b0
+08297bf0:  [<0806477b>] start_kernel_proc+0x2b/0x30
+08297c00:  [<08070b8a>] run_kernel_thread+0x3a/0x50
+08297cd0:  [<0806448f>] new_thread_handler+0xaf/0x110
+08297d20:  [<ffffe420>] _etext+0xf7db7406/0x0
 
-Keep in mind that -tt mode in 2.6.12.3 seems to be working for me even using 
-TLS binaries/libraries.  (I have no idea why.)
 
-Rob
+Does anyone recognize this bug? I've been planning on upgrading, but would
+like to know if the effort is likely to fix the issue. Unfortunately, this
+is a production machine that's owned by another individual. So I need to be
+careful about changes to the OS and kernel.
+
+Tony
+
 
 
 -------------------------------------------------------
