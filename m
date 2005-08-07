@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E14Qi-0004FP-H1	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Aug 2005 08:48:16 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E14Qi-0004wl-4p
+	id 1E1t1r-0001iC-9o	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 Aug 2005 14:49:59 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1E1t1q-0006wi-2W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Aug 2005 08:48:16 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Sun, 07 Aug 2005 14:49:59 -0700
+From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] NPTL pthread_create() cannot work.
 References: <AD266326EC54D9118CE700110A9E2BE205EA47EA@zch07exm01.corp.mot.com>
-In-Reply-To: <AD266326EC54D9118CE700110A9E2BE205EA47EA@zch07exm01.corp.mot.com>
+	<200508051754.34058.blaisorblade@yahoo.it>
+In-Reply-To: <200508051754.34058.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200508051754.34058.blaisorblade@yahoo.it>
+Message-Id: <200508071649.40752.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,69 +32,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 5 Aug 2005 17:54:33 +0200
+Date: Sun, 7 Aug 2005 16:49:40 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Zhu Tom-a2289c <A2289c@motorola.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, Zhu Tom-a2289c <A2289c@motorola.com>
 
-On Friday 05 August 2005 09:34, Zhu Tom-a2289c wrote:
-> 1.
-> I still fail to use these patches on git3/4,
+On Friday 05 August 2005 10:54, Blaisorblade wrote:
+> On Friday 05 August 2005 09:34, Zhu Tom-a2289c wrote:
+> > 1.
+> > I still fail to use these patches on git3/4,
+>
+> Hm, ok... there will be probably some trivial reject...I cannot update
+> those patches right now since I haven't enough bandwidth.
+>
+> Just to make sure: you got errors applying until TLS patches, right?
+> Anyhow, to get the TLS changes only, you need to apply only the following 4
+> patches:
+>
+> uml-clean-arch_switch
+> uml-tls-support-sc-tables
+> uml-add-tls-support
+> uml-add-tls-support-debug
 
-Hm, ok... there will be probably some trivial reject...I cannot update those 
-patches right now since I haven't enough bandwidth.
+Um, query:
 
-Just to make sure: you got errors applying until TLS patches, right? Anyhow, 
-to get the TLS changes only, you need to apply only the following 4 patches:
+If somebody wants to test out -skas0 to see if it can be made to work on an 
+unmodified kbuntu "horny hedgehog" release, which version should one use?  
+(The july 28 thing?  The july 31 snapshot?  Or can one just apply those four 
+patches to 2.6.12 and have some reasonable expectation of something good?)
 
-uml-clean-arch_switch
-uml-tls-support-sc-tables
-uml-add-tls-support
-uml-add-tls-support-debug
+Keep in mind that -tt mode in 2.6.12.3 seems to be working for me even using 
+TLS binaries/libraries.  (I have no idea why.)
 
-They almost apply even on 2.6.12, so should apply for sure on 2.6.13-rc4.
-
-And leave out uml-add-tls-support-flush-empty, it's still broken for now.
-
-> so, I just made my local fix on 2.6.12-rc4.
-
-> pthread_create works goods.
-> and then find your fix patch include it, seems my fix
-> is not wrong. :-)
-Yes, I was probably missing some sleep. Only difference in my patches is that 
-return value is set to set_tls_entry return value (and this matches with 
-i386).
-
-Does the system boots ok in that config, including sshd and apps like MySQL / 
-Apache / Java ? With the previous version of the patches, no TLS data would 
-work for sure... and sshd still doesn't work on my Sarge (which seems 
-particularly picky - other people got success with other distros with much 
-less changes).
-> 2.
-> in tls.c,
-> there are some code looking up the tls_arry
-
-> for (idx = GDT_ENTRY_TLS_MIN; idx < GDT_ENTRY_TLS_MAX; idx++) {
-> shall we use "idx <= GDT_ENTRY_TLS_MAX"?
-Good catch, thanks, even if this isn't going yet to be the *final* fix (since 
-we aren't likely using the last slot).
-> since
-> #define GDT_ENTRY_TLS_MAX 	(GDT_ENTRY_TLS_MIN + GDT_ENTRY_TLS_ENTRIES - 1)
-
-> Thanks,
-> Tom
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+Rob
 
 
 -------------------------------------------------------
