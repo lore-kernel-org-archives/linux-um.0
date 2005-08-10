@@ -1,25 +1,35 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E2sCg-00033W-VP	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Aug 2005 08:09:14 -0700
-Received: from www.scgiservices.com ([198.107.3.66] helo=www.sterlingcgi.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E2sCg-0001yJ-Lq
+	id 1E2wRF-0001kc-9X	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Aug 2005 12:40:33 -0700
+Received: from agminet04.oracle.com ([141.146.126.231])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1E2wRD-0003Ne-3Y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Aug 2005 08:09:14 -0700
-Message-ID: <20050810080910.c4km3ejqvn8cc8k4@www.scgiservices.com>
-From: Anthony Brock <brocka@sterlingcgi.com>
-Subject: Re: [uml-devel] 'soft lockup' issue on shutdown
-References: <CBELIFGMBIEPIEOFCJFAGEIPCAAA.brocka@sterlingcgi.com>
-	<20050809134702.GA4254@ccure.user-mode-linux.org>
-In-Reply-To: <20050809134702.GA4254@ccure.user-mode-linux.org>
+	Wed, 10 Aug 2005 12:40:33 -0700
+Received: from agminet04.oracle.com (localhost [127.0.0.1])
+	j7AJeKdB009763	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 10 Aug 2005 14:40:20 -0500
+Received: from rgmsgw301.us.oracle.com (rgmsgw301.us.oracle.com
+	[138.1.186.50])j7AJeKFj009750
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 10 Aug 2005 14:40:20 -0500
+Received: from rgmsgw301.us.oracle.com (localhost [127.0.0.1])
+	j7AJeJnV031501	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 10 Aug 2005 13:40:19 -0600
+Received: from [138.2.230.92] (agraves-lnx.us.oracle.com [138.2.230.92])
+	j7AJeItg031495
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 10 Aug 2005 13:40:19 -0600
+Message-ID: <42FA5822.3000505@oracle.com>
+From: Allan Graves <allan.graves@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050800000906040000060606"
+Subject: [uml-devel] SMP support in SKAS Mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,37 +41,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 10 Aug 2005 08:09:10 -0700
-To: UML Developer's List <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 10 Aug 2005 15:40:18 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Quoting Jeff Dike <jdike@addtoit.com>:
-> On Sun, Aug 07, 2005 at 03:57:48PM -0700, Anthony Brock wrote:
->> I've been encountering a "freeze" on shutdown with guest kernel
->> 2.6.12-rc5-mm1. Today, I was busy with other things so I left it frozen for
->> a while. When I returned, I saw the following:
->>
->> Turning off swap
->> BUG: soft lockup detected on CPU#0!
->
-> How reproducable is this?  I was seeing sleeps sleeping forever, often
-> on shutdown, but in a different place than this.
+This is a multi-part message in MIME format.
+--------------050800000906040000060606
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This was very reproducible on this SuSE 9.1 Professional image. The
-weird part is that it didn't affect the other 5 images that were running
-the same kernel (different software install sets and uses, but same
-installation media). So I'm not positive that it doesn't have something
-to do specifically with this image.
+Jeff,
+I don't know if you want me to file a bug for this or not, but it'd be 
+really helpful to have some sort of SMP enabled in SKAS mode like it is 
+in TT mode.  Some bugs are only gonna crop on SMP, as you well know.
 
-I'll see if I can reproduce this behavior with a non-production copy of
-the image. In the mean time, we've upgraded to a newer guest kernel
-(2.6.12.4). However, I won't be able to reboot the production machine
-again until the weekend. It does seems strange that this only happens on
-shutdown/reboot, and then just after the message "Turning off swap".
+Thanks,
+Allan
 
-Should I post the guest kernel .config file?
+--------------050800000906040000060606
+Content-Type: text/x-vcard; charset=utf8;
+ name="allan.graves.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="allan.graves.vcf"
 
-Tony
+begin:vcard
+fn:Allan Graves
+n:Graves;Allan
+email;internet:allan.graves@oracle.com
+tel;work:603-8973276
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
 
+
+--------------050800000906040000060606--
 
 
 -------------------------------------------------------
