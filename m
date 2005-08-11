@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3Dp0-00043M-5t	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Aug 2005 07:14:14 -0700
+	id 1E3KGj-0004pk-25	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 11 Aug 2005 14:07:17 -0700
 Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3Doy-0002I9-Ot
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3KGh-0003GH-PL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Aug 2005 07:14:14 -0700
-Message-ID: <42FB5D26.5020703@theshore.net>
+	Thu, 11 Aug 2005 14:07:17 -0700
+Message-ID: <42FBBDF8.2020206@theshore.net>
 From: "Christopher S. Aker" <caker@theshore.net>
 MIME-Version: 1.0
+Subject: Re: [uml-devel] Possible SKAS3 >= v8 bug
+References: <42FB5D26.5020703@theshore.net>
+In-Reply-To: <42FB5D26.5020703@theshore.net>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Possible SKAS3 >= v8 bug
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,62 +27,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 11 Aug 2005 09:13:58 -0500
+Date: Thu, 11 Aug 2005 16:07:04 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Blaisorblade <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>
 
-For many months now, I've been dealing with host machine instability. 
-Essentially, I'm rebooting at least one host a week (see 
-http://www.linode.com/forums/viewforum.php?f=25 for details).  The 
-affected machines are all running a kernel patched with skas3 at least 
-version 8.  Only my more recent boxes seem to be affected by this bug, 
-however the only difference between the boxes that crash and the ones 
-that don't are processor speed (faster ones crash).  Identical hardware, 
-otherwise.  Slower boxes running the identical kernel have great uptimes 
-(> 120 days).  Boxes running skas3 v7 or less have uptimes of over 400 
-days (!).
+Found this from in my remote syslog:
 
-Yesterday another box crashed.  Due to my crappy remote console unit 
-requiring me to be connected at the time of a panic to actually capture 
-it, I had my datacenter plug in a monitor and write down by hand some of 
-the panic output.  There's not much here, but this is what they provided me:
-
-<quote>
-(hoangvo-08/10/2005 10:28:22):
-Your server has been rebooted and verified to respond to SSH requests. 
-The error messages I recorded from the console are as follows:
-
-========================================
-EFLAGS: 00010292 (2.6.11.11-1-bigmem)
+Unable to handle kernel paging request at virtual address 00002000
+  printing eip:
+00000000
+*pde = 2a771001
+Oops: 0000 [#1]
+SMP
+Modules linked in:
+CPU:    2
+EIP:    0200:[<00000000>]    Not tainted VLI
+EFLAGS: 00010292   (2.6.11.11-1-bigmem)
 EIP is at 0x0
-========================================
-
-I skipped over the information here as I did not feel it would be useful 
-to you. This is more useful, however:
-
-========================================
-Call Trace
-[<c0106fd7>] do_syscall_trace+0x97/0x10e
-[<c0104934>] math_state_restore+0x24/0x40
-[<c0102639>] syscall_trace_entry_+0x11/0x2a
-
-Code: Bad EIP value.
-</quote>
-
-Source tree and vmlinux file:
-http://www.theshore.net/~caker/uml/2.6.11.11-1-bigmem.tar.bz2 (38M)
-http://www.theshore.net/~caker/uml/vmlinux.bz2 (2M)
-
-Built source tree:
-http://www.theshore.net/~caker/uml/2.6.11.11-1-bigmem.tar.gz (77M)
-
-Jeff took a look at this yesterday, but I didn't really expect him to 
-get very far with such little information.  I just wanted to get this 
-out into the open in case anyone else has experienced something similar. 
-  Next host that panics, I'll make sure that the datacenter copies down 
-the entire panic output.
+eax: ef66b784   ebx: ef7ba000   ecx: ef60f540   edx: 00000000
+esi: 00000001   edi: 00000000   ebp: ef7bbf14   esp: ef7bbf9c
+ds: 007b   es: 007b   ss: 0068
+Process 2.4.29-linode39 (pid: 11195, threadinfo=ef7ba000 task=ef60f540)
+Stack: ef7bbfc4 ef7ba000 c0106fd7 00000005 be7ff890 c0104934 be7ff768 
+be7ff760
+        00000000 c0102639 be7ff768 00000000 40029d00 be7ff760 00000000 
+be7ff928
+        00000000 0000007b 0000007b 0000004e 40100fb1 00000073 00000246 
+be7ff74c
+Call Trace:
+  [<c0106fd7>] do_syscall_trace+0x97/0x10e
+  [<c0104934>] math_state_restore+0x24/0x40
+  [<c0102639>] syscall_trace_entry+0x11/0x2a
+Code:  Bad EIP value.
 
 -Chris
+
 
 
 -------------------------------------------------------
