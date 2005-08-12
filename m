@@ -1,16 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3e4r-0004k8-7A	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:16:21 -0700
-Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3e4q-0000PI-Kz
+	id 1E3e4t-0004kK-G1	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 11:16:23 -0700
+Received: from mail-relay-3.tiscali.it ([213.205.33.43])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3e4r-0000zY-L2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:16:21 -0700
+	Fri, 12 Aug 2005 11:16:23 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050812182105.28FD924E7CA@zion.home.lan>
-Subject: [uml-devel] [patch 04/39] remove implied vm_ops check
+Message-Id: <20050812182116.3746D24E7D7@zion.home.lan>
+Subject: [uml-devel] [patch 08/39] remap_file_pages protection support: uml
+	bits
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,35 +23,92 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 20:21:04 +0200
+Date: Fri, 12 Aug 2005 20:21:15 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-
-If !vma->vm-ops we already BUG above, so retesting it is useless. The compiler
-cannot optimize this because BUG is a macro and is not thus marked noreturn;
-that should possibly be fixed.
+Update pte encoding macros for UML.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/mm/memory.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
+ linux-2.6.git-paolo/include/asm-um/pgtable-2level.h |   15 ++++++++++----
+ linux-2.6.git-paolo/include/asm-um/pgtable-3level.h |   21 +++++++++++++++-----
+ 2 files changed, 27 insertions(+), 9 deletions(-)
 
-diff -puN mm/memory.c~remove-implied-vm_ops-check mm/memory.c
---- linux-2.6.git/mm/memory.c~remove-implied-vm_ops-check	2005-08-11 11:05:20.000000000 +0200
-+++ linux-2.6.git-paolo/mm/memory.c	2005-08-11 11:05:47.000000000 +0200
-@@ -1933,7 +1933,7 @@ static int do_file_page(struct mm_struct
- 	 * Fall back to the linear mapping if the fs does not support
- 	 * ->populate:
- 	 */
--	if (!vma->vm_ops || !vma->vm_ops->populate || 
-+	if (!vma->vm_ops->populate ||
- 			(write_access && !(vma->vm_flags & VM_SHARED))) {
- 		pte_clear(mm, address, pte);
- 		return do_no_page(mm, vma, address, write_access, pte, pmd);
+diff -puN include/asm-um/pgtable-2level.h~rfp-arch-uml include/asm-um/pgtable-2level.h
+--- linux-2.6.git/include/asm-um/pgtable-2level.h~rfp-arch-uml	2005-08-11 11:23:21.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/pgtable-2level.h	2005-08-11 11:23:21.000000000 +0200
+@@ -72,12 +72,19 @@ static inline void set_pte(pte_t *pteptr
+ 	((unsigned long) __va(pmd_val(pmd) & PAGE_MASK))
+ 
+ /*
+- * Bits 0 through 3 are taken
++ * Bits 0 to 5 are taken, split up the 26 bits of offset
++ * into this range:
+  */
+-#define PTE_FILE_MAX_BITS	28
++#define PTE_FILE_MAX_BITS	26
+ 
+-#define pte_to_pgoff(pte) (pte_val(pte) >> 4)
++#define pte_to_pgoff(pte) (pte_val(pte) >> 6)
++#define pte_to_pgprot(pte) \
++	__pgprot((pte_val(pte) & (_PAGE_RW | _PAGE_PROTNONE)) \
++		| ((pte_val(pte) & _PAGE_PROTNONE) ? 0 : \
++			(_PAGE_USER | _PAGE_PRESENT)) | _PAGE_ACCESSED)
+ 
+-#define pgoff_to_pte(off) ((pte_t) { ((off) << 4) + _PAGE_FILE })
++#define pgoff_prot_to_pte(off, prot) \
++	((pte_t) { ((off) << 6) + \
++	 (pgprot_val(prot) & (_PAGE_RW | _PAGE_PROTNONE)) + _PAGE_FILE })
+ 
+ #endif
+diff -puN include/asm-um/pgtable-3level.h~rfp-arch-uml include/asm-um/pgtable-3level.h
+--- linux-2.6.git/include/asm-um/pgtable-3level.h~rfp-arch-uml	2005-08-11 11:23:21.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/pgtable-3level.h	2005-08-11 11:23:21.000000000 +0200
+@@ -140,25 +140,36 @@ static inline pmd_t pfn_pmd(pfn_t page_n
+ }
+ 
+ /*
+- * Bits 0 through 3 are taken in the low part of the pte,
++ * Bits 0 through 5 are taken in the low part of the pte,
+  * put the 32 bits of offset into the high part.
+  */
+ #define PTE_FILE_MAX_BITS	32
+ 
++
+ #ifdef CONFIG_64BIT
+ 
+ #define pte_to_pgoff(p) ((p).pte >> 32)
+-
+-#define pgoff_to_pte(off) ((pte_t) { ((off) << 32) | _PAGE_FILE })
++#define pgoff_to_pte(off) ((pte_t) { ((off) << 32) | _PAGE_FILE | \
++		(pgprot_val(prot) & (_PAGE_RW | _PAGE_PROTNONE)) })
++#define pte_flags(pte) pte_val(pte)
+ 
+ #else
+ 
+ #define pte_to_pgoff(pte) ((pte).pte_high)
+-
+-#define pgoff_to_pte(off) ((pte_t) { _PAGE_FILE, (off) })
++#define pgoff_prot_to_pte(off, prot) ((pte_t) { \
++		(pgprot_val(prot) & (_PAGE_RW | _PAGE_PROTNONE)) | _PAGE_FILE, \
++		(off) })
++/* Don't use pte_val below, useless to join the two halves */
++#define pte_flags(pte) ((pte).pte_low)
+ 
+ #endif
+ 
++#define pte_to_pgprot(pte) \
++	__pgprot((pte_flags(pte) & (_PAGE_RW | _PAGE_PROTNONE)) \
++		| ((pte_flags(pte) & _PAGE_PROTNONE) ? 0 : \
++			(_PAGE_USER | _PAGE_PRESENT)) | _PAGE_ACCESSED)
++#undef pte_flags
++
+ #endif
+ 
+ /*
 _
 
 
