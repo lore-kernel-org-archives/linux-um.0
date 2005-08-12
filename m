@@ -2,20 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3eMv-0005pg-1d	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:35:01 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3eMt-0004mE-8P
+	id 1E3eTV-0006Fq-Ib	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 11:41:49 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E3eTR-0006A9-Sw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:35:01 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050812174641.GA8746@ccure.user-mode-linux.org>
-References: <200508121855.02633.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Fri, 12 Aug 2005 11:41:49 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <20050728185655.9C6ADA3@zion.home.lan>
+	<20050730160218.GB4585@ccure.user-mode-linux.org>
+In-Reply-To: <20050730160218.GB4585@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200508121855.02633.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: sys_ptrace consolidation and S390 port
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200508122037.38473.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [patch 1/3] uml: share page bits handling between 2
+	and 3 level pagetables
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,29 +31,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 13:46:41 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 12 Aug 2005 20:37:38 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Aug 12, 2005 at 06:55:02PM +0200, Blaisorblade wrote:
-> I just ran through this article:
-> 
-> http://lwn.net/Articles/146973/
-> 
-> and it seems that it's dropping some of the early bits of s390 merge (I 
-> guess). Note the mention to SUBARCH_PTRACE_SPECIAL - I guess that's there for 
-> s390, right Bodo?
-> 
-> This patch is not going to be merged today, but it'll be soon I guess.
+On Saturday 30 July 2005 18:02, Jeff Dike wrote:
+> On Thu, Jul 28, 2005 at 08:56:53PM +0200, blaisorblade@yahoo.it wrote:
+> > As obvious, a "core code nice cleanup" is not a "stability-friendly
+> > patch" so usual care applies.
 
-Yeah, I guessed the same, but it was premature to get that in mainline
-without the actual port being ready.
+> These look reasonable, as they are what we discussed in Ottawa.
 
-So, we can look at that and see if we can do it without
-unconsolidating sys_ptrace.  If that's not possible, then we just
-revert the UML portion of the patch.
+> I'll put them in my tree and see if I see any problems.  I would
+> suggest sending these in early after 2.6.13 if they seem OK.
 
-				Jeff
+I've discovered that we're not the only one to miss dirty / accessed 
+"hardware" bits: see include/asm-alpha/pgtable.h (they don't have the 
+accessed bit). So maybe we could drop the "fault-on-access" thing.
+
+Also, note the comment before handle_pte_fault:
+/*
+ * These routines also need to handle stuff like marking pages dirty
+ * and/or accessed for architectures that don't do it in hardware (most
+ * RISC architectures).  The early dirtying is also good on the i386.
+ */
+
+I'm not able to find where we clean the dirty bit on a pte, however it's not 
+only done by pte_mkclean, there are some macros like ptep_clear... in 
+asm-generic/pgtable.h
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
