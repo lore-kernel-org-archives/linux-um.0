@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3ZwH-0005lG-5l	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 06:51:13 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E3ZwB-0005mJ-Ov
+	id 1E3ceS-00080U-Ne	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 09:45:00 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3ceR-0005W6-FT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 06:51:13 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 'soft lockup' issue on shutdown
-References: <CBELIFGMBIEPIEOFCJFAGEIPCAAA.brocka@sterlingcgi.com>
-	<20050809134702.GA4254@ccure.user-mode-linux.org>
-In-Reply-To: <20050809134702.GA4254@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Fri, 12 Aug 2005 09:45:00 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050812163817.GA7448@ccure.user-mode-linux.org>
+References: <200508102136.43763.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200508121528.59723.blaisorblade@yahoo.it>
+In-Reply-To: <200508102136.43763.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: madvise(DONTNEED) on tmpfs pages instead of /dev/anon
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,37 +27,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 15:28:59 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Anthony Brock <brocka@sterlingcgi.com>
+Date: Fri, 12 Aug 2005 12:38:17 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Rik van Riel <riel@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 09 August 2005 15:47, Jeff Dike wrote:
-> On Sun, Aug 07, 2005 at 03:57:48PM -0700, Anthony Brock wrote:
-> > I've been encountering a "freeze" on shutdown with guest kernel
-> > 2.6.12-rc5-mm1. Today, I was busy with other things so I left it frozen
-> > for a while. When I returned, I saw the following:
-> >
-> > Turning off swap
-> > BUG: soft lockup detected on CPU#0!
->
-> How reproducable is this?  I was seeing sleeps sleeping forever, often
-> on shutdown, but in a different place than this.
-And the soft lockup you got during a kernel compile in Ottawa, in the room? 
-Have you diagnosed that?
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+On Wed, Aug 10, 2005 at 09:36:43PM +0200, Blaisorblade wrote:
+> About this, I was thinking back to what Rik said in Ottawa at the OLS. He said 
+> "just use madvise(DONTNEED) on it", but I remarked that the pages were 
+> file-backed.
 
+> Actually, however, since backing store for tmpfs is just pagecache/swapcache 
+> memory,
 
-	
+They are still file-backed, just the underlying filesystem is often tmpfs.
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+> I have the doubt that madvise(DONTNEED) already does what we need, and if not 
+> that it might be easily fixed (since zap_page_range->unmap_vmas -> 
+> unmap_page_range accept a range of pages to be flushed - that was a recent 
+> change from Hugh Dickins).
 
+The man page is silent about whether the pages are synced to their
+backing store, and in any case, tmpfs hsa no real backing store.
+
+The desired behavior is that such pages are dropped as though they
+were clean, even if they are dirty.  It goes against the grain of a
+filesystem to drop dirty pages on the floor.
+
+Looking at the code, the comment above madvise_dontneed is promising:
+
+/*
+ * Application no longer needs these pages.  If the pages are dirty,
+ * it's OK to just throw them away.  The app will be more careful about
+ * data it wants to keep.  Be sure to free swap resources too.  
+
+which sounds like exactly what we need.
+
+And in zap_pte_range, I don't see any checking of PageDirty, so it
+looks like this works.
+
+				Jeff
 
 
 -------------------------------------------------------
