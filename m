@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3eqJ-0007TY-G2	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 12:05:23 -0700
-Received: from dsl027-180-168.sfo1.dsl.speakeasy.net
-	([216.27.180.168] helo=sunset.davemloft.net ident=Debian-exim)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1E3eqI-0002m6-AG
+	id 1E3fRC-00013T-Eq	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 12:43:30 -0700
+Received: from caramon.arm.linux.org.uk ([212.18.232.186])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1E3fRC-0002B3-30
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 12:05:23 -0700
-Message-Id: <20050812.120517.65192635.davem@davemloft.net>
-Subject: Re: [uml-devel] Re: [RFC] [patch 0/39] remap_file_pages protection
- support, try 2
-From: "David S. Miller" <davem@davemloft.net>
-In-Reply-To: <200508122056.11442.blaisorblade@yahoo.it>
-References: <200508122033.06385.blaisorblade@yahoo.it>
-	<20050812.112954.115910063.davem@davemloft.net>
-	<200508122056.11442.blaisorblade@yahoo.it>
+	Fri, 12 Aug 2005 12:43:30 -0700
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Message-ID: <20050812204315.B21152@flint.arm.linux.org.uk>
+References: <20050812182123.C896324E7DD@zion.home.lan>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050812182123.C896324E7DD@zion.home.lan>;
+	from blaisorblade@yahoo.it on Fri, Aug 12, 2005 at 08:21:23PM +0200
+Subject: [uml-devel] Re: [patch 11/39] remap_file_pages protection support:
+	add MAP_NOINHERIT flag
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,23 +30,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 12:05:17 -0700 (PDT)
+Date: Fri, 12 Aug 2005 20:43:15 +0100
 To: blaisorblade@yahoo.it
-Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, mingo@elte.hu, linux-kernel@vger.kernel.org, jdike@addtoit.com, bstroesser@fujitsu-siemens.com
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Fri, 12 Aug 2005 20:56:11 +0200
+On Fri, Aug 12, 2005 at 08:21:23PM +0200, blaisorblade@yahoo.it wrote:
+> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> 
+> Add the MAP_NOINHERIT flag to arch headers, for use with remap-file-pages.
 
-> However, I sent the initial tarball containing all them, so I hope
-> that will be useful.
+Does this mean ARM will break when these patches are merged?
 
-So not only did you spam the list with 40 patch postings,
-you sent a second copy of everything as a tarball attachment
-as well.  That's even worse.
+> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> ---
+> 
+>  linux-2.6.git-paolo/include/asm-i386/mman.h   |    1 +
+>  linux-2.6.git-paolo/include/asm-ia64/mman.h   |    1 +
+>  linux-2.6.git-paolo/include/asm-ppc/mman.h    |    1 +
+>  linux-2.6.git-paolo/include/asm-ppc64/mman.h  |    1 +
+>  linux-2.6.git-paolo/include/asm-s390/mman.h   |    1 +
+>  linux-2.6.git-paolo/include/asm-x86_64/mman.h |    1 +
+>  6 files changed, 6 insertions(+)
 
-Please do not abuse the list server in this way, it is a resource
-that is not just your's, but rather one which has to be shared
-amongst all folks doing kernel development.
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 Serial core
 
 
 -------------------------------------------------------
