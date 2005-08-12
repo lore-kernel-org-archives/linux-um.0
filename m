@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3ceS-00080U-Ne	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 09:45:00 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3ceR-0005W6-FT
+	id 1E3chG-000890-Ot	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 09:47:54 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E3chD-00065T-BL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 09:45:00 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050812163817.GA7448@ccure.user-mode-linux.org>
-References: <200508102136.43763.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Fri, 12 Aug 2005 09:47:54 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200508102136.43763.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: madvise(DONTNEED) on tmpfs pages instead of /dev/anon
+Message-Id: <200508121855.02633.blaisorblade@yahoo.it>
+Subject: [uml-devel] sys_ptrace consolidation and S390 port
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,45 +27,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 12:38:17 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Rik van Riel <riel@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 12 Aug 2005 18:55:02 +0200
+To: Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Aug 10, 2005 at 09:36:43PM +0200, Blaisorblade wrote:
-> About this, I was thinking back to what Rik said in Ottawa at the OLS. He said 
-> "just use madvise(DONTNEED) on it", but I remarked that the pages were 
-> file-backed.
+I just ran through this article:
 
-> Actually, however, since backing store for tmpfs is just pagecache/swapcache 
-> memory,
+http://lwn.net/Articles/146973/
 
-They are still file-backed, just the underlying filesystem is often tmpfs.
+and it seems that it's dropping some of the early bits of s390 merge (I 
+guess). Note the mention to SUBARCH_PTRACE_SPECIAL - I guess that's there for 
+s390, right Bodo?
 
-> I have the doubt that madvise(DONTNEED) already does what we need, and if not 
-> that it might be easily fixed (since zap_page_range->unmap_vmas -> 
-> unmap_page_range accept a range of pages to be flushed - that was a recent 
-> change from Hugh Dickins).
+This patch is not going to be merged today, but it'll be soon I guess.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-The man page is silent about whether the pages are synced to their
-backing store, and in any case, tmpfs hsa no real backing store.
+	
 
-The desired behavior is that such pages are dropped as though they
-were clean, even if they are dirty.  It goes against the grain of a
-filesystem to drop dirty pages on the floor.
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
-Looking at the code, the comment above madvise_dontneed is promising:
-
-/*
- * Application no longer needs these pages.  If the pages are dirty,
- * it's OK to just throw them away.  The app will be more careful about
- * data it wants to keep.  Be sure to free swap resources too.  
-
-which sounds like exactly what we need.
-
-And in zap_pte_range, I don't see any checking of PageDirty, so it
-looks like this works.
-
-				Jeff
 
 
 -------------------------------------------------------
