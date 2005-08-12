@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3eaK-0006XK-5E	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:48:52 -0700
+	id 1E3ea9-0006Wg-VP	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 11:48:41 -0700
 Received: from mail-relay-2.tiscali.it ([213.205.33.42])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3eaJ-0007eQ-UE
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3ea9-0007dU-Fq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:48:52 -0700
+	Fri, 12 Aug 2005 11:48:42 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050812183613.AE59524E7DC@zion.home.lan>
-Subject: [uml-devel] [patch 30/39] remap_file_pages protection support: ia64
-	bits
+Message-Id: <20050812183631.31D2524E7EC@zion.home.lan>
+Subject: [uml-devel] [patch 36/39] remap_file_pages protection support: avoid
+	lookup of pages for PROT_NONE remapping
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,59 +23,149 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 20:36:13 +0200
+Date: Fri, 12 Aug 2005 20:36:30 +0200
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, mingo@elte.hu
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-From: Ingo Molnar <mingo@elte.hu>
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-I've attached a 'blind' port of the prot bits of fremap to ia64.  I've
-compiled it with a cross-compiler but otherwise it's untested.  (and it's
-very likely i got the pte bits wrong - but it's roughly OK.)
+This optimization avoid looking up pages for PROT_NONE mappings. The idea was
+taken from the "wrong "historical" code for review - 1" one (the next one)
+from mingo, but I fixed it, by adding another "detail" parameter. I've also
+fixed the other callers to clear this parameter, and fixed madvise_dontneed()
+to use memset(0) on its parameter - currently it's probably a bug.
 
-This should at least make ia64 compile.
+Not even-compile tested, just written off the top of my head.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/include/asm-ia64/pgtable.h |   17 +++++++++++++----
- 1 files changed, 13 insertions(+), 4 deletions(-)
+ linux-2.6.git-paolo/include/linux/mm.h |    1 +
+ linux-2.6.git-paolo/mm/filemap.c       |   18 ++++++++++++++++++
+ linux-2.6.git-paolo/mm/madvise.c       |   10 ++++++----
+ linux-2.6.git-paolo/mm/memory.c        |   11 ++++++++---
+ linux-2.6.git-paolo/mm/shmem.c         |   11 +++++++++++
+ 5 files changed, 44 insertions(+), 7 deletions(-)
 
-diff -puN include/asm-ia64/pgtable.h~rfp-arch-ia64 include/asm-ia64/pgtable.h
---- linux-2.6.git/include/asm-ia64/pgtable.h~rfp-arch-ia64	2005-08-12 19:27:03.000000000 +0200
-+++ linux-2.6.git-paolo/include/asm-ia64/pgtable.h	2005-08-12 19:27:03.000000000 +0200
-@@ -433,7 +433,8 @@ extern void paging_init (void);
-  * Format of file pte:
-  *	bit   0   : present bit (must be zero)
-  *	bit   1   : _PAGE_FILE (must be one)
-- *	bits  2-62: file_offset/PAGE_SIZE
-+ *	bit   2   : _PAGE_AR_RW
-+ *	bits  3-62: file_offset/PAGE_SIZE
-  *	bit  63   : _PAGE_PROTNONE bit
-  */
- #define __swp_type(entry)		(((entry).val >> 2) & 0x7f)
-@@ -442,9 +443,17 @@ extern void paging_init (void);
- #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+diff -puN mm/filemap.c~rfp-avoid-lookup-pages-miss-mapping mm/filemap.c
+--- linux-2.6.git/mm/filemap.c~rfp-avoid-lookup-pages-miss-mapping	2005-08-12 18:42:23.000000000 +0200
++++ linux-2.6.git-paolo/mm/filemap.c	2005-08-12 19:14:39.000000000 +0200
+@@ -1495,6 +1495,24 @@ int filemap_populate(struct vm_area_stru
+ 	struct page *page;
+ 	int err;
  
--#define PTE_FILE_MAX_BITS		61
--#define pte_to_pgoff(pte)		((pte_val(pte) << 1) >> 3)
--#define pgoff_to_pte(off)		((pte_t) { ((off) << 2) | _PAGE_FILE })
-+#define PTE_FILE_MAX_BITS		59
-+#define pte_to_pgoff(pte)		((pte_val(pte) << 1) >> 4)
++	/*
++	 * mapping-removal fastpath:
++	 */
++	if ((vma->vm_flags & VM_SHARED) &&
++			(pgprot_val(prot) == pgprot_val(PAGE_NONE))) {
++		struct zap_details details;
 +
-+#define pte_to_pgprot(pte) \
-+	__pgprot((pte_val(pte) & (_PAGE_AR_RW | _PAGE_PROTNONE)) \
-+		| ((pte_val(pte) & _PAGE_PROTNONE) ? 0 : \
-+			(__ACCESS_BITS | _PAGE_PL_3)))
++		/* Still do error-checking! */
++		size = (i_size_read(inode) + PAGE_CACHE_SIZE - 1) >> PAGE_CACHE_SHIFT;
++		if (pgoff + (len >> PAGE_CACHE_SHIFT) > size)
++			return -EINVAL;
 +
-+#define pgoff_prot_to_pte(off, prot) \
-+       ((pte_t) { _PAGE_FILE + \
-+               (pgprot_val(prot) & (_PAGE_AR_RW | _PAGE_PROTNONE)) + (off) })
++		memset(&details, 0, sizeof(details));
++		details.prot_none_ptes = 1;
++		zap_page_range(vma, addr, len, &details);
++		return 0;
++	}
++
+ 	if (!nonblock)
+ 		force_page_cache_readahead(mapping, vma->vm_file,
+ 					pgoff, len >> PAGE_CACHE_SHIFT);
+diff -puN mm/shmem.c~rfp-avoid-lookup-pages-miss-mapping mm/shmem.c
+--- linux-2.6.git/mm/shmem.c~rfp-avoid-lookup-pages-miss-mapping	2005-08-12 18:42:23.000000000 +0200
++++ linux-2.6.git-paolo/mm/shmem.c	2005-08-12 19:11:52.000000000 +0200
+@@ -1186,6 +1186,17 @@ static int shmem_populate(struct vm_area
+ 	if (pgoff >= size || pgoff + (len >> PAGE_SHIFT) > size)
+ 		return -EINVAL;
  
- /* XXX is this right? */
- #define io_remap_page_range(vma, vaddr, paddr, size, prot)		\
++	/*
++	 * mapping-removal fastpath:
++	 */
++	if ((vma->vm_flags & VM_SHARED) &&
++			(pgprot_val(prot) == pgprot_val(PAGE_NONE))) {
++		memset(&details, 0, sizeof(details));
++		details.prot_none_ptes = 1;
++		zap_page_range(vma, addr, len, &details);
++		return 0;
++	}
++
+ 	while ((long) len > 0) {
+ 		struct page *page = NULL;
+ 		int err;
+diff -puN mm/memory.c~rfp-avoid-lookup-pages-miss-mapping mm/memory.c
+--- linux-2.6.git/mm/memory.c~rfp-avoid-lookup-pages-miss-mapping	2005-08-12 18:44:29.000000000 +0200
++++ linux-2.6.git-paolo/mm/memory.c	2005-08-12 19:09:50.000000000 +0200
+@@ -575,11 +575,14 @@ static void zap_pte_range(struct mmu_gat
+ 		 * If details->check_mapping, we leave swap entries;
+ 		 * if details->nonlinear_vma, we leave file entries.
+ 		 */
+-		if (unlikely(details))
++		if (unlikely(details) && !details->prot_none_ptes)
+ 			continue;
+ 		if (!pte_file(ptent))
+ 			free_swap_and_cache(pte_to_swp_entry(ptent));
+-		pte_clear(tlb->mm, addr, pte);
++		if (unlikely(details->prot_none_ptes))
++			set_pte_at(mm, addr, pte, pfn_pte(0, __S000));
++		else
++			pte_clear(tlb->mm, addr, pte);
+ 	} while (pte++, addr += PAGE_SIZE, addr != end);
+ 	pte_unmap(pte - 1);
+ }
+@@ -623,7 +626,8 @@ static void unmap_page_range(struct mmu_
+ 	pgd_t *pgd;
+ 	unsigned long next;
+ 
+-	if (details && !details->check_mapping && !details->nonlinear_vma)
++	if (details && !details->check_mapping && !details->nonlinear_vma &&
++			!details->prot_none_ptes)
+ 		details = NULL;
+ 
+ 	BUG_ON(addr >= end);
+@@ -1499,6 +1503,7 @@ void unmap_mapping_range(struct address_
+ 	if (details.last_index < details.first_index)
+ 		details.last_index = ULONG_MAX;
+ 	details.i_mmap_lock = &mapping->i_mmap_lock;
++	details.prot_none_ptes = 0;
+ 
+ 	spin_lock(&mapping->i_mmap_lock);
+ 
+diff -puN include/linux/mm.h~rfp-avoid-lookup-pages-miss-mapping include/linux/mm.h
+--- linux-2.6.git/include/linux/mm.h~rfp-avoid-lookup-pages-miss-mapping	2005-08-12 18:44:36.000000000 +0200
++++ linux-2.6.git-paolo/include/linux/mm.h	2005-08-12 19:01:52.000000000 +0200
+@@ -680,6 +680,7 @@ struct zap_details {
+ 	pgoff_t last_index;			/* Highest page->index to unmap */
+ 	spinlock_t *i_mmap_lock;		/* For unmap_mapping_range: */
+ 	unsigned long truncate_count;		/* Compare vm_truncate_count */
++	unsigned prot_none_ptes : 1;		/* If 1, set all PTE's to PROT_NONE ones.*/
+ };
+ 
+ unsigned long zap_page_range(struct vm_area_struct *vma, unsigned long address,
+diff -puN mm/madvise.c~rfp-avoid-lookup-pages-miss-mapping mm/madvise.c
+--- linux-2.6.git/mm/madvise.c~rfp-avoid-lookup-pages-miss-mapping	2005-08-12 18:45:58.000000000 +0200
++++ linux-2.6.git-paolo/mm/madvise.c	2005-08-12 19:20:45.000000000 +0200
+@@ -127,10 +127,12 @@ static long madvise_dontneed(struct vm_a
+ 		return -EINVAL;
+ 
+ 	if (unlikely(vma->vm_flags & VM_NONLINEAR)) {
+-		struct zap_details details = {
+-			.nonlinear_vma = vma,
+-			.last_index = ULONG_MAX,
+-		};
++		struct zap_details details;
++		memset(&details, 0, sizeof(details));
++
++		details.nonlinear_vma = vma;
++		details.last_index = ULONG_MAX;
++
+ 		zap_page_range(vma, start, end - start, &details);
+ 	} else
+ 		zap_page_range(vma, start, end - start, NULL);
 _
 
 
