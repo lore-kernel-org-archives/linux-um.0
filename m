@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3e3j-0004fZ-IM	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:15:11 -0700
-Received: from mail-relay-1.tiscali.it ([213.205.33.41])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3e3i-0000jt-SW
+	id 1E3e3k-0004ff-5x	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 11:15:12 -0700
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3e3j-0000kw-Gg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:15:11 -0700
+	Fri, 12 Aug 2005 11:15:12 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050812182145.DF52E24E7F3@zion.home.lan>
-Subject: [uml-devel] [patch 18/39] remap_file_pages protection support: add
-	VM_FAULT_SIGSEGV
+Message-Id: <20050812182059.E410A24E0A6@zion.home.lan>
+Subject: [uml-devel] [patch 02/39] shmem_populate: avoid an useless check, and
+	some comments
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,93 +23,78 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 20:21:45 +0200
+Date: Fri, 12 Aug 2005 20:20:59 +0200
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, mingo@elte.hu
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
-From: Ingo Molnar <mingo@elte.hu>
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Since with remap_file_pages w/prot we may put PROT_NONE on a single PTE rather
-than a VMA, we must handle that inside handle_mm_fault.
+Either shmem_getpage returns a failure, or it found a page, or it was told it
+couldn't do any I/O. So it's useless to check nonblock in the else branch. We
+could add a BUG() there but I preferred to comment the offending function.
 
-This value must be handled in the arch-specific fault handlers, and this
-change must be ported to every arch on the world; now the new support is not
-in a separate syscall, so this *must* be done unless we want stability /
-security issues (the *BUG()* for unknown return values of handle_mm_fault() is
-triggerable from userspace calling remap_file_pages, and on other archs, we
-have VM_FAULT_OOM which is worse). However, I've alleviated this need via the
-previous "safety net" patch.
+This was taken out from one Ingo Molnar's old patch I'm resurrecting.
 
-This patch includes the arch-specific part for i386.
-
-Note, however, that _proper_ support is more intrusive; we can allow a write
-on a readonly VMA, but the arch fault handler currently stops that; it should
-test VM_NONUNIFORM instead and call handle_mm_fault() in case it's set. And it
-will have to do on its own all protection checks. This is in the following
-patches.
+References: commit b103e8b204b317d52834671d5f09db95645523c2 of old-2.6-bkcvs,
+pointing to BKrev: 3f5ed0c1llm6NnNwNXtPv-Z0IYzkwA
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/i386/mm/fault.c |    2 ++
- linux-2.6.git-paolo/include/linux/mm.h   |    9 +++++----
- linux-2.6.git-paolo/mm/memory.c          |   12 ++++++++++++
- 3 files changed, 19 insertions(+), 4 deletions(-)
+ linux-2.6.git-paolo/mm/filemap.c |    7 +++++++
+ linux-2.6.git-paolo/mm/shmem.c   |    6 +++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-diff -puN arch/i386/mm/fault.c~rfp-add-vm_fault_sigsegv arch/i386/mm/fault.c
---- linux-2.6.git/arch/i386/mm/fault.c~rfp-add-vm_fault_sigsegv	2005-08-11 14:19:57.000000000 +0200
-+++ linux-2.6.git-paolo/arch/i386/mm/fault.c	2005-08-11 14:19:58.000000000 +0200
-@@ -351,6 +351,8 @@ good_area:
- 			goto do_sigbus;
- 		case VM_FAULT_OOM:
- 			goto out_of_memory;
-+		case VM_FAULT_SIGSEGV:
-+			goto bad_area;
- 		default:
- 			BUG();
- 	}
-diff -puN include/linux/mm.h~rfp-add-vm_fault_sigsegv include/linux/mm.h
---- linux-2.6.git/include/linux/mm.h~rfp-add-vm_fault_sigsegv	2005-08-11 14:19:58.000000000 +0200
-+++ linux-2.6.git-paolo/include/linux/mm.h	2005-08-11 14:19:58.000000000 +0200
-@@ -632,10 +632,11 @@ static inline int page_mapped(struct pag
-  * Used to decide whether a process gets delivered SIGBUS or
-  * just gets major/minor fault counters bumped up.
-  */
--#define VM_FAULT_OOM	(-1)
--#define VM_FAULT_SIGBUS	0
--#define VM_FAULT_MINOR	1
--#define VM_FAULT_MAJOR	2
-+#define VM_FAULT_OOM		(-1)
-+#define VM_FAULT_SIGBUS		0
-+#define VM_FAULT_MINOR		1
-+#define VM_FAULT_MAJOR		2
-+#define VM_FAULT_SIGSEGV	3
+diff -puN mm/shmem.c~mm-populate-optim-comment mm/shmem.c
+--- linux-2.6.git/mm/shmem.c~mm-populate-optim-comment	2005-08-11 11:12:39.000000000 +0200
++++ linux-2.6.git-paolo/mm/shmem.c	2005-08-11 11:12:39.000000000 +0200
+@@ -1195,6 +1195,7 @@ static int shmem_populate(struct vm_area
+ 		err = shmem_getpage(inode, pgoff, &page, sgp, NULL);
+ 		if (err)
+ 			return err;
++		/* Page may still be null, but only if nonblock was set. */
+ 		if (page) {
+ 			mark_page_accessed(page);
+ 			err = install_page(mm, vma, addr, page, prot);
+@@ -1202,7 +1203,10 @@ static int shmem_populate(struct vm_area
+ 				page_cache_release(page);
+ 				return err;
+ 			}
+-		} else if (nonblock) {
++		} else {
++			/* No page was found just because we can't read it in
++			 * now (being here implies nonblock != 0), but the page
++			 * may exist, so set the PTE to fault it in later. */
+     			err = install_file_pte(mm, vma, addr, pgoff, prot);
+ 			if (err)
+ 	    			return err;
+diff -puN mm/filemap.c~mm-populate-optim-comment mm/filemap.c
+--- linux-2.6.git/mm/filemap.c~mm-populate-optim-comment	2005-08-11 11:12:39.000000000 +0200
++++ linux-2.6.git-paolo/mm/filemap.c	2005-08-11 11:12:39.000000000 +0200
+@@ -1505,8 +1505,12 @@ repeat:
+ 		return -EINVAL;
  
- #define offset_in_page(p)	((unsigned long)(p) & ~PAGE_MASK)
- 
-diff -puN mm/memory.c~rfp-add-vm_fault_sigsegv mm/memory.c
---- linux-2.6.git/mm/memory.c~rfp-add-vm_fault_sigsegv	2005-08-11 14:19:58.000000000 +0200
-+++ linux-2.6.git-paolo/mm/memory.c	2005-08-11 14:19:58.000000000 +0200
-@@ -1995,6 +1995,18 @@ static inline int handle_pte_fault(struc
- 		return do_swap_page(mm, vma, address, pte, pmd, entry, write_access);
- 	}
- 
-+	/*
-+	 * Generate a SIGSEGV if a PROT_NONE page is accessed; this is handled
-+	 * in arch-specific code if the whole VMA has PROT_NONE, and here if
-+	 * just this pte has PROT_NONE (which can be done only with
-+	 * remap_file_pages).
-+	 */
-+	if (pgprot_val(pte_to_pgprot(entry)) == pgprot_val(__P000)) {
-+		pte_unmap(pte);
-+		spin_unlock(&mm->page_table_lock);
-+		return VM_FAULT_SIGSEGV;
-+	}
+ 	page = filemap_getpage(file, pgoff, nonblock);
 +
- 	if (write_access) {
- 		if (!pte_write(entry))
- 			return do_wp_page(mm, vma, address, pte, pmd, entry);
++	/* XXX: This is wrong, a filesystem I/O error may have happened. Fix that as
++	 * done in shmem_populate calling shmem_getpage */
+ 	if (!page && !nonblock)
+ 		return -ENOMEM;
++
+ 	if (page) {
+ 		err = install_page(mm, vma, addr, page, prot);
+ 		if (err) {
+@@ -1514,6 +1518,9 @@ repeat:
+ 			return err;
+ 		}
+ 	} else {
++		/* No page was found just because we can't read it in now (being
++		 * here implies nonblock != 0), but the page may exist, so set
++		 * the PTE to fault it in later. */
+ 		err = install_file_pte(mm, vma, addr, pgoff, prot);
+ 		if (err)
+ 			return err;
 _
 
 
