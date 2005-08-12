@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3fie-00025L-FC	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 13:01:32 -0700
-Received: from pop.gmx.de ([213.165.64.20] helo=mail.gmx.net)
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E3fid-0005d1-S4
+	id 1E3gF8-0003jG-LM	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 13:35:06 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3gF7-0004Dd-C5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 13:01:32 -0700
-From: leslie.polzer@gmx.net
-Message-ID: <20050812200118.GA8508@paktahn.black.cat>
+	Fri, 12 Aug 2005 13:35:06 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050812193755.GF8746@ccure.user-mode-linux.org>
+References: <42FBD1FC.4060905@fujitsu-siemens.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Subject: [uml-devel] Hang at delay loop calibration
+In-Reply-To: <42FBD1FC.4060905@fujitsu-siemens.com>
+Subject: [uml-devel] Re: UML/s390: first version
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,63 +27,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 22:01:18 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 12 Aug 2005 15:37:55 -0400
+To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
 
+On Fri, Aug 12, 2005 at 12:32:28AM +0200, Bodo Stroesser wrote:
+> Hi,
+> 
+> attached is a tarball containing a small series of patches, that apply
+> on linux-2.6.13-rc5 + incremental patches from Jeff.
 
---C7zPtVaVf+AK4Oqc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In my tree, thanks.
 
-% linux
-Checking for the skas3 patch in the host...not found
-Checking for /proc/mm...not found
-tracing thread pid =3D 8456
-Checking for /dev/anon on the host...Not available (open failed with errno =
-2)
-Checking for /dev/anon on the host...Not available (open failed with errno =
-2)
-Checking for /dev/anon on the host...Not available (open failed with errno =
-2)
-Checking for /dev/anon on the host...Not available (open failed with errno =
-2)
-Linux version 2.4.26-1um (root@aries) (gcc version 3.4.0) #1 Sat Jul 3 00:2=
-2:45 PDT 2004
-On node 0 totalpages: 8192
-zone(0): 8192 pages.
-zone(1): 0 pages.
-zone(2): 0 pages.
-Kernel command line: root=3D/dev/ubd0
-Calibrating delay loop...
+Do you have a list of my patches that are required for this to reach
+mainline - not only the only that avoid patch conflicts, but
+unconflicting ones which are also needed?
 
-[ stays here indefinitely until killed ]
-
-% uname -a
-Linux paktahn 2.6.12-RT-V0.7.51-33-ARCH #1 SMP Mon Jul 25 15:35:17 CEST 200=
-5 i686 AMD Athlon(tm) XP 2400+ AuthenticAMD GNU/Linux
-
-This is a 2.6.12 with realtime-preempt patch.
-
-Leslie
-
-
---=20
-PGP-KID: 0x52D70289
-
---C7zPtVaVf+AK4Oqc
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD8DBQFC/QAOn/ep3VLXAokRAie6AJoCV2oZpxp+Q7ePIUfSKbkogrlvNQCaA0ak
-Fwki7r4+XekF166gD7OGvDo=
-=4BRM
------END PGP SIGNATURE-----
-
---C7zPtVaVf+AK4Oqc--
+				Jeff
 
 
 -------------------------------------------------------
