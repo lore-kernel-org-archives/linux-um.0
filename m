@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3dRA-0002MJ-1H	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 10:35:20 -0700
+	id 1E3dQy-0002LN-0w	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 10:35:08 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3dR9-0007fk-Mm
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3dQw-0001N0-NZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 10:35:20 -0700
+	Fri, 12 Aug 2005 10:35:08 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050812170514.GB7448@ccure.user-mode-linux.org>
-References: <20050728185655.9C6ADA3@zion.home.lan>
-	<20050730160218.GB4585@ccure.user-mode-linux.org>
-	<200508102137.28414.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 'soft lockup' issue on shutdown
+Message-ID: <20050812171036.GD7448@ccure.user-mode-linux.org>
+References: <CBELIFGMBIEPIEOFCJFAGEIPCAAA.brocka@sterlingcgi.com>
+	<20050809134702.GA4254@ccure.user-mode-linux.org>
+	<200508121528.59723.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200508102137.28414.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [patch 1/3] uml: share page bits handling between 2
-	and 3 level pagetables
+In-Reply-To: <200508121528.59723.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,58 +29,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 13:05:14 -0400
+Date: Fri, 12 Aug 2005 13:10:36 -0400
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Anthony Brock <brocka@sterlingcgi.com>
 
-On Wed, Aug 10, 2005 at 09:37:28PM +0200, Blaisorblade wrote:
-> Just noticed: you can drop them (except the first, which is a nice cleanup).
-> 
-> set_pte handles that, and include/asm-generic/pgtable.h uses coherently 
-> set_pte_at. I've checked UML by examining "grep pte", and either mk_pte or 
-> set_pte are used.
-> 
-> Exceptions: fixaddr_user_init (but that should be ok as we shouldn't map it 
-> actually), pte_modify() (which handles that only for present pages).
-> 
-> But pte_modify is used with set_pte, so probably we could as well drop that 
-> handling.
-> 
-> Also look, on the "set_pte" theme, at the attached patch. I realized this when 
-> I needed those lines to work - I was getting a segfault loop.
+On Fri, Aug 12, 2005 at 03:28:59PM +0200, Blaisorblade wrote:
+> And the soft lockup you got during a kernel compile in Ottawa, in the room? 
+> Have you diagnosed that?
 
-OK, this sounds right.  To recap, we were concerned that when the page
-scanner went around clearing dirty (accessed) bits, that
-fix_range_common wasn't write (read) protecting the page in order to
-emulate the cleared bits.
-
-However, set_pte does set _PAGE_NEWPAGE, which forces the page through
-a full update, including dirty/accessed bit emulation.
-
-Correct?
-
-However, I did add some parenthesis to your patch:
-
-	WARN_ON(!pte_young(*pte) || (pte_write(*pte) && !pte_dirty(*pte)));
-
-This seems clearer to me.
-
-So, your pte consolidation patch is still in my tree, the other two
-pte patches are dropped.
-
-> After using set_pte(), things worked. I have now an almost perfectly working 
-> implementation of remap_file_pages with protection support.
-> There will probably be some other things to update, like swapping locations, 
-> but I can't get this kernel to fail (it's easier to find bugs in the 
-> test-program, it grew quite complex).
-
-Excellent.
-
-> I'm going to clean up the code and write changelogs, to send then the patches 
-> for -mm (hoping the page fault scalability patches don't get in the
-> way).
-
-Good.
+No.  I still see it very occasionally.  But it's nothing like it was before,
+so I think there's something else which is happening very infrequently.
 
 				Jeff
 
