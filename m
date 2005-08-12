@@ -2,15 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3e5V-0004oP-86	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:17:01 -0700
-Received: from mail-relay-3.tiscali.it ([213.205.33.43])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3e5T-000197-EG
+	id 1E3e4w-0004km-Vu	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 11:16:26 -0700
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3e4v-00010X-S9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:17:01 -0700
+	Fri, 12 Aug 2005 11:16:26 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050812182113.7A94F24E7D5@zion.home.lan>
-Subject: [uml-devel] [patch 07/39] uml: fault handler micro-cleanups
+Message-Id: <20050812182136.53D7D24E7E8@zion.home.lan>
+Subject: [uml-devel] [patch 15/39] remap_file_pages protection support: add
+	VM_NONUNIFORM to fix existing usage of mprotect()
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,111 +23,115 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 20:21:13 +0200
+Date: Fri, 12 Aug 2005 20:21:36 +0200
 To: akpm@osdl.org
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Avoid chomping low bits of address for functions doing it by themselves, fix
-whitespace, add a correctness checking.
+Distinguish between "normal" VMA and VMA with non-uniform protection. This
+will be also useful for fault handling (we must ignore VM_{READ,WRITE,EXEC} in
+the arch fault handler).
 
-I did this for remap-file-pages protection support, it was useful on its own
-too.
+As said before, with remap-file-pages-prot, we must punt on private VMA even
+when we're just changing protections.
+
+Also, with the remap_file_pages protection support, we have indeed a
+regression with remap_file_pages VS mprotect. mprotect alters the VMA
+protections and walks each installed PTE.
+
+Mprotect'ing a nonlinear VMA used to work, obviously, but now doesn't, because
+we must now read the protections from the PTE which haven't been updated; so,
+to avoid changing behaviour for old binaries, on uniform VMA's we ignore
+protections in the PTE, like we did before.
+
+On non-uniform VMA's, instead, mprotect is currently broken, however we've
+never supported it so this is acceptable.
+
+What it does is to split the VMA if needed, assign the new protection to the
+VMA and enforce the new protections on all present pages, ignoring all absent
+ones (including pte_file() ones), which will keep the current protections. So,
+the application has no reliable way to know which pages would actually be
+remapped.
+
+What is more, there is IMHO no reason to support using mprotect on non-uniform
+VMAs. The only exception is to change the VMA's default protection (which is
+used for non-individually remapped pages), but it should still ignore the page
+tables.
+
+The only need for that is if I want to change protections without changing the
+indexes, which with remap_file_pages you must do one page at a time and
+re-specifying the indexes.
+
+It is more reasonable to allow remap_file_pages to change protections on a PTE
+range without changing the offsets. I've not implemented this, but if wanted I
+can. For sure, UML doesn't need this interface.
+
+However, for now I've implemented no change to mprotect(), I'd like to get
+some feedback before about which way to go.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/um/kernel/trap_kern.c |   28 +++++++++++--------------
- 1 files changed, 13 insertions(+), 15 deletions(-)
+ linux-2.6.git-paolo/include/linux/mm.h |    7 +++++++
+ linux-2.6.git-paolo/mm/fremap.c        |   13 +++++++++++++
+ linux-2.6.git-paolo/mm/memory.c        |    2 +-
+ 3 files changed, 21 insertions(+), 1 deletion(-)
 
-diff -puN arch/um/kernel/trap_kern.c~uml-fault-handler-changes arch/um/kernel/trap_kern.c
---- linux-2.6.git/arch/um/kernel/trap_kern.c~uml-fault-handler-changes	2005-08-11 11:18:03.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/kernel/trap_kern.c	2005-08-11 11:19:56.000000000 +0200
-@@ -26,6 +26,7 @@
- #include "mem.h"
- #include "mem_kern.h"
- 
-+/* Note this is constrained to return 0, -EFAULT, -EACCESS, -ENOMEM by segv(). */
- int handle_page_fault(unsigned long address, unsigned long ip, 
- 		      int is_write, int is_user, int *code_out)
- {
-@@ -35,7 +36,6 @@ int handle_page_fault(unsigned long addr
- 	pud_t *pud;
- 	pmd_t *pmd;
- 	pte_t *pte;
--	unsigned long page;
- 	int err = -EFAULT;
- 
- 	*code_out = SEGV_MAPERR;
-@@ -52,7 +52,7 @@ int handle_page_fault(unsigned long addr
- 	else if(expand_stack(vma, address)) 
- 		goto out;
- 
-- good_area:
-+good_area:
- 	*code_out = SEGV_ACCERR;
- 	if(is_write && !(vma->vm_flags & VM_WRITE)) 
- 		goto out;
-@@ -60,9 +60,8 @@ int handle_page_fault(unsigned long addr
-         if(!(vma->vm_flags & (VM_READ | VM_EXEC)))
-                 goto out;
- 
--	page = address & PAGE_MASK;
- 	do {
-- survive:
-+survive:
- 		switch (handle_mm_fault(mm, vma, address, is_write)){
- 		case VM_FAULT_MINOR:
- 			current->min_flt++;
-@@ -79,16 +78,16 @@ int handle_page_fault(unsigned long addr
- 		default:
- 			BUG();
+diff -puN mm/fremap.c~rfp-add-VM_NONUNIFORM mm/fremap.c
+--- linux-2.6.git/mm/fremap.c~rfp-add-VM_NONUNIFORM	2005-08-11 23:03:51.000000000 +0200
++++ linux-2.6.git-paolo/mm/fremap.c	2005-08-11 23:03:51.000000000 +0200
+@@ -252,6 +252,19 @@ retry:
+ 				spin_unlock(&mapping->i_mmap_lock);
+ 			}
  		}
--		pgd = pgd_offset(mm, page);
--		pud = pud_offset(pgd, page);
--		pmd = pmd_offset(pud, page);
--		pte = pte_offset_kernel(pmd, page);
-+		pgd = pgd_offset(mm, address);
-+		pud = pud_offset(pgd, address);
-+		pmd = pmd_offset(pud, address);
-+		pte = pte_offset_kernel(pmd, address);
- 	} while(!pte_present(*pte));
- 	err = 0;
- 	*pte = pte_mkyoung(*pte);
- 	if(pte_write(*pte)) *pte = pte_mkdirty(*pte);
--	flush_tlb_page(vma, page);
-- out:
-+	flush_tlb_page(vma, address);
-+out:
- 	up_read(&mm->mmap_sem);
- 	return(err);
++		if (pgprot_val(pgprot) != pgprot_val(vma->vm_page_prot)) {
++			if (!(vma->vm_flags & VM_SHARED))
++				goto out_unlock;
++			if (!(vma->vm_flags & VM_NONUNIFORM)) {
++				if (!has_write_lock) {
++					up_read(&mm->mmap_sem);
++					down_write(&mm->mmap_sem);
++					has_write_lock = 1;
++					goto retry;
++				}
++				vma->vm_flags |= VM_NONUNIFORM;
++			}
++		}
  
-@@ -144,19 +143,18 @@ unsigned long segv(struct faultinfo fi, 
- 		panic("Kernel mode fault at addr 0x%lx, ip 0x%lx", 
- 		      address, ip);
+ 		err = vma->vm_ops->populate(vma, start, size, pgprot, pgoff,
+ 				flags & MAP_NONBLOCK);
+diff -puN include/linux/mm.h~rfp-add-VM_NONUNIFORM include/linux/mm.h
+--- linux-2.6.git/include/linux/mm.h~rfp-add-VM_NONUNIFORM	2005-08-11 23:03:51.000000000 +0200
++++ linux-2.6.git-paolo/include/linux/mm.h	2005-08-11 23:03:51.000000000 +0200
+@@ -160,7 +160,14 @@ extern unsigned int kobjsize(const void 
+ #define VM_ACCOUNT	0x00100000	/* Is a VM accounted object */
+ #define VM_HUGETLB	0x00400000	/* Huge TLB Page VM */
+ #define VM_NONLINEAR	0x00800000	/* Is non-linear (remap_file_pages) */
++
++#ifndef CONFIG_MMU
+ #define VM_MAPPED_COPY	0x01000000	/* T if mapped copy of data (nommu mmap) */
++#else
++#define VM_NONUNIFORM	0x01000000	/* The VM individual pages have
++					   different protections
++					   (remap_file_pages)*/
++#endif
  
--	if(err == -EACCES){
-+	if (err == -EACCES) {
- 		si.si_signo = SIGBUS;
- 		si.si_errno = 0;
- 		si.si_code = BUS_ADRERR;
- 		si.si_addr = (void *)address;
-                 current->thread.arch.faultinfo = fi;
- 		force_sig_info(SIGBUS, &si, current);
--	}
--	else if(err == -ENOMEM){
-+	} else if (err == -ENOMEM) {
- 		printk("VM: killing process %s\n", current->comm);
- 		do_exit(SIGKILL);
--	}
--	else {
-+	} else {
-+		BUG_ON(err != -EFAULT);
- 		si.si_signo = SIGSEGV;
- 		si.si_addr = (void *) address;
-                 current->thread.arch.faultinfo = fi;
+ #ifndef VM_STACK_DEFAULT_FLAGS		/* arch can override this */
+ #define VM_STACK_DEFAULT_FLAGS VM_DATA_DEFAULT_FLAGS
+diff -puN mm/memory.c~rfp-add-VM_NONUNIFORM mm/memory.c
+--- linux-2.6.git/mm/memory.c~rfp-add-VM_NONUNIFORM	2005-08-11 23:03:51.000000000 +0200
++++ linux-2.6.git-paolo/mm/memory.c	2005-08-11 23:03:51.000000000 +0200
+@@ -1941,7 +1941,7 @@ static int do_file_page(struct mm_struct
+ 	}
+ 
+ 	pgoff = pte_to_pgoff(*pte);
+-	pgprot = pte_to_pgprot(*pte);
++	pgprot = vma->vm_flags & VM_NONUNIFORM ? pte_to_pgprot(*pte): vma->vm_page_prot;
+ 
+ 	pte_unmap(pte);
+ 	spin_unlock(&mm->page_table_lock);
 _
 
 
