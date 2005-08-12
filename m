@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3eaH-0006XA-DW	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:48:49 -0700
-Received: from mail-relay-4.tiscali.it ([213.205.33.44])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3eaH-0007cu-0r
+	id 1E3eaK-0006XK-5E	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Aug 2005 11:48:52 -0700
+Received: from mail-relay-2.tiscali.it ([213.205.33.42])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3eaJ-0007eQ-UE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 11:48:49 -0700
+	Fri, 12 Aug 2005 11:48:52 -0700
 From: blaisorblade@yahoo.it
-Message-Id: <20050812183600.7D46D24E7D0@zion.home.lan>
-Subject: [uml-devel] [patch 25/39] remap_file_pages protection support: fix
-	unflushed TLB errors detection
+Message-Id: <20050812183613.AE59524E7DC@zion.home.lan>
+Subject: [uml-devel] [patch 30/39] remap_file_pages protection support: ia64
+	bits
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,73 +23,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 20:36:00 +0200
+Date: Fri, 12 Aug 2005 20:36:13 +0200
 To: akpm@osdl.org
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it, mingo@elte.hu
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+From: Ingo Molnar <mingo@elte.hu>
 
-We got unflushed PTE's marked up-to-date, because they were protected to get
-dirtying / accessing faults. So, don't test the PTE for being up-to-date, but
-check directly the permission (since the PTE is not protected for that).
+I've attached a 'blind' port of the prot bits of fremap to ia64.  I've
+compiled it with a cross-compiler but otherwise it's untested.  (and it's
+very likely i got the pte bits wrong - but it's roughly OK.)
+
+This should at least make ia64 compile.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- linux-2.6.git-paolo/arch/um/kernel/trap_kern.c |   28 +++++++++++++++++++------
- 1 files changed, 22 insertions(+), 6 deletions(-)
+ linux-2.6.git-paolo/include/asm-ia64/pgtable.h |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
 
-diff -puN arch/um/kernel/trap_kern.c~rfp-sigsegv-uml-3-fix arch/um/kernel/trap_kern.c
---- linux-2.6.git/arch/um/kernel/trap_kern.c~rfp-sigsegv-uml-3-fix	2005-08-11 23:14:58.000000000 +0200
-+++ linux-2.6.git-paolo/arch/um/kernel/trap_kern.c	2005-08-11 23:14:58.000000000 +0200
-@@ -35,7 +35,7 @@ int handle_page_fault(unsigned long addr
- 	pgd_t *pgd;
- 	pud_t *pud;
- 	pmd_t *pmd;
--	pte_t *pte;
-+	pte_t *pte, entry;
- 	int err = -EFAULT;
- 	int access_mask = 0;
+diff -puN include/asm-ia64/pgtable.h~rfp-arch-ia64 include/asm-ia64/pgtable.h
+--- linux-2.6.git/include/asm-ia64/pgtable.h~rfp-arch-ia64	2005-08-12 19:27:03.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-ia64/pgtable.h	2005-08-12 19:27:03.000000000 +0200
+@@ -433,7 +433,8 @@ extern void paging_init (void);
+  * Format of file pte:
+  *	bit   0   : present bit (must be zero)
+  *	bit   1   : _PAGE_FILE (must be one)
+- *	bits  2-62: file_offset/PAGE_SIZE
++ *	bit   2   : _PAGE_AR_RW
++ *	bits  3-62: file_offset/PAGE_SIZE
+  *	bit  63   : _PAGE_PROTNONE bit
+  */
+ #define __swp_type(entry)		(((entry).val >> 2) & 0x7f)
+@@ -442,9 +443,17 @@ extern void paging_init (void);
+ #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
  
-@@ -75,16 +75,32 @@ handle_fault:
- 			err = -EACCES;
- 			goto out;
- 		case VM_FAULT_SIGSEGV:
-+			WARN_ON(!(vma->vm_flags & VM_NONUNIFORM));
- 			/* Duplicate this code here. */
- 			pgd = pgd_offset(mm, address);
- 			pud = pud_offset(pgd, address);
- 			pmd = pmd_offset(pud, address);
- 			pte = pte_offset_kernel(pmd, address);
--			if (likely (pte_newpage(*pte) || pte_newprot(*pte))) {
--				/* This wasn't done by __handle_mm_fault(), and
--				 * the page hadn't been flushed. */
--				*pte = pte_mkyoung(*pte);
--				if(pte_write(*pte)) *pte = pte_mkdirty(*pte);
-+			if (likely (pte_newpage(*pte) || pte_newprot(*pte)) ||
-+				(is_write ? pte_write(*pte) : pte_read(*pte)) ) {
-+				/* The page hadn't been flushed, or it had been
-+				 * flushed but without access to get a dirtying
-+				 * / accessing fault. */
+-#define PTE_FILE_MAX_BITS		61
+-#define pte_to_pgoff(pte)		((pte_val(pte) << 1) >> 3)
+-#define pgoff_to_pte(off)		((pte_t) { ((off) << 2) | _PAGE_FILE })
++#define PTE_FILE_MAX_BITS		59
++#define pte_to_pgoff(pte)		((pte_val(pte) << 1) >> 4)
 +
-+				/* __handle_mm_fault() didn't dirty / young this
-+				 * PTE, probably we won't get another fault for
-+				 * this page, so fix things now. */
-+				entry = *pte;
-+				entry = pte_mkyoung(*pte);
-+				if(pte_write(entry))
-+					entry = pte_mkdirty(entry);
-+				/* Yes, this will set the page as NEWPAGE. We
-+				 * want this, otherwise things won't work.
-+				 * Indeed, the
-+				 * *pte = pte_mkyoung(*pte);
-+				 * we used to have (uselessly) didn't work at
-+				 * all! */
-+				set_pte(pte, entry);
- 				break;
- 			} else {
- 				err = -EFAULT;
++#define pte_to_pgprot(pte) \
++	__pgprot((pte_val(pte) & (_PAGE_AR_RW | _PAGE_PROTNONE)) \
++		| ((pte_val(pte) & _PAGE_PROTNONE) ? 0 : \
++			(__ACCESS_BITS | _PAGE_PL_3)))
++
++#define pgoff_prot_to_pte(off, prot) \
++       ((pte_t) { _PAGE_FILE + \
++               (pgprot_val(prot) & (_PAGE_AR_RW | _PAGE_PROTNONE)) + (off) })
+ 
+ /* XXX is this right? */
+ #define io_remap_page_range(vma, vaddr, paddr, size, prot)		\
 _
 
 
