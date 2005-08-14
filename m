@@ -2,25 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E47mi-0002Zj-5F	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 Aug 2005 18:59:36 -0700
-Received: from mx2.elte.hu ([157.181.151.9] helo=mx2.mail.elte.hu)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1E47mh-0005Tp-Pz
+	id 1E4BdR-0003rW-Tf	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 13 Aug 2005 23:06:17 -0700
+Received: from mail01.syd.optusnet.com.au ([211.29.132.182])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1E4BdQ-0000Fx-Vo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 Aug 2005 18:59:36 -0700
-From: Ingo Molnar <mingo@elte.hu>
-Subject: Re: [uml-devel] Re: [RFC] [patch 0/39] remap_file_pages protection
-	support, try 2
-Message-ID: <20050814020021.GB23795@elte.hu>
-References: <200508122033.06385.blaisorblade@yahoo.it>
-	<20050812.112954.115910063.davem@davemloft.net>
-	<200508122056.11442.blaisorblade@yahoo.it>
-	<20050812.120517.65192635.davem@davemloft.net>
+	Sat, 13 Aug 2005 23:06:17 -0700
+Received: from [192.168.1.20] (c210-49-175-223.mckinn1.vic.optusnet.com.au
+	[210.49.175.223])j7E667uv012670
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 14 Aug 2005 16:06:07 +1000
+From: Phill Wombat <uml@webwombat.com>
+Content-Type: multipart/alternative; boundary="=-7rjMyz+VkA7Qb0YoiFw5"
+Message-Id: <1123999566.17043.9.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050812.120517.65192635.davem@davemloft.net>
+Subject: [uml-devel] Compile UML-2.4.28+bs2 on FC4 with gcc4 - with my hack
+	(yuk)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,66 +30,277 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 14 Aug 2005 04:00:21 +0200
-To: "David S. Miller" <davem@davemloft.net>
-Cc: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org, jdike@addtoit.com, bstroesser@fujitsu-siemens.com
+Date: Sun, 14 Aug 2005 16:06:06 +1000
+To: UML Devel List <user-mode-linux-devel@lists.sourceforge.net>
 
 
-* David S. Miller <davem@davemloft.net> wrote:
+--=-7rjMyz+VkA7Qb0YoiFw5
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by
+	mail01.syd.optusnet.com.au id j7E667uv012670
 
-> From: Blaisorblade <blaisorblade@yahoo.it>
-> Date: Fri, 12 Aug 2005 20:56:11 +0200
-> 
-> > However, I sent the initial tarball containing all them, so I hope
-> > that will be useful.
-> 
-> So not only did you spam the list with 40 patch postings, you sent a 
-> second copy of everything as a tarball attachment as well.  That's 
-> even worse.
-> 
-> Please do not abuse the list server in this way, it is a resource that 
-> is not just your's, but rather one which has to be shared amongst all 
-> folks doing kernel development.
+ cc -D__KERNEL__ -I/home/phill/linux-2.4.28/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-U__i386__ -Ui386 -DUM_FASTCALL -g -D__arch_um__ -DSUBARCH=3D"i386"
+-D_LARGEFILE64_SOURCE -I/home/phill/linux-2.4.28/arch/um/include
+-Derrno=3Dkernel_errno
+-I/home/phill/linux-2.4.28/arch/um/kernel/tt/include
+-I/home/phill/linux-2.4.28/arch/um/kernel/skas/include
+-fno-unit-at-a-time   -nostdinc -iwithprefix include
+-DKBUILD_BASENAME=3Dbinfmt_elf -save-temps -c -o binfmt_elf.o binfmt_elf.=
+c
+In file included
+from /home/phill/linux-2.4.28/include/asm/byteorder.h:5,
 
-while i agree that 40 patches is not common, i'd like to point out that 
-Paolo has sent 40 very nicely split up patches instead of one 
-unreviewable monolithic patch, which are the encouraged format for 
-kernel changes. I havent seen any hard limit mentioned for patch-bombs 
-on lkml before - and i've seen much larger patchbombs going to lkml as 
-well, without any followup chastising of the submitter. E.g.:
+from /home/phill/linux-2.4.28/include/linux/kernel.h:16,
 
-   Subject: [0/48] Suspend2 2.1.9.8 for 2.6.12
+from /home/phill/linux-2.4.28/include/asm/arch/system.h:6,
 
-So if there needs to be some limit, it might be worth defining some 
-actual hard limit for this.
+from /home/phill/linux-2.4.28/include/asm/system-generic.h:5,
+                 from /home/phill/linux-2.4.28/include/asm/system.h:5,
 
-But the more important point is that given how complex the VM, and in 
-particular sys_remap_file_pages_prot() is, i'm personally much more 
-happy about the work having been submitted in a split-up way than i am 
-unhappy about the bombing!
+from /home/phill/linux-2.4.28/include/linux/spinlock.h:7,
 
-Paolo has actually worked alot on this, which resulted in 40 real, new 
-patches, so i couldnt think of any better way to present this work for 
-review. Had he posted some link it would not be individually reviewable. 
-(nor could the patch components be picked up by search utilities in that 
-case - i frequently search lkml for patches, but naturally i dont 
-traverse links referenced in them.) So i think we should rather be happy 
-about the 40-patch progress that Paolo has made to Linux, than be 
-unhappy about this intense work's effect on our infrastructure.
+from /home/phill/linux-2.4.28/include/linux/module.h:13,
+                 from binfmt_elf.c:13:
+/home/phill/linux-2.4.28/include/asm/arch/byteorder.h:14: warning: type
+qualifiers ignored on function return type
+/home/phill/linux-2.4.28/include/asm/arch/byteorder.h:30: warning: type
+qualifiers ignored on function return type
+In file included
+from /home/phill/linux-2.4.28/include/linux/byteorder/little_endian.h:12,
 
-In other words, we should not be worried about the number of real 
-changes submitted to lkml, and we should only hope for that number to 
-increase, and we should encourage people to do it! Paolo did this in 2 
-weeks, so it's not like he has sent changes accumulated over a long time 
-in a patch-bomb. It was real, cutting-edge work very relevant to lkml, 
-which work i believe Paolo didnt have much choice submitting in any 
-other sensible and reviewable form.
+from /home/phill/linux-2.4.28/include/asm/arch/byteorder.h:66,
 
-(i think i agree that maybe the tarball should not have been sent - but 
-even that one was within the usual size limits and other people send 
-tarballs frequently too.)
+from /home/phill/linux-2.4.28/include/asm/byteorder.h:5,
 
-	Ingo
+from /home/phill/linux-2.4.28/include/linux/kernel.h:16,
+
+from /home/phill/linux-2.4.28/include/asm/arch/system.h:6,
+
+from /home/phill/linux-2.4.28/include/asm/system-generic.h:5,
+                 from /home/phill/linux-2.4.28/include/asm/system.h:5,
+
+from /home/phill/linux-2.4.28/include/linux/spinlock.h:7,
+
+from /home/phill/linux-2.4.28/include/linux/module.h:13,
+                 from binfmt_elf.c:13:
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:160: warning:
+type qualifiers ignored on function return type
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:173: warning:
+type qualifiers ignored on function return type
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:186: warning:
+type qualifiers ignored on function return type
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:200: warning:
+type qualifiers ignored on function return type
+binfmt_elf.c: In function =E2=80=98load_elf_binary=E2=80=99:
+binfmt_elf.c:828: error: invalid lvalue in assignment
+binfmt_elf.c:828: error: invalid lvalue in assignment
+binfmt_elf.c:828: error: invalid lvalue in assignment
+binfmt_elf.c:828: error: invalid lvalue in assignment
+binfmt_elf.c:828: error: invalid lvalue in assignment
+binfmt_elf.c:828: error: invalid lvalue in assignment
+binfmt_elf.c:828: error: invalid lvalue in assignment
+
+so I looked at the preprocessor output and it showed this for the macro
+expansion (which looks correct??):
+
+ do { (mode_tt ? (*((unsigned long *) &(((char *)
+(((&(regs)->regs)->tt.sc)))[32]))) :
+((((&(regs)->regs)->skas.regs)[0]))) =3D 0; (mode_tt ? (*((unsigned long
+*) &(((char *) (((&(regs)->regs)->tt.sc)))[40]))) :
+((((&(regs)->regs)->skas.regs)[1]))) =3D 0; (mode_tt ? (*((unsigned long
+*) &(((char *) (((&(regs)->regs)->tt.sc)))[36]))) :
+((((&(regs)->regs)->skas.regs)[2]))) =3D 0; (mode_tt ? (*((unsigned long
+*) &(((char *) (((&(regs)->regs)->tt.sc)))[20]))) :
+((((&(regs)->regs)->skas.regs)[3]))) =3D 0; (mode_tt ? (*((unsigned long
+*) &(((char *) (((&(regs)->regs)->tt.sc)))[16]))) :
+((((&(regs)->regs)->skas.regs)[4]))) =3D 0; (mode_tt ? (*((unsigned long
+*) &(((char *) (((&(regs)->regs)->tt.sc)))[24]))) :
+((((&(regs)->regs)->skas.regs)[5]))) =3D 0; (mode_tt ? (*((unsigned long
+*) &(((char *) (((&(regs)->regs)->tt.sc)))[44]))) :
+((((&(regs)->regs)->skas.regs)[6]))) =3D 0; } while(0);
+
+which I hacked at to produce this (which compiles - don't know if it
+works or is equivalent even):
+
+if (mode_tt)
+{
+ (*((unsigned long *) &(((char *) (((&(regs)->regs)->tt.sc)))[32]))) =3D
+0;
+ (*((unsigned long *) &(((char *) (((&(regs)->regs)->tt.sc)))[40]))) =3D
+0;
+ (*((unsigned long *) &(((char *) (((&(regs)->regs)->tt.sc)))[36]))) =3D
+0;
+ (*((unsigned long *) &(((char *) (((&(regs)->regs)->tt.sc)))[20]))) =3D
+0;
+ (*((unsigned long *) &(((char *) (((&(regs)->regs)->tt.sc)))[16]))) =3D
+0;
+ (*((unsigned long *) &(((char *) (((&(regs)->regs)->tt.sc)))[24]))) =3D
+0;
+ (*((unsigned long *) &(((char *) (((&(regs)->regs)->tt.sc)))[44]))) =3D
+0;
+} else {
+ ((((&(regs)->regs)->skas.regs)[0])) =3D 0;
+ ((((&(regs)->regs)->skas.regs)[1])) =3D 0;
+ ((((&(regs)->regs)->skas.regs)[2])) =3D 0;
+ ((((&(regs)->regs)->skas.regs)[3])) =3D 0;
+ ((((&(regs)->regs)->skas.regs)[4])) =3D 0;
+ ((((&(regs)->regs)->skas.regs)[5])) =3D 0;
+ ((((&(regs)->regs)->skas.regs)[6])) =3D 0;
+};
+
+Cheers
+Phill.
+
+
+--=-7rjMyz+VkA7Qb0YoiFw5
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; CHARSET=3DUTF-8">
+  <META NAME=3D"GENERATOR" CONTENT=3D"GtkHTML/3.6.2">
+</HEAD>
+<BODY>
+ cc -D__KERNEL__ -I/home/phill/linux-2.4.28/include -Wall -Wstrict-prototyp=
+es -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common&nbsp; -U__i386__ -Ui=
+386 -DUM_FASTCALL -g -D__arch_um__ -DSUBARCH=3D&quot;i386&quot; -D_LARGEFIL=
+E64_SOURCE -I/home/phill/linux-2.4.28/arch/um/include -Derrno=3Dkernel_errn=
+o -I/home/phill/linux-2.4.28/arch/um/kernel/tt/include -I/home/phill/linux-=
+2.4.28/arch/um/kernel/skas/include -fno-unit-at-a-time&nbsp;&nbsp; -nostdin=
+c -iwithprefix include -DKBUILD_BASENAME=3Dbinfmt_elf -save-temps -c -o bin=
+fmt_elf.o binfmt_elf.c<BR>
+In file included from /home/phill/linux-2.4.28/include/asm/byteorder.h:5,<B=
+R>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/linux/kernel.h:=
+16,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/arch/system=
+.h:6,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/system-gene=
+ric.h:5,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/system.h:5,=
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/linux/spinlock.=
+h:7,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/linux/module.h:=
+13,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from binfmt_elf.c:13:<BR>
+/home/phill/linux-2.4.28/include/asm/arch/byteorder.h:14: warning: type qua=
+lifiers ignored on function return type<BR>
+/home/phill/linux-2.4.28/include/asm/arch/byteorder.h:30: warning: type qua=
+lifiers ignored on function return type<BR>
+In file included from /home/phill/linux-2.4.28/include/linux/byteorder/litt=
+le_endian.h:12,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/arch/byteor=
+der.h:66,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/byteorder.h=
+:5,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/linux/kernel.h:=
+16,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/arch/system=
+.h:6,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/system-gene=
+ric.h:5,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/asm/system.h:5,=
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/linux/spinlock.=
+h:7,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from /home/phill/linux-2.4.28/include/linux/module.h:=
+13,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; from binfmt_elf.c:13:<BR>
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:160: warning: type =
+qualifiers ignored on function return type<BR>
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:173: warning: type =
+qualifiers ignored on function return type<BR>
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:186: warning: type =
+qualifiers ignored on function return type<BR>
+/home/phill/linux-2.4.28/include/linux/byteorder/swab.h:200: warning: type =
+qualifiers ignored on function return type<BR>
+binfmt_elf.c: In function &#8216;load_elf_binary&#8217;:<BR>
+binfmt_elf.c:828: error: invalid lvalue in assignment<BR>
+binfmt_elf.c:828: error: invalid lvalue in assignment<BR>
+binfmt_elf.c:828: error: invalid lvalue in assignment<BR>
+binfmt_elf.c:828: error: invalid lvalue in assignment<BR>
+binfmt_elf.c:828: error: invalid lvalue in assignment<BR>
+binfmt_elf.c:828: error: invalid lvalue in assignment<BR>
+binfmt_elf.c:828: error: invalid lvalue in assignment<BR>
+<BR>
+so I looked at the preprocessor output and it showed this for the macro exp=
+ansion (which looks correct??):<BR>
+<BR>
+ do { (mode_tt ? (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;re=
+gs)-&gt;tt.sc)))[32]))) : ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[0]))) =
+=3D 0; (mode_tt ? (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;r=
+egs)-&gt;tt.sc)))[40]))) : ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[1]))) =
+=3D 0; (mode_tt ? (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;r=
+egs)-&gt;tt.sc)))[36]))) : ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[2]))) =
+=3D 0; (mode_tt ? (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;r=
+egs)-&gt;tt.sc)))[20]))) : ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[3]))) =
+=3D 0; (mode_tt ? (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;r=
+egs)-&gt;tt.sc)))[16]))) : ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[4]))) =
+=3D 0; (mode_tt ? (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;r=
+egs)-&gt;tt.sc)))[24]))) : ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[5]))) =
+=3D 0; (mode_tt ? (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;r=
+egs)-&gt;tt.sc)))[44]))) : ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[6]))) =
+=3D 0; } while(0);<BR>
+<BR>
+which I hacked at to produce this (which compiles - don't know if it works =
+or is equivalent even):<BR>
+<BR>
+if (mode_tt)<BR>
+{<BR>
+ (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;regs)-&gt;tt.sc)))=
+[32]))) =3D 0;<BR>
+ (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;regs)-&gt;tt.sc)))=
+[40]))) =3D 0;<BR>
+ (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;regs)-&gt;tt.sc)))=
+[36]))) =3D 0;<BR>
+ (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;regs)-&gt;tt.sc)))=
+[20]))) =3D 0;<BR>
+ (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;regs)-&gt;tt.sc)))=
+[16]))) =3D 0;<BR>
+ (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;regs)-&gt;tt.sc)))=
+[24]))) =3D 0;<BR>
+ (*((unsigned long *) &amp;(((char *) (((&amp;(regs)-&gt;regs)-&gt;tt.sc)))=
+[44]))) =3D 0;<BR>
+} else {<BR>
+ ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[0])) =3D 0;<BR>
+ ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[1])) =3D 0;<BR>
+ ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[2])) =3D 0;<BR>
+ ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[3])) =3D 0;<BR>
+ ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[4])) =3D 0;<BR>
+ ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[5])) =3D 0;<BR>
+ ((((&amp;(regs)-&gt;regs)-&gt;skas.regs)[6])) =3D 0;<BR>
+};<BR>
+<BR>
+Cheers<BR>
+Phill.<BR>
+<BR>
+</BODY>
+</HTML>
+
+--=-7rjMyz+VkA7Qb0YoiFw5--
+
 
 
 -------------------------------------------------------
