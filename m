@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E3gF8-0003jG-LM	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 13:35:06 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E3gF7-0004Dd-C5
+	id 1E47Sm-0001lf-UY	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 13 Aug 2005 18:39:00 -0700
+Received: from mx1.elte.hu ([157.181.1.137])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E47Sl-0003Qy-Lu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Aug 2005 13:35:06 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050812193755.GF8746@ccure.user-mode-linux.org>
-References: <42FBD1FC.4060905@fujitsu-siemens.com>
+	Sat, 13 Aug 2005 18:39:01 -0700
+From: Ingo Molnar <mingo@elte.hu>
+Message-ID: <20050814013849.GA23795@elte.hu>
+References: <200508122033.06385.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <42FBD1FC.4060905@fujitsu-siemens.com>
-Subject: [uml-devel] Re: UML/s390: first version
+In-Reply-To: <200508122033.06385.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [RFC] [patch 0/39] remap_file_pages protection
+	support, try 2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,23 +28,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 12 Aug 2005 15:37:55 -0400
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: user-mode-linux devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Sun, 14 Aug 2005 03:38:49 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Aug 12, 2005 at 12:32:28AM +0200, Bodo Stroesser wrote:
-> Hi,
+
+* Blaisorblade <blaisorblade@yahoo.it> wrote:
+
+> Ok, I've been working for the past two weeks learning well the Linux 
+> VM, understanding the Ingo's remap_file_pages protection support and 
+> its various weakness (due to lack of time on his part), and splitting 
+> and finishing it.
 > 
-> attached is a tarball containing a small series of patches, that apply
-> on linux-2.6.13-rc5 + incremental patches from Jeff.
+> Here follow a series of 39 _little_ patches against the git-commit-id 
+> 889371f61fd5bb914d0331268f12432590cf7e85, which means between 
+> 2.6.13-rc4 and -rc5.
+> 
+> Actually, the first 7 ones are unrelated trivial cleanups which 
+> somehow get in the way on this work and that can probably be merged 
+> even now (many are just comment fixes).
+> 
+> Since I was a VM newbie until two weeks ago, I've separated my changes 
+> into many little patches.
 
-In my tree, thanks.
+hi. Great work! I'm wondering about this comment in 
+rfp-fix-unmap-linear.patch:
 
-Do you have a list of my patches that are required for this to reach
-mainline - not only the only that avoid patch conflicts, but
-unconflicting ones which are also needed?
+> Additionally, add a missing TLB flush in both locations. However, 
+> there'is some excess of flushes in these functions.
 
-				Jeff
+excess TLB flushes one of the reasons of bad UML performance, so you 
+should really review them and not do spurious TLB flushes.
+
+	Ingo
 
 
 -------------------------------------------------------
