@@ -1,22 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E4kbC-00081K-0H	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 12:26:18 -0700
+	id 1E4oQX-00048x-OB	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Aug 2005 16:31:33 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E4kb7-0004v4-Q7
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E4oQX-0002Co-Eg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 12:26:18 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [-mm PATCH 14/32] um: fix-up schedule_timeout() usage
-Message-ID: <20050815185428.GA5542@ccure.user-mode-linux.org>
-References: <20050815180514.GC2854@us.ibm.com>
-	<20050815181626.GQ2854@us.ibm.com>
+	Mon, 15 Aug 2005 16:31:33 -0700
+Message-Id: <200508152325.j7FNP6km009009@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050815181626.GQ2854@us.ibm.com>
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 3/4] UML - Fix the x86_64 build
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,17 +24,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Aug 2005 14:54:28 -0400
-To: Nishanth Aravamudan <nacc@us.ibm.com>
-Cc: akpm@osdl.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 15 Aug 2005 19:25:06 -0400
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
 
-On Mon, Aug 15, 2005 at 11:16:26AM -0700, Nishanth Aravamudan wrote:
-> Description: Use schedule_timeout_interruptible() instead of
-> set_current_state()/schedule_timeout() to reduce kernel size.
-> 
-> Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+From Al Viro:
 
-Acked-by: Jeff Dike <jdike@addtoit.com>
+asm/elf.h breaks the x86_64 build.
+
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+
+Index: linux-2.6.13-rc6/arch/um/os-Linux/elf_aux.c
+===================================================================
+--- linux-2.6.13-rc6.orig/arch/um/os-Linux/elf_aux.c	2005-08-08 12:11:18.000000000 -0400
++++ linux-2.6.13-rc6/arch/um/os-Linux/elf_aux.c	2005-08-15 13:53:50.000000000 -0400
+@@ -9,7 +9,6 @@
+  */
+ #include <elf.h>
+ #include <stddef.h>
+-#include <asm/elf.h>
+ #include "init.h"
+ #include "elf_user.h"
+ #include "mem_user.h"
+
 
 
 -------------------------------------------------------
