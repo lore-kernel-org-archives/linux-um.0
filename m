@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E4bSQ-0003c5-MU	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 02:40:38 -0700
-Received: from caramon.arm.linux.org.uk ([212.18.232.186])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1E4bSO-0005Uf-9f
+	id 1E4bxq-00058C-F3	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Aug 2005 03:13:06 -0700
+Received: from smtp202.mail.sc5.yahoo.com ([216.136.129.92])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E4bxo-00049Q-Rx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 02:40:38 -0700
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-Message-ID: <20050815104022.D19811@flint.arm.linux.org.uk>
+	Mon, 15 Aug 2005 03:13:06 -0700
+Message-ID: <43006AA6.1040405@yahoo.com.au>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
+MIME-Version: 1.0
 References: <20050812182145.DF52E24E7F3@zion.home.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050812182145.DF52E24E7F3@zion.home.lan>;
-	from blaisorblade@yahoo.it on Fri, Aug 12, 2005 at 08:21:45PM +0200
+	<20050815104022.D19811@flint.arm.linux.org.uk>
+In-Reply-To: <20050815104022.D19811@flint.arm.linux.org.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Subject: [uml-devel] Re: [patch 18/39] remap_file_pages protection support:
 	add VM_FAULT_SIGSEGV
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -30,38 +29,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Aug 2005 10:40:22 +0100
-To: blaisorblade@yahoo.it
-Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, mingo@elte.hu
+Date: Mon, 15 Aug 2005 20:12:54 +1000
+To: Russell King <rmk+lkml@arm.linux.org.uk>
+Cc: blaisorblade@yahoo.it, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, mingo@elte.hu
 
-On Fri, Aug 12, 2005 at 08:21:45PM +0200, blaisorblade@yahoo.it wrote:
-> @@ -632,10 +632,11 @@ static inline int page_mapped(struct pag
->   * Used to decide whether a process gets delivered SIGBUS or
->   * just gets major/minor fault counters bumped up.
->   */
-> -#define VM_FAULT_OOM	(-1)
-> -#define VM_FAULT_SIGBUS	0
-> -#define VM_FAULT_MINOR	1
-> -#define VM_FAULT_MAJOR	2
-> +#define VM_FAULT_OOM		(-1)
-> +#define VM_FAULT_SIGBUS		0
-> +#define VM_FAULT_MINOR		1
-> +#define VM_FAULT_MAJOR		2
-> +#define VM_FAULT_SIGSEGV	3
->  
->  #define offset_in_page(p)	((unsigned long)(p) & ~PAGE_MASK)
->  
+Russell King wrote:
+> On Fri, Aug 12, 2005 at 08:21:45PM +0200, blaisorblade@yahoo.it wrote:
+> 
+>>@@ -632,10 +632,11 @@ static inline int page_mapped(struct pag
+>>  * Used to decide whether a process gets delivered SIGBUS or
+>>  * just gets major/minor fault counters bumped up.
+>>  */
+>>-#define VM_FAULT_OOM	(-1)
+>>-#define VM_FAULT_SIGBUS	0
+>>-#define VM_FAULT_MINOR	1
+>>-#define VM_FAULT_MAJOR	2
+>>+#define VM_FAULT_OOM		(-1)
+>>+#define VM_FAULT_SIGBUS		0
+>>+#define VM_FAULT_MINOR		1
+>>+#define VM_FAULT_MAJOR		2
+>>+#define VM_FAULT_SIGSEGV	3
+>> 
+>> #define offset_in_page(p)	((unsigned long)(p) & ~PAGE_MASK)
+>> 
+> 
+> 
+> Please arrange for "success" values to be numerically larger than "failure"
+> values.  This will avoid breaking ARM.
+> 
+> Is there a reason why we don't use -ve numbers for failure and +ve for
+> success here?
+> 
 
-Please arrange for "success" values to be numerically larger than "failure"
-values.  This will avoid breaking ARM.
+Well there is now, and that is we are now using a bit in the 2nd
+byte as flags. So I had to do away with -ve numbers there entirely.
 
-Is there a reason why we don't use -ve numbers for failure and +ve for
-success here?
+You could achieve a similar thing by using another bit in that byte
+#define VM_FAULT_FAILED 0x20
+and make that bit present in VM_FAULT_OOM and VM_FAULT_SIGBUS, then
+do an unlikely test for that bit in your handler and branch away to
+the slow path.
 
 -- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 Serial core
+SUSE Labs, Novell Inc.
+
+Send instant messages to your online friends http://au.messenger.yahoo.com 
+
 
 
 -------------------------------------------------------
