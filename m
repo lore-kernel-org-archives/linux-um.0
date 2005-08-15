@@ -1,25 +1,33 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E4c18-0005Em-Dh	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 03:16:30 -0700
-Received: from caramon.arm.linux.org.uk ([212.18.232.186])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1E4c0d-0005hg-TC
+	id 1E4jVn-0004Bz-Bl	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Aug 2005 11:16:39 -0700
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1E4jVl-0006y5-T7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 03:16:30 -0700
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-Message-ID: <20050815111548.F19811@flint.arm.linux.org.uk>
-References: <20050812182145.DF52E24E7F3@zion.home.lan>
-	<20050815104022.D19811@flint.arm.linux.org.uk> <43006AA6.1040405@yahoo.com.au>
+	Mon, 15 Aug 2005 11:16:39 -0700
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e3.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j7FIGR0r012309
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Aug 2005 14:16:27 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	j7FIGRos259474	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Aug 2005 14:16:27 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j7FIGRkB023084
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Aug 2005 14:16:27 -0400
+From: Nishanth Aravamudan <nacc@us.ibm.com>
+Message-ID: <20050815181626.GQ2854@us.ibm.com>
+References: <20050815180514.GC2854@us.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <43006AA6.1040405@yahoo.com.au>;
-	from nickpiggin@yahoo.com.au on Mon, Aug 15, 2005 at 08:12:54PM +1000
-Subject: [uml-devel] Re: [patch 18/39] remap_file_pages protection support:
-	add VM_FAULT_SIGSEGV
+In-Reply-To: <20050815180514.GC2854@us.ibm.com>
+Subject: [uml-devel] [-mm PATCH 14/32] um: fix-up schedule_timeout() usage
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,26 +39,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Aug 2005 11:15:48 +0100
-To: Nick Piggin <nickpiggin@yahoo.com.au>
-Cc: blaisorblade@yahoo.it, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, mingo@elte.hu
+Date: Mon, 15 Aug 2005 11:16:26 -0700
+To: jdike@karaya.com
+Cc: akpm@osdl.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Aug 15, 2005 at 08:12:54PM +1000, Nick Piggin wrote:
-> Well there is now, and that is we are now using a bit in the 2nd
-> byte as flags. So I had to do away with -ve numbers there entirely.
-> 
-> You could achieve a similar thing by using another bit in that byte
-> #define VM_FAULT_FAILED 0x20
-> and make that bit present in VM_FAULT_OOM and VM_FAULT_SIGBUS, then
-> do an unlikely test for that bit in your handler and branch away to
-> the slow path.
+Description: Use schedule_timeout_interruptible() instead of
+set_current_state()/schedule_timeout() to reduce kernel size.
 
-That'll do as well, thanks.
+Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
 
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 Serial core
+---
+
+ arch/um/drivers/random.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+diff -urpN 2.6.13-rc5-mm1/arch/um/drivers/random.c 2.6.13-rc5-mm1-dev/arch/um/drivers/random.c
+--- 2.6.13-rc5-mm1/arch/um/drivers/random.c	2005-08-07 09:57:22.000000000 -0700
++++ 2.6.13-rc5-mm1-dev/arch/um/drivers/random.c	2005-08-08 13:55:26.000000000 -0700
+@@ -58,10 +58,8 @@ static ssize_t rng_dev_read (struct file
+                         if (filp->f_flags & O_NONBLOCK)
+                                 return ret ? : -EAGAIN;
+ 
+-                        if(need_resched()){
+-                                current->state = TASK_INTERRUPTIBLE;
+-                                schedule_timeout(1);
+-                        }
++                        if(need_resched())
++                                schedule_timeout_interruptible(1);
+                 }
+                 else return n;
+ 		if (signal_pending (current))
 
 
 -------------------------------------------------------
