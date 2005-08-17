@@ -1,22 +1,12 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E5QF8-0007uS-OD	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Aug 2005 08:54:18 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E5QF8-0001GB-JF
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Aug 2005 08:54:19 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: 2.6.12.4 + bb12
-Message-ID: <20050817145537.GA3974@ccure.user-mode-linux.org>
-References: <1124276978.3965.10.camel@localhost.localdomain>
-	<1124279672.3965.12.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1124279672.3965.12.camel@localhost.localdomain>
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Message-ID: <F47F4E3B83BE854AA0BCB998C6929516BCA1D6@tiki.fastmail.usf.edu>
+From: "Gaspar, Alessio (USF Lakeland)" <alessio@lklnd.usf.edu>
+Subject: [uml-devel] 2.6.12.4 host + 2.6.12w/ uml-2.6.12-bb12-skas0 hangs
+	after "Starting periodic command scheduler: cron"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,40 +18,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Aug 2005 10:55:37 -0400
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 17 Aug 2005 13:36:33 -0400
+Content-Transfer-Encoding: 8bit
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Wed, Aug 17, 2005 at 12:54:32PM +0100, Antoine Martin wrote:
-> And for completeness, I get this error on amd64:
-> /usr/include/asm-x86_64/user.h:56: error: syntax error before ?u64?
-> /usr/include/asm-x86_64/user.h:58: error: syntax error before ?mxcsr?
-> /usr/include/asm-x86_64/user.h:59: error: syntax error before
-> ?mxcsr_mask?
-> /usr/include/asm-x86_64/user.h:60: error: syntax error before ?st_space?
-> /usr/include/asm-x86_64/user.h:61: error: syntax error before
-> ?xmm_space?
-> /usr/include/asm-x86_64/user.h:62: error: syntax error before ?padding?
-> /usr/include/asm-x86_64/user.h:63: error: syntax error before ?}? token
-> /usr/include/asm-x86_64/user.h:87: error: field ?i387? has incomplete
-> type
+Hi,
+ 
+I've given a try to the following combination of host/guest kernels
+yesterday: 
 
-This one I have a patch for:
+	Host = 2.6.12.4 on debian sarge
+	Guest = 2.6.12.4 from kernel.org + 2.6.12-bb12-skas0 patch 
+	Cmd line = ./linux con=null con0=fd:0,fd:1 
+	FS = Debian-3.0r2.ext2
 
-Index: linux-2.6.13-rc6/arch/um/os-Linux/elf_aux.c
-===================================================================
---- linux-2.6.13-rc6.orig/arch/um/os-Linux/elf_aux.c	2005-08-08 12:11:18.000000000 -0400
-+++ linux-2.6.13-rc6/arch/um/os-Linux/elf_aux.c	2005-08-15 13:53:50.000000000 -0400
-@@ -9,7 +9,6 @@
-  */
- #include <elf.h>
- #include <stddef.h>
--#include <asm/elf.h>
- #include "init.h"
- #include "elf_user.h"
- #include "mem_user.h"
+The system hangs after "Starting periodic command scheduler: cron."
 
-				Jeff
+
+Searching the linode irc logs and the devel mailing list didn't help so
+far 
+Other unsuccessful things I tried: 
+- removing cron from /etc/init.d, then atd is the problem (same hang)
+- removing atd from /etc/init.d (see a pattern here?) then the system
+still hangs after "Starting Internet superserver: inetd" 
+
+At this point, and before to go further, I'd like to check if: 
+1. this host/guest kernel /patch combination is successful for anyone
+2. if, like I suspect, the bug is coming from the file system 
+
+Concerning the latter, trying other FS led to other bugs so I'd prefer
+focusing on this one and fixing whatever this problem is...
+
+Of course, any suggestion or workaround is more than welcomed :)
+
+Alessio 
+
+
 
 
 -------------------------------------------------------
