@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E4oWG-0004Rs-26	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 16:37:28 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E4oWF-0005If-Ol
+	id 1E5Lny-0002Cc-Ka	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Aug 2005 04:09:58 -0700
+Received: from mail.nagafix.co.uk ([213.228.237.37])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E5Lny-0001Ul-3t
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Aug 2005 16:37:28 -0700
-Message-Id: <200508152325.j7FNP4JX009004@ccure.user-mode-linux.org>
+	Wed, 17 Aug 2005 04:09:58 -0700
+From: Antoine Martin <antoine@nagafix.co.uk>
+Content-Type: text/plain; charset="windows-1251"
+Message-Id: <1124276978.3965.10.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/4] UML -
+Subject: [uml-devel] 2.6.12.4 + bb12
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,39 +24,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 Aug 2005 19:25:04 -0400
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Date: Wed, 17 Aug 2005 12:09:38 +0100
+Content-Transfer-Encoding: base64
+To: Blaisorblade <blaisorblade@yahoo.it>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From Al Viro:
-
-Fix a macro typo which could break if the macro is passed arguments with
-side-effects.
-
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-
-Index: linux-2.6.13-rc6/arch/um/include/sysdep-x86_64/ptrace.h
-===================================================================
---- linux-2.6.13-rc6.orig/arch/um/include/sysdep-x86_64/ptrace.h	2005-06-17 15:48:29.000000000 -0400
-+++ linux-2.6.13-rc6/arch/um/include/sysdep-x86_64/ptrace.h	2005-08-15 13:32:57.000000000 -0400
-@@ -227,7 +227,7 @@
-                         panic("Bad register in UPT_SET : %d\n", reg);  \
- 			break; \
-                 } \
--                val; \
-+                __upt_val; \
-         })
- 
- #define UPT_SET_SYSCALL_RETURN(r, res) \
-
-
-
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SGkgUGFvbG8sCgpBZnRlciBhcHBseWluZyB1bWwtMi42LjEyLWJiMTItc2thczAucGF0Y2guYnoy
+IHRvIDIuNi4xMi40IEkgZ290IGEgZmV3CnJlamVjdHMsIEkgZmlndXJlZCB0aGVzZSB3ZXJlIG1l
+cmdlZCBpbiAyLjYuMTIueApUaGVuIEkgdHJpZWQgdG8gY3Jvc3MgY29tcGlsZSBhIGkzODYgZ3Vl
+c3Qgb24gYSBhbWQ2NCBob3N0IChnb3QgdG8gZG8KdGhpcyB1bnRpbCB0aGUgbWVtb3J5IGxlYWsg
+aXMgZml4ZWQpIGJ1dCBJIGdvdCB0aGlzIGNvbXBpbGUgZXJyb3I6CiMgbWFrZSBBUkNIPXVtIFNV
+QkFSQ0g9aTM4NiB2bWxpbnV4CiguLi4pCiAgQ0MgICAgICBhcmNoL3VtL3N5cy1pMzg2L3B0cmFj
+ZV91c2VyLm8KICBTWU1MSU5LIGFyY2gvdW0vc3lzLWkzODYvc2VtYXBob3JlLmMKICBDQyAgICAg
+IGFyY2gvdW0vc3lzLWkzODYvc2VtYXBob3JlLm8KICBDQyAgICAgIGFyY2gvdW0vc3lzLWkzODYv
+c2lnbmFsLm8KICBDQyAgICAgIGFyY2gvdW0vc3lzLWkzODYvc2lnY29udGV4dC5vCiAgQVMgICAg
+ICBhcmNoL3VtL3N5cy1pMzg2L3N0dWIubwogIENDICAgICAgYXJjaC91bS9zeXMtaTM4Ni9zdHVi
+X3NlZ3YubwpJbiBmaWxlIGluY2x1ZGVkIGZyb20gL3Vzci9pbmNsdWRlL2FzbS9zaWdjb250ZXh0
+Lmg6NywKICAgICAgICAgICAgICAgICBmcm9tIGFyY2gvdW0vc3lzLWkzODYvc3R1Yl9zZWd2LmM6
+NzoKL3Vzci9pbmNsdWRlL2FzbS1pMzg2L3NpZ2NvbnRleHQuaDoxODogZXJyb3I6IHJlZGVmaW5p
+dGlvbiBvZiCRc3RydWN0Cl9mcHJlZ5IKL3Vzci9pbmNsdWRlL2FzbS1pMzg2L3NpZ2NvbnRleHQu
+aDoyMzogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCRc3RydWN0Cl9mcHhyZWeSCi91c3IvaW5jbHVk
+ZS9hc20taTM4Ni9zaWdjb250ZXh0Lmg6Mjk6IGVycm9yOiByZWRlZmluaXRpb24gb2YgkXN0cnVj
+dApfeG1tcmVnkgovdXNyL2luY2x1ZGUvYXNtLWkzODYvc2lnY29udGV4dC5oOjMzOiBlcnJvcjog
+cmVkZWZpbml0aW9uIG9mIJFzdHJ1Y3QKX2Zwc3RhdGWSCi91c3IvaW5jbHVkZS9hc20taTM4Ni9z
+aWdjb250ZXh0Lmg6NTc6IGVycm9yOiByZWRlZmluaXRpb24gb2YgkXN0cnVjdApzaWdjb250ZXh0
+kgptYWtlWzFdOiAqKiogW2FyY2gvdW0vc3lzLWkzODYvc3R1Yl9zZWd2Lm9dIEVycm9yIDEKbWFr
+ZTogKioqIFthcmNoL3VtL3N5cy1pMzg2XSBFcnJvciAyCgpBbnkgY2x1ZXMuCgpUaGFua3MKQW50
+b2luZQoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tClNGLk5ldCBlbWFpbCBpcyBTcG9uc29yZWQgYnkgdGhlIEJldHRlciBTb2Z0d2FyZSBD
+b25mZXJlbmNlICYgRVhQTwpTZXB0ZW1iZXIgMTktMjIsIDIwMDUgKiBTYW4gRnJhbmNpc2NvLCBD
+QSAqIERldmVsb3BtZW50IExpZmVjeWNsZSBQcmFjdGljZXMKQWdpbGUgJiBQbGFuLURyaXZlbiBE
+ZXZlbG9wbWVudCAqIE1hbmFnaW5nIFByb2plY3RzICYgVGVhbXMgKiBUZXN0aW5nICYgUUEKU2Vj
+dXJpdHkgKiBQcm9jZXNzIEltcHJvdmVtZW50ICYgTWVhc3VyZW1lbnQgKiBodHRwOi8vd3d3LnNx
+ZS5jb20vYnNjZTVzZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1k
+ZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
