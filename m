@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E5MVN-0004J0-7A	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Aug 2005 04:54:49 -0700
-Received: from mail.nagafix.co.uk ([213.228.237.37])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E5MVM-0000yw-C5
+	id 1E5QF8-0007uS-OD	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Aug 2005 08:54:18 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E5QF8-0001GB-JF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Aug 2005 04:54:49 -0700
-From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <1124276978.3965.10.camel@localhost.localdomain>
+	Wed, 17 Aug 2005 08:54:19 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: 2.6.12.4 + bb12
+Message-ID: <20050817145537.GA3974@ccure.user-mode-linux.org>
 References: <1124276978.3965.10.camel@localhost.localdomain>
-Content-Type: text/plain; charset="windows-1251"
-Message-Id: <1124279672.3965.12.camel@localhost.localdomain>
+	<1124279672.3965.12.camel@localhost.localdomain>
 Mime-Version: 1.0
-Subject: [uml-devel] Re: 2.6.12.4 + bb12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1124279672.3965.12.camel@localhost.localdomain>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,63 +28,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Aug 2005 12:54:32 +0100
-Content-Transfer-Encoding: base64
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 17 Aug 2005 10:55:37 -0400
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-QW5kIGZvciBjb21wbGV0ZW5lc3MsIEkgZ2V0IHRoaXMgZXJyb3Igb24gYW1kNjQ6CiMgbWFrZSB2
-bWxpbnV4IEFSQ0g9dW0KICBMRCAgICAgIGFyY2gvdW0vZHJpdmVycy9wb3J0Lm8KICBDQyAgICAg
-IGFyY2gvdW0vZHJpdmVycy9wdHkubwogIENDICAgICAgYXJjaC91bS9kcml2ZXJzL3R0eS5vCiAg
-Q0MgICAgICBhcmNoL3VtL2RyaXZlcnMveHRlcm0ubwogIENDICAgICAgYXJjaC91bS9kcml2ZXJz
-L3h0ZXJtX2tlcm4ubwogIENDICAgICAgYXJjaC91bS9kcml2ZXJzL2Nvd191c2VyLm8KICBDQyAg
-ICAgIGFyY2gvdW0vZHJpdmVycy9yYW5kb20ubwogIExEICAgICAgYXJjaC91bS9kcml2ZXJzL2J1
-aWx0LWluLm8KICBDQyAgICAgIGFyY2gvdW0vb3MtTGludXgvZWxmX2F1eC5vCkluIGZpbGUgaW5j
-bHVkZWQgZnJvbSAvdXNyL2luY2x1ZGUvYXNtL3VzZXIuaDo0LAogICAgICAgICAgICAgICAgIGZy
-b20gL3Vzci9pbmNsdWRlL2FzbS14ODZfNjQvZWxmLmg6OSwKICAgICAgICAgICAgICAgICBmcm9t
-IC91c3IvaW5jbHVkZS9hc20vZWxmLmg6NCwKICAgICAgICAgICAgICAgICBmcm9tIGFyY2gvdW0v
-b3MtTGludXgvZWxmX2F1eC5jOjEyOgovdXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6NTY6
-IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlIJF1NjSSCi91c3IvaW5jbHVkZS9hc20teDg2XzY0
-L3VzZXIuaDo1ODogZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUgkW14Y3NykgovdXNyL2luY2x1
-ZGUvYXNtLXg4Nl82NC91c2VyLmg6NTk6IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlCpFteGNz
-cl9tYXNrkgovdXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6NjA6IGVycm9yOiBzeW50YXgg
-ZXJyb3IgYmVmb3JlIJFzdF9zcGFjZZIKL3Vzci9pbmNsdWRlL2FzbS14ODZfNjQvdXNlci5oOjYx
-OiBlcnJvcjogc3ludGF4IGVycm9yIGJlZm9yZQqReG1tX3NwYWNlkgovdXNyL2luY2x1ZGUvYXNt
-LXg4Nl82NC91c2VyLmg6NjI6IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlIJFwYWRkaW5nkgov
-dXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6NjM6IGVycm9yOiBzeW50YXggZXJyb3IgYmVm
-b3JlIJF9kiB0b2tlbgovdXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6ODc6IGVycm9yOiBm
-aWVsZCCRaTM4N5IgaGFzIGluY29tcGxldGUKdHlwZQptYWtlWzFdOiAqKiogW2FyY2gvdW0vb3Mt
-TGludXgvZWxmX2F1eC5vXSBFcnJvciAxCgpUaGFua3MKQW50b2luZQoKT24gV2VkLCAyMDA1LTA4
-LTE3IGF0IDEyOjA5ICswMTAwLCBBbnRvaW5lIE1hcnRpbiB3cm90ZToKPiBIaSBQYW9sbywKPiAK
-PiBBZnRlciBhcHBseWluZyB1bWwtMi42LjEyLWJiMTItc2thczAucGF0Y2guYnoyIHRvIDIuNi4x
-Mi40IEkgZ290IGEgZmV3Cj4gcmVqZWN0cywgSSBmaWd1cmVkIHRoZXNlIHdlcmUgbWVyZ2VkIGlu
-IDIuNi4xMi54Cj4gVGhlbiBJIHRyaWVkIHRvIGNyb3NzIGNvbXBpbGUgYSBpMzg2IGd1ZXN0IG9u
-IGEgYW1kNjQgaG9zdCAoZ290IHRvIGRvCj4gdGhpcyB1bnRpbCB0aGUgbWVtb3J5IGxlYWsgaXMg
-Zml4ZWQpIGJ1dCBJIGdvdCB0aGlzIGNvbXBpbGUgZXJyb3I6Cj4gIyBtYWtlIEFSQ0g9dW0gU1VC
-QVJDSD1pMzg2IHZtbGludXgKPiAoLi4uKQo+ICAgQ0MgICAgICBhcmNoL3VtL3N5cy1pMzg2L3B0
-cmFjZV91c2VyLm8KPiAgIFNZTUxJTksgYXJjaC91bS9zeXMtaTM4Ni9zZW1hcGhvcmUuYwo+ICAg
-Q0MgICAgICBhcmNoL3VtL3N5cy1pMzg2L3NlbWFwaG9yZS5vCj4gICBDQyAgICAgIGFyY2gvdW0v
-c3lzLWkzODYvc2lnbmFsLm8KPiAgIENDICAgICAgYXJjaC91bS9zeXMtaTM4Ni9zaWdjb250ZXh0
-Lm8KPiAgIEFTICAgICAgYXJjaC91bS9zeXMtaTM4Ni9zdHViLm8KPiAgIENDICAgICAgYXJjaC91
-bS9zeXMtaTM4Ni9zdHViX3NlZ3Yubwo+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSAvdXNyL2luY2x1
-ZGUvYXNtL3NpZ2NvbnRleHQuaDo3LAo+ICAgICAgICAgICAgICAgICAgZnJvbSBhcmNoL3VtL3N5
-cy1pMzg2L3N0dWJfc2Vndi5jOjc6Cj4gL3Vzci9pbmNsdWRlL2FzbS1pMzg2L3NpZ2NvbnRleHQu
-aDoxODogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCRc3RydWN0Cj4gX2ZwcmVnkgo+IC91c3IvaW5j
-bHVkZS9hc20taTM4Ni9zaWdjb250ZXh0Lmg6MjM6IGVycm9yOiByZWRlZmluaXRpb24gb2YgkXN0
-cnVjdAo+IF9mcHhyZWeSCj4gL3Vzci9pbmNsdWRlL2FzbS1pMzg2L3NpZ2NvbnRleHQuaDoyOTog
-ZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCRc3RydWN0Cj4gX3htbXJlZ5IKPiAvdXNyL2luY2x1ZGUv
-YXNtLWkzODYvc2lnY29udGV4dC5oOjMzOiBlcnJvcjogcmVkZWZpbml0aW9uIG9mIJFzdHJ1Y3QK
-PiBfZnBzdGF0ZZIKPiAvdXNyL2luY2x1ZGUvYXNtLWkzODYvc2lnY29udGV4dC5oOjU3OiBlcnJv
-cjogcmVkZWZpbml0aW9uIG9mIJFzdHJ1Y3QKPiBzaWdjb250ZXh0kgo+IG1ha2VbMV06ICoqKiBb
-YXJjaC91bS9zeXMtaTM4Ni9zdHViX3NlZ3Yub10gRXJyb3IgMQo+IG1ha2U6ICoqKiBbYXJjaC91
-bS9zeXMtaTM4Nl0gRXJyb3IgMgo+IAo+IEFueSBjbHVlcy4KPiAKPiBUaGFua3MKPiBBbnRvaW5l
-CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KU0YuTmV0IGVtYWlsIGlzIFNwb25zb3JlZCBieSB0aGUgQmV0dGVyIFNvZnR3YXJlIENvbmZl
-cmVuY2UgJiBFWFBPClNlcHRlbWJlciAxOS0yMiwgMjAwNSAqIFNhbiBGcmFuY2lzY28sIENBICog
-RGV2ZWxvcG1lbnQgTGlmZWN5Y2xlIFByYWN0aWNlcwpBZ2lsZSAmIFBsYW4tRHJpdmVuIERldmVs
-b3BtZW50ICogTWFuYWdpbmcgUHJvamVjdHMgJiBUZWFtcyAqIFRlc3RpbmcgJiBRQQpTZWN1cml0
-eSAqIFByb2Nlc3MgSW1wcm92ZW1lbnQgJiBNZWFzdXJlbWVudCAqIGh0dHA6Ly93d3cuc3FlLmNv
-bS9ic2NlNXNmCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-ClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVs
-QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0
-cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On Wed, Aug 17, 2005 at 12:54:32PM +0100, Antoine Martin wrote:
+> And for completeness, I get this error on amd64:
+> /usr/include/asm-x86_64/user.h:56: error: syntax error before ?u64?
+> /usr/include/asm-x86_64/user.h:58: error: syntax error before ?mxcsr?
+> /usr/include/asm-x86_64/user.h:59: error: syntax error before
+> ?mxcsr_mask?
+> /usr/include/asm-x86_64/user.h:60: error: syntax error before ?st_space?
+> /usr/include/asm-x86_64/user.h:61: error: syntax error before
+> ?xmm_space?
+> /usr/include/asm-x86_64/user.h:62: error: syntax error before ?padding?
+> /usr/include/asm-x86_64/user.h:63: error: syntax error before ?}? token
+> /usr/include/asm-x86_64/user.h:87: error: field ?i387? has incomplete
+> type
+
+This one I have a patch for:
+
+Index: linux-2.6.13-rc6/arch/um/os-Linux/elf_aux.c
+===================================================================
+--- linux-2.6.13-rc6.orig/arch/um/os-Linux/elf_aux.c	2005-08-08 12:11:18.000000000 -0400
++++ linux-2.6.13-rc6/arch/um/os-Linux/elf_aux.c	2005-08-15 13:53:50.000000000 -0400
+@@ -9,7 +9,6 @@
+  */
+ #include <elf.h>
+ #include <stddef.h>
+-#include <asm/elf.h>
+ #include "init.h"
+ #include "elf_user.h"
+ #include "mem_user.h"
+
+				Jeff
+
+
+-------------------------------------------------------
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
