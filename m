@@ -1,12 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Subject: RE: [uml-devel] 2.6.12.4 host + 2.6.12w/ uml-2.6.12-bb12-skas0 hangs
-	after "Starting periodic command scheduler: cron"
-Message-ID: <F47F4E3B83BE854AA0BCB998C6929516BCA1EB@tiki.fastmail.usf.edu>
-From: "Gaspar, Alessio (USF Lakeland)" <alessio@lklnd.usf.edu>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1E5oVv-0004eP-St	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Aug 2005 10:49:15 -0700
+Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1E5oVX-0000gP-JV
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Aug 2005 10:49:16 -0700
+Received: from mail.nagafix.co.uk ([213.228.237.37])
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1E5oVT-0000m2-RV	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Aug 2005 10:48:50 -0700
+Subject: Re: [uml-devel] Re: 2.6.12.4 + bb12
+From: Antoine Martin <antoine@nagafix.co.uk>
+In-Reply-To: <20050817145537.GA3974@ccure.user-mode-linux.org>
+References: <1124276978.3965.10.camel@localhost.localdomain>
+	 <1124279672.3965.12.camel@localhost.localdomain>
+	 <20050817145537.GA3974@ccure.user-mode-linux.org>
+Content-Type: text/plain; charset="windows-1251"
+Message-Id: <1124387258.4021.10.camel@localhost.localdomain>
+Mime-Version: 1.0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,88 +33,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 Aug 2005 13:56:45 -0400
-Content-Transfer-Encoding: 8bit
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net, "Gaspar, Alessio (USF Lakeland)" <alessio@lklnd.usf.edu>
+Date: Thu, 18 Aug 2005 18:47:38 +0100
+Content-Transfer-Encoding: base64
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Ok, ./linux con=null con1=fd:0,fd:1 works, mea culpa, bad understanding
-of what console 0 is really on my part! 
-
-Typing it out to the mailing list actually helped finding the problem
-but sorry for the spam 
-
-Alessio 
-
-
-> -----Original Message-----
-> From: user-mode-linux-devel-admin@lists.sourceforge.net
-[mailto:user-mode-
-> linux-devel-admin@lists.sourceforge.net] On Behalf Of Gaspar, Alessio
-(USF
-> Lakeland)
-> Sent: Wednesday, August 17, 2005 1:37 PM
-> To: user-mode-linux-devel@lists.sourceforge.net
-> Cc: user-mode-linux-user@lists.sourceforge.net
-> Subject: [uml-devel] 2.6.12.4 host + 2.6.12w/ uml-2.6.12-bb12-skas0
-hangs
-> after "Starting periodic command scheduler: cron"
-> 
-> Hi,
-> 
-> I've given a try to the following combination of host/guest kernels
-> yesterday:
-> 
-> 	Host = 2.6.12.4 on debian sarge
-> 	Guest = 2.6.12.4 from kernel.org + 2.6.12-bb12-skas0 patch
-> 	Cmd line = ./linux con=null con0=fd:0,fd:1
-> 	FS = Debian-3.0r2.ext2
-> 
-> The system hangs after "Starting periodic command scheduler: cron."
-> 
-> 
-> Searching the linode irc logs and the devel mailing list didn't help
-so
-> far
-> Other unsuccessful things I tried:
-> - removing cron from /etc/init.d, then atd is the problem (same hang)
-> - removing atd from /etc/init.d (see a pattern here?) then the system
-> still hangs after "Starting Internet superserver: inetd"
-> 
-> At this point, and before to go further, I'd like to check if:
-> 1. this host/guest kernel /patch combination is successful for anyone
-> 2. if, like I suspect, the bug is coming from the file system
-> 
-> Concerning the latter, trying other FS led to other bugs so I'd prefer
-> focusing on this one and fixing whatever this problem is...
-> 
-> Of course, any suggestion or workaround is more than welcomed :)
-> 
-> Alessio
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> SF.Net email is Sponsored by the Better Software Conference & EXPO
-> September 19-22, 2005 * San Francisco, CA * Development Lifecycle
-> Practices
-> Agile & Plan-Driven Development * Managing Projects & Teams * Testing
-& QA
-> Security * Process Improvement & Measurement *
-http://www.sqe.com/bsce5sf
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-
--------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+VGhhbmtzIGplZmYsIHRoaXMgcGF0Y2ggZGlkIGZpeCBpdCBvbiBhbWQ2NC4KCmFueW9uZSBnb3Qg
+YW55IGlkZWEgYWJvdXQgdGhlIFNVQkFSQ0g9aTM4NiBvbmU/Cihsb29rcyBzaW1pbGFyIC0gcHJv
+YmFibHkgYW5vdGhlciB1bm5lY2Vzc2FyeS9pZmRlZmVkIGluY2x1ZGUpCgpQUywgaGVyZSBpdCBp
+cyBhZ2FpbjoKICBDQyAgICAgIGFyY2gvdW0vc3lzLWkzODYvc2VtYXBob3JlLm8KICBDQyAgICAg
+IGFyY2gvdW0vc3lzLWkzODYvc2lnbmFsLm8KICBDQyAgICAgIGFyY2gvdW0vc3lzLWkzODYvc2ln
+Y29udGV4dC5vCiAgQVMgICAgICBhcmNoL3VtL3N5cy1pMzg2L3N0dWIubwogIENDICAgICAgYXJj
+aC91bS9zeXMtaTM4Ni9zdHViX3NlZ3YubwpJbiBmaWxlIGluY2x1ZGVkIGZyb20gL3Vzci9pbmNs
+dWRlL2FzbS9zaWdjb250ZXh0Lmg6NywKICAgICAgICAgICAgICAgICBmcm9tIGFyY2gvdW0vc3lz
+LWkzODYvc3R1Yl9zZWd2LmM6NzoKL3Vzci9pbmNsdWRlL2FzbS1pMzg2L3NpZ2NvbnRleHQuaDox
+ODogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCRc3RydWN0Cl9mcHJlZ5IKL3Vzci9pbmNsdWRlL2Fz
+bS1pMzg2L3NpZ2NvbnRleHQuaDoyMzogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCRc3RydWN0Cl9m
+cHhyZWeSCi91c3IvaW5jbHVkZS9hc20taTM4Ni9zaWdjb250ZXh0Lmg6Mjk6IGVycm9yOiByZWRl
+ZmluaXRpb24gb2YgkXN0cnVjdApfeG1tcmVnkgovdXNyL2luY2x1ZGUvYXNtLWkzODYvc2lnY29u
+dGV4dC5oOjMzOiBlcnJvcjogcmVkZWZpbml0aW9uIG9mIJFzdHJ1Y3QKX2Zwc3RhdGWSCi91c3Iv
+aW5jbHVkZS9hc20taTM4Ni9zaWdjb250ZXh0Lmg6NTc6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg
+kXN0cnVjdApzaWdjb250ZXh0kgptYWtlWzFdOiAqKiogW2FyY2gvdW0vc3lzLWkzODYvc3R1Yl9z
+ZWd2Lm9dIEVycm9yIDEKCgoKT24gV2VkLCAyMDA1LTA4LTE3IGF0IDEwOjU1IC0wNDAwLCBKZWZm
+IERpa2Ugd3JvdGU6Cj4gT24gV2VkLCBBdWcgMTcsIDIwMDUgYXQgMTI6NTQ6MzJQTSArMDEwMCwg
+QW50b2luZSBNYXJ0aW4gd3JvdGU6Cj4gPiBBbmQgZm9yIGNvbXBsZXRlbmVzcywgSSBnZXQgdGhp
+cyBlcnJvciBvbiBhbWQ2NDoKPiA+IC91c3IvaW5jbHVkZS9hc20teDg2XzY0L3VzZXIuaDo1Njog
+ZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUgP3U2ND8KPiA+IC91c3IvaW5jbHVkZS9hc20teDg2
+XzY0L3VzZXIuaDo1ODogZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUgP214Y3NyPwo+ID4gL3Vz
+ci9pbmNsdWRlL2FzbS14ODZfNjQvdXNlci5oOjU5OiBlcnJvcjogc3ludGF4IGVycm9yIGJlZm9y
+ZQo+ID4gP214Y3NyX21hc2s/Cj4gPiAvdXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6NjA6
+IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlID9zdF9zcGFjZT8KPiA+IC91c3IvaW5jbHVkZS9h
+c20teDg2XzY0L3VzZXIuaDo2MTogZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUKPiA+ID94bW1f
+c3BhY2U/Cj4gPiAvdXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6NjI6IGVycm9yOiBzeW50
+YXggZXJyb3IgYmVmb3JlID9wYWRkaW5nPwo+ID4gL3Vzci9pbmNsdWRlL2FzbS14ODZfNjQvdXNl
+ci5oOjYzOiBlcnJvcjogc3ludGF4IGVycm9yIGJlZm9yZSA/fT8gdG9rZW4KPiA+IC91c3IvaW5j
+bHVkZS9hc20teDg2XzY0L3VzZXIuaDo4NzogZXJyb3I6IGZpZWxkID9pMzg3PyBoYXMgaW5jb21w
+bGV0ZQo+ID4gdHlwZQo+IAo+IFRoaXMgb25lIEkgaGF2ZSBhIHBhdGNoIGZvcjoKPiAKPiBJbmRl
+eDogbGludXgtMi42LjEzLXJjNi9hcmNoL3VtL29zLUxpbnV4L2VsZl9hdXguYwo+ID09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0KPiAtLS0gbGludXgtMi42LjEzLXJjNi5vcmlnL2FyY2gvdW0vb3MtTGludXgvZWxmX2F1eC5j
+CTIwMDUtMDgtMDggMTI6MTE6MTguMDAwMDAwMDAwIC0wNDAwCj4gKysrIGxpbnV4LTIuNi4xMy1y
+YzYvYXJjaC91bS9vcy1MaW51eC9lbGZfYXV4LmMJMjAwNS0wOC0xNSAxMzo1Mzo1MC4wMDAwMDAw
+MDAgLTA0MDAKPiBAQCAtOSw3ICs5LDYgQEAKPiAgICovCj4gICNpbmNsdWRlIDxlbGYuaD4KPiAg
+I2luY2x1ZGUgPHN0ZGRlZi5oPgo+IC0jaW5jbHVkZSA8YXNtL2VsZi5oPgo+ICAjaW5jbHVkZSAi
+aW5pdC5oIgo+ICAjaW5jbHVkZSAiZWxmX3VzZXIuaCIKPiAgI2luY2x1ZGUgIm1lbV91c2VyLmgi
+Cj4gCj4gCQkJCUplZmYKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpTRi5OZXQgZW1haWwgaXMgU3BvbnNvcmVkIGJ5IHRoZSBCZXR0ZXIg
+U29mdHdhcmUgQ29uZmVyZW5jZSAmIEVYUE8KU2VwdGVtYmVyIDE5LTIyLCAyMDA1ICogU2FuIEZy
+YW5jaXNjbywgQ0EgKiBEZXZlbG9wbWVudCBMaWZlY3ljbGUgUHJhY3RpY2VzCkFnaWxlICYgUGxh
+bi1Ecml2ZW4gRGV2ZWxvcG1lbnQgKiBNYW5hZ2luZyBQcm9qZWN0cyAmIFRlYW1zICogVGVzdGlu
+ZyAmIFFBClNlY3VyaXR5ICogUHJvY2VzcyBJbXByb3ZlbWVudCAmIE1lYXN1cmVtZW50ICogaHR0
+cDovL3d3dy5zcWUuY29tL2JzY2U1c2YKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1v
+ZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
