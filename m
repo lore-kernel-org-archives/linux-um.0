@@ -2,18 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E73aX-00073A-SN	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Aug 2005 21:07:09 -0700
-Received: from [202.108.35.142] (helo=mail35-142.sinamail.sina.com.cn)
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E73aV-0003xt-RL
+	id 1E7E7X-0000Ev-DA	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Aug 2005 08:21:55 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E7E7S-000718-GJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Aug 2005 21:07:09 -0700
-Message-ID: <20050822040705.26215.qmail@mail35-142.sinamail.sina.com.cn>
-From: luothing@sina.com
+	Mon, 22 Aug 2005 08:21:55 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Possible SKAS3 >= v8 bug
+References: <42FB5D26.5020703@theshore.net> <42FBBDF8.2020206@theshore.net>
+	<42FBF41A.5090105@theshore.net>
+In-Reply-To: <42FBF41A.5090105@theshore.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Subject: [uml-devel]
-	=?GB2312?B?d2VhayBjaGVjayBvZiBhY2Nlc3Nfb2sgbWF5IGxlYWQgaGFuZyE=?=
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200508211429.56287.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,26 +30,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Aug 2005 12:07:05 +0800
-Content-Transfer-Encoding: base64
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 21 Aug 2005 14:29:56 +0200
+To: "Christopher S. Aker" <caker@theshore.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-SSB1c2UgTFRQIHRvIHRlc3QgdW1sLCBhbmQgZm91bmQgbWFueSBmYWlsZWQoYWJvdXQgMzYpLCBt
-YW55IG9mCnRoaXMgZmFpbGVkIGxlYWQgdHQgbW9kZSB1bWwgdG8gaGFuZywgdGhlc2UgZmFpbGVk
-IGlzIGNhbGxpbmcgCnN5c3RlbSBjYWxsKHN1Y2ggYXMgY2hvd24pIHdpdGggYSBvdXQgb2YgcmFu
-Z2UgcG9pbnRlciwgYW5kIGluIApmdW5jdGlvbiBzdHJuY3B5X2Zyb21fdXNlcl8qLCBhY2Nlc3Nf
-b2sganVzdCBnaXZlIGFuIHdlYWsgY2hlY2ssCnRoZW4gbGVhZCB0aGUgdGVzdCB0byBmYWlsZWQg
-aW4gc2thcyBtb2RlLCBhbmQgaGFuZyBpbiB0dCBtb2RlLApJIHRoaW5rIGl0IG1heSBiZSBhIHBy
-b2JsZW0uIAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KCgrXorLh0MLA
-yzJHw+K30dPKz+SjqCBodHRwOi8vbWFpbC5zaW5hLmNvbS5jbi9jaG9vc2VNb2RlLmh0bWwgo6kK
-Cj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT0KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tClNGLk5ldCBlbWFpbCBpcyBTcG9uc29yZWQgYnkgdGhlIEJldHRlciBTb2Z0
-d2FyZSBDb25mZXJlbmNlICYgRVhQTwpTZXB0ZW1iZXIgMTktMjIsIDIwMDUgKiBTYW4gRnJhbmNp
-c2NvLCBDQSAqIERldmVsb3BtZW50IExpZmVjeWNsZSBQcmFjdGljZXMKQWdpbGUgJiBQbGFuLURy
-aXZlbiBEZXZlbG9wbWVudCAqIE1hbmFnaW5nIFByb2plY3RzICYgVGVhbXMgKiBUZXN0aW5nICYg
-UUEKU2VjdXJpdHkgKiBQcm9jZXNzIEltcHJvdmVtZW50ICYgTWVhc3VyZW1lbnQgKiBodHRwOi8v
-d3d3LnNxZS5jb20vYnNjZTVzZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1s
-aW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+On Friday 12 August 2005 02:58, Christopher S. Aker wrote:
+> Perhaps this is related.  I've upgraded one of the affected machines to
+> 2.6.13-rc6.  We'll see how it goes...
+>
+> http://marc.theaimsgroup.com/?t=111720640400002&r=1&w=2
+>
+> -Chris
+Ok, I'm particularly suspicious of one patch, ptrace_ldt-reload-smp-fix, try 
+unapplying that one. I don't know exactly *how* it might trigger that crash, 
+but it seems a data corruption, and that code is doing exactly that.
+
+In addition, below, the segment selector is totally fucked up. It is a ring 0 
+GDT segment, which is however non existant. It would exist only if there were 
+a third CPU, and would be a NULL descriptor anyway.
+
+EIP:    0200:[<00000000>]    Not tainted VLI
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
+
+
+-------------------------------------------------------
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
