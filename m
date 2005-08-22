@@ -1,27 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E5oVv-0004eP-St	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2005 10:49:15 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	id 1E74vD-0001YN-Db	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 21 Aug 2005 22:32:35 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1E5oVX-0000gP-JV
+	(Exim 4.44)	id 1E74vB-0002ch-15
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2005 10:49:16 -0700
-Received: from mail.nagafix.co.uk ([213.228.237.37])
-	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
-	id 1E5oVT-0000m2-RV	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2005 10:48:50 -0700
-Subject: Re: [uml-devel] Re: 2.6.12.4 + bb12
-From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <20050817145537.GA3974@ccure.user-mode-linux.org>
-References: <1124276978.3965.10.camel@localhost.localdomain>
-	 <1124279672.3965.12.camel@localhost.localdomain>
-	 <20050817145537.GA3974@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset="windows-1251"
-Message-Id: <1124387258.4021.10.camel@localhost.localdomain>
-Mime-Version: 1.0
+	Sun, 21 Aug 2005 22:32:35 -0700
+Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
+	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j7M6wtg2023646
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 22 Aug 2005 02:59:00 -0400
+From: Rob Landley <rob@landley.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200508220032.14192.rob@landley.net>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] 2.6.12.3-uml has something wrong with the filesystem.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,57 +33,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 18 Aug 2005 18:47:38 +0100
-Content-Transfer-Encoding: base64
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Mon, 22 Aug 2005 00:32:14 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-VGhhbmtzIGplZmYsIHRoaXMgcGF0Y2ggZGlkIGZpeCBpdCBvbiBhbWQ2NC4KCmFueW9uZSBnb3Qg
-YW55IGlkZWEgYWJvdXQgdGhlIFNVQkFSQ0g9aTM4NiBvbmU/Cihsb29rcyBzaW1pbGFyIC0gcHJv
-YmFibHkgYW5vdGhlciB1bm5lY2Vzc2FyeS9pZmRlZmVkIGluY2x1ZGUpCgpQUywgaGVyZSBpdCBp
-cyBhZ2FpbjoKICBDQyAgICAgIGFyY2gvdW0vc3lzLWkzODYvc2VtYXBob3JlLm8KICBDQyAgICAg
-IGFyY2gvdW0vc3lzLWkzODYvc2lnbmFsLm8KICBDQyAgICAgIGFyY2gvdW0vc3lzLWkzODYvc2ln
-Y29udGV4dC5vCiAgQVMgICAgICBhcmNoL3VtL3N5cy1pMzg2L3N0dWIubwogIENDICAgICAgYXJj
-aC91bS9zeXMtaTM4Ni9zdHViX3NlZ3YubwpJbiBmaWxlIGluY2x1ZGVkIGZyb20gL3Vzci9pbmNs
-dWRlL2FzbS9zaWdjb250ZXh0Lmg6NywKICAgICAgICAgICAgICAgICBmcm9tIGFyY2gvdW0vc3lz
-LWkzODYvc3R1Yl9zZWd2LmM6NzoKL3Vzci9pbmNsdWRlL2FzbS1pMzg2L3NpZ2NvbnRleHQuaDox
-ODogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCRc3RydWN0Cl9mcHJlZ5IKL3Vzci9pbmNsdWRlL2Fz
-bS1pMzg2L3NpZ2NvbnRleHQuaDoyMzogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCRc3RydWN0Cl9m
-cHhyZWeSCi91c3IvaW5jbHVkZS9hc20taTM4Ni9zaWdjb250ZXh0Lmg6Mjk6IGVycm9yOiByZWRl
-ZmluaXRpb24gb2YgkXN0cnVjdApfeG1tcmVnkgovdXNyL2luY2x1ZGUvYXNtLWkzODYvc2lnY29u
-dGV4dC5oOjMzOiBlcnJvcjogcmVkZWZpbml0aW9uIG9mIJFzdHJ1Y3QKX2Zwc3RhdGWSCi91c3Iv
-aW5jbHVkZS9hc20taTM4Ni9zaWdjb250ZXh0Lmg6NTc6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg
-kXN0cnVjdApzaWdjb250ZXh0kgptYWtlWzFdOiAqKiogW2FyY2gvdW0vc3lzLWkzODYvc3R1Yl9z
-ZWd2Lm9dIEVycm9yIDEKCgoKT24gV2VkLCAyMDA1LTA4LTE3IGF0IDEwOjU1IC0wNDAwLCBKZWZm
-IERpa2Ugd3JvdGU6Cj4gT24gV2VkLCBBdWcgMTcsIDIwMDUgYXQgMTI6NTQ6MzJQTSArMDEwMCwg
-QW50b2luZSBNYXJ0aW4gd3JvdGU6Cj4gPiBBbmQgZm9yIGNvbXBsZXRlbmVzcywgSSBnZXQgdGhp
-cyBlcnJvciBvbiBhbWQ2NDoKPiA+IC91c3IvaW5jbHVkZS9hc20teDg2XzY0L3VzZXIuaDo1Njog
-ZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUgP3U2ND8KPiA+IC91c3IvaW5jbHVkZS9hc20teDg2
-XzY0L3VzZXIuaDo1ODogZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUgP214Y3NyPwo+ID4gL3Vz
-ci9pbmNsdWRlL2FzbS14ODZfNjQvdXNlci5oOjU5OiBlcnJvcjogc3ludGF4IGVycm9yIGJlZm9y
-ZQo+ID4gP214Y3NyX21hc2s/Cj4gPiAvdXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6NjA6
-IGVycm9yOiBzeW50YXggZXJyb3IgYmVmb3JlID9zdF9zcGFjZT8KPiA+IC91c3IvaW5jbHVkZS9h
-c20teDg2XzY0L3VzZXIuaDo2MTogZXJyb3I6IHN5bnRheCBlcnJvciBiZWZvcmUKPiA+ID94bW1f
-c3BhY2U/Cj4gPiAvdXNyL2luY2x1ZGUvYXNtLXg4Nl82NC91c2VyLmg6NjI6IGVycm9yOiBzeW50
-YXggZXJyb3IgYmVmb3JlID9wYWRkaW5nPwo+ID4gL3Vzci9pbmNsdWRlL2FzbS14ODZfNjQvdXNl
-ci5oOjYzOiBlcnJvcjogc3ludGF4IGVycm9yIGJlZm9yZSA/fT8gdG9rZW4KPiA+IC91c3IvaW5j
-bHVkZS9hc20teDg2XzY0L3VzZXIuaDo4NzogZXJyb3I6IGZpZWxkID9pMzg3PyBoYXMgaW5jb21w
-bGV0ZQo+ID4gdHlwZQo+IAo+IFRoaXMgb25lIEkgaGF2ZSBhIHBhdGNoIGZvcjoKPiAKPiBJbmRl
-eDogbGludXgtMi42LjEzLXJjNi9hcmNoL3VtL29zLUxpbnV4L2VsZl9hdXguYwo+ID09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT0KPiAtLS0gbGludXgtMi42LjEzLXJjNi5vcmlnL2FyY2gvdW0vb3MtTGludXgvZWxmX2F1eC5j
-CTIwMDUtMDgtMDggMTI6MTE6MTguMDAwMDAwMDAwIC0wNDAwCj4gKysrIGxpbnV4LTIuNi4xMy1y
-YzYvYXJjaC91bS9vcy1MaW51eC9lbGZfYXV4LmMJMjAwNS0wOC0xNSAxMzo1Mzo1MC4wMDAwMDAw
-MDAgLTA0MDAKPiBAQCAtOSw3ICs5LDYgQEAKPiAgICovCj4gICNpbmNsdWRlIDxlbGYuaD4KPiAg
-I2luY2x1ZGUgPHN0ZGRlZi5oPgo+IC0jaW5jbHVkZSA8YXNtL2VsZi5oPgo+ICAjaW5jbHVkZSAi
-aW5pdC5oIgo+ICAjaW5jbHVkZSAiZWxmX3VzZXIuaCIKPiAgI2luY2x1ZGUgIm1lbV91c2VyLmgi
-Cj4gCj4gCQkJCUplZmYKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQpTRi5OZXQgZW1haWwgaXMgU3BvbnNvcmVkIGJ5IHRoZSBCZXR0ZXIg
-U29mdHdhcmUgQ29uZmVyZW5jZSAmIEVYUE8KU2VwdGVtYmVyIDE5LTIyLCAyMDA1ICogU2FuIEZy
-YW5jaXNjbywgQ0EgKiBEZXZlbG9wbWVudCBMaWZlY3ljbGUgUHJhY3RpY2VzCkFnaWxlICYgUGxh
-bi1Ecml2ZW4gRGV2ZWxvcG1lbnQgKiBNYW5hZ2luZyBQcm9qZWN0cyAmIFRlYW1zICogVGVzdGlu
-ZyAmIFFBClNlY3VyaXR5ICogUHJvY2VzcyBJbXByb3ZlbWVudCAmIE1lYXN1cmVtZW50ICogaHR0
-cDovL3d3dy5zcWUuY29tL2JzY2U1c2YKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1v
-ZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+Ok, I have a build system (www.landley.net/code/firmware) that compiles a 
+Linux distro under UML (so it can build a C library against newer kernel 
+headers than the parent system and not worry about binaries linked against 
+that making syscalls that segfault under the old kernel during the rest of 
+the build).
+
+When I upgraded this system from 2.6.11 to 2.6.12.3, it started getting 
+strange build failures.  The build failures are all of the "file not found" 
+variety, but they are _random_.  I've seen failures happen in the 
+builds of gcc (couldn't find a standard .h file), zlib (install failed), df 
+(again install failed), and a couple other places.
+
+This is clearly a race condition: the build actually ran to completion once, 
+but most of the times it dies with a file not found.  It never dies twice in 
+the same place, even when running it two or three times in sequence with no 
+changes.
+
+The filesystem it's using is an ext2 image that lives in a loopback mounted 
+sparse file on hostfs.  (Yeah, this is a strange way to torture the 
+filesystem, I know.  But it should work.)
+
+Any clues as to recent patches that might be causing this?  What info do you 
+need from me?  (I can send you the build tarball if you want to reproduce it 
+yourself, but it's 100 megs and can take an hour or more to run to a failure 
+case with nothing obvious to set the debugger to trap on to catch it in the 
+act...)
+
+Rob
+
+
+-------------------------------------------------------
+SF.Net email is Sponsored by the Better Software Conference & EXPO
+September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
+Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
+Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
