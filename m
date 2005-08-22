@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E7E7X-0000Ev-DA	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2005 08:21:55 -0700
+	id 1E7EAE-0000NQ-30	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Aug 2005 08:24:42 -0700
 Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E7E7S-000718-GJ
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E7EAD-0007dd-HP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2005 08:21:55 -0700
+	Mon, 22 Aug 2005 08:24:42 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Possible SKAS3 >= v8 bug
-References: <42FB5D26.5020703@theshore.net> <42FBBDF8.2020206@theshore.net>
-	<42FBF41A.5090105@theshore.net>
-In-Reply-To: <42FBF41A.5090105@theshore.net>
+Subject: Re: [uml-devel] Hang at delay loop calibration
+References: <20050812200118.GA8508@paktahn.black.cat>
+In-Reply-To: <20050812200118.GA8508@paktahn.black.cat>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200508211429.56287.blaisorblade@yahoo.it>
+Message-Id: <200508221655.57342.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,31 +29,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 21 Aug 2005 14:29:56 +0200
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Mon, 22 Aug 2005 16:55:56 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: leslie.polzer@gmx.net
 
-On Friday 12 August 2005 02:58, Christopher S. Aker wrote:
-> Perhaps this is related.  I've upgraded one of the affected machines to
-> 2.6.13-rc6.  We'll see how it goes...
->
-> http://marc.theaimsgroup.com/?t=111720640400002&r=1&w=2
->
-> -Chris
-Ok, I'm particularly suspicious of one patch, ptrace_ldt-reload-smp-fix, try 
-unapplying that one. I don't know exactly *how* it might trigger that crash, 
-but it seems a data corruption, and that code is doing exactly that.
+On Friday 12 August 2005 22:01, leslie.polzer@gmx.net wrote:
+> % linux
+> Checking for the skas3 patch in the host...not found
+> Checking for /proc/mm...not found
+> tracing thread pid = 8456
+> Checking for /dev/anon on the host...Not available (open failed with errno
+> 2) Checking for /dev/anon on the host...Not available (open failed with
+> errno 2) Checking for /dev/anon on the host...Not available (open failed
+> with errno 2) Checking for /dev/anon on the host...Not available (open
+> failed with errno 2) Linux version 2.4.26-1um (root@aries) (gcc version
+> 3.4.0) #1 Sat Jul 3 00:22:45 PDT 2004 On node 0 totalpages: 8192
+> zone(0): 8192 pages.
+> zone(1): 0 pages.
+> zone(2): 0 pages.
+> Kernel command line: root=/dev/ubd0
+> Calibrating delay loop...
+Don't use anything less than 2.4.26-3um (there are known bugs in similar areas 
+in such old kernel releases).
 
-In addition, below, the segment selector is totally fucked up. It is a ring 0 
-GDT segment, which is however non existant. It would exist only if there were 
-a third CPU, and would be a NULL descriptor anyway.
+On my homepage you may find 2.4.28-bs2 which should be even stabler, but for 
+UML you'll very likely find the 2.6 branch more stable (at least on the UML 
+side, mainline side is different, but even there, UML has no "ACPI drivers" 
+likely to break).
 
-EIP:    0200:[<00000000>]    Not tainted VLI
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
-
 
 	
 
