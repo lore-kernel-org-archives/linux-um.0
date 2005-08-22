@@ -2,24 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E7Ewb-0002t8-WC	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2005 09:14:41 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E7EwZ-0002aZ-5C
+	id 1E7F9U-0003jL-4H	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Aug 2005 09:28:00 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E7F9Q-0005eu-CW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2005 09:14:41 -0700
+	Mon, 22 Aug 2005 09:28:00 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 11/39] remap_file_pages protection
-	support: add MAP_NOINHERIT flag
-References: <20050812182123.C896324E7DD@zion.home.lan>
-	<20050812204315.B21152@flint.arm.linux.org.uk>
-In-Reply-To: <20050812204315.B21152@flint.arm.linux.org.uk>
+Subject: Re: [uml-devel] Re: [RFC] [patch 0/39] remap_file_pages protection
+	support, try 2
+References: <200508122033.06385.blaisorblade@yahoo.it>
+	<20050814013849.GA23795@elte.hu>
+In-Reply-To: <20050814013849.GA23795@elte.hu>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200508221806.33667.blaisorblade@yahoo.it>
+Message-Id: <200508221807.58354.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,49 +31,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 22 Aug 2005 18:06:33 +0200
+Date: Mon, 22 Aug 2005 18:07:57 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Russell King <rmk+lkml@arm.linux.org.uk>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
+Cc: Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Friday 12 August 2005 21:43, Russell King wrote:
-> On Fri, Aug 12, 2005 at 08:21:23PM +0200, blaisorblade@yahoo.it wrote:
-> > From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> >
-> > Add the MAP_NOINHERIT flag to arch headers, for use with
-> > remap-file-pages.
+On Sunday 14 August 2005 03:38, Ingo Molnar wrote:
+> * Blaisorblade <blaisorblade@yahoo.it> wrote:
 
-> Does this mean ARM will break when these patches are merged?
-Sorry for missing answer, I was disconnected.
+> > Ok, I've been working for the past two weeks learning well the Linux
+> > VM, understanding the Ingo's remap_file_pages protection support and
+> > its various weakness (due to lack of time on his part), and splitting
+> > and finishing it.
 
-Well, when they'll be merged in -mm you(and other archs) will see a bit of 
-things screwing up, but *this* patch is trivial to port to all archs.
+> > Here follow a series of 39 _little_ patches against the git-commit-id
+> > 889371f61fd5bb914d0331268f12432590cf7e85, which means between
+> > 2.6.13-rc4 and -rc5.
 
-The real problem will be updating the PTE encoding macros (see pte_file and 
-sys_remap_file_pages) to also store the page protections. Or at least pretend 
-they do - things won't compile otherwise.
+> > Actually, the first 7 ones are unrelated trivial cleanups which
+> > somehow get in the way on this work and that can probably be merged
+> > even now (many are just comment fixes).
 
-However, those patches stayed around in -mm for a while, since 2.6.4-rc2-mm1 
-to 2.6.5-mm1, so the (basic) fixes will be of the same kind.
+> > Since I was a VM newbie until two weeks ago, I've separated my changes
+> > into many little patches.
 
-VM_FAULT_SIGSEGV is much more though, however. When VMA pages can change 
-protection, permission checking must move to the generic VM. See patches for 
-i386 about that (patches for other architectures are compile-only, and don't 
-handle properly this aspect).
+> hi. Great work! I'm wondering about this comment in
+Thanks for your appreciation.
+> rfp-fix-unmap-linear.patch:
+> > Additionally, add a missing TLB flush in both locations. However,
+> > there'is some excess of flushes in these functions.
 
-However, don't worry for now, we'll be discussing this on next try. Mass arch 
-updating will happen after the patch has been set into its definitive shape.
+> excess TLB flushes one of the reasons of bad UML performance, so you
+> should really review them and not do spurious TLB flushes.
+
+After a bit of thought I realized that there was no spurious flush in those 
+function, and that I didn't need to add any, because after setting a PTE as 
+missing and flushing the TLB, I can freely alter it if I don't make it 
+present again (right?), without other TLB flushes.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.beta.messenger.yahoo.com
 
 
 
