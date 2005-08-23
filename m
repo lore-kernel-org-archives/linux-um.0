@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E8fry-0003Eo-2y	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 08:11:50 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E8frw-0003On-Cg
+	id 1E8g8Z-0003qE-OI	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Aug 2005 08:28:59 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E8g8W-0006vZ-7x
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 08:11:50 -0700
+	Fri, 26 Aug 2005 08:28:59 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: madvise(DONTNEED) on tmpfs pages instead of
-	/dev/anon
-References: <200508102136.43763.blaisorblade@yahoo.it>
-	<200508121900.26503.blaisorblade@yahoo.it>
-	<20050822202402.GA27051@ccure.user-mode-linux.org>
-In-Reply-To: <20050822202402.GA27051@ccure.user-mode-linux.org>
+References: <20050812182145.DF52E24E7F3@zion.home.lan>
+	<43006AA6.1040405@yahoo.com.au> <20050815111548.F19811@flint.arm.linux.org.uk>
+In-Reply-To: <20050815111548.F19811@flint.arm.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200508261706.20923.blaisorblade@yahoo.it>
+Message-Id: <200508231045.50500.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [patch 18/39] remap_file_pages protection support:
+	add VM_FAULT_SIGSEGV
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,35 +31,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Aug 2005 17:06:20 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Rik van Riel <riel@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 23 Aug 2005 10:45:46 +0200
+To: Russell King <rmk+lkml@arm.linux.org.uk>
+Cc: Nick Piggin <nickpiggin@yahoo.com.au>, akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, mingo@elte.hu
 
-On Monday 22 August 2005 22:24, Jeff Dike wrote:
-> On Fri, Aug 12, 2005 at 07:00:26PM +0200, Blaisorblade wrote:
-> > Yes, but for the VM, there is nothing else than pagecache and swapcache
-> > and swap entries. Since that call will drop them, on normal files backing
-> > store will remain, on tmpfs everything will vanish!
+On Monday 15 August 2005 12:15, Russell King wrote:
+> On Mon, Aug 15, 2005 at 08:12:54PM +1000, Nick Piggin wrote:
+> > Well there is now, and that is we are now using a bit in the 2nd
+> > byte as flags. So I had to do away with -ve numbers there entirely.
 
-> > Hope you'll implement this soon, if it works.
+> > You could achieve a similar thing by using another bit in that byte
+> > #define VM_FAULT_FAILED 0x20
+> > and make that bit present in VM_FAULT_OOM and VM_FAULT_SIGBUS, then
+> > do an unlikely test for that bit in your handler and branch away to
+> > the slow path.
+ 
+> That'll do as well, thanks.
+Note that what Nick said is about mainline kernels, not only my brave patch.
 
-> There was a small omission in my quick analysis, which you alluded to
-> above.
-
-> It's removed from the address space, but preserved in the page cache.
-Yes, yesterday I realized this point. The pagecache has one additional 
-reference, which is only deleted after try_to_unmap() (the rmap function to 
-detach a page from page tables) succeeds (grep try_to_unmap mm/*.c to find 
-the caller).
-
-In fact, the madvise() comment only talks about anonymous memory.
-
-Rik, is there any hope to extend madvise() to cater for this?
-> Run the test below to see this.
+Currently Linus fixed up ARM26 by disabling the optimization: see git commit 
+6e346228c76506e07e297744a28464022c6806ad.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
+
 
 	
 
