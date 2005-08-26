@@ -2,24 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E8gDV-00044w-Nb	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 08:34:05 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E8gDT-0002ZV-SB
+	id 1E8hY7-0007XT-Vh	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Aug 2005 09:59:27 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E8hY6-0004In-KN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 08:34:05 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] uml for 2.6.12 kernel
-References: <838f7c500508231455607e9a7d@mail.gmail.com>
-	<20050824034403.GA8036@mindspring.com>
-	<838f7c50050824071665f2b081@mail.gmail.com>
-In-Reply-To: <838f7c50050824071665f2b081@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200508261729.10815.blaisorblade@yahoo.it>
+	Fri, 26 Aug 2005 09:59:28 -0700
+Resent-To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>,
+        Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>,
+        user-mode-linux-devel@lists.sourceforge.net
+Resent-Message-ID: <200508261827.32263.blaisorblade@yahoo.it>
+From: blaisorblade@yahoo.it
+Message-Id: <20050826145753.7EC2624E793@zion.home.lan>
+Subject: [uml-devel] [patch 2/2] hppfs: fix symlink error path
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,50 +26,86 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Aug 2005 17:29:10 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: ashwin tanugula <ashwin.tanugula@gmail.com>, jleu@mindspring.com, user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 26 Aug 2005 16:57:53 +0200
+To: torvalds@osdl.org
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-On Wednesday 24 August 2005 16:16, ashwin tanugula wrote:
-> On 8/23/05, James R. Leu <jleu@mindspring.com> wrote:
-> > Since you didn't specify, I assume your talking about building
-> > a guest kernel.  In which case I just went through the the same ordeal.
 
-> > I used a 2.6.12-mm2 kernel and applied jdike's patch set.  Here are the
-> > URLs for the parts you need.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-> > I'd be interested to see what others have gotten working.
-Hmm, nobody told you using -mm is a bit *brave*? And Jeff Dike's patchset is 
-mostly intended for development (Jeff has been recommending it for x86_64 
-because the support has been introduced recently, so it got a fair amount of 
-fixes in his tree).
+While touching this code I noticed the error handling is bogus, so I fixed it
+up.
 
-The working combinations are:
-* vanilla 2.6.12 (it works)
-* 2.6.12 + patches on my site.
-> > On Tue, Aug 23, 2005 at 05:55:27PM -0400, ashwin tanugula wrote:
-> > > Hi,
-> > > I want to build UML from source using a 2.6.12 kernel. Can somebody
-> > > tell me whether to patch it or not as kernels from 2.6.9 have the UML
-> > > included??
-> > >
-> > > Thanks,
-> > > Ashwin
+I've removed the IS_ERR(proc_dentry) check, which will never trigger and is
+clearly a typo: we must check proc_file instead.
 
-> Hi,
-> I am more confused now...I want to build a basic UML for a 2.6.12
-> kernel, just like the other kernels..for a 2.6.0 kernel one need to
-> apply a uml-patch-2.6.12.tar.bz2 patch and build it.
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-> so do I need to apply the 2.6.12-mm2.bz2 and patches.tar patches and
-> build??
+ linux-2.6.git-paolo/fs/hppfs/hppfs_kern.c |   24 +++++++++---------------
+ 1 files changed, 9 insertions(+), 15 deletions(-)
 
-> And can you tell me what a guest kernel is?
+diff -puN fs/hppfs/hppfs_kern.c~hppfs-fix-symlink-oops fs/hppfs/hppfs_kern.c
+--- linux-2.6.git/fs/hppfs/hppfs_kern.c~hppfs-fix-symlink-oops	2005-08-24 18:19:45.000000000 +0200
++++ linux-2.6.git-paolo/fs/hppfs/hppfs_kern.c	2005-08-24 18:19:45.000000000 +0200
+@@ -38,7 +38,7 @@ struct hppfs_inode_info {
+ 
+ static inline struct hppfs_inode_info *HPPFS_I(struct inode *inode)
+ {
+-	return(list_entry(inode, struct hppfs_inode_info, vfs_inode));
++	return container_of(inode, struct hppfs_inode_info, vfs_inode);
+ }
+ 
+ #define HPPFS_SUPER_MAGIC 0xb00000ee
+@@ -662,38 +662,32 @@ static int hppfs_readlink(struct dentry 
+ {
+ 	struct file *proc_file;
+ 	struct dentry *proc_dentry;
+-	int (*readlink)(struct dentry *, char *, int);
+-	int err, n;
++	int ret;
+ 
+ 	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
+ 	proc_file = dentry_open(dget(proc_dentry), NULL, O_RDONLY);
+-	err = PTR_ERR(proc_dentry);
+-	if(IS_ERR(proc_dentry))
+-		return(err);
++	if (IS_ERR(proc_file))
++		return PTR_ERR(proc_file);
+ 
+-	readlink = proc_dentry->d_inode->i_op->readlink;
+-	n = (*readlink)(proc_dentry, buffer, buflen);
++	ret = proc_dentry->d_inode->i_op->readlink(proc_dentry, buffer, buflen);
+ 
+ 	fput(proc_file);
+ 
+-	return(n);
++	return ret;
+ }
+ 
+ static void* hppfs_follow_link(struct dentry *dentry, struct nameidata *nd)
+ {
+ 	struct file *proc_file;
+ 	struct dentry *proc_dentry;
+-	void * (*follow_link)(struct dentry *, struct nameidata *);
+ 	void *ret;
+ 
+ 	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
+ 	proc_file = dentry_open(dget(proc_dentry), NULL, O_RDONLY);
++	if (IS_ERR(proc_file))
++		return proc_file;
+ 
+-	if (IS_ERR(proc_dentry))
+-		return proc_dentry;
+-
+-	follow_link = proc_dentry->d_inode->i_op->follow_link;
+-	ret = (*follow_link)(proc_dentry, nd);
++	ret = proc_dentry->d_inode->i_op->follow_link(proc_dentry, nd);
+ 
+ 	fput(proc_file);
+ 
+_
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
 
 	
 
