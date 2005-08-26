@@ -1,22 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E8KBw-0000Wd-Gt	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Aug 2005 09:03:00 -0700
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E8KBv-0004Xo-Ax
+	id 1E8fl2-0002vn-Bd	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Aug 2005 08:04:40 -0700
+Received: from mail-relay-4.tiscali.it ([213.205.33.44])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E8fkz-0004kB-N7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Aug 2005 09:03:00 -0700
-Message-ID: <430DEBAA.3090801@theshore.net>
-From: "Christopher S. Aker" <caker@theshore.net>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: host kernel dump on 2.6.11.12-skas3-v8.2
-References: <20050824155845.80549.qmail@web30709.mail.mud.yahoo.com>
-	<430C9A3D.8010104@athon.me.uk> <430D9435.2090809@rimuhosting.com>
-In-Reply-To: <430D9435.2090809@rimuhosting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+	Fri, 26 Aug 2005 08:04:40 -0700
+From: blaisorblade@yahoo.it
+Message-Id: <20050826145749.03BFE24D661@zion.home.lan>
+Subject: [uml-devel] [patch 1/2] Fixup symlink function pointers for hppfs
+	[for 2.6.13]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,31 +23,62 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 25 Aug 2005 11:02:50 -0500
-To: Peter <peter.spamcatcher@rimuhosting.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 26 Aug 2005 16:57:44 +0200
+To: torvalds@osdl.org
+Cc: akpm@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, blaisorblade@yahoo.it
 
-Peter wrote:
- > Hi.  I just got this kernel dump on one particular host server that has
- > been giving me some grief - it has paniced 3 times over the last month.
- >
- > Would anyone on the list care to take a guess whether this looks like a
- > hardware, skas or vanilla kernel problem.  Any recommendations 
-appreciated.
 
-Lots of reports of this very bug on LKML, so I wouldn't think it's SKAS 
-specific.  I didn't dig far enough to determine if it's been fixed past 
-2.6.11.12.  Let us know how the hunt goes :)
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-http://marc.theaimsgroup.com/?t=111524392800005&r=1&w=2
-http://marc.theaimsgroup.com/?t=111124107100001&r=1&w=2
-http://marc.theaimsgroup.com/?t=110591026500001&r=1&w=2
-http://marc.theaimsgroup.com/?t=111100740400005&r=1&w=2
-http://marc.theaimsgroup.com/?t=111141951900001&r=1&w=2
+Update hppfs for the symlink functions prototype change.
+Should be trivial, but please verify it's correct.
 
-BTW, Were you able to see the other panics?  Were they the same?
+Yes, I know the code I leave there is still _bogus_, see next patch for this.
 
--Chris
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.git-paolo/fs/hppfs/hppfs_kern.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff -puN fs/hppfs/hppfs_kern.c~hppfs-fix-symlink fs/hppfs/hppfs_kern.c
+--- linux-2.6.git/fs/hppfs/hppfs_kern.c~hppfs-fix-symlink	2005-08-24 17:43:56.000000000 +0200
++++ linux-2.6.git-paolo/fs/hppfs/hppfs_kern.c	2005-08-24 18:17:46.000000000 +0200
+@@ -679,25 +679,25 @@ static int hppfs_readlink(struct dentry 
+ 	return(n);
+ }
+ 
+-static int hppfs_follow_link(struct dentry *dentry, struct nameidata *nd)
++static void* hppfs_follow_link(struct dentry *dentry, struct nameidata *nd)
+ {
+ 	struct file *proc_file;
+ 	struct dentry *proc_dentry;
+-	int (*follow_link)(struct dentry *, struct nameidata *);
+-	int err, n;
++	void * (*follow_link)(struct dentry *, struct nameidata *);
++	void *ret;
+ 
+ 	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
+ 	proc_file = dentry_open(dget(proc_dentry), NULL, O_RDONLY);
+-	err = PTR_ERR(proc_dentry);
+-	if(IS_ERR(proc_dentry))
+-		return(err);
++
++	if (IS_ERR(proc_dentry))
++		return proc_dentry;
+ 
+ 	follow_link = proc_dentry->d_inode->i_op->follow_link;
+-	n = (*follow_link)(proc_dentry, nd);
++	ret = (*follow_link)(proc_dentry, nd);
+ 
+ 	fput(proc_file);
+ 
+-	return(n);
++	return ret;
+ }
+ 
+ static struct inode_operations hppfs_dir_iops = {
+_
 
 
 -------------------------------------------------------
