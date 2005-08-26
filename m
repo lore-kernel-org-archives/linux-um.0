@@ -1,21 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E8ja2-0004Ue-3g	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 12:09:34 -0700
-Received: from silver.veritas.com ([143.127.12.111])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E8ja1-0005GJ-Ks
+	id 1E8k3C-0005kl-3Y	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Aug 2005 12:39:42 -0700
+Received: from rgminet04.oracle.com ([148.87.122.33])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1E8k3B-0000io-CA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 12:09:34 -0700
-From: Hugh Dickins <hugh@veritas.com>
-In-Reply-To: <200508262023.29170.blaisorblade@yahoo.it>
-Message-ID: <Pine.LNX.4.61.0508262000530.8803@goblin.wat.veritas.com>
-References: <200508262023.29170.blaisorblade@yahoo.it>
+	Fri, 26 Aug 2005 12:39:42 -0700
+Received: from rgmsgw300.us.oracle.com (rgmsgw300.us.oracle.com
+	[138.1.186.49])j7QJdYBn021956
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Aug 2005 13:39:34 -0600
+Received: from rgmsgw300.us.oracle.com (localhost [127.0.0.1])
+	j7QJdXw1001190	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Aug 2005 13:39:33 -0600
+Received: from [138.2.230.92] (agraves-lnx.us.oracle.com [138.2.230.92])
+	j7QJdXRo001175
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Aug 2005 13:39:33 -0600
+Message-ID: <430F6FF5.3070008@oracle.com>
+From: Allan Graves <allan.graves@oracle.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: [RFC] [patch 0/18] remap_file_pages protection
-	support (for UML), try 3
+Content-Type: multipart/mixed;
+ boundary="------------010004040007030609010505"
+Subject: [uml-devel] patch for mconsole to interrupt for gdb
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,41 +38,141 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Aug 2005 20:11:20 +0100 (BST)
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, Andi Kleen <ak@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 26 Aug 2005 15:39:33 -0400
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 26 Aug 2005, Blaisorblade wrote:
+This is a multi-part message in MIME format.
+--------------010004040007030609010505
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> This is a followup to my post of last week (Aug 12) about remap_file_pages 
-> protection support. I've improved and consolidated the patches and updated 
-> them against 2.6.13-rc6/rc7 (the same patches apply against both versions).
-> I'm sending the full patch series only to akpm, mingo and LKML.
-> 
-> I've also reduced them to only 18, and made the splitting more significant. 
-> I'm not resending all the patches for foreign architectures, because they're 
-> almost unchanged since last time (there's just a trivial reject from ppc32, 
-> because one change has already been done after -rc4).
-> 
-> I'm working on this to provide support for UML, which currently easily creates 
-> more than 64K (the default limit) vma's for a single process. Actually, it 
-> needs one VMA per each page. So, with this patch and specific UML support, 
-> which Ingo wrote and which I'm porting to recent UMLs.
+Jeff,
+Here's the patch for mconsole to make it interrupt for gdb. 
+Allan
 
-I'll try to take a look sometime next week - or, if I wait until
-next Friday, can we expect it to have come down to 9 patches ;-?
+--------------010004040007030609010505
+Content-Type: text/plain;
+ name="interrupt.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="interrupt.patch"
 
-I should say, my initial reaction is very much like Andi's last week.
+--- uml_mconsole.c.orig	2005-08-26 13:08:33.000000000 -0400
++++ uml_mconsole.c	2005-08-26 15:32:31.000000000 -0400
+@@ -37,13 +37,20 @@
+ #include <sys/uio.h>
+ #include <readline/readline.h>
+ #include <readline/history.h>
++#include <signal.h>
++
+ 
+ static char uml_name[11];
+ static struct sockaddr_un sun;
++static long int uml_pid;
+ 
+-static int do_switch(char *file, char *name)
++static int do_switch(char *dir, char *file, char *name)
+ {
+   struct stat buf;
++  char pid_path[MAXPATHLEN + 1]="";
++  FILE *fd;
++  char pid[32]="";
++  int x=-1;
+ 
+   if(stat(file, &buf) == -1){
+     fprintf(stderr, "Warning: couldn't stat file: %s - ", file);
+@@ -53,6 +60,24 @@
+   sun.sun_family = AF_UNIX;
+   strncpy(sun.sun_path, file, sizeof(sun.sun_path));
+   strncpy(uml_name, name, sizeof(uml_name));
++
++  /* Open and read PID file */
++  snprintf(pid_path, sizeof(pid_path), "%s/%s/pid", dir, name);
++  if(!(fd=fopen(pid_path, "r"))) {
++    uml_pid=-1;
++    return(0);
++  }
++  while (!feof(fd) && !ferror(fd)) {
++    fread(&pid[++x], sizeof(char), 1, fd);
++  }
++  /* Convert read PID to number, or set PID to known error number */
++  if (feof(fd) && !ferror(fd) ) {
++    uml_pid=strtol(pid, NULL, 10);
++  }
++  else {
++    uml_pid=-1;
++    return(0);
++  }
+   return(0);
+ }
+ 
+@@ -65,19 +90,22 @@
+     snprintf(dir, sizeof(dir), "%s/.uml", home);
+     snprintf(file, sizeof(file), "%s/%s/mconsole", dir, name);
+     if(strncmp(name, dir, strlen(dir))){
+-      if(!do_switch(file, name)) return(0);
++      if(!do_switch(dir,file, name)) return(0);
+       try_file = 0;
+     }
+   }
+ 
++  snprintf(dir, sizeof(dir), "/tmp/uml/%s", name);
+   snprintf(tmp, sizeof(tmp), "/tmp/uml/%s/mconsole", name);
+   if(strncmp(name, "/tmp/uml/", strlen("/tmp/uml/"))){
+-    if(!do_switch(tmp, name)) return(0);
++    if(!do_switch(dir,tmp, name)) return(0);
+   }
+ 
+-  if(!do_switch(name, name)) return(0);
++
++  snprintf(dir, sizeof(dir), "./");
++  if(!do_switch(dir, name, name)) return(0);
+   if(!try_file) return(-1);
+-  return(do_switch(file, name));
++  return(do_switch(dir,file, name));
+ }
+ 
+ #define MCONSOLE_MAGIC (0xcafebabe)
+@@ -264,7 +292,8 @@
+     quit - Quit mconsole\n\
+     switch <socket-name> - Switch control to the given machine\n\
+     log -f <filename> - use contents of <filename> as UML log messages\n\
+-    mconsole-version - version of this mconsole program\n";
++    mconsole-version - version of this mconsole program\n\
++    int  - Interrupt UML session \n";
+ 
+ static int help_cmd(int fd, char *command)
+ {
+@@ -344,6 +373,19 @@
+   return(0);
+ }
+ 
++static int int_cmd(int fd, char *command)
++{
++
++  if (uml_pid == -1) {
++    printf("Cannot determine the PID of your UML session, not sending signal.\n");
++    return(0);
++  }
++
++  kill(uml_pid, SIGINT);
++
++  return(0);
++}
++
+ struct cmd {
+   char *command;
+   int (*proc)(int, char *);
+@@ -355,6 +397,7 @@
+   { "switch", switch_cmd },
+   { "log", log_cmd },
+   { "mconsole-version", mversion_cmd },
++  { "int", int_cmd },
+   { NULL, default_cmd }
+   /* default_cmd means "send it to the UML" */
+ };
 
-sys_remap_file_pages solves a real problem, but it does so by breaking
-lots of rules.  For more than a year after it came in, almost every
-development we tried in mm would come up against "but then what do we
-do about the nonlinear mappings?".
-
-That has settled down now, but I don't look forward to extending it.
-On the other hand, UML does deserve better support.
-
-Hugh
+--------------010004040007030609010505--
 
 
 -------------------------------------------------------
