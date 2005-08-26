@@ -1,32 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E8k3C-0005kl-3Y	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 12:39:42 -0700
-Received: from rgminet04.oracle.com ([148.87.122.33])
+	id 1E8kJM-0006MM-2v	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Aug 2005 12:56:24 -0700
+Received: from agminet03.oracle.com ([141.146.126.230])
 	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1E8k3B-0000io-CA
+	(Exim 4.44)	id 1E8kJL-0006Nw-VK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 12:39:42 -0700
+	Fri, 26 Aug 2005 12:56:24 -0700
 Received: from rgmsgw300.us.oracle.com (rgmsgw300.us.oracle.com
-	[138.1.186.49])j7QJdYBn021956
+	[138.1.186.49])j7QJuHLc026034
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Aug 2005 13:39:34 -0600
+	Fri, 26 Aug 2005 14:56:17 -0500
 Received: from rgmsgw300.us.oracle.com (localhost [127.0.0.1])
-	j7QJdXw1001190	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Aug 2005 13:39:33 -0600
+	j7QJuG5N008037	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Aug 2005 13:56:16 -0600
 Received: from [138.2.230.92] (agraves-lnx.us.oracle.com [138.2.230.92])
-	j7QJdXRo001175
+	j7QJuGRJ008030
 	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Aug 2005 13:39:33 -0600
-Message-ID: <430F6FF5.3070008@oracle.com>
+	Fri, 26 Aug 2005 13:56:16 -0600
+Message-ID: <430F73E0.3050508@oracle.com>
 From: Allan Graves <allan.graves@oracle.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010004040007030609010505"
-Subject: [uml-devel] patch for mconsole to interrupt for gdb
+ boundary="------------000801020809020005000405"
+Subject: [uml-devel] new patch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,19 +38,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Aug 2005 15:39:33 -0400
+Date: Fri, 26 Aug 2005 15:56:16 -0400
 To: user-mode-linux-devel@lists.sourceforge.net
 
 This is a multi-part message in MIME format.
---------------010004040007030609010505
+--------------000801020809020005000405
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Jeff,
-Here's the patch for mconsole to make it interrupt for gdb. 
+Jeff, here we have fscanf. :)
+Sorry bout that.
 Allan
 
---------------010004040007030609010505
+--------------000801020809020005000405
 Content-Type: text/plain;
  name="interrupt.patch"
 Content-Transfer-Encoding: 7bit
@@ -58,7 +58,7 @@ Content-Disposition: inline;
  filename="interrupt.patch"
 
 --- uml_mconsole.c.orig	2005-08-26 13:08:33.000000000 -0400
-+++ uml_mconsole.c	2005-08-26 15:32:31.000000000 -0400
++++ uml_mconsole.c	2005-08-26 15:53:11.000000000 -0400
 @@ -37,13 +37,20 @@
  #include <sys/uio.h>
  #include <readline/readline.h>
@@ -81,7 +81,7 @@ Content-Disposition: inline;
  
    if(stat(file, &buf) == -1){
      fprintf(stderr, "Warning: couldn't stat file: %s - ", file);
-@@ -53,6 +60,24 @@
+@@ -53,6 +60,18 @@
    sun.sun_family = AF_UNIX;
    strncpy(sun.sun_path, file, sizeof(sun.sun_path));
    strncpy(uml_name, name, sizeof(uml_name));
@@ -92,21 +92,15 @@ Content-Disposition: inline;
 +    uml_pid=-1;
 +    return(0);
 +  }
-+  while (!feof(fd) && !ferror(fd)) {
-+    fread(&pid[++x], sizeof(char), 1, fd);
-+  }
-+  /* Convert read PID to number, or set PID to known error number */
-+  if (feof(fd) && !ferror(fd) ) {
-+    uml_pid=strtol(pid, NULL, 10);
-+  }
-+  else {
++
++  if(fscanf(fd, "%ld", &uml_pid)!=1){
 +    uml_pid=-1;
 +    return(0);
 +  }
    return(0);
  }
  
-@@ -65,19 +90,22 @@
+@@ -65,19 +84,22 @@
      snprintf(dir, sizeof(dir), "%s/.uml", home);
      snprintf(file, sizeof(file), "%s/%s/mconsole", dir, name);
      if(strncmp(name, dir, strlen(dir))){
@@ -133,7 +127,7 @@ Content-Disposition: inline;
  }
  
  #define MCONSOLE_MAGIC (0xcafebabe)
-@@ -264,7 +292,8 @@
+@@ -264,7 +286,8 @@
      quit - Quit mconsole\n\
      switch <socket-name> - Switch control to the given machine\n\
      log -f <filename> - use contents of <filename> as UML log messages\n\
@@ -143,7 +137,7 @@ Content-Disposition: inline;
  
  static int help_cmd(int fd, char *command)
  {
-@@ -344,6 +373,19 @@
+@@ -344,6 +367,19 @@
    return(0);
  }
  
@@ -163,7 +157,7 @@ Content-Disposition: inline;
  struct cmd {
    char *command;
    int (*proc)(int, char *);
-@@ -355,6 +397,7 @@
+@@ -355,6 +391,7 @@
    { "switch", switch_cmd },
    { "log", log_cmd },
    { "mconsole-version", mversion_cmd },
@@ -172,7 +166,7 @@ Content-Disposition: inline;
    /* default_cmd means "send it to the UML" */
  };
 
---------------010004040007030609010505--
+--------------000801020809020005000405--
 
 
 -------------------------------------------------------
