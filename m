@@ -1,32 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E8kJM-0006MM-2v	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 12:56:24 -0700
-Received: from agminet03.oracle.com ([141.146.126.230])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1E8kJL-0006Nw-VK
+	id 1E8kP7-0006Vi-7T	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Aug 2005 13:02:21 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1E8kP3-00050e-F5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Aug 2005 12:56:24 -0700
-Received: from rgmsgw300.us.oracle.com (rgmsgw300.us.oracle.com
-	[138.1.186.49])j7QJuHLc026034
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Aug 2005 14:56:17 -0500
-Received: from rgmsgw300.us.oracle.com (localhost [127.0.0.1])
-	j7QJuG5N008037	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Aug 2005 13:56:16 -0600
-Received: from [138.2.230.92] (agraves-lnx.us.oracle.com [138.2.230.92])
-	j7QJuGRJ008030
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Aug 2005 13:56:16 -0600
-Message-ID: <430F73E0.3050508@oracle.com>
-From: Allan Graves <allan.graves@oracle.com>
+	Fri, 26 Aug 2005 13:02:21 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [RFC] [patch 0/18] remap_file_pages protection
+	support (for UML), try 3
+References: <200508262023.29170.blaisorblade@yahoo.it>
+	<Pine.LNX.4.61.0508262000530.8803@goblin.wat.veritas.com>
+In-Reply-To: <Pine.LNX.4.61.0508262000530.8803@goblin.wat.veritas.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000801020809020005000405"
-Subject: [uml-devel] new patch
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200508262158.11257.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,135 +31,115 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 26 Aug 2005 15:56:16 -0400
+Date: Fri, 26 Aug 2005 21:58:10 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Hugh Dickins <hugh@veritas.com>, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, Andi Kleen <ak@suse.de>, LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-This is a multi-part message in MIME format.
---------------000801020809020005000405
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Friday 26 August 2005 21:11, Hugh Dickins wrote:
+> On Fri, 26 Aug 2005, Blaisorblade wrote:
+> > This is a followup to my post of last week (Aug 12) about
+> > remap_file_pages protection support. I've improved and consolidated the
+> > patches and updated them against 2.6.13-rc6/rc7 (the same patches apply
+> > against both versions). I'm sending the full patch series only to akpm,
+> > mingo and LKML.
+> >
+> > I've also reduced them to only 18, and made the splitting more
+> > significant. I'm not resending all the patches for foreign architectures,
+> > because they're almost unchanged since last time (there's just a trivial
+> > reject from ppc32, because one change has already been done after -rc4).
+> >
+> > I'm working on this to provide support for UML, which currently easily
+> > creates more than 64K (the default limit) vma's for a single process.
+> > Actually, it needs one VMA per each page. So, with this patch and
+> > specific UML support, which Ingo wrote and which I'm porting to recent
+> > UMLs.
+>
+> I'll try to take a look sometime next week - or, if I wait until
+> next Friday, can we expect it to have come down to 9 patches ;-?
+:-) Don't think so, unless you want just me to join patches together. However, 
+there are still some oneliners, so the patchset is not so huge.
 
-Jeff, here we have fscanf. :)
-Sorry bout that.
-Allan
+Well, diffstat seems to contradict me (on the joined-up patch):
 
---------------000801020809020005000405
-Content-Type: text/plain;
- name="interrupt.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="interrupt.patch"
+ Documentation/feature-removal-schedule.txt |   12 +
+ arch/i386/mm/fault.c                       |   19 ++
+ arch/um/kernel/trap_kern.c                 |   52 ++++++-
+ arch/x86_64/mm/fault.c                     |    6
+ include/asm-i386/mman.h                    |    1
+ include/asm-i386/pgtable-2level.h          |   15 +-
+ include/asm-i386/pgtable-3level.h          |   11 +
+ include/asm-i386/pgtable.h                 |    3
+ include/asm-ia64/mman.h                    |    1
+ include/asm-ppc/mman.h                     |    1
+ include/asm-ppc64/mman.h                   |    1
+ include/asm-s390/mman.h                    |    1
+ include/asm-um/pgtable-2level.h            |   15 +-
+ include/asm-um/pgtable-3level.h            |   21 ++-
+ include/asm-um/pgtable.h                   |    3
+ include/asm-x86_64/mman.h                  |    1
+ include/asm-x86_64/pgtable.h               |   12 +
+ include/linux/mm.h                         |   40 ++++--
+ include/linux/pagemap.h                    |   32 ++++
+ mm/filemap.c                               |   18 ++
+ mm/fremap.c                                |  135 +++++++++++++++-----
+ mm/madvise.c                               |    2
+ mm/memory.c                                |  193 
+++++++++++++++++++++++-------
+ mm/mmap.c                                  |   14 +-
+ mm/mprotect.c                              |    3
+ mm/rmap.c                                  |    6
+ mm/shmem.c                                 |   13 +
 
---- uml_mconsole.c.orig	2005-08-26 13:08:33.000000000 -0400
-+++ uml_mconsole.c	2005-08-26 15:53:11.000000000 -0400
-@@ -37,13 +37,20 @@
- #include <sys/uio.h>
- #include <readline/readline.h>
- #include <readline/history.h>
-+#include <signal.h>
-+
- 
- static char uml_name[11];
- static struct sockaddr_un sun;
-+static long int uml_pid;
- 
--static int do_switch(char *file, char *name)
-+static int do_switch(char *dir, char *file, char *name)
- {
-   struct stat buf;
-+  char pid_path[MAXPATHLEN + 1]="";
-+  FILE *fd;
-+  char pid[32]="";
-+  int x=-1;
- 
-   if(stat(file, &buf) == -1){
-     fprintf(stderr, "Warning: couldn't stat file: %s - ", file);
-@@ -53,6 +60,18 @@
-   sun.sun_family = AF_UNIX;
-   strncpy(sun.sun_path, file, sizeof(sun.sun_path));
-   strncpy(uml_name, name, sizeof(uml_name));
-+
-+  /* Open and read PID file */
-+  snprintf(pid_path, sizeof(pid_path), "%s/%s/pid", dir, name);
-+  if(!(fd=fopen(pid_path, "r"))) {
-+    uml_pid=-1;
-+    return(0);
-+  }
-+
-+  if(fscanf(fd, "%ld", &uml_pid)!=1){
-+    uml_pid=-1;
-+    return(0);
-+  }
-   return(0);
- }
- 
-@@ -65,19 +84,22 @@
-     snprintf(dir, sizeof(dir), "%s/.uml", home);
-     snprintf(file, sizeof(file), "%s/%s/mconsole", dir, name);
-     if(strncmp(name, dir, strlen(dir))){
--      if(!do_switch(file, name)) return(0);
-+      if(!do_switch(dir,file, name)) return(0);
-       try_file = 0;
-     }
-   }
- 
-+  snprintf(dir, sizeof(dir), "/tmp/uml/%s", name);
-   snprintf(tmp, sizeof(tmp), "/tmp/uml/%s/mconsole", name);
-   if(strncmp(name, "/tmp/uml/", strlen("/tmp/uml/"))){
--    if(!do_switch(tmp, name)) return(0);
-+    if(!do_switch(dir,tmp, name)) return(0);
-   }
- 
--  if(!do_switch(name, name)) return(0);
-+
-+  snprintf(dir, sizeof(dir), "./");
-+  if(!do_switch(dir, name, name)) return(0);
-   if(!try_file) return(-1);
--  return(do_switch(file, name));
-+  return(do_switch(dir,file, name));
- }
- 
- #define MCONSOLE_MAGIC (0xcafebabe)
-@@ -264,7 +286,8 @@
-     quit - Quit mconsole\n\
-     switch <socket-name> - Switch control to the given machine\n\
-     log -f <filename> - use contents of <filename> as UML log messages\n\
--    mconsole-version - version of this mconsole program\n";
-+    mconsole-version - version of this mconsole program\n\
-+    int  - Interrupt UML session \n";
- 
- static int help_cmd(int fd, char *command)
- {
-@@ -344,6 +367,19 @@
-   return(0);
- }
- 
-+static int int_cmd(int fd, char *command)
-+{
-+
-+  if (uml_pid == -1) {
-+    printf("Cannot determine the PID of your UML session, not sending signal.\n");
-+    return(0);
-+  }
-+
-+  kill(uml_pid, SIGINT);
-+
-+  return(0);
-+}
-+
- struct cmd {
-   char *command;
-   int (*proc)(int, char *);
-@@ -355,6 +391,7 @@
-   { "switch", switch_cmd },
-   { "log", log_cmd },
-   { "mconsole-version", mversion_cmd },
-+  { "int", int_cmd },
-   { NULL, default_cmd }
-   /* default_cmd means "send it to the UML" */
- };
+> I should say, my initial reaction is very much like Andi's last week.
 
---------------000801020809020005000405--
+> sys_remap_file_pages solves a real problem, but it does so by breaking
+> lots of rules.  For more than a year after it came in, almost every
+> development we tried in mm would come up against "but then what do we
+> do about the nonlinear mappings?".
+
+Nonuniform mappings are much less of a problem. Really. The reason nonlinear 
+mappings reached mainline before nonuniform ones (and I don't know if they 
+willl ever) is not simplicity, but the miss of uses until now. And also the 
+fact that Ingo hadn't the time to finish it.
+
+In fact, I've been playing a lot with the GIT history during this month of 
+development, particularly with objrmap, so I've come across those problems 
+quite a lot, but what I noticed is that you mostly don't care about the VMA 
+to be uniform, just it to be linear or not (because nonlinear VMAs break 
+objrmap).
+
+This patch, in comparison, is just:
+
+*) check permissions in the generic VM when faulting in pages, if and only if 
+the vma is nonuniform (yes, nontrivial at all).
+
+*) be anally picky to save the PTE protections together with the rest, and do 
+it *everywhere*; but if you say "nonuniform implies linear", you lose this 
+problem almost completely.
+
+The only exception is that when you remap an address range with PROT_NONE 
+(thus effectively unmapping those addressed), you can't clear the PTEs but 
+you must use pfn_pte(0, __S000) to fill them in (this is done in the 
+optimization-fixup patch #15).
+
+> That has settled down now, but I don't look forward to extending it.
+> On the other hand, UML does deserve better support.
+
+> Hugh
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
