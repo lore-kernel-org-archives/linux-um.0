@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1E9qCD-00025a-IF	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Aug 2005 13:25:33 -0700
+	id 1E9qCW-00028G-7G	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Aug 2005 13:25:52 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E9qCD-0005Du-5v
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1E9qCV-0005Is-Jl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Aug 2005 13:25:33 -0700
-Message-Id: <200508292006.j7TK6ru5029910@ccure.user-mode-linux.org>
+	Mon, 29 Aug 2005 13:25:52 -0700
+Message-Id: <200508292007.j7TK7FsA029949@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/9] UML - Error path cleanup
+Subject: [uml-devel] [PATCH 8/9] UML - Merge duplicated page table code
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,59 +24,199 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 29 Aug 2005 16:06:52 -0400
+Date: Mon, 29 Aug 2005 16:07:15 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-This cleans up the error path in ubd_open, causing it now to call
-ubd_close appropriately when something fails.
 
+There is a lot of code which is duplicated between the 2 and 3 level
+implementation, with the only difference that the 3-level implementation is a
+bit more generalized (instead of accessing directly pte_t.pte, it uses the
+appropriate access macros).
+
+So this code is joined together.
+
+As obvious, a "core code nice cleanup" is not a "stability-friendly patch" so
+usual care applies.
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.13-rc6-mm1/arch/um/drivers/ubd_kern.c
-===================================================================
---- linux-2.6.13-rc6-mm1.orig/arch/um/drivers/ubd_kern.c	2005-08-29 11:51:22.000000000 -0400
-+++ linux-2.6.13-rc6-mm1/arch/um/drivers/ubd_kern.c	2005-08-29 11:57:44.000000000 -0400
-@@ -668,21 +668,22 @@
- 	struct ubd *dev = &ubd_dev[n];
- 	int err;
+---
+
+ linux-2.6.git-paolo/include/asm-um/pgtable-2level.h |   27 -----------
+ linux-2.6.git-paolo/include/asm-um/pgtable-3level.h |   36 ---------------
+ linux-2.6.git-paolo/include/asm-um/pgtable.h        |   46 ++++++++++++++++++++
+ 3 files changed, 46 insertions(+), 63 deletions(-)
+
+diff -puN include/asm-um/pgtable-2level.h~uml-join-page-bits-handling include/asm-um/pgtable-2level.h
+--- linux-2.6.git/include/asm-um/pgtable-2level.h~uml-join-page-bits-handling	2005-07-24 00:49:30.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/pgtable-2level.h	2005-07-24 00:49:30.000000000 +0200
+@@ -35,35 +35,8 @@
+ static inline int pgd_newpage(pgd_t pgd)	{ return 0; }
+ static inline void pgd_mkuptodate(pgd_t pgd)	{ }
  
-+	err = -ENODEV;
- 	if(dev->file == NULL)
--		return(-ENODEV);
-+		goto out;
+-#define pte_present(x)	(pte_val(x) & (_PAGE_PRESENT | _PAGE_PROTNONE))
+-
+-static inline pte_t pte_mknewprot(pte_t pte)
+-{
+- 	pte_val(pte) |= _PAGE_NEWPROT;
+-	return(pte);
+-}
+-
+-static inline pte_t pte_mknewpage(pte_t pte)
+-{
+-	pte_val(pte) |= _PAGE_NEWPAGE;
+-	return(pte);
+-}
+-
+-static inline void set_pte(pte_t *pteptr, pte_t pteval)
+-{
+-	/* If it's a swap entry, it needs to be marked _PAGE_NEWPAGE so
+-	 * fix_range knows to unmap it.  _PAGE_NEWPROT is specific to
+-	 * mapped pages.
+-	 */
+-	*pteptr = pte_mknewpage(pteval);
+-	if(pte_present(*pteptr)) *pteptr = pte_mknewprot(*pteptr);
+-}
+-#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
+-
+ #define set_pmd(pmdptr, pmdval) (*(pmdptr) = (pmdval))
  
- 	if (ubd_open_dev(dev))
--		return(-ENODEV);
-+		goto out;
+-#define pte_page(x) pfn_to_page(pte_pfn(x))
+-#define pte_none(x) !(pte_val(x) & ~_PAGE_NEWPAGE)
+ #define pte_pfn(x) phys_to_pfn(pte_val(x))
+ #define pfn_pte(pfn, prot) __pte(pfn_to_phys(pfn) | pgprot_val(prot))
+ #define pfn_pmd(pfn, prot) __pmd(pfn_to_phys(pfn) | pgprot_val(prot))
+diff -puN include/asm-um/pgtable-3level.h~uml-join-page-bits-handling include/asm-um/pgtable-3level.h
+--- linux-2.6.git/include/asm-um/pgtable-3level.h~uml-join-page-bits-handling	2005-07-24 00:49:30.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/pgtable-3level.h	2005-07-24 00:49:30.000000000 +0200
+@@ -57,35 +57,6 @@ static inline int pgd_newpage(pgd_t pgd)
  
- 	err = ubd_file_size(dev, &dev->size);
- 	if(err < 0)
--		return(err);
-+		goto out_close;
+ static inline void pgd_mkuptodate(pgd_t pgd) { pgd_val(pgd) &= ~_PAGE_NEWPAGE; }
  
- 	dev->size = ROUND_BLOCK(dev->size);
+-
+-#define pte_present(x)	pte_get_bits(x, (_PAGE_PRESENT | _PAGE_PROTNONE))
+-
+-static inline pte_t pte_mknewprot(pte_t pte)
+-{
+-        pte_set_bits(pte, _PAGE_NEWPROT);
+-	return(pte);
+-}
+-
+-static inline pte_t pte_mknewpage(pte_t pte)
+-{
+-	pte_set_bits(pte, _PAGE_NEWPAGE);
+-	return(pte);
+-}
+-
+-static inline void set_pte(pte_t *pteptr, pte_t pteval)
+-{
+-	pte_copy(*pteptr, pteval);
+-
+-	/* If it's a swap entry, it needs to be marked _PAGE_NEWPAGE so
+-	 * fix_range knows to unmap it.  _PAGE_NEWPROT is specific to
+-	 * mapped pages.
+-	 */
+-
+-	*pteptr = pte_mknewpage(*pteptr);
+-	if(pte_present(*pteptr)) *pteptr = pte_mknewprot(*pteptr);
+-}
+-#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
+-
+ #define set_pmd(pmdptr, pmdval) set_64bit((phys_t *) (pmdptr), pmd_val(pmdval))
  
- 	err = ubd_new_disk(MAJOR_NR, dev->size, n, &ubd_gendisk[n]);
- 	if(err) 
--		return(err);
-+		goto out_close;
-  
- 	if(fake_major != MAJOR_NR)
- 		ubd_new_disk(fake_major, dev->size, n, 
-@@ -693,8 +694,11 @@
- 	if (fake_ide)
- 		make_ide_entries(ubd_gendisk[n]->disk_name);
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+@@ -113,13 +84,6 @@ static inline void pud_clear (pud_t * pu
+ #define pmd_offset(pud, address) ((pmd_t *) pud_page(*(pud)) + \
+ 			pmd_index(address))
  
-+	err = 0;
-+out_close:
- 	ubd_close(dev);
--	return 0;
-+out:
-+	return err;
+-#define pte_page(x) pfn_to_page(pte_pfn(x))
+-
+-static inline int pte_none(pte_t pte)
+-{
+-	return pte_is_zero(pte);
+-}
+-
+ static inline unsigned long pte_pfn(pte_t pte)
+ {
+ 	return phys_to_pfn(pte_val(pte));
+diff -puN include/asm-um/pgtable.h~uml-join-page-bits-handling include/asm-um/pgtable.h
+--- linux-2.6.git/include/asm-um/pgtable.h~uml-join-page-bits-handling	2005-07-24 00:49:30.000000000 +0200
++++ linux-2.6.git-paolo/include/asm-um/pgtable.h	2005-07-24 06:11:58.000000000 +0200
+@@ -151,10 +151,24 @@ extern unsigned long pg0[1024];
+ 
+ #define pmd_page(pmd) phys_to_page(pmd_val(pmd) & PAGE_MASK)
+ 
++#define pte_page(x) pfn_to_page(pte_pfn(x))
+ #define pte_address(x) (__va(pte_val(x) & PAGE_MASK))
+ #define mk_phys(a, r) ((a) + (((unsigned long) r) << REGION_SHIFT))
+ #define phys_addr(p) ((p) & ~REGION_MASK)
+ 
++#define pte_present(x)	pte_get_bits(x, (_PAGE_PRESENT | _PAGE_PROTNONE))
++
++/*
++ * =================================
++ * Flags checking section.
++ * =================================
++ */
++
++static inline int pte_none(pte_t pte)
++{
++	return pte_is_zero(pte);
++}
++
+ /*
+  * The following only work if pte_present() is true.
+  * Undefined behaviour if not..
+@@ -210,6 +224,18 @@ static inline int pte_newprot(pte_t pte)
+ 	return(pte_present(pte) && (pte_get_bits(pte, _PAGE_NEWPROT)));
  }
  
- static int ubd_config(char *str)
++/*
++ * =================================
++ * Flags setting section.
++ * =================================
++ */
++
++static inline pte_t pte_mknewprot(pte_t pte)
++{
++	pte_set_bits(pte, _PAGE_NEWPROT);
++	return(pte);
++}
++
+ static inline pte_t pte_rdprotect(pte_t pte)
+ { 
+ 	pte_clear_bits(pte, _PAGE_USER);
+@@ -278,6 +304,26 @@ static inline pte_t pte_mkuptodate(pte_t
+ 	return(pte); 
+ }
+ 
++static inline pte_t pte_mknewpage(pte_t pte)
++{
++	pte_set_bits(pte, _PAGE_NEWPAGE);
++	return(pte);
++}
++
++static inline void set_pte(pte_t *pteptr, pte_t pteval)
++{
++	pte_copy(*pteptr, pteval);
++
++	/* If it's a swap entry, it needs to be marked _PAGE_NEWPAGE so
++	 * fix_range knows to unmap it.  _PAGE_NEWPROT is specific to
++	 * mapped pages.
++	 */
++
++	*pteptr = pte_mknewpage(*pteptr);
++	if(pte_present(*pteptr)) *pteptr = pte_mknewprot(*pteptr);
++}
++#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
++
+ extern phys_t page_to_phys(struct page *page);
+ 
+ /*
+_
+
 
 
 
