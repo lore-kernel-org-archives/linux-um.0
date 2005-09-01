@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EAxTz-000684-IB	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Sep 2005 15:24:31 -0700
+	id 1EAxvy-0007Fg-8u	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Sep 2005 15:53:26 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EAxTy-0002As-My
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EAxvw-0007Pq-LM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Sep 2005 15:24:31 -0700
-Message-Id: <200509012217.j81MH23j011535@ccure.user-mode-linux.org>
+	Thu, 01 Sep 2005 15:53:26 -0700
+Message-Id: <200509012216.j81MGvcQ011525@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 4/12] UML - build cleanups
+Subject: [uml-devel] [PATCH 2/12] UML - x86_64 build fix
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,113 +24,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 01 Sep 2005 18:17:02 -0400
+Date: Thu, 01 Sep 2005 18:16:57 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
+semaphore.c is no longer available from arch/x86_64, so we just pick up the
+generic version instead.
 
-Added missing include list to uml AFLAGS
-Killed magic for stubs. [So] - it was needed only because of messed AFLAGS
-Switched segv_stubs.c to kernel CFLAGS sans profile, instead of user ones
-Killed STUBS_CFLAGS - it's not needed and the only remaining use had been
-gratitious - it only polluted CFLAGS
-
-Signed-off-by: Al Viro <viro@parcelfarce.linux.theplanet.co.uk>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-
-Index: test/arch/um/Makefile-i386
+Index: linux-2.6.13-mm1/arch/um/sys-x86_64/Makefile
 ===================================================================
---- test.orig/arch/um/Makefile-i386	2005-09-01 16:03:16.000000000 -0400
-+++ test/arch/um/Makefile-i386	2005-09-01 16:04:30.000000000 -0400
-@@ -27,8 +27,7 @@
- endif
- endif
- 
--CFLAGS += -U__$(SUBARCH)__ -U$(SUBARCH) $(STUB_CFLAGS) \
--	  -Iinclude/asm-i386/mach-default \
-+CFLAGS += -U__$(SUBARCH)__ -U$(SUBARCH) -Iinclude/asm-i386/mach-default \
-           $(if $(KBUILD_SRC),-Iinclude2/asm-i386/mach-default -I$(srctree)/include/asm-i386/mach-default)
- 
- ifneq ($(CONFIG_GPROF),y)
-Index: test/arch/um/Makefile-x86_64
-===================================================================
---- test.orig/arch/um/Makefile-x86_64	2005-09-01 16:02:46.000000000 -0400
-+++ test/arch/um/Makefile-x86_64	2005-09-01 16:04:30.000000000 -0400
+--- linux-2.6.13-mm1.orig/arch/um/sys-x86_64/Makefile	2005-09-01 15:52:25.000000000 -0400
++++ linux-2.6.13-mm1/arch/um/sys-x86_64/Makefile	2005-09-01 15:53:04.000000000 -0400
 @@ -6,7 +6,7 @@
  
- #We #undef __x86_64__ for kernelspace, not for userspace where
- #it's needed for headers to work!
--CFLAGS += -U__$(SUBARCH)__ -fno-builtin $(STUB_CFLAGS)
-+CFLAGS += -U__$(SUBARCH)__ -fno-builtin
- USER_CFLAGS += -fno-builtin
+ #XXX: why into lib-y?
+ lib-y = bitops.o bugs.o csum-partial.o delay.o fault.o mem.o memcpy.o \
+-	ptrace.o ptrace_user.o semaphore.o sigcontext.o signal.o stub.o \
++	ptrace.o ptrace_user.o sigcontext.o signal.o stub.o \
+ 	stub_segv.o syscalls.o syscall_table.o sysrq.o thunk.o
  
- ELF_ARCH := i386:x86-64
-Index: test/arch/um/sys-i386/Makefile
-===================================================================
---- test.orig/arch/um/sys-i386/Makefile	2005-09-01 16:03:16.000000000 -0400
-+++ test/arch/um/sys-i386/Makefile	2005-09-01 16:04:30.000000000 -0400
-@@ -16,11 +16,7 @@
- highmem.c-dir = mm
- module.c-dir = kernel
+ obj-y := ksyms.o
+@@ -15,7 +15,7 @@
+ USER_OBJS := ptrace_user.o sigcontext.o
  
--STUB_CFLAGS = -Wp,-MD,$(depfile) $(call unprofile,$(USER_CFLAGS))
--
--# _cflags works with kernel files, not with userspace ones, but c_flags does,
--# why ask why?
--$(obj)/stub_segv.o : c_flags = $(STUB_CFLAGS)
-+$(obj)/stub_segv.o : _c_flags = $(call unprofile,$(CFLAGS))
+ SYMLINKS = bitops.c csum-copy.S csum-partial.c csum-wrappers.c memcpy.S \
+-	semaphore.c thunk.S module.c
++	thunk.S module.c
  
- subdir- := util
+ include arch/um/scripts/Makefile.rules
  
-Index: test/arch/um/sys-i386/stub_segv.c
-===================================================================
---- test.orig/arch/um/sys-i386/stub_segv.c	2005-09-01 16:02:46.000000000 -0400
-+++ test/arch/um/sys-i386/stub_segv.c	2005-09-01 16:04:30.000000000 -0400
-@@ -3,8 +3,7 @@
-  * Licensed under the GPL
-  */
- 
--#include <signal.h>
--#include <asm/sigcontext.h>
-+#include <asm/signal.h>
- #include <asm/unistd.h>
- #include "uml-config.h"
- #include "sysdep/sigcontext.h"
-Index: test/arch/um/sys-x86_64/Makefile
-===================================================================
---- test.orig/arch/um/sys-x86_64/Makefile	2005-09-01 16:04:05.000000000 -0400
-+++ test/arch/um/sys-x86_64/Makefile	2005-09-01 16:04:30.000000000 -0400
-@@ -27,11 +27,7 @@
+@@ -24,7 +24,6 @@
+ csum-partial.c-dir = lib
+ csum-wrappers.c-dir = lib
+ memcpy.S-dir = lib
+-semaphore.c-dir = kernel
  thunk.S-dir = lib
  module.c-dir = kernel
- 
--STUB_CFLAGS = -Wp,-MD,$(depfile) $(call unprofile,$(USER_CFLAGS))
--
--# _cflags works with kernel files, not with userspace ones, but c_flags does,
--# why ask why?
--$(obj)/stub_segv.o : c_flags = $(STUB_CFLAGS)
-+$(obj)/stub_segv.o: _c_flags = $(call unprofile,$(CFLAGS))
- 
- subdir- := util
- 
-Index: test/arch/um/sys-x86_64/stub_segv.c
-===================================================================
---- test.orig/arch/um/sys-x86_64/stub_segv.c	2005-09-01 16:02:46.000000000 -0400
-+++ test/arch/um/sys-x86_64/stub_segv.c	2005-09-01 16:04:30.000000000 -0400
-@@ -3,9 +3,10 @@
-  * Licensed under the GPL
-  */
- 
--#include <signal.h>
-+#include <asm/signal.h>
- #include <linux/compiler.h>
- #include <asm/unistd.h>
-+#include <asm/ucontext.h>
- #include "uml-config.h"
- #include "sysdep/sigcontext.h"
- #include "sysdep/faultinfo.h"
 
 
 
