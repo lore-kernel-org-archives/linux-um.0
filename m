@@ -1,18 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EAxvx-0007FW-F5	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Sep 2005 15:53:25 -0700
+	id 1EAxY9-0006Gg-SZ	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Sep 2005 15:28:49 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EAxvw-0007A9-Lv
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EAxY7-00036B-9B
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Sep 2005 15:53:25 -0700
-Message-Id: <200509012216.j81MGxtG011530@ccure.user-mode-linux.org>
+	Thu, 01 Sep 2005 15:28:49 -0700
+Message-Id: <200509012217.j81MHHj6011562@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/12] UML - System call path cleanup
+Subject: [uml-devel] [PATCH 9/12] UML - skas0 stubs now check system call
+	return values
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,49 +25,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 01 Sep 2005 18:16:59 -0400
+Date: Thu, 01 Sep 2005 18:17:17 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-This merges two sets of files which had no business being split apart in the
-first place.
+From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
+Change syscall-stub's data to include a "expected retval".
+Stub now checks syscalls retval and aborts execution of
+syscall list, if retval != expected retval.
+run_syscall_stub prints the data of the failed syscall,
+using the data pointer and retval written by the stub
+to the beginning of the stack.
+one_syscall_stub is removed, to simplify code, because
+only some instructions are saved by one_syscall_stub, no
+host-syscall.
+Using the stub with additional data (modify_ldt via stub)
+is prepared also.
+
+Signed-off-by: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.13/arch/um/include/syscall.h
+Index: test/arch/um/include/tlb.h
 ===================================================================
---- linux-2.6.13.orig/arch/um/include/syscall.h	2005-08-31 04:29:26.191951656 -0400
-+++ linux-2.6.13/arch/um/include/syscall.h	2005-08-30 19:36:48.000000000 -0400
-@@ -0,0 +1,12 @@
-+/* 
-+ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-+ * Licensed under the GPL
-+ */
-+
-+#ifndef __SYSCALL_USER_H
-+#define __SYSCALL_USER_H
-+
-+extern int record_syscall_start(int syscall);
-+extern void record_syscall_end(int index, long result);
-+
-+#endif
-Index: linux-2.6.13/arch/um/include/syscall_user.h
+--- test.orig/arch/um/include/tlb.h	2005-09-01 16:32:51.000000000 -0400
++++ test/arch/um/include/tlb.h	2005-09-01 16:33:07.000000000 -0400
+@@ -38,9 +38,9 @@
+ extern void force_flush_all(void);
+ extern void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+                              unsigned long end_addr, int force,
+-			     void *(*do_ops)(union mm_context *,
+-					     struct host_vm_op *, int, int,
+-					     void *));
++			     int (*do_ops)(union mm_context *, 
++					   struct host_vm_op *, int, int,
++					   void **));
+ extern int flush_tlb_kernel_range_common(unsigned long start,
+ 					 unsigned long end);
+ 
+Index: test/arch/um/kernel/skas/include/skas.h
 ===================================================================
---- linux-2.6.13.orig/arch/um/include/syscall_user.h	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/include/syscall_user.h	2005-08-31 04:29:26.191951656 -0400
-@@ -1,23 +0,0 @@
--/* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
--
--#ifndef __SYSCALL_USER_H
--#define __SYSCALL_USER_H
--
--extern int record_syscall_start(int syscall);
--extern void record_syscall_end(int index, long result);
--
--#endif
+--- test.orig/arch/um/kernel/skas/include/skas.h	2005-09-01 16:33:07.000000000 -0400
++++ test/arch/um/kernel/skas/include/skas.h	2005-09-01 16:33:07.000000000 -0400
+@@ -24,14 +24,14 @@
+ extern void remove_sigstack(void);
+ extern void new_thread_handler(int sig);
+ extern void handle_syscall(union uml_pt_regs *regs);
+-extern void *map(struct mm_id * mm_idp, unsigned long virt,
+-		 unsigned long len, int r, int w, int x, int phys_fd,
+-		 unsigned long long offset, int done, void *data);
+-extern void *unmap(struct mm_id * mm_idp, void *addr,
+-		   unsigned long len, int done, void *data);
+-extern void *protect(struct mm_id * mm_idp, unsigned long addr,
+-		     unsigned long len, int r, int w, int x, int done,
+-		     void *data);
++extern int map(struct mm_id * mm_idp, unsigned long virt,
++	       unsigned long len, int r, int w, int x, int phys_fd, 
++	       unsigned long long offset, int done, void **data);
++extern int unmap(struct mm_id * mm_idp, void *addr, unsigned long len,
++		 int done, void **data);
++extern int protect(struct mm_id * mm_idp, unsigned long addr,
++		   unsigned long len, int r, int w, int x, int done, 
++		   void **data);
+ extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
+ extern int new_mm(int from, unsigned long stack);
+ extern int start_userspace(unsigned long stub_stack);
+@@ -39,16 +39,11 @@
+ extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
+ extern long execute_syscall_skas(void *r);
+ extern unsigned long current_stub_stack(void);
++extern long run_syscall_stub(struct mm_id * mm_idp,
++                             int syscall, unsigned long *args, long expected,
++                             void **addr, int done);
++extern long syscall_stub_data(struct mm_id * mm_idp,
++                              unsigned long *data, int data_count,
++                              void **addr, void **stub_addr);
+ 
+ #endif
 -
 -/*
 - * Overrides for Emacs so that we follow Linus's tabbing style.
@@ -78,419 +113,875 @@ Index: linux-2.6.13/arch/um/include/syscall_user.h
 - * c-file-style: "linux"
 - * End:
 - */
-Index: linux-2.6.13/arch/um/include/sysdep-i386/syscalls.h
+Index: test/arch/um/kernel/skas/mem_user.c
 ===================================================================
---- linux-2.6.13.orig/arch/um/include/sysdep-i386/syscalls.h	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/include/sysdep-i386/syscalls.h	2005-08-30 19:36:27.000000000 -0400
-@@ -16,6 +16,8 @@
+--- test.orig/arch/um/kernel/skas/mem_user.c	2005-09-01 16:32:51.000000000 -0400
++++ test/arch/um/kernel/skas/mem_user.c	2005-09-01 16:43:18.000000000 -0400
+@@ -5,13 +5,14 @@
  
- extern syscall_handler_t old_mmap_i386;
- 
-+extern syscall_handler_t *sys_call_table[];
-+
- #define EXECUTE_SYSCALL(syscall, regs) \
- 	((long (*)(struct syscall_args)) (*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
- 
-Index: linux-2.6.13/arch/um/include/sysdep-x86_64/syscalls.h
-===================================================================
---- linux-2.6.13.orig/arch/um/include/sysdep-x86_64/syscalls.h	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/include/sysdep-x86_64/syscalls.h	2005-08-30 19:36:27.000000000 -0400
-@@ -14,6 +14,8 @@
- 
- extern syscall_handler_t *ia32_sys_call_table[];
- 
-+extern syscall_handler_t *sys_call_table[];
-+
- #define EXECUTE_SYSCALL(syscall, regs) \
- 	(((long (*)(long, long, long, long, long, long)) \
- 	  (*sys_call_table[syscall]))(UPT_SYSCALL_ARG1(&regs->regs), \
-Index: linux-2.6.13/arch/um/kernel/Makefile
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/Makefile	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/kernel/Makefile	2005-08-30 20:08:47.000000000 -0400
-@@ -18,7 +18,7 @@
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
- obj-$(CONFIG_GCOV)	+= gmon_syms.o
- obj-$(CONFIG_TTY_LOG)	+= tty_log.o
--obj-$(CONFIG_SYSCALL_DEBUG) += syscall_user.o
-+obj-$(CONFIG_SYSCALL_DEBUG) += syscall.o
- 
- obj-$(CONFIG_MODE_TT) += tt/
- obj-$(CONFIG_MODE_SKAS) += skas/
-Index: linux-2.6.13/arch/um/kernel/skas/Makefile
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/skas/Makefile	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/kernel/skas/Makefile	2005-08-30 20:39:46.000000000 -0400
-@@ -4,7 +4,7 @@
- #
- 
- obj-y := clone.o exec_kern.o mem.o mem_user.o mmu.o process.o process_kern.o \
--	syscall_kern.o syscall_user.o tlb.o trap_user.o uaccess.o \
-+	syscall.o tlb.o trap_user.o uaccess.o
- 
- subdir- := util
- 
-Index: linux-2.6.13/arch/um/kernel/skas/syscall.c
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/skas/syscall.c	2005-08-31 04:29:26.191951656 -0400
-+++ linux-2.6.13/arch/um/kernel/skas/syscall.c	2005-08-31 15:33:26.000000000 -0400
-@@ -0,0 +1,50 @@
-+/* 
-+ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-+ * Licensed under the GPL
-+ */
-+
-+#include "linux/sys.h"
-+#include "linux/ptrace.h"
-+#include "asm/errno.h"
-+#include "asm/unistd.h"
-+#include "asm/ptrace.h"
-+#include "asm/current.h"
-+#include "sysdep/syscalls.h"
-+#include "kern_util.h"
-+#include "syscall.h"
-+
-+void handle_syscall(union uml_pt_regs *r)
-+{
-+	struct pt_regs *regs = container_of(r, struct pt_regs, regs);
-+	long result;
-+	int syscall;
-+#ifdef UML_CONFIG_SYSCALL_DEBUG
-+  	int index;
-+
-+  	index = record_syscall_start(UPT_SYSCALL_NR(r));
-+#endif
-+	syscall_trace(r, 0);
-+
-+	current->thread.nsyscalls++;
-+	nsyscalls++;
-+
-+	/* This should go in the declaration of syscall, but when I do that,
-+	 * strace -f -c bash -c 'ls ; ls' breaks, sometimes not tracing 
-+	 * children at all, sometimes hanging when bash doesn't see the first
-+	 * ls exit.
-+	 * The assembly looks functionally the same to me.  This is 
-+	 *     gcc version 4.0.1 20050727 (Red Hat 4.0.1-5)
-+	 * in case it's a compiler bug.
-+	 */
-+	syscall = UPT_SYSCALL_NR(r);
-+	if((syscall >= NR_syscalls) || (syscall < 0))
-+		result = -ENOSYS;
-+	else result = EXECUTE_SYSCALL(syscall, regs);
-+
-+	REGS_SET_SYSCALL_RETURN(r->skas.regs, result);
-+
-+	syscall_trace(r, 1);
-+#ifdef UML_CONFIG_SYSCALL_DEBUG
-+  	record_syscall_end(index, result);
-+#endif
-+}
-Index: linux-2.6.13/arch/um/kernel/skas/syscall_kern.c
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/skas/syscall_kern.c	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/kernel/skas/syscall_kern.c	2005-08-31 04:29:26.191951656 -0400
-@@ -1,43 +0,0 @@
--/* 
-- * Copyright (C) 2002 - 2003 Jeff Dike (jdike@addtoit.com)
-- * Licensed under the GPL
-- */
--
--#include "linux/sys.h"
--#include "linux/ptrace.h"
--#include "asm/errno.h"
--#include "asm/unistd.h"
--#include "asm/ptrace.h"
--#include "asm/current.h"
--#include "sysdep/syscalls.h"
--#include "kern_util.h"
--
--extern syscall_handler_t *sys_call_table[];
--
--long execute_syscall_skas(void *r)
--{
--	struct pt_regs *regs = r;
--	long res;
--	int syscall;
--
--	current->thread.nsyscalls++;
--	nsyscalls++;
--	syscall = UPT_SYSCALL_NR(&regs->regs);
--
--	if((syscall >= NR_syscalls) || (syscall < 0))
--		res = -ENOSYS;
--	else res = EXECUTE_SYSCALL(syscall, regs);
--
--	return(res);
--}
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.13/arch/um/kernel/skas/syscall_user.c
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/skas/syscall_user.c	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/kernel/skas/syscall_user.c	2005-08-31 04:29:26.191951656 -0400
-@@ -1,44 +0,0 @@
--/* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
--
--#include <stdlib.h>
--#include <signal.h>
--#include "kern_util.h"
--#include "uml-config.h"
--#include "syscall_user.h"
--#include "sysdep/ptrace.h"
--#include "sysdep/sigcontext.h"
+ #include <signal.h>
+ #include <errno.h>
++#include <string.h>
+ #include <sys/mman.h>
+ #include <sys/wait.h>
+ #include <asm/page.h>
+ #include <asm/unistd.h>
+ #include "mem_user.h"
+ #include "mem.h"
+-#include "mm_id.h"
++#include "skas.h"
+ #include "user.h"
+ #include "os.h"
+ #include "proc_mm.h"
+@@ -23,56 +24,99 @@
+ #include "uml-config.h"
+ #include "sysdep/ptrace.h"
+ #include "sysdep/stub.h"
 -#include "skas.h"
--
--void handle_syscall(union uml_pt_regs *regs)
--{
--	long result;
--#ifdef UML_CONFIG_SYSCALL_DEBUG
--  	int index;
--
--  	index = record_syscall_start(UPT_SYSCALL_NR(regs));
--#endif
--
--	syscall_trace(regs, 0);
--	result = execute_syscall_skas(regs);
--
--	REGS_SET_SYSCALL_RETURN(regs->skas.regs, result);
--
--	syscall_trace(regs, 1);
--#ifdef UML_CONFIG_SYSCALL_DEBUG
--  	record_syscall_end(index, result);
--#endif
--}
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.13/arch/um/kernel/syscall.c
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/syscall.c	2005-08-31 04:29:26.191951656 -0400
-+++ linux-2.6.13/arch/um/kernel/syscall.c	2005-08-30 20:10:07.000000000 -0400
-@@ -0,0 +1,36 @@
-+/* 
-+ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-+ * Licensed under the GPL
-+ */
-+
-+#include "kern_util.h"
-+#include "syscall.h"
-+#include "os.h"
-+
-+struct {
-+	int syscall;
-+	int pid;
-+	long result;
-+	unsigned long long start;
-+	unsigned long long end;
-+} syscall_record[1024];
-+
-+int record_syscall_start(int syscall)
-+{
-+	int max, index;
-+
-+	max = sizeof(syscall_record)/sizeof(syscall_record[0]);
-+	index = next_syscall_index(max);
-+
-+	syscall_record[index].syscall = syscall;
-+	syscall_record[index].pid = current_pid();
-+	syscall_record[index].result = 0xdeadbeef;
-+	syscall_record[index].start = os_usecs();
-+	return(index);
-+}
-+
-+void record_syscall_end(int index, long result)
-+{
-+	syscall_record[index].result = result;
-+	syscall_record[index].end = os_usecs();
-+}
-Index: linux-2.6.13/arch/um/kernel/syscall_user.c
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/syscall_user.c	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/kernel/syscall_user.c	2005-08-31 04:29:26.191951656 -0400
-@@ -1,48 +0,0 @@
--/* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
--
--#include <stdlib.h>
--#include <sys/time.h>
--#include "kern_util.h"
--#include "syscall_user.h"
--
--struct {
--	int syscall;
--	int pid;
--	long result;
--	struct timeval start;
--	struct timeval end;
--} syscall_record[1024];
--
--int record_syscall_start(int syscall)
--{
--	int max, index;
--
--	max = sizeof(syscall_record)/sizeof(syscall_record[0]);
--	index = next_syscall_index(max);
--
--	syscall_record[index].syscall = syscall;
--	syscall_record[index].pid = current_pid();
--	syscall_record[index].result = 0xdeadbeef;
--	gettimeofday(&syscall_record[index].start, NULL);
--	return(index);
--}
--
--void record_syscall_end(int index, long result)
--{
--	syscall_record[index].result = result;
--	gettimeofday(&syscall_record[index].end, NULL);
--}
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.13/arch/um/kernel/tt/syscall_kern.c
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/tt/syscall_kern.c	2005-08-31 15:49:21.000000000 -0400
-+++ linux-2.6.13/arch/um/kernel/tt/syscall_kern.c	2005-08-31 15:50:01.000000000 -0400
-@@ -12,36 +12,41 @@
- #include "asm/uaccess.h"
- #include "asm/stat.h"
- #include "sysdep/syscalls.h"
-+#include "sysdep/sigcontext.h"
- #include "kern_util.h"
-+#include "syscall.h"
  
--extern syscall_handler_t *sys_call_table[];
--
--long execute_syscall_tt(void *r)
-+void syscall_handler_tt(int sig, struct pt_regs *regs)
+-extern unsigned long syscall_stub, batch_syscall_stub, __syscall_stub_start;
++extern unsigned long batch_syscall_stub, __syscall_stub_start;
+ 
+ extern void wait_stub_done(int pid, int sig, char * fname);
+ 
+-int single_count = 0;
++static inline unsigned long *check_init_stack(struct mm_id * mm_idp,
++					      unsigned long *stack)
++{
++	if(stack == NULL){
++		stack = (unsigned long *) mm_idp->stack + 2;
++		*stack = 0;
++	}
++	return stack;
++}
++
++extern int proc_mm;
+ 
+-static long one_syscall_stub(struct mm_id * mm_idp, int syscall,
+-			     unsigned long *args)
++int single_count = 0;
++int multi_count = 0;
++int multi_op_count = 0;
++  
++static long do_syscall_stub(struct mm_id *mm_idp, void **addr)
  {
--	struct pt_regs *regs = r;
--	long res;
-+	void *sc;
-+	long result;
- 	int syscall;
--
- #ifdef CONFIG_SYSCALL_DEBUG
-+	int index;
-+  	index = record_syscall_start(syscall);
-+#endif
-+	sc = UPT_SC(&regs->regs);
-+	SC_START_SYSCALL(sc);
-+
-+	syscall_trace(&regs->regs, 0);
-+
- 	current->thread.nsyscalls++;
- 	nsyscalls++;
--#endif
- 	syscall = UPT_SYSCALL_NR(&regs->regs);
++	unsigned long regs[MAX_REG_NR];
++	unsigned long *data;
++	unsigned long *syscall;
++	long ret, offset;
+         int n, pid = mm_idp->u.pid;
+-        unsigned long regs[MAX_REG_NR];
  
- 	if((syscall >= NR_syscalls) || (syscall < 0))
--		res = -ENOSYS;
--	else res = EXECUTE_SYSCALL(syscall, regs);
-+		result = -ENOSYS;
-+	else result = EXECUTE_SYSCALL(syscall, regs);
- 
--	return(res);
--}
-+	/* regs->sc may have changed while the system call ran (there may
-+	 * have been an interrupt or segfault), so it needs to be refreshed.
++	if(proc_mm)
++#warning Need to look up userspace_pid by cpu
++		pid = userspace_pid[0];
++
++	multi_count++;
++  
+         get_safe_registers(regs);
+         regs[REGS_IP_INDEX] = UML_CONFIG_STUB_CODE +
+-                ((unsigned long) &syscall_stub -
++		((unsigned long) &batch_syscall_stub - 
+                  (unsigned long) &__syscall_stub_start);
+-        /* XXX Don't have a define for starting a syscall */
+-        regs[REGS_SYSCALL_NR] = syscall;
+-        regs[REGS_SYSCALL_ARG1] = args[0];
+-        regs[REGS_SYSCALL_ARG2] = args[1];
+-        regs[REGS_SYSCALL_ARG3] = args[2];
+-        regs[REGS_SYSCALL_ARG4] = args[3];
+-        regs[REGS_SYSCALL_ARG5] = args[4];
+-        regs[REGS_SYSCALL_ARG6] = args[5];
+-        n = ptrace_setregs(pid, regs);
+-        if(n < 0){
+-		printk("one_syscall_stub : PTRACE_SETREGS failed, "
+-		       "errno = %d\n", n);
+-		return(n);
++	n = ptrace_setregs(pid, regs);
++	if(n < 0)
++		panic("do_syscall_stub : PTRACE_SETREGS failed, errno = %d\n",
++		      n);
++
++	wait_stub_done(pid, 0, "do_syscall_stub");
++
++	/* When the stub stops, we find the following values on the
++	 * beginning of the stack:
++	 * (long )return_value
++	 * (long )offset to failed sycall-data (0, if no error)
 +	 */
-+	UPT_SC(&regs->regs) = sc;
-+
-+	SC_SET_SYSCALL_RETURN(sc, result);
++	ret = *((unsigned long *) mm_idp->stack);
++	offset = *((unsigned long *) mm_idp->stack + 1);
++	if (offset) {
++		data = (unsigned long *)(mm_idp->stack +
++					 offset - UML_CONFIG_STUB_DATA);
++		syscall = (unsigned long *)((unsigned long)data + data[0]);
++		printk("do_syscall_stub: syscall %ld failed, return value = "
++		       "0x%lx, expected return value = 0x%lx\n",
++		       syscall[0], ret, syscall[7]);
++		printk("    syscall parameters: "
++		       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
++		       syscall[1], syscall[2], syscall[3],
++		       syscall[4], syscall[5], syscall[6]);
++		for(n = 1; n < data[0]/sizeof(long); n++) {
++			if(n == 1)
++				printk("    additional syscall data:");
++			if(n % 4 == 1)
++				printk("\n      ");
++			printk("  0x%lx", data[n]);
++		}
++		if(n > 1)
++			printk("\n");
+ 	}
++	else ret = 0;
  
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-+	syscall_trace(&regs->regs, 1);
-+#ifdef CONFIG_SYSCALL_DEBUG
-+  	record_syscall_end(index, result);
-+#endif
-+}
-Index: linux-2.6.13/arch/um/kernel/tt/syscall_user.c
-===================================================================
---- linux-2.6.13.orig/arch/um/kernel/tt/syscall_user.c	2005-08-30 19:35:44.000000000 -0400
-+++ linux-2.6.13/arch/um/kernel/tt/syscall_user.c	2005-08-31 15:50:33.000000000 -0400
-@@ -13,42 +13,9 @@
- #include "task.h"
- #include "user_util.h"
- #include "kern_util.h"
--#include "syscall_user.h"
-+#include "syscall.h"
- #include "tt.h"
+-	wait_stub_done(pid, 0, "one_syscall_stub");
+-
+-	return(*((unsigned long *) mm_idp->stack));
++	*addr = check_init_stack(mm_idp, NULL);
++ 
++	return ret;
+ }
  
+-int multi_count = 0;
+-int multi_op_count = 0;
 -
--void syscall_handler_tt(int sig, union uml_pt_regs *regs)
--{
--	void *sc;
--	long result;
--	int syscall;
--#ifdef UML_CONFIG_DEBUG_SYSCALL
--	int index;
--#endif
--
--	syscall = UPT_SYSCALL_NR(regs);
--	sc = UPT_SC(regs);
--	SC_START_SYSCALL(sc);
--
--#ifdef UML_CONFIG_DEBUG_SYSCALL
--  	index = record_syscall_start(syscall);
--#endif
--	syscall_trace(regs, 0);
--	result = execute_syscall_tt(regs);
--
--	/* regs->sc may have changed while the system call ran (there may
--	 * have been an interrupt or segfault), so it needs to be refreshed.
--	 */
--	UPT_SC(regs) = sc;
--
--	SC_SET_SYSCALL_RETURN(sc, result);
--
--	syscall_trace(regs, 1);
--#ifdef UML_CONFIG_DEBUG_SYSCALL
--  	record_syscall_end(index, result);
--#endif
--}
--
- void do_sigtrap(void *task)
+-static long many_syscall_stub(struct mm_id * mm_idp, int syscall,
+-			      unsigned long *args, int done, void **addr_out)
++long run_syscall_stub(struct mm_id * mm_idp, int syscall, 
++		      unsigned long *args, long expected, void **addr, 
++ 		      int done)
  {
- 	UPT_SYSCALL_NR(TASK_REGS(task)) = -1;
+-        unsigned long regs[MAX_REG_NR], *stack;
+-        int n, pid = mm_idp->u.pid;
++ 	unsigned long *stack = check_init_stack(mm_idp, *addr);
++
++	if(done && *addr == NULL)
++		single_count++;
++
++ 	*stack += sizeof(long);
++	stack += *stack / sizeof(long);
+ 
+-        stack = *addr_out;
+-        if(stack == NULL)
+-                stack = (unsigned long *) current_stub_stack();
+         *stack++ = syscall;
+         *stack++ = args[0];
+         *stack++ = args[1];
+@@ -80,53 +124,55 @@
+         *stack++ = args[3];
+         *stack++ = args[4];
+         *stack++ = args[5];
++	*stack++ = expected;
+         *stack = 0;
+         multi_op_count++;
+ 
+         if(!done && ((((unsigned long) stack) & ~PAGE_MASK) <
+-                     PAGE_SIZE - 8 * sizeof(long))){
+-                *addr_out = stack;
++		     PAGE_SIZE - 10 * sizeof(long))){
++		*addr = stack;
+                 return 0;
+         }
+ 
+-        multi_count++;
+-        get_safe_registers(regs);
+-        regs[REGS_IP_INDEX] = UML_CONFIG_STUB_CODE +
+-                ((unsigned long) &batch_syscall_stub -
+-                 (unsigned long) &__syscall_stub_start);
+-        regs[REGS_SP_INDEX] = UML_CONFIG_STUB_DATA;
++	return do_syscall_stub(mm_idp, addr);
++}
++ 
++long syscall_stub_data(struct mm_id * mm_idp,
++		       unsigned long *data, int data_count,
++		       void **addr, void **stub_addr)
++{
++	unsigned long *stack;
++	int ret = 0;
+ 
+-        n = ptrace_setregs(pid, regs);
+-        if(n < 0){
+-                printk("many_syscall_stub : PTRACE_SETREGS failed, "
+-                       "errno = %d\n", n);
+-                return(n);
+-        }
++	/* If *addr still is uninitialized, it *must* contain NULL.
++	 * Thus in this case do_syscall_stub correctly won't be called.
++	 */
++	if((((unsigned long) *addr) & ~PAGE_MASK) >=
++	   PAGE_SIZE - (10 + data_count) * sizeof(long)) {
++		ret = do_syscall_stub(mm_idp, addr);
++ 		/* in case of error, don't overwrite data on stack */
++		if(ret)
++			return ret;
++	}
+ 
+-        wait_stub_done(pid, 0, "many_syscall_stub");
+-        stack = (unsigned long *) mm_idp->stack;
++	stack = check_init_stack(mm_idp, *addr);
++	*addr = stack;
+ 
+-        *addr_out = stack;
+-        return(*stack);
+-}
++	*stack = data_count * sizeof(long);
+ 
+-static long run_syscall_stub(struct mm_id * mm_idp, int syscall,
+-                             unsigned long *args, void **addr, int done)
+-{
+-        long res;
++	memcpy(stack + 1, data, data_count * sizeof(long));
+ 
+-        if((*addr == NULL) && done)
+-                res = one_syscall_stub(mm_idp, syscall, args);
+-        else res = many_syscall_stub(mm_idp, syscall, args, done, addr);
++	*stub_addr = (void *)(((unsigned long)(stack + 1) & ~PAGE_MASK) +
++			      UML_CONFIG_STUB_DATA);
+ 
+-        return res;
++	return 0;
+ }
+-
+-void *map(struct mm_id * mm_idp, unsigned long virt, unsigned long len,
+-          int r, int w, int x, int phys_fd, unsigned long long offset,
+-          int done, void *data)
++ 
++int map(struct mm_id * mm_idp, unsigned long virt, unsigned long len,
++	int r, int w, int x, int phys_fd, unsigned long long offset, 
++	int done, void **data)
+ {
+-        int prot, n;
++        int prot, ret;
+ 
+         prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
+                 (x ? PROT_EXEC : 0);
+@@ -146,29 +192,27 @@
+                                                  .fd	= phys_fd,
+                                                  .offset= offset
+                                                } } } );
+-                n = os_write_file(fd, &map, sizeof(map));
+-                if(n != sizeof(map))
+-                        printk("map : /proc/mm map failed, err = %d\n", -n);
++		ret = os_write_file(fd, &map, sizeof(map));
++		if(ret != sizeof(map)) 
++			printk("map : /proc/mm map failed, err = %d\n", -ret);
++		else ret = 0;
+         }
+         else {
+-                long res;
+                 unsigned long args[] = { virt, len, prot,
+                                          MAP_SHARED | MAP_FIXED, phys_fd,
+                                          MMAP_OFFSET(offset) };
+ 
+-		res = run_syscall_stub(mm_idp, STUB_MMAP_NR, args,
+-				       &data, done);
+-                if((void *) res == MAP_FAILED)
+-                        printk("mmap stub failed, errno = %d\n", res);
++		ret = run_syscall_stub(mm_idp, STUB_MMAP_NR, args, virt,
++				       data, done);
+         }
+ 
+-	return data;
++	return ret;
+ }
+ 
+-void *unmap(struct mm_id * mm_idp, void *addr, unsigned long len, int done,
+-            void *data)
++int unmap(struct mm_id * mm_idp, void *addr, unsigned long len, int done,
++	  void **data)
+ {
+-        int n;
++        int ret;
+ 
+         if(proc_mm){
+                 struct proc_mm_op unmap;
+@@ -180,29 +224,29 @@
+                                                  { .addr	=
+                                                    (unsigned long) addr,
+                                                    .len		= len } } } );
+-                n = os_write_file(fd, &unmap, sizeof(unmap));
+-		if(n != sizeof(unmap))
+-		  printk("unmap - proc_mm write returned %d\n", n);
++		ret = os_write_file(fd, &unmap, sizeof(unmap));
++		if(ret != sizeof(unmap))
++			printk("unmap - proc_mm write returned %d\n", ret);
++		else ret = 0;
+         }
+         else {
+-                int res;
+                 unsigned long args[] = { (unsigned long) addr, len, 0, 0, 0,
+                                          0 };
+ 
+-		res = run_syscall_stub(mm_idp, __NR_munmap, args,
+-				       &data, done);
+-                if(res < 0)
+-                        printk("munmap stub failed, errno = %d\n", res);
++		ret = run_syscall_stub(mm_idp, __NR_munmap, args, 0,
++				       data, done);
++                if(ret < 0)
++                        printk("munmap stub failed, errno = %d\n", ret);
+         }
+ 
+-        return data;
++        return ret;
+ }
+ 
+-void *protect(struct mm_id * mm_idp, unsigned long addr, unsigned long len,
+-              int r, int w, int x, int done, void *data)
++int protect(struct mm_id * mm_idp, unsigned long addr, unsigned long len,
++	    int r, int w, int x, int done, void **data)
+ {
+         struct proc_mm_op protect;
+-        int prot, n;
++        int prot, ret;
+ 
+         prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
+                 (x ? PROT_EXEC : 0);
+@@ -217,21 +261,19 @@
+                                                      .len	= len,
+                                                      .prot	= prot } } } );
+ 
+-                n = os_write_file(fd, &protect, sizeof(protect));
+-                if(n != sizeof(protect))
+-                        panic("protect failed, err = %d", -n);
++                ret = os_write_file(fd, &protect, sizeof(protect));
++                if(ret != sizeof(protect))
++                        printk("protect failed, err = %d", -ret);
++                else ret = 0;
+         }
+         else {
+-                int res;
+                 unsigned long args[] = { addr, len, prot, 0, 0, 0 };
+ 
+-                res = run_syscall_stub(mm_idp, __NR_mprotect, args,
+-                                       &data, done);
+-                if(res < 0)
+-                        panic("mprotect stub failed, errno = %d\n", res);
++                ret = run_syscall_stub(mm_idp, __NR_mprotect, args, 0,
++                                       data, done);
+         }
+ 
+-        return data;
++        return ret;
+ }
+ 
+ void before_mem_skas(unsigned long unused)
+Index: test/arch/um/kernel/skas/tlb.c
+===================================================================
+--- test.orig/arch/um/kernel/skas/tlb.c	2005-09-01 16:32:51.000000000 -0400
++++ test/arch/um/kernel/skas/tlb.c	2005-09-01 16:33:07.000000000 -0400
+@@ -18,30 +18,31 @@
+ #include "os.h"
+ #include "tlb.h"
+ 
+-static void *do_ops(union mm_context *mmu, struct host_vm_op *ops, int last,
+-		    int finished, void *flush)
++static int do_ops(union mm_context *mmu, struct host_vm_op *ops, int last,
++		  int finished, void **flush)
+ {
+ 	struct host_vm_op *op;
+-	int i;
++        int i, ret = 0;
+ 
+-	for(i = 0; i <= last; i++){
++        for(i = 0; i <= last && !ret; i++){
+ 		op = &ops[i];
+ 		switch(op->type){
+ 		case MMAP:
+-			flush = map(&mmu->skas.id, op->u.mmap.addr,
+-				    op->u.mmap.len, op->u.mmap.r, op->u.mmap.w,
+-				    op->u.mmap.x, op->u.mmap.fd,
+-				    op->u.mmap.offset, finished, flush);
++			ret = map(&mmu->skas.id, op->u.mmap.addr, 
++				  op->u.mmap.len, op->u.mmap.r, op->u.mmap.w,
++				  op->u.mmap.x, op->u.mmap.fd,
++				  op->u.mmap.offset, finished, flush);
+ 			break;
+ 		case MUNMAP:
+-			flush = unmap(&mmu->skas.id, (void *) op->u.munmap.addr,
+-				      op->u.munmap.len, finished, flush);
++			ret = unmap(&mmu->skas.id, 
++				    (void *) op->u.munmap.addr,
++				    op->u.munmap.len, finished, flush);
+ 			break;
+ 		case MPROTECT:
+-			flush = protect(&mmu->skas.id, op->u.mprotect.addr,
+-					op->u.mprotect.len, op->u.mprotect.r,
+-					op->u.mprotect.w, op->u.mprotect.x,
+-					finished, flush);
++			ret = protect(&mmu->skas.id, op->u.mprotect.addr,
++				      op->u.mprotect.len, op->u.mprotect.r, 
++				      op->u.mprotect.w, op->u.mprotect.x, 
++				      finished, flush);
+ 			break;
+ 		default:
+ 			printk("Unknown op type %d in do_ops\n", op->type);
+@@ -49,7 +50,7 @@
+ 		}
+ 	}
+ 
+-	return flush;
++	return ret;
+ }
+ 
+ extern int proc_mm;
+Index: test/arch/um/kernel/tlb.c
+===================================================================
+--- test.orig/arch/um/kernel/tlb.c	2005-09-01 16:32:51.000000000 -0400
++++ test/arch/um/kernel/tlb.c	2005-09-01 16:33:07.000000000 -0400
+@@ -16,115 +16,117 @@
+ #include "os.h"
+ 
+ static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+-		    int r, int w, int x, struct host_vm_op *ops, int index,
++ 		    int r, int w, int x, struct host_vm_op *ops, int *index, 
+ 		    int last_filled, union mm_context *mmu, void **flush,
+-		    void *(*do_ops)(union mm_context *, struct host_vm_op *,
+-				    int, int, void *))
++		    int (*do_ops)(union mm_context *, struct host_vm_op *, 
++				  int, int, void **))
+ {
+         __u64 offset;
+ 	struct host_vm_op *last;
+-	int fd;
++	int fd, ret = 0;
+ 
+ 	fd = phys_mapping(phys, &offset);
+-	if(index != -1){
+-		last = &ops[index];
++	if(*index != -1){
++		last = &ops[*index];
+ 		if((last->type == MMAP) &&
+ 		   (last->u.mmap.addr + last->u.mmap.len == virt) &&
+ 		   (last->u.mmap.r == r) && (last->u.mmap.w == w) &&
+ 		   (last->u.mmap.x == x) && (last->u.mmap.fd == fd) &&
+ 		   (last->u.mmap.offset + last->u.mmap.len == offset)){
+ 			last->u.mmap.len += len;
+-			return index;
++			return 0;
+ 		}
+ 	}
+ 
+-	if(index == last_filled){
+-		*flush = (*do_ops)(mmu, ops, last_filled, 0, *flush);
+-		index = -1;
++	if(*index == last_filled){
++		ret = (*do_ops)(mmu, ops, last_filled, 0, flush);
++		*index = -1;
+ 	}
+ 
+-	ops[++index] = ((struct host_vm_op) { .type	= MMAP,
+-					      .u = { .mmap = {
+-						      .addr	= virt,
+-						      .len	= len,
+-						      .r	= r,
+-						      .w	= w,
+-						      .x	= x,
+-						      .fd	= fd,
+-						      .offset	= offset }
+-					      } });
+-	return index;
++	ops[++*index] = ((struct host_vm_op) { .type	= MMAP,
++			     			.u = { .mmap = {
++						       .addr	= virt,
++						       .len	= len,
++						       .r	= r,
++						       .w	= w,
++						       .x	= x,
++						       .fd	= fd,
++						       .offset	= offset }
++			   } });
++	return ret;
+ }
+ 
+ static int add_munmap(unsigned long addr, unsigned long len,
+-		      struct host_vm_op *ops, int index, int last_filled,
++		      struct host_vm_op *ops, int *index, int last_filled,
+ 		      union mm_context *mmu, void **flush,
+-		      void *(*do_ops)(union mm_context *, struct host_vm_op *,
+-				      int, int, void *))
++		      int (*do_ops)(union mm_context *, struct host_vm_op *, 
++				    int, int, void **))
+ {
+ 	struct host_vm_op *last;
+-
+-	if(index != -1){
+-		last = &ops[index];
++	int ret = 0;
++  
++	if(*index != -1){
++		last = &ops[*index];
+ 		if((last->type == MUNMAP) &&
+ 		   (last->u.munmap.addr + last->u.mmap.len == addr)){
+ 			last->u.munmap.len += len;
+-			return index;
++			return 0;
+ 		}
+ 	}
+ 
+-	if(index == last_filled){
+-		*flush = (*do_ops)(mmu, ops, last_filled, 0, *flush);
+-		index = -1;
++	if(*index == last_filled){
++		ret = (*do_ops)(mmu, ops, last_filled, 0, flush);
++		*index = -1;
+ 	}
+ 
+-	ops[++index] = ((struct host_vm_op) { .type	= MUNMAP,
+-					      .u = { .munmap = {
+-						      .addr	= addr,
+-						      .len	= len } } });
+-	return index;
++	ops[++*index] = ((struct host_vm_op) { .type	= MUNMAP,
++			     		       .u = { .munmap = {
++						        .addr	= addr,
++							.len	= len } } });
++	return ret;
+ }
+ 
+ static int add_mprotect(unsigned long addr, unsigned long len, int r, int w,
+-			int x, struct host_vm_op *ops, int index,
++			int x, struct host_vm_op *ops, int *index, 
+ 			int last_filled, union mm_context *mmu, void **flush,
+-			void *(*do_ops)(union mm_context *,
+-				       struct host_vm_op *, int, int, void *))
++ 			int (*do_ops)(union mm_context *, struct host_vm_op *,
++				      int, int, void **))
+ {
+ 	struct host_vm_op *last;
++	int ret = 0;
+ 
+-	if(index != -1){
+-		last = &ops[index];
++	if(*index != -1){
++		last = &ops[*index];
+ 		if((last->type == MPROTECT) &&
+ 		   (last->u.mprotect.addr + last->u.mprotect.len == addr) &&
+ 		   (last->u.mprotect.r == r) && (last->u.mprotect.w == w) &&
+ 		   (last->u.mprotect.x == x)){
+ 			last->u.mprotect.len += len;
+-			return index;
++			return 0;
+ 		}
+ 	}
+ 
+-	if(index == last_filled){
+-		*flush = (*do_ops)(mmu, ops, last_filled, 0, *flush);
+-		index = -1;
++	if(*index == last_filled){
++		ret = (*do_ops)(mmu, ops, last_filled, 0, flush);
++		*index = -1;
+ 	}
+ 
+-	ops[++index] = ((struct host_vm_op) { .type	= MPROTECT,
+-					      .u = { .mprotect = {
+-						      .addr	= addr,
+-						      .len	= len,
+-						      .r	= r,
+-						      .w	= w,
+-						      .x	= x } } });
+-	return index;
++	ops[++*index] = ((struct host_vm_op) { .type	= MPROTECT,
++			     		       .u = { .mprotect = {
++						       .addr	= addr,
++						       .len	= len,
++						       .r	= r,
++						       .w	= w,
++						       .x	= x } } });
++	return ret;
+ }
+ 
+ #define ADD_ROUND(n, inc) (((n) + (inc)) & ~((inc) - 1))
+ 
+ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+                       unsigned long end_addr, int force,
+-		      void *(*do_ops)(union mm_context *, struct host_vm_op *,
+-				      int, int, void *))
++		      int (*do_ops)(union mm_context *, struct host_vm_op *, 
++				    int, int, void **))
+ {
+         pgd_t *npgd;
+         pud_t *npud;
+@@ -136,20 +138,21 @@
+         struct host_vm_op ops[1];
+         void *flush = NULL;
+         int op_index = -1, last_op = sizeof(ops) / sizeof(ops[0]) - 1;
++        int ret = 0;
+ 
+         if(mm == NULL) return;
+ 
+         ops[0].type = NONE;
+-        for(addr = start_addr; addr < end_addr;){
++        for(addr = start_addr; addr < end_addr && !ret;){
+                 npgd = pgd_offset(mm, addr);
+                 if(!pgd_present(*npgd)){
+                         end = ADD_ROUND(addr, PGDIR_SIZE);
+                         if(end > end_addr)
+                                 end = end_addr;
+                         if(force || pgd_newpage(*npgd)){
+-                                op_index = add_munmap(addr, end - addr, ops,
+-                                                      op_index, last_op, mmu,
+-                                                      &flush, do_ops);
++                                ret = add_munmap(addr, end - addr, ops, 
++                                                 &op_index, last_op, mmu,
++                                                 &flush, do_ops);
+                                 pgd_mkuptodate(*npgd);
+                         }
+                         addr = end;
+@@ -162,9 +165,9 @@
+                         if(end > end_addr)
+                                 end = end_addr;
+                         if(force || pud_newpage(*npud)){
+-                                op_index = add_munmap(addr, end - addr, ops,
+-                                                      op_index, last_op, mmu,
+-                                                      &flush, do_ops);
++                                ret = add_munmap(addr, end - addr, ops, 
++                                                 &op_index, last_op, mmu,
++                                                 &flush, do_ops);
+                                 pud_mkuptodate(*npud);
+                         }
+                         addr = end;
+@@ -177,9 +180,9 @@
+                         if(end > end_addr)
+                                 end = end_addr;
+                         if(force || pmd_newpage(*npmd)){
+-                                op_index = add_munmap(addr, end - addr, ops,
+-                                                      op_index, last_op, mmu,
+-                                                      &flush, do_ops);
++                                ret = add_munmap(addr, end - addr, ops, 
++                                                 &op_index, last_op, mmu,
++                                                 &flush, do_ops);
+                                 pmd_mkuptodate(*npmd);
+                         }
+                         addr = end;
+@@ -198,24 +201,32 @@
+                 }
+                 if(force || pte_newpage(*npte)){
+                         if(pte_present(*npte))
+-                                op_index = add_mmap(addr,
+-                                                    pte_val(*npte) & PAGE_MASK,
+-                                                    PAGE_SIZE, r, w, x, ops,
+-                                                    op_index, last_op, mmu,
+-                                                    &flush, do_ops);
+-                        else op_index = add_munmap(addr, PAGE_SIZE, ops,
+-                                                   op_index, last_op, mmu,
+-                                                   &flush, do_ops);
++			  ret = add_mmap(addr, 
++					 pte_val(*npte) & PAGE_MASK,
++					 PAGE_SIZE, r, w, x, ops, 
++					 &op_index, last_op, mmu,
++					 &flush, do_ops);
++			else ret = add_munmap(addr, PAGE_SIZE, ops, 
++					      &op_index, last_op, mmu, 
++					      &flush, do_ops);
+                 }
+                 else if(pte_newprot(*npte))
+-                        op_index = add_mprotect(addr, PAGE_SIZE, r, w, x, ops,
+-                                                op_index, last_op, mmu,
+-                                                &flush, do_ops);
++			ret = add_mprotect(addr, PAGE_SIZE, r, w, x, ops, 
++					   &op_index, last_op, mmu,
++					   &flush, do_ops);
+ 
+                 *npte = pte_mkuptodate(*npte);
+                 addr += PAGE_SIZE;
+         }
+-	flush = (*do_ops)(mmu, ops, op_index, 1, flush);
++ 
++	if(!ret)
++		ret = (*do_ops)(mmu, ops, op_index, 1, &flush);
++
++	/* This is not an else because ret is modified above */
++	if(ret) {
++		printk("fix_range_common: failed, killing current process\n");
++		force_sig(SIGKILL, current);
++	}
+ }
+ 
+ int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+Index: test/arch/um/kernel/tt/tlb.c
+===================================================================
+--- test.orig/arch/um/kernel/tt/tlb.c	2005-09-01 16:32:51.000000000 -0400
++++ test/arch/um/kernel/tt/tlb.c	2005-09-01 16:33:07.000000000 -0400
+@@ -17,26 +17,31 @@
+ #include "os.h"
+ #include "tlb.h"
+ 
+-static void *do_ops(union mm_context *mmu, struct host_vm_op *ops, int last,
+-		    int finished, void *flush)
++static int do_ops(union mm_context *mmu, struct host_vm_op *ops, int last,
++		    int finished, void **flush)
+ {
+ 	struct host_vm_op *op;
+-	int i;
++        int i, ret=0;
+ 
+-	for(i = 0; i <= last; i++){
++        for(i = 0; i <= last && !ret; i++){
+ 		op = &ops[i];
+ 		switch(op->type){
+ 		case MMAP:
+-                        os_map_memory((void *) op->u.mmap.addr, op->u.mmap.fd,
+-				      op->u.mmap.offset, op->u.mmap.len,
+-				      op->u.mmap.r, op->u.mmap.w,
+-				      op->u.mmap.x);
++                        ret = os_map_memory((void *) op->u.mmap.addr,
++                                            op->u.mmap.fd, op->u.mmap.offset,
++                                            op->u.mmap.len, op->u.mmap.r,
++                                            op->u.mmap.w, op->u.mmap.x);
+ 			break;
+ 		case MUNMAP:
+-			os_unmap_memory((void *) op->u.munmap.addr,
+-					op->u.munmap.len);
++                        ret = os_unmap_memory((void *) op->u.munmap.addr, 
++                                              op->u.munmap.len);
+ 			break;
+ 		case MPROTECT:
++                        ret = protect_memory(op->u.mprotect.addr,
++                                             op->u.munmap.len, 
++                                             op->u.mprotect.r,
++                                             op->u.mprotect.w, 
++                                             op->u.mprotect.x, 1);
+ 			protect_memory(op->u.mprotect.addr, op->u.munmap.len,
+ 				       op->u.mprotect.r, op->u.mprotect.w,
+ 				       op->u.mprotect.x, 1);
+@@ -47,7 +52,7 @@
+ 		}
+ 	}
+ 
+-	return NULL;
++	return ret;
+ }
+ 
+ static void fix_range(struct mm_struct *mm, unsigned long start_addr, 
+Index: test/arch/um/sys-i386/stub.S
+===================================================================
+--- test.orig/arch/um/sys-i386/stub.S	2005-09-01 16:32:51.000000000 -0400
++++ test/arch/um/sys-i386/stub.S	2005-09-01 16:33:07.000000000 -0400
+@@ -2,24 +2,50 @@
+ 
+ 	.globl syscall_stub
+ .section .__syscall_stub, "x"
+-syscall_stub:
+-	int 	$0x80
+-	mov	%eax, UML_CONFIG_STUB_DATA
+-	int3
+ 
+ 	.globl batch_syscall_stub
+ batch_syscall_stub:
+-	mov	$UML_CONFIG_STUB_DATA, %esp
+-again:	pop	%eax
++	/* load pointer to first operation */
++	mov	$(UML_CONFIG_STUB_DATA+8), %esp
++
++again:
++	/* load length of additional data */
++	mov	0x0(%esp), %eax
++
++	/* if(length == 0) : end of list */
++	/* write possible 0 to header */
++	mov	%eax, UML_CONFIG_STUB_DATA+4
+ 	cmpl	$0, %eax
+ 	jz	done
++
++	/* save current pointer */
++	mov	%esp, UML_CONFIG_STUB_DATA+4
++
++	/* skip additional data */
++	add	%eax, %esp
++
++	/* load syscall-# */
++	pop	%eax
++
++	/* load syscall params */
+ 	pop	%ebx
+ 	pop	%ecx
+ 	pop	%edx
+ 	pop	%esi
+  	pop	%edi
+ 	pop	%ebp
++
++	/* execute syscall */
+ 	int	$0x80
++
++	/* check return value */
++	pop	%ebx
++	cmp	%ebx, %eax
++	je	again
++
++done:
++	/* save return value */
+ 	mov	%eax, UML_CONFIG_STUB_DATA
+-	jmp	again
+-done:	int3
++
++	/* stop */
++	int3
+Index: test/arch/um/sys-x86_64/stub.S
+===================================================================
+--- test.orig/arch/um/sys-x86_64/stub.S	2005-09-01 16:32:51.000000000 -0400
++++ test/arch/um/sys-x86_64/stub.S	2005-09-01 16:33:07.000000000 -0400
+@@ -16,21 +16,51 @@
+ 
+ 	.globl batch_syscall_stub
+ batch_syscall_stub:
+-	movq	$(UML_CONFIG_STUB_DATA >> 32), %rbx
+-	salq	$32, %rbx
+-	movq	$(UML_CONFIG_STUB_DATA & 0xffffffff), %rcx
+-	or	%rcx, %rbx
+-	movq	%rbx, %rsp
+-again:	pop	%rax
+-	cmpq	$0, %rax
+-jz	done
++	mov	$(UML_CONFIG_STUB_DATA >> 32), %rbx
++	sal	$32, %rbx
++	mov	$(UML_CONFIG_STUB_DATA & 0xffffffff), %rax
++	or	%rax, %rbx
++	/* load pointer to first operation */
++	mov	%rbx, %rsp
++	add	$0x10, %rsp
++again:
++	/* load length of additional data */
++	mov	0x0(%rsp), %rax
++	
++	/* if(length == 0) : end of list */
++	/* write possible 0 to header */
++	mov	%rax, 8(%rbx)
++	cmp	$0, %rax
++	jz	done
++
++	/* save current pointer */
++	mov	%rsp, 8(%rbx)
++
++	/* skip additional data */
++	add	%rax, %rsp
++
++	/* load syscall-# */
++	pop	%rax
++
++	/* load syscall params */
+ 	pop	%rdi
+ 	pop	%rsi
+ 	pop	%rdx
+ 	pop	%r10
+  	pop	%r8
+ 	pop	%r9
++
++	/* execute syscall */
+ 	syscall
++
++	/* check return value */
++	pop	%rcx
++	cmp	%rcx, %rax
++	je	again
++
++done:
++	/* save return value */
+ 	mov	%rax, (%rbx)
+-	jmp	again
+-done:	int3
++
++	/* stop */
++	int3
 
 
 
