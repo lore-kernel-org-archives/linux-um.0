@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EBEzT-0006fN-MF	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Sep 2005 10:06:11 -0700
+	id 1EBG8s-00015w-C1	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Sep 2005 11:19:58 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EBEzS-0001B5-25
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EBG8k-00019h-9T
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Sep 2005 10:06:11 -0700
+	Fri, 02 Sep 2005 11:19:58 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] stack and scheduler patches
-Message-ID: <20050902165935.GA6651@ccure.user-mode-linux.org>
-References: <431637F9.6030101@oracle.com>
+Subject: Re: [uml-devel] [PATCH 10/12] UML - Allow host capability usage to be
+	disabled
+Message-ID: <20050902171324.GA7000@ccure.user-mode-linux.org>
+References: <200509012217.j81MHKE7011567@ccure.user-mode-linux.org>
+	<200509021239.23859.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <431637F9.6030101@oracle.com>
+In-Reply-To: <200509021239.23859.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,41 +29,14 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 2 Sep 2005 12:59:35 -0400
-To: Allan Graves <allan.graves@oracle.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 2 Sep 2005 13:13:24 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Wed, Aug 31, 2005 at 07:06:33PM -0400, Allan Graves wrote:
-> Jeff,
-> Here's the patches.  Hope these meet your approval!
-> Allan
+On Fri, Sep 02, 2005 at 12:39:23PM +0200, Blaisorblade wrote:
+> Is "skas0" cmd line option preserved?
 
-Some comments - I have these all fixed:
-
-	+        struct task_struct *from=(struct task_struct*)prev;
-	+        struct task_struct *to=(struct task_struct*)next;
-There's no need to cast when the source is a void *
-
-	+          CHOOSE_MODE(switch_to_tt(prev, next),
-	+             switch_to_skas(prev, next));
-There's a CHOOSE_MODE_PROC which lets you avoid repeating common argument
-lists, although I was doing this wrong here too.
-
-	+extern int switch_to_skas(void *prev, void *next);
-	+extern int switch_to_tt(void *prev, void *next);
-Since these can't do anything but return 0, they might as well be void
-
-	+        if (0==sscanf(ptr, "%d", &pid_requested) || pid_requested==-1) {
-The pid_requested==-1 is redundant - if sscanf failed, we just want to bail out
-
-	+        if((!to) || (pid_requested == 0)) {
-Why the check against 0?
-
-	+		next=(void *)current->thread.saved_task;
-	+		prev=(void*)current;
-No need to cast when the target is a void * either
-
-Also, OK for me to add a Signed-off-by: you?
+Yes, it is.
 
 				Jeff
 
