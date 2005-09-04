@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EBsni-000763-UZ	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 Sep 2005 04:36:42 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EBsnf-0006Nh-Ep
+	id 1EBt58-0006Ct-GA	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 04 Sep 2005 04:54:42 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EBt55-0008A2-Me
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 Sep 2005 04:36:43 -0700
+	Sun, 04 Sep 2005 04:54:42 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [patch 1/3] uml: share page bits handling between
-	2 and 3 level pagetables
-References: <20050728185655.9C6ADA3@zion.home.lan>
-	<200508102137.28414.blaisorblade@yahoo.it>
-	<20050902201749.GA9104@ccure.user-mode-linux.org>
-In-Reply-To: <20050902201749.GA9104@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] stack and scheduler patches
+References: <431637F9.6030101@oracle.com>
+	<20050902165935.GA6651@ccure.user-mode-linux.org>
+In-Reply-To: <20050902165935.GA6651@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509041333.30466.blaisorblade@yahoo.it>
+Message-Id: <200509041351.32837.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,67 +30,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 4 Sep 2005 13:33:30 +0200
+Date: Sun, 4 Sep 2005 13:51:32 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Allan Graves <allan.graves@oracle.com>
 
-On Friday 02 September 2005 22:17, Jeff Dike wrote:
-> On Wed, Aug 10, 2005 at 09:37:28PM +0200, Blaisorblade wrote:
-> > Also look, on the "set_pte" theme, at the attached patch.
+On Friday 02 September 2005 18:59, Jeff Dike wrote:
+> On Wed, Aug 31, 2005 at 07:06:33PM -0400, Allan Graves wrote:
+> > Jeff,
+> > Here's the patches.  Hope these meet your approval!
+Could you please write a proper changelog? Reading a patch is possible, but 
+needs time which I don't have in the very moment.
 
-> +       WARN_ON(!pte_young(*pte) || pte_write(*pte) && !pte_dirty(*pte));
+Also, what is the difference between your "stack trace" patch, which adds a 
+member to thread_struct, for each process, so I'd like a minimum of 
+justification, and one of the sysrq options which does exactly this?
 
-> This one has been firing on me, and I decided to figure out why.  The
-> culprit is this code in do_no_page:
+Apart that the second is currently buggy, and is global, as in what you plan 
+here:
 
-> 	if (pte_none(*page_table)) {
-> 		if (!PageReserved(new_page))
-> 			inc_mm_counter(mm, rss);
->
-> 		flush_icache_page(vma, new_page);
-> 		entry = mk_pte(new_page, vma->vm_page_prot);
-> 		if (write_access)
-> 			entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-> 		set_pte_at(mm, address, page_table, entry);
->
-> The first mk_pte immediately sets the pte to the protection limits of
-> the VMA, regardless of the access type.
+/* Would be nice:
++           1) Send showregs output to mconsole.
++           2) Add a way to stack dump all pids.
++        */
 
-> So, if it's a read access on 
-> a writeable page, we get a writeable, but not dirty pte, since the
-> mkdirty never happens.  The exercises the warning you added.
-Thanks for noticing - I had really this doubt when writing some code (in the 
-patch, I've added a dirty PTEs on read accesses because I was unsure, and 
-even because of my warning).
-
-> This seems somewhat bogus to me.  If we set the pte protection to its
-> limits, then the maybe_mkwrite is unneccesary.
-
-> This doesn't seem to harm our dirty bit emulation.  fix_range_common
-> checks the dirty and accessed bits and disables read and write
-> protection as appropriate.
-
-> So, it seems like the warning could be dropped, or perhaps made more
-> selective, like checking for is_write == 0 and VM_WRITE, but then the
-> test is getting complicated.
-
-No, just replace pte_write() with is_write, as below. They might not coincide, 
-but if on a write fault we return with a clean PTE, we'll loop indefinitely 
-(experienced while hacking on remap_f_p), so the warning above is definitely 
-correct.
-
-       WARN_ON(!pte_young(*pte) || is_write && !pte_dirty(*pte));
-> 				Heff
+Sorry if these questions seem bad - but that's why changelogs are used.
+> > Allan
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+	
+
+	
 		
 ___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.beta.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
