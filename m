@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ECg1a-0002vv-6R	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Sep 2005 09:10:18 -0700
-Received: from rgminet01.oracle.com ([148.87.122.30])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1ECg1Y-0005qp-PT
+	id 1ECg8N-0003HD-LJ	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Sep 2005 09:17:19 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ECg8L-0007Oz-6k
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Sep 2005 09:10:18 -0700
-Message-ID: <431DBF5E.7010707@oracle.com>
-From: Allan Graves <allan.graves@oracle.com>
-MIME-Version: 1.0
-References: <431637F9.6030101@oracle.com>
-	<20050902165935.GA6651@ccure.user-mode-linux.org>
-	<200509041351.32837.blaisorblade@yahoo.it>
-In-Reply-To: <200509041351.32837.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] sched and stack patch changelogs.
+	Tue, 06 Sep 2005 09:17:19 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] SYSEMU getting merged - but I'm in doubt
+Message-ID: <20050906161032.GA6157@ccure.user-mode-linux.org>
+References: <200509041702.18506.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200509041702.18506.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,60 +27,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 06 Sep 2005 12:10:06 -0400
+Date: Tue, 6 Sep 2005 12:10:32 -0400
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, "Charles P. Wright" <cwright@cs.sunysb.edu>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-BB: Sorry I hadn't included a changelog, Jeff and I had talked about this a lot, I forgot that other people would be reading them. :)  
+On Sun, Sep 04, 2005 at 05:02:18PM +0200, Blaisorblade wrote:
+> Now, the point is: should I ask Linus to drop it for now, clean the 
+> interface, and resend the cleaned up one, with different ptrace call codes?
 
-Author: Allan Graves<allan.graves@gmail.com>
-	Scheduler Cleanup Patch:
-	This patch moves code that is in both switch_to_tt and switch_to_skas to the top level _switch_to function, keeping us from duplicating code.  It is required for the stack trace patch to work properly.
+I would be tempted to leave it in and fix it before 2.6.14.  We need different
+ptrace codes so that UML knows how to switch interception types, I take it?
 
-	Stack Trace Patch:
-	This patch implements a stack trace for a thread, not unlike sysrq-t does.  The advantage to this is that a break point can be placed on showreqs, so that upon showing the stack, you jump immediately into the debugger.
-	While sysrq-t does the same thing, sysrq-t shows *all* threads stacks.  It also doesn't work right now.  In the future, I thought it might be acceptable to make this show all pids stacks, but perhaps leaving well
-	enough alone and just using sysrq-t would be okay.  For now, upon receiving the stack command, UML switches context to that thread, dumps its registers, and then switches context back to the original thread.  Since 
-	UML compacts all threads into one of 4 host threads, this sort of mechanism could be expanded in the future to include other debugging helpers that sysrq does not cover.  
+UML is the only user, so there aren't really any compatibility issues.
 
+> On the host side, instead, supporting both the broken API and the new one is 
+> more difficult.
 
+Yeah, and it shouldn't be done.  This is one reason I'd like to use the same
+ptrace codes - it doesn't leave a hole in the codes that says there was a 
+broken ABI there once.
 
-Blaisorblade wrote:
+> What's your opinion on this? The options are:
+> 1) merge it as-is
+> 2) take it back for now, fix it and merge it for 2.6.15.
 
->On Friday 02 September 2005 18:59, Jeff Dike wrote:
->  
->
->>On Wed, Aug 31, 2005 at 07:06:33PM -0400, Allan Graves wrote:
->>    
->>
->>>Jeff,
->>>Here's the patches.  Hope these meet your approval!
->>>      
->>>
->Could you please write a proper changelog? Reading a patch is possible, but 
->needs time which I don't have in the very moment.
->
->Also, what is the difference between your "stack trace" patch, which adds a 
->member to thread_struct, for each process, so I'd like a minimum of 
->justification, and one of the sysrq options which does exactly this?
->
->Apart that the second is currently buggy, and is global, as in what you plan 
->here:
->
->/* Would be nice:
->+           1) Send showregs output to mconsole.
->+           2) Add a way to stack dump all pids.
->+        */
->
->Sorry if these questions seem bad - but that's why changelogs are used.
->  
->
->>>Allan
->>>      
->>>
->
->  
->
+Merge as-is, fix it before 2.6.13, and you get the same thing, except
+a release earlier.  I think this shouldn't be a problem, as after the
+floodgates close, you still get to fix things you merged early.  This
+came about as a result of feedback received because after it went into
+-mm, and it seems to me that this is a legitimate change for 2.6.14.
+
+> And then
+> 
+> 2a) drop the trick, and avoid changing ptrace call numbers. Old UMLs
+> will run fast, but crash with /proc/sysemu (only root-accessible).
+
+We should drop /proc/sysemu, if it's there at all, since it's only for
+debugging sysemu, and maintain it as a private patch.  So this doesn't
+seem like much of an issue.
+
+				Jeff
 
 
 -------------------------------------------------------
