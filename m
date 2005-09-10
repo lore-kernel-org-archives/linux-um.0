@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EE9ik-0006mE-Pp	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2005 11:04:58 -0700
-Received: from ppp-62-11-72-160.dialup.tiscali.it ([62.11.72.160]
-	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EE9ij-0002cx-4w	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2005 11:04:58 -0700
-Message-Id: <20050910174627.569839000@zion.home.lan>
-References: <20050910174452.907256000@zion.home.lan>
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Content-Disposition: inline;
-	filename=uml-add-dwarf-sections-to-static-link-script
-Subject: [uml-devel] [patch 2/7] i386 / uml: add dwarf sections to static link
-	script
+	id 1EE9jO-0006o0-6n	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Sep 2005 11:05:38 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EE9jM-0006zY-JX
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Sep 2005 11:05:38 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] NPTL status?
+References: <20050909162442.GA11934@trixie.casa.cgf.cx>
+In-Reply-To: <20050909162442.GA11934@trixie.casa.cgf.cx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200509101619.38922.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,171 +27,70 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 10 Sep 2005 19:44:54 +0200
-To: Linus Torvalds <torvalds@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, Sam Ravnborg <sam@ravnborg.org>, Paolo Blaisorblade Giarrusso <blaisorblade@yahoo.it>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 10 Sep 2005 16:19:38 +0200
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Christopher Faylor <me@cgf.cx>
 
-Inside the linker script, insert the code for DWARF debug info sections. This
-may help GDB'ing a Uml binary. Actually, it seems that ld is able to guess
-what I added correctly, but normal linker scripts include this section so it
-should be correct anyway adding it.
+On Friday 09 September 2005 18:24, Christopher Faylor wrote:
+> As I understand it NPTL support in UML is still a work in progress.  Is
+> this correct?  If so, is there an experimental patch set which works
+> better with NPTL
+Yes, but I'd really underline _experimental_.
+> and might allow things like RHEL4 to boot=20
+> out-of-the-box?
+Basically, no. At least nothing you'd rely onto.
+There is something like that, but it doesn't work very well yet.
 
-On request by Sam Ravnborg <sam@ravnborg.org>, I've added it to
-asm-generic/vmlinux.lds.s. I've also moved there the stabs debug section,
-used the new macro in i386 linker script and added DWARF debug section to
-that.
+If you browse my website, in the patches directory:
 
-In the truth, I've not been able to verify the difference in GDB behaviour
-after this change (I've seen large improvements with another patch). This
-may depend on my binutils version, older one may have worse defaults.
+http://www.user-mode-linux.org/~blaisorblade/patches/devel-guest/
 
-However, this section is present in normal linker script, so add it at
-least for the sake of cleanness.
+there are some test trees which include TLS support code.
 
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+It depends - at this stage, because of the difference between distros (glib=
+c=20
+version mainly), with the same code I can see one behaviour (say "nothing=20
+works") and somebody else have no problem.
 
- arch/i386/kernel/vmlinux.lds.S    |   11 +++--------
- arch/um/kernel/dyn.lds.S          |   37 ++++--------------------------------
- arch/um/kernel/uml.lds.S          |   14 +++++---------
- include/asm-generic/vmlinux.lds.h |   38 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 50 insertions(+), 50 deletions(-)
+My Debian Sarge appears to be very picky, while Jeff, with more or less the=
+=20
+same patches, has FC4 working "well enough" (there are still some spurious =
 
-diff --git a/arch/i386/kernel/vmlinux.lds.S b/arch/i386/kernel/vmlinux.lds.S
---- a/arch/i386/kernel/vmlinux.lds.S
-+++ b/arch/i386/kernel/vmlinux.lds.S
-@@ -144,12 +144,7 @@ SECTIONS
- 	*(.exitcall.exit)
- 	}
- 
--  /* Stabs debugging sections.  */
--  .stab 0 : { *(.stab) }
--  .stabstr 0 : { *(.stabstr) }
--  .stab.excl 0 : { *(.stab.excl) }
--  .stab.exclstr 0 : { *(.stab.exclstr) }
--  .stab.index 0 : { *(.stab.index) }
--  .stab.indexstr 0 : { *(.stab.indexstr) }
--  .comment 0 : { *(.comment) }
-+  STABS_DEBUG
-+
-+  DWARF_DEBUG
- }
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -146,37 +146,8 @@ SECTIONS
-   }
-   _end = .;
-   PROVIDE (end = .);
--   /* Stabs debugging sections.  */
--  .stab          0 : { *(.stab) }
--  .stabstr       0 : { *(.stabstr) }
--  .stab.excl     0 : { *(.stab.excl) }
--  .stab.exclstr  0 : { *(.stab.exclstr) }
--  .stab.index    0 : { *(.stab.index) }
--  .stab.indexstr 0 : { *(.stab.indexstr) }
--  .comment       0 : { *(.comment) }
--  /* DWARF debug sections.
--     Symbols in the DWARF debugging sections are relative to the beginning
--     of the section so we begin them at 0.  */
--  /* DWARF 1 */
--  .debug          0 : { *(.debug) }
--  .line           0 : { *(.line) }
--  /* GNU DWARF 1 extensions */
--  .debug_srcinfo  0 : { *(.debug_srcinfo) }
--  .debug_sfnames  0 : { *(.debug_sfnames) }
--  /* DWARF 1.1 and DWARF 2 */
--  .debug_aranges  0 : { *(.debug_aranges) }
--  .debug_pubnames 0 : { *(.debug_pubnames) }
--  /* DWARF 2 */
--  .debug_info     0 : { *(.debug_info .gnu.linkonce.wi.*) }
--  .debug_abbrev   0 : { *(.debug_abbrev) }
--  .debug_line     0 : { *(.debug_line) }
--  .debug_frame    0 : { *(.debug_frame) }
--  .debug_str      0 : { *(.debug_str) }
--  .debug_loc      0 : { *(.debug_loc) }
--  .debug_macinfo  0 : { *(.debug_macinfo) }
--  /* SGI/MIPS DWARF 2 extensions */
--  .debug_weaknames 0 : { *(.debug_weaknames) }
--  .debug_funcnames 0 : { *(.debug_funcnames) }
--  .debug_typenames 0 : { *(.debug_typenames) }
--  .debug_varnames  0 : { *(.debug_varnames) }
-+
-+  STABS_DEBUG
-+
-+  DWARF_DEBUG
- }
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -93,14 +93,10 @@ SECTIONS
-    *(.bss)
-    *(COMMON)
-   }
--  _end = . ;
-+  _end = .;
-   PROVIDE (end = .);
--  /* Stabs debugging sections.  */
--  .stab 0 : { *(.stab) }
--  .stabstr 0 : { *(.stabstr) }
--  .stab.excl 0 : { *(.stab.excl) }
--  .stab.exclstr 0 : { *(.stab.exclstr) }
--  .stab.index 0 : { *(.stab.index) }
--  .stab.indexstr 0 : { *(.stab.indexstr) }
--  .comment 0 : { *(.comment) }
-+
-+  STABS_DEBUG
-+
-+  DWARF_DEBUG
- }
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -103,3 +103,41 @@
- 		VMLINUX_SYMBOL(__kprobes_text_start) = .;		\
- 		*(.kprobes.text)					\
- 		VMLINUX_SYMBOL(__kprobes_text_end) = .;
-+
-+		/* DWARF debug sections.
-+		Symbols in the DWARF debugging sections are relative to
-+		the beginning of the section so we begin them at 0.  */
-+#define DWARF_DEBUG							\
-+		/* DWARF 1 */						\
-+		.debug          0 : { *(.debug) }			\
-+		.line           0 : { *(.line) }			\
-+		/* GNU DWARF 1 extensions */				\
-+		.debug_srcinfo  0 : { *(.debug_srcinfo) }		\
-+		.debug_sfnames  0 : { *(.debug_sfnames) }		\
-+		/* DWARF 1.1 and DWARF 2 */				\
-+		.debug_aranges  0 : { *(.debug_aranges) }		\
-+		.debug_pubnames 0 : { *(.debug_pubnames) }		\
-+		/* DWARF 2 */						\
-+		.debug_info     0 : { *(.debug_info			\
-+				.gnu.linkonce.wi.*) }			\
-+		.debug_abbrev   0 : { *(.debug_abbrev) }		\
-+		.debug_line     0 : { *(.debug_line) }			\
-+		.debug_frame    0 : { *(.debug_frame) }			\
-+		.debug_str      0 : { *(.debug_str) }			\
-+		.debug_loc      0 : { *(.debug_loc) }			\
-+		.debug_macinfo  0 : { *(.debug_macinfo) }		\
-+		/* SGI/MIPS DWARF 2 extensions */			\
-+		.debug_weaknames 0 : { *(.debug_weaknames) }		\
-+		.debug_funcnames 0 : { *(.debug_funcnames) }		\
-+		.debug_typenames 0 : { *(.debug_typenames) }		\
-+		.debug_varnames  0 : { *(.debug_varnames) }		\
-+
-+		/* Stabs debugging sections.  */
-+#define STABS_DEBUG							\
-+		.stab 0 : { *(.stab) }					\
-+		.stabstr 0 : { *(.stabstr) }				\
-+		.stab.excl 0 : { *(.stab.excl) }			\
-+		.stab.exclstr 0 : { *(.stab.exclstr) }			\
-+		.stab.index 0 : { *(.stab.index) }			\
-+		.stab.indexstr 0 : { *(.stab.indexstr) }		\
-+		.comment 0 : { *(.comment) }
+segfaults, however).
 
---
+And S=E9bastien Dugu=E9 tried LinuxFromScratch 6.1 with glibc 2.3.5 and it =
+worked=20
+well - but I think LFS is not a heavy stress tool for NPTL.
+
+> I am currently using a 2.6.12 guest kernel with RH9 rootfs and have
+> moved things around in /lib so as to avoid problems with NPTL but
+> I was hoping that there might be some improvements which would allow
+> me to use later versions of glibc without modification.
+RH9 is entirely different - that wouldn't even work with a plain 2.6 kernel=
+ on=20
+i386, I think.
+
+In fact, I've seen some early NPTL code on Ingo Molnar's site and it isn't =
+at=20
+all compatible with current API. So RH9's NPTL will never be supported.
+> Is this possible?
+
+> cgf
+
+--=20
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+=09
+
+=09
+	=09
+___________________________________=20
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB=20
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
