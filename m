@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EE9iU-0006lh-OO	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2005 11:04:42 -0700
+	id 1EE9ia-0006lx-Ma	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Sep 2005 11:04:48 -0700
 Received: from ppp-62-11-72-160.dialup.tiscali.it ([62.11.72.160]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EE9iS-0002ZJ-PO	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2005 11:04:42 -0700
-Message-Id: <20050910174630.063774000@zion.home.lan>
+	id 1EE9iX-0006rI-Qa	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Sep 2005 11:04:48 -0700
+Message-Id: <20050910174629.286344000@zion.home.lan>
 References: <20050910174452.907256000@zion.home.lan>
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Content-Disposition: inline; filename=fix-close-eintr
-Subject: [uml-devel] [patch 7/7] uml: retry host close() on EINTR
+Content-Disposition: inline; filename=uml-fix-fault-handler-on-write
+Subject: [uml-devel] [patch 5/7] uml: fix fault handler on write
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,39 +24,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 10 Sep 2005 19:44:59 +0200
+Date: Sat, 10 Sep 2005 19:44:57 +0200
 To: Linus Torvalds <torvalds@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, Paolo Blaisorblade Giarrusso <blaisorblade@yahoo.it>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-When calling close() on the host, we must retry the operation when we get
-EINTR.
+The UML fault handler was recently changed to enforce PROT_NONE protections,
+by requiring VM_READ or VM_EXEC on VMA's.
+
+However, by mistake, things were changed such that VM_READ is always checked,
+also on write faults; so a VMA mapped with only PROT_WRITE is not readable
+(unless it's prefaulted with MAP_POPULATE or with a write), which is different
+from i386.
+
+Discovered while testing remap_file_pages protection support.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/os-Linux/file.c |    3 ++-
+ arch/um/kernel/trap_kern.c |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -17,6 +17,7 @@
- #include <sys/uio.h>
- #include "os.h"
- #include "user.h"
-+#include "user_util.h"
- #include "kern_util.h"
+diff --git a/arch/um/kernel/trap_kern.c b/arch/um/kernel/trap_kern.c
+--- a/arch/um/kernel/trap_kern.c
++++ b/arch/um/kernel/trap_kern.c
+@@ -57,7 +57,8 @@ good_area:
+ 	if(is_write && !(vma->vm_flags & VM_WRITE)) 
+ 		goto out;
  
- static void copy_stat(struct uml_stat *dst, struct stat64 *src)
-@@ -300,7 +301,7 @@ int os_connect_socket(char *name)
+-        if(!(vma->vm_flags & (VM_READ | VM_EXEC)))
++	/* Don't require VM_READ|VM_EXEC for write faults! */
++        if(!is_write && !(vma->vm_flags & (VM_READ | VM_EXEC)))
+                 goto out;
  
- void os_close_file(int fd)
- {
--	close(fd);
-+	CATCH_EINTR(close(fd));
- }
- 
- int os_seek_file(int fd, __u64 offset)
+ 	do {
 
 --
 
