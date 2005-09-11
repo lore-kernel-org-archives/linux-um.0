@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EEAaB-0008Oj-MH	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2005 12:00:11 -0700
-Received: from smtp.osdl.org ([65.172.181.4])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1EEAa9-0002J7-D5
+	id 1EEMFF-0007XW-Fe	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Sep 2005 00:27:21 -0700
+Received: from ms004msg.fastwebnet.it ([213.140.2.58])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EEMFD-0004l6-VV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2005 12:00:11 -0700
-From: Linus Torvalds <torvalds@osdl.org>
-In-Reply-To: <20050910174630.063774000@zion.home.lan>
-Message-ID: <Pine.LNX.4.58.0509101157170.30958@g5.osdl.org>
+	Sun, 11 Sep 2005 00:27:21 -0700
+From: Paolo Ornati <ornati@fastwebnet.it>
+Message-ID: <20050911092802.1ab931ac@localhost>
+In-Reply-To: <Pine.LNX.4.58.0509101157170.30958@g5.osdl.org>
 References: <20050910174452.907256000@zion.home.lan>
 	<20050910174630.063774000@zion.home.lan>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	<Pine.LNX.4.58.0509101157170.30958@g5.osdl.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Subject: [uml-devel] Re: [patch 7/7] uml: retry host close() on EINTR
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -28,35 +29,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 10 Sep 2005 12:00:01 -0700 (PDT)
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 11 Sep 2005 09:28:02 +0200
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+
+On Sat, 10 Sep 2005 12:00:01 -0700 (PDT)
+Linus Torvalds <torvalds@osdl.org> wrote:
+
+> Re-doing the close() is the wrong thing to do, since in a threaded 
+> environment, something else might have opened another file, gotten
+> the same file descriptor, and you now close _another_ file.
+
+So glibc doc is wrong here:
+
+http://www.gnu.org/software/libc/manual/html_node/Opening-and-Closing-Files.html#index-close-1197
+
+-----------------------------------------------------------------------
+The normal return value from close is 0; a value of -1 is returned in
+case of failure. The following errno error conditions are defined for
+this function:
+
+...
+
+EINTR
+    The close call was interrupted by a signal. See Interrupted
+Primitives. Here is an example of how to handle EINTR properly:
+
+               TEMP_FAILURE_RETRY (close (desc));
+-----------------------------------------------------------------------
 
 
+And: /usr/include/unistd.h
 
-On Sat, 10 Sep 2005, Paolo 'Blaisorblade' Giarrusso wrote:
->
-> When calling close() on the host, we must retry the operation when we get
-> EINTR.
+# define TEMP_FAILURE_RETRY(expression)		\
+  (__extension__				\
+    ({ long int __result;			\
+       do __result = (long int) (expression);	\
+       while (__result == -1L && errno == EINTR); \
+       __result; }))
+#endif
 
-Actually, no.
 
-If close() return EINTR, the file descriptor _will_ have been closed. The
-error return just tells you that soem error happened on the file: for
-example, in the case of EINTR, the close() may not have flushed all the
-pending data synchronously.
+SUSV3:
+-------------------------------------------------------------
+If close() is interrupted by a signal that is to be caught, it shall
+return -1 with errno set to [EINTR] and the state of fildes is
+unspecified
+-------------------------------------------------------------
 
-Re-doing the close() is the wrong thing to do, since in a threaded 
-environment, something else might have opened another file, gotten the 
-same file descriptor, and you now close _another_ file.
+Unspecified! ;-)
 
-(Normally, re-doing the close will just return EBADF, of course).
-
-I'm going to drop this patch, but in case you've ever seen a case where 
-EINTR actually means that the fd didn't get closed, please holler, and we 
-need to fix it.
-
-			Linus
+-- 
+	Paolo Ornati
+	Linux 2.6.13.1 on x86_64
 
 
 -------------------------------------------------------
