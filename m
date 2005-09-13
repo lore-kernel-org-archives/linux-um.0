@@ -2,20 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFFOg-0004oy-C5	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Sep 2005 11:20:46 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFFOb-0003xL-Nc
+	id 1EFFWD-0005Bg-I0	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Sep 2005 11:28:33 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFFW9-0005Q0-NK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Sep 2005 11:20:46 -0700
+	Tue, 13 Sep 2005 11:28:33 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [RFC] [patch 0/18] remap_file_pages protection
+	support (for UML), try 3
+References: <200508262023.29170.blaisorblade@yahoo.it>
+	<200509042110.01968.blaisorblade@yahoo.it>
+	<Pine.LNX.4.61.0509071259380.17612@goblin.wat.veritas.com>
+In-Reply-To: <Pine.LNX.4.61.0509071259380.17612@goblin.wat.veritas.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509132001.40992.blaisorblade@yahoo.it>
-Subject: [uml-devel] "Sleeping in atomic section" with ubd aio patch
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200509132025.16015.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,49 +32,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 13 Sep 2005 20:01:40 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 13 Sep 2005 20:25:15 +0200
+To: Hugh Dickins <hugh@veritas.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, Andi Kleen <ak@suse.de>, jdike@addtoit.com, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Today I was running latest 2.6 UML git snapshot I have (from 8 September), 
-compiled with spinlock debugging, and got a big number of long series of 
-traces like this one (they varied a bit, but the core is 
-do_io->kmem_cache_alloc).
+On Wednesday 07 September 2005 14:00, Hugh Dickins wrote:
+> On Sun, 4 Sep 2005, Blaisorblade wrote:
+> > On Friday 02 September 2005 23:02, Hugh Dickins wrote:
+> > > On Fri, 26 Aug 2005, Blaisorblade wrote:
+> > > > * The first 2 patches modify the PTE encoding macros and start
+> > > > preparing the VM for the new situation (i.e. VMA which have variable
+> > > > protections, which are called VM_NONUNIFORM. I dropped the early
+> > > > VM_MANYPROTS name).
 
-It's just because things are called under spinlocks and GFP_KERNEL is used - 
-but if possible, it'd be better to use something better than GFP_ATOMIC 
-(since this is performance critical).
+> If it's something pervasive, like such naming, then yes you should redo
+> the patches.  Minor local corrections can be appended as an additional
+> patch, so long as they don't make the original patch ridiculous.
+>
+> I don't understand your "(at least when not changing behaviour)":
+> if you mean that significant changes of behaviour should be done as extra
+> patches at the end, no: surely they should be patches of the main sequence.
+Perfectly fine.
+> All of this supposes that my opinion is to be followed.
+> I've given my opinions, Andi gave his, I don't remember others.
+> It doesn't mean any one of us is right.  Did you agree with mine?
+For me it's no problem renaming, I see your point, have no particular reason 
+to insist with mine.
 
-Debug: sleeping function called from invalid context 
-at /home/paolo/Admin/kernel/6/VCS/linux-2.6.git/mm/slab.c:2097
-in_atomic():0, irqs_disabled():1
-a05bb5f0:  [<a0015c52>] dump_stack+0x22/0x30
-a05bb610:  [<a0048ddc>] __might_sleep+0xac/0xd0
-a05bb630:  [<a0094a38>] kmem_cache_alloc+0x98/0xb0
-a05bb660:  [<a003b266>] do_io+0x3b6/0x520
-a05bb760:  [<a003a6ba>] do_ubd_request+0x12a/0x180
-a05bb7f0:  [<a01d146d>] __generic_unplug_device+0x2d/0x40
-a05bb800:  [<a01d1500>] generic_unplug_device+0x80/0x180
-a05bb830:  [<a01d1621>] blk_backing_dev_unplug+0x21/0x30
-a05bb840:  [<a00bca6a>] block_sync_page+0x3a/0x50
-a05bb850:  [<a0087556>] sync_page+0x46/0x60
-a05bb860:  [<a02c79e9>] __wait_on_bit_lock+0x49/0x70
-a05bb880:  [<a0087e39>] __lock_page+0x89/0xa0
-a05bb900:  [<a008866a>] do_generic_mapping_read+0x3ca/0x770
-a05bb9e0:  [<a0088e5e>] __generic_file_aio_read+0x26e/0x2c0
-a05bba60:  [<a0088f03>] generic_file_aio_read+0x53/0x90
-a05bba90:  [<a00b53bc>] do_sync_read+0xdc/0x130
-a05bbb60:  [<a00b54f3>] vfs_read+0xe3/0x290
-a05bbba0:  [<a00b5a2b>] sys_read+0x4b/0x80
-a05bbbd0:  [<a001e687>] handle_syscall+0x117/0x140
-a05bbc70:  [<a001d5a6>] userspace+0x236/0x3c0
-a05bbcf0:  [<a001e1d8>] fork_handler+0xb8/0xd0
-a05bbd20:  [<ffffe420>] _etext+0x5fd3398a/0x0
+> > > "Inherit" is about parents and children, this is not;
+[...]
 
+> > MAP_CHGPROT? MAP_CHANGEPROT? MAP_REPROT?
+> > VM_MANYPROTS is internal name, so there's no reason to have the same name
+> > either.
+
+> It doesn't have to be the same name, true, but I find it a lot easier
+> to follow the trail of functionality when similar naming is used.
+> Perhaps the "PROT" part is enough: MAP_SETPROT or MAP_CHGPROT or
+> MAP_CHANGEPROT if you don't like MAP_MANYPROTS.
+MAP_CHGPROT is perfectly ok...
+> > It's just what you remarked above. But we'd have separate macros and code
+> > paths (not hugely separate): use the old macro version if VM_MANYPROTS
+> > clear, use the new one if VM_MANYPROTS set.
+
+> I think those macros are grotesque enough already.
+That change wouldn't be in the macro themselves. We'd have a slightly 
+different path in the caller to handle that.
+> But I don't have a constructive suggestion.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
+
 
 	
 
@@ -82,10 +96,10 @@ http://mail.yahoo.it
 
 
 -------------------------------------------------------
-SF.Net email is Sponsored by the Better Software Conference & EXPO
-September 19-22, 2005 * San Francisco, CA * Development Lifecycle Practices
-Agile & Plan-Driven Development * Managing Projects & Teams * Testing & QA
-Security * Process Improvement & Measurement * http://www.sqe.com/bsce5sf
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. Download
+it for free - -and be entered to win a 42" plasma tv or your very own
+Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
