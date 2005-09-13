@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFFWD-0005Bg-I0	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Sep 2005 11:28:33 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFFW9-0005Q0-NK
+	id 1EFFcO-0005Ru-L8	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Sep 2005 11:34:56 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFFcN-0006Qv-Po
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Sep 2005 11:28:33 -0700
+	Tue, 13 Sep 2005 11:34:56 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [RFC] [patch 0/18] remap_file_pages protection
-	support (for UML), try 3
-References: <200508262023.29170.blaisorblade@yahoo.it>
-	<200509042110.01968.blaisorblade@yahoo.it>
-	<Pine.LNX.4.61.0509071259380.17612@goblin.wat.veritas.com>
-In-Reply-To: <Pine.LNX.4.61.0509071259380.17612@goblin.wat.veritas.com>
+Subject: Re: [uml-devel] SYSEMU getting merged - but I'm in doubt
+References: <200509041702.18506.blaisorblade@yahoo.it>
+	<20050906161032.GA6157@ccure.user-mode-linux.org>
+	<43270396.5050102@fujitsu-siemens.com>
+In-Reply-To: <43270396.5050102@fujitsu-siemens.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200509132025.16015.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_OkxJDUHneWm479s"
+Message-Id: <200509132023.10959.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,58 +29,113 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 13 Sep 2005 20:25:15 +0200
-To: Hugh Dickins <hugh@veritas.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, Ingo Molnar <mingo@elte.hu>, Andi Kleen <ak@suse.de>, jdike@addtoit.com, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Tue, 13 Sep 2005 20:23:10 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>, "Charles P. Wright" <cwright@cs.sunysb.edu>
 
-On Wednesday 07 September 2005 14:00, Hugh Dickins wrote:
-> On Sun, 4 Sep 2005, Blaisorblade wrote:
-> > On Friday 02 September 2005 23:02, Hugh Dickins wrote:
-> > > On Fri, 26 Aug 2005, Blaisorblade wrote:
-> > > > * The first 2 patches modify the PTE encoding macros and start
-> > > > preparing the VM for the new situation (i.e. VMA which have variable
-> > > > protections, which are called VM_NONUNIFORM. I dropped the early
-> > > > VM_MANYPROTS name).
+--Boundary-00=_OkxJDUHneWm479s
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> If it's something pervasive, like such naming, then yes you should redo
-> the patches.  Minor local corrections can be appended as an additional
-> patch, so long as they don't make the original patch ridiculous.
->
-> I don't understand your "(at least when not changing behaviour)":
-> if you mean that significant changes of behaviour should be done as extra
-> patches at the end, no: surely they should be patches of the main sequence.
-Perfectly fine.
-> All of this supposes that my opinion is to be followed.
-> I've given my opinions, Andi gave his, I don't remember others.
-> It doesn't mean any one of us is right.  Did you agree with mine?
-For me it's no problem renaming, I see your point, have no particular reason 
-to insist with mine.
+On Tuesday 13 September 2005 18:51, Bodo Stroesser wrote:
+> Jeff Dike wrote:
+> > On Sun, Sep 04, 2005 at 05:02:18PM +0200, Blaisorblade wrote:
 
-> > > "Inherit" is about parents and children, this is not;
-[...]
+> > I would be tempted to leave it in and fix it before 2.6.14.  We need
+> > different ptrace codes so that UML knows how to switch interception
+> > types, I take it?
+Yes, that's the idea.
+> > UML is the only user, so there aren't really any compatibility issues.
+> >
+> >>On the host side, instead, supporting both the broken API and the new one
+> >> is more difficult.
+> >
+> > Yeah, and it shouldn't be done.  This is one reason I'd like to use the
+> > same ptrace codes - it doesn't leave a hole in the codes that says there
+> > was a broken ABI there once.
+Do you see contiguos codes? We jump from 24 to 31-32 (it was done for 
+something like having a common ABI with 2.4 and 2.6 hosts - don't ask me what 
+filled previous slots, however), so you shouldn't worry for this.
 
-> > MAP_CHGPROT? MAP_CHANGEPROT? MAP_REPROT?
-> > VM_MANYPROTS is internal name, so there's no reason to have the same name
-> > either.
+> >>What's your opinion on this? The options are:
+> >>1) merge it as-is
+> >>2) take it back for now, fix it and merge it for 2.6.15.
 
-> It doesn't have to be the same name, true, but I find it a lot easier
-> to follow the trail of functionality when similar naming is used.
-> Perhaps the "PROT" part is enough: MAP_SETPROT or MAP_CHGPROT or
-> MAP_CHANGEPROT if you don't like MAP_MANYPROTS.
-MAP_CHGPROT is perfectly ok...
-> > It's just what you remarked above. But we'd have separate macros and code
-> > paths (not hugely separate): use the old macro version if VM_MANYPROTS
-> > clear, use the new one if VM_MANYPROTS set.
+> > Merge as-is, fix it before 2.6.13, and you get the same thing, except
+> > a release earlier.  I think this shouldn't be a problem, as after the
+> > floodgates close, you still get to fix things you merged early.  This
+> > came about as a result of feedback received because after it went into
+> > -mm, and it seems to me that this is a legitimate change for 2.6.14.
 
-> I think those macros are grotesque enough already.
-That change wouldn't be in the macro themselves. We'd have a slightly 
-different path in the caller to handle that.
-> But I don't have a constructive suggestion.
+> >>And then
+
+> >>2a) drop the trick, and avoid changing ptrace call numbers. Old UMLs
+> >>will run fast, but crash with /proc/sysemu (only root-accessible).
+
+> > We should drop /proc/sysemu, if it's there at all, since it's only for
+> > debugging sysemu, and maintain it as a private patch.  So this doesn't
+> > seem like much of an issue.
+
+> > 				Jeff
+
+> It would be enough to make /proc/sysemu readonly.
+Yes, but my main concern is compatibility with existing binaries. They'll work 
+as long as nobody tries to write on /proc/sysemu if the API is changed.
+
+However, I've put something together, so I've attached the host patch (I'm 
+also a bit ill this days, so I want to make sure there's at least the 
+possibility for anybody else to fix it).
+
+This has not yet been tested (I'm gonna do it) - but it seems that it's little 
+enough to make the new behaviour a ptrace option, if needed.
+
+I wouldn't like to break in *anything* behaviour of old binaries, if possible.
+
+> But we need to change check_sysemu(). The current implementation will work
+> with the old API only.
+Would it refuse using sysemu or refuse to run at all? That's another 
+interesting point.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+--Boundary-00=_OkxJDUHneWm479s
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="sysemu-new-interface.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="sysemu-new-interface.patch"
+
+sysemu-new-interface
+
+
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ linux-2.6.git-paolo/arch/i386/kernel/ptrace.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletion(-)
+
+diff -puN arch/i386/kernel/ptrace.c~sysemu-new-interface arch/i386/kernel/ptrace.c
+--- linux-2.6.git/arch/i386/kernel/ptrace.c~sysemu-new-interface	2005-07-27 20:38:35.000000000 +0200
++++ linux-2.6.git-paolo/arch/i386/kernel/ptrace.c	2005-07-27 20:40:25.000000000 +0200
+@@ -749,7 +749,9 @@ int do_syscall_trace(struct pt_regs *reg
+ 		send_sig(current->exit_code, current, 1);
+ 		current->exit_code = 0;
+ 	}
+-	ret = is_sysemu;
++	/* The debugger might have changed the syscall intercepting mode. Apply
++	 * this update now, rather than at next syscall. */
++	ret = test_thread_flag(TIF_SYSCALL_EMU);
+  out:
+ 	if (unlikely(current->audit_context) && !entryexit)
+ 		audit_syscall_entry(current, AUDIT_ARCH_I386, regs->orig_eax,
+_
+
+--Boundary-00=_OkxJDUHneWm479s--
 
 	
 
