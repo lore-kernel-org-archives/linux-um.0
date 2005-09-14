@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFfih-0006DL-TG	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:27:11 -0700
+	id 1EFfLS-0003ij-MK	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 15:03:10 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfig-0001Eh-1h
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfLS-0004Ix-Ay
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:27:11 -0700
-Message-Id: <200509142156.j8ELuDAv012169@ccure.user-mode-linux.org>
+	Wed, 14 Sep 2005 15:03:10 -0700
+Message-Id: <200509142156.j8ELuFl7012174@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 9/10] UML - return a real error code
+Subject: [uml-devel] [PATCH 10/10] UML - remove include of asm/elf.h
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,26 +24,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 17:56:13 -0400
+Date: Wed, 14 Sep 2005 17:56:15 -0400
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-do_aio used to return -1 on error instead of errno.
+asm/elf.h is bad on x86_64, and i386 doesn't need it any more after Al's 
+cleanup.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: test/arch/um/os-Linux/aio.c
+Index: test/arch/um/os-Linux/elf_aux.c
 ===================================================================
---- test.orig/arch/um/os-Linux/aio.c	2005-09-14 15:47:30.000000000 -0400
-+++ test/arch/um/os-Linux/aio.c	2005-09-14 15:48:04.000000000 -0400
-@@ -117,6 +117,7 @@
-         err = io_submit(ctx, 1, &iocbp);
-         if(err > 0)
-                 err = 0;
-+	else err = -errno;
- 
-  out:
-         return err;
+--- test.orig/arch/um/os-Linux/elf_aux.c	2005-09-14 15:47:21.000000000 -0400
++++ test/arch/um/os-Linux/elf_aux.c	2005-09-14 15:48:17.000000000 -0400
+@@ -9,7 +9,6 @@
+  */
+ #include <elf.h>
+ #include <stddef.h>
+-#include <asm/elf.h>
+ #include "init.h"
+ #include "elf_user.h"
+ #include "mem_user.h"
 
 
 
