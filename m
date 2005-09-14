@@ -2,23 +2,32 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFdYK-0006xA-50	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 13:08:20 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFdYH-0007xw-Gh
+	id 1EFdQk-0006d5-79	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 13:00:30 -0700
+Received: from mail.nagafix.co.uk ([213.228.237.37])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFdQj-0006Vs-3I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 13:08:20 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] pcap
+	Wed, 14 Sep 2005 13:00:30 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by mail.nagafix.co.uk (Postfix) with ESMTP id C194545768
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 15 Sep 2005 03:07:06 +0100 (BST)
+Received: from mail.nagafix.co.uk ([127.0.0.1])
+ by localhost (viper.nagafix.co.uk [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 10211-07 for <user-mode-linux-devel@lists.sourceforge.net>;
+ Thu, 15 Sep 2005 03:07:05 +0100 (BST)
+Received: from [192.168.0.3] (host-87-74-41-116.bulldogdsl.com [87.74.41.116])
+	by mail.nagafix.co.uk (Postfix) with ESMTP id 0E53745766
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 15 Sep 2005 03:07:05 +0100 (BST)
+From: antoine <antoine@nagafix.co.uk>
+In-Reply-To: <1126653933.3769.45.camel@localhost>
 References: <1126653933.3769.45.camel@localhost>
-	<1126729188.3769.49.camel@localhost>
-In-Reply-To: <1126729188.3769.49.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
+Message-Id: <1126729188.3769.49.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200509142206.12128.blaisorblade@yahoo.it>
+Subject: [uml-devel] pcap
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +39,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 22:06:11 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: antoine <antoine@nagafix.co.uk>
+Date: Wed, 14 Sep 2005 21:19:48 +0100
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wednesday 14 September 2005 22:19, antoine wrote:
-> On some setups, when trying to bring up a pcap interface I get (in
-> dmesg):
-> [42949414.170000] dev_ip_addr - device not assigned an IP address
-I'd care more to this one probably. Especially because you say "on some 
-setups". It should refer to the host interface (don't know which one).
-> [42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
-This could be bogus.
-> [42949414.170000] device eth1 entered promiscuous mode
-> [42949414.170000] dev_ip_addr - device not assigned an IP address
-> [42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
->
-> Any clues? What's this syntax error?
+On some setups, when trying to bring up a pcap interface I get (in
+dmesg):
+[42949414.170000] dev_ip_addr - device not assigned an IP address
+[42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
+[42949414.170000] device eth1 entered promiscuous mode
+[42949414.170000] dev_ip_addr - device not assigned an IP address
+[42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
 
-> Thanks
-> Antoine
-It'd be on the PCAP filter expression (there's a parameter for that), assuming 
-the message is correct.
+Any clues? What's this syntax error?
 
-If you find no other explaination, I'll look if UML is passing a bogus string 
-there - however check the rest first.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+Thanks
+Antoine
 
 
 
