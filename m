@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFfLS-0003ij-MK	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:03:10 -0700
+	id 1EFfih-0006DJ-7b	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 15:27:11 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfLS-0004Ix-Ay
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfig-0001Ei-1p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:03:10 -0700
-Message-Id: <200509142156.j8ELuFl7012174@ccure.user-mode-linux.org>
+	Wed, 14 Sep 2005 15:27:11 -0700
+Message-Id: <200509142155.j8ELtugo012137@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 10/10] UML - remove include of asm/elf.h
+Subject: [uml-devel] [PATCH 3/10] UML - Remove a useless include
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,27 +24,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 17:56:15 -0400
+Date: Wed, 14 Sep 2005 17:55:56 -0400
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-asm/elf.h is bad on x86_64, and i386 doesn't need it any more after Al's 
-cleanup.
+linux/inet.h isn't needed, and on my system, is empty.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: test/arch/um/os-Linux/elf_aux.c
+Index: linux-2.6.13-mm1/arch/um/drivers/mcast_user.c
 ===================================================================
---- test.orig/arch/um/os-Linux/elf_aux.c	2005-09-14 15:47:21.000000000 -0400
-+++ test/arch/um/os-Linux/elf_aux.c	2005-09-14 15:48:17.000000000 -0400
-@@ -9,7 +9,6 @@
-  */
- #include <elf.h>
- #include <stddef.h>
--#include <asm/elf.h>
- #include "init.h"
- #include "elf_user.h"
- #include "mem_user.h"
+--- linux-2.6.13-mm1.orig/arch/um/drivers/mcast_user.c	2005-06-17 15:48:29.000000000 -0400
++++ linux-2.6.13-mm1/arch/um/drivers/mcast_user.c	2005-09-02 19:41:45.000000000 -0400
+@@ -13,7 +13,6 @@
+ 
+ #include <errno.h>
+ #include <unistd.h>
+-#include <linux/inet.h>
+ #include <sys/socket.h>
+ #include <sys/un.h>
+ #include <sys/time.h>
 
 
 
