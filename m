@@ -2,32 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFdQk-0006d5-79	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 13:00:30 -0700
-Received: from mail.nagafix.co.uk ([213.228.237.37])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFdQj-0006Vs-3I
+	id 1EFdBU-0005uU-Pa	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 12:44:44 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFdBR-0003Pw-94
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 13:00:30 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id C194545768
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 15 Sep 2005 03:07:06 +0100 (BST)
-Received: from mail.nagafix.co.uk ([127.0.0.1])
- by localhost (viper.nagafix.co.uk [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 10211-07 for <user-mode-linux-devel@lists.sourceforge.net>;
- Thu, 15 Sep 2005 03:07:05 +0100 (BST)
-Received: from [192.168.0.3] (host-87-74-41-116.bulldogdsl.com [87.74.41.116])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 0E53745766
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 15 Sep 2005 03:07:05 +0100 (BST)
-From: antoine <antoine@nagafix.co.uk>
-In-Reply-To: <1126653933.3769.45.camel@localhost>
-References: <1126653933.3769.45.camel@localhost>
-Content-Type: text/plain
-Message-Id: <1126729188.3769.49.camel@localhost>
+	Wed, 14 Sep 2005 12:44:44 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20050914192230.GC9001@ccure.user-mode-linux.org>
+References: <200509132001.40992.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] pcap
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200509132001.40992.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: "Sleeping in atomic section" with ubd aio patch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,21 +27,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 21:19:48 +0100
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 14 Sep 2005 15:22:30 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On some setups, when trying to bring up a pcap interface I get (in
-dmesg):
-[42949414.170000] dev_ip_addr - device not assigned an IP address
-[42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
-[42949414.170000] device eth1 entered promiscuous mode
-[42949414.170000] dev_ip_addr - device not assigned an IP address
-[42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
+On Tue, Sep 13, 2005 at 08:01:40PM +0200, Blaisorblade wrote:
+> It's just because things are called under spinlocks and GFP_KERNEL is used - 
+> but if possible, it'd be better to use something better than GFP_ATOMIC 
+> (since this is performance critical).
 
-Any clues? What's this syntax error?
+This would be ubd_io_lock, which is taken for us by the block layer before 
+entering do_ubd_request.  We could make that a GFP_ATOMIC allocation, except
+that we have already dequeued the request, so would need to do
+something with it if the allocation failed.
 
-Thanks
-Antoine
+I'm wondering if we can drop the lock before do_io and pick it up
+afterwards.  The bitmap argument is a global, which is a problem.  Two
+racing requests could result in one writing out a bitmap which is
+either too old or too new.
+
+So, I'm not sure how to handle this.  We could requeue what's left of
+the request if an allocation failure happens.  We could drop the lock
+and pick it up later, but we have to be careful to write out the
+current bitmap, not one which we saved earlier or one which has been
+updated to reflect a racing request which is coming through later.
+
+				Jeff
+
 
 
 
