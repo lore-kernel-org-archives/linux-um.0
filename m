@@ -2,17 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFfih-0006DJ-7b	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:27:11 -0700
+	id 1EFf3V-00038W-4P	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 14:44:37 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfig-0001Ei-1p
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFf3S-00015F-Ob
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:27:11 -0700
-Message-Id: <200509142155.j8ELtugo012137@ccure.user-mode-linux.org>
+	Wed, 14 Sep 2005 14:44:37 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: "Sleeping in atomic section" with ubd aio patch
+Message-ID: <20050914211808.GA11567@ccure.user-mode-linux.org>
+References: <200509132001.40992.blaisorblade@yahoo.it>
+	<20050914192230.GC9001@ccure.user-mode-linux.org>
+	<200509142200.39886.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/10] UML - Remove a useless include
+Content-Disposition: inline
+In-Reply-To: <200509142200.39886.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,27 +29,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 17:55:56 -0400
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 14 Sep 2005 17:18:08 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-linux/inet.h isn't needed, and on my system, is empty.
+On Wed, Sep 14, 2005 at 10:00:39PM +0200, Blaisorblade wrote:
+> Assuming it can be done, it'd be ok.
+> 
+> However, why have we already dequeued the request?
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+It is easier than removing segments from the request and finally
+dequeueing the request when it is finally empty.
 
-Index: linux-2.6.13-mm1/arch/um/drivers/mcast_user.c
-===================================================================
---- linux-2.6.13-mm1.orig/arch/um/drivers/mcast_user.c	2005-06-17 15:48:29.000000000 -0400
-+++ linux-2.6.13-mm1/arch/um/drivers/mcast_user.c	2005-09-02 19:41:45.000000000 -0400
-@@ -13,7 +13,6 @@
- 
- #include <errno.h>
- #include <unistd.h>
--#include <linux/inet.h>
- #include <sys/socket.h>
- #include <sys/un.h>
- #include <sys/time.h>
+> Looking for examples, via grep blkdev_dequeue_request drivers/ide/*.c and 
+> going opening drivers/ide/ide-io.c, I found blkdev_dequeue_request() called 
+> *after* end_that_request_first(), while there it's called before.
+> 
+> A comment in blk_start_pre_flush() says there's some freedom, but probably 
+> leaving the request in the queue would be ok....
 
+There is a good amount of freedom.  The driver is given a set of
+requests, and has the job of making them happen.
+
+				Jeff
 
 
 -------------------------------------------------------
