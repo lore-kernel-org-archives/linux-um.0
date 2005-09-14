@@ -2,23 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFcKQ-0003bQ-PG	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 11:49:54 -0700
+	id 1EFfih-0006DL-TG	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 15:27:11 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFcKM-0000dG-0s
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfig-0001Eh-1h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 11:49:54 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] SYSEMU getting merged - but I'm in doubt
-Message-ID: <20050914181914.GB9001@ccure.user-mode-linux.org>
-References: <200509041702.18506.blaisorblade@yahoo.it>
-	<20050906161032.GA6157@ccure.user-mode-linux.org>
-	<43270396.5050102@fujitsu-siemens.com>
-	<200509132023.10959.blaisorblade@yahoo.it>
+	Wed, 14 Sep 2005 15:27:11 -0700
+Message-Id: <200509142156.j8ELuDAv012169@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200509132023.10959.blaisorblade@yahoo.it>
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 9/10] UML - return a real error code
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,18 +24,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 14:19:14 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>, "Charles P. Wright" <cwright@cs.sunysb.edu>
+Date: Wed, 14 Sep 2005 17:56:13 -0400
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Sep 13, 2005 at 08:23:10PM +0200, Blaisorblade wrote:
-> Do you see contiguos codes? We jump from 24 to 31-32 (it was done for 
-> something like having a common ABI with 2.4 and 2.6 hosts - don't ask me what 
-> filled previous slots, however), so you shouldn't worry for this.
+do_aio used to return -1 on error instead of errno.
 
-Whoops, didn't notice this.
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-				Jeff
+Index: test/arch/um/os-Linux/aio.c
+===================================================================
+--- test.orig/arch/um/os-Linux/aio.c	2005-09-14 15:47:30.000000000 -0400
++++ test/arch/um/os-Linux/aio.c	2005-09-14 15:48:04.000000000 -0400
+@@ -117,6 +117,7 @@
+         err = io_submit(ctx, 1, &iocbp);
+         if(err > 0)
+                 err = 0;
++	else err = -errno;
+ 
+  out:
+         return err;
+
 
 
 -------------------------------------------------------
