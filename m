@@ -1,18 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFfLF-0003hz-Hn	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:02:57 -0700
+	id 1EFfih-0006DK-Rx	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 15:27:11 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfLE-0004Ep-Ja
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfig-0003FF-1M
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:02:57 -0700
-Message-Id: <200509142156.j8ELu5ZX012153@ccure.user-mode-linux.org>
+	Wed, 14 Sep 2005 15:27:11 -0700
+Message-Id: <200509142156.j8ELu7dK012159@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 6/10] UML - preserve errno in error paths
+Subject: [uml-devel] [PATCH 7/10] UML - move libc code out of mem_user.c and
+	tempfile.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,482 +25,843 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 17:56:05 -0400
+Date: Wed, 14 Sep 2005 17:56:07 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 
-The poster child for this patch is the third tuntap_user hunk.  When an ioctl
-fails, it properly closes the opened file descriptor and returns.  However,
-the close resets errno to 0, and the 'return errno' that follows returns 0 
-rather than the value that ioctl set.  This caused the caller to believe that
-the device open succeeded and had opened file descriptor 0, which caused no
-end of interesting behavior.
+The serial UML OS-abstraction layer patch (um/kernel dir).
 
-The rest of this patch is a pass through the UML sources looking for places
-where errno could be reset before being passed back out.  A common culprit is
-printk, which could call write, being called before errno is returned.
+This moves all system calls from mem_user.c and tempfile.c files under 
+os-Linux dir.
 
-In some cases, where the code ends up being much smaller, I just deleted the 
-printk.
-
-There was another case where a caller of run_helper looked at errno after a
-failure, rather than the return value of run_helper, which was the errno
-value that it wanted.
-
+Signed-off-by: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.13-mm2/arch/um/drivers/mcast_user.c
+Index: linux-2.6.13-mm2/arch/um/include/mem_user.h
 ===================================================================
---- linux-2.6.13-mm2.orig/arch/um/drivers/mcast_user.c	2005-09-12 23:19:16.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/drivers/mcast_user.c	2005-09-12 23:20:10.000000000 -0400
-@@ -54,7 +54,7 @@
- 	struct mcast_data *pri = data;
- 	struct sockaddr_in *sin = pri->mcast_addr;
- 	struct ip_mreq mreq;
--	int fd = -EINVAL, yes = 1, err = -EINVAL;;
-+	int fd, yes = 1, err = 0;
+--- linux-2.6.13-mm2.orig/arch/um/include/mem_user.h	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/include/mem_user.h	2005-09-08 14:55:47.000000000 -0400
+@@ -51,7 +51,6 @@
  
+ extern void check_devanon(void);
+ extern int init_mem_user(void);
+-extern int create_mem_file(unsigned long len);
+ extern void setup_memory(void *entry);
+ extern unsigned long find_iomem(char *driver, unsigned long *len_out);
+ extern int init_maps(unsigned long physmem, unsigned long iomem,
+@@ -64,20 +63,6 @@
+ extern void unmap_physmem(void);
+ extern void map_memory(unsigned long virt, unsigned long phys,
+ 		       unsigned long len, int r, int w, int x);
+-extern int protect_memory(unsigned long addr, unsigned long len, 
+-			  int r, int w, int x, int must_succeed);
+ extern unsigned long get_kmem_end(void);
+-extern void check_tmpexec(void);
  
- 	if ((sin->sin_addr.s_addr == 0) || (sin->sin_port == 0))
-@@ -65,13 +65,14 @@
- 	if (fd < 0){
- 		printk("mcast_open : data socket failed, errno = %d\n", 
- 		       errno);
--		fd = -errno;
-+		err = -errno;
- 		goto out;
- 	}
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.13-mm2/arch/um/include/os.h
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/include/os.h	2005-09-08 14:55:13.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/include/os.h	2005-09-08 14:55:47.000000000 -0400
+@@ -157,6 +157,9 @@
+ extern void os_early_checks(void);
+ extern int can_do_skas(void);
  
- 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0) {
- 		printk("mcast_open: SO_REUSEADDR failed, errno = %d\n",
- 			errno);
-+		err = -errno;
- 		goto out_close;
- 	}
++/* mem.c */
++extern int create_mem_file(unsigned long len);
++  
+ /* process.c */
+ extern unsigned long os_process_pc(int pid);
+ extern int os_process_parent(int pid);
+@@ -181,6 +184,8 @@
+ /* tt.c
+  * for tt mode only (will be deleted in future...)
+  */
++extern int protect_memory(unsigned long addr, unsigned long len, 
++			  int r, int w, int x, int must_succeed);
+ extern void forward_pending_sigio(int target);
+ extern int start_fork_tramp(void *arg, unsigned long temp_stack,
+ 			    int clone_flags, int (*tramp)(void *));
+Index: linux-2.6.13-mm2/arch/um/kernel/Makefile
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/kernel/Makefile	2005-09-08 14:55:13.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/kernel/Makefile	2005-09-08 14:55:47.000000000 -0400
+@@ -10,7 +10,7 @@
+ 	helper.o init_task.o irq.o irq_user.o ksyms.o main.o mem.o mem_user.o \
+ 	physmem.o process_kern.o ptrace.o reboot.o resource.o sigio_user.o \
+ 	sigio_kern.o signal_kern.o signal_user.o smp.o syscall_kern.o sysrq.o \
+-	tempfile.o time.o time_kern.o tlb.o trap_kern.o trap_user.o \
++	time.o time_kern.o tlb.o trap_kern.o trap_user.o \
+ 	uaccess_user.o um_arch.o umid.o user_util.o
  
-@@ -80,6 +81,7 @@
- 		       sizeof(pri->ttl)) < 0) {
- 		printk("mcast_open: IP_MULTICAST_TTL failed, error = %d\n",
- 			errno);
-+		err = -errno;
- 		goto out_close;
- 	}
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+@@ -24,8 +24,8 @@
  
-@@ -87,12 +89,14 @@
- 	if (setsockopt(fd, SOL_IP, IP_MULTICAST_LOOP, &yes, sizeof(yes)) < 0) {
- 		printk("mcast_open: IP_MULTICAST_LOOP failed, error = %d\n",
- 			errno);
-+		err = -errno;
- 		goto out_close;
- 	}
+ user-objs-$(CONFIG_TTY_LOG) += tty_log.o
  
- 	/* bind socket to mcast address */
- 	if (bind(fd, (struct sockaddr *) sin, sizeof(*sin)) < 0) {
- 		printk("mcast_open : data bind failed, errno = %d\n", errno);
-+		err = -errno;
- 		goto out_close;
- 	}		
- 	
-@@ -107,14 +111,15 @@
- 		       "interface on the host.\n");
- 		printk("eth0 should be configured in order to use the "
- 		       "multicast transport.\n");
-+		err = -errno;
-                 goto out_close;
- 	}
+-USER_OBJS := $(user-objs-y) config.o helper.o main.o tempfile.o time.o \
+-	tty_log.o umid.o user_util.o
++USER_OBJS := $(user-objs-y) config.o helper.o main.o time.o tty_log.o umid.o \
++	user_util.o
  
+ include arch/um/scripts/Makefile.rules
+ 
+Index: linux-2.6.13-mm2/arch/um/kernel/init_task.c
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/kernel/init_task.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/kernel/init_task.c	2005-09-08 14:55:47.000000000 -0400
+@@ -13,6 +13,7 @@
+ #include "asm/pgtable.h"
+ #include "user_util.h"
+ #include "mem_user.h"
++#include "os.h"
+ 
+ static struct fs_struct init_fs = INIT_FS;
+ struct mm_struct init_mm = INIT_MM(init_mm);
+@@ -45,8 +46,8 @@
+ 
+ void unprotect_stack(unsigned long stack)
+ {
+-	protect_memory(stack, (1 << CONFIG_KERNEL_STACK_ORDER) * PAGE_SIZE, 
+-		       1, 1, 0, 1);
++	os_protect_memory((void *) stack, (1 << CONFIG_KERNEL_STACK_ORDER) * PAGE_SIZE, 
++		       1, 1, 0);
+ }
+ 
+ /*
+Index: linux-2.6.13-mm2/arch/um/kernel/mem_user.c
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/kernel/mem_user.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/kernel/mem_user.c	2005-09-08 14:55:47.000000000 -0400
+@@ -48,219 +48,16 @@
+ #include "tempfile.h"
+ #include "kern_constants.h"
+ 
+-#define TEMPNAME_TEMPLATE "vm_file-XXXXXX"
+-
+-static int create_tmp_file(unsigned long len)
+-{
+-	int fd, err;
+-	char zero;
+-
+-	fd = make_tempfile(TEMPNAME_TEMPLATE, NULL, 1);
+-	if(fd < 0) {
+-		os_print_error(fd, "make_tempfile");
+-		exit(1);
+-	}
+-
+-	err = os_mode_fd(fd, 0777);
+-	if(err < 0){
+-		os_print_error(err, "os_mode_fd");
+-		exit(1);
+-	}
+-	err = os_seek_file(fd, len);
+-	if(err < 0){
+-		os_print_error(err, "os_seek_file");
+-		exit(1);
+-	}
+-	zero = 0;
+-	err = os_write_file(fd, &zero, 1);
+-	if(err != 1){
+-		os_print_error(err, "os_write_file");
+-		exit(1);
+-	}
+-
+-	return(fd);
+-}
+-
+-void check_tmpexec(void)
+-{
+-	void *addr;
+-	int err, fd = create_tmp_file(UM_KERN_PAGE_SIZE);
+-
+-	addr = mmap(NULL, UM_KERN_PAGE_SIZE,
+-		    PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
+-	printf("Checking PROT_EXEC mmap in /tmp...");
+-	fflush(stdout);
+-	if(addr == MAP_FAILED){
+-		err = errno;
+-		perror("failed");
+-		if(err == EPERM)
+-			printf("/tmp must be not mounted noexec\n");
+-		exit(1);
+-	}
+-	printf("OK\n");
+-	munmap(addr, UM_KERN_PAGE_SIZE);
+-
+-	os_close_file(fd);
+-}
+-
+-static int have_devanon = 0;
+-
+-void check_devanon(void)
+-{
+-	int fd;
+-
+-	printk("Checking for /dev/anon on the host...");
+-	fd = open("/dev/anon", O_RDWR);
+-	if(fd < 0){
+-		printk("Not available (open failed with errno %d)\n", errno);
+-		return;
+-	}
+-
+-	printk("OK\n");
+-	have_devanon = 1;
+-}
+-
+-static int create_anon_file(unsigned long len)
+-{
+-	void *addr;
+-	int fd;
+-
+-	fd = open("/dev/anon", O_RDWR);
+-	if(fd < 0) {
+-		os_print_error(fd, "opening /dev/anon");
+-		exit(1);
+-	}
+-
+-	addr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+-	if(addr == MAP_FAILED){
+-		perror("mapping physmem file");
+-		exit(1);
+-	}
+-	munmap(addr, len);
+-
+-	return(fd);
+-}
+-
+-int create_mem_file(unsigned long len)
+-{
+-	int err, fd;
+-
+-	if(have_devanon)
+-		fd = create_anon_file(len);
+-	else fd = create_tmp_file(len);
+-
+-	err = os_set_exec_close(fd, 1);
+-	if(err < 0)
+-		os_print_error(err, "exec_close");
+-	return(fd);
+-}
+-
+ struct iomem_region *iomem_regions = NULL;
+ int iomem_size = 0;
+ 
+-static int __init parse_iomem(char *str, int *add)
+-{
+-	struct iomem_region *new;
+-	struct uml_stat buf;
+-	char *file, *driver;
+-	int fd, err, size;
+-
+-	driver = str;
+-	file = strchr(str,',');
+-	if(file == NULL){
+-		printf("parse_iomem : failed to parse iomem\n");
+-		goto out;
+-	}
+-	*file = '\0';
+-	file++;
+-	fd = os_open_file(file, of_rdwr(OPENFLAGS()), 0);
+-	if(fd < 0){
+-		os_print_error(fd, "parse_iomem - Couldn't open io file");
+-		goto out;
+-	}
+-
+-	err = os_stat_fd(fd, &buf);
+-	if(err < 0){
+-		os_print_error(err, "parse_iomem - cannot stat_fd file");
+-		goto out_close;
+-	}
+-
+-	new = malloc(sizeof(*new));
+-	if(new == NULL){
+-		perror("Couldn't allocate iomem_region struct");
+-		goto out_close;
+-	}
+-
+-	size = (buf.ust_size + UM_KERN_PAGE_SIZE) & ~(UM_KERN_PAGE_SIZE - 1);
+-
+-	*new = ((struct iomem_region) { .next		= iomem_regions,
+-					.driver		= driver,
+-					.fd		= fd,
+-					.size		= size,
+-					.phys		= 0,
+-					.virt		= 0 });
+-	iomem_regions = new;
+-	iomem_size += new->size + UM_KERN_PAGE_SIZE;
+-
+-	return(0);
+- out_close:
+-	os_close_file(fd);
 - out:
- 	return fd;
+-	return(1);
+-}
++extern int parse_iomem(char *str, int *add) __init;
  
-  out_close:
-         os_close_file(fd);
-+ out:
-         return err;
- }
+ __uml_setup("iomem=", parse_iomem,
+ "iomem=<name>,<file>\n"
+ "    Configure <file> as an IO memory region named <name>.\n\n"
+ );
  
-Index: linux-2.6.13-mm2/arch/um/drivers/mconsole_user.c
-===================================================================
---- linux-2.6.13-mm2.orig/arch/um/drivers/mconsole_user.c	2005-09-12 23:19:16.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/drivers/mconsole_user.c	2005-09-12 23:20:10.000000000 -0400
-@@ -173,9 +173,9 @@
- 	if(notify_sock < 0){
- 		notify_sock = socket(PF_UNIX, SOCK_DGRAM, 0);
- 		if(notify_sock < 0){
--			printk("mconsole_notify - socket failed, errno = %d\n",
--			       errno);
- 			err = -errno;
-+			printk("mconsole_notify - socket failed, errno = %d\n",
-+			       err);
- 		}
- 	}
- 	unlock_notify();
-@@ -198,8 +198,8 @@
- 	n = sendto(notify_sock, &packet, len, 0, (struct sockaddr *) &target, 
- 		   sizeof(target));
- 	if(n < 0){
--		printk("mconsole_notify - sendto failed, errno = %d\n", errno);
- 		err = -errno;
-+		printk("mconsole_notify - sendto failed, errno = %d\n", errno);
- 	}
- 	return(err);
- }
-Index: linux-2.6.13-mm2/arch/um/drivers/pty.c
-===================================================================
---- linux-2.6.13-mm2.orig/arch/um/drivers/pty.c	2005-09-12 23:19:16.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/drivers/pty.c	2005-09-12 23:20:10.000000000 -0400
-@@ -43,8 +43,9 @@
- 
- 	fd = get_pty();
- 	if(fd < 0){
-+		err = -errno;
- 		printk("open_pts : Failed to open pts\n");
--		return(-errno);
-+		return err;
- 	}
- 	if(data->raw){
- 		CATCH_EINTR(err = tcgetattr(fd, &data->tt));
-Index: linux-2.6.13-mm2/arch/um/drivers/xterm.c
-===================================================================
---- linux-2.6.13-mm2.orig/arch/um/drivers/xterm.c	2005-09-12 23:19:16.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/drivers/xterm.c	2005-09-12 23:20:10.000000000 -0400
-@@ -110,13 +110,15 @@
- 
- 	fd = mkstemp(file);
- 	if(fd < 0){
-+		err = -errno;
- 		printk("xterm_open : mkstemp failed, errno = %d\n", errno);
--		return(-errno);
-+		return err;
- 	}
- 
- 	if(unlink(file)){
-+		err = -errno;
- 		printk("xterm_open : unlink failed, errno = %d\n", errno);
--		return(-errno);
-+		return err;
- 	}
- 	os_close_file(fd);
- 
-Index: linux-2.6.13-mm2/arch/um/kernel/helper.c
-===================================================================
---- linux-2.6.13-mm2.orig/arch/um/kernel/helper.c	2005-09-12 23:19:16.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/kernel/helper.c	2005-09-12 23:20:10.000000000 -0400
-@@ -85,8 +85,8 @@
- 	data.fd = fds[1];
- 	pid = clone(helper_child, (void *) sp, CLONE_VM | SIGCHLD, &data);
- 	if(pid < 0){
--		printk("run_helper : clone failed, errno = %d\n", errno);
- 		ret = -errno;
-+		printk("run_helper : clone failed, errno = %d\n", errno);
- 		goto out_close;
- 	}
- 
-@@ -122,7 +122,7 @@
- 		      unsigned long *stack_out, int stack_order)
- {
- 	unsigned long stack, sp;
--	int pid, status;
-+	int pid, status, err;
- 
- 	stack = alloc_stack(stack_order, um_in_interrupt());
- 	if(stack == 0) return(-ENOMEM);
-@@ -130,16 +130,18 @@
- 	sp = stack + (page_size() << stack_order) - sizeof(void *);
- 	pid = clone(proc, (void *) sp, flags | SIGCHLD, arg);
- 	if(pid < 0){
-+		err = -errno;
- 		printk("run_helper_thread : clone failed, errno = %d\n", 
- 		       errno);
--		return(-errno);
-+		return err;
- 	}
- 	if(stack_out == NULL){
- 		CATCH_EINTR(pid = waitpid(pid, &status, 0));
- 		if(pid < 0){
-+			err = -errno;
- 			printk("run_helper_thread - wait failed, errno = %d\n",
- 			       errno);
--			pid = -errno;
-+			pid = err;
- 		}
- 		if(!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
- 			printk("run_helper_thread - thread returned status "
-@@ -156,8 +158,8 @@
- 
- 	CATCH_EINTR(ret = waitpid(pid, NULL, WNOHANG));
- 	if(ret < 0){
-+		ret = -errno;
- 		printk("helper_wait : waitpid failed, errno = %d\n", errno);
--		return(-errno);
- 	}
- 	return(ret);
- }
-Index: linux-2.6.13-mm2/arch/um/kernel/user_util.c
-===================================================================
---- linux-2.6.13-mm2.orig/arch/um/kernel/user_util.c	2005-09-11 21:05:32.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/kernel/user_util.c	2005-09-12 23:20:10.000000000 -0400
-@@ -109,18 +109,14 @@
- 	int err;
- 
- 	CATCH_EINTR(err = tcgetattr(fd, &tt));
--	if (err < 0) {
--			printk("tcgetattr failed, errno = %d\n", errno);
--		return(-errno);
+-int protect_memory(unsigned long addr, unsigned long len, int r, int w, int x,
+-		   int must_succeed)
+-{
+-	int err;
+-
+-	err = os_protect_memory((void *) addr, len, r, w, x);
+-	if(err < 0){
+-                if(must_succeed)
+-			panic("protect failed, err = %d", -err);
+-		else return(err);
 -	}
-+	if(err < 0)
-+		return -errno;
- 
- 	cfmakeraw(&tt);
- 
-  	CATCH_EINTR(err = tcsetattr(fd, TCSADRAIN, &tt));
--	if (err < 0) {
--			printk("tcsetattr failed, errno = %d\n", errno);
--		return(-errno);
--	}
-+	if(err < 0)
-+		return -errno;
- 
- 	/* XXX tcsetattr could have applied only some changes
- 	 * (and cfmakeraw() is a set of changes) */
-Index: linux-2.6.13-mm2/arch/um/os-Linux/aio.c
+-	return(0);
+-}
+-
+-#if 0
+-/* Debugging facility for dumping stuff out to the host, avoiding the timing
+- * problems that come with printf and breakpoints.
+- * Enable in case of emergency.
+- */
+-
+-int logging = 1;
+-int logging_fd = -1;
+-
+-int logging_line = 0;
+-char logging_buf[512];
+-
+-void log(char *fmt, ...)
+-{
+-        va_list ap;
+-        struct timeval tv;
+-        struct openflags flags;
+-
+-        if(logging == 0) return;
+-        if(logging_fd < 0){
+-                flags = of_create(of_trunc(of_rdwr(OPENFLAGS())));
+-                logging_fd = os_open_file("log", flags, 0644);
+-        }
+-        gettimeofday(&tv, NULL);
+-        sprintf(logging_buf, "%d\t %u.%u  ", logging_line++, tv.tv_sec,
+-                tv.tv_usec);
+-        va_start(ap, fmt);
+-        vsprintf(&logging_buf[strlen(logging_buf)], fmt, ap);
+-        va_end(ap);
+-        write(logging_fd, logging_buf, strlen(logging_buf));
+-}
+-#endif
+-
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+  * Emacs will notice this stuff at the end of the file and automatically
+Index: linux-2.6.13-mm2/arch/um/kernel/tempfile.c
 ===================================================================
---- linux-2.6.13-mm2.orig/arch/um/os-Linux/aio.c	2005-09-12 23:20:10.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/os-Linux/aio.c	2005-09-12 23:20:10.000000000 -0400
-@@ -313,15 +313,16 @@
-         int err;
- 
-         if(io_setup(256, &ctx)){
-+		err = -errno;
-                 printk("aio_thread failed to initialize context, err = %d\n",
-                        errno);
--                return -errno;
-+                return err;
+--- linux-2.6.13-mm2.orig/arch/um/kernel/tempfile.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/kernel/tempfile.c	2005-09-08 05:17:51.187952264 -0400
+@@ -1,82 +0,0 @@
+-/*
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <sys/param.h>
+-#include "init.h"
+-
+-/* Modified from create_mem_file and start_debugger */
+-static char *tempdir = NULL;
+-
+-static void __init find_tempdir(void)
+-{
+-	char *dirs[] = { "TMP", "TEMP", "TMPDIR", NULL };
+-	int i;
+-	char *dir = NULL;
+-
+-	if(tempdir != NULL) return;	/* We've already been called */
+-	for(i = 0; dirs[i]; i++){
+-		dir = getenv(dirs[i]);
+-		if((dir != NULL) && (*dir != '\0'))
+-			break;
+-	}
+-	if((dir == NULL) || (*dir == '\0')) 
+-		dir = "/tmp";
+-
+-	tempdir = malloc(strlen(dir) + 2);
+-	if(tempdir == NULL){
+-		fprintf(stderr, "Failed to malloc tempdir, "
+-			"errno = %d\n", errno);
+-		return;
+-	}
+-	strcpy(tempdir, dir);
+-	strcat(tempdir, "/");
+-}
+-
+-int make_tempfile(const char *template, char **out_tempname, int do_unlink)
+-{
+-	char tempname[MAXPATHLEN];
+-	int fd;
+-
+-	find_tempdir();
+-	if (*template != '/')
+-		strcpy(tempname, tempdir);
+-	else
+-		*tempname = 0;
+-	strcat(tempname, template);
+-	fd = mkstemp(tempname);
+-	if(fd < 0){
+-		fprintf(stderr, "open - cannot create %s: %s\n", tempname, 
+-			strerror(errno));
+-		return -1;
+-	}
+-	if(do_unlink && (unlink(tempname) < 0)){
+-		perror("unlink");
+-		return -1;
+-	}
+-	if(out_tempname){
+-		*out_tempname = strdup(tempname);
+-		if(*out_tempname == NULL){
+-			perror("strdup");
+-			return -1;
+-		}
+-	}
+-	return(fd);
+-}
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.13-mm2/arch/um/kernel/tlb.c
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/kernel/tlb.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/kernel/tlb.c	2005-09-08 14:55:47.000000000 -0400
+@@ -307,7 +307,7 @@
+                 }
+                 else if(pte_newprot(*pte)){
+                         updated = 1;
+-                        protect_memory(addr, PAGE_SIZE, 1, 1, 1, 1);
++                        os_protect_memory((void *) addr, PAGE_SIZE, 1, 1, 1);
+                 }
+                 addr += PAGE_SIZE;
          }
- 
-         err = run_helper_thread(aio_thread, NULL,
-                                 CLONE_FILES | CLONE_VM | SIGCHLD, &stack, 0);
-         if(err < 0)
--                return -errno;
-+                return err;
- 
-         aio_pid = err;
- 
-Index: linux-2.6.13-mm2/arch/um/os-Linux/drivers/tuntap_user.c
+Index: linux-2.6.13-mm2/arch/um/kernel/tt/mem_user.c
 ===================================================================
---- linux-2.6.13-mm2.orig/arch/um/os-Linux/drivers/tuntap_user.c	2005-09-12 23:19:16.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/os-Linux/drivers/tuntap_user.c	2005-09-12 23:20:10.000000000 -0400
-@@ -75,7 +75,7 @@
- 	struct msghdr msg;
- 	struct cmsghdr *cmsg;
- 	struct iovec iov;
--	int pid, n;
-+	int pid, n, err;
+--- linux-2.6.13-mm2.orig/arch/um/kernel/tt/mem_user.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/kernel/tt/mem_user.c	2005-09-08 14:55:47.000000000 -0400
+@@ -12,6 +12,7 @@
+ #include "tt.h"
+ #include "mem_user.h"
+ #include "user_util.h"
++#include "os.h"
  
- 	sprintf(version_buf, "%d", UML_NET_VERSION);
- 
-@@ -105,9 +105,10 @@
- 	n = recvmsg(me, &msg, 0);
- 	*used_out = n;
- 	if(n < 0){
-+		err = -errno;
- 		printk("tuntap_open_tramp : recvmsg failed - errno = %d\n", 
- 		       errno);
--		return(-errno);
-+		return err;
- 	}
- 	CATCH_EINTR(waitpid(pid, NULL, 0));
- 
-@@ -147,9 +148,10 @@
- 		ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
- 		strlcpy(ifr.ifr_name, pri->dev_name, sizeof(ifr.ifr_name));
- 		if(ioctl(pri->fd, TUNSETIFF, (void *) &ifr) < 0){
-+			err = -errno;
- 			printk("TUNSETIFF failed, errno = %d\n", errno);
- 			os_close_file(pri->fd);
--			return(-errno);
-+			return err;
- 		}
- 	}
- 	else {
-Index: linux-2.6.13-mm2/arch/um/os-Linux/file.c
+ void remap_data(void *segment_start, void *segment_end, int w)
+ {
+Index: linux-2.6.13-mm2/arch/um/kernel/um_arch.c
 ===================================================================
---- linux-2.6.13-mm2.orig/arch/um/os-Linux/file.c	2005-09-12 23:19:16.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/os-Linux/file.c	2005-09-12 23:20:10.000000000 -0400
-@@ -119,15 +119,11 @@
+--- linux-2.6.13-mm2.orig/arch/um/kernel/um_arch.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/kernel/um_arch.c	2005-09-08 14:55:47.000000000 -0400
+@@ -361,11 +361,6 @@
+ 	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas, 0,
+ 				     &host_task_size, &task_size);
  
- int os_new_tty_pgrp(int fd, int pid)
+-	/* Need to check this early because mmapping happens before the
+-	 * kernel is running.
+-	 */
+-	check_tmpexec();
+-
+ 	brk_start = (unsigned long) sbrk(0);
+ 	CHOOSE_MODE_PROC(before_mem_tt, before_mem_skas, brk_start);
+ 	/* Increase physical memory size for exec-shield users
+Index: linux-2.6.13-mm2/arch/um/os-Linux/Makefile
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/os-Linux/Makefile	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/os-Linux/Makefile	2005-09-08 14:55:47.000000000 -0400
+@@ -3,11 +3,11 @@
+ # Licensed under the GPL
+ #
+ 
+-obj-y = aio.o elf_aux.o file.o process.o signal.o start_up.o time.o tt.o \
+-	tty.o user_syms.o drivers/ sys-$(SUBARCH)/
++obj-y = aio.o elf_aux.o file.o mem.o process.o signal.o start_up.o time.o \
++	tt.o tty.o user_syms.o drivers/ sys-$(SUBARCH)/
+ 
+-USER_OBJS := aio.o elf_aux.o file.o process.o signal.o start_up.o time.o tt.o \
+-	tty.o
++USER_OBJS := aio.o elf_aux.o file.o mem.o process.o signal.o start_up.o \
++	time.o tt.o tty.o
+ 
+ elf_aux.o: $(ARCH_DIR)/kernel-offsets.h
+ CFLAGS_elf_aux.o += -I$(objtree)/arch/um
+Index: linux-2.6.13-mm2/arch/um/os-Linux/mem.c
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/os-Linux/mem.c	2005-09-08 05:17:51.187952264 -0400
++++ linux-2.6.13-mm2/arch/um/os-Linux/mem.c	2005-09-08 14:55:47.000000000 -0400
+@@ -0,0 +1,161 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <stddef.h>
++#include <stdarg.h>
++#include <unistd.h>
++#include <errno.h>
++#include <string.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/mman.h>
++#include "kern_util.h"
++#include "user.h"
++#include "user_util.h"
++#include "mem_user.h"
++#include "init.h"
++#include "os.h"
++#include "tempfile.h"
++#include "kern_constants.h"
++
++#include <sys/param.h>
++
++static char *tempdir = NULL;
++
++static void __init find_tempdir(void)
++{
++	char *dirs[] = { "TMP", "TEMP", "TMPDIR", NULL };
++	int i;
++	char *dir = NULL;
++
++	if(tempdir != NULL) return;	/* We've already been called */
++	for(i = 0; dirs[i]; i++){
++		dir = getenv(dirs[i]);
++		if((dir != NULL) && (*dir != '\0'))
++			break;
++	}
++	if((dir == NULL) || (*dir == '\0')) 
++		dir = "/tmp";
++
++	tempdir = malloc(strlen(dir) + 2);
++	if(tempdir == NULL){
++		fprintf(stderr, "Failed to malloc tempdir, "
++			"errno = %d\n", errno);
++		return;
++	}
++	strcpy(tempdir, dir);
++	strcat(tempdir, "/");
++}
++
++/*
++ * This proc still used in tt-mode
++ * (file: kernel/tt/ptproxy/proxy.c, proc: start_debugger).
++ * So it isn't 'static' yet.
++ */
++int make_tempfile(const char *template, char **out_tempname, int do_unlink)
++{
++	char tempname[MAXPATHLEN];
++	int fd;
++
++	find_tempdir();
++	if (*template != '/')
++		strcpy(tempname, tempdir);
++	else
++		*tempname = 0;
++	strcat(tempname, template);
++	fd = mkstemp(tempname);
++	if(fd < 0){
++		fprintf(stderr, "open - cannot create %s: %s\n", tempname, 
++			strerror(errno));
++		return -1;
++	}
++	if(do_unlink && (unlink(tempname) < 0)){
++		perror("unlink");
++		return -1;
++	}
++	if(out_tempname){
++		*out_tempname = strdup(tempname);
++		if(*out_tempname == NULL){
++			perror("strdup");
++			return -1;
++		}
++	}
++	return(fd);
++}
++
++#define TEMPNAME_TEMPLATE "vm_file-XXXXXX"
++
++/*
++ * This proc is used in start_up.c
++ * So it isn't 'static'.
++ */
++int create_tmp_file(unsigned long len)
++{
++	int fd, err;
++	char zero;
++
++	fd = make_tempfile(TEMPNAME_TEMPLATE, NULL, 1);
++	if(fd < 0) {
++		exit(1);
++	}
++
++	err = fchmod(fd, 0777);
++	if(err < 0){
++		perror("os_mode_fd");
++		exit(1);
++	}
++
++        if (lseek64(fd, len, SEEK_SET) < 0) {
++ 		perror("os_seek_file");
++		exit(1);
++	}
++
++	zero = 0;
++
++	err = os_write_file(fd, &zero, 1);
++	if(err != 1){
++		errno = -err;
++		perror("os_write_file");
++		exit(1);
++	}
++
++	return(fd);
++}
++
++static int create_anon_file(unsigned long len)
++{
++	void *addr;
++	int fd;
++
++	fd = open("/dev/anon", O_RDWR);
++	if(fd < 0) {
++		perror("opening /dev/anon");
++		exit(1);
++	}
++
++	addr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
++	if(addr == MAP_FAILED){
++		perror("mapping physmem file");
++		exit(1);
++	}
++	munmap(addr, len);
++
++	return(fd);
++}
++
++extern int have_devanon;
++
++int create_mem_file(unsigned long len)
++{
++	int err, fd;
++
++	if(have_devanon)
++		fd = create_anon_file(len);
++	else fd = create_tmp_file(len);
++
++	err = os_set_exec_close(fd, 1);
++	if(err < 0){
++		errno = -err;
++		perror("exec_close");
++	}
++	return(fd);
++}
+Index: linux-2.6.13-mm2/arch/um/os-Linux/start_up.c
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/os-Linux/start_up.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/os-Linux/start_up.c	2005-09-08 14:55:47.000000000 -0400
+@@ -4,18 +4,22 @@
+  */
+ 
+ #include <stdio.h>
++#include <stddef.h>
++#include <stdarg.h>
++#include <stdlib.h>
++#include <string.h>
+ #include <unistd.h>
+ #include <signal.h>
+ #include <sched.h>
++#include <fcntl.h>
+ #include <errno.h>
+-#include <stdarg.h>
+-#include <stdlib.h>
+ #include <setjmp.h>
+ #include <sys/time.h>
+ #include <sys/wait.h>
+ #include <sys/mman.h>
+ #include <asm/unistd.h>
+ #include <asm/page.h>
++#include <sys/types.h>
+ #include "user_util.h"
+ #include "kern_util.h"
+ #include "user.h"
+@@ -25,6 +29,7 @@
+ #include "sysdep/sigcontext.h"
+ #include "irq_user.h"
+ #include "ptrace_user.h"
++#include "mem_user.h"
+ #include "time_user.h"
+ #include "init.h"
+ #include "os.h"
+@@ -32,6 +37,8 @@
+ #include "choose-mode.h"
+ #include "mode.h"
+ #include "tempfile.h"
++#include "kern_constants.h"
++
+ #ifdef UML_CONFIG_MODE_SKAS
+ #include "skas.h"
+ #include "skas_ptrace.h"
+@@ -276,9 +283,38 @@
+ 	check_sysemu();
+ }
+ 
++extern int create_tmp_file(unsigned long len);
++
++static void check_tmpexec(void)
++{
++	void *addr;
++	int err, fd = create_tmp_file(UM_KERN_PAGE_SIZE);
++
++	addr = mmap(NULL, UM_KERN_PAGE_SIZE,
++		    PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
++	printf("Checking PROT_EXEC mmap in /tmp...");
++	fflush(stdout);
++	if(addr == MAP_FAILED){
++		err = errno;
++		perror("failed");
++		if(err == EPERM)
++			printf("/tmp must be not mounted noexec\n");
++		exit(1);
++	}
++	printf("OK\n");
++	munmap(addr, UM_KERN_PAGE_SIZE);
++
++	close(fd);
++}
++
+ void os_early_checks(void)
  {
--	if(ioctl(fd, TIOCSCTTY, 0) < 0){
--		printk("TIOCSCTTY failed, errno = %d\n", errno);
--		return(-errno);
--	}
-+	if(ioctl(fd, TIOCSCTTY, 0) < 0)
-+		return -errno;
+ 	check_ptrace();
++
++	/* Need to check this early because mmapping happens before the
++	 * kernel is running.
++	 */
++	check_tmpexec();
+ }
  
--	if(tcsetpgrp(fd, pid) < 0){
--		printk("tcsetpgrp failed, errno = %d\n", errno);
--		return(-errno);
--	}
-+	if(tcsetpgrp(fd, pid) < 0)
-+		return -errno;
- 
+ static int __init noprocmm_cmd_param(char *str, int* add)
+@@ -357,3 +393,72 @@
  	return(0);
  }
-@@ -146,18 +142,12 @@
- 	int disc, sencap;
+ #endif
++
++int have_devanon = 0;
++
++void check_devanon(void)
++{
++	int fd;
++
++	printk("Checking for /dev/anon on the host...");
++	fd = open("/dev/anon", O_RDWR);
++	if(fd < 0){
++		printk("Not available (open failed with errno %d)\n", errno);
++		return;
++	}
++
++	printk("OK\n");
++	have_devanon = 1;
++}
++
++int __init parse_iomem(char *str, int *add)
++{
++	struct iomem_region *new;
++	struct uml_stat buf;
++	char *file, *driver;
++	int fd, err, size;
++
++	driver = str;
++	file = strchr(str,',');
++	if(file == NULL){
++		printf("parse_iomem : failed to parse iomem\n");
++		goto out;
++	}
++	*file = '\0';
++	file++;
++	fd = os_open_file(file, of_rdwr(OPENFLAGS()), 0);
++	if(fd < 0){
++		os_print_error(fd, "parse_iomem - Couldn't open io file");
++		goto out;
++	}
++
++	err = os_stat_fd(fd, &buf);
++	if(err < 0){
++		os_print_error(err, "parse_iomem - cannot stat_fd file");
++		goto out_close;
++	}
++
++	new = malloc(sizeof(*new));
++	if(new == NULL){
++		perror("Couldn't allocate iomem_region struct");
++		goto out_close;
++	}
++
++	size = (buf.ust_size + UM_KERN_PAGE_SIZE) & ~(UM_KERN_PAGE_SIZE - 1);
++
++	*new = ((struct iomem_region) { .next		= iomem_regions,
++					.driver		= driver,
++					.fd		= fd,
++					.size		= size,
++					.phys		= 0,
++					.virt		= 0 });
++	iomem_regions = new;
++	iomem_size += new->size + UM_KERN_PAGE_SIZE;
++
++	return(0);
++ out_close:
++	os_close_file(fd);
++ out:
++	return(1);
++}
++
+Index: linux-2.6.13-mm2/arch/um/os-Linux/tt.c
+===================================================================
+--- linux-2.6.13-mm2.orig/arch/um/os-Linux/tt.c	2005-09-08 14:55:12.000000000 -0400
++++ linux-2.6.13-mm2/arch/um/os-Linux/tt.c	2005-09-08 14:55:47.000000000 -0400
+@@ -36,6 +36,20 @@
+ #include "mode.h"
+ #include "tempfile.h"
  
- 	disc = N_SLIP;
--	if(ioctl(fd, TIOCSETD, &disc) < 0){
--		printk("Failed to set slip line discipline - "
--		       "errno = %d\n", errno);
--		return(-errno);
--	}
-+	if(ioctl(fd, TIOCSETD, &disc) < 0)
-+		return -errno;
- 
- 	sencap = 0;
--	if(ioctl(fd, SIOCSIFENCAP, &sencap) < 0){
--		printk("Failed to set slip encapsulation - "
--		       "errno = %d\n", errno);
--		return(-errno);
--	}
-+	if(ioctl(fd, SIOCSIFENCAP, &sencap) < 0)
-+		return -errno;
- 
- 	return(0);
- }
-@@ -180,22 +170,15 @@
- 	int flags;
- 
- 	flags = fcntl(master, F_GETFL);
--	if(flags < 0) {
--		printk("fcntl F_GETFL failed, errno = %d\n", errno);
--		return(-errno);
--	}
-+	if(flags < 0)
-+		return errno;
- 
- 	if((fcntl(master, F_SETFL, flags | O_NONBLOCK | O_ASYNC) < 0) ||
--	   (fcntl(master, F_SETOWN, os_getpid()) < 0)){
--		printk("fcntl F_SETFL or F_SETOWN failed, errno = %d\n",
--		       errno);
--		return(-errno);
--	}
-+	   (fcntl(master, F_SETOWN, os_getpid()) < 0))
-+		return -errno;
- 
--	if((fcntl(slave, F_SETFL, flags | O_NONBLOCK) < 0)){
--		printk("fcntl F_SETFL failed, errno = %d\n", errno);
--		return(-errno);
--	}
-+	if((fcntl(slave, F_SETFL, flags | O_NONBLOCK) < 0))
-+		return -errno;
- 
- 	return(0);
- }
-@@ -255,7 +238,7 @@
- 
- int os_open_file(char *file, struct openflags flags, int mode)
- {
--	int fd, f = 0;
-+	int fd, err, f = 0;
- 
- 	if(flags.r && flags.w) f = O_RDWR;
- 	else if(flags.r) f = O_RDONLY;
-@@ -272,8 +255,9 @@
- 		return(-errno);
- 
- 	if(flags.cl && fcntl(fd, F_SETFD, 1)){
-+		err = -errno;
- 		os_close_file(fd);
--		return(-errno);
-+		return err;
- 	}
- 
- 	return(fd);
-@@ -383,9 +367,9 @@
- 			return(fd);
- 		}
- 		if(ioctl(fd, BLKGETSIZE, &blocks) < 0){
-+			err = -errno;
- 			printk("Couldn't get the block size of \"%s\", "
- 			       "errno = %d\n", file, errno);
--			err = -errno;
- 			os_close_file(fd);
- 			return(err);
- 		}
-@@ -473,11 +457,14 @@
- 
- int os_set_fd_async(int fd, int owner)
- {
++int protect_memory(unsigned long addr, unsigned long len, int r, int w, int x,
++		   int must_succeed)
++{
 +	int err;
 +
- 	/* XXX This should do F_GETFL first */
- 	if(fcntl(fd, F_SETFL, O_ASYNC | O_NONBLOCK) < 0){
-+		err = -errno;
- 		printk("os_set_fd_async : failed to set O_ASYNC and "
- 		       "O_NONBLOCK on fd # %d, errno = %d\n", fd, errno);
--		return(-errno);
-+		return err;
- 	}
- #ifdef notdef
- 	if(fcntl(fd, F_SETFD, 1) < 0){
-@@ -488,10 +475,11 @@
- 
- 	if((fcntl(fd, F_SETSIG, SIGIO) < 0) ||
- 	   (fcntl(fd, F_SETOWN, owner) < 0)){
-+		err = -errno;
- 		printk("os_set_fd_async : Failed to fcntl F_SETOWN "
- 		       "(or F_SETSIG) fd %d to pid %d, errno = %d\n", fd, 
- 		       owner, errno);
--		return(-errno);
-+		return err;
- 	}
- 
- 	return(0);
-@@ -516,11 +504,9 @@
- 	if(blocking) flags &= ~O_NONBLOCK;
- 	else flags |= O_NONBLOCK;
- 
--	if(fcntl(fd, F_SETFL, flags) < 0){
--		printk("Failed to change blocking on fd # %d, errno = %d\n",
--		       fd, errno);
--		return(-errno);
--	}
-+	if(fcntl(fd, F_SETFL, flags) < 0)
-+		return -errno;
++	err = os_protect_memory((void *) addr, len, r, w, x);
++	if(err < 0){
++                if(must_succeed)
++			panic("protect failed, err = %d", -err);
++		else return(err);
++	}
++	return(0);
++}
 +
- 	return(0);
- }
- 
-@@ -609,11 +595,8 @@
- 	int sock, err;
- 
- 	sock = socket(PF_UNIX, SOCK_DGRAM, 0);
--	if (sock < 0){
--		printk("create_unix_socket - socket failed, errno = %d\n",
--		       errno);
--		return(-errno);
--	}
-+	if(sock < 0)		     
-+		return -errno;
- 
- 	if(close_on_exec) {
- 		err = os_set_exec_close(sock, 1);
-@@ -628,11 +611,8 @@
- 	snprintf(addr.sun_path, len, "%s", file);
- 
- 	err = bind(sock, (struct sockaddr *) &addr, sizeof(addr));
--	if (err < 0){
--		printk("create_listening_socket at '%s' - bind failed, "
--		       "errno = %d\n", file, errno);
--		return(-errno);
--	}
-+	if(err < 0)
-+		return -errno;
- 
- 	return(sock);
- }
+ /*
+  *-------------------------
+  * only for tt mode (will be deleted in future...)
 
 
 
