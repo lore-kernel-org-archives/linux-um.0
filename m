@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFfLT-0003ip-6H	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:03:11 -0700
+	id 1EFfL7-0003hj-5V	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 15:02:49 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfLS-00065V-My
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfL6-0004Cn-2x
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:03:11 -0700
-Message-Id: <200509142156.j8ELuALt012164@ccure.user-mode-linux.org>
+	Wed, 14 Sep 2005 15:02:49 -0700
+Message-Id: <200509142155.j8ELtsQG012132@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 8/10] UML - merge mem_user.c and mem.c
+Subject: [uml-devel] [PATCH 2/10] UML - breakpoint an arbitrary thread
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,157 +24,168 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 17:56:10 -0400
+Date: Wed, 14 Sep 2005 17:55:54 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Gennady Sharapov <Gennady.V.Sharapov@intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@gmail.com>
 
-The serial UML OS-abstraction layer patch (um/kernel dir).
+This patch implements a stack trace for a thread, not unlike sysrq-t
+does.  The advantage to this is that a break point can be placed on
+showreqs, so that upon showing the stack, you jump immediately into
+the debugger.
+While sysrq-t does the same thing, sysrq-t shows *all* threads
+stacks.  It also doesn't work right now.  In the future, I thought
+it might be acceptable to make this show all pids stacks, but
+perhaps leaving well enough alone and just using sysrq-t would be
+okay.  For now, upon receiving the stack command, UML switches
+context to that thread, dumps its registers, and then switches
+context back to the original thread.  Since UML compacts all threads
+into one of 4 host threads, this sort of mechanism could be expanded
+in the future to include other debugging helpers that sysrq does not cover.
 
-This joins mem_user.c and mem.c files.
+Note by jdike - The main benefit to this is that it brings an
+arbitrary thread back into context, where it can be examined by
+gdb.  The fact that it dumps it stack is secondary.  This provides
+the capability to examine a sleeping thread, which has existed in tt
+mode, but not in skas mode until now.
+Also, the other threads, that sysrq doesn't cover, can be gdb-ed
+directly anyway.
 
-Signed-off-by: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
+Signed-off-by: Allan Graves<allan.graves@gmail.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.13-mm2/arch/um/kernel/Makefile
+Index: test/arch/um/drivers/mconsole_kern.c
 ===================================================================
---- linux-2.6.13-mm2.orig/arch/um/kernel/Makefile	2005-09-08 14:55:47.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/kernel/Makefile	2005-09-08 14:58:21.000000000 -0400
-@@ -1,4 +1,4 @@
--# 
-+#
- # Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
- # Licensed under the GPL
- #
-@@ -7,11 +7,11 @@
- clean-files :=
- 
- obj-y = config.o exec_kern.o exitcode.o \
--	helper.o init_task.o irq.o irq_user.o ksyms.o main.o mem.o mem_user.o \
--	physmem.o process_kern.o ptrace.o reboot.o resource.o sigio_user.o \
--	sigio_kern.o signal_kern.o signal_user.o smp.o syscall_kern.o sysrq.o \
--	time.o time_kern.o tlb.o trap_kern.o trap_user.o \
--	uaccess_user.o um_arch.o umid.o user_util.o
-+	helper.o init_task.o irq.o irq_user.o ksyms.o main.o mem.o physmem.o \
-+	process_kern.o ptrace.o reboot.o resource.o sigio_user.o sigio_kern.o \
-+	signal_kern.o signal_user.o smp.o syscall_kern.o sysrq.o time.o \
-+	time_kern.o tlb.o trap_kern.o trap_user.o uaccess_user.o um_arch.o \
-+	umid.o user_util.o
- 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-Index: linux-2.6.13-mm2/arch/um/kernel/mem.c
-===================================================================
---- linux-2.6.13-mm2.orig/arch/um/kernel/mem.c	2005-09-08 14:52:15.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/kernel/mem.c	2005-09-08 14:56:35.000000000 -0400
-@@ -1,4 +1,4 @@
--/* 
-+/*
-  * Copyright (C) 2000 - 2003 Jeff Dike (jdike@addtoit.com)
-  * Licensed under the GPL
-  */
-@@ -19,6 +19,10 @@
- #include "mem_user.h"
- #include "uml_uaccess.h"
+--- test.orig/arch/um/drivers/mconsole_kern.c	2005-09-02 12:50:26.000000000 -0400
++++ test/arch/um/drivers/mconsole_kern.c	2005-09-02 13:03:31.000000000 -0400
+@@ -32,6 +32,7 @@
  #include "os.h"
-+#include "linux/types.h"
-+#include "linux/string.h"
-+#include "init.h"
-+#include "kern_constants.h"
+ #include "umid.h"
+ #include "irq_kern.h"
++#include "choose-mode.h"
  
- extern char __binary_start;
+ static int do_unlink_socket(struct notifier_block *notifier, 
+ 			    unsigned long what, void *data)
+@@ -276,6 +277,7 @@
+     go - continue the UML after a 'stop' \n\
+     log <string> - make UML enter <string> into the kernel log\n\
+     proc <file> - returns the contents of the UML's /proc/<file>\n\
++    stack <pid> - returns the stack of the specified pid\n\
+ "
  
-@@ -368,6 +372,16 @@
- 	return pte;
+ void mconsole_help(struct mc_request *req)
+@@ -479,6 +481,56 @@
  }
+ #endif
  
-+struct iomem_region *iomem_regions = NULL;
-+int iomem_size = 0;
++/* Mconsole stack trace
++ *  Added by Allan Graves, Jeff Dike
++ *  Dumps a stacks registers to the linux console.
++ *  Usage stack <pid>.  
++ */
++void do_stack(struct mc_request *req)
++{
++        char *ptr = req->request.data; 
++        int pid_requested= -1;
++        struct task_struct *from = NULL;
++	struct task_struct *to = NULL;
++       
++        /* Would be nice:
++         * 1) Send showregs output to mconsole.
++	 * 2) Add a way to stack dump all pids.
++	 */
 +
-+extern int parse_iomem(char *str, int *add) __init;
++        ptr += strlen("stack");
++        while(isspace(*ptr)) ptr++;
 +
-+__uml_setup("iomem=", parse_iomem,
-+"iomem=<name>,<file>\n"
-+"    Configure <file> as an IO memory region named <name>.\n\n"
-+);
++        /* Should really check for multiple pids or reject bad args here */
++        /* What do the arguments in mconsole_reply mean? */
++        if(sscanf(ptr, "%d", &pid_requested) == 0){
++                mconsole_reply(req, "Please specify a pid", 1, 0);
++                return;
++        }
 +
- /*
-  * Overrides for Emacs so that we follow Linus's tabbing style.
-  * Emacs will notice this stuff at the end of the file and automatically
-Index: linux-2.6.13-mm2/arch/um/kernel/mem_user.c
++        from = current;
++        to = find_task_by_pid(pid_requested);
++
++        if((to == NULL) || (pid_requested == 0)) {
++                mconsole_reply(req, "Couldn't find that pid", 1, 0);
++                return;
++        }
++        to->thread.saved_task = current;
++
++        switch_to(from, to, from);
++        mconsole_reply(req, "Stack Dumped to console and message log", 0, 0);
++}
++
++void mconsole_stack(struct mc_request *req)
++{
++	/* This command doesn't work in TT mode, so let's check and then 
++	 * get out of here 
++	 */
++	CHOOSE_MODE(mconsole_reply(req, "Sorry, this doesn't work in TT mode", 
++				   1, 0),
++		    do_stack(req));
++}
++
+ /* Changed by mconsole_setup, which is __setup, and called before SMP is
+  * active.
+  */
+Index: test/arch/um/drivers/mconsole_user.c
 ===================================================================
---- linux-2.6.13-mm2.orig/arch/um/kernel/mem_user.c	2005-09-08 14:55:47.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/kernel/mem_user.c	2005-09-08 05:17:51.187952264 -0400
-@@ -1,70 +0,0 @@
--/*
-- * arch/um/kernel/mem_user.c
-- *
-- * BRIEF MODULE DESCRIPTION
-- * user side memory routines for supporting IO memory inside user mode linux
-- *
-- * Copyright (C) 2001 RidgeRun, Inc.
-- * Author: RidgeRun, Inc.
-- *         Greg Lonnon glonnon@ridgerun.com or info@ridgerun.com
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- *  THIS  SOFTWARE  IS PROVIDED   ``AS  IS'' AND   ANY  EXPRESS OR IMPLIED
-- *  WARRANTIES,   INCLUDING, BUT NOT  LIMITED  TO, THE IMPLIED WARRANTIES OF
-- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN
-- *  NO  EVENT  SHALL   THE AUTHOR  BE    LIABLE FOR ANY   DIRECT, INDIRECT,
-- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-- *  NOT LIMITED   TO, PROCUREMENT OF  SUBSTITUTE GOODS  OR SERVICES; LOSS OF
-- *  USE, DATA,  OR PROFITS; OR  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-- *  ANY THEORY OF LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY, OR TORT
-- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- *
-- *  You should have received a copy of the  GNU General Public License along
-- *  with this program; if not, write  to the Free Software Foundation, Inc.,
-- *  675 Mass Ave, Cambridge, MA 02139, USA.
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <stddef.h>
--#include <stdarg.h>
--#include <unistd.h>
--#include <errno.h>
--#include <string.h>
--#include <fcntl.h>
--#include <sys/types.h>
--#include <sys/mman.h>
--#include "kern_util.h"
--#include "user.h"
--#include "user_util.h"
--#include "mem_user.h"
--#include "init.h"
--#include "os.h"
--#include "tempfile.h"
--#include "kern_constants.h"
--
--struct iomem_region *iomem_regions = NULL;
--int iomem_size = 0;
--
--extern int parse_iomem(char *str, int *add) __init;
--
--__uml_setup("iomem=", parse_iomem,
--"iomem=<name>,<file>\n"
--"    Configure <file> as an IO memory region named <name>.\n\n"
--);
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
+--- test.orig/arch/um/drivers/mconsole_user.c	2005-09-02 12:50:26.000000000 -0400
++++ test/arch/um/drivers/mconsole_user.c	2005-09-02 12:56:59.000000000 -0400
+@@ -30,6 +30,7 @@
+ 	{ "go", mconsole_go, MCONSOLE_INTR },
+ 	{ "log", mconsole_log, MCONSOLE_INTR },
+ 	{ "proc", mconsole_proc, MCONSOLE_PROC },
++        { "stack", mconsole_stack, MCONSOLE_INTR },
+ };
+ 
+ /* Initialized in mconsole_init, which is an initcall */
+Index: test/arch/um/include/mconsole.h
+===================================================================
+--- test.orig/arch/um/include/mconsole.h	2005-09-02 12:50:26.000000000 -0400
++++ test/arch/um/include/mconsole.h	2005-09-02 12:56:59.000000000 -0400
+@@ -81,6 +81,7 @@
+ extern void mconsole_go(struct mc_request *req);
+ extern void mconsole_log(struct mc_request *req);
+ extern void mconsole_proc(struct mc_request *req);
++extern void mconsole_stack(struct mc_request *req);
+ 
+ extern int mconsole_get_request(int fd, struct mc_request *req);
+ extern int mconsole_notify(char *sock_name, int type, const void *data, 
+Index: test/arch/um/kernel/process_kern.c
+===================================================================
+--- test.orig/arch/um/kernel/process_kern.c	2005-09-02 12:53:20.000000000 -0400
++++ test/arch/um/kernel/process_kern.c	2005-09-02 13:04:47.000000000 -0400
+@@ -119,7 +119,14 @@
+         to->thread.prev_sched = from;
+         set_current(to);
+ 
+-	CHOOSE_MODE_PROC(switch_to_tt, switch_to_skas, prev, next);
++	do { 
++		current->thread.saved_task = NULL ;
++		CHOOSE_MODE_PROC(switch_to_tt, switch_to_skas, prev, next);
++		if(current->thread.saved_task) 
++			show_regs(&(current->thread.regs));
++		next= current->thread.saved_task;
++		prev= current;
++	} while(current->thread.saved_task);
+ 
+         return(current->thread.prev_sched); 
+ 
+Index: test/include/asm-um/processor-generic.h
+===================================================================
+--- test.orig/include/asm-um/processor-generic.h	2005-09-02 12:50:26.000000000 -0400
++++ test/include/asm-um/processor-generic.h	2005-09-02 12:56:59.000000000 -0400
+@@ -21,6 +21,7 @@
+ 	 * copy_thread) to mark that we are begin called from userspace (fork /
+ 	 * vfork / clone), and reset to 0 after. It is left to 0 when called
+ 	 * from kernelspace (i.e. kernel_thread() or fork_idle(), as of 2.6.11). */
++	struct task_struct *saved_task;
+ 	int forking;
+ 	int nsyscalls;
+ 	struct pt_regs regs;
 
 
 
