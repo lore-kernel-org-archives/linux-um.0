@@ -2,22 +2,34 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFf3V-00038W-4P	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 14:44:37 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFf3S-00015F-Ob
+	id 1EFdox-0007jZ-SB	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 13:25:31 -0700
+Received: from mail.nagafix.co.uk ([213.228.237.37])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFdow-0002rP-Gf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 14:44:37 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: "Sleeping in atomic section" with ubd aio patch
-Message-ID: <20050914211808.GA11567@ccure.user-mode-linux.org>
-References: <200509132001.40992.blaisorblade@yahoo.it>
-	<20050914192230.GC9001@ccure.user-mode-linux.org>
-	<200509142200.39886.blaisorblade@yahoo.it>
+	Wed, 14 Sep 2005 13:25:31 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by mail.nagafix.co.uk (Postfix) with ESMTP id 2387A4576D
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 15 Sep 2005 03:32:07 +0100 (BST)
+Received: from mail.nagafix.co.uk ([127.0.0.1])
+ by localhost (viper.nagafix.co.uk [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 10211-08 for <user-mode-linux-devel@lists.sourceforge.net>;
+ Thu, 15 Sep 2005 03:32:06 +0100 (BST)
+Received: from [192.168.0.3] (host-87-74-41-116.bulldogdsl.com [87.74.41.116])
+	by mail.nagafix.co.uk (Postfix) with ESMTP id 2BCD94576C
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 15 Sep 2005 03:32:06 +0100 (BST)
+Subject: Re: [uml-devel] pcap - FIXED
+From: antoine <antoine@nagafix.co.uk>
+In-Reply-To: <200509142206.12128.blaisorblade@yahoo.it>
+References: <1126653933.3769.45.camel@localhost>
+	 <1126729188.3769.49.camel@localhost>
+	 <200509142206.12128.blaisorblade@yahoo.it>
+Content-Type: text/plain
+Message-Id: <1126730694.3769.58.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200509142200.39886.blaisorblade@yahoo.it>
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,29 +41,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 17:18:08 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 14 Sep 2005 21:44:54 +0100
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Sep 14, 2005 at 10:00:39PM +0200, Blaisorblade wrote:
-> Assuming it can be done, it'd be ok.
+> > [42949414.170000] dev_ip_addr - device not assigned an IP address
+Yes, I was wondering about this one. The device has got an IP assigned
+and it is up...
+> I'd care more to this one probably. Especially because you say "on some 
+> setups". It should refer to the host interface (don't know which one).
+> > [42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
+> This could be bogus.
+Actually it isn't. This forced me to check my syntax...
+> > [42949414.170000] device eth1 entered promiscuous mode
+> > [42949414.170000] dev_ip_addr - device not assigned an IP address
+> > [42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
+> It'd be on the PCAP filter expression (there's a parameter for that), assuming 
+> the message is correct.
 > 
-> However, why have we already dequeued the request?
+> If you find no other explaination, I'll look if UML is passing a bogus string 
+> there - however check the rest first.
+Thanks. Found it, the startup scripts on the broken setups were passing
+a 'null' filter expression (from a database) rather than leaving it
+empty. Works fine now.
 
-It is easier than removing segments from the request and finally
-dequeueing the request when it is finally empty.
+Sorry for the line noise...
 
-> Looking for examples, via grep blkdev_dequeue_request drivers/ide/*.c and 
-> going opening drivers/ide/ide-io.c, I found blkdev_dequeue_request() called 
-> *after* end_that_request_first(), while there it's called before.
-> 
-> A comment in blk_start_pre_flush() says there's some freedom, but probably 
-> leaving the request in the queue would be ok....
+Antoine
 
-There is a good amount of freedom.  The driver is given a set of
-requests, and has the job of making them happen.
-
-				Jeff
 
 
 -------------------------------------------------------
