@@ -2,23 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFdbe-00074j-Ev	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 13:11:46 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFdbY-0000AM-Pd
+	id 1EFdYK-0006xA-50	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 13:08:20 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFdYH-0007xw-Gh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 13:11:46 -0700
+	Wed, 14 Sep 2005 13:08:20 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <200509132001.40992.blaisorblade@yahoo.it>
-	<20050914192230.GC9001@ccure.user-mode-linux.org>
-In-Reply-To: <20050914192230.GC9001@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] pcap
+References: <1126653933.3769.45.camel@localhost>
+	<1126729188.3769.49.camel@localhost>
+In-Reply-To: <1126729188.3769.49.camel@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509142200.39886.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: "Sleeping in atomic section" with ubd aio patch
+Message-Id: <200509142206.12128.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,51 +30,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 22:00:39 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 14 Sep 2005 22:06:11 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: antoine <antoine@nagafix.co.uk>
 
-On Wednesday 14 September 2005 21:22, Jeff Dike wrote:
-> On Tue, Sep 13, 2005 at 08:01:40PM +0200, Blaisorblade wrote:
-> > It's just because things are called under spinlocks and GFP_KERNEL is
-> > used - but if possible, it'd be better to use something better than
-> > GFP_ATOMIC (since this is performance critical).
+On Wednesday 14 September 2005 22:19, antoine wrote:
+> On some setups, when trying to bring up a pcap interface I get (in
+> dmesg):
+> [42949414.170000] dev_ip_addr - device not assigned an IP address
+I'd care more to this one probably. Especially because you say "on some 
+setups". It should refer to the host interface (don't know which one).
+> [42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
+This could be bogus.
+> [42949414.170000] device eth1 entered promiscuous mode
+> [42949414.170000] dev_ip_addr - device not assigned an IP address
+> [42949414.170000] pcap_open : pcap_compile failed - 'syntax error'
+>
+> Any clues? What's this syntax error?
 
-> This would be ubd_io_lock, which is taken for us by the block layer before
-> entering do_ubd_request.  We could make that a GFP_ATOMIC allocation,
-> except that we have already dequeued the request, so would need to do
-> something with it if the allocation failed.
+> Thanks
+> Antoine
+It'd be on the PCAP filter expression (there's a parameter for that), assuming 
+the message is correct.
 
-> I'm wondering if we can drop the lock before do_io and pick it up
-> afterwards.  The bitmap argument
-the COW bitmap, right?
-> is a global, which is a problem.  Two 
-> racing requests could result in one writing out a bitmap which is
-> either too old or too new.
-
-> So, I'm not sure how to handle this.  We could requeue what's left of
-> the request if an allocation failure happens.
-Assuming it can be done, it'd be ok.
-
-However, why have we already dequeued the request?
-
-Looking for examples, via grep blkdev_dequeue_request drivers/ide/*.c and 
-going opening drivers/ide/ide-io.c, I found blkdev_dequeue_request() called 
-*after* end_that_request_first(), while there it's called before.
-
-A comment in blk_start_pre_flush() says there's some freedom, but probably 
-leaving the request in the queue would be ok....
-> We could drop the lock 
-> and pick it up later, but we have to be careful to write out the
-> current bitmap, not one which we saved earlier or one which has been
-> updated to reflect a racing request which is coming through later.
-If you work on the second, be also sure to ask Jens Axboe (see MAINTAINERS for 
-email) whether it's legal for the block layer.
-
-CC'ing him on the change in first place would not have been a bad idea, either 
-(IMHO).
-> 				Jeff
-
+If you find no other explaination, I'll look if UML is passing a bogus string 
+there - however check the rest first.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
