@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFfL9-0003hp-ML	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:02:51 -0700
+	id 1EFfii-0006DN-7g	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Sep 2005 15:27:12 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfL8-0004DL-9w
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFfig-0001Ej-1Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 15:02:51 -0700
-Message-Id: <200509142155.j8ELtxC1012142@ccure.user-mode-linux.org>
+	Wed, 14 Sep 2005 15:27:12 -0700
+Message-Id: <200509142155.j8ELtm5c012124@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 4/10] UML - Remove an unused file
+Subject: [uml-devel] [PATCH 1/10] UML - _switch_to code consolidation
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,94 +24,136 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 17:55:59 -0400
+Date: Wed, 14 Sep 2005 17:55:47 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@gmail.com>
 
-This removes a file which is no longer used.
+This patch moves code that is in both switch_to_tt and
+switch_to_skas to the top level _switch_to function, keeping us from
+duplicating code.  It is required for the stack trace patch to work
+properly.
 
+Signed-off-by: Allan Graves <allan.graves@gmail.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.13-mm2/arch/um/drivers/ubd_user.c
+Index: linux-2.6.13/arch/um/kernel/process_kern.c
 ===================================================================
---- linux-2.6.13-mm2.orig/arch/um/drivers/ubd_user.c	2005-08-28 19:41:01.000000000 -0400
-+++ linux-2.6.13-mm2/arch/um/drivers/ubd_user.c	2005-09-09 12:53:03.802794632 -0400
-@@ -1,75 +0,0 @@
--/* 
-- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-- * Copyright (C) 2001 Ridgerun,Inc (glonnon@ridgerun.com)
-- * Licensed under the GPL
-- */
+--- linux-2.6.13.orig/arch/um/kernel/process_kern.c	2005-09-13 16:04:11.000000000 -0400
++++ linux-2.6.13/arch/um/kernel/process_kern.c	2005-09-13 16:08:18.000000000 -0400
+@@ -113,8 +113,16 @@
+ 
+ void *_switch_to(void *prev, void *next, void *last)
+ {
+-	return(CHOOSE_MODE(switch_to_tt(prev, next), 
+-			   switch_to_skas(prev, next)));
++        struct task_struct *from = prev;
++        struct task_struct *to= next;
++
++        to->thread.prev_sched = from;
++        set_current(to);
++
++	CHOOSE_MODE_PROC(switch_to_tt, switch_to_skas, prev, next);
++
++        return(current->thread.prev_sched); 
++
+ }
+ 
+ void interrupt_end(void)
+Index: linux-2.6.13/arch/um/kernel/skas/include/mode_kern-skas.h
+===================================================================
+--- linux-2.6.13.orig/arch/um/kernel/skas/include/mode_kern-skas.h	2005-09-13 16:04:12.000000000 -0400
++++ linux-2.6.13/arch/um/kernel/skas/include/mode_kern-skas.h	2005-09-13 16:08:18.000000000 -0400
+@@ -11,7 +11,7 @@
+ #include "asm/ptrace.h"
+ 
+ extern void flush_thread_skas(void);
+-extern void *switch_to_skas(void *prev, void *next);
++extern void switch_to_skas(void *prev, void *next);
+ extern void start_thread_skas(struct pt_regs *regs, unsigned long eip,
+ 			      unsigned long esp);
+ extern int copy_thread_skas(int nr, unsigned long clone_flags,
+Index: linux-2.6.13/arch/um/kernel/skas/process_kern.c
+===================================================================
+--- linux-2.6.13.orig/arch/um/kernel/skas/process_kern.c	2005-09-13 16:05:34.000000000 -0400
++++ linux-2.6.13/arch/um/kernel/skas/process_kern.c	2005-09-13 16:08:18.000000000 -0400
+@@ -24,7 +24,7 @@
+ #include "proc_mm.h"
+ #include "registers.h"
+ 
+-void *switch_to_skas(void *prev, void *next)
++void switch_to_skas(void *prev, void *next)
+ {
+ 	struct task_struct *from, *to;
+ 
+@@ -35,16 +35,11 @@
+ 	if(current->pid == 0)
+ 		switch_timers(0);
+ 
+-	to->thread.prev_sched = from;
+-	set_current(to);
 -
--#include <stddef.h>
--#include <unistd.h>
--#include <errno.h>
--#include <sched.h>
--#include <signal.h>
--#include <string.h>
--#include <netinet/in.h>
--#include <sys/time.h>
--#include <sys/socket.h>
--#include <sys/mman.h>
--#include <sys/param.h>
--#include "asm/types.h"
--#include "user_util.h"
--#include "kern_util.h"
--#include "user.h"
--#include "ubd_user.h"
--#include "os.h"
--#include "cow.h"
+ 	switch_threads(&from->thread.mode.skas.switch_buf, 
+ 		       to->thread.mode.skas.switch_buf);
+ 
+ 	if(current->pid == 0)
+ 		switch_timers(1);
 -
--#include <endian.h>
--#include <byteswap.h>
+-	return(current->thread.prev_sched);
+ }
+ 
+ extern void schedule_tail(struct task_struct *prev);
+Index: linux-2.6.13/arch/um/kernel/tt/include/mode_kern-tt.h
+===================================================================
+--- linux-2.6.13.orig/arch/um/kernel/tt/include/mode_kern-tt.h	2005-09-13 16:04:12.000000000 -0400
++++ linux-2.6.13/arch/um/kernel/tt/include/mode_kern-tt.h	2005-09-13 16:08:18.000000000 -0400
+@@ -11,7 +11,7 @@
+ #include "asm/ptrace.h"
+ #include "asm/uaccess.h"
+ 
+-extern void *switch_to_tt(void *prev, void *next);
++extern void switch_to_tt(void *prev, void *next);
+ extern void flush_thread_tt(void);
+ extern void start_thread_tt(struct pt_regs *regs, unsigned long eip,
+ 			   unsigned long esp);
+Index: linux-2.6.13/arch/um/kernel/tt/process_kern.c
+===================================================================
+--- linux-2.6.13.orig/arch/um/kernel/tt/process_kern.c	2005-09-13 16:04:11.000000000 -0400
++++ linux-2.6.13/arch/um/kernel/tt/process_kern.c	2005-09-13 16:08:38.000000000 -0400
+@@ -26,7 +26,7 @@
+ #include "init.h"
+ #include "tt.h"
+ 
+-void *switch_to_tt(void *prev, void *next, void *last)
++int switch_to_tt(void *prev, void *next, void *last)
+ {
+ 	struct task_struct *from, *to, *prev_sched;
+ 	unsigned long flags;
+@@ -36,8 +36,6 @@
+ 	from = prev;
+ 	to = next;
+ 
+-	to->thread.prev_sched = from;
 -
--void ignore_sigwinch_sig(void)
--{
--	signal(SIGWINCH, SIG_IGN);
--}
+ 	cpu = from->thread_info->cpu;
+ 	if(cpu == 0)
+ 		forward_interrupts(to->thread.mode.tt.extern_pid);
+@@ -53,7 +51,6 @@
+ 	forward_pending_sigio(to->thread.mode.tt.extern_pid);
+ 
+ 	c = 0;
+-	set_current(to);
+ 
+ 	err = os_write_file(to->thread.mode.tt.switch_pipe[1], &c, sizeof(c));
+ 	if(err != sizeof(c))
+@@ -85,8 +82,6 @@
+ 
+ 	flush_tlb_all();
+ 	local_irq_restore(flags);
 -
--int start_io_thread(unsigned long sp, int *fd_out)
--{
--	int pid, fds[2], err;
--
--	err = os_pipe(fds, 1, 1);
--	if(err < 0){
--		printk("start_io_thread - os_pipe failed, err = %d\n", -err);
--		goto out;
--	}
--
--	kernel_fd = fds[0];
--	*fd_out = fds[1];
--
--	pid = clone(io_thread, (void *) sp, CLONE_FILES | CLONE_VM | SIGCHLD,
--		    NULL);
--	if(pid < 0){
--		printk("start_io_thread - clone failed : errno = %d\n", errno);
--		err = -errno;
--		goto out_close;
--	}
--
--	return(pid);
--
-- out_close:
--	os_close_file(fds[0]);
--	os_close_file(fds[1]);
--	kernel_fd = -1;
--	*fd_out = -1;
-- out:
--	return(err);
--}
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
+-	return(current->thread.prev_sched);
+ }
+ 
+ void release_thread_tt(struct task_struct *task)
 
 
 
