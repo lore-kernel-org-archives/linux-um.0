@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EG0Gv-0007zv-0J	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Sep 2005 13:23:53 -0700
+	id 1EG0HM-00080l-2e	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Sep 2005 13:24:20 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EG0Gt-00059T-Jb
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EG0HK-0006w8-LQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Sep 2005 13:23:53 -0700
+	Thu, 15 Sep 2005 13:24:20 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] 2.6.14-rc1 x86 on 2.6.13.1 amd64 host: guest
-	segfaults
-Message-ID: <20050915190633.GB8106@ccure.user-mode-linux.org>
-References: <1126803951.5268.39.camel@localhost.localdomain>
+Message-ID: <20050915192111.GD8106@ccure.user-mode-linux.org>
+References: <200509142155.j8ELtm5c012124@ccure.user-mode-linux.org>
+	<20050914223035.455f76b9.akpm@osdl.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1126803951.5268.39.camel@localhost.localdomain>
+In-Reply-To: <20050914223035.455f76b9.akpm@osdl.org>
+Subject: [uml-devel] Re: [PATCH 1/10] UML - _switch_to code consolidation
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,42 +28,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Sep 2005 15:06:33 -0400
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 15 Sep 2005 15:21:11 -0400
+To: Andrew Morton <akpm@osdl.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, allan.graves@gmail.com
 
-On Thu, Sep 15, 2005 at 06:05:51PM +0100, Antoine Martin wrote:
-> I tried mode=skas0 but it seems to always default to TT.
-> Or has this not been merged in mainline yet?
+On Wed, Sep 14, 2005 at 10:30:35PM -0700, Andrew Morton wrote:
+> Which if any of these are -rc material?   uml-return-a-real-error-code.patch?
 
-It's in mainline.  What's the guest?
+I consider them all to be 2.6.14 material, which is why I sent them.
 
-> **
-> And here is a amd64 guest:
-> (This trace was much much longer)
+With the exception of uml-breakpoint-an-arbitrary-thread.patch, which
+adds a bit of functionality, they are all bug fixes and code
+movement/cleanup.  In order of my preference of reaching mainline:
 
-Did this one come up in skas0 or tt mode?
+uml-remove-include-of-asm-elfh.patch
+	serious bug - this fixes the x86_64 build
 
-> Another weirdness, this command line works:
-> # ./kernel64 root=/dev/ubda mem=256M ubd0=./root_fs64
-> eth0=tuntap,tap0,FE:F0:00:00:00:01,10.0.0.254 eth1=pcap,eth0
-> console0=fd:0,fd:1 umid=1
+uml-preserve-errno-in-error-paths.patch
+	serious bug - if you hit some of these, UML will hang
 
-What's with the console* business?  The switch is "con".
+uml-return-a-real-error-code.patch
+	a small bug, almost a cleanup
 
-> But this one does not:
-> # ./kernel64 root=/dev/ubda mem=256M ubd0=./root_fs64
-> eth0=tuntap,tap0,FE:F0:00:00:00:01,10.0.0.254 eth1=pcap,eth0
-> console0=fd:0,fd:1 console=pty umid=1 gentoo=nodevfs nodevfs selinux=1
-> enforcing=0
-> With this one it crashes after checking for PROT_EXEC.
-> Is this to do with command line size limitations?
+uml-remove-a-useless-include.patch
+uml-remove-an-unused-file.patch
+uml-remove-some-build-warnings.patch
+	code cleanup
 
-Maybe, but it probably shouldn't crash.
+uml-move-libc-code-out-of-mem_userc-and-tempfilec.patch
+uml-merge-mem_userc-and-memc.patch
+	code movement
 
-> write(3, "1126803520:  *** terminating.\n", 30) = 30
+uml-_switch_to-code-consolidation.patch
+	code cleanup - can be omitted from mainline if
+	uml-breakpoint-an-arbitrary-thread.patch is
 
-This bit seems relevent - were there any syscall failures above that?
+uml-breakpoint-an-arbitrary-thread.patch
+	functionality
+
 
 				Jeff
 
