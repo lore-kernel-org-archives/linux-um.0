@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EG2th-00079E-G2	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Sep 2005 16:12:05 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EG2tg-0005PF-0F
+	id 1EG31v-0007VE-An	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Sep 2005 16:20:35 -0700
+Received: from mail.nagafix.co.uk ([213.228.237.37])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EG31s-0006zN-Uu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Sep 2005 16:12:05 -0700
-From: Jeff Dike <jdike@addtoit.com>
+	Thu, 15 Sep 2005 16:20:35 -0700
 Subject: Re: [uml-devel] 2.6.14-rc1 x86 on 2.6.13.1 amd64 host: guest
 	segfaults
-Message-ID: <20050915222851.GD9678@ccure.user-mode-linux.org>
+From: antoine <antoine@nagafix.co.uk>
+In-Reply-To: <20050915222851.GD9678@ccure.user-mode-linux.org>
 References: <1126803951.5268.39.camel@localhost.localdomain>
 	<20050915190633.GB8106@ccure.user-mode-linux.org>
-	<1126820388.1391.4.camel@localhost> <1126823701.1391.7.camel@localhost>
+	<1126823701.1391.7.camel@localhost>
+	<20050915222851.GD9678@ccure.user-mode-linux.org>
+Content-Type: text/plain
+Message-Id: <1126827927.1391.11.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1126823701.1391.7.camel@localhost>
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,24 +31,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Sep 2005 18:28:51 -0400
-To: antoine <antoine@nagafix.co.uk>
+Date: Fri, 16 Sep 2005 00:45:27 +0100
+To: Jeff Dike <jdike@addtoit.com>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Sep 15, 2005 at 11:35:01PM +0100, antoine wrote:
-> after issuing a uml_mconsole N reboot, I got (from stdout):
-> " * Starting local...  [ ok ]
-> deactivate_all_fds failed, errno = 9
+On Thu, 2005-09-15 at 18:28 -0400, Jeff Dike wrote:
+> On Thu, Sep 15, 2005 at 11:35:01PM +0100, antoine wrote:
+> > after issuing a uml_mconsole N reboot, I got (from stdout):
+> > " * Starting local...  [ ok ]
+> > deactivate_all_fds failed, errno = 9
+> > 
+> > I/O possible"
 > 
-> I/O possible"
+> Was this booting up or shutting down?  The "starting local" business
+> suggests booting, but deactivate_all_fds is only called at shutdown.
+'starting local' was the last message of the boot process (no login
+screen on this console)
+I was shutting down with uml_mconsole N reboot
+(I believe this does the equivalent of a 'init 6')
+This instance was quite short on memory - which may have caused or
+helped trigger this.
 
-Was this booting up or shutting down?  The "starting local" business
-suggests booting, but deactivate_all_fds is only called at shutdown.
+Antoine
 
-I'm chasing a similar bug, which seems to be exercised by hotplugging
-devices.
+> I'm chasing a similar bug, which seems to be exercised by hotplugging
+> devices.
+> 
+> 				Jeff
 
-				Jeff
 
 
 -------------------------------------------------------
