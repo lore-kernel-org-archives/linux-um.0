@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EFbgw-0001bH-68	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 11:09:06 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EFbgv-0002e9-Ga
+	id 1EFqWV-0002mv-6M	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Sep 2005 02:59:19 -0700
+Received: from gprs189-60.eurotel.cz
+	([160.218.189.60] helo=amd.ucw.cz ident=postfix)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EFqWD-0000VT-HM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Sep 2005 11:09:06 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SYSEMU getting merged - but I'm in doubt
-References: <200509041702.18506.blaisorblade@yahoo.it>
-	<432732E5.5010303@fujitsu-siemens.com> <43280E00.6030707@fujitsu-siemens.com>
-In-Reply-To: <43280E00.6030707@fujitsu-siemens.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Thu, 15 Sep 2005 02:59:19 -0700
+From: Pavel Machek <pavel@suse.cz>
+Message-ID: <20050915095828.GE7880@elf.ucw.cz>
+References: <200509142155.j8ELtm5c012124@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200509142001.14318.blaisorblade@yahoo.it>
+In-Reply-To: <200509142155.j8ELtm5c012124@ccure.user-mode-linux.org>
+Subject: [uml-devel] Re: [PATCH 1/10] UML - _switch_to code consolidation
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,67 +28,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Sep 2005 20:01:13 +0200
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, "Charles P. Wright" <cwright@cs.sunysb.edu>
+Date: Thu, 15 Sep 2005 11:58:28 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@gmail.com>
 
-On Wednesday 14 September 2005 13:48, Bodo Stroesser wrote:
-> Bodo Stroesser wrote:
-> > OTOH, if the new API would reuse the same ptrace code, check_sysemu of
-> > the old
-> > binaries will fail on i386
+Hi!
 
-> > (and I hope on x86_64, too). 
-Nobody implemented sysemu for x86_64, at least to my knowledge.
+> This patch moves code that is in both switch_to_tt and
+> switch_to_skas to the top level _switch_to function, keeping us from
+> duplicating code.  It is required for the stack trace patch to work
+> properly.
+> 
+> Signed-off-by: Allan Graves <allan.graves@gmail.com>
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+> 
+> Index: linux-2.6.13/arch/um/kernel/process_kern.c
+> ===================================================================
+> --- linux-2.6.13.orig/arch/um/kernel/process_kern.c	2005-09-13 16:04:11.000000000 -0400
+> +++ linux-2.6.13/arch/um/kernel/process_kern.c	2005-09-13 16:08:18.000000000 -0400
+> @@ -113,8 +113,16 @@
+>  
+>  void *_switch_to(void *prev, void *next, void *last)
+>  {
+> -	return(CHOOSE_MODE(switch_to_tt(prev, next), 
+> -			   switch_to_skas(prev, next)));
+> +        struct task_struct *from = prev;
+> +        struct task_struct *to= next;
+> +
+> +        to->thread.prev_sched = from;
+> +        set_current(to);
+> +
+> +	CHOOSE_MODE_PROC(switch_to_tt, switch_to_skas, prev, next);
+> +
+> +        return(current->thread.prev_sched); 
+> +
+>  }
 
-I hoped to finish skas first, but stopped on that problem.
-> > That means, 
-> > sysemu again
-> > will be disabled. AFAICS, it will not refuse to run at all. (Not tested,
-> > taken from
-> > the code only)
-> > On s390 the check even might succeed accidentally, but that's no
-> > problem, as s390
-> > isn't mainline yet, we can change check_sysemu() to avoid problems.
-> > There will
-> > never be an old binary for s390.
-
-> Some more points:
-
-> The new API must have PTRACE_SYSEMU _and_ PTRACE_SYSEMU_SINGLESTEP.
-Granted.
-> While with the old API SYSEMU_SINGLESTEP was inserted to improve security,
-> with the new one it will be necessary to allow singlestepping of processes
-> in UML-SKAS at all. Suppose a singlestepped userspace is stopped at a
-> syscall interception. Now UML needs to restart it with SYSEMU for syscall
-> emulation, but also wants to proceed with singlestepping. PTRACE_SYSEMU
-> wouldn't do the job, as it starts userspace in "normal" mode, no
-> singlestepping.
-Hmm, I hadn't looked at this detail...
-> Also, in tt new API's PTRACE_SYSEMU behaves as PTRACE_SYSCALL does, because
-> tracer uses PTRACE_CONT after syscall interception. So tt (do_syscall(),
-> ...) needs to be changed. PTRACE_SYSEMU_SINGLESTEP still should be used, as
-> if it's name were PTRACE_SYSCALL_SINGLESTEP.
-Ok, I think it's enough to warrant keeping the current behaviour and adding 
-later an option, and/or removing it for now and merging it later.
-
-Unless somebody manages to fix all this in time. I don't think I'm likely to 
-accomplish this, sorry.
-> 	Bodo
+I sense a whitespace damage here.
+								Pavel
 
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+if you have sharp zaurus hardware you don't need... you know my address
 
 
 -------------------------------------------------------
