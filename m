@@ -1,18 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EGKXb-0007lL-9d	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Sep 2005 11:02:27 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EGKXZ-0001UY-GB
+	id 1EGLY2-00028c-6C	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Sep 2005 12:06:58 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EGLXz-0000iN-CX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Sep 2005 11:02:27 -0700
-Message-Id: <200509161755.j8GHtR4G006755@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/1] UML - UML/i386 cmpxchg fix
+	Fri, 16 Sep 2005 12:06:58 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [PATCH 1/10] UML - _switch_to code consolidation
+References: <200509142155.j8ELtm5c012124@ccure.user-mode-linux.org>
+	<20050915095828.GE7880@elf.ucw.cz>
+In-Reply-To: <20050915095828.GE7880@elf.ucw.cz>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200509162055.08876.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,41 +30,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 16 Sep 2005 13:55:27 -0400
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 16 Sep 2005 20:55:08 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Pavel Machek <pavel@suse.cz>, Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-This is 2.6.14 material, as it works in current mainline, and is a slight 
-improvment there.
+On Thursday 15 September 2005 11:58, Pavel Machek wrote:
+> Hi!
+>
 
-In -rc1-mm1, this fixes a compilation breakage caused by the cmpxchg changes
-in asm-i386/system.h.
+> I sense a whitespace damage here.
+Yes, it seems definitely that getting Jeff to use tabs consistently is a 
+daunting task, since when he started removing the Emacs annotations from the 
+files.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Apart for parentheses excess in return and missing spaces with if and such...
 
-Index: linux-2.6.13-rc1-mm1/arch/um/Kconfig.i386
-===================================================================
---- linux-2.6.13-rc1-mm1.orig/arch/um/Kconfig.i386	2005-09-16 12:33:07.000000000 -0400
-+++ linux-2.6.13-rc1-mm1/arch/um/Kconfig.i386	2005-09-16 13:20:49.000000000 -0400
-@@ -42,3 +42,7 @@
- config ARCH_REUSE_HOST_VSYSCALL_AREA
- 	bool
- 	default y
-+
-+config X86_CMPXCHG
-+	bool
-+	default y
-Index: linux-2.6.13-rc1-mm1/include/asm-um/system-i386.h
-===================================================================
---- linux-2.6.13-rc1-mm1.orig/include/asm-um/system-i386.h	2005-08-28 19:41:01.000000000 -0400
-+++ linux-2.6.13-rc1-mm1/include/asm-um/system-i386.h	2005-09-16 13:20:20.000000000 -0400
-@@ -3,6 +3,4 @@
- 
- #include "asm/system-generic.h"
-     
--#define __HAVE_ARCH_CMPXCHG 1
--
- #endif
+Jeff, have you moved that to your emacs settings or not yet?
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
