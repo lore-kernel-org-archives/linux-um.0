@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EGLY2-00028h-Bh	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Sep 2005 12:06:58 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EGLY0-0000ig-Nt
+	id 1EGLml-0002sy-OU	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Sep 2005 12:22:11 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EGLmi-0003il-6N
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Sep 2005 12:06:58 -0700
+	Fri, 16 Sep 2005 12:22:11 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [uml-user] 2.6.13 / cannot set up LDT for
-	thread-local storage
-References: <2accc2ff0509111117747e8639@mail.gmail.com>
-	<200509131952.22631.blaisorblade@yahoo.it>
-	<2accc2ff0509160423743a1ed6@mail.gmail.com>
-In-Reply-To: <2accc2ff0509160423743a1ed6@mail.gmail.com>
+Subject: Re: [uml-devel] Re: "Sleeping in atomic section" with ubd aio patch
+References: <200509132001.40992.blaisorblade@yahoo.it>
+	<200509142200.39886.blaisorblade@yahoo.it>
+	<20050914211808.GA11567@ccure.user-mode-linux.org>
+In-Reply-To: <20050914211808.GA11567@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509162104.40771.blaisorblade@yahoo.it>
+Message-Id: <200509162120.18101.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,46 +31,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 16 Sep 2005 21:04:40 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, nelsoneci@gmail.com
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 16 Sep 2005 21:20:17 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 16 September 2005 13:23, Nelson Castillo wrote:
-> On 9/13/05, Blaisorblade <blaisorblade@yahoo.it> wrote:
-> (cut)
-
-
-> That is as maybe, but /etc/environment is the
-> only shell-agnostic file there is, and where it can be
-> used, it certainly serves a good purpose.
-> ---------------------------------------
-
-> I did 2 equivalent tests
->   1) patching init/main.c to add the variable to the environment
->   2) using a wrapper to /sbin/init
+On Wednesday 14 September 2005 23:18, Jeff Dike wrote:
+> On Wed, Sep 14, 2005 at 10:00:39PM +0200, Blaisorblade wrote:
+> > Assuming it can be done, it'd be ok.
+> >
+> > However, why have we already dequeued the request?
 >
+> It is easier than removing segments from the request and finally
+> dequeueing the request when it is finally empty.
+Why can't you just move that exact call later, without removing segments?
 
-> sysvinit should have a way to add a variable to the
-> environment. Can it be done in intitab?
-It can be done via adding LD_ASSUME_KERNEL=2.4.1 to the kernel command line.
+However, even if it's "easier" this way, IMHO it's still easier to defer the 
+removal than to readd the thing into the queue (assuming the driver is 
+supposed to do this).
 
-> - Do they mean standard in Debian?
-No idea about that - but I've never seen this file, so I assume it's Debian 
-specific.
-> BTW,
+Not that I've looked well at the code or at the API recently. I'm busy with 
+other stuff.
+> > Looking for examples, via grep blkdev_dequeue_request drivers/ide/*.c and
+> > going opening drivers/ide/ide-io.c, I found blkdev_dequeue_request()
+> > called *after* end_that_request_first(), while there it's called before.
 
-> - when is NPTL (not) supported in UML?
+> > A comment in blk_start_pre_flush() says there's some freedom, but
+> > probably leaving the request in the queue would be ok....
 
-> I'm sending for your consideration a small patch for the FAQ
->  (that may need some update. I'll do it as I learn more about
-> this issue).
-I've not yet read the patch, and likely I won't before you generate it with 
--u.
+> There is a good amount of freedom.  The driver is given a set of
+> requests, and has the job of making them happen.
 
-Sorry but I've not the time to learn that format (nor the will), especially 
-since patches with -u provide more info both to "patch" and to patch readers.
->  Thanks,
->  Nelson.-
+> 				Jeff
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
