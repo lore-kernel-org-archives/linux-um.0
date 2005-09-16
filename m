@@ -2,25 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EG52J-0006nk-Qa	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Sep 2005 18:29:07 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EG52J-0006U3-C3
+	id 1EGEJ9-0005fs-JO	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Sep 2005 04:23:07 -0700
+Received: from xproxy.gmail.com ([66.249.82.205])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EGEJ9-0002Tb-5U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Sep 2005 18:29:07 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] 2.6.14-rc1 x86 on 2.6.13.1 amd64 host: guest
-	segfaults
-References: <1126803951.5268.39.camel@localhost.localdomain>
-	<20050915190633.GB8106@ccure.user-mode-linux.org>
-	<1126820388.1391.4.camel@localhost>
-In-Reply-To: <1126820388.1391.4.camel@localhost>
-MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_P/hKDcji6mE26sP"
-Message-Id: <200509152028.47194.rob@landley.net>
+	Fri, 16 Sep 2005 04:23:07 -0700
+Received: by xproxy.gmail.com with SMTP id h31so942113wxd
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 16 Sep 2005 04:23:00 -0700 (PDT)
+Message-ID: <2accc2ff0509160423743a1ed6@mail.gmail.com>
+From: Nelson Castillo <nelsoneci@gmail.com>
+Reply-To: nelsoneci@gmail.com
+In-Reply-To: <200509131952.22631.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_19415_523588.1126869780266"
+References: <2accc2ff0509111117747e8639@mail.gmail.com>
+	 <200509131952.22631.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] 2.6.13 / cannot set up LDT for
+	thread-local storage
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,139 +33,144 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 15 Sep 2005 20:28:46 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: antoine <antoine@nagafix.co.uk>, Jeff Dike <jdike@addtoit.com>
+Date: Fri, 16 Sep 2005 06:23:00 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
---Boundary-00=_P/hKDcji6mE26sP
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+------=_Part_19415_523588.1126869780266
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-On Thursday 15 September 2005 16:39, antoine wrote:
-> On Thu, 2005-09-15 at 15:06 -0400, Jeff Dike wrote:
-> > On Thu, Sep 15, 2005 at 06:05:51PM +0100, Antoine Martin wrote:
-> > > I tried mode=skas0 but it seems to always default to TT.
-> > > Or has this not been merged in mainline yet?
+On 9/13/05, Blaisorblade <blaisorblade@yahoo.it> wrote:
+(cut)
+=20
 > >
-> > It's in mainline.  What's the guest?
->
-> 2.6.14-rc1
->
-> > > **
-> > > And here is a amd64 guest:
-> > > (This trace was much much longer)
-> >
-> > Did this one come up in skas0 or tt mode?
->
-> I think it was tt (will check tomorrow on that box)
-> As I said above, it seems to always use TT, ignoring mode=skas0
+> > What should I try? Do I need a patch?
+> mv /lib/tls /lib/tls.away, after loop-mounting the filesystem on the host=
+=20
+> , or booting with init=3D/bin/bash (not sure the second will work).
 
-I have a little trick I do, which is to build a minimal UML with hostfs 
-(sample config file attached), and then booting it ala:
+I did some tests. I just found out that
+In Debian the best solution is to run:
 
-./linux rootfstype=hostfs rootflags=/ rw mem=48M init=/bin/sh
+  # echo "LD_ASSUME_KERNEL=3D2.4.1" >> etc/environment
 
-This should come up with /bin/sh as pid 1 attached to /dev/console which is 
-going to stdin and stdout of the UML process.  (I.E. bog simple uml wrapper 
-for a command shell.)
+in the chroot.
+(See http://people.redhat.com/drepper/assumekernel.html)
+=20
+I found something in this thread:
 
-If I compile it in tt mode, it works fine on ubuntu (hoar-infested hedgehog 
-release).
+http://lists.debian.org/debian-user/2005/01/msg04226.html
+---------------------------------------
+--- "Todd A. Jacobs" <nospam@codegnome.org> wrote:=20
+> On Fri, Jan 28, 2005 at 10:43:44PM -0500, kynn@panix.com wrote:
+> > Is the file /etc/environment _documented_ *anywhere*???
+>=20
+> It's a highly non-standard, non-portable file that is source by PAM (and
+> possibly other applications) on a Debian system.
 
-If I compile it instead for skas mode, it makes it all the way to mounting the 
-rootfs (which it will only do if skas0 is in, because the ubuntu host kernel 
-doesn't have skas support), but then barfs saying it can't intialize the TLS 
-environment, kills PID 1, dumps a panic, and gives me my host kernel's shell 
-prompt back.
+That is as maybe, but /etc/environment is the
+only shell-agnostic file there is, and where it can be
+used, it certainly serves a good purpose.
+---------------------------------------
 
-(Easy way to tell which system you're running: "whoami".  If it says root, 
-you're in the child kernel.  "mount -t proc /proc /proc" followed by 
-"cat /proc/cpuinfo" is good too...)
+I did 2 equivalent tests
+  1) patching init/main.c to add the variable to the environment
+  2) using a wrapper to /sbin/init
 
-When I build both in, skas0 wins (at least in that it gives me the can't setup 
-tls message and corresponding panic).
+but it seems the environment is just discarded before
+running what is in inittab (I'm not sure, I should read the
+sources later).
 
-Rob
+sysvinit should have a way to add a variable to the
+environment. Can it be done in intitab?
 
---Boundary-00=_P/hKDcji6mE26sP
-Content-Type: text/plain;
-  charset="utf-8";
-  name="config-uml"
+With : cd /etc && grep  "/etc/environment" * -RH 2>/dev/null
+
+Among others, I found pam.d/login
+# This module parses /etc/environment (the standard for  setting
+# environ vars) and also allows you to use an extended config
+
+- Do they mean standard in Debian?
+
+BTW,
+
+- when is NPTL (not) supported in UML?
+
+I'm sending for your consideration a small patch for the FAQ
+ (that may need some update. I'll do it as I learn more about
+this issue).
+
+ Thanks,
+ Nelson.-
+
+ --=20
+Homepage : http://geocities.com/arhuaco
+
+The first principle is that you must not fool yourself
+and you are the easiest person to fool.
+     -- Richard Feynman.
+
+------=_Part_19415_523588.1126869780266
+Content-Type: text/x-patch; name=faq.html.patch; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="config-uml"
+Content-Disposition: attachment; filename="faq.html.patch"
 
-CONFIG_GENERIC_HARDIRQS=y
-CONFIG_UML=y
-CONFIG_MMU=y
-CONFIG_UID16=y
-CONFIG_RWSEM_GENERIC_SPINLOCK=y
-CONFIG_GENERIC_CALIBRATE_DELAY=y
-CONFIG_IRQ_RELEASE_METHOD=y
-CONFIG_MODE_SKAS=y
-CONFIG_UML_X86=y
-CONFIG_TOP_ADDR=0xc0000000
-CONFIG_STUB_CODE=0xbfffe000
-CONFIG_STUB_DATA=0xbffff000
-CONFIG_STUB_START=0xbfffe000
-CONFIG_ARCH_HAS_SC_SIGNALS=y
-CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA=y
-CONFIG_FLATMEM=y
-CONFIG_FLAT_NODE_MEM_MAP=y
-CONFIG_LD_SCRIPT_DYN=y
-CONFIG_NET=y
-CONFIG_BINFMT_ELF=y
-CONFIG_HOSTFS=y
-CONFIG_NEST_LEVEL=0
-CONFIG_KERNEL_HALF_GIGS=1
-CONFIG_KERNEL_STACK_ORDER=2
-CONFIG_CLEAN_COMPILE=y
-CONFIG_BROKEN_ON_SMP=y
-CONFIG_INIT_ENV_ARG_LIMIT=32
-CONFIG_LOCALVERSION=""
-CONFIG_SYSCTL=y
-CONFIG_KOBJECT_UEVENT=y
-CONFIG_KALLSYMS=y
-CONFIG_PRINTK=y
-CONFIG_BUG=y
-CONFIG_BASE_FULL=y
-CONFIG_FUTEX=y
-CONFIG_EPOLL=y
-CONFIG_SHMEM=y
-CONFIG_CC_ALIGN_FUNCTIONS=0
-CONFIG_CC_ALIGN_LABELS=0
-CONFIG_CC_ALIGN_LOOPS=0
-CONFIG_CC_ALIGN_JUMPS=0
-CONFIG_BASE_SMALL=0
-CONFIG_PACKET=y
-CONFIG_UNIX=y
-CONFIG_STANDALONE=y
-CONFIG_STDERR_CONSOLE=y
-CONFIG_STDIO_CONSOLE=y
-CONFIG_XTERM_CHAN=y
-CONFIG_NOCONFIG_CHAN=y
-CONFIG_CON_ZERO_CHAN="fd:0,fd:1"
-CONFIG_CON_CHAN="xterm"
-CONFIG_SSL_CHAN="pty"
-CONFIG_UNIX98_PTYS=y
-CONFIG_BLK_DEV_LOOP=y
-CONFIG_BLK_DEV_RAM_COUNT=16
-CONFIG_INITRAMFS_SOURCE=""
-CONFIG_LBD=y
-CONFIG_IOSCHED_NOOP=y
-CONFIG_NETDEVICES=y
-CONFIG_EXT3_FS=y
-CONFIG_JBD=y
-CONFIG_DNOTIFY=y
-CONFIG_PROC_FS=y
-CONFIG_SYSFS=y
-CONFIG_RAMFS=y
-CONFIG_MSDOS_PARTITION=y
-CONFIG_LOG_BUF_SHIFT=14
+538a539,589
+> <a name="kernel Panic, cannot set up thread-local storage"/><table width="100%" bgcolor="#e0e0e0">
+>             <tr>
+>               <td>
+>                 <b>
+>                   <font color="black">kernel Panic, cannot set up thread-local storage</font>
+>                 </b>
+>               </td>
+>             </tr>
+>           </table>
+> <blockquote>
+> Your UML kernel doesn't support Native Posix Thread Library and the binaries
+> you're running are being dynamically linked to the NTPL libraries.
+> <br><br>
+> You can boot moving the NTPL libraries away.
+> <ul>
+> <li> <font color="black"># mount root_fs mnt-uml/ -o loop</font>
+> <li> <font color="black"># mv mnt-uml/lib/tls mnt-uml/lib/tls.away</font>
+> <li> <font color="black"># umount mnt-uml</font>
+> </ul>
+> If you're running Debian, you can get away with:
+> <pre><font color="black">
+>  # mount root_fs mnt-uml/ -o loop
+>  # echo "LD_ASSUME_KERNEL=2.4.1" >> /mnt-uml/etc/environment
+>  # umount mnt-uml/
+> </font></pre>
+> 
+> It seems that using /etc/environment is Debian specific,
+> as <a href="http://lists.debian.org/debian-user/2005/01/msg04226.html">discussed here</a>.
+> 
+> The LD_ASSUME_KERNEL=2.4.1 environment variable precludes
+> the dynamic linker from using the NTPL libraries, as explained
+> <a href="http://people.redhat.com/drepper/assumekernel.html">here</a>.
+> 
+> If you decide to move away /lib/tls/ and you're running Debian, you might
+> prefer to use dpkg-divert.
+> <pre><font color="black">
+>   # export LD_ASSUME_KERNEL=2.4.1
+>   # mount root_fs mnt-uml/ -o loop
+>   # chroot mnt-uml
+>   # mkdir /lib/tls.off
+>   # cd /lib/tls
+>   # pwd
+>   #  for f in *;
+>      do
+>        dpkg-divert --divert --local --rename --divert /lib/tls.off/$f --add /lib/tls/$f;
+>      done
+>   # exit
+>   # umount mnt-uml
+> </font></pre>
+> </blockquote>
+> 
 
---Boundary-00=_P/hKDcji6mE26sP--
+------=_Part_19415_523588.1126869780266--
 
 
 -------------------------------------------------------
