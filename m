@@ -1,21 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EGN5T-0006lK-7s	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Sep 2005 13:45:35 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EGN5Q-0001eq-UK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Sep 2005 13:45:35 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] UML compile errors for 2.6.10 kernel
-Message-ID: <20050916174431.GA6194@ccure.user-mode-linux.org>
-References: <838f7c5005091513317a6166c0@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <838f7c5005091513317a6166c0@mail.gmail.com>
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] Re: [uml-user] 2.6.13 / cannot set up LDT for
+ thread-local storage
+In-Reply-To: <2accc2ff0509160423743a1ed6@mail.gmail.com>
+Message-ID: <Pine.LNX.4.61.0509162245460.22926@filer.marasystems.com>
+References: <2accc2ff0509111117747e8639@mail.gmail.com> 
+	<2accc2ff0509160423743a1ed6@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,22 +19,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 16 Sep 2005 13:44:31 -0400
-To: ashwin tanugula <ashwin.tanugula@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 16 Sep 2005 22:53:53 +0200 (CEST)
+To: Nelson Castillo <nelsoneci@gmail.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Sep 15, 2005 at 04:31:19PM -0400, ashwin tanugula wrote:
-> Hi,
-> I got the following errors when I tried to compile a 2.6.10 kernel. What 
-> should I do to fix this?
-> 
-> make: *** No rule to make target `arch/um/include/sysdep-ppc/sc.h', needed 
-> by `arch/um/util'. Stop.
+On Fri, 16 Sep 2005, Nelson Castillo wrote:
 
-You could perhaps look at arch/um/sys-{i386,x86_64}/util/mk_sc.c and
-see about reproducing that for ppc.
+>  1) patching init/main.c to add the variable to the environment
+>  2) using a wrapper to /sbin/init
 
-				Jeff
+Better to just add the variable to the kernel command line.. any 
+XX=something string on the command line is set as environment variables to 
+init.
+
+> but it seems the environment is just discarded before
+> running what is in inittab (I'm not sure, I should read the
+> sources later).
+
+It is not, but mingetty/login cleans up the environment on interactive 
+logins. Many other commands is also very restrictive about what is 
+preserved in the environment when starting childprocesses so relying on 
+LD_ASSUME_KERNEL to be globally set for all processes in the whole system 
+is generally not a good idea.. (very hard to guarantee).
+
+> sysvinit should have a way to add a variable to the
+> environment. Can it be done in intitab?
+
+Not that I know of. But as the environment can be specified on the kernel 
+command line this isn't really needed.
+
+> # This module parses /etc/environment (the standard for  setting
+> # environ vars) and also allows you to use an extended config
+>
+> - Do they mean standard in Debian?
+
+No idea what stadard they refer to. It is not in the UNIX standard from 
+what I can see.
+
+Regards
+Henrik
 
 
 -------------------------------------------------------
