@@ -1,13 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Henrik Nordstrom <uml@hno.marasystems.com>
-Subject: Re: [uml-devel] Re: [uml-user] 2.6.13 / cannot set up LDT for
- thread-local storage
-In-Reply-To: <2accc2ff0509160423743a1ed6@mail.gmail.com>
-Message-ID: <Pine.LNX.4.61.0509162245460.22926@filer.marasystems.com>
-References: <2accc2ff0509111117747e8639@mail.gmail.com> 
-	<2accc2ff0509160423743a1ed6@mail.gmail.com>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1EGeqp-0005ns-4r	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Sep 2005 08:43:39 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EGeql-0007lD-LN
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 Sep 2005 08:43:39 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] testing: 2.6.13 to 2.6.14-rc1 TT boot hangs early
+	(sometimes)
+References: <1126653933.3769.45.camel@localhost>
+	<200509162124.42522.blaisorblade@yahoo.it>
+	<1126901562.17715.9.camel@localhost>
+In-Reply-To: <1126901562.17715.9.camel@localhost>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200509171741.30694.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,45 +32,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 16 Sep 2005 22:53:53 +0200 (CEST)
-To: Nelson Castillo <nelsoneci@gmail.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 17 Sep 2005 17:41:30 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: antoine <antoine@nagafix.co.uk>, Jeff Dike <jdike@addtoit.com>
 
-On Fri, 16 Sep 2005, Nelson Castillo wrote:
+On Friday 16 September 2005 22:12, antoine wrote:
+> > > UML running in SKAS3 mode
+> > > Checking PROT_EXEC mmap in /tmp...OK
+> > > Kernel virtual memory size shrunk to 28311552 bytes
+> >
+> > This is running in SKAS3 mode - see message. However, the problem may be
+> > TT in the meaning you'd better probably disable it.
 
->  1) patching init/main.c to add the variable to the environment
->  2) using a wrapper to /sbin/init
+> I enabled both to make it easier to test each mode, oh well... Noted.
 
-Better to just add the variable to the kernel command line.. any 
-XX=something string on the command line is set as environment variables to 
-init.
+> > > What's this about shrinking vm size? (reducing the mem gets rid of this
+> > > warning)
 
-> but it seems the environment is just discarded before
-> running what is in inittab (I'm not sure, I should read the
-> sources later).
-
-It is not, but mingetty/login cleans up the environment on interactive 
-logins. Many other commands is also very restrictive about what is 
-preserved in the environment when starting childprocesses so relying on 
-LD_ASSUME_KERNEL to be globally set for all processes in the whole system 
-is generally not a good idea.. (very hard to guarantee).
-
-> sysvinit should have a way to add a variable to the
-> environment. Can it be done in intitab?
-
-Not that I know of. But as the environment can be specified on the kernel 
-command line this isn't really needed.
-
-> # This module parses /etc/environment (the standard for  setting
-> # environ vars) and also allows you to use an extended config
+> > By how much? If you tried to pass it 1G of mem it's ok it complains (when
+> > TT mode is enabled and HIGHMEM disabled it doesn't work - disabling TT
+> > should fix this).
 >
-> - Do they mean standard in Debian?
+> HIGHMEM was disabled, but mem=512M so this shouldn't matter, right?
+I've read from Jeff that the actual limit is 480M (some space must be saved 
+for vmalloc(), i.e. kernel pageable memory).
+> It stopped complaining at about mem=200M (roughly IIRC)
+Well, that's too low, so yes, there's some problem. Especially because memory 
+is shrunk down to 28M...
 
-No idea what stadard they refer to. It is not in the UNIX standard from 
-what I can see.
+Which is the host distro? Having a RH/Fc could be a cause (I don't know the 
+current situation with these).
+> > > # uname -a
 
-Regards
-Henrik
+> >
+> > Does the box locks up thereafter? Jeff has been seeing these for some
+> > time, but IIRC the box didn't lock up. (Jeff, what's the actual
+> > situation?).
+
+> The host is fine... so far.
+Sorry, was talking about UML. But I assume it locks up. Was SMP enabled? In 
+that case, there's a couple of things in -bs1 (just published) which may help 
+it.
+> > > * Good points:
+> > > pcap works really well.
+> > > I just wished there was a way to easily figure out which libraries need
+> > > to be included in the chroot to make it work (beyond lipcap)
+
+> > Idea: try using ltrace with focus on dlopen (from libdl).
+
+> I'll do that and post the results.
+
+> > > * Some other small issues:
+> > > when building IPv6 & pcap, I get:
+> > > /usr/lib/gcc-lib/i686-pc-linux-gnu/3.3.6/../../../libc.a(in6_addr.o)(.r
+> > >odat a+0x10): multiple definition of `in6addr_loopback'
+> > >
+> > > (This has been the case with the last few releases)
+> >
+
+> Anything for credits ;-)
+> BTW, I can't contribute patches (I can code in C, but not kernel code) -
+> however I can provide free hosting, disk space, etc to all the uml
+> hackers that ask.
+> Feel free include my email, in the worst case it will train my spam
+> filters!
+
+> Antoine
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
