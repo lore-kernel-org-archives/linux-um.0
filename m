@@ -2,17 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EH04n-00056c-SW	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:29 -0700
+	id 1EH04s-00056i-4G	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:34 -0700
 Received: from ppp-62-11-75-109.dialup.tiscali.it ([62.11.75.109]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EH04m-000262-W5	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:29 -0700
+	id 1EH04q-00026o-EN	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:34 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050918140946.31461.26100.stgit@zion.home.lan>
+Message-Id: <20050918140955.31461.2812.stgit@zion.home.lan>
 In-Reply-To: 200509181400.39120.blaisorblade@yahoo.it
 References: 200509181400.39120.blaisorblade@yahoo.it
-Subject: [uml-devel] [PATCH 02/12] HPPFS: don't check sb->s_op in is_pid()
+Subject: [uml-devel] [PATCH 06/12] HPPFS: add ->release method to fix struct
+	file leak
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,52 +25,144 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Sep 2005 16:09:46 +0200
+Date: Sun, 18 Sep 2005 16:09:55 +0200
 To: Antoine Martin <antoine@nagafix.co.uk>, Al Viro <viro@zeniv.linux.org.uk>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Al Viro
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-To check whether a directory in /proc is a "pid" directory, we also check
-(uselessly) whether the super_operations match the HPPFS ones. Drop that,
-as suggested by Al Viro. Cleanup codingstyle in nearby code, btw.
+When hppfs_open is called, we in turn open with dentry_open a file,
+referring to the file we are wrapping, and also other resources are
+allocated (including a host fd - I have a old report of fd leaks with
+hppfs, and this patch seems quite the fix to it).
 
-Actually, we don't know why we used to do this. Just guessing.
+Add a release method to release all these resources.
 
+Also, clean whitespace where I'm touching code and remove an unused
+parameter.
+
+And add copyright.
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- fs/hppfs/hppfs_kern.c |   14 ++++++--------
- 1 files changed, 6 insertions(+), 8 deletions(-)
+ fs/hppfs/hppfs_kern.c |   47 ++++++++++++++++++++++++++++++++++-------------
+ 1 files changed, 34 insertions(+), 13 deletions(-)
 
 diff --git a/fs/hppfs/hppfs_kern.c b/fs/hppfs/hppfs_kern.c
 --- a/fs/hppfs/hppfs_kern.c
 +++ b/fs/hppfs/hppfs_kern.c
-@@ -49,18 +49,16 @@ static struct vfsmount * proc_submnt;
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2005 Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+  * Licensed under the GPL
+  */
  
- static int is_pid(struct dentry *dentry)
+@@ -316,6 +317,7 @@ static ssize_t hppfs_read(struct file *f
+ 
+ 		if(off + count > hppfs->len)
+ 			count = hppfs->len - off;
++		/*XXX: we should walk the list of remaining buffers! */
+ 		err = copy_to_user(buf, &data->contents[off], count);
+ 		count -= err;
+ 		if (!count)
+@@ -388,7 +390,6 @@ static void free_contents(struct hppfs_d
+ 
+ static struct hppfs_data *hppfs_get_data(int fd, int filter,
+ 					 struct file *proc_file,
+-					 struct file *hppfs_file,
+ 					 loff_t *size_out)
  {
--	struct super_block *sb;
- 	int i;
+ 	struct hppfs_data *data, *new, *head;
+@@ -502,7 +503,6 @@ static int hppfs_open(struct inode *inod
  
--	sb = dentry->d_sb;
--	if((sb->s_op != &hppfs_sbops) || (dentry->d_parent != sb->s_root))
--		return(0);
-+	if (dentry->d_parent != dentry->d_sb->s_root)
-+		return 0;
+ 	proc_dentry = HPPFS_I(inode)->proc_dentry;
  
--	for(i = 0; i < dentry->d_name.len; i++){
--		if(!isdigit(dentry->d_name.name[i]))
--			return(0);
-+	for (i = 0; i < dentry->d_name.len; i++) {
-+		if (!isdigit(dentry->d_name.name[i]))
-+			return 0;
+-	/* XXX This isn't closed anywhere */
+ 	data->proc_file = dentry_open(dget(proc_dentry), mntget(proc_submnt),
+ 				      file_mode(file->f_mode));
+ 	err = PTR_ERR(data->proc_file);
+@@ -510,7 +510,7 @@ static int hppfs_open(struct inode *inod
+ 		goto out_free1;
+ 
+ 	type = os_file_type(host_file);
+-	if(type == OS_TYPE_FILE){
++	if (type == OS_TYPE_FILE) {
+ 		fd = os_open_file(host_file, of_read(OPENFLAGS()), 0);
+ 		if (fd >= 0)
+ 			data->host_fd = fd;
+@@ -518,33 +518,53 @@ static int hppfs_open(struct inode *inod
+ 			    host_file, -fd);
+ 
+ 		data->contents = NULL;
+-	}
+-	else if(type == OS_TYPE_DIR){
++	} else if (type == OS_TYPE_DIR) {
+ 		fd = open_host_sock(host_file, &filter);
+ 		if (fd >= 0){
+ 			data->contents = hppfs_get_data(fd, filter,
+ 							data->proc_file,
+-							file, &data->len);
+-			if(!IS_ERR(data->contents))
++							&data->len);
++			if (likely(!IS_ERR(data->contents))) {
+ 				data->host_fd = fd;
+-		}
+-		else printk("hppfs_open : failed to open a socket in "
++			} else {
++				printk("hppfs_open : failed to read data from "
++						"host, err = %ld\n",
++						PTR_ERR(data->contents));
++				data->contents = NULL;
++			}
++		} else {
++			printk("hppfs_open : failed to open a socket in "
+ 			    "'%s', err = %d\n", host_file, -fd);
++		}
  	}
--	return(1);
-+	return 1;
+ 	kfree(host_file);
+ 
+ 	file->private_data = data;
+ 	return(0);
+ 
+- out_free1:
++out_free1:
+ 	kfree(host_file);
+- out_free2:
+-	free_contents(data->contents);
++out_free2:
+ 	kfree(data);
+- out:
++out:
+ 	return(err);
  }
  
- static char *dentry_name(struct dentry *dentry, int extra)
++static int hppfs_release(struct inode *inode, struct file *file)
++{
++	struct hppfs_private *data = file->private_data;
++
++	WARN_ON(file_count(data->proc_file) != 1);
++	fput(data->proc_file);
++	free_contents(data->contents);
++
++	/* close() works on sockets too. */
++	os_close_file(data->host_fd);
++
++	kfree(data);
++	return 0;
++}
++
+ static int hppfs_dir_open(struct inode *inode, struct file *file)
+ {
+ 	struct hppfs_private *data;
+@@ -595,6 +615,7 @@ static struct file_operations hppfs_file
+ 	.read		= hppfs_read,
+ 	.write		= hppfs_write,
+ 	.open		= hppfs_open,
++	.release	= hppfs_release,
+ };
+ 
+ struct hppfs_dirent {
 
 
 
