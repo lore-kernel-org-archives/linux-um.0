@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EH04T-00056B-5E	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:09 -0700
+	id 1EH04Y-00056G-KY	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:14 -0700
 Received: from ppp-62-11-75-109.dialup.tiscali.it ([62.11.75.109]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EH04Q-0004GJ-OB	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:09 -0700
+	id 1EH04W-00022K-BB	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:14 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050918140951.31461.78736.stgit@zion.home.lan>
+Message-Id: <20050918141009.31461.43507.stgit@zion.home.lan>
 In-Reply-To: 200509181400.39120.blaisorblade@yahoo.it
 References: 200509181400.39120.blaisorblade@yahoo.it
-Subject: [uml-devel] [PATCH 04/12] HPPFS: fix access to ppos and file->f_pos
+Subject: [uml-devel] [PATCH 12/12] HPPFS: fix nameidata handling
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,95 +24,189 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Sep 2005 16:09:51 +0200
+Date: Sun, 18 Sep 2005 16:10:09 +0200
 To: Antoine Martin <antoine@nagafix.co.uk>, Al Viro <viro@zeniv.linux.org.uk>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Al Viro
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Access to ->f_pos is racy, and it's not the fs task to update it.
+In follow_link, we call the underlying method with the same nameidata we got -
+it will then call path_release() and then dput()/mntput() on hppfs dentries /
+vfsmount rather than his own, which could be problematic (I'm not really sure,
+however).
 
-Also, this code is still in the pre-2.6.8 world, when ppos was compared
-against &file->f_pos to distinguish between normal reads and pread()s for
-unseekable files, and so it performs dirty stuff to follow this rule for
-the underlying procfs. (see http://lwn.net/Articles/96662/ - safe seeks).
+This issue exists potentially also for other methods getting nameidata. Fix
+this.
 
-For inner "struct file"s opened with dentry_open(), we can access safely
-their ->f_pos field inside dentry_open(), when we are called by
-hppfs_open() - in fact, there's one of them per file descriptor, and
-there's no race as the fd has not yet been returned to userspace. See new
-read_proc() comment.
-
-Instead, we use the VFS readdir locking on inode->i_sem in hppfs_readdir.
+However, I couldn't make a lot of sense of the reference counting used in
+namei.c. So I'm uncertain whether this patch makes sense. Al, please have a
+critical eye toward this one. Especially, proc_pid_follow_link calls
+path_release itself. Which makes me wonder a lot.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- fs/hppfs/hppfs_kern.c |   22 +++++++++++++++++-----
- 1 files changed, 17 insertions(+), 5 deletions(-)
+ fs/hppfs/hppfs_kern.c |   76 ++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 71 insertions(+), 5 deletions(-)
 
 diff --git a/fs/hppfs/hppfs_kern.c b/fs/hppfs/hppfs_kern.c
 --- a/fs/hppfs/hppfs_kern.c
 +++ b/fs/hppfs/hppfs_kern.c
-@@ -216,6 +216,15 @@ static struct dentry *hppfs_lookup(struc
- static struct inode_operations hppfs_file_iops = {
- };
+@@ -15,6 +15,7 @@
+ #include <linux/dcache.h>
+ #include <linux/statfs.h>
+ #include <linux/mount.h>
++#include <linux/namei.h>
+ #include <asm/uaccess.h>
+ #include <asm/fcntl.h>
+ #include "os.h"
+@@ -106,8 +107,12 @@ static char *dentry_name(struct dentry *
  
-+/* Pass down ppos when you're being called from userspace.
-+ *
-+ * Otherwise, if you pass NULL, we'll store the file position in file->f_pos,
-+ * and you must have a lock on it. Since we're called only by hppfs_open ->
-+ * hppfs_get_data, and open is serialized by the VFS, we're safe.
-+ *
-+ * We also know if we're called from userspace from is_user, which is used for
-+ * set_fs(). I'm leaving this redundancy to bite any wrong caller.
-+ */
- static ssize_t read_proc(struct file *file, char *buf, ssize_t count,
- 			 loff_t *ppos, int is_user)
+ static int hppfs_d_revalidate(struct dentry * dentry, struct nameidata * nd)
  {
-@@ -228,17 +237,21 @@ static ssize_t read_proc(struct file *fi
- 	if (read == NULL)
- 		return -EINVAL;
- 
-+	WARN_ON(is_user != (ppos != NULL));
++	struct dentry *sav_dentry;
++	struct vfsmount *sav_mnt;
 +
- 	if (!is_user) {
- 		old_fs = get_fs();
- 		set_fs(KERNEL_DS);
+ 	int (*d_revalidate)(struct dentry *, struct nameidata *);
+ 	struct dentry *proc_dentry;
++	int ret;
+ 
+ 	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
+ 	if (proc_dentry->d_op && proc_dentry->d_op->d_revalidate)
+@@ -115,7 +120,17 @@ static int hppfs_d_revalidate(struct den
+ 	else
+ 		return 1; /* "Still valid" code */
+ 
+-	return (*d_revalidate)(proc_dentry, nd);
++	sav_dentry = nd->dentry;
++	sav_mnt = nd->mnt;
++
++	nd->dentry = dget(proc_dentry);
++	nd->mnt = mntget(proc_submnt);
++	ret = (*d_revalidate)(proc_dentry, nd);
++	path_release(nd);
++
++	nd->dentry = sav_dentry;
++	nd->mnt = sav_mnt;
++	return ret;
+ }
+ 
+ static struct dentry_operations hppfs_dentry_ops = {
+@@ -175,6 +190,9 @@ static void hppfs_read_inode(struct inod
+ static struct dentry *hppfs_lookup(struct inode *parent_ino, struct dentry *dentry,
+                                   struct nameidata *nd)
+ {
++	struct dentry *sav_dentry;
++	struct vfsmount *sav_mnt;
++
+ 	struct dentry *proc_dentry, *new, *parent;
+ 	struct inode *inode;
+ 	int err, deleted;
+@@ -203,8 +221,17 @@ static struct dentry *hppfs_lookup(struc
+ 			up(&parent->d_inode->i_sem);
+ 			goto out;
+ 		}
++		sav_dentry = nd->dentry;
++		sav_mnt = nd->mnt;
++
++		nd->dentry = dget(proc_dentry);
++		nd->mnt = mntget(proc_submnt);
+ 		new = (*parent->d_inode->i_op->lookup)(parent->d_inode,
+-						       proc_dentry, NULL);
++						       proc_dentry, nd);
++		path_release(nd);
++
++		nd->dentry = sav_dentry;
++		nd->mnt = sav_mnt;
+ 		if(new){
+ 			dput(proc_dentry);
+ 			proc_dentry = new;
+@@ -213,11 +240,20 @@ static struct dentry *hppfs_lookup(struc
+ 	} else {
+ 		up(&parent->d_inode->i_sem);
+ 		if (proc_dentry->d_op && proc_dentry->d_op->d_revalidate) {
+-			if (!proc_dentry->d_op->d_revalidate(proc_dentry, NULL) &&
++			sav_dentry = nd->dentry;
++			sav_mnt = nd->mnt;
++
++			nd->dentry = dget(proc_dentry);
++			nd->mnt = mntget(proc_submnt);
++			if (!proc_dentry->d_op->d_revalidate(proc_dentry, nd) &&
+ 					!d_invalidate(proc_dentry)) {
+ 				dput(proc_dentry);
+ 				proc_dentry = ERR_PTR(-ENOENT);
+ 			}
++			path_release(nd);
++
++			nd->dentry = sav_dentry;
++			nd->mnt = sav_mnt;
+ 		}
  	}
  
--	n = (*read)(file, buf, count, &file->f_pos);
-+	if (!ppos)
-+		ppos = &file->f_pos;
+@@ -248,16 +284,32 @@ static struct dentry *hppfs_lookup(struc
+ 
+ static int hppfs_permission(struct inode *inode, int mask, struct nameidata *nd)
+ {
++	struct dentry *sav_dentry;
++	struct vfsmount *sav_mnt;
 +
-+	n = (*read)(file, buf, count, ppos);
+ 	struct inode *proc_inode;
++	struct dentry *proc_dentry;
+ 	int (*permission) (struct inode *, int, struct nameidata *);
++	int ret;
  
- 	if (!is_user)
- 		set_fs(old_fs);
+-	proc_inode = HPPFS_I(inode)->proc_dentry->d_inode;
++	proc_dentry = HPPFS_I(inode)->proc_dentry;
++	proc_inode = proc_dentry->d_inode;
+ 	permission = proc_inode->i_op->permission;
  
--	if(ppos) *ppos = file->f_pos;
- 	return n;
+ 	if (permission == NULL)
+ 		return generic_permission(inode, mask, NULL);
+ 
+-	return (*permission)(proc_inode, mask, nd);
++	sav_dentry = nd->dentry;
++	sav_mnt = nd->mnt;
++
++	nd->dentry = dget(proc_dentry);
++	nd->mnt = mntget(proc_submnt);
++	ret = (*permission)(proc_inode, mask, nd);
++	path_release(nd);
++
++	nd->dentry = sav_dentry;
++	nd->mnt = sav_mnt;
++	return ret;
  }
  
-@@ -330,9 +343,7 @@ static ssize_t hppfs_write(struct file *
- 	if (write == NULL)
- 		return -EINVAL;
+ static struct inode_operations hppfs_file_iops = {
+@@ -794,6 +846,9 @@ static int hppfs_readlink(struct dentry 
  
--	proc_file->f_pos = file->f_pos;
--	err = (*write)(proc_file, buf, len, &proc_file->f_pos);
--	file->f_pos = proc_file->f_pos;
-+	err = (*write)(proc_file, buf, len, ppos);
+ static void* hppfs_follow_link(struct dentry *dentry, struct nameidata *nd)
+ {
++	struct dentry *sav_dentry;
++	struct vfsmount *sav_mnt;
++
+ 	struct dentry *proc_dentry;
+ 	void * (*follow_link)(struct dentry *, struct nameidata *);
+ 	void *ret;
+@@ -808,7 +863,18 @@ static void* hppfs_follow_link(struct de
+ 	if (follow_link == NULL)
+ 		return ERR_PTR(-EOPNOTSUPP);
  
- 	return(err);
++	/* We have a reference on this already - so it won't go.*/
++	sav_dentry = nd->dentry;
++	sav_mnt = nd->mnt;
++
++	nd->dentry = dget(proc_dentry);
++	nd->mnt = mntget(proc_submnt);
+ 	ret = follow_link(proc_dentry, nd);
++	/* XXX: would this be done normally when calling follow_link or not? */
++	path_release(nd);
++
++	nd->dentry = sav_dentry;
++	nd->mnt = sav_mnt;
+ 
+ 	return ret;
  }
-@@ -613,6 +624,7 @@ static int hppfs_readdir(struct file *fi
- 	if (readdir == NULL)
- 		return -ENOTDIR;
- 
-+	/* XXX: race on f_pos? Should be safe because we hold inode->i_sem. */
- 	proc_file->f_pos = file->f_pos;
- 	err = (*readdir)(proc_file, &dirent, hppfs_filldir);
- 	file->f_pos = proc_file->f_pos;
 
 
 
