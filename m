@@ -1,26 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EGxOb-00039q-2B	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 04:31:45 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EGxOW-0005Lw-Bx
+	id 1EGxPN-0003mW-EN	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 04:32:33 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EGxPJ-0003J2-Tc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 04:31:45 -0700
+	Sun, 18 Sep 2005 04:32:33 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] testing: 2.6.13 to 2.6.14-rc1 TT boot hangs early
-	(sometimes)
-References: <1126653933.3769.45.camel@localhost>
-	<200509171741.30694.blaisorblade@yahoo.it>
-	<1126982040.1169.17.camel@localhost>
-In-Reply-To: <1126982040.1169.17.camel@localhost>
+Subject: Re: Fixed - copy_from_user(dest, -1,...) hangs in TT mode (was: Re:
+	[uml-devel] weak check of access_ok may lead hang!)
+References: <20050916104057.77345.qmail@mail35-142.sinamail.sina.com.cn>
+	<200509171734.36738.blaisorblade@yahoo.it>
+	<20050917170052.GB5225@ccure.user-mode-linux.org>
+In-Reply-To: <20050917170052.GB5225@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509181329.07873.blaisorblade@yahoo.it>
+Message-Id: <200509181330.46030.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,30 +32,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Sep 2005 13:29:07 +0200
+Date: Sun, 18 Sep 2005 13:30:45 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Antoine Martin <antoine@nagafix.co.uk>, Jeff Dike <jdike@addtoit.com>
+Cc: Jeff Dike <jdike@addtoit.com>, luothing@sina.com
 
-On Saturday 17 September 2005 20:34, Antoine Martin wrote:
-> > Sorry, was talking about UML. But I assume it locks up. Was SMP enabled?
-> > In that case, there's a couple of things in -bs1 (just published) which
-> > may help it.
-
-> Initial testing reveals (one just one x86 box so far), that the kernel
-> stops booting right after:
-Add stderr=1 to see some the rest...
-> Checking PROT_EXEC mmap in /tmp...OK
-
-> only when using:
-> 2.6.12-bs11
-> 2.6.13-bs1
-
-> but not using 2.6.12-bb12
-Since the only difference between -bb12 and -bs11 is SKAS0, in which modes are 
-you running those kernels? Use the "UML running in XXX mode" message to make 
-sure.
-> Hope that helps...
-> Antoine
+On Saturday 17 September 2005 19:00, Jeff Dike wrote:
+> BTW, that ldt patch can go straight to mainline if it's not on its way
+> already.
+Yes, I'm just waiting to resync with mainline before sending everything 
+altogether. I have 38 patches which should be sent, so I'll it at once 
+Monday.
+> 				Jeff
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
