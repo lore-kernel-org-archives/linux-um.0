@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EH04N-000566-Aq	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:03 -0700
+	id 1EH04T-00056B-5E	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:09 -0700
 Received: from ppp-62-11-75-109.dialup.tiscali.it ([62.11.75.109]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EH04L-0004F1-MQ	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:03 -0700
+	id 1EH04Q-0004GJ-OB	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:09 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050918140959.31461.51318.stgit@zion.home.lan>
+Message-Id: <20050918140951.31461.78736.stgit@zion.home.lan>
 In-Reply-To: 200509181400.39120.blaisorblade@yahoo.it
 References: 200509181400.39120.blaisorblade@yahoo.it
-Subject: [uml-devel] [PATCH 08/12] HPPFS: add sparse annotations
+Subject: [uml-devel] [PATCH 04/12] HPPFS: fix access to ppos and file->f_pos
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,103 +24,95 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Sep 2005 16:10:00 +0200
+Date: Sun, 18 Sep 2005 16:09:51 +0200
 To: Antoine Martin <antoine@nagafix.co.uk>, Al Viro <viro@zeniv.linux.org.uk>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Al Viro
 
-Add sparse annotations and add some missing "static" to hppfs_kern.c - no
-bug fixed in this patch. There's still a warning - but sparse can't
-understand set_fs(KERNEL_DS) it seems.
+Access to ->f_pos is racy, and it's not the fs task to update it.
+
+Also, this code is still in the pre-2.6.8 world, when ppos was compared
+against &file->f_pos to distinguish between normal reads and pread()s for
+unseekable files, and so it performs dirty stuff to follow this rule for
+the underlying procfs. (see http://lwn.net/Articles/96662/ - safe seeks).
+
+For inner "struct file"s opened with dentry_open(), we can access safely
+their ->f_pos field inside dentry_open(), when we are called by
+hppfs_open() - in fact, there's one of them per file descriptor, and
+there's no race as the fd has not yet been returned to userspace. See new
+read_proc() comment.
+
+Instead, we use the VFS readdir locking on inode->i_sem in hppfs_readdir.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- fs/hppfs/hppfs_kern.c |   20 ++++++++++----------
- 1 files changed, 10 insertions(+), 10 deletions(-)
+ fs/hppfs/hppfs_kern.c |   22 +++++++++++++++++-----
+ 1 files changed, 17 insertions(+), 5 deletions(-)
 
 diff --git a/fs/hppfs/hppfs_kern.c b/fs/hppfs/hppfs_kern.c
 --- a/fs/hppfs/hppfs_kern.c
 +++ b/fs/hppfs/hppfs_kern.c
-@@ -104,7 +104,7 @@ static char *dentry_name(struct dentry *
- 	return(name);
- }
- 
--struct dentry_operations hppfs_dentry_ops = {
-+static struct dentry_operations hppfs_dentry_ops = {
+@@ -216,6 +216,15 @@ static struct dentry *hppfs_lookup(struc
+ static struct inode_operations hppfs_file_iops = {
  };
  
- static int file_removed(struct dentry *dentry, const char *file)
-@@ -226,10 +226,10 @@ static struct inode_operations hppfs_fil
-  * We also know if we're called from userspace from is_user, which is used for
-  * set_fs(). I'm leaving this redundancy to bite any wrong caller.
-  */
--static ssize_t read_proc(struct file *file, char *buf, ssize_t count,
-+static ssize_t read_proc(struct file *file, char __user *buf, ssize_t count,
++/* Pass down ppos when you're being called from userspace.
++ *
++ * Otherwise, if you pass NULL, we'll store the file position in file->f_pos,
++ * and you must have a lock on it. Since we're called only by hppfs_open ->
++ * hppfs_get_data, and open is serialized by the VFS, we're safe.
++ *
++ * We also know if we're called from userspace from is_user, which is used for
++ * set_fs(). I'm leaving this redundancy to bite any wrong caller.
++ */
+ static ssize_t read_proc(struct file *file, char *buf, ssize_t count,
  			 loff_t *ppos, int is_user)
  {
--	ssize_t (*read)(struct file *, char *, size_t, loff_t *);
-+	ssize_t (*read)(struct file *, char __user *, size_t, loff_t *);
- 	ssize_t n;
- 	mm_segment_t old_fs;
+@@ -228,17 +237,21 @@ static ssize_t read_proc(struct file *fi
+ 	if (read == NULL)
+ 		return -EINVAL;
  
-@@ -256,7 +256,7 @@ static ssize_t read_proc(struct file *fi
++	WARN_ON(is_user != (ppos != NULL));
++
+ 	if (!is_user) {
+ 		old_fs = get_fs();
+ 		set_fs(KERNEL_DS);
+ 	}
+ 
+-	n = (*read)(file, buf, count, &file->f_pos);
++	if (!ppos)
++		ppos = &file->f_pos;
++
++	n = (*read)(file, buf, count, ppos);
+ 
+ 	if (!is_user)
+ 		set_fs(old_fs);
+ 
+-	if(ppos) *ppos = file->f_pos;
  	return n;
  }
  
--static ssize_t hppfs_read_file(int fd, char *buf, ssize_t count)
-+static ssize_t hppfs_read_file(int fd, char __user *buf, ssize_t count)
- {
- 	ssize_t n;
- 	int cur, ret;
-@@ -296,7 +296,7 @@ out:
- 	return n;
+@@ -330,9 +343,7 @@ static ssize_t hppfs_write(struct file *
+ 	if (write == NULL)
+ 		return -EINVAL;
+ 
+-	proc_file->f_pos = file->f_pos;
+-	err = (*write)(proc_file, buf, len, &proc_file->f_pos);
+-	file->f_pos = proc_file->f_pos;
++	err = (*write)(proc_file, buf, len, ppos);
+ 
+ 	return(err);
  }
+@@ -613,6 +624,7 @@ static int hppfs_readdir(struct file *fi
+ 	if (readdir == NULL)
+ 		return -ENOTDIR;
  
--static ssize_t hppfs_read(struct file *file, char *buf, size_t count,
-+static ssize_t hppfs_read(struct file *file, char __user *buf, size_t count,
- 			  loff_t *ppos)
- {
- 	struct hppfs_private *hppfs = file->private_data;
-@@ -353,12 +353,12 @@ static ssize_t hppfs_read(struct file *f
- 	return written;
- }
- 
--static ssize_t hppfs_write(struct file *file, const char *buf, size_t len,
-+static ssize_t hppfs_write(struct file *file, const char __user *buf, size_t len,
- 			   loff_t *ppos)
- {
- 	struct hppfs_private *data = file->private_data;
- 	struct file *proc_file = data->proc_file;
--	ssize_t (*write)(struct file *, const char *, size_t, loff_t *);
-+	ssize_t (*write)(struct file *, const char __user *, size_t, loff_t *);
- 	int err;
- 
- 	write = proc_file->f_dentry->d_inode->i_fop->write;
-@@ -710,7 +710,7 @@ static struct inode *hppfs_alloc_inode(s
- 	return(&hi->vfs_inode);
- }
- 
--void hppfs_delete_inode(struct inode *ino)
-+static void hppfs_delete_inode(struct inode *ino)
- {
- 	clear_inode(ino);
- }
-@@ -728,11 +728,11 @@ static struct super_operations hppfs_sbo
- 	.statfs		= hppfs_statfs,
- };
- 
--static int hppfs_readlink(struct dentry *dentry, char *buffer, int buflen)
-+static int hppfs_readlink(struct dentry *dentry, char __user *buffer, int buflen)
- {
- 	struct file *proc_file;
- 	struct dentry *proc_dentry;
--	int (*readlink)(struct dentry *, char *, int);
-+	int (*readlink)(struct dentry *, char __user *, int);
- 	int ret;
- 
- 	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
++	/* XXX: race on f_pos? Should be safe because we hold inode->i_sem. */
+ 	proc_file->f_pos = file->f_pos;
+ 	err = (*readdir)(proc_file, &dirent, hppfs_filldir);
+ 	file->f_pos = proc_file->f_pos;
 
 
 
