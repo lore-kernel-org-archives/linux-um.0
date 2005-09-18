@@ -2,18 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EH04v-00056n-Lr	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:37 -0700
+	id 1EH04z-00056o-Ok	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:41 -0700
 Received: from ppp-62-11-75-109.dialup.tiscali.it ([62.11.75.109]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EH04u-00027t-O0	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Sep 2005 07:23:37 -0700
+	id 1EH04y-00028e-FA	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Sep 2005 07:23:41 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050918141004.31461.39445.stgit@zion.home.lan>
+Message-Id: <20050918140957.31461.8463.stgit@zion.home.lan>
 In-Reply-To: 200509181400.39120.blaisorblade@yahoo.it
 References: 200509181400.39120.blaisorblade@yahoo.it
-Subject: [uml-devel] [PATCH 10/12] HPPFS: don't open a file when it stays
-	unused
+Subject: [uml-devel] [PATCH 07/12] HPPFS: fix broken read method
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,75 +24,109 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Sep 2005 16:10:04 +0200
+Date: Sun, 18 Sep 2005 16:09:57 +0200
 To: Antoine Martin <antoine@nagafix.co.uk>, Al Viro <viro@zeniv.linux.org.uk>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-hppfs_follow_link() and hppfs_readlink() open the file but then doesn't use it,
-apart for fput().
+When data to be read has been loaded in memory (sadly kmalloc'ed() memory,
+not buffer cache, but I hope it doesn't really matter), we alloc memory one
+page at a time, and chain the pages. On a read, we properly walk the page
+list, but we fail to handle reads which cross a page boundary.
 
-I assume that dropping this dentry_open doesn't remove any needed permission
-checking.
+This patch should fix that. But please, cross check this with
+drivers/char/mem.c as I did or use a paper sheet to check it
+(as I've done) - it's absolutely nontrivial to get right.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- fs/hppfs/hppfs_kern.c |   12 ------------
- 1 files changed, 0 insertions(+), 12 deletions(-)
+ fs/hppfs/hppfs_kern.c |   61 +++++++++++++++++++++++++++++++------------------
+ 1 files changed, 38 insertions(+), 23 deletions(-)
 
 diff --git a/fs/hppfs/hppfs_kern.c b/fs/hppfs/hppfs_kern.c
 --- a/fs/hppfs/hppfs_kern.c
 +++ b/fs/hppfs/hppfs_kern.c
-@@ -745,15 +745,11 @@ static struct super_operations hppfs_sbo
+@@ -302,40 +302,55 @@ static ssize_t hppfs_read(struct file *f
+ 	struct hppfs_private *hppfs = file->private_data;
+ 	struct hppfs_data *data;
+ 	loff_t off;
+-	int err;
++	int err, written = 0;
  
- static int hppfs_readlink(struct dentry *dentry, char __user *buffer, int buflen)
- {
--	struct file *proc_file;
- 	struct dentry *proc_dentry;
- 	int (*readlink)(struct dentry *, char __user *, int);
- 	int ret;
- 
- 	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
--	proc_file = dentry_open(dget(proc_dentry), mntget(proc_submnt), O_RDONLY);
--	if (IS_ERR(proc_file))
--		return PTR_ERR(proc_file);
- 
- 	readlink = proc_dentry->d_inode->i_op->readlink;
- 	if (readlink == NULL)
-@@ -761,22 +757,16 @@ static int hppfs_readlink(struct dentry 
- 	ret = (*readlink)(proc_dentry, buffer, buflen);
- 	ret = proc_dentry->d_inode->i_op->readlink(proc_dentry, buffer, buflen);
- 
--	fput(proc_file);
+ 	if (hppfs->contents != NULL) {
+-		if(*ppos >= hppfs->len) return(0);
 -
- 	return ret;
+-		data = hppfs->contents;
+ 		off = *ppos;
+-		while(off >= sizeof(data->contents)){
+-			data = list_entry(data->list.next, struct hppfs_data,
+-					  list);
+-			off -= sizeof(data->contents);
+-		}
+ 
+-		if(off + count > hppfs->len)
++		if (off >= hppfs->len)
++			return 0;
++
++		if (off + count > hppfs->len)
+ 			count = hppfs->len - off;
+-		/*XXX: we should walk the list of remaining buffers! */
+-		err = copy_to_user(buf, &data->contents[off], count);
+-		count -= err;
+-		if (!count)
+-			return -EFAULT;
+-		*ppos += count;
+-	} else if(hppfs->host_fd != -1) {
++
++		data = hppfs->contents;
++		while (count) {
++			int chunk;
++			while (off >= sizeof(data->contents)) {
++				data = list_entry(data->list.next,
++						struct hppfs_data, list);
++				off -= sizeof(data->contents);
++			}
++
++			chunk = min_t(size_t, sizeof(data->contents) - off, count);
++			err = copy_to_user(buf, &data->contents[off], chunk);
++			if (err) {
++				*ppos += chunk - err;
++				written += chunk - err;
++				if (written == 0)
++					written = -EFAULT;
++				break;
++			}
++			off += chunk;
++			buf += chunk;
++			count -= chunk;
++			written += chunk;
++		}
++		*ppos += written;
++	} else if (hppfs->host_fd != -1) {
+ 		err = os_seek_file(hppfs->host_fd, *ppos);
+ 		if (err < 0){
+ 			printk("hppfs_read : seek failed, errno = %d\n", err);
+ 			return(err);
+ 		}
+-		count = hppfs_read_file(hppfs->host_fd, buf, count);
+-		if(count > 0)
+-			*ppos += count;
+-	} else
+-		count = read_proc(hppfs->proc_file, buf, count, ppos, 1);
++		written = hppfs_read_file(hppfs->host_fd, buf, count);
++		*ppos += written;
++	} else {
++		/* It handles ppos on its own */
++		written = read_proc(hppfs->proc_file, buf, count, ppos, 1);
++	}
+ 
+-	return(count);
++	return written;
  }
  
- static void* hppfs_follow_link(struct dentry *dentry, struct nameidata *nd)
- {
--	struct file *proc_file;
- 	struct dentry *proc_dentry;
- 	void * (*follow_link)(struct dentry *, struct nameidata *);
- 	void *ret;
- 
- 	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
--	proc_file = dentry_open(dget(proc_dentry), mntget(proc_submnt), O_RDONLY);
--	if (IS_ERR(proc_file))
--		return proc_file;
- 
- 	follow_link = proc_dentry->d_inode->i_op->follow_link;
- 
-@@ -788,8 +778,6 @@ static void* hppfs_follow_link(struct de
- 
- 	ret = follow_link(proc_dentry, nd);
- 
--	fput(proc_file);
--
- 	return ret;
- }
- 
+ static ssize_t hppfs_write(struct file *file, const char *buf, size_t len,
 
 
 
