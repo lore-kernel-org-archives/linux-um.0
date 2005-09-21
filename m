@@ -1,23 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIAc7-0001bL-56	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 12:50:43 -0700
-Received: from smtp.osdl.org ([65.172.181.4])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1EIAc5-0001Ck-Uf
+	id 1EIB8Y-0004BC-Lo	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Sep 2005 13:24:14 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIB8U-0005zR-Rs
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 12:50:43 -0700
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20050921124957.437cf069.akpm@osdl.org>
-In-Reply-To: <20050921172908.10219.57644.stgit@zion.home.lan>
+	Wed, 21 Sep 2005 13:24:14 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [PATCH 07/10] uml: avoid fixing faults while
+	atomic
 References: <200509211923.21861.blaisorblade@yahoo.it>
 	<20050921172908.10219.57644.stgit@zion.home.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	<20050921124957.437cf069.akpm@osdl.org>
+In-Reply-To: <20050921124957.437cf069.akpm@osdl.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [PATCH 07/10] uml: avoid fixing faults while atomic
+Content-Disposition: inline
+Message-Id: <200509212222.50653.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,79 +32,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Sep 2005 12:49:57 -0700
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Cc: torvalds@osdl.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 21 Sep 2005 22:22:50 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Andrew Morton <akpm@osdl.org>, torvalds@osdl.org, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-"Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
->
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> 
-> Following i386, we should maybe refuse trying to fault in pages when we're
-> doing atomic operations, because to handle the fault we could need to take
-> already taken spinlocks.
-> 
-> Also, if we're doing an atomic operation (in the sense of in_atomic()) we're
-> surely in kernel mode and we're surely going to handle adequately the failed
-> fault, so it's safe to behave this way.
-> 
-> Currently, on UML SMP is rarely used, and we don't support PREEMPT, so this is
-> unlikely to create problems right now, but it might in the future.
-> 
+On Wednesday 21 September 2005 21:49, Andrew Morton wrote:
+> "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
+> > From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-That's not really an accurate explanation/understanding of what's going on
-in there.
+> The in_atomic() test in x86's do_page_fault() is in fact a message passed
+> into it from filemap.c's kmap_atomic().
+Ok, this can be ok, but:
+> It has accidental side-effects, 
+> such as making copy_to_user() fail if inside spinlocks when
+> CONFIG_PREEMPT=y.
+Sorry, but should it ever succeed inside spinlocks? I mean, should it ever 
+call down() inside spinlocks? (We never do down_trylock, and ever if we did 
+the x86 trick, that wouldn't make the whole thing safe at all - they still 
+take the spinlock and potentially sleep. And it's legal only if no spinlock 
+is held).
 
-There's an extremely special-case in the pagefault handlers where we fail
-the fault if in_atomic().  It's unrelated to spinlocks (spinlocks don't
-even cause in_atomic() to become true if !CONFIG_PREEMPT).
+Even if spinlocks don't always trigger in_atomic() - which means that we'd 
+need to have a better fix for this.
 
-It has to do with kmap_atomic().  There's tricksy code in mm/filemap.c
-which will fault the target page in by hand and will then take an atomic
-kmap and will then raise current->preempt_count by hand, so in_atomic()
-becomes true even if !COFNIG_PREEMPT.
+(Btw, I took the above reasoning from something said, as an aside, on LWN.net 
+kernel page, about the FUTEX deadlock on mm->mmap_sem of ~ 2.6.8 - yes, it 
+wasn't the full truth, but not totally dumb).
 
-So at this stage we expect to be able to do a copy_to/from_user to/from
-pagecache without taking a fault, because we just faulted the page in by
-hand.  And we're not allowed to take a fault, because we're holding an
-atomic kmap.  But if we _do_ take a fault (extreme memory pressure, racing
-munmap, etc) then we want to fail the pagefault immediately.
+> So I think this change is only needed if UML implements kmap_atomic, as in
+> arch/i386/mm/highmem.c, which it surely does not do?
+NACK, see above.
 
-The in_atomic() test in x86's do_page_fault() is in fact a message passed
-into it from filemap.c's kmap_atomic().  It has accidental side-effects,
-such as making copy_to_user() fail if inside spinlocks when
-CONFIG_PREEMPT=y.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
+	
 
-So I think this change is only needed if UML implements kmap_atomic, as in
-arch/i386/mm/highmem.c, which it surely does not do?
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
-
-> 
-> diff --git a/arch/um/kernel/trap_kern.c b/arch/um/kernel/trap_kern.c
-> --- a/arch/um/kernel/trap_kern.c
-> +++ b/arch/um/kernel/trap_kern.c
-> @@ -40,6 +40,12 @@ int handle_page_fault(unsigned long addr
->  	int err = -EFAULT;
->  
->  	*code_out = SEGV_MAPERR;
-> +
-> +	/* If the fault was during atomic operation, don't take the fault, just
-> +	 * fail. */
-> +	if (in_atomic())
-> +		goto out_nosemaphore;
-> +
->  	down_read(&mm->mmap_sem);
->  	vma = find_vma(mm, address);
->  	if(!vma) 
-> @@ -90,6 +96,7 @@ survive:
->  	flush_tlb_page(vma, address);
->  out:
->  	up_read(&mm->mmap_sem);
-> +out_nosemaphore:
->  	return(err);
->  
->  /*
 
 
 -------------------------------------------------------
