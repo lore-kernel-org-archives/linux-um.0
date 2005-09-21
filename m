@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EI8iG-00049O-Ql	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 10:48:56 -0700
+	id 1EI8iI-00049Q-Ag	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Sep 2005 10:48:58 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EI8iF-0006I7-9W
+	(Exim 4.44)	id 1EI8iH-0001Ie-LH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 10:48:56 -0700
+	Wed, 21 Sep 2005 10:48:58 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050921172815.10219.19512.stgit@zion.home.lan>
+Message-Id: <20050921172936.10219.33013.stgit@zion.home.lan>
 In-Reply-To: <200509211923.21861.blaisorblade@yahoo.it>
 References: <200509211923.21861.blaisorblade@yahoo.it>
-Subject: [uml-devel] [PATCH 02/10] strlcat: use for uml umid.c
+Subject: [uml-devel] [PATCH 10/10] uml: replace printk with "stack-friendly"
+	printf - to report console failure
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,59 +26,148 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Sep 2005 19:28:15 +0200
+Date: Wed, 21 Sep 2005 19:29:36 +0200
 To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Simplify the code by using strlcat() instead of strncat() and manual
-appending.
+User get *a lot* confused when consoles don't work but we don't report anything.
+And, as reported in the comment, using printk to report "your console doesn't
+work" isn't likely to go that far.
+
+Fix the problem on the base of this: stack consumption by host printf(). Use
+kernel sprintf() and os_write_file, using a wild guess that one page will be
+enough for the message, to preallocate the buffer with kmalloc().
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/include/user.h |    4 +++-
- arch/um/kernel/umid.c  |   11 ++++-------
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ arch/um/drivers/chan_kern.c |   58 +++++++++++++++++++++++++++++++------------
+ 1 files changed, 42 insertions(+), 16 deletions(-)
 
-diff --git a/arch/um/include/user.h b/arch/um/include/user.h
---- a/arch/um/include/user.h
-+++ b/arch/um/include/user.h
-@@ -14,7 +14,9 @@ extern void *um_kmalloc_atomic(int size)
- extern void kfree(void *ptr);
- extern int in_aton(char *str);
- extern int open_gdb_chan(void);
--extern int strlcpy(char *, const char *, int);
-+/* These use size_t, however unsigned long is correct on both i386 and x86_64. */
-+extern unsigned long strlcpy(char *, const char *, unsigned long);
-+extern unsigned long strlcat(char *, const char *, unsigned long);
- extern void *um_vmalloc(int size);
- extern void vfree(void *ptr);
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -19,18 +19,44 @@
+ #include "line.h"
+ #include "os.h"
  
-diff --git a/arch/um/kernel/umid.c b/arch/um/kernel/umid.c
---- a/arch/um/kernel/umid.c
-+++ b/arch/um/kernel/umid.c
-@@ -237,16 +237,13 @@ static int __init make_uml_dir(void)
- 		strlcpy(dir, home, sizeof(dir));
- 		uml_dir++;
+-#ifdef CONFIG_NOCONFIG_CHAN
++/* XXX: could well be moved to somewhere else, if needed. */
++static int my_printf(const char * fmt, ...)
++	__attribute__ ((format (printf, 1, 2)));
++
++static int my_printf(const char * fmt, ...)
++{
++	/* Yes, can be called on atomic context.*/
++	char *buf = kmalloc(4096, GFP_ATOMIC);
++	va_list args;
++	int r;
++
++	if (!buf) {
++		/* We print directly fmt.
++		 * Yes, yes, yes, feel free to complain. */
++		r = strlen(fmt);
++	} else {
++		va_start(args, fmt);
++		r = vsprintf(buf, fmt, args);
++		va_end(args);
++		fmt = buf;
++	}
++
++	if (r)
++		r = os_write_file(1, fmt, r);
++	return r;
+ 
+-/* The printk's here are wrong because we are complaining that there is no
+- * output device, but printk is printing to that output device.  The user will
+- * never see the error.  printf would be better, except it can't run on a
+- * kernel stack because it will overflow it.
+- * Use printk for now since that will avoid crashing.
+- */
++}
++
++#ifdef CONFIG_NOCONFIG_CHAN
++/* Despite its name, there's no added trailing newline. */
++static int my_puts(const char * buf)
++{
++	return os_write_file(1, buf, strlen(buf));
++}
+ 
+ static void *not_configged_init(char *str, int device, struct chan_opts *opts)
+ {
+-	printk(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ 	return(NULL);
+ }
+@@ -38,27 +64,27 @@ static void *not_configged_init(char *st
+ static int not_configged_open(int input, int output, int primary, void *data,
+ 			      char **dev_out)
+ {
+-	printk(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ 	return(-ENODEV);
+ }
+ 
+ static void not_configged_close(int fd, void *data)
+ {
+-	printk(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ }
+ 
+ static int not_configged_read(int fd, char *c_out, void *data)
+ {
+-	printk(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ 	return(-EIO);
+ }
+ 
+ static int not_configged_write(int fd, const char *buf, int len, void *data)
+ {
+-	printk(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ 	return(-EIO);
+ }
+@@ -66,7 +92,7 @@ static int not_configged_write(int fd, c
+ static int not_configged_console_write(int fd, const char *buf, int len,
+ 				       void *data)
+ {
+-	printk(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ 	return(-EIO);
+ }
+@@ -74,14 +100,14 @@ static int not_configged_console_write(i
+ static int not_configged_window_size(int fd, void *data, unsigned short *rows,
+ 				     unsigned short *cols)
+ {
+-	printk(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ 	return(-ENODEV);
+ }
+ 
+ static void not_configged_free(void *data)
+ {
+-	printf(KERN_ERR "Using a channel type which is configured out of "
++	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+ }
+ 
+@@ -457,7 +483,7 @@ static struct chan *parse_chan(char *str
+ 		}
  	}
-+	strlcat(dir, uml_dir, sizeof(dir));
- 	len = strlen(dir);
--	strncat(dir, uml_dir, sizeof(dir) - len);
--	len = strlen(dir);
--	if((len > 0) && (len < sizeof(dir) - 1) && (dir[len - 1] != '/')){
--		dir[len] = '/';
--		dir[len + 1] = '\0';
--	}
-+	if (len > 0 && dir[len - 1] != '/')
-+		strlcat(dir, "/", sizeof(dir));
- 
- 	uml_dir = malloc(strlen(dir) + 1);
--	if(uml_dir == NULL){
-+	if (uml_dir == NULL) {
- 		printf("make_uml_dir : malloc failed, errno = %d\n", errno);
- 		exit(1);
+ 	if(ops == NULL){
+-		printk(KERN_ERR "parse_chan couldn't parse \"%s\"\n", 
++		my_printf("parse_chan couldn't parse \"%s\"\n", 
+ 		       str);
+ 		return(NULL);
  	}
 
 
