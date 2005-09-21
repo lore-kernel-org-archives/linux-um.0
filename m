@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EI7kL-0001E7-VM	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 09:47:01 -0700
+	id 1EI7kS-0001EN-Uy	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Sep 2005 09:47:08 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EI7kL-0003vZ-Ar
+	(Exim 4.44)	id 1EI7kS-0003xe-HU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 09:47:01 -0700
+	Wed, 21 Sep 2005 09:47:09 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050921163946.30500.54980.stgit@zion.home.lan>
+Message-Id: <20050921164048.30500.76109.stgit@zion.home.lan>
 In-Reply-To: <200509211822.17590.blaisorblade@yahoo.it>
 References: <200509211822.17590.blaisorblade@yahoo.it>
-Subject: [uml-devel] [PATCH 07/10] uml: fix bogus HOST_ELF_CLASS symbol name
+Subject: [uml-devel] [PATCH 10/10] uml: fix compile warning after
+	consolidation patch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,54 +26,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Sep 2005 18:39:47 +0200
+Date: Wed, 21 Sep 2005 18:40:49 +0200
 To: Linus Torvalds <torvalds@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Even if with a bit of misunderstanding, Al fixed this in commit
-95608261dae863bc43292e6fbd946a3abd3aa49f.
+The header declaring this function wasn't included, so the function declaration
+was totally bogus wrt. the proto - even if this wasn't going to fail at all.
 
-Well, the symbol was intended to come from userspace (it exists there on normal
-host), but since some hosts may miss that, using the kernel one is just as fine.
-However, rename it to be named consistently with the rest.
+It was so bad that the compile warning I got was "control reaches end of
+non-void function", i.e. missing return. Actually, this has been there for ages,
+the consolidation patch just added the warning which was needed to clean it up.
+Nice. Really.
 
-Actually, he missed converting ELFCLASS32 to coming from kernel headers. For
-consistence, add ELFCLASS64 too.
-
-Cc: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Allan Graves <allan.graves@gmail.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/include/common-offsets.h |    4 +++-
- arch/um/os-Linux/elf_aux.c       |    3 ++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ arch/um/kernel/tt/process_kern.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/include/common-offsets.h b/arch/um/include/common-offsets.h
---- a/arch/um/include/common-offsets.h
-+++ b/arch/um/include/common-offsets.h
-@@ -12,4 +12,6 @@ DEFINE_STR(UM_KERN_WARNING, KERN_WARNING
- DEFINE_STR(UM_KERN_NOTICE, KERN_NOTICE);
- DEFINE_STR(UM_KERN_INFO, KERN_INFO);
- DEFINE_STR(UM_KERN_DEBUG, KERN_DEBUG);
--DEFINE(HOST_ELF_CLASS, ELF_CLASS);
-+DEFINE(UM_ELF_CLASS, ELF_CLASS);
-+DEFINE(UM_ELFCLASS32, ELFCLASS32);
-+DEFINE(UM_ELFCLASS64, ELFCLASS64);
-diff --git a/arch/um/os-Linux/elf_aux.c b/arch/um/os-Linux/elf_aux.c
---- a/arch/um/os-Linux/elf_aux.c
-+++ b/arch/um/os-Linux/elf_aux.c
-@@ -14,7 +14,8 @@
+diff --git a/arch/um/kernel/tt/process_kern.c b/arch/um/kernel/tt/process_kern.c
+--- a/arch/um/kernel/tt/process_kern.c
++++ b/arch/um/kernel/tt/process_kern.c
+@@ -23,10 +23,11 @@
  #include "mem_user.h"
- #include <kernel-offsets.h>
+ #include "tlb.h"
+ #include "mode.h"
++#include "mode_kern.h"
+ #include "init.h"
+ #include "tt.h"
  
--#if HOST_ELF_CLASS == ELFCLASS32
-+/* Use the one from the kernel - the host may miss it, if having old headers. */
-+#if UM_ELF_CLASS == UM_ELFCLASS32
- typedef Elf32_auxv_t elf_auxv_t;
- #else
- typedef Elf64_auxv_t elf_auxv_t;
+-int switch_to_tt(void *prev, void *next, void *last)
++void switch_to_tt(void *prev, void *next)
+ {
+ 	struct task_struct *from, *to, *prev_sched;
+ 	unsigned long flags;
 
 
 
