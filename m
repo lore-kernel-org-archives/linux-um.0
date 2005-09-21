@@ -1,19 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EI8iI-00049R-KH	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 10:48:58 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EI8iH-0006Hw-UW
+	id 1EI9Ku-00064N-NF	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Sep 2005 11:28:52 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EI9Kt-0000zB-A0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 10:48:58 -0700
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050921172920.10219.29856.stgit@zion.home.lan>
-In-Reply-To: <200509211923.21861.blaisorblade@yahoo.it>
-References: <200509211923.21861.blaisorblade@yahoo.it>
-Subject: [uml-devel] [PATCH 08/10] uml: Fix GFP_ flags usage
+	Wed, 21 Sep 2005 11:28:52 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Review needed for ubd fixes
+Message-ID: <20050921180436.GA7712@ccure.user-mode-linux.org>
+References: <200509172245.j8HMjqJD009056@ccure.user-mode-linux.org>
+	<200509201401.13750.blaisorblade@yahoo.it>
+	<20050920190618.GA9417@ccure.user-mode-linux.org>
+	<200509211749.46125.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200509211749.46125.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,35 +30,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Sep 2005 19:29:21 +0200
-To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 21 Sep 2005 14:04:36 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+On Wed, Sep 21, 2005 at 05:49:43PM +0200, Blaisorblade wrote:
+> Since you're going to possibly sleep, it's better to allow kmalloc to sleep in 
+> first place!
 
-GFP_ATOMIC | GFP_KERNEL is meaningless and won't work. Actually it never worked,
-even in 2.4.
+WRONG!  The first request in line can't sleep, that's the whole point.
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+If it does, the system can deadlock.  Subsequent requests can sleep, waiting
+for previous ones to finish, but there absolutely can't be any sleeping
+in kmalloc.
 
- arch/um/kernel/process_kern.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+> Is the COW bitmap mmap'ed? Because otherwise we'd need to queue up an 
+> additional write request, which creates problems.
 
-diff --git a/arch/um/kernel/process_kern.c b/arch/um/kernel/process_kern.c
---- a/arch/um/kernel/process_kern.c
-+++ b/arch/um/kernel/process_kern.c
-@@ -82,7 +82,8 @@ unsigned long alloc_stack(int order, int
- 	unsigned long page;
- 	int flags = GFP_KERNEL;
- 
--	if(atomic) flags |= GFP_ATOMIC;
-+	if (atomic)
-+		flags = GFP_ATOMIC;
- 	page = __get_free_pages(flags, order);
- 	if(page == 0)
- 		return(0);
+No.  That creates ordering problems which I haven't thought about yet,  It
+may be worth doing, but explicit writes make ordering easier to think about.
+> 
+> Btw, msync() allows sync'ing only a specific region, which fsync() doesn't 
+> allow. Don't know whether we need this really, however (we probably don't do 
+> it, but we should).
 
+Or, the host may just flush out the mmapped stuff on its own.  This is my 
+concern about ordering.
+
+> Also, I kept forgetting to mention one thing: Device mapper has the support 
+> for COW volumes, like we do. E.g. when you create a snapshot, it is not a 
+> static immutable copy of the original, it's writable too!
+
+Yeah, that's something to think about.
+
+> Don't think it's reasonable to expect this. I think that filesystems like ext2 
+> will never produce write barriers - they are needed for journaled FS's.
+
+I thought your point was to rely on the block layer to order overlapping
+writes for us.
+
+It sounded reasonable to me :-)
+
+				Jeff
 
 
 -------------------------------------------------------
