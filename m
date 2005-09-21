@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EI9Ku-00064N-NF	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 11:28:52 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EI9Kt-0000zB-A0
+	id 1EI9wq-000819-Hc	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Sep 2005 12:08:04 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EI9wl-0000Zi-I6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 11:28:52 -0700
-From: Jeff Dike <jdike@addtoit.com>
+	Wed, 21 Sep 2005 12:08:04 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Review needed for ubd fixes
-Message-ID: <20050921180436.GA7712@ccure.user-mode-linux.org>
 References: <200509172245.j8HMjqJD009056@ccure.user-mode-linux.org>
-	<200509201401.13750.blaisorblade@yahoo.it>
-	<20050920190618.GA9417@ccure.user-mode-linux.org>
 	<200509211749.46125.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<20050921180436.GA7712@ccure.user-mode-linux.org>
+In-Reply-To: <20050921180436.GA7712@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200509211749.46125.blaisorblade@yahoo.it>
+Message-Id: <200509212106.39169.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,48 +31,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Sep 2005 14:04:36 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 21 Sep 2005 21:06:38 +0200
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Wed, Sep 21, 2005 at 05:49:43PM +0200, Blaisorblade wrote:
-> Since you're going to possibly sleep, it's better to allow kmalloc to sleep in 
-> first place!
+On Wednesday 21 September 2005 20:04, Jeff Dike wrote:
+> On Wed, Sep 21, 2005 at 05:49:43PM +0200, Blaisorblade wrote:
+[...]
+> > Don't think it's reasonable to expect this. I think that filesystems like
+> > ext2 will never produce write barriers - they are needed for journaled
+> > FS's.
 
-WRONG!  The first request in line can't sleep, that's the whole point.
+> I thought your point was to rely on the block layer to order overlapping
+> writes for us.
+The block layer is supposed to merge as far as possible overlapping writes, 
+that's reasonable, but not dependable. Say it gets the overlapping request 
+*after* it sent the first one - we'll see both. Also, this is trivially true 
+for output done through page cache, but for the rest I don't know if explicit 
+merging is implemented.
 
-If it does, the system can deadlock.  Subsequent requests can sleep, waiting
-for previous ones to finish, but there absolutely can't be any sleeping
-in kmalloc.
+For the buffer cache (i.e. fs metadata) it may still hold, but I'm not sure at 
+all. Not that it matters for us - we can't depend on it anyway.
 
-> Is the COW bitmap mmap'ed? Because otherwise we'd need to queue up an 
-> additional write request, which creates problems.
+No, I was thinking to you enforcing ordering to comply to what journaled 
+filesystems expect.
 
-No.  That creates ordering problems which I haven't thought about yet,  It
-may be worth doing, but explicit writes make ordering easier to think about.
-> 
-> Btw, msync() allows sync'ing only a specific region, which fsync() doesn't 
-> allow. Don't know whether we need this really, however (we probably don't do 
-> it, but we should).
+Btw: even when we aren't using COW, we're supposed to do writes in the order 
+the fs passed them to us - at least when write barriers are explicitly sent 
+(don't know if there's something to care normally - I know this as a LWN.net 
+reader, not as an hacker in this area).
 
-Or, the host may just flush out the mmapped stuff on its own.  This is my 
-concern about ordering.
+> It sounded reasonable to me :-)
 
-> Also, I kept forgetting to mention one thing: Device mapper has the support 
-> for COW volumes, like we do. E.g. when you create a snapshot, it is not a 
-> static immutable copy of the original, it's writable too!
+> 				Jeff
 
-Yeah, that's something to think about.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-> Don't think it's reasonable to expect this. I think that filesystems like ext2 
-> will never produce write barriers - they are needed for journaled FS's.
+	
 
-I thought your point was to rely on the block layer to order overlapping
-writes for us.
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
-It sounded reasonable to me :-)
-
-				Jeff
 
 
 -------------------------------------------------------
