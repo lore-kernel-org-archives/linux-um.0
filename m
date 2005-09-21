@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EI8gA-00043c-I5	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 10:46:46 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EI8g7-0000dT-1i
+	id 1EI8iF-00049M-P8	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Sep 2005 10:48:55 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EI8iF-0006I3-5z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 10:46:46 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200509211923.21861.blaisorblade@yahoo.it>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [PATCH 0/10] "Bigger" UML fixes for 2.6.14
+	Wed, 21 Sep 2005 10:48:55 -0700
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20050921172824.10219.17857.stgit@zion.home.lan>
+In-Reply-To: <200509211923.21861.blaisorblade@yahoo.it>
+References: <200509211923.21861.blaisorblade@yahoo.it>
+Subject: [uml-devel] [PATCH 03/10] uml: don't redundantly mark pte as newpage
+	in pte_modify
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,27 +26,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Sep 2005 19:23:20 +0200
+Date: Wed, 21 Sep 2005 19:28:25 +0200
 To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-This is a collection of more intrusive UML fixes for 2.6.14.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-However, I've been careful in them (at least so I hope). You may want to put 
-some in -mm, but please let's make sure that they get into -mm.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+pte_modify marks a page as needing flush, which is redundant because the
+resulting PTE is still set with set_pte, which already handles that.
 
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-	
+ include/asm-um/pgtable.h |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+diff --git a/include/asm-um/pgtable.h b/include/asm-um/pgtable.h
+--- a/include/asm-um/pgtable.h
++++ b/include/asm-um/pgtable.h
+@@ -346,7 +346,6 @@ static inline void set_pte(pte_t *pteptr
+ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+ {
+ 	pte_set_val(pte, (pte_val(pte) & _PAGE_CHG_MASK), newprot);
+-	if(pte_present(pte)) pte = pte_mknewpage(pte_mknewprot(pte));
+ 	return pte; 
+ }
+ 
 
 
 
