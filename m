@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIY3j-0003Iu-Jq	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Sep 2005 13:52:47 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIY3h-0006k5-Vv
+	id 1EIY5g-0003PY-3Q	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Sep 2005 13:54:48 -0700
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1EIY5e-00079C-Th
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Sep 2005 13:52:47 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Review needed for ubd fixes
-References: <200509172245.j8HMjqJD009056@ccure.user-mode-linux.org>
-	<200509212106.39169.blaisorblade@yahoo.it>
-	<20050921204507.GA9918@ccure.user-mode-linux.org>
-In-Reply-To: <20050921204507.GA9918@ccure.user-mode-linux.org>
+	Thu, 22 Sep 2005 13:54:48 -0700
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: Re: [uml-devel] Re: [PATCH 07/10] uml: avoid fixing faults while
+ atomic
+In-Reply-To: <200509222137.41412.blaisorblade@yahoo.it>
+Message-ID: <Pine.LNX.4.58.0509221341230.2553@g5.osdl.org>
+References: <200509211923.21861.blaisorblade@yahoo.it>
+	<20050921134724.52603016.akpm@osdl.org>
+	<200509222137.41412.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200509222251.31918.blaisorblade@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,55 +30,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Sep 2005 22:51:31 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Thu, 22 Sep 2005 13:54:24 -0700 (PDT)
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-On Wednesday 21 September 2005 22:45, Jeff Dike wrote:
-> On Wed, Sep 21, 2005 at 09:06:38PM +0200, Blaisorblade wrote:
-> > The block layer is supposed to merge as far as possible overlapping
-> > writes, that's reasonable, but not dependable. Say it gets the
-> > overlapping request *after* it sent the first one - we'll see both. Also,
-> > this is trivially true for output done through page cache, but for the
-> > rest I don't know if explicit merging is implemented.
+
+
+On Thu, 22 Sep 2005, Blaisorblade wrote:
 >
-> Yeah, I'm concerned about O_DIRECT.  Also, what happens when we write a
-> page to disk, and immediately afterwards, it gets dirty again and written
-> again? Is there a barrier between the two?
->
-> > No, I was thinking to you enforcing ordering to comply to what journaled
-> > filesystems expect.
->
-> Yeah, but there's more ordering than that.
->
-> > Btw: even when we aren't using COW, we're supposed to do writes in the
-> > order the fs passed them to us - at least when write barriers are
-> > explicitly sent (don't know if there's something to care normally - I
-> > know this as a LWN.net reader, not as an hacker in this area).
->
-> We get requests from the block layer, not the fs.  And physical disks are
-> allowed to reorder requests, so I think there is some flexibility there.
-I expect the FS to send the barriers - they don't make sense otherwise.
+> Exactly - the point is: is it legal to call copy_from_user() while holding a 
+> spinlock (which is my original question)? Or should copy_from_user try to 
+> satisfy the fault, instead of seeing in_atomic() or something similar and 
+> fail?
 
-In fact, grep -i barrier fs/jbd/*.c gives some results, which point to 
-BH_Ordered.
+It is not legal to call copy_to/from_user() under a spinlock in general.
 
-And after grepping it in reiserfs, I found that fs/buffer.c:submit_bh() cares 
-about it (i.e. looks at the buffer head and sees if it is ordered), and sends 
-it down to the elevator.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+But what _is_ legal to do is something slightly more complex, ie
 
-	
+	spin_lock(...)
+	inc_preempt_count();
+	ret = __copy_from_user_inatomic(..)
+	dec_preempt_count();
+	spin_unlock();
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+but you have to realize that the copy-from-user will fail if the target is 
+swapped out (so the code that does things like this has to look at the 
+return value, and if the copy didn't copy anything it needs to release the 
+locks and do it all over again without the atomic thing).
 
+We don't do it very much, because it gets more complicated and it hasn't
+historically been legal, but it could in theory be very useful if you hold
+a lock and want to avoid releasing and re-taking it just to do a user
+access.
+
+Right now the only case where that happens is the futex code, and maybe 
+that's a very special case. But maybe it isn't. 
+
+			Linus
 
 
 -------------------------------------------------------
