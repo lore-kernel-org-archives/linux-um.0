@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIC98-0007Jh-56	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 14:28:54 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EIC96-0001Jr-PD
+	id 1EIO1J-0007D9-H4	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Sep 2005 03:09:37 -0700
+Received: from mxfep02.bredband.com ([195.54.107.73])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EIO1H-000339-Sz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Sep 2005 14:28:54 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH 08/10] uml: Fix GFP_ flags usage
-Message-ID: <20050921205227.GC9918@ccure.user-mode-linux.org>
-References: <200509211923.21861.blaisorblade@yahoo.it>
-	<20050921172920.10219.29856.stgit@zion.home.lan>
+	Thu, 22 Sep 2005 03:09:37 -0700
+Received: from [192.168.0.206] ([85.226.145.207] [85.226.145.207])
+          by mxfep02.bredband.com with ESMTP
+          id <20050922100927.AFW11792.mxfep02.bredband.com@[192.168.0.206]>
+          for <user-mode-linux-devel@lists.sourceforge.net>;
+          Thu, 22 Sep 2005 12:09:27 +0200
+From: Rickard =?ISO-8859-1?Q?Vikstr=F6m?= <rickard@azalea.se>
+Content-Type: text/plain; charset="iso-8859-1"
+Message-Id: <1127390899.7679.36.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050921172920.10219.29856.stgit@zion.home.lan>
+Subject: [uml-devel] hangup
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,19 +29,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Sep 2005 16:52:27 -0400
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Thu, 22 Sep 2005 14:08:19 +0200
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Sep 21, 2005 at 07:29:21PM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
-> -	if(atomic) flags |= GFP_ATOMIC;
-> +	if (atomic)
-> +		flags = GFP_ATOMIC;
+Hi uml-people
 
-We should take a careful look at where this is called from, and see if we
-can get rid of the atomic business altogether.
+I have problem with hostkernel 2.6.12-skas3-v8.2 to start a guest.
+This is the output:
 
-				Jeff
+./2.4.29  eth0=3Dtuntap,tap_bf,00:11:2F:87:09:02 ubd0=3Ddebian20gigg.iso
+mem=3D512M
+
+and the hangup is here:
+kjournald starting.  Commit interval 5 seconds
+EXT3-fs: mounted filesystem with ordered data mode.
+VFS: Mounted root (ext3 filesystem) readonly.
+Mounted devfs on /dev
+
+(I get nothing after "mounted...")
+
+And in top I get 100% cpuusage for that guest-pid.
+
+Can someone point me in the right direction.
+
+And I also have problem with jdk 1.{4,5} on 2.4.X-guestkernels Is there
+a known problem with 2.4.X + jdk 1.{4,5} ?
+
+Best Regards
+Rickard Vikstr=F6m
+
+
+
+
+
 
 
 -------------------------------------------------------
