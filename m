@@ -2,20 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIWtE-0008D2-Ej	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Sep 2005 12:37:52 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIWtA-0000cJ-Oa
+	id 1EIWzi-0008Tc-H4	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Sep 2005 12:44:34 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIWzf-0001pf-NJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Sep 2005 12:37:52 -0700
+	Thu, 22 Sep 2005 12:44:34 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] hangup
-References: <1127390899.7679.36.camel@localhost.localdomain>
-In-Reply-To: <1127390899.7679.36.camel@localhost.localdomain>
+Subject: Re: [uml-devel] [PATCH 06/10] uml: run mconsole "sysrq" in process
+	context
+References: <200509211923.21861.blaisorblade@yahoo.it>
+	<20050921172857.10219.71071.stgit@zion.home.lan>
+	<20050921205028.GB9918@ccure.user-mode-linux.org>
+In-Reply-To: <20050921205028.GB9918@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509222123.40489.blaisorblade@yahoo.it>
+Message-Id: <200509222120.20922.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,54 +32,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Sep 2005 21:23:40 +0200
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rickard =?iso-8859-1?q?Vikstr=F6m?= <rickard@azalea.se>
+Date: Thu, 22 Sep 2005 21:20:20 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Thursday 22 September 2005 14:08, Rickard Vikstr=F6m wrote:
-> Hi uml-people
+On Wednesday 21 September 2005 22:50, Jeff Dike wrote:
+> On Wed, Sep 21, 2005 at 07:28:57PM +0200, Paolo 'Blaisorblade' Giarrusso 
+wrote:
+> > From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> >
+> > Things are breaking horribly with sysrq called in interrupt context. I
+> > want to try to fix it, but probably this is simpler. To tell the truth,
+> > sysrq is normally run in interrupt context, so there shouldn't be any
+> > problem.
 >
-> I have problem with hostkernel 2.6.12-skas3-v8.2 to start a guest.
-> This is the output:
+> How are they breaking?
+sysrq t is broken (and stays), but additionally there are some warnings from 
+some commands (enable sleep inside spinlock checking and spinlock debugging), 
+which go to the down_read inside handle_page_fault IIRC. So try to run in 
+process context.
 
-> ./2.4.29  eth0=3Dtuntap,tap_bf,00:11:2F:87:09:02 ubd0=3Ddebian20gigg.iso
-> mem=3D512M
-
-> and the hangup is here:
-> kjournald starting.  Commit interval 5 seconds
-> EXT3-fs: mounted filesystem with ordered data mode.
-> VFS: Mounted root (ext3 filesystem) readonly.
-> Mounted devfs on /dev
-
-> (I get nothing after "mounted...")
-That could be a console setup problem, but
-> And in top I get 100% cpuusage for that guest-pid.
-Ok, that's bad, yes. But please try 2.4.28-bs2 and say the *guest* version =
-
-(including the patch version). There are some problems with 2.4.27-1um.
-
-That said, UML 2.4 is more problematic in general, and more buggy, than=20
-UML/2.6. Try to use the -bs patches for 2.6 too. And report any problem you=
-=20
-get with 2.6, we might be able to fix them.
-> Can someone point me in the right direction.
-
-> And I also have problem with jdk 1.{4,5} on 2.4.X-guestkernels Is there
-> a known problem with 2.4.X + jdk 1.{4,5} ?
-Try 2.4.28-bs2 - on other releases there are known problems, yes.
---=20
+-- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-=09
-
-=09
-	=09
-___________________________________=20
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB=20
-http://mail.yahoo.it
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
 
 
