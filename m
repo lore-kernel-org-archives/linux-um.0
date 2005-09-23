@@ -1,29 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIsL0-0003aS-4w	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 11:31:58 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EIsKy-0002kT-Oz
+	id 1EIsam-0004Fz-Ah	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Sep 2005 11:48:16 -0700
+Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EIsal-0003Om-Vg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 11:31:58 -0700
-Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j8NK18ns014848
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 23 Sep 2005 16:01:09 -0400
-From: Rob Landley <rob@landley.net>
+	Fri, 23 Sep 2005 11:48:16 -0700
+From: Henrik Nordstrom <uml@hno.marasystems.com>
 Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
-References: <200509231135.27882.rob@landley.net>
 In-Reply-To: <200509231135.27882.rob@landley.net>
+Message-ID: <Pine.LNX.4.61.0509232038110.14136@filer.marasystems.com>
+References: <200509231135.27882.rob@landley.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200509231331.47282.rob@landley.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,27 +26,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 23 Sep 2005 13:31:47 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 23 Sep 2005 20:47:59 +0200 (CEST)
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 23 September 2005 11:35, Rob Landley wrote:
+On Fri, 23 Sep 2005, Rob Landley wrote:
+
 > I'm the strange guy using UML via the stdio console, ala:
 >
 > ./linux rootfstype=hostfs MEM=48m rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
 >
-> And it would be very nice if ctrl-c would work with that.  I tried
-> commenting out the "!noctty &&" test in line 1872, 
-
-Of drivers/char/tty_io.c, that is 
-
-> but it didn't make any 
-> difference.
+> And it would be very nice if ctrl-c would work with that.  I tried commenting
+> out the "!noctty &&" test in line 1872, but it didn't make any difference.
 >
 > Anybody see an obvious way to make /dev/console a controlling TTY?
->
-> Rob
 
-Rob
+The stdin given by the kernel to init is not a controlling TTY as this 
+would be disasterous (imagine someone sending breaks during the boot 
+sequence, breaking various init tasks or even init itself...), but any 
+init related process (but only one) can claim it as the controlling TTY 
+and will then be given signals.
+
+This is not unique to UML but applies to all architectures.
+
+There is nothing wrong with using /dev/console instead of a "real" tty. 
+/dev/console is no more than an alias for the first console tty. But you 
+won't get it as a controlling TTY unless explicitly asked for.
+
+Regards
+Henrik
+
 
 
 -------------------------------------------------------
