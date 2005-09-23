@@ -2,19 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIsam-0004Fz-Ah	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 11:48:16 -0700
-Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EIsal-0003Om-Vg
+	id 1EIsgy-0004Uf-HY	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Sep 2005 11:54:40 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIsgu-0004Zf-5h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 11:48:16 -0700
-From: Henrik Nordstrom <uml@hno.marasystems.com>
+	Fri, 23 Sep 2005 11:54:40 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
-In-Reply-To: <200509231135.27882.rob@landley.net>
-Message-ID: <Pine.LNX.4.61.0509232038110.14136@filer.marasystems.com>
 References: <200509231135.27882.rob@landley.net>
+	<Pine.LNX.4.61.0509232038110.14136@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.61.0509232038110.14136@filer.marasystems.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200509232053.24982.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,35 +30,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 23 Sep 2005 20:47:59 +0200 (CEST)
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 23 Sep 2005 20:53:24 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Rob Landley <rob@landley.net>
 
-On Fri, 23 Sep 2005, Rob Landley wrote:
+On Friday 23 September 2005 20:47, Henrik Nordstrom wrote:
+> On Fri, 23 Sep 2005, Rob Landley wrote:
+> > I'm the strange guy using UML via the stdio console, ala:
 
-> I'm the strange guy using UML via the stdio console, ala:
+> > ./linux rootfstype=hostfs MEM=48m rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
+
+> > And it would be very nice if ctrl-c would work with that.  I tried
+> > commenting out the "!noctty &&" test in line 1872, but it didn't make any
+> > difference.
+
+> > Anybody see an obvious way to make /dev/console a controlling TTY?
+
+> The stdin given by the kernel to init is not a controlling TTY as this
+> would be disasterous (imagine someone sending breaks during the boot
+> sequence, breaking various init tasks or even init itself...), but any
+> init related process (but only one) can claim it as the controlling TTY
+> and will then be given signals.
 >
-> ./linux rootfstype=hostfs MEM=48m rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
->
-> And it would be very nice if ctrl-c would work with that.  I tried commenting
-> out the "!noctty &&" test in line 1872, but it didn't make any difference.
->
-> Anybody see an obvious way to make /dev/console a controlling TTY?
+> This is not unique to UML but applies to all architectures.
 
-The stdin given by the kernel to init is not a controlling TTY as this 
-would be disasterous (imagine someone sending breaks during the boot 
-sequence, breaking various init tasks or even init itself...), but any 
-init related process (but only one) can claim it as the controlling TTY 
-and will then be given signals.
+> There is nothing wrong with using /dev/console instead of a "real" tty.
+> /dev/console is no more than an alias for the first console tty.
+Ahhh..
+> But you 
+> won't get it as a controlling TTY unless explicitly asked for.
+How?
 
-This is not unique to UML but applies to all architectures.
+Anyway, Henrik, thanks for your enlightenment.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-There is nothing wrong with using /dev/console instead of a "real" tty. 
-/dev/console is no more than an alias for the first console tty. But you 
-won't get it as a controlling TTY unless explicitly asked for.
+	
 
-Regards
-Henrik
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
