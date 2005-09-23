@@ -2,26 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIqWU-0006Hp-GT	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 09:35:42 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EIqWT-0004c9-3N
+	id 1EIs8s-0002yH-Kr	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Sep 2005 11:19:26 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIs8m-0000MT-2l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 09:35:42 -0700
-Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j8NI4luf013165
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 23 Sep 2005 14:04:48 -0400
-From: Rob Landley <rob@landley.net>
+	Fri, 23 Sep 2005 11:19:20 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
+References: <200509231135.27882.rob@landley.net>
+In-Reply-To: <200509231135.27882.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509231135.27882.rob@landley.net>
-Subject: [uml-devel] Any way to give /dev/console a controlling TTY?
+Message-Id: <200509231950.32370.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,19 +29,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 23 Sep 2005 11:35:27 -0500
+Date: Fri, 23 Sep 2005 19:50:32 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>
 
-I'm the strange guy using UML via the stdio console, ala:
+On Friday 23 September 2005 18:35, Rob Landley wrote:
+> I'm the strange guy using UML via the stdio console, ala:
+>
+> ./linux rootfstype=hostfs MEM=48m rw init=/bin/sh
+Ah, init=/bin/sh, that's why you have /dev/console. I feared somebody again 
+using /dev/console in inittab.
+> LD_ASSUME_KERNEL=2.4.1 
 
-./linux rootfstype=hostfs MEM=48m rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
+> And it would be very nice if ctrl-c would work with that.  I tried
+> commenting out the "!noctty &&" test in line 1872, but it didn't make any
+> difference.
 
-And it would be very nice if ctrl-c would work with that.  I tried commenting 
-out the "!noctty &&" test in line 1872, but it didn't make any difference.
+> Anybody see an obvious way to make /dev/console a controlling TTY?
+Guess that /dev/console is not a TTY, so that it not possible. I mean, you'd 
+have to patch (uselessly) the very TTY core layer.
 
-Anybody see an obvious way to make /dev/console a controlling TTY?
+Or make Linux use /dev/tty0 instead of /dev/console when starting init - which 
+is simpler. There is maybe even a console= switch
 
-Rob
+What about something like init="kludgy script which calls, say, a mixture of 
+setsid, <> /dev/tty0, open(1) and such stuff to make sh start?
+
+Maybe sh doesn't even need that, but login(8) needs setsid. I never remember 
+the exact combination, however.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
 
 
