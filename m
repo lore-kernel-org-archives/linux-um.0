@@ -2,25 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIY7O-0003Wx-3l	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Sep 2005 13:56:34 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIY7E-00087r-ID
+	id 1EIiBJ-0006gy-KD	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Sep 2005 00:41:17 -0700
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1EIiBI-0000a3-Bg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Sep 2005 13:56:34 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Fri, 23 Sep 2005 00:41:17 -0700
+From: Andrew Morton <akpm@osdl.org>
 Subject: Re: [uml-devel] [PATCH 06/10] uml: run mconsole "sysrq" in process
-	context
+ context
+Message-Id: <20050923004031.6b7da42a.akpm@osdl.org>
+In-Reply-To: <20050922203743.GA11648@ccure.user-mode-linux.org>
 References: <200509211923.21861.blaisorblade@yahoo.it>
+	<20050921172857.10219.71071.stgit@zion.home.lan>
+	<20050921205028.GB9918@ccure.user-mode-linux.org>
 	<200509222120.20922.blaisorblade@yahoo.it>
 	<20050922203743.GA11648@ccure.user-mode-linux.org>
-In-Reply-To: <20050922203743.GA11648@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200509222248.21339.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,47 +33,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 22 Sep 2005 22:48:21 +0200
+Date: Fri, 23 Sep 2005 00:40:31 -0700
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Thursday 22 September 2005 22:37, Jeff Dike wrote:
+Jeff Dike <jdike@addtoit.com> wrote:
+>
 > On Thu, Sep 22, 2005 at 09:20:20PM +0200, Blaisorblade wrote:
-> > sysrq t is broken (and stays),
-
-> There's a fix on the way for that.
-Already found? Nice.
-> This has nothing to do with interrupt 
+> > sysrq t is broken (and stays), 
+> 
+> There's a fix on the way for that.  This has nothing to do with interrupt
 > context anyway.
-
-> > but additionally there are some warnings from
-> > some commands (enable sleep inside spinlock checking and spinlock
-> > debugging), which go to the down_read inside handle_page_fault IIRC. So
-> > try to run in process context.
-
+> 
+> > but additionally there are some warnings from 
+> > some commands (enable sleep inside spinlock checking and spinlock debugging), 
+> > which go to the down_read inside handle_page_fault IIRC. So try to run in 
+> > process context.
+> 
 > Which ones?  They should be fixed.
-Ok, will drop this patch and retry again to look at the messages.
+> 
 > It is fairly fundamental to sysrq that it work from interrupt context.  You
 > may be diagnosing a system which can't context switch any more.
-
-Ok, I felt a bit uncertain about this, but didn't realize this very problem.
-
+> 
 > This patch should be dropped, and the real problems fixed.
-Ok, that's nice for me. I'll look into this. Possibly, the
+> 
 
-if (in_atomic()) don't take semaphore in handle_page_fault was the right fix 
-for this. I'll have a look soon.
-> 				Jeff
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+Well Linus has just merged this patch.  If you hadn't removed me from the
+cc yesterday this would not have happened.
 
 
 
