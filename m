@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EIswC-0005JJ-IT	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 12:10:24 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EIsw9-0007be-Sc
+	id 1EItuV-00084O-Ob	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Sep 2005 13:12:43 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EItuS-0004QY-Rg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Sep 2005 12:10:24 -0700
+	Fri, 23 Sep 2005 13:12:43 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
-References: <200509231135.27882.rob@landley.net>
-	<200509231331.47282.rob@landley.net>
-	<Pine.LNX.4.61.0509232048230.14136@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.61.0509232048230.14136@filer.marasystems.com>
+References: <20050920163433.6081be3b.akpm@osdl.org>
+	<20050921154846.GW18976@agk.surrey.redhat.com>
+In-Reply-To: <20050921154846.GW18976@agk.surrey.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509232108.51050.blaisorblade@yahoo.it>
+Message-Id: <200509232211.32238.blaisorblade@yahoo.it>
+Subject: [uml-devel] Writing on DM snapshots, and having no "mainstream"
+	device (was: Re: Fw: [PATCH 1/7] Add dm-snapshot tutorial in Documentation)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,31 +31,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 23 Sep 2005 21:08:50 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>, Rob Landley <rob@landley.net>
+Date: Fri, 23 Sep 2005 22:11:31 +0200
+To: Alasdair G Kergon <agk@redhat.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Friday 23 September 2005 20:56, Henrik Nordstrom wrote:
-> On Fri, 23 Sep 2005, Rob Landley wrote:
-> >> Anybody see an obvious way to make /dev/console a controlling TTY?
+On Wednesday 21 September 2005 17:48, Alasdair G Kergon wrote:
+> On Tue, Sep 20, 2005 at 04:34:33PM -0700, Andrew Morton wrote:
+> > ack?
 >
-> The user-space process who wants it as a controlling tty needs to run
->
->    ioctl(0, TIOCSCTTY, (void *) 1);
->
-> You should also take care to set up the termios parameters correctly.
->
-> At http://marasystems.com/download/ctty/ you can find a little tool we use
-> in embedded systems making /dev/console a controlling TTY. We use from
-> inittab in the main console entries (single and console).
->
-> ls:S:wait:ctty ash
-> sh:0123456:respawn:ctty console
+> Applied some quick corrections to this.
+I'm now looking at this, but you've done an error. You say that 
 
-> (console is our console command line program)
-So in this case he should use init=/sbin/ctty sh, right?
-> Regards
-> Henrik
+You must create the snapshot-origin device before you can create snapshots.
+
+This is totally wrong. The whole point of my document is to show that you can 
+create snapshots *WITHOUT* having a snapshot-origin device (yes, I did it).
+
+And while the LVM setup (with snapshot-origin) is often used and well known, 
+the possibility to do without the snapshot-origin, and more important to 
+write on the snapshots, is something which is not widely known at all.
+
+In fact, UML community has been using an in-house version of the same feature, 
+which cannot be mounted on the host due to missing code.
+> See also http://people.redhat.com/agk/talks/FOSDEM_2005/
+> (slides 15-27)
+Not yet had time to look at those, sorry.
+> You might like to convert some of those diagrams to ASCII
+> and include them?
+If you feel like doing this, ok, but I'm not normally a documentor.
+> Alasdair
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
