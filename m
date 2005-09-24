@@ -1,27 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJBG1-00027x-QO	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 07:44:05 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
+	id 1EJC0F-0003zE-UA	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Sep 2005 08:31:51 -0700
+Received: from mail.dravanet.hu ([212.40.69.7])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EJBG0-0008OA-HL
+	(Exim 4.44)	id 1EJC0C-0003vc-E7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 07:44:06 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
-References: <200509231135.27882.rob@landley.net>
-	<200509231331.47282.rob@landley.net>
-	<Pine.LNX.4.61.0509232048230.14136@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.61.0509232048230.14136@filer.marasystems.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	Sat, 24 Sep 2005 08:31:52 -0700
+Received: from mail (mail [192.168.69.23])j8OFVUFZ014351
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 24 Sep 2005 17:31:36 +0200
+From: Hegedus Gabor <hygylista@jpm.hu>
+In-Reply-To: <200509241242.22417.blaisorblade@yahoo.it>
+References: <200509241242.22417.blaisorblade@yahoo.it>
+Content-Type: text/plain
+Message-Id: <1127575895.8538.24.camel@hygyhome>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200509240943.54587.rob@landley.net>
+Subject: [uml-devel] x86_64 kernel panic in skas mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,80 +31,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 24 Sep 2005 09:43:54 -0500
+Date: Sat, 24 Sep 2005 17:31:35 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Henrik Nordstrom <uml@hno.marasystems.com>
 
-On Friday 23 September 2005 13:56, Henrik Nordstrom wrote:
-> On Fri, 23 Sep 2005, Rob Landley wrote:
-> >> Anybody see an obvious way to make /dev/console a controlling TTY?
->
-> The user-space process who wants it as a controlling tty needs to run
->
->    ioctl(0, TIOCSCTTY, (void *) 1);
->
-> You should also take care to set up the termios parameters correctly.
->
-> At http://marasystems.com/download/ctty/ you can find a little tool we use
-> in embedded systems making /dev/console a controlling TTY. We use from
-> inittab in the main console entries (single and console).
+Hi!
 
-So I fire up UML:
+I have an x86_64 kernel (2.6.13-2) (on a celeron 64bit processor, debian
+sarge). I patched it with -v9-pre7. When I start the uml It found the
+skas patch, then: 
 
-./linux rootfstype=hostfs rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
+Unable to load iterpreter
+Kernel panic: kernel BUG at memory.c:337!
 
-And I run the above program "./ctty /bin/sh"
+When I start it with mode=tt, then it starts tt mode successfully.
 
-And I get:
+This guest binary compilled on a 32 bit system, with a 2.4.25 kernel.
 
-sh-3.00# ./ctty /bin/sh
-idr_remove called for id=5 which is not allocated.
-08b77930:  [<080fe55f>] sub_remove+0xef/0x100
-08b77990:  [<080fe59f>] idr_remove+0x2f/0xc0
-08b779b0:  [<08107282>] release_dev+0x5d2/0x6f0
-08b77a30:  [<08106745>] init_dev+0x1b5/0x5b0
-08b77a80:  [<081074ec>] tty_open+0x14c/0x370
-08b77a90:  [<080b38bf>] cdev_get+0xf/0x20
-08b77aa0:  [<080b3a8f>] exact_lock+0xf/0x20
-08b77ab0:  [<08111130>] kobj_lookup+0xe0/0xf0
-08b77ad8:  [<081073a0>] tty_open+0x0/0x370
-08b77ae0:  [<080b398e>] chrdev_open+0x9e/0x120
-08b77af0:  [<08061757>] buffer_op+0x47/0x80
-08b77af4:  [<08061590>] do_buffer_op+0x0/0x180
-08b77b10:  [<080a971a>] dentry_open+0x10a/0x190
-08b77b2c:  [<080ec008>] empty_dir+0x18/0x330
-08b77b30:  [<080a9608>] filp_open+0x68/0x70
-08b77b74:  [<080ec000>] empty_dir+0x10/0x330
-08b77b90:  [<080a9949>] sys_open+0x49/0x90
-08b77bb0:  [<08061067>] execute_syscall_skas+0xd7/0xe0
-08b77bb4:  [<080ec008>] empty_dir+0x18/0x330
-08b77bd0:  [<0805bc55>] change_signals+0x65/0x90
-08b77be4:  [<080ec008>] empty_dir+0x18/0x330
-08b77c04:  [<080ec008>] empty_dir+0x18/0x330
-08b77c40:  [<08061091>] handle_syscall+0x21/0x40
-08b77c50:  [<0805fb18>] handle_trap+0x28/0x130
-08b77c80:  [<08060164>] userspace+0x1c4/0x220
-08b77cd0:  [<080612f4>] force_flush_all_skas+0x44/0x50
-08b77cf0:  [<08060bf1>] fork_handler+0xc1/0xe0
+I try to compille a 2.6.13-2 guest system, but this is failed too.
 
-sh-3.00#
+bye
+  HyGy
 
-Which is not too surprising because I get an error like that most of the time 
-when I start UML anyway.  (I've mentioned it here before, still no idea what 
-it is.)
-
-So it's a shell just like the one I had before: Ctrl-C is still being ignored.
-
-Right, so exit out of that into the first UML shell, and then type "reset".  
-(The standard reset(1) command.)
-
-And I get a hang.  The screen clears but I never get my prompt back, and 
-although hitting enter moves the cursor down the screen nothing I type makes 
-any difference (including ctrl-c).
-
-Anybody else tried this?
-
-Rob
 
 
 -------------------------------------------------------
