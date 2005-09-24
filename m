@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJAfI-0000n2-3c	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 07:06:08 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJAfE-0004H0-89
+	id 1EJAgx-0000uV-Pt	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Sep 2005 07:07:51 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJAgv-0002HC-V5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 07:06:08 -0700
+	Sat, 24 Sep 2005 07:07:51 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
+References: <200509231135.27882.rob@landley.net>
+	<200509232108.51050.blaisorblade@yahoo.it>
+	<Pine.LNX.4.61.0509232229090.14136@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.61.0509232229090.14136@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509241242.22417.blaisorblade@yahoo.it>
-Subject: [uml-devel] UML/SKAS3 broken in 2.6.13-bs1, fixed up, sorry
+Message-Id: <200509241603.53845.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,28 +31,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 24 Sep 2005 12:42:22 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Sat, 24 Sep 2005 16:03:53 +0200
+To: Henrik Nordstrom <uml@hno.marasystems.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>
 
-Ok, I've now went debugging the SKAS3 busy hang I had locally. I thought that 
-was due to running a "experimental" SYSEMU, but I turned out wrong.
+On Friday 23 September 2005 22:31, Henrik Nordstrom wrote:
+> On Fri, 23 Sep 2005, Blaisorblade wrote:
+> > So in this case he should use init=/sbin/ctty sh, right?
+>
+> But you can't.. init= takes a single path to the binary to use, no
+> arguments.
+init= doesn't take argument, yes, but IIRC unhandled arguments are 
+automatically passed to init, like unhandled assignment are passed in env. 
+vars. Or not?
+> But it's trivial to modify ctty to autmatically start a shell 
+> for you.
+Yes, indeed.
+> Regards
+> Henrik
 
-It turns out that when fixing the hang in TT mode I broke SKAS3, and so I've 
-fixed it up. The fix will be in -bs2.
-
-The same problem affects the current Linus repository, and I'm going to send 
-the fix there too.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+	
 
+	
 		
 ___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
