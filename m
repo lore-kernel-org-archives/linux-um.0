@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJCKa-0004ow-NS	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 08:52:52 -0700
-Received: from zproxy.gmail.com ([64.233.162.198])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EJCKa-0007ex-M1
+	id 1EJDXD-0007l5-O9	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Sep 2005 10:09:59 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJDXC-0000Uv-23
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 08:52:52 -0700
-Received: by zproxy.gmail.com with SMTP id x3so253178nzd
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 24 Sep 2005 08:52:46 -0700 (PDT)
-Message-ID: <229e70f2050924085215707921@mail.gmail.com>
-From: Etay Meiri <etay.meiri@gmail.com>
-Reply-To: Etay Meiri <etay.meiri@gmail.com>
+	Sat, 24 Sep 2005 10:09:59 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.13.2 + gcc 4.01 link error
+References: <229e70f2050924085215707921@mail.gmail.com>
+In-Reply-To: <229e70f2050924085215707921@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_9748_31158683.1127577166342"
-Subject: [uml-devel] 2.6.13.2 + gcc 4.01 link error
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200509241854.53536.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,138 +29,72 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 24 Sep 2005 18:52:46 +0300
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 24 Sep 2005 18:54:53 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, Etay Meiri <etay.meiri@gmail.com>
 
-------=_Part_9748_31158683.1127577166342
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Hi,
-
-I'm trying to compile UML on FC4 using kernel source 2.6.13.2<http://2.6.13=
-.2/>
-and gcc-4.0.1-4.fc4 and getting the following errors:
-
-CC lib/string.o
-CC lib/vsprintf.o
-AR lib/lib.a
-CC [M] lib/crc-ccitt.o
-CC [M] lib/libcrc32c.o
-GEN .version
-CHK include/linux/compile.h
-dnsdomainname: Unknown host
-UPD include/linux/compile.h
-CC init/version.o
-LD init/built-in.o
-LD .tmp_vmlinux1
-arch/um/sys-i386/built-in.o(*ABS*+0xde77d105): In function `__crc_kunmap':
-: multiple definition of `__crc_kunmap'
-arch/um/sys-i386/built-in.o(*ABS*+0x26792e7): In function
-`__crc_kmap_atomic':
-: multiple definition of `__crc_kmap_atomic'
-arch/um/sys-i386/built-in.o(*ABS*+0x7d922e4a): In function
-`__crc_kmap_atomic_to_page':
-: multiple definition of `__crc_kmap_atomic_to_page'
-arch/um/sys-i386/built-in.o(*ABS*+0xf3c4062c): In function `__crc_kmap':
-: multiple definition of `__crc_kmap'
-collect2: ld returned 1 exit status
-KSYM .tmp_kallsyms1.S
-nm: '.tmp_vmlinux1': No such file
-No valid symbol.
-make: *** [.tmp_kallsyms1.S] Error 1
-
-Any idea?
-
-Thanks,
-
---
-------------------------------------------------------
-Etay Meiri
-etay.meiri@gmail.com
-
-------=_Part_9748_31158683.1127577166342
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Hi,<br>
-
-<br>
-
-I'm trying to compile UML on FC4 using kernel source <a href=3D"http://2.6.=
-13.2/" target=3D"_blank" onclick=3D"return top.js.OpenExtLink(window,event,=
-this)">2.6.13.2</a><br>
-
-and gcc-4.0.1-4.fc4 and getting the following errors:<br>
-
-<br clear=3D"all">
-&nbsp; CC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lib/string.o<br>
-
-&nbsp; CC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lib/vsprintf.o<br>
-
-&nbsp; AR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lib/lib.a<br>
-
-&nbsp; CC [M]&nbsp; lib/crc-ccitt.o<br>
-
-&nbsp; CC [M]&nbsp; lib/libcrc32c.o<br>
-
-&nbsp; GEN&nbsp;&nbsp;&nbsp;&nbsp; .version<br>
-
-&nbsp; CHK&nbsp;&nbsp;&nbsp;&nbsp; include/linux/compile.h<br>
-
-dnsdomainname: Unknown host<br>
-
-&nbsp; UPD&nbsp;&nbsp;&nbsp;&nbsp; include/linux/compile.h<br>
-
-&nbsp; CC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; init/version.o<br>
-
-&nbsp; LD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; init/built-in.o<br>
-
-&nbsp; LD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .tmp_vmlinux1<br>
-
-arch/um/sys-i386/built-in.o(*ABS*+0xde77d105): In function `__crc_kunmap':<=
-br>
-
-: multiple definition of `__crc_kunmap'<br>
-
-arch/um/sys-i386/built-in.o(*ABS*+0x26792e7): In function `__crc_kmap_atomi=
-c':<br>
-
-: multiple definition of `__crc_kmap_atomic'<br>
-
-arch/um/sys-i386/built-in.o(*ABS*+0x7d922e4a): In function `__crc_kmap_atom=
-ic_to_page':<br>
-
-: multiple definition of `__crc_kmap_atomic_to_page'<br>
-
-arch/um/sys-i386/built-in.o(*ABS*+0xf3c4062c): In function `__crc_kmap':<br=
+On Saturday 24 September 2005 17:52, Etay Meiri wrote:
+> Hi,
 >
+> I'm trying to compile UML on FC4 using kernel source
+> 2.6.13.2<http://2.6.13.2/> and gcc-4.0.1-4.fc4 and getting the following
+> errors:
+Disable CONFIG_HIGHMEM as a workaround (you likely don't need it), I'll fix it 
+later.
+>
+> CC lib/string.o
+> CC lib/vsprintf.o
+> AR lib/lib.a
+> CC [M] lib/crc-ccitt.o
+> CC [M] lib/libcrc32c.o
+> GEN .version
+> CHK include/linux/compile.h
+> dnsdomainname: Unknown host
+> UPD include/linux/compile.h
+> CC init/version.o
+> LD init/built-in.o
+> LD .tmp_vmlinux1
 
-: multiple definition of `__crc_kmap'<br>
+> arch/um/sys-i386/built-in.o(*ABS*+0xde77d105): In function `__crc_kunmap':
+> : multiple definition of `__crc_kunmap'
+>
+> arch/um/sys-i386/built-in.o(*ABS*+0x26792e7): In function
 
-collect2: ld returned 1 exit status<br>
+> `__crc_kmap_atomic':
+> : multiple definition of `__crc_kmap_atomic'
+>
+> arch/um/sys-i386/built-in.o(*ABS*+0x7d922e4a): In function
+>
+> `__crc_kmap_atomic_to_page':
+> : multiple definition of `__crc_kmap_atomic_to_page'
+>
+> arch/um/sys-i386/built-in.o(*ABS*+0xf3c4062c): In function `__crc_kmap':
+> : multiple definition of `__crc_kmap'
+>
+> collect2: ld returned 1 exit status
+> KSYM .tmp_kallsyms1.S
+> nm: '.tmp_vmlinux1': No such file
+> No valid symbol.
+> make: *** [.tmp_kallsyms1.S] Error 1
+>
+> Any idea?
+>
+> Thanks,
+>
+> --
+> ------------------------------------------------------
+> Etay Meiri
+> etay.meiri@gmail.com
 
-&nbsp; KSYM&nbsp;&nbsp;&nbsp; .tmp_kallsyms1.S<br>
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-nm: '.tmp_vmlinux1': No such file<br>
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
-No valid symbol.<br>
-
-make: *** [.tmp_kallsyms1.S] Error 1<br>
-
-<br>
-
-Any idea?<br>
-
-<br>
-
-Thanks,<br clear=3D"all"><br>-- <br>---------------------------------------=
----------------<br>Etay Meiri<br><a href=3D"mailto:etay.meiri@gmail.com">et=
-ay.meiri@gmail.com</a>
-
-------=_Part_9748_31158683.1127577166342--
 
 
 -------------------------------------------------------
