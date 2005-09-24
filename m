@@ -2,24 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJApU-0001Eh-EO	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 07:16:40 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJApT-0003gz-Op
+	id 1EJBG1-00027x-QO	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Sep 2005 07:44:05 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EJBG0-0008OA-HL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Sep 2005 07:16:40 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Sat, 24 Sep 2005 07:44:06 -0700
+From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
 References: <200509231135.27882.rob@landley.net>
-	<200509231950.32370.blaisorblade@yahoo.it>
-	<200509231408.32522.rob@landley.net>
-In-Reply-To: <200509231408.32522.rob@landley.net>
+	<200509231331.47282.rob@landley.net>
+	<Pine.LNX.4.61.0509232048230.14136@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.61.0509232048230.14136@filer.marasystems.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509241609.15575.blaisorblade@yahoo.it>
+Message-Id: <200509240943.54587.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,87 +33,80 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 24 Sep 2005 16:09:14 +0200
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 24 Sep 2005 09:43:54 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Henrik Nordstrom <uml@hno.marasystems.com>
 
-On Friday 23 September 2005 21:08, Rob Landley wrote:
-> On Friday 23 September 2005 12:50, Blaisorblade wrote:
-> > On Friday 23 September 2005 18:35, Rob Landley wrote:
-> > > I'm the strange guy using UML via the stdio console, ala:
-
-> > > ./linux rootfstype=hostfs MEM=48m rw init=/bin/sh
-
-> > Ah, init=/bin/sh, that's why you have /dev/console.
-
-> Yup.  Very useful thing to do with UML, I've found.  (That or
-> init=/some/shell/script.sh, although it has the nasty habit of falling back
-> to /sbin/init if that file is not found...)
-
-> Unfortunately, when you do wrap a shell script, ctrl-c won't get you out.
-
-> > I feared somebody again using /dev/console in inittab.
-
-> Nope, trying to wrap a shell script in a UML instance so I can build and
-> link against a libc with more recent kernel headers than the kernel the
-> parent system is running.  (Otherwise I get segfaults when the libc tries
-> to do things the parent kernel doesn't support.)
-
-> P.S.  The failure case i reported earlier (where 2.6.11 works but 2.6.13.1
-> doesn't) involves building the busybox "install" command against uclibc.
-> That seems to be what's failing.  I'm still trying to narrow down the
-> reproduction case to something small enough to attach to the list, but it's
-> been a busy week...)
+On Friday 23 September 2005 13:56, Henrik Nordstrom wrote:
+> On Fri, 23 Sep 2005, Rob Landley wrote:
+> >> Anybody see an obvious way to make /dev/console a controlling TTY?
 >
-> > > LD_ASSUME_KERNEL=2.4.1
-> > >
-> > > And it would be very nice if ctrl-c would work with that.  I tried
-> > > commenting out the "!noctty &&" test in line 1872, but it didn't make
-> > > any difference.
-> > >
-> > > Anybody see an obvious way to make /dev/console a controlling TTY?
-> >
-> > Guess that /dev/console is not a TTY, so that it not possible. I mean,
-> > you'd have to patch (uselessly) the very TTY core layer.
+> The user-space process who wants it as a controlling tty needs to run
+>
+>    ioctl(0, TIOCSCTTY, (void *) 1);
+>
+> You should also take care to set up the termios parameters correctly.
+>
+> At http://marasystems.com/download/ctty/ you can find a little tool we use
+> in embedded systems making /dev/console a controlling TTY. We use from
+> inittab in the main console entries (single and console).
 
-> The first test is the one I commented out, and I guess one of the next 3
-> tests is still blocking it...
+So I fire up UML:
 
-> > Or make Linux use /dev/tty0 instead of /dev/console when starting init -
-> > which is simpler. There is maybe even a console= switch
+./linux rootfstype=hostfs rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
 
-> There is indeed a console= switch, but I haven't found a way to get it to
-> do anything useful.  (when I use console=/dev/tty0 it immediately exits
-> with no error message.
-it doesn't expect a /dev/ in front of it.
-> Same for console=4,1.  Strangely, console=tty0 
-> boots, but seems to be a NOP.)
-Given what Henrik said about console being a wrapper of tty0, I expect that 
-you could do console=tty1 and have things go there, but /dev/console would 
-still behave like /dev/console (i.e. it doesn't become a controlling terminal 
-unless requested, to avoid Ctrl-C on init scripts). Using Henrik's ctty is 
-the proper solution.
+And I run the above program "./ctty /bin/sh"
 
-> > Maybe sh doesn't even need that, but login(8) needs setsid. I never
-> > remember the exact combination, however.
+And I get:
 
-> The necessary magic is in the busybox init.c, but I don't see how it
-> applies here...
-Well, I remember something as "/bin/bash <> /dev/tty8" doesn't work without 
-the magic, and you need to do more or less this.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+sh-3.00# ./ctty /bin/sh
+idr_remove called for id=5 which is not allocated.
+08b77930:  [<080fe55f>] sub_remove+0xef/0x100
+08b77990:  [<080fe59f>] idr_remove+0x2f/0xc0
+08b779b0:  [<08107282>] release_dev+0x5d2/0x6f0
+08b77a30:  [<08106745>] init_dev+0x1b5/0x5b0
+08b77a80:  [<081074ec>] tty_open+0x14c/0x370
+08b77a90:  [<080b38bf>] cdev_get+0xf/0x20
+08b77aa0:  [<080b3a8f>] exact_lock+0xf/0x20
+08b77ab0:  [<08111130>] kobj_lookup+0xe0/0xf0
+08b77ad8:  [<081073a0>] tty_open+0x0/0x370
+08b77ae0:  [<080b398e>] chrdev_open+0x9e/0x120
+08b77af0:  [<08061757>] buffer_op+0x47/0x80
+08b77af4:  [<08061590>] do_buffer_op+0x0/0x180
+08b77b10:  [<080a971a>] dentry_open+0x10a/0x190
+08b77b2c:  [<080ec008>] empty_dir+0x18/0x330
+08b77b30:  [<080a9608>] filp_open+0x68/0x70
+08b77b74:  [<080ec000>] empty_dir+0x10/0x330
+08b77b90:  [<080a9949>] sys_open+0x49/0x90
+08b77bb0:  [<08061067>] execute_syscall_skas+0xd7/0xe0
+08b77bb4:  [<080ec008>] empty_dir+0x18/0x330
+08b77bd0:  [<0805bc55>] change_signals+0x65/0x90
+08b77be4:  [<080ec008>] empty_dir+0x18/0x330
+08b77c04:  [<080ec008>] empty_dir+0x18/0x330
+08b77c40:  [<08061091>] handle_syscall+0x21/0x40
+08b77c50:  [<0805fb18>] handle_trap+0x28/0x130
+08b77c80:  [<08060164>] userspace+0x1c4/0x220
+08b77cd0:  [<080612f4>] force_flush_all_skas+0x44/0x50
+08b77cf0:  [<08060bf1>] fork_handler+0xc1/0xe0
 
-	
+sh-3.00#
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Which is not too surprising because I get an error like that most of the time 
+when I start UML anyway.  (I've mentioned it here before, still no idea what 
+it is.)
 
+So it's a shell just like the one I had before: Ctrl-C is still being ignored.
+
+Right, so exit out of that into the first UML shell, and then type "reset".  
+(The standard reset(1) command.)
+
+And I get a hang.  The screen clears but I never get my prompt back, and 
+although hitting enter moves the cursor down the screen nothing I type makes 
+any difference (including ctrl-c).
+
+Anybody else tried this?
+
+Rob
 
 
 -------------------------------------------------------
