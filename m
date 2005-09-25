@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJabu-00061x-SI	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 10:48:22 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJabq-0002QK-7Q
+	id 1EJao0-0006ay-4K	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Sep 2005 11:00:52 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJany-0004ZV-HZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 10:48:23 -0700
+	Sun, 25 Sep 2005 11:00:52 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] x86_64 kernel panic in skas mode
-References: <200509241242.22417.blaisorblade@yahoo.it>
-	<1127575895.8538.24.camel@hygyhome>
-In-Reply-To: <1127575895.8538.24.camel@hygyhome>
+Subject: Re: [uml-devel] Curiosity about nested UML invocations...
+References: <200509241913.24060.rob@landley.net>
+In-Reply-To: <200509241913.24060.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509251633.15261.blaisorblade@yahoo.it>
+Message-Id: <200509251959.49639.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,37 +29,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 25 Sep 2005 16:33:14 +0200
+Date: Sun, 25 Sep 2005 19:59:48 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Hegedus Gabor <hygylista@jpm.hu>
+Cc: Rob Landley <rob@landley.net>
 
-On Saturday 24 September 2005 17:31, Hegedus Gabor wrote:
-> Hi!
->
-> I have an x86_64 kernel (2.6.13-2) (on a celeron 64bit processor, debian
-> sarge). I patched it with -v9-pre7.
-The SKAS patch doesn't work on x86_64 hosts. Stop. There some code which makes 
-it "almost" work, but you can't run UML on it.
-> When I start the uml It found the 
-> skas patch, then:
-Try adding a "skas0" switch - SKAS0 mode should start successfully, and if not 
-that's another story.
-> Unable to load iterpreter
-> Kernel panic: kernel BUG at memory.c:337!
+On Sunday 25 September 2005 02:13, Rob Landley wrote:
+> So what does "nesting level" actually do, anyway?
+For TT mode it's needed because, in the virtual address space, host kernel 
+uses 3G-4G, a normal TT mode UML uses 2.5 G - 3G *, so a nested UML must use 
+2.0G-2.5G.
 
-> When I start it with mode=tt, then it starts tt mode successfully.
+* Note: the load address is decided at link time, so this is used even if you 
+just compile TT mode in. IOW, when you enable TT mode and you try using more 
+than 512M (actually 480M for various reasons), you'd need HIGHMEM, which is 
+slow. Disabling TT mode and running SKAS0 is better.
+> Trying to run UML from 
+> within itself (giving the outer invocation mem=128M), I get the following
+> error:
 
-> This guest binary compilled on a 32 bit system, with a 2.4.25 kernel.
+> sh-3.00# ./linux rootfstype=hostfs rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
+> Checking for /proc/mm...not found
+> Checking for the skas3 patch in the host...found
+> UML running in SKAS0 mode
 
-> I try to compille a 2.6.13-2 guest system, but this is failed too.
-On this I cannot answer, since you don't give info.
-> bye
->   HyGy
+> os_mode_fd: No such file or directory
+Strace would be of help, possibly is looking for some file inside /proc 
+(say /proc/cpuinfo, but it exists, so it must be another one).
+
+> sh-3.00#
+
+> Just playing around, really, but now I'm curious...
+
+> Rob
+
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
-
 
 	
 
