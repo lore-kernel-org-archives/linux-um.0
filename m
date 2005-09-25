@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJabu-00061w-I2	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1EJabu-00061x-SI	for user-mode-linux-devel@lists.sourceforge.net;
 	Sun, 25 Sep 2005 10:48:22 -0700
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJabs-0008LX-5p
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJabq-0002QK-7Q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 10:48:22 -0700
+	Sun, 25 Sep 2005 10:48:23 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.13.2 + gcc 4.01 link error
-References: <229e70f2050924085215707921@mail.gmail.com>
-In-Reply-To: <229e70f2050924085215707921@mail.gmail.com>
+Subject: Re: [uml-devel] x86_64 kernel panic in skas mode
+References: <200509241242.22417.blaisorblade@yahoo.it>
+	<1127575895.8538.24.camel@hygyhome>
+In-Reply-To: <1127575895.8538.24.camel@hygyhome>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509251727.00589.blaisorblade@yahoo.it>
+Message-Id: <200509251633.15261.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,52 +30,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 25 Sep 2005 17:27:00 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, Etay Meiri <etay.meiri@gmail.com>
+Date: Sun, 25 Sep 2005 16:33:14 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Hegedus Gabor <hygylista@jpm.hu>
 
-On Saturday 24 September 2005 17:52, Etay Meiri wrote:
-> Hi,
+On Saturday 24 September 2005 17:31, Hegedus Gabor wrote:
+> Hi!
+>
+> I have an x86_64 kernel (2.6.13-2) (on a celeron 64bit processor, debian
+> sarge). I patched it with -v9-pre7.
+The SKAS patch doesn't work on x86_64 hosts. Stop. There some code which makes 
+it "almost" work, but you can't run UML on it.
+> When I start the uml It found the 
+> skas patch, then:
+Try adding a "skas0" switch - SKAS0 mode should start successfully, and if not 
+that's another story.
+> Unable to load iterpreter
+> Kernel panic: kernel BUG at memory.c:337!
 
-> I'm trying to compile UML on FC4 using kernel source
-> 2.6.13.2<http://2.6.13.2/> and gcc-4.0.1-4.fc4 and getting the following
-> errors:
+> When I start it with mode=tt, then it starts tt mode successfully.
 
-> CC lib/string.o
-> CC lib/vsprintf.o
-> AR lib/lib.a
-> CC [M] lib/crc-ccitt.o
-> CC [M] lib/libcrc32c.o
-> GEN .version
-> CHK include/linux/compile.h
+> This guest binary compilled on a 32 bit system, with a 2.4.25 kernel.
 
-> dnsdomainname: Unknown host
-This error is not related to Uml at all and shouldn't give problems in itself, 
-but why dnsdomainname doesn't work on your machine? You should probably fix 
-that.
-
-> UPD include/linux/compile.h
-> CC init/version.o
-> LD init/built-in.o
-> LD .tmp_vmlinux1
-
-> collect2: ld returned 1 exit status
-> KSYM .tmp_kallsyms1.S
-> nm: '.tmp_vmlinux1': No such file
-> No valid symbol.
-> make: *** [.tmp_kallsyms1.S] Error 1
-
-> Any idea?
-Read my previous answer, however if you want the fix it's in 2.6.13-bs2 - and 
-it was already in 2.6.14 current Linus tree.
+> I try to compille a 2.6.13-2 guest system, but this is failed too.
+On this I cannot answer, since you don't give info.
+> bye
+>   HyGy
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+
+	
+
+	
 		
 ___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
