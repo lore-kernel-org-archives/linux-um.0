@@ -2,26 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJYWo-0000fu-RP	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 08:34:58 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EJYWn-0003os-8x
+	id 1EJabu-00061w-I2	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Sep 2005 10:48:22 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJabs-0008LX-5p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 08:34:58 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Any way to give /dev/console a controlling TTY?
-References: <200509231135.27882.rob@landley.net>
-	<200509231408.32522.rob@landley.net>
-	<Pine.LNX.4.61.0509251423150.12255@filer.marasystems.com>
-In-Reply-To: <Pine.LNX.4.61.0509251423150.12255@filer.marasystems.com>
+	Sun, 25 Sep 2005 10:48:22 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.13.2 + gcc 4.01 link error
+References: <229e70f2050924085215707921@mail.gmail.com>
+In-Reply-To: <229e70f2050924085215707921@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509251034.44965.rob@landley.net>
+Message-Id: <200509251727.00589.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,47 +29,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 25 Sep 2005 10:34:44 -0500
-To: Henrik Nordstrom <uml@hno.marasystems.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 25 Sep 2005 17:27:00 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, Etay Meiri <etay.meiri@gmail.com>
 
-On Sunday 25 September 2005 07:49, Henrik Nordstrom wrote:
+On Saturday 24 September 2005 17:52, Etay Meiri wrote:
+> Hi,
 
-> The ctty program mentioned has only been truly tested from inittab. Does
-> not seem to work proper when used as init= so it's probably missing some
-> process group thing or similar. Did work when executed interactively from
-> a init=/bin/sh shell however.
+> I'm trying to compile UML on FC4 using kernel source
+> 2.6.13.2<http://2.6.13.2/> and gcc-4.0.1-4.fc4 and getting the following
+> errors:
 
-I tried it.  I did the following:
+> CC lib/string.o
+> CC lib/vsprintf.o
+> AR lib/lib.a
+> CC [M] lib/crc-ccitt.o
+> CC [M] lib/libcrc32c.o
+> GEN .version
+> CHK include/linux/compile.h
 
-./linux rootfstype=hostfs rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
-#/path/to/ctty /bin/sh
+> dnsdomainname: Unknown host
+This error is not related to Uml at all and shouldn't give problems in itself, 
+but why dnsdomainname doesn't work on your machine? You should probably fix 
+that.
 
-And although it did give me a nested shell invocation, it made no difference 
-that I could see as far as ctrl-c went.
+> UPD include/linux/compile.h
+> CC init/version.o
+> LD init/built-in.o
+> LD .tmp_vmlinux1
 
-> To be honest it skips quite many steps in 
-> the terminal initialization compared to how getty etc opens their
-> terminal.
+> collect2: ld returned 1 exit status
+> KSYM .tmp_kallsyms1.S
+> nm: '.tmp_vmlinux1': No such file
+> No valid symbol.
+> make: *** [.tmp_kallsyms1.S] Error 1
 
-It's obviously a quick hack or it wouldn't segfault when you ran it with no 
-arguments.  I don't hold that against it.
+> Any idea?
+Read my previous answer, however if you want the fix it's in 2.6.13-bs2 - and 
+it was already in 2.6.14 current Linus tree.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-The thing is, all the various invocation methods you've mentioned are attempts 
-to give a controlling tty to something _other_ than /dev/console.  The 
-various virtual terminals, for instance.  I haven't figured out how to get 
-those to attach to fd:0,fd:1 so that I have ctrl-c working on stdio of the 
-UML instance, so getting ctrl-c working on them doesn't help me.  (I could 
-just use init.)
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
-I can fiddle around and create an initramfs to do all sorts of complicated 
-things if necessary, and probably will, but it would be nice if there was an 
-easy solution...
-
-> Regards
-> Henrik
-
-Rob
 
 
 -------------------------------------------------------
