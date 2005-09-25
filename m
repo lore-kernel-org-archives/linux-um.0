@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJao0-0006ay-4K	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 11:00:52 -0700
+	id 1EJauu-00070p-1q	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Sep 2005 11:08:00 -0700
 Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJany-0004ZV-HZ
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJaut-0003KG-FA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 11:00:52 -0700
+	Sun, 25 Sep 2005 11:08:00 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Curiosity about nested UML invocations...
-References: <200509241913.24060.rob@landley.net>
-In-Reply-To: <200509241913.24060.rob@landley.net>
+Subject: Re: [uml-devel] 2.6.13.2 + gcc 4.01 link error
+References: <229e70f2050924085215707921@mail.gmail.com>
+	<200509241854.53536.blaisorblade@yahoo.it>
+	<20050924172420.GB5398@ccure.user-mode-linux.org>
+In-Reply-To: <20050924172420.GB5398@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509251959.49639.blaisorblade@yahoo.it>
+Message-Id: <200509252007.03289.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,39 +31,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 25 Sep 2005 19:59:48 +0200
+Date: Sun, 25 Sep 2005 20:07:02 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>
+Cc: Jeff Dike <jdike@addtoit.com>, Etay Meiri <etay.meiri@gmail.com>
 
-On Sunday 25 September 2005 02:13, Rob Landley wrote:
-> So what does "nesting level" actually do, anyway?
-For TT mode it's needed because, in the virtual address space, host kernel 
-uses 3G-4G, a normal TT mode UML uses 2.5 G - 3G *, so a nested UML must use 
-2.0G-2.5G.
+On Saturday 24 September 2005 19:24, Jeff Dike wrote:
+> On Sat, Sep 24, 2005 at 06:54:53PM +0200, Blaisorblade wrote:
+> > Disable CONFIG_HIGHMEM as a workaround (you likely don't need it), I'll
+> > fix it later.
 
-* Note: the load address is decided at link time, so this is used even if you 
-just compile TT mode in. IOW, when you enable TT mode and you try using more 
-than 512M (actually 480M for various reasons), you'd need HIGHMEM, which is 
-slow. Disabling TT mode and running SKAS0 is better.
-> Trying to run UML from 
-> within itself (giving the outer invocation mem=128M), I get the following
-> error:
+> Hmmm, maybe my previous answer is wrong, but I do have a recollection that
+> I saw this after accidentally getting an i386 config.
+Ok, fine, but:
+You said you have 1G on your laptop, back in Ottawa, so you likely enable 
+HIGHMEM in your host .config, while you never do on UML, and neither do I. 
+That explains what you say.
 
-> sh-3.00# ./linux rootfstype=hostfs rw init=/bin/sh LD_ASSUME_KERNEL=2.4.1
-> Checking for /proc/mm...not found
-> Checking for the skas3 patch in the host...found
-> UML running in SKAS0 mode
+But no, an i386 .config can produce bogus settings (i.e. an UML without UBD 
+driver), but it shouldn't produce a non-compiling setting - make randconfig 
+is supposed to produce a compiling configuration.
 
-> os_mode_fd: No such file or directory
-Strace would be of help, possibly is looking for some file inside /proc 
-(say /proc/cpuinfo, but it exists, so it must be another one).
-
-> sh-3.00#
-
-> Just playing around, really, but now I'm curious...
-
-> Rob
-
+I just tested and got the *same* errors, and applied the "remove duplicated 
+symbols export" you sent to Linus' git tree, which fixed it.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
