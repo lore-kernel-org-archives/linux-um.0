@@ -1,25 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EJauu-00070p-1q	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 11:08:00 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EJaut-0003KG-FA
+	id 1EJe8Y-0005sJ-G9	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Sep 2005 14:34:18 -0700
+Received: from omx2-ext.sgi.com ([192.48.171.19] helo=omx2.sgi.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EJe8X-0003u2-AJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Sep 2005 11:08:00 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.13.2 + gcc 4.01 link error
-References: <229e70f2050924085215707921@mail.gmail.com>
-	<200509241854.53536.blaisorblade@yahoo.it>
-	<20050924172420.GB5398@ccure.user-mode-linux.org>
-In-Reply-To: <20050924172420.GB5398@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	Sun, 25 Sep 2005 14:34:18 -0700
+From: Paul Jackson <pj@sgi.com>
+Subject: Re: [uml-devel] [PATCH 06/10] uml: run mconsole "sysrq" in process
+ context
+Message-Id: <20050925143414.6e9d3760.pj@sgi.com>
+In-Reply-To: <20050923133312.GA3875@ccure.user-mode-linux.org>
+References: <200509211923.21861.blaisorblade@yahoo.it>
+	<20050921172857.10219.71071.stgit@zion.home.lan>
+	<20050921205028.GB9918@ccure.user-mode-linux.org>
+	<200509222120.20922.blaisorblade@yahoo.it>
+	<20050922203743.GA11648@ccure.user-mode-linux.org>
+	<20050923004031.6b7da42a.akpm@osdl.org>
+	<20050923133312.GA3875@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200509252007.03289.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,41 +34,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 25 Sep 2005 20:07:02 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Etay Meiri <etay.meiri@gmail.com>
+Date: Sun, 25 Sep 2005 14:34:14 -0700
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Saturday 24 September 2005 19:24, Jeff Dike wrote:
-> On Sat, Sep 24, 2005 at 06:54:53PM +0200, Blaisorblade wrote:
-> > Disable CONFIG_HIGHMEM as a workaround (you likely don't need it), I'll
-> > fix it later.
+> I was trying to reduce the noise in your mail box.
 
-> Hmmm, maybe my previous answer is wrong, but I do have a recollection that
-> I saw this after accidentally getting an i386 config.
-Ok, fine, but:
-You said you have 1G on your laptop, back in Ottawa, so you likely enable 
-HIGHMEM in your host .config, while you never do on UML, and neither do I. 
-That explains what you say.
+When co-ordinators are on their game as Andrew is,
+they can far more easily deal with an extra message
+than they can with a missing message.
 
-But no, an i386 .config can produce bogus settings (i.e. an UML without UBD 
-driver), but it shouldn't produce a non-compiling setting - make randconfig 
-is supposed to produce a compiling configuration.
-
-I just tested and got the *same* errors, and applied the "remove duplicated 
-symbols export" you sent to Linus' git tree, which fixed it.
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+                  I won't rest till it's the best ...
+                  Programmer, Linux Scalability
+                  Paul Jackson <pj@sgi.com> 1.925.600.0401
 
 
 -------------------------------------------------------
