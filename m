@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EKFPL-0001VR-K2	for User-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Sep 2005 06:22:07 -0700
-Received: from nproxy.gmail.com ([64.233.182.200])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKFPL-0004c1-2Z
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Sep 2005 06:22:07 -0700
-Received: by nproxy.gmail.com with SMTP id a4so411444nfc
-	for <User-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 27 Sep 2005 06:21:55 -0700 (PDT)
-Message-ID: <cdefcbcf050927062142be6a7@mail.gmail.com>
-From: Muhammad Sajjad <msajjad@gmail.com>
-Reply-To: Muhammad Sajjad <msajjad@gmail.com>
+	id 1EKHhL-00013t-Kr	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Sep 2005 08:48:51 -0700
+Received: from qproxy.gmail.com ([72.14.204.206])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKHgz-0001WQ-Lm
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Sep 2005 08:48:51 -0700
+Received: by qproxy.gmail.com with SMTP id f10so532534qba
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 27 Sep 2005 08:48:19 -0700 (PDT)
+Message-ID: <3524bf1f050927070645b999bd@mail.gmail.com>
+From: Young Koh <young.koh@gmail.com>
+Reply-To: Young Koh <young.koh@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_5645_21932245.1127827315712"
-Subject: [uml-devel] problem with wxGTK-2.6.2 and TLS in suse uml
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Disposition: inline
+Subject: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,62 +29,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 27 Sep 2005 15:21:55 +0200
-To: User-mode-linux-devel@lists.sourceforge.net
-
-------=_Part_5645_21932245.1127827315712
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Date: Tue, 27 Sep 2005 10:06:53 -0400
+Content-Transfer-Encoding: 8bit
+To: user-mode-linux-devel@lists.sourceforge.net
 
 Hi,
 
-I am not able to run an application which is useing wxGTK-2.6.2 libaray.
-when tls is enable (/lib/tls exist) then segmentation fault occured.
-If tls is disable (/lib/tls.disable) then following error occure while
-calling wxDialog method in the application.
+i have a question about copy_from/to_user() implementation in skas mode.
 
-Cannot create anonymous event.
-System error code: [38].
-Function not implemented
+as my understanding,
+when copy_from/to_user() is  invoked, before the address translation
+happens, UML kernel calls sigsetjmp() to come back when there is a
+segmentation fault. and if there is, it seems that the system call an
+application triggered eventually returns EFAULT. then, it seems to me
+that sigsetjmp() is to catch the error when the application gave the
+invalid user space address.
 
-This problem became head ache for me. please help me.
+my question is, if so, shouldn't the error be caught when UML kernel
+translates the user space address to the kernel space address? i mean,
+UML kernel must know the valid memory regions and if the address is
+out of the valid regions, then it knows the address is invalid before
+UML tries to access the address. why should it use sigsetjmp() and let
+a segfault occur?
 
-regards,
-Sajjad
+Thank you in advance,
 
-------=_Part_5645_21932245.1127827315712
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Hi,<br>
-<br>
-I am not able to run an application which is useing wxGTK-2.6.2
-libaray. when tls is enable (/lib/tls exist) then segmentation fault
-occured. <br>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8">If=
- tls is disable (/lib/tls.disable) then following error occure while callin=
-g wxDialog method in the application.<br>
-<br>
-Cannot create anonymous event.<br>
-System error code: [38].<br>
-Function not implemented<br>
-<br>
-This problem became head ache for me. please help me.<br>
-<br>
-regards,<br>
-Sajjad<br>
-<br>
-
-------=_Part_5645_21932245.1127827315712--
+-Young
 
 
 -------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Download
-it for free - -and be entered to win a 42" plasma tv or your very own
-Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+This SF.Net email is sponsored by:
+Power Architecture Resource Center: Free content, downloads, discussions,
+and more. http://solutions.newsforge.com/ibmarch.tmpl
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
