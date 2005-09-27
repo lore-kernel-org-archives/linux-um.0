@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EK7lg-0006b8-Sq	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Sep 2005 22:12:40 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EK7lf-0001mS-Cv
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Sep 2005 22:12:40 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] sysrq patch
-Message-ID: <20050927045446.GA19032@ccure.user-mode-linux.org>
-References: <43383859.7090301@oracle.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43383859.7090301@oracle.com>
+	id 1EKFPL-0001VR-K2	for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Sep 2005 06:22:07 -0700
+Received: from nproxy.gmail.com ([64.233.182.200])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKFPL-0004c1-2Z
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Sep 2005 06:22:07 -0700
+Received: by nproxy.gmail.com with SMTP id a4so411444nfc
+	for <User-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 27 Sep 2005 06:21:55 -0700 (PDT)
+Message-ID: <cdefcbcf050927062142be6a7@mail.gmail.com>
+From: Muhammad Sajjad <msajjad@gmail.com>
+Reply-To: Muhammad Sajjad <msajjad@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_5645_21932245.1127827315712"
+Subject: [uml-devel] problem with wxGTK-2.6.2 and TLS in suse uml
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,71 +29,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 27 Sep 2005 00:54:46 -0400
-To: Allan Graves <allan.graves@oracle.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 27 Sep 2005 15:21:55 +0200
+To: User-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Sep 26, 2005 at 02:05:13PM -0400, Allan Graves wrote:
-> Let me know what you want changed, jeff, 
+------=_Part_5645_21932245.1127827315712
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-OK, you asked for it :-)
+Hi,
 
-> i set vim to hardtabs, i hope 
-> the white space comes out okay, don't want to get you in trouble again.  
+I am not able to run an application which is useing wxGTK-2.6.2 libaray.
+when tls is enable (/lib/tls exist) then segmentation fault occured.
+If tls is disable (/lib/tls.disable) then following error occure while
+calling wxDialog method in the application.
 
-The tabs look OK this time, thanks.
+Cannot create anonymous event.
+System error code: [38].
+Function not implemented
 
-> i ran this in both frame pointer and no frame pointer mode.
+This problem became head ache for me. please help me.
 
-+union uml_pt_regs *get_thread_regs(union uml_pt_regs *uml_regs, void *buffer)
-+{
-	...
-+       return uml_regs;
-+}
+regards,
+Sajjad
 
-This should just be a void, there's usually no sense in returning an argument.
-I see why you do it this way, but see my comments later.
+------=_Part_5645_21932245.1127827315712
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-	//jmp_buf * jmpbuf=(jmp_buf  *)buffer;
+Hi,<br>
+<br>
+I am not able to run an application which is useing wxGTK-2.6.2
+libaray. when tls is enable (/lib/tls exist) then segmentation fault
+occured. <br>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8">If=
+ tls is disable (/lib/tls.disable) then following error occure while callin=
+g wxDialog method in the application.<br>
+<br>
+Cannot create anonymous event.<br>
+System error code: [38].<br>
+Function not implemented<br>
+<br>
+This problem became head ache for me. please help me.<br>
+<br>
+regards,<br>
+Sajjad<br>
+<br>
 
-Just get rid of commented code - act like you mean it :-)
-
-	+int stop_here=0;
-
-You should have gotten rid of that.
-
-+               printk("ASM\n");
-
-What's that?
-
-+#ifdef CONFIG_MODE_SKAS
-+
-+#define KSTK_EIP(tsk) UPT_REG(get_thread_regs(&tsk->thread.sysrq_regs, tsk->thread.mode.skas.switch_buf), EIP);
-+#define KSTK_ESP(tsk) UPT_REG(get_thread_regs(&tsk->thread.sysrq_regs, tsk->thread.mode.skas.switch_buf), UESP);
-+#define KSTK_EBP(tsk) UPT_REG(get_thread_regs(&tsk->thread.sysrq_regs, tsk->thread.mode.skas.switch_buf), EBP);
-+
-+#else
-
-With this, I would prefer something like 
-
-static inline unsigned long KSTK_EIP(struct task_struct *task)
-{
-	union uml_pt_regs regs;
-
-	get_thread_regs(&regs, task->thread.mode.skas.switch_buf);
-	return(UPT_REG(regs, EIP));
-}
-
-No need to make the thread structure any larger than it needs to be.  Plus
-the typechecking is better with a function than a macro.
-
-Also, is KSTK_EBP needed?  It wasn't defined before, and yet UML still
-linked.
-
-And I would make the tt mode versions return obviously bogus values
-(0x00badbad, maybe :-), rather than non-obviously bogus values.
-
-				Jeff
+------=_Part_5645_21932245.1127827315712--
 
 
 -------------------------------------------------------
