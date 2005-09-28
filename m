@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EKaac-00083E-Ly	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 04:59:10 -0700
+	id 1EKabt-00085v-Ao	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Sep 2005 05:00:29 -0700
 Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EKaaa-0004vf-98
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EKabr-0005Gg-UC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 04:59:10 -0700
+	Wed, 28 Sep 2005 05:00:29 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
-References: <3524bf1f050927070645b999bd@mail.gmail.com>
-In-Reply-To: <3524bf1f050927070645b999bd@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509281041.15953.blaisorblade@yahoo.it>
+Message-Id: <200509281346.23592.blaisorblade@yahoo.it>
+Subject: [uml-devel] Clearing kmalloc_ok during shutdown is broken - malloc
+	will clear our data.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,83 +28,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Sep 2005 10:41:15 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
+Date: Wed, 28 Sep 2005 13:46:15 +0200
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 27 September 2005 16:06, Young Koh wrote:
-> Hi,
+I've recently realized how potentially misguided that thing is.
 
-> i have a question about copy_from/to_user() implementation in skas mode.
+And I am wondering about whether the recent "eactivate_all_fds failed, errno = 
+9" (no, the initial "d" never comes out) may be due to this. Even if, now I 
+see that was done even before... but first only on TT mode, then also in SKAS 
+mode with commit 6770cb61ff6d557613a8382b28f9b0a919fb112f, which says "when 
+getting a fatal signal".
 
-Ok, and here I'll explain also about TT mode, since they're reasonably 
-similar, and TT mode is more similar to i386.
-> as my understanding,
-> when copy_from/to_user() is  invoked, before the address translation
-> happens, UML kernel calls sigsetjmp() to come back when there is a
-> segmentation fault. and if there is, it seems that the system call an
-> application triggered eventually returns EFAULT.
-Yes, copy_*_user returns a failure code and the calling code is supposed to 
-check and return EFAULT.
+But still, Jeff, how can we expect that malloc won't stomp over all our data 
+which we preallocated with kmalloc and such?
 
-Assuming the fault is a *real* fault, i.e. an unfixable one - maybe we simply 
-need to call handle_page_fault() and load the page from swap.
-> then, it seems to me 
-> that sigsetjmp() is to catch the error when the application gave the
-> invalid user space address.
-Exactly.
-> my question is, if so, shouldn't the error be caught when UML kernel
-> translates the user space address to the kernel space address? i mean,
-> UML kernel must know the valid memory regions
-Well, saying "regions" is a bit confusing - in fact, you are coping with 
-installed mappings (mmap()s done on the host), which are like page tables 
-(populated on fault).
-> and if the address is 
-> out of the valid regions, then it knows the address is invalid before
-> UML tries to access the address.
+There's no single mention of that in your original changelog, and this is 
+untrivial, so I can assume you didn't realize this issue.
 
-> why should it use sigsetjmp() and let 
-> a segfault occur?
-In general, because it would be faster, because you must optimize for the fast 
-path, when a segfault won't occur and predoing the checking 
+The git commit is 026549d28469f7d4ca7e5a4707f0d2dc4f2c164c.
 
-1) Background: TT mode and i386 implementation. They can access the user 
-address directly, so they do, and catch the error afterwards. Why? Because 
-when we care for performance, the application will pass correct address. So 
-it's better to optimize the performance of the fast path (correct address) 
-than the one of the slow path. The hardware walking of page tables is faster 
-than the software one (even due to TLBs, which are processor caches of page 
-tables).
+On the other side, could you explain why you don't like kmalloc in first 
+place? It surely works.
 
-Whenever a fault occur, the i386 exception handler (see 
-search_exception_tables() and 
-grep ".section __ex_table" include/asm-i386/*)
+Also, there are some calls to kmalloc in the shutdown path - and they work. 
+I know this because I saw a problem with one of them: it gave "might_sleep 
+while atomic", and it was kmalloc in the shutdown, or rather, in panic() - 
+for the broken sysrq t (where's the fix you promised?).
 
-and/or the TT mode fault catcher make copy_*_user return an error.
+While looking for the "change" function, I thought even if it's static, that's 
+still not enough to deserve such an insignificant name. Ah, it's in 
+arch/um/drivers/net_user.c.
 
-2) SKAS instead. SKAS is like 4G/4G on the host (it is actually a 3G/3G).
+ <3>Debug: sleeping function called from invalid context 
+at /home/paolo/Admin/kernel/6/VCS/linux-2.6.13/mm/slab.c:2096
+in_atomic():1, irqs_disabled():0
 
-In SKAS mode, we actually walk the page tables, because we cannot access the 
-host mapping - we're using a different mapping set.
+a0327088:  [<a00164f2>] dump_stack+0x22/0x30
+a03270a8:  [<a0049e1c>] __might_sleep+0xac/0xd0
+a03270c8:  [<a0094fa0>] __kmalloc+0xc0/0x110
+a03270f8:  [<a00129ba>] um_kmalloc+0x1a/0x20
+a0327108:  [<a0038b6b>] change+0xcb/0x220
+a03271d8:  [<a0038d10>] close_addr+0x20/0x30
+a03271e8:  [<a00385bb>] iter_addresses+0x7b/0x90
+a0327218:  [<a0041b0a>] tuntap_close+0x4a/0x70
+a0327238:  [<a003827d>] close_devices+0x4d/0x90
+a0327258:  [<a0012a92>] do_uml_exitcalls+0x22/0x40
+a0327268:  [<a0013763>] uml_cleanup+0x13/0x20
+.... panic...
 
-In fact, what you see doesn't catch user space wrong addresses.
+The real solution for this warning is to replace um_kmalloc with malloc(), and 
+set, during shutdown, kmalloc_only_atomic - which would switch 
+__wrap_malloc() from um_kmalloc to um_kmalloc_atomic.
 
-It catches kernelspace faulting addresses - which is legal to happen, because 
-i386 implementation catches any fault, and doesn't make a distinction, and 
-which happens, when you try to do things like "cat /dev/kmem" - you're trying 
-to do copy_to_user(to, offset /* which is 0 */, size).
-
-In fact, that sigsegjmp() was added back in 2.4.24-?um (IIRC) and then around 
-~2.6.7-um after I and Jeff analyzed this.
+Or better yet, simply test in_atomic() and irqs_disabled() to choose between 
+the atomic and normal versions.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
 
+	
+
+	
 		
 ___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
