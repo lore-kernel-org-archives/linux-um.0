@@ -2,26 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EKcHl-0005K7-GF	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 06:47:49 -0700
-Received: from qproxy.gmail.com ([72.14.204.207])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKcHl-0001bw-6G
+	id 1EKcpg-0007HY-7A	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Sep 2005 07:22:52 -0700
+Received: from qproxy.gmail.com ([72.14.204.200])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKcpf-0002HZ-2O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 06:47:49 -0700
-Received: by qproxy.gmail.com with SMTP id f10so669006qba
+	Wed, 28 Sep 2005 07:22:51 -0700
+Received: by qproxy.gmail.com with SMTP id f10so675164qba
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 28 Sep 2005 06:47:42 -0700 (PDT)
-Message-ID: <3524bf1f05092806477e590930@mail.gmail.com>
+	Wed, 28 Sep 2005 07:22:45 -0700 (PDT)
+Message-ID: <3524bf1f05092807222f9d0aed@mail.gmail.com>
 From: Young Koh <young.koh@gmail.com>
 Reply-To: Young Koh <young.koh@gmail.com>
 Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
-In-Reply-To: <200509281359.48449.blaisorblade@yahoo.it>
+In-Reply-To: <200509281041.15953.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Disposition: inline
 References: <3524bf1f050927070645b999bd@mail.gmail.com>
-	 <20050927172812.GA28528@ccure.user-mode-linux.org>
-	 <200509281359.48449.blaisorblade@yahoo.it>
+	 <200509281041.15953.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,61 +32,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Sep 2005 09:47:41 -0400
+Date: Wed, 28 Sep 2005 10:22:45 -0400
 Content-Transfer-Encoding: 8bit
-To: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Thank you for your reply, but still have one more.
+so, as my understanding, sigsetjmp() is used for returning an error
+when there is a userspace and/or kernelspace address faulting in both
+skas and tt modes. and i386 implementation works the same way, i
+guess.
 
-(i think i forgot to reply to the mailing list with the previous
-email, so, i'm attaching the text)
+my one quick question is (it could sound stupid, but) that why there
+may be a kernelspace faulting? kernel must correct and shouldn't
+access bad address, i guess, and if so, shouldn't it be a kernel
+panic?
 
-On 9/28/05, Jeff Dike <jdike@addtoit.com> wrote:
-> On Tue, Sep 27, 2005 at 08:56:51PM -0400, Young Koh wrote:
-> > 1) if the address is fine, shouldn't the access that causes a segfault
-> > be regarded as a page fault? that is, shouldn't it be handled by UML
-> > kernel and UML proceeds normally instead of returning an error to the
-> > application? (because the app gave the proper address)
+> In fact, what you see doesn't catch user space wrong addresses.
 >
-> No.
+> It catches kernelspace faulting addresses - which is legal to happen, because
+> i386 implementation catches any fault, and doesn't make a distinction, and
+> which happens, when you try to do things like "cat /dev/kmem" - you're trying
+> to do copy_to_user(to, offset /* which is 0 */, size).
 >
-> It's akin to a piece of memory all of a sudden going bad.  You allocated the
-> memory and thought you could use it, but when you try, it turns out not
-> to be there.
+> In fact, that sigsegjmp() was added back in 2.4.24-?um (IIRC) and then around
+> ~2.6.7-um after I and Jeff analyzed this.
 
-yes, i think memory can go bad if 1) it cannot be allocated because of
-filesystem full or similar reasons as Jeff described, or 2) it was
-allocated once but could have been swapped.
-
-in case of 1) it should be more like kernel panic rather than just a
-system call error, i think? because kernel cannot allocate any more
-memory, which kernel is supposed to use.
-
-in case of 2) this is a real fault, so, the seg fault handler of UML
-kernel is supposed to load the swapped page and UML kernel proceeds
-normally? (as Blaisorblade described in the other mail, by calling
-handle_page_fault()?)
+i'm using 2.4.26 and 2.6.12 and i think both versions include sigsetjmp().
 
 Thank you,
 
 -Young
-
->
-> > 2) i thought that the file used for UML memory is created when a UML
-> > process is initialized.
-> > then, the memory file is not created for the fixed size at first, but
-> > it changes the size according to the UML memory usage?
->
-> It's not fully allocated.  It starts off sparse and gets allocated on
-> the host as the guest's memory usage increases.
->
-> > 3) is it the only case sigsetjmp() protected from?
->
-> I believe so, but am not positive.
->
->                                 Jeff
->
 
 
 -------------------------------------------------------
