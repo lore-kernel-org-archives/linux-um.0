@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EKdPk-0000sy-0U	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 08:00:08 -0700
+	id 1EKeYB-0004cr-Kg	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Sep 2005 09:12:55 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKdPh-0002YD-QS
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKeY8-0004Ev-Ts
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 08:00:08 -0700
+	Wed, 28 Sep 2005 09:12:55 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: Uml showstopper bugs for 2.6.14
-Message-ID: <20050928145250.GB11610@ccure.user-mode-linux.org>
-References: <200509271846.51804.blaisorblade@yahoo.it>
-	<20050927193055.GA30451@ccure.user-mode-linux.org>
-	<200509281415.18586.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
+Message-ID: <20050928145009.GA11610@ccure.user-mode-linux.org>
+References: <3524bf1f050927070645b999bd@mail.gmail.com>
+	<20050927172812.GA28528@ccure.user-mode-linux.org>
+	<200509281359.48449.blaisorblade@yahoo.it>
+	<3524bf1f05092806477e590930@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200509281415.18586.blaisorblade@yahoo.it>
+In-Reply-To: <3524bf1f05092806477e590930@mail.gmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,18 +30,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Sep 2005 10:52:50 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>
+Date: Wed, 28 Sep 2005 10:50:09 -0400
+To: Young Koh <young.koh@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Sep 28, 2005 at 02:15:18PM +0200, Blaisorblade wrote:
-> Do you know when this was introduced, and the last working UML version?
+On Wed, Sep 28, 2005 at 09:47:41AM -0400, Young Koh wrote:
+> yes, i think memory can go bad if 1) it cannot be allocated because of
+> filesystem full or similar reasons as Jeff described, or 2) it was
+> allocated once but could have been swapped.
+> 
+> in case of 1) it should be more like kernel panic rather than just a
+> system call error, i think? because kernel cannot allocate any more
+> memory, which kernel is supposed to use.
 
-It's always been broken, I think.  It results from the stub having to
-sigreturn by hand because it has no access to the libc restorer, and thus 
-needing to restore the stack pointer to where it was on entry.  I did this
-by popping the requisite number of times.  Bodo fixed this for i386, and
-I need to do something similar for x86_64.
+No, just that page is bad.  Another page could have been dirtied and thus
+allocated on the host, and it would be usable.  So, it's not a fatal problem.
+
+> in case of 2) this is a real fault, so, the seg fault handler of UML
+> kernel is supposed to load the swapped page and UML kernel proceeds
+> normally? (as Blaisorblade described in the other mail, by calling
+> handle_page_fault()?)
+
+Yes, this happens in the call from maybe_map.
 
 				Jeff
 
