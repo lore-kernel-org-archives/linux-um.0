@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EKedv-00055D-6W	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 09:18:51 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKedu-0005eC-G6
+	id 1EKezi-0006IQ-OG	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Sep 2005 09:41:22 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EKeze-0001gH-40
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 09:18:50 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Review needed for ubd fixes
-Message-ID: <20050928155405.GA12888@ccure.user-mode-linux.org>
-References: <200509172245.j8HMjqJD009056@ccure.user-mode-linux.org>
-	<200509222251.31918.blaisorblade@yahoo.it>
-	<20050927181218.GA28937@ccure.user-mode-linux.org>
-	<200509281414.32622.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Wed, 28 Sep 2005 09:41:22 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: Uml showstopper bugs for 2.6.14
+References: <200509271846.51804.blaisorblade@yahoo.it>
+	<200509281415.18586.blaisorblade@yahoo.it>
+	<20050928145250.GB11610@ccure.user-mode-linux.org>
+In-Reply-To: <20050928145250.GB11610@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200509281414.32622.blaisorblade@yahoo.it>
+Message-Id: <200509281840.23816.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,52 +31,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Sep 2005 11:54:05 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Wed, 28 Sep 2005 18:40:22 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>
 
-On Wed, Sep 28, 2005 at 02:14:32PM +0200, Blaisorblade wrote:
-> Very, very nice.
-> 
-> What about the early removal of the request from the queue, before being sure 
-> we can complete it (sorry for not reading carefully everything below, I'm 
-> going to have lunch and afterwards back to study).
+On Wednesday 28 September 2005 16:52, Jeff Dike wrote:
+> On Wed, Sep 28, 2005 at 02:15:18PM +0200, Blaisorblade wrote:
+> > Do you know when this was introduced, and the last working UML version?
 
-I think that doesn't matter too much.  I have to get the sg information out
-of it, and store that, plus the current position within the sg array if
-we couldn't send it all to the host.  So, I don't refer to the request after
-I get the sg information out of it, so I might as well remove it from the
-queue.
+> It's always been broken, I think.
+Ah, but you're talking of SKAS0.
 
-> Reorder o_direct at the end - no time to read them yet, but guess that more 
-> intrusive goes at the end. And I'm not sure whether merging o_direct so late 
-> in 2.6.14 is nice (even if you've tested the full patch set, and without 
-> o_direct the thing makes less sense).
+In this case (which seems strange, given the number of people using x86_64 and 
+not complaining - or maybe it's just me who didn't say "enable frame 
+pointers" to any of the various bug reports), if the patch is not trivial 
+enough (it seems to be), make sure to at least force frame pointers.
 
-Yeah, I wasn't planning on sending that for 2.6.14.  It was just part of that
-set of patches.
+Even if I think, if I understood the thing correctly, that this workaround is 
+not even guaranteed to work.
 
-> Let's hope for the better, but next time the debug should be done *before* 
-> merging, ok? Even because, for instance, if (say) the patch was ready for 
-> 2.6.14 and merged into 2.6.15, I could have released a test tree against 
-> 2.6.14 (maybe I could do this now).
+> It results from the stub having to 
+> sigreturn by hand because it has no access to the libc restorer, and thus
+> needing to restore the stack pointer to where it was on entry.  I did this
+> by popping the requisite number of times.
 
-I thought I did.  AIO had been in my tree forever with no apparent problems.
-I recently started running 24 hour/day stress tests on UML, and that turned
-up some problems.  People turning on spinlock debugging turned up the sleeping
-while atomic problem.  And me staring at the code as a result of that turned
-up the possible deadlock.
+> Bodo fixed this for i386,
+By restoring in sp the address of first param (or something like that), right?
+> and  
+> I need to do something similar for x86_64.
 
-> Please, send them to Andrew for -mm, and say "2.6.14 can't go without them, 
-> but they might need further review".
-> 
-> And ask Jens Axboe if it can give a look to them (this time it's less 
-> necessary, since there are less dirty tricks).
+The bug killing almost everybody testing 2.6.12-bb? In this case, it's SKAS0 
+specific.
 
-Yeah.  This still needs some work.  I need to deal with the bitmap array
-properly.
+But especially, couldn't this be triggered by another GCC version, changing 
+the stack layout?
+> 				Jeff
 
-				Jeff
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
