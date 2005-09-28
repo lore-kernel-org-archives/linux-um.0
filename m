@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EKf6L-0006b5-Ck	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 09:48:13 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EKf6B-00045D-R8
+	id 1EKfUW-0007gv-LZ	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Sep 2005 10:13:12 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EKfUR-00085M-76
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 09:48:10 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Review needed for ubd fixes
-References: <200509172245.j8HMjqJD009056@ccure.user-mode-linux.org>
-	<200509281414.32622.blaisorblade@yahoo.it>
-	<20050928155405.GA12888@ccure.user-mode-linux.org>
-In-Reply-To: <20050928155405.GA12888@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Wed, 28 Sep 2005 10:13:09 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
+Message-ID: <20050928160946.GB12888@ccure.user-mode-linux.org>
+References: <3524bf1f050927070645b999bd@mail.gmail.com>
+	<20050927172812.GA28528@ccure.user-mode-linux.org>
+	<200509281359.48449.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200509281847.21078.blaisorblade@yahoo.it>
+In-Reply-To: <200509281359.48449.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,51 +29,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Sep 2005 18:47:20 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Wed, 28 Sep 2005 12:09:46 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
 
-On Wednesday 28 September 2005 17:54, Jeff Dike wrote:
-> On Wed, Sep 28, 2005 at 02:14:32PM +0200, Blaisorblade wrote:
-> > Very, very nice.
+On Wed, Sep 28, 2005 at 01:59:48PM +0200, Blaisorblade wrote:
+> That wasn't the original reason - this is fine too, but as I explained in the 
+> other mail, cat /dev/kmem will cause a copy_to_user() with invalid kernel 
+> ("from") address. I remember because I discussed this with you at length.
 
-> > Let's hope for the better, but next time the debug should be done
-> > *before* merging, ok? Even because, for instance, if (say) the patch was
-> > ready for 2.6.14 and merged into 2.6.15, I could have released a test
-> > tree against 2.6.14 (maybe I could do this now).
+Oh yeah.  I was thinking there was a different (and better) reason, but I
+couldn't remember what it was.
 
-> I thought I did.  AIO had been in my tree forever with no apparent
-> problems.
-We're not currently getting a lot of testing on that. Apart the really current 
-issue of the page not uptodate, users mostly ran that because of x86_64 
-support, which is now reliable in mainline.
+Also, my reason isn't that good anyway.  I had a different fix a while ago,
+but it got lost somewhere.  I added an arch hook to get_free_pages which
+touched each allocated page under the cover of a setjmp.  If a page couldn't
+be allocated on the host, then it is put on a "bad pages" list, and another
+page is allocated instead.
 
-In fact, the SKAS0 compiler-dependant bug (the asm code was popping a fixed 
-number of words, which was wrong with different compiler) only came out on 
-the tree I released against 2.6.12...
-> I recently started running 24 hour/day stress tests on UML, and 
-> that turned up some problems.  People turning on spinlock debugging turned
-> up the sleeping while atomic problem.  And me staring at the code as a
-> result of that turned up the possible deadlock.
-
-> > And ask Jens Axboe if it can give a look to them (this time it's less
-> > necessary, since there are less dirty tricks).
-
-> Yeah.  This still needs some work.  I need to deal with the bitmap array
-> properly.
-
-> 				Jeff
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
-
+				Jeff
 
 
 -------------------------------------------------------
