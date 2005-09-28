@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EKaaZ-00083C-6w	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 04:59:07 -0700
+	id 1EKacW-00087G-Bh	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Sep 2005 05:01:08 -0700
 Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EKaaW-0004tx-NN
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EKacU-00012U-Cj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Sep 2005 04:59:07 -0700
+	Wed, 28 Sep 2005 05:01:08 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] problem with wxGTK-2.6.2 and TLS in suse uml
-References: <cdefcbcf050927062142be6a7@mail.gmail.com>
-In-Reply-To: <cdefcbcf050927062142be6a7@mail.gmail.com>
+Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
+References: <3524bf1f050927070645b999bd@mail.gmail.com>
+	<20050927172812.GA28528@ccure.user-mode-linux.org>
+In-Reply-To: <20050927172812.GA28528@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200509281014.00084.blaisorblade@yahoo.it>
+Message-Id: <200509281359.48449.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,48 +30,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 28 Sep 2005 10:13:59 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, Muhammad Sajjad <msajjad@gmail.com>
+Date: Wed, 28 Sep 2005 13:59:48 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Young Koh <young.koh@gmail.com>
 
-On Tuesday 27 September 2005 15:21, Muhammad Sajjad wrote:
-> Hi,
-
-> I am not able to run an application which is useing wxGTK-2.6.2 libaray.
-> when tls is enable (/lib/tls exist) then segmentation fault occured.
-Known..
-> If tls is disable (/lib/tls.disable) then following error occure while
-> calling wxDialog method in the application.
-Ok, it stops later, and while doing what?
-> Cannot create anonymous event.
-What is it doing? Could you try to strace the failing application, and search 
-for ENOSYS in the output?
-> System error code: [38].
-ENOSYS
-> Function not implemented
-Ok, this could mean that somehow, in your distro (SuSE), wxGTK depends on the 
-TLS libraries. But that is not very likely.
-
-
-So, instead, which UML version are you using? It is possible that the above 
-error is given by a completely different kernel functionality, which wasn't 
-implemented at that time. So, please upgrade your UML to a recent version, 
-probably 2.6.13-bs2 - there's even a bug in modify_ldt() causing it to return 
-ENOSYS, which is fixed in my patchset.
-
-If this doesn't work, and strace says the failing call is set_thread_area / 
-get_thread_area, the solution would probably involve recompiling wxGTK 
-(probably from the source RPM, to avoid dependency problems), after fixing 
-the configuration...
-> This problem became head ache for me. please help me.
-
-> regards,
-> Sajjad
-
+On Tuesday 27 September 2005 19:28, Jeff Dike wrote:
+> On Tue, Sep 27, 2005 at 10:06:53AM -0400, Young Koh wrote:
+> > my question is, if so, shouldn't the error be caught when UML kernel
+> > translates the user space address to the kernel space address? i mean,
+> > UML kernel must know the valid memory regions and if the address is
+> > out of the valid regions, then it knows the address is invalid before
+> > UML tries to access the address. why should it use sigsetjmp() and let
+> > a segfault occur?
+>
+> Because the address may be fine, and an access may still cause a segfault.
+>
+> UML memory is backed by a file on the host.  You can map anything from
+> the file you want, but if you access it when the host filesystem is full
+> or you've exceeded your disk quota, the access will segfault.
+That wasn't the original reason - this is fine too, but as I explained in the 
+other mail, cat /dev/kmem will cause a copy_to_user() with invalid kernel 
+("from") address. I remember because I discussed this with you at length.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
-
 
 	
 
