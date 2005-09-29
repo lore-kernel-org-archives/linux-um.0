@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EL3yq-0007pw-KB	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2005 12:22:08 -0700
+	id 1EL3yt-0007qF-1K	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Sep 2005 12:22:11 -0700
 Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EL3ym-0004QJ-BH
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EL3yr-0000lI-Cl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2005 12:22:08 -0700
+	Thu, 29 Sep 2005 12:22:11 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Clearing kmalloc_ok during shutdown is broken -
-	malloc will clear our data.
-References: <200509281346.23592.blaisorblade@yahoo.it>
-	<20050928201243.GA13636@ccure.user-mode-linux.org>
-In-Reply-To: <20050928201243.GA13636@ccure.user-mode-linux.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200509291407.30152.blaisorblade@yahoo.it>
+Message-Id: <200509292102.44942.blaisorblade@yahoo.it>
+Subject: [uml-devel] [PATCH 0/5] Other important UML fixes for 2.6.14
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,66 +27,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 29 Sep 2005 14:07:29 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 29 Sep 2005 21:02:43 +0200
+To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>
 
-On Wednesday 28 September 2005 22:12, Jeff Dike wrote:
-> On Wed, Sep 28, 2005 at 01:46:15PM +0200, Blaisorblade wrote:
-> > And I am wondering about whether the recent "eactivate_all_fds failed,
-> > errno = 9"
+This is what I've currently in my tree for 2.6.14. It's not enough to fix all 
+regressions (there are still some problems on which Jeff is working right 
+now, namely UBD and x86-64 without frame pointers).
 
-> I found this one, although I didn't notice the missing 'd'.
-Hmm, after saying that I saw that 'd' again.
-In my experience with 2.6.13, it normally works, except when panicking (I 
-triggered with sysrq t, and got the failure).
-
-If it isn't a memory corruption, which I suspected, then we're ok.
-> It turns out 
-> that close_chan closes file descriptors, but never freed the associated
-> IRQs.
-So deactivate_all_fds() tries to close them again...
-> > But still, Jeff, how can we expect that malloc won't stomp over all our
-> > data which we preallocated with kmalloc and such?
-
-> Because I leave a decent amount of room between the brk and the start of
-> kmalloc-able memory (which is free_pages-d during boot).  It's a couple
-> meg, I think.
-
-> No guarantees, of course, but there isn't a lot of mallocing 
-> happening.
-Ok, this is enough, but could be documented. But we could record the end of 
-malloc'able data, and check it, since we're using a wrapper anyway, and 
-return NULL + my_printf()* a message if the space is exhausted.
-
-* printf() can overflow kernel stack according to Al Viro, see 
-not_configged_chan messages.
-
-
-> > On the other side, could you explain why you don't like kmalloc in first
-> > place? It surely works.
-
-> I'm not sure - let me think about it.  But I fixed that for a reason - it
-> was causing a crash somehow, I just don't remember the details.
-
-> > The real solution for this warning is to replace um_kmalloc with
-> > malloc(), and set, during shutdown, kmalloc_only_atomic - which would
-> > switch
-> > __wrap_malloc() from um_kmalloc to um_kmalloc_atomic.
-
-> Yeah, that's userspace code, so it should probably just use malloc.
-
-> > Or better yet, simply test in_atomic() and irqs_disabled() to choose
-> > between the atomic and normal versions.
-
-> I don't really like testing in_atomic() because you should generally know
-> what context you're running in.
-Beyond that, in_atomic() isn't set by spinlocks (at least not normally - it is 
-set when preemption is enabled, not for us).
-
-Userspace code calling malloc could miss this knowledge (as in the example 
-above). Also userspace is supposed to use malloc, and with malloc there's no 
-choice. And finally, surely libc isn't aware of anything such.
+This includes the critical fixes for my UML fault handler breakage - this time 
+I ran a kernel compile under each UML running mode (last time I couldn't test 
+SKAS3) with these patches.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
