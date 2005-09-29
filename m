@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EL1C6-0007FZ-01	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2005 09:23:38 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EL1C5-0004eS-Gc
+	id 1EL3zA-0007qj-4i	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Sep 2005 12:22:28 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EL3z8-0000jf-9U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2005 09:23:38 -0700
-Received: from ccure.user-mode-linux.org (lakshmi.solana.com [127.0.0.1])
-	by lakshmi.solana.com (8.11.2/8.11.2) with ESMTP id j8TFIlm04252
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 29 Sep 2005 11:18:47 -0400
-Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	j8TGGI13031039	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 29 Sep 2005 12:16:18 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20050929161617.GA30460@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Thu, 29 Sep 2005 12:22:27 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Clearing kmalloc_ok during shutdown is broken -
+	malloc will clear our data.
+References: <200509281346.23592.blaisorblade@yahoo.it>
+	<20050928213125.GA16955@ccure.user-mode-linux.org>
+In-Reply-To: <20050928213125.GA16955@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] Early x86_64 crash
+Message-Id: <200509291614.03229.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,61 +31,54 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 29 Sep 2005 12:16:17 -0400
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 29 Sep 2005 16:14:02 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@oracle.com>
+Cc: Jeff Dike <jdike@addtoit.com>
 
-If you are running UML/x86_64 and are seeing it crash before starting init,
-I'd like you to do the following:
-	- make sure that you have CONFIG_FRAME_POINTER disabled
-	- enable it and see that UML boots
-	- apply the patch below, disable CONFIG_FRAME_POINTER again, and
-see if UML still boots
-	- report results back to me
+On Wednesday 28 September 2005 23:31, Jeff Dike wrote:
+> On Wed, Sep 28, 2005 at 01:46:15PM +0200, Blaisorblade wrote:
+> > Also, there are some calls to kmalloc in the shutdown path - and they
+> > work. I know this because I saw a problem with one of them: it gave
+> > "might_sleep while atomic", and it was kmalloc in the shutdown, or
+> > rather, in panic() - for the broken sysrq t (where's the fix you
+> > promised?).
 
-				Jeff
+> Attached.
 
-Index: test/arch/um/sys-x86_64/stub_segv.c
-===================================================================
---- test.orig/arch/um/sys-x86_64/stub_segv.c	2005-09-29 12:19:07.000000000 -0400
-+++ test/arch/um/sys-x86_64/stub_segv.c	2005-09-29 12:21:03.000000000 -0400
-@@ -11,6 +11,16 @@
- #include "sysdep/sigcontext.h"
- #include "sysdep/faultinfo.h"
- 
-+/* Copied from sys-x86_64/signal.c - Can't find an equivalent definition
-+ * in the libc headers anywhere.
-+ */
-+struct rt_sigframe
-+{
-+        char *pretcode;
-+        struct ucontext uc;
-+        struct siginfo info;
-+};
-+
- void __attribute__ ((__section__ (".__syscall_stub")))
- stub_segv_handler(int sig)
- {
-@@ -22,11 +32,14 @@
- 
- 	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));
- 	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
--		"syscall": : "g" (__NR_kill), "g" (SIGUSR1));
--	/* Two popqs to restore the stack to the state just before entering
--	 * the handler, one pops the return address, the other pops the frame
--	 * pointer.
-+		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) : 
-+                "%rdi", "%rax", "%rsi");
-+	/* sys_sigreturn expects that the stack pointer will be 8 bytes into
-+	 * the signal frame.  So, we use the ucontext pointer, which we know
-+	 * already, to get the signal frame pointer, and add 8 to that.
- 	 */
--	__asm__("popq %%rax ; popq %%rax ; movq %0, %%rax ; syscall" : : "g"
--		(__NR_rt_sigreturn));
-+        __asm__("movq %0, %%rsp": : 
-+                "g" ((unsigned long) container_of(uc, struct rt_sigframe, 
-+						  uc) + 8));
-+	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
- }
+I now even found (by chance) the original mail from Allan Graves - and the 
+changes in arch/um/include/sysdep-x86_64/ptrace.h weren't in his patch and 
+are unrelated.
+
+Plus, I think they're also bogus (those registers exist), but I may be wrong, 
+I'm not looking at these unrelated changes since they pertain to something 
+else and I've no changelog.
+
+On the patch: it makes sense, and the "XXX" removed comment, which explained 
+the bug, was added by myself.
+
+On the bogus value: I'm more accustomed to 0xdeadbeef, since 0xbadbabe could 
+be valid while 0xdeadbeef not (it's in the last giga).
+
+The only problem I see is that we need to test it on a wide glibc range - 
+you're using an internal header detail, so glibc will break it at will.
+
+Sadly, we haven't a better fix (except reimplementing setjmp(), which is even 
+worse than the original problem - plus I don't like glibc sources enough to 
+go picking the code).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
