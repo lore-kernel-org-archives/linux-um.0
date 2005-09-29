@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EL49F-0008Gi-57	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2005 12:32:53 -0700
+	id 1EL49M-0008Hj-Aq	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Sep 2005 12:33:00 -0700
 Received: from ppp-62-11-74-97.dialup.tiscali.it ([62.11.74.97]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EL49A-0002kC-LZ	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2005 12:32:53 -0700
+	id 1EL49L-0006Pi-43	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Sep 2005 12:33:00 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20050929193021.14528.58899.stgit@zion.home.lan>
+Message-Id: <20050929193101.14528.90627.stgit@zion.home.lan>
 In-Reply-To: <200509292102.44942.blaisorblade@yahoo.it>
 References: <200509292102.44942.blaisorblade@yahoo.it>
-Subject: [uml-devel] [PATCH 1/5] Uml: fix build dependencies with KBUILD
-	OUTPUT
+Subject: [uml-devel] [PATCH 5/5] uml: remove empty hostfs_truncate method
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,87 +24,62 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 29 Sep 2005 21:30:21 +0200
+Date: Thu, 29 Sep 2005 21:31:02 +0200
 To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-When doing "make ARCH=um O=<path>", where <path> only contains .config, the
-build failed, because <path>/include2 hadn't been created. It's not supposed to
-work like this, at all. Since I never saw this (even with massively parallel
-builds - I'm accustomed to test often -j50, given that I use ccache), I suppose
-that after doing "make ARCH=um O=<path> *config" this wouldn't happen.
+Calling truncate() on hostfs spits a kernel warning "Something isn't implemented
+here", but it still works fine.
 
-Turns out that the UML "archprepare" target failed - it depends on prepare1
-which in turn would cause include2 to be created, but the failing target was
-listed as dependency of archprepare. And there's no specific order among
-dependencies, so add another dependency.
+Indeed, hostfs i_op->truncate doesn't do anything. But hostfs_setattr() ->
+set_attr() correctly detects ATTR_SIZE and calls truncate() on the host. So we
+should be safe (using ftruncate() may be better, in case the file is unlinked on
+the host, but we aren't sure to have the file open for writing, and reopening it
+would cause the same races; plus nobody should expect UML to be so careful).
 
-Btw, fix some clutter I found (duplicate assignments).
-And add $(Q) to an ln invocation, since this patch (don't ask me why) causes
-$(SYMLINK_HEADERS) to be rebuilt at each "make" call.
+So, the warning is wrong, because the current implementation is working. Al, am
+I correct, and can the warning be therefore dropped?
 
-Cc: Sam Ravnborg <sam@ravnborg.org>
+CC: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/Makefile        |    6 +++++-
- arch/um/Makefile-i386   |    2 --
- arch/um/Makefile-x86_64 |    3 ---
- 3 files changed, 5 insertions(+), 6 deletions(-)
+ fs/hostfs/hostfs_kern.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -111,6 +111,10 @@ else
- $(shell cd $(ARCH_DIR) && ln -sf Kconfig.$(SUBARCH) Kconfig.arch)
- endif
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -793,11 +793,6 @@ int hostfs_rename(struct inode *from_ino
+ 	return(err);
+ }
  
-+# archprepare depends on prepare1. But we need that all these are made *after* prepare1.
-+# Otherwise, for instance, we may miss include2.
-+$(ARCH_SYMLINKS) $(SYS_HEADERS) $(GEN_HEADERS): prepare1
-+
- archprepare: $(ARCH_SYMLINKS) $(SYS_HEADERS) $(GEN_HEADERS)
- 
- LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
-@@ -161,7 +165,7 @@ archclean:
- $(SYMLINK_HEADERS):
- 	@echo '  SYMLINK $@'
- ifneq ($(KBUILD_SRC),)
--	ln -fsn $(srctree)/include/asm-um/$(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $@
-+	$(Q)ln -fsn $(srctree)/include/asm-um/$(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $@
- else
- 	$(Q)cd $(TOPDIR)/$(dir $@) ; \
- 	ln -sf $(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $(notdir $@)
-diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
---- a/arch/um/Makefile-i386
-+++ b/arch/um/Makefile-i386
-@@ -36,8 +36,6 @@ endif
- SYS_UTIL_DIR	:= $(ARCH_DIR)/sys-i386/util
- SYS_HEADERS	:= $(SYS_DIR)/sc.h $(SYS_DIR)/thread.h
- 
--prepare: $(SYS_HEADERS)
+-void hostfs_truncate(struct inode *ino)
+-{
+-	not_implemented();
+-}
 -
- $(SYS_DIR)/sc.h: $(SYS_UTIL_DIR)/mk_sc
- 	$(call filechk,gen_header)
- 
-diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
---- a/arch/um/Makefile-x86_64
-+++ b/arch/um/Makefile-x86_64
-@@ -14,12 +14,9 @@ ELF_ARCH := i386:x86-64
- ELF_FORMAT := elf64-x86-64
- 
- SYS_UTIL_DIR := $(ARCH_DIR)/sys-x86_64/util
--SYS_DIR := $(ARCH_DIR)/include/sysdep-x86_64
- 
- SYS_HEADERS = $(SYS_DIR)/sc.h $(SYS_DIR)/thread.h
- 
--prepare: $(SYS_HEADERS)
--
- $(SYS_DIR)/sc.h: $(SYS_UTIL_DIR)/mk_sc
- 	$(call filechk,gen_header)
- 
+ int hostfs_permission(struct inode *ino, int desired, struct nameidata *nd)
+ {
+ 	char *name;
+@@ -894,7 +889,6 @@ static struct inode_operations hostfs_io
+ 	.rmdir		= hostfs_rmdir,
+ 	.mknod		= hostfs_mknod,
+ 	.rename		= hostfs_rename,
+-	.truncate	= hostfs_truncate,
+ 	.permission	= hostfs_permission,
+ 	.setattr	= hostfs_setattr,
+ 	.getattr	= hostfs_getattr,
+@@ -910,7 +904,6 @@ static struct inode_operations hostfs_di
+ 	.rmdir		= hostfs_rmdir,
+ 	.mknod		= hostfs_mknod,
+ 	.rename		= hostfs_rename,
+-	.truncate	= hostfs_truncate,
+ 	.permission	= hostfs_permission,
+ 	.setattr	= hostfs_setattr,
+ 	.getattr	= hostfs_getattr,
 
 
 
