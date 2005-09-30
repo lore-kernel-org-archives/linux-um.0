@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM7Uz-0007vr-7D	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 10:19:41 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EM7Uu-0002iV-9V
+	id 1EM7fA-0008SI-GV	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 10:30:12 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ELPIK-0007nN-BR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 10:19:41 -0700
+	Fri, 30 Sep 2005 11:07:42 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH] Early x86_64 crash
 References: <20050929161617.GA30460@ccure.user-mode-linux.org>
-	<200509301641.59585.blaisorblade@yahoo.it>
-	<20051002023514.GA6350@localhost.localdomain>
-In-Reply-To: <20051002023514.GA6350@localhost.localdomain>
+In-Reply-To: <20050929161617.GA30460@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510021723.26575.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_36UPDwjX6Vohysw"
+Message-Id: <200509301641.59585.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,33 +27,111 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Oct 2005 17:23:26 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 30 Sep 2005 16:41:58 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Sunday 02 October 2005 04:35, Jeff Dike wrote:
-> On Fri, Sep 30, 2005 at 04:41:58PM +0200, Blaisorblade wrote:
-> > I assume you've been able to reproduce this crash and see this patch fix
-> > it, right?
+--Boundary-00=_36UPDwjX6Vohysw
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> Yup.
+On Thursday 29 September 2005 18:16, Jeff Dike wrote:
+> If you are running UML/x86_64 and are seeing it crash before starting init,
+> I'd like you to do the following:
+I assume you've been able to reproduce this crash and see this patch fix it, 
+right?
 
-> > I've attached the addon with additional clobber, and with fixed tabs
-> > (i.e. hardtabs). Not compiled it (no time to reboot right now).
+I'm going to take it for -bs3, meanwhile, as soon as you answer on the 
+attachment (I'd like it at least to compile).
+> 	- make sure that you have CONFIG_FRAME_POINTER disabled
+> 	- enable it and see that UML boots
+> 	- apply the patch below, disable CONFIG_FRAME_POINTER again, and
+> see if UML still boots
+> 	- report results back to me
 
-> Yeah, I'll fix the spacing in my copy.
+> 				Jeff
 
-I'm assuming the additional clobbers are ok, and queuing the whole in -bs3.
+> @@ -22,11 +32,14 @@
+>
+>  	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));
+Why there's no "%rax" in the register clobber list, here and at the end?
+>  	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
+> -		"syscall": : "g" (__NR_kill), "g" (SIGUSR1));
+> -	/* Two popqs to restore the stack to the state just before entering
+> -	 * the handler, one pops the return address, the other pops the frame
+> -	 * pointer.
+> +		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) :
+> +                "%rdi", "%rax", "%rsi");
+Here you're correctly informing GCC that your asm uses these regs.
+> +	/* sys_sigreturn expects that the stack pointer will be 8 bytes into
+> +	 * the signal frame.  So, we use the ucontext pointer, which we know
+> +	 * already, to get the signal frame pointer, and add 8 to that.
+>  	 */
+> -	__asm__("popq %%rax ; popq %%rax ; movq %0, %%rax ; syscall" : : "g"
+> -		(__NR_rt_sigreturn));
+> +        __asm__("movq %0, %%rsp": :
+> +                "g" ((unsigned long) container_of(uc, struct rt_sigframe,
+> +						  uc) + 8));
+> +	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
+>  }
+I've attached the addon with additional clobber, and with fixed tabs (i.e. 
+hardtabs). Not compiled it (no time to reboot right now).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+--Boundary-00=_36UPDwjX6Vohysw
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="uml-early-x86-64-crash-fix"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="uml-early-x86-64-crash-fix"
 
+Index: linux-2.6.13/arch/um/sys-x86_64/stub_segv.c
+===================================================================
+--- linux-2.6.13.orig/arch/um/sys-x86_64/stub_segv.c
++++ linux-2.6.13/arch/um/sys-x86_64/stub_segv.c
+@@ -25,20 +25,20 @@ stub_segv_handler(int sig)
+ {
+ 	struct ucontext *uc;
+ 
+-	__asm__("movq %%rdx, %0" : "=g" (uc) :);
++	__asm__("movq %%rdx, %0" : "=g" (uc) : );
+         GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
+                               &uc->uc_mcontext);
+ 
+-	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));
++	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid) : "%rax");
+ 	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
+ 		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) :
+-                "%rdi", "%rax", "%rsi");
++		"%rdi", "%rax", "%rsi");
+ 	/* sys_sigreturn expects that the stack pointer will be 8 bytes into
+ 	 * the signal frame.  So, we use the ucontext pointer, which we know
+ 	 * already, to get the signal frame pointer, and add 8 to that.
+ 	 */
+-        __asm__("movq %0, %%rsp": :
+-                "g" ((unsigned long) container_of(uc, struct rt_sigframe,
++	__asm__("movq %0, %%rsp": :
++		"g" ((unsigned long) container_of(uc, struct rt_sigframe,
+ 						  uc) + 8));
+-	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
++	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn) : "%rax");
+ }
+
+--Boundary-00=_36UPDwjX6Vohysw--
+
+	
+
+	
 		
 ___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
