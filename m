@@ -2,27 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ELMw1-000513-20	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Sep 2005 08:36:29 -0700
-Received: from qproxy.gmail.com ([72.14.204.204])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ELMw0-0006Ao-Sk
+	id 1ELN4K-0005Ui-8a	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Sep 2005 08:45:04 -0700
+Received: from witte.sonytel.be ([80.88.33.193])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ELN4D-0000wB-C0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Sep 2005 08:36:29 -0700
-Received: by qproxy.gmail.com with SMTP id a33so120614qbd
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 30 Sep 2005 08:35:37 -0700 (PDT)
-Message-ID: <3524bf1f0509300808scdb25acga0e2bc9f8fd9008c@mail.gmail.com>
-From: Young Koh <young.koh@gmail.com>
-Reply-To: Young Koh <young.koh@gmail.com>
+	Fri, 30 Sep 2005 08:45:04 -0700
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
-In-Reply-To: <200509291409.28067.blaisorblade@yahoo.it>
+In-Reply-To: <3524bf1f0509300808scdb25acga0e2bc9f8fd9008c@mail.gmail.com>
+Message-ID: <Pine.LNX.4.62.0509301744080.9170@numbat.sonytel.be>
+References: <3524bf1f050927070645b999bd@mail.gmail.com> 
+	<3524bf1f0509281225180173ae@mail.gmail.com>
+	<3524bf1f0509300808scdb25acga0e2bc9f8fd9008c@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Disposition: inline
-References: <3524bf1f050927070645b999bd@mail.gmail.com>
-	 <20050928145009.GA11610@ccure.user-mode-linux.org>
-	 <3524bf1f0509281225180173ae@mail.gmail.com>
-	 <200509291409.28067.blaisorblade@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,36 +28,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 30 Sep 2005 11:08:04 -0400
-Content-Transfer-Encoding: 8bit
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Fri, 30 Sep 2005 17:44:36 +0200 (CEST)
+To: Young Koh <young.koh@gmail.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-> > it seems that sigsetjmp() has
-> > relatively large overhead, we could reduce some overhead by not
-> > calling it.
->
-> How do you measure it? I'm curious myself - I know there's the possibility to
-> use gprof, but I've never used that myself.
+On Fri, 30 Sep 2005, Young Koh wrote:
+> > > it seems that sigsetjmp() has
+> > > relatively large overhead, we could reduce some overhead by not
+> > > calling it.
+> >
+> > How do you measure it? I'm curious myself - I know there's the possibility to
+> > use gprof, but I've never used that myself.
+> 
+> i usually use pentium rdtsc(read time stamp counter) to measure the
+> timing and latency. (sometimes by instrumenting kernel or sometimes by
+> measuring test programs) i ran a test program and measured the
+> overhead of sigsetjmp() and setjmp(). it showed sigsetjmp() uses
+> around 1350 cycles (which is around 0.45 us in 3.0GHz machine), and
+> setjmp() only 21 cycles (< 0.01us). maybe while sigsetjmp() is
+> implemented as a system call to cope with signal blocking/unblocking,
+> setjmp() is not a system call? (getpid() itself takes more than 1000
+> cycles)
 
-i usually use pentium rdtsc(read time stamp counter) to measure the
-timing and latency. (sometimes by instrumenting kernel or sometimes by
-measuring test programs) i ran a test program and measured the
-overhead of sigsetjmp() and setjmp(). it showed sigsetjmp() uses
-around 1350 cycles (which is around 0.45 us in 3.0GHz machine), and
-setjmp() only 21 cycles (< 0.01us). maybe while sigsetjmp() is
-implemented as a system call to cope with signal blocking/unblocking,
-setjmp() is not a system call? (getpid() itself takes more than 1000
-cycles)
+Indeed, setjmp() is not a system call. It just saves the registers to the
+passed env structure.
 
-thanks,
+Gr{oetje,eeting}s,
 
->
-> Surely the "sig" thing is heavy (some syscalls like sigprocmask() for
-> blocking/unblocking signals). Or better, it's the only heavy thing - the rest
-> consists only of saving a couple of registers (6, IIRC) in memory, there's no
-> interest in optimizing it away (I assume).
->
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 
 -------------------------------------------------------
