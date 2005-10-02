@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM7h8-0000Bd-Ok	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 10:32:14 -0700
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EM7h3-0005gr-S6
+	id 1EM7uo-0000vX-2t	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 10:46:22 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EM7um-00005n-Af
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 10:32:11 -0700
-From: Al Viro <viro@ftp.linux.org.uk>
-Message-ID: <20051002173203.GQ7992@ftp.linux.org.uk>
+	Sun, 02 Oct 2005 10:46:22 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 References: <200510021213.40191.blaisorblade@yahoo.it>
-	<20051002113806.GO7992@ftp.linux.org.uk>
 	<200510021350.29959.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<20051002173203.GQ7992@ftp.linux.org.uk>
+In-Reply-To: <20051002173203.GQ7992@ftp.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200510021350.29959.blaisorblade@yahoo.it>
+Message-Id: <200510021945.59673.blaisorblade@yahoo.it>
 Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -30,51 +31,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Oct 2005 18:32:03 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 2 Oct 2005 19:45:58 +0200
+To: Al Viro <viro@ftp.linux.org.uk>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
 
-On Sun, Oct 02, 2005 at 01:50:28PM +0200, Blaisorblade wrote:
-> On Sunday 02 October 2005 13:38, Al Viro wrote:
-> > On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
-> > > The patch in Al Viro's:
-> 
-> > > ecba97d4aacf4e80c56eb73e39af0369cb8539a4
-> 
-> > > messed up UML (in particular skas0, which doesn't boot any more - or
-> > > maybe it boots one out of 10 times).
-> 
-> > > Btw: did Al CC you on it, at least?
-> 
-> > Yes.  Moreover, that had also been done two weeks ago when original version
-> > of patch had been sent for review to Jeff.  Who'd caught that one and other
-> > bugs and sent the fixed variant back.   At which point I'd fscked up the
-> > merge.
-> 
-> Ok, you're excused... now, however, I still think that this should be 
-> postponed to 2.6.15, since it's a (very nice, indeed) cleanup and we're 
-> nearing completion.
-> 
-> Al, did you receive my "[PATCH 5/5] uml: remove empty hostfs_truncate method"? 
-> What about that?
+On Sunday 02 October 2005 19:32, Al Viro wrote:
+> On Sun, Oct 02, 2005 at 01:50:28PM +0200, Blaisorblade wrote:
+> > On Sunday 02 October 2005 13:38, Al Viro wrote:
 
-What about that?  Obvious patch that got no objections from anybody and
-AFAICS got in -rc3:
 
-; git-whatchanged fs/hostfs/hostfs_kern.c|head
-diff-tree daa35edc0a967d1f77c2e2c1346f57d04371487a (from bd948057357db5febfe64cf7a9ef11d7e347ffec)
-Author: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Date:   Fri Sep 30 11:59:01 2005 -0700
+> > Al, did you receive my "[PATCH 5/5] uml: remove empty hostfs_truncate
+> > method"? What about that?
 
-    [PATCH] uml: remove empty hostfs_truncate method
-    
-    Calling truncate() on hostfs spits a kernel warning "Something isn't
-    implemented here", but it still works fine.
-    
-    Indeed, hostfs i_op->truncate doesn't do anything.  But hostfs_setattr() ->
-;
+> What about that?  Obvious patch
+Ok, that's nice.
+> that got no objections from anybody and 
+> AFAICS got in -rc3:
+Ok, sorry - overlooked and missed it.
 
-Judging by Signed-off-by it looks like a -mm -> Linus merge...
+I saw "Hey, it's not been merged yet" and just after I saw -rc3, and didn't 
+notice my last batch going in between the two ones.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
