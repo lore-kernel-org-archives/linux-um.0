@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM6YB-0005r9-Sx	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 09:18:55 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ELuPI-0003zB-O7
+	id 1EM77u-00071W-Rl	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 09:55:50 -0700
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EM77s-0007Mf-FZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 Oct 2005 20:20:58 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH] Early x86_64 crash
-Message-ID: <20051002023514.GA6350@localhost.localdomain>
-References: <20050929161617.GA30460@ccure.user-mode-linux.org>
-	<200509301641.59585.blaisorblade@yahoo.it>
+	Sun, 02 Oct 2005 09:55:51 -0700
+From: Al Viro <viro@ftp.linux.org.uk>
+Message-ID: <20051002165545.GP7992@ftp.linux.org.uk>
+References: <200510021213.40191.blaisorblade@yahoo.it>
+	<20051002155134.GA3777@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200509301641.59585.blaisorblade@yahoo.it>
+In-Reply-To: <20051002155134.GA3777@ccure.user-mode-linux.org>
+Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,22 +29,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 1 Oct 2005 22:35:14 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 2 Oct 2005 17:55:45 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
 
-On Fri, Sep 30, 2005 at 04:41:58PM +0200, Blaisorblade wrote:
-> I assume you've been able to reproduce this crash and see this patch fix it, 
-> right?
+On Sun, Oct 02, 2005 at 11:51:34AM -0400, Jeff Dike wrote:
+> On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
+> > The patch in Al Viro's:
+> > 
+> > ecba97d4aacf4e80c56eb73e39af0369cb8539a4
+> > 
+> > messed up UML (in particular skas0, which doesn't boot any more - or maybe it 
+> > boots one out of 10 times).
+> > 
+> > Btw: did Al CC you on it, at least?
+> > 
+> > The reason is that he messed up HOST_FRAME_SIZE on i386 (by using 
+> > DEFINE_LONGS). I.e. HOST_FRAME_SIZE, which was 17, became 17/sizeof(long). 
+> > Uh, nice.
+> 
+> He did, and I found the same problem and sent him back the fix.  I guess
+> he sent in the original patch.
 
-Yup.
-
-> I've attached the addon with additional clobber, and with fixed tabs (i.e. 
-> hardtabs). Not compiled it (no time to reboot right now).
-
-Yeah, I'll fix the spacing in my copy.
-
-				Jeff
+s/original/mismerged/ (note that original had more breakage in the same
+file).  AFAICS, s/DEFINE_LONGS/DEFINE/ in that place is all that got lost.
 
 
 -------------------------------------------------------
