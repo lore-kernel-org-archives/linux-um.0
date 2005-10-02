@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM9Cy-0006tB-VB	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 12:09:12 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ELsRk-0008Ln-6w
+	id 1EMAPf-00075f-G3	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 13:26:23 -0700
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EM2AX-0003BC-CM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 Oct 2005 18:15:21 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Clearing kmalloc_ok during shutdown is broken -
-	malloc will clear our data.
-Message-ID: <20051002010812.GB4778@localhost.localdomain>
-References: <200509281346.23592.blaisorblade@yahoo.it>
-	<20050928213125.GA16955@ccure.user-mode-linux.org>
-	<200509291614.03229.blaisorblade@yahoo.it>
+	Sun, 02 Oct 2005 04:38:14 -0700
+From: Al Viro <viro@ftp.linux.org.uk>
+Message-ID: <20051002113806.GO7992@ftp.linux.org.uk>
+References: <200510021213.40191.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200509291614.03229.blaisorblade@yahoo.it>
+In-Reply-To: <200510021213.40191.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,34 +28,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 1 Oct 2005 21:08:12 -0400
+Date: Sun, 2 Oct 2005 12:38:06 +0100
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@oracle.com>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
 
-On Thu, Sep 29, 2005 at 04:14:02PM +0200, Blaisorblade wrote:
-> I now even found (by chance) the original mail from Allan Graves - and the 
-> changes in arch/um/include/sysdep-x86_64/ptrace.h weren't in his patch and 
-> are unrelated.
-> Plus, I think they're also bogus (those registers exist), but I may be wrong, 
-The patch uses UPT_REG apparently for the first time.  Those registers exist,
-but there are no defines for them in the x86_64 ptrace.h.  UPT_REG is never
-called with any of those as its argument, so it's easy to just remove those
-cases.
+On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
+> The patch in Al Viro's:
+> 
+> ecba97d4aacf4e80c56eb73e39af0369cb8539a4
+> 
+> messed up UML (in particular skas0, which doesn't boot any more - or maybe it 
+> boots one out of 10 times).
+> 
+> Btw: did Al CC you on it, at least?
 
-> On the bogus value: I'm more accustomed to 0xdeadbeef, since 0xbadbabe could 
-> be valid while 0xdeadbeef not (it's in the last giga).
-
-Yeah, that makes sense.
-
-> The only problem I see is that we need to test it on a wide glibc range - 
-> you're using an internal header detail, so glibc will break it at will.
-
-Yeah, it's bad.  The other way to do it is to explictly save the registers
-in the thread struct, which is effectively the reimplementing setjmp option
-which you mentioned.
-
-				Jeff
-
+Yes.  Moreover, that had also been done two weeks ago when original version
+of patch had been sent for review to Jeff.  Who'd caught that one and other
+bugs and sent the fixed variant back.   At which point I'd fscked up the
+merge.
 
 
 -------------------------------------------------------
