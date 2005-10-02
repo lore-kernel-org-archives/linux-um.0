@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM8AI-00020F-MP	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 11:02:22 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EM8AF-0002vz-Sj
+	id 1EM8g0-00044Q-MB	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 11:35:08 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EM8fw-0002zN-LQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 11:02:22 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <200510021213.40191.blaisorblade@yahoo.it>
-	<20051002155134.GA3777@ccure.user-mode-linux.org>
-In-Reply-To: <20051002155134.GA3777@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Sun, 02 Oct 2005 11:35:08 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Clearing kmalloc_ok during shutdown is broken -
+	malloc will clear our data.
+Message-ID: <20051002182755.GB26063@ccure.user-mode-linux.org>
+References: <200509281346.23592.blaisorblade@yahoo.it>
+	<200509291614.03229.blaisorblade@yahoo.it>
+	<20051002010812.GB4778@localhost.localdomain>
+	<200510021231.05260.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200510022001.21638.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
+In-Reply-To: <200510021231.05260.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,34 +31,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Oct 2005 20:01:21 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
+Date: Sun, 2 Oct 2005 14:27:55 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@oracle.com>
 
-On Sunday 02 October 2005 17:51, Jeff Dike wrote:
-> On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
+On Sun, Oct 02, 2005 at 12:31:04PM +0200, Blaisorblade wrote:
+> > Yeah, it's bad.  The other way to do it is to explictly save the registers
+> > in the thread struct, which is effectively the reimplementing setjmp option
+> > which you mentioned.
+> At least, if we save them separately from the jmpbuf_t, we can use them for 
+> sysrq t, without reimplementing setjmp() and longjmp(). Not nice, wastes 24 
+> bytes, but would work.
 
-> He did, and I found the same problem and sent him back the fix.  I guess
-> he sent in the original patch.
-Ok, he just said he sent a mismerged patch, but it's ok.
-> I was planning on sending it in after 2.6.14 because of its size.
-Al, is that ok for you if we follow this original plan?
+Yup.
 
-In this case, I'll post the dropping patch and re-send the Kbuild fix of my 
-last batch (conflicted with Al's patch, but now it's needed again).
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+> I have the doubt that the location of those registers is part of the ABI, 
 
-	
+I think they are probably not.
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+> Probably, however, it's just better to test on, say, a Slackware 8.1, and hope 
+> for the best and go doing a fix when things change.
 
+Yeah, I agree.  On the positive side, I think that jmp_buf has probably been
+unchanged for a long time, and will remain so.
+
+				Jeff
 
 
 -------------------------------------------------------
