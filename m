@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM8ip-0004H4-8D	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 11:38:03 -0700
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EM8in-0003pL-Ls
+	id 1EM8yV-0005Wu-Bo	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 11:54:15 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EM8yT-0006Ns-Kc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 11:38:03 -0700
-From: Al Viro <viro@ftp.linux.org.uk>
-Message-ID: <20051002183758.GR7992@ftp.linux.org.uk>
-References: <200510021213.40191.blaisorblade@yahoo.it>
-	<20051002155134.GA3777@ccure.user-mode-linux.org>
-	<200510022001.21638.blaisorblade@yahoo.it>
+	Sun, 02 Oct 2005 11:54:15 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
+Message-ID: <20051002183123.GC26063@ccure.user-mode-linux.org>
+References: <3524bf1f050927070645b999bd@mail.gmail.com>
+	<200509291409.28067.blaisorblade@yahoo.it>
+	<20051002010315.GA4778@localhost.localdomain>
+	<200510021223.15115.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200510022001.21638.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
+In-Reply-To: <200510021223.15115.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,39 +30,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Oct 2005 19:37:58 +0100
+Date: Sun, 2 Oct 2005 14:31:23 -0400
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
 
-On Sun, Oct 02, 2005 at 08:01:21PM +0200, Blaisorblade wrote:
-> On Sunday 02 October 2005 17:51, Jeff Dike wrote:
-> > On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
-> 
-> > He did, and I found the same problem and sent him back the fix.  I guess
-> > he sent in the original patch.
-> Ok, he just said he sent a mismerged patch, but it's ok.
-> > I was planning on sending it in after 2.6.14 because of its size.
-> Al, is that ok for you if we follow this original plan?
-> 
-> In this case, I'll post the dropping patch and re-send the Kbuild fix of my 
-> last batch (conflicted with Al's patch, but now it's needed again).
+On Sun, Oct 02, 2005 at 12:23:14PM +0200, Blaisorblade wrote:
+> Sorry, any reference will fault, unless it is done on a allocated present 
+> page, which the UML kernel freed but the host didn't. And remember, btw, 
+> you've planned to make this impossible...
 
-Up to Jeff; IMO it's easier to restore the variant past his review (with
-incremental replacing that DEFINE_LONGS), but maintainer gets to decide;
-that was the reason for Cc when patch got sent to Linus, after all...
+You are not making any sense t me here.
 
-diff -urN RC14-rc2-git6-base/arch/um/sys-i386/user-offsets.c current/arch/um/sys-i386/user-offsets.c
---- RC14-rc2-git6-base/arch/um/sys-i386/user-offsets.c	2005-09-25 23:28:27.000000000 -0400
-+++ current/arch/um/sys-i386/user-offsets.c	2005-10-02 14:08:15.000000000 -0400
-@@ -46,7 +46,7 @@
- 	OFFSET(HOST_SC_FP_ST, _fpstate, _st);
- 	OFFSET(HOST_SC_FXSR_ENV, _fpstate, _fxsr_env);
- 
--	DEFINE_LONGS(HOST_FRAME_SIZE, FRAME_SIZE);
-+	DEFINE(HOST_FRAME_SIZE, FRAME_SIZE);
- 	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_i387_struct));
- 	DEFINE_LONGS(HOST_XFP_SIZE, sizeof(struct user_fxsr_struct));
- 
+> Sorry, Jeff, which page are you going to evict? It can be a dirty page. Unless 
+> you mean that since that page is still accounted in the FS, Linux will leave 
+> a RAM page free to allow it to be re-read, while still swapping the page.
+
+Swapped pages are accounted in the FS all the time and there's obviously
+no dedicated page left free for them when they are next pulled in.  All 
+disk-based filesystems account pages that are on disk and not in memory.
+tmpfs is no different, except that its disk is the swap partition.
+
+				Jeff
 
 
 -------------------------------------------------------
