@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM7fA-0008SI-GV	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 10:30:12 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ELPIK-0007nN-BR
+	id 1EM7h8-0000Bd-Ok	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 10:32:14 -0700
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EM7h3-0005gr-S6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Sep 2005 11:07:42 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Early x86_64 crash
-References: <20050929161617.GA30460@ccure.user-mode-linux.org>
-In-Reply-To: <20050929161617.GA30460@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_36UPDwjX6Vohysw"
-Message-Id: <200509301641.59585.blaisorblade@yahoo.it>
+	Sun, 02 Oct 2005 10:32:11 -0700
+From: Al Viro <viro@ftp.linux.org.uk>
+Message-ID: <20051002173203.GQ7992@ftp.linux.org.uk>
+References: <200510021213.40191.blaisorblade@yahoo.it>
+	<20051002113806.GO7992@ftp.linux.org.uk>
+	<200510021350.29959.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200510021350.29959.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,112 +30,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 30 Sep 2005 16:41:58 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Sun, 2 Oct 2005 18:32:03 +0100
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
 
---Boundary-00=_36UPDwjX6Vohysw
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Sun, Oct 02, 2005 at 01:50:28PM +0200, Blaisorblade wrote:
+> On Sunday 02 October 2005 13:38, Al Viro wrote:
+> > On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
+> > > The patch in Al Viro's:
+> 
+> > > ecba97d4aacf4e80c56eb73e39af0369cb8539a4
+> 
+> > > messed up UML (in particular skas0, which doesn't boot any more - or
+> > > maybe it boots one out of 10 times).
+> 
+> > > Btw: did Al CC you on it, at least?
+> 
+> > Yes.  Moreover, that had also been done two weeks ago when original version
+> > of patch had been sent for review to Jeff.  Who'd caught that one and other
+> > bugs and sent the fixed variant back.   At which point I'd fscked up the
+> > merge.
+> 
+> Ok, you're excused... now, however, I still think that this should be 
+> postponed to 2.6.15, since it's a (very nice, indeed) cleanup and we're 
+> nearing completion.
+> 
+> Al, did you receive my "[PATCH 5/5] uml: remove empty hostfs_truncate method"? 
+> What about that?
 
-On Thursday 29 September 2005 18:16, Jeff Dike wrote:
-> If you are running UML/x86_64 and are seeing it crash before starting init,
-> I'd like you to do the following:
-I assume you've been able to reproduce this crash and see this patch fix it, 
-right?
+What about that?  Obvious patch that got no objections from anybody and
+AFAICS got in -rc3:
 
-I'm going to take it for -bs3, meanwhile, as soon as you answer on the 
-attachment (I'd like it at least to compile).
-> 	- make sure that you have CONFIG_FRAME_POINTER disabled
-> 	- enable it and see that UML boots
-> 	- apply the patch below, disable CONFIG_FRAME_POINTER again, and
-> see if UML still boots
-> 	- report results back to me
+; git-whatchanged fs/hostfs/hostfs_kern.c|head
+diff-tree daa35edc0a967d1f77c2e2c1346f57d04371487a (from bd948057357db5febfe64cf7a9ef11d7e347ffec)
+Author: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Date:   Fri Sep 30 11:59:01 2005 -0700
 
-> 				Jeff
+    [PATCH] uml: remove empty hostfs_truncate method
+    
+    Calling truncate() on hostfs spits a kernel warning "Something isn't
+    implemented here", but it still works fine.
+    
+    Indeed, hostfs i_op->truncate doesn't do anything.  But hostfs_setattr() ->
+;
 
-> @@ -22,11 +32,14 @@
->
->  	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));
-Why there's no "%rax" in the register clobber list, here and at the end?
->  	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
-> -		"syscall": : "g" (__NR_kill), "g" (SIGUSR1));
-> -	/* Two popqs to restore the stack to the state just before entering
-> -	 * the handler, one pops the return address, the other pops the frame
-> -	 * pointer.
-> +		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) :
-> +                "%rdi", "%rax", "%rsi");
-Here you're correctly informing GCC that your asm uses these regs.
-> +	/* sys_sigreturn expects that the stack pointer will be 8 bytes into
-> +	 * the signal frame.  So, we use the ucontext pointer, which we know
-> +	 * already, to get the signal frame pointer, and add 8 to that.
->  	 */
-> -	__asm__("popq %%rax ; popq %%rax ; movq %0, %%rax ; syscall" : : "g"
-> -		(__NR_rt_sigreturn));
-> +        __asm__("movq %0, %%rsp": :
-> +                "g" ((unsigned long) container_of(uc, struct rt_sigframe,
-> +						  uc) + 8));
-> +	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
->  }
-I've attached the addon with additional clobber, and with fixed tabs (i.e. 
-hardtabs). Not compiled it (no time to reboot right now).
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
---Boundary-00=_36UPDwjX6Vohysw
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="uml-early-x86-64-crash-fix"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="uml-early-x86-64-crash-fix"
-
-Index: linux-2.6.13/arch/um/sys-x86_64/stub_segv.c
-===================================================================
---- linux-2.6.13.orig/arch/um/sys-x86_64/stub_segv.c
-+++ linux-2.6.13/arch/um/sys-x86_64/stub_segv.c
-@@ -25,20 +25,20 @@ stub_segv_handler(int sig)
- {
- 	struct ucontext *uc;
- 
--	__asm__("movq %%rdx, %0" : "=g" (uc) :);
-+	__asm__("movq %%rdx, %0" : "=g" (uc) : );
-         GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
-                               &uc->uc_mcontext);
- 
--	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));
-+	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid) : "%rax");
- 	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
- 		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) :
--                "%rdi", "%rax", "%rsi");
-+		"%rdi", "%rax", "%rsi");
- 	/* sys_sigreturn expects that the stack pointer will be 8 bytes into
- 	 * the signal frame.  So, we use the ucontext pointer, which we know
- 	 * already, to get the signal frame pointer, and add 8 to that.
- 	 */
--        __asm__("movq %0, %%rsp": :
--                "g" ((unsigned long) container_of(uc, struct rt_sigframe,
-+	__asm__("movq %0, %%rsp": :
-+		"g" ((unsigned long) container_of(uc, struct rt_sigframe,
- 						  uc) + 8));
--	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
-+	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn) : "%rax");
- }
-
---Boundary-00=_36UPDwjX6Vohysw--
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+Judging by Signed-off-by it looks like a -mm -> Linus merge...
 
 
 -------------------------------------------------------
