@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMCOk-0001sP-3P	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 15:33:34 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ELtXx-0005uD-Rr
+	id 1EMCVw-00039E-W3	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 15:41:01 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EM2Mi-0004m0-LZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 Oct 2005 19:25:52 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
-Message-ID: <20051002010315.GA4778@localhost.localdomain>
-References: <3524bf1f050927070645b999bd@mail.gmail.com>
-	<20050928145009.GA11610@ccure.user-mode-linux.org>
-	<3524bf1f0509281225180173ae@mail.gmail.com>
-	<200509291409.28067.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sun, 02 Oct 2005 04:50:51 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <200510021213.40191.blaisorblade@yahoo.it>
+	<20051002113806.GO7992@ftp.linux.org.uk>
+In-Reply-To: <20051002113806.GO7992@ftp.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200509291409.28067.blaisorblade@yahoo.it>
+Message-Id: <200510021350.29959.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,37 +30,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 1 Oct 2005 21:03:15 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
+Date: Sun, 2 Oct 2005 13:50:28 +0200
+To: Al Viro <viro@ftp.linux.org.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
 
-On Thu, Sep 29, 2005 at 02:09:27PM +0200, Blaisorblade wrote:
-> Again, that page is not bad. There is no page yet for this address, and the 
-> host won't allocate one for now.
+On Sunday 02 October 2005 13:38, Al Viro wrote:
+> On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
+> > The patch in Al Viro's:
 
-It is bad in the sense that, unless some space is freed on that mount, a 
-reference to the page will always fault.
+> > ecba97d4aacf4e80c56eb73e39af0369cb8539a4
 
-> Ok, this makes a bit of sense, even if IMHO it doesn't work, I now see your 
-> point (but I still insist with what said above).
+> > messed up UML (in particular skas0, which doesn't boot any more - or
+> > maybe it boots one out of 10 times).
 
-Explain why it doesn't work.
+> > Btw: did Al CC you on it, at least?
 
-> However, even a dirtied page could be "bad", if it has been swapped. If 
-> we're getting a SIGBUS, it meant that it didn't succeed in freeing any 
-> memory.
+> Yes.  Moreover, that had also been done two weeks ago when original version
+> of patch had been sent for review to Jeff.  Who'd caught that one and other
+> bugs and sent the fixed variant back.   At which point I'd fscked up the
+> merge.
 
-No it can't.  A swapped page still counts as occupying space in the filesystem.
-If a page was successfully allocated, then accesses to it will always succeed,
-even if it needs to be swapped in.
+Ok, you're excused... now, however, I still think that this should be 
+postponed to 2.6.15, since it's a (very nice, indeed) cleanup and we're 
+nearing completion.
 
-> And, frankly, unless the UML ram file is kept on ramfs (which is RAM-only), 
-> it can be swapped (both for disk-based filesystem and for tmpfs).
-> So, I don't think what you suggest could work.
+Al, did you receive my "[PATCH 5/5] uml: remove empty hostfs_truncate method"? 
+What about that? I'm nervous because the whole batch was lost somewhere 
+without merging, it seems (and it has a couple of other critical fixes).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-Swapping makes no difference.
+	
 
-				Jeff
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
