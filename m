@@ -2,20 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMD4a-00017L-NP	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 16:16:48 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EM6EY-0006P6-1z
+	id 1EMDXV-0006XP-2Y	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 16:46:41 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EM10D-0002D8-8V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 08:58:39 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20051002155134.GA3777@ccure.user-mode-linux.org>
-References: <200510021213.40191.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sun, 02 Oct 2005 03:23:33 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
+References: <3524bf1f050927070645b999bd@mail.gmail.com>
+	<200509291409.28067.blaisorblade@yahoo.it>
+	<20051002010315.GA4778@localhost.localdomain>
+In-Reply-To: <20051002010315.GA4778@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200510021213.40191.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
+Message-Id: <200510021223.15115.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,30 +31,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Oct 2005 11:51:34 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
+Date: Sun, 2 Oct 2005 12:23:14 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
 
-On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
-> The patch in Al Viro's:
-> 
-> ecba97d4aacf4e80c56eb73e39af0369cb8539a4
-> 
-> messed up UML (in particular skas0, which doesn't boot any more - or maybe it 
-> boots one out of 10 times).
-> 
-> Btw: did Al CC you on it, at least?
-> 
-> The reason is that he messed up HOST_FRAME_SIZE on i386 (by using 
-> DEFINE_LONGS). I.e. HOST_FRAME_SIZE, which was 17, became 17/sizeof(long). 
-> Uh, nice.
+On Sunday 02 October 2005 03:03, Jeff Dike wrote:
+> On Thu, Sep 29, 2005 at 02:09:27PM +0200, Blaisorblade wrote:
+> > Again, that page is not bad. There is no page yet for this address, and
+> > the host won't allocate one for now.
 
-He did, and I found the same problem and sent him back the fix.  I guess
-he sent in the original patch.
+> It is bad in the sense that, unless some space is freed on that mount, a
+> reference to the page will always fault.
+Sorry, any reference will fault, unless it is done on a allocated present 
+page, which the UML kernel freed but the host didn't. And remember, btw, 
+you've planned to make this impossible...
+> > Ok, this makes a bit of sense, even if IMHO it doesn't work, I now see
+> > your point (but I still insist with what said above).
 
-I was planning on sending it in after 2.6.14 because of its size.
+> Explain why it doesn't work.
+Below.
+> > However, even a dirtied page could be "bad", if it has been swapped. If
+> > we're getting a SIGBUS, it meant that it didn't succeed in freeing any
+> > memory.
 
-				Jeff
+> No it can't.  A swapped page still counts as occupying space in the
+> filesystem. If a page was successfully allocated, then accesses to it will
+> always succeed, even if it needs to be swapped in.
+
+Sorry, Jeff, which page are you going to evict? It can be a dirty page. Unless 
+you mean that since that page is still accounted in the FS, Linux will leave 
+a RAM page free to allow it to be re-read, while still swapping the page.
+
+You didn't obviously mean this absurdity (why swap it in first place), but I 
+don't catch what's missing to you.
+
+> > And, frankly, unless the UML ram file is kept on ramfs (which is
+> > RAM-only), it can be swapped (both for disk-based filesystem and for
+> > tmpfs). So, I don't think what you suggest could work.
+
+> Swapping makes no difference.
+Realoding pages means freeing RAM to leave place to them.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
