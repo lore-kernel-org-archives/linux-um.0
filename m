@@ -2,23 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMCVw-00039E-W3	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 15:41:01 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EM2Mi-0004m0-LZ
+	id 1EMCvQ-0007od-3x	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 16:07:20 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EM17n-0003Fi-Mr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 04:50:51 -0700
+	Sun, 02 Oct 2005 03:31:23 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <200510021213.40191.blaisorblade@yahoo.it>
-	<20051002113806.GO7992@ftp.linux.org.uk>
-In-Reply-To: <20051002113806.GO7992@ftp.linux.org.uk>
+Subject: Re: [uml-devel] Clearing kmalloc_ok during shutdown is broken -
+	malloc will clear our data.
+References: <200509281346.23592.blaisorblade@yahoo.it>
+	<200509291614.03229.blaisorblade@yahoo.it>
+	<20051002010812.GB4778@localhost.localdomain>
+In-Reply-To: <20051002010812.GB4778@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200510021350.29959.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
+Message-Id: <200510021231.05260.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,33 +32,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Oct 2005 13:50:28 +0200
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>
+Date: Sun, 2 Oct 2005 12:31:04 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@oracle.com>
 
-On Sunday 02 October 2005 13:38, Al Viro wrote:
-> On Sun, Oct 02, 2005 at 12:13:39PM +0200, Blaisorblade wrote:
-> > The patch in Al Viro's:
+On Sunday 02 October 2005 03:08, Jeff Dike wrote:
+> On Thu, Sep 29, 2005 at 04:14:02PM +0200, Blaisorblade wrote:
+> > I now even found (by chance) the original mail from Allan Graves - and
+> > the changes in arch/um/include/sysdep-x86_64/ptrace.h weren't in his
+> > patch and are unrelated.
+> > Plus, I think they're also bogus (those registers exist), but I may be
+> > wrong,
 
-> > ecba97d4aacf4e80c56eb73e39af0369cb8539a4
+> The patch uses UPT_REG apparently for the first time.  Those registers
+> exist, but there are no defines for them in the x86_64 ptrace.h.  UPT_REG
+> is never called with any of those as its argument, so it's easy to just
+> remove those cases.
+Ah, ok.
 
-> > messed up UML (in particular skas0, which doesn't boot any more - or
-> > maybe it boots one out of 10 times).
+> > The only problem I see is that we need to test it on a wide glibc range -
+> > you're using an internal header detail, so glibc will break it at will.
 
-> > Btw: did Al CC you on it, at least?
+> Yeah, it's bad.  The other way to do it is to explictly save the registers
+> in the thread struct, which is effectively the reimplementing setjmp option
+> which you mentioned.
+At least, if we save them separately from the jmpbuf_t, we can use them for 
+sysrq t, without reimplementing setjmp() and longjmp(). Not nice, wastes 24 
+bytes, but would work.
 
-> Yes.  Moreover, that had also been done two weeks ago when original version
-> of patch had been sent for review to Jeff.  Who'd caught that one and other
-> bugs and sent the fixed variant back.   At which point I'd fscked up the
-> merge.
+I have the doubt that the location of those registers is part of the ABI, 
+(pending: find an example where I can be statically linked to glibc and 
+dynamically linked to a library dynamically linked to glibc, and must pass 
+jmpbuf_t between the two implementations)
+even if the C names aren't part of the API, so we could copy the structure.
 
-Ok, you're excused... now, however, I still think that this should be 
-postponed to 2.6.15, since it's a (very nice, indeed) cleanup and we're 
-nearing completion.
-
-Al, did you receive my "[PATCH 5/5] uml: remove empty hostfs_truncate method"? 
-What about that? I'm nervous because the whole batch was lost somewhere 
-without merging, it seems (and it has a couple of other critical fixes).
+Probably, however, it's just better to test on, say, a Slackware 8.1, and hope 
+for the best and go doing a fix when things change.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
