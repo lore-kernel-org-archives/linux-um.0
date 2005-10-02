@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EM8yV-0005Wu-Bo	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 11:54:15 -0700
+	id 1EM9Cy-0006tB-VB	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 02 Oct 2005 12:09:12 -0700
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EM8yT-0006Ns-Kc
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ELsRk-0008Ln-6w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 02 Oct 2005 11:54:15 -0700
+	Sat, 01 Oct 2005 18:15:21 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] a question about sigsetjmp() in copy_from/to_user()
-Message-ID: <20051002183123.GC26063@ccure.user-mode-linux.org>
-References: <3524bf1f050927070645b999bd@mail.gmail.com>
-	<200509291409.28067.blaisorblade@yahoo.it>
-	<20051002010315.GA4778@localhost.localdomain>
-	<200510021223.15115.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Clearing kmalloc_ok during shutdown is broken -
+	malloc will clear our data.
+Message-ID: <20051002010812.GB4778@localhost.localdomain>
+References: <200509281346.23592.blaisorblade@yahoo.it>
+	<20050928213125.GA16955@ccure.user-mode-linux.org>
+	<200509291614.03229.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200510021223.15115.blaisorblade@yahoo.it>
+In-Reply-To: <200509291614.03229.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,27 +30,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 2 Oct 2005 14:31:23 -0400
+Date: Sat, 1 Oct 2005 21:08:12 -0400
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Allan Graves <allan.graves@oracle.com>
 
-On Sun, Oct 02, 2005 at 12:23:14PM +0200, Blaisorblade wrote:
-> Sorry, any reference will fault, unless it is done on a allocated present 
-> page, which the UML kernel freed but the host didn't. And remember, btw, 
-> you've planned to make this impossible...
+On Thu, Sep 29, 2005 at 04:14:02PM +0200, Blaisorblade wrote:
+> I now even found (by chance) the original mail from Allan Graves - and the 
+> changes in arch/um/include/sysdep-x86_64/ptrace.h weren't in his patch and 
+> are unrelated.
+> Plus, I think they're also bogus (those registers exist), but I may be wrong, 
+The patch uses UPT_REG apparently for the first time.  Those registers exist,
+but there are no defines for them in the x86_64 ptrace.h.  UPT_REG is never
+called with any of those as its argument, so it's easy to just remove those
+cases.
 
-You are not making any sense t me here.
+> On the bogus value: I'm more accustomed to 0xdeadbeef, since 0xbadbabe could 
+> be valid while 0xdeadbeef not (it's in the last giga).
 
-> Sorry, Jeff, which page are you going to evict? It can be a dirty page. Unless 
-> you mean that since that page is still accounted in the FS, Linux will leave 
-> a RAM page free to allow it to be re-read, while still swapping the page.
+Yeah, that makes sense.
 
-Swapped pages are accounted in the FS all the time and there's obviously
-no dedicated page left free for them when they are next pulled in.  All 
-disk-based filesystems account pages that are on disk and not in memory.
-tmpfs is no different, except that its disk is the swap partition.
+> The only problem I see is that we need to test it on a wide glibc range - 
+> you're using an internal header detail, so glibc will break it at will.
+
+Yeah, it's bad.  The other way to do it is to explictly save the registers
+in the thread struct, which is effectively the reimplementing setjmp option
+which you mentioned.
 
 				Jeff
+
 
 
 -------------------------------------------------------
