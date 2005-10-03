@@ -2,24 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMVMc-0007ek-Qm	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Oct 2005 11:48:38 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EMVMY-0004w3-5L
+	id 1EMVUI-00084q-4E	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Oct 2005 11:56:34 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EMVUG-0006TI-Ay
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Oct 2005 11:48:36 -0700
+	Mon, 03 Oct 2005 11:56:34 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
 References: <200510021213.40191.blaisorblade@yahoo.it>
+	<200510022001.21638.blaisorblade@yahoo.it>
 	<20051002183758.GR7992@ftp.linux.org.uk>
-	<20051002205451.GS7992@ftp.linux.org.uk>
-In-Reply-To: <20051002205451.GS7992@ftp.linux.org.uk>
+In-Reply-To: <20051002183758.GR7992@ftp.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200510032030.23705.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
+Message-Id: <200510032056.18439.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,72 +31,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 3 Oct 2005 20:30:23 +0200
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>, sam@ravnborg.org
+Date: Mon, 3 Oct 2005 20:56:18 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Al Viro <viro@ftp.linux.org.uk>, Jeff Dike <jdike@addtoit.com>, Alexander Viro <viro@zeniv.linux.org.uk>
 
-On Sunday 02 October 2005 22:54, Al Viro wrote:
-> BTW, speaking of Kbuild cleanups (and that one is definitely 2.6.15
-> fodder): patch below
-> 	* kills messing with lib vs. core for uml-amd64 (we don't need that
-> anymore)
-I'm even curious why we needed that in first place.
+On Sunday 02 October 2005 20:37, Al Viro wrote:
+> On Sun, Oct 02, 2005 at 08:01:21PM +0200, Blaisorblade wrote:
+> > On Sunday 02 October 2005 17:51, Jeff Dike wrote:
 
-> 	* kills symlinks in arch/um/sys-*/
-> 	* kills foo.c-dir - we simply give HOST_OBJS=<list of pathnames
-> under arch/$(SUBARCH)> and that's it (no SYMLINKS either)
+> > Al, is that ok for you if we follow this original plan?
+> >
+> > In this case, I'll post the dropping patch and re-send the Kbuild fix of
+> > my last batch (conflicted with Al's patch, but now it's needed again).
 
-> Price: use of make feature I really, really hate - $(eval ...). 
-I looked at make Changelog, time ago, and this feature was added in make 3.80, 
-so you'd need to update Documentation/Changes.
+> Up to Jeff; IMO it's easier to restore the variant past his review (with
+> incremental replacing that DEFINE_LONGS), but maintainer gets to decide;
+> that was the reason for Cc when patch got sent to Linus, after all...
 
-Make 3.80 was released in 2002-10-03, so I hope it's not a problem (should 
-check on Debian Woody though, maybe).
-
-> I'm using 
-> it to generate and process
->
-> bar-y := ../../$(SUBARCH)/foo/bar.o
-> ...
-
-> for all HOST_OBJS elements.  If there are better suggestions, I'd be glad
-> to hear them...
-
-The first thing is that HOST_OBJS is totally confusing... SUBARCH_OBJS or 
-something else is better.
-
-The second is that, even if x86_64 uses things such as  (from 
-arch/x86_64/mm/Makefile):
-
-obj-$(CONFIG_HUGETLB_PAGE) += hugetlbpage.o
-hugetlbpage-y = ../../i386/mm/hugetlbpage.o
-(because hugetlbpage.o is conditional)
-
-we could as well do 
-
-subarch-y := ../../$(SUBARCH)/name
-(even with foreach)
-
-for most things (see arch/x86_64/oprofile/Makefile), and for highmem and 
-module I'd just do that by hand:
-
-highmem-y := $(SUBARCH_DIR)/mm/highmem.o
-module-y := $(SUBARCH_DIR)/kernel/module.o
-
-with SUBARCH_DIR defined in arch/um/Makefile.
+My only worry is that some other bug may have slipped through - it's not the 
+case that we are perfect, nor we have a real test-suite to catch this sort of 
+thing (especially, there are sections of FPU handling which are buggy anyway 
+- there is a really big patch which copies whole sections of i386 low level 
+messing up with FPU, which I requested Jeff to hold some time ago).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
 
 
