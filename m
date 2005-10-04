@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMlbf-0003NC-RQ	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Oct 2005 05:09:15 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EMlbe-0007Qz-7e
+	id 1EMnQr-0001Je-1m	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Oct 2005 07:06:13 -0700
+Received: from wumpus.mythic-beasts.com ([212.69.37.9] ident=Debian-exim)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EMnQo-0006au-A7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Oct 2005 05:09:15 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
-References: <200510021213.40191.blaisorblade@yahoo.it>
-	<200510041319.34431.blaisorblade@yahoo.it>
-	<20051004115529.GD7992@ftp.linux.org.uk>
-In-Reply-To: <20051004115529.GD7992@ftp.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Tue, 04 Oct 2005 07:06:13 -0700
+Received: from sphinx.mythic-beasts.com ([212.69.37.6])
+	by wumpus.mythic-beasts.com with esmtp (Exim 4.44)
+	id 1EMnQh-0006mK-Li	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Oct 2005 15:06:03 +0100
+From: Chris Lightfoot <chris@ex-parrot.com>
+Message-ID: <p0zwERnRDXpq.XPXM1lKY1g1VZeW131q++g@sphinx.mythic-beasts.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200510041409.13277.blaisorblade@yahoo.it>
+Subject: [uml-devel] comments in ubd_kern.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,35 +30,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Oct 2005 14:09:12 +0200
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Alexander Viro <viro@zeniv.linux.org.uk>, sam@ravnborg.org
+Date: Tue, 4 Oct 2005 15:06:02 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 04 October 2005 13:55, Al Viro wrote:
-> On Tue, Oct 04, 2005 at 01:19:33PM +0200, Blaisorblade wrote:
+Presently the code in ubd_kern.c carries the following
+comments:
 
-> For one thing, it doesn't link into anything; for another, NPTL or not, it
-> won't generate any non-trivial sections - it's one static variable (*not*
-> per-thread, etc.) and one function with a bunch of inline assembler in
-> it.  Built as kernel object.
+  - for ubd_handler,
 
-> IOW, this sucker is as self-contained as it get - .text, .bss, the only
-> relocation being reference to static variable from code (i.e. offset
-> relative to wherever .bss ends up) and the only non-local symbol being
-> switcheroo.
+    /* Called without ubd_io_lock held */
 
-Ok, fine - the old problem was due to linking it with libc, so it's fixed.
-Nice and ACK.
+  - for do_ubd_request,
+
+    /* Called with ubd_io_lock held */
+
+ubd_handler locks ubd_io_lock before calling end_request,
+but it then calls do_ubd_request, after releasing the
+lock. But at the end of ubd_handler, it calls
+do_ubd_request, and doesn't acquire the spinlock before
+doing so. Am I missing something or is this an error?
+
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
-
+Something must be done. This is something, so we must do it.
+(characterising government-by-reaction)
 
 
 -------------------------------------------------------
