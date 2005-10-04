@@ -2,18 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ENWNw-0004Tq-Qs	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Oct 2005 07:06:12 -0700
-Received: from [203.67.244.145] (helo=mail.san-gatu.com)
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ENWNu-0006aM-AZ
+	id 1ENb5R-0005IP-Sb	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Oct 2005 12:07:25 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ENb5P-0005Jh-6F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Oct 2005 07:06:12 -0700
-Message-ID: <20051006082352.9685.qmail@mail.san-gatu.com>
-From: info@san-gatu.com
+	Thu, 06 Oct 2005 12:07:23 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] sysctl -w va.legacy_va_layout=1
+References: <003e01c59644$3893a5b0$3c01010a@webwombat.com.au>
+In-Reply-To: <003e01c59644$3893a5b0$3c01010a@webwombat.com.au>
 MIME-Version: 1.0
-Content-type: text/plain; charset=iso-2022-jp
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] IRL-GIRL
+Content-Disposition: inline
+Message-Id: <200510041901.42002.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,33 +29,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 6 Oct 2005 17:23:52 +0900
+Date: Tue, 4 Oct 2005 19:01:41 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Phill Wombat <uml@webwombat.com>
 
- http://pure.pmp.to/girl-girl
+On Monday 01 August 2005 04:53, Phill Wombat wrote:
+> With 2.6.12+bs9 on x86_64 the error now changes
 
-◆◇◆◇ランキング＆オトナのブログ集◆◇◆◇
+> On the host set:
+> sysctl -w va.legacy_va_layout=1
+> sysctl -w kernel.randomize_va_space=0
 
-☆いま全国でもっとも人気のあるサイトTOP8☆
+> Starting the uml with init=/bin/sh starts up as usual. Performing the ls
+> command now result in a different thing happening: Bad op in do_proc_op
 
- http://pure.pmp.to/girl-girl
+> Where as before it produced:
+> Child 22915 exited with signal 11
 
-◆注目！！新着もご紹介（＾−＾）
+Hi Phil, I was looking to old bugs and I came through your mail.
+Has your bug been fixed in later releases?
 
- http://pure.pmp.to/girl-girl
+Also, I see it's mostly related to x86_64 hosts - which are working a lot 
+better now (especially thanks to SKAS0 mode).
 
-おまけはかなり過激なオトナのブログ付♪
-
- http://pure.pmp.to/girl-girl
-
-メールを拒否する方は
-
- toiawase_mailer@yahoo.co.jp
-
-
+IOW: is this still an issue, or can I consider this bug "closed"?
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
 
-.
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
