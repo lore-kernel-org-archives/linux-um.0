@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ENb5R-0005IP-Sb	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Oct 2005 12:07:25 -0700
+	id 1ENb5x-0005Nd-Ta	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Oct 2005 12:07:58 -0700
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ENb5P-0005Jh-6F
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ENb5x-0002ZG-7U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Oct 2005 12:07:23 -0700
+	Thu, 06 Oct 2005 12:07:57 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] sysctl -w va.legacy_va_layout=1
-References: <003e01c59644$3893a5b0$3c01010a@webwombat.com.au>
-In-Reply-To: <003e01c59644$3893a5b0$3c01010a@webwombat.com.au>
+Subject: Re: [uml-devel] skas v8.2 results
+References: <42EBEFAC.90208@rimuhosting.com>
+In-Reply-To: <42EBEFAC.90208@rimuhosting.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200510041901.42002.blaisorblade@yahoo.it>
+Message-Id: <200510041902.56704.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,30 +29,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Oct 2005 19:01:41 +0200
+Date: Tue, 4 Oct 2005 19:02:56 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Phill Wombat <uml@webwombat.com>
+Cc: Peter <peter.spamcatcher@rimuhosting.com>
 
-On Monday 01 August 2005 04:53, Phill Wombat wrote:
-> With 2.6.12+bs9 on x86_64 the error now changes
+On Saturday 30 July 2005 23:22, Peter wrote:
+> Hi.
+>
+> We tried 2.6.12.3-skas3-v8.2 on a host server.  It kernel paniced (could
+> not capture the panic) after about 90 minutes.  I'd tried a 2.6.12
+> skasv8.2 a week or so back on another server and got the same result.
 
-> On the host set:
-> sysctl -w va.legacy_va_layout=1
-> sysctl -w kernel.randomize_va_space=0
+> 2.6.11.12-skas3-v8.2 has been running fine for 20 odd hours.
 
-> Starting the uml with init=/bin/sh starts up as usual. Performing the ls
-> command now result in a different thing happening: Bad op in do_proc_op
+> Has anyone had success with 2.6.12 skas v8.2?  If so I'd be interested
+> in a kernel .config.  FWIW our hosts are dual xeons.
+Peter, has anything changed on this issue? Had problems with 2.6.11 or success 
+with 2.6.12/2.6.13?
 
-> Where as before it produced:
-> Child 22915 exited with signal 11
-
-Hi Phil, I was looking to old bugs and I came through your mail.
-Has your bug been fixed in later releases?
-
-Also, I see it's mostly related to x86_64 hosts - which are working a lot 
-better now (especially thanks to SKAS0 mode).
-
-IOW: is this still an issue, or can I consider this bug "closed"?
+I've not heard any news, plus I've difficulties in imagining what's wrong 
+here. However, I'm going to think a bit more on this, and on an idea I just 
+had.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
