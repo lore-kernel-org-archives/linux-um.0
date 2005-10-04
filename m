@@ -1,25 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMZtL-0006q1-3V	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Oct 2005 16:38:43 -0700
-Received: from zeniv.linux.org.uk ([195.92.253.2])
+	id 1EMjb6-0004QQ-Bu	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Oct 2005 03:00:32 -0700
+Received: from wumpus.mythic-beasts.com ([212.69.37.9] ident=Debian-exim)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EMZtK-0003BG-PB
+	(Exim 4.44)	id 1EMjb6-0006rd-2X
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Oct 2005 16:38:43 -0700
-From: Al Viro <viro@ftp.linux.org.uk>
-Message-ID: <20051003233837.GA7992@ftp.linux.org.uk>
-References: <200510021213.40191.blaisorblade@yahoo.it>
-	<20051002183758.GR7992@ftp.linux.org.uk>
-	<20051002205451.GS7992@ftp.linux.org.uk>
-	<200510032030.23705.blaisorblade@yahoo.it>
+	Tue, 04 Oct 2005 03:00:32 -0700
+Received: from sphinx.mythic-beasts.com ([212.69.37.6])
+	by wumpus.mythic-beasts.com with esmtp (Exim 4.44)
+	id 1EMjaz-0005qZ-1u	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Oct 2005 11:00:25 +0100
+Received: from chris by sphinx.mythic-beasts.com with local (Exim 4.51)
+	id 1EMjay-0001Su-VE	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Oct 2005 11:00:24 +0100
+From: Chris Lightfoot <chris@ex-parrot.com>
+Message-ID: <HDubM/jULNDp.FiIUPkbI/sUT/mvVu1/2/A@sphinx.mythic-beasts.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200510032030.23705.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
+Resent-To: user-mode-linux-devel@lists.sourceforge.net
+Resent-Message-Id: <E1EMjay-0001Su-VE@sphinx.mythic-beasts.com>
+Subject: [uml-devel] ubd and write barriers
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,53 +35,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Oct 2005 00:38:37 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>, sam@ravnborg.org
+Date: Tue, 4 Oct 2005 10:31:15 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Oct 03, 2005 at 08:30:23PM +0200, Blaisorblade wrote:
-> The second is that, even if x86_64 uses things such as  (from 
-> arch/x86_64/mm/Makefile):
-> 
-> obj-$(CONFIG_HUGETLB_PAGE) += hugetlbpage.o
-> hugetlbpage-y = ../../i386/mm/hugetlbpage.o
-> (because hugetlbpage.o is conditional)
-> 
-> we could as well do 
-> 
-> subarch-y := ../../$(SUBARCH)/name
-> (even with foreach)
+The current ubd implementation doesn't support write
+barriers (blk_queue_ordered etc.), and the reccomendation
+is to use synchronous IO to ensure data integrity. In
+principle, adding barrier request support ought to get
+around this problem, allowing writes without O_SYNC with
+occasional calls to fdatasync on the underlying data (the
+motivation for write barrier support was safety of
+journalling filesystems on disks with write caches, an
+analogous problem).
 
-Err...  Kbuild won't know what to do with your subarch-y.  The way it works
-is simple - we are saying that e.g. bitops.o is a multi-part object with
-only one part, namely ../../i386/lib/bitops.o.  Said part is built by the
-normal Kbuild logics and then we get (dummy) linking, creating bitops.o.
+ext3 and reiserfs support the write barrier stuff if
+mounted with appropriate options (barrier=1 and
+barrier=flush respectively).
 
-> for most things (see arch/x86_64/oprofile/Makefile), and for highmem and 
-> module I'd just do that by hand:
-> 
-> highmem-y := $(SUBARCH_DIR)/mm/highmem.o
-> module-y := $(SUBARCH_DIR)/kernel/module.o
-> 
-> with SUBARCH_DIR defined in arch/um/Makefile.
+Implementing this ought to give performance somewhere
+between ubdXs and ubdX, but with adequate guarantees of
+data integrity for use with modern filesystems. That said,
+I haven't measured this yet.
 
-Hrm...   That just might be usable, _if_ we never run into modular suckers;
-in that case we can do the following:
+A patch for this is pretty simple (see below). Has there
+been discussion of this before? I couldn't find any in the
+list archives....
 
-ifneq ($(subarch-objs-y),)
-obj-y += subarch.o
-subarch-y = $(addprefix ../../$(SUBARCH),$(subarch-objs-y))
-endif
+--- ubd_kern.c.orig     2005-10-04 10:17:50.000000000 +0100
++++ ubd_kern.c  2005-10-04 10:22:59.000000000 +0100
+@@ -68,6 +68,7 @@
+        unsigned long long cow_offset;
+        unsigned long bitmap_words[2];
+        int error;
++        int barrier;
+ };
+ 
+ extern int open_ubd_file(char *file, struct openflags *openflags,
+@@ -825,6 +826,8 @@
+                unregister_blkdev(MAJOR_NR, "ubd");
+                return -1;
+        }
++
++        blk_queue_ordered(ubd_queue, QUEUE_ORDERED_TAG);
+ 
+        if (fake_major != MAJOR_NR) {
+                char name[sizeof("ubd_nnn\0")];
+@@ -1003,6 +1006,8 @@
+        io_req->buffer = req->buffer;
+        io_req->sectorsize = 1 << 9;
+ 
++        io_req->barrier = blk_barrier_rq(req);
++
+        if(dev->cow.file != NULL)
+                cowify_req(io_req, dev->cow.bitmap, dev->cow.bitmap_offset,
+                           dev->cow.bitmap_len);
+@@ -1334,6 +1339,8 @@
+                start = end;
+        } while(start < nsectors);
+ 
++        if (req->barrier) fdatasync(req->fds[bit]); /* XXX also sync before this write? */
++
+        req->error = update_bitmap(req);
+ }
+ 
 
-in arch/um/scripts/Makefile.rules with
 
-subarch-y = .....
-subarch-$(CONFIG_MODULE) += kernel/module.o
-etc. in arch/um/sys-.../Makefile
-
-The thing is, if we _ever_ need a potentially modular object pulled from
-the underlying architecture that trick will break.  So far we do not and
-since $(eval...) *is* a vile mess straight from the GNU intestine...
+-- 
+``Is there no beginning to your talents?''
+  (Clive Anderson, to Jeffrey Archer)
 
 
 -------------------------------------------------------
