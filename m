@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMkFX-0006Xc-J2	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Oct 2005 03:42:19 -0700
-Received: from wumpus.mythic-beasts.com ([212.69.37.9] ident=Debian-exim)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EMkFV-00023d-VC
+	id 1EMkpp-0000Dp-6r	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Oct 2005 04:19:49 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EMkpn-00034A-Ed
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Oct 2005 03:42:19 -0700
-From: Chris Lightfoot <chris@ex-parrot.com>
-Subject: Re: [uml-devel] ubd and write barriers
-Message-ID: <cnDjK7F+TozA.ccv0mQ01QIn2nWs/VlrGNA@sphinx.mythic-beasts.com>
-References: <HDubM/jULNDp.FiIUPkbI/sUT/mvVu1/2/A@sphinx.mythic-beasts.com>
-	<200510041231.56985.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Tue, 04 Oct 2005 04:19:49 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
+References: <200510021213.40191.blaisorblade@yahoo.it>
+	<200510041226.39233.blaisorblade@yahoo.it>
+	<20051004110959.GC7992@ftp.linux.org.uk>
+In-Reply-To: <20051004110959.GC7992@ftp.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200510041231.56985.blaisorblade@yahoo.it>
+Message-Id: <200510041319.34431.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,65 +31,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Oct 2005 11:42:14 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Tue, 4 Oct 2005 13:19:33 +0200
+To: Al Viro <viro@ftp.linux.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Alexander Viro <viro@zeniv.linux.org.uk>, sam@ravnborg.org
 
-On Tue, Oct 04, 2005 at 12:31:56PM +0200, Blaisorblade wrote:
-> On Tuesday 04 October 2005 11:31, Chris Lightfoot wrote:
-> > The current ubd implementation doesn't support write
-> > barriers (blk_queue_ordered etc.), and the reccomendation
-> > is to use synchronous IO to ensure data integrity. In
-> > principle, adding barrier request support ought to get
-> > around this problem, allowing writes without O_SYNC with
-> > occasional calls to fdatasync on the underlying data (the
-> > motivation for write barrier support was safety of
-> > journalling filesystems on disks with write caches, an
-> > analogous problem).
-> Yes, I more or less remembered that was the idea (from readings on lwn.net), 
-> thanks for confirming it.
+On Tuesday 04 October 2005 13:09, Al Viro wrote:
+> On Tue, Oct 04, 2005 at 12:26:36PM +0200, Blaisorblade wrote:
+> > On Tuesday 04 October 2005 01:38, Al Viro wrote:
+> > > On Mon, Oct 03, 2005 at 08:30:23PM +0200, Blaisorblade wrote:
+> > > > The second is that, even if x86_64 uses things such as  (from
+> > > > arch/x86_64/mm/Makefile):
 
-ok -- q.v. the discussion in here:
-    http://lwn.net/images/pdf/LDD3/ch16.pdf
+> Speaking of cleaning these makefiles: in my tree Makefile.unmap is
+> simply
+>
+> extra-$(CONFIG_MODE_TT) += unmap.o
+> $(obj)/unmap.o: _c_flags = $(call unprofile,$(CFLAGS))
+Where went objcopy -G switcheroo?
 
-> > ext3 and reiserfs support the write barrier stuff if
-> > mounted with appropriate options (barrier=1 and
-> > barrier=flush respectively).
-> So they don't auto-enable this when support exists? I.e. everybody is running 
-> slower just because we don't add those params?
+Possibly (it doesn't link into glibc) it's trivially ok, but please make sure 
+as the original fixed bug was environment-dependant (it happened only on some 
+Gentoo NPTL-only systems, and maybe the problem disappeared in later glibc 
+versions), so you wouldn't see the breakage.
 
-This bit I'm not sure about. I found one reference which
-said that barrier=1 is enabled by default in ext3, but it
-certainly isn't in the current kernel, and I suspect it's
-because some real disks lie about cache flushes(?).
-There's a compatibility chart here which tells you which
-combinations are safe on real hardware:
-    http://www.dt.e-technik.uni-dortmund.de/~ma/linux/kernel/safe-write-caches.html
-There was also some discussion somewhere about having a
-blacklist or whitelist of supported drives. Still, I don't
-understand why barrier=0 is any safer: if the write
-barriers aren't supported by the driver or hardware,
-there's still no other way of ensuring changes are
-committed to disk -- it's up to the user to test and
-configure appropriately.
+> now.  At which point it's about to disappear - no sense to bother with
+> including two lines, especially since one of them folds into
+>
+> $(obj)/stub_segv.o $(obj)/unmap.o: _c_flags = $(call unprofile,$(CFLAGS))
+>
+> Post-2.6.14 fodder, obviously.
+About folding it in, 
 
-Anyway, none of that applies to the UML/ubd case, but if
-barriers are implemented in ubd it's pretty easy to add
-the barrier=1 mount option when starting each UML
-instance.
+Acked-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-> > between ubdXs and ubdX, but with adequate guarantees of
-> > data integrity for use with modern filesystems. That said,
-> > I haven't measured this yet.
-> 
-> > A patch for this is pretty simple (see below). Has there
-> > been discussion of this before? I couldn't find any in the
-> > list archives....
-> This was discussed between me and Jeff recently, even if maybe that was 
-> off-list.
-
+Bye
 -- 
-``Nobody ever forgets where he buried the hatchet.'' (Hubbard)
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
