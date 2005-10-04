@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EMqJ8-00046D-0k	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Oct 2005 10:10:26 -0700
+	id 1EMqN1-0004I2-Qm	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Oct 2005 10:14:27 -0700
 Received: from zeniv.linux.org.uk ([195.92.253.2])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EMqIj-0004Jt-BE
+	(Exim 4.44)	id 1EMqMy-0008DY-SR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Oct 2005 10:10:25 -0700
+	Tue, 04 Oct 2005 10:14:27 -0700
 From: Al Viro <viro@ftp.linux.org.uk>
-Message-ID: <20051004170941.GI7992@ftp.linux.org.uk>
+Message-ID: <20051004171419.GJ7992@ftp.linux.org.uk>
 References: <200510021213.40191.blaisorblade@yahoo.it>
 	<20051002183758.GR7992@ftp.linux.org.uk>
 	<20051002205451.GS7992@ftp.linux.org.uk>
 	<200510032030.23705.blaisorblade@yahoo.it>
+	<20051004170941.GI7992@ftp.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200510032030.23705.blaisorblade@yahoo.it>
+In-Reply-To: <20051004170941.GI7992@ftp.linux.org.uk>
 Subject: [uml-devel] Re: UML/2.6.14-rc3 doesn't work fixes
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -31,26 +32,11 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Oct 2005 18:09:41 +0100
+Date: Tue, 4 Oct 2005 18:14:19 +0100
 To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Alexander Viro <viro@zeniv.linux.org.uk>, sam@ravnborg.org
 
-On Mon, Oct 03, 2005 at 08:30:23PM +0200, Blaisorblade wrote:
-> On Sunday 02 October 2005 22:54, Al Viro wrote:
-> > BTW, speaking of Kbuild cleanups (and that one is definitely 2.6.15
-> > fodder): patch below
-> > 	* kills messing with lib vs. core for uml-amd64 (we don't need that
-> > anymore)
-> I'm even curious why we needed that in first place.
-> 
-> > 	* kills symlinks in arch/um/sys-*/
-> > 	* kills foo.c-dir - we simply give HOST_OBJS=<list of pathnames
-> > under arch/$(SUBARCH)> and that's it (no SYMLINKS either)
-> 
-> > Price: use of make feature I really, really hate - $(eval ...). 
-... not anymore
-
-[that's post-2.6.14 stuff, IMO]
+	Sorry - a line had leaked from later patch; correct variant follows
 
 diff -urN RC14-rc3-git4-base/arch/um/Makefile-x86_64 RC14-rc3-git4-foo/arch/um/Makefile-x86_64
 --- RC14-rc3-git4-base/arch/um/Makefile-x86_64	2005-09-12 14:33:28.000000000 -0400
@@ -125,7 +111,7 @@ diff -urN RC14-rc3-git4-base/arch/um/sys-i386/Makefile RC14-rc3-git4-foo/arch/um
 diff -urN RC14-rc3-git4-base/arch/um/sys-x86_64/Makefile RC14-rc3-git4-foo/arch/um/sys-x86_64/Makefile
 --- RC14-rc3-git4-base/arch/um/sys-x86_64/Makefile	2005-09-12 14:33:28.000000000 -0400
 +++ RC14-rc3-git4-foo/arch/um/sys-x86_64/Makefile	2005-10-04 13:04:59.000000000 -0400
-@@ -4,29 +4,19 @@
+@@ -4,29 +4,18 @@
  # Licensed under the GPL
  #
  
@@ -139,7 +125,6 @@ diff -urN RC14-rc3-git4-base/arch/um/sys-x86_64/Makefile RC14-rc3-git4-foo/arch/
 -obj-y := ksyms.o
 -obj-$(CONFIG_MODULES) += module.o um_module.o
 +obj-$(CONFIG_MODULES) += um_module.o
-+obj-$(CONFIG_MODE_SKAS) += clone.o
  
 -USER_OBJS := ptrace_user.o sigcontext.o
 +subarch-obj-y = lib/bitops.o lib/csum-partial.o lib/memcpy.o lib/thunk.o
