@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ENb5x-0005Nd-Ta	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Oct 2005 12:07:58 -0700
+	id 1ENb5V-0005If-4P	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Oct 2005 12:07:29 -0700
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ENb5x-0002ZG-7U
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ENb5U-0005Ks-Gy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Oct 2005 12:07:57 -0700
+	Thu, 06 Oct 2005 12:07:29 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] skas v8.2 results
-References: <42EBEFAC.90208@rimuhosting.com>
-In-Reply-To: <42EBEFAC.90208@rimuhosting.com>
+Subject: Re: [uml-devel] Re: [PATCH 11/12] HPPFS: add dentry_ops->d_revalidate
+References: <20050918141006.31461.23599.stgit@zion.home.lan>
+	<20050921034416.GW7992@ftp.linux.org.uk>
+In-Reply-To: <20050921034416.GW7992@ftp.linux.org.uk>
 MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200510062007.32365.blaisorblade@yahoo.it>
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510041902.56704.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,32 +30,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Oct 2005 19:02:56 +0200
+Date: Thu, 6 Oct 2005 20:07:31 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Peter <peter.spamcatcher@rimuhosting.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, LKML <linux-kernel@vger.kernel.org>
 
-On Saturday 30 July 2005 23:22, Peter wrote:
-> Hi.
+On Wednesday 21 September 2005 05:44, Al Viro wrote:
+> On Sun, Sep 18, 2005 at 04:10:07PM +0200, Paolo 'Blaisorblade' Giarrusso 
+wrote:
+> > +static int hppfs_d_revalidate(struct dentry * dentry, struct nameidata *
+> > nd) +{
+> > +	int (*d_revalidate)(struct dentry *, struct nameidata *);
+> > +	struct dentry *proc_dentry;
+> > +
+> > +	proc_dentry = HPPFS_I(dentry->d_inode)->proc_dentry;
+> > +	if (proc_dentry->d_op && proc_dentry->d_op->d_revalidate)
+> > +		d_revalidate = proc_dentry->d_op->d_revalidate;
+> > +	else
+> > +		return 1; /* "Still valid" code */
+> > +
+> > +	return (*d_revalidate)(proc_dentry, nd);
+> > +}
 >
-> We tried 2.6.12.3-skas3-v8.2 on a host server.  It kernel paniced (could
-> not capture the panic) after about 90 minutes.  I'd tried a 2.6.12
-> skasv8.2 a week or so back on another server and got the same result.
+> Ahem...  Guess what that will do with negative dentry?
+Was missing the very first line (dentry->d_inode). I just saw you already 
+suggested returning 0 for them, which I'm gonna do anyway.
 
-> 2.6.11.12-skas3-v8.2 has been running fine for 20 odd hours.
+But, actually, procfs returns ENOENT (or EINVAL) rather than creating negative 
+dentries (at least, I've examined most of procfs lookup funcs, hope I haven't 
+missed any)...
 
-> Has anyone had success with 2.6.12 skas v8.2?  If so I'd be interested
-> in a kernel .config.  FWIW our hosts are dual xeons.
-Peter, has anything changed on this issue? Had problems with 2.6.11 or success 
-with 2.6.12/2.6.13?
+And actually, after realizing the procfs trick, I see that we, too should miss 
+negative dentries, because on the "uncached" path when we get an error like 
+that we propagate that, and on the "cached" one obviously we can't find them 
+in dcache.
+Right?
 
-I've not heard any news, plus I've difficulties in imagining what's wrong 
-here. However, I'm going to think a bit more on this, and on an idea I just 
-had.
+I'll do the check for negative dentries anyway because depending on procfs 
+details is not on my TODO list.
+
+Yes, we could, but given the unmaintainance level of HPPFS, nobody would ever 
+fix it when needed, and that's not recommended.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
-
 
 	
 
