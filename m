@@ -1,24 +1,30 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EOHcR-0000nv-VO	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Oct 2005 09:32:19 -0700
-Received: from wumpus.mythic-beasts.com ([212.69.37.9] ident=Debian-exim)
+	id 1EOMk4-0006uc-CD	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 08 Oct 2005 15:00:32 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EOHcQ-0000Ck-C2
+	(Exim 4.44)	id 1EOMk2-0003dC-LQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Oct 2005 09:32:20 -0700
-Received: from sphinx.mythic-beasts.com ([212.69.37.6])
-	by wumpus.mythic-beasts.com with esmtp (Exim 4.44)
-	id 1EOHcI-0002kz-SD	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Oct 2005 17:32:10 +0100
-From: Chris Lightfoot <chris@ex-parrot.com>
-Message-ID: <z/jPSbKkgHHL.jbObjJNOGZsiVW/jm0lNOg@sphinx.mythic-beasts.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sat, 08 Oct 2005 15:00:32 -0700
+Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
+	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j98NUrY6003943
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 8 Oct 2005 19:30:53 -0400
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Help?  (Filesystem race condition in 2.6.13.2 in
+	-skas0 and -tt mode.)
+References: <200509201524.41199.rob@landley.net>
+In-Reply-To: <200509201524.41199.rob@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: [uml-devel] UBD performance
+Message-Id: <200510081700.18120.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,158 +36,156 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 8 Oct 2005 17:32:10 +0100
+Date: Sat, 8 Oct 2005 17:00:18 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
 
-At the moment, the performance of UBD is disappointing.
-For instance, here is a trivial benchmark on a quiet and
-reasonably modern P4 server with 3Ware 8xxx RAID (this is
-linux 2.6.13.3, but I haven't spent any effort on tuning
-the IO subsystem; in particular, the below results are for
-the default, anticipatory, IO scheduler, but I don't
-expect this choice to make much difference in this test
-environment):
+On Tuesday 20 September 2005 15:24, Rob Landley wrote:
+> I have a system build that happens under UML.  The build is a series of
+> bash scripts that compile and run a heavily modified Linux From Scratch
+> system. The previous version was working fine under 2.6.11 UML in -tt mode
+> (with one patch applied, the one to fix the permissions on block devices in
+> hostfs).
+>
+> I just upgraded the build to use the 2.6.13.2, and now I'm getting the
+> build breaking with random file not found errors.  I've tried both -tt mode
+> and -skas0 mode, and it doesn't like either one.
+>
+> It seems to be a filesystem problem. 
 
-    # time dd if=/dev/zero of=testfile bs=1M count=32
-    32+0 records in
-    32+0 records out
-    33554432 bytes transferred in 0.118687 seconds (282713683 bytes/sec)
+Update: it seems to be that a filesystem is returning true for S_ISDIR() on 
+something that isn't a directory.  Looking closer at the failure cases I 
+posted:
 
-    real    0m0.120s
-    user    0m0.000s
-    sys     0m0.120s
-    # time rm testfile
+>  /tools/bin/install -c -m 644 ./sdiff.1 /tools/man/man1/sdiff.1
+> install: unable to open `/tools/man/man1/sdiff.1/sdiff.1': No such file or
+> directory
+> install: cannot change permissions of /tools/man/man1/sdiff.1/sdiff.1: No
+> such file or directory
+> install: cannot change ownership of /tools/man/man1/sdiff.1/sdiff.1: No
+> such file or directory
 
-    real    0m0.027s
-    user    0m0.000s
-    sys     0m0.028s
+Note how the last argument, "/tools/man/man1/sdiff.1" is having an extra 
+"/sdiff.1" appended to the end?
 
-... while the same experiment on a 2.6.13.3 UML kernel
-(booting with parameters ubd0s=filesystem mem=128M)
-running on the same hardware gives the following less
-impressive results:
+and
 
-    # time dd if=/dev/zero of=testfile bs=1M count=32
-    32+0 records in
-    32+0 records out
-    33554432 bytes transferred in 0.761825 seconds (44044809 bytes/sec)
+>   /tools/bin/install -c sdiff /tools/bin/sdiff
+> install: unable to open `/tools/bin/sdiff/sdiff': No such file or directory
+> install: cannot change permissions of /tools/bin/sdiff/sdiff: No such file
+> or directory
+> install: cannot change ownership of /tools/bin/sdiff/sdiff: No such file or
+> directory
 
-    real    0m0.770s
-    user    0m0.000s
-    sys     0m0.240s
-    # time rm testfile
-    
-    real    1m20.808s
-    user    0m0.000s
-    sys     0m0.120s
+Again, the string "/tools/bin/sdiff" is turning into  
+"/tools/bin/sdiff/sdiff"...
 
-(in this case the filesystem is from Debian `sarge', but
-there's no reason this should make a significant
-difference). Note that in both cases I've run the test
-several times in order until the timings stabilise a bit.
+The busybox source code in question can be viewed out of our source control 
+here:
+http://www.busybox.net/cgi-bin/viewcvs.cgi/*checkout*/trunk/busybox/coreutils/install.c?content-type=text%2Fplain&rev=11515
 
-Note that if you mount the host filesystem `sync' the
-cost of creating the file rises a bit but the cost of
-unlinking it doesn't change that much. Similarly if you
-configure the UBD device without O_SYNC, things get a bit
-quicker, but ``I like my data and I want to keep it'', so
-this isn't an attractive option. (Though see my comment
-about write barriers from earlier in the week.)
+And the relevant snippet is:
 
-I should say also at this stage that no benchmark is
-meaningful without context and the best benchmarks are
-those which are based on a specific application which you
-want to use a system to run. Equally I don't think that
-the above pair of commands is an unreasonable thing to
-expect to run reasonably swiftly on modern hardware, and
-it's an interesting test case because the gap between host
-and virtual machine performance is so large.
+ cp_mv_stat2(argv[argc - 1], &statbuf, lstat);
+ for (i = optind; i < argc - 1; i++) {
+  unsigned char *dest;
 
-Matters can be improved a bit by rewriting the UBD code to
-accept whole requests at once, use scatter/gather IO
-(readv/writev) on the host, and allow there to be more
-than one outstanding request at once. Here's a patch
-against 2.6.12.5 which does this:
-    http://ex-parrot.com/~chris/tmp/20051008/ubd-sgio-2.6.12.5.patch
-but note that it's very much a work-in-progress (it also
-removes support for COW and isn't anywhere near
-sufficiently well-tested for real use):
+  if (S_ISDIR(statbuf.st_mode)) {
+   dest = concat_path_file(argv[argc - 1], basename(argv[i]));
+  } else {
+   dest = argv[argc - 1];
+  }
+  ret |= copy_file(argv[i], dest, copy_flags);
 
-    # time dd if=/dev/zero of=testfile bs=1M count=32
-    32+0 records in
-    32+0 records out
-    33554432 bytes transferred in 0.753967 seconds (44503843 bytes/sec)
+  /* Set the file mode */
+  if (chmod(dest, mode) == -1) {
+   bb_perror_msg("cannot change permissions of %s", dest);
+   ret = EXIT_FAILURE;
+  }
 
-    real    0m0.763s
-    user    0m0.000s
-    sys     0m0.320s
-    # time rm testfile
+  /* Set the user and group id */
+  if (lchown(dest, uid, gid) == -1) {
+   bb_perror_msg("cannot change ownership of %s", dest);
+   ret = EXIT_FAILURE;
+  }
 
-    real    0m1.026s
-    user    0m0.000s
-    sys     0m0.140s
+and cp_mv_stat2 is:
 
-Note that, while this comes closer to acceptable
-performance, the rm is getting on for two orders of
-magnitude slower than on the host.
+extern int cp_mv_stat2(const char *fn, struct stat *fn_stat, stat_func sf)
+{
+    if (sf(fn, fn_stat) < 0) {
+        if (errno != ENOENT) {
+            bb_perror_msg("unable to stat `%s'", fn);
+            return -1;
+        }
+        return 0;
+    } else if (S_ISDIR(fn_stat->st_mode)) {
+        return 3;
+    }
+    return 1;
+}
 
-Jeff Dike also has an AIO reimplementation of UBD in the
-works, but I haven't had a chance to look at it yet.
 
-I'm not really sure why this simple test is so slow. A
-limitation of the existing UBD implementation is that it
-issues requests to the host serially; Jeff's AIO
-reimplementation will fix this, and I had a go at making
-my implementation multithreaded (N threads submitting up
-to N simultaneous IO operations to the host). In fact this
-doesn't make a lot of difference to the above test, and
-the concurrency is a bit messy (it makes the write
-barriers case harder, in particular), so I haven't
-investigated in detail.
+(Yeah, it needs a cleanup, I know...)
 
-Here is another simple test. The code in,
-    http://caesious.beasts.org/~chris/tmp/20051008/ioperformance.tar.gz
-will issue random seeks and randomly-sized
-reads/writes/synchronous writes against a file or block
-device. This gives a measure of the effective seek time
-and transfer rate of a block device (with or without an
-overlying filesystem). Basic usage as follows:
+So the uclibc lstat() is getting true from S_ISDIR() on a freshly created 
+normal file.  It's definitely an intermittent problem, it _seems_ like the 
+lstat structure is not zeroed out or something.
 
-    # tar xzf ioperformance.tar.gz
-    # cd ioperformance
-    # make rate
-    # dd if=/dev/zero of=300M bs=1M count=300
-    # ./rate writesync 300 > results
-        [ ... this takes a little while... ]
+This is linked against uClibc 0.9.27, compiled with "long file support" and 
+thus using the following implementation for lstat:
 
-that gives a text file whose first column is the size of
-each IO operation and whose second column is its duration
-of that operation. Obviously there will be a distribution
-of durations for any given size of (in this case) write
-operation, so there are two further scripts in the
-distribution, bsmedian and bspercentile, which compute
-respectively the median duration of operations of a given
-size and the nth percentile points of the distribution for
-each size. Here are some sample results, again comparing
-the host with 2.6.12.5 UML kernels:
-    http://ex-parrot.com/~chris/tmp/20051008/host-vs-uml-io-results.png
+int lstat64(const char *file_name, struct stat64 *buf)
+{
+    int result;
+    struct kernel_stat64 kbuf;
 
-Note that while stock UBD in 2.6.12.5 is about an order of
-magnitude slower than the host kernel for writes of any
-significant size, a more effective implementation can
-match the host's performance pretty well, which is as we
-expect, since the cost of issuing the writes in UML is
-pretty small compared to the actual cost of the disk
-operations themselves. (As an aside, I don't really
-understand the plateau in the curve above for writes of
-smaller than 64KB. This may be an effect of stripe size in
-the RAID array, but I'm not sure.)
+    result = __syscall_lstat64(file_name, &kbuf);
+    if (result == 0) {
+        __xstat64_conv(&kbuf, buf);
+    }
+    return result;
+}
 
-Thoughts / comments?
+And the opaque bit of the above is:
 
--- 
-Commitment can be best illustrated by a breakfast of ham and eggs.
-The chicken was involved, the pig was committed. (unknown origin)
+void __xstat64_conv(struct kernel_stat64 *kbuf, struct stat64 *buf)
+{
+    /* Convert to current kernel version of `struct stat64'.  */
+    buf->st_dev = kbuf->st_dev;
+    buf->st_ino = kbuf->st_ino;
+#ifdef _HAVE_STAT64___ST_INO
+    buf->__st_ino = kbuf->__st_ino;
+#endif
+    buf->st_mode = kbuf->st_mode;
+    buf->st_nlink = kbuf->st_nlink;
+    buf->st_uid = kbuf->st_uid;
+    buf->st_gid = kbuf->st_gid;
+    buf->st_rdev = kbuf->st_rdev;
+    buf->st_size = kbuf->st_size;
+    buf->st_blksize = kbuf->st_blksize;
+    buf->st_blocks = kbuf->st_blocks;
+    buf->st_atime = kbuf->st_atime;
+    buf->st_mtime = kbuf->st_mtime;
+    buf->st_ctime = kbuf->st_ctime;
+}
+
+Um, this might be relevant too:
+
+#define __NR___syscall_lstat64 __NR_lstat64
+_syscall2(int, __syscall_lstat64, const char *, file_name, struct stat64 *, 
+buf)
+;
+
+Now: given all that, do any of you guys have the foggiest idea what's going 
+on?  (This is running install on an ext2 formatted file loopback mounted and 
+living in a hostfs partition, so the stack of things getting exercised is 
+ext2 living in /dev/loop0 attached to hostfs file which is exporting an ext3 
+partition from the host system (ubuntu "hoary hedgehog").
+
+By the way, I've cherry-picked out all the binaries and libraries involved in 
+this, and got it down to a 650k tarball.  Anybody want that?
+
+Rob
 
 
 -------------------------------------------------------
