@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EOgHx-0001HX-J5	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 11:52:49 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EOgHy-0005EQ-Hj
+	id 1EOgNO-0001UW-DU	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 11:58:26 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EOgNQ-0003uZ-7x
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 11:52:51 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] UBD performance
-Message-ID: <20051009184542.GC4901@ccure.user-mode-linux.org>
-References: <z/jPSbKkgHHL.jbObjJNOGZsiVW/jm0lNOg@sphinx.mythic-beasts.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sun, 09 Oct 2005 11:58:28 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Respawning too fast - 2.6.13-bs2
+References: <229e70f20510070643h79c3a661q116d6093d0a63bdf@mail.gmail.com>
+	<200510071707.41531.blaisorblade@yahoo.it>
+	<229e70f20510072323u725b2406l84b19c66942254ac@mail.gmail.com>
+In-Reply-To: <229e70f20510072323u725b2406l84b19c66942254ac@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <z/jPSbKkgHHL.jbObjJNOGZsiVW/jm0lNOg@sphinx.mythic-beasts.com>
+Message-Id: <200510092058.52891.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,25 +31,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 9 Oct 2005 14:45:42 -0400
-To: Chris Lightfoot <chris@ex-parrot.com>
+Date: Sun, 9 Oct 2005 20:58:52 +0200
+To: Etay Meiri <etay.meiri@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Oct 08, 2005 at 05:32:10PM +0100, Chris Lightfoot wrote:
-> Jeff Dike also has an AIO reimplementation of UBD in the
-> works, but I haven't had a chance to look at it yet.
+On Saturday 08 October 2005 08:23, Etay Meiri wrote:
+> > > INIT: Id "0" respawning too fast: disabled for 5 minutes
+> > > INIT: no more processes left in this runlevel
+> > >
+> > > I did play with it earlier (updated a few rpms and configured nfs) but
+> > > I'm not sure which of my steps caused this.
+> > > Any idea how to debug it?
+> >
+> > Problems like this come usually from:
+> > b) messing up /etc/inittab (possibly from RPM?) - it must use non-DevFS
+> > names
+>
+> /etc/inittab contained 'tty0' as the device. It doesn't exist in /dev. I
+> changed
+> it to 'console' and now it is working correctly.
+Does Ctrl-C/Ctrl-Z work? I know it doesn't on /dev/console.
 
-Why don't you look at UML with the AIO stuff applied?  It's pretty certain 
-that the one-at-a-time pseudo-AIO gives you close to synchronous
-performance when you have a lot of IO.  The AIO work is intended to
-fix that, and if it doesn't, I like to know why.
+Go back and create /dev/tty0 (major 4, minor 0, character device).
+> Thanks a lot,
 
-If you do want to play with the current stuff, I think you can wash
-out the effects of the pseudo-AIO stuff by slowing down the host and
-having it do symchronous I/O.  If there is still a major difference
-between UML and the host, it would be interesting to know why.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-				Jeff
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
