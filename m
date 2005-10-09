@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EOgUE-0001oc-Qs	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:05:30 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EOgUG-0005FO-Qm
+	id 1EOgZ1-00024a-KS	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 12:10:27 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EOgZ2-0006Ac-If
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:05:33 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Found the problem...
-References: <200510090054.07750.rob@landley.net>
-In-Reply-To: <200510090054.07750.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Sun, 09 Oct 2005 12:10:30 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] 2.6.13-bs3 amd64 compilation broken?
+Message-ID: <20051009182431.GB4901@ccure.user-mode-linux.org>
+References: <1128695313.15932.30.camel@localhost.localdomain>
+	<43467BEE.7000503@gmail.com> <200510071937.27810.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200510092106.00389.blaisorblade@yahoo.it>
+In-Reply-To: <200510071937.27810.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,34 +28,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 9 Oct 2005 21:06:00 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>
+Date: Sun, 9 Oct 2005 14:24:31 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Alan Menegotto <macnish@gmail.com>
 
-On Sunday 09 October 2005 07:54, Rob Landley wrote:
-> When attempting to stat a nonexistent file, 2.6.11 returned a consistent
-> value in st_mode (BFFFF73C, every time), and 2.6.13 is returning random
-> crap that varies from invocation to invocation.  Hence the intermittent
-> failure.
->
-> We _should_ be checking the error return value from lstat64() before
-> looking at S_ISDIR(), and I'll fix it.  Almost certainly, the value in
-> there is random garbage off the stack, and 2.6.13 simply has different
-> random garbage on the stack.
->
-> So it's not your problem...
-Just to be sure: UML _does_ return an error code from lstat64, right? If not, 
-complain again please.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+On Fri, Oct 07, 2005 at 07:37:27PM +0200, Blaisorblade wrote:
+> Jeff, stick this with the original patch when sending it upstream (it's
+> introduced by your fix for frame-pointer-less x86_64 binaries).
 
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+Done, thanks.
 
+		Jeff
 
 
 -------------------------------------------------------
