@@ -1,27 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EOZ7A-0000Ja-Ry	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 04:13:12 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EOZ79-0006cW-CF
+	id 1EOflI-0008Rx-Jz	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 11:19:04 -0700
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EOflJ-0006Xd-B4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 04:13:12 -0700
-Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j99ChfP8017864
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 9 Oct 2005 08:43:41 -0400
-From: Rob Landley <rob@landley.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	Sun, 09 Oct 2005 11:19:06 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] [PATCH] slight UML config simplification.
+Message-ID: <20051009181143.GA4901@ccure.user-mode-linux.org>
+References: <200510081837.26059.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200510090054.07750.rob@landley.net>
-Subject: [uml-devel] Found the problem...
+In-Reply-To: <200510081837.26059.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,22 +27,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 9 Oct 2005 00:54:05 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 9 Oct 2005 14:11:43 -0400
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-When attempting to stat a nonexistent file, 2.6.11 returned a consistent value 
-in st_mode (BFFFF73C, every time), and 2.6.13 is returning random crap that 
-varies from invocation to invocation.  Hence the intermittent failure.
+On Sat, Oct 08, 2005 at 06:37:25PM -0500, Rob Landley wrote:
+> Since -tt mode is going to go the way of the dodo when -skas0 stabilizies 
+> (and -skas0 "works for me"), start making options that only affect -tt mode 
+> depend on -tt mode (and group them together).
+> 
+> Start with "nesting level".
 
-We _should_ be checking the error return value from lstat64() before looking 
-at S_ISDIR(), and I'll fix it.  Almost certainly, the value in there is 
-random garbage off the stack, and 2.6.13 simply has different random garbage 
-on the stack.
+Applied, thanks.  There's a bunch more that need similar treatment.
 
-So it's not your problem...
-
-Rob
-
+				Jeff
 
 
 -------------------------------------------------------
