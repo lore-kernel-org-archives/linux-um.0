@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EOgnq-0002mT-2s	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:25:46 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EOgno-0002lM-Ne
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:25:48 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <87psqf2s9p.dancerj%dancer@netfort.gr.jp>
-In-Reply-To: <87psqf2s9p.dancerj%dancer@netfort.gr.jp>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510092126.04881.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [PATCH] UML TT-mode-only compile fix.
+	id 1EOh3w-0003Ve-9f	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 12:42:24 -0700
+Received: from ppp-62-11-74-46.dialup.tiscali.it ([62.11.74.46]
+	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1EOh3x-0003Xv-9f	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 12:42:27 -0700
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20051009193734.26019.44043.stgit@zion.home.lan>
+In-Reply-To: <200510092118.21032.blaisorblade@yahoo.it>
+References: <200510092118.21032.blaisorblade@yahoo.it>
+Subject: [uml-devel] [PATCH 4/6] uml: restore include breakage, breaking
+	binary format of COW driver
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,54 +25,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 9 Oct 2005 21:26:04 +0200
-To: Junichi Uekawa <dancer@netfort.gr.jp>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Sun, 09 Oct 2005 21:37:35 +0200
+To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sunday 09 October 2005 07:06, Junichi Uekawa wrote:
-> Hi,
->
-> In today's linus's git tree, uml doesn't compile when it's configured for
-> only TT-mode.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-> This regression caused by:
-> 	8923648c125421b0fcb240cde607e2748d099ab8
-> 	[PATCH] uml: clear SKAS0/3 flags when running in TT mode
->
-> Signed-off-by: Junichi Uekawa <dancer@debian.org>
-Thanks for the report and the patch, however I want to fix things a bit 
-differently... the thing _should_ compile anyway.
+Commit 44456d37b59d8e541936ed26d8b6e08d27e88ac1, between 2.6.13-rc3 and -rc4,
+was a "nice cleanup" which broke something. Revert the offending part.
 
-The macro is declared anyway and the var should exist anyway.
-The problem is just that they aren't declared, I think. Will fix.
+It broke because:
+a) because this part doesn't fall under the description
+b) the author didn't know what he was doing here
+c) the author didn't try to compile the existing code and see that it worked
+   perfectly.
+d) the author didn't ask us what was happening
+e) you didn't either, and somebody there should have learned that UML is a bit
+   different.
 
-> diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-> --- a/arch/um/kernel/um_arch.c
-> +++ b/arch/um/kernel/um_arch.c
-> @@ -334,8 +334,10 @@ int linux_main(int argc, char **argv)
->  		add_arg(DEFAULT_COMMAND_LINE);
->
->  	os_early_checks();
-> +#ifdef CONFIG_MODE_SKAS
->  	if (force_tt)
->  		clear_can_do_skas();
-> +#endif
->  	mode_tt = force_tt ? 1 : !can_do_skas();
->  #ifndef CONFIG_MODE_TT
->  	if (mode_tt) {
+In fact, UML is special in linking to host libc and using its includes.
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+In particular, since host includes always define both __BIG_ENDIAN and
+__LITTLE_ENDIAN, ntohll() macros started thinking to be in a big-endian world;
+and on-disk compatibility was broken.
 
-	
+Many thanks go to Nix for reporting the problem and correctly diagnosing an
+endianness problem.
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Btw, this patch restores the previous code, which worked; but the definitions
+would be uncorrect if used in kernelspace files.
+
+Next patch addresses that.
+
+Cc: Nix <nix@esperi.org.uk>, Olaf Hering <olh@suse.de>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ arch/um/drivers/cow.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/drivers/cow.h b/arch/um/drivers/cow.h
+--- a/arch/um/drivers/cow.h
++++ b/arch/um/drivers/cow.h
+@@ -3,10 +3,10 @@
+ 
+ #include <asm/types.h>
+ 
+-#if defined(__BIG_ENDIAN)
++#if __BYTE_ORDER == __BIG_ENDIAN
+ # define ntohll(x) (x)
+ # define htonll(x) (x)
+-#elif defined(__LITTLE_ENDIAN)
++#elif __BYTE_ORDER == __LITTLE_ENDIAN
+ # define ntohll(x)  bswap_64(x)
+ # define htonll(x)  bswap_64(x)
+ #else
 
 
 
