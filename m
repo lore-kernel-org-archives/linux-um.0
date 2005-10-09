@@ -2,18 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EOh3w-0003Vk-RK	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:42:24 -0700
+	id 1EOh45-0003WE-Em	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 12:42:33 -0700
 Received: from ppp-62-11-74-46.dialup.tiscali.it ([62.11.74.46]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EOh3x-00069O-6Z	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:42:27 -0700
+	id 1EOh45-0006AR-B7	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 12:42:36 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20051009193726.26019.36037.stgit@zion.home.lan>
+Message-Id: <20051009193705.26019.10908.stgit@zion.home.lan>
 In-Reply-To: <200510092118.21032.blaisorblade@yahoo.it>
 References: <200510092118.21032.blaisorblade@yahoo.it>
-Subject: [uml-devel] [PATCH 3/6] uml: allow building .s/.i/.lst files from
-	userspace files
+Subject: [uml-devel] [PATCH 1/6] Uml: hide commands when not being verbose
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,35 +24,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 09 Oct 2005 21:37:26 +0200
+Date: Sun, 09 Oct 2005 21:37:05 +0200
 To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-For files which need to include glibc headers (i.e. userspace files), we
-specified the correct flags only for .o, not for .s/.lst/.i. Fix this.
+Add a missing $(Q) to a "ln" invocation.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/scripts/Makefile.rules |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/scripts/Makefile.rules b/arch/um/scripts/Makefile.rules
---- a/arch/um/scripts/Makefile.rules
-+++ b/arch/um/scripts/Makefile.rules
-@@ -7,8 +7,8 @@ USER_SINGLE_OBJS := \
- USER_OBJS += $(filter %_user.o,$(obj-y) $(obj-m)  $(USER_SINGLE_OBJS))
- USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
- 
--$(USER_OBJS) : c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) \
--	$(CFLAGS_$(notdir $@))
-+$(USER_OBJS) $(USER_OBJS:.o=.i) $(USER_OBJS:.o=.s) $(USER_OBJS:.o=.lst): \
-+	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) $(CFLAGS_$(notdir $@))
- $(USER_OBJS): cmd_checksrc =
- $(USER_OBJS): quiet_cmd_checksrc =
- $(USER_OBJS): cmd_force_checksrc =
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -152,7 +152,7 @@ archclean:
+ $(SYMLINK_HEADERS):
+ 	@echo '  SYMLINK $@'
+ ifneq ($(KBUILD_SRC),)
+-	ln -fsn $(srctree)/include/asm-um/$(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $@
++	$(Q)ln -fsn $(srctree)/include/asm-um/$(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $@
+ else
+ 	$(Q)cd $(TOPDIR)/$(dir $@) ; \
+ 	ln -sf $(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $(notdir $@)
 
 
 
