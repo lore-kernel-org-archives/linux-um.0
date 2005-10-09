@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EOh44-0003WA-5D	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:42:32 -0700
+	id 1EOh47-0003WC-Ml	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 12:42:35 -0700
 Received: from ppp-62-11-74-46.dialup.tiscali.it ([62.11.74.46]
 	helo=zion.home.lan)	by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1EOh44-0003aX-Ql	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Oct 2005 12:42:34 -0700
+	id 1EOh44-0006AQ-NQ	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2005 12:42:35 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20051009193745.26019.3947.stgit@zion.home.lan>
+Message-Id: <20051009193718.26019.60494.stgit@zion.home.lan>
 In-Reply-To: <200510092118.21032.blaisorblade@yahoo.it>
 References: <200510092118.21032.blaisorblade@yahoo.it>
-Subject: [uml-devel] [PATCH 5/6] uml: cleanup byte order macros for COW driver
+Subject: [uml-devel] [PATCH 2/6] uml: add mode=skas0 as a synonym of skas0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,80 +24,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 09 Oct 2005 21:37:45 +0200
+Date: Sun, 09 Oct 2005 21:37:18 +0200
 To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-After restoring the existing code, make it work also when included in
-kernelspace code (which isn't currently the case, but at least this will prevent
-people from "fixing" it as just happened).
-Whitespace is fixed in next patch - it cluttered the diff too much.
+Too many people were confused by skas0 and tried using "mode=skas0". And after
+all, they are right - accept this.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/cow.h      |   27 ++++++++++++++++++++++++++-
- arch/um/drivers/cow_user.c |    1 -
- 2 files changed, 26 insertions(+), 2 deletions(-)
+ arch/um/os-Linux/start_up.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
-diff --git a/arch/um/drivers/cow.h b/arch/um/drivers/cow.h
---- a/arch/um/drivers/cow.h
-+++ b/arch/um/drivers/cow.h
-@@ -3,6 +3,26 @@
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -143,11 +143,22 @@ static int __init skas0_cmd_param(char *
+ 	return 0;
+ }
  
- #include <asm/types.h>
++/* The two __uml_setup would conflict, without this stupid alias. */
++
++static int __init mode_skas0_cmd_param(char *str, int* add)
++	__attribute__((alias("skas0_cmd_param")));
++
+ __uml_setup("skas0", skas0_cmd_param,
+ 		"skas0\n"
+ 		"    Disables SKAS3 usage, so that SKAS0 is used, unless \n"
+ 	        "    you specify mode=tt.\n\n");
  
-+#if defined(__KERNEL__)
++__uml_setup("mode=skas0", mode_skas0_cmd_param,
++		"mode=skas0\n"
++		"    Disables SKAS3 usage, so that SKAS0 is used, unless you \n"
++		"    specify mode=tt. Note that this was recently added - on \n"
++		"    older kernels you must use simply \"skas0\".\n\n");
 +
-+# include <asm/byteorder.h>
-+
-+# if defined(__BIG_ENDIAN)
-+#	define ntohll(x) (x)
-+#	define htonll(x) (x)
-+# elif defined(__LITTLE_ENDIAN)
-+#	define ntohll(x)  be64_to_cpu(x)
-+#	define htonll(x)  cpu_to_be64(x)
-+# else
-+#	error "Could not determine byte order"
-+# endif
-+
-+#else
-+/* For the definition of ntohl, htonl and __BYTE_ORDER */
-+#include <endian.h>
-+#include <netinet/in.h>
-+#if defined(__BYTE_ORDER)
-+
- #if __BYTE_ORDER == __BIG_ENDIAN
- # define ntohll(x) (x)
- # define htonll(x) (x)
-@@ -10,8 +30,13 @@
- # define ntohll(x)  bswap_64(x)
- # define htonll(x)  bswap_64(x)
- #else
--#error "__BYTE_ORDER not defined"
-+# error "Could not determine byte order: __BYTE_ORDER uncorrectly defined"
-+#endif
-+
-+#else  /* ! defined(__BYTE_ORDER) */
-+#	error "Could not determine byte order: __BYTE_ORDER not defined"
- #endif
-+#endif /* ! defined(__KERNEL__) */
+ static int force_sysemu_disabled = 0;
  
- extern int init_cow_file(int fd, char *cow_file, char *backing_file,
- 			 int sectorsize, int alignment, int *bitmap_offset_out,
-diff --git a/arch/um/drivers/cow_user.c b/arch/um/drivers/cow_user.c
---- a/arch/um/drivers/cow_user.c
-+++ b/arch/um/drivers/cow_user.c
-@@ -9,7 +9,6 @@
- #include <sys/time.h>
- #include <sys/param.h>
- #include <sys/user.h>
--#include <netinet/in.h>
- 
- #include "os.h"
- 
+ static int __init nosysemu_cmd_param(char *str, int* add)
 
 
 
