@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EPoVA-00058G-70	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Oct 2005 14:51:08 -0700
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EPoVA-0002Zx-3i
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Oct 2005 14:51:08 -0700
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
-	id 1EMs7p-0008SD-Ia	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Oct 2005 12:06:56 -0700
-Message-Id: <200510041853.j94IrnqX008942@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/2] UML - Fix Al's build tidying
+	id 1EPooS-0006W0-AX	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Oct 2005 15:11:04 -0700
+Received: from newmail.brainfood.com ([146.82.138.14] ident=Debian-exim)
+	by mail.sourceforge.net with esmtps (TLSv1:RC4-SHA:128)	(Exim 4.44)
+	id 1EPooQ-0006l2-VU	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Oct 2005 15:11:04 -0700
+From: Adam Heath <doogie@debian.org>
+Subject: Re: [uml-devel] ubd and write barriers
+In-Reply-To: <HDubM/jULNDp.FiIUPkbI/sUT/mvVu1/2/A@sphinx.mythic-beasts.com>
+Message-ID: <Pine.LNX.4.58.0510121710380.8567@gradall.private.brainfood.com>
+References: <HDubM/jULNDp.FiIUPkbI/sUT/mvVu1/2/A@sphinx.mythic-beasts.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +26,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 04 Oct 2005 14:53:49 -0400
-To: torvalds@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@ftp.linux.org.uk>
+Date: Wed, 12 Oct 2005 17:11:00 -0500 (CDT)
+To: Chris Lightfoot <chris@ex-parrot.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Al's build tidying missed one bit from me - without this UML doesn't boot.
+On Tue, 4 Oct 2005, Chris Lightfoot wrote:
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-Index: linux-2.6.13/arch/um/sys-i386/user-offsets.c
-===================================================================
---- linux-2.6.13.orig/arch/um/sys-i386/user-offsets.c	2005-10-04 13:33:39.000000000 -0400
-+++ linux-2.6.13/arch/um/sys-i386/user-offsets.c	2005-10-04 14:57:24.000000000 -0400
-@@ -46,7 +46,7 @@
- 	OFFSET(HOST_SC_FP_ST, _fpstate, _st);
- 	OFFSET(HOST_SC_FXSR_ENV, _fpstate, _fxsr_env);
- 
--	DEFINE_LONGS(HOST_FRAME_SIZE, FRAME_SIZE);
-+	DEFINE(HOST_FRAME_SIZE, FRAME_SIZE);
- 	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_i387_struct));
- 	DEFINE_LONGS(HOST_XFP_SIZE, sizeof(struct user_fxsr_struct));
- 
+> --- ubd_kern.c.orig     2005-10-04 10:17:50.000000000 +0100
+> +++ ubd_kern.c  2005-10-04 10:22:59.000000000 +0100
+> @@ -68,6 +68,7 @@
+>         unsigned long long cow_offset;
+>         unsigned long bitmap_words[2];
+>         int error;
+> +        int barrier;
+>  };
+>
+>  extern int open_ubd_file(char *file, struct openflags *openflags,
+> @@ -825,6 +826,8 @@
+>                 unregister_blkdev(MAJOR_NR, "ubd");
+>                 return -1;
+>         }
+> +
+> +        blk_queue_ordered(ubd_queue, QUEUE_ORDERED_TAG);
+>
+>         if (fake_major != MAJOR_NR) {
+>                 char name[sizeof("ubd_nnn\0")];
+> @@ -1003,6 +1006,8 @@
+>         io_req->buffer = req->buffer;
+>         io_req->sectorsize = 1 << 9;
+>
+> +        io_req->barrier = blk_barrier_rq(req);
+> +
+>         if(dev->cow.file != NULL)
+>                 cowify_req(io_req, dev->cow.bitmap, dev->cow.bitmap_offset,
+>                            dev->cow.bitmap_len);
+> @@ -1334,6 +1339,8 @@
+>                 start = end;
+>         } while(start < nsectors);
+>
+> +        if (req->barrier) fdatasync(req->fds[bit]); /* XXX also sync before this write? */
+> +
+>         req->error = update_bitmap(req);
+>  }
 
-
+Fix your tabbing.
 
 
 -------------------------------------------------------
