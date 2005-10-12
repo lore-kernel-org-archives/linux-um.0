@@ -2,16 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EPShg-0006vH-Mi	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Oct 2005 15:34:36 -0700
-Received: from [151.97.230.9] (helo=ssc.unict.it)
+	id 1EPXfp-0006Wb-Nj	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Oct 2005 20:53:01 -0700
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EPShf-0008Th-6A
+	(Exim 4.44)	id 1EPXfo-0006db-IB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Oct 2005 15:34:36 -0700
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20051011190101.8637.13495.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH] uml: compile-time fix recent patch
+	Tue, 11 Oct 2005 20:53:01 -0700
+Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
+	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j9C5Nhri010430
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 12 Oct 2005 01:23:43 -0400
+From: Rob Landley <rob@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200510112252.51849.rob@landley.net>
+Subject: [uml-devel] Getting garbage in ps, as expected...
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,45 +33,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Oct 2005 21:01:01 +0200
-To: Linus Torvalds <torvalds@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 11 Oct 2005 22:52:51 -0500
+To: user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Great fun.  So I'm using UML in -skas0 mode built from 2.6.13.2, and it's 
+putting fun garbage in the ps display:
 
-Give an empty definition for clear_can_do_skas() when it is not needed. Thanks
-to Junichi Uekawa <dancer@netfort.gr.jp> for reporting the breakage and
-providing a fix (I re-fixed it in an IMHO cleaner way).
+ 7284 ?        S      0:00 [pdflush]
+10480 pts/3    R      0:06 ?@???            ?   ?   ?    ???s   F?! @???{
+12783 ?        S      0:00 [pdflush]
+ 8454 pts/3    R      0:03  @???{        " ? ???
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+Also, sometimes when my script hits an error and init exits, and of course the 
+thing panics and exits, it doesn't actually exit.  Instead it remains alive 
+spinning and eating CPU.  "killall linux" makes it stop eating CPU, but that 
+leaves T threads, and when you unblock them you get the above garbage (and 
+_they_ start spinning eating CPU)...
 
- arch/um/include/os.h |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+No easy way to script a cleanup for this...
 
-diff --git a/arch/um/include/os.h b/arch/um/include/os.h
---- a/arch/um/include/os.h
-+++ b/arch/um/include/os.h
-@@ -6,6 +6,7 @@
- #ifndef __OS_H__
- #define __OS_H__
- 
-+#include "uml-config.h"
- #include "asm/types.h"
- #include "../os/include/file.h"
- 
-@@ -159,7 +160,11 @@ extern int can_do_skas(void);
- 
- /* Make sure they are clear when running in TT mode. Required by
-  * SEGV_MAYBE_FIXABLE */
-+#ifdef UML_CONFIG_MODE_SKAS
- #define clear_can_do_skas() do { ptrace_faultinfo = proc_mm = 0; } while (0)
-+#else
-+#define clear_can_do_skas() do {} while (0)
-+#endif
- 
- /* mem.c */
- extern int create_mem_file(unsigned long len);
+Rob
 
 
 
