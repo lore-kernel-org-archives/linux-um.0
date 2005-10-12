@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EPi7s-0004Qx-T0	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Oct 2005 08:02:40 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EPi7s-0006ou-6K
+	id 1EPi9O-0004TS-8L	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Oct 2005 08:04:14 -0700
+Received: from wproxy.gmail.com ([64.233.184.195])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EPi9K-00075p-PH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Oct 2005 08:02:40 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] uml: compile-time fix recent patch
-References: <20051011190101.8637.13495.stgit@zion.home.lan>
-In-Reply-To: <20051011190101.8637.13495.stgit@zion.home.lan>
+	Wed, 12 Oct 2005 08:04:11 -0700
+Received: by wproxy.gmail.com with SMTP id i5so54683wra
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 12 Oct 2005 08:03:47 -0700 (PDT)
+Message-ID: <229e70f20510120803g7e00e0d2s81951984dfc63c6c@mail.gmail.com>
+From: Etay Meiri <etay.meiri@gmail.com>
+Subject: Re: [uml-devel] swap problem
+In-Reply-To: <200510121649.54816.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510121703.16291.blaisorblade@yahoo.it>
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_8136_13153238.1129129427700"
+References: <229e70f20510120701r3d5698ccy992263fac8a8082a@mail.gmail.com>
+	 <200510121649.54816.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,36 +31,79 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 12 Oct 2005 17:03:15 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Linus Torvalds <torvalds@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Date: Wed, 12 Oct 2005 17:03:47 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 11 October 2005 21:01, Paolo 'Blaisorblade' Giarrusso wrote:
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+------=_Part_8136_13153238.1129129427700
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Great! it worked.
+
+Thanks,
+
+-Etay
+
+On 10/12/05, Blaisorblade <blaisorblade@yahoo.it> wrote:
 >
-> Give an empty definition for clear_can_do_skas() when it is not needed.
-> Thanks to Junichi Uekawa <dancer@netfort.gr.jp> for reporting the breakage
-> and providing a fix (I re-fixed it in an IMHO cleaner way).
+> Check the minor number. It should be 16, but there are around root_fs wit=
+h
+> number 1 (which was correct when UBD didn't support partitions). This
+> would
+> explain everything in your setup.
+> --
+> Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+> Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ
+> 215621894)
+> http://www.user-mode-linux.org/~blaisorblade
 >
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Just to make clear, since it hasn't been merged - that's a simple compile fix 
-for 2.6.14, so please merge *now*.
+>
+>
+>
+>
+> ___________________________________
+> Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB
+> http://mail.yahoo.it
+>
+>
 
-The same applies to Jeff's AIO revert patch, it's even much more important. So 
-please, at least, don't drop without an answer.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
 
-	
+--
+------------------------------------------------------
+Etay Meiri
+etay.meiri@gmail.com
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+------=_Part_8136_13153238.1129129427700
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
+Great! it worked.<br>
+<br>
+Thanks,<br>
+<br>
+-Etay<br><br><div><span class=3D"gmail_quote">On 10/12/05, <b class=3D"gmai=
+l_sendername">Blaisorblade</b> &lt;<a href=3D"mailto:blaisorblade@yahoo.it"=
+>blaisorblade@yahoo.it</a>&gt; wrote:</span><blockquote class=3D"gmail_quot=
+e" style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt =
+0.8ex; padding-left: 1ex;">
+Check the minor number. It should be 16, but there are around root_fs with<=
+br>number 1 (which was correct when UBD didn't support partitions). This wo=
+uld<br>explain everything in your setup.<br>--<br>Inform me of my mistakes,=
+ so I can keep imitating Homer Simpson's &quot;Doh!&quot;.
+<br>Paolo Giarrusso, aka Blaisorblade (Skype ID &quot;PaoloGiarrusso&quot;,=
+ ICQ 215621894)<br><a href=3D"http://www.user-mode-linux.org/~blaisorblade"=
+>http://www.user-mode-linux.org/~blaisorblade</a><br><br><br><br><br><br>
+___________________________________<br>Yahoo! Mail: gratis 1GB per i messag=
+gi e allegati da 10MB<br><a href=3D"http://mail.yahoo.it">http://mail.yahoo=
+.it</a><br><br></blockquote></div><br><br clear=3D"all"><br>-- <br>--------=
+----------------------------------------------
+<br>Etay Meiri<br><a href=3D"mailto:etay.meiri@gmail.com">etay.meiri@gmail.=
+com</a>
+
+------=_Part_8136_13153238.1129129427700--
 
 
 -------------------------------------------------------
