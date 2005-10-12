@@ -2,26 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EPXfp-0006Wb-Nj	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Oct 2005 20:53:01 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EPXfo-0006db-IB
+	id 1EPhBa-0001Dm-Rw	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Oct 2005 07:02:26 -0700
+Received: from wproxy.gmail.com ([64.233.184.202])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EPhB0-0004je-E4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Oct 2005 20:53:01 -0700
-Received: from localhost.localdomain (grelber.thyrsus.com [192.168.1.31])
-	by grelber.thyrsus.com (8.13.1/8.13.1) with ESMTP id j9C5Nhri010430
+	Wed, 12 Oct 2005 07:02:23 -0700
+Received: by wproxy.gmail.com with SMTP id i5so48510wra
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 12 Oct 2005 01:23:43 -0400
-From: Rob Landley <rob@landley.net>
+	Wed, 12 Oct 2005 07:01:26 -0700 (PDT)
+Message-ID: <229e70f20510120701r3d5698ccy992263fac8a8082a@mail.gmail.com>
+From: Etay Meiri <etay.meiri@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510112252.51849.rob@landley.net>
-Subject: [uml-devel] Getting garbage in ps, as expected...
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_7016_2990730.1129125686828"
+Subject: [uml-devel] swap problem
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,27 +28,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 11 Oct 2005 22:52:51 -0500
+Date: Wed, 12 Oct 2005 16:01:26 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Great fun.  So I'm using UML in -skas0 mode built from 2.6.13.2, and it's 
-putting fun garbage in the ps display:
+------=_Part_7016_2990730.1129125686828
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
- 7284 ?        S      0:00 [pdflush]
-10480 pts/3    R      0:06 ?@???            ?   ?   ?    ???s   F?! @???{
-12783 ?        S      0:00 [pdflush]
- 8454 pts/3    R      0:03  @???{        " ? ???
+Hi,
 
-Also, sometimes when my script hits an error and init exits, and of course the 
-thing panics and exits, it doesn't actually exit.  Instead it remains alive 
-spinning and eating CPU.  "killall linux" makes it stop eating CPU, but that 
-leaves T threads, and when you unblock them you get the above garbage (and 
-_they_ start spinning eating CPU)...
+I'm unable to get the swap file working with uml (2.6.13-bs2).
+I created a 512Mb file using dd and formatted it using 'mkswap ./swap'.
+I start uml with the command:
+vmlinux mem=3D128m ubd0d=3Droot_fs.fc4 ubd1d=3Dswap
+eth0=3Dtuntap,,,10.10.20.6<http://10.10.20.6>
+I've got 8 devices under /dev/ubd and only /dev/ubd/0 seems to be working
+and used for the root partition.
+I see the following messages during the boot:
+.
+.
+[42949373.340000] ubda: unknown partition table
+[42949373.340000] ubdb: unknown partition table
+.
+.
+Enabling swap space: swapon: /dev/ubd/1: No such device or address [FAILED]
 
-No easy way to script a cleanup for this...
+Any idea?
 
-Rob
+Thanks,
 
+--
+------------------------------------------------------
+Etay Meiri
+etay.meiri@gmail.com
+
+------=_Part_7016_2990730.1129125686828
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Hi,<br>
+<br>
+I'm unable to get the swap file working with uml (2.6.13-bs2).<br>
+I created a 512Mb file using dd and formatted it using 'mkswap ./swap'.<br>
+I start uml with the command:<br>
+vmlinux mem=3D128m ubd0d=3Droot_fs.fc4 ubd1d=3Dswap eth0=3Dtuntap,,,<a href=
+=3D"http://10.10.20.6">10.10.20.6</a><br>
+I've got 8 devices under /dev/ubd and only /dev/ubd/0 seems to be working<b=
+r>
+and used for the root partition. <br>
+I see the following messages during the boot:<br>
+.<br>
+.<br>
+[42949373.340000]&nbsp; ubda: unknown partition table<br>
+[42949373.340000]&nbsp; ubdb: unknown partition table<br>
+.<br>
+.<br>
+Enabling swap space:&nbsp; swapon: /dev/ubd/1: No such device or address [F=
+AILED]<br>
+<br>
+Any idea?<br>
+<br>
+Thanks,<br clear=3D"all"><br>-- <br>---------------------------------------=
+---------------<br>Etay Meiri<br><a href=3D"mailto:etay.meiri@gmail.com">et=
+ay.meiri@gmail.com</a>
+
+------=_Part_7016_2990730.1129125686828--
 
 
 -------------------------------------------------------
