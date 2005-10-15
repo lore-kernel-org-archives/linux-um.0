@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EQChj-0003i3-Ad	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Oct 2005 16:41:43 -0700
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EQChi-0008Q1-Um
+	id 1EQk9n-0006Ym-DQ	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 15 Oct 2005 04:24:55 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EQk9i-0001Oc-RY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Oct 2005 16:41:43 -0700
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Getting garbage in ps, as expected...
-References: <200510112252.51849.rob@landley.net>
-	<20051013162111.GB5352@ccure.user-mode-linux.org>
-In-Reply-To: <20051013162111.GB5352@ccure.user-mode-linux.org>
+	Sat, 15 Oct 2005 04:24:55 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200510131841.23578.rob@landley.net>
+Message-Id: <200510151325.50461.blaisorblade@yahoo.it>
+Subject: [uml-devel] 2.6.13.4-bs4 released - fixes for SKAS0 problems -
+	careful about COW
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,41 +28,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Oct 2005 18:41:23 -0500
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 15 Oct 2005 13:25:49 +0200
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, Kai Tan <mineown@hotmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Nix <nix@esperi.org.uk>
 
-On Thursday 13 October 2005 11:21, Jeff Dike wrote:
-> On Tue, Oct 11, 2005 at 10:52:51PM -0500, Rob Landley wrote:
-> > Great fun.  So I'm using UML in -skas0 mode built from 2.6.13.2, and it's
-> > putting fun garbage in the ps display:
-> >
-> >  7284 ?        S      0:00 [pdflush]
-> > 10480 pts/3    R      0:06 ?@???            ?   ?   ?    ???s   F?! @???{
-> > 12783 ?        S      0:00 [pdflush]
-> >  8454 pts/3    R      0:03  @???{        " ? ???
->
-> The garbage is irrelevant.
+Ok, I've batched together the existing fixes and released -bs4.
+It's really nice, it fixes various problems, as indicated on the website. But 
+it also restores the 2.6.12 COW format (see below) - so please beware to your 
+COW files!
 
-But annoying.  It's corrupting the ps display and there's no way to killall 
-those threads.
+Changelog follows
 
-> UML is supposed to clean up after itself.  How reproducable is this, and
-> how do you do it?
+* -bs3 didn't apply on top of 2.6.13.3, because one of his patches was merged 
+in it. So remove it from -bs. 
 
-I normally run the build:
-(cat /dev/zero | ./buildscript.sh > out.txt 2>&1 &) && tail -f out.txt
+* CAREFUL : 2.6.13 kernel changed the COW format from all previous kernels in 
+an unintended way (and it wasn't our fault). -bs4 restores the previous 
+format, but this means you likely won't be able to use the same COW files 
+when switching from any 2.6.13 to -bs4; but -bs4 has the same format as any 
+<= 2.6.12 or >= 2.6.14 UML kernel. 
 
-(Because the standard "tee" is buggy; it stops sending to a pipe if that pipe 
-is ever full, which can happen due to the process it's feeding not getting 
-scheduled fast enough.  This includes your xterm.  I fixed this in the 
-busybox version...)
+*  fix compilation of UML on x86_64 with SKAS0 
 
-In the above, buildscript runs UML, which exits (with a panic) but doesn't 
-_stop_.  Also "killall linux" will sometimes leave the garbage threads in T 
-state, and when you -CONT them they turn into CPU hogs.
+* fix compilation of UML on i386 without SKAS mode 
 
-Rob
+* fix SKAS0 mode assembly code - this could stop it from working on some old 
+GCC compilers (this happened, for instance, on GCC 3.2.3, and on RH 9).
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________
+Yahoo! Mail -  proteggi la tua casella di posta da virus
+e posta indesiderata
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
