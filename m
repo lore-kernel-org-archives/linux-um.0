@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ERYUa-00019e-P4	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Oct 2005 10:09:44 -0700
-Received: from wproxy.gmail.com ([64.233.184.205])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ERYUW-0004f5-DF
+	id 1ERZHv-0004BO-3a	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 Oct 2005 11:00:43 -0700
+Received: from pool-71-245-228-238.bstnma.fios.verizon.net ([71.245.228.238]
+	helo=localhost.localdomain)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1ERZHt-0004gH-R2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Oct 2005 10:09:44 -0700
-Received: by wproxy.gmail.com with SMTP id i5so479232wra
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 17 Oct 2005 10:09:21 -0700 (PDT)
-Message-ID: <229e70f20510171009x103fe854ncb91021c3ce0e31e@mail.gmail.com>
-From: Etay Meiri <etay.meiri@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_5554_4054200.1129568961511"
-Subject: [uml-devel] Starting uml with the debugger
+	Mon, 17 Oct 2005 11:00:43 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Starting uml with the debugger
+Message-ID: <20051017175328.GA8015@localhost.localdomain>
+References: <229e70f20510171009x103fe854ncb91021c3ce0e31e@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <229e70f20510171009x103fe854ncb91021c3ce0e31e@mail.gmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,56 +29,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 Oct 2005 19:09:21 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 17 Oct 2005 13:53:28 -0400
+To: Etay Meiri <etay.meiri@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-------=_Part_5554_4054200.1129568961511
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Mon, Oct 17, 2005 at 07:09:21PM +0200, Etay Meiri wrote:
+> Hi,
+> 
+> I'm trying to start uml under the controller of gdb using the following
+> command:
 
-Hi,
+What version?
 
-I'm trying to start uml under the controller of gdb using the following
-command:
+> ./vmlinux mem=128m ubda=root_fs.fc4_client ubdb=swap_client con=xterm
+> eth0=tuntap,,,10.10.20.10 <http://10.10.20.10> debug
 
-./vmlinux mem=3D128m ubda=3Droot_fs.fc4_client ubdb=3Dswap_client con=3Dxte=
-rm
-eth0=3Dtuntap,,,10.10.20.10 <http://10.10.20.10> debug
+WTF is <http://10.10.20.10>?
 
-uml is started ok but there is no sigh of the debugger.
+If this thing is new enough to have skas0, then just disable CONFIG_MODE_TT
+and gdb it normally.
 
-Any idea?
-
-Thanks,
-
---
-------------------------------------------------------
-Etay Meiri
-etay.meiri@gmail.com
-
-------=_Part_5554_4054200.1129568961511
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Hi,<br>
-<br>
-I'm trying to start uml under the controller of gdb using the following com=
-mand:<br>
-<br>
-./vmlinux mem=3D128m ubda=3Droot_fs.fc4_client ubdb=3Dswap_client con=3Dxte=
-rm eth0=3Dtuntap,,,<a href=3D"http://10.10.20.10">10.10.20.10</a> debug<br =
-clear=3D"all"><br>
-uml is started ok but there is no sigh of the debugger.<br>
-<br>
-Any idea?<br>
-<br>
-Thanks,<br>
-<br>-- <br>------------------------------------------------------<br>Etay M=
-eiri<br><a href=3D"mailto:etay.meiri@gmail.com">etay.meiri@gmail.com</a>
-
-------=_Part_5554_4054200.1129568961511--
+				Jeff
 
 
 -------------------------------------------------------
