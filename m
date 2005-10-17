@@ -1,33 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ERWPB-0002eb-CJ	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Oct 2005 07:56:01 -0700
-Received: from smtp1.oregonstate.edu ([128.193.0.11] ident=postfix)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ERWP8-0004g4-MF
+	id 1ERYUa-00019e-P4	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 Oct 2005 10:09:44 -0700
+Received: from wproxy.gmail.com ([64.233.184.205])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ERYUW-0004f5-DF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Oct 2005 07:56:01 -0700
-Received: from localhost (localhost [127.0.0.1])
-	by smtp1.oregonstate.edu (Postfix) with ESMTP id 76CEF128FC1
+	Mon, 17 Oct 2005 10:09:44 -0700
+Received: by wproxy.gmail.com with SMTP id i5so479232wra
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 17 Oct 2005 07:55:52 -0700 (PDT)
-Received: from smtp1.oregonstate.edu ([127.0.0.1])
- by localhost (smtp1 [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
- id 04528-01 for <user-mode-linux-devel@lists.sourceforge.net>;
- Mon, 17 Oct 2005 07:55:52 -0700 (PDT)
-Received: from thuja.forestry.oregonstate.edu (thuja.forestry.oregonstate.edu
-	[128.193.113.9])
-	by smtp1.oregonstate.edu (Postfix) with ESMTP id 49CFF128FC7
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 17 Oct 2005 07:55:52 -0700 (PDT)
-Content-class: urn:content-classes:message
+	Mon, 17 Oct 2005 10:09:21 -0700 (PDT)
+Message-ID: <229e70f20510171009x103fe854ncb91021c3ce0e31e@mail.gmail.com>
+From: Etay Meiri <etay.meiri@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Subject: RE: [uml-devel] Quick and dirty UML howto.
-Message-ID: <7B4268E5ACB878429B58D4BE5B780E8336F474@NWS-EXCH2.nws.oregonstate.edu>
-From: "Brock, Anthony - NET" <Anthony.Brock@oregonstate.edu>
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_5554_4054200.1129568961511"
+Subject: [uml-devel] Starting uml with the debugger
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,59 +28,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 17 Oct 2005 07:55:51 -0700
-Content-Transfer-Encoding: 8bit
+Date: Mon, 17 Oct 2005 19:09:21 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Rob,
+------=_Part_5554_4054200.1129568961511
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Have you looked at the wiki yet? It can be found at:
+Hi,
 
-http://uml.harlowhill.com/
+I'm trying to start uml under the controller of gdb using the following
+command:
 
-It holds a lot of documentation (some old, some new). Once your howto is
-ready, you may want to list it here:
+./vmlinux mem=3D128m ubda=3Droot_fs.fc4_client ubdb=3Dswap_client con=3Dxte=
+rm
+eth0=3Dtuntap,,,10.10.20.10 <http://10.10.20.10> debug
 
-http://uml.harlowhill.com/index.php/UMLArticles
+uml is started ok but there is no sigh of the debugger.
 
-Good luck!
+Any idea?
 
-Tony
+Thanks,
 
+--
+------------------------------------------------------
+Etay Meiri
+etay.meiri@gmail.com
 
-> -----Original Message-----
-> From: user-mode-linux-devel-admin@lists.sourceforge.net 
-> [mailto:user-mode-linux-devel-admin@lists.sourceforge.net] On 
-> Behalf Of Rob Landley
-> Sent: Saturday, October 15, 2005 4:30 PM
-> To: user-mode-linux-devel@lists.sourceforge.net
-> Subject: [uml-devel] Quick and dirty UML howto.
-> 
-> I started a howto here, aimed at people who have never used 
-> this before and 
-> want to ease into it:
-> 
-> http://www.landley.net/code/UML.html
-> 
-> I'll probably fluff it up a bit later on, and maybe even make 
-> it less ugly. :)
-> 
-> Anybody want to suggest any "further reading" I should point 
-> people to?
-> 
-> Rob
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by:
-> Power Architecture Resource Center: Free content, downloads, 
-> discussions,
-> and more. http://solutions.newsforge.com/ibmarch.tmpl
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
+------=_Part_5554_4054200.1129568961511
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Hi,<br>
+<br>
+I'm trying to start uml under the controller of gdb using the following com=
+mand:<br>
+<br>
+./vmlinux mem=3D128m ubda=3Droot_fs.fc4_client ubdb=3Dswap_client con=3Dxte=
+rm eth0=3Dtuntap,,,<a href=3D"http://10.10.20.10">10.10.20.10</a> debug<br =
+clear=3D"all"><br>
+uml is started ok but there is no sigh of the debugger.<br>
+<br>
+Any idea?<br>
+<br>
+Thanks,<br>
+<br>-- <br>------------------------------------------------------<br>Etay M=
+eiri<br><a href=3D"mailto:etay.meiri@gmail.com">etay.meiri@gmail.com</a>
+
+------=_Part_5554_4054200.1129568961511--
 
 
 -------------------------------------------------------
