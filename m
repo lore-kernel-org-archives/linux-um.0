@@ -1,21 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ET1Lu-0003x5-Os	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Oct 2005 11:10:50 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ET1Lp-0006gl-0z
+	id 1ET1Z0-0004or-EC	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Oct 2005 11:24:22 -0700
+Received: from moutng.kundenserver.de ([212.227.126.176])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ET1Yy-00068H-G7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Oct 2005 11:10:50 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] hostfs link count bug?
-References: <Pine.GSO.4.63.0510211919010.18944@kempelen.iit.bme.hu>
-In-Reply-To: <Pine.GSO.4.63.0510211919010.18944@kempelen.iit.bme.hu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200510212011.13792.blaisorblade@yahoo.it>
+	Fri, 21 Oct 2005 11:24:22 -0700
+Received: from [212.227.126.160] (helo=mrelayng.kundenserver.de)
+	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 1ET1Yq-0006VT-00	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Oct 2005 20:24:12 +0200
+Received: from [84.58.154.32] (helo=gate.lan.gerd-stolpmann.de)
+	by mrelayng.kundenserver.de with asmtp (Exim 3.35 #1)
+	id 1ET1Yq-0002Ur-00	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Oct 2005 20:24:12 +0200
+Received: from flakew.lan.gerd-stolpmann.de (flakew.lan.gerd-stolpmann.de
+	[192.168.0.32])
+	by gate.lan.gerd-stolpmann.de (Postfix) with ESMTP id 1D374C0AD
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 21 Oct 2005 20:24:12 +0200 (CEST)
+From: Gerd Stolpmann <info@gerd-stolpmann.de>
+Content-Type: text/plain
+Message-Id: <1129919051.27787.42.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Strange behaviour of hwrng
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,61 +38,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Oct 2005 20:11:13 +0200
-Content-Transfer-Encoding: quoted-printable
+Date: Fri, 21 Oct 2005 20:24:11 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Szabo Peter <pts@inf.bme.hu>
 
-On Friday 21 October 2005 19:22, Szabo Peter wrote:
-> Hi!
+Hi list,
 
-> I think I have found a bug in UML.
-Sure!
-> Inside my guest Linux, I get=20
-[...]
-> I use this version of UML:
+I recently tested the hwrng driver. In principal, it works, but it
+sometimes eats up all host CPU time. In particular, I can see that the
+UML system does a (blocking) read on /dev/hwrng, and that the host
+system loops while reading from /dev/random which almost always returns
+-EAGAIN. (Found that out with strace, in the hope the output is
+correct.)
 
-> # dpkg -l user-mode-linux
-> Desired=3DUnknown/Install/Remove/Purge/Hold
+Nevertheless rngd seems to work, because when killing with SIGUSR1 it
+shows some reasonable statistics.
 
-> | Status=3DNot/Installed/Config-files/Unpacked/Failed-config/Half-install=
-ed
-> |/ Err?=3D(none)/Hold/Reinst-required/X=3Dboth-problems (Status,Err:
+My test setup is as follows:
 
-> uppercase=3Dbad)
+- Host system: 2.6.12.6 with SKAS3 v8.2 patch
+- UML system: 2.6.14-rc5, in SKAS3 mode.
+  Using rngd from Debian Sarge.
+  TLS is disabled.
 
-> ||/ Name           Version        Description
->
-> +++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=3D=3D=3D ii  user-mode-linu 2.4.26-3um-1   User-mode Linux (kernel)
->
-> Best regards,
->
-> P=E9ter
-The hostfs code in that release is very experimental, and was never finishe=
-d=20
-for 2.4, so try 2.4.28-bs2, which is an updated version from me, and includ=
-es=20
-the old working hostfs code from 2.4.24-1um (with some additional fixes=20
-included).
+Let me know if you need more information.
 
-Btw, you could also test 2.4.24-1um, except it doesn't plain work on 2.6=20
-hosts, and has various bugs.
-
-If, btw, you can file a bug upstream to Debian, to add 2.4.28-bs2 UML, it'd=
- be=20
-nice.
---=20
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	=09
-___________________________________=20
-Yahoo! Messenger: chiamate gratuite in tutto il mondo=20
-http://it.messenger.yahoo.com
+Gerd
+-- 
+------------------------------------------------------------
+Gerd Stolpmann * Viktoriastr. 45 * 64293 Darmstadt * Germany 
+gerd@gerd-stolpmann.de          http://www.gerd-stolpmann.de
+Telefon: 06151/153855                  Telefax: 06151/997714
+------------------------------------------------------------
 
 
 
