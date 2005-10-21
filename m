@@ -1,22 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ET2EA-0007La-Hs	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Oct 2005 12:06:54 -0700
-Received: from moutng.kundenserver.de ([212.227.126.190])
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1ET2E8-0000Ce-Ty
+	id 1ET4Cq-0006sM-AX	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Oct 2005 14:13:40 -0700
+Received: from mail06.syd.optusnet.com.au ([211.29.132.187])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1ET4Co-0008S8-MQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Oct 2005 12:06:54 -0700
-Subject: Re: [uml-devel] Strange behaviour of hwrng
-From: Gerd Stolpmann <info@gerd-stolpmann.de>
-In-Reply-To: <200510212042.29634.blaisorblade@yahoo.it>
-References: <1129919051.27787.42.camel@localhost.localdomain>
-	 <200510212042.29634.blaisorblade@yahoo.it>
-Content-Type: text/plain
-Message-Id: <1129921606.27787.61.camel@localhost.localdomain>
+	Fri, 21 Oct 2005 14:13:40 -0700
+Received: from [192.168.1.20] (c210-49-175-223.mckinn1.vic.optusnet.com.au
+	[210.49.175.223])j9LLDV2M008333
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 22 Oct 2005 07:13:31 +1000
+Subject: Re: [uml-devel] 2.6.13.4-bs4 released - fixes for SKAS0 problems -
+	careful about COW
+From: Phill Wombat <uml@webwombat.com>
+In-Reply-To: <200510211120.08231.blaisorblade@yahoo.it>
+References: <200510151325.50461.blaisorblade@yahoo.it>
+	 <1129841654.10146.14.camel@localhost.localdomain>
+	 <200510211120.08231.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <1129929210.10146.22.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,101 +34,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Oct 2005 21:06:46 +0200
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 22 Oct 2005 07:13:30 +1000
+Content-Transfer-Encoding: 8bit
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Am Freitag, den 21.10.2005, 20:42 +0200 schrieb Blaisorblade:
-> On Friday 21 October 2005 20:24, Gerd Stolpmann wrote:
-> > Hi list,
+Fixed!! Compiles OK now.
+
+Thanks
+Phill.
+
+On Fri, 2005-10-21 at 11:20 +0200, Blaisorblade wrote:
+> On Thursday 20 October 2005 22:54, Phill Wombat wrote:
+> > Hi List,
 > >
-> > I recently tested the hwrng driver. In principal, it works, but it
-> > sometimes eats up all host CPU time. In particular, I can see that the
-> > UML system does a (blocking) read on /dev/hwrng,
+> > Start the process of compiling 2.6.13.4-bs4.
+> >
+> > x86_64 host, i386 UML.
+> >
+> > Using same config as successful 2.6.12.5-bb12-skas0.
+> >
+> > Some compile errors encountered:
+> Can't reproduce that on my i386 host, and probably can't reproduce it on my 
+> x86_64 compile environment (but I'm too lazy to reboot there).
 > 
-> Could you please elaborate on that? Who is doing the read, the rng tools? 
-
-Yes, one of the rngd threads is doing the read:
-
-play:~# strace -p 517
-Process 517 attached - interrupt to quit
-read(3,  <unfinished ...>
-
-top shows it consumes 12.5% CPU time (on the UML system) although it is
-blocking, I guess it is system time accounted for this process. On the
-host system, UML consumes more than 70% CPU time.
-
-> Also, are they doing only a single read (in which case, it's we the ones who 
-> are looping and we're broken) or they are astonished by our -EAGAIN and keep 
-> trying (in which case, they are broken)?
-
-Obviously, they don't get the -EAGAIN, so they are only doing a single
-read. (We should see the -EAGAIN with strace if it occurred, shouldn'd
-we.)
-
-> Actually, from looking at the code (arch/um/drivers/random.c:rng_dev_read()) 
-> it appears that we _do_ loop ourselves, if the read is blocking. Not sure how 
-> to handle that.
-
-I think this is the problem.
-
-> We could return maybe -EIO, possibly when a rate limit is exceeded (not 
-> trivial to do, though - I must learn using timers first).
-
-Maybe an opportunity...
-
-> > and that the host 
-> > system loops while reading from /dev/random which almost always returns
-> > -EAGAIN. (Found that out with strace, in the hope the output is
-> > correct.)
+> I would bet your glibc headers have a bug somewhere (this seems a "double 
+> inclusion of the same header" problem). However, try the attached patch.
 > 
-> Well, if the host hasn't enough entropy, it's reasonable for it to return 
-> -EAGAIN.
-
-Of course, it it will do most of the time.
-
-> And we should do the same (the loop is actually executed by the UML code, 
-> right?).
-
-If the descriptor is non-blocking.
-
-> However, probably the tools inside UML don't expect a lot to get -EAGAIN from 
-> an hardware generator. So possibly they are not ready to handle that well.
-
-Obviously, the real hardware generators block when there is not enough
-entropy, and rngd was written for them. I think there are two ways of
-fixing the problem:
-
-(1) Change rngd. If it sees -EAGAIN, it sleeps for a moment. This is not
-easy, because it has to find out the available bit rate of entropy, in
-order to determine a reasonable frequency of polling /dev/hwrng.
-
-(2) Fix /dev/hwrng such that it blocks when it is out of entropy. Looks
-like the same problem, only within the kernel.
-
-Gerd
-
+> > ================ SNIP ======================
 > 
-> > Nevertheless rngd seems to work, because when killing with SIGUSR1 it
-> > shows some reasonable statistics.
+> >   AS      arch/um/sys-i386/stub.o
+> >   CC      arch/um/sys-i386/stub_segv.o
+> > In file included from /usr/include/asm/sigcontext.h:7,
+> >                  from arch/um/sys-i386/stub_segv.c:7:
+> > /usr/include/asm-i386/sigcontext.h:18: error: redefinition of ‘struct
+> > _fpreg’ /usr/include/asm-i386/sigcontext.h:23: error: redefinition of
+> > ‘struct _fpxreg’ /usr/include/asm-i386/sigcontext.h:29: error: redefinition
+> > of ‘struct _xmmreg’ /usr/include/asm-i386/sigcontext.h:33: error:
+> > redefinition of ‘struct _fpstate’ /usr/include/asm-i386/sigcontext.h:57:
+> > error: redefinition of ‘struct sigcontext’ make[1]: ***
+> > [arch/um/sys-i386/stub_segv.o] Error 1
 > 
-> > My test setup is as follows:
-> 
-> > - Host system: 2.6.12.6 with SKAS3 v8.2 patch
-> > - UML system: 2.6.14-rc5, in SKAS3 mode.
-> >   Using rngd from Debian Sarge.
-> >   TLS is disabled.
-> 
-> > Let me know if you need more information.
-> 
-> > Gerd
-> 
--- 
-------------------------------------------------------------
-Gerd Stolpmann * Viktoriastr. 45 * 64293 Darmstadt * Germany 
-gerd@gerd-stolpmann.de          http://www.gerd-stolpmann.de
-Telefon: 06151/153855                  Telefax: 06151/997714
-------------------------------------------------------------
 
 
 
