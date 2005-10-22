@@ -2,27 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ET4Cq-0006sM-AX	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Oct 2005 14:13:40 -0700
-Received: from mail06.syd.optusnet.com.au ([211.29.132.187])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1ET4Co-0008S8-MQ
+	id 1ET7ah-0002mk-TD	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Oct 2005 17:50:31 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1ET7af-0002ub-Ev
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Oct 2005 14:13:40 -0700
-Received: from [192.168.1.20] (c210-49-175-223.mckinn1.vic.optusnet.com.au
-	[210.49.175.223])j9LLDV2M008333
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 22 Oct 2005 07:13:31 +1000
-Subject: Re: [uml-devel] 2.6.13.4-bs4 released - fixes for SKAS0 problems -
-	careful about COW
-From: Phill Wombat <uml@webwombat.com>
-In-Reply-To: <200510211120.08231.blaisorblade@yahoo.it>
-References: <200510151325.50461.blaisorblade@yahoo.it>
-	 <1129841654.10146.14.camel@localhost.localdomain>
-	 <200510211120.08231.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <1129929210.10146.22.camel@localhost.localdomain>
-Mime-Version: 1.0
+	Fri, 21 Oct 2005 17:50:32 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Strange behaviour of hwrng
+References: <1129919051.27787.42.camel@localhost.localdomain>
+	<200510212042.29634.blaisorblade@yahoo.it>
+	<1129921606.27787.61.camel@localhost.localdomain>
+In-Reply-To: <1129921606.27787.61.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200510220252.00871.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,46 +31,120 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 22 Oct 2005 07:13:30 +1000
-Content-Transfer-Encoding: 8bit
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 22 Oct 2005 02:52:00 +0200
+To: Gerd Stolpmann <info@gerd-stolpmann.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Fixed!! Compiles OK now.
+On Friday 21 October 2005 21:06, Gerd Stolpmann wrote:
+> Am Freitag, den 21.10.2005, 20:42 +0200 schrieb Blaisorblade:
+> > On Friday 21 October 2005 20:24, Gerd Stolpmann wrote:
+> > > Hi list,
+> > >
+> > > I recently tested the hwrng driver. In principal, it works, but it
+> > > sometimes eats up all host CPU time. In particular, I can see that the
+> > > UML system does a (blocking) read on /dev/hwrng,
+> >
+> > Could you please elaborate on that? Who is doing the read, the rng tools?
+>
+> Yes, one of the rngd threads is doing the read:
+>
+> play:~# strace -p 517
+> Process 517 attached - interrupt to quit
+> read(3,  <unfinished ...>
+>
+> top shows it consumes 12.5% CPU time (on the UML system) although it is
+> blocking, I guess it is system time accounted for this process. On the
+> host system, UML consumes more than 70% CPU time.
 
-Thanks
-Phill.
+> > Also, are they doing only a single read (in which case, it's we the ones
+> > who are looping and we're broken) or they are astonished by our -EAGAIN
+> > and keep trying (in which case, they are broken)?
+>
+> Obviously, they don't get the -EAGAIN, so they are only doing a single
+> read. (We should see the -EAGAIN with strace if it occurred, shouldn'd
+> we.)
+Yes, we'd see it. Anyway, after seeing rngd is doing a blocking read, I 
+guessed that.
+> > Actually, from looking at the code
+> > (arch/um/drivers/random.c:rng_dev_read()) it appears that we _do_ loop
+> > ourselves, if the read is blocking. Not sure how to handle that.
+>
+> I think this is the problem.
+Yes, agreed.
+> > We could return maybe -EIO, possibly when a rate limit is exceeded (not
+> > trivial to do, though - I must learn using timers first).
+>
+> Maybe an opportunity...
+>
+> > > and that the host
+> > > system loops while reading from /dev/random which almost always returns
+> > > -EAGAIN. (Found that out with strace, in the hope the output is
+> > > correct.)
+> >
+> > Well, if the host hasn't enough entropy, it's reasonable for it to return
+> > -EAGAIN.
+>
+> Of course, it it will do most of the time.
+Well, the host should have more entropy than the guest. But if the host hasn't 
+a real hardware generator, yes, that will happen. For the normal rngd 
+context, the hardware is expected to give a continous flow.
+> > And we should do the same (the loop is actually executed by the UML code,
+> > right?).
 
-On Fri, 2005-10-21 at 11:20 +0200, Blaisorblade wrote:
-> On Thursday 20 October 2005 22:54, Phill Wombat wrote:
-> > Hi List,
-> >
-> > Start the process of compiling 2.6.13.4-bs4.
-> >
-> > x86_64 host, i386 UML.
-> >
-> > Using same config as successful 2.6.12.5-bb12-skas0.
-> >
-> > Some compile errors encountered:
-> Can't reproduce that on my i386 host, and probably can't reproduce it on my 
-> x86_64 compile environment (but I'm too lazy to reboot there).
-> 
-> I would bet your glibc headers have a bug somewhere (this seems a "double 
-> inclusion of the same header" problem). However, try the attached patch.
-> 
-> > ================ SNIP ======================
-> 
-> >   AS      arch/um/sys-i386/stub.o
-> >   CC      arch/um/sys-i386/stub_segv.o
-> > In file included from /usr/include/asm/sigcontext.h:7,
-> >                  from arch/um/sys-i386/stub_segv.c:7:
-> > /usr/include/asm-i386/sigcontext.h:18: error: redefinition of ‘struct
-> > _fpreg’ /usr/include/asm-i386/sigcontext.h:23: error: redefinition of
-> > ‘struct _fpxreg’ /usr/include/asm-i386/sigcontext.h:29: error: redefinition
-> > of ‘struct _xmmreg’ /usr/include/asm-i386/sigcontext.h:33: error:
-> > redefinition of ‘struct _fpstate’ /usr/include/asm-i386/sigcontext.h:57:
-> > error: redefinition of ‘struct sigcontext’ make[1]: ***
-> > [arch/um/sys-i386/stub_segv.o] Error 1
-> 
+> If the descriptor is non-blocking.
+Theoretically yes, in practice this limitation is a problem.
+> > However, probably the tools inside UML don't expect a lot to get -EAGAIN
+> > from an hardware generator. So possibly they are not ready to handle that
+> > well.
+
+> Obviously, the real hardware generators block when there is not enough
+> entropy, and rngd was written for them. I think there are two ways of
+> fixing the problem:
+
+> (1) Change rngd. If it sees -EAGAIN, it sleeps for a moment. This is not
+> easy, because it has to find out the available bit rate of entropy, in
+> order to determine a reasonable frequency of polling /dev/hwrng.
+We could implement poll() for that purpose, 
+> (2) Fix /dev/hwrng such that it blocks when it is out of entropy. Looks
+> like the same problem, only within the kernel.
+
+Proper solution: use a separate _host_ thread, which either sits blocked in a 
+blocking read or calls poll() on the host /dev/random, and have it do the 
+work. It's not easy however.
+The ubd driver works currently this way, but the thing is not trivial to get 
+right (and the UBD rewrite in the works has shown that).
+
+A simpler solution is to increase the parameter passed to schedule_timeout. We 
+currently sleep for one hundredth of second (actually one jiffy).
+
+But only if need_resched(), which is wrong. I.e. if a timeslice lasts 80 ms 
+(as is possible) we'll sleep 1 ms every 80 ones, which is unfair. Also, 
+there's no need to continously poll the host /dev/random.
+
+So, in rng_dev_read, in this piece of code:
+                       if(need_resched()){
+                                current->state = TASK_INTERRUPTIBLE;
+                                schedule_timeout(1);
+                        }
+
+Remove the need_resched() checking, and retest. You can also test increasing 
+the param to schedule timeout (it's currently 10 ms, but it's better to use 
+HZ to mean a second and, say, HZ/100 to mean 10ms).
+
+In any case, give me an answer on this.
+Bye!
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
