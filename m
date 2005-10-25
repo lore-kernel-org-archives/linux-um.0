@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUXTp-0006Go-BU	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:41:17 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EUXTo-00066r-Uy
+	id 1EUYHF-0000Is-79	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Oct 2005 16:32:21 -0700
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EUYHD-00079D-OY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:41:17 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Tue, 25 Oct 2005 16:32:21 -0700
+From: Andi Kleen <ak@suse.de>
 References: <20051025221105.21106.95194.stgit@zion.home.lan>
-	<20051025221253.21106.22572.stgit@zion.home.lan>
-	<200510260024.17241.ak@suse.de>
-In-Reply-To: <200510260024.17241.ak@suse.de>
+	<200510260024.17241.ak@suse.de> <200510260044.26138.blaisorblade@yahoo.it>
+In-Reply-To: <200510260044.26138.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200510260044.26138.blaisorblade@yahoo.it>
+Message-Id: <200510260133.03425.ak@suse.de>
 Subject: [uml-devel] Re: [PATCH 4/6] x86_64: fix L1_CACHE_SHIFT_MAX for Intel
 	EM64T [for 2.6.14?]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -32,41 +32,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 00:44:25 +0200
-To: Andi Kleen <ak@suse.de>
+Date: Wed, 26 Oct 2005 01:33:03 +0200
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 26 October 2005 00:24, Andi Kleen wrote:
-> > No correctness issues, obviously. So this could even be merged for 2.6.14
-> > (I'm not a fan of this idea, though).
->
-> I don't think it's a good idea to mess with this for 2.6.14
+On Wednesday 26 October 2005 00:44, Blaisorblade wrote:
 
-> In general the maxaligned stuff is imho bogus and should be removed. That
-> is what CONFIG_X86_GENERIC is for. It doesn't make sense imho to separate
-> the variables in two aligned classes - either they should be aligned in all
-> cases or they shouldn't.
+> For what I see, that's based on the tradeoff between space and contention -
+> for instance there are few zones only, so there's no big waste.
 
-For what I see, that's based on the tradeoff between space and contention - 
-for instance there are few zones only, so there's no big waste. In practice, 
-interpreting !X86_GENERIC as "I will run this kernel on _this_ processor" 
-could also be done.
+If space is precious it shouldn't be padded at all.
 
-However, in case you didn't note, max_align is never enough on EM64T 
-currently, right?
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+> In  practice, interpreting !X86_GENERIC as "I will run this kernel on _this_
+> processor" could also be done.
 
-	
+That is what it always meant yes.
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+> However, in case you didn't note, max_align is never enough on EM64T
+> currently, right?
 
+I will prepare patches for .15 to remove it completely, that should fix that 
+problem.
+
+-Andi
 
 
 -------------------------------------------------------
