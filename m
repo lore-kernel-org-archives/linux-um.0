@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUWvC-0004hv-R0	for user-mode-linux-devel@lists.sourceforge.net;
+	id 1EUWvC-0004hw-SL	for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 25 Oct 2005 15:05:30 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EUWvA-0007h7-6r
+	(Exim 4.44)	id 1EUWvA-0007h5-6q
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 25 Oct 2005 15:05:30 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20051025220133.20010.19935.stgit@zion.home.lan>
+Message-Id: <20051025220240.20010.67825.stgit@zion.home.lan>
 In-Reply-To: <20051025220053.20010.56979.stgit@zion.home.lan>
 References: <20051025220053.20010.56979.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 05/11] uml: fix assembly stub for segv
+Subject: [uml-devel] [PATCH 09/11] uml console channels: fix the API of
+	console_write
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,88 +26,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 00:01:34 +0200
+Date: Wed, 26 Oct 2005 00:02:41 +0200
 To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Even here, we reuse values from one asm statement to the next without telling
-this to GCC - so fix this.
-
-While at it, a bit of improvements to the generated asm code, with better use of
-constraints. Still TODO: convert all this to the syscall_stub macros we already
-have.
+Since the 4th param is unused, remove it altogether.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/sys-i386/stub_segv.c   |   10 ++++++----
- arch/um/sys-x86_64/stub_segv.c |   18 ++++++++++--------
- 2 files changed, 16 insertions(+), 12 deletions(-)
+ arch/um/drivers/chan_kern.c |    5 ++---
+ arch/um/drivers/chan_user.c |    2 +-
+ arch/um/include/chan_user.h |    4 ++--
+ 3 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/sys-i386/stub_segv.c b/arch/um/sys-i386/stub_segv.c
---- a/arch/um/sys-i386/stub_segv.c
-+++ b/arch/um/sys-i386/stub_segv.c
-@@ -13,17 +13,19 @@ void __attribute__ ((__section__ (".__sy
- stub_segv_handler(int sig)
- {
- 	struct sigcontext *sc = (struct sigcontext *) (&sig + 1);
-+	long pid;
- 
- 	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
- 			      sc);
- 
--	__asm__("movl %0, %%eax ; int $0x80": : "g" (__NR_getpid));
--	__asm__("movl %%eax, %%ebx ; movl %0, %%eax ; movl %1, %%ecx ;"
--		"int $0x80": : "g" (__NR_kill), "g" (SIGUSR1));
-+	__asm__("movl %1, %%eax ; int $0x80": "=&a" (pid): "i" (__NR_getpid));
-+	__asm__("movl %0, %%eax ; movl %1, %%ecx ;"
-+		"int $0x80": : "i" (__NR_kill), "i" (SIGUSR1), "b" (pid)
-+		: "eax", "ecx");
- 	/* Load pointer to sigcontext into esp, since we need to leave
- 	 * the stack in its original form when we do the sigreturn here, by
- 	 * hand.
- 	 */
- 	__asm__("mov %0,%%esp ; movl %1, %%eax ; "
--		"int $0x80" : : "a" (sc), "g" (__NR_sigreturn));
-+		"int $0x80" : : "r" (sc), "i" (__NR_sigreturn));
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -89,8 +89,7 @@ static int not_configged_write(int fd, c
+ 	return(-EIO);
  }
-diff --git a/arch/um/sys-x86_64/stub_segv.c b/arch/um/sys-x86_64/stub_segv.c
---- a/arch/um/sys-x86_64/stub_segv.c
-+++ b/arch/um/sys-x86_64/stub_segv.c
-@@ -31,21 +31,23 @@ void __attribute__ ((__section__ (".__sy
- stub_segv_handler(int sig)
+ 
+-static int not_configged_console_write(int fd, const char *buf, int len,
+-				       void *data)
++static int not_configged_console_write(int fd, const char *buf, int len)
  {
- 	struct ucontext *uc;
-+	long pid;
+ 	my_puts("Using a channel type which is configured out of "
+ 	       "UML\n");
+@@ -299,7 +298,7 @@ int console_write_chan(struct list_head 
+ 		chan = list_entry(ele, struct chan, list);
+ 		if(!chan->output || (chan->ops->console_write == NULL))
+ 			continue;
+-		n = chan->ops->console_write(chan->fd, buf, len, chan->data);
++		n = chan->ops->console_write(chan->fd, buf, len);
+ 		if(chan->primary) ret = n;
+ 	}
+ 	return(ret);
+diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+--- a/arch/um/drivers/chan_user.c
++++ b/arch/um/drivers/chan_user.c
+@@ -21,7 +21,7 @@
+ #include "choose-mode.h"
+ #include "mode.h"
  
--	__asm__("movq %%rdx, %0" : "=g" (uc) :);
-+	__asm__("movq %%rdx, %0" : "=g" (uc) : );
- 	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
- 			      &uc->uc_mcontext);
- 
--	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));	
--	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
--		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) : 
--		"%rdi", "%rax", "%rsi");
-+	__asm__("movq %0, %%rax ; syscall": "=&a" (pid) : "g" (__NR_getpid)
-+			: "rax", __syscall_clobber);
-+	__asm__("movq %0, %%rax ; movq %1, %%rsi ;"
-+		"syscall": : "i" (__NR_kill), "i" (SIGUSR1), "D" (pid) :
-+		"rdi", "rax", "rsi", __syscall_clobber);
- 	/* sys_sigreturn expects that the stack pointer will be 8 bytes into
- 	 * the signal frame.  So, we use the ucontext pointer, which we know
- 	 * already, to get the signal frame pointer, and add 8 to that.
- 	 */
--	__asm__("movq %0, %%rsp": : 
--		"g" ((unsigned long) container_of(uc, struct rt_sigframe, 
-+	__asm__("movq %0, %%rsp": :
-+		"g" ((unsigned long) container_of(uc, struct rt_sigframe,
- 						  uc) + 8));
--	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
-+	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn) : "rax");
- }
+-int generic_console_write(int fd, const char *buf, int n, void *unused)
++int generic_console_write(int fd, const char *buf, int n)
+ {
+ 	struct termios save, new;
+ 	int err;
+diff --git a/arch/um/include/chan_user.h b/arch/um/include/chan_user.h
+--- a/arch/um/include/chan_user.h
++++ b/arch/um/include/chan_user.h
+@@ -25,7 +25,7 @@ struct chan_ops {
+ 	void (*close)(int, void *);
+ 	int (*read)(int, char *, void *);
+ 	int (*write)(int, const char *, int, void *);
+-	int (*console_write)(int, const char *, int, void *);
++	int (*console_write)(int, const char *, int);
+ 	int (*window_size)(int, void *, unsigned short *, unsigned short *);
+ 	void (*free)(void *);
+ 	int winch;
+@@ -37,7 +37,7 @@ extern struct chan_ops fd_ops, null_ops,
+ extern void generic_close(int fd, void *unused);
+ extern int generic_read(int fd, char *c_out, void *unused);
+ extern int generic_write(int fd, const char *buf, int n, void *unused);
+-extern int generic_console_write(int fd, const char *buf, int n, void *state);
++extern int generic_console_write(int fd, const char *buf, int n);
+ extern int generic_window_size(int fd, void *unused, unsigned short *rows_out,
+ 			       unsigned short *cols_out);
+ extern void generic_free(void *data);
 
 
 
