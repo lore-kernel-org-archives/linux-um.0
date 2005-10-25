@@ -1,23 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUXEN-0005ZJ-SA	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:25:19 -0700
-Received: from rimuhosting.com ([69.90.33.248])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EUXEN-0003Ge-Ig
+	id 1EUXSw-0006Bk-Ce	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Oct 2005 15:40:22 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EUXSt-0003FV-Vd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:25:19 -0700
-Message-ID: <435EB0C8.3050609@rimuhosting.com>
-From: Peter <peter.spamcatcher@rimuhosting.com>
+	Tue, 25 Oct 2005 15:40:22 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <20051025221105.21106.95194.stgit@zion.home.lan>
+	<20051025221351.21106.57194.stgit@zion.home.lan>
+	<200510260022.28095.ak@suse.de>
+In-Reply-To: <200510260022.28095.ak@suse.de>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] SKAS race condition status?
-References: <43542ACC.7020108@theshore.net> <435E60F1.2010005@linode.com>
-	<435EAA6E.6070107@rimuhosting.com> <435EAD3B.8020900@linode.com>
-In-Reply-To: <435EAD3B.8020900@linode.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200510260044.17184.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [PATCH 6/6] x86_64: enable xchg optimization for
+	x86_64
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +32,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 11:25:12 +1300
-To: "Christopher S. Aker" <caker@linode.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 26 Oct 2005 00:44:15 +0200
+To: Andi Kleen <ak@suse.de>
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-HT is not disabled on any of my boxes.
+On Wednesday 26 October 2005 00:22, Andi Kleen wrote:
+> On Wednesday 26 October 2005 00:13, Paolo 'Blaisorblade' Giarrusso wrote:
+> > I.e. the implementation was written, is present in the tree, but due to
+> > this:
+> >
+> > #ifdef CONFIG_RWSEM_GENERIC_SPINLOCK
+> > #include <linux/rwsem-spinlock.h> /* use a generic implementation */
+> > #else
+> > #include <asm/rwsem.h> /* use an arch-specific implementation */
+> > #endif
+> >
+> > it was probably _NEVER_ compiled!!!
 
-Christopher S. Aker wrote:
-> Peter wrote:
-> 
->> I have skas3-v8 host servers with model 4 processes and good (100+ 
->> day) uptimes.  The host server I had issues with (host38) got 
->> converted to Xen and is still having problems.  I am seeing issues 
->> with host34 that require the odd restart.  That server runs the same 
->> CPU model and kernel code as other servers of mine with good uptime.
->>
->> My conclusion is that I must be seeing hardware issues rather than a 
->> skas bug.
-> 
-> 
-> By chance, do you have Hyperthreading disabled on your model 4 Xeon boxes?
-> 
-> -Chris
+> Actually it was, but we switched it back because there were some doubts
+> on the correctness of the xchg based implementation and the generic
+> one looked much cleaner. So far nobody showed a significant performance
+> different too.
+
+> I should probably remove asm/rwsem.h.
+That's fine too, the current situation is clearly bogus.
+Thanks for the quick answer.
+
+> Don't apply please.
+Agreed.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
