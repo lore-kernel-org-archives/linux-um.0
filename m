@@ -2,21 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUWzi-0004v1-Qg	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:10:10 -0700
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EUWzg-0000Kz-VM
+	id 1EUX0q-00051g-B5	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Oct 2005 15:11:20 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EUX0o-0000Yq-Vm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:10:10 -0700
-Message-ID: <435EAD3B.8020900@linode.com>
-From: "Christopher S. Aker" <caker@linode.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] SKAS race condition status?
-References: <43542ACC.7020108@theshore.net> <435E60F1.2010005@linode.com>
-	<435EAA6E.6070107@rimuhosting.com>
-In-Reply-To: <435EAA6E.6070107@rimuhosting.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	Tue, 25 Oct 2005 15:11:19 -0700
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20051025221203.21106.72834.stgit@zion.home.lan>
+In-Reply-To: <20051025221105.21106.95194.stgit@zion.home.lan>
+References: <20051025221105.21106.95194.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 2/6] uml: fix "reuse i386 cpu optimizations"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,23 +25,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Oct 2005 17:10:03 -0500
-To: Peter <peter.spamcatcher@rimuhosting.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 26 Oct 2005 00:12:05 +0200
+To: Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Peter wrote:
-> I have skas3-v8 host servers with model 4 processes and good (100+ day) 
-> uptimes.  The host server I had issues with (host38) got converted to 
-> Xen and is still having problems.  I am seeing issues with host34 that 
-> require the odd restart.  That server runs the same CPU model and kernel 
-> code as other servers of mine with good uptime.
-> 
-> My conclusion is that I must be seeing hardware issues rather than a 
-> skas bug.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-By chance, do you have Hyperthreading disabled on your model 4 Xeon boxes?
+Remove RWSEM_GENERIC_SPINLOCK, it's now defined (only if needed) by the
+underlying arch/i386/Kconfig.cpu. Leave it only for x86_64. Even there, it's
+totally wrong, as they even have the code to support XCHG_ADD.
 
--Chris
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ arch/um/Kconfig        |    4 ----
+ arch/um/Kconfig.x86_64 |    5 +++++
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -26,10 +26,6 @@ config UID16
+ 	bool
+ 	default y
+ 
+-config RWSEM_GENERIC_SPINLOCK
+-	bool
+-	default y
+-
+ config GENERIC_CALIBRATE_DELAY
+ 	bool
+ 	default y
+diff --git a/arch/um/Kconfig.x86_64 b/arch/um/Kconfig.x86_64
+--- a/arch/um/Kconfig.x86_64
++++ b/arch/um/Kconfig.x86_64
+@@ -6,6 +6,11 @@ config 64BIT
+ 	bool
+ 	default y
+ 
++#XXX: this is so in the underlying arch, but it's wrong!!!
++config RWSEM_GENERIC_SPINLOCK
++	bool
++	default y
++
+ config SEMAPHORE_SLEEPERS
+ 	bool
+ 	default y
+
 
 
 -------------------------------------------------------
