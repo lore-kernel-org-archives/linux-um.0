@@ -1,17 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUWvC-0004hx-TT	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:05:30 -0700
+	id 1EUWvD-0004i4-9z	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Oct 2005 15:05:31 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EUWvA-0007h1-6v
+	(Exim 4.44)	id 1EUWvA-0003t1-7o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:05:30 -0700
+	Tue, 25 Oct 2005 15:05:31 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20051025220053.20010.56979.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 01/11] uml: sigio code - reduce spinlock hold time
+Message-Id: <20051025220126.20010.28676.stgit@zion.home.lan>
+In-Reply-To: <20051025220053.20010.56979.stgit@zion.home.lan>
+References: <20051025220053.20010.56979.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 04/11] uml: fix SKAS0 assembly stubs - use proper
+	constraints
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,162 +26,216 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 00:00:55 +0200
+Date: Wed, 26 Oct 2005 00:01:27 +0200
 To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-In a previous patch I shifted an allocation to being atomic.
+Jeff Dike noted that the assembly code for syscall stubs is misassembled with
+GCC 3.2.3: the values copied in registers weren't preserved between one asm()
+and the following one.
 
-In this patch, a better but more intrusive solution is implemented, i.e. hold
-the lock only when really needing it, especially not over pipe operations, nor
-over the culprit allocation.
+So I fixed the thing by rewriting the __asm__ constraints more
+like unistd.h ones.
 
-Additionally, while at it, add a missing kfree in the failure path, and make
-sure that if we fail in forking, write_sigio_pid is -1 and not, say, -ENOMEM.
+Note: in syscall6 case I had to add one more instruction (i.e. moving arg6 in
+eax and shuffling things around) - it's needed for the function to be valid in
+general (we can't load the value from the stack, relative to ebp, because we
+change it), but could be avoided since we actually use a constant as param 6.
 
-And fix whitespace, at least for things I was touching anyway.
+The only fix would be to turn stub_syscall6 to a macro and use a "i" constraint
+for arg6 (i.e., specify it's a constant value).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/kernel/sigio_user.c |   84 ++++++++++++++++++++++++++++++-------------
- 1 files changed, 59 insertions(+), 25 deletions(-)
+ arch/um/include/sysdep-i386/stub.h   |   64 +++++++++++++++++++++++-----------
+ arch/um/include/sysdep-x86_64/stub.h |   61 ++++++++++++++++++++++++++------
+ 2 files changed, 92 insertions(+), 33 deletions(-)
 
-diff --git a/arch/um/kernel/sigio_user.c b/arch/um/kernel/sigio_user.c
---- a/arch/um/kernel/sigio_user.c
-+++ b/arch/um/kernel/sigio_user.c
-@@ -336,70 +336,104 @@ int ignore_sigio_fd(int fd)
- 	return(err);
- }
+diff --git a/arch/um/include/sysdep-i386/stub.h b/arch/um/include/sysdep-i386/stub.h
+--- a/arch/um/include/sysdep-i386/stub.h
++++ b/arch/um/include/sysdep-i386/stub.h
+@@ -16,45 +16,69 @@ extern void stub_clone_handler(void);
+ #define STUB_MMAP_NR __NR_mmap2
+ #define MMAP_OFFSET(o) ((o) >> PAGE_SHIFT)
  
--static int setup_initial_poll(int fd)
-+static struct pollfd* setup_initial_poll(int fd)
++static inline long stub_syscall1(long syscall, long arg1)
++{
++	long ret;
++
++	__asm__ volatile ("int $0x80" : "=a" (ret) : "0" (syscall), "b" (arg1));
++
++	return ret;
++}
++
+ static inline long stub_syscall2(long syscall, long arg1, long arg2)
  {
- 	struct pollfd *p;
+ 	long ret;
  
--	p = um_kmalloc_atomic(sizeof(struct pollfd));
--	if(p == NULL){
-+	p = um_kmalloc(sizeof(struct pollfd));
-+	if (p == NULL) {
- 		printk("setup_initial_poll : failed to allocate poll\n");
--		return(-1);
-+		return NULL;
- 	}
- 	*p = ((struct pollfd) { .fd  	= fd,
- 				.events 	= POLLIN,
- 				.revents 	= 0 });
--	current_poll = ((struct pollfds) { .poll 	= p,
--					   .used 	= 1,
--					   .size 	= 1 });
--	return(0);
-+	return p;
+-	__asm__("movl %0, %%ecx; " : : "g" (arg2) : "%ecx");
+-	__asm__("movl %0, %%ebx; " : : "g" (arg1) : "%ebx");
+-	__asm__("movl %0, %%eax; " : : "g" (syscall) : "%eax");
+-	__asm__("int $0x80;" : : : "%eax");
+-	__asm__ __volatile__("movl %%eax, %0; " : "=g" (ret) :);
+-	return(ret);
++	__asm__ volatile ("int $0x80" : "=a" (ret) : "0" (syscall), "b" (arg1),
++			"c" (arg2));
++
++	return ret;
  }
  
- void write_sigio_workaround(void)
+ static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
  {
- 	unsigned long stack;
-+	struct pollfd *p;
- 	int err;
-+	int l_write_sigio_fds[2];
-+	int l_sigio_private[2];
-+	int l_write_sigio_pid;
- 
-+	/* We call this *tons* of times - and most ones we must just fail. */
- 	sigio_lock();
--	if(write_sigio_pid != -1)
--		goto out;
-+	l_write_sigio_pid = write_sigio_pid;
-+	sigio_unlock();
+-	__asm__("movl %0, %%edx; " : : "g" (arg3) : "%edx");
+-	return(stub_syscall2(syscall, arg1, arg2));
++	long ret;
 +
-+	if (l_write_sigio_pid != -1)
-+		return;
- 
--	err = os_pipe(write_sigio_fds, 1, 1);
-+	err = os_pipe(l_write_sigio_fds, 1, 1);
- 	if(err < 0){
- 		printk("write_sigio_workaround - os_pipe 1 failed, "
- 		       "err = %d\n", -err);
--		goto out;
-+		return;
- 	}
--	err = os_pipe(sigio_private, 1, 1);
-+	err = os_pipe(l_sigio_private, 1, 1);
- 	if(err < 0){
--		printk("write_sigio_workaround - os_pipe 2 failed, "
-+		printk("write_sigio_workaround - os_pipe 1 failed, "
- 		       "err = %d\n", -err);
- 		goto out_close1;
- 	}
--	if(setup_initial_poll(sigio_private[1]))
++	__asm__ volatile ("int $0x80" : "=a" (ret) : "0" (syscall), "b" (arg1),
++			"c" (arg2), "d" (arg3));
 +
-+	p = setup_initial_poll(l_sigio_private[1]);
-+	if(!p)
- 		goto out_close2;
- 
--	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL, 
-+	sigio_lock();
-+
-+	/* Did we race? Don't try to optimize this, please, it's not so likely
-+	 * to happen, and no more than once at the boot. */
-+	if(write_sigio_pid != -1)
-+		goto out_unlock;
-+
-+	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
- 					    CLONE_FILES | CLONE_VM, &stack, 0);
- 
--	if(write_sigio_pid < 0) goto out_close2;
-+	if (write_sigio_pid < 0)
-+		goto out_clear;
- 
--	if(write_sigio_irq(write_sigio_fds[0])) 
-+	if (write_sigio_irq(l_write_sigio_fds[0])) 
- 		goto out_kill;
- 
-- out:
-+	/* Success, finally. */
-+	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
-+	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
-+
-+	current_poll = ((struct pollfds) { .poll 	= p,
-+					   .used 	= 1,
-+					   .size 	= 1 });
-+
- 	sigio_unlock();
- 	return;
- 
-  out_kill:
--	os_kill_process(write_sigio_pid, 1);
-+	l_write_sigio_pid = write_sigio_pid;
-+	write_sigio_pid = -1;
-+	sigio_unlock();
-+	/* Going to call waitpid, avoid holding the lock. */
-+	os_kill_process(l_write_sigio_pid, 1);
-+	goto out_free;
-+
-+ out_clear:
- 	write_sigio_pid = -1;
-+ out_unlock:
-+	sigio_unlock();
-+ out_free:
-+	kfree(p);
-  out_close2:
--	os_close_file(sigio_private[0]);
--	os_close_file(sigio_private[1]);
-+	os_close_file(l_sigio_private[0]);
-+	os_close_file(l_sigio_private[1]);
-  out_close1:
--	os_close_file(write_sigio_fds[0]);
--	os_close_file(write_sigio_fds[1]);
--	sigio_unlock();
-+	os_close_file(l_write_sigio_fds[0]);
-+	os_close_file(l_write_sigio_fds[1]);
-+	return;
-+
++	return ret;
  }
  
- int read_sigio_fd(int fd)
+ static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
+ 				 long arg4)
+ {
+-	__asm__("movl %0, %%esi; " : : "g" (arg4) : "%esi");
+-	return(stub_syscall3(syscall, arg1, arg2, arg3));
++	long ret;
++
++	__asm__ volatile ("int $0x80" : "=a" (ret) : "0" (syscall), "b" (arg1),
++			"c" (arg2), "d" (arg3), "S" (arg4));
++
++	return ret;
++}
++
++static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
++				 long arg4, long arg5)
++{
++	long ret;
++
++	__asm__ volatile ("int $0x80" : "=a" (ret) : "0" (syscall), "b" (arg1),
++			"c" (arg2), "d" (arg3), "S" (arg4), "D" (arg5));
++
++	return ret;
+ }
+ 
+ static inline long stub_syscall6(long syscall, long arg1, long arg2, long arg3,
+ 				 long arg4, long arg5, long arg6)
+ {
+ 	long ret;
+-	__asm__("movl %0, %%eax; " : : "g" (syscall) : "%eax");
+-	__asm__("movl %0, %%ebx; " : : "g" (arg1) : "%ebx");
+-	__asm__("movl %0, %%ecx; " : : "g" (arg2) : "%ecx");
+-	__asm__("movl %0, %%edx; " : : "g" (arg3) : "%edx");
+-	__asm__("movl %0, %%esi; " : : "g" (arg4) : "%esi");
+-	__asm__("movl %0, %%edi; " : : "g" (arg5) : "%edi");
+-	__asm__ __volatile__("pushl %%ebp ; movl %1, %%ebp; "
+-		"int $0x80; popl %%ebp ; "
+-		"movl %%eax, %0; " : "=g" (ret) : "g" (arg6) : "%eax");
+-	return(ret);
++
++	__asm__ volatile ("push %%ebp ; movl %%eax,%%ebp ; movl %1,%%eax ; "
++			"int $0x80 ; pop %%ebp"
++			: "=a" (ret)
++			: "g" (syscall), "b" (arg1), "c" (arg2), "d" (arg3),
++			  "S" (arg4), "D" (arg5), "0" (arg6));
++
++	return ret;
+ }
+ 
+ static inline void trap_myself(void)
+diff --git a/arch/um/include/sysdep-x86_64/stub.h b/arch/um/include/sysdep-x86_64/stub.h
+--- a/arch/um/include/sysdep-x86_64/stub.h
++++ b/arch/um/include/sysdep-x86_64/stub.h
+@@ -17,37 +17,72 @@ extern void stub_clone_handler(void);
+ #define STUB_MMAP_NR __NR_mmap
+ #define MMAP_OFFSET(o) (o)
+ 
++#define __syscall_clobber "r11","rcx","memory"
++#define __syscall "syscall"
++
+ static inline long stub_syscall2(long syscall, long arg1, long arg2)
+ {
+ 	long ret;
+ 
+-	__asm__("movq %0, %%rsi; " : : "g" (arg2) : "%rsi");
+-	__asm__("movq %0, %%rdi; " : : "g" (arg1) : "%rdi");
+-	__asm__("movq %0, %%rax; " : : "g" (syscall) : "%rax");
+-	__asm__("syscall;" : : : "%rax", "%r11", "%rcx");
+-	__asm__ __volatile__("movq %%rax, %0; " : "=g" (ret) :);
+-	return(ret);
++	__asm__ volatile (__syscall
++		: "=a" (ret)
++		: "0" (syscall), "D" (arg1), "S" (arg2) : __syscall_clobber );
++
++	return ret;
+ }
+ 
+ static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
+ {
+-	__asm__("movq %0, %%rdx; " : : "g" (arg3) : "%rdx");
+-	return(stub_syscall2(syscall, arg1, arg2));
++	long ret;
++
++	__asm__ volatile (__syscall
++		: "=a" (ret)
++		: "0" (syscall), "D" (arg1), "S" (arg2), "d" (arg3)
++		: __syscall_clobber );
++
++	return ret;
+ }
+ 
+ static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
+ 				 long arg4)
+ {
+-	__asm__("movq %0, %%r10; " : : "g" (arg4) : "%r10");
+-	return(stub_syscall3(syscall, arg1, arg2, arg3));
++	long ret;
++
++	__asm__ volatile ("movq %5,%%r10 ; " __syscall
++		: "=a" (ret)
++		: "0" (syscall), "D" (arg1), "S" (arg2), "d" (arg3),
++		  "g" (arg4)
++		: __syscall_clobber, "r10" );
++
++	return ret;
++}
++
++static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
++				 long arg4, long arg5)
++{
++	long ret;
++
++	__asm__ volatile ("movq %5,%%r10 ; movq %6,%%r8 ; " __syscall
++		: "=a" (ret)
++		: "0" (syscall), "D" (arg1), "S" (arg2), "d" (arg3),
++		  "g" (arg4), "g" (arg5)
++		: __syscall_clobber, "r10", "r8" );
++
++	return ret;
+ }
+ 
+ static inline long stub_syscall6(long syscall, long arg1, long arg2, long arg3,
+ 				 long arg4, long arg5, long arg6)
+ {
+-	__asm__("movq %0, %%r9; " : : "g" (arg6) : "%r9");
+-	__asm__("movq %0, %%r8; " : : "g" (arg5) : "%r8");
+-	return(stub_syscall4(syscall, arg1, arg2, arg3, arg4));
++	long ret;
++
++	__asm__ volatile ("movq %5,%%r10 ; movq %6,%%r8 ; "
++		"movq %7, %%r9; " __syscall : "=a" (ret)
++		: "0" (syscall), "D" (arg1), "S" (arg2), "d" (arg3),
++		  "g" (arg4), "g" (arg5), "g" (arg6)
++		: __syscall_clobber, "r10", "r8", "r9" );
++
++	return ret;
+ }
+ 
+ static inline void trap_myself(void)
 
 
 
