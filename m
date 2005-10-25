@@ -1,26 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUXSw-0006Bk-Ce	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:40:22 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EUXSt-0003FV-Vd
+	id 1EUXTp-0006Go-BU	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Oct 2005 15:41:17 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EUXTo-00066r-Uy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 15:40:22 -0700
+	Tue, 25 Oct 2005 15:41:17 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
 References: <20051025221105.21106.95194.stgit@zion.home.lan>
-	<20051025221351.21106.57194.stgit@zion.home.lan>
-	<200510260022.28095.ak@suse.de>
-In-Reply-To: <200510260022.28095.ak@suse.de>
+	<20051025221253.21106.22572.stgit@zion.home.lan>
+	<200510260024.17241.ak@suse.de>
+In-Reply-To: <200510260024.17241.ak@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200510260044.17184.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [PATCH 6/6] x86_64: enable xchg optimization for
-	x86_64
+Message-Id: <200510260044.26138.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [PATCH 4/6] x86_64: fix L1_CACHE_SHIFT_MAX for Intel
+	EM64T [for 2.6.14?]
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +32,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 00:44:15 +0200
+Date: Wed, 26 Oct 2005 00:44:25 +0200
 To: Andi Kleen <ak@suse.de>
 Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 26 October 2005 00:22, Andi Kleen wrote:
-> On Wednesday 26 October 2005 00:13, Paolo 'Blaisorblade' Giarrusso wrote:
-> > I.e. the implementation was written, is present in the tree, but due to
-> > this:
-> >
-> > #ifdef CONFIG_RWSEM_GENERIC_SPINLOCK
-> > #include <linux/rwsem-spinlock.h> /* use a generic implementation */
-> > #else
-> > #include <asm/rwsem.h> /* use an arch-specific implementation */
-> > #endif
-> >
-> > it was probably _NEVER_ compiled!!!
+On Wednesday 26 October 2005 00:24, Andi Kleen wrote:
+> > No correctness issues, obviously. So this could even be merged for 2.6.14
+> > (I'm not a fan of this idea, though).
+>
+> I don't think it's a good idea to mess with this for 2.6.14
 
-> Actually it was, but we switched it back because there were some doubts
-> on the correctness of the xchg based implementation and the generic
-> one looked much cleaner. So far nobody showed a significant performance
-> different too.
+> In general the maxaligned stuff is imho bogus and should be removed. That
+> is what CONFIG_X86_GENERIC is for. It doesn't make sense imho to separate
+> the variables in two aligned classes - either they should be aligned in all
+> cases or they shouldn't.
 
-> I should probably remove asm/rwsem.h.
-That's fine too, the current situation is clearly bogus.
-Thanks for the quick answer.
+For what I see, that's based on the tradeoff between space and contention - 
+for instance there are few zones only, so there's no big waste. In practice, 
+interpreting !X86_GENERIC as "I will run this kernel on _this_ processor" 
+could also be done.
 
-> Don't apply please.
-Agreed.
+However, in case you didn't note, max_align is never enough on EM64T 
+currently, right?
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
