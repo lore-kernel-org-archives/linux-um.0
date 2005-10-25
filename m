@@ -2,21 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUWoK-0004SA-0Z	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 14:58:24 -0700
-Received: from rimuhosting.com ([69.90.33.248])
+	id 1EUWvC-0004hv-R0	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Oct 2005 15:05:30 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EUWoH-0006L3-S2
+	(Exim 4.44)	id 1EUWvA-0007h7-6r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 14:58:24 -0700
-Message-ID: <435EAA6E.6070107@rimuhosting.com>
-From: Peter <peter.spamcatcher@rimuhosting.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] SKAS race condition status?
-References: <43542ACC.7020108@theshore.net> <435E60F1.2010005@linode.com>
-In-Reply-To: <435E60F1.2010005@linode.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	Tue, 25 Oct 2005 15:05:30 -0700
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20051025220133.20010.19935.stgit@zion.home.lan>
+In-Reply-To: <20051025220053.20010.56979.stgit@zion.home.lan>
+References: <20051025220053.20010.56979.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 05/11] uml: fix assembly stub for segv
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,62 +25,89 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 10:58:06 +1300
-To: "Christopher S. Aker" <caker@linode.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 26 Oct 2005 00:01:34 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-I have skas3-v8 host servers with model 4 processes and good (100+ day) 
-uptimes.  The host server I had issues with (host38) got converted to 
-Xen and is still having problems.  I am seeing issues with host34 that 
-require the odd restart.  That server runs the same CPU model and kernel 
-code as other servers of mine with good uptime.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-My conclusion is that I must be seeing hardware issues rather than a 
-skas bug.
+Even here, we reuse values from one asm statement to the next without telling
+this to GCC - so fix this.
 
-- Peter
+While at it, a bit of improvements to the generated asm code, with better use of
+constraints. Still TODO: convert all this to the syscall_stub macros we already
+have.
 
-# for ((i=34;i<41;i++)); do echo host$i $(ssh host$i 'echo $(cat 
-/proc/cpuinfo  | grep model | grep -v name | head -n 1) $(uname -r) 
-$(uptime)'); done
-host34 model : 2 2.6.11.10-skas3-v8 21:52:37 up 15:19, 0 users, load 
-average: 1.64, 1.60, 1.32
-host35 model : 4 2.6.11.7-skas3-v8 21:49:21 up 42 days, 12:15, 0 users, 
-load average: 13.72, 9.66, 5.21
-host36 model : 4 2.6.11.12-skas3-v8.2 21:49:23 up 61 days, 0 min, 0 
-users, load average: 1.26, 1.44, 1.78
-host37 model : 4 2.6.11.7-skas3-v8 21:49:25 up 121 days, 9:48, 0 users, 
-load average: 0.91, 1.04, 1.14
-host38 model : 2 2.6.11.12-xen0 21:49:26 up 7 days, 13:28, 0 users, load 
-average: 0.02, 0.05, 0.01
-host39 model : 4 2.6.11.7-skas3-v8 21:49:28 up 106 days, 2:46, 0 users, 
-load average: 0.59, 0.65, 0.70
-host40 model : 4 2.6.11.7-skas3-v8 21:49:39 up 121 days, 9:47, 0 users, 
-load average: 0.27, 0.43, 0.47
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
+ arch/um/sys-i386/stub_segv.c   |   10 ++++++----
+ arch/um/sys-x86_64/stub_segv.c |   18 ++++++++++--------
+ 2 files changed, 16 insertions(+), 12 deletions(-)
 
-Christopher S. Aker wrote:
-> Christopher S. Aker wrote:
-> 
->> Has there been any progress on the race in SKAS?  I've been dealing 
->> with 2-4 hosts crashing a week.  Same thing happens on my old SKAS 
->> kernel, 2.6.7 with skas3-v4 or so.
-> 
-> 
-> Jeff and I realized that this only happens on Xeon processors where the 
-> model number is > 2.  None of my model 2 Xeon hosts crash, but my model 
-> 3 and model 4 xeons do.  grep model /proc/cpuinfo for info.  I've had 
-> skas3-v4 and skas3-v8.2 generate the same panic, so it's something 
-> processor model specific.
-> 
-> Peter, can you verify the problems you've had are on hosts with a model 
-> 3 or 4 Xeon processor?  Also, with regard to 2.6.12, I'm not sure we're 
-> looking at the same issue, as I had problems with that kernel too but 
-> wasn't able to verify it was the same panic.  I have had 2.6.13 working, 
-> and it does generate the same SKAS panic eventually.
-> 
-> Thanks,
-> -Chris
+diff --git a/arch/um/sys-i386/stub_segv.c b/arch/um/sys-i386/stub_segv.c
+--- a/arch/um/sys-i386/stub_segv.c
++++ b/arch/um/sys-i386/stub_segv.c
+@@ -13,17 +13,19 @@ void __attribute__ ((__section__ (".__sy
+ stub_segv_handler(int sig)
+ {
+ 	struct sigcontext *sc = (struct sigcontext *) (&sig + 1);
++	long pid;
+ 
+ 	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
+ 			      sc);
+ 
+-	__asm__("movl %0, %%eax ; int $0x80": : "g" (__NR_getpid));
+-	__asm__("movl %%eax, %%ebx ; movl %0, %%eax ; movl %1, %%ecx ;"
+-		"int $0x80": : "g" (__NR_kill), "g" (SIGUSR1));
++	__asm__("movl %1, %%eax ; int $0x80": "=&a" (pid): "i" (__NR_getpid));
++	__asm__("movl %0, %%eax ; movl %1, %%ecx ;"
++		"int $0x80": : "i" (__NR_kill), "i" (SIGUSR1), "b" (pid)
++		: "eax", "ecx");
+ 	/* Load pointer to sigcontext into esp, since we need to leave
+ 	 * the stack in its original form when we do the sigreturn here, by
+ 	 * hand.
+ 	 */
+ 	__asm__("mov %0,%%esp ; movl %1, %%eax ; "
+-		"int $0x80" : : "a" (sc), "g" (__NR_sigreturn));
++		"int $0x80" : : "r" (sc), "i" (__NR_sigreturn));
+ }
+diff --git a/arch/um/sys-x86_64/stub_segv.c b/arch/um/sys-x86_64/stub_segv.c
+--- a/arch/um/sys-x86_64/stub_segv.c
++++ b/arch/um/sys-x86_64/stub_segv.c
+@@ -31,21 +31,23 @@ void __attribute__ ((__section__ (".__sy
+ stub_segv_handler(int sig)
+ {
+ 	struct ucontext *uc;
++	long pid;
+ 
+-	__asm__("movq %%rdx, %0" : "=g" (uc) :);
++	__asm__("movq %%rdx, %0" : "=g" (uc) : );
+ 	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
+ 			      &uc->uc_mcontext);
+ 
+-	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));	
+-	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
+-		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) : 
+-		"%rdi", "%rax", "%rsi");
++	__asm__("movq %0, %%rax ; syscall": "=&a" (pid) : "g" (__NR_getpid)
++			: "rax", __syscall_clobber);
++	__asm__("movq %0, %%rax ; movq %1, %%rsi ;"
++		"syscall": : "i" (__NR_kill), "i" (SIGUSR1), "D" (pid) :
++		"rdi", "rax", "rsi", __syscall_clobber);
+ 	/* sys_sigreturn expects that the stack pointer will be 8 bytes into
+ 	 * the signal frame.  So, we use the ucontext pointer, which we know
+ 	 * already, to get the signal frame pointer, and add 8 to that.
+ 	 */
+-	__asm__("movq %0, %%rsp": : 
+-		"g" ((unsigned long) container_of(uc, struct rt_sigframe, 
++	__asm__("movq %0, %%rsp": :
++		"g" ((unsigned long) container_of(uc, struct rt_sigframe,
+ 						  uc) + 8));
+-	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
++	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn) : "rax");
+ }
+
 
 
 -------------------------------------------------------
