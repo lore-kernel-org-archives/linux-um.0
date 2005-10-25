@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EURun-0006E3-Kg	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 09:44:45 -0700
+	id 1EUS75-0006rr-Uh	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Oct 2005 09:57:27 -0700
 Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EURui-0005OT-GY
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EUS72-0000d8-PT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 09:44:42 -0700
-Message-ID: <435E60F1.2010005@linode.com>
-From: "Christopher S. Aker" <caker@linode.com>
+	Tue, 25 Oct 2005 09:57:25 -0700
+Message-ID: <435E63E8.2020702@theshore.net>
+From: "Christopher S. Aker" <caker@theshore.net>
 MIME-Version: 1.0
 Subject: Re: [uml-devel] SKAS race condition status?
-References: <43542ACC.7020108@theshore.net>
-In-Reply-To: <43542ACC.7020108@theshore.net>
+References: <43542ACC.7020108@theshore.net> <435E60F1.2010005@linode.com>
+In-Reply-To: <435E60F1.2010005@linode.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -27,29 +27,63 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Oct 2005 11:44:33 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: peter.spamcatcher@rimuhosting.com, Blaisorblade <blaisorblade@yahoo.it>
+Date: Tue, 25 Oct 2005 11:57:12 -0500
+To: caker@theshore.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, peter.spamcatcher@rimuhosting.com, Blaisorblade <blaisorblade@yahoo.it>
 
-Christopher S. Aker wrote:
-> Has there been any progress on the race in SKAS?  I've been dealing with 
-> 2-4 hosts crashing a week.  Same thing happens on my old SKAS kernel, 
-> 2.6.7 with skas3-v4 or so.
+/proc/cpuinfo -- model 3
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 15
+model           : 3
+model name      : Intel(R) Xeon(TM) CPU 2.80GHz
+stepping        : 4
+cpu MHz         : 2801.996
+cache size      : 1024 KB
+physical id     : 0
+siblings        : 2
+fdiv_bug        : no
+hlt_bug         : no
+f00f_bug        : no
+coma_bug        : no
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 5
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
+mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe lm 
+pni monitor ds_cpl cid xtpr
+bogomips        : 5521.40
 
-Jeff and I realized that this only happens on Xeon processors where the 
-model number is > 2.  None of my model 2 Xeon hosts crash, but my model 
-3 and model 4 xeons do.  grep model /proc/cpuinfo for info.  I've had 
-skas3-v4 and skas3-v8.2 generate the same panic, so it's something 
-processor model specific.
 
-Peter, can you verify the problems you've had are on hosts with a model 
-3 or 4 Xeon processor?  Also, with regard to 2.6.12, I'm not sure we're 
-looking at the same issue, as I had problems with that kernel too but 
-wasn't able to verify it was the same panic.  I have had 2.6.13 working, 
-and it does generate the same SKAS panic eventually.
+/proc/cpuinfo -- model 4
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 15
+model           : 4
+model name      : Intel(R) Xeon(TM) CPU 3.20GHz
+stepping        : 3
+cpu MHz         : 3200.832
+cache size      : 2048 KB
+physical id     : 0
+siblings        : 2
+core id         : 0
+cpu cores       : 1
+fdiv_bug        : no
+hlt_bug         : no
+f00f_bug        : no
+coma_bug        : no
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 5
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge 
+mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx lm 
+pni monitor ds_cpl cid cx16 xtpr
+bogomips        : 6409.33
 
-Thanks,
 -Chris
+
 
 
 -------------------------------------------------------
