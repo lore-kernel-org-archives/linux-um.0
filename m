@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUfcK-0006bZ-QC	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Oct 2005 00:22:36 -0700
-Received: from smtp.osdl.org ([65.172.181.4])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44)	id 1EUfcI-00075f-F1
+	id 1EUhNj-0003QG-Tx	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Oct 2005 02:15:39 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EUhNf-0000my-9g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Oct 2005 00:22:36 -0700
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20051026002200.1ebb06f2.akpm@osdl.org>
-In-Reply-To: <20051025221105.21106.95194.stgit@zion.home.lan>
+	Wed, 26 Oct 2005 02:15:39 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
 References: <20051025221105.21106.95194.stgit@zion.home.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	<20051026002200.1ebb06f2.akpm@osdl.org>
+In-Reply-To: <20051026002200.1ebb06f2.akpm@osdl.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200510261119.30429.blaisorblade@yahoo.it>
 Subject: [uml-devel] Re: [PATCH 1/6] Uml - reuse i386 cpu-specific tuning
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -28,31 +30,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 00:22:00 -0700
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Date: Wed, 26 Oct 2005 11:19:30 +0200
+To: Andrew Morton <akpm@osdl.org>
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-"Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
+On Wednesday 26 October 2005 09:22, Andrew Morton wrote:
+> "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
+> >  arch/i386/Kconfig      |  304
+> > ------------------------------------------------ arch/i386/Kconfig.cpu  |
+> >  305 ++++++++++++++++++++++++++++++++++++++++++++++++
 >
->  arch/i386/Kconfig      |  304 ------------------------------------------------
->   arch/i386/Kconfig.cpu  |  305 ++++++++++++++++++++++++++++++++++++++++++++++++
+> Have mercy.  I currently have twelve patches which alter arch/i386/Kconfig
+> and this patch conflicts with most of them.  This shouldn't come as a
+> surprise - Kconfig files are oft-patched, and this is x86.
 
-Have mercy.  I currently have twelve patches which alter arch/i386/Kconfig
-and this patch conflicts with most of them.  This shouldn't come as a
-surprise - Kconfig files are oft-patched, and this is x86.
+Yep - if we get no objection with this, I could pull any changes in -mm and 
+merge the patch directly Linuswards at some point, since it has so many 
+conflicts.
 
-What I did was to simply copy the large block between
+So, you can probably leave what you have there.
+> What I did was to simply copy the large block between
 
-	if !X86_ELAN
+> 	if !X86_ELAN
+>
+> and
+>
+> 	config X86_OOSTORE
+>
+> over into Kconfig.cpu, taking the modifications with it.
 
-and
+I also took X86_TSC with me, in my patch.
 
-	config X86_OOSTORE
+> As long as that's also what you did things should work OK.  If you actually
+> made any changes as you did the copy-and-paste, we're screwed.
 
-over into Kconfig.cpu, taking the modifications with it.
+No, I didn't do real changes - I just added a couple of comments. However yes, 
+should have splitout in copy+paste and changes
 
-As long as that's also what you did things should work OK.  If you actually
-made any changes as you did the copy-and-paste, we're screwed.
++# Put here option for CPU selection and depending optimization
+[...]
+and the comment near "endif" to say what is it closing:
++#!X86_ELAN
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
