@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUYeU-0001CM-U5	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 16:56:22 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EUYeS-00048q-KY
+	id 1EUfcK-0006bZ-QC	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Oct 2005 00:22:36 -0700
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44)	id 1EUfcI-00075f-F1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Oct 2005 16:56:23 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [PATCH 4/6] x86_64: fix L1_CACHE_SHIFT_MAX for
-	Intel EM64T [for 2.6.14?]
+	Wed, 26 Oct 2005 00:22:36 -0700
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20051026002200.1ebb06f2.akpm@osdl.org>
+In-Reply-To: <20051025221105.21106.95194.stgit@zion.home.lan>
 References: <20051025221105.21106.95194.stgit@zion.home.lan>
-	<200510260044.26138.blaisorblade@yahoo.it> <200510260133.03425.ak@suse.de>
-In-Reply-To: <200510260133.03425.ak@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510260200.16501.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [PATCH 1/6] Uml - reuse i386 cpu-specific tuning
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,50 +28,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 02:00:15 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andi Kleen <ak@suse.de>, Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Date: Wed, 26 Oct 2005 00:22:00 -0700
+To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 26 October 2005 01:33, Andi Kleen wrote:
-> On Wednesday 26 October 2005 00:44, Blaisorblade wrote:
-> > For what I see, that's based on the tradeoff between space and contention
-> > - for instance there are few zones only, so there's no big waste.
-
-> If space is precious it shouldn't be padded at all.
-Ah, when the structure has many instances padding should be reduced, you mean. 
-But well, I think slab itself adds some padding to separate instances, for 
-this effect and for cache colouring (I guess that means to prevent too many 
-different things from being allocated on addresses matching on the low-order 
-bits, so that inserting one in the cache means evicting another of the two - 
-it's something I guessed when I studied set-associative caches).
-
-> > In  practice, interpreting !X86_GENERIC as "I will run this kernel on
-> > _this_ processor" could also be done.
+"Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
 >
-> That is what it always meant yes.
->
-> > However, in case you didn't note, max_align is never enough on EM64T
-> > currently, right?
->
-> I will prepare patches for .15 to remove it completely, that should fix
-> that problem.
-Making L1_CACHE_SHIFT_MAX and L1_CACHE_SHIFT match, right? Or forcing all 
-architectures to support something like X86_GENERIC?
+>  arch/i386/Kconfig      |  304 ------------------------------------------------
+>   arch/i386/Kconfig.cpu  |  305 ++++++++++++++++++++++++++++++++++++++++++++++++
 
-Also, 
+Have mercy.  I currently have twelve patches which alter arch/i386/Kconfig
+and this patch conflicts with most of them.  This shouldn't come as a
+surprise - Kconfig files are oft-patched, and this is x86.
 
-#define L1_CACHE_BYTES  (1 << L1_CACHE_SHIFT)
+What I did was to simply copy the large block between
 
-should probably be made general, while at it.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+	if !X86_ELAN
 
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+and
+
+	config X86_OOSTORE
+
+over into Kconfig.cpu, taking the modifications with it.
+
+As long as that's also what you did things should work OK.  If you actually
+made any changes as you did the copy-and-paste, we're screwed.
 
 
 
