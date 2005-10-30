@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EWCF2-0003p4-83	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Oct 2005 04:24:52 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44)	id 1EWCF0-0002Ey-Nq
+	id 1EWCgc-0007am-Ix	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Oct 2005 04:53:22 -0800
+Received: from zproxy.gmail.com ([64.233.162.207])
+	by mail.sourceforge.net with esmtp (Exim 4.44)	id 1EWCgb-0006Hh-Ck
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Oct 2005 04:24:52 -0800
-From: Rob Landley <rob@landley.net>
+	Sun, 30 Oct 2005 04:53:22 -0800
+Received: by zproxy.gmail.com with SMTP id x7so442342nzc
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 30 Oct 2005 04:53:00 -0800 (PST)
+Message-ID: <35fb2e590510300453q520a9ce7ua1d74d7790b3a6b8@mail.gmail.com>
+From: Jon Masters <jonmasters@gmail.com>
+Reply-To: jonathan@jonmasters.org
+In-Reply-To: <200510300624.38794.rob@landley.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Disposition: inline
-Message-Id: <200510300624.38794.rob@landley.net>
-Subject: [uml-devel] What's wrong with tmpfs?
+References: <200510300624.38794.rob@landley.net>
+Subject: [uml-devel] Re: What's wrong with tmpfs?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,29 +31,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Oct 2005 06:24:38 -0600
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 30 Oct 2005 12:53:00 +0000
+Content-Transfer-Encoding: 8bit
+To: Rob Landley <rob@landley.net>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Under User Mode Linux in 2.6.14, would someone please explain to me why this 
-test:
+On 10/30/05, Rob Landley <rob@landley.net> wrote:
 
-static int graft_tree(struct vfsmount *mnt, struct nameidata *nd)
-{
-        int err;
+> If somebody needs a reproduction sequence, I'm happy to oblige.  In theory
+> "mount -t tmpfs /mnt /mnt" should do it, but if it was _that_ simple it
+> wouldn't have shipped...
 
-        if (mnt->mnt_sb->s_flags & MS_NOUSER)
-                return -EINVAL;
+I don't see this behaviour on a regular desktop box running 2.6.14.
+Guess it's UML specific.
 
-Is triggering when I try to mount tmpfs?  Is this happening for anybody else?  
-Shouldn't I be getting a fresh superblock or something?  (Is this just a User 
-Mode Linux issue?  Haven't got a spare box set up to boot it on real hardware 
-just yet...)
-
-If somebody needs a reproduction sequence, I'm happy to oblige.  In theory 
-"mount -t tmpfs /mnt /mnt" should do it, but if it was _that_ simple it 
-wouldn't have shipped...
-
-Rob
+Jon.
 
 
 -------------------------------------------------------
