@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EUhNj-0003QG-Tx	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Oct 2005 02:15:39 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44)	id 1EUhNf-0000my-9g
+	id 1EWCF2-0003p4-83	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Oct 2005 04:24:52 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44)	id 1EWCF0-0002Ey-Nq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Oct 2005 02:15:39 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20051025221105.21106.95194.stgit@zion.home.lan>
-	<20051026002200.1ebb06f2.akpm@osdl.org>
-In-Reply-To: <20051026002200.1ebb06f2.akpm@osdl.org>
+	Sun, 30 Oct 2005 04:24:52 -0800
+From: Rob Landley <rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200510261119.30429.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [PATCH 1/6] Uml - reuse i386 cpu-specific tuning
+Message-Id: <200510300624.38794.rob@landley.net>
+Subject: [uml-devel] What's wrong with tmpfs?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,61 +29,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Oct 2005 11:19:30 +0200
-To: Andrew Morton <akpm@osdl.org>
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 30 Oct 2005 06:24:38 -0600
+To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 26 October 2005 09:22, Andrew Morton wrote:
-> "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
-> >  arch/i386/Kconfig      |  304
-> > ------------------------------------------------ arch/i386/Kconfig.cpu  |
-> >  305 ++++++++++++++++++++++++++++++++++++++++++++++++
->
-> Have mercy.  I currently have twelve patches which alter arch/i386/Kconfig
-> and this patch conflicts with most of them.  This shouldn't come as a
-> surprise - Kconfig files are oft-patched, and this is x86.
+Under User Mode Linux in 2.6.14, would someone please explain to me why this 
+test:
 
-Yep - if we get no objection with this, I could pull any changes in -mm and 
-merge the patch directly Linuswards at some point, since it has so many 
-conflicts.
+static int graft_tree(struct vfsmount *mnt, struct nameidata *nd)
+{
+        int err;
 
-So, you can probably leave what you have there.
-> What I did was to simply copy the large block between
+        if (mnt->mnt_sb->s_flags & MS_NOUSER)
+                return -EINVAL;
 
-> 	if !X86_ELAN
->
-> and
->
-> 	config X86_OOSTORE
->
-> over into Kconfig.cpu, taking the modifications with it.
+Is triggering when I try to mount tmpfs?  Is this happening for anybody else?  
+Shouldn't I be getting a fresh superblock or something?  (Is this just a User 
+Mode Linux issue?  Haven't got a spare box set up to boot it on real hardware 
+just yet...)
 
-I also took X86_TSC with me, in my patch.
+If somebody needs a reproduction sequence, I'm happy to oblige.  In theory 
+"mount -t tmpfs /mnt /mnt" should do it, but if it was _that_ simple it 
+wouldn't have shipped...
 
-> As long as that's also what you did things should work OK.  If you actually
-> made any changes as you did the copy-and-paste, we're screwed.
-
-No, I didn't do real changes - I just added a couple of comments. However yes, 
-should have splitout in copy+paste and changes
-
-+# Put here option for CPU selection and depending optimization
-[...]
-and the comment near "endif" to say what is it closing:
-+#!X86_ELAN
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+Rob
 
 
 -------------------------------------------------------
