@@ -2,26 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EWyqi-0001Fm-4r for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Nov 2005 08:19:00 -0800
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EWyqZ-0007QH-MW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Nov 2005 08:18:54 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
-	id 1EWyqV-0005Rc-UE for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Nov 2005 08:18:50 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH 9/10] UML - Big memory fixes
-Message-ID: <20051101170633.GB6448@ccure.user-mode-linux.org>
-References: <200510310439.j9V4dgqP000878@ccure.user-mode-linux.org>
-	<200511011611.09532.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200511011611.09532.blaisorblade@yahoo.it>
+	id 1EX2oi-0005Up-FZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 Nov 2005 12:33:12 -0800
+Received: from host175-37.pool8253.interbusiness.it ([82.53.37.175]
+	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1EX2ob-0002O9-7Z for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 Nov 2005 12:33:12 -0800
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20051101203721.26156.11021.stgit@zion.home.lan>
+In-Reply-To: <20051101170633.GB6448@ccure.user-mode-linux.org>
+References: <20051101170633.GB6448@ccure.user-mode-linux.org>
+Subject: [uml-devel] [PATCH] uml: fix hardcoded ZONE_* constants in zone setup
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,22 +24,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 1 Nov 2005 12:06:33 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org
+Date: Tue, 01 Nov 2005 21:37:21 +0100
+To: Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Nov 01, 2005 at 04:11:04PM +0100, Blaisorblade wrote:
-> I think this came up because there's (in -mm) Andi Kleen created a new zone 
-> (ZONE_DMA32) for devices using 32-bit only DMA - but it seems it's not in 
-> mainline).  (I don't know if that patch is in -mm actually, but I guess it 
-> from this patch content).
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Correct, nice spotting.
+Remove usage of hardcoded constants in paging_init().
 
-This chunk leaked from my -mm tree accidentally, so it is appropriate for -mm,
-but it should be its own separate -mm-only patch.
+By chance I spotted a bug in zones_setup involving a change to ZONE_* constants,
+due to the ZONE_DMA32 patch from Andi Kleen (which is in -mm). So, possibly,
+instead of zones_size[2] you will find zones_size[3] in the code, but that
+change is wrong and this patch is still correct.
 
-				Jeff
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
+
+ arch/um/kernel/mem.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -234,8 +234,8 @@ void paging_init(void)
+ 	empty_bad_page = (unsigned long *) alloc_bootmem_low_pages(PAGE_SIZE);
+ 	for(i=0;i<sizeof(zones_size)/sizeof(zones_size[0]);i++) 
+ 		zones_size[i] = 0;
+-	zones_size[0] = (end_iomem >> PAGE_SHIFT) - (uml_physmem >> PAGE_SHIFT);
+-	zones_size[2] = highmem >> PAGE_SHIFT;
++	zones_size[ZONE_DMA] = (end_iomem >> PAGE_SHIFT) - (uml_physmem >> PAGE_SHIFT);
++	zones_size[ZONE_HIGHMEM] = highmem >> PAGE_SHIFT;
+ 	free_area_init(zones_size);
+ 
+ 	/*
+
 
 
 -------------------------------------------------------
