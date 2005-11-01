@@ -1,23 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EWxid-00063J-Ku for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Nov 2005 07:06:35 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EWxia-0001Ha-11
+	id 1EWyqi-0001Fm-4r for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 Nov 2005 08:19:00 -0800
+Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EWyqZ-0007QH-MW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Nov 2005 07:06:35 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Tue, 01 Nov 2005 08:18:54 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1EWyqV-0005Rc-UE for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 Nov 2005 08:18:50 -0800
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] [PATCH 9/10] UML - Big memory fixes
+Message-ID: <20051101170633.GB6448@ccure.user-mode-linux.org>
 References: <200510310439.j9V4dgqP000878@ccure.user-mode-linux.org>
-In-Reply-To: <200510310439.j9V4dgqP000878@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	<200511011611.09532.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200511011611.09532.blaisorblade@yahoo.it>
+In-Reply-To: <200511011611.09532.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,67 +33,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 1 Nov 2005 16:11:04 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
+Date: Tue, 1 Nov 2005 12:06:33 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Monday 31 October 2005 05:39, Jeff Dike wrote:
-> A number of fixes to improve behavior when large physical memory sizes
-> are specified:
->     libc files need -D_FILE_OFFSET_BITS=64 because there are unavoidable
-> uses of non-64 interfaces in libc
->     some %d need to be %u
->
-> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+On Tue, Nov 01, 2005 at 04:11:04PM +0100, Blaisorblade wrote:
+> I think this came up because there's (in -mm) Andi Kleen created a new zone 
+> (ZONE_DMA32) for devices using 32-bit only DMA - but it seems it's not in 
+> mainline).  (I don't know if that patch is in -mm actually, but I guess it 
+> from this patch content).
 
-Jeff, please always make patch and ChangeLog match. Yes, it matters - when it 
-doesn't happen there's always something bad going on.
+Correct, nice spotting.
 
-> Index: linux-2.6.14/arch/um/kernel/mem.c
-> ===================================================================
-> --- linux-2.6.14.orig/arch/um/kernel/mem.c	2005-10-28 12:58:12.000000000
-> -0400 +++ linux-2.6.14/arch/um/kernel/mem.c	2005-10-30 19:29:04.000000000
-> -0500 @@ -235,7 +235,7 @@ void paging_init(void)
->  	for(i=0;i<sizeof(zones_size)/sizeof(zones_size[0]);i++)
->  		zones_size[i] = 0;
->  	zones_size[0] = (end_iomem >> PAGE_SHIFT) - (uml_physmem >> PAGE_SHIFT);
-> -	zones_size[2] = highmem >> PAGE_SHIFT;
-> +	zones_size[3] = highmem >> PAGE_SHIFT;
->  	free_area_init(zones_size);
+This chunk leaked from my -mm tree accidentally, so it is appropriate for -mm,
+but it should be its own separate -mm-only patch.
 
-What's this? It's IMHO invalid. free_area_init() intereprets these values with 
-include/linux/mmzone.h: ZONE_* constants.
-
-Why those are not used here it's a nice question.
-
-I think this came up because there's (in -mm) Andi Kleen created a new zone 
-(ZONE_DMA32) for devices using 32-bit only DMA - but it seems it's not in 
-mainline).  (I don't know if that patch is in -mm actually, but I guess it 
-from this patch content).
-
-Actually, since MAX_NR_ZONES is 3, and we are assigning to zones_size[3],
-we're corrupting data:
-
-        unsigned long zones_size[MAX_NR_ZONES], vaddr;
-
-Don't drop the patch however, I'm fixing all this up.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
-
+				Jeff
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by the JBoss Inc.
-Get Certified Today * Register for a JBoss Training Course
-Free Certification Exam for All Training Attendees Through End of 2005
-Visit http://www.jboss.com/services/certification for more information
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. Download
+it for free - -and be entered to win a 42" plasma tv or your very own
+Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
