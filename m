@@ -1,19 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EWe25-0001DC-AR for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 31 Oct 2005 10:05:21 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EWe20-0000v2-Hb
+	id 1EWrha-0006gm-IU for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 Nov 2005 00:41:06 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EWrhY-0000pi-W8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 31 Oct 2005 10:05:21 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20051031185758.GA7116@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Tue, 01 Nov 2005 00:41:06 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] [PATCH 8/10] UML - Maintain own LDT entries
+References: <200510310439.j9V4dfbw000872@ccure.user-mode-linux.org>
+In-Reply-To: <200510310439.j9V4dfbw000872@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: [uml-devel] Another stub bug
+Message-Id: <200511010153.31531.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,23 +31,14 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 31 Oct 2005 13:57:58 -0500
-To: blaisorblade@yahoo.it
-Cc: user-mode-linux-devel@lists.sourceforge.net, gogi@gogi.tv
+Date: Tue, 1 Nov 2005 01:53:30 -0600
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org, bstroesser@fujitsu-siemens.com
 
-I just saw another case where the stubs are being badly assembled.  This cases
-involves the address of from being referred relative to ebp.  After the 
-call to syscall6, ebp is trash because, even though we carefully push and
-pop it, we pop it from a brand new page.
+Thumbs up.  Works for me on Ubuntu (still "Horny Hedgehog", haven't installed 
+flatulent badger yet...)
 
-This interaction between mmap and syscall6 suggests that this is the
-wrong interface.  It looks more like we should have stub_remap_stack
-instead of stub_syscall6, and similar things for the others.  Even so,
-it's not clear to me how to deal with this.  We are out of registers,
-so we could possibly store ebp in esp, restore it after the mmap, and
-set esp to a fixed value.
-
-				Jeff
+Rob
 
 
 -------------------------------------------------------
