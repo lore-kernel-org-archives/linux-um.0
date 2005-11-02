@@ -1,24 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EXTcY-0003Hz-UB for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Nov 2005 17:10:26 -0800
-Received: from externalmx-1.sourceforge.net ([12.152.184.25])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EXTcU-000797-De
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Nov 2005 17:10:26 -0800
-Received: from rgminet02.oracle.com ([148.87.122.31])
-	by externalmx-1.sourceforge.net with esmtp (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.41) id 1EXPpJ-0002LH-F4
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Nov 2005 13:07:22 -0800
-Message-ID: <43690BDD.1060409@oracle.com>
-From: Allan Graves <allan.graves@oracle.com>
+From: Rob Landley <rob@landley.net>
+References: <1130917338.14475.133.camel@localhost>
+	<20051102172729.9E7C.Y-GOTO@jp.fujitsu.com>
+	<43687C3D.7060706@yahoo.com.au>
+In-Reply-To: <43687C3D.7060706@yahoo.com.au>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080203000902090704040307"
-Subject: [uml-devel] [Fwd: patch info]
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200511021728.36745.rob@landley.net>
+Subject: [uml-devel] Re: [Lhms-devel] [PATCH 0/7] Fragmentation Avoidance V19
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,136 +22,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 02 Nov 2005 13:56:29 -0500
-To: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 2 Nov 2005 17:28:35 -0600
+To: Nick Piggin <nickpiggin@yahoo.com.au>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Yasunori Goto <y-goto@jp.fujitsu.com>, Dave Hansen <haveblue@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, Mel Gorman <mel@csn.ul.ie>, "Martin J. Bligh" <mbligh@mbligh.org>, Andrew Morton <akpm@osdl.org>, kravetz@us.ibm.com, linux-mm <linux-mm@kvack.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, lhms <lhms-devel@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------080203000902090704040307
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wednesday 02 November 2005 02:43, Nick Piggin wrote:
 
-Here's what i get when i compile the patch with 2.6.14 and skas-ldt 
-patch.  Sorry for the duplication in the patch list itself, it includes 
-the dry run.
+> > Hmmm. I don't see at this point.
+> > Why do you think ZONE_REMOVABLE can satisfy for hugepage.
+> > At leaset, my ZONE_REMOVABLE patch doesn't any concern about
+> > fragmentation.
+>
+> Well I think it can satisfy hugepage allocations simply because
+> we can be reasonably sure of being able to free contiguous regions.
+> Of course it will be memory no longer easily reclaimable, same as
+> the case for the frag patches. Nor would be name ZONE_REMOVABLE any
+> longer be the most appropriate!
+>
+> But my point is, the basic mechanism is there and is workable.
+> Hugepages and memory unplug are the two main reasons for IBM to be
+> pushing this AFAIKS.
 
---------------080203000902090704040307
-Content-Type: message/rfc822;
- name="patch info"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="patch info"
+Who cares what IBM is pushing?  I'm interested in fragmentation avoidance for 
+User Mode Linux.
 
-Return-Path: <anton.verhulst@oracle.com>
-Received: from rgmum104.us.oracle.com by rgmum300.us.oracle.com
-	with ESMTP id 344594481130957375; Wed, 02 Nov 2005 11:49:35 -0700
-Received: from rgmsgw300.us.oracle.com by rgmum104.us.oracle.com
-	with ESMTP id 3771938311130957372; Wed, 02 Nov 2005 11:49:32 -0700
-Received: from rgmsgw300.us.oracle.com (localhost [127.0.0.1])
-	by rgmsgw300.us.oracle.com (Switch-3.1.7/Switch-3.1.7) with ESMTP id
-	jA2InWtM023080
-	for <allan.graves@oracle.com>; Wed, 2 Nov 2005 11:49:32 -0700
-Received: from [138.2.230.199] (averhuls-lnx.us.oracle.com [138.2.230.199])
-	by rgmsgw300.us.oracle.com (Switch-3.1.7/Switch-3.1.7) with ESMTP id
-	jA2InVES023068
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
-	for <allan.graves@oracle.com>; Wed, 2 Nov 2005 11:49:32 -0700
-Message-ID: <43690A3B.30001@oracle.com>
-Date: Wed, 02 Nov 2005 13:49:31 -0500
-From: Anton Verhulst <anton.verhulst@oracle.com>
-User-Agent: Mozilla Thunderbird 1.0.5 (X11/20050711)
-X-Accept-Language: en-us, en
-MIME-Version: 1.0
-To: Allan Graves <allan.graves@oracle.com>
-Subject: patch info
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+I use User Mode Linux to virtualize a system build, and one problem I 
+currently have is that some workloads temporarily use a lot of memory.  For 
+example, I can run a complete system build in about 48 megs of ram: except 
+for building GCC.  That spikes to a couple hundred megabytes.  If I allocate 
+256 megabytes of memory to UML, that's half the memory on my laptop and UML 
+will just use it for redundant cacheing and such while desktop performance 
+gets a bit unhappy with the build going.
 
-[ averhuls_avd ] bash-3.00# make linux ARCH=um modules
-  CHK     arch/um/include/user_constants.h
-  CHK     include/linux/version.h
-gcc -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs 
--fno-strict-aliasing -fno-common -ffreestanding -O2     
--fomit-frame-pointer -g  -D__arch_um__ -DSUBARCH=\"i386\" 
--Iarch/um/include  -I/usr/src/linux-2.6.14/arch/um/kernel/tt/include  
--I/usr/src/linux-2.6.14/arch/um/kernel/skas/include -Dvmap=kernel_vmap 
--Din6addr_loopback=kernel_in6addr_loopback -Derrno=kernel_errno 
--Dsigprocmask=kernel_sigprocmask -fno-unit-at-a-time -U__i386__ -Ui386 
--D_LARGEFILE64_SOURCE -Wdeclaration-after-statement   -nostdinc -isystem 
-/usr/lib/gcc/i386-redhat-linux/3.4.4/include -D__KERNEL__ -Iinclude  -S 
--o arch/um/kernel-offsets.s arch/um/sys-i386/kernel-offsets.c
-In file included from arch/um/include/um_mmu.h:17,
-                 from include/asm/mmu.h:9,
-                 from include/linux/sched.h:23,
-                 from arch/um/sys-i386/kernel-offsets.c:3:
-/usr/src/linux-2.6.14/arch/um/kernel/skas/include/mmu-skas.h:19: error: 
-syntax error before "uml_ldt_t"
-/usr/src/linux-2.6.14/arch/um/kernel/skas/include/mmu-skas.h:19: 
-warning: no semicolon at end of struct or union
-In file included from include/asm/mmu.h:9,
-                 from include/linux/sched.h:23,
-                 from arch/um/sys-i386/kernel-offsets.c:3:
-arch/um/include/um_mmu.h:25: error: field `skas' has incomplete type
-make: *** [arch/um/kernel-offsets.s] Error 1
-[ averhuls_avd ] bash-3.00# exit
-ade:[ averhuls_avd ] [averhuls@staca07 uml]$ exit
-[averhuls@staca07 ~]$ !!
+UML gets an instance's "physical memory" by allocating a temporary file, 
+mmapping it, and deleting it (which signals to the vfs that flushing this 
+data to backing store should only be done under memory pressure from the rest 
+of the OS, because the file's going away when it's closed so there's no 
 
+With fragmentation reduction and prezeroing, UML suddenly gains the option of 
+calling madvise(DONT_NEED) on sufficiently large blocks as A) a fast way of 
+prezeroing, B) a way of giving memory back to the host OS when it's not in 
+use.
 
+This has _nothing_ to do with IBM.  Or large systems.  This is some random 
+developer trying to run a virtualized system build on his laptop.
 
+(The reason I need to use UML is that I build uClibc with the newest 2.6 
+kernel headers I can, link apps against it, and then running many of those 
+apps during later stages of the build.  If the kernel headers used to build 
+libc are sufficiently newer than the kernel the build is running under, I get 
+segfaults because the new libc tries use kernel features that aren't there on 
+the host system, but will be in the final system.  I also get the ability to 
+mknod/chown/chroot without needing root access on the host system for 
+free...)
 
-
-gcc (GCC) 3.4.4 20050721 (Red Hat 3.4.4-2)
-Copyright (C) 2004 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-
-ade:[ averhuls_avd ] [averhuls@staca07 uml]$ patch -p1 --dry-run 
-</uml/skas-hold
--own-ldt
-patching file arch/um/kernel/skas/include/mmu-skas.h
-patching file arch/um/kernel/skas/include/skas.h
-patching file arch/um/kernel/skas/mem.c
-patching file arch/um/kernel/skas/mmu.c
-patching file arch/um/kernel/skas/process.c
-Hunk #1 succeeded at 370 (offset -11 lines).
-patching file arch/um/kernel/skas/process_kern.c
-patching file arch/um/os-Linux/start_up.c
-patching file arch/um/scripts/Makefile.rules
-patching file arch/um/sys-i386/ldt.c
-patching file arch/um/sys-x86_64/Makefile
-patching file arch/um/sys-x86_64/syscalls.c
-patching file include/asm-um/ldt-i386.h
-patching file include/asm-um/ldt.h
-patch unexpectedly ends in middle of line
-ade:[ averhuls_avd ] [averhuls@staca07 uml]$ vim /uml/skas-hold-own-ldt
-ade:[ averhuls_avd ] [averhuls@staca07 uml]$ patch -p1 --dry-run < 
-/uml/skas-hol
-d-own-ldt
-patching file arch/um/kernel/skas/include/mmu-skas.h
-patching file arch/um/kernel/skas/include/skas.h
-patching file arch/um/kernel/skas/mem.c
-patching file arch/um/kernel/skas/mmu.c
-patching file arch/um/kernel/skas/process.c
-Hunk #1 succeeded at 370 (offset -11 lines).
-patching file arch/um/kernel/skas/process_kern.c
-patching file arch/um/os-Linux/start_up.c
-patching file arch/um/scripts/Makefile.rules
-patching file arch/um/sys-i386/ldt.c
-patching file arch/um/sys-x86_64/Makefile
-patching file arch/um/sys-x86_64/syscalls.c
-patching file include/asm-um/ldt-i386.h
-patching file include/asm-um/ldt.h
-
--- 
-
-The system of refusing the mere act of drinking and leaving the
-desire in full force, is unintelligent war tactics, it seems to me.
-
-Mark Twain
-
-
---------------080203000902090704040307--
+Rob
 
 
 -------------------------------------------------------
