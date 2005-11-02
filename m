@@ -2,22 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EXOZF-0005Ot-To for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Nov 2005 11:46:41 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EXOZB-00043H-Gu
+	id 1EXQPr-0002bV-BG for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Nov 2005 13:45:07 -0800
+Received: from bay101-f4.bay101.hotmail.com ([64.4.56.14] helo=hotmail.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EXQPo-0005Zp-MH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Nov 2005 11:46:42 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 8/10] UML - Maintain own LDT entries
-References: <200510310439.j9V4dfbw000872@ccure.user-mode-linux.org>
-In-Reply-To: <200510310439.j9V4dfbw000872@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511022051.24335.blaisorblade@yahoo.it>
+	Wed, 02 Nov 2005 13:45:07 -0800
+Message-ID: <BAY101-F4507935C4D38603757606B66E0@phx.gbl>
+In-Reply-To: <200510092142.33332.blaisorblade@yahoo.it>
+From: "Kai Tan" <mineown@hotmail.com>
+Subject: Re: [uml-devel] Uml left showstopper bugs for 2.6.14
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,69 +25,78 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 2 Nov 2005 20:51:22 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, bstroesser@fujitsu-siemens.com, Allan Graves <allan.graves@oracle.com>
+Date: Wed, 02 Nov 2005 21:44:17 +0000
+To: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-On Monday 31 October 2005 05:39, Jeff Dike wrote:
-> From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+I tried the first patch, got the following error:
+
+Kernel panic - not syncing: copy_context_skas0 : failed to wait for 
+SIGUSR1/SIGTRAP, pid = 7182, n = 7182, errno = 0, status = 0xb7f
+
+I got the same error even after applying the second patch.
+
+My run command is the following:
+
+linux stderr=1 ubd0=../../root_fs.rh-7.2-full.pristine.20020312
+
+>From: Blaisorblade <blaisorblade@yahoo.it>
+>To: user-mode-linux-devel@lists.sourceforge.net
+>CC: Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, 
+>"Kai Tan" <mineown@hotmail.com>
+>Subject: Re: [uml-devel] Uml left showstopper bugs for 2.6.14
+>Date: Sun, 9 Oct 2005 21:42:32 +0200
 >
-> Patch imlements full LDT handling in SKAS:
->  * UML holds it's own LDT table, used to deliver data on
->    modify_ldt(READ)
->  * UML disables the default_ldt, inherited from the host (SKAS3)
->    or resets LDT entries, set by host's clib and inherited in
->    SKAS0
->  * A new global variable skas_needs_stub is inserted, that
->    can be used to decide, whether stub-pages must be supported
->    or not.
->  * Uses the syscall-stub to replace missing PTRACE_LDT (therefore,
->    write_ldt_entry needs to be modified)
-Two complaints against this patch (to be fixed afterwards, so I'm not CC'ing 
-akpm):
+>Kai - go to the end, there are patches for your SKAS0 problem.
+>
+>On Sunday 09 October 2005 21:18, Blaisorblade wrote:
+> > Here's a short and updated list of showstoppers for 2.6.14 release, from
+> > the UML point of view.
+>
+> > 2) Someone broke endianness of COW driver macros in a header cleanup. I
+> > have fixes.
+>Just sent them.
+> > 3) SKAS0 is broken on amd64 hosts, when frame pointers are disabled. 
+>Jeff
+> > has the fix, waiting end of testing.
+>
+> > 4) SKAS0 is broken with GCC 3.2.3, and potentially other GCC releases -
+> > look at arch/um/include/sysdep-i386/stub.h: stub_syscall*() to see how. 
+>I
+> > have two fixes, choosing the safer one (it's all just simply reusing 
+>code
+> > from <asm/unistd.h>).
+>Jeff, I've attached patches for this. Also found another problematic piece 
+>of
+>code, in stub-segv (same bad idea).
+>
+>The patch for that changes a bit more things that strictly needed - 
+>complain
+>if that's a problem for merging in 2.6.14.
+>
+>Kai Tan, the order of the patches is:
+>
+>uml-fix-misassembling-skas0-stub
+>uml-fix-misassembling-skas0-stub-segv
+>
+>Note that the second is a bit less tested, so if both together cause 
+>problems,
+>try with only the first one.
+>
+>And remember to add "skas0" to the cmd line, to force UML to run in SKAS0
+>mode.
+>--
+>Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+>Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 
+>215621894)
+>http://www.user-mode-linux.org/~blaisorblade
 
-*) It reverts my cleanup and consolidation of ldt.c wrt. SKAS vs TT.
 
-Or at least so I think (I must still give a proper look afterwards, and I'll 
-post patches). Actually it seems that this is done on purpose, but I don't 
-agree too much on this. I will see.
+><< uml-fix-misassembling-skas0-stub >>
 
-*) Doesn't compile on old GCC's - it uses anonymous unions:
-(it's asm-um/ldt-i386.h).
-> +
-> +struct ldt_entry {
-> +	__u32 a;
-> +	__u32 b;
-> +};
 
-> +typedef struct uml_ldt {
-> +	int entry_count;
-> +	struct semaphore semaphore;
-> +	union {
-> +		struct ldt_entry * pages[LDT_PAGES_MAX];
-> +		struct ldt_entry entries[LDT_DIRECT_ENTRIES];
-> +	};
-> +} uml_ldt_t;
+><< uml-fix-misassembling-skas0-stub-segv >>
 
-Suggestions for almost free replacement of anonymous union: 
-> Index: 2.6.14-akpm/include/asm-um/ldt.h
-> ===================================================================
-> --- 2.6.14-akpm.orig/include/asm-um/ldt.h	2005-08-28 19:41:01.000000000
-> -0400 +++ 2.6.14-akpm/include/asm-um/ldt.h	2005-10-28 17:31:07.000000000
-AAAAAAAAAAAARGH!!!!!!!!!!!!!! This is supposed to be a  _SYMLINK_!
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
 
 
 
