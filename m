@@ -1,25 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EY5JP-0006Jn-J7 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Nov 2005 09:25:11 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EY5JL-0002RX-VP
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Nov 2005 09:25:11 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] What's different about building for x86-64?
-References: <200511040807.03708.rob@landley.net>
-	<20051104160402.GA4379@ccure.user-mode-linux.org>
-	<200511040938.35735.rob@landley.net>
-In-Reply-To: <200511040938.35735.rob@landley.net>
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Re: [Lhms-devel] [PATCH 0/7] Fragmentation Avoidance
+	V19
+References: <1130917338.14475.133.camel@localhost>
+	<200511040950.59942.rob@landley.net>
+	<200511041818.04397.blaisorblade@yahoo.it>
+In-Reply-To: <200511041818.04397.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511041801.33833.blaisorblade@yahoo.it>
+Message-Id: <200511041144.27762.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,48 +23,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 4 Nov 2005 18:01:32 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>, Jeff Dike <jdike@addtoit.com>
+Date: Fri, 4 Nov 2005 11:44:26 -0600
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Nick Piggin <nickpiggin@yahoo.com.au>, Yasunori Goto <y-goto@jp.fujitsu.com>, Dave Hansen <haveblue@us.ibm.com>, linux-mm <linux-mm@kvack.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, lhms <lhms-devel@lists.sourceforge.net>
 
-On Friday 04 November 2005 16:38, Rob Landley wrote:
-> On Friday 04 November 2005 10:04, Jeff Dike wrote:
-> > On Fri, Nov 04, 2005 at 08:07:03AM -0600, Rob Landley wrote:
-> > > My build is basically extracting the 2.6.14 tarball, adding the
-> > > squashfs patch, and then doing this:
-> > >
-> > > make ARCH=um O=../linux-build allnoconfig &&
-> >
-> > I would start with a make defconfig.  This smacks of a mangled
-> > configuration.
+On Friday 04 November 2005 11:18, Blaisorblade wrote:
+> > Oh well, bench it when it happens.  (And in any case, it needs a tunable
+> > to beat the page cache into submission or there's no free memory to give
+> > back.
+>
+> I couldn't parse your sentence. The allocation will free memory like when
+> memory is needed.
 
-> Actually, he turned out to be using an older version of my firmware linux
-> build script (the one with the 2.6.13.2 kernel, from the website), and the
-> problem he was seeing is that building on an x86-64 machine in 32 bit
-> emulation mode gets confused.
+If you've got a daemon running in the virtual system to hand back memory to 
+the host, then you don't need a tuneable.
 
-> Once he started building in 64 bit mode, he got past that, but then hit the
-> 3 level page tables leak from 2.6.13 shortly thereafter.
+What I was thinking is that if we get prezeroing infrastructure that can use 
+various prezeroing accelerators (as has been discussed but I don't believe 
+merged), then a logical prezeroing accelerator for UML would be calling 
+madvise on the host system.  This has the advantage of automatically giving 
+back to the host system any memory that's not in use, but would require some 
+way to tell kswapd or some such that keeping around lots of prezeroed memory 
+is preferable to keeping around lots of page cache.
 
-Don't you know that I maintain a kernel tree exactly for this purpose?
+In my case, I have a workload that can mostly work with 32-48 megs of ram, but 
+it spikes up to 256 at one point.  Right now, I'm telling UML mem=64 megs and 
+the feeding it a 256 swap file on ubd, but this is hideously inefficient when 
+it actually tries to use this swap file.  (And since the host system is 
+running a 2.6.10 kernel, there's a five minute period during each build where 
+things on my desktop actually freeze for 15-30 seconds at a time.  And this 
+is on a laptop with 512 megs of ram.  I think it's because the disk is so 
+overwhelmed, and some things (like vim's .swp file, and something similar in 
+kmail's composer) do a gratuitous fsync...
 
-The fix is included starting from 2.6.13-bs1. And I've even merged it upstream 
-in -stable (even if it was merged in .4 only).
+> However look at /proc/sys/vm/swappiness
 
-> I sent him a new 
-> build script using 2.6.14 and still am waiting to hear back...
+Setting swappiness to 0 triggers the OOM killer on 2.6.14 for a load that 
+completes with swappiness at 60.  I mentioned this on the list a little while 
+ago and some people asked for copies of my test script...
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+> or use Con Kolivas's patches to find new tunable and policies.
 
+The daemon you mentioned is an alternative, but I'm not quite sure how rapid 
+the daemon's reaction is going to be to potential OOM situations when 
+something suddenly wants an extra 200 megs...
 
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
-
+Rob
 
 
 -------------------------------------------------------
