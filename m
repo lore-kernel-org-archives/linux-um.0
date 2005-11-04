@@ -2,20 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EY3Dn-0000BM-Lh for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Nov 2005 07:11:15 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EY3Dm-000783-1Q
+	id 1EXs9A-0005cU-LY for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Nov 2005 19:21:44 -0800
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EXs97-00023u-UW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Nov 2005 07:11:15 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] What's different about building for x86-64?
-Message-ID: <20051104160402.GA4379@ccure.user-mode-linux.org>
-References: <200511040807.03708.rob@landley.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Thu, 03 Nov 2005 19:21:44 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [Lhms-devel] [PATCH 0/7] Fragmentation Avoidance
+	V19
+References: <1130917338.14475.133.camel@localhost>
+	<20051103052649.GA16508@ccure.user-mode-linux.org>
+	<200511022341.50524.rob@landley.net>
+In-Reply-To: <200511022341.50524.rob@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200511040807.03708.rob@landley.net>
+Message-Id: <200511040426.47043.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,19 +32,81 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 4 Nov 2005 11:04:02 -0500
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 4 Nov 2005 04:26:45 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Jeff Dike <jdike@addtoit.com>, Nick Piggin <nickpiggin@yahoo.com.au>, Yasunori Goto <y-goto@jp.fujitsu.com>, Dave Hansen <haveblue@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, Mel Gorman <mel@csn.ul.ie>, "Martin J. Bligh" <mbligh@mbligh.org>, Andrew Morton <akpm@osdl.org>, kravetz@us.ibm.com, linux-mm <linux-mm@kvack.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, lhms <lhms-devel@lists.sourceforge.net>
 
-On Fri, Nov 04, 2005 at 08:07:03AM -0600, Rob Landley wrote:
-> My build is basically extracting the 2.6.14 tarball, adding the squashfs 
-> patch, and then doing this:
-> 
-> make ARCH=um O=../linux-build allnoconfig &&
+On Thursday 03 November 2005 06:41, Rob Landley wrote:
+> On Wednesday 02 November 2005 23:26, Jeff Dike wrote:
+> > On Wed, Nov 02, 2005 at 05:28:35PM -0600, Rob Landley wrote:
+> > > With fragmentation reduction and prezeroing, UML suddenly gains the
+> > > option of calling madvise(DONT_NEED) on sufficiently large blocks as A)
+> > > a fast way of prezeroing, B) a way of giving memory back to the host OS
+> > > when it's not in use.
 
-I would start with a make defconfig.  This smacks of a mangled configuration.
+> > DONT_NEED is insufficient.  It doesn't discard the data in dirty
+> > file-backed pages.
 
-				Jeff
+> I thought DONT_NEED would discard the page cache, and punch was only needed
+> to free up the disk space.
+This is correct, but...
+
+> I was hoping that since the file was deleted from disk and is already
+> getting _some_ special treatment (since it's a longstanding "poor man's
+> shared memory" hack), that madvise wouldn't flush the data to disk, but
+> would just zero it out.  A bit optimistic on my part, I know. :)
+
+I read at some time that this optimization existed but was deemed obsolete and 
+removed.
+
+Why obsolete? Because... we have tmpfs! And that's the point. With DONTNEED, 
+we detach references from page tables, but the content is still pinned: it 
+_is_ the "disk"! (And you have TMPDIR on tmpfs, right?)
+
+> > Badari Pulavarty has a test patch (google for madvise(MADV_REMOVE))
+> > which does do the trick, and I have a UML patch which adds memory
+> > hotplug.  This combination does free memory back to the host.
+
+> I saw it wander by, and am all for it.  If it goes in, it's obviously the
+> right thing to use.
+Btw, on this side of the picture, I think fragmentation avoidance is not 
+needed for that.
+
+I guess you refer to using frag. avoidance on the guest (if it matters for the 
+host, let me know). When it will be present using it will be nice, but 
+currently we'd do madvise() on a page-per-page basis, and we'd do it on 
+non-consecutive pages (basically, free pages we either find or free or 
+purpose).
+
+> You may remember I asked about this two years ago: 
+> http://seclists.org/lists/linux-kernel/2003/Dec/0919.html
+
+> And a reply indicated that SVr4 had it, but we don't.  I assume the "naming
+> discussion" mentioned in the recent thread already scrubbed through this
+> old thread to determine that the SVr4 API was icky.
+> http://seclists.org/lists/linux-kernel/2003/Dec/0955.html
+
+I assume not everybody did (even if somebody pointed out the existance of the 
+SVr4 API), but there was the need, in at least one usage, for a virtual 
+address-based API rather than a file offset based one, like the SVr4 one - 
+that user would need implementing backward mapping in userspace only for this 
+purpose, while we already have it in the kernel.
+
+Anyway, the sys_punch() API will follow later - customers need mainly 
+madvise() for now.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
