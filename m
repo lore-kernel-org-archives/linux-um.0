@@ -3,15 +3,15 @@ From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Re: [Lhms-devel] [PATCH 0/7] Fragmentation Avoidance
 	V19
 References: <1130917338.14475.133.camel@localhost>
-	<200511040950.59942.rob@landley.net>
-	<200511041818.04397.blaisorblade@yahoo.it>
-In-Reply-To: <200511041818.04397.blaisorblade@yahoo.it>
+	<200511022341.50524.rob@landley.net>
+	<200511040426.47043.blaisorblade@yahoo.it>
+In-Reply-To: <200511040426.47043.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511041144.27762.rob@landley.net>
+Message-Id: <200511040950.59942.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,50 +23,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 4 Nov 2005 11:44:26 -0600
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Nick Piggin <nickpiggin@yahoo.com.au>, Yasunori Goto <y-goto@jp.fujitsu.com>, Dave Hansen <haveblue@us.ibm.com>, linux-mm <linux-mm@kvack.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, lhms <lhms-devel@lists.sourceforge.net>
+Date: Fri, 4 Nov 2005 09:50:58 -0600
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>, Nick Piggin <nickpiggin@yahoo.com.au>, Yasunori Goto <y-goto@jp.fujitsu.com>, Dave Hansen <haveblue@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, Mel Gorman <mel@csn.ul.ie>, "Martin J. Bligh" <mbligh@mbligh.org>, Andrew Morton <akpm@osdl.org>, kravetz@us.ibm.com, linux-mm <linux-mm@kvack.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, lhms <lhms-devel@lists.sourceforge.net>
 
-On Friday 04 November 2005 11:18, Blaisorblade wrote:
-> > Oh well, bench it when it happens.  (And in any case, it needs a tunable
-> > to beat the page cache into submission or there's no free memory to give
-> > back.
+On Thursday 03 November 2005 21:26, Blaisorblade wrote:
+> > I was hoping that since the file was deleted from disk and is already
+> > getting _some_ special treatment (since it's a longstanding "poor man's
+> > shared memory" hack), that madvise wouldn't flush the data to disk, but
+> > would just zero it out.  A bit optimistic on my part, I know. :)
 >
-> I couldn't parse your sentence. The allocation will free memory like when
-> memory is needed.
+> I read at some time that this optimization existed but was deemed obsolete
+> and removed.
+>
+> Why obsolete? Because... we have tmpfs! And that's the point. With
+> DONTNEED, we detach references from page tables, but the content is still
+> pinned: it _is_ the "disk"! (And you have TMPDIR on tmpfs, right?)
 
-If you've got a daemon running in the virtual system to hand back memory to 
-the host, then you don't need a tuneable.
+If I had that kind of control over environment my build would always be 
+deployed in (including root access), I wouldn't need UML. :)
 
-What I was thinking is that if we get prezeroing infrastructure that can use 
-various prezeroing accelerators (as has been discussed but I don't believe 
-merged), then a logical prezeroing accelerator for UML would be calling 
-madvise on the host system.  This has the advantage of automatically giving 
-back to the host system any memory that's not in use, but would require some 
-way to tell kswapd or some such that keeping around lots of prezeroed memory 
-is preferable to keeping around lots of page cache.
+(P.S. The default for Ubuntu "Horny Hedgehog" is no.  The only tmpfs mount 
+is /dev/shm, and /tmp is on / which is ext3.  Yeah, I need to upgrade my 
+laptop...)
 
-In my case, I have a workload that can mostly work with 32-48 megs of ram, but 
-it spikes up to 256 at one point.  Right now, I'm telling UML mem=64 megs and 
-the feeding it a 256 swap file on ubd, but this is hideously inefficient when 
-it actually tries to use this swap file.  (And since the host system is 
-running a 2.6.10 kernel, there's a five minute period during each build where 
-things on my desktop actually freeze for 15-30 seconds at a time.  And this 
-is on a laptop with 512 megs of ram.  I think it's because the disk is so 
-overwhelmed, and some things (like vim's .swp file, and something similar in 
-kmail's composer) do a gratuitous fsync...
+> I guess you refer to using frag. avoidance on the guest
 
-> However look at /proc/sys/vm/swappiness
+Yes.  Moot point since Linus doesn't want it.
 
-Setting swappiness to 0 triggers the OOM killer on 2.6.14 for a load that 
-completes with swappiness at 60.  I mentioned this on the list a little while 
-ago and some people asked for copies of my test script...
+> (if it matters for 
+> the host, let me know). When it will be present using it will be nice, but
+> currently we'd do madvise() on a page-per-page basis, and we'd do it on
+> non-consecutive pages (basically, free pages we either find or free or
+> purpose).
 
-> or use Con Kolivas's patches to find new tunable and policies.
-
-The daemon you mentioned is an alternative, but I'm not quite sure how rapid 
-the daemon's reaction is going to be to potential OOM situations when 
-something suddenly wants an extra 200 megs...
+Might be a performance issue if that gets introduced with per-page 
+granularity, and how do you avoid giving back pages we're about to re-use?  
+Oh well, bench it when it happens.  (And in any case, it needs a tunable to 
+beat the page cache into submission or there's no free memory to give back.  
+If there's already such a tuneable, I haven't found it yet.)
 
 Rob
 
