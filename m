@@ -2,27 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EYXK1-0004uf-IY for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Nov 2005 15:19:41 -0800
+	id 1EYXiL-0005db-4U for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Nov 2005 15:44:49 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EYXJz-0004hy-Gz
+	(Exim 4.44) id 1EYXiJ-0008Dc-Gk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Nov 2005 15:19:41 -0800
+	Sat, 05 Nov 2005 15:44:49 -0800
 From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Re: [Lhms-devel] [PATCH 0/7] Fragmentation Avoidance
 	V19
 References: <1130917338.14475.133.camel@localhost>
-	<200511041441.11896.rob@landley.net>
 	<20051105054551.GC15683@ccure.user-mode-linux.org>
-In-Reply-To: <20051105054551.GC15683@ccure.user-mode-linux.org>
+	<200511051230.00837.blaisorblade@yahoo.it>
+In-Reply-To: <200511051230.00837.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511051257.36988.rob@landley.net>
+Message-Id: <200511051744.33790.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,98 +34,133 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 5 Nov 2005 12:57:36 -0600
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Date: Sat, 5 Nov 2005 17:44:33 -0600
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 04 November 2005 23:45, Jeff Dike wrote:
-> > If we get prezeroing, the tunable is useful.  If we haven't got
-> > prezeroing, this infrastructure probably won't get in.
+On Saturday 05 November 2005 05:30, Blaisorblade wrote:
+> I've proposed in fact including (for now) another of Con's patch, which
+> gives some preference to free memory over pagecache (to speed up page
+> allocation)... but I don't quite understand why no Con's patches get
+> merged, at least in -mm (not that I follow that a lot)...
 >
-> I'm not really convinced that prezeroing would be that useful, particularly
-> through madvise.  The reason is that the normal case for a system is that
-> it has no free memory because it's caching anything that might be useful.
-> The one case I can think of where you all of a sudden have a lot of free
-> memory that might not be used for a while is when a large process exits,
-> and you get a lot of freed data, page tables, etc.  Then, we could possibly
-> madvise that and stick it on a zeroed pages list.  Forgetting about the
-> extra infrastructure needed to implement it, even that would be under
-> constant threat.  Witness the ocassional proposals to do pre-swapping
-> - swapping in stuff before it's needed when you have some free memory
-> for it.
+> Also, using pre-zeroing accelerators would mean that we need to keep some
+> zero-ed memory at hand...
 
-For the specific case of User Mode Linux, the extra cacheing is largely a 
-waste of time.  For UBD or hostfs, the host OS has the data cached so we're 
-spending twice as much memory as necessary in hopes of avoiding a syscall and 
-copy.
+In theory, the state of truly free memory is irrelevant.  The fact madvise 
+zeroes it out is nice, but not actually required.  (And I'm not sure madvise 
+would actually zero if /tmp isn't tmpfs, so relying on the zeroing behavior 
+might not be quite advisable just yet anyway.)
 
-A proposal floated by on Linux-Kernel yesterday for a zone for hugepages, 
-something the kernel could only put anonymous and pagecache in.  If we had 
-the option to keep page cache out of it as well, then we could specify at 
-boot time, "I'm giving this UML instance mem=256 but I only want the default 
-32M of that to be used by anything but anonymous pages.  When those are free, 
-it's fine for them to be free, I _want_ them to be free.  The host can put 
-that to good use in service of Konqueror and Kmail.
-
-This would be useful to me.  If the sucker reaps all the page cache and 
-dentries and _still_ runs out of memory for a kernel allocation, then yes 
-I've misconfigured it.  But it had better reap all the page cache and 
-dentries first...
-
-> Looking at it another way, what this would basically doing would be
-> moving page zeroing from userspace to kernel space, which is generally
-> counter to the direction that things generally go.
-
-Page zeroing is currently done in userspace?
-
-Juggling memory is something that userspace has traditionally deeply sucked 
-at.  Having to page in a daemon to make decisions in a low memory situation 
-is unlikely to improve matters.
-
-> > It's not load for me, it's disk bandwidth.  Every time it writes to the
-> > swap UBD, that data is scheduled for write-out.  So if it's thrashing the
-> > swap file, even though it's reading the data back in fairly quickly the
-> > data still gets written out to disk, again and again, each time it's
-> > touched.  Result: the disk I/O becomes a bottleneck and the disk is
-> > _PEGGED_ as long as the swap storm continues.
+> > > It's not load for me, it's disk bandwidth.  Every time it writes to the
+> > > swap UBD, that data is scheduled for write-out.  So if it's thrashing
+> > > the swap file, even though it's reading the data back in fairly quickly
+> > > the data still gets written out to disk, again and again, each time
+> > > it's touched.  Result: the disk I/O becomes a bottleneck and the disk
+> > > is _PEGGED_ as long as the swap storm continues.
 >
-> Do you understand exactly what's happening here?  Because I don't, and
-> I wish someone could explain it.  UML shouldn't be able to bog down
-> the host like that.  Its one-request-at-a-time pseudo-AIO shouldn't
-> make that much IO happen that suddenly.  There are other things that
-> do IO for a living (kernel builds, updatedb) and they don't seem to
-> bog down the system like this.
+> Sorry, you mention UML fsyncing to the swap file... this is
+> misconfiguration! Disable CONFIG_*UBD*_SYNC and enable it per-device with
+> ubd0s= rather than ubd0= (see --help output). The net effect is the same,
+> except you don't get synchronous swapping! Can you try and report _any_
+> difference?
 
-Just some educated guesses.
+I have it disabled in UML.  It's vi and kmail that seem to be doing fsync.  
+(In vi's case, it has a .swp file that allows you to recover from crashes.  
+In kmail's case, it has a similar saved state that allows you to resume 
+composing your email after a crash.  The problem is, both _block_ waiting for 
+the fsync to finish, which sucks mightily when you're trying to type when it 
+blocks.)
 
-1) Ubuntu is defaulting to the anticipator I/O scheduler, and that melts down 
-under sufficiently heavy loads.  I should switch it to CFQ.
+All UML is doing is thrashing the heck out of the disk.
 
-2) Some applications (vim and kmail most noticeably) do an fsync(), and in 
-situations with lots of disk activity an fsync can block for 30 seconds.  
-(Why konqueror suffers from this is another question, but konqueror has 
-always been vulnerable to low memory situations...)
+> Some ideas on this:
+>
+> 1) In my experience, even with the CFQ scheduler, updatedb _does_ do many
+> bad to the system... (but I run a Folding@Home CPU hog, so I may not be
+> considered totally trustworthy). Without CFQ it's a total pain (even
+> without CPU hogs)...
 
-Either way it's a host kernel problem.  UML is a more or less normal userspace 
-app, and it shouldn't be able to bog the system like...
+updatedb is mostly reads, but due to our over-eager page cache, reads can 
+bloat the page cache to push running programs out of memory.  There was some 
+work back in the early 2.4 timeframe to add new page cache pages to the 
+'expired' list or some such, except that under load this fought with 
+readahead...  (I lost track of things after Rik's vm got yanked in favor of 
+Arcandrea Angeli's because I never _did_ get a clear explanation of what the 
+heck a classzone was...)
 
-P.S.  You're mentioning loads the kernel guys have specifically optimized for.  
-Kernel builds are what the kernel has been optimized for over the past 10 
-years, but it's not a big I/O test.  The I/O it does is nicely localized by 
-directory, sucking in entire files each time so readahead is never wasted, 
-and it's generally CPU bound even on a fast machine.  As for updatedb, that's 
-also not random seeks taking small chunks out of a file, and it's dominated 
-by reads.  The anticipatory scheduler is effectively optimized for updatedb.  
-Of course the first thing I do on any new system is kill cron...
+> 2) Also, fsync() is a bad idea here.... the host elevator can either
+> prioritize only UML's writes wrt. all other writes (which could be seen as
+> unfair and so wouldn't be implemented) or prioritize all writes, or do
+> nothing to speed up fsync() - and I guess some elevator prioritizes writes
+> on fsync(). Which bogs down the host
 
-swapping has always been tougher to optimize for, and it turns out that even 
-swapping-style access patterns originating in userspace and happening inside 
-a file are still a bit of a pain.
+The anticipatory scheduler does stupid things sometimes when both writes and 
+reads are under pressure.  There have been a dozen different approaches to 
+try to make this all work.  Token based swap thrashing control was the most 
+recent, I believe.  I've hit every single bad case out there, under 2.4.4 I 
+once got my desktop so badly into swap city that I went to lunch, came back, 
+and it was STILL SWAPPING.  Trying to switch to a different konqueror window!  
+(Power cycle time.)
 
-I'll see if CFQ improves matters.  If nothing else, the ability of "nice 20 
-mybuild" to actually affect disk I/O would be a _serious_ bonus...
+I've been able to bring any linux desktop system to its knees (it's easy, open 
+40 konqueror tabs and a copy of kmail with 60,000 linux-kernel messages in 
+"threaded" mode, while using vi and kmail's composer.  Compiling stuff is an 
+optional extra...)  I thought upgrading to 512 megs of ram might make it go 
+away, but apparently not...
 
->     Jeff
+> 3) Have you looked at C. Aker's ubd token limiter?
+
+The UML instance is legitimately swapping, it's running something with a ~200 
+meg working set in 64 megs of ram and 256 megs of swap.  (This is why I'm 
+interested in any "give pages back to the host system" approach that would 
+let me just _give_ UML 256 megs of ram without starving my desktop because 
+UML has filled itself up with redundant page cache.) 
+
+I did try telling UML "echo 0 > /proc/sys/vm/swappiness", but that just 
+triggered UML's OOM killer, as I mentioned.  Why I consider to be a separate 
+bug...
+
+> 4) Also, remember that you mustn't count I/O, but rather seeks (one seek
+> can costs about 10 ms+ on a laptop, i.e. 100 Kb of sequential I/O)....
+>
+> * remember that guest's ext3 (and recently reiserfs too) is proud of
+> avoiding fragmentation by spreading files on the whole disk... (thus making
+> ubd0 _much_ sparse).
+
+The guest actually has an ext2 partition loopback mounted out of hostfs, but 
+the situation that's under load isn't stressing that.  The stress is entirely 
+on the swap file, and swapping is inherently pretty seeky.
+
+> * and finally, remember that we usually run UML on sparse files,
+
+I was doing that too.  The dd to create the file on the parent filesystem 
+created a sparse file, which UML was happy to loopback mount because hostfs 
+hid the sparseness of it.  I stopped doing that because it was yet another 
+way to peg the disk with seek activity.  (Tryinging it again has been a todo 
+item for a while...)
+
+> which is 
+> an atypical workload and not optimized against fragmentation... we could
+> well have a sequential read in UML become a crazy seek storm in the host.
+
+You could, but I'm not feeding it sparse files, exactly to avoid this 
+possibility.
+
+> About this, a paper at OLS (Virtualized GNU/Linux testing across distros?)
+> talks about "special I/O elevator setup" for UML, and the authors talked to
+> you for some issues, and IIRC maybe even work at Intel...
+
+I've configured UML to use the NOP elevator, because all my I/O goes through 
+the parent system which should have its own elevator.  I can try feeding UML 
+an elevator if you think it'll help...
+
+> ***) Jeff, what about talking to them and asking them to submit us their
+> code, or at the very least their recipe?
+
+You're welcome to my test case.  It's my Firmware Linux build online at 
+http://www.landley.net/code/firmware (I should have an updated version using 
+2.6.14 out in a few days, working on some unrelated stuff at the moment...)
 
 Rob
 
