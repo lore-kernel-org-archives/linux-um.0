@@ -2,21 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EYFb5-0001Tn-6D for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Nov 2005 20:24:07 -0800
+	id 1EYFmT-0001wa-55 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Nov 2005 20:35:53 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EYFb3-0001ic-3D
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EYFmS-0003h5-5h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Nov 2005 20:24:07 -0800
+	Fri, 04 Nov 2005 20:35:53 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] The web page doesn't say where to get the switch
-	daemon.
-Message-ID: <20051105051643.GA15683@ccure.user-mode-linux.org>
-References: <200511041900.37782.rob@landley.net>
+Subject: Re: [uml-devel] Re: [Lhms-devel] [PATCH 0/7] Fragmentation Avoidance
+	V19
+Message-ID: <20051105052342.GB15683@ccure.user-mode-linux.org>
+References: <1130917338.14475.133.camel@localhost>
+	<200511041441.11896.rob@landley.net>
+	<200511050042.49904.blaisorblade@yahoo.it>
+	<200511041945.53507.rob@landley.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200511041900.37782.rob@landley.net>
+In-Reply-To: <200511041945.53507.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,23 +31,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 5 Nov 2005 00:16:43 -0500
+Date: Sat, 5 Nov 2005 00:23:42 -0500
 To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Nov 04, 2005 at 07:00:37PM -0600, Rob Landley wrote:
-> Let's see, the uml_net link from the download page (the difference between 
-> that and uml_switch is...?) links to a generic page about CVS, which isn't 
-> installed on my laptop.  (Subversion is, but doesn't help here.)  Ok, a web 
-> browsing link...  No tarball.  Ok, maybe it's one source file I can get and 
-> compile, ala ifenslave...
+On Fri, Nov 04, 2005 at 07:45:53PM -0600, Rob Landley wrote:
+> Another advantage of prezeroing: it maps really well to what we're trying to 
+> do here.  It makes a class of not just free but zeroed memory (and madvise 
+> zeroes the memory for us).  
 
-Let's see.  On the downloads page, there is a utilities section which says
-something about uml_switch.  Grabbing that tarball shows me a directory
-called uml_router (which is probably the problem - that's the old name before
-people clued me in that I hadn't really implemented a router) with something
-called uml_switch.c in it.  Building that might give you something called
-uml_switch.
+Yeah, we would need to keep track of zeroed pages somehow.  This isn't 
+currently done, and it would require some generic kernel hooks.  And it would 
+require them in some delicate places.
+
+If there were some sort of background zeroing and tracking of zeroed pages
+already there, it would be a lot easier for UML.  Without that, I'm not sure
+how to take advantage of the host's zeroing.
 
 				Jeff
 
