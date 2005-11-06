@@ -2,26 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EYXlR-0005iJ-Fy for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Nov 2005 15:48:01 -0800
+	id 1EYtrv-0003HY-D0 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Nov 2005 15:24:11 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EYXlQ-0000DR-7v
+	(Exim 4.44) id 1EYtrs-000882-ON
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Nov 2005 15:48:01 -0800
+	Sun, 06 Nov 2005 15:24:11 -0800
 From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] The web page doesn't say where to get the switch
-	daemon.
-References: <200511041900.37782.rob@landley.net>
-	<20051105051643.GA15683@ccure.user-mode-linux.org>
-In-Reply-To: <20051105051643.GA15683@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200511051747.50770.rob@landley.net>
+Message-Id: <200511061723.32848.rob@landley.net>
+Subject: [uml-devel] Does UML 2.6.14 work under x86-64?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,27 +27,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 5 Nov 2005 17:47:50 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Sun, 6 Nov 2005 17:23:32 -0600
+Content-Transfer-Encoding: quoted-printable
+To: David Lang <dlang@invendra.net>, user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 04 November 2005 23:16, Jeff Dike wrote:
-> On Fri, Nov 04, 2005 at 07:00:37PM -0600, Rob Landley wrote:
-> > Let's see, the uml_net link from the download page (the difference
-> > between that and uml_switch is...?) links to a generic page about CVS,
-> > which isn't installed on my laptop.  (Subversion is, but doesn't help
-> > here.)  Ok, a web browsing link...  No tarball.  Ok, maybe it's one
-> > source file I can get and compile, ala ifenslave...
->
-> Let's see.  On the downloads page, there is a utilities section which says
-> something about uml_switch.  Grabbing that tarball shows me a directory
+David Lang is trying to get my firmware build working under x86-64, and whe=
+n I=20
+upgraded him to 2.6.14 (to get around the memory leak in 2.6.13.2), he=20
+started getting this:
 
-Found the tarball.  (I thought the grey bar at the very bottom of my screen 
-was the start of the next section, turns out the download links for the 
-tarballs are in a big grey box the size of the screen.  Misleading color 
-scheme, that.)
+>> Checking PROT_EXEC mmap in /tmp...OK
+>> Checking for the skas3 patch in the host:
+>> =A0 =A0- /proc/mm...not found
+>> =A0 =A0- PTRACE_FAULTINFO...not found
+>> =A0 =A0- PTRACE_LDT...not found
+>> UML running in SKAS0 mode
+>> Kernel panic - not syncing: get_skas_faultinfo : failed to wait for
+>> SIGUSR1/SIGTRAP, pid =3D 16411, n =3D 16411, errno
+>> =A0 0, status =3D 0xb7f
 
-Sorry for the confusion...
+This is 2.6.14 configured like so:
+
+make ARCH=3Dum allnoconfig &&
+cat >> .config << EOF &&
+CONFIG_MODE_SKAS=3Dy
+CONFIG_BINFMT_ELF=3Dy
+CONFIG_HOSTFS=3Dy
+CONFIG_SYSCTL=3Dy
+CONFIG_STDERR_CONSOLE=3Dy
+CONFIG_UNIX98_PTYS=3Dy
+CONFIG_BLK_DEV_LOOP=3Dy
+CONFIG_BLK_DEV_UBD=3Dy
+CONFIG_TMPFS=3Dy
+CONFIG_SWAP=3Dy
+CONFIG_LBD=3Dy
+CONFIG_EXT2_FS=3Dy
+CONFIG_PROC_FS=3Dy
+EOF
+yes "" | make ARCH=3Dum oldconfig &&
+make ARCH=3Dum
+
+And then run via:
+
+tmpdir/linux rootfstype=3Dhostfs rw quiet mem=3D64M ubd0=3Dtmpdir/swap.img =
+
+init=3D/bin/sh
+
+He first tried with the LDT patch applied.  Then he tried reverting it (and=
+=20
+adding LD_ASSUME_KERNEL=3D2.4.1 to the kernel command line), but that didn'=
+t=20
+help.
+
+Any clues?  (Should I tell him to just try -tt mode?  Or revert to 2.6.13 w=
+ith=20
+the leak fix?)
 
 Rob
 
