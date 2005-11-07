@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZ5zd-0006W6-FX for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2005 04:20:57 -0800
-Received: from dgate1.fujitsu-siemens.com ([217.115.66.35])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EZ5zc-0003lY-1u
+	id 1EZ8zw-0006bH-5S for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Nov 2005 07:33:28 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EZ8zu-0001Qg-KT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2005 04:20:57 -0800
-Message-ID: <436F469B.3080607@fujitsu-siemens.com>
-From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 8/10] UML - Maintain own LDT entries
-References: <200510310439.j9V4dfbw000872@ccure.user-mode-linux.org>
-	<200511022051.24335.blaisorblade@yahoo.it>
-In-Reply-To: <200511022051.24335.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	Mon, 07 Nov 2005 07:33:28 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Does UML 2.6.14 work under x86-64?
+Message-ID: <20051107162541.GB4954@ccure.user-mode-linux.org>
+References: <200511061723.32848.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200511061723.32848.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,45 +27,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 07 Nov 2005 13:20:43 +0100
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Allan Graves <allan.graves@oracle.com>
+Date: Mon, 7 Nov 2005 11:25:41 -0500
+To: Rob Landley <rob@landley.net>
+Cc: David Lang <dlang@invendra.net>, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> On Monday 31 October 2005 05:39, Jeff Dike wrote:
-> 
->>From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
->>
->>Patch imlements full LDT handling in SKAS:
->> * UML holds it's own LDT table, used to deliver data on
->>   modify_ldt(READ)
->> * UML disables the default_ldt, inherited from the host (SKAS3)
->>   or resets LDT entries, set by host's clib and inherited in
->>   SKAS0
->> * A new global variable skas_needs_stub is inserted, that
->>   can be used to decide, whether stub-pages must be supported
->>   or not.
->> * Uses the syscall-stub to replace missing PTRACE_LDT (therefore,
->>   write_ldt_entry needs to be modified)
-> 
-> Two complaints against this patch (to be fixed afterwards, so I'm not CC'ing 
-> akpm):
-> 
-> *) It reverts my cleanup and consolidation of ldt.c wrt. SKAS vs TT.
-> 
-> Or at least so I think (I must still give a proper look afterwards, and I'll 
-> post patches). Actually it seems that this is done on purpose, but I don't 
-> agree too much on this. I will see.
+On Sun, Nov 06, 2005 at 05:23:32PM -0600, Rob Landley wrote:
+> >> Kernel panic - not syncing: get_skas_faultinfo : failed to wait for
+> >> SIGUSR1/SIGTRAP, pid = 16411, n = 16411, errno
+> >> ? 0, status = 0xb7f
 
- From the beginning my new code for SKAS included the checks/buffering you later
-inserted for TT and SKAS. So this patch is a second version adapted to your changes.
-It shifts your improvements into TT path only (where I didn't do any changes in
-my old patch), while it uses my own stuff for SKAS. Thus the patch doesn't really
-revert your improvements, but restricts it to TT. As in SKAS0 UML now holds its own
-LDT data, there is no need for buffering in this case. So I think it makes sense to
-have separate code for SKAS.
+Can you apply the stub debugging patch (the first of the 10 patches I sent
+to Andrew last week) and show us the output and the disassembly of 
+stub_segv_handler?
 
-	Bodo
+				Jeff
 
 
 -------------------------------------------------------
