@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZCa2-0000F6-Uc for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2005 11:22:58 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EZCa0-0004Zp-9g
+	id 1EZCdz-0000M8-Sx for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Nov 2005 11:27:03 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EZCdw-0006cj-Bs
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2005 11:22:58 -0800
+	Mon, 07 Nov 2005 11:27:03 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 8/10] UML - Maintain own LDT entries
-References: <200510310439.j9V4dfbw000872@ccure.user-mode-linux.org>
-	<200511022051.24335.blaisorblade@yahoo.it>
-	<436F469B.3080607@fujitsu-siemens.com>
-In-Reply-To: <436F469B.3080607@fujitsu-siemens.com>
+Subject: Re: [uml-devel] Does UML 2.6.14 work under x86-64?
+References: <200511061723.32848.rob@landley.net>
+In-Reply-To: <200511061723.32848.rob@landley.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Message-Id: <200511072028.23111.blaisorblade@yahoo.it>
+Message-Id: <200511072032.27218.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,46 +27,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 7 Nov 2005 20:28:22 +0100
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Allan Graves <allan.graves@oracle.com>
+Date: Mon, 7 Nov 2005 20:32:26 +0100
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, David Lang <dlang@invendra.net>
 
-On Monday 07 November 2005 13:20, Bodo Stroesser wrote:
-> Blaisorblade wrote:
-> > On Monday 31 October 2005 05:39, Jeff Dike wrote:
-> >>From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+On Monday 07 November 2005 00:23, Rob Landley wrote:
+> David Lang is trying to get my firmware build working under x86-64,
+proper x86-64 or a 32-bit binary?
+> and=20
+> when I upgraded him to 2.6.14 (to get around the memory leak in 2.6.13.2),
+> he
 
-> > Or at least so I think (I must still give a proper look afterwards, and
-> > I'll post patches). Actually it seems that this is done on purpose, but I
-> > don't agree too much on this. I will see.
+> started getting this:
 
->  From the beginning my new code for SKAS included the checks/buffering you
-> later inserted for TT and SKAS. So this patch is a second version adapted
-> to your changes. It shifts your improvements into TT path only (where I
-> didn't do any changes in my old patch), while it uses my own stuff for
-> SKAS. Thus the patch doesn't really revert your improvements, but restricts
-> it to TT. As in SKAS0 UML now holds its own LDT data, there is no need for
-> buffering in this case. So I think it makes sense to have separate code for
-> SKAS.
-Yep, ok - I'm undecided about the new code for SKAS3, but it may make sense 
-(i.e. no opinion).
+> >> Kernel panic - not syncing: get_skas_faultinfo : failed to wait for
+> >> SIGUSR1/SIGTRAP, pid =3D 16411, n =3D 16411, errno
+> >> =A0 0, status =3D 0xb7f
+>
+> This is 2.6.14 configured like so:
+>
 
-Instead, I have another question: is there a proper reason for using the 
-processor format for storing the info and translating it back to (struct 
-user_desc)? I am planning to avoid this double translation because I don't 
-like it. Any opinion?
--- 
+> CONFIG_MODE_SKAS=3Dy
+> EOF
+> yes "" | make ARCH=3Dum oldconfig &&
+> make ARCH=3Dum
+Ok, this seems a 64-bit binary if built on x86-64.
+> He first tried with the LDT patch applied.
+When I last tried that patch doesn't compile on x86-64.
+> Then he tried reverting it (and=20
+> adding LD_ASSUME_KERNEL=3D2.4.1 to the kernel command line), but that did=
+n't
+> help.
+
+> Any clues?  (Should I tell him to just try -tt mode?
+> Or revert to 2.6.13=20
+> with the leak fix?)
+For now, any of these workaround is good, if it works.
+
+On the bug: there are some problems with the stub assembly code - it=20
+miscompiles on some GCC releases. I'm trying to fix that - and -bs1 may or =
+
+may not help on this (for some people it refuses to compile on x86_64).
+
+GCC version?
+--=20
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+	=09
+___________________________________=20
+Yahoo! Messenger: chiamate gratuite in tutto il mondo=20
+http://it.messenger.yahoo.com
 
 
 
