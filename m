@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZUnr-0008Ih-V2 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 06:50:27 -0800
+	id 1EZUqo-0000A7-7d for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 06:53:30 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EZUnp-0001ww-O0
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EZUqn-0002rJ-4o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 06:50:28 -0800
+	Tue, 08 Nov 2005 06:53:30 -0800
 From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Making UML Single Threader
-Message-ID: <20051108154310.GA4131@ccure.user-mode-linux.org>
+Message-ID: <20051108154618.GB4131@ccure.user-mode-linux.org>
 References: <200511061723.32848.rob@landley.net>
 	<91A93A3A-FE83-4002-A004-E8FD4AFBAA3C@stanford.edu>
+	<200511080109.06999.rob@landley.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <91A93A3A-FE83-4002-A004-E8FD4AFBAA3C@stanford.edu>
+In-Reply-To: <200511080109.06999.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,22 +29,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 10:43:10 -0500
-To: Can Sar <csar@stanford.edu>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 8 Nov 2005 10:46:18 -0500
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Can Sar <csar@stanford.edu>
 
-On Mon, Nov 07, 2005 at 09:13:19PM -0800, Can Sar wrote:
-> Do the other threads (particularly the user thread) ever  
-> do something else that would be important?
+On Tue, Nov 08, 2005 at 01:09:06AM -0600, Rob Landley wrote:
+> > So I don't care about systemcall interception or anything like that,
+> 
+> *blink*  *blink*
+> 
+> Ok, you want user mode linux, but you don't want it to actually run user 
+> processes, nor do want it to be able to intercept system calls.
+> 
+> Um...  What's left?
 
-The user thread doesn't.  The IO thread does, if you wish to do IO.
-And you can easily dispense with the sigio emulation thread.
+Only all of Linux.  It so happens that I want exactly the same thing for 
+libUML, except I haven't had time to do anything about it.
 
-> Furthermore is the actual kernel process multi threaded?
-
-It does what amounts to user-level threads - i.e. there are multiple
-execution contexts in it, implemented with setjmp/longjmp, but that's
-not visible from the outside.
+Try to think a little before calling someone's project dumb.
 
 				Jeff
 
