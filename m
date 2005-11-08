@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZXjx-0002eE-UQ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 09:58:37 -0800
-Received: from waste.org ([216.27.176.166])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EZXjw-0006cP-V3
+	id 1EZYsO-00063X-JJ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 11:11:24 -0800
+Received: from smtp1.stanford.edu ([171.67.16.123])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EZYsN-0003dj-6o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 09:58:38 -0800
-From: Matt Mackall <mpm@selenic.com>
-Message-ID: <20051108175800.GB8126@waste.org>
-References: <200510300624.38794.rob@landley.net>
-	<35fb2e590510300453q520a9ce7ua1d74d7790b3a6b8@mail.gmail.com>
-	<20051030151506.GA3354@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20051030151506.GA3354@ccure.user-mode-linux.org>
-Subject: [uml-devel] Re: What's wrong with tmpfs?
+	Tue, 08 Nov 2005 11:11:24 -0800
+In-Reply-To: <20051108154310.GA4131@ccure.user-mode-linux.org>
+References: <200511061723.32848.rob@landley.net>
+	<91A93A3A-FE83-4002-A004-E8FD4AFBAA3C@stanford.edu>
+	<20051108154310.GA4131@ccure.user-mode-linux.org>
+Mime-Version: 1.0 (Apple Message framework v746.2)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <E3EBEE81-52B5-4CA1-9DE2-76E71FF91B31@stanford.edu>
+Content-Transfer-Encoding: 7bit
+From: Can Sar <csar@stanford.edu>
+Subject: Re: [uml-devel] Making UML Single Threader
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,33 +29,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 09:58:00 -0800
+Date: Tue, 8 Nov 2005 11:11:07 -0800
 To: Jeff Dike <jdike@addtoit.com>
-Cc: jonathan@jonmasters.org, Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Oct 30, 2005 at 10:15:06AM -0500, Jeff Dike wrote:
-> On Sun, Oct 30, 2005 at 12:53:00PM +0000, Jon Masters wrote:
-> > On 10/30/05, Rob Landley <rob@landley.net> wrote:
-> > 
-> > > If somebody needs a reproduction sequence, I'm happy to oblige.  In theory
-> > > "mount -t tmpfs /mnt /mnt" should do it, but if it was _that_ simple it
-> > > wouldn't have shipped...
-> > 
-> > I don't see this behaviour on a regular desktop box running 2.6.14.
-> > Guess it's UML specific.
-> 
-> Sorry, but wrong.
-> 
-> IIRC, this triggers when you don't have CONFIG_TMPFS enabled.  If you don't,
-> you still get it, but you get a version that's only usable in-kernel.
 
-That sounds like a regression. Turning off CONFIG_TMPFS replaces tmpfs
-with an aliased ramfs. It should be perfectly usable everywhere that
-tmpfs is, with the exception that it's not swap-backed and doesn't
-have an size limiting.
+On Nov 8, 2005, at 7:43 AM, Jeff Dike wrote:
 
--- 
-Mathematics is the supreme nostalgia of our time.
+> On Mon, Nov 07, 2005 at 09:13:19PM -0800, Can Sar wrote:
+>> Do the other threads (particularly the user thread) ever
+>> do something else that would be important?
+>
+> The user thread doesn't.  The IO thread does, if you wish to do IO.
+> And you can easily dispense with the sigio emulation thread.
+>
+>> Furthermore is the actual kernel process multi threaded?
+>
+> It does what amounts to user-level threads - i.e. there are multiple
+> execution contexts in it, implemented with setjmp/longjmp, but that's
+> not visible from the outside.
+
+Thank you, that was all really helpful.
+Can
 
 
 -------------------------------------------------------
