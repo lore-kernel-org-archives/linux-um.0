@@ -1,27 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZKLL-0005zi-FV for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2005 19:40:19 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EZKLK-0003nx-61
+	id 1EZLnl-0000zL-E4 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Nov 2005 21:13:45 -0800
+Received: from smtp1.stanford.edu ([171.67.16.123])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EZLnk-0004z2-4f
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2005 19:40:19 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Does UML 2.6.14 work under x86-64?
+	Mon, 07 Nov 2005 21:13:45 -0800
+Received: from [171.66.50.73] (DNab423249.Stanford.EDU [171.66.50.73])
+	by smtp1.Stanford.EDU (8.12.11/8.12.11) with ESMTP id jA85DOol024882
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 7 Nov 2005 21:13:29 -0800
+Mime-Version: 1.0 (Apple Message framework v746.2)
+In-Reply-To: <200511061723.32848.rob@landley.net>
 References: <200511061723.32848.rob@landley.net>
-	<200511071853.40490.rob@landley.net>
-	<Pine.LNX.4.62.0511070646180.2799@qnivq.ynat.uz>
-In-Reply-To: <Pine.LNX.4.62.0511070646180.2799@qnivq.ynat.uz>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+Message-Id: <91A93A3A-FE83-4002-A004-E8FD4AFBAA3C@stanford.edu>
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511072139.46779.rob@landley.net>
+From: Can Sar <csar@stanford.edu>
+Subject: [uml-devel] Making UML Single Threader
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,23 +31,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 7 Nov 2005 21:39:46 -0600
-To: David Lang <dlang@invendra.net>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 7 Nov 2005 21:13:19 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 07 November 2005 08:47, David Lang wrote:
-> >> GCC version?
-> >
-> > 4.0.2, hacked to link against uClibc.
->
-> does it use the GCC you include for the first compile, or the base
-> compiler on the host OS?
+Hi,
 
-You're right, building UML is the job of the base compiler in the host OS.
+I am trying to make a 1 thread version of UML that does not need to  
+be able to support user level programs. So I don't care about  
+systemcall interception or anything like that, I just want a copy of  
+UML that gets a basic kernel environment running (where I could call  
+some kernel functions like sys_read or sys_open and then exit) that  
+never calls fork on the host.
+ From looking at the various websites I am hoping that I can just rip  
+out 3 of the 4 SKAS threads and only leave the kernel thread:
+"The UML kernel thread, which runs in the separate kernel address  
+space, executes kernel code, and does system call interception on UML  
+processes." Do the other threads (particularly the user thread) ever  
+do something else that would be important?
+Furthermore is the actual kernel process multi threaded?
 
-> David Lang
+Sorry if this all sounds a bit weird, it's for a research project and  
+we are trying to port UML to an environment that only supports single  
+threaded operation.
 
-Rob
+Thanks,
+Can Sar
 
 
 -------------------------------------------------------
