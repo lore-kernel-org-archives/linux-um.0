@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZW2I-0005V3-G0 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 08:09:26 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EZW2H-0002nI-Rk
+	id 1EZW1G-0005SU-50 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 08:08:22 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EZW1F-0006PO-C6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 08:09:26 -0800
+	Tue, 08 Nov 2005 08:08:21 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Making UML Single Threader
-References: <200511061723.32848.rob@landley.net>
-	<91A93A3A-FE83-4002-A004-E8FD4AFBAA3C@stanford.edu>
-	<20051108154310.GA4131@ccure.user-mode-linux.org>
-In-Reply-To: <20051108154310.GA4131@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH 8/10] UML - Maintain own LDT entries
+References: <200510310439.j9V4dfbw000872@ccure.user-mode-linux.org>
+	<200511072028.23111.blaisorblade@yahoo.it>
+	<4370C36E.2040205@fujitsu-siemens.com>
+In-Reply-To: <4370C36E.2040205@fujitsu-siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511081710.28618.blaisorblade@yahoo.it>
+Message-Id: <200511081702.02891.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,44 +31,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 17:10:28 +0100
+Date: Tue, 8 Nov 2005 17:02:02 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Can Sar <csar@stanford.edu>
+Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Allan Graves <allan.graves@oracle.com>
 
-On Tuesday 08 November 2005 16:43, Jeff Dike wrote:
-> On Mon, Nov 07, 2005 at 09:13:19PM -0800, Can Sar wrote:
-> > Do the other threads (particularly the user thread) ever
-> > do something else that would be important?
->
-> The user thread doesn't.  The IO thread does, if you wish to do IO.
+On Tuesday 08 November 2005 16:25, Bodo Stroesser wrote:
+> Blaisorblade wrote:
+> > On Monday 07 November 2005 13:20, Bodo Stroesser wrote:
+> >>Blaisorblade wrote:
+> >>>On Monday 31 October 2005 05:39, Jeff Dike wrote:
+> >>>>From: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Since he needs to be _really_ single-threaded (and he may very possibly be 
-trying to run something like Valgrind on UML) he may even run UBD without the 
-I/O thread.
+> In my opinion there is no reason to change the current implementation for
+> SAKS3/0. Note: if someone reads LDT via [sys_]modify_ldt(), he will receive
+> the requested data in "processor format", that is LDT-descriptors. He will
+> receive a list of descriptors starting at the first descriptor of the LDT,
+> thus no entry number is needed in the enties.
+Ehrr... ACK! You're right, I really _did_ miss the read_ldt case.
+> The only case that uses user_desc is when writing one desriptor via
+> modify_ldt(). modify_ldt(WRITE) exactly writes one LDT-descriptor, so
+> user_desc must contain the number of the entry to write. Thus user_desc is
+> bigger than LDT descriptor. It also uses an other data layout resulting in
+> double the size of LDT-descriptor. So I think it doesn't make sense to
+> store user_desc. We save memory storing the resulting LDT-descriptors,
+> which then are copied transparently on modify_ldt(READ). Conversion between
+> user_desc and LDT-entry is done on modify_ldt(WRITE) in SKAS0 only. No
+> other conversions are done in UML.
 
-The code still exists, even if some bugs may have crept in since 2.6.9 (guess 
-not, there has been no major rework). Basically, if io_thread_pid == -1, the 
-code instead to to asynchronous I/O via this separate thread, does directly 
-I/O by itself.
-
-For normal usage, it's a bad idea - UML won't be able to schedule another 
-thread until completion of that I/O request (much like green-threads do when 
-implemented the simple way). Btw, usage of sigjmp()/longjmp() (between kernel 
-threads) is actually green-threads said another way (like Jeff said below).
-
-Btw, even userspace programs have a "stub" in the kernelspace thread.
-
-In that case, through, it's just userspace(): an infinite loop running ptrace 
-to intercept and nullify syscalls and segfaults, basically.
-
-> And you can easily dispense with the sigio emulation thread.
-
-> > Furthermore is the actual kernel process multi threaded?
->
-> It does what amounts to user-level threads - i.e. there are multiple
-> execution contexts in it, implemented with setjmp/longjmp, but that's
-> not visible from the outside.
-
+Ok, I now totally agree with your point. I had missed the read_ldt case. It's 
+perfectly fine to keep it as-is.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
