@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZW42-0005Yt-LQ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 08:11:14 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EZW41-0007F1-21
+	id 1EZXjx-0002eE-UQ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 09:58:37 -0800
+Received: from waste.org ([216.27.176.166])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EZXjw-0006cP-V3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 08:11:14 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Making UML Single Threader
-References: <200511061723.32848.rob@landley.net>
-	<91A93A3A-FE83-4002-A004-E8FD4AFBAA3C@stanford.edu>
-	<200511080109.06999.rob@landley.net>
-In-Reply-To: <200511080109.06999.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Tue, 08 Nov 2005 09:58:38 -0800
+From: Matt Mackall <mpm@selenic.com>
+Message-ID: <20051108175800.GB8126@waste.org>
+References: <200510300624.38794.rob@landley.net>
+	<35fb2e590510300453q520a9ce7ua1d74d7790b3a6b8@mail.gmail.com>
+	<20051030151506.GA3354@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200511081713.14783.blaisorblade@yahoo.it>
+In-Reply-To: <20051030151506.GA3354@ccure.user-mode-linux.org>
+Subject: [uml-devel] Re: What's wrong with tmpfs?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,46 +30,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 17:13:13 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>, Can Sar <csar@stanford.edu>
+Date: Tue, 8 Nov 2005 09:58:00 -0800
+To: Jeff Dike <jdike@addtoit.com>
+Cc: jonathan@jonmasters.org, Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 08 November 2005 08:09, Rob Landley wrote:
-> On Monday 07 November 2005 23:13, Can Sar wrote:
-> > Hi,
-> >
-> > I am trying to make a 1 thread version of UML that does not need to
-> > be able to support user level programs.
+On Sun, Oct 30, 2005 at 10:15:06AM -0500, Jeff Dike wrote:
+> On Sun, Oct 30, 2005 at 12:53:00PM +0000, Jon Masters wrote:
+> > On 10/30/05, Rob Landley <rob@landley.net> wrote:
+> > 
+> > > If somebody needs a reproduction sequence, I'm happy to oblige.  In theory
+> > > "mount -t tmpfs /mnt /mnt" should do it, but if it was _that_ simple it
+> > > wouldn't have shipped...
+> > 
+> > I don't see this behaviour on a regular desktop box running 2.6.14.
+> > Guess it's UML specific.
+> 
+> Sorry, but wrong.
+> 
+> IIRC, this triggers when you don't have CONFIG_TMPFS enabled.  If you don't,
+> you still get it, but you get a version that's only usable in-kernel.
 
-> Why?
-
-He may well be running Valgrind or something similar (Valgrind doesn't like us 
-using clone(), even if it accepts fork()).
-
-Ah, btw, given his address, I wonder if he's related at all with some project 
-like "Stanford Checker" or a relative of it.
-
-> Did you ever read Rik van Reil's list of the dumbest patches he's ever
-> seen? This is the first entry in the list:
->
-> http://www.surriel.com/potm/apr2001.shtml
-
-Sorry I don't see your point, Rob - it's a really different thing.
-
-> Define "port".  (Have you looked at mmu-less linux?  Are you saying you
-> haven't got a timer interrupt and can't fake up some kind of green-threads
-> approach like people managed to do under _DOS_?)
+That sounds like a regression. Turning off CONFIG_TMPFS replaces tmpfs
+with an aliased ramfs. It should be perfectly usable everywhere that
+tmpfs is, with the exception that it's not swap-backed and doesn't
+have an size limiting.
 
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
-
+Mathematics is the supreme nostalgia of our time.
 
 
 -------------------------------------------------------
