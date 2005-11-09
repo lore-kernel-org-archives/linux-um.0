@@ -2,27 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZeAe-0003HZ-Dp for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 16:50:36 -0800
+	id 1EZeC4-0003Kf-UK for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 16:52:04 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EZeAd-0001Lf-66
+	(Exim 4.44) id 1EZeC2-0001ap-Co
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 16:50:36 -0800
+	Tue, 08 Nov 2005 16:52:05 -0800
 From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Re: [Lhms-devel] [PATCH 0/7] Fragmentation Avoidance
-	V19
-References: <1130917338.14475.133.camel@localhost>
-	<200511071832.04974.rob@landley.net>
-	<200511081656.24694.blaisorblade@yahoo.it>
-In-Reply-To: <200511081656.24694.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Making UML Single Threader
+References: <200511061723.32848.rob@landley.net>
+	<200511080109.06999.rob@landley.net>
+	<200511081713.14783.blaisorblade@yahoo.it>
+In-Reply-To: <200511081713.14783.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511081850.26359.rob@landley.net>
+Message-Id: <200511081851.54145.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,37 +33,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 18:50:26 -0600
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 8 Nov 2005 18:51:53 -0600
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Blaisorblade <blaisorblade@yahoo.it>, Can Sar <csar@stanford.edu>
 
-On Tuesday 08 November 2005 09:56, Blaisorblade wrote:
-> But hey, it's (now) standard practice to loopback-mount root_fs images to
-> alter them. I've been using linux since less than 3 years (say RedHat 7.3
-> was my first distro), though, so I can't remember about before.
+On Tuesday 08 November 2005 10:13, Blaisorblade wrote:
+> > Did you ever read Rik van Reil's list of the dumbest patches he's ever
+> > seen? This is the first entry in the list:
+> >
+> > http://www.surriel.com/potm/apr2001.shtml
+>
+> Sorry I don't see your point, Rob - it's a really different thing.
 
-Red Hat 5.something here.  (5.1?  It _hated_ my video card.  And I was already 
-trying to do strange things like loopback mounting a file that lived in 
-another loopback mount...)
-
-> Which means that, when just testing the build process in itself, since you
-> can create a chroot on the loopback-mount, it's perfectly ok to run it in a
-> chroot on the host, for speed.
-
-I've done that (with my build, run the sources/scripts/1.1-* script in the 
-chroot environment after --bind mounting in /tools and /tools/sources).  But 
-at the end of the build the packaging step makes a standalone User Mode Linux 
-(with appended squashfs) to test it out, so I'll need it eventually anyway...
-
-Of course the gcc build is still quite a memory hog without UML.  But the 
-system is more graceful about dealing with it.  (Better at random memory 
-pressure than random IO pressure, apparently.  It might just be that the 
-anticipatory scheduler on the host system is particularly _bad_ about dealing 
-with saturation level random-seek equal mixes of reads and writes scattered 
-across a couplke hundred megabytes of disk space.)
-
-I should be upgrading the host system soon, not worth pursuing this unless the 
-new kernel has the same problem...
+As has been pointed out to me by Jeff.  I didn't understand the potential use 
+case.
 
 Rob
 
