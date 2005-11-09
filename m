@@ -2,26 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZeWl-000474-T5 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 17:13:27 -0800
+	id 1EZeaj-0004D3-0V for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 17:17:33 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EZeWh-0004hw-9C
+	(Exim 4.44) id 1EZeah-0005nO-GT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 17:13:27 -0800
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by grelber.thyrsus.com (8.13.4/8.13.4) with ESMTP id jA92kTHr017434
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 8 Nov 2005 21:46:29 -0500
+	Tue, 08 Nov 2005 17:17:32 -0800
 From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] Making UML Single Threader
+References: <200511061723.32848.rob@landley.net>
+	<200511081835.47575.rob@landley.net>
+	<200511090148.26628.blaisorblade@yahoo.it>
+In-Reply-To: <200511090148.26628.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200511081913.14657.rob@landley.net>
-Subject: [uml-devel] Test for ethernet broadcast address?
+Content-Disposition: inline
+Message-Id: <200511081917.22963.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +33,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 19:13:14 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 8 Nov 2005 19:17:22 -0600
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-So I'm trying to play with ifenslave under UML, and my naieve attempt to go
+On Tuesday 08 November 2005 18:48, Blaisorblade wrote:
+> On Wednesday 09 November 2005 01:35, Rob Landley wrote:
+> > On Tuesday 08 November 2005 01:44, Can Sar wrote:
+> >
+> > P.S. What on earth is CONFIG_CMDLINE_ON_HOST?  It doesn't seem to ever be
+> > set anywhere, by anything...
+>
+> Totally unrelated. In short, it's TT-only, it implements the old behaviour
+> (nice output on ps), but it requires UML to call exec() on itself (with a
+> bigger arg list, so that enough space is allocated for argv); and I
+> discovered gdb gets very confused on this.
+>
+> So I allowed to disable it, and gdb started working like a charm!
 
-./linux LD_ASSUME_KERNEL=2.4.1 eth0=daemon,11:11:11:11:11:11 \ 
-eth1=daemon,22:22:22:22:22:22 rootfstype=hostfs rw init=/bin/sh
-
-Led to unexpected results that eth0 had a mac addr of 00:00:00:00:00:00.  
-Eventually, I tracked it down to this test in arch/um/drivers/net_kern.c:
-if(addr[0] & 1){
-        printk(KERN_ERR
-               "Attempt to assign a broadcast ethernet address to a "
-               "device disallowed\n");
-        return(0);
-}
-
-My question is: where's the spec for what is and isn't a broadcast address?
-
-RFC 894 says that "the" ethernet broadcast address is (only) FF:FF:FF:FF:FF:FF
-http://www.freesoft.org/CIE/RFC/894/
-
-So does Ethereal's wiki:
-http://wiki.ethereal.com/Ethernet
-
-Confused?
+Is there any easy way to get decent ps output in SKAS0 mode?
 
 Rob
 
