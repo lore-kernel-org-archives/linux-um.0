@@ -1,23 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZYsO-00063X-JJ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 11:11:24 -0800
-Received: from smtp1.stanford.edu ([171.67.16.123])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EZYsN-0003dj-6o
+	id 1EZdoo-0002Vr-TR for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 16:28:02 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EZdon-0004XV-F7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 11:11:24 -0800
-In-Reply-To: <20051108154310.GA4131@ccure.user-mode-linux.org>
-References: <200511061723.32848.rob@landley.net>
-	<91A93A3A-FE83-4002-A004-E8FD4AFBAA3C@stanford.edu>
-	<20051108154310.GA4131@ccure.user-mode-linux.org>
-Mime-Version: 1.0 (Apple Message framework v746.2)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <E3EBEE81-52B5-4CA1-9DE2-76E71FF91B31@stanford.edu>
-Content-Transfer-Encoding: 7bit
-From: Can Sar <csar@stanford.edu>
+	Tue, 08 Nov 2005 16:28:02 -0800
+From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Making UML Single Threader
+References: <200511061723.32848.rob@landley.net>
+	<200511080109.06999.rob@landley.net>
+	<20051108154618.GB4131@ccure.user-mode-linux.org>
+In-Reply-To: <20051108154618.GB4131@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200511081827.46640.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +33,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 11:11:07 -0800
+Date: Tue, 8 Nov 2005 18:27:46 -0600
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Can Sar <csar@stanford.edu>
 
-
-On Nov 8, 2005, at 7:43 AM, Jeff Dike wrote:
-
-> On Mon, Nov 07, 2005 at 09:13:19PM -0800, Can Sar wrote:
->> Do the other threads (particularly the user thread) ever
->> do something else that would be important?
+On Tuesday 08 November 2005 09:46, Jeff Dike wrote:
+> On Tue, Nov 08, 2005 at 01:09:06AM -0600, Rob Landley wrote:
+> > > So I don't care about systemcall interception or anything like that,
+> >
+> > *blink*  *blink*
+> >
+> > Ok, you want user mode linux, but you don't want it to actually run user
+> > processes, nor do want it to be able to intercept system calls.
+> >
+> > Um...  What's left?
 >
-> The user thread doesn't.  The IO thread does, if you wish to do IO.
-> And you can easily dispense with the sigio emulation thread.
+> Only all of Linux.  It so happens that I want exactly the same thing for
+> libUML, except I haven't had time to do anything about it.
 >
->> Furthermore is the actual kernel process multi threaded?
->
-> It does what amounts to user-level threads - i.e. there are multiple
-> execution contexts in it, implemented with setjmp/longjmp, but that's
-> not visible from the outside.
+> Try to think a little before calling someone's project dumb.
 
-Thank you, that was all really helpful.
-Can
+Sorry, wasn't trying to call it dumb.  (I linked to a similar patch for 
+ripping out lots of "unnecessary" infrastructure, which Rik found dumb 
+because there was really no advantage to removing it.  I should have 
+clarified that _my_ question was "Why?".)
+
+I didn't understand what he was trying to do.  (Hard to ponder implementing 
+something if you don't know what it would do.)  A test harness for isolated 
+kernel functions is something I can at least imagine...
+
+Rob
 
 
 -------------------------------------------------------
