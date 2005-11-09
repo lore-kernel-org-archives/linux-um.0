@@ -2,26 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EZdoo-0002Vr-TR for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 16:28:02 -0800
+	id 1EZdwT-0002lu-7R for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Nov 2005 16:35:57 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EZdon-0004XV-F7
+	(Exim 4.44) id 1EZdwS-0005te-Ss
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2005 16:28:02 -0800
+	Tue, 08 Nov 2005 16:35:57 -0800
 From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Making UML Single Threader
 References: <200511061723.32848.rob@landley.net>
 	<200511080109.06999.rob@landley.net>
-	<20051108154618.GB4131@ccure.user-mode-linux.org>
-In-Reply-To: <20051108154618.GB4131@ccure.user-mode-linux.org>
+	<4A8812BF-70D2-451C-9E9F-4502ED468120@stanford.edu>
+In-Reply-To: <4A8812BF-70D2-451C-9E9F-4502ED468120@stanford.edu>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511081827.46640.rob@landley.net>
+Message-Id: <200511081835.47575.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,36 +33,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 8 Nov 2005 18:27:46 -0600
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Can Sar <csar@stanford.edu>
+Date: Tue, 8 Nov 2005 18:35:47 -0600
+To: Can Sar <csar@stanford.edu>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 08 November 2005 09:46, Jeff Dike wrote:
-> On Tue, Nov 08, 2005 at 01:09:06AM -0600, Rob Landley wrote:
-> > > So I don't care about systemcall interception or anything like that,
+On Tuesday 08 November 2005 01:44, Can Sar wrote:
+> > Why?
+>
+> Trust me, I wouldn't do this if it were not for a reason. I have no
+> intention of marketing this as a general purpose alternative to
+> Linux. It's to check Linux for errors.
+
+I just don't understand your potential use case.  (I've seen some really weird 
+things done in embedded systems, and done a few myself, but I don't 
+understand what the advantage is here...)
+
+> >> So I don't care about systemcall interception or anything like that,
 > >
 > > *blink*  *blink*
 > >
-> > Ok, you want user mode linux, but you don't want it to actually run user
+> > Ok, you want user mode linux, but you don't want it to actually run
+> > user
 > > processes, nor do want it to be able to intercept system calls.
 > >
 > > Um...  What's left?
 >
-> Only all of Linux.  It so happens that I want exactly the same thing for
-> libUML, except I haven't had time to do anything about it.
->
-> Try to think a little before calling someone's project dumb.
+> The ability to call the kernel implementation of some system calls
+> and then halt the kernel.
 
-Sorry, wasn't trying to call it dumb.  (I linked to a similar patch for 
-ripping out lots of "unnecessary" infrastructure, which Rik found dumb 
-because there was really no advantage to removing it.  I should have 
-clarified that _my_ question was "Why?".)
+Ah!  So you want the ability to test some kernel code, printf the result, and 
+exit.  Right.  (And a kernel module doesn't do this because...?)
 
-I didn't understand what he was trying to do.  (Hard to ponder implementing 
-something if you don't know what it would do.)  A test harness for isolated 
-kernel functions is something I can at least imagine...
+Jeff was going to split out the scheduler and filesystem into shared libraries 
+or some such.  He mentions it in his intermittent diary, among other places.  
+(Check the April 22 entry, for example):
+http://user-mode-linux.sourceforge.net/diary.html
+Also projects mentions it towards the end:
+http://user-mode-linux.sourceforge.net/projects.html
+
+I haven't really followed that work because I never had a use for it.  If I 
+had to chop out kernel functions to run standalone, I'd guess your best bet 
+is probably reading through starting from main() (in arch/um/kernel/main.c) 
+and seeing at what point it's initialized enough stuff that you can do what 
+you want.  (Assuming you don't need to do I/O or handle interrupts, and are 
+doing single processor, then your big worry is probably memory allocation?  
+I'm guessing here.)
 
 Rob
+
+P.S. What on earth is CONFIG_CMDLINE_ON_HOST?  It doesn't seem to ever be set 
+anywhere, by anything...
 
 
 -------------------------------------------------------
