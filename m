@@ -1,27 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ea4WQ-0005Xw-P0 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Nov 2005 20:58:50 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ea4WP-0007y3-Iw
+	id 1Ea5qK-00005n-Mr for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Nov 2005 22:23:28 -0800
+Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ea5qI-0002Zy-1V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Nov 2005 20:58:51 -0800
-From: Rob Landley <rob@landley.net>
+	Wed, 09 Nov 2005 22:23:28 -0800
+From: Henrik Nordstrom <uml@hno.marasystems.com>
 Subject: Re: [uml-devel] Making UML Single Threader
+In-Reply-To: <200511092258.36708.rob@landley.net>
+Message-ID: <Pine.LNX.4.61.0511100716520.7810@filer.marasystems.com>
 References: <200511061723.32848.rob@landley.net>
 	<200511082118.58614.rob@landley.net>
 	<20051110041818.GD15002@ccure.user-mode-linux.org>
-In-Reply-To: <20051110041818.GD15002@ccure.user-mode-linux.org>
+	<200511092258.36708.rob@landley.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511092258.36708.rob@landley.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,45 +29,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 9 Nov 2005 22:58:36 -0600
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 10 Nov 2005 07:23:00 +0100 (CET)
+To: Rob Landley <rob@landley.net>
+Cc: Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 09 November 2005 22:18, Jeff Dike wrote:
-> On Tue, Nov 08, 2005 at 09:18:58PM -0600, Rob Landley wrote:
-> > 1) Is there any documentation on SKAS0's design?  (A couple things
-> > floated by, but it was piecemeal and I didn't have the necessary
-> > context.)
->
-> There was a big message when I first announced it.
+On Wed, 9 Nov 2005, Rob Landley wrote:
 
-Rummage rummage rummage...  January diary entry mentions that blaisorblade 
-asked "a while back"...
+> (Wow, sourceforge's mailing list archives are almost as difficult to use as
+> their download mirror system.  That takes _effort_.)
 
-This would appear to be your announcement:
-http://sourceforge.net/mailarchive/message.php?msg_id=10171422
+There is other mirrors more easily navigated.. my preference is MARC:
 
-(Wow, sourceforge's mailing list archives are almost as difficult to use as 
-their download mirror system.  That takes _effort_.)
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&r=1&w=2
 
-> Also, the changelog on 
-> that patch was fairly comprehensive, so you can dig that out of git or
-> an LKML archive or somewhere.
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=110176058308224&w=4
 
-Rummage rummage rummage...
-http://seclists.org/lists/linux-kernel/2005/Jul/0182.html
+> Randomization in the host, or randomization in UML?
 
-> > 3) What can -tt mode still do that -skas0 can't?  (Something about
-> > running under gdb, was it?)
->
-> SMP is about it.
->
-> On nice process names with skas0, that might not be too possible with stack
-> randomization.
+host, when loading the UML binary.
 
-Randomization in the host, or randomization in UML?
-
-Rob
+Regards
+Henrik
 
 
 -------------------------------------------------------
