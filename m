@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EaAei-00034p-ET for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Nov 2005 03:31:48 -0800
+	id 1EactW-0003U9-Bt for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Nov 2005 09:40:58 -0800
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EaAee-0000eE-OH
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EactR-00067U-HM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Nov 2005 03:31:48 -0800
+	Fri, 11 Nov 2005 09:40:58 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] errors in uml-guest log
-References: <dkuq7o$u24$1@sea.gmane.org>
-In-Reply-To: <dkuq7o$u24$1@sea.gmane.org>
+References: <1131140395.27405.6.camel@localhost.localdomain>
+In-Reply-To: <1131140395.27405.6.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511101238.47223.blaisorblade@yahoo.it>
+Message-Id: <200511111848.01764.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: 2.6.14-bs1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,68 +29,77 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 10 Nov 2005 12:38:46 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Sven =?iso-8859-15?q?K=F6hler?= <skoehler@upb.de>
+Date: Fri, 11 Nov 2005 18:48:00 +0100
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-On Thursday 10 November 2005 07:43, Sven K=F6hler wrote:
+On Friday 04 November 2005 22:39, Antoine Martin wrote:
 > Hi,
->
-> an UML-guest-kernel 2.6.14 (without any additional patches) is running
-> on a host with kernel 2.6.12.3-skas3-v8.2 host.
-> Can anybody explain this error-message to me,=20
-Yes, I can.
 
-In short: don't worry, I get it too at times and I must just remove this=20
-warning, it was introduced recently (by me) and it's wrong (as I later=20
-discovered).
+> I thought you might be interested in this regression:
 
-> which occur periodically
-> in the guests log:
+> make ARCH=um SUBARCH=i386 defconfig
+> make ARCH=um SUBARCH=i386 vmlinux
+> (...)
+>   CC      arch/um/kernel/initrd.o
+>   CC      arch/um/kernel/skas/clone.o
+> arch/um/kernel/skas/clone.c: In function `stub_clone_handler':
+> arch/um/include/sysdep/stub.h:32: error: can't find a register in class
+> `BREG' while reloading `asm'
+> arch/um/include/sysdep/stub.h:53: error: can't find a register in class
+> `BREG' while reloading `asm'
+> arch/um/include/sysdep/stub.h:42: error: can't find a register in class
+> `BREG' while reloading `asm'
+> arch/um/include/sysdep/stub.h:75: error: can't find a register in class
+> `BREG' while reloading `asm'
+> make[2]: *** [arch/um/kernel/skas/clone.o] Error 1
+> make[1]: *** [arch/um/kernel/skas] Error 2
+> make: *** [arch/um/kernel] Error 2
 
-More that "periodically" it's randomically. On a kernel compile loop with -=
-jN,=20
-I used to get that more or less once every hour, but with high variability.=
-=20
-Just had no time to proof-check and send all patches I have in my queue.
+Ok, today I've had time to look at the compile error, and while they are 
+"legitimate" (aka you didn't do anything wrong, and I don't think it can 
+be .config-dependant), they're still totally bogus (aka GCC is drunk).
 
-> Badness in handle_page_fault at arch/um/kernel/trap_kern.c:98
+And what's going on is possibly related to the hardening patches both you 
+Gentoo GCC (3.4.4) says to have and that the FC4 GCC (4.0) I know to have.
 
-> 0f3d3b30:  [<08062f04>] handle_page_fault+0x1c4/0x260
-> 0f3d3b70:  [<08063047>] segv+0xa7/0x2e0
-> 0f3d3b90:  [<080ba701>] sys_read+0x51/0x80
-> 0f3d3bd0:  [<08053680>] init_udf_fs+0x30/0x50
-> 0f3d3c00:  [<08053680>] init_udf_fs+0x30/0x50
-> 0f3d3c20:  [<08053680>] init_udf_fs+0x30/0x50
-> 0f3d3c40:  [<08065291>] get_skas_faultinfo+0x51/0xc0
-> 0f3d3c60:  [<08065358>] handle_segv+0x58/0x60
-> 0f3d3c80:  [<08065a1d>] userspace+0x1ed/0x220
-> 0f3d3cd0:  [<08066d94>] force_flush_all_skas+0x44/0x50
-> 0f3d3cf0:  [<08066621>] fork_handler+0xc1/0xe0
+In fact, I compile with 3.4.4 and it works; plus, the source code is IMHO 
+legitimate.
 
-It's an error message I introduced to detect a possible bug; however, I lat=
-er=20
-discovered that under high load this warning can be triggered without a rea=
-l=20
-problem.
+However, I just remembered I have an Ubuntu with GCC 4.0... so I could test 
+the thing.
+> I've had quite a few problems with 2.6.14 not booting on 2.6.13 and
+> 2.6.14 hosts. (errors have been reported by other users - unfortunately
+> the strace isn't very useful)
 
-The problem would be a "100% CPU usage" loop (a process endlessly causing=20
-guest page faults) right after the warning, so if you haven't got the probl=
-em=20
-the warning is a false positive.
+I've not looked deeply at the strace, but I don't see anything much clear.
 
---=20
+Also, I suppose the problem is with SKAS0 and no regression is seen in other 
+modes.
+
+However, given that you're having this compilation problem (caused by 
+uml-fix-misassembling-skas0-stub-segv, which you can unapply for testing), 
+you could test the 32-bit binaries I've built and uploaded on my homepage.
+
+For at least one people they run better than home-compiled binaries, and 
+there's no report of the opposite.
+
+Also, there is at least another GCC-triggered bug in SKAS0 sources, so if 
+you're hitting this one then the binaries will fix it.
+
+> Antoine
+
+-- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-=09
+	
 
-=09
-	=09
-___________________________________=20
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB=20
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
 http://mail.yahoo.it
 
 
