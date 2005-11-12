@@ -1,22 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EafqP-0002BU-9C for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Nov 2005 12:49:57 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EafqP-0003Ux-4m
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 11 Nov 2005 12:49:57 -0800
-From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <200511111848.01764.blaisorblade@yahoo.it>
-References: <1131140395.27405.6.camel@localhost.localdomain>
-	<200511111848.01764.blaisorblade@yahoo.it>
-Content-Type: text/plain
-Message-Id: <1131742176.23542.17.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: 2.6.14-bs1
+	id 1Eazhd-0004fX-SU for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Nov 2005 10:02:13 -0800
+Received: from host20-103.pool873.interbusiness.it ([87.3.103.20]
+	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1EazhZ-0001rj-W1 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Nov 2005 10:02:14 -0800
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20051112180732.20133.15230.stgit@zion.home.lan>
+In-Reply-To: <20051112180711.20133.68166.stgit@zion.home.lan>
+References: <20051112180711.20133.68166.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 5/9] uml: fix mcast network driver error handling
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,41 +24,116 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 11 Nov 2005 20:49:36 +0000
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Sat, 12 Nov 2005 19:07:36 +0100
+To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-> However, I just remembered I have an Ubuntu with GCC 4.0... so I could test 
-> the thing.
-Or you could use a gentoo chroot. (if you leave it to build overnight..)
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-> > I've had quite a few problems with 2.6.14 not booting on 2.6.13 and
-> > 2.6.14 hosts. (errors have been reported by other users - unfortunately
-> > the strace isn't very useful)
-> 
-> I've not looked deeply at the strace, but I don't see anything much clear.
-> 
-> Also, I suppose the problem is with SKAS0 and no regression is seen in other 
-> modes.
-> 
-> However, given that you're having this compilation problem (caused by 
-> uml-fix-misassembling-skas0-stub-segv, which you can unapply for testing), 
-I tried removing this patch (and its sibling ^segv^) but patch -R moaned
-at me, and after unmerging it by hand I still got the same error so I
-gave up (for now anyway)
+printk clears the host errno (I verified this in debugging and it's reasonable
+enough, given that it ends via a write call on some fd, especially since
+printk() goes on /dev/tty0 which is often the host stdout).
+So save errno earlier. There's no reason to change the printk calls to use -err
+rather than errno - the assignment can't clear errno.
 
-> you could test the 32-bit binaries I've built and uploaded on my homepage.
-I couldn't find the link (I didn't look very long).
+And in the first failure path, we used to return 0 too (and this time more
+clearly), which is totally wrong. 0 is a success fd, which is then registered
+and gives a "registering fd twice" warning.
 
-> For at least one people they run better than home-compiled binaries, and 
-> there's no report of the opposite.
-I'll try that.
+Finally, fix up some whitespace.
 
-I'm currently working on those root_fs images, coming along nicely but
-it takes *a lot* of time. I should have something ready within a few
-days.
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-Antoine
+ arch/um/drivers/mcast_user.c |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/arch/um/drivers/mcast_user.c b/arch/um/drivers/mcast_user.c
+index 5db136e..afe85bf 100644
+--- a/arch/um/drivers/mcast_user.c
++++ b/arch/um/drivers/mcast_user.c
+@@ -54,7 +54,7 @@ static int mcast_open(void *data)
+ 	struct mcast_data *pri = data;
+ 	struct sockaddr_in *sin = pri->mcast_addr;
+ 	struct ip_mreq mreq;
+-	int fd, yes = 1, err = 0;
++	int fd, yes = 1, err = -EINVAL;
+ 
+ 
+ 	if ((sin->sin_addr.s_addr == 0) || (sin->sin_port == 0))
+@@ -63,40 +63,40 @@ static int mcast_open(void *data)
+ 	fd = socket(AF_INET, SOCK_DGRAM, 0);
+ 
+ 	if (fd < 0){
++		err = -errno;
+ 		printk("mcast_open : data socket failed, errno = %d\n", 
+ 		       errno);
+-		err = -errno;
+ 		goto out;
+ 	}
+ 
+ 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0) {
++		err = -errno;
+ 		printk("mcast_open: SO_REUSEADDR failed, errno = %d\n",
+ 			errno);
+-		err = -errno;
+ 		goto out_close;
+ 	}
+ 
+ 	/* set ttl according to config */
+ 	if (setsockopt(fd, SOL_IP, IP_MULTICAST_TTL, &pri->ttl,
+ 		       sizeof(pri->ttl)) < 0) {
++		err = -errno;
+ 		printk("mcast_open: IP_MULTICAST_TTL failed, error = %d\n",
+ 			errno);
+-		err = -errno;
+ 		goto out_close;
+ 	}
+ 
+ 	/* set LOOP, so data does get fed back to local sockets */
+ 	if (setsockopt(fd, SOL_IP, IP_MULTICAST_LOOP, &yes, sizeof(yes)) < 0) {
++		err = -errno;
+ 		printk("mcast_open: IP_MULTICAST_LOOP failed, error = %d\n",
+ 			errno);
+-		err = -errno;
+ 		goto out_close;
+ 	}
+ 
+ 	/* bind socket to mcast address */
+ 	if (bind(fd, (struct sockaddr *) sin, sizeof(*sin)) < 0) {
+-		printk("mcast_open : data bind failed, errno = %d\n", errno);
+ 		err = -errno;
++		printk("mcast_open : data bind failed, errno = %d\n", errno);
+ 		goto out_close;
+ 	}		
+ 	
+@@ -105,22 +105,22 @@ static int mcast_open(void *data)
+ 	mreq.imr_interface.s_addr = 0;
+ 	if (setsockopt(fd, SOL_IP, IP_ADD_MEMBERSHIP, 
+ 		       &mreq, sizeof(mreq)) < 0) {
++		err = -errno;
+ 		printk("mcast_open: IP_ADD_MEMBERSHIP failed, error = %d\n",
+ 			errno);
+ 		printk("There appears not to be a multicast-capable network "
+ 		       "interface on the host.\n");
+ 		printk("eth0 should be configured in order to use the "
+ 		       "multicast transport.\n");
+-		err = -errno;
+-                goto out_close;
++		goto out_close;
+ 	}
+ 
+ 	return fd;
+ 
+  out_close:
+-        os_close_file(fd);
++	os_close_file(fd);
+  out:
+-        return err;
++	return err;
+ }
+ 
+ static void mcast_close(int fd, void *data)
 
 
 
