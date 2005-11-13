@@ -2,20 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eb584-0008BN-PT for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Nov 2005 15:49:52 -0800
-Received: from scrub.xs4all.nl ([194.109.195.176] ident=mail)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Eb583-0006zD-L1
+	id 1Eb5uG-0001F1-1U for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Nov 2005 16:39:40 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Eb5uE-0006b9-Me
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Nov 2005 15:49:53 -0800
-From: Roman Zippel <zippel@linux-m68k.org>
-In-Reply-To: <200511121731.25982.rob@landley.net>
-Message-ID: <Pine.LNX.4.61.0511130042530.1610@scrub.home>
-References: <200511121656.29445.rob@landley.net>
-	<200511121731.25982.rob@landley.net>
+	Sat, 12 Nov 2005 16:39:40 -0800
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by grelber.thyrsus.com (8.13.4/8.13.4) with ESMTP id jAD2D45e021414
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 12 Nov 2005 21:13:04 -0500
+From: Rob Landley <rob@landley.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [uml-devel] Re: Why did oldconfig's behavior change in 2.6.15-rc1?
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200511121839.25818.rob@landley.net>
+Subject: [uml-devel] 2.6.15-rc1 build break on x86-64.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,30 +33,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 13 Nov 2005 00:49:34 +0100 (CET)
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Sat, 12 Nov 2005 18:39:25 -0600
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+Ok, I got it to build on x86 (kconfig behavior changed, which broke my build).  
+Wandered over to the x86-64 system and tried to build there, and got this:
 
-On Sat, 12 Nov 2005, Rob Landley wrote:
+  CC      lib/rwsem.o
+lib/rwsem.c: In function `__rwsem_do_wake':
+lib/rwsem.c:57: warning: implicit declaration of function 
+`rwsem_atomic_update'
+lib/rwsem.c:57: error: `RWSEM_ACTIVE_BIAS' undeclared (first use in this 
+function)
+lib/rwsem.c:57: error: (Each undeclared identifier is reported only once
+lib/rwsem.c:57: error: for each function it appears in.)
+lib/rwsem.c:59: error: `RWSEM_ACTIVE_MASK' undeclared (first use in this 
+function)
+lib/rwsem.c:108: error: `RWSEM_WAITING_BIAS' undeclared (first use in this 
+function)
+lib/rwsem.c:113: warning: implicit declaration of function `rwsem_atomic_add'
+lib/rwsem.c: In function `rwsem_down_failed_common':
+lib/rwsem.c:163: error: `RWSEM_ACTIVE_MASK' undeclared (first use in this 
+function)
+lib/rwsem.c: In function `rwsem_down_read_failed':
+lib/rwsem.c:193: error: `RWSEM_WAITING_BIAS' undeclared (first use in this 
+function)
+lib/rwsem.c:193: error: `RWSEM_ACTIVE_BIAS' undeclared (first use in this 
+function)
+lib/rwsem.c: In function `rwsem_down_write_failed':
+lib/rwsem.c:210: error: `RWSEM_ACTIVE_BIAS' undeclared (first use in this 
+function)
+make[1]: *** [lib/rwsem.o] Bd 1
+make: *** [lib] Bd 2
 
-> Why did oldconfig switch off CONFIG_MODE_SKAS?  It didn't do that before.  
-> Hmmm...  Rummage, rummage...  Darn it, it's position dependent.  _And_ 
-> version dependent.
-
-It's _not_ position dependent, but the behaviour with multiple equal 
-symbols is undefined.
-
-> Ok, now I have to put the new entries at the _beginning_.  Appending them 
-> doesn't work anymore, it now ignores any symbol it's already seen, so you 
-> can't easily start with allnoconfig, switch on just what you want, and expect 
-> oldconfig to do anything intelligent.
-
-Now you can put them in allno.config instead and allnoconfig will do the 
-right thing.
-
-bye, Roman
+Rob
 
 
 -------------------------------------------------------
