@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EbsBq-00082a-6T for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Nov 2005 20:13:02 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EbsBn-00040X-P6
+	id 1EbzAJ-0007X4-SK for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Nov 2005 03:39:55 -0800
+Received: from marasystems.com ([83.241.133.2] helo=filer.marasystems.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EbzAD-0004LL-8I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Nov 2005 20:13:02 -0800
-Message-ID: <43796042.6060108@linode.com>
-From: "Christopher S. Aker" <caker@linode.com>
+	Tue, 15 Nov 2005 03:39:55 -0800
+From: Henrik Nordstrom <uml@hno.marasystems.com>
+Subject: Re: [uml-devel] Making UML Single Threader
+In-Reply-To: <200511142037.56022.blaisorblade@yahoo.it>
+Message-ID: <Pine.LNX.4.61.0511151237080.12596@filer.marasystems.com>
+References: <200511061723.32848.rob@landley.net>
+	<20051108154618.GB4131@ccure.user-mode-linux.org>
+	<87lkzrwcs3.fsf@amaterasu.srvr.nix>
+	<200511142037.56022.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [ANN] Fedora Core 4 UML filesystem image available
-References: <20051115000958.GA11442@ccure.user-mode-linux.org>
-In-Reply-To: <20051115000958.GA11442@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,26 +29,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 14 Nov 2005 22:12:50 -0600
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 15 Nov 2005 12:39:35 +0100 (CET)
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-Jeff Dike wrote:
-> I've put my FC4 image online at 
-> 	http://www.user-mode-linux.org/~jdike/root_fs.2005062201.bz2
-> 
-> It requires my full patchset in order to boot, especially the NPTL patches,
-> which, aside from some obvious nastinesses, seem to work.
-> 
-> As of today, it's fully updated,
-> 
-> Thanks to Bill Stearns for providing the initial image.
+On Mon, 14 Nov 2005, Blaisorblade wrote:
 
-Mirrored here:
+> I.e. "shutdown now" without -h? Halt without poweroff?
 
-http://uml.linode.com/root_fs.fc4.2005062201.bz2
+halt without poweroff.
 
--Chris
+stops the scheduler, but interrupts etc continues running.
+
+but it's not something I'd recommend relying upon. Better to leave the 
+scheduler running but only have an init process sleeping indefinitely.
+
+> Is this a _documented_ feature 8-() ?
+
+Not really, no.
+
+Regards
+Henrik
 
 
 -------------------------------------------------------
