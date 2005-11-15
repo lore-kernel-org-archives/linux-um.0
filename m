@@ -1,37 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EcAFr-0004OY-2l for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 15:30:23 -0800
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EcAFp-0006VB-NP
+	id 1EcAfp-0005TS-0l for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Nov 2005 15:57:13 -0800
+Received: from mamba.nagafix.co.uk ([194.145.196.68] helo=mail2.nagafix.co.uk)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EcAfo-0000Py-Mq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 15:30:23 -0800
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.12.11/8.12.11) with ESMTP id jAFNU8qk011206
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 15 Nov 2005 18:30:08 -0500
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.12.10/NCO/VERS6.8) with ESMTP id
-	jAFNVO0i057480 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 15 Nov 2005 16:31:24 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
-	jAFNU81X013462 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 15 Nov 2005 16:30:08 -0700
-Received: from localhost (dyn9047021085.beaverton.ibm.com [9.47.21.85])
-	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	jAFNU82u013458 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 15 Nov 2005 16:30:08 -0700
-Message-ID: <20051115233006.GA31279@RAM>
+	Tue, 15 Nov 2005 15:57:13 -0800
+From: Antoine Martin <antoine@nagafix.co.uk>
+In-Reply-To: <200511142127.29052.blaisorblade@yahoo.it>
+References: <1131140395.27405.6.camel@localhost.localdomain>
+	<200511111848.01764.blaisorblade@yahoo.it>
+	<1131742176.23542.17.camel@localhost.localdomain>
+	<200511142127.29052.blaisorblade@yahoo.it>
+Content-Type: text/plain
+Message-Id: <1132099022.12792.66.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-From: linuxram@us.ibm.com (Ram Pai)
-Subject: [uml-devel] [RFC PATCH] fixes for some compilation errors
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: 2.6.14-bs1
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -43,116 +30,95 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 15 Nov 2005 15:30:06 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 15 Nov 2005 23:57:02 +0000
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-The patches in the patch tarball at
-http://user-mode-linux.sf.net/patches.html  for 2.6.15-rc1 kernel do not
-apply cleanly.  Its the last patch constant-page-size which has the
-issue.  There were some compilation issues too in
+> However, I _did_ test with that GCC and things work ok. So it's definitely the 
+> hardening patches.
+Probably.
 
-arch/um/include/tt/mode_kern_tt.h
-arch/um/sys-i386/stub_segv.c
-arch/um/kernel/skas/clone.c
-arch/um/kernel/tt/process_kern.c
+> However, I _can_ test them:
+> gentoo # gcc-config -l
+>  [1] x86_64-pc-linux-gnu-3.4.4 *
+>  [2] x86_64-pc-linux-gnu-3.4.4-hardened
+>  [3] x86_64-pc-linux-gnu-3.4.4-hardenednopie
+>  [4] x86_64-pc-linux-gnu-3.4.4-hardenednopiessp
+>  [5] x86_64-pc-linux-gnu-3.4.4-hardenednossp
+I've got similar settings - on a x86 box this time:
+# gcc-config -l
+ [1] i686-pc-linux-gnu-3.3.6 *
+ [2] i686-pc-linux-gnu-3.3.6-hardenednopie
+ [3] i686-pc-linux-gnu-3.3.6-hardenednopiessp
+ [4] i686-pc-linux-gnu-3.3.6-hardenednossp
+ [5] i686-pc-linux-gnu-3.3.6-vanilla
 
-The following patch fixes them, but I am not sure if they are correct
-Please check,
-RP
+ CC      arch/um/kernel/skas/clone.o
+arch/um/kernel/skas/clone.c: In function `stub_clone_handler':
+arch/um/include/sysdep/stub.h:32: error: can't find a register in class
+`BREG' while reloading `asm'
+arch/um/include/sysdep/stub.h:53: error: can't find a register in class
+`BREG' while reloading `asm'
+arch/um/include/sysdep/stub.h:42: error: can't find a register in class
+`BREG' while reloading `asm'
+arch/um/include/sysdep/stub.h:75: error: can't find a register in class
+`BREG' while reloading `asm'
+make[2]: *** [arch/um/kernel/skas/clone.o] Error 1
+make[1]: *** [arch/um/kernel/skas] Error 2
+make: *** [arch/um/kernel] Error 2
 
+So I built a 2.6.14 instead. Then tried running in skas0:
 
- arch/um/include/tt/mode_kern_tt.h |    2 +-
- arch/um/kernel/skas/clone.c       |   12 +++++++-----
- arch/um/sys-i386/stub_segv.c      |    2 +-
- 3 files changed, 9 insertions(+), 7 deletions(-)
+It ended up spinning at 100% cpu usage (and eventually detecting it):
+[42949375.230000] VFS: Mounted root (reiserfs filesystem) readonly.
+[42949384.260000] BUG: soft lockup detected on CPU#0!
+[42949384.260000]
+[42949384.260000] EIP: 0073:[<a02554c1>] CPU: 0 Not tainted ESP: 007b:b7f75f6c EFLAGS: 00000292
+[42949384.260000]     Not tainted
+[42949384.260000] EAX: 00000000 EBX: 00002136 ECX: 00000013 EDX: a035d364
+[42949384.260000] ESI: a0437940 EDI: 00002132 EBP: b7f75f98 DS: 007b ES: 007b
+[42949384.260000] a10a6f70:  [<a00501d4>] show_regs+0x214/0x220
+[42949384.260000] a10a6fa0:  [<a00785c7>] softlockup_tick+0x57/0x60
+[42949384.260000] a10a6fc0:  [<a0062037>] do_timer+0x47/0xd0
+[42949384.260000] a10a6fd0:  [<a001bee4>] um_timer+0x14/0x50
+[42949384.260000] a10a6fe0:  [<a0078763>] handle_IRQ_event+0x33/0x80
+[42949384.260000] a10a7010:  [<a0078805>] __do_IRQ+0x55/0xb0
+[42949384.260000] a10a7040:  [<a00152f0>] do_IRQ+0x30/0x40
+[42949384.260000] a10a7050:  [<a001be33>] timer_irq+0x113/0x170
+[42949384.260000] a10a7080:  [<a001c1f0>] timer_handler+0x70/0x90
+[42949384.260000] a10a70a0:  [<a0025254>] sig_handler_common_skas+0xc4/0x150
+[42949384.260000] a10a70f0:  [<a00496a4>] alarm_handler+0xa4/0xc0
+[42949384.260000] a10a7120:  [<ffffe420>] _etext+0x5fd5795d/0x0
+[42949384.260000] a10a7428:  [<a001ca6c>] flush_tlb_kernel_range_common+0xbc/0x160
+[42949384.260000] a10a7458:  [<a001cc8e>] flush_tlb_kernel_vm+0x2e/0x30
+[42949384.260000] a10a7468:  [<a001d261>] segv+0x281/0x2d0
+[42949384.260000] a10a7558:  [<a001d63c>] segv_handler+0xfc/0x150
+[42949384.260000] a10a75c8:  [<a0025254>] sig_handler_common_skas+0xc4/0x150
+[42949384.260000] a10a7618:  [<a00495f6>] sig_handler+0x76/0x80
+[42949384.260000] a10a7648:  [<ffffe420>] _etext+0x5fd5795d/0x0
+[42949384.260000] a10a79a0:  [<a00c86b6>] load_elf_binary+0x6c6/0x1040
+[42949384.260000] a10a7af0:  [<a00a5fe3>] search_binary_handler+0x63/0xf0
+[42949384.260000] a10a7b20:  [<a00a6202>] do_execve+0x192/0x260
+[42949384.260000] a10a7b50:  [<a0014908>] execve1+0x38/0x80
+[42949384.260000] a10a7b80:  [<a0014972>] um_execve+0x22/0x60
+[42949384.260000] a10a7ba0:  [<a00141bc>] run_init_process+0x4c/0x80
+[42949384.260000] a10a7bd0:  [<a00142b8>] init+0xc8/0x170
+[42949384.260000] a10a7bf0:  [<a00494ff>] run_kernel_thread+0x9f/0xb0
+[42949384.260000] a10a7ce0:  [<a00248c3>] new_thread_handler+0xc3/0x120
+[42949384.260000] a10a7d20:  [<ffffe420>] _etext+0x5fd5795d/0x0
+[42949384.260000]
+After that I tried reducing the guest ram, the clue was seeing this message:
+Kernel virtual memory size shrunk to 258998272 bytes
+It continuously got stuck on:
+[42949375.540000] Kernel panic - not syncing: copy_context_skas0 : failed to wait for SIGUSR1/SIGTRAP, pid = 8484, n = 8484, errno = 0, status = 0xb7f
 
-Index: 2.6.15-rc1/arch/um/include/tt/mode_kern_tt.h
-===================================================================
---- 2.6.15-rc1.orig/arch/um/include/tt/mode_kern_tt.h
-+++ 2.6.15-rc1/arch/um/include/tt/mode_kern_tt.h
-@@ -9,11 +9,11 @@
- #include "linux/sched.h"
- #include "asm/page.h"
- #include "asm/ptrace.h"
- #include "asm/uaccess.h"
- 
--extern void *switch_to_tt(void *prev, void *next);
-+extern void switch_to_tt(void *prev, void *next);
- extern void flush_thread_tt(void);
- extern void start_thread_tt(struct pt_regs *regs, unsigned long eip,
- 			   unsigned long esp);
- extern int copy_thread_tt(int nr, unsigned long clone_flags, unsigned long sp,
- 			  unsigned long stack_top, struct task_struct *p,
-Index: 2.6.15-rc1/arch/um/sys-i386/stub_segv.c
-===================================================================
---- 2.6.15-rc1.orig/arch/um/sys-i386/stub_segv.c
-+++ 2.6.15-rc1/arch/um/sys-i386/stub_segv.c
-@@ -2,11 +2,11 @@
-  * Copyright (C) 2004 Jeff Dike (jdike@addtoit.com)
-  * Licensed under the GPL
-  */
- 
- #include <sys/select.h> /* The only way I can see to get sigset_t */
--#include <asm/signal.h>
-+//#include <asm/signal.h>
- #include <asm/unistd.h>
- #include "uml-config.h"
- #include "sysdep/stub.h"
- #include "sysdep/sigcontext.h"
- #include "sysdep/faultinfo.h"
-Index: 2.6.15-rc1/arch/um/kernel/skas/clone.c
-===================================================================
---- 2.6.15-rc1.orig/arch/um/kernel/skas/clone.c
-+++ 2.6.15-rc1/arch/um/kernel/skas/clone.c
-@@ -7,10 +7,11 @@
- #include "ptrace_user.h"
- #include "skas.h"
- #include "stub-data.h"
- #include "uml-config.h"
- #include "sysdep/stub.h"
-+#include "kern_constants.h"
- 
- /* This is in a separate file because it needs to be compiled with any
-  * extraneous gcc flags (-pg, -fprofile-arcs, -ftest-coverage) disabled
-  */
- 
-@@ -18,29 +19,30 @@
- 
- void __attribute__ ((__section__ (".__syscall_stub")))
- stub_clone_handler(void)
- {
- 	long err;
-+        struct stub_data *from = (struct stub_data *) UML_CONFIG_STUB_DATA;
- 
- 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    UML_CONFIG_STUB_DATA + PAGE_SIZE / 2 -
-+			    UML_CONFIG_STUB_DATA + UM_KERN_PAGE_SIZE / 2 -
- 			    sizeof(void *));
- 	if(err != 0)
- 		goto out;
- 
- 	err = stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
- 	if(err)
- 		goto out;
- 
- 	err = stub_syscall3(__NR_setitimer, ITIMER_VIRTUAL,
--			    (long) STUB_DATA(timer), 0);
-+			    (long) &from->timer, 0);
- 	if(err)
- 		goto out;
- 
--	err = stub_syscall6(STUB_MMAP_NR, UML_CONFIG_STUB_DATA, PAGE_SIZE,
--			    PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED,
--			    STUB_DATA(fd), STUB_DATA(offset));
-+	err = stub_syscall6(STUB_MMAP_NR, UML_CONFIG_STUB_DATA,
-+			    UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
-+			    MAP_FIXED | MAP_SHARED, from->fd, from->offset);
-  out:
- 	/* save current result. Parent: pid; child: retcode of mmap */
- 	STUB_DATA(err) = err;
- 	trap_myself();
- }
+skas3 works absolutely  fine.
+The only problem I've got with skas3 is that it requires /proc/mm in
+the chroot and the only way that I found to do this is to mount it in
+there. (SELinux will need some work to allow me to restrict write
+access to just /proc/mm and not the whole /proc...)
 
+Antoine
 
 
 
