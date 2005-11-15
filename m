@@ -2,19 +2,36 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ec8zM-0001DI-0a for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 14:09:16 -0800
-Received: from web25208.mail.ukl.yahoo.com ([217.12.10.68])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ec8zJ-00087W-80
+	id 1EcAFr-0004OY-2l for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Nov 2005 15:30:23 -0800
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EcAFp-0006VB-NP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 14:09:15 -0800
-Message-ID: <20051115220903.73648.qmail@web25208.mail.ukl.yahoo.com>
-From: Paolo Giarrusso <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Ok, I build x86-64 -skas0,
-	and it still segfaults.
-In-Reply-To: <20051114215517.GA9579@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	Tue, 15 Nov 2005 15:30:23 -0800
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.12.11/8.12.11) with ESMTP id jAFNU8qk011206
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 15 Nov 2005 18:30:08 -0500
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.12.10/NCO/VERS6.8) with ESMTP id
+	jAFNVO0i057480 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 15 Nov 2005 16:31:24 -0700
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
+	jAFNU81X013462 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 15 Nov 2005 16:30:08 -0700
+Received: from localhost (dyn9047021085.beaverton.ibm.com [9.47.21.85])
+	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
+	jAFNU82u013458 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 15 Nov 2005 16:30:08 -0700
+Message-ID: <20051115233006.GA31279@RAM>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+From: linuxram@us.ibm.com (Ram Pai)
+Subject: [uml-devel] [RFC PATCH] fixes for some compilation errors
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,164 +43,117 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 15 Nov 2005 23:09:03 +0100 (CET)
-To: Jeff Dike <jdike@addtoit.com>, Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
+Date: Tue, 15 Nov 2005 15:30:06 -0800
+To: user-mode-linux-devel@lists.sourceforge.net
+
+The patches in the patch tarball at
+http://user-mode-linux.sf.net/patches.html  for 2.6.15-rc1 kernel do not
+apply cleanly.  Its the last patch constant-page-size which has the
+issue.  There were some compilation issues too in
+
+arch/um/include/tt/mode_kern_tt.h
+arch/um/sys-i386/stub_segv.c
+arch/um/kernel/skas/clone.c
+arch/um/kernel/tt/process_kern.c
+
+The following patch fixes them, but I am not sure if they are correct
+Please check,
+RP
 
 
---- Jeff Dike <jdike@addtoit.com> ha scritto: 
+ arch/um/include/tt/mode_kern_tt.h |    2 +-
+ arch/um/kernel/skas/clone.c       |   12 +++++++-----
+ arch/um/sys-i386/stub_segv.c      |    2 +-
+ 3 files changed, 9 insertions(+), 7 deletions(-)
 
-> On Sun, Nov 13, 2005 at 05:32:10PM -0600, Rob Landley wrote:
-> > moan moan
-> 
-> Can you try the x86-64-clobbers-rcx patch below?
-> 
-> If you don't have it already, apply the fix-x86-stubs patch first.
-> 
-> Paolo, could you eyeball this one for me?  This applies the
-> stub_syscall*
-> goodness to stub_segv.c.
-
-Thanks for requesting.
-
-I've come to a (possible) conclusion - probably we could try to adapt
-and reuse the batching syscall stub to do everything. With the
-original single-syscall stub it didn't make sense, with this one it
-could do. Yep, there's something to do since stub_segv does some
-interesting stuff, but I guess it's solvable - I'll look to the code
-ASAP (I'm finding it difficult these days to leave some time for
-proper hacking, and I'm very sorry for that).
-
-Or anyway, it's possibly becoming harder to write all this in C with
-assembly inserts rather than directly in assembly. It also does not
-work well on some strange compilers (aka Hardened GCC, as reported by
-Antoine Martin).
-
-However, back on _this_ patch, I have a couple of
-complaints/suggestions (and sorry for the mess-up, I'm currently
-answering from web-mail :-( ):
-
-> Index: linux-2.6.14/arch/um/sys-i386/stub_segv.c
-> ===================================================================
-> --- linux-2.6.14.orig/arch/um/sys-i386/stub_segv.c	2005-11-10
-> 11:41:46.000000000 -0500
-> +++ linux-2.6.14/arch/um/sys-i386/stub_segv.c	2005-11-14
-> 15:56:22.000000000 -0500
-> @@ -3,9 +3,11 @@
->   * Licensed under the GPL
->   */
->  
-> +#include <sys/select.h> /* The only way I can see to get sigset_t
-> */
->  #include <asm/signal.h>
->  #include <asm/unistd.h>
->  #include "uml-config.h"
-> +#include "sysdep/stub.h"
->  #include "sysdep/sigcontext.h"
->  #include "sysdep/faultinfo.h"
->  
-> @@ -17,13 +19,10 @@ stub_segv_handler(int sig)
->  	GET_FAULTINFO_FROM_SC(*((struct faultinfo *)
-> UML_CONFIG_STUB_DATA),
->  			      sc);
->  
-> -/*	__asm__("movl %0, %%eax ; int $0x80": : "g" (__NR_getpid));
-> -	__asm__("movl %%eax, %%ebx ; movl %0, %%eax ; movl %1, %%ecx ;"
-> -		"int $0x80": : "g" (__NR_kill), "g" (SIGUSR1)); */
-
-Where does this commented getpid + kill comes from? It seems to come
-from rubbish in some patch.
-
-Actually, you leave it there for x86-64 - and while I've not looked
-at the meaning of what it's doing (sorry but it's late here), it's
-anyway bogus (and in fact it doesn't apply anywhere).
-
-And, more important:
-
->  	/* Load pointer to sigcontext into esp, since we need to leave
->  	 * the stack in its original form when we do the sigreturn here,
-> by
->  	 * hand.
->  	 */
-> -	__asm__("mov %0,%%esp ; movl %1, %%eax ; "
-> -		"int $0x80" : : "a" (sc), "g" (__NR_sigreturn));
-> +	__asm__("mov %0,%%esp" : : "a" (sc));
-> +	stub_syscall0(__NR_sigreturn);
->  }
-
-The idea would be nice, but I am reluctant in trusting GCC to leave
-%esp unaltered; also, without volatile, GCC feels probably allowed to
-move this instruction anywhere in the code.
-
-Actually, I start feeling this could be moved to assembly.
-
-Here and for x86-64, I would rather hardcode this final syscall as
-done currently, rather than using the common macros.
-
-For the other syscalls, it's fully ok to reuse the common macros.
-> Index: linux-2.6.14/arch/um/sys-x86_64/stub_segv.c
-> ===================================================================
-> --- linux-2.6.14.orig/arch/um/sys-x86_64/stub_segv.c	2005-11-14
-> 15:45:09.000000000 -0500
-> +++ linux-2.6.14/arch/um/sys-x86_64/stub_segv.c	2005-11-14
-> 15:45:21.000000000 -0500
-> @@ -3,13 +3,16 @@
->   * Licensed under the GPL
->   */
->  
-> -#include <asm/signal.h>
->  #include <linux/compiler.h>
-> +#include <asm/signal.h>
->  #include <asm/unistd.h>
-> +#include <asm/sigcontext.h>
-> +#include <asm/siginfo.h>
->  #include <asm/ucontext.h>
->  #include "uml-config.h"
->  #include "sysdep/sigcontext.h"
->  #include "sysdep/faultinfo.h"
-> +#include "sysdep/stub.h"
->  #include <stddef.h>
->  
->  /* Copied from sys-x86_64/signal.c - Can't find an equivalent
-> definition
-> @@ -31,15 +34,15 @@ void __attribute__ ((__section__ (".__sy
->  stub_segv_handler(int sig)
->  {
->  	struct ucontext *uc;
-> +        int pid;
->  
->  	__asm__("movq %%rdx, %0" : "=g" (uc) :);
->  	GET_FAULTINFO_FROM_SC(*((struct faultinfo *)
-> UML_CONFIG_STUB_DATA),
->  			      &uc->uc_mcontext);
->  
-> -	__asm__("movq %0, %%rax ; syscall": : "g" (__NR_getpid));	
-> -	__asm__("movq %%rax, %%rdi ; movq %0, %%rax ; movq %1, %%rsi ;"
-> -		"syscall": : "g" (__NR_kill), "g" (SIGUSR1) : 
-> -		"%rdi", "%rax", "%rsi");
-> +	pid = stub_syscall0(__NR_getpid);
-> +	stub_syscall2(__NR_kill, pid, SIGUSR1);
-> +
->  	/* sys_sigreturn expects that the stack pointer will be 8 bytes
-> into
->  	 * the signal frame.  So, we use the ucontext pointer, which we
-> know
->  	 * already, to get the signal frame pointer, and add 8 to that.
-> @@ -47,5 +50,5 @@ stub_segv_handler(int sig)
->  	__asm__("movq %0, %%rsp": : 
->  		"g" ((unsigned long) container_of(uc, struct rt_sigframe, 
->  						  uc) + 8));
-> -	__asm__("movq %0, %%rax ; syscall" : : "g" (__NR_rt_sigreturn));
-> +	stub_syscall0(__NR_rt_sigreturn);
->  }
+Index: 2.6.15-rc1/arch/um/include/tt/mode_kern_tt.h
+===================================================================
+--- 2.6.15-rc1.orig/arch/um/include/tt/mode_kern_tt.h
++++ 2.6.15-rc1/arch/um/include/tt/mode_kern_tt.h
+@@ -9,11 +9,11 @@
+ #include "linux/sched.h"
+ #include "asm/page.h"
+ #include "asm/ptrace.h"
+ #include "asm/uaccess.h"
+ 
+-extern void *switch_to_tt(void *prev, void *next);
++extern void switch_to_tt(void *prev, void *next);
+ extern void flush_thread_tt(void);
+ extern void start_thread_tt(struct pt_regs *regs, unsigned long eip,
+ 			   unsigned long esp);
+ extern int copy_thread_tt(int nr, unsigned long clone_flags, unsigned long sp,
+ 			  unsigned long stack_top, struct task_struct *p,
+Index: 2.6.15-rc1/arch/um/sys-i386/stub_segv.c
+===================================================================
+--- 2.6.15-rc1.orig/arch/um/sys-i386/stub_segv.c
++++ 2.6.15-rc1/arch/um/sys-i386/stub_segv.c
+@@ -2,11 +2,11 @@
+  * Copyright (C) 2004 Jeff Dike (jdike@addtoit.com)
+  * Licensed under the GPL
+  */
+ 
+ #include <sys/select.h> /* The only way I can see to get sigset_t */
+-#include <asm/signal.h>
++//#include <asm/signal.h>
+ #include <asm/unistd.h>
+ #include "uml-config.h"
+ #include "sysdep/stub.h"
+ #include "sysdep/sigcontext.h"
+ #include "sysdep/faultinfo.h"
+Index: 2.6.15-rc1/arch/um/kernel/skas/clone.c
+===================================================================
+--- 2.6.15-rc1.orig/arch/um/kernel/skas/clone.c
++++ 2.6.15-rc1/arch/um/kernel/skas/clone.c
+@@ -7,10 +7,11 @@
+ #include "ptrace_user.h"
+ #include "skas.h"
+ #include "stub-data.h"
+ #include "uml-config.h"
+ #include "sysdep/stub.h"
++#include "kern_constants.h"
+ 
+ /* This is in a separate file because it needs to be compiled with any
+  * extraneous gcc flags (-pg, -fprofile-arcs, -ftest-coverage) disabled
+  */
+ 
+@@ -18,29 +19,30 @@
+ 
+ void __attribute__ ((__section__ (".__syscall_stub")))
+ stub_clone_handler(void)
+ {
+ 	long err;
++        struct stub_data *from = (struct stub_data *) UML_CONFIG_STUB_DATA;
+ 
+ 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
+-			    UML_CONFIG_STUB_DATA + PAGE_SIZE / 2 -
++			    UML_CONFIG_STUB_DATA + UM_KERN_PAGE_SIZE / 2 -
+ 			    sizeof(void *));
+ 	if(err != 0)
+ 		goto out;
+ 
+ 	err = stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
+ 	if(err)
+ 		goto out;
+ 
+ 	err = stub_syscall3(__NR_setitimer, ITIMER_VIRTUAL,
+-			    (long) STUB_DATA(timer), 0);
++			    (long) &from->timer, 0);
+ 	if(err)
+ 		goto out;
+ 
+-	err = stub_syscall6(STUB_MMAP_NR, UML_CONFIG_STUB_DATA, PAGE_SIZE,
+-			    PROT_READ | PROT_WRITE, MAP_FIXED | MAP_SHARED,
+-			    STUB_DATA(fd), STUB_DATA(offset));
++	err = stub_syscall6(STUB_MMAP_NR, UML_CONFIG_STUB_DATA,
++			    UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
++			    MAP_FIXED | MAP_SHARED, from->fd, from->offset);
+  out:
+ 	/* save current result. Parent: pid; child: retcode of mmap */
+ 	STUB_DATA(err) = err;
+ 	trap_myself();
+ }
 
 
-
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
 
 
 -------------------------------------------------------
