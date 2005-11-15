@@ -1,31 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ec2Ca-00079O-09 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 06:54:28 -0800
+	id 1Ec2M8-0007fV-LL for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Nov 2005 07:04:20 -0800
 Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ec2CY-0002sy-MB
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ec2M7-0001H7-Bf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 06:54:28 -0800
+	Tue, 15 Nov 2005 07:04:20 -0800
 Received: from localhost (localhost [127.0.0.1])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 66EBDB0605
+	by mail.nagafix.co.uk (Postfix) with ESMTP id DF452B0605
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 15 Nov 2005 20:57:11 +0000 (GMT)
+	Tue, 15 Nov 2005 21:07:05 +0000 (GMT)
 Received: from mail.nagafix.co.uk ([127.0.0.1])
 	by localhost (viper.nagafix.co.uk [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 11285-01 for
+	with ESMTP id 11567-01 for
 	<user-mode-linux-devel@lists.sourceforge.net>; 
-	Tue, 15 Nov 2005 20:57:08 +0000 (GMT)
+	Tue, 15 Nov 2005 21:07:02 +0000 (GMT)
 Received: from ant.internal (88-96-60-221.dsl.zen.co.uk [88.96.60.221])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id B66F6B0590
+	by mail.nagafix.co.uk (Postfix) with ESMTP id 99BBAB0590
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 15 Nov 2005 20:57:08 +0000 (GMT)
+	Tue, 15 Nov 2005 21:07:02 +0000 (GMT)
 From: Antoine Martin <antoine@nagafix.co.uk>
-Content-Type: text/plain; charset="windows-1251"
-Message-Id: <1132066452.3082.12.camel@ant.internal>
+Content-Type: text/plain
+Message-Id: <1132067048.3082.23.camel@ant.internal>
 Mime-Version: 1.0
-Subject: [uml-devel] 2.6.15-rc1-bk3 minor breakage
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] root_fs images
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,74 +38,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 15 Nov 2005 14:54:12 +0000
-Content-Transfer-Encoding: base64
+Date: Tue, 15 Nov 2005 15:04:08 +0000
 To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-SXQgYXNrZWQgbWUgd2hhdCBDUFUgSSB3YW50ZWQgdG8gYnVpbGQgZm9yPyEgKG1ha2Ugb2xkY29u
-ZmlnKQpJdCBicmVha3MgaWYgSSBzZWxlY3QgSzcsIGJ1dCBub3QgaWYgSSBzZWxlY3QgUFBybyAo
-ZGVmYXVsdCkuCgptYWtlIEFSQ0g9dW0gdm1saW51eAogIFNZTUxJTksgaW5jbHVkZS9hc20tdW0v
-YXJjaAogIFNZTUxJTksgYXJjaC91bS9pbmNsdWRlL3N5c2RlcAogIFNZTUxJTksgYXJjaC91bS9v
-cwogIFNZTUxJTksgaW5jbHVkZS9hc20tdW0vYXJjaHBhcmFtLmgKICBTWU1MSU5LIGluY2x1ZGUv
-YXNtLXVtL3N5c3RlbS5oCiAgU1lNTElOSyBpbmNsdWRlL2FzbS11bS9zaWdjb250ZXh0LmgKICBT
-WU1MSU5LIGluY2x1ZGUvYXNtLXVtL3Byb2Nlc3Nvci5oCiAgU1lNTElOSyBpbmNsdWRlL2FzbS11
-bS9wdHJhY2UuaAogIFNZTUxJTksgaW5jbHVkZS9hc20tdW0vbW9kdWxlLmgKICBTWU1MSU5LIGlu
-Y2x1ZGUvYXNtLXVtL3ZtLWZsYWdzLmgKICBTWU1MSU5LIGluY2x1ZGUvYXNtLXVtL2VsZi5oCiAg
-Q0hLICAgICBhcmNoL3VtL2luY2x1ZGUvdW1sLWNvbmZpZy5oCiAgVVBEICAgICBhcmNoL3VtL2lu
-Y2x1ZGUvdW1sLWNvbmZpZy5oCmdjYyAtV2FsbCAtV3VuZGVmIC1Xc3RyaWN0LXByb3RvdHlwZXMg
-LVduby10cmlncmFwaHMKLWZuby1zdHJpY3QtYWxpYXNpbmcgLWZuby1jb21tb24gLWZmcmVlc3Rh
-bmRpbmcgLU8yCi1mbm8tb21pdC1mcmFtZS1wb2ludGVyIC1mbm8tb3B0aW1pemUtc2libGluZy1j
-YWxscyAtZyAtRF9fYXJjaF91bV9fCi1EU1VCQVJDSD1cImkzODZcIiAtRHZtYXA9a2VybmVsX3Zt
-YXAKLURpbjZhZGRyX2xvb3BiYWNrPWtlcm5lbF9pbjZhZGRyX2xvb3BiYWNrIC1JYXJjaC91bS9p
-bmNsdWRlCi1JL3Vzci9zcmMvbGludXgtMi42LjE1LXJjMS1iazMtdW1sL2FyY2gvdW0va2VybmVs
-L3R0L2luY2x1ZGUKLUkvdXNyL3NyYy9saW51eC0yLjYuMTUtcmMxLWJrMy11bWwvYXJjaC91bS9r
-ZXJuZWwvc2thcy9pbmNsdWRlCi1EX0ZJTEVfT0ZGU0VUX0JJVFM9NjQgLW1hcmNoPWF0aGxvbiAt
-bXByZWZlcnJlZC1zdGFjay1ib3VuZGFyeT0yCi1EX0dOVV9TT1VSQ0UgLURfTEFSR0VGSUxFNjRf
-U09VUkNFIC1TIC1vIGFyY2gvdW0vdXNlci1vZmZzZXRzLnMKYXJjaC91bS9zeXMtaTM4Ni91c2Vy
-LW9mZnNldHMuYwogIENISyAgICAgYXJjaC91bS9pbmNsdWRlL3VzZXJfY29uc3RhbnRzLmgKICBV
-UEQgICAgIGFyY2gvdW0vaW5jbHVkZS91c2VyX2NvbnN0YW50cy5oCiAgQ0hLICAgICBpbmNsdWRl
-L2xpbnV4L3ZlcnNpb24uaAogIFVQRCAgICAgaW5jbHVkZS9saW51eC92ZXJzaW9uLmgKICBTWU1M
-SU5LIGluY2x1ZGUvYXNtIC0+IGluY2x1ZGUvYXNtLXVtCiAgU1BMSVQgICBpbmNsdWRlL2xpbnV4
-L2F1dG9jb25mLmggLT4gaW5jbHVkZS9jb25maWcvKgpnY2MgLVdhbGwgLVd1bmRlZiAtV3N0cmlj
-dC1wcm90b3R5cGVzIC1Xbm8tdHJpZ3JhcGhzCi1mbm8tc3RyaWN0LWFsaWFzaW5nIC1mbm8tY29t
-bW9uIC1mZnJlZXN0YW5kaW5nIC1PMgotZm5vLW9taXQtZnJhbWUtcG9pbnRlciAtZm5vLW9wdGlt
-aXplLXNpYmxpbmctY2FsbHMgLWcgIC1EX19hcmNoX3VtX18KLURTVUJBUkNIPVwiaTM4NlwiIC1J
-YXJjaC91bS9pbmNsdWRlCi1JL3Vzci9zcmMvbGludXgtMi42LjE1LXJjMS1iazMtdW1sL2FyY2gv
-dW0va2VybmVsL3R0L2luY2x1ZGUKLUkvdXNyL3NyYy9saW51eC0yLjYuMTUtcmMxLWJrMy11bWwv
-YXJjaC91bS9rZXJuZWwvc2thcy9pbmNsdWRlCi1Edm1hcD1rZXJuZWxfdm1hcCAtRGluNmFkZHJf
-bG9vcGJhY2s9a2VybmVsX2luNmFkZHJfbG9vcGJhY2sKLURlcnJubz1rZXJuZWxfZXJybm8gLURz
-aWdwcm9jbWFzaz1rZXJuZWxfc2lncHJvY21hc2sKLWZuby11bml0LWF0LWEtdGltZSAtVV9faTM4
-Nl9fIC1VaTM4NiAtbWFyY2g9YXRobG9uCi1tcHJlZmVycmVkLXN0YWNrLWJvdW5kYXJ5PTIgLURf
-TEFSR0VGSUxFNjRfU09VUkNFCi1XZGVjbGFyYXRpb24tYWZ0ZXItc3RhdGVtZW50IC1Xbm8tcG9p
-bnRlci1zaWduICAtbm9zdGRpbmMKLWlzeXN0ZW0gL3Vzci9saWIvZ2NjL2kzODYtcmVkaGF0LWxp
-bnV4LzQuMC4xL2luY2x1ZGUgLURfX0tFUk5FTF9fCi1JaW5jbHVkZSAgLWluY2x1ZGUgaW5jbHVk
-ZS9saW51eC9hdXRvY29uZi5oIC1TIC1vCmFyY2gvdW0va2VybmVsLW9mZnNldHMucyBhcmNoL3Vt
-L3N5cy1pMzg2L2tlcm5lbC1vZmZzZXRzLmMKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGluY2x1ZGUv
-YXNtL3N0cmluZy5oOjQsCiAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L3N0cmlu
-Zy5oOjI0LAogICAgICAgICAgICAgICAgIGZyb20gaW5jbHVkZS9saW51eC9iaXRtYXAuaDo4LAog
-ICAgICAgICAgICAgICAgIGZyb20gaW5jbHVkZS9saW51eC9jcHVtYXNrLmg6ODYsCiAgICAgICAg
-ICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L3NjaGVkLmg6MTUsCiAgICAgICAgICAgICAgICAg
-ZnJvbSBhcmNoL3VtL3N5cy1pMzg2L2tlcm5lbC1vZmZzZXRzLmM6MzoKaW5jbHVkZS9hc20vYXJj
-aC9zdHJpbmcuaDoyODg6MjE6IGVycm9yOiBhc20vbW14Lmg6IE5vIHN1Y2ggZmlsZSBvcgpkaXJl
-Y3RvcnkKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGluY2x1ZGUvYXNtL3N0cmluZy5oOjQsCiAgICAg
-ICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L3N0cmluZy5oOjI0LAogICAgICAgICAgICAg
-ICAgIGZyb20gaW5jbHVkZS9saW51eC9iaXRtYXAuaDo4LAogICAgICAgICAgICAgICAgIGZyb20g
-aW5jbHVkZS9saW51eC9jcHVtYXNrLmg6ODYsCiAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRl
-L2xpbnV4L3NjaGVkLmg6MTUsCiAgICAgICAgICAgICAgICAgZnJvbSBhcmNoL3VtL3N5cy1pMzg2
-L2tlcm5lbC1vZmZzZXRzLmM6MzoKaW5jbHVkZS9hc20vYXJjaC9zdHJpbmcuaDogSW4gZnVuY3Rp
-b24gkV9fY29uc3RhbnRfbWVtY3B5M2SSOgppbmNsdWRlL2FzbS9hcmNoL3N0cmluZy5oOjI5ODog
-d2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24KkV9tbXhfbWVtY3B5kgpp
-bmNsdWRlL2FzbS9hcmNoL3N0cmluZy5oOjI5ODogd2FybmluZzogcmV0dXJuIG1ha2VzIHBvaW50
-ZXIgZnJvbQppbnRlZ2VyIHdpdGhvdXQgYSBjYXN0CmluY2x1ZGUvYXNtL2FyY2gvc3RyaW5nLmg6
-IEluIGZ1bmN0aW9uIJFfX21lbWNweTNkkjoKaW5jbHVkZS9hc20vYXJjaC9zdHJpbmcuaDozMDU6
-IHdhcm5pbmc6IHJldHVybiBtYWtlcyBwb2ludGVyIGZyb20KaW50ZWdlciB3aXRob3V0IGEgY2Fz
-dAptYWtlOiAqKiogW2FyY2gvdW0va2VybmVsLW9mZnNldHMuc10gRXJyb3IgMQoKQW50b2luZQoK
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-ClRoaXMgU0YuTmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSB0aGUgSkJvc3MgSW5jLiAgR2V0IENl
-cnRpZmllZCBUb2RheQpSZWdpc3RlciBmb3IgYSBKQm9zcyBUcmFpbmluZyBDb3Vyc2UuICBGcmVl
-IENlcnRpZmljYXRpb24gRXhhbQpmb3IgQWxsIFRyYWluaW5nIEF0dGVuZGVlcyBUaHJvdWdoIEVu
-ZCBvZiAyMDA1LiBGb3IgbW9yZSBpbmZvIHZpc2l0OgpodHRwOi8vYWRzLm9zZG4uY29tLz9hZF9p
-ZHYyOCZhbGxvY19pZBY4NDUmb3DMawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9k
-ZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
-b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+Hi,
+
+I've finally started rebuilding root images from scratch (instructions
+provided) and adding various other bits of information:
+http://uml.nagafix.co.uk/
+I will try to finish the RPM based distros soon: FC4, OpenSuse and
+Mandriva are not done yet, any help on how to build these 3 (simply, if
+possible) would be appreciated - it has to be from scratch...
+Is NPTL/TLS support getting close or should I build non-nptl images?
+Also, a few have offered to provide mirrors - and seeing that my
+bandwidth limits will get saturated pretty quickly, I will probably want
+to get that setup before sending out this URL to a wider audience.
+I will also add the SELinux pages (work in progress), some more honeypot
+resources, a network toolkit image (providing ntop/snort/nmap/etc)
+Suggestions and feedback welcome.
+
+Antoine
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
+Register for a JBoss Training Course.  Free Certification Exam
+for All Training Attendees Through End of 2005. For more info visit:
+http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
