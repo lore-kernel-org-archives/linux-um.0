@@ -1,34 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EcQw9-0000q3-1F for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Nov 2005 09:19:09 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EcQw7-0005Aq-KN
+	id 1EcRyp-0003vt-A5 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 16 Nov 2005 10:25:59 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EcRyk-0000iX-Ek
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Nov 2005 09:19:09 -0800
-Received: from localhost (localhost [127.0.0.1])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id DC362AEFE0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 16 Nov 2005 23:21:44 +0000 (GMT)
-Received: from mail.nagafix.co.uk ([127.0.0.1])
-	by localhost (viper.nagafix.co.uk [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 11182-20 for
-	<user-mode-linux-devel@lists.sourceforge.net>; 
-	Wed, 16 Nov 2005 23:21:41 +0000 (GMT)
-Received: from ant.internal (88-96-60-221.dsl.zen.co.uk [88.96.60.221])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 93387AEF81
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 16 Nov 2005 23:21:41 +0000 (GMT)
-From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <1132067048.3082.23.camel@ant.internal>
-References: <1132067048.3082.23.camel@ant.internal>
-Content-Type: text/plain
-Message-Id: <1132161529.3082.143.camel@ant.internal>
+	Wed, 16 Nov 2005 10:25:56 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] [RFC PATCH] fixes for some compilation errors
+Message-ID: <20051116191819.GA7635@ccure.user-mode-linux.org>
+References: <20051115233006.GA31279@RAM>
+	<20051116012309.GB11520@ccure.user-mode-linux.org>
+	<1132137733.5720.17.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: root_fs images
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1132137733.5720.17.camel@localhost>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,23 +29,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 16 Nov 2005 17:18:49 +0000
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Wed, 16 Nov 2005 14:18:19 -0500
+To: Ram Pai <linuxram@us.ibm.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> I've finally started rebuilding root images from scratch (instructions
-> provided) and adding various other bits of information:
-> http://uml.nagafix.co.uk/
-I've now updated the DNS records, so it might actually work now. DOH
+On Wed, Nov 16, 2005 at 02:42:13AM -0800, Ram Pai wrote:
+> make -j32 arch/um/kernel/skas/clone.o ARCH=um
+>   CC      arch/um/kernel/skas/clone.o
+> arch/um/kernel/skas/clone.c: In function `stub_clone_handler':
+> arch/um/kernel/skas/clone.c:39: error: aggregate value used where an
+> integer was expected
+> make[1]: *** [arch/um/kernel/skas/clone.o] Error 1
+> make: *** [arch/um/kernel/skas/clone.o] Error 2
 
-> I will try to finish the RPM based distros soon: FC4, OpenSuse and
-> Mandriva are not done yet, any help on how to build these 3 (simply, if
-> possible) would be appreciated - it has to be from scratch...
-> Is NPTL/TLS support getting close or should I build non-nptl images?
-I think I will just try NPTL and see how far that goes. Maybe a note
-stating that this requires a 2.6.15? guest (is nptl support going to be
-sent to Linus?)
+OK, I fixed this.  That was the first patch in the series, and I was 
+forgetting to refresh it.
 
-Antoine
+What was the bit about a patch not applying cleanly?  I just pulled my
+tarball, and everything is clean.
+
+				Jeff
 
 
 
