@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EcAn1-0005gj-Ue for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 16:04:39 -0800
+	id 1EcBCA-0006aX-7p for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Nov 2005 16:30:38 -0800
 Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EcAmx-0003p2-7j
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EcBC8-0008R8-I3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Nov 2005 16:04:40 -0800
+	Tue, 15 Nov 2005 16:30:38 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH] Ok, I build x86-64 -skas0,
-	and it still segfaults.
-Message-ID: <20051116005710.GA11520@ccure.user-mode-linux.org>
-References: <20051114215517.GA9579@ccure.user-mode-linux.org>
-	<20051115220903.73648.qmail@web25208.mail.ukl.yahoo.com>
+Subject: Re: [uml-devel] [RFC PATCH] fixes for some compilation errors
+Message-ID: <20051116012309.GB11520@ccure.user-mode-linux.org>
+References: <20051115233006.GA31279@RAM>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20051115220903.73648.qmail@web25208.mail.ukl.yahoo.com>
+In-Reply-To: <20051115233006.GA31279@RAM>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,50 +27,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 15 Nov 2005 19:57:10 -0500
-To: Paolo Giarrusso <blaisorblade@yahoo.it>
-Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 15 Nov 2005 20:23:09 -0500
+To: Ram Pai <linuxram@us.ibm.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Nov 15, 2005 at 11:09:03PM +0100, Paolo Giarrusso wrote:
-> I've come to a (possible) conclusion - probably we could try to adapt
-> and reuse the batching syscall stub to do everything. With the
-> original single-syscall stub it didn't make sense, with this one it
-> could do. 
+On Tue, Nov 15, 2005 at 03:30:06PM -0800, Ram Pai wrote:
+> -extern void *switch_to_tt(void *prev, void *next);
+> +extern void switch_to_tt(void *prev, void *next);
 
-What would that look like?  An array of numbers representing register
-values to be given to the batch syscall stub?  Or the syscall_stub* macros
-would fill in an array?
+Oops, I hadn't built with CONFIG_MODE_TT enabled in a while.
 
-> Or anyway, it's possibly becoming harder to write all this in C with
-> assembly inserts rather than directly in assembly. It also does not
-> work well on some strange compilers (aka Hardened GCC, as reported by
-> Antoine Martin).
+> -#include <asm/signal.h>
+> +//#include <asm/signal.h>
 
-I'm wondering about this as well.  I'm unsure whether we are mopping up the
-last few problems, or whether we will just be seeing misassembly after
-misassembly.
+I now have this as <signal.h> which works here - can you check this?
 
-At least this patch is a clear bug fix.
+> +#include "kern_constants.h"
 
-> > -/*	__asm__("movl %0, %%eax ; int $0x80": : "g" (__NR_getpid));
-> > -	__asm__("movl %%eax, %%ebx ; movl %0, %%eax ; movl %1, %%ecx ;"
-> > -		"int $0x80": : "g" (__NR_kill), "g" (SIGUSR1)); */
-> 
-> Where does this commented getpid + kill comes from? It seems to come
-> from rubbish in some patch.
+I already have this, I may not have refreshed the patch before pushing it
+out.
 
-This patch was at the end of my series - the current version doesn't have
-this.
+>  	err = stub_syscall3(__NR_setitimer, ITIMER_VIRTUAL,
+> -			    (long) STUB_DATA(timer), 0);
+> +			    (long) &from->timer, 0);
 
-> The idea would be nice, but I am reluctant in trusting GCC to leave
-> %esp unaltered; also, without volatile, GCC feels probably allowed to
-> move this instruction anywhere in the code.
+What were these doing to you?
 
-OK, I changed it back.
-
-> Actually, I start feeling this could be moved to assembly.
-
-Maybe.  I prefer C as long as that is viable, though.
+I pushed out a fixed patchset - can you recheck?
 
 				Jeff
 
