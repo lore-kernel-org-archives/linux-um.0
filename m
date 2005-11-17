@@ -1,28 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ecm9e-0005ky-Q6 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Nov 2005 07:58:30 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ecm9c-0002hy-En
+	id 1Ecmfv-0007AE-Ax for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Nov 2005 08:31:51 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ecmft-0002Q8-VJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Nov 2005 07:58:31 -0800
-From: Rob Landley <rob@landley.net>
+	Thu, 17 Nov 2005 08:31:51 -0800
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Getting the x86-64 rollup patch to work on my x86
 	laptop.
+Message-ID: <20051117172438.GA6868@ccure.user-mode-linux.org>
 References: <200511161100.31053.rob@landley.net>
-	<200511170716.46519.rob@landley.net>
-	<20051117163723.GA5878@ccure.user-mode-linux.org>
-In-Reply-To: <20051117163723.GA5878@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	<200511161811.38823.rob@landley.net>
+	<20051117052622.GA12221@ccure.user-mode-linux.org>
+	<200511170846.55886.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200511170958.17364.rob@landley.net>
+In-Reply-To: <200511170846.55886.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,42 +31,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Nov 2005 09:58:17 -0600
-To: Jeff Dike <jdike@addtoit.com>
+Date: Thu, 17 Nov 2005 12:24:38 -0500
+To: Rob Landley <rob@landley.net>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 17 November 2005 10:37, Jeff Dike wrote:
-> On Thu, Nov 17, 2005 at 07:16:46AM -0600, Rob Landley wrote:
-> > is what I had to apply to 2.6.15-rc1 to get that to work).  I think that
-> > included tls, but since the target system doesn't use it I don't know.
->
-> OK, well your recipe results in this
->
-> $ grep MODE obj1/.config
-> # CONFIG_MODE_TT is not set
-> # CONFIG_MODE_SKAS is not set
->
-> which is not a healthy config.  It fails to build here, but the errors are
-> different.
+On Thu, Nov 17, 2005 at 08:46:55AM -0600, Rob Landley wrote:
+> What do you want dumps of?  (Keep in mind this is straight -rc1. 
 
-That means you didn't get the uml-miniconf I attached to my message copied 
-into allno.config in the source directory.  (Did I typo my script?)
+The usual disassembly.
 
-2.6.15-rc1 developed a new feature that lets you take a config snippet setting 
-just the features you want and generate a working .config from that.  I wrote 
-some bad documentation for it earlier this morning:
-
-http://seclists.org/lists/linux-kernel/2005/Nov/5804.html
-
-> This case does need better error checking though.
->
-> Can you check a config that actually has a chance of running?
-
-I'm fairly certain I did.  That's why my errors are different. :)
-
->     Jeff
-
-Rob
+				Jeff
 
 
 -------------------------------------------------------
