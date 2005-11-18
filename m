@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ed0Vh-00025E-Cn for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Nov 2005 23:18:13 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ed0Ve-0005nN-ND
+	id 1Ed0dO-0002Lh-Iv for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Nov 2005 23:26:10 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ed0dL-0007jb-W9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Nov 2005 23:18:13 -0800
+	Thu, 17 Nov 2005 23:26:10 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Getting the x86-64 rollup patch to work on my x86
-	laptop.
-References: <200511161100.31053.rob@landley.net>
-	<20051118031257.GA14537@ccure.user-mode-linux.org>
-	<200511180048.06213.rob@landley.net>
-In-Reply-To: <200511180048.06213.rob@landley.net>
+Subject: Re: [uml-devel] 2.6.15-rc1-bk3 minor breakage
+References: <1132066452.3082.12.camel@ant.internal>
+In-Reply-To: <1132066452.3082.12.camel@ant.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200511180826.53596.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_gQYfDx9RML2K3X8"
+Message-Id: <200511180834.56201.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,112 +27,148 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 18 Nov 2005 08:26:53 +0100
+Date: Fri, 18 Nov 2005 08:34:55 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
+
+--Boundary-00=_gQYfDx9RML2K3X8
+Content-Type: text/plain;
+  charset="windows-1251"
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>, Jeff Dike <jdike@addtoit.com>
+Content-Disposition: inline
 
-On Friday 18 November 2005 07:48, Rob Landley wrote:
-> On Thursday 17 November 2005 21:12, Jeff Dike wrote:
-> > On Thu, Nov 17, 2005 at 04:51:33PM -0600, Rob Landley wrote:
-> > > find . -name asm
+On Tuesday 15 November 2005 15:54, Antoine Martin wrote:
+> It asked me what CPU I wanted to build for?! (make oldconfig)
+> It breaks if I select K7, but not if I select PPro (default).
 
-> > This all looks the same as I have here, except for the asm-i386 thing,
-> > which I don't think matters.  ldt.h seems to be at the center of this,
-> > so can you check the following:
-> >  asm-i386/ldt.h contains a struct user_desc
+=46ully correct note... I didn't test every possible selection, and there a=
+re a=20
+few missing stub headers (i.e. containing #include "asm/arch/WHATEVER").
 
-> Yup.
+Patch attached but untested. We must also build:=20
 
-> >  asm-um includes asm/arch/ldt.h
+arch/i386/lib/mmx.c
 
-> There's no asm subdirectory under asm-um.
+but I expect errors from it.
 
-Jeff meant that inside asm-um you should have a "arch" symlink to=20
-"../asm-i386", and that include/asm/arch/ldt.h should exist (in the source =
+> make ARCH=3Dum vmlinux
 
-tree root).
-
-> >  asm-um/ldt.h contains a typedef of uml_ldt_t
-
-> asm-um/ldt.h is a 0 byte file.
-
-Damnit! Do rm on it and things will work (Makefiles will create a symlink t=
-o=20
-ldt-$(SUBARCH) in its place). We had this problem in the past, and exactly =
-
-for a mis-formed patch with quilt.
-
-> >  mmu-skas.h includes asm-um/ldt.h
-
-> The one in arch/um/include/skas includes asm/ldt.h
-> The one in arch/um/kernel/skas/include is a 0 byte file.
-
-I suppose that's a rename from something in the patchset... and that the fi=
-le=20
-is not properly deleted (I hope this one shouldn't create problems).
-
-Damn it again! Je-eff? I remember quilt can be taught to do it!
-
-> > Also, generate a .i for the C file that's being built and check that
-> > the definitions are getting pulled in.  There may be an easier way to
-> > do this, but I
-
-I do make ARCH=3Dum $path.i is supposed to work. I recently fixed it (shoul=
-d be=20
-upstream) up for userspace files (along with other extensions - .lst, .s an=
-d=20
-so on) . Before, obviously, I did as you do.
-
-> >=A0=A0=A0=A0=A0=A0=A0=A0turn on V=3D1
-> >=A0=A0=A0=A0=A0=A0=A0=A0cd obj
-> >=A0=A0=A0=A0=A0=A0=A0=A0paste the gcc command into an xterm
-> >=A0=A0=A0=A0=A0=A0=A0=A0edit it as follows
-> >=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0the -o -c foo.o is repla=
-ced by -E
-> >=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0add > x.i at the end
-
-> The line that's going boing is
-
-> gcc -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing
-> -fno-common -ffreestanding -O2     -fomit-frame-pointer  -D__arch_um__
+>   SYMLINK include/asm-um/elf.h
+>   CHK     arch/um/include/uml-config.h
+>   UPD     arch/um/include/uml-config.h
+> gcc -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs
+> -fno-strict-aliasing -fno-common -ffreestanding -O2
+> -fno-omit-frame-pointer -fno-optimize-sibling-calls -g -D__arch_um__
+> -DSUBARCH=3D\"i386\" -Dvmap=3Dkernel_vmap
+> -Din6addr_loopback=3Dkernel_in6addr_loopback -Iarch/um/include
+> -I/usr/src/linux-2.6.15-rc1-bk3-uml/arch/um/kernel/tt/include
+> -I/usr/src/linux-2.6.15-rc1-bk3-uml/arch/um/kernel/skas/include
+> -D_FILE_OFFSET_BITS=3D64 -march=3Dathlon -mpreferred-stack-boundary=3D2
+> -D_GNU_SOURCE -D_LARGEFILE64_SOURCE -S -o arch/um/user-offsets.s
+> arch/um/sys-i386/user-offsets.c
+>   CHK     arch/um/include/user_constants.h
+>   UPD     arch/um/include/user_constants.h
+>   CHK     include/linux/version.h
+>   UPD     include/linux/version.h
+>   SYMLINK include/asm -> include/asm-um
+>   SPLIT   include/linux/autoconf.h -> include/config/*
+> gcc -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs
+> -fno-strict-aliasing -fno-common -ffreestanding -O2
+> -fno-omit-frame-pointer -fno-optimize-sibling-calls -g  -D__arch_um__
 > -DSUBARCH=3D\"i386\" -Iarch/um/include
-> -I/home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/arch/um/inclu=
-de
-> -I/home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/arch/um/inclu=
-de
->/skas -Dvmap=3Dkernel_vmap -Din6addr_loopback=3Dkernel_in6addr_loopback
-> -Derrno=3Dkernel_errno -Dsigprocmask=3Dkernel_sigprocmask  -U__i386__ -Ui=
-386
-> -mpreferred-stack-boundary=3D2 -D_LARGEFILE64_SOURCE    -nostdinc
-> -isystem /usr/lib/gcc-lib/i486-linux/3.3.5/include -D__KERNEL__ -Iinclude
-> -Iinclude2
-> -I/home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/include
-> -include include/linux/autoconf.h -S -o
-> arch/um/kernel-offsets.s
-> /home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/arch/um/sys-i38=
-6/
->kernel-offsets.c
+> -I/usr/src/linux-2.6.15-rc1-bk3-uml/arch/um/kernel/tt/include
+> -I/usr/src/linux-2.6.15-rc1-bk3-uml/arch/um/kernel/skas/include
+> -Dvmap=3Dkernel_vmap -Din6addr_loopback=3Dkernel_in6addr_loopback
+> -Derrno=3Dkernel_errno -Dsigprocmask=3Dkernel_sigprocmask
+> -fno-unit-at-a-time -U__i386__ -Ui386 -march=3Dathlon
+> -mpreferred-stack-boundary=3D2 -D_LARGEFILE64_SOURCE
+> -Wdeclaration-after-statement -Wno-pointer-sign  -nostdinc
+> -isystem /usr/lib/gcc/i386-redhat-linux/4.0.1/include -D__KERNEL__
+> -Iinclude  -include include/linux/autoconf.h -S -o
+> arch/um/kernel-offsets.s arch/um/sys-i386/kernel-offsets.c
+> In file included from include/asm/string.h:4,
+>                  from include/linux/string.h:24,
+>                  from include/linux/bitmap.h:8,
+>                  from include/linux/cpumask.h:86,
+>                  from include/linux/sched.h:15,
+>                  from arch/um/sys-i386/kernel-offsets.c:3:
+> include/asm/arch/string.h:288:21: error: asm/mmx.h: No such file or
+> directory
+> In file included from include/asm/string.h:4,
+>                  from include/linux/string.h:24,
+>                  from include/linux/bitmap.h:8,
+>                  from include/linux/cpumask.h:86,
+>                  from include/linux/sched.h:15,
+>                  from arch/um/sys-i386/kernel-offsets.c:3:
+> include/asm/arch/string.h: In function =91__constant_memcpy3d=92:
+> include/asm/arch/string.h:298: warning: implicit declaration of function
+> =91_mmx_memcpy=92
+> include/asm/arch/string.h:298: warning: return makes pointer from
+> integer without a cast
+> include/asm/arch/string.h: In function =91__memcpy3d=92:
+> include/asm/arch/string.h:305: warning: return makes pointer from
+> integer without a cast
+> make: *** [arch/um/kernel-offsets.s] Error 1
+>
+> Antoine
 
-> I don't even have to add V=3D1 to get it, that sucker isn't run through a
-> prettification macro.  However, whey you say "-o -c foo.o", I can't find
-> that to replace it with -E.  Do you mean the "-S -o kernel-offsets.s" bit?
-
-In this case yes - Jeff thought the build would stop when building a "foo.o=
-",=20
-but it's stopping earlier than he expected.
-
---=20
+=2D-=20
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-=09
+--Boundary-00=_gQYfDx9RML2K3X8
+Content-Type: text/x-diff; charset="windows-1251"; name="add-missing-header"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="add-missing-header"
 
-=09
-	=09
-___________________________________=20
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB=20
+Index: linux-2.6.git/arch/um/sys-i386/Makefile
+===================================================================
+--- linux-2.6.git.orig/arch/um/sys-i386/Makefile
++++ linux-2.6.git/arch/um/sys-i386/Makefile
+@@ -5,9 +5,13 @@ obj-y = bitops.o bugs.o checksum.o delay
+ obj-$(CONFIG_HIGHMEM) += highmem.o
+ obj-$(CONFIG_MODULES) += module.o
+ 
++# XXX: Should be lib? Supported here? For bitops.o we currently don't care.
++#lib-$(CONFIG_X86_USE_3DNOW) += mmx.o
++obj-$(CONFIG_X86_USE_3DNOW) += mmx.o
++
+ USER_OBJS := bugs.o ptrace_user.o sigcontext.o fault.o
+ 
+-SYMLINKS = bitops.c semaphore.c highmem.c module.c
++SYMLINKS = bitops.c semaphore.c highmem.c module.c mmx.c
+ 
+ include arch/um/scripts/Makefile.rules
+ 
+@@ -15,6 +19,7 @@ bitops.c-dir = lib
+ semaphore.c-dir = kernel
+ highmem.c-dir = mm
+ module.c-dir = kernel
++mmx.c-dir = lib
+ 
+ $(obj)/stub_segv.o : _c_flags = $(call unprofile,$(CFLAGS))
+ 
+Index: linux-2.6.git/include/asm-um/mmx.h
+===================================================================
+--- /dev/null
++++ linux-2.6.git/include/asm-um/mmx.h
+@@ -0,0 +1,6 @@
++#ifndef __UM_MMX_H
++#define __UM_MMX_H
++
++#include "asm/arch/mmx.h"
++
++#endif
+
+--Boundary-00=_gQYfDx9RML2K3X8--
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
 http://mail.yahoo.it
 
 
@@ -144,7 +177,7 @@ http://mail.yahoo.it
 This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
 Register for a JBoss Training Course.  Free Certification Exam
 for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_idv28&alloc_id=16845&op=CCk
+http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
