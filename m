@@ -1,28 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EcsvT-0007R3-Lr for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Nov 2005 15:12:19 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EcsvT-0001G2-4D
+	id 1EcvrN-0000Ev-3r for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Nov 2005 18:20:17 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EcvrM-0001iS-MM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Nov 2005 15:12:19 -0800
-From: Rob Landley <rob@landley.net>
+	Thu, 17 Nov 2005 18:20:17 -0800
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Getting the x86-64 rollup patch to work on my x86
 	laptop.
+Message-ID: <20051118031257.GA14537@ccure.user-mode-linux.org>
 References: <200511161100.31053.rob@landley.net>
+	<200511161811.38823.rob@landley.net>
 	<20051117184038.GB7062@ccure.user-mode-linux.org>
 	<200511171651.33764.rob@landley.net>
-In-Reply-To: <200511171651.33764.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200511171712.08582.rob@landley.net>
+In-Reply-To: <200511171651.33764.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,43 +31,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 17 Nov 2005 17:12:08 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Thu, 17 Nov 2005 22:12:57 -0500
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 17 November 2005 16:51, Rob Landley wrote:
-
+On Thu, Nov 17, 2005 at 04:51:33PM -0600, Rob Landley wrote:
 > find . -name asm
 > ./include/asm
 > ./include2/asm
->
+> 
 > ls -l include/asm include2/asm
-> lrwxrwxrwx  1 landley landley 72 2005-11-17 16:46 include2/asm
+> lrwxrwxrwx  1 landley landley 72 2005-11-17 16:46 include2/asm 
 > -> /home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/include/asm-um
 > lrwxrwxrwx  1 landley landley  6 2005-11-17 16:46 include/asm -> asm-um
->
+> 
 > ls -l include/asm/arch include2/asm/arch
 > ls: include2/asm/arch: No such file or directory
-> lrwxrwxrwx  1 landley landley 74 2005-11-17 16:46 include/asm/arch
-> ->
-> /home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/include/asm-i386
->
-> I have no idea what the difference between include and include2 is, but
-> it's there on the straight -rc1 that built, so I'm assuming it's
-> intentional.
+> lrwxrwxrwx  1 landley landley 74 2005-11-17 16:46 include/asm/arch 
+> -> /home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/include/asm-i386
 
-By the way: for some reason, the asm-i386 directory contains an "asm-i386" 
-symlink pointing to itself:
+This all looks the same as I have here, except for the asm-i386 thing,
+which I don't think matters.  ldt.h seems to be at the center of this,
+so can you check the following:
+	asm-i386/ldt.h contains a struct user_desc
+	asm-um includes asm/arch/ldt.h
 
-ls 
--l /home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/include/asm-i386/asm-i386
-lrwxrwxrwx  1 landley landley 75 2005-11-17 
-17:08 /home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/include/asm-i386/asm-i386 
--> /home/landley/newbuild/firmware-build/tmpdir/linux-2.6.14/include/asm-i386/
+	asm-um/ldt.h contains a typedef of uml_ldt_t
+	mmu-skas.h includes asm-um/ldt.h
 
-Useful data point?
+Also, generate a .i for the C file that's being built and check that
+the definitions are getting pulled in.  There may be an easier way to
+do this, but I
+	turn on V=1
+	cd obj
+	paste the gcc command into an xterm
+	edit it as follows
+		the -o -c foo.o is replaced by -E
+		add > x.i at the end
 
-Rob
+				Jeff
 
 
 -------------------------------------------------------
