@@ -2,27 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ed26O-0005ey-6L for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Nov 2005 01:00:12 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ed26M-00033I-Vn
+	id 1EdFCu-0006BT-4h for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Nov 2005 14:59:48 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EdFCs-0004Vc-Vi
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Nov 2005 01:00:12 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Getting the x86-64 rollup patch to work on my x86
-	laptop.
-References: <200511161100.31053.rob@landley.net>
-	<200511180133.52547.rob@landley.net>
-	<200511180858.43760.blaisorblade@yahoo.it>
-In-Reply-To: <200511180858.43760.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Fri, 18 Nov 2005 14:59:48 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: merge status
+Message-ID: <20051118235231.GB12049@ccure.user-mode-linux.org>
+References: <20051109133558.513facef.akpm@osdl.org>
+	<200511160736.44659.rob@landley.net>
+	<200511180808.57481.blaisorblade@yahoo.it>
+	<200511180117.03742.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200511180259.59589.rob@landley.net>
+In-Reply-To: <200511180117.03742.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,38 +30,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 18 Nov 2005 02:59:59 -0600
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Fri, 18 Nov 2005 18:52:31 -0500
+To: Rob Landley <rob@landley.net>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 18 November 2005 01:58, Blaisorblade wrote:
+On Fri, Nov 18, 2005 at 01:17:03AM -0600, Rob Landley wrote:
+> > Definitely Jeff's tree is a first filter for his work, but I've not seen it
+> > working a lot as a collector, especially for little fixes - but there it
+> > makes sense.
 
-> > arch/um/sys-i386/built-in.o(.text+0x3b60): In function `load_TLS':
-> > : undefined reference to `indirect_set_thread_area'
-> >
-> > collect2: ld returned 1 exit status
-> >   KSYM    .tmp_kallsyms1.S
-> > nm: '.tmp_vmlinux1': No such file
-> > No valid symbol.
-> > make[2]: *** [.tmp_kallsyms1.S] Error 1
-> > make[1]: *** [_all] Error 2
-> > make: *** [all] Error 2
-> >
-> > This is progress!
->
-> Disable TT mode or play with such things IIRC
+I'd like it to be a collector of patches.  I just don't see a lot of them
+(IIRC, the ones I do see are already on their way to akpm/linus, so it
+makes not too much sense to exercise them in my tree).  Witness the OS
+patches, the s390 stuff, and the NPTL patches (which I went and found
+myself, which turned out to be a really good move).
 
-Nope, tt mode already is disabled.
+> > I tend to send directly to Andrew and he forwards them to Linus (in many
+> > cases so fast that I wonder if they appear in one -mm release), but I
+> > currently do not have a public tree.
 
-> - actually there's a proper 
-> fix along lines of "move #ifdef's inside sys-i386/tls.c to properly cater
-> to dependencies" if you want.
->
-> This comes from the TLS patches btw...
+And you're welcome to send directly to Andrew, but feel free to send
+them to me beforehand.
 
-I'll be banging on this more in a bit...
 
-Rob
+				Jeff
 
 
 -------------------------------------------------------
