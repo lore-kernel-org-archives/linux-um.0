@@ -2,20 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eds9G-0005MD-1X for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Nov 2005 08:34:38 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eds99-0004ec-3a
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Nov 2005 08:34:34 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] CONFIG_SND_DUMMY support?
-References: <4380128D.9020408@theshore.net>
-In-Reply-To: <4380128D.9020408@theshore.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Message-Id: <200511201743.51615.blaisorblade@yahoo.it>
+	id 1EdvOr-0003sT-8X for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Nov 2005 12:02:57 -0800
+Received: from host222-100.pool871.interbusiness.it ([87.1.100.222]
+	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1EdvOq-0006pR-TI for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Nov 2005 12:02:57 -0800
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20051120191021.4189.37355.stgit@zion.home.lan>
+In-Reply-To: <20051120191019.4189.22191.stgit@zion.home.lan>
+References: <20051120191019.4189.22191.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 2/2] uml: fix dynamic linking on some 64-bit
+	distros
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,31 +25,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 20 Nov 2005 17:43:50 +0100
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Christopher S. Aker" <caker@theshore.net>
+Date: Sun, 20 Nov 2005 20:10:22 +0100
+To: Linus Torvalds <torvalds@osdl.org>, Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sunday 20 November 2005 07:07, Christopher S. Aker wrote:
-> I've got a user requesting CONFIG_SND_DUMMY support in UML.  Is this
-> just a hack to UML's config system, or would there be more to it?
+From: Rob Landley <rob@landley.net>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-From a quick look at the code and at the configuration, and common sense, =
-I=20
-assume that hacking Kconfig's would be enough... Just try and report!
+The current UML build assumes that on x86-64 systems, /lib is a symlink 
+to /lib64, but in some distributions (like PLD and CentOS) they are separate 
+directories, so the 64 bit library loader isn't found.  This patch 
+inserts /lib64 at the start of the rpath on x86-64 UML builds.
 
---=20
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+Signed-off-by: Rob Landley <rob@landley.net>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-=09
+ arch/um/Makefile-x86_64 |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-=09
-	=09
-___________________________________=20
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB=20
-http://mail.yahoo.it
+diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
+index 4f118d5..38df311 100644
+--- a/arch/um/Makefile-x86_64
++++ b/arch/um/Makefile-x86_64
+@@ -12,3 +12,7 @@ CHECKFLAGS  += -m64
+ 
+ ELF_ARCH := i386:x86-64
+ ELF_FORMAT := elf64-x86-64
++
++# Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
++
++LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
 
 
 
@@ -59,7 +62,7 @@ http://mail.yahoo.it
 This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
 Register for a JBoss Training Course.  Free Certification Exam
 for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_idv28&alloc_id=16845&op=CCk
+http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
