@@ -2,20 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ef2vl-0006C8-Qk for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Nov 2005 14:17:33 -0800
-Received: from box.punkt.pl ([217.8.180.66])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ef2vl-0007EL-5M
+	id 1EfFwd-0001l0-91 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Nov 2005 04:11:19 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EfFwb-0005DF-P9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Nov 2005 14:17:33 -0800
-From: Mariusz Mazur <mmazur@kernel.pl>
+	Thu, 24 Nov 2005 04:11:19 -0800
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by grelber.thyrsus.com (8.13.4/8.13.4) with ESMTP id jAODjfZi025746
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 24 Nov 2005 08:45:42 -0500
+From: Rob Landley <rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-2"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511232310.47752.mmazur@kernel.pl>
-Subject: [uml-devel] linux-libc-headers status
+Message-Id: <200511240611.02613.rob@landley.net>
+Subject: [uml-devel] When /tmp is not tmpfs.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,39 +33,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 23 Nov 2005 23:10:47 +0100
-To: llh-announce@lists.pld-linux.org
-Cc: Richard A Downing <richard@langside.org.uk>, Matthew Burgess <matthew@linuxfromscratch.org>, "Murch, Christopher" <cmurch@mrv.com>, Steve Youngs <steve@youngs.au.com>, Julio Meca Hansen <julio25@telefonica.net>, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Alex Davis <alex14641@yahoo.com>, "Robert P. J. Day" <rpjday@mindspring.com>, Jim Gifford <lfs@jg555.com>
+Date: Thu, 24 Nov 2005 06:11:01 -0600
+To: user-mode-linux-devel@lists.sourceforge.net
 
-I'm ccing everyone that mailed me during the past two months or so + the 
-llh-announce mailing list.
+So apparently, one reason for the pathological behavior of UML (pegging the 
+hard drive, which I mentioned earlier) is that by default Ubuntu doesn't 
+mount /tmpfs on /tmp.  This means it's part of /root, which is ext3, and 
+every touched page gets scheduled for writeout after a few seconds.  (The 
+optimization not to do that for deleted files was apparently taken out of 
+2.6.)
 
-As for 2.6.13, at the time of it's release I've unexpectedly got a good 
-short-term job offer which got me really busy (I'll manage my time better 
-next time, promise :). After the dust settled I figured I'd just skip that 
-release since for unknown reasons nobody really complained and 2.6.14 was 
-getting really close.
+There is a tmpfs mount, it's /dev/shm.  And apparently, even if tmpfs isn't 
+exposed as a separate filesystem, system V shared memory will still use it.
 
-The plan was to release llh 2.6.14.0 at most a couple of days after linus 
-pushed 2.6.14. Unfortunately Life happened -- I've had a one in a lifetime 
-personal life meltdown which meant anything computer related got the lowest 
-priority possible. I'm currently recovering and hope to be able to manage my 
-time in a reasonable fashion by the end of this month. I'm aiming at 
-releasing 2.6.14 during the first weekend of December and assuming nothing 
-more important comes up, you can count on that date.
+So my question is, could system v shared memory be used in place of the tmpfs 
+mount?  (Can it be mapped in the right location and inherited across fork()?)  
+Or is this just a "systems that don't mount /tmpfs on /tmp are screwed, it's 
+another prerequisite for running UML".
 
-Currently llh 2.6.14.0 is the priority. Don't know if anybody really needs 
-2.6.13 which I could in theory release but that would most likely need to 
-wait at least a month if not more (and it wouldn't make much sense releasing 
-it that late, would it).
-
-
+Rob
 -- 
-In the year eighty five ten
-God is gonna shake his mighty head
-He'll either say,
-"I'm pleased where man has been"
-Or tear it down, and start again
+Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
+I do not think it means what you think it means.
 
 
 -------------------------------------------------------
