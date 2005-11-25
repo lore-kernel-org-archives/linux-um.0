@@ -2,26 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EfbBj-0008Rt-4k for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 02:52:19 -0800
+	id 1EfbjQ-0001LG-SF for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Nov 2005 03:27:08 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EfbBg-00079U-PR
+	(Exim 4.44) id 1EfbjQ-0007sb-CK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 02:52:19 -0800
+	Fri, 25 Nov 2005 03:27:08 -0800
 From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] When /tmp is not tmpfs.
 References: <200511240611.02613.rob@landley.net>
-	<20051125095502.GA32587@ccure.user-mode-linux.org>
 	<200511250348.28123.rob@landley.net>
-In-Reply-To: <200511250348.28123.rob@landley.net>
+	<200511250452.05006.rob@landley.net>
+In-Reply-To: <200511250452.05006.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511250452.05006.rob@landley.net>
+Message-Id: <200511250526.56755.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,83 +33,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 25 Nov 2005 04:52:04 -0600
+Date: Fri, 25 Nov 2005 05:26:55 -0600
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Jeff Dike <jdike@addtoit.com>
 
-FYI:
+On Friday 25 November 2005 04:52, Rob Landley wrote:
+> FYI:
+>
+> The mounts on a Fedora Core 4 system:
+...
+> The mounts on the x86-64 PLD system I've been borrowing (and on which I do
+> not have root access):
+...
+> The shell servers from sourceforge:
+...
+> And I reiterate that on my ubuntu laptop /tmp is not tmpfs (it inherits my
+> ext3 /) but /dev/shm is a world writeable tmpfs mount that has the sticky
+> bit set.
+...
 
-The mounts on a Fedora Core 4 system:
+Found one more lying around:  A gentoo system my friend mark set up.  Can't 
+easily cut and paste the mount table from here (it's a laptop), but /tmp 
+inherits / which is ext3, and /dev/shm is a tmpfs mount which is world 
+writeable and has the sticky bit set.
 
-/dev/hda2 on / type ext3 (rw)
-/dev/proc on /proc type proc (rw)
-/dev/sys on /sys type sysfs (rw)
-/dev/devpts on /dev/pts type devpts (rw,gid=5,mode=620)
-/dev/hda1 on /boot type ext3 (rw)
-/dev/shm on /dev/shm type tmpfs (rw)
-/dev/hdb1 on /home type ext3 (rw)
-none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
-none on /var/named/chroot/proc type proc (rw)
-automount(pid1716) on /misc type autofs 
-(rw,fd=4,pgrp=1716,minproto=2,maxproto=4)
-automount(pid1759) on /net type autofs 
-(rw,fd=4,pgrp=1759,minproto=2,maxproto=4)
-nfsd on /proc/fs/nfsd type nfsd (rw)
-
-/tmp is nothing special (it inherits / which is ext3), but /dev/shm is a tmpfs 
-mount which is world writeable and has the sticky bit set.
-
-The mounts on the x86-64 PLD system I've been borrowing (and on which I do not 
-have root access):
-
-/dev/sda3 on / type jfs (rw)
-none on /proc type proc (rw,gid=17)
-sysfs on /sys type sysfs (rw)
-selinuxfs on /selinux type selinuxfs (rw)
-/dev/sda1 on /boot type ext2 (rw)
-/dev/sda5 on /usr type jfs (rw)
-/dev/sda6 on /var type jfs (rw)
-/dev/sda7 on /tmp type jfs (rw)
-/dev/sda8 on /home type jfs (rw)
-/dev/sda9 on /srv type jfs (rw)
-none on /dev/pts type devpts (rw,gid=5,mode=620)
-/root/pldcd-0.95.iso on /root/pld type iso9660 (rw,loop=/dev/loop0)
-
-/tmp is an explicit scsi mount.  /dev/shm inherits / (which is jfs), but 
-that's moot because the directory is not world writeable.
-
-The shell servers from sourceforge:
-
-/dev/md0 on / type ext3 (rw,errors=remount-ro)
-none on /proc type proc (rw)
-none on /dev/pts type devpts (rw,gid=5,mode=620)
-usbfs on /proc/bus/usb type usbfs (rw)
-/dev/md1 on /tmp type ext3 (rw)
-/dev/md2 on /var type ext3 (rw)
-/dev/md3 on /usr type ext3 (rw)
-/dev/md4 on /var/local type ext3 (rw)
-none on /dev/shm type tmpfs (rw)
-none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
-sunrpc on /var/lib/nfs/rpc_pipefs type rpc_pipefs (rw)
-pr-fs-users-a:/home/users/a on /home/users/a type nfs 
-(rw,nosuid,nodev,nfsvers=3,udp,rsize=16384,wsize=16384,hard,intr,addr=10.5.1.153)
-... and so on [about 8 gazillion more /home/users/blah mounts trimmed].
-
-Again, /tmp is not tmpfs (it's ext3 on a raid), but /dev/shm is a tmpfs mount 
-which is world writeable and has the sticky bit set.
-
-And I reiterate that on my ubuntu laptop /tmp is not tmpfs (it inherits my 
-ext3 /) but /dev/shm is a world writeable tmpfs mount that has the sticky bit 
-set.
-
-My conclusion from this is that /dev/shm is probably a better default 
-than /tmp for User Mode Linux's physical memory file, perhaps with a fallback 
-to /tmp if it can't write there.  But I'd appreciate hearing from other 
-people with different systems.
-
-The assumption that tmpfs is already mounted on /tmp does not seem to be true 
-on any preexisting system I can currently find out in the field.  Where have 
-you seen this?
+Except for the x86-64 PLD system (which is already known to be weird), it's 
+unanimous so far...
 
 Rob
 -- 
