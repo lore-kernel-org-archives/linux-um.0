@@ -2,26 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Efg3V-0007d9-FI for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 08:04:09 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Efg3U-0007ei-3V
+	id 1EfjKa-0001Ma-B5 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Nov 2005 11:34:00 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user69799)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EfjKZ-00022p-OB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 08:04:09 -0800
-From: Rob Landley <rob@landley.net>
+	Fri, 25 Nov 2005 11:34:00 -0800
 Subject: Re: [uml-devel] When /tmp is not tmpfs.
 References: <200511240611.02613.rob@landley.net>
 	<87sltkkc7i.fsf@amaterasu.srvr.nix>
 	<pqTCNcAZweUM.k//fYyReDcBiXgpOuNcx7w@sphinx.mythic-beasts.com>
-In-Reply-To: <pqTCNcAZweUM.k//fYyReDcBiXgpOuNcx7w@sphinx.mythic-beasts.com>
+	<200511251003.42328.rob@landley.net>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200511251003.42328.rob@landley.net> (Rob Landley's message of
+	"Fri, 25 Nov 2005 10:03:42 -0600")
+Message-ID: <87k6ewikte.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511251003.42328.rob@landley.net>
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +31,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 25 Nov 2005 10:03:42 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Chris Lightfoot <chris@ex-parrot.com>, Nix <nix@esperi.org.uk>
+Date: Fri, 25 Nov 2005 19:33:49 +0000
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Chris Lightfoot <chris@ex-parrot.com>
 
-On Friday 25 November 2005 09:03, Chris Lightfoot wrote:
-> On Fri, Nov 25, 2005 at 02:56:49PM +0000, Nix wrote:
-> > You could certainly do just that with POSIX shm :)
->
-> Another option is to mlock the memory, which should
-> prevent paging, but requires root. I have a patch which
-> does this using a helper binary, if people would like it.
+On Fri, 25 Nov 2005, Rob Landley uttered the following:
+> A) mlock would be a bad thing.  Not only is it a trivial DOS waiting to happen 
+> but I like the UML physmem being swapped out under memory pressure.  I just 
+> don't want uselessly writing it to disk over and over in the absence of any 
+> memory pressure whatosever to consume all I/O bandwidth to no purpose, which 
+> is the effect when it's not on tmpfs.
 
-A) mlock would be a bad thing.  Not only is it a trivial DOS waiting to happen 
-but I like the UML physmem being swapped out under memory pressure.  I just 
-don't want uselessly writing it to disk over and over in the absence of any 
-memory pressure whatosever to consume all I/O bandwidth to no purpose, which 
-is the effect when it's not on tmpfs.
+Maybe this is a stupid question, but... why do *any* systems other than
+extremely memory-constrained ones not mount tmpfs on /tmp? It seems to
+me to have numerous advantages and no disadvantages.
 
-B) Still requires root.  The suid root helper program is only available in 
-exactly the same circumstances in which you can just ask the admin to mount 
-tmpfs somewhere for you.
+In fact, even when you're memory-constrained, if you *have* diskspace that
+you could spend on /tmp, you can swap to it instead, and spend the space
+on virtual memory when you're not spending it on /tmp.
 
-Rob
+So, er, why?
+
 -- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+`Y'know, London's nice at this time of year. If you like your cities
+ freezing cold and full of surly gits.' --- David Damerell
+
 
 
 -------------------------------------------------------
