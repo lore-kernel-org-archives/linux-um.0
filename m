@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eff0W-0003OY-KO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 06:57:00 -0800
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user12889)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Eff0V-0005cj-6u
+	id 1Eff6y-0003t2-IX for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Nov 2005 07:03:40 -0800
+Received: from wumpus.mythic-beasts.com ([212.69.37.9] ident=Debian-exim)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Eff6x-00051y-Ak
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 06:57:00 -0800
+	Fri, 25 Nov 2005 07:03:40 -0800
+From: Chris Lightfoot <chris@ex-parrot.com>
 Subject: Re: [uml-devel] When /tmp is not tmpfs.
+Message-ID: <pqTCNcAZweUM.k//fYyReDcBiXgpOuNcx7w@sphinx.mythic-beasts.com>
 References: <200511240611.02613.rob@landley.net>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200511240611.02613.rob@landley.net> (Rob Landley's message of
-	"Thu, 24 Nov 2005 06:11:01 -0600")
-Message-ID: <87sltkkc7i.fsf@amaterasu.srvr.nix>
-MIME-Version: 1.0
+	<87sltkkc7i.fsf@amaterasu.srvr.nix>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sltkkc7i.fsf@amaterasu.srvr.nix>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,30 +29,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 25 Nov 2005 14:56:49 +0000
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 25 Nov 2005 15:03:32 +0000
+To: Nix <nix@esperi.org.uk>
+Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 24 Nov 2005, Rob Landley uttered the following:
-> There is a tmpfs mount, it's /dev/shm.  And apparently, even if tmpfs isn't 
-> exposed as a separate filesystem, system V shared memory will still use it.
+On Fri, Nov 25, 2005 at 02:56:49PM +0000, Nix wrote:
+> You could certainly do just that with POSIX shm :)
 
-s/System V/POSIX/
-
-It's the shm_open()/shm_close()shm_unlink() functions you're looking for.
-
-It's been present in glibc since 2.2, so you should be able to use them
-without any real difficulty if need be.
-
-> So my question is, could system v shared memory be used in place of the tmpfs 
-> mount?  (Can it be mapped in the right location and inherited across fork()?)  
-
-You could certainly do just that with POSIX shm :)
+Another option is to mlock the memory, which should
+prevent paging, but requires root. I have a patch which
+does this using a helper binary, if people would like it.
 
 -- 
-`Y'know, London's nice at this time of year. If you like your cities
- freezing cold and full of surly gits.' --- David Damerell
-
+``As usual the Liberals offer a mixture of sound and original ideas.
+  Unfortunately none of the sound ideas is original and none of the
+  original ideas is sound.'' (Harold Macmillan)
 
 
 -------------------------------------------------------
