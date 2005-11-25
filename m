@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EfkkW-0005cE-Sy for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 13:04:52 -0800
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user83243)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EfkkV-0003dP-RW
+	id 1Efn4O-0004B1-Ql for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Nov 2005 15:33:32 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Efn4O-00045U-96
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 13:04:52 -0800
+	Fri, 25 Nov 2005 15:33:32 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] When /tmp is not tmpfs.
 References: <200511240611.02613.rob@landley.net>
-	<200511251003.42328.rob@landley.net>
-	<87k6ewikte.fsf@amaterasu.srvr.nix>
 	<200511251418.43866.rob@landley.net>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200511251418.43866.rob@landley.net> (Rob Landley's message of
-	"Fri, 25 Nov 2005 14:18:43 -0600")
-Message-ID: <87br08iglz.fsf@amaterasu.srvr.nix>
+	<87br08iglz.fsf@amaterasu.srvr.nix>
+In-Reply-To: <87br08iglz.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200511260033.25661.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,155 +31,133 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 25 Nov 2005 21:04:40 +0000
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Chris Lightfoot <chris@ex-parrot.com>
+Date: Sat, 26 Nov 2005 00:33:25 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Chris Lightfoot <chris@ex-parrot.com>
 
-On Fri, 25 Nov 2005, Rob Landley moaned:
-> On Friday 25 November 2005 13:33, Nix wrote:
->> Maybe this is a stupid question, but... why do *any* systems other than
->> extremely memory-constrained ones not mount tmpfs on /tmp? It seems to
->> me to have numerous advantages and no disadvantages.
-> 
-> Actually, I consider the fact the OOM killer doesn't delete files out of tmpfs 
-> mounts to be a potential disadvantage in this context.
+On Friday 25 November 2005 22:04, Nix wrote:
+> On Fri, 25 Nov 2005, Rob Landley moaned:
+> > On Friday 25 November 2005 13:33, Nix wrote:
 
-Yeah, true, if you think the OOM killer is worthwhile (I do: most of the MM
-hackers don't. I know who knows more about the Linux kernel's MM and it's
-not me!)
+> > Actually, I consider the fact the OOM killer doesn't delete files out of
+> > tmpfs mounts to be a potential disadvantage in this context.
 
-> Using /tmp for anything has been kind of discouraged for a while, because 
-> throwing any insufficiently randomized filename in there is a security hole 
-> waiting to happen.
+Not quite understood this - what's the fact?
 
-Um, atomically create a directory, spray all the files you like under
-it.  Trivial. Doesn't everyone have a bit of scriptage that does that in
-$LANGUAGE_OF_CHOICE?
+> Yeah, true, if you think the OOM killer is worthwhile (I do: most of the MM
+> hackers don't. I know who knows more about the Linux kernel's MM and it's
+> not me!)
 
->                    By the time tmpfs was widely available as something you 
-> might mount on /tmp, the use of /tmp had been largely replaced with things 
-> like the ~/.kde directory or /var/spool/appdir with ownership and permissions 
-> enforced.
+Its euristics are crap (many cases breaking them), and the concept is crap: 
+damn hell, a C programmer has been taught to check that malloc() can return 
+NULL, not that he should patch a kernel to get a meaningful behaviour.
 
-The ~/.kde directory doesn't contain temporary files, but persistent state:
-and the same is true of /var/spool, and /var/cache and /var/tmp for that
-matter.
+In fact, luckily, Linux provides a "strict overcommit policy", i.e. no 
+overselling of memory.
 
-> Most of the remaining uses of /tmp are actually for things like named sockets 
-> (where tmpfs really doesn't help at all), or for tiny little files (like all 
-> the mcop crap) that on a different day would live under /var.  It's used for 
-> inter-process communications, not for temporary storage space.  Long ago 
+However, the idea of an OOM could be made to work, if you can kill an app 
+based on the derivative of its memory usage (i.e. how fast usage has 
+increased over the last moments).
 
-I suspect what causes this is that /tmp is explicitly for uses that
-*don't outlive a reboot*, and how many of those are there? Not all that
-damn many. --- at least, not all that damn many *programmatic* ones.
+> > Using /tmp for anything has been kind of discouraged for a while, because
+> > throwing any insufficiently randomized filename in there is a security
+> > hole waiting to happen.
 
-> things like vi would create temporary files in /tmp,
+> Um, atomically create a directory,
 
-/var/tmp, because the entire point of those files was to survive a reboot.
+DoS-able if filenames are predictable...
 
->                                                      but these days it uses .
-> ${filename}.swp in the same directory as the file being edited.
+> spray all the files you like under 
+> it.  Trivial. Doesn't everyone have a bit of scriptage that does that in
+> $LANGUAGE_OF_CHOICE?
 
-Yes, and I absolutely despise this behaviour. Is there any way to force vim
-to use /var/tmp like everyone else?
+Never seen anybody doing it, IIRC. Not even mkstemp() (even if today I 
+discover mkdtemp()).
 
->                                                                  (As a matter 
-> of fact, there's even a /var/tmp that konqueror recently started storing its 
-> cache in.  It used to be in ~/.kde.  So there isn't just _one_ tmp directory; 
-> if you try to tmpfs mount your /tmp than you need to do more than one.)
+> > Most of the remaining uses of /tmp are actually for things like named
+> > sockets (where tmpfs really doesn't help at all), or for tiny little
+> > files (like all the mcop crap) that on a different day would live under
+> > /var.
 
-Since /tmp and /var/tmp serve different purposes, yes, of course. This has
-always been true; right back in the early Slackware days the boot scripts
-used to carefully scrub /tmp but leave /var/tmp alone.
+There is no point in keeping them at reboot so why under /var?
 
-> I suspect that the real reason nobody mounts tmpfs on /tmp is that nobody 
-> _bothers_.  Nobody in their right mind puts anything big under /tmp, the few 
-> remaining uses are largely IPC between different users on the same machine, 
-> and even X11 has mostly moved away from that.  Things like postfix and cups 
-> use subdirectories under /var/spool that aren't world readable.
+> I suspect what causes this is that /tmp is explicitly for uses that
+> *don't outlive a reboot*, and how many of those are there? Not all that
+> damn many. --- at least, not all that damn many *programmatic* ones.
 
-Well, I'd say the majority users in my case are:
+> > things like vi would create temporary files in /tmp,
 
-- programs writing to $TMPDIR; config.guess, configure, and GCC are big users
-  on my systems, but lots of other apps write here for a while. Of course
-  you could point TMPDIR somewhere else, but does anyone do that?
+> /var/tmp, because the entire point of those files was to survive a reboot.
 
-  There are a quite surprising number of these: generally the files live
-  for brief instants before being unlinked, if at all. (mkstemp() creates its
-  files in $TMPDIR, after all, and often for those files minimal overhead
-  is what counts; and like it or not tmpfs has lower overhead than ext*fs.)
+> >                                                      but these days it
+> > uses . ${filename}.swp in the same directory as the file being edited.
 
-- users. A *lot* of my users dump temporary crud in /tmp: the names of these
-  files aren't predictable unless you're telepathic so we're pretty safe from
-  symlink attacks. (My local users are Nice Guys anyway, or I shoot them. No
-  shots have so far been necessary.)
+> Yes, and I absolutely despise this behaviour. Is there any way to force vim
+> to use /var/tmp like everyone else?
 
-Maybe your users don't dump everything they don't care much about in
-/tmp: mine are always sticking all sorts of things in there from
-half-chewed LaTeX through to boring logfiles and stuff being looked over
-on its way to the printer :)
+> Since /tmp and /var/tmp serve different purposes, yes, of course. This has
+> always been true; right back in the early Slackware days the boot scripts
+> used to carefully scrub /tmp but leave /var/tmp alone.
 
-(the half-chewed LaTeX worries me slightly: maybe a baby's dummy
-wouldn't go amiss.)
+> >                 What UML really _wants_ is shared memory, which has
+> > traditionally been available through /dev/shm.  Insisting that /tmp
+> > behave like /dev/shm because otherwise what you get doesn't behave like
+> > shared memory A) doesn't make make a whole lot of sense, B) doesn't match
+> > existing practice.
 
-> Keep in mind that tmpfs used to be shmfs, and what it's good at is providing 
-> shared memory.
+> `Existing practice' seems to me to have pretty much wanted something,
+> uh, like tmpfs. But maybe your existing practice of /tmp is very different
+> from mine. (It certainly sounds like it.)
 
-Yep. It just so happens that this gives good properties for transient stuff
-that should vanish no later than the next reboot, and generally lives only
-for as long as someone has it open.
+Existing practice is there for very good reasons:
 
->                 What UML really _wants_ is shared memory, which has 
-> traditionally been available through /dev/shm.  Insisting that /tmp behave 
-> like /dev/shm because otherwise what you get doesn't behave like shared 
-> memory A) doesn't make make a whole lot of sense, B) doesn't match existing 
-> practice.
+- back in 2.4, tmpfs on /tmp broke mkinitrd since it tried to loop-mount the 
+new initrd, which was in /tmp. And loop-mount over tmpfs didn't work.
 
-`Existing practice' seems to me to have pretty much wanted something,
-uh, like tmpfs. But maybe your existing practice of /tmp is very different
-from mine. (It certainly sounds like it.)
+- now most distros tend to *suggest* mounting tmpfs there (Gentoo does suggest 
+this). But since it's not back-compatible, aka if you don't know that you 
+loose data, it's up to the admin to do it. And btw, the admin of the network 
+I'm writing from didn't notice that a partition was not mounted on /home - 
+and said me "hey! I ran yum update and it removed the whole /home!".
 
->> In fact, even when you're memory-constrained, if you *have* diskspace that
->> you could spend on /tmp, you can swap to it instead, and spend the space
->> on virtual memory when you're not spending it on /tmp.
-> 
-> "can" doesn't mean "should".  Yes you can make a 10 gigabyte swap partition, 
-> but most people actively don't want one because if your system ever winds up 
-> using more than about twice as much swap space as it has physical memory, 
-> it's likely that the amount of swap thrashing you're doing is getting 
-> pathological.
+He had never known that "mount" lists mounts...
 
-You've never used dar in infinint mode or watched large matrix maths stuff
-churn through to completion :/ there really are things with insane memory
-requirements and good locality of reference. (I think the most I ever saw
-dar eat was 15Gb of swap. *gah*)
+(Btw, the problem was that he added a new external disk, but labeled it /boot, 
+like an existing /boot partition , so mount -a choked with "duplicate label 
+'/boot'" and it stopped before mounting /home).
 
->                Having a runaway app have to churn through 10 gigabytes of 
-> swap space before the OOM killer terminates it can turn 30 seconds of 
-> paralysis into 10 minutes.  Not an improvement.
+Sorry for the OT, hope it's fun ;D
 
-The problem there is that it's churning, i.e. that its locality of reference
-is crap. Such a program should indeed not be allowed to eat that much swap.
+> >> In fact, even when you're memory-constrained, if you *have* diskspace
+> >> that you could spend on /tmp, you can swap to it instead, and spend the
+> >> space on virtual memory when you're not spending it on /tmp.
 
-> Also, although it's pretty common to have 10 gigabytes of spare disk space on 
-> a modern laptop, it is _not_ common to have 10 gigabytes of spare swap space, 
-> and that's for a reason.  Extra space in your filesystem can be used for all 
-> sorts of things.  Extra swap space is normally wasted.
+> > "can" doesn't mean "should".  Yes you can make a 10 gigabyte swap
+> > partition, but most people actively don't want one because if your system
+> > ever winds up using more than about twice as much swap space as it has
+> > physical memory, it's likely that the amount of swap thrashing you're
+> > doing is getting pathological.
 
-You can zap it if you need it for something else pretty easily. swapfiles are
-no slower than swap partitions these days, and swap partitions are easy to
-turn into filesystems too.
+> You've never used dar in infinint mode or watched large matrix maths stuff
+> churn through to completion :/ there really are things with insane memory
+> requirements and good locality of reference. (I think the most I ever saw
+> dar eat was 15Gb of swap. *gah*)
 
-> So having tmp just be a normal directory isn't really that bad of a choice.  
-> It normally manifests no downsides whatsoever.  And encouraging people to 
-> use /tmp is considered a security hole.
-
-That depends if you have telepathic local attackers :) I don't.
+Boy, be serious - we are talking about normal systems, and you know that you'd 
+better run dar on properly sized systems...
 
 -- 
-`Y'know, London's nice at this time of year. If you like your cities
- freezing cold and full of surly gits.' --- David Damerell
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
