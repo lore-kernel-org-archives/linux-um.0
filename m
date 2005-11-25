@@ -1,27 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EfbjQ-0001LG-SF for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 03:27:08 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EfbjQ-0007sb-CK
+	id 1Eff0W-0003OY-KO for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Nov 2005 06:57:00 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user12889)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Eff0V-0005cj-6u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Nov 2005 03:27:08 -0800
-From: Rob Landley <rob@landley.net>
+	Fri, 25 Nov 2005 06:57:00 -0800
 Subject: Re: [uml-devel] When /tmp is not tmpfs.
 References: <200511240611.02613.rob@landley.net>
-	<200511250348.28123.rob@landley.net>
-	<200511250452.05006.rob@landley.net>
-In-Reply-To: <200511250452.05006.rob@landley.net>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200511240611.02613.rob@landley.net> (Rob Landley's message of
+	"Thu, 24 Nov 2005 06:11:01 -0600")
+Message-ID: <87sltkkc7i.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511250526.56755.rob@landley.net>
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,37 +28,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 25 Nov 2005 05:26:55 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Date: Fri, 25 Nov 2005 14:56:49 +0000
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 25 November 2005 04:52, Rob Landley wrote:
-> FYI:
->
-> The mounts on a Fedora Core 4 system:
-...
-> The mounts on the x86-64 PLD system I've been borrowing (and on which I do
-> not have root access):
-...
-> The shell servers from sourceforge:
-...
-> And I reiterate that on my ubuntu laptop /tmp is not tmpfs (it inherits my
-> ext3 /) but /dev/shm is a world writeable tmpfs mount that has the sticky
-> bit set.
-...
+On Thu, 24 Nov 2005, Rob Landley uttered the following:
+> There is a tmpfs mount, it's /dev/shm.  And apparently, even if tmpfs isn't 
+> exposed as a separate filesystem, system V shared memory will still use it.
 
-Found one more lying around:  A gentoo system my friend mark set up.  Can't 
-easily cut and paste the mount table from here (it's a laptop), but /tmp 
-inherits / which is ext3, and /dev/shm is a tmpfs mount which is world 
-writeable and has the sticky bit set.
+s/System V/POSIX/
 
-Except for the x86-64 PLD system (which is already known to be weird), it's 
-unanimous so far...
+It's the shm_open()/shm_close()shm_unlink() functions you're looking for.
 
-Rob
+It's been present in glibc since 2.2, so you should be able to use them
+without any real difficulty if need be.
+
+> So my question is, could system v shared memory be used in place of the tmpfs 
+> mount?  (Can it be mapped in the right location and inherited across fork()?)  
+
+You could certainly do just that with POSIX shm :)
+
 -- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+`Y'know, London's nice at this time of year. If you like your cities
+ freezing cold and full of surly gits.' --- David Damerell
+
 
 
 -------------------------------------------------------
