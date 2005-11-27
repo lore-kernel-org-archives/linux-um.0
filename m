@@ -2,33 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EgAZ7-0000bW-7L for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Nov 2005 16:38:49 -0800
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EgAZ5-0003CL-Q7
+	id 1EgF2C-00028T-19 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Nov 2005 21:25:08 -0800
+Received: from in-ruhr4.ruhr.de ([62.80.13.2] helo=mail.ruhr.de ident=qmailr)
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EgF2A-0002fs-F4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Nov 2005 16:38:49 -0800
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1EgAXl-0001G2-QF for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Nov 2005 01:37:25 +0100
-Received: from dslb-082-083-008-021.pools.arcor-ip.net ([82.83.8.21])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 27 Nov 2005 01:37:25 +0100
-Received: from skoehler by dslb-082-083-008-021.pools.arcor-ip.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 27 Nov 2005 01:37:25 +0100
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <dmav2j$4k6$1@sea.gmane.org>
-References: <200511261303.42684.rob@landley.net> <dmammg$iem$1@sea.gmane.org>
+	Sat, 26 Nov 2005 21:25:08 -0800
+Date: Sun, 27 Nov 2005 06:22:16 +0100
+From: Andreas Wohlfeld <agw@supersonic.ruhr.de>
+Subject: Re: [uml-devel] Using lilo on ubda?
+Message-ID: <20051127052216.GA18684@supersonic.ruhr.de>
+References: <200511261303.42684.rob@landley.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <dmammg$iem$1@sea.gmane.org>
-Subject: [uml-devel] Re: Using lilo on ubda?
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200511261303.42684.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,14 +28,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 27 Nov 2005 01:36:31 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
 
->> Lilo is saying that ubda is not a device with partitions.
+On Sat, Nov 26, 2005 at 01:03:42PM -0600, Rob Landley wrote:
+> Lilo is saying that ubda is not a device with partitions.
+> 
+> Anybody know what it's talking about?  (I've got a ubda1.  I'm trying to make 
+> a disk image I can test boot with qemu without having to boot a knoppix image 
+> to do it...)
+> 
+Did you use fdisk on your hard file or do you use ist as a super floppy?
 
-Ohh, i just read you question again, i think my answer is completely
-unrelated :-(
+Try testing it with a second hardfile and (c)fdisk it with partitions.
 
+Most of us use several hard files as super floppies not putting any
+partition table on the disk (you can see a message about that during
+boot, I think).
 
 
 -------------------------------------------------------
