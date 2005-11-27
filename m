@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EgR6C-0008EE-OB for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Nov 2005 10:18:04 -0800
+	id 1EgRJJ-0000gC-E5 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 27 Nov 2005 10:31:37 -0800
 Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user79856)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EgR6A-0002AN-RR
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user88658)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EgRJE-0002vR-2R
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Nov 2005 10:18:04 -0800
+	Sun, 27 Nov 2005 10:31:33 -0800
 Subject: Re: [uml-devel] When /tmp is not tmpfs.
 References: <200511240611.02613.rob@landley.net>
-	<200511251418.43866.rob@landley.net>
-	<87br08iglz.fsf@amaterasu.srvr.nix>
-	<200511251631.41518.rob@landley.net>
+	<200511260033.25661.blaisorblade@yahoo.it>
+	<87sltk9my7.fsf@amaterasu.srvr.nix>
+	<200511260547.10683.rob@landley.net>
 From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200511251631.41518.rob@landley.net> (Rob Landley's message of
-	"Fri, 25 Nov 2005 16:31:41 -0600")
-Message-ID: <87br067y60.fsf@amaterasu.srvr.nix>
+In-Reply-To: <200511260547.10683.rob@landley.net> (Rob Landley's message of
+	"Sat, 26 Nov 2005 05:47:10 -0600")
+Message-ID: <877jau7xjc.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -31,171 +31,160 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 27 Nov 2005 18:17:43 +0000
+Date: Sun, 27 Nov 2005 18:31:19 +0000
 To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Chris Lightfoot <chris@ex-parrot.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Chris Lightfoot <chris@ex-parrot.com>
 
-[Sorry for response delay, steaming cold/flu]
-
-On Fri, 25 Nov 2005, Rob Landley worried:
-> On Friday 25 November 2005 15:04, Nix wrote:
->> The ~/.kde directory doesn't contain temporary files, but persistent state:
+On Sat, 26 Nov 2005, Rob Landley murmured woefully:
+> On Friday 25 November 2005 20:12, Nix wrote:
+>> If it's a problem you have both hostile users and no size limits on /tmp
+>> and you therefore have bigger problems anyway. :)
 > 
-> ~/.kde/share/apps/kmail/lock is persistent state?
+> The size limits on /tmp aren't per-user.
 
-No, but KDE is a bit of a mess in some areas, and this is one of htem.
+True. TODO: add tmpfs quota support. :)
 
-> I do know that half the time the darn battery runs out and kde suddely shuts 
-> down my desktop without the courtesy of even _warning_ me first (oh it pops 
-> up a window three seconds before doing it), kmail doesn't have a chance to 
-> zap this file before being killed and thus I have to drill down and zap the 
-> sucker by hand or it'll refuse to run when I boot back up.
-
-... and this is why it should be in /tmp.
-
-> Circa Red Hat 9, konqueror's cache files were under .kde.  I have no idea what 
-> the junk in .kde/share/apps/kpdf is for...
-
-Not true as of reasonably recent Konquerors.
-
-> But I take your point.  They've instituted a policy and tried to clean this 
-> up.  Similarly, .bash_history, .bittorrent, .DCOPserver*, .mcop, and all the 
-> other fun stuff written into home must be considered persistent state.
-
-Certainly the bash history and bittorrent stuff is persistent. .mcop is
-persistent (the trader cache should outlast reboots).
-
->> and the same is true of /var/spool,
-> 
-> Doesn't /var/spool/cups contains files spooled to the printer?  (I dunno, the 
-> only printer in the house is hooked up to my fiance's windows machine.)
-
-Yes. Again, if the machine reboots, you don't want to lose stuff you've got
-waiting to print.
-
->> > things like vi would create temporary files in /tmp,
+>> > However, the idea of an OOM could be made to work, if you can kill an app
+>> > based on the derivative of its memory usage (i.e. how fast usage has
+>> > increased over the last moments).
 >>
->> /var/tmp, because the entire point of those files was to survive a reboot.
+>> ... and the VM appears to be growing things that might help in that area :)
 > 
-> Is it?  I thought it was to support undo.
+> We get better as time goes on.
+> 
+> My original point was that the semantics of what UML wants is shared memory.  
+> It's trusting /tmp to provide different behavior than simply using ~, and 
+> this turns out to be a very unreliable assumption.  There is a directory 
+> (/dev/shm) whose entire definition is to provide those semantics, and 
+> shouldn't even _exist_ if it doesn't.  I believe that would be a better 
+> directory to use.
 
-Nah, as this XEmacs user understands it, it's for `vi -r'. (XEmacs does that
-with stuff in the local directory and/or any-directory-of-your-choice, so I
-picked one under /var/tmp. :) )
+I have to agree, not least because it is counterintuitive to set a strict
+size limit on /tmp on the host and then find you can't start big UMLs.
 
->> >                                                      but these days it
->> > uses . ${filename}.swp in the same directory as the file being edited.
+>> ... with a random name, obviously. :)
+> 
+> Like "/tmp/uml.ctl" in arch/um/drivers/daemon_kern.c, line 70?
+
+Um. :/
+
+>             I personally symlink /bin, /sbin, and /lib to the 
+> corresponding /usr directories and consolidate the whole mess, myself.  Yes, 
+> you have to patch gcc's paths (in collect2) to not search _both_ /lib 
+> and /usr/lib because if gnu's linker finds the same symbols in two different 
+> libraries it statically links them in rather than trying to figure out which 
+> one is right, resulting in executables as big as if they're statically linked 
+> but still refusing to run if they can't find their shared libraries at run 
+> time.  That's a bug in ld.
+
+I'll say! I'll see if I can fix that (if it isn't already fixed: I'm having
+trouble reproducing it here, with binutils 2.16.91.0.2...)
+
+>> > - back in 2.4, tmpfs on /tmp broke mkinitrd since it tried to loop-mount
+>> > the new initrd, which was in /tmp. And loop-mount over tmpfs didn't work.
 >>
->> Yes, and I absolutely despise this behaviour. Is there any way to force vim
->> to use /var/tmp like everyone else?
+>> Ah, well, I never use initrd if I can avoid it, and a bug in one tool is
+>> a reason to *fix that tool*, not rejig the whole damn system.
 > 
-> It's a compile-time option.  (I accidentally set it to use /tmp once and had 
-> to figure out how to undo it.)
+> I agree initrd is kinda pointless, but initramfs isn't.  The kernel guys are 
+> moving towards initramfs being required someday.
 
-Is it? Oh good, I'll flip it next time I upgrade :)
+I didn't properly understand the difference (using rootfs versus not) when
+I wrote that email. I do now thanks to your nice little document recently
+mentioned on l-k, and I have to agree that initramfs seems a whole lot nicer.
 
->> - programs writing to $TMPDIR; config.guess, configure, and GCC are big
->> users on my systems, but lots of other apps write here for a while. Of
->> course you could point TMPDIR somewhere else, but does anyone do that?
+>                                                  These are still nebulous 
+> future plans with no actual deadline, but they include moving to dynamically 
+> assigned major/minor numbers (so you need something like udev to 
+> populate /dev),
+
+How terrible. :)
+
+>                 having userspace find and mount the real root partition (so 
+> when you're booting from a USB key but your root paritition lives on an NFS 
+> server that in order to access it you have to dhcp yourself an address, 
+> nslookup the server name, and then login with a public key from said USB 
+> stick...)  All the various partitioning schemes could be moved over to device 
+> mapper.  And so on.
+
+It's a little annoying for those of us *without* horribly complex boot
+schemes; I guess there'll be a `default initramfs' which replicates the
+current behaviour.
+
+> They'd proposed a serious kernel crapectomy "for 2.7" back before 2.7 got put 
+> on indefinite hold.  How they're rolling it out now, we dunno.  They seem to 
+> be happy chewing their current mouthful, at the moment...
+
+Yeah, the change rate of the kernel doesn't exactly seem to be at an
+all-time low :)
+
+>> What does it look like in this brave new world of shared 
+>> subtrees?
+> 
+> I had this discussion on the kernel list a week or so back: namespaces are 
+> reference counted so as soon as the last process that can see a mount goes 
+> away, umount happens.  This means that umount -a should only zap everything 
+> in your current namespace, so that after init kills all sub-processes it can 
+> then run umount -a for pid 1, life is good.
+
+Yeah, but what does /proc/mounts say? Does it show only references that the
+querying process can see?
+
+... actually, hey, yes, it's a symlink to /proc/self/mounts, so it does the
+right thing already. Nifty.
+
+>> Obviously /etc/mtab *must* be a symlink to /proc/mounts, now, 
+>> only oops that breaks the quota tools...)
+> 
+> I rewrote busybox mount so that things work properly with /proc/mounts.  And I 
+> vaguely remember coming up with an in-house patch to fix the quota tools 
+> (they were upset by rootfs) something like four years ago.
+
+Please feed it upstream to the quota tools people before I have to write the
+same damn patch ;)))
+
+>> I HATE FSCKING MTAB
 >>
->>   There are a quite surprising number of these: generally the files live
->>   for brief instants before being unlinked, if at all. (mkstemp() creates
->> its files in $TMPDIR, after all, and often for those files minimal overhead
->> is what counts; and like it or not tmpfs has lower overhead than ext*fs.)
+>> (in three-part harmony, probably)
 > 
-> Files that live for brief instants never get written out to disk anyway.  
+> Everybody hates /etc/mtab.  It doesn't work if you chroot.  It can't handle 
+> --bind or --move mounts...  Just symlink it to /proc/mounts and recognize 
+> that any tool that can't handle that is a buggy tool that needs to be fixed.
 
-Aside: it's easy to test this by writing something that creates and
-unlinks a file, dumps stuff into it, then deletes it, and loops on that:
-watch the disk light. I'll write a testcase because I'm so sure I'm right.
+Well, ideally the kernel should allow mount(2) to feed it *arbitrary*
+options in the `data' argument, reflecting those it doesn't understand
+back into /proc/mounts. That would avoid breaking the quota tools and,
+um, whatever else depends on this (I've seen distributed administration
+tools that mark up filesystems with custom options in the expectation
+that they'll land in mtab, too: I think there's some automated fstab
+editor in HAL that does the same thing).
 
-[five minutes later]
+[...]
+> First time I've heard of the tool, but then back under 2.4.7 I remember I had 
+> rsync regularly triggering the OOM killer.  Not because rsync was leaking, 
+> but because the servers backing up only had 128 megs of memory and the 
+> balancing was _terrible_ so the dentry cache and page cache would squeeze out 
+> anonymous pages to the point where rsync itself got OOM killed...
 
-... oops. I just, er, proved I was wrong. Ah well. You live and
-learn. This was certainly true in 2.4 but in 2.6 it seems to be the case
-that dirty blocks get magically undirtied if the file in question gets
-completely unlinked and not kept open by anything before the blocks hit
-the disk (unless the file is too large to fit in the page cache of
-course; even then it might fit in tmpfs, as tmpfs is swap-backed but
-even I'll admit that multi-hundred-megabyte writes to /tmp are rare
-things for programs to do.)
+Ick, yes. I switched to 2.4 around that time and switched right back to
+2.2 again because the MM had so many problems...
 
-> That's why there's the delay before dirty pages in the page cache are 
-> scheduled for writeout.  So tmpfs doesn't help there.
+> People who want truly insane amounts of memory these days (often for graphics 
+> or video editing) tend to mmap their data files directly and work in there.  
+> Once again rendering insane amounts of swap less useful...
 
-Well, it does if the consuming program takes some time to consume the
-file, or the producing program takes some time to generate it (e.g. GCC;
-yes, even in -pipe mode, some temporary files in /tmp are used.)
+Not necessarily, given the existence of MAP_PRIVATE. (The problem with working
+directly in data files without MAP_PRIVATE is that if you lose power at *any*
+time, your data file is toast.)
 
->> - users. A *lot* of my users dump temporary crud in /tmp:
-> 
-> Yeah, at Rutgers we used to do that on the Sun machines to get around the disk 
-> quota.
+> If we had a "treat this like it's on tmpfs" madvice, that would be ideal...
 
-Mine do it to avoid cluttering up their $HOMEs with crap. (Well, all but
-one whose home directory looks like a sewer. I avoid looking in there
-unless forced.)
+Agreed. Combine that with per-user filesytems and, well, give every user
+a small tmpfs mount of their own on /tmp and let apps use suitably
+advised mmaps for everything else :)
 
->> Maybe your users don't dump everything they don't care much about in
->> /tmp: mine are always sticking all sorts of things in there from
->> half-chewed LaTeX through to boring logfiles and stuff being looked over
->> on its way to the printer :)
-> 
-> Sounds like your users are old unix hands who cut their teeth on traditional 
-> Unix boxes in the days before Linux.
-
-Two of them are for certain: I don't know about the rest. They're not
-doing it for efficiency reasons, just out of tidiness.
-
->> `Existing practice' seems to me to have pretty much wanted something,
->> uh, like tmpfs. But maybe your existing practice of /tmp is very different
->> from mine. (It certainly sounds like it.)
-> 
-> Out there in the field, today, /tmp is not usually tmpfs.
-
-Out there in the field, today, the average Linux box is running Oracle and
-very little else :(
-
->                                                            And nobody's seen 
-> enough benefit in it to bother deploying it on the Fedora, Gentoo, and Ubuntu 
-> systems I've tested.
-
-I haven't seen a non-tmpfs-for-/tmp Linux box in years. I guess this is
-another transatlantic divide thing :)
-
->> You've never used dar in infinint mode
-> 
-> Never even heard of it.
-
-A very powerful backup program with, ahem, notable memory consumption
-problems in its default configuration (unless you *like* 1Gb memory
-consumption per million files, approx.)
-
->> or watched large matrix maths stuff 
->> churn through to completion :/
-> 
-> Oh I've watched large jobs thrash the heck out of a machine all afternoon.  
-> Classic ray tracing, for example...
-
-Ray tracing is a worst case; it has very little locality of reference at
-all (at least not unless the ray tracer has been optimized for parallism,
-which `classic' ones generally haven't been).
-
->> > Also, although it's pretty common to have 10 gigabytes of spare disk
->> > space on a modern laptop, it is _not_ common to have 10 gigabytes of
->> > spare swap space, and that's for a reason.  Extra space in your
->> > filesystem can be used for all sorts of things.  Extra swap space is
->> > normally wasted.
->>
->> You can zap it if you need it for something else pretty easily. swapfiles
->> are no slower than swap partitions these days, and swap partitions are easy
->> to turn into filesystems too.
-> 
-> I've done this, but it's not automatic.  (Did they ever make swapfiles 
-> reliable so they don't lock up under low memory situations?)
-
-As I understand it all the downsides of swapfiles (speed, reliability et
-al) went away in the 2.5.x timeframe.
+(security holes? but other users can't *see* that /tmp, which is why it's
+mode 640, just like their $HOME...)
 
 -- 
 `Y'know, London's nice at this time of year. If you like your cities
