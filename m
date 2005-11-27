@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EgPYL-0003UY-64 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Nov 2005 08:39:01 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EgPYG-0006C9-1H
+	id 1EgPia-00041A-8j for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 27 Nov 2005 08:49:36 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EgPiQ-0008L0-W9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Nov 2005 08:39:01 -0800
+	Sun, 27 Nov 2005 08:49:32 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] When /tmp is not tmpfs.
 References: <200511240611.02613.rob@landley.net>
-	<200511260033.25661.blaisorblade@yahoo.it>
-	<200511260444.29470.rob@landley.net>
-In-Reply-To: <200511260444.29470.rob@landley.net>
+	<87br08iglz.fsf@amaterasu.srvr.nix>
+	<200511251631.41518.rob@landley.net>
+In-Reply-To: <200511251631.41518.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511271738.39880.blaisorblade@yahoo.it>
+Message-Id: <200511271748.53872.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,68 +31,67 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 27 Nov 2005 17:38:38 +0100
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Nix <nix@esperi.org.uk>, Chris Lightfoot <chris@ex-parrot.com>
+Date: Sun, 27 Nov 2005 17:48:53 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Nix <nix@esperi.org.uk>, Chris Lightfoot <chris@ex-parrot.com>
 
-On Saturday 26 November 2005 11:44, Rob Landley wrote:
-> On Friday 25 November 2005 17:33, Blaisorblade wrote:
-
-> > - back in 2.4, tmpfs on /tmp broke mkinitrd since it tried to loop-mount
-> > the new initrd, which was in /tmp. And loop-mount over tmpfs didn't work.
+On Friday 25 November 2005 23:31, Rob Landley wrote:
+> On Friday 25 November 2005 15:04, Nix wrote:
+> > The ~/.kde directory doesn't contain temporary files, but persistent
+> > state:
 >
-> I vaguely remember this being fixed. :)
-
-Yep, it was, but at 2.4.18 (my first kernel) it wasn't yet.
-
-> > He had never known that "mount" lists mounts...
+> ~/.kde/share/apps/kmail/lock is persistent state?
 >
-> I try not to assume that people know everything there is to know about
-> Unix.
+> I do know that half the time the darn battery runs out and kde suddely
+> shuts down my desktop without the courtesy of even _warning_ me first (oh
+> it pops up a window three seconds before doing it), kmail doesn't have a
+> chance to zap this file before being killed and thus I have to drill down
+> and zap the sucker by hand or it'll refuse to run when I boot back up.
+>
+> Circa Red Hat 9, konqueror's cache files were under .kde.  I have no idea
+> what the junk in .kde/share/apps/kpdf is for...
+>
+> But I take your point.  They've instituted a policy and tried to clean this
+> up.  Similarly, .bash_history, .bittorrent, .DCOPserver*, .mcop, and all
+> the other fun stuff written into home must be considered persistent state.
+>
+> > and the same is true of /var/spool,
+>
+> Doesn't /var/spool/cups contains files spooled to the printer?  (I dunno,
+> the only printer in the house is hooked up to my fiance's windows machine.)
 
-I've done my share of stupid things, but he's _payed_ as a sysadmin (though 
-he's actually a programmer) and I learned this time ago, and since I started 
-using Linux <=3.5 years ago, time ago means at the very beginning ... he 
-_should_ know that. However he had backups - which shows he's well 
-intentioned.
+Spool *is* persistent... this is why cups is a daemon. Indeed, when you power 
+on a printer and it starts printing without further action, you (or the 
+average user, or me for a couple of seconds) say "it's a daemon's fault!"...
 
-(as an aside, I do despise learning *so* fast... I wouldn't be able to use 
-socket() without manuals, and there's a lot of stuff I'd like to learn well. 
-And I'd really like to _start_ and finish even a little project on my own... 
-it's years I don't start coding some fun project up).
-
-> And the default seems to be that /tmp ain't tempfs, but /dev/shm is.
-
-I argue for that too...
-
-> > (Btw, the problem was that he added a new external disk, but labeled it
-> > /boot, like an existing /boot partition , so mount -a choked with
-> > "duplicate label '/boot'" and it stopped before mounting /home).
-
-> He's using Red Hat, isn't he? :)
-
-Yes...
-
-> (Been there, done that, moved the darn labels to /dev/hda4 and such. 
-> Wouldn't recommend that with SCSI because the scsi bus detects devices via
-> chicken entrails and then enumerates them in sequence (with no gaps) on a
-> first come first served basis.  With ATA, /dev/hdd3 means second
-> controller, slave device, third partition, and that doesn't move unless you
-> physically unplug it from its connector cable, no matter what else you plug
-> in.  The whole _reason_ Red hat has this boot label stuff is some people
-> have an unreasoning love of SCSI devices. :)
-
-Well, it makes sense anyhow, and though it's unusual and it sucks for the 
-user, it would be much more meaningful to use labels rather than partitions 
-(when repartitioning the same can happen - and I've seen the bloody hell 
-happen with partition tables
+> > > things like vi would create temporary files in /tmp,
+> >
+> > /var/tmp, because the entire point of those files was to survive a
+> > reboot.
+>
+> Is it?  I thought it was to support undo.
 
 
-> google dar linux:
-> Some french disk archiving tool, apparently.  I generally just use tarballs
-> or rsync.
+> Files that live for brief instants never get written out to disk anyway.
+> That's why there's the delay before dirty pages in the page cache are
+> scheduled for writeout.  So tmpfs doesn't help there.
 
-It's clear Nix is using some calculation program (not sure what's it).
+That's not entirely correct for performances - the file could not get written 
+out, but on most filesystems (excluding XFS, Reiser4 and some experimental 
+ext3 version) a few preparatory steps (block allocation, for instance, and 
+that involves poking through free list bitmaps and is even computationally 
+intensive*) are done. Delayed allocation was invented exactly for that.
+
+* on a RAID array with ext3, in a benchmark, it limited writeout speed downto 
+300 Mb/s instead of 500 Mb/s (See OLS 2005, ext3 paper).
+
+> > - users. A *lot* of my users dump temporary crud in /tmp:
+
+> *shrug*.  The truly transient stuff never leaves the page cache, no matter
+> what the filesystem.  (Especially if you mount with noatime, which is the
+> norm these days.)
+
+I've seen it rarely used... only Gentoo suggests that.
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
