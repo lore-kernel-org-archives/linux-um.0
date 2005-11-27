@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EgLwZ-0001ME-EZ for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Nov 2005 04:47:47 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EgLwY-0007CB-2e
+	id 1EgPYL-0003UY-64 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 27 Nov 2005 08:39:01 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EgPYG-0006C9-1H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Nov 2005 04:47:47 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Using lilo on ubda?
-References: <200511261303.42684.rob@landley.net>
-	<20051127052216.GA18684@supersonic.ruhr.de>
-In-Reply-To: <20051127052216.GA18684@supersonic.ruhr.de>
+	Sun, 27 Nov 2005 08:39:01 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] When /tmp is not tmpfs.
+References: <200511240611.02613.rob@landley.net>
+	<200511260033.25661.blaisorblade@yahoo.it>
+	<200511260444.29470.rob@landley.net>
+In-Reply-To: <200511260444.29470.rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200511270647.10473.rob@landley.net>
+Message-Id: <200511271738.39880.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,76 +31,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 27 Nov 2005 06:47:03 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andreas Wohlfeld <agw@supersonic.ruhr.de>
+Date: Sun, 27 Nov 2005 17:38:38 +0100
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Nix <nix@esperi.org.uk>, Chris Lightfoot <chris@ex-parrot.com>
 
-On Saturday 26 November 2005 23:22, Andreas Wohlfeld wrote:
-> On Sat, Nov 26, 2005 at 01:03:42PM -0600, Rob Landley wrote:
-> > Lilo is saying that ubda is not a device with partitions.
-> >
-> > Anybody know what it's talking about?  (I've got a ubda1.  I'm trying to
-> > make a disk image I can test boot with qemu without having to boot a
-> > knoppix image to do it...)
+On Saturday 26 November 2005 11:44, Rob Landley wrote:
+> On Friday 25 November 2005 17:33, Blaisorblade wrote:
+
+> > - back in 2.4, tmpfs on /tmp broke mkinitrd since it tried to loop-mount
+> > the new initrd, which was in /tmp. And loop-mount over tmpfs didn't work.
 >
-> Did you use fdisk on your hard file or do you use ist as a super floppy?
+> I vaguely remember this being fixed. :)
 
-I'm trying to create a partitioned image file to feed as a hard drive image to 
-qemu.
+Yep, it was, but at 2.4.18 (my first kernel) it wasn't yet.
 
-I eventually made the lilo installer happy by specifying _everything_:
-disk=/dev/ubda
-  bios=0x80
-  cylinders=128
-  heads=16
-  sectors=63
-  partition=/dev/ubda1
-    start=63
-
-The actual booting part isn't occurring yet.  (Getting "L 99 99 99 99 99"...)  
-I may have the partition offset wrong.  Run my partition finding script... 
-Yup, I told sfdisk not to leave a gap here so it starts at sector 1, I 
-remember now...  And now the kernel decompression is going "ran out of input 
-data" because I didn't update my length hack for the new kernel I just 
-built...  Forgot to make some symlinks...  Ah, I left "mknod" out of 
-busybox...
-
-Work progresses.  Slowly, as usual... :)
-
-
-> Try testing it with a second hardfile and (c)fdisk it with partitions.
+> > He had never known that "mount" lists mounts...
 >
-> Most of us use several hard files as super floppies not putting any
-> partition table on the disk (you can see a message about that during
-> boot, I think).
+> I try not to assume that people know everything there is to know about
+> Unix.
 
-It's partitioned but the first partition was starting at sector 1.
+I've done my share of stupid things, but he's _payed_ as a sysadmin (though 
+he's actually a programmer) and I learned this time ago, and since I started 
+using Linux <=3.5 years ago, time ago means at the very beginning ... he 
+_should_ know that. However he had backups - which shows he's well 
+intentioned.
 
-#!/bin/sh
-CYLINDERS=128
-HEADS=16
-SECTORS=63
+(as an aside, I do despise learning *so* fast... I wouldn't be able to use 
+socket() without manuals, and there's a lot of stuff I'd like to learn well. 
+And I'd really like to _start_ and finish even a little project on my own... 
+it's years I don't start coding some fun project up).
 
-dd if=/dev/zero of=hda.img bs=$[$HEADS*$SECTORS*512] count=$CYLINDERS
-sfdisk -uS -C $CYLINDERS -H 16 -S 63  hda.img << EOF
-1,$[16*63*$CYLINDERS-1],83
-EOF
+> And the default seems to be that /tmp ain't tempfs, but /dev/shm is.
 
-The old dos compatible partitions would have used a starting cylinder of 
-$SECTORS instead of 1, but LILO doesn't need the gap.  (I think grub might.)
+I argue for that too...
 
-You can actually use losetup to mount a partition via -o 
-$[$cylinder*$sector*$head*512] (where cylinder is actually starting cylinder 
--1, because it's how much to _skip_ and cylinder numbering starts at 1).  You 
-can't feed a "length" option to losetup (only offset), but now you know what 
-the blocks-count option to mke2fs is for. :)
+> > (Btw, the problem was that he added a new external disk, but labeled it
+> > /boot, like an existing /boot partition , so mount -a choked with
+> > "duplicate label '/boot'" and it stopped before mounting /home).
 
-Yes, I do this sort of thing all the time.  For fun.
+> He's using Red Hat, isn't he? :)
 
-Rob
+Yes...
+
+> (Been there, done that, moved the darn labels to /dev/hda4 and such. 
+> Wouldn't recommend that with SCSI because the scsi bus detects devices via
+> chicken entrails and then enumerates them in sequence (with no gaps) on a
+> first come first served basis.  With ATA, /dev/hdd3 means second
+> controller, slave device, third partition, and that doesn't move unless you
+> physically unplug it from its connector cable, no matter what else you plug
+> in.  The whole _reason_ Red hat has this boot label stuff is some people
+> have an unreasoning love of SCSI devices. :)
+
+Well, it makes sense anyhow, and though it's unusual and it sucks for the 
+user, it would be much more meaningful to use labels rather than partitions 
+(when repartitioning the same can happen - and I've seen the bloody hell 
+happen with partition tables
+
+
+> google dar linux:
+> Some french disk archiving tool, apparently.  I generally just use tarballs
+> or rsync.
+
+It's clear Nix is using some calculation program (not sure what's it).
+
 -- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
