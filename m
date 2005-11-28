@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EglOj-0007BX-Vi for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Nov 2005 07:58:33 -0800
+	id 1EgltW-0000k5-6m for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Nov 2005 08:30:22 -0800
 Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
 	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EglOg-0000JU-Gx
+	(Exim 4.44) id 1EgltR-000236-Qk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Nov 2005 07:58:34 -0800
+	Mon, 28 Nov 2005 08:30:18 -0800
 From: Rob Landley <rob@landley.net>
 MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200511281029.58116.rob@landley.net>
 Content-Type: text/plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511280958.12932.rob@landley.net>
 Subject: [uml-devel] [PATCH] uml: move TMP default from /tmp to /dev/shm.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -29,7 +29,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 28 Nov 2005 09:58:12 -0600
+Date: Mon, 28 Nov 2005 10:29:57 -0600
 To: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>
 
 Signed-off-by: Rob Landley <rob@landley.net>
@@ -38,6 +38,9 @@ UML really wants shared memory semantics form its physical memory map file,
 and the place for that is /dev/shm.  So move the default, and fix the error
 messages to recognize that this value can be overridden.
 ---
+Let's try that again with wordrap off...
+
+
 UML calls mmap() to allocate some "physical memory" it shares between
 processes.  If we're not careful, every page of this memory that gets dirtied
 is pointelessly scheduled for writeout, which means an active user mode
@@ -63,12 +66,9 @@ should never require that.)
 One function is moved to another file, but the only changes are to its 
 printf()s.
 
-diff -ur linux-2.6.15-rc2/arch/um-old/os-Linux/mem.c 
-linux-2.6.15-rc2/arch/um/os-Linux/mem.c
---- linux-2.6.15-rc2/arch/um-old/os-Linux/mem.c 2005-11-23 02:35:49.000000000 
--0600
-+++ linux-2.6.15-rc2/arch/um/os-Linux/mem.c 2005-11-28 09:33:21.158395976 
--0600
+diff -ur linux-2.6.15-rc2/arch/um-old/os-Linux/mem.c linux-2.6.15-rc2/arch/um/os-Linux/mem.c
+--- linux-2.6.15-rc2/arch/um-old/os-Linux/mem.c 2005-11-23 02:35:49.000000000 -0600
++++ linux-2.6.15-rc2/arch/um/os-Linux/mem.c 2005-11-28 09:33:21.158395976 -0600
 @@ -34,7 +34,7 @@
     break;
   }
@@ -105,12 +105,9 @@ linux-2.6.15-rc2/arch/um/os-Linux/mem.c
 +
 + close(fd);
 +}
-diff -ur linux-2.6.15-rc2/arch/um-old/os-Linux/start_up.c 
-linux-2.6.15-rc2/arch/um/os-Linux/start_up.c
---- linux-2.6.15-rc2/arch/um-old/os-Linux/start_up.c 2005-11-23 
-02:35:49.000000000 -0600
-+++ linux-2.6.15-rc2/arch/um/os-Linux/start_up.c 2005-11-28 09:41:04.051025600 
--0600
+diff -ur linux-2.6.15-rc2/arch/um-old/os-Linux/start_up.c linux-2.6.15-rc2/arch/um/os-Linux/start_up.c
+--- linux-2.6.15-rc2/arch/um-old/os-Linux/start_up.c 2005-11-23 02:35:49.000000000 -0600
++++ linux-2.6.15-rc2/arch/um/os-Linux/start_up.c 2005-11-28 09:41:04.051025600 -0600
 @@ -296,29 +296,7 @@
   check_sysemu();
  }
@@ -142,7 +139,6 @@ linux-2.6.15-rc2/arch/um/os-Linux/start_up.c
  
  void os_early_checks(void)
  {
-
 
 -- 
 Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
