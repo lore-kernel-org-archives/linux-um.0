@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EgltW-0000k5-6m for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Nov 2005 08:30:22 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EgltR-000236-Qk
+	id 1Egmuv-0004KP-N2 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Nov 2005 09:35:53 -0800
+Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Egmus-0005nt-8g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Nov 2005 08:30:18 -0800
-From: Rob Landley <rob@landley.net>
-MIME-Version: 1.0
+	Mon, 28 Nov 2005 09:35:53 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] NPTL support
+Message-ID: <20051128182747.GA14934@ccure.user-mode-linux.org>
+References: <29D15BBCA340DA4D8146D38B4924FC7A03378F16@zcarhxm0.corp.nortel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200511281029.58116.rob@landley.net>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [PATCH] uml: move TMP default from /tmp to /dev/shm.
+In-Reply-To: <29D15BBCA340DA4D8146D38B4924FC7A03378F16@zcarhxm0.corp.nortel.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,120 +27,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 28 Nov 2005 10:29:57 -0600
-To: user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>, Jeff Dike <jdike@addtoit.com>
+Date: Mon, 28 Nov 2005 13:27:47 -0500
+To: Majid Salame <msalame@nortel.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Signed-off-by: Rob Landley <rob@landley.net>
+On Mon, Nov 28, 2005 at 10:01:25AM -0500, Majid Salame wrote:
+>  Is NPTL supported and working? Are there separate patches to be applied
+> against 2.6.10 kernel?
 
-UML really wants shared memory semantics form its physical memory map file,
-and the place for that is /dev/shm.  So move the default, and fix the error
-messages to recognize that this value can be overridden.
----
-Let's try that again with wordrap off...
+My current patchset, against 2.5.15-rc1, is running current Debian and FC4
+filesystems without any apparent problems.
 
-
-UML calls mmap() to allocate some "physical memory" it shares between
-processes.  If we're not careful, every page of this memory that gets dirtied
-is pointelessly scheduled for writeout, which means an active user mode
-instance running a compiler or some such can keep the disk pegged with
-unnecessary I/O and slow the rest of the system to a crawl.
-
-Back under 2.4 there was a performance hack that if you deleted a file you had
-open and mmaped, dirty pages wouldn't get written out anymore unless they were
-evicted due to memory pressure.  This hack got yanked sometime during 2.5, and
-now you're supposed to use tmpfs if you want file-backed memory you can dirty
-without causing unnecessary write I/O.
-
-UML assumed that /tmp would be tmpfs, but this turns out not to be the default
-on the systems I checked (Fedora Core 4, Ubuntu, and Gentoo).  But all of
-these systems _do_ default to having a tmpfs mount on /dev/shm, which makes
-sense since tmpfs used to be shmfs.  So that's a more logical default location
-for UML's physical memory file.
-
-(You can override the default location with the TMPDIR environment variable,
-but you can't create a new tmpdir mount without root access, and running UML
-should never require that.)
-
-One function is moved to another file, but the only changes are to its 
-printf()s.
-
-diff -ur linux-2.6.15-rc2/arch/um-old/os-Linux/mem.c linux-2.6.15-rc2/arch/um/os-Linux/mem.c
---- linux-2.6.15-rc2/arch/um-old/os-Linux/mem.c 2005-11-23 02:35:49.000000000 -0600
-+++ linux-2.6.15-rc2/arch/um/os-Linux/mem.c 2005-11-28 09:33:21.158395976 -0600
-@@ -34,7 +34,7 @@
-    break;
-  }
-  if((dir == NULL) || (*dir == '\0'))
--  dir = "/tmp";
-+  dir = "/dev/shm";
- 
-  tempdir = malloc(strlen(dir) + 2);
-  if(tempdir == NULL){
-@@ -159,3 +159,26 @@
-  }
-  return(fd);
- }
-+
-+
-+void check_tmpexec(void)
-+{
-+ void *addr;
-+ int err, fd = create_tmp_file(UM_KERN_PAGE_SIZE);
-+
-+ addr = mmap(NULL, UM_KERN_PAGE_SIZE,
-+      PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
-+ printf("Checking PROT_EXEC mmap in %s...",tempdir);
-+ fflush(stdout);
-+ if(addr == MAP_FAILED){
-+  err = errno;
-+  perror("failed");
-+  if(err == EPERM)
-+   printf("%s must be not mounted noexec\n",tempdir);
-+  exit(1);
-+ }
-+ printf("OK\n");
-+ munmap(addr, UM_KERN_PAGE_SIZE);
-+
-+ close(fd);
-+}
-diff -ur linux-2.6.15-rc2/arch/um-old/os-Linux/start_up.c linux-2.6.15-rc2/arch/um/os-Linux/start_up.c
---- linux-2.6.15-rc2/arch/um-old/os-Linux/start_up.c 2005-11-23 02:35:49.000000000 -0600
-+++ linux-2.6.15-rc2/arch/um/os-Linux/start_up.c 2005-11-28 09:41:04.051025600 -0600
-@@ -296,29 +296,7 @@
-  check_sysemu();
- }
- 
--extern int create_tmp_file(unsigned long long len);
--
--static void check_tmpexec(void)
--{
-- void *addr;
-- int err, fd = create_tmp_file(UM_KERN_PAGE_SIZE);
--
-- addr = mmap(NULL, UM_KERN_PAGE_SIZE,
--      PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
-- printf("Checking PROT_EXEC mmap in /tmp...");
-- fflush(stdout);
-- if(addr == MAP_FAILED){
--  err = errno;
--  perror("failed");
--  if(err == EPERM)
--   printf("/tmp must be not mounted noexec\n");
--  exit(1);
-- }
-- printf("OK\n");
-- munmap(addr, UM_KERN_PAGE_SIZE);
--
-- close(fd);
--}
-+extern void check_tmpexec(void);
- 
- void os_early_checks(void)
- {
-
--- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+				Jeff
 
 
 -------------------------------------------------------
