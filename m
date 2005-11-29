@@ -2,21 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eh36Q-0001HC-OX for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 02:52:50 -0800
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user77435)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Eh36P-0000qf-5F
+	id 1Eh4Mh-0005RQ-Eg for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 04:13:43 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Eh4Mc-000483-TI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 02:52:51 -0800
+	Tue, 29 Nov 2005 04:13:43 -0800
+From: Rob Landley <rob@landley.net>
 Subject: Re: [uml-devel] Fun little detail about /dev/shm.
 References: <200511280744.09325.rob@landley.net>
-From: Nix <nix@esperi.org.uk>
-In-Reply-To: <200511280744.09325.rob@landley.net> (Rob Landley's message of
-	"Mon, 28 Nov 2005 07:44:08 -0600")
-Message-ID: <87y837ybd5.fsf@amaterasu.srvr.nix>
+	<87y837ybd5.fsf@amaterasu.srvr.nix>
+In-Reply-To: <87y837ybd5.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200511290613.19925.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,21 +32,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 10:52:38 +0000
-To: Rob Landley <rob@landley.net>
+Date: Tue, 29 Nov 2005 06:13:19 -0600
+To: Nix <nix@esperi.org.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 28 Nov 2005, Rob Landley prattled cheerily:
-> If you're using udev, then /dev is tmpfs.  So /dev/shm is trivially tmpfs.
+On Tuesday 29 November 2005 04:52, Nix wrote:
+> On Mon, 28 Nov 2005, Rob Landley prattled cheerily:
+> > If you're using udev, then /dev is tmpfs.  So /dev/shm is trivially
+> > tmpfs.
+>
+> True enough; but some people mount /dev with a size of 0.
 
-True enough; but some people mount /dev with a size of 0. (Admittedly if
-they don't want to break POSIX shm they'd better damn well mount *another*
-tmpfs on /dev/shm with a saner size limit...)
+That stopped working in 2.6.14.  Now size=0 specifies no size limit.  (Yeah, 
+I'm annoyed about it too.  I complained.)
 
+Thread starts here:
+http://seclists.org/lists/linux-kernel/2005/Nov/0387.html
+
+> (Admittedly if 
+> they don't want to break POSIX shm they'd better damn well mount *another*
+> tmpfs on /dev/shm with a saner size limit...)
+
+In the patch I sent the error message was changed to say which directory it 
+was upset about, but it should probably also hint that you can set TMPDIR to 
+override this...
+
+Rob
 -- 
-`Y'know, London's nice at this time of year. If you like your cities
- freezing cold and full of surly gits.' --- David Damerell
-
+Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
+I do not think it means what you think it means.
 
 
 -------------------------------------------------------
