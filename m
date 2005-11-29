@@ -2,26 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EhBKB-0007QQ-W7 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 11:39:36 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EhBK5-0007j9-EL
+	id 1EhCbC-0003uO-VU for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 13:01:14 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EhCbA-0006yg-O4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 11:39:32 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] When /tmp is not tmpfs.
-References: <200511240611.02613.rob@landley.net>
-	<200511271907.45529.rob@landley.net>
-	<200511291708.04068.blaisorblade@yahoo.it>
-In-Reply-To: <200511291708.04068.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511291338.54361.rob@landley.net>
+	Tue, 29 Nov 2005 13:01:15 -0800
+Subject: Re: [uml-devel] NPTL support
+From: Antoine Martin <antoine@nagafix.co.uk>
+In-Reply-To: <20051129162801.4474EF3DC@sc8-sf-spam2.sourceforge.net>
+References: <20051129162801.4474EF3DC@sc8-sf-spam2.sourceforge.net>
+Content-Type: text/plain; charset="iso-8859-7"
+Message-Id: <1133298043.13162.18.camel@localhost.localdomain>
+Mime-Version: 1.0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,64 +26,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 13:38:54 -0600
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Chris Lightfoot <chris@ex-parrot.com>
+Date: Tue, 29 Nov 2005 21:00:42 +0000
+Content-Transfer-Encoding: base64
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Majid Salame <msalame@nortel.com>
 
-On Tuesday 29 November 2005 10:08, Blaisorblade wrote:
-> On Monday 28 November 2005 02:07, Rob Landley wrote:
-> > On Sunday 27 November 2005 12:31, Nix wrote:
-> >
-> > Did you catch Linus's long rant about how MAP_PRIVATE is deeply stupid
-> > and that Linux will never really implement it?
->
-> What's that?
-
-Looking it up, it turns out it was MAP_COPY he was against:
-http://www.uwsg.iu.edu/hypermail/linux/kernel/0110.0/0826.html
-
-So I was wrong there.
-
-> > And you can fsync and do stuff like journaling within a file.  (Except
-> > with mmap it's msync.)
-> >
-> > No, just use the madvise(NO_SYNC).
->
-> Which doesn't exist.
-
-Takes some of the fun out of it, yes.  But as a recommendation in response to 
-a similar "change everything" proposal, it seems like a more sane direction 
-to me.
-
-> > Then tmpfs becomes completely
-> > irrelevant because any arbitrary file backed mapping can be treated as
-> > memory.  (Not pinned, but still treated as shared memory.)
-> >
-> > I vaguely remember some discussion about this on linux-kernel, some time
-> > ago. I wonder how it came out?  (2.6.15-rc2 mman.h doesn't show
-> > anything...)
->
-> What I remember is MADV_TRUNCATE / MADV_FREE / and so on by Badary
-> Pulavarty - the equivalent of MADV_DONTNEED with additional truncation of
-> the tmpfs pages you have mmaped.
->
-> Which is used for UML memory hotunplug patch from Jeff's. IIRC it's in -mm,
-> but won't be in 2.6.15 at this point.
-
-This is a vague recollection from 3-5 years ago. :)
-
-Rob
--- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+PiA+ICBJcyBOUFRMIHN1cHBvcnRlZCBhbmQgd29ya2luZz8gQXJlIHRoZXJlIHNlcGFyYXRlIHBh
+dGNoZXMgdG8gYmUKPiBhcHBsaWVkCj4gPiBhZ2FpbnN0IDIuNi4xMCBrZXJuZWw/Cj4gCj4gTXkg
+Y3VycmVudCBwYXRjaHNldCwgYWdhaW5zdCAyLjUuMTUtcmMxLCBpcyBydW5uaW5nIGN1cnJlbnQg
+RGViaWFuIGFuZAo+IEZDNAo+IGZpbGVzeXN0ZW1zIHdpdGhvdXQgYW55IGFwcGFyZW50IHByb2Js
+ZW1zLgo+IAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSmVmZgpJIHRob3VnaHQg
+dGhhdCBsYXN0IHRpbWUgSSBmYWlsZWQgdG8gYnVpbGQgaXQsIEdlbnRvbyB3YXMgdG8gYmxhbWUg
+c28gSQp0cmllZCBhZ2FpbiB0b2RheSBvbiBhbiBhbWQ2NCBGQzQgaG9zdCwgYW5kIHRoYXQgd29y
+a2VkIGZvciBpMzg2LgpBZ2FpbiwgSSBoYWQgdG8gZGVsZXRlIHRoZSBlbXB0eSBmaWxlcyB0byBn
+ZXQgdGhhdCBmYXIuCgpJIGFsc28gaGFkIHRvIHJlbW92ZSAzLWxldmVsIHBhZ2UgdGFibGVzIG9w
+dGlvbiwgb3RoZXJ3aXNlIEkgZ2V0IHRoaXM6CiAgSE9TVENDICBzY3JpcHRzL2JpbjJjCiAgQ0Mg
+ICAgICBpbml0L21haW4ubwpJbiBmaWxlIGluY2x1ZGVkIGZyb20gaW5jbHVkZS9hc20vcGd0YWJs
+ZS5oOjMwLAogICAgICAgICAgICAgICAgIGZyb20gaW5jbHVkZS9saW51eC9ib290bWVtLmg6NywK
+ICAgICAgICAgICAgICAgICBmcm9tIGluaXQvbWFpbi5jOjMwOgppbmNsdWRlL2FzbS9wZ3RhYmxl
+LTNsZXZlbC5oOiBJbiBmdW5jdGlvbiChcHVkX2NsZWFyojoKaW5jbHVkZS9hc20vcGd0YWJsZS0z
+bGV2ZWwuaDo3NDogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YKZnVuY3Rpb24goXNl
+dF82NGJpdKIKICBDSEsgICAgIGluY2x1ZGUvbGludXgvY29tcGlsZS5oCiAgVVBEICAgICBpbmNs
+dWRlL2xpbnV4L2NvbXBpbGUuaAooLi4uKSBMb3RzIG1vcmUgd2FybmluZ3MgYWJvdXQgc2V0XzY0
+Yml0Li4uIFRoZW4gdGhlIGJ1aWxkIGZhaWxzLgoKCkFueSBmaXggZm9yIHRoZSBHQ0MgZXJyb3Jz
+IG9uIGFyY2gvdW0vaW5jbHVkZS9zeXNkZXAvc3R1Yi5oIHdvdWxkIGJlCm11Y2ggYXBwcmVjaWF0
+ZWQgKEkgaGF2ZSB0byBjb21waWxlIG9uIHRoZXNlIGhvc3RzIHRvIGJlIGFibGUgdG8gdXNlIHRo
+ZQpwY2FwIG5ldHdvcmsgZHJpdmVyKToKICBDQyAgICAgIGFyY2gvdW0va2VybmVsL3NrYXMvY2xv
+bmUubwphcmNoL3VtL2tlcm5lbC9za2FzL2Nsb25lLmM6IEluIGZ1bmN0aW9uIGBzdHViX2Nsb25l
+X2hhbmRsZXInOgphcmNoL3VtL2luY2x1ZGUvc3lzZGVwL3N0dWIuaDo0MTogZXJyb3I6IGNhbid0
+IGZpbmQgYSByZWdpc3RlciBpbiBjbGFzcwpgQlJFRycgd2hpbGUgcmVsb2FkaW5nIGBhc20nCmFy
+Y2gvdW0vaW5jbHVkZS9zeXNkZXAvc3R1Yi5oOjYyOiBlcnJvcjogY2FuJ3QgZmluZCBhIHJlZ2lz
+dGVyIGluIGNsYXNzCmBCUkVHJyB3aGlsZSByZWxvYWRpbmcgYGFzbScKYXJjaC91bS9pbmNsdWRl
+L3N5c2RlcC9zdHViLmg6NTE6IGVycm9yOiBjYW4ndCBmaW5kIGEgcmVnaXN0ZXIgaW4gY2xhc3MK
+YEJSRUcnIHdoaWxlIHJlbG9hZGluZyBgYXNtJwphcmNoL3VtL2luY2x1ZGUvc3lzZGVwL3N0dWIu
+aDo4NDogZXJyb3I6IGNhbid0IGZpbmQgYSByZWdpc3RlciBpbiBjbGFzcwpgQlJFRycgd2hpbGUg
+cmVsb2FkaW5nIGBhc20nCm1ha2VbMl06ICoqKiBbYXJjaC91bS9rZXJuZWwvc2thcy9jbG9uZS5v
+XSBFcnJvciAxCm1ha2VbMV06ICoqKiBbYXJjaC91bS9rZXJuZWwvc2thc10gRXJyb3IgMgptYWtl
+OiAqKiogW2FyY2gvdW0va2VybmVsXSBFcnJvciAyCgpPciBzaGFsbCBJIGJ1ZyB0aGUgR0NDIGd1
+eXM/CgpUaGFua3MKQW50b2luZQoKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnk6
+IFNwbHVuayBJbmMuIERvIHlvdSBncmVwIHRocm91Z2ggbG9nIGZpbGVzCmZvciBwcm9ibGVtcz8g
+IFN0b3AhICBEb3dubG9hZCB0aGUgbmV3IEFKQVggc2VhcmNoIGVuZ2luZSB0aGF0IG1ha2VzCnNl
+YXJjaGluZyB5b3VyIGxvZyBmaWxlcyBhcyBlYXN5IGFzIHN1cmZpbmcgdGhlICB3ZWIuICBET1dO
+TE9BRCBTUExVTkshCmh0dHA6Ly9hZHMub3Nkbi5jb20vP2FkX2lkdjM3JmFsbG9jX2lkFjg2NSZv
+cMxrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXIt
+bW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3Rz
+LnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
+aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
