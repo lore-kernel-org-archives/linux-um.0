@@ -1,20 +1,33 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EhCbC-0003uO-VU for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 13:01:14 -0800
+	id 1EhF0b-0004IQ-Ht for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 15:35:37 -0800
 Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EhCbA-0006yg-O4
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EhF0a-0001K2-WC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 13:01:15 -0800
-Subject: Re: [uml-devel] NPTL support
+	Tue, 29 Nov 2005 15:35:37 -0800
+Received: from localhost (localhost [127.0.0.1])
+	by mail.nagafix.co.uk (Postfix) with ESMTP id D8FC9AF078
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 29 Nov 2005 23:35:14 +0000 (GMT)
+Received: from mail.nagafix.co.uk ([127.0.0.1])
+	by localhost (viper.nagafix.co.uk [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 14596-02 for
+	<user-mode-linux-devel@lists.sourceforge.net>; 
+	Tue, 29 Nov 2005 23:35:02 +0000 (GMT)
+Received: from [192.168.0.2] (host-87-74-21-109.bulldogdsl.com [87.74.21.109])
+	by mail.nagafix.co.uk (Postfix) with ESMTP id 4F2D6AF075
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 29 Nov 2005 23:35:02 +0000 (GMT)
 From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <20051129162801.4474EF3DC@sc8-sf-spam2.sourceforge.net>
-References: <20051129162801.4474EF3DC@sc8-sf-spam2.sourceforge.net>
-Content-Type: text/plain; charset="iso-8859-7"
-Message-Id: <1133298043.13162.18.camel@localhost.localdomain>
+Content-Type: text/plain
+Message-Id: <1133307314.13162.50.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] testing of 2.6.15-rc1+patches and 2.6.15-rc3 x86 guests
+	on amd64 host
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,50 +39,131 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 21:00:42 +0000
-Content-Transfer-Encoding: base64
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Majid Salame <msalame@nortel.com>
+Date: Tue, 29 Nov 2005 23:35:14 +0000
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-PiA+ICBJcyBOUFRMIHN1cHBvcnRlZCBhbmQgd29ya2luZz8gQXJlIHRoZXJlIHNlcGFyYXRlIHBh
-dGNoZXMgdG8gYmUKPiBhcHBsaWVkCj4gPiBhZ2FpbnN0IDIuNi4xMCBrZXJuZWw/Cj4gCj4gTXkg
-Y3VycmVudCBwYXRjaHNldCwgYWdhaW5zdCAyLjUuMTUtcmMxLCBpcyBydW5uaW5nIGN1cnJlbnQg
-RGViaWFuIGFuZAo+IEZDNAo+IGZpbGVzeXN0ZW1zIHdpdGhvdXQgYW55IGFwcGFyZW50IHByb2Js
-ZW1zLgo+IAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSmVmZgpJIHRob3VnaHQg
-dGhhdCBsYXN0IHRpbWUgSSBmYWlsZWQgdG8gYnVpbGQgaXQsIEdlbnRvbyB3YXMgdG8gYmxhbWUg
-c28gSQp0cmllZCBhZ2FpbiB0b2RheSBvbiBhbiBhbWQ2NCBGQzQgaG9zdCwgYW5kIHRoYXQgd29y
-a2VkIGZvciBpMzg2LgpBZ2FpbiwgSSBoYWQgdG8gZGVsZXRlIHRoZSBlbXB0eSBmaWxlcyB0byBn
-ZXQgdGhhdCBmYXIuCgpJIGFsc28gaGFkIHRvIHJlbW92ZSAzLWxldmVsIHBhZ2UgdGFibGVzIG9w
-dGlvbiwgb3RoZXJ3aXNlIEkgZ2V0IHRoaXM6CiAgSE9TVENDICBzY3JpcHRzL2JpbjJjCiAgQ0Mg
-ICAgICBpbml0L21haW4ubwpJbiBmaWxlIGluY2x1ZGVkIGZyb20gaW5jbHVkZS9hc20vcGd0YWJs
-ZS5oOjMwLAogICAgICAgICAgICAgICAgIGZyb20gaW5jbHVkZS9saW51eC9ib290bWVtLmg6NywK
-ICAgICAgICAgICAgICAgICBmcm9tIGluaXQvbWFpbi5jOjMwOgppbmNsdWRlL2FzbS9wZ3RhYmxl
-LTNsZXZlbC5oOiBJbiBmdW5jdGlvbiChcHVkX2NsZWFyojoKaW5jbHVkZS9hc20vcGd0YWJsZS0z
-bGV2ZWwuaDo3NDogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YKZnVuY3Rpb24goXNl
-dF82NGJpdKIKICBDSEsgICAgIGluY2x1ZGUvbGludXgvY29tcGlsZS5oCiAgVVBEICAgICBpbmNs
-dWRlL2xpbnV4L2NvbXBpbGUuaAooLi4uKSBMb3RzIG1vcmUgd2FybmluZ3MgYWJvdXQgc2V0XzY0
-Yml0Li4uIFRoZW4gdGhlIGJ1aWxkIGZhaWxzLgoKCkFueSBmaXggZm9yIHRoZSBHQ0MgZXJyb3Jz
-IG9uIGFyY2gvdW0vaW5jbHVkZS9zeXNkZXAvc3R1Yi5oIHdvdWxkIGJlCm11Y2ggYXBwcmVjaWF0
-ZWQgKEkgaGF2ZSB0byBjb21waWxlIG9uIHRoZXNlIGhvc3RzIHRvIGJlIGFibGUgdG8gdXNlIHRo
-ZQpwY2FwIG5ldHdvcmsgZHJpdmVyKToKICBDQyAgICAgIGFyY2gvdW0va2VybmVsL3NrYXMvY2xv
-bmUubwphcmNoL3VtL2tlcm5lbC9za2FzL2Nsb25lLmM6IEluIGZ1bmN0aW9uIGBzdHViX2Nsb25l
-X2hhbmRsZXInOgphcmNoL3VtL2luY2x1ZGUvc3lzZGVwL3N0dWIuaDo0MTogZXJyb3I6IGNhbid0
-IGZpbmQgYSByZWdpc3RlciBpbiBjbGFzcwpgQlJFRycgd2hpbGUgcmVsb2FkaW5nIGBhc20nCmFy
-Y2gvdW0vaW5jbHVkZS9zeXNkZXAvc3R1Yi5oOjYyOiBlcnJvcjogY2FuJ3QgZmluZCBhIHJlZ2lz
-dGVyIGluIGNsYXNzCmBCUkVHJyB3aGlsZSByZWxvYWRpbmcgYGFzbScKYXJjaC91bS9pbmNsdWRl
-L3N5c2RlcC9zdHViLmg6NTE6IGVycm9yOiBjYW4ndCBmaW5kIGEgcmVnaXN0ZXIgaW4gY2xhc3MK
-YEJSRUcnIHdoaWxlIHJlbG9hZGluZyBgYXNtJwphcmNoL3VtL2luY2x1ZGUvc3lzZGVwL3N0dWIu
-aDo4NDogZXJyb3I6IGNhbid0IGZpbmQgYSByZWdpc3RlciBpbiBjbGFzcwpgQlJFRycgd2hpbGUg
-cmVsb2FkaW5nIGBhc20nCm1ha2VbMl06ICoqKiBbYXJjaC91bS9rZXJuZWwvc2thcy9jbG9uZS5v
-XSBFcnJvciAxCm1ha2VbMV06ICoqKiBbYXJjaC91bS9rZXJuZWwvc2thc10gRXJyb3IgMgptYWtl
-OiAqKiogW2FyY2gvdW0va2VybmVsXSBFcnJvciAyCgpPciBzaGFsbCBJIGJ1ZyB0aGUgR0NDIGd1
-eXM/CgpUaGFua3MKQW50b2luZQoKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnk6
-IFNwbHVuayBJbmMuIERvIHlvdSBncmVwIHRocm91Z2ggbG9nIGZpbGVzCmZvciBwcm9ibGVtcz8g
-IFN0b3AhICBEb3dubG9hZCB0aGUgbmV3IEFKQVggc2VhcmNoIGVuZ2luZSB0aGF0IG1ha2VzCnNl
-YXJjaGluZyB5b3VyIGxvZyBmaWxlcyBhcyBlYXN5IGFzIHN1cmZpbmcgdGhlICB3ZWIuICBET1dO
-TE9BRCBTUExVTkshCmh0dHA6Ly9hZHMub3Nkbi5jb20vP2FkX2lkdjM3JmFsbG9jX2lkFjg2NSZv
-cMxrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXIt
-bW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3Rz
-LnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
-aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+All of this testing was done on an amd64 host.
+
+* With a 2.6.15-rc1 (+ 17-11-2005 patches from UML site) in skas0 mode:
+Runs quite well, but when running some long compilation (php, gcc or
+xorg for example) it ends up crashing (this not new to this version - I
+believe this bug has been present for a long time, just never diagnosed
+- but this is 100% reproducible):
+During boot the kernel prints out a lot of:
+"load_TLS(O_FORCE) in fork_handler returned -2"
+Then for example, try:
+emerge -a php
+(...)
+/bin/sh ../../libtool --mode=compile g++ -DHAVE_CONFIG_H -I. -I.
+-I../../autocfg     -O2 -march=athlon-xp -fomit-frame-pointer  -c -o
+arena.lo `test -f 'arena.cpp' || echo './'`arena.cpp
+mkdir .libs
+g++ -DHAVE_CONFIG_H -I. -I. -I../../autocfg -O2 -march=athlon-xp
+-fomit-frame-pointer -c arena.cpp -MT arena.lo -MD -MP
+-MF .deps/arena.TPlo  -fPIC -DPIC -o .libs/arena.lo
+[42951313.910000] Kernel panic - not syncing: Kernel mode signal 7
+
+* Same kernel but in TT mode does not boot:
+(...)
+[42949377.540000] VFS: Mounted root (ext3 filesystem) readonly.
+[42949377.560000] line_ioctl: tty0: ioctl KDSIGACCEPT called
+[42949377.560000] os_set_fd_async : failed to set O_ASYNC and O_NONBLOCK
+on fd # 6, errno = 9
+[42949377.560000] register_winch_irq - failed to register IRQ
+[42949377.560000] os_set_fd_async : failed to set O_ASYNC and O_NONBLOCK
+on fd # 6, errno = 9
+[42949377.560000] register_winch_irq - failed to register IRQ
+INIT: [42949377.560000] os_set_fd_async : failed to set O_ASYNC and
+O_NONBLOCK on fd # 6, errno = 9
+[42949377.560000] register_winch_irq - failed to register IRQ
+version 2.86 booting[42949377.560000] os_set_fd_async : failed to set
+O_ASYNC and O_NONBLOCK on fd # 6, errno = 9
+[42949377.560000] register_winch_irq - failed to register IRQ
+
+[42949377.580000] Kernel panic - not syncing: read of switch_pipe
+failed, errno = 11
+
+
+* Now, with 2.6.15-rc3 it does not boot:
+either in TT mode:
+Checking PROT_EXEC mmap in /tmp...OK
+UML running in TT mode
+tracing thread pid = 11250
+Child 11253 exited with signal 7
+(hangs there until I kill it)
+
+* or in skas0 mode:
+Checking PROT_EXEC mmap in /tmp...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...not found
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
+UML running in SKAS0 mode
+(then it exits)
+
+This is the same problem I had reported earlier, where it gets stuck -
+strace extract follows:
+sigaltstack({ss_sp=0x200000000, ss_flags=0,
+ss_size=11529956872819846383}, NULL) = 0
+rt_sigprocmask(SIG_SETMASK, [IO], NULL, 8) = 0
+rt_sigprocmask(SIG_BLOCK, NULL, [IO], 8) = 0
+rt_sigprocmask(SIG_BLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+getpid()                                = 11503
+rt_sigprocmask(SIG_SETMASK, NULL, [ALRM VTALRM IO], 8) = 0
+rt_sigprocmask(SIG_BLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [], [ALRM VTALRM IO], 8) = 0
+rt_sigprocmask(SIG_BLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+(repeat for a while - then)
+--- SIGBUS (Bus error) @ 0 (0) ---
+rt_sigprocmask(SIG_UNBLOCK, [USR1], [BUS USR1 ALRM VTALRM WINCH IO], 8)
+= 0
+rt_sigprocmask(SIG_UNBLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, NULL, [BUS WINCH], 8) = 0
+rt_sigprocmask(SIG_BLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [ALRM VTALRM IO], [BUS ALRM VTALRM WINCH
+IO], 8) = 0
+rt_sigprocmask(SIG_BLOCK, [], NULL, 8)  = 0
+(this repeats until)
+rt_sigprocmask(SIG_BLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [ALRM VTALRM IO], [BUS ALRM VTALRM WINCH
+IO], 8) = 0
+rt_sigprocmask(SIG_BLOCK, [], NULL, 8)  = 0
+open("/uml/.uml/3", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY) = 4
+fstat64(0x4, 0xa05735ac)                = 0
+fcntl64(4, F_SETFD, FD_CLOEXEC)         = 0
+getdents64(4, /* 3 entries */, 131072)  = 72
+unlink("/uml/.uml/3/pid")               = 0
+getdents64(4, /* 0 entries */, 131072)  = 0
+rmdir("/uml/.uml/3")                    = 0
+getpid()                                = 11503
+rt_sigprocmask(SIG_BLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [IO], NULL, 8) = 0
+rt_sigprocmask(SIG_BLOCK, [PROF], [IO], 8) = 0
+setitimer(ITIMER_VIRTUAL, {it_interval={0, 0},
+it_value={11530534155079122944, 27}}, NULL) = 0
+setitimer(ITIMER_REAL, {it_interval={0, 0},
+it_value={11530534155079122944, 27}}, NULL) = 0
+rt_sigaction(SIGALRM, {SIG_IGN}, NULL, 8) = 0
+rt_sigaction(SIGVTALRM, {SIG_IGN}, NULL, 8) = 0
+rt_sigaction(SIGIO, {SIG_IGN}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [ALRM VTALRM IO], NULL, 8) = 0
+write(1, "\n", 1
+)                       = 1
+munmap(0x55556000, 4096)                = 0
+exit_group(1)                           = ?
+
+Let me know what I can do to help.
+
+Antoine
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
