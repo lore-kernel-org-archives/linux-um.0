@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eh8iX-0005r2-6T for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 08:52:33 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eh8iS-0002i3-EH
+	id 1Eh8io-0005sZ-Ti for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 08:52:50 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eh8ij-00032v-BJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 08:52:30 -0800
+	Tue, 29 Nov 2005 08:52:48 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Blaisorblade's UML binaries - MORE MORE... please
-	give us an x86_64 UML
-References: <200511272159.38069.blaisorblade@yahoo.it>
-	<000e01c5f3b5$40024d50$3c01010a@webwombat.com.au>
-	<1133266976.17563.6.camel@localhost.localdomain>
-In-Reply-To: <1133266976.17563.6.camel@localhost.localdomain>
+Subject: Re: [uml-devel] When /tmp is not tmpfs.
+References: <200511240611.02613.rob@landley.net>
+	<200511272020.52664.blaisorblade@yahoo.it>
+	<200511271541.12899.rob@landley.net>
+In-Reply-To: <200511271541.12899.rob@landley.net>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200511291752.02558.blaisorblade@yahoo.it>
+Message-Id: <200511291752.31722.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,33 +31,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 17:52:02 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Phill Wombat <uml@webwombat.com>
+Date: Tue, 29 Nov 2005 17:52:31 +0100
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Nix <nix@esperi.org.uk>, Chris Lightfoot <chris@ex-parrot.com>
 
-On Tuesday 29 November 2005 13:22, Phill Wombat wrote:
-> Hi Paolo,
->
-> x86_64 binary.
->
-> So far so good!
+On Sunday 27 November 2005 22:41, Rob Landley wrote:
+> On Sunday 27 November 2005 13:20, Blaisorblade wrote:
 
-Thanks, I have no 64-bit FS to test it. Btw, there's also some other site with 
-binaries:
+> *shrug*  The same argument could be made about any other argument that
+> mount interprets.  (Currently: loop, defaults, noauto, ro, rw, nosuid,
+> suid, dev, nodev, exec, noexec, sync, async, remount, atime, noatime,
+> diratime, nodiratime, bind, move, and rbind.)
 
-http://uml.harlowhill.com/index.php/PrecompiledKernels
+No, it's not the same story. What keeps both pieces together is mount being a 
+de-facto standard.
 
-http://uml.nagafix.co.uk/
+Any fs coder who takes one of that as an fs option will have his head lopped 
+at the very moment he does it.
 
-> I have managed to create an FC4/x86_64 rootfs from the very impressive
-> (and amazingly simple) shell script on umlwiki where the entire distro
-> is installed via yum. Had some trouble with gpg keys though.
+So, start making busybox mount incompatible with util-linux mount (I mean for 
+features, not for "undefined behaviour" situations) and you'll break stuff.
 
-> The rootfs starts up and hangs at the usual places to do with consoles
-> etc. I'll get to doing some hacks on the rootfs to get things going.
+( I didn't know about diratime... )
 
-> Thanks again
-> Phill.
+> And no, I didn't invent mount interpreting any of that.  I can make it
+> depend on loopback support (which is already a config option for mount; you
+> can disable features out of the apps in busybox to shrink the size).
+
+> Rob
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
