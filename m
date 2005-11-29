@@ -1,26 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eh4Mh-0005RQ-Eg for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 04:13:43 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Eh4Mc-000483-TI
+	id 1Eh4Vp-0005z1-ED for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 04:23:09 -0800
+Received: from mail10.syd.optusnet.com.au ([211.29.132.191])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1Eh4Vn-0003An-LZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 04:13:43 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Fun little detail about /dev/shm.
-References: <200511280744.09325.rob@landley.net>
-	<87y837ybd5.fsf@amaterasu.srvr.nix>
-In-Reply-To: <87y837ybd5.fsf@amaterasu.srvr.nix>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	Tue, 29 Nov 2005 04:23:09 -0800
+Received: from [192.168.1.20] (c210-49-175-223.mckinn1.vic.optusnet.com.au
+	[210.49.175.223])
+	by mail10.syd.optusnet.com.au (8.12.11/8.12.11) with ESMTP id
+	jATCMv0b016069 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 29 Nov 2005 23:22:57 +1100
+Subject: Re: [uml-devel] Blaisorblade's UML binaries - MORE MORE... please
+	give us an x86_64 UML
+From: Phill Wombat <uml@webwombat.com>
+In-Reply-To: <000e01c5f3b5$40024d50$3c01010a@webwombat.com.au>
+References: <200511272159.38069.blaisorblade@yahoo.it>
+	<000e01c5f3b5$40024d50$3c01010a@webwombat.com.au>
+Content-Type: text/plain
+Message-Id: <1133266976.17563.6.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511290613.19925.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,35 +35,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 06:13:19 -0600
-To: Nix <nix@esperi.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 29 Nov 2005 23:22:56 +1100
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 29 November 2005 04:52, Nix wrote:
-> On Mon, 28 Nov 2005, Rob Landley prattled cheerily:
-> > If you're using udev, then /dev is tmpfs.  So /dev/shm is trivially
-> > tmpfs.
->
-> True enough; but some people mount /dev with a size of 0.
+Hi Paolo,
 
-That stopped working in 2.6.14.  Now size=0 specifies no size limit.  (Yeah, 
-I'm annoyed about it too.  I complained.)
+x86_64 binary.
 
-Thread starts here:
-http://seclists.org/lists/linux-kernel/2005/Nov/0387.html
+So far so good!
 
-> (Admittedly if 
-> they don't want to break POSIX shm they'd better damn well mount *another*
-> tmpfs on /dev/shm with a saner size limit...)
+I have managed to create an FC4/x86_64 rootfs from the very impressive
+(and amazingly simple) shell script on umlwiki where the entire distro
+is installed via yum. Had some trouble with gpg keys though.
 
-In the patch I sent the error message was changed to say which directory it 
-was upset about, but it should probably also hint that you can set TMPDIR to 
-override this...
+The rootfs starts up and hangs at the usual places to do with consoles
+etc. I'll get to doing some hacks on the rootfs to get things going.
 
-Rob
--- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+Thanks again
+Phill.
+
+On Mon, 2005-11-28 at 11:47 +1100, UML wrote:
+> Hi Paolo,
+> 
+> Please create an x86_64 binary so I can play with different 64 bit distros.
+> 
+> Thanks in advance (I know you have lots of spare time on your hands....)
+> 
+> Cheers
+> Phill.
+> 
+> P.S. the 32 bit binary is wonderful! It does absolutely everything I need.
+> 
+
+
 
 
 -------------------------------------------------------
