@@ -2,23 +2,26 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eh8zY-0006n7-AA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 09:10:08 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Eh8zR-0007JZ-4h
+	id 1EhBKB-0007QQ-W7 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 11:39:36 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EhBK5-0007j9-EL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 09:10:08 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Testing requested - [PATCH] Fixing SKAS0 compilation
-	problem / TT mode bug report
-Message-ID: <20051129175556.GA14058@ccure.user-mode-linux.org>
-References: <200511272159.38069.blaisorblade@yahoo.it>
-	<20051128042327.GA28500@ccure.user-mode-linux.org>
-	<200511291728.56515.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Tue, 29 Nov 2005 11:39:32 -0800
+From: Rob Landley <rob@landley.net>
+Subject: Re: [uml-devel] When /tmp is not tmpfs.
+References: <200511240611.02613.rob@landley.net>
+	<200511271907.45529.rob@landley.net>
+	<200511291708.04068.blaisorblade@yahoo.it>
+In-Reply-To: <200511291708.04068.blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200511291728.56515.blaisorblade@yahoo.it>
+Message-Id: <200511291338.54361.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,20 +33,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 12:55:56 -0500
+Date: Tue, 29 Nov 2005 13:38:54 -0600
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Chris Lightfoot <chris@ex-parrot.com>
 
-On Tue, Nov 29, 2005 at 05:28:56PM +0100, Blaisorblade wrote:
-> So, again: can we finally rewrite clone.c in assembly? Or, otherwise, to use a 
-> unique assembly macro joining mmap, the return and trap_myself?
+On Tuesday 29 November 2005 10:08, Blaisorblade wrote:
+> On Monday 28 November 2005 02:07, Rob Landley wrote:
+> > On Sunday 27 November 2005 12:31, Nix wrote:
+> >
+> > Did you catch Linus's long rant about how MAP_PRIVATE is deeply stupid
+> > and that Linux will never really implement it?
+>
+> What's that?
 
-I would favor the second, although I would just join the mmap and storing of 
-the error value.  The stack switching is at the heart of our recent problems
-here, so some asm which hides that should be OK.  I think the rest is OK with
-the pseudo-C, right?
+Looking it up, it turns out it was MAP_COPY he was against:
+http://www.uwsg.iu.edu/hypermail/linux/kernel/0110.0/0826.html
 
-				Jeff
+So I was wrong there.
+
+> > And you can fsync and do stuff like journaling within a file.  (Except
+> > with mmap it's msync.)
+> >
+> > No, just use the madvise(NO_SYNC).
+>
+> Which doesn't exist.
+
+Takes some of the fun out of it, yes.  But as a recommendation in response to 
+a similar "change everything" proposal, it seems like a more sane direction 
+to me.
+
+> > Then tmpfs becomes completely
+> > irrelevant because any arbitrary file backed mapping can be treated as
+> > memory.  (Not pinned, but still treated as shared memory.)
+> >
+> > I vaguely remember some discussion about this on linux-kernel, some time
+> > ago. I wonder how it came out?  (2.6.15-rc2 mman.h doesn't show
+> > anything...)
+>
+> What I remember is MADV_TRUNCATE / MADV_FREE / and so on by Badary
+> Pulavarty - the equivalent of MADV_DONTNEED with additional truncation of
+> the tmpfs pages you have mmaped.
+>
+> Which is used for UML memory hotunplug patch from Jeff's. IIRC it's in -mm,
+> but won't be in 2.6.15 at this point.
+
+This is a vague recollection from 3-5 years ago. :)
+
+Rob
+-- 
+Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
+I do not think it means what you think it means.
 
 
 -------------------------------------------------------
