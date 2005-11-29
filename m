@@ -1,27 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Egqw5-00025d-2S for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Nov 2005 13:53:21 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Egqw2-00053s-8p
+	id 1Eh36Q-0001HC-OX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 02:52:50 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user77435)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Eh36P-0000qf-5F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Nov 2005 13:53:21 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] [PATCH] uml: move TMP default from /tmp to /dev/shm.
-References: <200511281029.58116.rob@landley.net>
-	<200511281152.15727.rob@landley.net>
-	<20051128200524.GA23143@ccure.user-mode-linux.org>
-In-Reply-To: <20051128200524.GA23143@ccure.user-mode-linux.org>
+	Tue, 29 Nov 2005 02:52:51 -0800
+Subject: Re: [uml-devel] Fun little detail about /dev/shm.
+References: <200511280744.09325.rob@landley.net>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200511280744.09325.rob@landley.net> (Rob Landley's message of
+	"Mon, 28 Nov 2005 07:44:08 -0600")
+Message-ID: <87y837ybd5.fsf@amaterasu.srvr.nix>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511281553.03577.rob@landley.net>
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,35 +28,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 28 Nov 2005 15:53:03 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>
+Date: Tue, 29 Nov 2005 10:52:38 +0000
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 28 November 2005 14:05, Jeff Dike wrote:
-> > Kmail is a "helpful" mail client.  It's possible to get it to send out
-> > unmangled patches, assuming you remember to set the moon phase and get
-> > the chicken entrails in the right position.  (I sometimes miss a step.)
->
-> Why not cc yourself if you're not sure?
+On Mon, 28 Nov 2005, Rob Landley prattled cheerily:
+> If you're using udev, then /dev is tmpfs.  So /dev/shm is trivially tmpfs.
 
-Because it seems to depend on things like whether or not I've adjusted my mail 
-filters since the last reboot, and current moon phase, and that only tells me 
-whether or not it worked after the fact of sending it?
+True enough; but some people mount /dev with a size of 0. (Admittedly if
+they don't want to break POSIX shm they'd better damn well mount *another*
+tmpfs on /dev/shm with a saner size limit...)
 
->     Jeff
-
-I think what broke it this time was turning on the .signature.  That seems to 
-convert tabs to spaces throughout the entire message.  Nice and orthogonal.  
-(Just like integrating kmail in and kontact was.  No unwanted behavior 
-changes there...)
-
-Sorry, I'll try sending mail with patches from the darn command line in 
-future...
-
-Rob
 -- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+`Y'know, London's nice at this time of year. If you like your cities
+ freezing cold and full of surly gits.' --- David Damerell
+
 
 
 -------------------------------------------------------
