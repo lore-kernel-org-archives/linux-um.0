@@ -1,29 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eh4Vp-0005z1-ED for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 04:23:09 -0800
-Received: from mail10.syd.optusnet.com.au ([211.29.132.191])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44) id 1Eh4Vn-0003An-LZ
+	id 1Eh8J1-0004JL-Pm for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 08:26:11 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eh8Iv-0003jI-BT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 04:23:09 -0800
-Received: from [192.168.1.20] (c210-49-175-223.mckinn1.vic.optusnet.com.au
-	[210.49.175.223])
-	by mail10.syd.optusnet.com.au (8.12.11/8.12.11) with ESMTP id
-	jATCMv0b016069 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 29 Nov 2005 23:22:57 +1100
-Subject: Re: [uml-devel] Blaisorblade's UML binaries - MORE MORE... please
-	give us an x86_64 UML
-From: Phill Wombat <uml@webwombat.com>
-In-Reply-To: <000e01c5f3b5$40024d50$3c01010a@webwombat.com.au>
-References: <200511272159.38069.blaisorblade@yahoo.it>
-	<000e01c5f3b5$40024d50$3c01010a@webwombat.com.au>
-Content-Type: text/plain
-Message-Id: <1133266976.17563.6.camel@localhost.localdomain>
-Mime-Version: 1.0
+	Tue, 29 Nov 2005 08:26:11 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] When /tmp is not tmpfs.
+References: <200511240611.02613.rob@landley.net>
+	<877jau7xjc.fsf@amaterasu.srvr.nix>
+	<200511271907.45529.rob@landley.net>
+In-Reply-To: <200511271907.45529.rob@landley.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Message-Id: <200511291708.04068.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,38 +31,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 23:22:56 +1100
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 29 Nov 2005 17:08:03 +0100
+To: Rob Landley <rob@landley.net>
+Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Chris Lightfoot <chris@ex-parrot.com>
 
-Hi Paolo,
+On Monday 28 November 2005 02:07, Rob Landley wrote:
+> On Sunday 27 November 2005 12:31, Nix wrote:
 
-x86_64 binary.
+> Did you catch Linus's long rant about how MAP_PRIVATE is deeply stupid and
+> that Linux will never really implement it?
 
-So far so good!
+What's that?
 
-I have managed to create an FC4/x86_64 rootfs from the very impressive
-(and amazingly simple) shell script on umlwiki where the entire distro
-is installed via yum. Had some trouble with gpg keys though.
+> And you can fsync and do stuff like journaling within a file.  (Except with
+> mmap it's msync.)
 
-The rootfs starts up and hangs at the usual places to do with consoles
-etc. I'll get to doing some hacks on the rootfs to get things going.
+> No, just use the madvise(NO_SYNC).
 
-Thanks again
-Phill.
+Which doesn't exist.
 
-On Mon, 2005-11-28 at 11:47 +1100, UML wrote:
-> Hi Paolo,
-> 
-> Please create an x86_64 binary so I can play with different 64 bit distros.
-> 
-> Thanks in advance (I know you have lots of spare time on your hands....)
-> 
-> Cheers
-> Phill.
-> 
-> P.S. the 32 bit binary is wonderful! It does absolutely everything I need.
-> 
+> Then tmpfs becomes completely 
+> irrelevant because any arbitrary file backed mapping can be treated as
+> memory.  (Not pinned, but still treated as shared memory.)
 
+> I vaguely remember some discussion about this on linux-kernel, some time
+> ago. I wonder how it came out?  (2.6.15-rc2 mman.h doesn't show
+> anything...)
+
+What I remember is MADV_TRUNCATE / MADV_FREE / and so on by Badary Pulavarty - 
+the equivalent of MADV_DONTNEED with additional truncation of the tmpfs pages 
+you have mmaped.
+
+Which is used for UML memory hotunplug patch from Jeff's. IIRC it's in -mm, 
+but won't be in 2.6.15 at this point.
+
+> > (security holes? but other users can't *see* that /tmp, which is why it's
+> > mode 640, just like their $HOME...)
+
+> Or you could just add the madvise() like I mentioned and forget about tmpfs
+> completely.
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
