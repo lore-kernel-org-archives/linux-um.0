@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eh8io-0005sZ-Ti for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 08:52:50 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eh8ij-00032v-BJ
+	id 1Eh8kS-0005yh-QX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Nov 2005 08:54:32 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eh8kJ-0000gH-Oo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Nov 2005 08:52:48 -0800
+	Tue, 29 Nov 2005 08:54:30 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] When /tmp is not tmpfs.
-References: <200511240611.02613.rob@landley.net>
-	<200511272020.52664.blaisorblade@yahoo.it>
-	<200511271541.12899.rob@landley.net>
-In-Reply-To: <200511271541.12899.rob@landley.net>
+Subject: Re: [uml-devel] [PATCH] uml: move TMP default from /tmp to /dev/shm.
+References: <200511281029.58116.rob@landley.net>
+	<Pine.LNX.4.61.0511282025560.2231@filer.marasystems.com>
+	<200511281547.41319.rob@landley.net>
+In-Reply-To: <200511281547.41319.rob@landley.net>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200511291752.31722.blaisorblade@yahoo.it>
+Message-Id: <200511291754.04540.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,47 +31,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 29 Nov 2005 17:52:31 +0100
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Nix <nix@esperi.org.uk>, Chris Lightfoot <chris@ex-parrot.com>
+Date: Tue, 29 Nov 2005 17:54:04 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Henrik Nordstrom <uml@hno.marasystems.com>, Jeff Dike <jdike@addtoit.com>
 
-On Sunday 27 November 2005 22:41, Rob Landley wrote:
-> On Sunday 27 November 2005 13:20, Blaisorblade wrote:
+On Monday 28 November 2005 22:47, Rob Landley wrote:
+> On Monday 28 November 2005 13:27, Henrik Nordstrom wrote:
+> > On Mon, 28 Nov 2005, Jeff Dike wrote:
+> > > On Mon, Nov 28, 2005 at 11:52:15AM -0600, Rob Landley wrote:
 
-> *shrug*  The same argument could be made about any other argument that
-> mount interprets.  (Currently: loop, defaults, noauto, ro, rw, nosuid,
-> suid, dev, nodev, exec, noexec, sync, async, remount, atime, noatime,
-> diratime, nodiratime, bind, move, and rbind.)
+> Inline is linux-kernel policy, but here the darn thing is as an attachment.
 
-No, it's not the same story. What keeps both pieces together is mount being a 
-de-facto standard.
+They explicitly accept plain-text attachments when inline doesn't work. 
+However, here we are *much* liberal, since we apply anyhow patches by hand, 
+and plain-text attachment works as well when feeding the patch to patch on  
+stdin, even if you feed it the whole mail. IIRC.
 
-Any fs coder who takes one of that as an fs option will have his head lopped 
-at the very moment he does it.
+> (No, I seem to have no control whatsoever over the type of the attachment. 
 
-So, start making busybox mount incompatible with util-linux mount (I mean for 
-features, not for "undefined behaviour" situations) and you'll break stuff.
+> I have checkboxes for "compress, encrypt, and sign" though, in case I can't
+> figure out how to do that to the actual file...)
 
-( I didn't know about diratime... )
+Don't look at the mime type...
 
-> And no, I didn't invent mount interpreting any of that.  I can make it
-> depend on loopback support (which is already a config option for mount; you
-> can disable features out of the apps in busybox to shrink the size).
+Right-click -> "properties" -> "encoding" (I guess) -> choose "7bit" or "8bit" 
+over "base64". Btw, kmail never tried to send a patch as base64, it always 
+chose 7bit, as in your patch.
 
-> Rob
+> I need to find a real mail client, it seems.
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
 
 
