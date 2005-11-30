@@ -1,27 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EhVjq-00080v-Ta for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Nov 2005 09:27:26 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EhVjp-0005DQ-By
+	id 1EhYdA-0002vO-QJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Nov 2005 12:32:44 -0800
+Received: from mail07.syd.optusnet.com.au ([211.29.132.188])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1EhYd7-0006Zs-TW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Nov 2005 09:27:26 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] 2.6.15-rc2
-References: <12276.1133324450@sandelman.ottawa.on.ca>
-	<200511300739.46148.rob@landley.net>
-	<31479.1133368473@sandelman.ottawa.on.ca>
-In-Reply-To: <31479.1133368473@sandelman.ottawa.on.ca>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+	Wed, 30 Nov 2005 12:32:44 -0800
+Subject: Re: [uml-devel] Blaisorblade's UML binaries - MORE MORE... please
+	give us an x86_64 UML
+From: Phill Wombat <uml@webwombat.com>
+In-Reply-To: <200511291752.02558.blaisorblade@yahoo.it>
+References: <200511272159.38069.blaisorblade@yahoo.it>
+	<000e01c5f3b5$40024d50$3c01010a@webwombat.com.au>
+	<1133266976.17563.6.camel@localhost.localdomain>
+	<200511291752.02558.blaisorblade@yahoo.it>
+Content-Type: text/plain
+Message-Id: <1133382741.29332.15.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511301127.13494.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,53 +32,124 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 30 Nov 2005 11:27:13 -0600
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Date: Thu, 01 Dec 2005 07:32:21 +1100
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 30 November 2005 10:34, Michael Richardson wrote:
-> What was the fix?
+Hi Paolo,
 
-A quick check through the past few pages of:
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=shortlog
+Use this to create a new FC4/x86_64 rootfs (modified from umlwiki post).
 
-Finds these four commits:
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=aa1a64ee12ae130706f3fc0007841ce9b0ddf9c2
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=17d469715c6453e4994e6617e8f644bf10f38584
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=e23181deec0d2a8be576faf9d71211abb84d5ccc
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=39d730ab87f07592e3a3794353f097d5184cae7a
+#!/bin/bash
 
-Click "commitdiff" and then right click on "plain" and save as.
+RPM_INSTALL_CHR=./INSTALL
 
-> Are you using a cramfs initrd?
+echo " --> Setting up chroot env in $RPM_INSTALL_CHR"
 
-Nope.  Squashfs.  (Last time I tried cramfs it had some _serious_ size 
-limitations.)
+if [ `id -u` = "0" ] ; then
+        mkdir -p \
+                $RPM_INSTALL_CHR/etc \
+                $RPM_INSTALL_CHR/dev \
+                $RPM_INSTALL_CHR/proc \
+                $RPM_INSTALL_CHR/sys \
+                $RPM_INSTALL_CHR/var/tmp \
+                $RPM_INSTALL_CHR/var/cache/yum
+        touch $RPM_INSTALL_CHR/etc/fstab
+        mknod $RPM_INSTALL_CHR/dev/null c 1 3
+        chmod 666 $RPM_INSTALL_CHR/dev/null
+        mount --bind /proc $RPM_INSTALL_CHR/proc
+        mount --bind /sys $RPM_INSTALL_CHR/sys
+#       rpm \
+#               --root $PWD/$RPM_INSTALL_CHR \
+#               --import http://fedora.redhat.com/about/security/4F2A6FD2.txt
+        rpm \
+                --root $PWD/$RPM_INSTALL_CHR \
+                -Uvh \
+                --nodeps \
+                --force \
+                http://download.fedora.redhat.com/pub/fedora/linux/core/4/x86_64/os/Fedora/RPMS/fedora-release-4-2.noarch.rpm
+        yum \
+                -y \
+                -C \
+                --installroot=$PWD/$RPM_INSTALL_CHR \
+                groupinstall "Base"
+        umount $RPM_INSTALL_CHR/proc
+        umount $RPM_INSTALL_CHR/sys
+else
+        echo " *** Sorry, you must be root to setup a chroot environment"
+        exit 1
+fi
 
-And for testing, I just go:
+This is the gpg key installed instead of the commented lines (I couldn't
+find the right key on the fedora web site). It comes from the live
+FC4/x86_64 host with rpm -qa gpg-pubkeys*; rpm -qi gpg-pubkey-db42a60e
 
-./linux rootfstype=hostfs rw init=/bin/sh
 
-No special setup required at all, just borrow the host system's root 
-directory.  (You probably want to "mount -t proc /proc /proc" and "mount -t 
-tmpfs /dev/shm", and "mount -t devpts /dev/pts" before doing anything _too_ 
-fancy.)
+Name        : gpg-pubkey                   Relocations: (not relocatable)
+Version     : db42a60e                          Vendor: (none)
+Release     : 37ea5438                      Build Date: Thu 25 Aug 2005 02:28:19 PM EST
+Install Date: Thu 25 Aug 2005 02:28:19 PM EST      Build Host: localhost
+Group       : Public Keys                   Source RPM: (none)
+Size        : 0                                License: pubkey
+Signature   : (none)
+Summary     : gpg(Red Hat, Inc <security@redhat.com>)
+Description :
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: rpm-4.4.1 (beecrypt-3.0.0)
 
-Getting ctrl-C to work took a bit of doing, but I posted a oneit.c file I made 
-that does it, a while back...
+mQGiBDfqVDgRBADBKr3Bl6PO8BQ0H8sJoD6p9U7Yyl7pjtZqioviPwXP+DCWd4u8HQzcxAZ5
+7m8ssA1LK1Fx93coJhDzM130+p5BG9mYSWShLabR3N1KXdXQYYcowTOMGxdwYRGr1Spw8Qyd
+LhjVfU1VSl4xt6bupPbWJbyjkg5Z3P7BlUOUJmrx3wCgobNVEDGaWYJcch5z5B1of/41G8kE
+AKii6q7Gu/vhXXnLS6m15oNnPVybyngiw/23dKjSZVG7rKANEK2mxg1VB+vc/uUc4k49UxJJ
+fCZg1gu1sPFV3GSa+Y/7jsiLktQvCiLPlncQt1dV+ENmHR5BdIDPWDzKBVbgWnSDnqQ6KrZ7
+T6AlZ74VMpjGxxkWU6vV2xsWXCLPA/9P/vtImA8CZN3jxGgtK5GGtDNJ/cMhhuv5tnfwFg4b
+/VGo2Jr8mhLUqoIbE6zeGAmZbUpdckDco8D5fiFmqTf5+++pCEpJLJkkzel/32N2w4qzPrcR
+MCiBURESPjCLd4Y5rPoU8E4kOHc/4BuHN903tiCsCPloCrWsQZ7UdxfQ5LQiUmVkIEhhdCwg
+SW5jIDxzZWN1cml0eUByZWRoYXQuY29tPohVBBMRAgAVBQI36lQ4AwsKAwMVAwIDFgIBAheA
+AAoJECGRgM3bQqYOsBQAnRVtg7B25Hm11PHcpa8FpeddKiq2AJ9aO8sBXmLDmPOEFI75mpTr
+KYHF6rkCDQQ36lRyEAgAokgI2xJ+3bZsk8jRA8ORIX8DH05UlMH27qFYzLbT6npXwXYIOtVn
+0K2/iMDj+oEB1Aa2au4OnddYaLWp06v3d+XyS0t+5ab2ZfIQzdh7wCwxqRkzR+/H5TLYbMG+
+hvtTdylfqIX0WEfoOXMtWEGSVwyUsnM3Jy3LOi48rQQSCKtCAUdV20FoIGWhwnb/gHU1BnmE
+S6UdQujFBE6EANqPhp0coYoIhHJ2oIO8ujQItvvNaU88j/s/izQv5e7MXOgVSjKe/WX3s2Jt
+B/tW7utpy12wh1J+JsFdbLV/t8CozUTpJgx5mVA3RKlxjTA+On+1IEUWioB+iVfT7Ov/0kcA
+zwADBQf9E4SKCWRand8K0XloMYgmipxMhJNnWDMLkokvbMNTUoNpSfRoQJ9EheXDxwMpTPwK
+ti/PYrrL2J11P2ed0x7zm8v3gLrY0cue1iSba+8glY+p31ZPOr5ogaJw7ZARgoS8BwjyRymX
+Qp+8Dete0TELKOL2/itDOPGHW07SsVWOR6cmX4VlRRcWB5KejaNvdrE54XFtOd04NMgWI63u
+qZc4zkRa+kwEZtmbz3tHSdRCCE+Y7YVP6IUf/w6YPQFQriWYFiA6fD10eB+BlIUqIw80Vgjs
+BKmCwvKkn4jg8kibXgj4/TzQSx77uYokw1EqQ2wkOZoaEtcubsNMquuLCMWijYhGBBgRAgAG
+BQI36lRyAAoJECGRgM3bQqYOhyYAnj7hVDY/FJAGqmtZpwVp9IlitW5tAJ4xQApr/jNFZCTk
+snI+4O1765F7tA==
+=3AHZ
+-----END PGP PUBLIC KEY BLOCK-----
 
-> I built against the v2.6.15-rc3 tag in GIT, and I saw the same failure.
-> I'm going to make clean again (the rm -rf way) and try again to be
-> sure...
 
-Yeah, neither make ARCH=um clean nor make ARCH=um distclean seem to actually 
-delete all the files a UML build makes.  I may do something about that one of 
-these days...
 
-Rob
--- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+On Tue, 2005-11-29 at 17:52 +0100, Blaisorblade wrote:
+> On Tuesday 29 November 2005 13:22, Phill Wombat wrote:
+> > Hi Paolo,
+> >
+> > x86_64 binary.
+> >
+> > So far so good!
+> 
+> Thanks, I have no 64-bit FS to test it. Btw, there's also some other site with 
+> binaries:
+> 
+> http://uml.harlowhill.com/index.php/PrecompiledKernels
+> 
+> http://uml.nagafix.co.uk/
+> 
+> > I have managed to create an FC4/x86_64 rootfs from the very impressive
+> > (and amazingly simple) shell script on umlwiki where the entire distro
+> > is installed via yum. Had some trouble with gpg keys though.
+> 
+> > The rootfs starts up and hangs at the usual places to do with consoles
+> > etc. I'll get to doing some hacks on the rootfs to get things going.
+> 
+> > Thanks again
+> > Phill.
+> 
+
 
 
 -------------------------------------------------------
