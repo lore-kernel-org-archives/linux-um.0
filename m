@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EiNco-0006Zw-4q for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 18:59:46 -0800
+	id 1EiNcn-0006Zi-4r for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Dec 2005 18:59:45 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EiNcn-0000pp-TX
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EiNck-0001Zs-Gw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 18:59:46 -0800
+	Fri, 02 Dec 2005 18:59:45 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Testing requested - [PATCH] Fixing SKAS0 compilation
-	problem / TT mode bug report
-References: <200511272159.38069.blaisorblade@yahoo.it>
-	<200511291728.56515.blaisorblade@yahoo.it>
-	<20051129175556.GA14058@ccure.user-mode-linux.org>
-In-Reply-To: <20051129175556.GA14058@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] NPTL support
+References: <20051129162801.4474EF3DC@sc8-sf-spam2.sourceforge.net>
+	<1133298043.13162.18.camel@localhost.localdomain>
+In-Reply-To: <1133298043.13162.18.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-7"
 Content-Disposition: inline
-Message-Id: <200512020118.27879.blaisorblade@yahoo.it>
+Message-Id: <200512020129.03963.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,46 +28,67 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 2 Dec 2005 01:18:27 +0100
+Date: Fri, 2 Dec 2005 01:29:03 +0100
+Content-Transfer-Encoding: base64
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Antoine Martin <antoine@nagafix.co.uk>, Jeff Dike <jdike@addtoit.com>, Majid Salame <msalame@nortel.com>
 
-On Tuesday 29 November 2005 18:55, Jeff Dike wrote:
-> On Tue, Nov 29, 2005 at 05:28:56PM +0100, Blaisorblade wrote:
-> > So, again: can we finally rewrite clone.c in assembly? Or, otherwise, to
-> > use a unique assembly macro joining mmap, the return and trap_myself?
->
-> I would favor the second, although I would just join the mmap and storing
-> of the error value.
-I want to add the int3 too - that's the only way to be deterministically sure 
-that GCC doesn't use %ebp after the unmap.
-
-> The stack switching is at the heart of our recent 
-> problems here, so some asm which hides that should be OK.  I think the rest
-> is OK with the pseudo-C, right?
-Yes, mostly.... there is also the problem with hardened toolchains (two 
-different reports), which makes inline syscalls bleach (hardened toolchains 
-use PIE code and need to have %EBX reserved for GOT/PLT handling), but I 
-currently I do not consider fixing it before I can reproduce it.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
-
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gVHVlc2RheSAyOSBOb3ZlbWJlciAyMDA1IDIyOjAwLCBBbnRvaW5lIE1hcnRpbiB3cm90ZToK
+PiA+ID4gIElzIE5QVEwgc3VwcG9ydGVkIGFuZCB3b3JraW5nPyBBcmUgdGhlcmUgc2VwYXJhdGUg
+cGF0Y2hlcyB0byBiZQo+ID4KPiA+IGFwcGxpZWQKPiA+Cj4gPiA+IGFnYWluc3QgMi42LjEwIGtl
+cm5lbD8KPiA+Cj4gPiBNeSBjdXJyZW50IHBhdGNoc2V0LCBhZ2FpbnN0IDIuNS4xNS1yYzEsIGlz
+IHJ1bm5pbmcgY3VycmVudCBEZWJpYW4gYW5kCj4gPiBGQzQKPiA+IGZpbGVzeXN0ZW1zIHdpdGhv
+dXQgYW55IGFwcGFyZW50IHByb2JsZW1zLgo+ID4KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgSmVmZgo+Cj4gSSB0aG91Z2h0IHRoYXQgbGFzdCB0aW1lIEkgZmFpbGVkIHRvIGJ1
+aWxkIGl0LCBHZW50b28gd2FzIHRvIGJsYW1lIHNvIEkKPiB0cmllZCBhZ2FpbiB0b2RheSBvbiBh
+biBhbWQ2NCBGQzQgaG9zdCwgYW5kIHRoYXQgd29ya2VkIGZvciBpMzg2Lgo+IEFnYWluLCBJIGhh
+ZCB0byBkZWxldGUgdGhlIGVtcHR5IGZpbGVzIHRvIGdldCB0aGF0IGZhci4KCj4gSSBhbHNvIGhh
+ZCB0byByZW1vdmUgMy1sZXZlbCBwYWdlIHRhYmxlcyBvcHRpb24KCng4Nl82NCBvciB4ODY/IFRo
+ZSBsYXR0ZXIgaGFzIGFsbW9zdCBuZXZlciByZWFsbHkgd29ya2VkIHdlbGwuLi4KCj4gLCBvdGhl
+cndpc2UgSSBnZXQgdGhpczogCj4gICBIT1NUQ0MgIHNjcmlwdHMvYmluMmMKPiAgIENDICAgICAg
+aW5pdC9tYWluLm8KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gaW5jbHVkZS9hc20vcGd0YWJsZS5o
+OjMwLAo+ICAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L2Jvb3RtZW0uaDo3LAo+
+ICAgICAgICAgICAgICAgICAgZnJvbSBpbml0L21haW4uYzozMDoKPiBpbmNsdWRlL2FzbS9wZ3Rh
+YmxlLTNsZXZlbC5oOiBJbiBmdW5jdGlvbiChcHVkX2NsZWFyojoKPiBpbmNsdWRlL2FzbS9wZ3Rh
+YmxlLTNsZXZlbC5oOjc0OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZgo+IGZ1bmN0
+aW9uIKFzZXRfNjRiaXSiCj4gICBDSEsgICAgIGluY2x1ZGUvbGludXgvY29tcGlsZS5oCj4gICBV
+UEQgICAgIGluY2x1ZGUvbGludXgvY29tcGlsZS5oCj4gKC4uLikgTG90cyBtb3JlIHdhcm5pbmdz
+IGFib3V0IHNldF82NGJpdC4uLiBUaGVuIHRoZSBidWlsZCBmYWlscy4KCj4gQW55IGZpeCBmb3Ig
+dGhlIEdDQyBlcnJvcnMgb24gYXJjaC91bS9pbmNsdWRlL3N5c2RlcC9zdHViLmggd291bGQgYmUK
+PiBtdWNoIGFwcHJlY2lhdGVkIChJIGhhdmUgdG8gY29tcGlsZSBvbiB0aGVzZSBob3N0cyB0byBi
+ZSBhYmxlIHRvIHVzZSB0aGUKPiBwY2FwIG5ldHdvcmsgZHJpdmVyKToKPiAgIENDICAgICAgYXJj
+aC91bS9rZXJuZWwvc2thcy9jbG9uZS5vCj4gYXJjaC91bS9rZXJuZWwvc2thcy9jbG9uZS5jOiBJ
+biBmdW5jdGlvbiBgc3R1Yl9jbG9uZV9oYW5kbGVyJzoKPiBhcmNoL3VtL2luY2x1ZGUvc3lzZGVw
+L3N0dWIuaDo0MTogZXJyb3I6IGNhbid0IGZpbmQgYSByZWdpc3RlciBpbiBjbGFzcwo+IGBCUkVH
+JyB3aGlsZSByZWxvYWRpbmcgYGFzbScKPiBhcmNoL3VtL2luY2x1ZGUvc3lzZGVwL3N0dWIuaDo2
+MjogZXJyb3I6IGNhbid0IGZpbmQgYSByZWdpc3RlciBpbiBjbGFzcwo+IGBCUkVHJyB3aGlsZSBy
+ZWxvYWRpbmcgYGFzbScKPiBhcmNoL3VtL2luY2x1ZGUvc3lzZGVwL3N0dWIuaDo1MTogZXJyb3I6
+IGNhbid0IGZpbmQgYSByZWdpc3RlciBpbiBjbGFzcwo+IGBCUkVHJyB3aGlsZSByZWxvYWRpbmcg
+YGFzbScKPiBhcmNoL3VtL2luY2x1ZGUvc3lzZGVwL3N0dWIuaDo4NDogZXJyb3I6IGNhbid0IGZp
+bmQgYSByZWdpc3RlciBpbiBjbGFzcwo+IGBCUkVHJyB3aGlsZSByZWxvYWRpbmcgYGFzbScKPiBt
+YWtlWzJdOiAqKiogW2FyY2gvdW0va2VybmVsL3NrYXMvY2xvbmUub10gRXJyb3IgMQo+IG1ha2Vb
+MV06ICoqKiBbYXJjaC91bS9rZXJuZWwvc2thc10gRXJyb3IgMgo+IG1ha2U6ICoqKiBbYXJjaC91
+bS9rZXJuZWxdIEVycm9yIDIKPgo+IE9yIHNoYWxsIEkgYnVnIHRoZSBHQ0MgZ3V5cz8KClRoZSBw
+cm9ibGVtIGlzIChzZWVuIG9uIGFub3RoZXIgcmVwb3J0IHRvbyk6IEdDQyBoYXJkZW5lZCBpcyBj
+b21waWxpbmcgdGhhdCAKY29kZSBhcyBQSUUgY29kZSAobGlrZSBQSUMgbGlicmFyaWVzKSwgc28g
+aXQgcmVzZXJ2ZXMgRUJYIGZvciB1c2FnZSBvZiB0aGUgCkdPVCB0YWJsZSAodGhpcyBpcyBkZXRh
+aWxlZCBpbiB0aGUgU3lzViBpMzg2IEVMRiBBQkkgZG9jcykuCgpBY3R1YWxseSwgSSBrbm93IGEg
+d2F5IHRvIGZpeCBpdCwgaXQncyBhIGJpdCBvZiBhbiBoYWNrIGJ1dCBzaG91bGQgd29yay4gCihJ
+LmUuLCB1c2luZyBhZ2FpbiBhICJnIiBjb25zdHJhaW50IGZvciB0aGF0IHBhcmFtZXRlciBhbmQg
+YWRkaW5nIGEgbW92ICVuLCAKJSVlYnggdGhlcmUgLSBidXQgdGhlbiBJIHNob3VsZCBhZGQgYSBj
+bG9iYmVyIGZvciBlYngsIGFuZCBtYXliZSBHQ0MgY291bGQgCnN0aWxsIGNvbXBsYWluKS4KLS0g
+CkluZm9ybSBtZSBvZiBteSBtaXN0YWtlcywgc28gSSBjYW4ga2VlcCBpbWl0YXRpbmcgSG9tZXIg
+U2ltcHNvbidzICJEb2ghIi4KUGFvbG8gR2lhcnJ1c3NvLCBha2EgQmxhaXNvcmJsYWRlIChTa3lw
+ZSBJRCAiUGFvbG9HaWFycnVzc28iLCBJQ1EgMjE1NjIxODk0KQpodHRwOi8vd3d3LnVzZXItbW9k
+ZS1saW51eC5vcmcvfmJsYWlzb3JibGFkZQoKCgkKCgkKCQkKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18gCllhaG9vISBNYWlsOiBncmF0aXMgMUdCIHBlciBpIG1lc3NhZ2dpIGUg
+YWxsZWdhdGkgZGEgMTBNQiAKaHR0cDovL21haWwueWFob28uaXQKCgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFp
+bCBpcyBzcG9uc29yZWQgYnk6IFNwbHVuayBJbmMuIERvIHlvdSBncmVwIHRocm91Z2ggbG9nIGZp
+bGVzCmZvciBwcm9ibGVtcz8gIFN0b3AhICBEb3dubG9hZCB0aGUgbmV3IEFKQVggc2VhcmNoIGVu
+Z2luZSB0aGF0IG1ha2VzCnNlYXJjaGluZyB5b3VyIGxvZyBmaWxlcyBhcyBlYXN5IGFzIHN1cmZp
+bmcgdGhlICB3ZWIuICBET1dOTE9BRCBTUExVTkshCmh0dHA6Ly9hZHMub3Nkbi5jb20vP2FkX2lk
+djM3JmFsbG9jX2lkFjg2NSZvcMxrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2Rl
+LWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
+cmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
