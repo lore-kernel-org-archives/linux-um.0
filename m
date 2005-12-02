@@ -1,33 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EiG0R-0001RI-NA for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 10:51:39 -0800
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	id 1EiHGm-0006M7-2h for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Dec 2005 12:12:36 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EiG0R-0003kF-9k
+	(Exim 4.44) id 1EiHGh-0003Ug-C9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 10:51:39 -0800
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1EiFzj-0003uy-Kv for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 19:50:55 +0100
-Received: from desk.marajade.sandelman.ca ([205.150.200.247])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
+	Fri, 02 Dec 2005 12:12:36 -0800
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by grelber.thyrsus.com (8.13.4/8.13.4) with ESMTP id jB2LljMt016880
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 02 Dec 2005 19:50:55 +0100
-Received: from mcr by desk.marajade.sandelman.ca with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 02 Dec 2005 19:50:55 +0100
-From: Michael Richardson <mcr@sandelman.ottawa.on.ca>
-Message-ID: <v0u0drbaqh.fsf@marajade.sandelman.ca>
-References: <20051202001358.GA12204@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
-Subject: [uml-devel] Re: Stop the insanity
+	Fri, 2 Dec 2005 16:47:45 -0500
+From: Rob Landley <rob@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200512021412.21539.rob@landley.net>
+Subject: [uml-devel] Is there an easy way to do a stack dump on UML?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,44 +33,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 02 Dec 2005 13:43:50 -0500
+Date: Fri, 2 Dec 2005 14:12:21 -0600
 To: user-mode-linux-devel@lists.sourceforge.net
 
---=-=-=
+I don't know how to send sysrq through the stdio console.
 
+I have a reproducable hang (well, I did this morning and think I can recreate 
+it).  It's gcc 4.0.2 attempting to statically link busybox (the allyesconfig 
+version), it just goes off into la-la land.  left it for an hour and no 
+progress, and UML is not eating noticeable CPU according to top (it roughly 
+correlates with the timer interrupt load).
 
->>>>> "Jeff" == Jeff Dike <jdike@addtoit.com> writes:
-    Jeff> I'm sending this mail out to everyone that I can find who has had
-    Jeff> the UML stubs compiled in unexpected ways, resulting in crashing.
+I'd like to see what the heck this sucker thinks it's doing, but it's kinda 
+tricky to strace "make".  (Too many forks.)
 
-    Jeff> I'd like testing of the patch below on as many gcc versions as
-    Jeff> possible.  I think this patch avoids the fundamental issue which is
-    Jeff> behind this, namely gcc using the stack when we have just replaced
-    Jeff> it, behind gcc's back.  The remapping and storage of the return
-
-Linux version 2.6.15-rc3-gefe3e2df (mcr@marajade.sandelman.ca) (gcc version 3.3.5 (Debian 1:3.3.5-13)) #7 Fri Dec 2 13:42:13 EST 2005
-
-boots and runs.
-
-Thank you!
-
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iQEVAwUAQ5CV6YCLcPvd0N1lAQLnqggAoekfTgi9i3GlamW0votuI2GAZ9d3KVxI
-EBFsff9rZl9U+NHrRv7FUzEwcvuWdjuYVln96xWJ2H4ArD1WIX8GkWJvEqzlh2ZV
-Vp8lH3hZ69/sMs4dtIe3MeiR7IAzbv8JY/Rpq2hML3xWwL+Mc1hirmHX2YC4dYeY
-93RrJ2haz2GTXMltjrdOMU9t4pue7TTHF5ByhmUCaNc5n+j2F3FlWzt+CT6MxseL
-2K7OjXhgC34O1jwlW9/QAITiLLCIY27/QeALxmqd0X6rFJ8c0hgYD8ot09sTqc9M
-1D0j3pNx7Qd7XFBHJ/4ELTpRxJj54HUJOfqbGOhhv4Y7MZ+LM4UGDw==
-=bu/K
------END PGP SIGNATURE-----
---=-=-=--
-
+Rob
+-- 
+Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
+I do not think it means what you think it means.
 
 
 -------------------------------------------------------
