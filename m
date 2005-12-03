@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EiONL-0000VH-7F for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 19:47:51 -0800
+	id 1EiOMO-0000TC-Fm for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Dec 2005 19:46:52 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EiONJ-0005Si-LS
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EiOML-00058S-26
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 19:47:51 -0800
+	Fri, 02 Dec 2005 19:46:52 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.15-rc2
+Subject: Re: [uml-devel] Re: 2.6.15-rc2
 References: <12276.1133324450@sandelman.ottawa.on.ca>
-In-Reply-To: <12276.1133324450@sandelman.ottawa.on.ca>
+	<200511301127.13494.rob@landley.net>
+	<v0k6eo24af.fsf@marajade.sandelman.ca>
+In-Reply-To: <v0k6eo24af.fsf@marajade.sandelman.ca>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200512030447.47095.blaisorblade@yahoo.it>
+Content-Disposition: inline
+Message-Id: <200512030446.46310.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,60 +31,95 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 3 Dec 2005 04:47:46 +0100
+Date: Sat, 3 Dec 2005 04:46:45 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>, jdike@addtoit.com
 
-On Wednesday 30 November 2005 05:20, Michael Richardson wrote:
-> Running a kernel which is not 2.6.15-rc2 (but a couple of merges back,
-> looking for a place where it works), I get:
+On Thursday 01 December 2005 17:03, Michael Richardson wrote:
+> okay, I don't quite understand, but it seemds that -rc2 is okay, but -rc3
+> is failing. (-rc2 was failing as far as I could tell on Monday. Maybe I
+> wasn't running the kernel I thought I was).
 
-> If I try with "mode=tt", (vs skas0) it boots, but on shutdown, I get:
+> Using git bisect, 
 
-I got it too, and actually I think it's triggerable by playing with proc 
-(something like ps with the "l" flag should do, but never tested). I've even 
-diagnosed and sent a report to Jeff, we just need to fix it up.
+must learn that, yep...
 
-It was introduced in the sysrq-t patch - some macros return 0xdeadbeef when 
-SKAS mode is compile-time disabled, and have only a SKAS implementation 
-(which is broken for TT mode but is used there too).
+> I've reduced the problem to: 
 
-Btw, it was not in the first Allan's version that bug, it was introduced 
-later.
+Yes, this happens due to GCC doing quite the opposite of what the patch should 
+do, in the immediately following line. I've experienced this one too.
 
-> EIP: 0073:[<40101e18>] CPU: 0 Not tainted ESP: 007b:bf8cec8c EFLAGS:
-> 00000246 Not tainted
-> EAX: ffffffda EBX: 40189880 ECX: ffffffff EDX: 00000000
-> ESI: bf8ced38 EDI: 00000000 EBP: bf8cec98 DS: 007b ES: 007b
-> a09ff800:  [<a00395bf>] show_regs+0x1cf/0x1e0
-> a09ff828:  [<a001d25c>] panic_exit+0x2c/0x50
-> a09ff838:  [<a00506cd>] notifier_call_chain+0x2d/0x50
-> a09ff858:  [<a003d922>] panic+0x72/0x110
-> a09ff874:  [<a0022d1e>] wait_stub_done+0xfe/0x180
-> a09ff8f4:  [<a0023792>] copy_context_skas0+0x1c2/0x270
-> a09ff9d4:  [<a0022aac>] init_new_context_skas+0x11c/0x1b0
-> a09ffa08:  [<a003bf97>] copy_mm+0x367/0x3a0
-> a09ffa50:  [<a003c969>] copy_process+0x499/0xe60
-> a09ffb40:  [<a003d39e>] do_fork+0x6e/0x1ca
-> a09ffbac:  [<a001a33b>] sys_fork+0x8b/0xb0
-> a09ffbe0:  [<a0024512>] handle_syscall+0x112/0x140
-> a09ffc5c:  [<a0022ed1>] handle_trap+0x31/0x140
-> a09ffc84:  [<a002357a>] userspace+0x1da/0x230
-> a09ffce0:  [<a0023f35>] new_thread_handler+0xe5/0x120
-> a09ffd20:  [<a01cb468>] __restore+0x0/0x8
+>           39d730ab87f07592e3a3794353f097d5184cae7a is first bad commit
+>           diff-tree 39d730ab87f07592e3a3794353f097d5184cae7a (from
+
+> Stub registers -
+
+>         12 - bfffe092
+
+This is the content of EIP.
+
+> Kernel panic - not syncing: copy_context_skas0 : failed to wait for
+> SIGUSR1/SIGTRAP, pid = 32345, n = 32345, errno = 0, status = 0xb7f
+
+Ok - status = stopped for SIGSEGV.
+
+> Program received signal SIGSEGV, Segmentation fault.
+
+This backtrace is quite different from the other one - and checking for 
+independent problems with cramfs may be worth... However, let's go back on 
+main problem (below).
+
+> zlib_inflateInit2_ (z=0xa0309360, w=15,
+>     version=0xa280005c <Address 0xa280005c out of bounds>, stream_size=48)
+>     at /mara1/git/uml-2.6.15/lib/zlib_inflate/inflate.c:57
+> 57        z->state->blocks = NULL;
+> (gdb) bt
+> #0  zlib_inflateInit2_ (z=0xa0309360, w=15,
+>     version=0xa280005c <Address 0xa280005c out of bounds>, stream_size=48)
+>     at /mara1/git/uml-2.6.15/lib/zlib_inflate/inflate.c:57
+
+Ok, here we replace the stack, in the below int 0x80. The old stack contents 
+are not copied, and we have random crap on the new stack.
+
+>   8a:	b8 c0 00 00 00       	mov    $0xc0,%eax
+>   8f:	cd 80                	int    $0x80
+>   91:	5d                   	pop    %ebp
+
+Here we pop an invalid value into ebp - so we need to keep GCC from using %ebp 
+afterwards.
+
+This will fail. Notice the "92" - it matches last digits of EIP (the rest can 
+change due to relocation, but the last digits are a good ID of the 
+instruction).
+
+>   92:	89 45 f0             	mov    %eax,0xfffffff0(%ebp)
+
+%eax is the return value of the syscall. Gcc saves it on the stack and puts it 
+back on %eax, but only with the patch.
+
+>   95:	8b 45 f0             	mov    0xfffffff0(%ebp),%eax
+
+>   98:	a3 18 f0 ff bf       	mov    %eax,0xbffff018
+
+The patch is intended to make sure the _above_ instruction is assembled 
+correctly.
+
+
+>   9d:	cc                   	int3
+> 	trap_myself();
+> }
+
+The below is ignored thanks to the int3.
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
 
 
