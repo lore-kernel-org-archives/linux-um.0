@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EiPd9-00044i-0t for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 21:08:15 -0800
-Received: from lakshmi.addtoit.com ([198.99.130.6] helo=lakshmi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EiPd8-0005Xj-Ju
+	id 1Eiwaa-0004q8-9A for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 04 Dec 2005 08:19:48 -0800
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EiwaV-0002sW-26
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Dec 2005 21:08:15 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Is there an easy way to do a stack dump on UML?
-Message-ID: <20051203060030.GB17426@ccure.user-mode-linux.org>
-References: <200512021412.21539.rob@landley.net>
-	<200512030359.32894.blaisorblade@yahoo.it>
-	<200512022144.20730.rob@landley.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sun, 04 Dec 2005 08:19:48 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <b1df7a2c0512020134v777af71ev@mail.gmail.com>
+	<200512030405.10210.blaisorblade@yahoo.it>
+	<b1df7a2c0512030455x2f9e2bb5s@mail.gmail.com>
+In-Reply-To: <b1df7a2c0512030455x2f9e2bb5s@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200512022144.20730.rob@landley.net>
+Message-Id: <200512041718.02045.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] about virtual smp in uml
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,23 +31,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 3 Dec 2005 01:00:30 -0500
-To: Rob Landley <rob@landley.net>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 4 Dec 2005 17:17:58 +0100
+To: zhuang zhuanghou <zhuanghou@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Dec 02, 2005 at 09:44:20PM -0600, Rob Landley wrote:
-> I've never used mconsole.  Never needed it before.
-> 
-> Perhaps if I attach to a serial console instead of stdio I can send sysrq that 
-> way...
+On Saturday 03 December 2005 13:55, zhuang zhuanghou wrote:
+> Many thanks for your replying!!!
+>
+> > You need to force UML to run into TT mode:
+> >
+> > $ ./linux mode=tt ncpus=2 ubd0=rootfs
+>
+> Yes, I have given the mode=tt option in the command line, but still cannot
+> work :(
 
-No.  Just think a little.  Banging on the SysRq key on your keyboard can't
-do anything but send SysRq to the host.
+Which way? Anyhow, if you really want that (for testing, it's not useful 
+currently for performance) you want to use some older kernels (or try the 
+latest 2.4, i.e. 2.4.3x + 2.4.28-bs2 patchset).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-SysRq for a virtual machine has to be an out-of-band thing wrt the host.  For
-UML, that's mconsole.
+	
 
-				Jeff
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
