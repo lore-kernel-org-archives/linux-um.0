@@ -1,32 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ejf0h-0004AH-4X for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Dec 2005 07:45:43 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ejf0e-0001oq-EP
+	id 1EjjMD-0004VQ-Rm for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Dec 2005 12:24:13 -0800
+Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EjjMD-0006Uf-7Y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Dec 2005 07:45:43 -0800
-Received: from localhost (localhost [127.0.0.1])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 10DE0C6F82
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue,  6 Dec 2005 15:44:21 +0000 (GMT)
-Received: from mail.nagafix.co.uk ([127.0.0.1])
-	by localhost (viper.nagafix.co.uk [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 00911-09 for
-	<user-mode-linux-devel@lists.sourceforge.net>; 
-	Tue,  6 Dec 2005 15:44:19 +0000 (GMT)
-Received: from ant.internal (88-96-60-221.dsl.zen.co.uk [88.96.60.221])
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 3AC75C6F81
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue,  6 Dec 2005 15:44:08 +0000 (GMT)
-From: Antoine Martin <antoine@nagafix.co.uk>
-Content-Type: text/plain
-Message-Id: <1133883874.6202.39.camel@ant.internal>
+	Tue, 06 Dec 2005 12:24:13 -0800
+From: Pekka Enberg <penberg@cs.helsinki.fi>
+Message-Id: <1133900650.3279.9.camel@localhost>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] fakehd and tty logging
+Subject: [uml-devel] [PATCH] um: fix compile error for tt
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,22 +26,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 06 Dec 2005 15:44:34 +0000
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 06 Dec 2005 22:24:09 +0200
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, jdike@karaya.com, user-mode-linux-devel@lists.sourceforge.net
 
-I just noticed this patch:
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.15-rc3/patches/no-fakehd
-Anyone trying to use UML for honeypots will need this feature.
-But since tty-logging is also missing from 2.6, I don't use it.
-However I would hope that one day the tty logging gets re-added to 2.6
-then I would probably want to use both features for honeypots.
+Without the included patch, I get the following compile error for um:
 
-"The fakehd switch lost its implementation at some point. Since no one
-is screaming for it, we might as well remove it."
+arch/um/kernel/tt/uaccess.c: In function `copy_from_user_tt':
+arch/um/kernel/tt/uaccess.c:11: error: `FIXADDR_USER_START' undeclared (first use in this function)
+arch/um/kernel/tt/uaccess.c:11: error: (Each undeclared identifier is reported only once
+arch/um/kernel/tt/uaccess.c:11: error: for each function it appears in.)
 
-Please please please (not screaming yet).
+The error only happens when I disable CONFIG_MODE_SKAS.
 
-Antoine
+Signed-off-by: Pekka Enberg <penberg@cs.helsinki.fi>
+---
+
+ uaccess-tt.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+Index: 2.6/arch/um/kernel/tt/include/uaccess-tt.h
+===================================================================
+--- 2.6.orig/arch/um/kernel/tt/include/uaccess-tt.h
++++ 2.6/arch/um/kernel/tt/include/uaccess-tt.h
+@@ -8,6 +8,7 @@
+ 
+ #include "linux/string.h"
+ #include "linux/sched.h"
++#include "asm/fixmap.h"
+ #include "asm/processor.h"
+ #include "asm/errno.h"
+ #include "asm/current.h"
+
 
 
 
