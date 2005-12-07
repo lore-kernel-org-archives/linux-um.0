@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EjzVu-0005ud-1k for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Dec 2005 05:39:18 -0800
-Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EjzVt-0002X0-Br
+	id 1Ek1yo-0000Ma-3W for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Dec 2005 08:17:18 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ek1yl-0003Lp-8y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Dec 2005 05:39:18 -0800
-From: Pekka J Enberg <penberg@cs.Helsinki.FI>
+	Wed, 07 Dec 2005 08:17:18 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH] um: fix compile error for tt
-In-Reply-To: <200512071038.04958.blaisorblade@yahoo.it>
-Message-ID: <Pine.LNX.4.58.0512071538230.22525@sbz-30.cs.Helsinki.FI>
 References: <1133900650.3279.9.camel@localhost>
 	<200512071038.04958.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<Pine.LNX.4.58.0512071538230.22525@sbz-30.cs.Helsinki.FI>
+In-Reply-To: <Pine.LNX.4.58.0512071538230.22525@sbz-30.cs.Helsinki.FI>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200512071716.08637.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,67 +31,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 7 Dec 2005 15:39:02 +0200 (EET)
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org, jdike@karaya.com
+Date: Wed, 7 Dec 2005 17:16:05 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Pekka J Enberg <penberg@cs.helsinki.fi>, akpm@osdl.org, linux-kernel@vger.kernel.org, jdike@karaya.com
 
-Hi,
+On Wednesday 07 December 2005 14:39, Pekka J Enberg wrote:
+> Hi,
+>
+> On Wed, 7 Dec 2005, Blaisorblade wrote:
+> > Ok, fine, just a note - the header inclusion should be added to
+> >
+> > arch/um/include/um_uaccess.h
+> >
+> > where it is effectively used (the offending macros, using FIXADDR_USER_*,
+> > are __access_ok_vsyscall.
+> >
+> > For the rest it's ok.
+>
+> Here's an updated patch.
 
-On Wed, 7 Dec 2005, Blaisorblade wrote:
-> Ok, fine, just a note - the header inclusion should be added to 
-> 
-> arch/um/include/um_uaccess.h
-> 
-> where it is effectively used (the offending macros, using FIXADDR_USER_*, are 
-> __access_ok_vsyscall.
-> 
-> For the rest it's ok.
+ACK - Andrew, please merge (and queue for -linus), or notify if it needs to be 
+resent. Thanks.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-Here's an updated patch.
+	
 
-[PATCH] um: fix compile error for tt
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
-Without the included patch, I get the following compile error for um:
-
-arch/um/kernel/tt/uaccess.c: In function `copy_from_user_tt':
-arch/um/kernel/tt/uaccess.c:11: error: `FIXADDR_USER_START' undeclared (first use in this function)
-arch/um/kernel/tt/uaccess.c:11: error: (Each undeclared identifier is reported only once
-arch/um/kernel/tt/uaccess.c:11: error: for each function it appears in.)
-
-I get the compile error when I disable CONFIG_MODE_SKAS.
-
-Signed-off-by: Pekka Enberg <penberg@cs.helsinki.fi>
----
-
- include/um_uaccess.h               |    2 ++
- kernel/skas/include/uaccess-skas.h |    1 -
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-Index: 2.6/arch/um/include/um_uaccess.h
-===================================================================
---- 2.6.orig/arch/um/include/um_uaccess.h
-+++ 2.6/arch/um/include/um_uaccess.h
-@@ -17,6 +17,8 @@
- #include "uaccess-skas.h"
- #endif
- 
-+#include "asm/fixmap.h"
-+
- #define __under_task_size(addr, size) \
- 	(((unsigned long) (addr) < TASK_SIZE) && \
-          (((unsigned long) (addr) + (size)) < TASK_SIZE))
-Index: 2.6/arch/um/kernel/skas/include/uaccess-skas.h
-===================================================================
---- 2.6.orig/arch/um/kernel/skas/include/uaccess-skas.h
-+++ 2.6/arch/um/kernel/skas/include/uaccess-skas.h
-@@ -7,7 +7,6 @@
- #define __SKAS_UACCESS_H
- 
- #include "asm/errno.h"
--#include "asm/fixmap.h"
- 
- /* No SKAS-specific checking. */
- #define access_ok_skas(type, addr, size) 0
 
 
 -------------------------------------------------------
