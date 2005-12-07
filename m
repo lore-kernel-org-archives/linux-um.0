@@ -1,20 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EjjMD-0004VQ-Rm for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Dec 2005 12:24:13 -0800
-Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EjjMD-0006Uf-7Y
+	id 1Ejvkp-00083o-6l for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Dec 2005 01:38:27 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ejvkk-0000VJ-HB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Dec 2005 12:24:13 -0800
-From: Pekka Enberg <penberg@cs.helsinki.fi>
-Message-Id: <1133900650.3279.9.camel@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	Wed, 07 Dec 2005 01:38:27 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] um: fix compile error for tt
+References: <1133900650.3279.9.camel@localhost>
+In-Reply-To: <1133900650.3279.9.camel@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [PATCH] um: fix compile error for tt
+Content-Disposition: inline
+Message-Id: <200512071038.04958.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,38 +29,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 06 Dec 2005 22:24:09 +0200
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, jdike@karaya.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 7 Dec 2005 10:38:04 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Pekka Enberg <penberg@cs.helsinki.fi>, akpm@osdl.org, linux-kernel@vger.kernel.org, jdike@karaya.com
 
-Without the included patch, I get the following compile error for um:
+On Tuesday 06 December 2005 21:24, Pekka Enberg wrote:
+> Without the included patch, I get the following compile error for um:
+>
+> arch/um/kernel/tt/uaccess.c: In function `copy_from_user_tt':
+> arch/um/kernel/tt/uaccess.c:11: error: `FIXADDR_USER_START' undeclared
+> (first use in this function) arch/um/kernel/tt/uaccess.c:11: error: (Each
+> undeclared identifier is reported only once arch/um/kernel/tt/uaccess.c:11:
+> error: for each function it appears in.)
+>
+> The error only happens when I disable CONFIG_MODE_SKAS.
+Ok, fine, just a note - the header inclusion should be added to 
 
-arch/um/kernel/tt/uaccess.c: In function `copy_from_user_tt':
-arch/um/kernel/tt/uaccess.c:11: error: `FIXADDR_USER_START' undeclared (first use in this function)
-arch/um/kernel/tt/uaccess.c:11: error: (Each undeclared identifier is reported only once
-arch/um/kernel/tt/uaccess.c:11: error: for each function it appears in.)
+arch/um/include/um_uaccess.h
 
-The error only happens when I disable CONFIG_MODE_SKAS.
+where it is effectively used (the offending macros, using FIXADDR_USER_*, are 
+__access_ok_vsyscall.
 
-Signed-off-by: Pekka Enberg <penberg@cs.helsinki.fi>
----
+For the rest it's ok.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
- uaccess-tt.h |    1 +
- 1 file changed, 1 insertion(+)
+	
 
-Index: 2.6/arch/um/kernel/tt/include/uaccess-tt.h
-===================================================================
---- 2.6.orig/arch/um/kernel/tt/include/uaccess-tt.h
-+++ 2.6/arch/um/kernel/tt/include/uaccess-tt.h
-@@ -8,6 +8,7 @@
- 
- #include "linux/string.h"
- #include "linux/sched.h"
-+#include "asm/fixmap.h"
- #include "asm/processor.h"
- #include "asm/errno.h"
- #include "asm/current.h"
-
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
