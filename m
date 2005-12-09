@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EkBSp-0000ON-9v for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Dec 2005 18:24:55 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EkBSp-0002DR-1X
+	id 1EkmQJ-0002yg-IF for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Dec 2005 09:52:47 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EkmQI-00048L-4q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Dec 2005 18:24:55 -0800
-Subject: Re: [uml-devel] testing of 2.6.15-rc1+patches and 2.6.15-rc3 x86
-	guests on amd64 host
-From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <20051130040114.GB21268@ccure.user-mode-linux.org>
-References: <1133307314.13162.50.camel@localhost.localdomain>
-	<20051130040114.GB21268@ccure.user-mode-linux.org>
-Content-Type: text/plain
-Message-Id: <1134008686.32598.56.camel@localhost.localdomain>
-Mime-Version: 1.0
+	Fri, 09 Dec 2005 09:52:47 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] tls: set_thread_area failed
+References: <1134008028.32598.52.camel@localhost.localdomain>
+In-Reply-To: <1134008028.32598.52.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200512091852.15906.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,40 +29,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 08 Dec 2005 02:24:45 +0000
-To: Jeff Dike <jdike@addtoit.com>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Fri, 9 Dec 2005 18:52:15 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Antoine Martin <antoine@nagafix.co.uk>
 
-On Tue, 2005-11-29 at 23:01 -0500, Jeff Dike wrote:
-> On Tue, Nov 29, 2005 at 11:35:14PM +0000, Antoine Martin wrote:
-> > [42951313.910000] Kernel panic - not syncing: Kernel mode signal 7
-> 
-> Did your /tmp fill up?
-> 
-> > * Now, with 2.6.15-rc3 it does not boot:
-> > * or in skas0 mode:
-> > Checking PROT_EXEC mmap in /tmp...OK
-> > Checking for the skas3 patch in the host:
-> >   - /proc/mm...not found
-> >   - PTRACE_FAULTINFO...not found
-> >   - PTRACE_LDT...not found
-> > UML running in SKAS0 mode
-> > (then it exits)
-> 
-> With SIGBUS happening, I'd check that you've got some space in /tmp.
-DOH. There were a few temp files in there, and the guest ran out of
-space. I didn't consider this because the guest also had a swap disk
-file and seemed to crash when only consuming a small amount of swap...
-wrong track.
-I now mount /tmp in the chroot as tmpfs with a 20MB extra to spare for
-tmp files...
+On Thursday 08 December 2005 03:13, Antoine Martin wrote:
+> I'm still trying to get a regular FC4 image to boot with the latest x86
+> tls support code.
+Mainline kernel or with jdike patchset?
+> (since Gentoo works fine) 
+> but this is what I get:
+> # fsck.ext3 -a /dev/ubda
+> set_thread_area failed when setting up thread-local storage
+> Segmentation fault
 
-Thanks
-Antoine
-> 
-> FWIW, I have rc3 running happily here on x86_64.
-> 
-> 				Jeff
+> Is this glibc? Any ideas?
+
+Yes, I see that on Debian Sarge too. Don't ask me why fsck uses thread, but it 
+seems to do that.
+
+Also, different glibc are more or less happy in using modify_ldt() rather than 
+set_thread_area() - it seems that latter is better.
+
+> Thanks
+> Antoine
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
