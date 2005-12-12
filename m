@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ElX6m-0000jX-Q3 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Dec 2005 11:43:44 -0800
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1ElX6j-0000Eo-8m
+	id 1EldMy-0003Q6-0I for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 11 Dec 2005 18:24:52 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EldMw-0005Ob-ET
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Dec 2005 11:43:44 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Sun, 11 Dec 2005 18:24:52 -0800
+From: Antoine Martin <antoine@nagafix.co.uk>
+In-Reply-To: <200512112043.26863.blaisorblade@yahoo.it>
 References: <1134007824.32598.48.camel@localhost.localdomain>
 	<200512111747.30441.blaisorblade@yahoo.it>
 	<1134328772.29209.82.camel@localhost.localdomain>
-In-Reply-To: <1134328772.29209.82.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200512112043.26863.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: 2.4.32-bs2
+	<200512112043.26863.blaisorblade@yahoo.it>
+Content-Type: multipart/mixed; boundary="=-bRSUo94153aFov2+Nzoj"
+Message-Id: <1134354266.29209.116.camel@localhost.localdomain>
+Mime-Version: 1.0
+Subject: [uml-devel] [PATCH] Re: 2.4.32-bs2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,127 +29,88 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 11 Dec 2005 20:43:26 +0100
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
-
-On Sunday 11 December 2005 20:19, Antoine Martin wrote:
-> On Sun, 2005-12-11 at 17:47 +0100, Blaisorblade wrote:
-> > On Thursday 08 December 2005 03:10, Antoine Martin wrote:
-> > > All,
-> > >
-> > > Talking about tty logging and fake ide reminded of the current state of
-> > > UML on 2.4 kernels:
-> > > http://uml.nagafix.co.uk/uml-2.4.32-bs2.patch.bz2
-> > > Is Blaisorblade's 2.4.28-bs2 patch tweaked to apply cleanly on 2.4.32.
-> >
-> > There should be (I think) just offsets, not even fuzzes, so there should
-> > be no problem.
-
-> > > /usr/lib/libc.a: could not read symbols: Bad value
-
-> > I'd like to see the exact cmd line producing this. Possibly seeing also
-> > gcc -v output with that cmd line would help.
+Date: Mon, 12 Dec 2005 02:24:26 +0000
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: uml@nagafix.co.uk, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
 
-> collect2: ld returned 1 exit status
+--=-bRSUo94153aFov2+Nzoj
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-> > (After seeing if there's anything strange with the file itself, but I
-> > think you can compile on the same box some
+> > I have no idea what I've done different! 
+I was using mrproper, but I've scripted the whole thing to test all the
+combinations from scratch again (with a brand new tree each time - not
+just mrproper) and the error only occurs when using the hardened gcc,
+and I'm not too bothered about that (it's easy enough to switch, except
+in SELinux enforcing mode - but that's another matter...)
 
-> > > Any idea why that is? It happens when I use:
-> > > i686-pc-linux-gnu-3.4.4-vanilla
-> > > but not with:
-> > > i686-pc-linux-gnu-3.3.6-vanilla
+So I guess that the patch is good enough as it is.
+It is available here:
+http://uml.nagafix.co.uk/uml-2.4.32-bs2.patch.bz2
+it cumulates:
+* 2.4.28-bs2
+* offsets for 2.4.32 and removed the whitespace no-change in
+drivers/char/tty_io.c.rej
+* tiny patch (attached) for tt/Makefile to cope with duplicate symbols
+in newer glibc
+(done properly this time)
+* mconsole-exec patch backported to 2.4:
+http://uml.nagafix.co.uk/mconsole-exec.patch-2.4.bz2
+(unlike in 2.6 there is no config option for it)
 
-> Trying again today with 3.3.6, I get a new warning (bcmp) and the same
-> error.
+> > How would I go about building a 32-bit pcap enabled kernel in the
+> > chroot? Do I copy the pcap.a from outside the chroot?
+> 
+> No, pcap.a is a static library so you don't need that. The problem is that you 
+> need a matching glibc inside the chroot and outside for the libraries which 
+> are dlopen()ed by glibc, i.e. the whole libnss + helpers called 
+> by /etc/nsswitch.conf for instance. On my system the linker spits out a 
+> warning to say that ("You must have the same glibc used for compiling, even 
+> if you're linking statically").
+Same here. I wish it could tell me which ones so I could place them in
+the chroot without guessing or tracing it (we have discussed this a
+while back)
 
-The warning is about two memcmp() definitions, of which one is from libc and 
-one from UML. And memcmp() is called in bcmp(), triggering the error.
+So in this case, on a multilib amd64 system, I should be able to build a
+chroot using a bind mount to preserve /lib32 and /usr/lib32 to guarantee
+that the libs are exactly the same? (and add a 32bit bash, gcc, make...)
 
-> I have no idea what I've done different! 
+> > I'll send a patch when the whole thing works.
+> 
+> The patch is for review, and please don't send any whole patch on the ML - 
+Sure, I meant just the diffs with 2.4.28-bs2!
 
-Ok, now we have that the difference between 3.3 and 3.4 could be in collect2, 
-the ld wrapper, which was discarding the useful message. I don't think gcc 
-3.4 could do anything differently. (I've not looked at linux-2.4.32 sources, 
-though, I'm 
+Antoine
 
-> gcc -Wl,-T,arch/um/link.ld -static -Wl,--wrap,malloc -Wl,--wrap,free
-> -Wl,--wrap,calloc \
->         -o linux arch/um/main.o vmlinux.o -L/usr/lib -lutil
-> /usr/lib/libc.a(memcmp.o): In function `bcmp':
-> ../sysdeps/i386/i686/memcmp.S:(.text+0x0): multiple definition of
-> `memcmp'
+--=-bRSUo94153aFov2+Nzoj
+Content-Disposition: inline; filename=2.4.32-bs2-tt-makefile.patch
+Content-Type: text/x-patch; name=2.4.32-bs2-tt-makefile.patch;
+	charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-Notice the line below:
+--- linux-2.4.32/arch/um/kernel/tt/Makefile     2005-12-13 03:29:03.000000000 +0000
++++ linux-2.4.32-bs2/arch/um/kernel/tt/Makefile 2005-12-13 03:27:52.000000000 +0000
+@@ -26,7 +26,7 @@
+ include $(TOPDIR)/Rules.make
 
-> vmlinux.o:/usr/src/linux-2.4.32-bs2/lib/string.c:452: first defined here
+ $(USER_OBJS) : %.o: %.c
+-       $(CC) $(CFLAGS_$@) $(USER_CFLAGS) -c -o $@ $<
++       $(CC) $(USER_CFLAGS) $(CFLAGS_$@) -c -o $@ $<
 
-I.e. memcmp is multiply defined.
+ $(O_TARGET) : unmap_fin.o
 
-> /usr/lib/gcc-lib/i686-pc-linux-gnu/3.3.6/../../../../i686-pc-linux-gnu/bin/
->ld: Warning: size of symbol `memcmp' changed from 53 in vmlinux.o to 128 in
-> /usr/lib/libc.a(memcmp.o)
+@@ -34,6 +34,7 @@
+        $(CC) $(UNMAP_CFLAGS) -c -o $@ $<
 
-This particular warning (size of function changed) may depend on gcc 3.3 
-creating 53-bytes of code and gcc used for glibc using 128 ones (doh!). 
-However it's a stupid way to say again "duplicate symbol".
+ unmap_fin.o : unmap.o
+-       ld -r -o $@ $< -lc -L/usr/lib
++       ld -r -o unmap_tmp.o unmap.o -lc -L/usr/lib
++       objcopy unmap_tmp.o unmap_fin.o -G switcheroo
 
-Ok, this makes *much* sense to me, and we had that in 2.6. I'm not sure why it 
-started appearing here, I think it started existing either for some kernel 
-cleanup or for what else... (maybe the kernel cleanup got backported in 
-2.4.32).
+ clean :
 
-I think in that case I #ifdefed just the function definition (for memcmp, not 
-for bcmp!) in lib/string.c, while keeping the EXPORT_SYMBOL() line (wherever 
-it is).
-
-> fix_libtool_files.sh did fix some libs when I upgraded to 3.4 - but did
-> not help in this case.
-
-ok, no more worry, the current 3.3 error message *is* informative.
-
-
-> > Hmm, I never compiled 2.4 kernels on x86_64 machines. Probably I
-> > backported just an earlier attempt - in fact I thought I'd done it on
-> > 2.6, but until I started testing it, it didn't work.
->
-> Not to worry, I just thought it was meant to work.
-
-> How would I go about building a 32-bit pcap enabled kernel in the
-> chroot? Do I copy the pcap.a from outside the chroot?
-
-No, pcap.a is a static library so you don't need that. The problem is that you 
-need a matching glibc inside the chroot and outside for the libraries which 
-are dlopen()ed by glibc, i.e. the whole libnss + helpers called 
-by /etc/nsswitch.conf for instance. On my system the linker spits out a 
-warning to say that ("You must have the same glibc used for compiling, even 
-if you're linking statically").
-
-Hope that glibc people have not been so strict.
-
-> I almost did, but the patch was twice as long... will do next time.
-
-Sometimes this can happen, the problem is that probably a patch (even for this 
-file only) is (normally) more readable.
-
-[... I read your answers on the patch ...]
-
-> I'll send a patch when the whole thing works.
-
-The patch is for review, and please don't send any whole patch on the ML - 
-limit to the interesting hunks, with reference URLs if needed (let's avoid 
-spamming people).
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+--=-bRSUo94153aFov2+Nzoj--
 
 
 
