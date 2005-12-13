@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EldMy-0003Q6-0I for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Dec 2005 18:24:52 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EldMw-0005Ob-ET
+	id 1EmItY-0005J3-MN for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Dec 2005 14:45:16 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user29129)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EmItV-0002Tq-UI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Dec 2005 18:24:52 -0800
-From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <200512112043.26863.blaisorblade@yahoo.it>
-References: <1134007824.32598.48.camel@localhost.localdomain>
-	<200512111747.30441.blaisorblade@yahoo.it>
-	<1134328772.29209.82.camel@localhost.localdomain>
-	<200512112043.26863.blaisorblade@yahoo.it>
-Content-Type: multipart/mixed; boundary="=-bRSUo94153aFov2+Nzoj"
-Message-Id: <1134354266.29209.116.camel@localhost.localdomain>
-Mime-Version: 1.0
-Subject: [uml-devel] [PATCH] Re: 2.4.32-bs2
+	Tue, 13 Dec 2005 14:45:16 -0800
+Subject: Re: [uml-devel] tls: set_thread_area failed
+References: <1134008028.32598.52.camel@localhost.localdomain>
+	<1134153592.29209.2.camel@localhost.localdomain>
+	<200512110034.43397.rob@landley.net>
+	<200512111701.31229.blaisorblade@yahoo.it>
+From: Nix <nix@esperi.org.uk>
+In-Reply-To: <200512111701.31229.blaisorblade@yahoo.it>
+	(blaisorblade@yahoo.it's
+	message of "Sun, 11 Dec 2005 17:01:30 +0100")
+Message-ID: <87fyowsjkg.fsf@amaterasu.srvr.nix>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,89 +32,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 12 Dec 2005 02:24:26 +0000
+Date: Tue, 13 Dec 2005 22:45:03 +0000
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: uml@nagafix.co.uk, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
 
+On Sun, 11 Dec 2005, blaisorblade@yahoo.it whispered secretively:
+> On Sunday 11 December 2005 07:34, Rob Landley wrote:
+>> On Friday 09 December 2005 12:39, Antoine Martin wrote:
+>> > I wasn't even thinking about that! So true, why on earth would fsck
+>> > require threading!?
 
---=-bRSUo94153aFov2+Nzoj
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+It doesn't, at least not as of e2fsprogs-1.38.
 
-> > I have no idea what I've done different! 
-I was using mrproper, but I've scripted the whole thing to test all the
-combinations from scratch again (with a brand new tree each time - not
-just mrproper) and the error only occurs when using the hardened gcc,
-and I'm not too bothered about that (it's easy enough to switch, except
-in SELinux enforcing mode - but that's another matter...)
+>> fsck -A does all filesystems in fstab in one run, and the single case
+>> apparently defaults to one thread.
+>>
+>> I didn't say it was a good design... :)
 
-So I guess that the patch is good enough as it is.
-It is available here:
-http://uml.nagafix.co.uk/uml-2.4.32-bs2.patch.bz2
-it cumulates:
-* 2.4.28-bs2
-* offsets for 2.4.32 and removed the whitespace no-change in
-drivers/char/tty_io.c.rej
-* tiny patch (attached) for tt/Makefile to cope with duplicate symbols
-in newer glibc
-(done properly this time)
-* mconsole-exec patch backported to 2.4:
-http://uml.nagafix.co.uk/mconsole-exec.patch-2.4.bz2
-(unlike in 2.6 there is no config option for it)
+e2fsprogs-1.38/misc/fsck.c:check_all() repeatedly invokes fsck_device(),
+which invokes execute(), which does a perfectly normal fork()/exec().
+No threads here. Nor is there use of aio_*(), which might use threads
+(well, POSIX allows it).
 
-> > How would I go about building a 32-bit pcap enabled kernel in the
-> > chroot? Do I copy the pcap.a from outside the chroot?
-> 
-> No, pcap.a is a static library so you don't need that. The problem is that you 
-> need a matching glibc inside the chroot and outside for the libraries which 
-> are dlopen()ed by glibc, i.e. the whole libnss + helpers called 
-> by /etc/nsswitch.conf for instance. On my system the linker spits out a 
-> warning to say that ("You must have the same glibc used for compiling, even 
-> if you're linking statically").
-Same here. I wish it could tell me which ones so I could place them in
-the chroot without guessing or tracing it (we have discussed this a
-while back)
+> In fact, I expect a core Unix utility to be grown up in the good old Unix 
+> school, i.e. fork() and exec()!
 
-So in this case, on a multilib amd64 system, I should be able to build a
-chroot using a bind mount to preserve /lib32 and /usr/lib32 to guarantee
-that the libs are exactly the same? (and add a 32bit bash, gcc, make...)
+It is. :)
 
-> > I'll send a patch when the whole thing works.
-> 
-> The patch is for review, and please don't send any whole patch on the ML - 
-Sure, I meant just the diffs with 2.4.28-bs2!
+> We met The One* Unix coder thinking "I like new things!".
 
-Antoine
+Thankfully, Ted Ts'o is not a Nazgul (despite his close involvement in
+the flashy new things of Kerberos and IPSec).
 
---=-bRSUo94153aFov2+Nzoj
-Content-Disposition: inline; filename=2.4.32-bs2-tt-makefile.patch
-Content-Type: text/x-patch; name=2.4.32-bs2-tt-makefile.patch;
-	charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
-
---- linux-2.4.32/arch/um/kernel/tt/Makefile     2005-12-13 03:29:03.000000000 +0000
-+++ linux-2.4.32-bs2/arch/um/kernel/tt/Makefile 2005-12-13 03:27:52.000000000 +0000
-@@ -26,7 +26,7 @@
- include $(TOPDIR)/Rules.make
-
- $(USER_OBJS) : %.o: %.c
--       $(CC) $(CFLAGS_$@) $(USER_CFLAGS) -c -o $@ $<
-+       $(CC) $(USER_CFLAGS) $(CFLAGS_$@) -c -o $@ $<
-
- $(O_TARGET) : unmap_fin.o
-
-@@ -34,6 +34,7 @@
-        $(CC) $(UNMAP_CFLAGS) -c -o $@ $<
-
- unmap_fin.o : unmap.o
--       ld -r -o $@ $< -lc -L/usr/lib
-+       ld -r -o unmap_tmp.o unmap.o -lc -L/usr/lib
-+       objcopy unmap_tmp.o unmap_fin.o -G switcheroo
-
- clean :
-
---=-bRSUo94153aFov2+Nzoj--
-
+-- 
+`I must caution that dipping fingers into molten lead
+ presents several serious dangers.' --- Jearl Walker
 
 
 -------------------------------------------------------
