@@ -2,34 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EmN0q-00052e-8l for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Dec 2005 19:09:04 -0800
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EmN0o-0005ba-L2
+	id 1EmVeJ-0002mA-CD for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Dec 2005 04:22:23 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EmVeH-0001Ns-RZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Dec 2005 19:09:04 -0800
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1EmMyX-0007ZU-1c for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Dec 2005 04:06:41 +0100
-Received: from dslb-082-083-008-185.pools.arcor-ip.net ([82.83.8.185])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 14 Dec 2005 04:06:41 +0100
-Received: from skoehler by dslb-082-083-008-185.pools.arcor-ip.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 14 Dec 2005 04:06:41 +0100
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <439F8C0A.2000302@upb.de>
-References: <1134008028.32598.52.camel@localhost.localdomain>	<1134153592.29209.2.camel@localhost.localdomain>	<200512110034.43397.rob@landley.net>	<200512111701.31229.blaisorblade@yahoo.it>
-	<87fyowsjkg.fsf@amaterasu.srvr.nix>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <87fyowsjkg.fsf@amaterasu.srvr.nix>
-Subject: [uml-devel] Re: tls: set_thread_area failed
+	Wed, 14 Dec 2005 04:22:23 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: tls: set_thread_area failed
+References: <1134008028.32598.52.camel@localhost.localdomain>
+	<87fyowsjkg.fsf@amaterasu.srvr.nix> <439F8C0A.2000302@upb.de>
+In-Reply-To: <439F8C0A.2000302@upb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Message-Id: <200512141321.49910.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,18 +28,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 14 Dec 2005 04:05:46 +0100
+Date: Wed, 14 Dec 2005 13:21:48 +0100
+Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Rob Landley <rob@landley.net>, Antoine Martin <antoine@nagafix.co.uk>
+Cc: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>, Rob Landley <rob@landley.net>, Antoine Martin <antoine@nagafix.co.uk>
 
-> e2fsprogs-1.38/misc/fsck.c:check_all() repeatedly invokes fsck_device(),
-> which invokes execute(), which does a perfectly normal fork()/exec().
-> No threads here. Nor is there use of aio_*(), which might use threads
-> (well, POSIX allows it).
+On Wednesday 14 December 2005 04:05, Sven K=F6hler wrote:
+> > e2fsprogs-1.38/misc/fsck.c:check_all() repeatedly invokes fsck_device(),
+> > which invokes execute(), which does a perfectly normal fork()/exec().
+> > No threads here. Nor is there use of aio_*(), which might use threads
+> > (well, POSIX allows it).
+>
+> Sorry, and what's the conclusion?
+>
+> fork() calles set_thread_area()?
 
-Sorry, and what's the conclusion?
+Interesting... yep, it could.
 
-fork() calles set_thread_area()?
+Ok, picture down:
+
+a) in NPTL, getpid() caches the result of the syscall in the TLS - so each =
+new=20
+process at startup (i.e. after exec!) calls set_thread_area(). But that's=20
+normal.
+
+b) I know that in clone()*, and I presume that in fork(), the pid cache mus=
+t=20
+be invalidated / updated. So while fork() maybe doesn't use set_thread_area=
+=20
+(and it could, seeing that no TLS setup has been done, and retrying) it wan=
+ts=20
+to puzzle with the TLS content.
+
+* We know that as glibc once didn't and UML was the one user of clone() +=20
+getpid(), and we discovered the hard way that glibc forgot that. Workaround=
+ed=20
+with a real getpid().
+
+At bug report time we got an angry Ulrich saying "it's already fixed in lat=
+est=20
+version", luckily.
+--=20
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	=09
+___________________________________=20
+Yahoo! Messenger: chiamate gratuite in tutto il mondo=20
+http://it.messenger.yahoo.com
 
 
 
@@ -60,7 +84,7 @@ fork() calles set_thread_area()?
 This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+http://ads.osdn.com/?ad_idv37&alloc_id=16865&op=CCk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
