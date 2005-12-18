@@ -2,18 +2,15 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eo1lZ-0003qt-O1 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Dec 2005 08:52:09 -0800
+	id 1Eo1lh-0003rB-LE for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Dec 2005 08:52:17 -0800
 Received: from host229-46.pool8259.interbusiness.it ([82.59.46.229]
 	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1Eo1lZ-00047g-DV for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Dec 2005 08:52:09 -0800
+	id 1Eo1ld-0004AS-Rj for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Dec 2005 08:52:17 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20051218165031.441.4674.stgit@zion.home.lan>
-In-Reply-To: <20051218164916.441.69564.stgit@zion.home.lan>
-References: <20051218164916.441.69564.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 1/4] uml: arch/um/scripts/Makefile.rules - remove
-	duplicated code
+Message-Id: <20051218164916.441.69564.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 0/4] Uml: basic fixups for 2.6.15
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,39 +22,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Dec 2005 17:50:32 +0100
+Date: Sun, 18 Dec 2005 17:49:16 +0100
 To: Linus Torvalds <torvalds@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
+These are some important fixes for 2.6.15 to merge. A couple of them are
+already in -mm, but I'm resending them anyway since they haven't been merged,
+and since akpm is "non-functional". They are:
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+uml-arch-um-scripts-makefilerules-remove-duplicated-code.patch
+uml-fix-dynamic-linking-on-some-64-bit-distros.patch
 
-Duplicated code - the patch adding it was probably applied twice without enough
-care.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- arch/um/scripts/Makefile.rules |    5 -----
- 1 files changed, 0 insertions(+), 5 deletions(-)
-
-diff --git a/arch/um/scripts/Makefile.rules b/arch/um/scripts/Makefile.rules
-index b3fbf12..2e41cab 100644
---- a/arch/um/scripts/Makefile.rules
-+++ b/arch/um/scripts/Makefile.rules
-@@ -21,11 +21,6 @@ define unprofile
- endef
- 
- 
--# The stubs and unmap.o can't try to call mcount or update basic block data
--define unprofile
--	$(patsubst -pg,,$(patsubst -fprofile-arcs -ftest-coverage,,$(1)))
--endef
--
- # cmd_make_link checks to see if the $(foo-dir) variable starts with a /.  If
- # so, it's considered to be a path relative to $(srcdir) rather than
- # $(srcdir)/arch/$(SUBARCH).  This is because x86_64 wants to get ldt.c from
-
+--
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
