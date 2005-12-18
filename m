@@ -1,25 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eo0kZ-000171-ER for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Dec 2005 07:47:03 -0800
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eo0kU-0006pe-Jx
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Dec 2005 07:47:03 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <200512161736.28011.blaisorblade@yahoo.it>
-	<200512161917.51015.rob@landley.net>
-In-Reply-To: <200512161917.51015.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200512181646.44431.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: 2.6.14-bs3 released - fixes for SKAS0 modify_ldt()
-	and stub compilation
+	id 1Eo1lc-0003qu-Ib for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Dec 2005 08:52:12 -0800
+Received: from host229-46.pool8259.interbusiness.it ([82.59.46.229]
+	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1Eo1lY-00047b-4n for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Dec 2005 08:52:12 -0800
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20051218165034.441.31617.stgit@zion.home.lan>
+In-Reply-To: <20051218164916.441.69564.stgit@zion.home.lan>
+References: <20051218164916.441.69564.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 2/4] uml: fix dynamic linking on some 64-bit
+	distros
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,36 +25,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 18 Dec 2005 16:46:44 +0100
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 18 Dec 2005 17:50:35 +0100
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 17 December 2005 02:17, Rob Landley wrote:
-> On Friday 16 December 2005 10:36, Blaisorblade wrote:
-> > Ok, finally I've collected some time together and I merged the needed
-> > patches.
-> >
-> > So, I'm pleased to release 2.6.14-bs3, and hope I have not done any mess!
 
-> > So, enjoy it, and report any bugs!
->
-> 2.6.15-rc4 and up work pretty well for me so far.  What does this have that
-> isn't already in mainline?
+From: Rob Landley <rob@landley.net>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Backports _are_ backports, i.e. hopefully (up to a certain, limited degree), 
-more stable.
+The current UML build assumes that on x86-64 systems, /lib is a symlink 
+to /lib64, but in some distributions (like PLD and CentOS) they are separate 
+directories, so the 64 bit library loader isn't found.  This patch 
+inserts /lib64 at the start of the rpath on x86-64 UML builds.
 
-However, the last SKAS0 compilation patch (Stop the insanity) has not yet been 
-merged in mainline.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+Signed-off-by: Rob Landley <rob@landley.net>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-		
-___________________________________ 
-Yahoo! Messenger: chiamate gratuite in tutto il mondo 
-http://it.messenger.yahoo.com
+ arch/um/Makefile-x86_64 |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
+index 4f118d5..38df311 100644
+--- a/arch/um/Makefile-x86_64
++++ b/arch/um/Makefile-x86_64
+@@ -12,3 +12,7 @@ CHECKFLAGS  += -m64
+ 
+ ELF_ARCH := i386:x86-64
+ ELF_FORMAT := elf64-x86-64
++
++# Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
++
++LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
 
 
 
