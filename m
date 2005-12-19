@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EoNnT-0000uL-5n for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Dec 2005 08:23:35 -0800
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EoNnR-0004H1-DP
+	id 1EoNwh-0001Rb-Rk for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Dec 2005 08:33:07 -0800
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EoNwd-0002We-Me
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Dec 2005 08:23:35 -0800
+	Mon, 19 Dec 2005 08:33:07 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] skas3 (almost) works on amd64?
-References: <200504181134.53390.markc@renta.net>
-	<1113844082.11747.33.camel@cobra>
-	<1134932639.10491.78.camel@localhost.localdomain>
-In-Reply-To: <1134932639.10491.78.camel@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200512191723.19829.blaisorblade@yahoo.it>
+Message-Id: <200512191732.43333.blaisorblade@yahoo.it>
+Subject: [uml-devel] Introducing new bugs with fixups - one safe story
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,48 +27,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 19 Dec 2005 17:23:19 +0100
+Date: Mon, 19 Dec 2005 17:32:43 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Antoine Martin <antoine@nagafix.co.uk>
 
-On Sunday 18 December 2005 20:03, Antoine Martin wrote:
-> (..)
->
-> > > I can't speak to how stable it was. I'm pretty sure I wasn't using
-> > > Skas,
+One nice day a clumsy programmer (let's say me) on a "call for fixing" day 
+wrote the following patch (host_kern.c):
 
-> > It isn't skas as the skas3 code hasn't been ported to x86_64 yet.
+-       start = (long long) (page->index << PAGE_CACHE_SHIFT) + from;
++       start = ((long long) page->index) << PAGE_CACHE_SHIFT + from;
 
-> Or has it?
+to make sure page->index was casted before shifting, to avoid losing 
+information. But look below. Does the new line:
 
-Wait a moment - I remember informing somebody (probably you) that all 32-bit 
-Slackware-based root_fs work in SKAS3 mode very well on 64-bit hosts.
+        start = ((long long) page->index) << PAGE_CACHE_SHIFT + from;
 
-And you saying "yes it works, I know this".
+must be interpreted as:
 
-SKAS64 support is implemented in the SKAS patch, but IIRC not in the guest 
-kernel - there are just a few things to fix up (for instance 
-using /proc/mm64), but I gave up as I hadn't found a solution to SKAS32-on-64 
-problems, and the changes were boring to do, and impossible to get right 
-without a testing possibility.
+        start = (((long long) page->index) << PAGE_CACHE_SHIFT) + from;
+(what I meant) or as 
+        start = ((long long) page->index) << (PAGE_CACHE_SHIFT + from);
 
-Actually, there is even some information I saved on a bug interfering here - 
-i.e. a description from Bodo Stroesser.
+?
 
-I've not found the time to do my homeworks on the subject (aka studying the 
-SYSENTER instruction) and then go studying that description.
+This message is given as help:
+
+  CC [M]  fs/hostfs/hostfs_kern.o
+/home/paolo/Admin/kernel/6/VCS/linux-2.6.git/fs/hostfs/hostfs_kern.c: In 
+function `hostfs_commit_write':
+/home/paolo/Admin/kernel/6/VCS/linux-2.6.git/fs/hostfs/hostfs_kern.c:504: 
+warning: suggest parentheses around + or - inside shift
+
+Luckily, however, the clumsy programmer saw the message and learned The Way 
+(tm). And the patch hadn't been merged yet. Another point for GCC.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
 
 
