@@ -1,23 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EooLI-0001Ty-7Q for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Dec 2005 12:44:16 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EooLD-0003vM-OU
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Dec 2005 12:44:16 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: pcap cross-linking [PATCH]
-References: <1134932624.10491.76.camel@localhost.localdomain>
-	<1135017219.15991.131.camel@ant.internal>
-	<200512201401.03853.rob@landley.net>
-In-Reply-To: <200512201401.03853.rob@landley.net>
+From: Joel Palmius <joel.palmius@miun.se>
+In-Reply-To: <200512202123.34630.blaisorblade@yahoo.it>
+Message-ID: <Pine.LNX.4.64.0512202151210.11265@ligur.jwp.se>
+References: <Pine.LNX.4.63.0510161818210.10902@ligur.student.mh.se>
+	<20051215201530.GA10705@ccure.user-mode-linux.org>
+	<200512161703.14319.blaisorblade@yahoo.it>
+	<200512202123.34630.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_J0GqD3jVhFtqmIx"
-Message-Id: <200512202143.53814.blaisorblade@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: [uml-devel] Re: Bug in COW format - 64-bit incompatible with 32-bit
+	due to struct padding (was: Re: [uml-user] uml_moo and large files)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,107 +21,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 20 Dec 2005 21:43:53 +0100
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
+Date: Tue, 20 Dec 2005 22:13:54 +0100 (CET)
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
---Boundary-00=_J0GqD3jVhFtqmIx
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Tue, 20 Dec 2005, Blaisorblade wrote:
 
-On Tuesday 20 December 2005 21:01, Rob Landley wrote:
-> On Monday 19 December 2005 12:33, Antoine Martin wrote:
-> > I think I'll rebuild it with compartment and build su without pam to
-> > trim it down even more.
+> So we need an utility doing just the setup and the writeout. Should be easy to
+> do, but I must learn the complete COW API. I will dismiss this task if I see
+> (as it seems) that there are no existing COW files.
 
-> > > > (also lib/security so I can get into the chroot)
+Personally I stopped trusting COW files once I saw I couldn't moo them, so 
+I simply haven't used COWs. I guess most people trying COWs on an amd64 
+system with 32bit umls would reach the same conclusion pretty fast.
 
-> > > That's for su, right? There are some tools (including "compartment") to
-> > > combine chroot + su together.
-
-> > Yep, it's a shame compartment does not ship with all distros.
-> > chroot without su is pointless (since you can use 'chroot-again' to
-> > escape) changing uid/guid should really be included in chroot.
-
-> This is the first I've heard of it, and after few minutes of googling the
-> best I can find on it is this:
->   http://www.suse.de/~marc/SuSE.html
-
-> Which is from February 2001.
-> Is that the newest version?
-
-Don't know, guess yes - and that's more or less the URL I had. I know it just 
-because it was mentioned here (by Gerd Knorr, maybe - former SuSE UML 
-maintainer).
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
---Boundary-00=_J0GqD3jVhFtqmIx
-Content-Type: text/x-csrc;
-  charset="utf-8";
-  name="chroot-setuid.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="chroot-setuid.c"
-
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-
-int main(int argc, char **argv)
-{
-	int uid;
-	char *dir, **command, *end;
-	
-	if(argc < 3){
-		fprintf(stderr, "Usage - do-chroot dir uid "
-                  "command-line...\n");
-		exit(1);
-	}
-
-	dir = argv[1];
-	uid = strtoul(argv[2], &end, 10);
-	if(*end != '\0'){
-		fprintf(stderr, "the uid \"%s\" isn't a number\n", \
-                  argv[2]);
-		exit(1);
-	}
-	command = &argv[3];
-
-	if(chdir(dir) < 0){
-		perror("chroot");
-		exit(1);
-	}
-
-	if(chroot(".") < 0){
-		perror("chroot");
-		exit(1);
-	}
-
-	if(setuid(uid) < 0){
-		perror("setuid");
-		exit(1);
-	}
-
-	execv(command[0], command);
-	perror("execv");
-	exit(1);
-}
-
---Boundary-00=_J0GqD3jVhFtqmIx--
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+   // Joel
 
 
 -------------------------------------------------------
