@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ep8Rm-0007fj-Ne for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Dec 2005 10:12:18 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ep8Rl-0002xn-TU
+	id 1Ep8St-0007wb-0p for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Dec 2005 10:13:27 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ep8Sr-00041M-CO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Dec 2005 10:12:18 -0800
+	Wed, 21 Dec 2005 10:13:26 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <Pine.LNX.4.63.0510161818210.10902@ligur.student.mh.se>
-	<200512202123.34630.blaisorblade@yahoo.it>
-	<Pine.LNX.4.64.0512202151210.11265@ligur.jwp.se>
-In-Reply-To: <Pine.LNX.4.64.0512202151210.11265@ligur.jwp.se>
+Subject: Re: [uml-devel] Re: pcap cross-linking [PATCH]
+References: <1134932624.10491.76.camel@localhost.localdomain>
+	<200512201401.03853.rob@landley.net>
+	<200512202143.53814.blaisorblade@yahoo.it>
+In-Reply-To: <200512202143.53814.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200512211911.22870.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Bug in COW format - 64-bit incompatible with 32-bit
-	due to struct padding (was: Re: [uml-user] uml_moo and large files)
+Message-Id: <200512211913.18433.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +31,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 21 Dec 2005 19:11:21 +0100
-To: Joel Palmius <joel.palmius@miun.se>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 21 Dec 2005 19:13:15 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Rob Landley <rob@landley.net>, Antoine Martin <antoine@nagafix.co.uk>
 
-On Tuesday 20 December 2005 22:13, Joel Palmius wrote:
-> On Tue, 20 Dec 2005, Blaisorblade wrote:
-> > So we need an utility doing just the setup and the writeout. Should be
-> > easy to do, but I must learn the complete COW API. I will dismiss this
-> > task if I see (as it seems) that there are no existing COW files.
+Forgot to say one thing - the attachment is a minimal chroot-setuid C program 
+written by Jeff Dike for his book - it's minimal and trivial to verify.
 
-> Personally I stopped trusting COW files once I saw I couldn't moo them, so
-> I simply haven't used COWs. I guess most people trying COWs on an amd64
-> system with 32bit umls would reach the same conclusion pretty fast.
-
-I do exactly this, but I never use uml_moo (until the other day, when I saw 
-this crash, remembered your report and successfully debugged it).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
 
 
