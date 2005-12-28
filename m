@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ErM5R-0001On-Pd for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Dec 2005 13:10:25 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1ErM5L-0007j2-Pi
+	id 1ErVm2-0003cx-Pm for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Dec 2005 23:31:02 -0800
+Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1ErVm1-0007HA-NF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Dec 2005 13:10:25 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+	Tue, 27 Dec 2005 23:31:03 -0800
+From: Pekka J Enberg <penberg@cs.Helsinki.FI>
+Subject: Re: [uml-devel] Re: Ho ho ho.. Linux 2.6.15-rc7
+In-Reply-To: <200512272009.40980.blaisorblade@yahoo.it>
+Message-ID: <Pine.LNX.4.58.0512280928580.23899@sbz-30.cs.Helsinki.FI>
+References: <20051227124500.CA66633495@sc8-sf-spam1.sourceforge.net>
+	<1135705691.3719.13.camel@localhost.localdomain>
+	<200512272009.40980.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200512272208.12768.blaisorblade@yahoo.it>
-Subject: [uml-devel] uml_moo 64-bit is still broken
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,32 +30,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 27 Dec 2005 22:08:11 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, Joel Palmius <joel.palmius@miun.se>
+Date: Wed, 28 Dec 2005 09:30:36 +0200 (EET)
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>, Jeff Dike <jdike@addtoit.com>
 
-Today I decided to run a 64-bit uml_moo (a local version, where I had . I did 
-a non destructive merge, and tried to boot the FS.
+On Tue, 27 Dec 2005, Blaisorblade wrote:
+> Please test the attached patch, worksForMe now.
 
-The result was various errors when booting on it (tons of corruptions); I ran 
-e2fsck on it (from the host) and it spit out hundreds of screenfuls of 
-errors.
+Works for me too. Thanks!
 
-So my recommendation is still to use a 32-bit version of uml_moo, and probably 
-of other COW tools (uml_mkcow should be safe but there's no reason using it 
-in general).
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+On Tue, 27 Dec 2005, Blaisorblade wrote:
+> > Are you sure that you are using a raw 2.6.15-rc7?
+>
+> He has disabled SKAS, which is causing this - however the breakage doesn't 
+> seem new into 2.6.15-rc7.
 
-	
+It used to compile somewhere around 2.6.15-rc5 or so, I think.
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+			Pekka
 
 
 -------------------------------------------------------
