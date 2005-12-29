@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Es0pm-0000TJ-Vc for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Dec 2005 08:40:58 -0800
+	id 1Es0pg-0000Sm-IR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Dec 2005 08:40:52 -0800
 Received: from host3-98.pool876.interbusiness.it ([87.6.98.3]
 	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1Es0pj-0001PM-GE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Dec 2005 08:40:58 -0800
+	id 1Es0pc-0001KT-TU for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Dec 2005 08:40:52 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20051229163959.4985.38748.stgit@zion.home.lan>
+Message-Id: <20051229164001.4985.66325.stgit@zion.home.lan>
 In-Reply-To: <20051229163803.4985.66742.stgit@zion.home.lan>
 References: <20051229163803.4985.66742.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 4/5] Hostfs: update for new glibc - add missing
-	symbol exports
+Subject: [uml-devel] [PATCH 5/5] uml: fix compilation with CONFIG_MODE_TT
+	disabled
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,42 +25,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 29 Dec 2005 17:39:59 +0100
+Date: Thu, 29 Dec 2005 17:40:02 +0100
 To: Linus Torvalds <torvalds@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Fix UML compilation when SKAS mode is disabled. Indeed, we were compiling
+SKAS-only object files, which failed due to some SKAS-only headers being
+excluded from the search path.
 
-Today, when compiling UML, I got warnings for two used unexported symbols:
-readdir64 and truncate64. Indeed, my glibc headers are aliasing readdir to
-readdir64 and truncate to truncate64 (and so on).
+Thanks to the bug report from Pekka J Enberg.
 
-I'm then adding additional exports. Since I've no idea if the symbols where
-always provided in the supported glibc's, I've added weak definitions too.
-
+Acked-by: Pekka J Enberg <penberg (at) cs ! helsinki ! fi>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/os-Linux/user_syms.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ arch/um/sys-i386/Makefile   |    8 +++++---
+ arch/um/sys-x86_64/Makefile |    5 +++--
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
-index 56d3f87..8da6ab3 100644
---- a/arch/um/os-Linux/user_syms.c
-+++ b/arch/um/os-Linux/user_syms.c
-@@ -34,6 +34,11 @@ EXPORT_SYMBOL(strstr);
-        int sym(void);                  \
-        EXPORT_SYMBOL(sym);
- 
-+extern void readdir64(void) __attribute__((weak));
-+EXPORT_SYMBOL(readdir64);
-+extern void truncate64(void) __attribute__((weak));
-+EXPORT_SYMBOL(truncate64);
+diff --git a/arch/um/sys-i386/Makefile b/arch/um/sys-i386/Makefile
+index 150059d..f5fd5b0 100644
+--- a/arch/um/sys-i386/Makefile
++++ b/arch/um/sys-i386/Makefile
+@@ -1,6 +1,8 @@
+-obj-y = bitops.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
+-	ptrace_user.o semaphore.o signal.o sigcontext.o stub.o stub_segv.o \
+-	syscalls.o sysrq.o sys_call_table.o
++obj-y := bitops.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
++	ptrace_user.o semaphore.o signal.o sigcontext.o syscalls.o sysrq.o \
++	sys_call_table.o
 +
- #ifdef SUBARCH_i386
- EXPORT_SYMBOL(vsyscall_ehdr);
- EXPORT_SYMBOL(vsyscall_end);
++obj-$(CONFIG_MODE_SKAS) += stub.o stub_segv.o
+ 
+ obj-$(CONFIG_HIGHMEM) += highmem.o
+ obj-$(CONFIG_MODULES) += module.o
+diff --git a/arch/um/sys-x86_64/Makefile b/arch/um/sys-x86_64/Makefile
+index 00b2025..a351091 100644
+--- a/arch/um/sys-x86_64/Makefile
++++ b/arch/um/sys-x86_64/Makefile
+@@ -6,8 +6,9 @@
+ 
+ #XXX: why into lib-y?
+ lib-y = bitops.o bugs.o csum-partial.o delay.o fault.o ldt.o mem.o memcpy.o \
+-	ptrace.o ptrace_user.o sigcontext.o signal.o stub.o \
+-	stub_segv.o syscalls.o syscall_table.o sysrq.o thunk.o
++	ptrace.o ptrace_user.o sigcontext.o signal.o syscalls.o \
++	syscall_table.o sysrq.o thunk.o
++lib-$(CONFIG_MODE_SKAS) += stub.o stub_segv.o
+ 
+ obj-y := ksyms.o
+ obj-$(CONFIG_MODULES) += module.o um_module.o
 
 
 
