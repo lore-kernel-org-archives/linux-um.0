@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EuFjS-0006Ll-8d for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 12:59:42 -0800
+	id 1EuFjV-0006M0-G0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jan 2006 12:59:45 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EuFjR-0007PC-TU
+	(Exim 4.44) id 1EuFjU-0005Ok-Sh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 12:59:42 -0800
-Message-Id: <200601042152.k04Lq2fS009247@ccure.user-mode-linux.org>
+	Wed, 04 Jan 2006 12:59:45 -0800
+Message-Id: <200601042152.k04Lq6ud009257@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 6/9] UML - capture printk output for mconsole stack
+Subject: [uml-devel] [PATCH 8/9] UML - Fix whitespace in mconsole driver
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,145 +25,152 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 Jan 2006 16:52:02 -0500
+Date: Wed, 04 Jan 2006 16:52:06 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-The stack command now sends the printk output back to the mconsole
-client.  This is done by registering a special console for the
-mconsole driver.  This receives all printk output.  Normally, it is
-ignored, but when a stack command is issued, any printk output will
-be sent back to the client.  
-This will capture any printk output, whether it is stack output or
-not, since we can't tell the difference.
+Fix up some bogus spacing in the mconsole driver.  Also delete the
+emacs formatting comment at the end.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
 Index: linux-2.6.15/arch/um/drivers/mconsole_kern.c
 ===================================================================
---- linux-2.6.15.orig/arch/um/drivers/mconsole_kern.c	2006-01-04 14:08:25.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/mconsole_kern.c	2006-01-04 14:52:11.000000000 -0500
-@@ -20,6 +20,7 @@
- #include "linux/namei.h"
- #include "linux/proc_fs.h"
- #include "linux/syscalls.h"
-+#include "linux/console.h"
- #include "asm/irq.h"
- #include "asm/uaccess.h"
- #include "user_util.h"
-@@ -480,6 +481,82 @@ void mconsole_sysrq(struct mc_request *r
- }
- #endif
- 
-+static DEFINE_SPINLOCK(console_lock);
-+static LIST_HEAD(clients);
-+static char console_buf[MCONSOLE_MAX_DATA];
-+static int console_index = 0;
-+
-+static void console_write(struct console *console, const char *string,
-+			  unsigned len)
-+{
-+	struct list_head *ele;
-+	int n;
-+
-+	if(list_empty(&clients))
-+		return;
-+
-+	while(1){
-+		n = min(len, ARRAY_SIZE(console_buf) - console_index);
-+		strncpy(&console_buf[console_index], string, n);
-+		console_index += n;
-+		string += n;
-+		len -= n;
-+		if(len == 0)
-+			return;
-+
-+		list_for_each(ele, &clients){
-+			struct mconsole_entry *entry;
-+
-+			entry = list_entry(ele, struct mconsole_entry, list);
-+			mconsole_reply_len(&entry->request, console_buf,
-+					   console_index, 0, 1);
-+		}
-+
-+		console_index = 0;
-+	}
-+}
-+
-+static struct console mc_console = { .name	= "mc",
-+				     .write	= console_write,
-+				     .flags	= CON_PRINTBUFFER | CON_ENABLED,
-+				     .index	= -1 };
-+
-+static int mc_add_console(void)
-+{
-+	register_console(&mc_console);
-+	return 0;
-+}
-+
-+late_initcall(mc_add_console);
-+
-+static void with_console(struct mc_request *req, void (*proc)(void *),
-+			 void *arg)
-+{
-+	struct mconsole_entry entry;
-+	unsigned long flags;
-+
-+	INIT_LIST_HEAD(&entry.list);
-+	entry.request = *req;
-+	list_add(&entry.list, &clients);
-+	spin_lock_irqsave(&console_lock, flags);
-+
-+	(*proc)(arg);
-+
-+	mconsole_reply_len(req, console_buf, console_index, 0, 0);
-+	console_index = 0;
-+
-+	spin_unlock_irqrestore(&console_lock, flags);
-+	list_del(&entry.list);
-+}
-+
-+static void stack_proc(void *arg)
-+{
-+	struct task_struct *from = current, *to = arg;
-+
-+	to->thread.saved_task = from;
-+	switch_to(from, to, from);
-+}
-+
- /* Mconsole stack trace
-  *  Added by Allan Graves, Jeff Dike
-  *  Dumps a stacks registers to the linux console.
-@@ -489,7 +566,7 @@ void do_stack(struct mc_request *req)
+--- linux-2.6.15.orig/arch/um/drivers/mconsole_kern.c	2006-01-04 14:53:02.000000000 -0500
++++ linux-2.6.15/arch/um/drivers/mconsole_kern.c	2006-01-04 14:55:31.000000000 -0500
+@@ -422,7 +422,7 @@ void mconsole_remove(struct mc_request *
  {
-         char *ptr = req->request.data;
-         int pid_requested= -1;
--        struct task_struct *from = NULL;
-+	struct task_struct *from = NULL;
+ 	struct mc_device *dev;
+ 	char *ptr = req->request.data, *err_msg = "";
+-        char error[256];
++	char error[256];
+ 	int err, start, end, n;
+ 
+ 	ptr += strlen("remove");
+@@ -433,33 +433,33 @@ void mconsole_remove(struct mc_request *
+ 		return;
+ 	}
+ 
+-        ptr = &ptr[strlen(dev->name)];
++	ptr = &ptr[strlen(dev->name)];
+ 
+-        err = 1;
+-        n = (*dev->id)(&ptr, &start, &end);
+-        if(n < 0){
+-                err_msg = "Couldn't parse device number";
+-                goto out;
+-        }
+-        else if((n < start) || (n > end)){
+-                sprintf(error, "Invalid device number - must be between "
+-                        "%d and %d", start, end);
+-                err_msg = error;
+-                goto out;
+-        }
++	err = 1;
++	n = (*dev->id)(&ptr, &start, &end);
++	if(n < 0){
++		err_msg = "Couldn't parse device number";
++		goto out;
++	}
++	else if((n < start) || (n > end)){
++		sprintf(error, "Invalid device number - must be between "
++			"%d and %d", start, end);
++		err_msg = error;
++		goto out;
++	}
+ 
+ 	err = (*dev->remove)(n);
+-        switch(err){
+-        case -ENODEV:
+-                err_msg = "Device doesn't exist";
+-                break;
+-        case -EBUSY:
+-                err_msg = "Device is currently open";
+-                break;
+-        default:
+-                break;
+-        }
+- out:
++	switch(err){
++	case -ENODEV:
++		err_msg = "Device doesn't exist";
++		break;
++	case -EBUSY:
++		err_msg = "Device is currently open";
++		break;
++	default:
++		break;
++	}
++out:
+ 	mconsole_reply(req, err_msg, err, 0);
+ }
+ 
+@@ -576,34 +576,33 @@ static void stack_proc(void *arg)
+  */
+ void do_stack(struct mc_request *req)
+ {
+-        char *ptr = req->request.data;
+-        int pid_requested= -1;
++	char *ptr = req->request.data;
++	int pid_requested= -1;
+ 	struct task_struct *from = NULL;
  	struct task_struct *to = NULL;
  
-         /* Would be nice:
-@@ -507,17 +584,15 @@ void do_stack(struct mc_request *req)
-                 return;
-         }
+-        /* Would be nice:
+-         * 1) Send showregs output to mconsole.
++	/* Would be nice:
++	 * 1) Send showregs output to mconsole.
+ 	 * 2) Add a way to stack dump all pids.
+ 	 */
  
--        from = current;
--        to = find_task_by_pid(pid_requested);
-+	from = current;
+-        ptr += strlen("stack");
+-        while(isspace(*ptr)) ptr++;
++	ptr += strlen("stack");
++	while(isspace(*ptr)) ptr++;
  
-+	to = find_task_by_pid(pid_requested);
-         if((to == NULL) || (pid_requested == 0)) {
-                 mconsole_reply(req, "Couldn't find that pid", 1, 0);
-                 return;
-         }
--        to->thread.saved_task = current;
+-        /* Should really check for multiple pids or reject bad args here */
+-        /* What do the arguments in mconsole_reply mean? */
+-        if(sscanf(ptr, "%d", &pid_requested) == 0){
+-                mconsole_reply(req, "Please specify a pid", 1, 0);
+-                return;
+-        }
++	/* Should really check for multiple pids or reject bad args here */
++	/* What do the arguments in mconsole_reply mean? */
++	if(sscanf(ptr, "%d", &pid_requested) == 0){
++		mconsole_reply(req, "Please specify a pid", 1, 0);
++		return;
++	}
  
--        switch_to(from, to, from);
--        mconsole_reply(req, "Stack Dumped to console and message log", 0, 0);
-+	with_console(req, stack_proc, to);
+ 	from = current;
+ 
+ 	to = find_task_by_pid(pid_requested);
+-        if((to == NULL) || (pid_requested == 0)) {
+-                mconsole_reply(req, "Couldn't find that pid", 1, 0);
+-                return;
+-        }
+-
++	if((to == NULL) || (pid_requested == 0)) {
++		mconsole_reply(req, "Couldn't find that pid", 1, 0);
++		return;
++	}
+ 	with_console(req, stack_proc, to);
  }
  
- void mconsole_stack(struct mc_request *req)
+@@ -772,14 +771,3 @@ char *mconsole_notify_socket(void)
+ }
+ 
+ EXPORT_SYMBOL(mconsole_notify_socket);
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 
 
