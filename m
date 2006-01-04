@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EtvqK-00048Q-KV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jan 2006 15:45:28 -0800
+	id 1EuFjM-0006Ku-Ir for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jan 2006 12:59:36 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EtvqK-0001Su-2e
+	(Exim 4.44) id 1EuFjI-0005Ld-Lf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jan 2006 15:45:28 -0800
-Message-Id: <200601040037.k040bo1L012582@ccure.user-mode-linux.org>
+	Wed, 04 Jan 2006 12:59:33 -0800
+Message-Id: <200601042151.k04LpsKV009226@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 12/12] UML - Add throttling to console driver
+Subject: [uml-devel] [PATCH 2/9] UML - umid cleanup
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,185 +25,549 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 03 Jan 2006 19:37:50 -0500
+Date: Wed, 04 Jan 2006 16:51:54 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This patch adds support for throttling and unthrottling input when
-the tty driver can't handle it.
+This patch cleans up the umid code:
+	The only_if_set argument to get_umid is gone.
+	get_umid returns an empty string rather than NULL if there is
+no umid.
+	umid_is_random is gone since its users went away.
+	Some printfs were turned into printks because the code runs
+late enough that printk is working.
+	Error paths were cleaned up.
+	Some functions now return an error and let the caller print
+the error message rather than printing it themselves.  This
+eliminates the practice of passing a pointer to printf or printk in,
+depending on where in the boot process we are.
+	Major tidying of not_dead_yet - mostly error path cleanup,
+plus a comment explaining why it doesn't react to errors the way you
+might expect.
+	Calls to os_* interfaces that were moved under os are changed
+back to their native libc forms.
+	snprintf, strlcpy, and their bounds-checking friends are used
+more often, replacing by-hand bounds checking in some places.
 
-Index: linux-2.6.15/arch/um/drivers/ssl.c
-===================================================================
---- linux-2.6.15.orig/arch/um/drivers/ssl.c	2006-01-03 17:32:45.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/ssl.c	2006-01-03 17:35:00.000000000 -0500
-@@ -109,16 +109,6 @@ static void ssl_flush_buffer(struct tty_
- 	return;
- }
- 
--static void ssl_throttle(struct tty_struct * tty)
--{
--	printk(KERN_ERR "Someone should implement ssl_throttle\n");
--}
--
--static void ssl_unthrottle(struct tty_struct * tty)
--{
--	printk(KERN_ERR "Someone should implement ssl_unthrottle\n");
--}
--
- static void ssl_stop(struct tty_struct *tty)
- {
- 	printk(KERN_ERR "Someone should implement ssl_stop\n");
-@@ -145,9 +135,9 @@ static struct tty_operations ssl_ops = {
- 	.flush_chars 		= line_flush_chars,
- 	.set_termios 		= line_set_termios,
- 	.ioctl 	 		= line_ioctl,
-+	.throttle 		= line_throttle,
-+	.unthrottle 		= line_unthrottle,
- #if 0
--	.throttle 		= ssl_throttle,
--	.unthrottle 		= ssl_unthrottle,
- 	.stop 	 		= ssl_stop,
- 	.start 	 		= ssl_start,
- 	.hangup 	 	= ssl_hangup,
-Index: linux-2.6.15/arch/um/drivers/stdio_console.c
-===================================================================
---- linux-2.6.15.orig/arch/um/drivers/stdio_console.c	2006-01-03 17:32:45.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/stdio_console.c	2006-01-03 17:35:00.000000000 -0500
-@@ -122,6 +122,8 @@ static struct tty_operations console_ops
- 	.flush_chars 		= line_flush_chars,
- 	.set_termios 		= line_set_termios,
- 	.ioctl 	 		= line_ioctl,
-+	.throttle 		= line_throttle,
-+	.unthrottle 		= line_unthrottle,
- };
- 
- static void uml_console_write(struct console *console, const char *string,
-Index: linux-2.6.15/arch/um/include/line.h
-===================================================================
---- linux-2.6.15.orig/arch/um/include/line.h	2006-01-03 17:33:23.000000000 -0500
-+++ linux-2.6.15/arch/um/include/line.h	2006-01-03 17:35:00.000000000 -0500
-@@ -38,6 +38,7 @@ struct line {
- 	struct list_head chan_list;
- 	int valid;
- 	int count;
-+	int throttled;
- 	/*This lock is actually, mostly, local to*/
- 	spinlock_t lock;
- 
-@@ -60,6 +61,7 @@ struct line {
- 	{ init_str :	str, \
- 	  init_pri :	INIT_STATIC, \
- 	  valid :	1, \
-+	  throttled :	0, \
- 	  lock :	SPIN_LOCK_UNLOCKED, \
- 	  buffer :	NULL, \
- 	  head :	NULL, \
-@@ -88,6 +90,8 @@ extern void line_flush_chars(struct tty_
- extern int line_write_room(struct tty_struct *tty);
- extern int line_ioctl(struct tty_struct *tty, struct file * file,
- 		      unsigned int cmd, unsigned long arg);
-+extern void line_throttle(struct tty_struct *tty);
-+extern void line_unthrottle(struct tty_struct *tty);
- 
- extern char *add_xterm_umid(char *base);
- extern int line_setup_irq(int fd, int input, int output, struct line *line,
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+
 Index: linux-2.6.15/arch/um/drivers/line.c
 ===================================================================
---- linux-2.6.15.orig/arch/um/drivers/line.c	2006-01-03 17:33:23.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/line.c	2006-01-03 17:35:00.000000000 -0500
-@@ -36,8 +36,9 @@ static void line_timer_cb(void *arg)
- {
- 	struct line *line = arg;
+--- linux-2.6.15.orig/arch/um/drivers/line.c	2006-01-04 13:57:19.000000000 -0500
++++ linux-2.6.15/arch/um/drivers/line.c	2006-01-04 13:57:45.000000000 -0500
+@@ -831,8 +831,8 @@ char *add_xterm_umid(char *base)
+ 	char *umid, *title;
+ 	int len;
  
--	chan_interrupt(&line->chan_list, &line->task, line->tty,
--		       line->driver->read_irq);
-+	if(!line->throttled)
-+		chan_interrupt(&line->chan_list, &line->task, line->tty,
-+			       line->driver->read_irq);
- }
+-	umid = get_umid(1);
+-	if(umid == NULL)
++	umid = get_umid();
++	if(*umid == '\0')
+ 		return base;
  
- /* Returns the free space inside the ring buffer of this line.
-@@ -340,6 +341,30 @@ int line_ioctl(struct tty_struct *tty, s
- 	return ret;
- }
- 
-+void line_throttle(struct tty_struct *tty)
-+{
-+	struct line *line = tty->driver_data;
-+
-+	deactivate_chan(&line->chan_list, line->driver->read_irq);
-+	line->throttled = 1;
-+}
-+
-+void line_unthrottle(struct tty_struct *tty)
-+{
-+	struct line *line = tty->driver_data;
-+
-+	line->throttled = 0;
-+	chan_interrupt(&line->chan_list, &line->task, tty,
-+		       line->driver->read_irq);
-+
-+	/* Maybe there is enough stuff pending that calling the interrupt
-+	 * throttles us again.  In this case, line->throttled will be 1
-+	 * again and we shouldn't turn the interrupt back on.
-+	 */
-+	if(!line->throttled)
-+		reactivate_chan(&line->chan_list, line->driver->read_irq);
-+}
-+
- static irqreturn_t line_write_interrupt(int irq, void *data,
- 					struct pt_regs *unused)
- {
-Index: linux-2.6.15/arch/um/drivers/chan_kern.c
+ 	len = strlen(base) + strlen(" ()") + strlen(umid) + 1;
+Index: linux-2.6.15/arch/um/include/os.h
 ===================================================================
---- linux-2.6.15.orig/arch/um/drivers/chan_kern.c	2006-01-03 17:34:49.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/chan_kern.c	2006-01-03 17:35:00.000000000 -0500
-@@ -312,6 +312,32 @@ void close_chan(struct list_head *chans,
+--- linux-2.6.15.orig/arch/um/include/os.h	2006-01-04 13:57:34.000000000 -0500
++++ linux-2.6.15/arch/um/include/os.h	2006-01-04 13:57:45.000000000 -0500
+@@ -216,7 +216,7 @@ extern int helper_wait(int pid);
+ /* umid.c */
+ 
+ extern int umid_file_name(char *name, char *buf, int len);
+-extern int set_umid(char *name, int (*printer)(const char *fmt, ...));
+-extern char *get_umid(int only_if_set);
++extern int set_umid(char *name);
++extern char *get_umid(void);
+ 
+ #endif
+Index: linux-2.6.15/arch/um/include/user_util.h
+===================================================================
+--- linux-2.6.15.orig/arch/um/include/user_util.h	2005-10-28 12:58:12.000000000 -0400
++++ linux-2.6.15/arch/um/include/user_util.h	2006-01-04 13:57:45.000000000 -0500
+@@ -64,7 +64,6 @@ extern void setup_machinename(char *mach
+ extern void setup_hostinfo(void);
+ extern void do_exec(int old_pid, int new_pid);
+ extern void tracer_panic(char *msg, ...);
+-extern char *get_umid(int only_if_set);
+ extern void do_longjmp(void *p, int val);
+ extern int detach(int pid, int sig);
+ extern int attach(int pid);
+Index: linux-2.6.15/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6.15.orig/arch/um/kernel/um_arch.c	2006-01-03 17:39:46.000000000 -0500
++++ linux-2.6.15/arch/um/kernel/um_arch.c	2006-01-04 13:57:45.000000000 -0500
+@@ -146,8 +146,8 @@ void set_cmdline(char *cmd)
+ 
+ 	if(CHOOSE_MODE(honeypot, 0)) return;
+ 
+-	umid = get_umid(1);
+-	if(umid != NULL){
++	umid = get_umid();
++	if(*umid != '\0'){
+ 		snprintf(argv1_begin, 
+ 			 (argv1_end - argv1_begin) * sizeof(*ptr), 
+ 			 "(%s) ", umid);
+Index: linux-2.6.15/arch/um/kernel/umid.c
+===================================================================
+--- linux-2.6.15.orig/arch/um/kernel/umid.c	2006-01-04 13:57:34.000000000 -0500
++++ linux-2.6.15/arch/um/kernel/umid.c	2006-01-04 13:57:45.000000000 -0500
+@@ -3,15 +3,13 @@
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/stddef.h"
+-#include "linux/kernel.h"
+ #include "asm/errno.h"
+ #include "init.h"
+ #include "os.h"
+ #include "kern.h"
++#include "linux/kernel.h"
+ 
+-/* Changed by set_umid_arg and umid_file_name */
+-int umid_is_random = 0;
++/* Changed by set_umid_arg */
+ static int umid_inited = 0;
+ 
+ static int __init set_umid_arg(char *name, int *add)
+@@ -22,11 +20,9 @@ static int __init set_umid_arg(char *nam
+ 		return 0;
+ 
+ 	*add = 0;
+-	err = set_umid(name, printf);
+-	if(err == -EEXIST){
++	err = set_umid(name);
++	if(err == -EEXIST)
+ 		printf("umid '%s' already in use\n", name);
+-		umid_is_random = 1;
+-	}
+ 	else if(!err)
+ 		umid_inited = 1;
+ 
+Index: linux-2.6.15/arch/um/os-Linux/umid.c
+===================================================================
+--- linux-2.6.15.orig/arch/um/os-Linux/umid.c	2006-01-04 13:57:34.000000000 -0500
++++ linux-2.6.15/arch/um/os-Linux/umid.c	2006-01-04 13:57:45.000000000 -0500
+@@ -5,6 +5,7 @@
+ #include <errno.h>
+ #include <signal.h>
+ #include <dirent.h>
++#include <sys/fcntl.h>
+ #include <sys/stat.h>
+ #include <sys/param.h>
+ #include "init.h"
+@@ -25,15 +26,16 @@ static char *uml_dir = UML_DIR;
+ static int __init make_uml_dir(void)
+ {
+ 	char dir[512] = { '\0' };
+-	int len;
++	int len, err;
+ 
+ 	if(*uml_dir == '~'){
+ 		char *home = getenv("HOME");
+ 
++		err = -ENOENT;
+ 		if(home == NULL){
+-			printf("make_uml_dir : no value in environment for "
++			printk("make_uml_dir : no value in environment for "
+ 			       "$HOME\n");
+-			exit(1);
++			goto err;
+ 		}
+ 		strlcpy(dir, home, sizeof(dir));
+ 		uml_dir++;
+@@ -43,18 +45,26 @@ static int __init make_uml_dir(void)
+ 	if (len > 0 && dir[len - 1] != '/')
+ 		strlcat(dir, "/", sizeof(dir));
+ 
++	err = -ENOMEM;
+ 	uml_dir = malloc(strlen(dir) + 1);
+ 	if (uml_dir == NULL) {
+ 		printf("make_uml_dir : malloc failed, errno = %d\n", errno);
+-		exit(1);
++		goto err;
  	}
+ 	strcpy(uml_dir, dir);
+-	
++
+ 	if((mkdir(uml_dir, 0777) < 0) && (errno != EEXIST)){
+ 	        printf("Failed to mkdir '%s': %s\n", uml_dir, strerror(errno));
+-		return(-1);
++		err = -errno;
++		goto err_free;
+ 	}
+ 	return 0;
++
++err_free:
++	free(uml_dir);
++err:
++	uml_dir = NULL;
++	return err;
  }
  
-+void deactivate_chan(struct list_head *chans, int irq)
-+{
-+	struct list_head *ele;
+ static int actually_do_remove(char *dir)
+@@ -65,75 +75,88 @@ static int actually_do_remove(char *dir)
+ 	char file[256];
+ 
+ 	directory = opendir(dir);
+-	if(directory == NULL){
+-		printk("actually_do_remove : couldn't open directory '%s', "
+-		       "errno = %d\n", dir, errno);
+-		return(1);
+-	}
++	if(directory == NULL)
++		return -errno;
 +
-+	struct chan *chan;
-+	list_for_each(ele, chans) {
-+		chan = list_entry(ele, struct chan, list);
+ 	while((ent = readdir(directory)) != NULL){
+ 		if(!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
+ 			continue;
+ 		len = strlen(dir) + sizeof("/") + strlen(ent->d_name) + 1;
+-		if(len > sizeof(file)){
+-			printk("Not deleting '%s' from '%s' - name too long\n",
+-			       ent->d_name, dir);
+-			continue;
+-		}
++		if(len > sizeof(file))
++			return -E2BIG;
 +
-+		if(chan->enabled && chan->input)
-+			deactivate_fd(chan->fd, irq);
-+	}
-+}
+ 		sprintf(file, "%s/%s", dir, ent->d_name);
+-		if(unlink(file) < 0){
+-			printk("actually_do_remove : couldn't remove '%s' "
+-			       "from '%s', errno = %d\n", ent->d_name, dir, 
+-			       errno);
+-			return(1);
+-		}
+-	}
+-	if(rmdir(dir) < 0){
+-		printk("actually_do_remove : couldn't rmdir '%s', "
+-		       "errno = %d\n", dir, errno);
+-		return(1);
++		if(unlink(file) < 0)
++			return -errno;
+ 	}
+-	return(0);
++	if(rmdir(dir) < 0)
++		return -errno;
 +
-+void reactivate_chan(struct list_head *chans, int irq)
-+{
-+	struct list_head *ele;
-+	struct chan *chan;
-+
-+	list_for_each(ele, chans) {
-+		chan = list_entry(ele, struct chan, list);
-+
-+		if(chan->enabled && chan->input)
-+			reactivate_fd(chan->fd, irq);
-+	}
-+}
-+
- int write_chan(struct list_head *chans, const char *buf, int len,
- 	       int write_irq)
++	return 0;
+ }
+ 
+-extern int tracing_pid;
++/* This says that there isn't already a user of the specified directory even if
++ * there are errors during the checking.  This is because if these errors
++ * happen, the directory is unusable by the pre-existing UML, so we might as
++ * well take it over.  This could happen either by
++ * 	the existing UML somehow corrupting its umid directory
++ * 	something other than UML sticking stuff in the directory
++ *	this boot racing with a shutdown of the other UML
++ * In any of these cases, the directory isn't useful for anything else.
++ */
+ 
+ static int not_dead_yet(char *dir)
  {
-Index: linux-2.6.15/arch/um/include/chan_kern.h
-===================================================================
---- linux-2.6.15.orig/arch/um/include/chan_kern.h	2006-01-03 17:33:23.000000000 -0500
-+++ linux-2.6.15/arch/um/include/chan_kern.h	2006-01-03 17:35:00.000000000 -0500
-@@ -38,6 +38,8 @@ extern int console_write_chan(struct lis
- 			      int len);
- extern int console_open_chan(struct line *line, struct console *co,
- 			     struct chan_opts *opts);
-+extern void deactivate_chan(struct list_head *chans, int irq);
-+extern void reactivate_chan(struct list_head *chans, int irq);
- extern void chan_enable_winch(struct list_head *chans, struct tty_struct *tty);
- extern void enable_chan(struct line *line);
- extern void close_chan(struct list_head *chans, int delay_free_irq);
+ 	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
+ 	char pid[sizeof("nnnnn\0")], *end;
+-	int dead, fd, p, n;
++	int dead, fd, p, n, err;
++
++	n = snprintf(file, sizeof(file), "%s/pid", dir);
++	if(n >= sizeof(file)){
++		printk("not_dead_yet - pid filename too long\n");
++		err = -E2BIG;
++		goto out;
++	}
+ 
+-	sprintf(file, "%s/pid", dir);
+ 	dead = 0;
+-	fd = os_open_file(file, of_read(OPENFLAGS()), 0);
++	fd = open(file, O_RDONLY);
+ 	if(fd < 0){
+ 		if(fd != -ENOENT){
+ 			printk("not_dead_yet : couldn't open pid file '%s', "
+ 			       "err = %d\n", file, -fd);
+-			return(1);
+ 		}
+-		dead = 1;
++		goto out;
+ 	}
+-	if(fd > 0){
+-		n = os_read_file(fd, pid, sizeof(pid));
+-		if(n < 0){
+-			printk("not_dead_yet : couldn't read pid file '%s', "
+-			       "err = %d\n", file, -n);
+-			return(1);
+-		}
+-		p = strtoul(pid, &end, 0);
+-		if(end == pid){
+-			printk("not_dead_yet : couldn't parse pid file '%s', "
+-			       "errno = %d\n", file, errno);
+-			dead = 1;
+-		}
+-		if(((kill(p, 0) < 0) && (errno == ESRCH)) ||
+-		   (p == CHOOSE_MODE(tracing_pid, os_getpid())))
+-			dead = 1;
+-	}
+-	if(!dead)
+-		return(1);
+-	return(actually_do_remove(dir));
++
++	err = 0;
++	n = read(fd, pid, sizeof(pid));
++	if(n <= 0){
++		printk("not_dead_yet : couldn't read pid file '%s', "
++		       "err = %d\n", file, -n);
++		goto out_close;
++	}
++
++	p = strtoul(pid, &end, 0);
++	if(end == pid){
++		printk("not_dead_yet : couldn't parse pid file '%s', "
++		       "errno = %d\n", file, errno);
++		goto out_close;
++	}
++
++	if((kill(p, 0) == 0) || (errno != ESRCH))
++		return 1;
++
++	err = actually_do_remove(dir);
++	if(err)
++		printk("not_dead_yet - actually_do_remove failed with "
++		       "err = %d\n", err);
++
++	return err;
++
++ out_close:
++	close(fd);
++ out:
++	return 0;
+ }
+ 
+ static void __init create_pid_file(void)
+@@ -145,26 +168,26 @@ static void __init create_pid_file(void)
+ 	if(umid_file_name("pid", file, sizeof(file)))
+ 		return;
+ 
+-	fd = os_open_file(file, of_create(of_excl(of_rdwr(OPENFLAGS()))), 
+-			  0644);
++	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
+ 	if(fd < 0){
+-		printf("Open of machine pid file \"%s\" failed: %s\n",
++		printk("Open of machine pid file \"%s\" failed: %s\n",
+ 		       file, strerror(-fd));
+ 		return;
+ 	}
+ 
+-	sprintf(pid, "%d\n", os_getpid());
+-	n = os_write_file(fd, pid, strlen(pid));
++	snprintf(pid, sizeof(pid), "%d\n", getpid());
++	n = write(fd, pid, strlen(pid));
+ 	if(n != strlen(pid))
+-		printf("Write of pid file failed - err = %d\n", -n);
+-	os_close_file(fd);
++		printk("Write of pid file failed - err = %d\n", -n);
++
++	close(fd);
+ }
+ 
+-int __init set_umid(char *name, int (*printer)(const char *fmt, ...))
++int __init set_umid(char *name)
+ {
+ 	if(strlen(name) > UMID_LEN - 1)
+-		(*printer)("Unique machine name is being truncated to %d "
+-			   "characters\n", UMID_LEN);
++		return -E2BIG;
++
+ 	strlcpy(umid, name, sizeof(umid));
+ 
+ 	return 0;
+@@ -172,44 +195,56 @@ int __init set_umid(char *name, int (*pr
+ 
+ static int umid_setup = 0;
+ 
+-int __init make_umid(int (*printer)(const char *fmt, ...))
++int __init make_umid(void)
+ {
+ 	int fd, err;
+ 	char tmp[256];
+ 
++	if(umid_setup)
++		return 0;
++
+ 	make_uml_dir();
+ 
+ 	if(*umid == '\0'){
+ 		strlcpy(tmp, uml_dir, sizeof(tmp));
+-		strcat(tmp, "XXXXXX");
++		strlcat(tmp, "XXXXXX", sizeof(tmp));
+ 		fd = mkstemp(tmp);
+ 		if(fd < 0){
+-			(*printer)("make_umid - mkstemp(%s) failed: %s\n",
+-				   tmp,strerror(errno));
+-			return(1);
++			printk("make_umid - mkstemp(%s) failed: %s\n",
++			       tmp, strerror(errno));
++			err = -errno;
++			goto err;
+ 		}
+ 
+-		os_close_file(fd);
++		close(fd);
++
++		set_umid(&tmp[strlen(uml_dir)]);
++
+ 		/* There's a nice tiny little race between this unlink and
+ 		 * the mkdir below.  It'd be nice if there were a mkstemp
+ 		 * for directories.
+ 		 */
+-		unlink(tmp);
+-		set_umid(&tmp[strlen(uml_dir)], printer);
++		if(unlink(tmp)){
++			err = -errno;
++			goto err;
++		}
+ 	}
+-	
+-	sprintf(tmp, "%s%s", uml_dir, umid);
++
++	snprintf(tmp, sizeof(tmp), "%s%s", uml_dir, umid);
+ 	err = mkdir(tmp, 0777);
+ 	if(err < 0){
+-		if(errno == EEXIST){
+-			if(not_dead_yet(tmp))
+-				return -EEXIST;
+-			err = mkdir(tmp, 0777);
+-		}
++		err = -errno;
++		if(errno != EEXIST)
++			goto err;
++
++		if(not_dead_yet(tmp) < 0)
++			goto err;
++
++		err = mkdir(tmp, 0777);
+ 	}
+ 	if(err < 0){
+-		(*printer)("Failed to create %s - errno = %d\n", umid, errno);
+-		return(-1);
++		printk("Failed to create '%s' - err = %d\n", umid, err);
++		goto err_rmdir;
+ 	}
+ 
+ 	umid_setup = 1;
+@@ -217,13 +252,18 @@ int __init make_umid(int (*printer)(cons
+ 	create_pid_file();
+ 
+ 	return 0;
++
++ err_rmdir:
++	rmdir(tmp);
++ err:
++	return err;
+ }
+ 
+ static int __init make_umid_init(void)
+ {
+-	make_umid(printk);
++	make_umid();
+ 
+-	return(0);
++	return 0;
+ }
+ 
+ __initcall(make_umid_init);
+@@ -232,48 +272,48 @@ int __init umid_file_name(char *name, ch
+ {
+ 	int n, err;
+ 
+-	if(!umid_setup){
+-		err = make_umid(printk);
+-		if(err)
+-			return err;
+-	}
++	err = make_umid();
++	if(err)
++		return err;
+ 
+-	n = strlen(uml_dir) + strlen(umid) + strlen("/") + strlen(name) + 1;
+-	if(n > len){
++	n = snprintf(buf, len, "%s%s/%s", uml_dir, umid, name);
++	if(n >= len){
+ 		printk("umid_file_name : buffer too short\n");
+-		return(-1);
++		return -E2BIG;
+ 	}
+ 
+-	sprintf(buf, "%s%s/%s", uml_dir, umid, name);
+-	return(0);
++	return 0;
+ }
+ 
+-extern int umid_is_random;
+-
+-char *get_umid(int only_if_set)
++char *get_umid(void)
+ {
+-	if(only_if_set && umid_is_random)
+-		return NULL;
+ 	return umid;
+ }
+ 
+ static int __init set_uml_dir(char *name, int *add)
+ {
+-	if((strlen(name) > 0) && (name[strlen(name) - 1] != '/')){
+-		uml_dir = malloc(strlen(name) + 2);
+-		if(uml_dir == NULL){
+-			printf("Failed to malloc uml_dir - error = %d\n",
+-			       errno);
+-			uml_dir = name;
+-			/* Return 0 here because do_initcalls doesn't look at
+-			 * the return value.
+-			 */
+-			return(0);
+-		}
+-		sprintf(uml_dir, "%s/", name);
++	if(*name == '\0'){
++		printf("uml_dir can't be an empty string\n");
++		return 0;
++	}
++
++	if(name[strlen(name) - 1] == '/'){
++		uml_dir = name;
++		return 0;
+ 	}
+-	else uml_dir = name;
+-	return(0);
++
++	uml_dir = malloc(strlen(name) + 2);
++	if(uml_dir == NULL){
++		printf("Failed to malloc uml_dir - error = %d\n", errno);
++
++		/* Return 0 here because do_initcalls doesn't look at
++		 * the return value.
++		 */
++		return 0;
++	}
++	sprintf(uml_dir, "%s/", name);
++
++	return 0;
+ }
+ 
+ __uml_setup("uml_dir=", set_uml_dir,
+@@ -283,10 +323,13 @@ __uml_setup("uml_dir=", set_uml_dir,
+ 
+ static void remove_umid_dir(void)
+ {
+-	char dir[strlen(uml_dir) + UMID_LEN + 1];
++	char dir[strlen(uml_dir) + UMID_LEN + 1], err;
+ 
+ 	sprintf(dir, "%s%s", uml_dir, umid);
+-	actually_do_remove(dir);
++	err = actually_do_remove(dir);
++	if(err)
++		printf("remove_umid_dir - actually_do_remove failed with "
++		       "err = %d\n", err);
+ }
+ 
+ __uml_exitcall(remove_umid_dir);
 
 
 
