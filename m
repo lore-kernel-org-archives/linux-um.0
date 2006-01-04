@@ -2,18 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EuFjY-0006M7-94 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 12:59:48 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EuFjY-0007gv-1I
+	id 1EuHxq-000784-B3 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jan 2006 15:22:42 -0800
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1EuHxp-0003AN-1u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 12:59:48 -0800
-Message-Id: <200601042152.k04Lq40R009252@ccure.user-mode-linux.org>
+	Wed, 04 Jan 2006 15:22:42 -0800
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20060104152433.7304ec75.akpm@osdl.org>
+In-Reply-To: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
+References: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/9] UML - Capture printk output for mconsole sysrq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [PATCH 4/9] UML - Better diagnostics for broken
+	configs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,82 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 Jan 2006 16:52:04 -0500
-To: akpm@osdl.org
+Date: Wed, 4 Jan 2006 15:24:33 -0800
+To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Pass sysrq output back to the mconsole client using the mechanism
-introduced for stack output.
+Jeff Dike <jdike@addtoit.com> wrote:
+>
+> Produce a compile-time error if both MODE_SKAS and MODE_TT are disabled.
+> 
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+> 
+> Index: linux-2.6.15/arch/um/include/choose-mode.h
+> ===================================================================
+> --- linux-2.6.15.orig/arch/um/include/choose-mode.h	2005-08-28 19:41:01.000000000 -0400
+> +++ linux-2.6.15/arch/um/include/choose-mode.h	2005-11-17 10:43:47.000000000 -0500
+> @@ -23,6 +23,9 @@ static inline void *__choose_mode(void *
+>  
+>  #elif defined(UML_CONFIG_MODE_TT)
+>  #define CHOOSE_MODE(tt, skas) (tt)
+> +
+> +#else
+> +#error CONFIG_MODE_SKAS and CONFIG_MODE_TT are both disabled
+>  #endif
+>  
+>  #define CHOOSE_MODE_PROC(tt, skas, args...) \
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-
-Index: linux-2.6.15/arch/um/drivers/mconsole_kern.c
-===================================================================
---- linux-2.6.15.orig/arch/um/drivers/mconsole_kern.c	2006-01-04 13:59:58.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/mconsole_kern.c	2006-01-04 14:00:45.000000000 -0500
-@@ -463,24 +463,6 @@ void mconsole_remove(struct mc_request *
- 	mconsole_reply(req, err_msg, err, 0);
- }
- 
--#ifdef CONFIG_MAGIC_SYSRQ
--void mconsole_sysrq(struct mc_request *req)
--{
--	char *ptr = req->request.data;
--
--	ptr += strlen("sysrq");
--	while(isspace(*ptr)) ptr++;
--
--	mconsole_reply(req, "", 0, 0);
--	handle_sysrq(*ptr, &current->thread.regs, NULL);
--}
--#else
--void mconsole_sysrq(struct mc_request *req)
--{
--	mconsole_reply(req, "Sysrq not compiled in", 1, 0);
--}
--#endif
--
- static DEFINE_SPINLOCK(console_lock);
- static LIST_HEAD(clients);
- static char console_buf[MCONSOLE_MAX_DATA];
-@@ -549,6 +531,36 @@ static void with_console(struct mc_reque
- 	list_del(&entry.list);
- }
- 
-+#ifdef CONFIG_MAGIC_SYSRQ
-+static void sysrq_proc(void *arg)
-+{
-+	char *op = arg;
-+
-+	handle_sysrq(*op, &current->thread.regs, NULL);
-+}
-+
-+void mconsole_sysrq(struct mc_request *req)
-+{
-+	char *ptr = req->request.data;
-+
-+	ptr += strlen("sysrq");
-+	while(isspace(*ptr)) ptr++;
-+
-+	/* With 'b', the system will shut down without a chance to reply,
-+	 * so in this case, we reply first.
-+	 */
-+	if(*ptr == 'b')
-+		mconsole_reply(req, "", 0, 0);
-+
-+	with_console(req, sysrq_proc, ptr);
-+}
-+#else
-+void mconsole_sysrq(struct mc_request *req)
-+{
-+	mconsole_reply(req, "Sysrq not compiled in", 1, 0);
-+}
-+#endif
-+
- static void stack_proc(void *arg)
- {
- 	struct task_struct *from = current, *to = arg;
-
+Is there no sane way to prevent this situation within Kconfig?
 
 
 -------------------------------------------------------
