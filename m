@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EtvqC-00047j-Tp for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jan 2006 15:45:20 -0800
+	id 1EtvqK-00048P-1Q for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Jan 2006 15:45:28 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EtvqC-0001Q5-JS
+	(Exim 4.44) id 1EtvqI-0000h4-No
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jan 2006 15:45:21 -0800
-Message-Id: <200601040037.k040bgcf012560@ccure.user-mode-linux.org>
+	Tue, 03 Jan 2006 15:45:28 -0800
+Message-Id: <200601040037.k040bmls012576@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 8/12] UML - line_setup interface change
+Subject: [uml-devel] [PATCH 11/12] UML - Fix flip_buf full handling
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,61 +25,29 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 03 Jan 2006 19:37:42 -0500
+Date: Tue, 03 Jan 2006 19:37:48 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-line_setup is changed to return the device which it set up, rather
-than just success or failure.  This will be important in the
-line-config patch.
+When the tty flip_buf is full, it's a good idea to delay the input
+processing for a jiffy, rather than just scheduling the tasklet
+immediately.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.15/arch/um/drivers/line.c
+Index: linux-2.6.15/arch/um/drivers/chan_kern.c
 ===================================================================
---- linux-2.6.15.orig/arch/um/drivers/line.c	2006-01-03 17:29:31.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/line.c	2006-01-03 17:32:25.000000000 -0500
-@@ -555,12 +555,13 @@ int line_setup(struct line *lines, unsig
+--- linux-2.6.15.orig/arch/um/drivers/chan_kern.c	2005-12-25 22:35:58.000000000 -0500
++++ linux-2.6.15/arch/um/drivers/chan_kern.c	2005-12-25 22:42:14.000000000 -0500
+@@ -629,7 +629,7 @@ void chan_interrupt(struct list_head *ch
+ 		do {
+ 			if((tty != NULL) &&
+ 			   (tty->flip.count >= TTY_FLIPBUF_SIZE)){
+-				schedule_work(task);
++				schedule_delayed_work(task, 1);
+ 				goto out;
  			}
- 		}
- 	}
--	return 1;
-+	return n == -1 ? num : n;
- }
- 
- int line_config(struct line *lines, unsigned int num, char *str)
- {
- 	char *new;
-+	int n;
- 
- 	if(*str == '='){
- 		printk("line_config - can't configure all devices from "
-@@ -573,7 +574,8 @@ int line_config(struct line *lines, unsi
- 		printk("line_config - kstrdup failed\n");
- 		return -ENOMEM;
- 	}
--	return !line_setup(lines, num, new);
-+	n = line_setup(lines, num, new);
-+	return n < 0 ? n : 0;
- }
- 
- int line_get_config(char *name, struct line *lines, unsigned int num, char *str,
-@@ -624,10 +626,14 @@ int line_id(char **str, int *start_out, 
- 
- int line_remove(struct line *lines, unsigned int num, int n)
- {
-+	int err;
- 	char config[sizeof("conxxxx=none\0")];
- 
- 	sprintf(config, "%d=none", n);
--	return !line_setup(lines, num, config);
-+	err = line_setup(lines, num, config);
-+	if(err >= 0)
-+		err = 0;
-+	return err;
- }
- 
- struct tty_driver *line_register_devfs(struct lines *set,
+ 			err = chan->ops->read(chan->fd, &c, chan->data);
 
 
 
