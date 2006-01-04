@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EuFjN-0006L5-3U for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 12:59:37 -0800
+	id 1EuFjQ-0006LW-Tl for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jan 2006 12:59:40 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EuFjL-0007A7-Pt
+	(Exim 4.44) id 1EuFjQ-0005NA-Km
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 12:59:37 -0800
-Message-Id: <200601042151.k04LpuTO009231@ccure.user-mode-linux.org>
+	Wed, 04 Jan 2006 12:59:41 -0800
+Message-Id: <200601042152.k04Lq0nc009242@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/9] UML - SIGWINCH handling cleanup
+Subject: [uml-devel] [PATCH 5/9] UML - add mconsole_reply variant with length
+	param
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,99 +26,85 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 04 Jan 2006 16:51:56 -0500
+Date: Wed, 04 Jan 2006 16:52:00 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Code cleanup - unregister_winch and winch_cleanup had some duplicate code.
-This is now abstracted out into free_winch.
+This is needed for the console output patch, since we have a
+possibly non-NULL-terminated string there.  So, the new interface
+takes a string and a length, and the old interface calls strlen on
+its string and calls the new interface with the length.
+
+There's also a bit of whitespace cleanup.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.15/arch/um/drivers/line.c
+Index: linux-2.6.15/arch/um/drivers/mconsole_user.c
 ===================================================================
---- linux-2.6.15.orig/arch/um/drivers/line.c	2006-01-04 13:57:45.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/line.c	2006-01-04 13:58:17.000000000 -0500
-@@ -774,55 +774,49 @@ void register_winch_irq(int fd, int tty_
- 		printk("register_winch_irq - failed to register IRQ\n");
+--- linux-2.6.15.orig/arch/um/drivers/mconsole_user.c	2005-11-30 12:48:57.000000000 -0500
++++ linux-2.6.15/arch/um/drivers/mconsole_user.c	2005-12-28 23:22:37.000000000 -0500
+@@ -122,12 +122,12 @@ int mconsole_get_request(int fd, struct 
+ 	return(1);
  }
  
-+static void free_winch(struct winch *winch)
+-int mconsole_reply(struct mc_request *req, char *str, int err, int more)
++int mconsole_reply_len(struct mc_request *req, const char *str, int total,
++		       int err, int more)
+ {
+ 	struct mconsole_reply reply;
+-	int total, len, n;
++	int len, n;
+ 
+-	total = strlen(str);
+ 	do {
+ 		reply.err = err;
+ 
+@@ -155,6 +155,12 @@ int mconsole_reply(struct mc_request *re
+ 	return(0);
+ }
+ 
++int mconsole_reply(struct mc_request *req, const char *str, int err, int more)
 +{
-+	list_del(&winch->list);
-+
-+	if(winch->pid != -1)
-+		os_kill_process(winch->pid, 1);
-+	if(winch->fd != -1)
-+		os_close_file(winch->fd);
-+
-+	free_irq(WINCH_IRQ, winch);
-+	kfree(winch);
++	return mconsole_reply_len(req, str, strlen(str), err, more);
 +}
 +
- static void unregister_winch(struct tty_struct *tty)
++
+ int mconsole_unlink_socket(void)
  {
- 	struct list_head *ele;
--	struct winch *winch, *found = NULL;
-+	struct winch *winch;
+ 	unlink(mconsole_socket_name);
+Index: linux-2.6.15/arch/um/include/mconsole.h
+===================================================================
+--- linux-2.6.15.orig/arch/um/include/mconsole.h	2005-10-28 12:58:12.000000000 -0400
++++ linux-2.6.15/arch/um/include/mconsole.h	2005-12-29 11:52:19.000000000 -0500
+@@ -32,7 +32,7 @@ struct mconsole_reply {
  
- 	spin_lock(&winch_handler_lock);
-+
- 	list_for_each(ele, &winch_handlers){
- 		winch = list_entry(ele, struct winch, list);
-                 if(winch->tty == tty){
--                        found = winch;
--                        break;
-+			free_winch(winch);
-+			break;
-                 }
-         }
--        if(found == NULL)
--		goto err;
--
--	list_del(&winch->list);
--	spin_unlock(&winch_handler_lock);
--
--        if(winch->pid != -1)
--                os_kill_process(winch->pid, 1);
--
--        free_irq(WINCH_IRQ, winch);
--        kfree(winch);
--
--	return;
--err:
- 	spin_unlock(&winch_handler_lock);
- }
+ struct mconsole_notify {
+ 	u32 magic;
+-	u32 version;	
++	u32 version;
+ 	enum { MCONSOLE_SOCKET, MCONSOLE_PANIC, MCONSOLE_HANG,
+ 	       MCONSOLE_USER_NOTIFY } type;
+ 	u32 len;
+@@ -66,7 +66,9 @@ struct mc_request
+ extern char mconsole_socket_name[];
  
--/* XXX: No lock as it's an exitcall... is this valid? Depending on cleanup
-- * order... are we sure that nothing else is done on the list? */
- static void winch_cleanup(void)
- {
--	struct list_head *ele;
-+	struct list_head *ele, *next;
- 	struct winch *winch;
+ extern int mconsole_unlink_socket(void);
+-extern int mconsole_reply(struct mc_request *req, char *reply, int err,
++extern int mconsole_reply_len(struct mc_request *req, const char *reply,
++			      int len, int err, int more);
++extern int mconsole_reply(struct mc_request *req, const char *str, int err,
+ 			  int more);
  
--	list_for_each(ele, &winch_handlers){
-+	spin_lock(&winch_handler_lock);
-+
-+	list_for_each_safe(ele, next, &winch_handlers){
- 		winch = list_entry(ele, struct winch, list);
--		if(winch->fd != -1){
--			/* Why is this different from the above free_irq(),
--			 * which deactivates SIGIO? This searches the FD
--			 * somewhere else and removes it from the list... */
--			deactivate_fd(winch->fd, WINCH_IRQ);
--			os_close_file(winch->fd);
--		}
--		if(winch->pid != -1)
--			os_kill_process(winch->pid, 1);
-+		free_winch(winch);
- 	}
-+
-+	spin_unlock(&winch_handler_lock);
- }
- __uml_exitcall(winch_cleanup);
+ extern void mconsole_version(struct mc_request *req);
+@@ -84,7 +86,7 @@ extern void mconsole_proc(struct mc_requ
+ extern void mconsole_stack(struct mc_request *req);
  
+ extern int mconsole_get_request(int fd, struct mc_request *req);
+-extern int mconsole_notify(char *sock_name, int type, const void *data, 
++extern int mconsole_notify(char *sock_name, int type, const void *data,
+ 			   int len);
+ extern char *mconsole_notify_socket(void);
+ extern void lock_notify(void);
 
 
 
