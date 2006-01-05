@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EuJwN-0005u9-IJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 17:29:19 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EuJwL-0006jA-Vw
+	id 1EuNaX-0001yl-0p for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jan 2006 21:23:01 -0800
+Received: from nproxy.gmail.com ([64.233.182.192])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EuNaW-0006p9-Lr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 17:29:19 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060105022129.GA13183@ccure.user-mode-linux.org>
-References: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
-	<20060104152433.7304ec75.akpm@osdl.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060104152433.7304ec75.akpm@osdl.org>
-Subject: [uml-devel] Re: [PATCH 4/9] UML - Better diagnostics for broken
-	configs
+	Wed, 04 Jan 2006 21:23:01 -0800
+Received: by nproxy.gmail.com with SMTP id d4so1142237nfe
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 04 Jan 2006 21:22:58 -0800 (PST)
+Message-ID: <39134b110601042122s613b2ad5j@mail.gmail.com>
+From: wang lianwei <lianwei.wang@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_13934_30460092.1136438577685"
+Subject: [uml-devel] Re:User-mode-linux-devel -- confirmation of subscription
+	-- request 414904
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,20 +29,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 4 Jan 2006 21:21:29 -0500
-To: Andrew Morton <akpm@osdl.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 5 Jan 2006 13:22:57 +0800
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Jan 04, 2006 at 03:24:33PM -0800, Andrew Morton wrote:
-> Jeff Dike <jdike@addtoit.com> wrote:
-> >
-> > Produce a compile-time error if both MODE_SKAS and MODE_TT are disabled.
-> Is there no sane way to prevent this situation within Kconfig?
+------=_Part_13934_30460092.1136438577685
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I tried.  The best I managed was to get *config to moan about circular
-dependencies.
+confirm 414904 <user-mode-linux-devel@lists.sourceforge.net>
 
-				Jeff
+------=_Part_13934_30460092.1136438577685
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+confirm 414904<a onclick=3D"return top.js.OpenExtLink(window,event,this)" h=
+ref=3D"mailto:user-mode-linux-devel@lists.sourceforge.net"></a>
+
+------=_Part_13934_30460092.1136438577685--
 
 
 -------------------------------------------------------
