@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EuNaX-0001yl-0p for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 21:23:01 -0800
-Received: from nproxy.gmail.com ([64.233.182.192])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EuNaW-0006p9-Lr
+	id 1EuPoc-0000MS-M6 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jan 2006 23:45:42 -0800
+Received: from linux01.gwdg.de ([134.76.13.21] ident=root)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EuPoc-0004a1-Aj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jan 2006 21:23:01 -0800
-Received: by nproxy.gmail.com with SMTP id d4so1142237nfe
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 04 Jan 2006 21:22:58 -0800 (PST)
-Message-ID: <39134b110601042122s613b2ad5j@mail.gmail.com>
-From: wang lianwei <lianwei.wang@gmail.com>
+	Wed, 04 Jan 2006 23:45:42 -0800
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+In-Reply-To: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.61.0601050844550.10161@yvahk01.tjqt.qr>
+References: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_13934_30460092.1136438577685"
-Subject: [uml-devel] Re:User-mode-linux-devel -- confirmation of subscription
-	-- request 414904
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] Re: [PATCH 4/9] UML - Better diagnostics for broken
+	configs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,25 +28,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 5 Jan 2006 13:22:57 +0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 5 Jan 2006 08:45:36 +0100 (MET)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-------=_Part_13934_30460092.1136438577685
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+>Produce a compile-time error if both MODE_SKAS and MODE_TT are disabled.
+>
+What would happen if both were disabled?
+Say, if the host system does not have SKAS and I did not want any 
+tracing/debugging stuff?
 
-confirm 414904 <user-mode-linux-devel@lists.sourceforge.net>
 
-------=_Part_13934_30460092.1136438577685
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-confirm 414904<a onclick=3D"return top.js.OpenExtLink(window,event,this)" h=
-ref=3D"mailto:user-mode-linux-devel@lists.sourceforge.net"></a>
-
-------=_Part_13934_30460092.1136438577685--
+Jan Engelhardt
+-- 
 
 
 -------------------------------------------------------
