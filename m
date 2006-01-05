@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EuWwh-0007Mi-R4 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Jan 2006 07:22:31 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1Eud9V-0006R4-Vo for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Jan 2006 14:00:10 -0800
+Received: from linux01.gwdg.de ([134.76.13.21] ident=root)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EuWwg-0000Zb-9a
+	(Exim 4.44) id 1Eud9S-0007c9-MD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Jan 2006 07:22:31 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060105161436.GA4426@ccure.user-mode-linux.org>
+	Thu, 05 Jan 2006 14:00:07 -0800
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+In-Reply-To: <20060105161436.GA4426@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.61.0601052258350.27662@yvahk01.tjqt.qr>
 References: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
 	<Pine.LNX.4.61.0601050844550.10161@yvahk01.tjqt.qr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0601050844550.10161@yvahk01.tjqt.qr>
+	<20060105161436.GA4426@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Subject: [uml-devel] Re: [PATCH 4/9] UML - Better diagnostics for broken
 	configs
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -30,22 +30,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 5 Jan 2006 11:14:36 -0500
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Date: Thu, 5 Jan 2006 22:59:58 +0100 (MET)
+To: Jeff Dike <jdike@addtoit.com>
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Jan 05, 2006 at 08:45:36AM +0100, Jan Engelhardt wrote:
-> >Produce a compile-time error if both MODE_SKAS and MODE_TT are disabled.
+>> >Produce a compile-time error if both MODE_SKAS and MODE_TT are disabled.
+>>
+>> What would happen if both were disabled?
+>> Say, if the host system does not have SKAS and I did not want any 
+>> tracing/debugging stuff?
 >
-> What would happen if both were disabled?
-> Say, if the host system does not have SKAS and I did not want any 
-> tracing/debugging stuff?
+>You get a UML that can't run.  TT mode isn't tracing/debugging stuff.  It's 
+>a basic mode of UML operation.  Also, UML doesn't need the skas patch on
+>the host in order to use skas mode any more.  It helps, but is not necessary.
 
-You get a UML that can't run.  TT mode isn't tracing/debugging stuff.  It's 
-a basic mode of UML operation.  Also, UML doesn't need the skas patch on
-the host in order to use skas mode any more.  It helps, but is not necessary.
+config MODE_TT
+        bool "Tracing thread support"
+        default y
+        help
+        This option controls whether tracing thread support is compiled
+        into UML.  Normally, this should be set to Y.  If you intend to
+        use only skas mode (and the host has the skas patch applied to it),
+        then it is OK to say N here.
 
-				Jeff
+Then I unfortunately do not quite understand what this is for.
+
+
+
+Jan Engelhardt
+-- 
 
 
 -------------------------------------------------------
