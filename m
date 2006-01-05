@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EudAv-0006Ug-Sk for user-mode-linux-devel@lists.sourceforge.net;
+	id 1EudAv-0006Uh-VO for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 05 Jan 2006 14:01:37 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EudAt-00013j-FU
+	(Exim 4.44) id 1EudAu-0007dT-2u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Jan 2006 14:01:37 -0800
-Message-Id: <200601052253.k05MrmPj010772@ccure.user-mode-linux.org>
+	Thu, 05 Jan 2006 14:01:38 -0800
+Message-Id: <200601052253.k05MrngR010777@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/4] UML - Merge trap_user.c and trap_kern.c
+Subject: [uml-devel] [PATCH 4/4] Consolidate asm/futex.h
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,165 +27,1098 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
 Date: Thu, 05 Jan 2006 17:53:48 -0500
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Gennady Sharapov <Gennady.V.Sharapov@intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
+Most of the architectures have the same asm/futex.h.  This
+consolidates them into asm-generic, with the arches including it
+from their own asm/futex.h.
 
-The serial UML OS-abstraction layer patch (um/kernel dir).
+In the case of UML, this reverts the old broken futex.h and goes back
+to using the same one as almost everyone else.
 
-This joins trap_user.c and trap_kernel.c files.
-
-Signed-off-by: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.15/arch/um/kernel/Makefile
+Index: linux-2.6.15/include/asm-alpha/futex.h
 ===================================================================
---- linux-2.6.15.orig/arch/um/kernel/Makefile	2006-01-04 16:00:20.000000000 -0500
-+++ linux-2.6.15/arch/um/kernel/Makefile	2006-01-04 16:52:33.000000000 -0500
-@@ -10,7 +10,7 @@ obj-y = config.o exec_kern.o exitcode.o 
- 	init_task.o irq.o irq_user.o ksyms.o mem.o physmem.o \
- 	process_kern.o ptrace.o reboot.o resource.o sigio_user.o sigio_kern.o \
- 	signal_kern.o smp.o syscall_kern.o sysrq.o time.o \
--	time_kern.o tlb.o trap_kern.o trap_user.o uaccess.o um_arch.o umid.o \
-+	time_kern.o tlb.o trap_kern.o uaccess.o um_arch.o umid.o \
- 	user_util.o
+--- linux-2.6.15.orig/include/asm-alpha/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-alpha/futex.h	2005-12-31 13:45:50.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
  
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
-Index: linux-2.6.15/arch/um/kernel/trap_kern.c
-===================================================================
---- linux-2.6.15.orig/arch/um/kernel/trap_kern.c	2006-01-04 16:52:17.000000000 -0500
-+++ linux-2.6.15/arch/um/kernel/trap_kern.c	2006-01-04 16:52:33.000000000 -0500
-@@ -26,6 +26,9 @@
- #include "mconsole_kern.h"
- #include "mem.h"
- #include "mem_kern.h"
-+#include "sysdep/sigcontext.h"
-+#include "sysdep/ptrace.h"
-+#include "os.h"
- #ifdef CONFIG_MODE_SKAS
- #include "skas.h"
- #endif
-@@ -126,6 +129,17 @@ out_of_memory:
- 	goto out;
- }
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
  
-+void segv_handler(int sig, union uml_pt_regs *regs)
-+{
-+	struct faultinfo * fi = UPT_FAULTINFO(regs);
-+
-+	if(UPT_IS_USER(regs) && !SEGV_IS_FIXABLE(fi)){
-+		bad_segv(*fi, UPT_IP(regs));
-+		return;
-+	}
-+	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
-+}
-+
- struct kern_handlers handlinfo_kern = {
- 	.relay_signal = relay_signal,
- 	.winch = winch,
-Index: linux-2.6.15/arch/um/kernel/trap_user.c
-===================================================================
---- linux-2.6.15.orig/arch/um/kernel/trap_user.c	2006-01-04 16:52:17.000000000 -0500
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,58 +0,0 @@
--/*
-- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
 -
--#include <stdlib.h>
--#include <errno.h>
--#include <setjmp.h>
--#include <signal.h>
--#include <sys/time.h>
--#include <sys/wait.h>
--#include <asm/page.h>
--#include <asm/unistd.h>
--#include <asm/ptrace.h>
--#include "init.h"
--#include "sysdep/ptrace.h"
--#include "sigcontext.h"
--#include "sysdep/sigcontext.h"
--#include "irq_user.h"
--#include "time_user.h"
--#include "task.h"
--#include "mode.h"
--#include "choose-mode.h"
--#include "kern_util.h"
--#include "user_util.h"
--#include "os.h"
--
--void segv_handler(int sig, union uml_pt_regs *regs)
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
 -{
--        struct faultinfo * fi = UPT_FAULTINFO(regs);
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
 -
--        if(UPT_IS_USER(regs) && !SEGV_IS_FIXABLE(fi)){
--                bad_segv(*fi, UPT_IP(regs));
--		return;
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
 -	}
--        segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
 -}
 -
--void usr2_handler(int sig, union uml_pt_regs *regs)
--{
--	CHOOSE_MODE(syscall_handler_tt(sig, regs), (void) 0);
--}
--
--void (*sig_info[NSIG])(int, union uml_pt_regs *);
--
--void os_fill_handlinfo(struct kern_handlers h)
--{
--	sig_info[SIGTRAP] = h.relay_signal;
--	sig_info[SIGFPE] = h.relay_signal;
--	sig_info[SIGILL] = h.relay_signal;
--	sig_info[SIGWINCH] = h.winch;
--	sig_info[SIGBUS] = h.bus_handler;
--	sig_info[SIGSEGV] = h.page_fault;
--	sig_info[SIGIO] = h.sigio_handler;
--	sig_info[SIGVTALRM] = h.timer_handler;
--	sig_info[SIGALRM] = h.timer_handler;
--	sig_info[SIGUSR2] = usr2_handler;
--}
-Index: linux-2.6.15/arch/um/os-Linux/trap.c
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-arm/futex.h
 ===================================================================
---- linux-2.6.15.orig/arch/um/os-Linux/trap.c	2006-01-04 16:52:17.000000000 -0500
-+++ linux-2.6.15/arch/um/os-Linux/trap.c	2006-01-04 16:52:33.000000000 -0500
-@@ -3,11 +3,34 @@
-  * Licensed under the GPL
-  */
+--- linux-2.6.15.orig/include/asm-arm/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-arm/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
  
--#include <setjmp.h>
-+#include <stdlib.h>
- #include <signal.h>
-+#include <setjmp.h>
- #include "kern_util.h"
- #include "user_util.h"
- #include "os.h"
-+#include "mode.h"
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-arm26/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-arm26/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-arm26/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-cris/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-cris/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-cris/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-frv/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-frv/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-frv/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-generic/futex.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15/include/asm-generic/futex.h	2005-12-31 13:45:16.000000000 -0500
+@@ -0,0 +1,53 @@
++#ifndef _ASM_GENERIC_FUTEX_H
++#define _ASM_GENERIC_FUTEX_H
 +
-+void usr2_handler(int sig, union uml_pt_regs *regs)
++#ifdef __KERNEL__
++
++#include <linux/futex.h>
++#include <asm/errno.h>
++#include <asm/uaccess.h>
++
++static inline int
++futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
 +{
-+	CHOOSE_MODE(syscall_handler_tt(sig, regs), (void) 0);
++	int op = (encoded_op >> 28) & 7;
++	int cmp = (encoded_op >> 24) & 15;
++	int oparg = (encoded_op << 8) >> 20;
++	int cmparg = (encoded_op << 20) >> 20;
++	int oldval = 0, ret;
++	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
++		oparg = 1 << oparg;
++
++	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
++		return -EFAULT;
++
++	inc_preempt_count();
++
++	switch (op) {
++	case FUTEX_OP_SET:
++	case FUTEX_OP_ADD:
++	case FUTEX_OP_OR:
++	case FUTEX_OP_ANDN:
++	case FUTEX_OP_XOR:
++	default:
++		ret = -ENOSYS;
++	}
++
++	dec_preempt_count();
++
++	if (!ret) {
++		switch (cmp) {
++		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
++		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
++		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
++		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
++		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
++		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
++		default: ret = -ENOSYS;
++		}
++	}
++	return ret;
 +}
 +
-+void (*sig_info[NSIG])(int, union uml_pt_regs *);
-+
-+void os_fill_handlinfo(struct kern_handlers h)
-+{
-+	sig_info[SIGTRAP] = h.relay_signal;
-+	sig_info[SIGFPE] = h.relay_signal;
-+	sig_info[SIGILL] = h.relay_signal;
-+	sig_info[SIGWINCH] = h.winch;
-+	sig_info[SIGBUS] = h.bus_handler;
-+	sig_info[SIGSEGV] = h.page_fault;
-+	sig_info[SIGIO] = h.sigio_handler;
-+	sig_info[SIGVTALRM] = h.timer_handler;
-+	sig_info[SIGALRM] = h.timer_handler;
-+	sig_info[SIGUSR2] = usr2_handler;
-+}
++#endif
++#endif
+Index: linux-2.6.15/include/asm-h8300/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-h8300/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-h8300/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
  
- void do_longjmp(void *b, int val)
- {
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-ia64/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-ia64/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-ia64/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-m32r/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-m32r/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-m32r/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-m68k/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-m68k/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-m68k/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-m68knommu/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-m68knommu/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-m68knommu/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-parisc/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-parisc/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-parisc/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-s390/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-s390/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-s390/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-sh/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-sh/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-sh/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-sh64/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-sh64/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-sh64/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-sparc/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-sparc/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-sparc/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-sparc64/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-sparc64/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-sparc64/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
+Index: linux-2.6.15/include/asm-um/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-um/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-um/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,12 +1,6 @@
+-#ifndef __UM_FUTEX_H
+-#define __UM_FUTEX_H
++#ifndef _ASM_FUTEX_H
++#define _ASM_FUTEX_H
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/system.h>
+-#include <asm/processor.h>
+-#include <asm/uaccess.h>
+-
+-#include "asm/arch/futex.h"
++#include <asm-generic/futex.h>
+ 
+ #endif
+Index: linux-2.6.15/include/asm-v850/futex.h
+===================================================================
+--- linux-2.6.15.orig/include/asm-v850/futex.h	2005-10-28 12:58:15.000000000 -0400
++++ linux-2.6.15/include/asm-v850/futex.h	2005-12-31 13:47:35.000000000 -0500
+@@ -1,53 +1,6 @@
+ #ifndef _ASM_FUTEX_H
+ #define _ASM_FUTEX_H
+ 
+-#ifdef __KERNEL__
++#include <asm-generic/futex.h>
+ 
+-#include <linux/futex.h>
+-#include <asm/errno.h>
+-#include <asm/uaccess.h>
+-
+-static inline int
+-futex_atomic_op_inuser (int encoded_op, int __user *uaddr)
+-{
+-	int op = (encoded_op >> 28) & 7;
+-	int cmp = (encoded_op >> 24) & 15;
+-	int oparg = (encoded_op << 8) >> 20;
+-	int cmparg = (encoded_op << 20) >> 20;
+-	int oldval = 0, ret;
+-	if (encoded_op & (FUTEX_OP_OPARG_SHIFT << 28))
+-		oparg = 1 << oparg;
+-
+-	if (! access_ok (VERIFY_WRITE, uaddr, sizeof(int)))
+-		return -EFAULT;
+-
+-	inc_preempt_count();
+-
+-	switch (op) {
+-	case FUTEX_OP_SET:
+-	case FUTEX_OP_ADD:
+-	case FUTEX_OP_OR:
+-	case FUTEX_OP_ANDN:
+-	case FUTEX_OP_XOR:
+-	default:
+-		ret = -ENOSYS;
+-	}
+-
+-	dec_preempt_count();
+-
+-	if (!ret) {
+-		switch (cmp) {
+-		case FUTEX_OP_CMP_EQ: ret = (oldval == cmparg); break;
+-		case FUTEX_OP_CMP_NE: ret = (oldval != cmparg); break;
+-		case FUTEX_OP_CMP_LT: ret = (oldval < cmparg); break;
+-		case FUTEX_OP_CMP_GE: ret = (oldval >= cmparg); break;
+-		case FUTEX_OP_CMP_LE: ret = (oldval <= cmparg); break;
+-		case FUTEX_OP_CMP_GT: ret = (oldval > cmparg); break;
+-		default: ret = -ENOSYS;
+-		}
+-	}
+-	return ret;
+-}
+-
+-#endif
+ #endif
 
 
 
