@@ -2,27 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ev1Wn-0001JN-Jt for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 Jan 2006 16:01:49 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
+	id 1Ev38n-0007TA-CS for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 Jan 2006 17:45:09 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ev1Wm-0006YA-Nk
+	(Exim 4.44) id 1Ev38m-0006ld-RD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 Jan 2006 16:01:49 -0800
-From: Rob Landley <rob@landley.net>
+	Fri, 06 Jan 2006 17:45:09 -0800
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Re: [PATCH 4/9] UML - Better diagnostics for broken
 	configs
+Message-ID: <20060107023713.GA13285@ccure.user-mode-linux.org>
 References: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
 	<20060105161436.GA4426@ccure.user-mode-linux.org>
 	<Pine.LNX.4.61.0601052258350.27662@yvahk01.tjqt.qr>
-In-Reply-To: <Pine.LNX.4.61.0601052258350.27662@yvahk01.tjqt.qr>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	<200601061801.17497.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200601061801.17497.rob@landley.net>
+In-Reply-To: <200601061801.17497.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,76 +32,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 6 Jan 2006 18:01:13 -0600
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jan Engelhardt <jengelh@linux01.gwdg.de>, Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
+Date: Fri, 6 Jan 2006 21:37:13 -0500
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jan Engelhardt <jengelh@linux01.gwdg.de>, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Thursday 05 January 2006 15:59, Jan Engelhardt wrote:
-> config MODE_TT
->         bool "Tracing thread support"
->         default y
->         help
->         This option controls whether tracing thread support is compiled
->         into UML.  Normally, this should be set to Y.  If you intend to
->         use only skas mode (and the host has the skas patch applied to it),
->         then it is OK to say N here.
->
-> Then I unfortunately do not quite understand what this is for.
+On Fri, Jan 06, 2006 at 06:01:13PM -0600, Rob Landley wrote:
+> Unfortunately, stock kernels don't let you just discard a system call, so you
+> have to pass _something_ on to the underlying OS before you can resume from 
+> the ptrace.  But you can change all the information both on the way in and on
+> the way out, so what UML did was it turned all system calls into "getpid", 
+> which it then ignored the return value of in favor of doing its own system 
+> call handling.  Stock kernels also don't allow one process to remap another 
+> process's memory, which is kind of important in context switching and meant 
+> that each process being traced had to be a separate PID on the host, because 
+> the UML kernel couldn't remap that process's page tables.
+> 
+> Doing both of these things (a seperate host process for each UML process, and
+> calling getpid() for all system calls), is what "Tracing Thread" mode did.  
+> The UML kernel was one thread among several, and it was kinda slow.
 
-User Mode Linux works a bit like gdb: it uses ptrace to intercept the system 
-calls a process makes and handles them itself instead of allowing the 
-underlying OS to do so.
+The skas vs tt distinction is the address space part of this.  How we nullify
+system calls is separate.  That's the PTRACE_SYSCALL vs PTRACE_SYSEMU (which
+is now in mainline) thing.
 
-Unfortunately, stock kernels don't let you just discard a system call, so you 
-have to pass _something_ on to the underlying OS before you can resume from 
-the ptrace.  But you can change all the information both on the way in and on 
-the way out, so what UML did was it turned all system calls into "getpid", 
-which it then ignored the return value of in favor of doing its own system 
-call handling.  Stock kernels also don't allow one process to remap another 
-process's memory, which is kind of important in context switching and meant 
-that each process being traced had to be a separate PID on the host, because 
-the UML kernel couldn't remap that process's page tables.
+> Then somebody got drunk and came up with something extremely clever that I'm 
+> _still_ trying to get a clear explanation of, but they found out a way to run
+> SKAS mode on an unmodified kernel by sacrificing a chicken or something, and 
+> this became known as "SKAS0" mode.  
 
-Doing both of these things (a seperate host process for each UML process, and 
-calling getpid() for all system calls), is what "Tracing Thread" mode did.  
-The UML kernel was one thread among several, and it was kinda slow.
+Hehe, that would be Blaisorblade - I've refrained from asking what he had
+to sacrifice.
 
-Then the UML guys started patching the kernel, adding the ability to not pass 
-on a system call (to eliminate the pointless calls to getpid() that just 
-served to throw in a lot of context switches and slow everything down a 
-suprising amount), and adding /proc/mm to let one process remap another's 
-memory.  This was "SKAS" mode (Single Kernel Address Space), and was much 
-faster but required a modified host kernel.  They went through a few 
-iterations of this (different host patches) until they came up with the 
-current version, "SKAS3".  (Of course if you're going to run a modified host 
-kernel, you might as well just use XEN.)
+> It's not as fast as SKAS3 mode 
+> (sacrificing chickens takes time), but it's faster than TT mode and a lot 
+> less cluttered because you don't need a separate process on the host for each
+> process running under User Mode Linux kernel. 
 
-Then somebody got drunk and came up with something extremely clever that I'm 
-_still_ trying to get a clear explanation of, but they found out a way to run 
-SKAS mode on an unmodified kernel by sacrificing a chicken or something, and 
-this became known as "SKAS0" mode.  It's not as fast as SKAS3 mode 
-(sacrificing chickens takes time), but it's faster than TT mode and a lot 
-less cluttered because you don't need a separate process on the host for each 
-process running under User Mode Linux kernel. 
+skas0 still requires one host process per UML process.  That's how it gets
+host address spaces, which skas3 does using /proc/mm.  In this sense, skas0
+is sort of a cross between tt and skas3 modes.
 
-Both TT and SKAS0 run on unmodified kernels.  I ignore SKAS3 entirely, because 
-it doesn't.
-
-SKAS0 works pretty well now, it's faster and less complicated than TT mode, 
-and thus TT mode is mostly obsolete now.  If you compile UML and run SKAS, 
-it'll auto-detect if your host kernel has the weird patches to support the 
-extensions for SKAS3, and if not it'll run SKAS0.  TT mode is mostly an 
-anachronism, except that they haven't made SKAS0 support SMP yet, so if you 
-want to emulate SMP via UML you have no choice but to use TT mode (not that 
-it necessarily works all that great there, since TT mode doesn't get much 
-testing anymore).
-
-> Jan Engelhardt
-
-Rob
--- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+				Jeff
 
 
 -------------------------------------------------------
