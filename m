@@ -2,24 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ev5jY-0008Kl-6g for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 Jan 2006 20:31:16 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1EvFkc-0002cf-Il for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 Jan 2006 07:13:02 -0800
+Received: from linux01.gwdg.de ([134.76.13.21] ident=root)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ev5jX-00065C-Lv
+	(Exim 4.44) id 1EvFkb-0007OQ-0l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 Jan 2006 20:31:16 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060107052335.GB15654@ccure.user-mode-linux.org>
+	Sat, 07 Jan 2006 07:13:02 -0800
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: [uml-devel] Re: [PATCH 4/9] UML - Better diagnostics for broken
+	configs
+In-Reply-To: <20060107023713.GA13285@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.61.0601071612030.3578@yvahk01.tjqt.qr>
 References: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
-	<20060104152433.7304ec75.akpm@osdl.org>
-	<20060105022129.GA13183@ccure.user-mode-linux.org>
-	<20060106124438.GB12131@stusta.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060106124438.GB12131@stusta.de>
-Subject: [uml-devel] Re: [2.6 patch] UML - Prevent MODE_SKAS=n and MODE_TT=n
+	<20060105161436.GA4426@ccure.user-mode-linux.org>
+	<Pine.LNX.4.61.0601052258350.27662@yvahk01.tjqt.qr>
+	<200601061801.17497.rob@landley.net>
+	<20060107023713.GA13285@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,17 +32,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 7 Jan 2006 00:23:35 -0500
-To: Adrian Bunk <bunk@stusta.de>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 7 Jan 2006 16:12:50 +0100 (MET)
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Fri, Jan 06, 2006 at 01:44:38PM +0100, Adrian Bunk wrote:
-> > I tried.  The best I managed was to get *config to moan about circular
-> > dependencies.
-> 
-> The patch below implements this in Kconfig.
+>> Doing both of these things (a seperate host process for each UML process, and
+>> calling getpid() for all system calls), is what "Tracing Thread" mode did.  
+>> The UML kernel was one thread among several, and it was kinda slow.
+>
+>The skas vs tt distinction is the address space part of this.  How we nullify
+>system calls is separate.  That's the PTRACE_SYSCALL vs PTRACE_SYSEMU (which
+>is now in mainline) thing.
+>
 
-Acked-by: Jeff Dike <jdike@addtoit.com>
+...
+So there is no way to get UML compile on non-Linux.
+
+
+Jan Engelhardt
+-- 
 
 
 -------------------------------------------------------
