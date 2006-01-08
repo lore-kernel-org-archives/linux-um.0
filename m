@@ -2,27 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EvRZk-0003Pc-Sx for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 Jan 2006 19:50:36 -0800
-Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EvRZi-0001OL-Ka
+	id 1Evidy-0003OA-Sg for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 Jan 2006 14:04:06 -0800
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Evidx-0004vP-7r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 Jan 2006 19:50:37 -0800
-From: Rob Landley <rob@landley.net>
-Subject: Re: [uml-devel] Re: [PATCH 4/9] UML - Better diagnostics for broken
-	configs
-References: <200601042151.k04LpxbH009237@ccure.user-mode-linux.org>
-	<20060107023713.GA13285@ccure.user-mode-linux.org>
-	<Pine.LNX.4.61.0601071612030.3578@yvahk01.tjqt.qr>
-In-Reply-To: <Pine.LNX.4.61.0601071612030.3578@yvahk01.tjqt.qr>
+	Sun, 08 Jan 2006 14:04:06 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.64.0601081539001.4477@sparrow>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200601072150.14855.rob@landley.net>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: [uml-devel] tls patch compile problem (syntax error before
+	get_thread_area)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,39 +26,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 7 Jan 2006 21:50:14 -0600
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org
+Date: Sun, 8 Jan 2006 17:03:25 -0500 (EST)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: William Stearns <wstearns@pobox.com>, Paolo Blaisorblade Giarrusso <blaisorblade_spam@yahoo.it>
 
-On Saturday 07 January 2006 09:12, Jan Engelhardt wrote:
-> >The skas vs tt distinction is the address space part of this.  How we
-> > nullify system calls is separate.  That's the PTRACE_SYSCALL vs
-> > PTRACE_SYSEMU (which is now in mainline) thing.
->
-> ...
-> So there is no way to get UML compile on non-Linux.
+Good afternoon, all,
+ 	While trying to compile 2.6.15 + Jeff's 20060107 patches, I got 
+this compile error:
 
-Not out of the box, no.  You need some equivalent debugging facility, but 
-that's not too high a barrier.  It's really that there's no way for a 
-userspace process to fiddle around with the MMU the way an OS wants to, 
-unless you A) put hooks in the OS, or B) have multiple processes with 
-different memory contexts, which means debugging hooks if you want one thread 
-to intercept the syscalls made by another thread.
+[wstearns@sparrow linux-2.6.15-um20060107]$ make ARCH=um linux
+   CHK     include/linux/version.h
+gcc -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing 
+-fno-common -ffreestanding -Os     -fno-omit-frame-pointer 
+-fno-optimize-sibling-calls -g  -D__arch_um__ -DSUBARCH=\"i386\" 
+-Iarch/um/include 
+-I/usr/src/uml-linux/linux-2.6.15-um20060107/arch/um/include/tt 
+-I/usr/src/uml-linux/linux-2.6.15-um20060107/arch/um/include/skas 
+-Dvmap=kernel_vmap -Din6addr_loopback=kernel_in6addr_loopback 
+-Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask -fno-unit-at-a-time 
+-U__i386__ -Ui386 -march=i686 -mpreferred-stack-boundary=2 
+-D_LARGEFILE64_SOURCE -Wdeclaration-after-statement -Wno-pointer-sign 
+-nostdinc -isystem /usr/lib/gcc/i386-redhat-linux/4.0.2/include 
+-D__KERNEL__ -Iinclude  -include include/linux/autoconf.h -S -o 
+arch/um/kernel-offsets.s arch/um/sys-i386/kernel-offsets.c
+   CHK     arch/um/include/kern_constants.h
+   CHK     include/linux/compile.h
+   CHK     usr/initramfs_list
+   CC      arch/um/os-Linux/tls.o
+arch/um/os-Linux/tls.c:48: error: syntax error before 'get_thread_area'
+arch/um/os-Linux/tls.c:48: warning: type defaults to 'int' in declaration 
+of '_syscall1'
+arch/um/os-Linux/tls.c:48: warning: function declaration isn't a prototype
+arch/um/os-Linux/tls.c:48: warning: data definition has no type or storage 
+class
+arch/um/os-Linux/tls.c:49: error: syntax error before 'set_thread_area'
+arch/um/os-Linux/tls.c:49: warning: type defaults to 'int' in declaration 
+of '_syscall1'
+arch/um/os-Linux/tls.c:49: warning: function declaration isn't a prototype
+arch/um/os-Linux/tls.c:49: warning: data definition has no type or storage 
+class
+arch/um/os-Linux/tls.c:51: warning: 'struct user_desc' declared inside 
+parameter list
+arch/um/os-Linux/tls.c:51: warning: its scope is only this definition or 
+declaration, which is probably not what you want
+arch/um/os-Linux/tls.c: In function 'do_set_thread_area_tt':
+arch/um/os-Linux/tls.c:55: warning: implicit declaration of function 
+'set_thread_area'
+arch/um/os-Linux/tls.c: At top level:
+arch/um/os-Linux/tls.c:62: warning: 'struct user_desc' declared inside 
+parameter list
+arch/um/os-Linux/tls.c: In function 'do_get_thread_area_tt':
+arch/um/os-Linux/tls.c:66: warning: implicit declaration of function 
+'get_thread_area'
+make[1]: *** [arch/um/os-Linux/tls.o] Error 1
+make: *** [arch/um/os-Linux] Error 2
 
-There have been occasional attempts at doing this, by the way.  (If I had 
-gotten a mac mini I was going to give it a try, but about two _hours_ before 
-I had scheduled an extra long lunch hour to go visit the Apple store in the 
-barton creek mall, I heard about Jobs' announcement of the switchover to 
-Intel processors, so I didn't.  Not like I really _need_ another todo item 
-that's going to wind up taking up six months of my free time.  Just use 
-qemu...)
+ 	By removing the 4 tls related patches (uml-tls-support-sc-tables, 
+uml-add-tls-support, uml-add-tls-support-debug, and 
+uml-add-tls-support-flush-empty) from series and reapplying, the compile 
+continues past this point.  uml-clean-arch_switch also needs to be 
+reverted to finish compilation.
+ 	If it makes a difference, I'm using: gcc version 4.0.2 20051125 
+(Red Hat 4.0.2-8).  Finished kernel, config, and System.map are at 
+http://www.stearns.org/uml/ (linux-2.6.15-um20060107-notls-2.bz2 and 
+friends).
+ 	Cheers,
+ 	- Bill
 
-> Jan Engelhardt
-
-Rob
--- 
-Steve Ballmer: Innovation!  Inigo Montoya: You keep using that word.
-I do not think it means what you think it means.
+---------------------------------------------------------------------------
+          "My fellow Americans. I've signed legislation that will outlaw
+Russia forever. We begin bombing in five minutes."
+         - President Reagan, before a scheduled radio broadcast, unaware
+that the microphone was already on...
+(Courtesy of Brian S. Dellinger <Brian.Dellinger@Dartmouth.EDU>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
