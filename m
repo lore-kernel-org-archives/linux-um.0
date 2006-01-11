@@ -2,22 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EwT6B-0005Bw-Dz for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 Jan 2006 15:40:19 -0800
+	id 1EwiHR-00075T-IR for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 11 Jan 2006 07:52:57 -0800
 Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EwT65-0003Dx-KW
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EwiHN-0002zO-PE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 Jan 2006 15:40:19 -0800
+	Wed, 11 Jan 2006 07:52:57 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] The init_maps bug which cause mem map error
 References: <39134b110601100614o14112d19r@mail.gmail.com>
-In-Reply-To: <39134b110601100614o14112d19r@mail.gmail.com>
+	<200601110040.02121.blaisorblade@yahoo.it>
+	<20060111162151.GC10179@ccure.user-mode-linux.org>
+In-Reply-To: <20060111162151.GC10179@ccure.user-mode-linux.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200601110040.02121.blaisorblade@yahoo.it>
+Message-Id: <200601111652.39727.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,51 +31,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 11 Jan 2006 00:39:59 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: wang lianwei <lianwei.wang@gmail.com>, jdike@addtoit.com
+Date: Wed, 11 Jan 2006 16:52:38 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, wang lianwei <lianwei.wang@gmail.com>
 
-On Tuesday 10 January 2006 15:14, wang lianwei wrote:
->  There is a bug In file
->     linux/arch/um/kernel/physmem.c  init_mem() functions:
+On Wednesday 11 January 2006 17:21, Jeff Dike wrote:
+> On Wed, Jan 11, 2006 at 12:39:59AM +0100, Blaisorblade wrote:
+> > On Tuesday 10 January 2006 15:14, wang lianwei wrote:
+> > (What happened to these bad "*" guys ;-) ? )
 
-Yep, right...
+> Yeah, this would have been better expressed as a patch.
 
-> *int* *init_maps*(*unsigned* *long* physmem, *unsigned* *long* iomem,
-> *unsigned* *long* highmem)
-> {
-> 	*struct* page *p, *map;
-> 	*unsigned* *long* phys_len, phys_pages, highmem_len, highmem_pages;
-> 	*unsigned* *long* iomem_len, iomem_pages, total_len, total_pages;
-> 	*int* i;
+> > > total_len = phys_len + iomem_len + highmem_len;
 
-(What happened to these bad "*" guys ;-) ? )
+> > Remember people: never compare apples with bananas (or whatever).
 
-> 	phys_pages = physmem >> PAGE_SHIFT;
-> 	phys_len = phys_pages * *sizeof*(*struct* page);
+> Yup, sometimes I wish we had strongly typed integers...
 
-> 	iomem_pages = iomem >> PAGE_SHIFT;
-> 	iomem_len = iomem_pages * *sizeof*(*struct* page);
+Yeah :-] ...
 
-> 	highmem_pages = highmem >> PAGE_SHIFT;
-> 	highmem_len = highmem_pages * *sizeof*(*struct* page);
+I think in Java APIs tend to do almost that... not at that point, but they use 
+distinct classes for Point and Dimension and Rectangle and whatsoever... and 
+I even have to study these things.
 
-> 	total_pages = phys_pages + iomem_pages + highmem_pages;
+> > Thanks for
+> > the note. It's the first patch on my queue.
 
-> 	total_len = phys_len + iomem_pages + highmem_len;
+> OK, I was going to fix it here, but I'll just let you send it in.
 
-> this line should be
+Will be in my next queue flush...
 
-That line should be the below one, right (it wasn't clear the line you were 
-correcting, I later grasped it)? I think you're fully right (and I've never 
-seen iomem working very well, so I tend to agree).
+> Does this fix the 2M iomem problem?
 
-> total_len = phys_len + iomem_len + highmem_len;
-
-Remember people: never compare apples with bananas (or whatever). Thanks for 
-the note. It's the first patch on my queue.
-
->  <http://cvs.sourceforge.net/viewcvs.py/user-mode-linux/linux/#dirlist>
+Ah, well, he's the reporter of that problem, and he also worked diagnosing 
+it... compliments!
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
