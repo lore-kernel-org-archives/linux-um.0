@@ -2,21 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1ExBDX-0007Cz-Qr for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 Jan 2006 14:46:51 -0800
+	id 1Ey0dv-0002kd-VF for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 14 Jan 2006 21:41:31 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1ExBDV-00032N-Fh
+	(Exim 4.44) id 1Ey0dt-0004jL-KW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 Jan 2006 14:46:51 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] high-performance system calls using vsyscall
-Message-ID: <20060112233848.GA945@ccure.user-mode-linux.org>
-References: <3524bf1f0601120902v3812029l4d8ba5411b53f36f@mail.gmail.com>
+	Sat, 14 Jan 2006 21:41:32 -0800
+Message-Id: <200601150633.k0F6Xa2I015470@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3524bf1f0601120902v3812029l4d8ba5411b53f36f@mail.gmail.com>
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 3/3] UML - Add __raw_writel definition
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,26 +25,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 12 Jan 2006 18:38:48 -0500
-To: Young Koh <young.koh@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 15 Jan 2006 01:33:36 -0500
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Bryan O'Sullivan <bos@pathscale.com>
 
-On Thu, Jan 12, 2006 at 12:02:16PM -0500, Young Koh wrote:
-> I found an old post discussing the possibility of turning a system
-> call into a procedure call using vsyscall. Is it really implemented in
-> recent versions? I tested with recent Linux/UML kernels and glibcs but
-> system calls don't seem that fast. so, i guess it's not implemented
-> yet?
+Add implementations of the write* and __raw_write* functions.  __raw_writel
+is needed by lib/iocopy.c, which shouldn't be used in UML, but which is 
+unconditionally linked in anyway.
 
-In the generic kernel (or in whatever arches have the vsyscall page),
-it's used for only a small number of system calls.
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-In a tt-style UML, where the UML kernel is in the same address space
-as the process, this could be used for all system calls, where you
-would just jump from there into the UML kernel.  I think you would
-have to fiddle libc to make all of the system calls fo this.
+Index: linux-2.6.15-mm/include/asm-um/io.h
+===================================================================
+--- linux-2.6.15-mm.orig/include/asm-um/io.h	2005-08-28 19:41:01.000000000 -0400
++++ linux-2.6.15-mm/include/asm-um/io.h	2006-01-14 19:12:17.000000000 -0500
+@@ -33,4 +33,20 @@ static inline void * phys_to_virt(unsign
+  */
+ #define xlate_dev_kmem_ptr(p)	p
+ 
++static inline void writeb(unsigned char b, volatile void __iomem *addr)
++{
++	*(volatile unsigned char __force *) addr = b;
++}
++static inline void writew(unsigned short b, volatile void __iomem *addr)
++{
++	*(volatile unsigned short __force *) addr = b;
++}
++static inline void writel(unsigned int b, volatile void __iomem *addr)
++{
++	*(volatile unsigned int __force *) addr = b;
++}
++#define __raw_writeb writeb
++#define __raw_writew writew
++#define __raw_writel writel
++
+ #endif
 
-				Jeff
 
 
 -------------------------------------------------------
