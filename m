@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyEo9-0005Xi-6M for user-mode-linux-devel@lists.sourceforge.net;
+	id 1EyEo9-0005Xn-L3 for user-mode-linux-devel@lists.sourceforge.net;
 	Sun, 15 Jan 2006 12:49:01 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EyEo8-0001PU-5M
+	(Exim 4.44) id 1EyEo6-0005Tq-Ho
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Sun, 15 Jan 2006 12:49:01 -0800
-Message-Id: <200601152139.k0FLdi8g027732@ccure.user-mode-linux.org>
+Message-Id: <200601152139.k0FLdapx027710@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 6/11] UML - Move libc-dependent skas memory
-	mapping code
+Subject: [uml-devel] [PATCH 2/11] UML - Move libc-dependent utility procedures
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,688 +25,549 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 15 Jan 2006 16:39:44 -0500
+Date: Sun, 15 Jan 2006 16:39:36 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 
 From: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 
-The serial UML OS-abstraction layer patch (um/kernel/skas dir).
+The serial UML OS-abstraction layer patch (um/kernel dir).
 
-This moves all systemcalls from skas/mem_user.c file under
-os-Linux dir and join skas/mem_user.c and skas/mem.c files.
+This moves all systemcalls from user_util.c file under os-Linux dir
 
-Signed-off-by: Gennady Sharapov <gennady.v.sharapov@intel.com>
+Signed-off-by: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
+Index: linux-2.6.15-mm/arch/um/drivers/fd.c
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/drivers/fd.c	2006-01-06 21:23:35.000000000 -0500
++++ linux-2.6.15-mm/arch/um/drivers/fd.c	2006-01-06 21:24:14.000000000 -0500
+@@ -11,6 +11,7 @@
+ #include "user.h"
+ #include "user_util.h"
+ #include "chan_user.h"
++#include "os.h"
+ 
+ struct fd_chan {
+ 	int fd;
 Index: linux-2.6.15-mm/arch/um/include/os.h
 ===================================================================
---- linux-2.6.15-mm.orig/arch/um/include/os.h	2006-01-09 11:26:24.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/include/os.h	2006-01-09 11:30:10.000000000 -0500
-@@ -11,6 +11,7 @@
- #include "../os/include/file.h"
- #include "sysdep/ptrace.h"
- #include "kern_util.h"
-+#include "skas/mm_id.h"
+--- linux-2.6.15-mm.orig/arch/um/include/os.h	2006-01-06 21:24:14.000000000 -0500
++++ linux-2.6.15-mm/arch/um/include/os.h	2006-01-06 21:46:20.000000000 -0500
+@@ -195,6 +195,8 @@ extern unsigned long long os_usecs(void)
+ /* tt.c
+  * for tt mode only (will be deleted in future...)
+  */
++extern void stop(void);
++extern int wait_for_stop(int pid, int sig, int cont_type, void *relay);
+ extern int protect_memory(unsigned long addr, unsigned long len,
+ 			  int r, int w, int x, int must_succeed);
+ extern void forward_pending_sigio(int target);
+@@ -235,4 +237,12 @@ extern int set_signals(int enable);
+ extern void os_fill_handlinfo(struct kern_handlers h);
+ extern void do_longjmp(void *p, int val);
  
- #define OS_TYPE_FILE 1 
- #define OS_TYPE_DIR 2 
-@@ -255,4 +256,20 @@ extern void user_time_init(void);
- extern void uml_idle_timer(void);
- extern unsigned long long os_nsecs(void);
- 
-+/* skas/mem.c */
-+extern long run_syscall_stub(struct mm_id * mm_idp,
-+			     int syscall, unsigned long *args, long expected,
-+			     void **addr, int done);
-+extern long syscall_stub_data(struct mm_id * mm_idp,
-+			      unsigned long *data, int data_count,
-+			      void **addr, void **stub_addr);
-+extern int map(struct mm_id * mm_idp, unsigned long virt,
-+	       unsigned long len, int r, int w, int x, int phys_fd,
-+	       unsigned long long offset, int done, void **data);
-+extern int unmap(struct mm_id * mm_idp, void *addr, unsigned long len,
-+		 int done, void **data);
-+extern int protect(struct mm_id * mm_idp, unsigned long addr,
-+		   unsigned long len, int r, int w, int x, int done,
-+		   void **data);
++/* util.c */
++extern void stack_protections(unsigned long address);
++extern void task_protections(unsigned long address);
++extern int raw(int fd);
++extern void setup_machinename(char *machine_out);
++extern void setup_hostinfo(void);
++extern int setjmp_wrapper(void (*proc)(void *, void *), ...);
 +
  #endif
-Index: linux-2.6.15-mm/arch/um/include/skas/skas.h
+Index: linux-2.6.15-mm/arch/um/include/user_util.h
 ===================================================================
---- linux-2.6.15-mm.orig/arch/um/include/skas/skas.h	2006-01-09 11:29:25.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/include/skas/skas.h	2006-01-09 11:30:10.000000000 -0500
-@@ -24,14 +24,6 @@ extern void userspace(union uml_pt_regs 
- extern void new_thread_proc(void *stack, void (*handler)(int sig));
- extern void new_thread_handler(int sig);
- extern void handle_syscall(union uml_pt_regs *regs);
--extern int map(struct mm_id * mm_idp, unsigned long virt,
--	       unsigned long len, int r, int w, int x, int phys_fd,
--	       unsigned long long offset, int done, void **data);
--extern int unmap(struct mm_id * mm_idp, void *addr, unsigned long len,
--		 int done, void **data);
--extern int protect(struct mm_id * mm_idp, unsigned long addr,
--		   unsigned long len, int r, int w, int x, int done,
--		   void **data);
- extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
- extern int new_mm(unsigned long stack);
- extern int start_userspace(unsigned long stub_stack);
-@@ -39,11 +31,5 @@ extern int copy_context_skas0(unsigned l
- extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
- extern long execute_syscall_skas(void *r);
- extern unsigned long current_stub_stack(void);
--extern long run_syscall_stub(struct mm_id * mm_idp,
--			     int syscall, unsigned long *args, long expected,
--			     void **addr, int done);
--extern long syscall_stub_data(struct mm_id * mm_idp,
--			      unsigned long *data, int data_count,
--			      void **addr, void **stub_addr);
+--- linux-2.6.15-mm.orig/arch/um/include/user_util.h	2006-01-06 21:24:14.000000000 -0500
++++ linux-2.6.15-mm/arch/um/include/user_util.h	2006-01-06 21:24:14.000000000 -0500
+@@ -44,10 +44,6 @@ extern unsigned long brk_start;
+ extern int pty_output_sigio;
+ extern int pty_close_sigio;
+ 
+-extern void stop(void);
+-extern void stack_protections(unsigned long address);
+-extern void task_protections(unsigned long address);
+-extern int wait_for_stop(int pid, int sig, int cont_type, void *relay);
+ extern void *add_signal_handler(int sig, void (*handler)(int));
+ extern int linux_main(int argc, char **argv);
+ extern void set_cmdline(char *cmd);
+@@ -55,8 +51,6 @@ extern void input_cb(void (*proc)(void *
+ extern int get_pty(void);
+ extern void *um_kmalloc(int size);
+ extern int switcheroo(int fd, int prot, void *from, void *to, int size);
+-extern void setup_machinename(char *machine_out);
+-extern void setup_hostinfo(void);
+ extern void do_exec(int old_pid, int new_pid);
+ extern void tracer_panic(char *msg, ...);
+ extern int detach(int pid, int sig);
+@@ -70,18 +64,6 @@ extern int cpu_feature(char *what, char 
+ extern int arch_handle_signal(int sig, union uml_pt_regs *regs);
+ extern int arch_fixup(unsigned long address, void *sc_ptr);
+ extern void arch_init_thread(void);
+-extern int setjmp_wrapper(void (*proc)(void *, void *), ...);
+ extern int raw(int fd);
  
  #endif
-Index: linux-2.6.15-mm/arch/um/kernel/skas/Makefile
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/Makefile
 ===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/skas/Makefile	2006-01-09 10:27:19.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/kernel/skas/Makefile	2006-01-09 11:30:10.000000000 -0500
-@@ -1,9 +1,9 @@
--# 
-+#
- # Copyright (C) 2002 - 2004 Jeff Dike (jdike@addtoit.com)
- # Licensed under the GPL
- #
+--- linux-2.6.15-mm.orig/arch/um/kernel/Makefile	2006-01-06 21:24:14.000000000 -0500
++++ linux-2.6.15-mm/arch/um/kernel/Makefile	2006-01-06 21:46:20.000000000 -0500
+@@ -10,8 +10,7 @@ obj-y = config.o exec_kern.o exitcode.o 
+ 	init_task.o irq.o irq_user.o ksyms.o mem.o physmem.o \
+ 	process_kern.o ptrace.o reboot.o resource.o sigio_user.o sigio_kern.o \
+ 	signal_kern.o smp.o syscall_kern.o sysrq.o time.o \
+-	time_kern.o tlb.o trap_kern.o uaccess.o um_arch.o umid.o \
+-	user_util.o
++	time_kern.o tlb.o trap_kern.o uaccess.o um_arch.o umid.o
  
--obj-y := clone.o exec_kern.o mem.o mem_user.o mmu.o process.o process_kern.o \
-+obj-y := clone.o exec_kern.o mem.o mmu.o process.o process_kern.o \
- 	syscall.o tlb.o uaccess.o
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+@@ -24,7 +23,7 @@ obj-$(CONFIG_MODE_SKAS) += skas/
  
- USER_OBJS := process.o clone.o
-Index: linux-2.6.15-mm/arch/um/kernel/skas/mem_user.c
+ user-objs-$(CONFIG_TTY_LOG) += tty_log.o
+ 
+-USER_OBJS := $(user-objs-y) config.o time.o tty_log.o user_util.o
++USER_OBJS := $(user-objs-y) config.o time.o tty_log.o
+ 
+ include arch/um/scripts/Makefile.rules
+ 
+Index: linux-2.6.15-mm/arch/um/kernel/skas/uaccess.c
 ===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/skas/mem_user.c	2006-01-09 10:27:19.000000000 -0500
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/uaccess.c	2006-01-06 21:23:35.000000000 -0500
++++ linux-2.6.15-mm/arch/um/kernel/skas/uaccess.c	2006-01-06 21:24:14.000000000 -0500
+@@ -13,7 +13,7 @@
+ #include "asm/pgtable.h"
+ #include "asm/uaccess.h"
+ #include "kern_util.h"
+-#include "user_util.h"
++#include "os.h"
+ 
+ extern void *um_virt_to_phys(struct task_struct *task, unsigned long addr,
+ 			     pte_t *pte_out);
+Index: linux-2.6.15-mm/arch/um/kernel/tt/gdb.c
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/tt/gdb.c	2006-01-06 21:23:35.000000000 -0500
++++ linux-2.6.15-mm/arch/um/kernel/tt/gdb.c	2006-01-06 21:24:14.000000000 -0500
+@@ -20,6 +20,7 @@
+ #include "user_util.h"
+ #include "tt.h"
+ #include "sysdep/thread.h"
++#include "os.h"
+ 
+ extern int debugger_pid;
+ extern int debugger_fd;
+Index: linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/ptrace.c
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/tt/ptproxy/ptrace.c	2006-01-06 21:23:35.000000000 -0500
++++ linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/ptrace.c	2006-01-06 21:24:14.000000000 -0500
+@@ -20,6 +20,7 @@ Jeff Dike (jdike@karaya.com) : Modified 
+ #include "kern_util.h"
+ #include "ptrace_user.h"
+ #include "tt.h"
++#include "os.h"
+ 
+ long proxy_ptrace(struct debugger *debugger, int arg1, pid_t arg2,
+ 		  long arg3, long arg4, pid_t child, int *ret)
+Index: linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/sysdep.c
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/tt/ptproxy/sysdep.c	2006-01-06 21:23:35.000000000 -0500
++++ linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/sysdep.c	2006-01-06 21:24:14.000000000 -0500
+@@ -15,6 +15,7 @@ terms and conditions.
+ #include "ptrace_user.h"
+ #include "user_util.h"
+ #include "user.h"
++#include "os.h"
+ 
+ int get_syscall(pid_t pid, long *arg1, long *arg2, long *arg3, long *arg4, 
+ 		long *arg5)
+Index: linux-2.6.15-mm/arch/um/kernel/user_util.c
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/user_util.c	2006-01-06 21:23:35.000000000 -0500
 +++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,281 +0,0 @@
+@@ -1,174 +0,0 @@
 -/* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
 - * Licensed under the GPL
 - */
 -
--#include <signal.h>
--#include <errno.h>
--#include <string.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <limits.h>
+-#include <setjmp.h>
 -#include <sys/mman.h>
--#include <sys/wait.h>
--#include <asm/page.h>
--#include <asm/unistd.h>
--#include "mem_user.h"
--#include "mem.h"
--#include "skas.h"
--#include "user.h"
--#include "os.h"
--#include "proc_mm.h"
--#include "ptrace_user.h"
+-#include <sys/stat.h>
+-#include <sys/utsname.h>
+-#include <sys/param.h>
+-#include <sys/time.h>
+-#include "asm/types.h"
+-#include <ctype.h>
+-#include <signal.h>
+-#include <wait.h>
+-#include <errno.h>
+-#include <stdarg.h>
+-#include <sched.h>
+-#include <termios.h>
+-#include <string.h>
 -#include "user_util.h"
 -#include "kern_util.h"
--#include "task.h"
--#include "registers.h"
+-#include "user.h"
+-#include "mem_user.h"
+-#include "init.h"
+-#include "ptrace_user.h"
 -#include "uml-config.h"
--#include "sysdep/ptrace.h"
--#include "sysdep/stub.h"
 -
--extern unsigned long batch_syscall_stub, __syscall_stub_start;
--
--extern void wait_stub_done(int pid, int sig, char * fname);
--
--static inline unsigned long *check_init_stack(struct mm_id * mm_idp,
--					      unsigned long *stack)
+-void stop(void)
 -{
--	if(stack == NULL){
--		stack = (unsigned long *) mm_idp->stack + 2;
--		*stack = 0;
--	}
--	return stack;
+-	while(1) sleep(1000000);
 -}
 -
--extern int proc_mm;
--
--int single_count = 0;
--int multi_count = 0;
--int multi_op_count = 0;
--
--static long do_syscall_stub(struct mm_id *mm_idp, void **addr)
+-void stack_protections(unsigned long address)
 -{
--	unsigned long regs[MAX_REG_NR];
--	unsigned long *data;
--	unsigned long *syscall;
--	long ret, offset;
--        int n, pid = mm_idp->u.pid;
+-	int prot = PROT_READ | PROT_WRITE | PROT_EXEC;
 -
--	if(proc_mm)
--#warning Need to look up userspace_pid by cpu
--		pid = userspace_pid[0];
+-        if(mprotect((void *) address, page_size(), prot) < 0)
+-		panic("protecting stack failed, errno = %d", errno);
+-}
 -
--	multi_count++;
+-void task_protections(unsigned long address)
+-{
+-	unsigned long guard = address + page_size();
+-	unsigned long stack = guard + page_size();
+-	int prot = 0, pages;
 -
--        get_safe_registers(regs);
--        regs[REGS_IP_INDEX] = UML_CONFIG_STUB_CODE +
--		((unsigned long) &batch_syscall_stub -
--                 (unsigned long) &__syscall_stub_start);
--	n = ptrace_setregs(pid, regs);
--	if(n < 0)
--		panic("do_syscall_stub : PTRACE_SETREGS failed, errno = %d\n",
--		      n);
+-#ifdef notdef
+-	if(mprotect((void *) stack, page_size(), prot) < 0)
+-		panic("protecting guard page failed, errno = %d", errno);
+-#endif
+-	pages = (1 << UML_CONFIG_KERNEL_STACK_ORDER) - 2;
+-	prot = PROT_READ | PROT_WRITE | PROT_EXEC;
+-	if(mprotect((void *) stack, pages * page_size(), prot) < 0)
+-		panic("protecting stack failed, errno = %d", errno);
+-}
 -
--	wait_stub_done(pid, 0, "do_syscall_stub");
+-int wait_for_stop(int pid, int sig, int cont_type, void *relay)
+-{
+-	sigset_t *relay_signals = relay;
+-	int status, ret;
 -
--	/* When the stub stops, we find the following values on the
--	 * beginning of the stack:
--	 * (long )return_value
--	 * (long )offset to failed sycall-data (0, if no error)
--	 */
--	ret = *((unsigned long *) mm_idp->stack);
--	offset = *((unsigned long *) mm_idp->stack + 1);
--	if (offset) {
--		data = (unsigned long *)(mm_idp->stack +
--					 offset - UML_CONFIG_STUB_DATA);
--		syscall = (unsigned long *)((unsigned long)data + data[0]);
--		printk("do_syscall_stub: syscall %ld failed, return value = "
--		       "0x%lx, expected return value = 0x%lx\n",
--		       syscall[0], ret, syscall[7]);
--		printk("    syscall parameters: "
--		       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
--		       syscall[1], syscall[2], syscall[3],
--		       syscall[4], syscall[5], syscall[6]);
--		for(n = 1; n < data[0]/sizeof(long); n++) {
--			if(n == 1)
--				printk("    additional syscall data:");
--			if(n % 4 == 1)
--				printk("\n      ");
--			printk("  0x%lx", data[n]);
+-	while(1){
+-		CATCH_EINTR(ret = waitpid(pid, &status, WUNTRACED));
+-		if((ret < 0) ||
+-		   !WIFSTOPPED(status) || (WSTOPSIG(status) != sig)){
+-			if(ret < 0){
+-				printk("wait failed, errno = %d\n",
+-				       errno);
+-			}
+-			else if(WIFEXITED(status)) 
+-				printk("process %d exited with status %d\n",
+-				       pid, WEXITSTATUS(status));
+-			else if(WIFSIGNALED(status))
+-				printk("process %d exited with signal %d\n",
+-				       pid, WTERMSIG(status));
+-			else if((WSTOPSIG(status) == SIGVTALRM) ||
+-				(WSTOPSIG(status) == SIGALRM) ||
+-				(WSTOPSIG(status) == SIGIO) ||
+-				(WSTOPSIG(status) == SIGPROF) ||
+-				(WSTOPSIG(status) == SIGCHLD) ||
+-				(WSTOPSIG(status) == SIGWINCH) ||
+-				(WSTOPSIG(status) == SIGINT)){
+-				ptrace(cont_type, pid, 0, WSTOPSIG(status));
+-				continue;
+-			}
+-			else if((relay_signals != NULL) &&
+-				sigismember(relay_signals, WSTOPSIG(status))){
+-				ptrace(cont_type, pid, 0, WSTOPSIG(status));
+-				continue;
+-			}
+-			else printk("process %d stopped with signal %d\n",
+-				    pid, WSTOPSIG(status));
+-			panic("wait_for_stop failed to wait for %d to stop "
+-			      "with %d\n", pid, sig);
 -		}
--		if(n > 1)
--			printk("\n");
+-		return(status);
 -	}
--	else ret = 0;
--
--	*addr = check_init_stack(mm_idp, NULL);
--
--	return ret;
 -}
 -
--long run_syscall_stub(struct mm_id * mm_idp, int syscall,
--		      unsigned long *args, long expected, void **addr,
-- 		      int done)
+-int raw(int fd)
 -{
-- 	unsigned long *stack = check_init_stack(mm_idp, *addr);
+-	struct termios tt;
+-	int err;
 -
--	if(done && *addr == NULL)
--		single_count++;
+-	CATCH_EINTR(err = tcgetattr(fd, &tt));
+-	if(err < 0)
+-		return -errno;
 -
-- 	*stack += sizeof(long);
--	stack += *stack / sizeof(long);
+-	cfmakeraw(&tt);
 -
--        *stack++ = syscall;
--        *stack++ = args[0];
--        *stack++ = args[1];
--        *stack++ = args[2];
--        *stack++ = args[3];
--        *stack++ = args[4];
--        *stack++ = args[5];
--	*stack++ = expected;
--        *stack = 0;
--        multi_op_count++;
+- 	CATCH_EINTR(err = tcsetattr(fd, TCSADRAIN, &tt));
+-	if(err < 0)
+-		return -errno;
 -
--        if(!done && ((((unsigned long) stack) & ~PAGE_MASK) <
--		     PAGE_SIZE - 10 * sizeof(long))){
--		*addr = stack;
--                return 0;
--        }
--
--	return do_syscall_stub(mm_idp, addr);
+-	/* XXX tcsetattr could have applied only some changes
+-	 * (and cfmakeraw() is a set of changes) */
+-	return(0);
 -}
 -
--long syscall_stub_data(struct mm_id * mm_idp,
--		       unsigned long *data, int data_count,
--		       void **addr, void **stub_addr)
+-void setup_machinename(char *machine_out)
 -{
--	unsigned long *stack;
--	int ret = 0;
+-	struct utsname host;
 -
--	/* If *addr still is uninitialized, it *must* contain NULL.
--	 * Thus in this case do_syscall_stub correctly won't be called.
--	 */
--	if((((unsigned long) *addr) & ~PAGE_MASK) >=
--	   PAGE_SIZE - (10 + data_count) * sizeof(long)) {
--		ret = do_syscall_stub(mm_idp, addr);
-- 		/* in case of error, don't overwrite data on stack */
--		if(ret)
--			return ret;
+-	uname(&host);
+-#if defined(UML_CONFIG_UML_X86) && !defined(UML_CONFIG_64BIT)
+-	if (!strcmp(host.machine, "x86_64")) {
+-		strcpy(machine_out, "i686");
+-		return;
 -	}
--
--	stack = check_init_stack(mm_idp, *addr);
--	*addr = stack;
--
--	*stack = data_count * sizeof(long);
--
--	memcpy(stack + 1, data, data_count * sizeof(long));
--
--	*stub_addr = (void *)(((unsigned long)(stack + 1) & ~PAGE_MASK) +
--			      UML_CONFIG_STUB_DATA);
--
--	return 0;
+-#endif
+-	strcpy(machine_out, host.machine);
 -}
 -
--int map(struct mm_id * mm_idp, unsigned long virt, unsigned long len,
--	int r, int w, int x, int phys_fd, unsigned long long offset,
--	int done, void **data)
+-char host_info[(_UTSNAME_LENGTH + 1) * 4 + _UTSNAME_NODENAME_LENGTH + 1];
+-
+-void setup_hostinfo(void)
 -{
--        int prot, ret;
+-	struct utsname host;
 -
--        prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
--                (x ? PROT_EXEC : 0);
--
--        if(proc_mm){
--                struct proc_mm_op map;
--                int fd = mm_idp->u.mm_fd;
--
--                map = ((struct proc_mm_op) { .op	= MM_MMAP,
--                                             .u		=
--                                             { .mmap	=
--                                               { .addr	= virt,
--                                                 .len	= len,
--                                                 .prot	= prot,
--                                                 .flags	= MAP_SHARED |
--                                                 MAP_FIXED,
--                                                 .fd	= phys_fd,
--                                                 .offset= offset
--                                               } } } );
--		ret = os_write_file(fd, &map, sizeof(map));
--		if(ret != sizeof(map))
--			printk("map : /proc/mm map failed, err = %d\n", -ret);
--		else ret = 0;
--        }
--        else {
--                unsigned long args[] = { virt, len, prot,
--                                         MAP_SHARED | MAP_FIXED, phys_fd,
--                                         MMAP_OFFSET(offset) };
--
--		ret = run_syscall_stub(mm_idp, STUB_MMAP_NR, args, virt,
--				       data, done);
--        }
--
--	return ret;
+-	uname(&host);
+-	sprintf(host_info, "%s %s %s %s %s", host.sysname, host.nodename,
+-		host.release, host.version, host.machine);
 -}
 -
--int unmap(struct mm_id * mm_idp, void *addr, unsigned long len, int done,
--	  void **data)
+-int setjmp_wrapper(void (*proc)(void *, void *), ...)
 -{
--        int ret;
+-        va_list args;
+-	sigjmp_buf buf;
+-	int n;
 -
--        if(proc_mm){
--                struct proc_mm_op unmap;
--                int fd = mm_idp->u.mm_fd;
--
--                unmap = ((struct proc_mm_op) { .op	= MM_MUNMAP,
--                                               .u	=
--                                               { .munmap	=
--                                                 { .addr	=
--                                                   (unsigned long) addr,
--                                                   .len		= len } } } );
--		ret = os_write_file(fd, &unmap, sizeof(unmap));
--		if(ret != sizeof(unmap))
--			printk("unmap - proc_mm write returned %d\n", ret);
--		else ret = 0;
--        }
--        else {
--                unsigned long args[] = { (unsigned long) addr, len, 0, 0, 0,
--                                         0 };
--
--		ret = run_syscall_stub(mm_idp, __NR_munmap, args, 0,
--				       data, done);
--                if(ret < 0)
--                        printk("munmap stub failed, errno = %d\n", ret);
--        }
--
--        return ret;
+-	n = sigsetjmp(buf, 1);
+-	if(n == 0){
+-		va_start(args, proc);
+-		(*proc)(&buf, &args);
+-	}
+-	va_end(args);
+-	return(n);
 -}
 -
--int protect(struct mm_id * mm_idp, unsigned long addr, unsigned long len,
--	    int r, int w, int x, int done, void **data)
--{
--        struct proc_mm_op protect;
--        int prot, ret;
--
--        prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
--                (x ? PROT_EXEC : 0);
--
--        if(proc_mm){
--                int fd = mm_idp->u.mm_fd;
--                protect = ((struct proc_mm_op) { .op	= MM_MPROTECT,
--                                                 .u	=
--                                                 { .mprotect	=
--                                                   { .addr	=
--                                                     (unsigned long) addr,
--                                                     .len	= len,
--                                                     .prot	= prot } } } );
--
--                ret = os_write_file(fd, &protect, sizeof(protect));
--                if(ret != sizeof(protect))
--                        printk("protect failed, err = %d", -ret);
--                else ret = 0;
--        }
--        else {
--                unsigned long args[] = { addr, len, prot, 0, 0, 0 };
--
--                ret = run_syscall_stub(mm_idp, __NR_mprotect, args, 0,
--                                       data, done);
--        }
--
--        return ret;
--}
--
--void before_mem_skas(unsigned long unused)
--{
--}
-Index: linux-2.6.15-mm/arch/um/os-Linux/skas/Makefile
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/os-Linux/Makefile
 ===================================================================
---- linux-2.6.15-mm.orig/arch/um/os-Linux/skas/Makefile	2006-01-09 10:27:19.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/os-Linux/skas/Makefile	2006-01-09 11:30:10.000000000 -0500
-@@ -3,8 +3,8 @@
- # Licensed under the GPL
- #
+--- linux-2.6.15-mm.orig/arch/um/os-Linux/Makefile	2006-01-06 21:24:14.000000000 -0500
++++ linux-2.6.15-mm/arch/um/os-Linux/Makefile	2006-01-06 21:24:14.000000000 -0500
+@@ -5,12 +5,12 @@
  
--obj-y := trap.o
-+obj-y := mem.o trap.o
+ obj-y = aio.o elf_aux.o file.o helper.o main.o mem.o process.o signal.o \
+ 	start_up.o time.o trap.o tt.o tty.o uaccess.o umid.o user_syms.o \
+-	drivers/ sys-$(SUBARCH)/
++	util.o drivers/ sys-$(SUBARCH)/
  
--USER_OBJS := trap.o
-+USER_OBJS := mem.o trap.o
+ obj-$(CONFIG_MODE_SKAS) += skas/
  
- include arch/um/scripts/Makefile.rules
-Index: linux-2.6.15-mm/arch/um/os-Linux/skas/mem.c
+ USER_OBJS := aio.o elf_aux.o file.o helper.o main.o mem.o process.o signal.o \
+-	start_up.o time.o trap.o tt.o tty.o uaccess.o umid.o
++	start_up.o time.o trap.o tt.o tty.o uaccess.o umid.o util.o
+ 
+ elf_aux.o: $(ARCH_DIR)/kernel-offsets.h
+ CFLAGS_elf_aux.o += -I$(objtree)/arch/um
+Index: linux-2.6.15-mm/arch/um/os-Linux/tt.c
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/os-Linux/tt.c	2006-01-06 21:24:14.000000000 -0500
++++ linux-2.6.15-mm/arch/um/os-Linux/tt.c	2006-01-06 21:46:20.000000000 -0500
+@@ -63,6 +63,54 @@ void kill_child_dead(int pid)
+ 	} while(1);
+ }
+ 
++void stop(void)
++{
++	while(1) sleep(1000000);
++}
++
++int wait_for_stop(int pid, int sig, int cont_type, void *relay)
++{
++	sigset_t *relay_signals = relay;
++	int status, ret;
++
++	while(1){
++		CATCH_EINTR(ret = waitpid(pid, &status, WUNTRACED));
++		if((ret < 0) ||
++		   !WIFSTOPPED(status) || (WSTOPSIG(status) != sig)){
++			if(ret < 0){
++				printk("wait failed, errno = %d\n",
++				       errno);
++			}
++			else if(WIFEXITED(status))
++				printk("process %d exited with status %d\n",
++				       pid, WEXITSTATUS(status));
++			else if(WIFSIGNALED(status))
++				printk("process %d exited with signal %d\n",
++				       pid, WTERMSIG(status));
++			else if((WSTOPSIG(status) == SIGVTALRM) ||
++				(WSTOPSIG(status) == SIGALRM) ||
++				(WSTOPSIG(status) == SIGIO) ||
++				(WSTOPSIG(status) == SIGPROF) ||
++				(WSTOPSIG(status) == SIGCHLD) ||
++				(WSTOPSIG(status) == SIGWINCH) ||
++				(WSTOPSIG(status) == SIGINT)){
++				ptrace(cont_type, pid, 0, WSTOPSIG(status));
++				continue;
++			}
++			else if((relay_signals != NULL) &&
++				sigismember(relay_signals, WSTOPSIG(status))){
++				ptrace(cont_type, pid, 0, WSTOPSIG(status));
++				continue;
++			}
++			else printk("process %d stopped with signal %d\n",
++				    pid, WSTOPSIG(status));
++			panic("wait_for_stop failed to wait for %d to stop "
++			      "with %d\n", pid, sig);
++		}
++		return(status);
++	}
++}
++
+ /*
+  *-------------------------
+  * only for tt mode (will be deleted in future...)
+Index: linux-2.6.15-mm/arch/um/os-Linux/util.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15-mm/arch/um/os-Linux/skas/mem.c	2006-01-09 11:34:17.000000000 -0500
-@@ -0,0 +1,283 @@
++++ linux-2.6.15-mm/arch/um/os-Linux/util.c	2006-01-06 21:46:42.000000000 -0500
+@@ -0,0 +1,116 @@
 +/*
-+ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
 + * Licensed under the GPL
 + */
 +
-+#include <signal.h>
-+#include <errno.h>
-+#include <string.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <limits.h>
++#include <setjmp.h>
 +#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <asm/page.h>
-+#include <asm/unistd.h>
-+#include "mem_user.h"
-+#include "mem.h"
-+#include "skas.h"
-+#include "user.h"
-+#include "os.h"
-+#include "proc_mm.h"
-+#include "ptrace_user.h"
++#include <sys/stat.h>
++#include <sys/utsname.h>
++#include <sys/param.h>
++#include <sys/time.h>
++#include "asm/types.h"
++#include <ctype.h>
++#include <signal.h>
++#include <wait.h>
++#include <errno.h>
++#include <stdarg.h>
++#include <sched.h>
++#include <termios.h>
++#include <string.h>
 +#include "user_util.h"
 +#include "kern_util.h"
-+#include "task.h"
-+#include "registers.h"
++#include "user.h"
++#include "mem_user.h"
++#include "init.h"
++#include "ptrace_user.h"
 +#include "uml-config.h"
-+#include "sysdep/ptrace.h"
-+#include "sysdep/stub.h"
++#include "os.h"
 +
-+extern unsigned long batch_syscall_stub, __syscall_stub_start;
-+
-+extern void wait_stub_done(int pid, int sig, char * fname);
-+
-+static inline unsigned long *check_init_stack(struct mm_id * mm_idp,
-+					      unsigned long *stack)
++void stack_protections(unsigned long address)
 +{
-+	if(stack == NULL) {
-+		stack = (unsigned long *) mm_idp->stack + 2;
-+		*stack = 0;
-+	}
-+	return stack;
++	int prot = PROT_READ | PROT_WRITE | PROT_EXEC;
++
++	if(mprotect((void *) address, page_size(), prot) < 0)
++		panic("protecting stack failed, errno = %d", errno);
 +}
 +
-+extern int proc_mm;
-+
-+int single_count = 0;
-+int multi_count = 0;
-+int multi_op_count = 0;
-+
-+static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
++void task_protections(unsigned long address)
 +{
-+	unsigned long regs[MAX_REG_NR];
++	unsigned long guard = address + page_size();
++	unsigned long stack = guard + page_size();
++	int prot = 0, pages;
++
++#ifdef notdef
++	if(mprotect((void *) stack, page_size(), prot) < 0)
++		panic("protecting guard page failed, errno = %d", errno);
++#endif
++	pages = (1 << UML_CONFIG_KERNEL_STACK_ORDER) - 2;
++	prot = PROT_READ | PROT_WRITE | PROT_EXEC;
++	if(mprotect((void *) stack, pages * page_size(), prot) < 0)
++		panic("protecting stack failed, errno = %d", errno);
++}
++
++int raw(int fd)
++{
++	struct termios tt;
++	int err;
++
++	CATCH_EINTR(err = tcgetattr(fd, &tt));
++	if(err < 0)
++		return -errno;
++
++	cfmakeraw(&tt);
++
++	CATCH_EINTR(err = tcsetattr(fd, TCSADRAIN, &tt));
++	if(err < 0)
++		return -errno;
++
++	/* XXX tcsetattr could have applied only some changes
++	 * (and cfmakeraw() is a set of changes) */
++	return(0);
++}
++
++void setup_machinename(char *machine_out)
++{
++	struct utsname host;
++
++	uname(&host);
++#if defined(UML_CONFIG_UML_X86) && !defined(UML_CONFIG_64BIT)
++	if (!strcmp(host.machine, "x86_64")) {
++		strcpy(machine_out, "i686");
++		return;
++	}
++#endif
++	strcpy(machine_out, host.machine);
++}
++
++char host_info[(_UTSNAME_LENGTH + 1) * 4 + _UTSNAME_NODENAME_LENGTH + 1];
++
++void setup_hostinfo(void)
++{
++	struct utsname host;
++
++	uname(&host);
++	sprintf(host_info, "%s %s %s %s %s", host.sysname, host.nodename,
++		host.release, host.version, host.machine);
++}
++
++int setjmp_wrapper(void (*proc)(void *, void *), ...)
++{
++	va_list args;
++	sigjmp_buf buf;
 +	int n;
-+	long ret, offset;
-+	unsigned long * data;
-+	unsigned long * syscall;
-+	int pid = mm_idp->u.pid;
 +
-+	if(proc_mm)
-+#warning Need to look up userspace_pid by cpu
-+		pid = userspace_pid[0];
-+
-+	multi_count++;
-+
-+	get_safe_registers(regs);
-+	regs[REGS_IP_INDEX] = UML_CONFIG_STUB_CODE +
-+		((unsigned long) &batch_syscall_stub -
-+		 (unsigned long) &__syscall_stub_start);
-+
-+	n = ptrace_setregs(pid, regs);
-+	if(n < 0)
-+		panic("do_syscall_stub : PTRACE_SETREGS failed, errno = %d\n",
-+		      n);
-+
-+	wait_stub_done(pid, 0, "do_syscall_stub");
-+
-+	/* When the stub stops, we find the following values on the
-+	 * beginning of the stack:
-+	 * (long )return_value
-+	 * (long )offset to failed sycall-data (0, if no error)
-+	 */
-+	ret = *((unsigned long *) mm_idp->stack);
-+	offset = *((unsigned long *) mm_idp->stack + 1);
-+	if (offset) {
-+		data = (unsigned long *)(mm_idp->stack +
-+					 offset - UML_CONFIG_STUB_DATA);
-+		printk("do_syscall_stub : ret = %d, offset = %d, "
-+		       "data = 0x%x\n", ret, offset, data);
-+		syscall = (unsigned long *)((unsigned long)data + data[0]);
-+		printk("do_syscall_stub: syscall %ld failed, return value = "
-+		       "0x%lx, expected return value = 0x%lx\n",
-+		       syscall[0], ret, syscall[7]);
-+		printk("    syscall parameters: "
-+		       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
-+		       syscall[1], syscall[2], syscall[3],
-+		       syscall[4], syscall[5], syscall[6]);
-+		for(n = 1; n < data[0]/sizeof(long); n++) {
-+			if(n == 1)
-+				printk("    additional syscall data:");
-+			if(n % 4 == 1)
-+				printk("\n      ");
-+			printk("  0x%lx", data[n]);
-+		}
-+		if(n > 1)
-+			printk("\n");
++	n = sigsetjmp(buf, 1);
++	if(n == 0){
++		va_start(args, proc);
++		(*proc)(&buf, &args);
 +	}
-+	else ret = 0;
-+
-+	*addr = check_init_stack(mm_idp, NULL);
-+
-+	return ret;
-+}
-+
-+long run_syscall_stub(struct mm_id * mm_idp, int syscall,
-+		      unsigned long *args, long expected, void **addr,
-+		      int done)
-+{
-+	unsigned long *stack = check_init_stack(mm_idp, *addr);
-+
-+	if(done && *addr == NULL)
-+		single_count++;
-+
-+	*stack += sizeof(long);
-+	stack += *stack / sizeof(long);
-+
-+	*stack++ = syscall;
-+	*stack++ = args[0];
-+	*stack++ = args[1];
-+	*stack++ = args[2];
-+	*stack++ = args[3];
-+	*stack++ = args[4];
-+	*stack++ = args[5];
-+	*stack++ = expected;
-+	*stack = 0;
-+	multi_op_count++;
-+
-+	if(!done && ((((unsigned long) stack) & ~PAGE_MASK) <
-+		     PAGE_SIZE - 10 * sizeof(long))){
-+		*addr = stack;
-+		return 0;
-+	}
-+
-+	return do_syscall_stub(mm_idp, addr);
-+}
-+
-+long syscall_stub_data(struct mm_id * mm_idp,
-+		       unsigned long *data, int data_count,
-+		       void **addr, void **stub_addr)
-+{
-+	unsigned long *stack;
-+	int ret = 0;
-+
-+	/* If *addr still is uninitialized, it *must* contain NULL.
-+	 * Thus in this case do_syscall_stub correctly won't be called.
-+	 */
-+	if((((unsigned long) *addr) & ~PAGE_MASK) >=
-+	   PAGE_SIZE - (10 + data_count) * sizeof(long)) {
-+		ret = do_syscall_stub(mm_idp, addr);
-+		/* in case of error, don't overwrite data on stack */
-+		if(ret)
-+			return ret;
-+	}
-+
-+	stack = check_init_stack(mm_idp, *addr);
-+	*addr = stack;
-+
-+	*stack = data_count * sizeof(long);
-+
-+	memcpy(stack + 1, data, data_count * sizeof(long));
-+
-+	*stub_addr = (void *)(((unsigned long)(stack + 1) & ~PAGE_MASK) +
-+			      UML_CONFIG_STUB_DATA);
-+
-+	return 0;
-+}
-+
-+int map(struct mm_id * mm_idp, unsigned long virt, unsigned long len,
-+	int r, int w, int x, int phys_fd, unsigned long long offset,
-+	int done, void **data)
-+{
-+	int prot, ret;
-+
-+	prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
-+		(x ? PROT_EXEC : 0);
-+
-+	if(proc_mm){
-+		struct proc_mm_op map;
-+		int fd = mm_idp->u.mm_fd;
-+
-+		map = ((struct proc_mm_op) { .op	= MM_MMAP,
-+				       .u		=
-+				       { .mmap	=
-+					 { .addr	= virt,
-+					   .len	= len,
-+					   .prot	= prot,
-+					   .flags	= MAP_SHARED |
-+					   MAP_FIXED,
-+					   .fd	= phys_fd,
-+					   .offset= offset
-+					 } } } );
-+		ret = os_write_file(fd, &map, sizeof(map));
-+		if(ret != sizeof(map))
-+			printk("map : /proc/mm map failed, err = %d\n", -ret);
-+		else ret = 0;
-+	}
-+	else {
-+		unsigned long args[] = { virt, len, prot,
-+					 MAP_SHARED | MAP_FIXED, phys_fd,
-+					 MMAP_OFFSET(offset) };
-+
-+		ret = run_syscall_stub(mm_idp, STUB_MMAP_NR, args, virt,
-+				       data, done);
-+	}
-+
-+	return ret;
-+}
-+
-+int unmap(struct mm_id * mm_idp, void *addr, unsigned long len, int done,
-+	  void **data)
-+{
-+	int ret;
-+
-+	if(proc_mm){
-+		struct proc_mm_op unmap;
-+		int fd = mm_idp->u.mm_fd;
-+
-+		unmap = ((struct proc_mm_op) { .op	= MM_MUNMAP,
-+					 .u	=
-+					 { .munmap	=
-+					   { .addr	=
-+					     (unsigned long) addr,
-+					     .len		= len } } } );
-+		ret = os_write_file(fd, &unmap, sizeof(unmap));
-+		if(ret != sizeof(unmap))
-+			printk("unmap - proc_mm write returned %d\n", ret);
-+		else ret = 0;
-+	}
-+	else {
-+		unsigned long args[] = { (unsigned long) addr, len, 0, 0, 0,
-+					 0 };
-+
-+		ret = run_syscall_stub(mm_idp, __NR_munmap, args, 0,
-+				       data, done);
-+	}
-+
-+	return ret;
-+}
-+
-+int protect(struct mm_id * mm_idp, unsigned long addr, unsigned long len,
-+	    int r, int w, int x, int done, void **data)
-+{
-+	struct proc_mm_op protect;
-+	int prot, ret;
-+
-+	prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
-+		(x ? PROT_EXEC : 0);
-+	if(proc_mm){
-+		int fd = mm_idp->u.mm_fd;
-+
-+		protect = ((struct proc_mm_op) { .op	= MM_MPROTECT,
-+					   .u	=
-+					   { .mprotect	=
-+					     { .addr	=
-+					       (unsigned long) addr,
-+					       .len	= len,
-+					       .prot	= prot } } } );
-+
-+		ret = os_write_file(fd, &protect, sizeof(protect));
-+		if(ret != sizeof(protect))
-+			printk("protect failed, err = %d", -ret);
-+		else ret = 0;
-+	}
-+	else {
-+		unsigned long args[] = { addr, len, prot, 0, 0, 0 };
-+
-+		ret = run_syscall_stub(mm_idp, __NR_mprotect, args, 0,
-+				       data, done);
-+	}
-+
-+	return ret;
-+}
-+
-+void before_mem_skas(unsigned long unused)
-+{
++	va_end(args);
++	return(n);
 +}
 
 
