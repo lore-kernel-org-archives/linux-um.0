@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyEo9-0005Xn-L3 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Jan 2006 12:49:01 -0800
+	id 1EyEoj-0005Yq-Bi for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 15 Jan 2006 12:49:37 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EyEo6-0005Tq-Ho
+	(Exim 4.44) id 1EyEoh-0001zU-L4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Jan 2006 12:49:01 -0800
-Message-Id: <200601152139.k0FLdapx027710@ccure.user-mode-linux.org>
+	Sun, 15 Jan 2006 12:49:37 -0800
+Message-Id: <200601152139.k0FLdgug027726@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/11] UML - Move libc-dependent utility procedures
+Subject: [uml-devel] [PATCH 5/11] UML - Move headers to arch/um/include
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,7 +25,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 15 Jan 2006 16:39:36 -0500
+Date: Sun, 15 Jan 2006 16:39:42 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 
@@ -33,542 +33,1034 @@ From: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 
 The serial UML OS-abstraction layer patch (um/kernel dir).
 
-This moves all systemcalls from user_util.c file under os-Linux dir
+This moves skas headers to arch/um/include.
 
 Signed-off-by: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.15-mm/arch/um/drivers/fd.c
+Index: linux-2.6.15-mm/arch/um/Makefile
 ===================================================================
---- linux-2.6.15-mm.orig/arch/um/drivers/fd.c	2006-01-06 21:23:35.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/drivers/fd.c	2006-01-06 21:24:14.000000000 -0500
-@@ -11,6 +11,7 @@
- #include "user.h"
- #include "user_util.h"
- #include "chan_user.h"
-+#include "os.h"
+--- linux-2.6.15-mm.orig/arch/um/Makefile	2006-01-09 10:27:20.000000000 -0500
++++ linux-2.6.15-mm/arch/um/Makefile	2006-01-09 11:26:24.000000000 -0500
+@@ -32,7 +32,7 @@ um-modes-$(CONFIG_MODE_TT) += tt
+ um-modes-$(CONFIG_MODE_SKAS) += skas
  
- struct fd_chan {
- 	int fd;
-Index: linux-2.6.15-mm/arch/um/include/os.h
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/include/os.h	2006-01-06 21:24:14.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/include/os.h	2006-01-06 21:46:20.000000000 -0500
-@@ -195,6 +195,8 @@ extern unsigned long long os_usecs(void)
- /* tt.c
-  * for tt mode only (will be deleted in future...)
-  */
-+extern void stop(void);
-+extern int wait_for_stop(int pid, int sig, int cont_type, void *relay);
- extern int protect_memory(unsigned long addr, unsigned long len,
- 			  int r, int w, int x, int must_succeed);
- extern void forward_pending_sigio(int target);
-@@ -235,4 +237,12 @@ extern int set_signals(int enable);
- extern void os_fill_handlinfo(struct kern_handlers h);
- extern void do_longjmp(void *p, int val);
+ MODE_INCLUDE	+= $(foreach mode,$(um-modes-y),\
+-		   -I$(srctree)/$(ARCH_DIR)/kernel/$(mode)/include)
++		   -I$(srctree)/$(ARCH_DIR)/include/$(mode))
  
-+/* util.c */
-+extern void stack_protections(unsigned long address);
-+extern void task_protections(unsigned long address);
-+extern int raw(int fd);
-+extern void setup_machinename(char *machine_out);
-+extern void setup_hostinfo(void);
-+extern int setjmp_wrapper(void (*proc)(void *, void *), ...);
-+
- #endif
-Index: linux-2.6.15-mm/arch/um/include/user_util.h
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/include/user_util.h	2006-01-06 21:24:14.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/include/user_util.h	2006-01-06 21:24:14.000000000 -0500
-@@ -44,10 +44,6 @@ extern unsigned long brk_start;
- extern int pty_output_sigio;
- extern int pty_close_sigio;
- 
--extern void stop(void);
--extern void stack_protections(unsigned long address);
--extern void task_protections(unsigned long address);
--extern int wait_for_stop(int pid, int sig, int cont_type, void *relay);
- extern void *add_signal_handler(int sig, void (*handler)(int));
- extern int linux_main(int argc, char **argv);
- extern void set_cmdline(char *cmd);
-@@ -55,8 +51,6 @@ extern void input_cb(void (*proc)(void *
- extern int get_pty(void);
- extern void *um_kmalloc(int size);
- extern int switcheroo(int fd, int prot, void *from, void *to, int size);
--extern void setup_machinename(char *machine_out);
--extern void setup_hostinfo(void);
- extern void do_exec(int old_pid, int new_pid);
- extern void tracer_panic(char *msg, ...);
- extern int detach(int pid, int sig);
-@@ -70,18 +64,6 @@ extern int cpu_feature(char *what, char 
- extern int arch_handle_signal(int sig, union uml_pt_regs *regs);
- extern int arch_fixup(unsigned long address, void *sc_ptr);
- extern void arch_init_thread(void);
--extern int setjmp_wrapper(void (*proc)(void *, void *), ...);
- extern int raw(int fd);
- 
- #endif
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.15-mm/arch/um/kernel/Makefile
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/Makefile	2006-01-06 21:24:14.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/kernel/Makefile	2006-01-06 21:46:20.000000000 -0500
-@@ -10,8 +10,7 @@ obj-y = config.o exec_kern.o exitcode.o 
- 	init_task.o irq.o irq_user.o ksyms.o mem.o physmem.o \
- 	process_kern.o ptrace.o reboot.o resource.o sigio_user.o sigio_kern.o \
- 	signal_kern.o smp.o syscall_kern.o sysrq.o time.o \
--	time_kern.o tlb.o trap_kern.o uaccess.o um_arch.o umid.o \
--	user_util.o
-+	time_kern.o tlb.o trap_kern.o uaccess.o um_arch.o umid.o
- 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-@@ -24,7 +23,7 @@ obj-$(CONFIG_MODE_SKAS) += skas/
- 
- user-objs-$(CONFIG_TTY_LOG) += tty_log.o
- 
--USER_OBJS := $(user-objs-y) config.o time.o tty_log.o user_util.o
-+USER_OBJS := $(user-objs-y) config.o time.o tty_log.o
- 
- include arch/um/scripts/Makefile.rules
- 
-Index: linux-2.6.15-mm/arch/um/kernel/skas/uaccess.c
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/skas/uaccess.c	2006-01-06 21:23:35.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/kernel/skas/uaccess.c	2006-01-06 21:24:14.000000000 -0500
-@@ -13,7 +13,7 @@
- #include "asm/pgtable.h"
- #include "asm/uaccess.h"
- #include "kern_util.h"
--#include "user_util.h"
-+#include "os.h"
- 
- extern void *um_virt_to_phys(struct task_struct *task, unsigned long addr,
- 			     pte_t *pte_out);
-Index: linux-2.6.15-mm/arch/um/kernel/tt/gdb.c
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/tt/gdb.c	2006-01-06 21:23:35.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/kernel/tt/gdb.c	2006-01-06 21:24:14.000000000 -0500
-@@ -20,6 +20,7 @@
- #include "user_util.h"
- #include "tt.h"
- #include "sysdep/thread.h"
-+#include "os.h"
- 
- extern int debugger_pid;
- extern int debugger_fd;
-Index: linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/ptrace.c
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/tt/ptproxy/ptrace.c	2006-01-06 21:23:35.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/ptrace.c	2006-01-06 21:24:14.000000000 -0500
-@@ -20,6 +20,7 @@ Jeff Dike (jdike@karaya.com) : Modified 
- #include "kern_util.h"
- #include "ptrace_user.h"
- #include "tt.h"
-+#include "os.h"
- 
- long proxy_ptrace(struct debugger *debugger, int arg1, pid_t arg2,
- 		  long arg3, long arg4, pid_t child, int *ret)
-Index: linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/sysdep.c
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/tt/ptproxy/sysdep.c	2006-01-06 21:23:35.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/kernel/tt/ptproxy/sysdep.c	2006-01-06 21:24:14.000000000 -0500
-@@ -15,6 +15,7 @@ terms and conditions.
- #include "ptrace_user.h"
- #include "user_util.h"
- #include "user.h"
-+#include "os.h"
- 
- int get_syscall(pid_t pid, long *arg1, long *arg2, long *arg3, long *arg4, 
- 		long *arg5)
-Index: linux-2.6.15-mm/arch/um/kernel/user_util.c
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/kernel/user_util.c	2006-01-06 21:23:35.000000000 -0500
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,174 +0,0 @@
--/* 
-- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <limits.h>
--#include <setjmp.h>
--#include <sys/mman.h>
--#include <sys/stat.h>
--#include <sys/utsname.h>
--#include <sys/param.h>
--#include <sys/time.h>
--#include "asm/types.h"
--#include <ctype.h>
--#include <signal.h>
--#include <wait.h>
--#include <errno.h>
--#include <stdarg.h>
--#include <sched.h>
--#include <termios.h>
--#include <string.h>
--#include "user_util.h"
--#include "kern_util.h"
--#include "user.h"
--#include "mem_user.h"
--#include "init.h"
--#include "ptrace_user.h"
--#include "uml-config.h"
--
--void stop(void)
--{
--	while(1) sleep(1000000);
--}
--
--void stack_protections(unsigned long address)
--{
--	int prot = PROT_READ | PROT_WRITE | PROT_EXEC;
--
--        if(mprotect((void *) address, page_size(), prot) < 0)
--		panic("protecting stack failed, errno = %d", errno);
--}
--
--void task_protections(unsigned long address)
--{
--	unsigned long guard = address + page_size();
--	unsigned long stack = guard + page_size();
--	int prot = 0, pages;
--
--#ifdef notdef
--	if(mprotect((void *) stack, page_size(), prot) < 0)
--		panic("protecting guard page failed, errno = %d", errno);
--#endif
--	pages = (1 << UML_CONFIG_KERNEL_STACK_ORDER) - 2;
--	prot = PROT_READ | PROT_WRITE | PROT_EXEC;
--	if(mprotect((void *) stack, pages * page_size(), prot) < 0)
--		panic("protecting stack failed, errno = %d", errno);
--}
--
--int wait_for_stop(int pid, int sig, int cont_type, void *relay)
--{
--	sigset_t *relay_signals = relay;
--	int status, ret;
--
--	while(1){
--		CATCH_EINTR(ret = waitpid(pid, &status, WUNTRACED));
--		if((ret < 0) ||
--		   !WIFSTOPPED(status) || (WSTOPSIG(status) != sig)){
--			if(ret < 0){
--				printk("wait failed, errno = %d\n",
--				       errno);
--			}
--			else if(WIFEXITED(status)) 
--				printk("process %d exited with status %d\n",
--				       pid, WEXITSTATUS(status));
--			else if(WIFSIGNALED(status))
--				printk("process %d exited with signal %d\n",
--				       pid, WTERMSIG(status));
--			else if((WSTOPSIG(status) == SIGVTALRM) ||
--				(WSTOPSIG(status) == SIGALRM) ||
--				(WSTOPSIG(status) == SIGIO) ||
--				(WSTOPSIG(status) == SIGPROF) ||
--				(WSTOPSIG(status) == SIGCHLD) ||
--				(WSTOPSIG(status) == SIGWINCH) ||
--				(WSTOPSIG(status) == SIGINT)){
--				ptrace(cont_type, pid, 0, WSTOPSIG(status));
--				continue;
--			}
--			else if((relay_signals != NULL) &&
--				sigismember(relay_signals, WSTOPSIG(status))){
--				ptrace(cont_type, pid, 0, WSTOPSIG(status));
--				continue;
--			}
--			else printk("process %d stopped with signal %d\n",
--				    pid, WSTOPSIG(status));
--			panic("wait_for_stop failed to wait for %d to stop "
--			      "with %d\n", pid, sig);
--		}
--		return(status);
--	}
--}
--
--int raw(int fd)
--{
--	struct termios tt;
--	int err;
--
--	CATCH_EINTR(err = tcgetattr(fd, &tt));
--	if(err < 0)
--		return -errno;
--
--	cfmakeraw(&tt);
--
-- 	CATCH_EINTR(err = tcsetattr(fd, TCSADRAIN, &tt));
--	if(err < 0)
--		return -errno;
--
--	/* XXX tcsetattr could have applied only some changes
--	 * (and cfmakeraw() is a set of changes) */
--	return(0);
--}
--
--void setup_machinename(char *machine_out)
--{
--	struct utsname host;
--
--	uname(&host);
--#if defined(UML_CONFIG_UML_X86) && !defined(UML_CONFIG_64BIT)
--	if (!strcmp(host.machine, "x86_64")) {
--		strcpy(machine_out, "i686");
--		return;
--	}
--#endif
--	strcpy(machine_out, host.machine);
--}
--
--char host_info[(_UTSNAME_LENGTH + 1) * 4 + _UTSNAME_NODENAME_LENGTH + 1];
--
--void setup_hostinfo(void)
--{
--	struct utsname host;
--
--	uname(&host);
--	sprintf(host_info, "%s %s %s %s %s", host.sysname, host.nodename,
--		host.release, host.version, host.machine);
--}
--
--int setjmp_wrapper(void (*proc)(void *, void *), ...)
--{
--        va_list args;
--	sigjmp_buf buf;
--	int n;
--
--	n = sigsetjmp(buf, 1);
--	if(n == 0){
--		va_start(args, proc);
--		(*proc)(&buf, &args);
--	}
--	va_end(args);
--	return(n);
--}
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.15-mm/arch/um/os-Linux/Makefile
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/os-Linux/Makefile	2006-01-06 21:24:14.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/os-Linux/Makefile	2006-01-06 21:24:14.000000000 -0500
-@@ -5,12 +5,12 @@
- 
- obj-y = aio.o elf_aux.o file.o helper.o main.o mem.o process.o signal.o \
- 	start_up.o time.o trap.o tt.o tty.o uaccess.o umid.o user_syms.o \
--	drivers/ sys-$(SUBARCH)/
-+	util.o drivers/ sys-$(SUBARCH)/
- 
- obj-$(CONFIG_MODE_SKAS) += skas/
- 
- USER_OBJS := aio.o elf_aux.o file.o helper.o main.o mem.o process.o signal.o \
--	start_up.o time.o trap.o tt.o tty.o uaccess.o umid.o
-+	start_up.o time.o trap.o tt.o tty.o uaccess.o umid.o util.o
- 
- elf_aux.o: $(ARCH_DIR)/kernel-offsets.h
- CFLAGS_elf_aux.o += -I$(objtree)/arch/um
-Index: linux-2.6.15-mm/arch/um/os-Linux/tt.c
-===================================================================
---- linux-2.6.15-mm.orig/arch/um/os-Linux/tt.c	2006-01-06 21:24:14.000000000 -0500
-+++ linux-2.6.15-mm/arch/um/os-Linux/tt.c	2006-01-06 21:46:20.000000000 -0500
-@@ -63,6 +63,54 @@ void kill_child_dead(int pid)
- 	} while(1);
- }
- 
-+void stop(void)
-+{
-+	while(1) sleep(1000000);
-+}
-+
-+int wait_for_stop(int pid, int sig, int cont_type, void *relay)
-+{
-+	sigset_t *relay_signals = relay;
-+	int status, ret;
-+
-+	while(1){
-+		CATCH_EINTR(ret = waitpid(pid, &status, WUNTRACED));
-+		if((ret < 0) ||
-+		   !WIFSTOPPED(status) || (WSTOPSIG(status) != sig)){
-+			if(ret < 0){
-+				printk("wait failed, errno = %d\n",
-+				       errno);
-+			}
-+			else if(WIFEXITED(status))
-+				printk("process %d exited with status %d\n",
-+				       pid, WEXITSTATUS(status));
-+			else if(WIFSIGNALED(status))
-+				printk("process %d exited with signal %d\n",
-+				       pid, WTERMSIG(status));
-+			else if((WSTOPSIG(status) == SIGVTALRM) ||
-+				(WSTOPSIG(status) == SIGALRM) ||
-+				(WSTOPSIG(status) == SIGIO) ||
-+				(WSTOPSIG(status) == SIGPROF) ||
-+				(WSTOPSIG(status) == SIGCHLD) ||
-+				(WSTOPSIG(status) == SIGWINCH) ||
-+				(WSTOPSIG(status) == SIGINT)){
-+				ptrace(cont_type, pid, 0, WSTOPSIG(status));
-+				continue;
-+			}
-+			else if((relay_signals != NULL) &&
-+				sigismember(relay_signals, WSTOPSIG(status))){
-+				ptrace(cont_type, pid, 0, WSTOPSIG(status));
-+				continue;
-+			}
-+			else printk("process %d stopped with signal %d\n",
-+				    pid, WSTOPSIG(status));
-+			panic("wait_for_stop failed to wait for %d to stop "
-+			      "with %d\n", pid, sig);
-+		}
-+		return(status);
-+	}
-+}
-+
- /*
-  *-------------------------
-  * only for tt mode (will be deleted in future...)
-Index: linux-2.6.15-mm/arch/um/os-Linux/util.c
+ MAKEFILES-INCL	+= $(foreach mode,$(um-modes-y),\
+ 		   $(srctree)/$(ARCH_DIR)/Makefile-$(mode))
+Index: linux-2.6.15-mm/arch/um/include/skas/mm_id.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.15-mm/arch/um/os-Linux/util.c	2006-01-06 21:46:42.000000000 -0500
-@@ -0,0 +1,116 @@
++++ linux-2.6.15-mm/arch/um/include/skas/mm_id.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,17 @@
 +/*
-+ * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2005 Jeff Dike (jdike@karaya.com)
 + * Licensed under the GPL
 + */
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <limits.h>
-+#include <setjmp.h>
-+#include <sys/mman.h>
-+#include <sys/stat.h>
-+#include <sys/utsname.h>
-+#include <sys/param.h>
++#ifndef __MM_ID_H
++#define __MM_ID_H
++
++struct mm_id {
++	union {
++		int mm_fd;
++		int pid;
++	} u;
++	unsigned long stack;
++};
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/skas/mmu-skas.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/skas/mmu-skas.h	2006-01-09 11:28:14.000000000 -0500
+@@ -0,0 +1,24 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __SKAS_MMU_H
++#define __SKAS_MMU_H
++
++#include "linux/config.h"
++#include "mm_id.h"
++#include "asm/ldt.h"
++
++struct mmu_context_skas {
++	struct mm_id id;
++	unsigned long last_page_table;
++#ifdef CONFIG_3_LEVEL_PGTABLES
++	unsigned long last_pmd;
++#endif
++	uml_ldt_t ldt;
++};
++
++extern void switch_mm_skas(struct mm_id * mm_idp);
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/skas/mode-skas.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/skas/mode-skas.h	2006-01-09 11:49:37.000000000 -0500
+@@ -0,0 +1,22 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __MODE_SKAS_H__
++#define __MODE_SKAS_H__
++
++#include <sysdep/ptrace.h>
++
++extern unsigned long exec_regs[];
++extern unsigned long exec_fp_regs[];
++extern unsigned long exec_fpx_regs[];
++extern int have_fpx_regs;
++
++extern void sig_handler_common_skas(int sig, void *sc_ptr);
++extern void halt_skas(void);
++extern void reboot_skas(void);
++extern void kill_off_processes_skas(void);
++extern int is_skas_winch(int pid, int fd, void *data);
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/skas/mode_kern_skas.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/skas/mode_kern_skas.h	2006-01-09 11:49:37.000000000 -0500
+@@ -0,0 +1,41 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __SKAS_MODE_KERN_H__
++#define __SKAS_MODE_KERN_H__
++
++#include "linux/sched.h"
++#include "asm/page.h"
++#include "asm/ptrace.h"
++
++extern void flush_thread_skas(void);
++extern void switch_to_skas(void *prev, void *next);
++extern void start_thread_skas(struct pt_regs *regs, unsigned long eip,
++			      unsigned long esp);
++extern int copy_thread_skas(int nr, unsigned long clone_flags,
++			    unsigned long sp, unsigned long stack_top,
++			    struct task_struct *p, struct pt_regs *regs);
++extern void release_thread_skas(struct task_struct *task);
++extern void initial_thread_cb_skas(void (*proc)(void *), void *arg);
++extern void init_idle_skas(void);
++extern void flush_tlb_kernel_range_skas(unsigned long start,
++					unsigned long end);
++extern void flush_tlb_kernel_vm_skas(void);
++extern void __flush_tlb_one_skas(unsigned long addr);
++extern void flush_tlb_range_skas(struct vm_area_struct *vma,
++				 unsigned long start, unsigned long end);
++extern void flush_tlb_mm_skas(struct mm_struct *mm);
++extern void force_flush_all_skas(void);
++extern long execute_syscall_skas(void *r);
++extern void before_mem_skas(unsigned long unused);
++extern unsigned long set_task_sizes_skas(int arg, unsigned long *host_size_out,
++					 unsigned long *task_size_out);
++extern int start_uml_skas(void);
++extern int external_pid_skas(struct task_struct *task);
++extern int thread_pid_skas(struct task_struct *task);
++
++#define kmem_end_skas (host_task_size - 1024 * 1024)
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/skas/proc_mm.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/skas/proc_mm.h	2006-01-09 11:39:56.000000000 -0500
+@@ -0,0 +1,44 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __SKAS_PROC_MM_H
++#define __SKAS_PROC_MM_H
++
++#define MM_MMAP 54
++#define MM_MUNMAP 55
++#define MM_MPROTECT 56
++#define MM_COPY_SEGMENTS 57
++
++struct mm_mmap {
++	unsigned long addr;
++	unsigned long len;
++	unsigned long prot;
++	unsigned long flags;
++	unsigned long fd;
++	unsigned long offset;
++};
++
++struct mm_munmap {
++	unsigned long addr;
++	unsigned long len;
++};
++
++struct mm_mprotect {
++	unsigned long addr;
++	unsigned long len;
++	unsigned int prot;
++};
++
++struct proc_mm_op {
++	int op;
++	union {
++		struct mm_mmap mmap;
++		struct mm_munmap munmap;
++	        struct mm_mprotect mprotect;
++		int copy_segments;
++	} u;
++};
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/skas/skas.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/skas/skas.h	2006-01-09 11:49:37.000000000 -0500
+@@ -0,0 +1,49 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __SKAS_H
++#define __SKAS_H
++
++#include "mm_id.h"
++#include "sysdep/ptrace.h"
++
++extern int userspace_pid[];
++extern int proc_mm, ptrace_faultinfo, ptrace_ldt;
++extern int skas_needs_stub;
++
++extern void switch_threads(void *me, void *next);
++extern void thread_wait(void *sw, void *fb);
++extern void new_thread(void *stack, void **switch_buf_ptr, void **fork_buf_ptr,
++		       void (*handler)(int));
++extern int start_idle_thread(void *stack, void *switch_buf_ptr,
++			     void **fork_buf_ptr);
++extern int user_thread(unsigned long stack, int flags);
++extern void userspace(union uml_pt_regs *regs);
++extern void new_thread_proc(void *stack, void (*handler)(int sig));
++extern void new_thread_handler(int sig);
++extern void handle_syscall(union uml_pt_regs *regs);
++extern int map(struct mm_id * mm_idp, unsigned long virt,
++	       unsigned long len, int r, int w, int x, int phys_fd,
++	       unsigned long long offset, int done, void **data);
++extern int unmap(struct mm_id * mm_idp, void *addr, unsigned long len,
++		 int done, void **data);
++extern int protect(struct mm_id * mm_idp, unsigned long addr,
++		   unsigned long len, int r, int w, int x, int done,
++		   void **data);
++extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
++extern int new_mm(unsigned long stack);
++extern int start_userspace(unsigned long stub_stack);
++extern int copy_context_skas0(unsigned long stack, int pid);
++extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
++extern long execute_syscall_skas(void *r);
++extern unsigned long current_stub_stack(void);
++extern long run_syscall_stub(struct mm_id * mm_idp,
++			     int syscall, unsigned long *args, long expected,
++			     void **addr, int done);
++extern long syscall_stub_data(struct mm_id * mm_idp,
++			      unsigned long *data, int data_count,
++			      void **addr, void **stub_addr);
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/skas/stub-data.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/skas/stub-data.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,18 @@
++/*
++ * Copyright (C) 2005 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __STUB_DATA_H
++#define __STUB_DATA_H
++
 +#include <sys/time.h>
-+#include "asm/types.h"
-+#include <ctype.h>
-+#include <signal.h>
-+#include <wait.h>
-+#include <errno.h>
-+#include <stdarg.h>
-+#include <sched.h>
-+#include <termios.h>
-+#include <string.h>
-+#include "user_util.h"
-+#include "kern_util.h"
-+#include "user.h"
-+#include "mem_user.h"
-+#include "init.h"
-+#include "ptrace_user.h"
-+#include "uml-config.h"
-+#include "os.h"
 +
-+void stack_protections(unsigned long address)
-+{
-+	int prot = PROT_READ | PROT_WRITE | PROT_EXEC;
++struct stub_data {
++	long offset;
++	int fd;
++	struct itimerval timer;
++	long err;
++};
 +
-+	if(mprotect((void *) address, page_size(), prot) < 0)
-+		panic("protecting stack failed, errno = %d", errno);
-+}
-+
-+void task_protections(unsigned long address)
-+{
-+	unsigned long guard = address + page_size();
-+	unsigned long stack = guard + page_size();
-+	int prot = 0, pages;
-+
-+#ifdef notdef
-+	if(mprotect((void *) stack, page_size(), prot) < 0)
-+		panic("protecting guard page failed, errno = %d", errno);
 +#endif
-+	pages = (1 << UML_CONFIG_KERNEL_STACK_ORDER) - 2;
-+	prot = PROT_READ | PROT_WRITE | PROT_EXEC;
-+	if(mprotect((void *) stack, pages * page_size(), prot) < 0)
-+		panic("protecting stack failed, errno = %d", errno);
-+}
+Index: linux-2.6.15-mm/arch/um/include/skas/uaccess-skas.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/skas/uaccess-skas.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,21 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
 +
-+int raw(int fd)
-+{
-+	struct termios tt;
-+	int err;
++#ifndef __SKAS_UACCESS_H
++#define __SKAS_UACCESS_H
 +
-+	CATCH_EINTR(err = tcgetattr(fd, &tt));
-+	if(err < 0)
-+		return -errno;
++#include "asm/errno.h"
 +
-+	cfmakeraw(&tt);
++/* No SKAS-specific checking. */
++#define access_ok_skas(type, addr, size) 0
 +
-+	CATCH_EINTR(err = tcsetattr(fd, TCSADRAIN, &tt));
-+	if(err < 0)
-+		return -errno;
++extern int copy_from_user_skas(void *to, const void __user *from, int n);
++extern int copy_to_user_skas(void __user *to, const void *from, int n);
++extern int strncpy_from_user_skas(char *dst, const char __user *src, int count);
++extern int __clear_user_skas(void __user *mem, int len);
++extern int clear_user_skas(void __user *mem, int len);
++extern int strnlen_user_skas(const void __user *str, int len);
 +
-+	/* XXX tcsetattr could have applied only some changes
-+	 * (and cfmakeraw() is a set of changes) */
-+	return(0);
-+}
-+
-+void setup_machinename(char *machine_out)
-+{
-+	struct utsname host;
-+
-+	uname(&host);
-+#if defined(UML_CONFIG_UML_X86) && !defined(UML_CONFIG_64BIT)
-+	if (!strcmp(host.machine, "x86_64")) {
-+		strcpy(machine_out, "i686");
-+		return;
-+	}
 +#endif
-+	strcpy(machine_out, host.machine);
-+}
+Index: linux-2.6.15-mm/arch/um/include/tt/debug.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/tt/debug.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,18 @@
++/*
++ * Copyright (C) 2000, 2001, 2002  Jeff Dike (jdike@karaya.com) and
++ * Lars Brinkhoff.
++ * Licensed under the GPL
++ */
 +
-+char host_info[(_UTSNAME_LENGTH + 1) * 4 + _UTSNAME_NODENAME_LENGTH + 1];
++#ifndef __UML_TT_DEBUG_H
++#define __UML_TT_DEBUG_H
 +
-+void setup_hostinfo(void)
-+{
-+	struct utsname host;
++extern int debugger_proxy(int status, pid_t pid);
++extern void child_proxy(pid_t pid, int status);
++extern void init_proxy (pid_t pid, int waiting, int status);
++extern int start_debugger(char *prog, int startup, int stop, int *debugger_fd);
++extern void fake_child_exit(void);
++extern int gdb_config(char *str);
++extern int gdb_remove(int unused);
 +
-+	uname(&host);
-+	sprintf(host_info, "%s %s %s %s %s", host.sysname, host.nodename,
-+		host.release, host.version, host.machine);
-+}
++#endif
+Index: linux-2.6.15-mm/arch/um/include/tt/mmu-tt.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/tt/mmu-tt.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,12 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
 +
-+int setjmp_wrapper(void (*proc)(void *, void *), ...)
-+{
-+	va_list args;
-+	sigjmp_buf buf;
-+	int n;
++#ifndef __TT_MMU_H
++#define __TT_MMU_H
 +
-+	n = sigsetjmp(buf, 1);
-+	if(n == 0){
-+		va_start(args, proc);
-+		(*proc)(&buf, &args);
-+	}
-+	va_end(args);
-+	return(n);
-+}
++struct mmu_context_tt {
++};
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/tt/mode-tt.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/tt/mode-tt.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,23 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __MODE_TT_H__
++#define __MODE_TT_H__
++
++#include "sysdep/ptrace.h"
++
++enum { OP_NONE, OP_EXEC, OP_FORK, OP_TRACE_ON, OP_REBOOT, OP_HALT, OP_CB };
++
++extern int tracing_pid;
++
++extern int tracer(int (*init_proc)(void *), void *sp);
++extern void sig_handler_common_tt(int sig, void *sc);
++extern void syscall_handler_tt(int sig, union uml_pt_regs *regs);
++extern void reboot_tt(void);
++extern void halt_tt(void);
++extern int is_tracer_winch(int pid, int fd, void *data);
++extern void kill_off_processes_tt(void);
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/tt/mode_kern_tt.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/tt/mode_kern_tt.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,41 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __TT_MODE_KERN_H__
++#define __TT_MODE_KERN_H__
++
++#include "linux/sched.h"
++#include "asm/page.h"
++#include "asm/ptrace.h"
++#include "asm/uaccess.h"
++
++extern void switch_to_tt(void *prev, void *next);
++extern void flush_thread_tt(void);
++extern void start_thread_tt(struct pt_regs *regs, unsigned long eip,
++			   unsigned long esp);
++extern int copy_thread_tt(int nr, unsigned long clone_flags, unsigned long sp,
++			  unsigned long stack_top, struct task_struct *p,
++			  struct pt_regs *regs);
++extern void release_thread_tt(struct task_struct *task);
++extern void initial_thread_cb_tt(void (*proc)(void *), void *arg);
++extern void init_idle_tt(void);
++extern void flush_tlb_kernel_range_tt(unsigned long start, unsigned long end);
++extern void flush_tlb_kernel_vm_tt(void);
++extern void __flush_tlb_one_tt(unsigned long addr);
++extern void flush_tlb_range_tt(struct vm_area_struct *vma,
++			       unsigned long start, unsigned long end);
++extern void flush_tlb_mm_tt(struct mm_struct *mm);
++extern void force_flush_all_tt(void);
++extern long execute_syscall_tt(void *r);
++extern void before_mem_tt(unsigned long brk_start);
++extern unsigned long set_task_sizes_tt(int arg, unsigned long *host_size_out,
++				       unsigned long *task_size_out);
++extern int start_uml_tt(void);
++extern int external_pid_tt(struct task_struct *task);
++extern int thread_pid_tt(struct task_struct *task);
++
++#define kmem_end_tt (host_task_size - ABOVE_KMEM)
++
++#endif
+Index: linux-2.6.15-mm/arch/um/include/tt/tt.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/tt/tt.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,36 @@
++/*
++ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __TT_H__
++#define __TT_H__
++
++#include "sysdep/ptrace.h"
++
++extern int gdb_pid;
++extern int debug;
++extern int debug_stop;
++extern int debug_trace;
++
++extern int honeypot;
++
++extern int fork_tramp(void *sig_stack);
++extern int do_proc_op(void *t, int proc_id);
++extern int tracer(int (*init_proc)(void *), void *sp);
++extern void attach_process(int pid);
++extern void tracer_panic(char *format, ...);
++extern void set_init_pid(int pid);
++extern int set_user_mode(void *task);
++extern void set_tracing(void *t, int tracing);
++extern int is_tracing(void *task);
++extern void syscall_handler(int sig, union uml_pt_regs *regs);
++extern void exit_kernel(int pid, void *task);
++extern void do_syscall(void *task, int pid, int local_using_sysemu);
++extern void do_sigtrap(void *task);
++extern int is_valid_pid(int pid);
++extern void remap_data(void *segment_start, void *segment_end, int w);
++extern long execute_syscall_tt(void *r);
++
++#endif
++
+Index: linux-2.6.15-mm/arch/um/include/tt/uaccess-tt.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.15-mm/arch/um/include/tt/uaccess-tt.h	2006-01-09 11:26:24.000000000 -0500
+@@ -0,0 +1,48 @@
++/*
++ * Copyright (C) 2000 - 2003 Jeff Dike (jdike@addtoit.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __TT_UACCESS_H
++#define __TT_UACCESS_H
++
++#include "linux/string.h"
++#include "linux/sched.h"
++#include "asm/processor.h"
++#include "asm/errno.h"
++#include "asm/current.h"
++#include "asm/a.out.h"
++#include "uml_uaccess.h"
++
++#define ABOVE_KMEM (16 * 1024 * 1024)
++
++extern unsigned long end_vm;
++extern unsigned long uml_physmem;
++
++#define is_stack(addr, size) \
++	(((unsigned long) (addr) < STACK_TOP) && \
++	 ((unsigned long) (addr) >= STACK_TOP - ABOVE_KMEM) && \
++	 (((unsigned long) (addr) + (size)) <= STACK_TOP))
++
++#define access_ok_tt(type, addr, size) \
++	(is_stack(addr, size))
++
++extern unsigned long get_fault_addr(void);
++
++extern int __do_copy_from_user(void *to, const void *from, int n,
++			       void **fault_addr, void **fault_catcher);
++extern int __do_strncpy_from_user(char *dst, const char *src, size_t n,
++				  void **fault_addr, void **fault_catcher);
++extern int __do_clear_user(void *mem, size_t len, void **fault_addr,
++			   void **fault_catcher);
++extern int __do_strnlen_user(const char *str, unsigned long n,
++			     void **fault_addr, void **fault_catcher);
++
++extern int copy_from_user_tt(void *to, const void __user *from, int n);
++extern int copy_to_user_tt(void __user *to, const void *from, int n);
++extern int strncpy_from_user_tt(char *dst, const char __user *src, int count);
++extern int __clear_user_tt(void __user *mem, int len);
++extern int clear_user_tt(void __user *mem, int len);
++extern int strnlen_user_tt(const void __user *str, int len);
++
++#endif
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/mm_id.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/mm_id.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,17 +0,0 @@
+-/*
+- * Copyright (C) 2005 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __MM_ID_H
+-#define __MM_ID_H
+-
+-struct mm_id {
+-	union {
+-		int mm_fd;
+-		int pid;
+-	} u;
+-	unsigned long stack;
+-};
+-
+-#endif
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/mmu-skas.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/mmu-skas.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,35 +0,0 @@
+-/*
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SKAS_MMU_H
+-#define __SKAS_MMU_H
+-
+-#include "linux/config.h"
+-#include "mm_id.h"
+-#include "asm/ldt.h"
+-
+-struct mmu_context_skas {
+-	struct mm_id id;
+-        unsigned long last_page_table;
+-#ifdef CONFIG_3_LEVEL_PGTABLES
+-        unsigned long last_pmd;
+-#endif
+-	uml_ldt_t ldt;
+-};
+-
+-extern void switch_mm_skas(struct mm_id * mm_idp);
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/mode-skas.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/mode-skas.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,33 +0,0 @@
+-/*
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __MODE_SKAS_H__
+-#define __MODE_SKAS_H__
+-
+-#include <sysdep/ptrace.h>
+-
+-extern unsigned long exec_regs[];
+-extern unsigned long exec_fp_regs[];
+-extern unsigned long exec_fpx_regs[];
+-extern int have_fpx_regs;
+-
+-extern void sig_handler_common_skas(int sig, void *sc_ptr);
+-extern void halt_skas(void);
+-extern void reboot_skas(void);
+-extern void kill_off_processes_skas(void);
+-extern int is_skas_winch(int pid, int fd, void *data);
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/proc_mm.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/proc_mm.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,55 +0,0 @@
+-/* 
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SKAS_PROC_MM_H
+-#define __SKAS_PROC_MM_H
+-
+-#define MM_MMAP 54
+-#define MM_MUNMAP 55
+-#define MM_MPROTECT 56
+-#define MM_COPY_SEGMENTS 57
+-
+-struct mm_mmap {
+-	unsigned long addr;
+-	unsigned long len;
+-	unsigned long prot;
+-	unsigned long flags;
+-	unsigned long fd;
+-	unsigned long offset;
+-};
+-
+-struct mm_munmap {
+-	unsigned long addr;
+-	unsigned long len;	
+-};
+-
+-struct mm_mprotect {
+-	unsigned long addr;
+-	unsigned long len;
+-        unsigned int prot;
+-};
+-
+-struct proc_mm_op {
+-	int op;
+-	union {
+-		struct mm_mmap mmap;
+-		struct mm_munmap munmap;
+-	        struct mm_mprotect mprotect;
+-		int copy_segments;
+-	} u;
+-};
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/skas.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/skas.h	2006-01-09 11:26:24.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,49 +0,0 @@
+-/* 
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SKAS_H
+-#define __SKAS_H
+-
+-#include "mm_id.h"
+-#include "sysdep/ptrace.h"
+-
+-extern int userspace_pid[];
+-extern int proc_mm, ptrace_faultinfo, ptrace_ldt;
+-extern int skas_needs_stub;
+-
+-extern void switch_threads(void *me, void *next);
+-extern void thread_wait(void *sw, void *fb);
+-extern void new_thread(void *stack, void **switch_buf_ptr, void **fork_buf_ptr,
+-                       void (*handler)(int));
+-extern int start_idle_thread(void *stack, void *switch_buf_ptr, 
+-			     void **fork_buf_ptr);
+-extern int user_thread(unsigned long stack, int flags);
+-extern void userspace(union uml_pt_regs *regs);
+-extern void new_thread_proc(void *stack, void (*handler)(int sig));
+-extern void new_thread_handler(int sig);
+-extern void handle_syscall(union uml_pt_regs *regs);
+-extern int map(struct mm_id * mm_idp, unsigned long virt,
+-	       unsigned long len, int r, int w, int x, int phys_fd,
+-	       unsigned long long offset, int done, void **data);
+-extern int unmap(struct mm_id * mm_idp, void *addr, unsigned long len,
+-		 int done, void **data);
+-extern int protect(struct mm_id * mm_idp, unsigned long addr,
+-		   unsigned long len, int r, int w, int x, int done,
+-		   void **data);
+-extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
+-extern int new_mm(unsigned long stack);
+-extern int start_userspace(unsigned long stub_stack);
+-extern int copy_context_skas0(unsigned long stack, int pid);
+-extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
+-extern long execute_syscall_skas(void *r);
+-extern unsigned long current_stub_stack(void);
+-extern long run_syscall_stub(struct mm_id * mm_idp,
+-                             int syscall, unsigned long *args, long expected,
+-                             void **addr, int done);
+-extern long syscall_stub_data(struct mm_id * mm_idp,
+-                              unsigned long *data, int data_count,
+-                              void **addr, void **stub_addr);
+-
+-#endif
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/stub-data.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/stub-data.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,18 +0,0 @@
+-/*
+- * Copyright (C) 2005 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __STUB_DATA_H
+-#define __STUB_DATA_H
+-
+-#include <sys/time.h>
+-
+-struct stub_data {
+-	long offset;
+-	int fd;
+-	struct itimerval timer;
+-	long err;
+-};
+-
+-#endif
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/uaccess-skas.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/uaccess-skas.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,32 +0,0 @@
+-/*
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SKAS_UACCESS_H
+-#define __SKAS_UACCESS_H
+-
+-#include "asm/errno.h"
+-
+-/* No SKAS-specific checking. */
+-#define access_ok_skas(type, addr, size) 0
+-
+-extern int copy_from_user_skas(void *to, const void __user *from, int n);
+-extern int copy_to_user_skas(void __user *to, const void *from, int n);
+-extern int strncpy_from_user_skas(char *dst, const char __user *src, int count);
+-extern int __clear_user_skas(void __user *mem, int len);
+-extern int clear_user_skas(void __user *mem, int len);
+-extern int strnlen_user_skas(const void __user *str, int len);
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/tt/include/debug.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/tt/include/debug.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,18 +0,0 @@
+-/* 
+- * Copyright (C) 2000, 2001, 2002  Jeff Dike (jdike@karaya.com) and
+- * Lars Brinkhoff.
+- * Licensed under the GPL
+- */
+-
+-#ifndef __UML_TT_DEBUG_H
+-#define __UML_TT_DEBUG_H
+-
+-extern int debugger_proxy(int status, pid_t pid);
+-extern void child_proxy(pid_t pid, int status);
+-extern void init_proxy (pid_t pid, int waiting, int status);
+-extern int start_debugger(char *prog, int startup, int stop, int *debugger_fd);
+-extern void fake_child_exit(void);
+-extern int gdb_config(char *str);
+-extern int gdb_remove(int unused);
+-
+-#endif
+Index: linux-2.6.15-mm/arch/um/kernel/tt/include/mmu-tt.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/tt/include/mmu-tt.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,23 +0,0 @@
+-/*
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __TT_MMU_H
+-#define __TT_MMU_H
+-
+-struct mmu_context_tt {
+-};
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/tt/include/tt.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/tt/include/tt.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,46 +0,0 @@
+-/* 
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __TT_H__
+-#define __TT_H__
+-
+-#include "sysdep/ptrace.h"
+-
+-extern int gdb_pid;
+-extern int debug;
+-extern int debug_stop;
+-extern int debug_trace;
+-
+-extern int honeypot;
+-
+-extern int fork_tramp(void *sig_stack);
+-extern int do_proc_op(void *t, int proc_id);
+-extern int tracer(int (*init_proc)(void *), void *sp);
+-extern void attach_process(int pid);
+-extern void tracer_panic(char *format, ...);
+-extern void set_init_pid(int pid);
+-extern int set_user_mode(void *task);
+-extern void set_tracing(void *t, int tracing);
+-extern int is_tracing(void *task);
+-extern void syscall_handler(int sig, union uml_pt_regs *regs);
+-extern void exit_kernel(int pid, void *task);
+-extern void do_syscall(void *task, int pid, int local_using_sysemu);
+-extern void do_sigtrap(void *task);
+-extern int is_valid_pid(int pid);
+-extern void remap_data(void *segment_start, void *segment_end, int w);
+-extern long execute_syscall_tt(void *r);
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/tt/include/uaccess-tt.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/tt/include/uaccess-tt.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,59 +0,0 @@
+-/*
+- * Copyright (C) 2000 - 2003 Jeff Dike (jdike@addtoit.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __TT_UACCESS_H
+-#define __TT_UACCESS_H
+-
+-#include "linux/string.h"
+-#include "linux/sched.h"
+-#include "asm/processor.h"
+-#include "asm/errno.h"
+-#include "asm/current.h"
+-#include "asm/a.out.h"
+-#include "uml_uaccess.h"
+-
+-#define ABOVE_KMEM (16 * 1024 * 1024)
+-
+-extern unsigned long end_vm;
+-extern unsigned long uml_physmem;
+-
+-#define is_stack(addr, size) \
+-	(((unsigned long) (addr) < STACK_TOP) && \
+-	 ((unsigned long) (addr) >= STACK_TOP - ABOVE_KMEM) && \
+-	 (((unsigned long) (addr) + (size)) <= STACK_TOP))
+-
+-#define access_ok_tt(type, addr, size) \
+-	(is_stack(addr, size))
+-
+-extern unsigned long get_fault_addr(void);
+-
+-extern int __do_copy_from_user(void *to, const void *from, int n,
+-			       void **fault_addr, void **fault_catcher);
+-extern int __do_strncpy_from_user(char *dst, const char *src, size_t n,
+-				  void **fault_addr, void **fault_catcher);
+-extern int __do_clear_user(void *mem, size_t len, void **fault_addr,
+-			   void **fault_catcher);
+-extern int __do_strnlen_user(const char *str, unsigned long n,
+-			     void **fault_addr, void **fault_catcher);
+-
+-extern int copy_from_user_tt(void *to, const void __user *from, int n);
+-extern int copy_to_user_tt(void __user *to, const void *from, int n);
+-extern int strncpy_from_user_tt(char *dst, const char __user *src, int count);
+-extern int __clear_user_tt(void __user *mem, int len);
+-extern int clear_user_tt(void __user *mem, int len);
+-extern int strnlen_user_tt(const void __user *str, int len);
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/kernel/skas/include/mode_kern-skas.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/kernel/skas/include/mode_kern-skas.h	2006-01-09 10:27:20.000000000 -0500
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,52 +0,0 @@
+-/*
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SKAS_MODE_KERN_H__
+-#define __SKAS_MODE_KERN_H__
+-
+-#include "linux/sched.h"
+-#include "asm/page.h"
+-#include "asm/ptrace.h"
+-
+-extern void flush_thread_skas(void);
+-extern void switch_to_skas(void *prev, void *next);
+-extern void start_thread_skas(struct pt_regs *regs, unsigned long eip,
+-			      unsigned long esp);
+-extern int copy_thread_skas(int nr, unsigned long clone_flags,
+-			    unsigned long sp, unsigned long stack_top,
+-			    struct task_struct *p, struct pt_regs *regs);
+-extern void release_thread_skas(struct task_struct *task);
+-extern void initial_thread_cb_skas(void (*proc)(void *), void *arg);
+-extern void init_idle_skas(void);
+-extern void flush_tlb_kernel_range_skas(unsigned long start,
+-					unsigned long end);
+-extern void flush_tlb_kernel_vm_skas(void);
+-extern void __flush_tlb_one_skas(unsigned long addr);
+-extern void flush_tlb_range_skas(struct vm_area_struct *vma,
+-				 unsigned long start, unsigned long end);
+-extern void flush_tlb_mm_skas(struct mm_struct *mm);
+-extern void force_flush_all_skas(void);
+-extern long execute_syscall_skas(void *r);
+-extern void before_mem_skas(unsigned long unused);
+-extern unsigned long set_task_sizes_skas(int arg, unsigned long *host_size_out,
+-					 unsigned long *task_size_out);
+-extern int start_uml_skas(void);
+-extern int external_pid_skas(struct task_struct *task);
+-extern int thread_pid_skas(struct task_struct *task);
+-
+-#define kmem_end_skas (host_task_size - 1024 * 1024)
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.15-mm/arch/um/include/mode_kern.h
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/include/mode_kern.h	2006-01-09 10:27:20.000000000 -0500
++++ linux-2.6.15-mm/arch/um/include/mode_kern.h	2006-01-09 11:26:24.000000000 -0500
+@@ -9,22 +9,11 @@
+ #include "linux/config.h"
+ 
+ #ifdef CONFIG_MODE_TT
+-#include "mode_kern-tt.h"
++#include "mode_kern_tt.h"
+ #endif
+ 
+ #ifdef CONFIG_MODE_SKAS
+-#include "mode_kern-skas.h"
++#include "mode_kern_skas.h"
+ #endif
+ 
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 
 
