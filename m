@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EydND-0007WJ-RU for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 15:02:51 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EydNC-00068z-9n
+	id 1EyfId-0004ON-0M for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Jan 2006 17:06:15 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyfIb-0007Vj-Ss
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 15:02:51 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] 2.6.15-rc1 Badness in handle_page_fault
-Message-ID: <20060116235450.GB14064@ccure.user-mode-linux.org>
-References: <1137444603.8036.2.camel@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Mon, 16 Jan 2006 17:06:15 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1137444603.8036.2.camel@localhost>
+Message-Id: <200601170120.14836.blaisorblade@yahoo.it>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] TLS patches compilation fixups
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,22 +27,59 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 Jan 2006 18:54:50 -0500
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Date: Tue, 17 Jan 2006 01:20:14 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, William Stearns <wstearns@pobox.com>, "D. Bahi" <dbahi@enterasys.com>, Antoine Martin <antoine@nagafix.co.uk>
 
-On Mon, Jan 16, 2006 at 08:50:03PM +0000, Antoine Martin wrote:
-> Found these in a guest running 2.6.15-rc1.
-> Note sure this is relevant anymore, but here it is anyway:
-> 
-> [45512066.140000] Badness in handle_page_fault at
-> arch/um/kernel/trap_kern.c:101
+I've taken TLS patches from Jeff Dike's tree today, and made them compile in 
+all SKAS/TT configurations. The errors were easy to fix, however (ever 
+because I still remember my code and the comments help).
 
-> [45512066.830000] load_TLS(O_FORCE) in fork_handler returned -2
+Btw, D.Bahi, your fixup patch was a bit bogus (doesn't matter when not using 
+TT, however).
 
-These are fixed.
+I've taken (and made apply) these ones:
+global-ldt-sem
+uml-tls-support-sc-tables
+uml-clean-arch_switch
+uml-add-tls-support
+uml-add-tls-support-flush-empty
 
-		Jeff
+And added, on top of them, these ones:
+
+fix-struct-compile (to say user_desc instead of modify_ldt_ldt_s. Will break 
+on 2.4 kernel headers on the host)
+compile-tt-off-indirect-set-thread-area (make the indirect_* thing compile)
+remove-indirect-set-thread-area (remove that thing - should be safe it seems)
+
+I intentionally removed "uml-add-tls-support-debug", as it's debug-only stuff 
+IMHO and was used to try to make it work (IIRC).
+
+It never works, it seems, I should check if sometimes it succeeds, indeed, I'm 
+doing that with "uml-add-tls-support-debug-check-never-works" (not tested 
+yet, don't run yourself unless you really want).
+
+I hadn't written SKAS0 support when I wrote the patches, and they show it 
+hasn't been added.
+
+I will shortly publish all the updated patches (against vanilla 2.6.15) under:
+
+http://www.user-mode-linux.org/~blaisorblade/patches/devel-guest/uml-2.6.15-tls-1
+
+in the usual combo + splitout + signature form.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
