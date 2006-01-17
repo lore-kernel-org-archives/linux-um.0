@@ -2,23 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyfjW-0006QS-7d for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 17:34:02 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyfjT-00048f-Ma
+	id 1Eyg8c-0000AX-Df for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Jan 2006 17:59:58 -0800
+Received: from wumpus.mythic-beasts.com ([212.69.37.9] ident=Debian-exim)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Eyg8a-0002Bc-AO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 17:34:02 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.15-rc1 Badness in handle_page_fault
-References: <1137444603.8036.2.camel@localhost>
-	<20060116235450.GB14064@ccure.user-mode-linux.org>
-In-Reply-To: <20060116235450.GB14064@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Mon, 16 Jan 2006 17:59:58 -0800
+From: Chris Lightfoot <chris@ex-parrot.com>
+Subject: Re: [uml-devel] high-performance system calls using vsyscall
+Message-ID: <HbcrwbrtvOUs.K4FEW1N24puC7st8KrlCFA@sphinx.mythic-beasts.com>
+References: <3524bf1f0601120902v3812029l4d8ba5411b53f36f@mail.gmail.com>
+	<20060112233848.GA945@ccure.user-mode-linux.org>
+	<200601170104.22814.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200601170233.59826.blaisorblade@yahoo.it>
+In-Reply-To: <200601170104.22814.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,48 +30,37 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 02:33:59 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Antoine Martin <antoine@nagafix.co.uk>
+Date: Tue, 17 Jan 2006 01:59:40 +0000
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Young Koh <young.koh@gmail.com>
 
-On Tuesday 17 January 2006 00:54, Jeff Dike wrote:
-> On Mon, Jan 16, 2006 at 08:50:03PM +0000, Antoine Martin wrote:
-> > Found these in a guest running 2.6.15-rc1.
-> > Note sure this is relevant anymore, but here it is anyway:
-> >
-> > [45512066.140000] Badness in handle_page_fault at
-> > arch/um/kernel/trap_kern.c:101
-> >
-> > [45512066.830000] load_TLS(O_FORCE) in fork_handler returned -2
->
-> These are fixed.
+On Tue, Jan 17, 2006 at 01:04:21AM +0100, Blaisorblade wrote:
+    [...]
+> However, going through ptrace for interprocess comunication is far from 
+> optimal - using something like, say, POSIX message queues (it's a wild guess) 
+> would be probably faster. Something purely in userspace seems difficult. 
+> However, as shown below, if it's not purely in userspace ptrace will 
+> intercept it, so we stop any gain.
 
-I remember the badness in handle_page_fault (bogus warning from me), what 
-about load_TLS? I only got -22, I fixed it by removing tls-debug (it was a 
-kludgy attempt to get things working, and didn't appear correct to me); still 
-not completely tested.
+http://caesious.beasts.org/~chris/tmp/20060117/msgq-pipe-signal-costs.png
 
-See my "TLS patches compilation fixups" for the fixes.
+(measured on 2.6.12.6, on Intel Xeon, with sending and
+receiving processes bound to the same CPU).
+
+So message queues don't win you much over pipes, but do
+(significantly!) over signals.
+
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+``Oh my god, I was wrong! It was Earth all along!
+  You've finally made a monkey out of me.''
+  (`Stop the Planet of the Apes! I want to get off', from `The Simpsons')
 
 
 -------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
