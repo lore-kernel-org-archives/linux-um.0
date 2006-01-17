@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eygli-0002Ok-6O for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 18:40:22 -0800
+	id 1Eygqm-0002Zf-0m for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Jan 2006 18:45:36 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Eyglh-0001Dz-QF
+	(Exim 4.44) id 1Eygqk-0003wG-NW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 18:40:22 -0800
+	Mon, 16 Jan 2006 18:45:36 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH 9/11] UML - Implement soft interrupts
-Message-ID: <20060117033227.GB17171@ccure.user-mode-linux.org>
-References: <200601152139.k0FLdp1G027747@ccure.user-mode-linux.org>
-	<200601170124.32076.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.15-rc1 Badness in handle_page_fault
+Message-ID: <20060117033744.GE17171@ccure.user-mode-linux.org>
+References: <1137444603.8036.2.camel@localhost>
+	<20060116235450.GB14064@ccure.user-mode-linux.org>
+	<200601170233.59826.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200601170124.32076.blaisorblade@yahoo.it>
+In-Reply-To: <200601170233.59826.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,22 +30,16 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 Jan 2006 22:32:27 -0500
+Date: Mon, 16 Jan 2006 22:37:44 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
 
-On Tue, Jan 17, 2006 at 01:24:31AM +0100, Blaisorblade wrote:
-> ~25 %? Good! Which is delay vs. host?
+On Tue, Jan 17, 2006 at 02:33:59AM +0100, Blaisorblade wrote:
+> what 
+> about load_TLS? I only got -22, I fixed it by removing tls-debug
 
-Delay vs a UML without the patch.
-
-> A curiosity - did you look at the similar code in Ingo Molnar's VCPU patch? 
-> I never found the time to split it out and compare differencies. I just 
-> remember it using assembler inserts for (maybe atomic) bitmask manipulations.
-
-It was separate from VCPU, but I never really looked at it since I already
-had this.  Some day I will to see if there are any trick in it that I should
-use.
+That's caused by referring to errno in kernel code.  That gets you the
+value of kernel_errno, which could be anything.
 
 				Jeff
 
