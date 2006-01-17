@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eyrag-0000RM-5w for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 06:13:42 -0800
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eyraf-0003b8-Ib
+	id 1Eyreh-0000i6-GE for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jan 2006 06:17:51 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eyree-0005S0-RV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 06:13:42 -0800
+	Tue, 17 Jan 2006 06:17:51 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] arch/um/include/kern_util.h:35: error:
-	'CONFIG_NR_CPUS' undeclared
-References: <20060116171447.GA15932@suse.de>
-	<200601170222.59415.blaisorblade@yahoo.it>
-	<20060117034504.GG17171@ccure.user-mode-linux.org>
-In-Reply-To: <20060117034504.GG17171@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH 9/11] UML - Implement soft interrupts
+References: <200601152139.k0FLdp1G027747@ccure.user-mode-linux.org>
+	<200601170124.32076.blaisorblade@yahoo.it>
+	<20060117033227.GB17171@ccure.user-mode-linux.org>
+In-Reply-To: <20060117033227.GB17171@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200601171513.39404.blaisorblade@yahoo.it>
+Message-Id: <200601171517.38199.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,31 +31,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 15:13:38 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Olaf Hering <olh@suse.de>
+Date: Tue, 17 Jan 2006 15:17:37 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Tuesday 17 January 2006 04:45, Jeff Dike wrote:
-> On Tue, Jan 17, 2006 at 02:22:59AM +0100, Blaisorblade wrote:
-> > On Monday 16 January 2006 18:14, Olaf Hering wrote:
-> > > It picks up the libc headers instead of the 2.6.15 ones.
-> >
-> > Yep, that's correct, the bug is that shouldn't be using CONFIG_NR_CPUS.
+On Tuesday 17 January 2006 04:32, Jeff Dike wrote:
+> On Tue, Jan 17, 2006 at 01:24:31AM +0100, Blaisorblade wrote:
+> > ~25 %? Good! Which is delay vs. host?
+>
+> Delay vs a UML without the patch.
+>
+> > A curiosity - did you look at the similar code in Ingo Molnar's VCPU
+> > patch? I never found the time to split it out and compare differencies. I
+> > just remember it using assembler inserts for (maybe atomic) bitmask
+> > manipulations.
+>
+> It was separate from VCPU,
+conceptually, but I got only a blob comprising everything - never seen it 
+splitout (or maybe I split that out and forgot?)
 
-> No, I just fixed this.  The bug is that chan_user.c includes kern_util.h,
-> which is a kernel-only header.
-Good thing.
-> I made a bunch of similar changes today 
-> (os.h also included kern_util.h!).
-
-In that case, if it's kern-only, it should go into asm-um. Not in the current 
-form, hopefully (you agree it's a mess, right? We just don't have time and 
-patience to clean it right now).
-
-> Maybe we don't need idle_threads there anyway, but that's a separate issue.
-
-Yep, I fixed it this way. idle_threads was moved to asm/smp.h and it was 
-included in files needing it.
+> but I never really looked at it since I already 
+> had this.  Some day I will to see if there are any trick in it that I
+> should use.
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
