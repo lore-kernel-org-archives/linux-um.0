@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EygkO-0002LC-51 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 18:39:00 -0800
+	id 1Eygli-0002Ok-6O for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Jan 2006 18:40:22 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EygkM-0008U5-QA
+	(Exim 4.44) id 1Eyglh-0001Dz-QF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 18:39:00 -0800
+	Mon, 16 Jan 2006 18:40:22 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] high-performance system calls using vsyscall
-Message-ID: <20060117033055.GA17171@ccure.user-mode-linux.org>
-References: <3524bf1f0601120902v3812029l4d8ba5411b53f36f@mail.gmail.com>
-	<20060112233848.GA945@ccure.user-mode-linux.org>
-	<200601170104.22814.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 9/11] UML - Implement soft interrupts
+Message-ID: <20060117033227.GB17171@ccure.user-mode-linux.org>
+References: <200601152139.k0FLdp1G027747@ccure.user-mode-linux.org>
+	<200601170124.32076.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200601170104.22814.blaisorblade@yahoo.it>
+In-Reply-To: <200601170124.32076.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,29 +29,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 16 Jan 2006 22:30:55 -0500
+Date: Mon, 16 Jan 2006 22:32:27 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Young Koh <young.koh@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Tue, Jan 17, 2006 at 01:04:21AM +0100, Blaisorblade wrote:
-> No, wrong - on x86 it's used for everything, depending on userspace (it's 
-> replacing int 0x80 with sysenter). For some reason, on x86-64 it was that 
-> way, but it switched to what you say (implementing only a few syscalls 
-> directly in userspace).
+On Tue, Jan 17, 2006 at 01:24:31AM +0100, Blaisorblade wrote:
+> ~25 %? Good! Which is delay vs. host?
 
-Yeah, I was remembering Andrea's original proposal to implement a few system
-calls entirely in userspace.
+Delay vs a UML without the patch.
 
-> > In a tt-style UML, where the UML kernel is in the same address space
-> > as the process, this could be used for all system calls, where you
-> > would just jump from there into the UML kernel.
-> 
-> 1st, TT mode is kept there only until SKAS0 will be damn stable (it seems 
-> we're probably reaching that, no foreseen problems, except maybe my new TLS 
-> code doesn't work for SKAS0 yet IMHO), and because it's the only SMP 
-> supporting mode.
+> A curiosity - did you look at the similar code in Ingo Molnar's VCPU patch? 
+> I never found the time to split it out and compare differencies. I just 
+> remember it using assembler inserts for (maybe atomic) bitmask manipulations.
 
-It has worked fine for me since I fixed that one bug.
+It was separate from VCPU, but I never really looked at it since I already
+had this.  Some day I will to see if there are any trick in it that I should
+use.
 
 				Jeff
 
