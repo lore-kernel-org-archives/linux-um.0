@@ -1,25 +1,17 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ez081-0004uz-3g for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 15:20:41 -0800
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Ez07z-0001WQ-96
+	id 1Ez0FG-0005E4-KG for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jan 2006 15:28:10 -0800
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ez0FC-0006SW-2N
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 15:20:41 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <43CA5642.9060205@gentoo.org>
-	<200601160314.05831.blaisorblade@yahoo.it>
-	<43CD4B1B.1060806@gentoo.org>
-In-Reply-To: <43CD4B1B.1060806@gentoo.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200601180020.26838.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: -bs patchset still useful for users?
+	Tue, 17 Jan 2006 15:28:10 -0800
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20060117232626.11417.66832.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH] uml: remove leftover from patch revertal
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,78 +23,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 00:20:24 +0100
-To: Daniel Drake <dsd@gentoo.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 18 Jan 2006 00:26:27 +0100
+To: Andrew Morton <akpm@osdl.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 17 January 2006 20:52, Daniel Drake wrote:
-> Blaisorblade wrote:
-> > Vanilla can do, however -bs has one little additional feature
-> > (mconsole-exec) and contains all bug fixes written after the release
-> > (only few important ones go to -stable, they're very restrictive and some
-> > -bs patches don't fix critical "regressions"/crashes).
-> >
-> > In fact, most times 2.6.n-bs is entirely merged in 2.6.(n+1).
->
-> Great.
 
-> Unless you have any strong objections, I will probably drop
-> usermode-sources from Gentoo, and suggest that users migrate to
-> gentoo-sources.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-> The problem is that usermode-sources doesn't have a maintainer within
-> Gentoo.
+I added this line to share this file with UML, but now it's no longer shared so
+remove this useless leftover.
 
-Given I do use Gentoo, and I understand ebuilds, is that problem solvable 
-(i.e. by me becoming maintainer?)
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-Don't know well what this implies (I looked at "How to become a Gentoo 
-developer" docs and it seemed require much more than what I do for -bs), but 
-could still be pursued.
+ include/asm-i386/futex.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> At the moment I've been taking care of it, but you know how 
-> clueless I am about UML. Also, it's a lot of work to maintain a kernel
-> within a distro, and Gentoo have too many...
-
-> Thanks for helping us out with the UML bugs, and I hope you will
-> continue spending a few minutes here and there providing input. I don't
-> expect you will, but if you have time, you are always welcome to send
-> important UML fixes to me for inclusion in Gentoo's patchset (we aren't
-> quite as strict as -stable). I'll be keeping an eye on the -bs patchset
-> anyway.
-
-There is an useful feature in -bs which isn't included in mainline (because 
-Jeff Dike legitimaly thinks it's not something which should be in kernel), 
-and which could be added to gentoo-sources, I hope.
-
- i.e. Mconsole Exec support (basically, it allows to say to UML to start a new 
-process inside the guest kernel, without working network and such, and easily 
-scriptable).
-
-"uml: mconsole exec support
-
-Adds the "exec" command to mconsole; the command is passed to /bin/sh -c, so
-you know its syntax, and can freely use redirections and so on."
-
-Latest version is at:
-
-http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.14-bs3/broken-out/uml-mconsole-exec
-
-Probably you'll need a link from the home page to this patch by itself (for 
-updated versions, even if it's very stable), which I'll happily add if you 
-agree.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+diff --git a/include/asm-i386/futex.h b/include/asm-i386/futex.h
+index e7a271d..44b9db8 100644
+--- a/include/asm-i386/futex.h
++++ b/include/asm-i386/futex.h
+@@ -61,7 +61,7 @@ futex_atomic_op_inuser (int encoded_op, 
+ 	if (op == FUTEX_OP_SET)
+ 		__futex_atomic_op1("xchgl %0, %2", ret, oldval, uaddr, oparg);
+ 	else {
+-#if !defined(CONFIG_X86_BSWAP) && !defined(CONFIG_UML)
++#ifndef CONFIG_X86_BSWAP
+ 		if (boot_cpu_data.x86 == 3)
+ 			ret = -ENOSYS;
+ 		else
 
 
 
