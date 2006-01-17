@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyrYS-0000Ju-37 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 06:11:24 -0800
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyrYM-0002kw-FB
+	id 1EyrZ3-0000Lp-4J for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jan 2006 06:12:01 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyrZ0-0001mS-E7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 06:11:23 -0800
+	Tue, 17 Jan 2006 06:12:01 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.15-rc1 Badness in handle_page_fault
-References: <1137444603.8036.2.camel@localhost>
-	<200601170233.59826.blaisorblade@yahoo.it>
-	<20060117033744.GE17171@ccure.user-mode-linux.org>
-In-Reply-To: <20060117033744.GE17171@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] slip_init and slirp_init using 12K of stack
+References: <200601170126.12774.blaisorblade@yahoo.it>
+	<20060117034116.GF17171@ccure.user-mode-linux.org>
+In-Reply-To: <20060117034116.GF17171@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200601171510.16839.blaisorblade@yahoo.it>
+Message-Id: <200601171511.47160.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,32 +30,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 15:10:16 +0100
+Date: Tue, 17 Jan 2006 15:11:46 +0100
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 17 January 2006 04:37, Jeff Dike wrote:
-> On Tue, Jan 17, 2006 at 02:33:59AM +0100, Blaisorblade wrote:
-> > what
-> > about load_TLS? I only got -22, I fixed it by removing tls-debug
+On Tuesday 17 January 2006 04:41, Jeff Dike wrote:
+> On Tue, Jan 17, 2006 at 01:26:12AM +0100, Blaisorblade wrote:
+> > I ran by accident scripts/checkstack.pl and found that slip_init and
+> > slirp_init are two big offenders.
+> >
+> > They are since of such lines:
+> >
+> >         *spri = ((struct slip_data)
+> >                 { .name         = { '\0' },
+> >                   .addr         = NULL,
+> >                   .gate_addr    = init->gate_addr,
+> >                   .slave        = -1,
+> >                   .slip         = SLIP_PROTO_INIT,
+> >                   .dev          = dev });
 >
-> That's caused by referring to errno in kernel code.  That gets you the
-> value of kernel_errno, which could be anything.
-
-Ok, in fact -2 (-ENOENT) didn't make sense, while -22 (-EINVAL) makes a lot. 
-You agree to removing the -debug part? Can you retest without that? I've done 
-a patch which complains if it ever returns something different from -EINVAL 
-(it's in my uploaded patchset, the last one, URL posted in my email).
-
+> Yuck, I guess it's time to initialize that field-by-field.
+Yep, done... I'll flush my queue when you're done with yours, there are too 
+many conflicts right now. What about getting TLS in in this cycle (after 
+-rc1, the freeze is less strict for us in practice)? If yes, I'm going to 
+take care at it - I'm cleaning it anyway.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+	
+
+	
 		
 ___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
