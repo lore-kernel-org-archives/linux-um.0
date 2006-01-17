@@ -1,24 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyrZ3-0000Lp-4J for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 06:12:01 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyrZ0-0001mS-E7
+	id 1Eyrag-0000RM-5w for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jan 2006 06:13:42 -0800
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Eyraf-0003b8-Ib
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 06:12:01 -0800
+	Tue, 17 Jan 2006 06:13:42 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] slip_init and slirp_init using 12K of stack
-References: <200601170126.12774.blaisorblade@yahoo.it>
-	<20060117034116.GF17171@ccure.user-mode-linux.org>
-In-Reply-To: <20060117034116.GF17171@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] arch/um/include/kern_util.h:35: error:
+	'CONFIG_NR_CPUS' undeclared
+References: <20060116171447.GA15932@suse.de>
+	<200601170222.59415.blaisorblade@yahoo.it>
+	<20060117034504.GG17171@ccure.user-mode-linux.org>
+In-Reply-To: <20060117034504.GG17171@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200601171511.47160.blaisorblade@yahoo.it>
+Message-Id: <200601171513.39404.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,30 +32,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 15:11:46 +0100
+Date: Tue, 17 Jan 2006 15:13:38 +0100
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Olaf Hering <olh@suse.de>
 
-On Tuesday 17 January 2006 04:41, Jeff Dike wrote:
-> On Tue, Jan 17, 2006 at 01:26:12AM +0100, Blaisorblade wrote:
-> > I ran by accident scripts/checkstack.pl and found that slip_init and
-> > slirp_init are two big offenders.
+On Tuesday 17 January 2006 04:45, Jeff Dike wrote:
+> On Tue, Jan 17, 2006 at 02:22:59AM +0100, Blaisorblade wrote:
+> > On Monday 16 January 2006 18:14, Olaf Hering wrote:
+> > > It picks up the libc headers instead of the 2.6.15 ones.
 > >
-> > They are since of such lines:
-> >
-> >         *spri = ((struct slip_data)
-> >                 { .name         = { '\0' },
-> >                   .addr         = NULL,
-> >                   .gate_addr    = init->gate_addr,
-> >                   .slave        = -1,
-> >                   .slip         = SLIP_PROTO_INIT,
-> >                   .dev          = dev });
->
-> Yuck, I guess it's time to initialize that field-by-field.
-Yep, done... I'll flush my queue when you're done with yours, there are too 
-many conflicts right now. What about getting TLS in in this cycle (after 
--rc1, the freeze is less strict for us in practice)? If yes, I'm going to 
-take care at it - I'm cleaning it anyway.
+> > Yep, that's correct, the bug is that shouldn't be using CONFIG_NR_CPUS.
+
+> No, I just fixed this.  The bug is that chan_user.c includes kern_util.h,
+> which is a kernel-only header.
+Good thing.
+> I made a bunch of similar changes today 
+> (os.h also included kern_util.h!).
+
+In that case, if it's kern-only, it should go into asm-um. Not in the current 
+form, hopefully (you agree it's a mess, right? We just don't have time and 
+patience to clean it right now).
+
+> Maybe we don't need idle_threads there anyway, but that's a separate issue.
+
+Yep, I fixed it this way. idle_threads was moved to asm/smp.h and it was 
+included in files needing it.
+
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
