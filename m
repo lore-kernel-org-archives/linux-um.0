@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Eywsp-0004KH-2w for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 11:52:47 -0800
-Received: from mta09-winn.ispmail.ntl.com ([81.103.221.49])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Eywso-0008Dv-A9
+	id 1EyxNI-0005jE-1t for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jan 2006 12:24:16 -0800
+Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EyxNH-0000rk-Ge
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 11:52:47 -0800
-Message-ID: <43CD4B1B.1060806@gentoo.org>
-From: Daniel Drake <dsd@gentoo.org>
-MIME-Version: 1.0
-References: <43CA5642.9060205@gentoo.org>
-	<200601160314.05831.blaisorblade@yahoo.it>
-In-Reply-To: <200601160314.05831.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: -bs patchset still useful for users?
+	Tue, 17 Jan 2006 12:24:16 -0800
+From: Olaf Hering <olh@suse.de>
+Subject: Re: [uml-devel] arch/um/include/kern_util.h:35: error:
+	'CONFIG_NR_CPUS' undeclared
+Message-ID: <20060117202411.GA27124@suse.de>
+References: <20060116171447.GA15932@suse.de>
+	<200601170222.59415.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <200601170222.59415.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,38 +30,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 19:52:59 +0000
+Date: Tue, 17 Jan 2006 21:24:11 +0100
 To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> Vanilla can do, however -bs has one little additional feature (mconsole-exec) 
-> and contains all bug fixes written after the release (only few important ones 
-> go to -stable, they're very restrictive and some -bs patches don't fix 
-> critical "regressions"/crashes).
-> 
-> In fact, most times 2.6.n-bs is entirely merged in 2.6.(n+1).
+ On Tue, Jan 17, Blaisorblade wrote:
 
-Great.
+> Disable CONFIG_SMP, it doesn't work well anyway, however thanks for the 
+> report.
 
-Unless you have any strong objections, I will probably drop 
-usermode-sources from Gentoo, and suggest that users migrate to 
-gentoo-sources.
+Some of the libc headers my define it, its not enabled in the kernel
+.config.
+The patch gets me further, thanks. Next error is:
 
-The problem is that usermode-sources doesn't have a maintainer within 
-Gentoo. At the moment I've been taking care of it, but you know how 
-clueless I am about UML. Also, it's a lot of work to maintain a kernel 
-within a distro, and Gentoo have too many...
+arch/um/os-Linux/sys-i386/registers.c: In function 'get_thread_regs':
+arch/um/os-Linux/sys-i386/registers.c:134: error: 'JB_PC' undeclared (first use in this function)
+arch/um/os-Linux/sys-i386/registers.c:134: error: (Each undeclared identifier is reported only once
+arch/um/os-Linux/sys-i386/registers.c:134: error: for each function it appears in.)
+arch/um/os-Linux/sys-i386/registers.c:135: error: 'JB_SP' undeclared (first use in this function)
+arch/um/os-Linux/sys-i386/registers.c:136: error: 'JB_BP' undeclared (first use in this function)
+make[2]: *** [arch/um/os-Linux/sys-i386/registers.o] Error 1
 
-Thanks for helping us out with the UML bugs, and I hope you will 
-continue spending a few minutes here and there providing input. I don't 
-expect you will, but if you have time, you are always welcome to send 
-important UML fixes to me for inclusion in Gentoo's patchset (we aren't 
-quite as strict as -stable). I'll be keeping an eye on the -bs patchset 
-anyway.
 
-Daniel
-
+-- 
+short story of a lazy sysadmin:
+ alias appserv=wotan
 
 
 -------------------------------------------------------
