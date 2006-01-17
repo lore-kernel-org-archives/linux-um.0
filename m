@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyfId-0004OV-Qd for user-mode-linux-devel@lists.sourceforge.net;
+	id 1EyfId-0004OU-Oi for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 16 Jan 2006 17:06:15 -0800
 Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyfIb-0007Vm-St
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyfIc-0001V6-7F
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 16 Jan 2006 17:06:15 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 9/11] UML - Implement soft interrupts
-References: <200601152139.k0FLdp1G027747@ccure.user-mode-linux.org>
-In-Reply-To: <200601152139.k0FLdp1G027747@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200601170124.32076.blaisorblade@yahoo.it>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200601170126.12774.blaisorblade@yahoo.it>
+Subject: [uml-devel] slip_init and slirp_init using 12K of stack
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,25 +27,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 01:24:31 +0100
+Date: Tue, 17 Jan 2006 01:26:12 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org, linux-kernel@vger.kernel.org
 
-On Sunday 15 January 2006 22:39, Jeff Dike wrote:
-> This patch implements soft interrupts.  Interrupt enabling and
-> disabling no longer map to sigprocmask.  Rather, a flag is set
-> indicating whether interrupts may be handled.  If a signal comes in
-> and interrupts are marked as OK, then it is handled normally.  If
-> interrupts are marked as off, then the signal handler simply returns
-> after noting that a signal needs handling.  When interrupts are enabled
-> later on, this pending signals flag is checked, and the IRQ handlers
-> are called at that point.
+I ran by accident scripts/checkstack.pl and found that slip_init and 
+slirp_init are two big offenders.
 
-~25 %? Good! Which is delay vs. host?
+They are since of such lines:
 
-A curiosity - did you look at the similar code in Ingo Molnar's VCPU patch? I 
-never found the time to split it out and compare differencies. I just 
-remember it using assembler inserts for (maybe atomic) bitmask manipulations.
+        *spri = ((struct slip_data)
+                { .name         = { '\0' },
+                  .addr         = NULL,
+                  .gate_addr    = init->gate_addr,
+                  .slave        = -1,
+                  .slip         = SLIP_PROTO_INIT,
+                  .dev          = dev });
+
+This is compiled (as it seems from the assembly, and as I read from a 
+discussion on LKML on how badly GCC optimizes that) compiled as "set this up 
+on the stack, memcpy it on the stack, and memcpy it on the final area".
+
+struct slip_data (and the same for slirp_data) contains slip_proto, which is 
+6K wide (has two large buffers). Having it twice on the stack gives 12k, 
+which explains this output:
+
+$ objdump -d
+/home/paolo/Admin/kernel/6/VCS/um-linux-2.6.15-build/vmlinux| ./scripts/checkstack.pl 
+i386|head -20
+
+0xa021e0a6 _IO_vfwprintf:                               37512
+0xa0020d62 slirp_init:                                  12880
+0xa0020e8a slirp_init:                                  12880
+0xa0020258 slip_init:                                   12112
+0xa0020351 slip_init:                                   12112
+...
+0xa000515c make_umid_setup:                             4144
+0xa002bc16 make_tempfile:                               4128
+0xa002bd29 make_tempfile:                               4128
+
+(I remember these to store a PATH_MAX char array on the stack). But 
+make_umid_setup just disappeared (the rewritten umid abstraction doesn't use 
+significant stack space).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
