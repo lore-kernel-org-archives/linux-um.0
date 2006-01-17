@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyfId-0004OW-R6 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 17:06:15 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyfIb-0007Vc-Ss
+	id 1EyfYs-0005lH-UF for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Jan 2006 17:23:02 -0800
+Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyfYq-0006ec-6g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 17:06:15 -0800
+	Mon, 16 Jan 2006 17:23:02 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] high-performance system calls using vsyscall
-References: <3524bf1f0601120902v3812029l4d8ba5411b53f36f@mail.gmail.com>
-	<20060112233848.GA945@ccure.user-mode-linux.org>
-In-Reply-To: <20060112233848.GA945@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] arch/um/include/kern_util.h:35: error:
+	'CONFIG_NR_CPUS' undeclared
+References: <20060116171447.GA15932@suse.de>
+In-Reply-To: <20060116171447.GA15932@suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200601170104.22814.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_zbEzDPuiTRg754p"
+Message-Id: <200601170222.59415.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,75 +28,99 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 01:04:21 +0100
+Date: Tue, 17 Jan 2006 02:22:59 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Young Koh <young.koh@gmail.com>
+Cc: Olaf Hering <olh@suse.de>
 
-On Friday 13 January 2006 00:38, Jeff Dike wrote:
-> On Thu, Jan 12, 2006 at 12:02:16PM -0500, Young Koh wrote:
-> > I found an old post discussing the possibility of turning a system
-> > call into a procedure call using vsyscall. Is it really implemented in
-> > recent versions? I tested with recent Linux/UML kernels and glibcs but
-> > system calls don't seem that fast. so, i guess it's not implemented
-> > yet?
+--Boundary-00=_zbEzDPuiTRg754p
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> In the generic kernel (or in whatever arches have the vsyscall page),
-> it's used for only a small number of system calls.
+On Monday 16 January 2006 18:14, Olaf Hering wrote:
+> Current Linus tree does not compile for me:
+>
+>
+> girgendwas:~/linux-2.6.15$ gcc -Wp,-MD,arch/um/drivers/.chan_user.o.d -Wall
+> -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
+> -ffreestanding -Os -fomit-frame-pointer -D__arch_um__ -DSUBARCH=\"i386\"
+> -Dvmap=kernel_vmap -Din6addr_loopback=kernel_in6addr_loopback
+> -Iarch/um/include  -I/home/abuild/linux-2.6.15/arch/um/kernel/skas/include
+> -D_FILE_OFFSET_BITS=64 -march=i686 -mpreferred-stack-boundary=2
+> -D_GNU_SOURCE -D_LARGEFILE64_SOURCE  -c -o arch/um/drivers/chan_user.o
+> arch/um/drivers/chan_user.c --save-temps In file included from
+> arch/um/drivers/chan_user.c:16:
+> arch/um/include/kern_util.h:35: error: 'CONFIG_NR_CPUS' undeclared here
+> (not in a function)
+>
+> It picks up the libc headers instead of the 2.6.15 ones.
+Yep, that's correct, the bug is that shouldn't be using CONFIG_NR_CPUS.
+> grep -E '^#[[:blank:]]+[[:digit:]]' chan_user.i
 
-No, wrong - on x86 it's used for everything, depending on userspace (it's 
-replacing int 0x80 with sysenter). For some reason, on x86-64 it was that 
-way, but it switched to what you say (implementing only a few syscalls 
-directly in userspace).
-
-> In a tt-style UML, where the UML kernel is in the same address space
-> as the process, this could be used for all system calls, where you
-> would just jump from there into the UML kernel.
-
-1st, TT mode is kept there only until SKAS0 will be damn stable (it seems 
-we're probably reaching that, no foreseen problems, except maybe my new TLS 
-code doesn't work for SKAS0 yet IMHO), and because it's the only SMP 
-supporting mode.
-
-However, going through ptrace for interprocess comunication is far from 
-optimal - using something like, say, POSIX message queues (it's a wild guess) 
-would be probably faster. Something purely in userspace seems difficult. 
-However, as shown below, if it's not purely in userspace ptrace will 
-intercept it, so we stop any gain.
-
-> I think you would have to fiddle libc to make all of the system calls for 
-this.
-
-No, you have to do worse - newer libc (more or less NPTL ones) link to a DSO 
-which is the vsyscall page, which we can't replace. However maybe the address 
-is not fixed, so we could pass the address of another vsyscall page with our 
-code.
-
-Obviously ptrace can't be disabled, as int 0x80 is still usable inside UML, 
-and you must catch that. Also the normal vsyscall page is still mapped and 
-could be run, so sysenter must be also caught.
-
-Once you pass another vsyscall page to glibc, you must only write the 
-implementation, distinguish the syscalls from that page (which must go in) 
-from the syscalls coming from everywhere else (which must still be 
-intercepted the normal way). Indeed, you still get to trace even new-style 
-syscalls this way (adding an API for checking something in kernel before 
-switching to the debugger is ugly, especially because we indeed must inspect 
-the stack to see where the syscall come from).
-
-> 				Jeff
+Disable CONFIG_SMP, it doesn't work well anyway, however thanks for the 
+report.
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+--Boundary-00=_zbEzDPuiTRg754p
+Content-Type: text/x-diff; charset="utf-8";
+	name="uml-compilation-error-smp-fix"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="uml-compilation-error-smp-fix"
+
+Index: linux-2.6.git/arch/um/include/kern_util.h
+===================================================================
+--- linux-2.6.git.orig/arch/um/include/kern_util.h
++++ linux-2.6.git/arch/um/include/kern_util.h
+@@ -31,8 +31,6 @@ extern int timer_irq_inited;
+ extern int jail;
+ extern int nsyscalls;
+ 
+-extern struct task_struct *idle_threads[NR_CPUS];
+-
+ #define UML_ROUND_DOWN(addr) ((void *)(((unsigned long) addr) & PAGE_MASK))
+ #define UML_ROUND_UP(addr) \
+ 	UML_ROUND_DOWN(((unsigned long) addr) + PAGE_SIZE - 1)
+Index: linux-2.6.git/arch/um/kernel/reboot.c
+===================================================================
+--- linux-2.6.git.orig/arch/um/kernel/reboot.c
++++ linux-2.6.git/arch/um/kernel/reboot.c
+@@ -5,6 +5,7 @@
+ 
+ #include "linux/module.h"
+ #include "linux/sched.h"
++#include "asm/smp.h"
+ #include "user_util.h"
+ #include "kern_util.h"
+ #include "kern.h"
+Index: linux-2.6.git/include/asm-um/smp.h
+===================================================================
+--- linux-2.6.git.orig/include/asm-um/smp.h
++++ linux-2.6.git/include/asm-um/smp.h
+@@ -23,6 +23,8 @@ extern inline void smp_cpus_done(unsigne
+ {
+ }
+ 
++extern struct task_struct *idle_threads[NR_CPUS];
++
+ #endif
+ 
+ #endif
+
+--Boundary-00=_zbEzDPuiTRg754p--
 
 	
+
 	
 		
 ___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
