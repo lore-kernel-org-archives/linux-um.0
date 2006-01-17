@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EyixH-00081y-NJ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 21:00:27 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EyixG-0007En-FN
+	id 1EyrYS-0000Ju-37 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jan 2006 06:11:24 -0800
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EyrYM-0002kw-FB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Jan 2006 21:00:27 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] arch/um/include/kern_util.h:35: error:
-	'CONFIG_NR_CPUS' undeclared
-Message-ID: <20060117055230.GA18789@ccure.user-mode-linux.org>
-References: <20060116171447.GA15932@suse.de>
-	<200601170222.59415.blaisorblade@yahoo.it>
-	<20060117034504.GG17171@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Tue, 17 Jan 2006 06:11:23 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.15-rc1 Badness in handle_page_fault
+References: <1137444603.8036.2.camel@localhost>
+	<200601170233.59826.blaisorblade@yahoo.it>
+	<20060117033744.GE17171@ccure.user-mode-linux.org>
+In-Reply-To: <20060117033744.GE17171@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20060117034504.GG17171@ccure.user-mode-linux.org>
+Message-Id: <200601171510.16839.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,17 +31,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 17 Jan 2006 00:52:30 -0500
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Olaf Hering <olh@suse.de>
+Date: Tue, 17 Jan 2006 15:10:16 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
 
-On Mon, Jan 16, 2006 at 10:45:04PM -0500, Jeff Dike wrote:
-> No, I just fixed this.  The bug is that chan_user.c includes kern_util.h,
-> which is a kernel-only header.
+On Tuesday 17 January 2006 04:37, Jeff Dike wrote:
+> On Tue, Jan 17, 2006 at 02:33:59AM +0100, Blaisorblade wrote:
+> > what
+> > about load_TLS? I only got -22, I fixed it by removing tls-debug
+>
+> That's caused by referring to errno in kernel code.  That gets you the
+> value of kernel_errno, which could be anything.
 
-This is just plain wrong.  The correct fix is to remove the kernel stuff
-(the NR_CPUS as BB did, plus the struct task things further down).
+Ok, in fact -2 (-ENOENT) didn't make sense, while -22 (-EINVAL) makes a lot. 
+You agree to removing the -debug part? Can you retest without that? I've done 
+a patch which complains if it ever returns something different from -EINVAL 
+(it's in my uploaded patchset, the last one, URL posted in my email).
 
-				Jeff
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
