@@ -2,21 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzM4g-0006U3-7K for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 14:46:42 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EzM4f-0004UO-02
+	id 1EzMXE-0007cB-N0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 15:16:12 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzMXB-0005w9-1F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 14:46:42 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060118233846.GA5534@ccure.user-mode-linux.org>
-References: <200601182053.31322.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Wed, 18 Jan 2006 15:16:12 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <20060118002225.003080b1.akpm@osdl.org>
+	<200601181347.27276.blaisorblade@yahoo.it>
+	<20060118213546.GC15828@mars.ravnborg.org>
+In-Reply-To: <20060118213546.GC15828@mars.ravnborg.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200601182053.31322.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Needed arch_copy_tls? Not done by dup_task_struct?
+Message-Id: <200601190016.01573.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: Using compiler.h from uml userspace code (was: Re:
+	uml build error)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,39 +32,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 18:38:46 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 19 Jan 2006 00:16:00 +0100
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, jdike@addtoit.com
 
-On Wed, Jan 18, 2006 at 08:53:29PM +0100, Blaisorblade wrote:
-> I looked at my patch's comment and noticed that arch_copy_tls, your 
-> introduction, shouldn't indeed be needed, because dup_task_struct should do 
-> that (it copies the whole task_struct, and it seems that arch_thread is 
-> included in that blob rather than pointed too).
-> 
-> I'm fairly puzzled at that. Have you any idea on this?
+On Wednesday 18 January 2006 22:35, Sam Ravnborg wrote:
+> On Wed, Jan 18, 2006 at 01:47:26PM +0100, Blaisorblade wrote:
+> > Possible solutions below - akpm doesn't need to read this. Sam, instead,
+> > please do read and give an opinion.
 
-I wondered about that, too, but hadn't bothered looking into it yet.  I'm
-suspicious that we initialize p.thread with INIT_THREAD, which would
-obviously wipe it out.
+> First off. When I see #include 2foo.h" then this tell me that foo is
+> found in the same dir as the .c file we are compiling.
 
-> Also, since you have a good test FS (Fedora), can I send you the updated 
-> versions I put out / can you test them? My Sarge isn't good any more, likely 
-> because glibc was updated by apt-get, and it works well with the LDT 
-> fallback.
+Oops... with that "foo.h" I meant the same folder as compiler.h... I'm correct 
+or not, with gcc?
 
-I have - they are on my patches page.  I added back the 
-user_desc -> modify_ldt_t thing because I don't have a user_desc here.
+> gcc though has a much more weak interpretation of the differences
+> between include <foo.h> and #include "foo.h".
 
-Other than that (and the O_FORCE succeeded message), it seems to be working
-fine.
+> The -I- flag to correct this stupidity is scheduled for removal and when
+> I asked on the gcc list no-one bothered to answer so I assume this is
+> all done now in 4.x.
+> -I- had to purposes, but I cannot recall the other one right now.
 
-> I've just uploaded 2.6.15-bs1-tls for people to test.
+1) Stop searching in "."
+2) End listing of include search dirs to use only with "" quotes.
 
-What I grabbed is what was there this morning.  If you changed anything
-significant, let me know, and I'll pull again.
+(From info gcc -> searching -I-, at least with 3.4).
 
-				Jeff
+> From a technical viewpoint nothing is wrong - the only thing being that
+> human mortals may be confused when suddenly file are included using a
+> different style than usual.
+
+> > With that in, just symlinking include/linux/compiler-*.h into
+> > arch/um/include would work well!
+
+> > We prefer to avoid them included as <linux/compiler-*.h> because it could
+> > conflict with host headers, unless it's possible to have our headers
+> > searched before host ones.
+
+> Thats perfectly doable if we talk kbuild.
+> You can just assing to NOSTDINC_FLAGS the directories to search first.
+
+The problem is that those files are building without NOSTDINC_FLAGS, because 
+they are the USER_OBJS. Weren't for this they'd simply include 
+<linux/compiler.h> and be done. However, I just saw that user supplied 
+include directories are searched before system headers.
+
+So, a simpler solution could be involve symlinking just a directory, where to 
+put all related files (like linux/byteorder).
+
+> In general I wish all symlinks in the build to hell.
+> In many cases they are just repairing a badly thought directory
+> structure include/asm being the worst evil of all.
+> klibc does the same with no symlinks.
+
+Hmm, how? Btw, I thought that klibc could be very useful for UML (either 
+linking to it or taking code to replace glibc one and alter it at will - 
+glibc is fairly unreadable for me, hope klibc is clearer).
+
+For instance, since fork() (or actually, clone) + execvp() calls malloc (and 
+so kmalloc) from a wrong context, we want to split execvp() into 
+search_exec() and execve().
+
+Doing that with glibc code felt horrible...
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
