@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzBt2-0005iY-Bt for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 03:54:00 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzBsz-0003UN-S6
+	id 1EzBxU-0005z3-Jy for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 03:58:36 -0800
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzBxU-0008It-Bc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 03:54:00 -0800
+	Wed, 18 Jan 2006 03:58:36 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [PATCH 1/9] uml: avoid sysfs warning on hot-unplug
-References: <20060118011200.GA28086@kroah.com>
-In-Reply-To: <20060118011200.GA28086@kroah.com>
+Subject: Re: [uml-devel] SKAS4 design question
+References: <43CBF532.8020103@gmail.com>
+In-Reply-To: <43CBF532.8020103@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200601181253.54942.blaisorblade@yahoo.it>
+Message-Id: <200601181258.34474.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,77 +29,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 12:53:54 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Greg KH <greg@kroah.com>, akpm@osdl.org, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Date: Wed, 18 Jan 2006 12:58:34 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, jcb62281@gmail.com
 
-On Wednesday 18 January 2006 02:12, Greg KH wrote:
-> > From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso
-> > <blaisorblade@yahoo.it>
-> >
-> > Define a release method for the ubd and network driver so that sysfs
-> > doesn't complain when one is removed via:
+On Monday 16 January 2006 20:34, Jacob Bachmeyer wrote:
+> Has any thought been given to making SKAS4 suitably generic that it
+> could be used for more than just UML?
 
-> What?  No.  The kernel is complaining for a reason, don't try to
-> out-smart it.
+Not yet, thoughts welcome.
 
-I'm not trying to ignore the warning.
+> PS:  If I understand correctly, UML with the current SKAS3 works by
+> swapping processes into and out of a single "user" address space.
 
-> > host $ uml_mconsole <umid> remove <dev>
+> I 
+> propose a system where many distinct "user" address spaces are
+> maintained by the kernel and execution is placed whereever the user-mode
+> scheduler says.
 
-> > Done by Jeff around January for ubd only, later lost, then restored in
-> > his tree - however I'm merging it now since there's no reason to leave
-> > this here.
+What you say is not clear, but the most obvious understanding of the above 
+sentence is that you propose what already happens.
 
-> > We don't need to do any cleanup in the new added method, because when
-> > hot-unplug is done by uml_mconsole we already handle cleanup in mconsole
-> > infrastructure, i.e.  mc_device->remove (net_remove/ubd_remove), which is
-> > also the calling method.
+However, SKAS3 and current ideas for SKAS4, with different APIs but similar 
+semantics, say: implement all guest processes as user-level threads (totally 
+implemented within UML) with the exception that we allow different address 
+spaces.
 
-> Huh?  You have 2 different release functions for the same object?
-
-Not sure which ones you refer. net_remove and ubd_remove are for different 
-devices; mc_device->remove and the sysfs release are in different layers and 
-for different things.
-
-> And 
-> how do you know which one is correct?  That does not sound right at all.
-
-No, but since we don't have plugs, we get configuration requests to remove 
-devices.
-
-And currently, since this existed in already 2.4, the handler of the 
-configuration request(mc_device->remove) does all the work to shutdown the 
-interface, and then calls into the kobject stuff (with 
-platform_device_unregister()); and this complains for the missing ->remove.
-
-If it's better, we may try to move things inside the sysfs ->remove event, 
-with care because different stuff has been done.
-
-However, there are a lot of things to look at here... is there anything in 
-ubd_remove() smelling awful? Because we have a crash which is caused by us 
-harming sysfs data structures, which triggers on ubd_remove().
-
-Bug report:
-http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=113537479514679&w=2
-
-investigations:
-http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=113538805406552&w=2
-
-> Please fix this correctly.
-
+So we have "switch the guest proc to a different address 
+space" (PTRACE_SWITCH_MM, in arch/i386/kernel/ptrace.c), manipulate with 
+mmap/munmap/mprotect any of these address spaces, and destroy it (all in 
+mm/proc_mm.c).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
 
+	
 	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
 
 
 
