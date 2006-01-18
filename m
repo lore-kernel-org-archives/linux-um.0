@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzNDG-0000yO-1f for user-mode-linux-devel@lists.sourceforge.net;
+	id 1EzNDG-0000yQ-26 for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 18 Jan 2006 15:59:38 -0800
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EzNDF-0002Yl-EA
+	(Exim 4.44) id 1EzNDF-0002Yp-EB
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 18 Jan 2006 15:59:38 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060118235514.4626.78783.stgit@zion.home.lan>
+Message-Id: <20060118235503.4626.71474.stgit@zion.home.lan>
 In-Reply-To: <20060118235132.4626.74049.stgit@zion.home.lan>
 References: <20060118235132.4626.74049.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 6/8] uml: skas0-hold-own-ldt fixups for x86-64
+Subject: [uml-devel] [PATCH 3/8] uml: fix hugest stack users
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,59 +25,100 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 Jan 2006 00:55:15 +0100
+Date: Thu, 19 Jan 2006 00:55:04 +0100
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-In a recent fixup i386 code was copied raw to x86_64 subarch to make it compile
-again.
+The C99 initialization, with GCC's bad handling, for 6K wide structs (which
+_aren't_ on the stack), is causing GCC to use 12K for these silly procs with 3
+vars. Workaround this.
 
-Here there are some little fixups and resyncs needed for it (mainly for
-cleanliness sake) - I did an audit and found the rest of the code to be safe.
+Note that .name = { '\0' } translates to memset(->name, 0, '->name' size) - I verified
+this with GCC's docs and a testprogram.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- include/asm-um/ldt-x86_64.h |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ arch/um/drivers/slip_common.h |   13 +++++++------
+ arch/um/drivers/slip_kern.c   |   15 ++++++++-------
+ arch/um/drivers/slirp_kern.c  |   13 +++++++------
+ 3 files changed, 22 insertions(+), 19 deletions(-)
 
-diff --git a/include/asm-um/ldt-x86_64.h b/include/asm-um/ldt-x86_64.h
-index 57159f1..96b35aa 100644
---- a/include/asm-um/ldt-x86_64.h
-+++ b/include/asm-um/ldt-x86_64.h
-@@ -39,11 +39,13 @@ typedef struct uml_ldt {
- } uml_ldt_t;
+diff --git a/arch/um/drivers/slip_common.h b/arch/um/drivers/slip_common.h
+index 2ae76d8..d574e0a 100644
+--- a/arch/um/drivers/slip_common.h
++++ b/arch/um/drivers/slip_common.h
+@@ -88,12 +88,13 @@ struct slip_proto {
+ 	int esc;
+ };
  
- /*
-- * macros stolen from include/asm-i386/desc.h
-+ * macros stolen from include/asm-x86_64/desc.h
-  */
- #define LDT_entry_a(info) \
- 	((((info)->base_addr & 0x0000ffff) << 16) | ((info)->limit & 0x0ffff))
+-#define SLIP_PROTO_INIT { \
+-	.ibuf  	= { '\0' }, \
+-	.obuf  	= { '\0' }, \
+-        .more	= 0, \
+-	.pos	= 0, \
+-	.esc	= 0 \
++static inline void slip_proto_init(struct slip_proto * slip)
++{
++	memset(slip->ibuf, 0, sizeof(slip->ibuf));
++	memset(slip->obuf, 0, sizeof(slip->obuf));
++	slip->more = 0;
++	slip->pos = 0;
++	slip->esc = 0;
+ }
  
-+/* Don't allow setting of the lm bit. It is useless anyways because
-+ * 64bit system calls require __USER_CS. */
- #define LDT_entry_b(info) \
- 	(((info)->base_addr & 0xff000000) | \
- 	(((info)->base_addr & 0x00ff0000) >> 16) | \
-@@ -54,6 +56,7 @@ typedef struct uml_ldt {
- 	((info)->seg_32bit << 22) | \
- 	((info)->limit_in_pages << 23) | \
- 	((info)->useable << 20) | \
-+	/* ((info)->lm << 21) | */ \
- 	0x7000)
+ extern int slip_proto_read(int fd, void *buf, int len,
+diff --git a/arch/um/drivers/slip_kern.c b/arch/um/drivers/slip_kern.c
+index 9a6f5c8..a62f5ef 100644
+--- a/arch/um/drivers/slip_kern.c
++++ b/arch/um/drivers/slip_kern.c
+@@ -21,13 +21,14 @@ void slip_init(struct net_device *dev, v
  
- #define LDT_empty(info) (\
-@@ -64,6 +67,7 @@ typedef struct uml_ldt {
- 	(info)->seg_32bit	== 0	&& \
- 	(info)->limit_in_pages	== 0	&& \
- 	(info)->seg_not_present	== 1	&& \
--	(info)->useable		== 0	)
-+	(info)->useable		== 0	&& \
-+	(info)->lm              == 0)
+ 	private = dev->priv;
+ 	spri = (struct slip_data *) private->user;
+-	*spri = ((struct slip_data)
+-		{ .name 	= { '\0' },
+-		  .addr		= NULL,
+-		  .gate_addr 	= init->gate_addr,
+-		  .slave  	= -1,
+-		  .slip		= SLIP_PROTO_INIT,
+-		  .dev 		= dev });
++
++	memset(spri->name, 0, sizeof(spri->name));
++	spri->addr = NULL;
++	spri->gate_addr = init->gate_addr;
++	spri->slave = -1;
++	spri->dev = dev;
++
++	slip_proto_init(&spri->slip);
  
- #endif
+ 	dev->init = NULL;
+ 	dev->header_cache_update = NULL;
+diff --git a/arch/um/drivers/slirp_kern.c b/arch/um/drivers/slirp_kern.c
+index 9864d27..33d7982 100644
+--- a/arch/um/drivers/slirp_kern.c
++++ b/arch/um/drivers/slirp_kern.c
+@@ -21,12 +21,13 @@ void slirp_init(struct net_device *dev, 
+ 
+ 	private = dev->priv;
+ 	spri = (struct slirp_data *) private->user;
+-	*spri = ((struct slirp_data)
+-		{ .argw 	= init->argw,
+-		  .pid  	= -1,
+-		  .slave  	= -1,
+-		  .slip		= SLIP_PROTO_INIT,
+-		  .dev 		= dev });
++
++	spri->argw = init->argw;
++	spri->pid = -1;
++	spri->slave = -1;
++	spri->dev = dev;
++
++	slip_proto_init(&spri->slip);
+ 
+ 	dev->init = NULL;
+ 	dev->hard_header_len = 0;
 
 
 
