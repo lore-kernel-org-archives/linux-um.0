@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzMXs-0007gh-6l for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 15:16:52 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EzMXp-0007nD-Vr
+	id 1EzMtx-00008N-Bg for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 15:39:41 -0800
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzMtu-00078q-Tx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 15:16:52 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] arch/um/include/kern_util.h:35: error:
-	'CONFIG_NR_CPUS' undeclared
-Message-ID: <20060119000851.GB5534@ccure.user-mode-linux.org>
-References: <20060116171447.GA15932@suse.de> <20060118130403.GA21457@suse.de>
-	<20060118143742.GB5154@ccure.user-mode-linux.org>
-	<200601181743.04311.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Wed, 18 Jan 2006 15:39:41 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: Needed arch_copy_tls? Not done by dup_task_struct?
+References: <200601182053.31322.blaisorblade@yahoo.it>
+	<20060118233846.GA5534@ccure.user-mode-linux.org>
+In-Reply-To: <20060118233846.GA5534@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200601181743.04311.blaisorblade@yahoo.it>
+Message-Id: <200601190039.30094.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,31 +30,65 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 19:08:51 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Olaf Hering <olh@suse.de>
+Date: Thu, 19 Jan 2006 00:39:29 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Wed, Jan 18, 2006 at 05:42:56PM +0100, Blaisorblade wrote:
-> What about this? Inserting an asm volatile clobbering all unsaved registers 
-> (what I thought for long time)? 
+On Thursday 19 January 2006 00:38, Jeff Dike wrote:
+> On Wed, Jan 18, 2006 at 08:53:29PM +0100, Blaisorblade wrote:
+> > I looked at my patch's comment and noticed that arch_copy_tls, your
+> > introduction, shouldn't indeed be needed, because dup_task_struct should
+> > do that (it copies the whole task_struct, and it seems that arch_thread
+> > is included in that blob rather than pointed too).
+> >
+> > I'm fairly puzzled at that. Have you any idea on this?
 
-The gcc doc is somewhat confusing.  I read your description as saying
-that locals may be totally smashed to random numbers (and the first
-sentence in the gcc description implies that as well).  However, the
-example they give is a pathological case where a local may have one of
-two (well-defined) values, and it's not defined which of those two
-well-defined values it will end up with.
+> I wondered about that, too, but hadn't bothered looking into it yet.  I'm
+> suspicious that we initialize p.thread with INIT_THREAD, which would
+> obviously wipe it out.
 
-> Or taking the libc implementation and suiting 
-> it for our use, solving the above problem?
+> > Also, since you have a good test FS (Fedora), can I send you the updated
+> > versions I put out / can you test them? My Sarge isn't good any more,
+> > likely because glibc was updated by apt-get, and it works well with the
+> > LDT fallback.
 
-Yuck.  But how big is it?
+> I have - they are on my patches page.  I added back the
+> user_desc -> modify_ldt_t thing because I don't have a user_desc here.
 
-Another possibility is to do the magic wakeup thing we do with
-mconsole stack, and have it tell us what it registers are.  Not sure
-if that's any better.
+> Other than that
 
-				Jeff
+> (and the O_FORCE succeeded message),
+
+Uff, I want to remove load_TLS(O_FORCE) from there altogether.
+
+Could you unapply 
+
+patches/tls/uml-add-tls-support-debug-check-never-works
+
+and verify it works correctly however? I want that to work :-) !
+
+> it seems to be working  
+> fine.
+
+> > I've just uploaded 2.6.15-bs1-tls for people to test.
+
+> What I grabbed is what was there this morning.  If you changed anything
+> significant, let me know, and I'll pull again.
+Ok, don't think anything changed for now. I'm changing things however, so 
+please stick modification in different patches so we merge easily.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
