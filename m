@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzKyP-00032v-Et for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 13:36:09 -0800
-Received: from pasmtp.tele.dk ([193.162.159.95])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EzKyM-0008Nk-K4
+	id 1EzM4g-0006U3-7K for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 14:46:42 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EzM4f-0004UO-02
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 13:36:09 -0800
-From: Sam Ravnborg <sam@ravnborg.org>
-Message-ID: <20060118213546.GC15828@mars.ravnborg.org>
-References: <20060118002225.003080b1.akpm@osdl.org>
-	<200601181217.31461.blaisorblade@yahoo.it>
-	<20060118033122.40e5d8b3.akpm@osdl.org>
-	<200601181347.27276.blaisorblade@yahoo.it>
+	Wed, 18 Jan 2006 14:46:42 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060118233846.GA5534@ccure.user-mode-linux.org>
+References: <200601182053.31322.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200601181347.27276.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: Using compiler.h from uml userspace code (was: Re:
-	uml build error)
+In-Reply-To: <200601182053.31322.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: Needed arch_copy_tls? Not done by dup_task_struct?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,78 +28,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 22:35:46 +0100
+Date: Wed, 18 Jan 2006 18:38:46 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>, jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Jan 18, 2006 at 01:47:26PM +0100, Blaisorblade wrote:
-> Possible solutions below - akpm doesn't need to read this. Sam, instead, 
-> please do read and give an opinion.
+On Wed, Jan 18, 2006 at 08:53:29PM +0100, Blaisorblade wrote:
+> I looked at my patch's comment and noticed that arch_copy_tls, your 
+> introduction, shouldn't indeed be needed, because dup_task_struct should do 
+> that (it copies the whole task_struct, and it seems that arch_thread is 
+> included in that blob rather than pointed too).
 > 
-> Found it: we're using __attribute_used__ from /usr/include/sys/cdefs.h rather 
-> than from compiler.h, because we can't include that... and <sys/cdefs.h> is 
-> buggy for this (see below).
-> 
-> But I've found a way to reuse compiler.h! Sam, could this go in?
-> 
-> Index: linux-2.6.git/include/linux/compiler.h
-> ===================================================================
-> --- linux-2.6.git.orig/include/linux/compiler.h
-> +++ linux-2.6.git/include/linux/compiler.h
-> @@ -39,9 +39,9 @@ extern void __chk_io_ptr(void __iomem *)
->  #if __GNUC__ > 4
->  #error no compiler-gcc.h file for this gcc version
->  #elif __GNUC__ == 4
-> -# include <linux/compiler-gcc4.h>
-> +# include "compiler-gcc4.h"
->  #elif __GNUC__ == 3
-> -# include <linux/compiler-gcc3.h>
-> +# include "compiler-gcc3.h"
->  #else
->  # error Sorry, your compiler is too old/not recognized.
->  #endif
-> @@ -50,7 +50,7 @@ extern void __chk_io_ptr(void __iomem *)
->   * coming from above header files here
->   */
->  #ifdef __INTEL_COMPILER
-> -# include <linux/compiler-intel.h>
-> +# include "compiler-intel.h"
->  #endif
-> 
->  /*
-First off. When I see #include 2foo.h" then this tell me that foo is
-found in the same dir as the .c file we are compiling.
-gcc though has a much more weak interpretation of the differences
-between include <foo.h> and #include "foo.h".
+> I'm fairly puzzled at that. Have you any idea on this?
 
-The -I- flag to correct this stupidity is scheduled for removal and when
-I asked on the gcc list no-one bothered to answer so I assume this is
-all done now in 4.x.
--I- had to purposes, but I cannot recall the other one right now.
+I wondered about that, too, but hadn't bothered looking into it yet.  I'm
+suspicious that we initialize p.thread with INIT_THREAD, which would
+obviously wipe it out.
 
-From a technical viewpoint nothing is wrong - the only thing being that
-human mortals may be confused when suddenly file are included using a
-different style than usual.
+> Also, since you have a good test FS (Fedora), can I send you the updated 
+> versions I put out / can you test them? My Sarge isn't good any more, likely 
+> because glibc was updated by apt-get, and it works well with the LDT 
+> fallback.
 
-> With that in, just symlinking include/linux/compiler-*.h into arch/um/include 
-> would work well!
-> 
-> We prefer to avoid them included as <linux/compiler-*.h> because it could 
-> conflict with host headers, unless it's possible to have our headers searched 
-> before host ones.
-Thats perfectly doable if we talk kbuild.
-You can just assing to NOSTDINC_FLAGS the directories to search first.
+I have - they are on my patches page.  I added back the 
+user_desc -> modify_ldt_t thing because I don't have a user_desc here.
 
-In general I wish all symlinks in the build to hell.
-In many cases they are just repairing a badly thought directory
-structure include/asm being the worst evil of all.
-klibc does the same with no symlinks.
+Other than that (and the O_FORCE succeeded message), it seems to be working
+fine.
 
-They are indeed needed sometimes - Al Viro poitned out a few cases for
-UML where they were the best solution, but do not let it be the hammer
-to repair everything.
+> I've just uploaded 2.6.15-bs1-tls for people to test.
 
-	Sam
+What I grabbed is what was there this morning.  If you changed anything
+significant, let me know, and I'll pull again.
+
+				Jeff
 
 
 -------------------------------------------------------
