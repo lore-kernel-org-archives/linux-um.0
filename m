@@ -2,21 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzGij-000627-E5 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 09:03:41 -0800
-Received: from mail.kroah.org ([69.55.234.183] helo=perch.kroah.org)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EzGih-00012Z-7f
+	id 1EzIAn-0002MI-JJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 10:36:45 -0800
+Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzIAi-0000yk-RV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 09:03:41 -0800
-From: Greg KH <greg@kroah.com>
+	Wed, 18 Jan 2006 10:36:45 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Re: [PATCH 1/9] uml: avoid sysfs warning on hot-unplug
-Message-ID: <20060118170212.GB12757@kroah.com>
 References: <20060118011200.GA28086@kroah.com>
 	<200601181253.54942.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<20060118170212.GB12757@kroah.com>
+In-Reply-To: <20060118170212.GB12757@kroah.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200601181253.54942.blaisorblade@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200601181936.26614.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,54 +31,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 09:02:12 -0800
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, akpm@osdl.org, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Date: Wed, 18 Jan 2006 19:36:26 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Greg KH <greg@kroah.com>, akpm@osdl.org, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-On Wed, Jan 18, 2006 at 12:53:54PM +0100, Blaisorblade wrote:
-> On Wednesday 18 January 2006 02:12, Greg KH wrote:
-> > > From: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso
-> > > <blaisorblade@yahoo.it>
-> > >
-> > > Define a release method for the ubd and network driver so that sysfs
-> > > doesn't complain when one is removed via:
-> 
-> > What?  No.  The kernel is complaining for a reason, don't try to
-> > out-smart it.
-> 
-> I'm not trying to ignore the warning.
+On Wednesday 18 January 2006 18:02, Greg KH wrote:
+> On Wed, Jan 18, 2006 at 12:53:54PM +0100, Blaisorblade wrote:
 
-By providing a release function that does nothing, all you are doing is
-shutting the kernel up.  You are not doing anything to "fix" the real
-problem at all.
+> As for your specific bug report, sorry, I really don't know.
 
-> > > host $ uml_mconsole <umid> remove <dev>
-> 
-> > > Done by Jeff around January for ubd only, later lost, then restored in
-> > > his tree - however I'm merging it now since there's no reason to leave
-> > > this here.
-> 
-> > > We don't need to do any cleanup in the new added method, because when
-> > > hot-unplug is done by uml_mconsole we already handle cleanup in mconsole
-> > > infrastructure, i.e.  mc_device->remove (net_remove/ubd_remove), which is
-> > > also the calling method.
-> 
-> > Huh?  You have 2 different release functions for the same object?
-> 
-> Not sure which ones you refer. net_remove and ubd_remove are for different 
-> devices; mc_device->remove and the sysfs release are in different layers and 
-> for different things.
+I know it's not something easy to find, but nor me nor Jeff master deeply the 
+kobject API. And we're not short of work.
 
-Ok, but you are still adding 2 empty release functions.
+Is there anybody who while reviewing various drivers could review our ones on 
+this aspect (the same way people like you use to review and fix bugs all over 
+the tree)?
 
-Please do not do that, if you think you need this, your code logic is
-wrong.
+I know this may seem unkind, but it's a "specialization thing" - 
+don't let an engineer heal somebody nor a doctor build a house, and don't 
+request them doing such things - defer the thing to more competent people, if 
+possible.
 
-As for your specific bug report, sorry, I really don't know.
+Alternatively, documentation is accepted. Is LDD v3 up-to-date enough? Guess 
+not.
 
-good luck,
+A question: looking at ide driver I saw that they don't use the 
+platform_device API, because they're already in the block category.
 
-greg k-h
+Could we be causing trouble by using both block API (with gendisk stuff) and 
+platform_device? Can platform_device
+
+Alternatively, is drivers/input/serio/i8042.c a likely correct API example?
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
