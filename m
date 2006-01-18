@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzDd3-0002jI-81 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 05:45:37 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EzDd1-00046p-HT
+	id 1EzGPC-0004q9-JO for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 08:43:30 -0800
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzGP6-0000UK-Q8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 05:45:37 -0800
-From: Jeff Dike <jdike@addtoit.com>
+	Wed, 18 Jan 2006 08:43:30 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] arch/um/include/kern_util.h:35: error:
 	'CONFIG_NR_CPUS' undeclared
-Message-ID: <20060118143742.GB5154@ccure.user-mode-linux.org>
-References: <20060116171447.GA15932@suse.de>
-	<200601170222.59415.blaisorblade@yahoo.it>
-	<20060117202411.GA27124@suse.de> <20060118130403.GA21457@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <20060116171447.GA15932@suse.de> <20060118130403.GA21457@suse.de>
+	<20060118143742.GB5154@ccure.user-mode-linux.org>
+In-Reply-To: <20060118143742.GB5154@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20060118130403.GA21457@suse.de>
+Message-Id: <200601181743.04311.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,16 +31,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 09:37:42 -0500
-To: Olaf Hering <olh@suse.de>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 18 Jan 2006 17:42:56 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Olaf Hering <olh@suse.de>
 
-On Wed, Jan 18, 2006 at 02:04:04PM +0100, Olaf Hering wrote:
-> These definitions are gone from glibc 2.4, has to be fixed in uml.
+On Wednesday 18 January 2006 15:37, Jeff Dike wrote:
+> On Wed, Jan 18, 2006 at 02:04:04PM +0100, Olaf Hering wrote:
+> > These definitions are gone from glibc 2.4, has to be fixed in uml.
 
-Yeah, we knew that was going to be fragile.  Needs fixing.
+I guess that using the same values is hackily guaranteed to work for binary 
+compatibility, right?
 
-				Jeff
+> Yeah, we knew that was going to be fragile.  Needs fixing.
+
+This sort of things is what autoconf is for. However we shouldn't use that, 
+and probably not its ideas... in the past we've used grep into headers (for 
+hostfs, a stat field had been renamed).
+
+Btw, while about setjmp/longjmp: they save only a few registers, not all ones 
+(and obviously not EAX and the return value); in fact GCC docs says that 
+local variables should be marked as volatile or risk being destroyed.
+
+What about this? Inserting an asm volatile clobbering all unsaved registers 
+(what I thought for long time)? Or taking the libc implementation and suiting 
+it for our use, solving the above problem?
+
+We do such things for context switch in the traced process, doing it for us 
+should be simpler (but it's in assembler).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
