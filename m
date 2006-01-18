@@ -1,19 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Ez1As-0007Kj-NA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 16:27:42 -0800
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ez1As-0000vE-6o
+	id 1Ez1Wq-00088b-17 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jan 2006 16:50:24 -0800
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1Ez1Wn-0002XJ-TG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Jan 2006 16:27:42 -0800
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060118001923.14622.78817.stgit@zion.home.lan>
-In-Reply-To: <20060117235659.14622.18544.stgit@zion.home.lan>
+	Tue, 17 Jan 2006 16:50:24 -0800
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20060117165217.0f9d9add.akpm@osdl.org>
+In-Reply-To: <20060118001931.14622.17211.stgit@zion.home.lan>
 References: <20060117235659.14622.18544.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 2/9] uml: make daemon transport behave properly
+	<20060118001931.14622.17211.stgit@zion.home.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [PATCH 4/9] uml: fix spinlock recursion and
+	sleep-inside-spinlock in error path
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,62 +30,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 01:19:25 +0100
-To: Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 17 Jan 2006 16:52:17 -0800
+To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
+"Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
+>
+> 
+> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> 
+> In this error path, when the interface has had a problem, we call dev_close(),
+> which is disallowed for two reasons:
+> 
+> *) takes again the UML internal spinlock, inside the ->stop method of this
+>    device
+> *) can be called in process context only, while we're in interrupt context.
+> 
+> I've also thought that calling dev_close() may be a wrong policy to follow, but
+> it's not up to me to decide that.
+> 
+> However, we may end up with multiple dev_close() queued on the same device.
+> But the initial test for (dev->flags & IFF_UP) makes this harmless, though -
+> and dev_close() is supposed to care about races with itself. So there's no harm
+> in delaying the shutdown, IMHO.
+> 
+> Something to mark the interface as "going to shutdown" would be appreciated, but
+> dev_deactivate has the same problems as dev_close(), so we can't use it either.
+> 
+> ...
+> +		/* dev_close can't be called in interrupt context, and takes
+> +		 * again lp->lock.
+> +		 * And dev_close() can be safely called multiple times on the
+> +		 * same device, since it tests for (dev->flags & IFF_UP). So
+> +		 * there's no harm in delaying the device shutdown. */
+> +		schedule_work(&close_work);
+>  		goto out;
+>  	}
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-
-Avoid uninitialized data in the daemon_data structure. I used this transport
-before doing proper setup before-hand, and I got some very nice SLAB corruption
-due to freeing crap pointers. So just make sure to clear everything when
-appropriate.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- arch/um/drivers/daemon_kern.c |    4 ++++
- arch/um/drivers/daemon_user.c |    6 ++++++
- 2 files changed, 10 insertions(+), 0 deletions(-)
-
-diff --git a/arch/um/drivers/daemon_kern.c b/arch/um/drivers/daemon_kern.c
-index 30d285b..507e3cb 100644
---- a/arch/um/drivers/daemon_kern.c
-+++ b/arch/um/drivers/daemon_kern.c
-@@ -31,6 +31,10 @@ void daemon_init(struct net_device *dev,
- 	dpri->fd = -1;
- 	dpri->control = -1;
- 	dpri->dev = dev;
-+	/* We will free this pointer. If it contains crap we're burned. */
-+	dpri->ctl_addr = NULL;
-+	dpri->data_addr = NULL;
-+	dpri->local_addr = NULL;
- 
- 	printk("daemon backend (uml_switch version %d) - %s:%s", 
- 	       SWITCH_VERSION, dpri->sock_type, dpri->ctl_sock);
-diff --git a/arch/um/drivers/daemon_user.c b/arch/um/drivers/daemon_user.c
-index 1bb085b..c944265 100644
---- a/arch/um/drivers/daemon_user.c
-+++ b/arch/um/drivers/daemon_user.c
-@@ -158,10 +158,16 @@ static void daemon_remove(void *data)
- 	struct daemon_data *pri = data;
- 
- 	os_close_file(pri->fd);
-+	pri->fd = -1;
- 	os_close_file(pri->control);
-+	pri->control = -1;
-+
- 	kfree(pri->data_addr);
-+	pri->data_addr = NULL;
- 	kfree(pri->ctl_addr);
-+	pri->ctl_addr = NULL;
- 	kfree(pri->local_addr);
-+	pri->local_addr = NULL;
- }
- 
- int daemon_user_write(int fd, void *buf, int len, struct daemon_data *pri)
-
+This callback can be pending for an arbitrary amount of time.  I'd have
+expected to see a flush_sceduled_work() somewhere in the driver to force
+all such pending work to complete before we destroy things which that
+callback wil be using.
 
 
 -------------------------------------------------------
