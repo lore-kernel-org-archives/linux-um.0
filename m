@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzNDG-0000yQ-26 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 15:59:38 -0800
+	id 1EzNDI-0000yw-O6 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 15:59:40 -0800
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EzNDF-0002Yp-EB
+	(Exim 4.44) id 1EzNDI-0002LK-Dr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 15:59:38 -0800
+	Wed, 18 Jan 2006 15:59:41 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060118235503.4626.71474.stgit@zion.home.lan>
+Message-Id: <20060118235522.4626.2825.stgit@zion.home.lan>
 In-Reply-To: <20060118235132.4626.74049.stgit@zion.home.lan>
 References: <20060118235132.4626.74049.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 3/8] uml: fix hugest stack users
+Subject: [uml-devel] [PATCH 8/8] uml: avoid "CONFIG_NR_CPUS undeclared" bogus
+	error messages
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,100 +26,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 Jan 2006 00:55:04 +0100
+Date: Thu, 19 Jan 2006 00:55:23 +0100
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-The C99 initialization, with GCC's bad handling, for 6K wide structs (which
-_aren't_ on the stack), is causing GCC to use 12K for these silly procs with 3
-vars. Workaround this.
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Olaf Hering <olh@suse.de>
 
-Note that .name = { '\0' } translates to memset(->name, 0, '->name' size) - I verified
-this with GCC's docs and a testprogram.
+Olaf reported UML doesn't build for him with a clear analisys of what happened -
+we're using NR_CPUS in files linked against glibc headers. Seems like it defines
+CONFIG_SMP but not CONFIG_NR_CPUS, so we get CONFIG_NR_CPUS undeclared.
+
+The fix is to move the declaration away from that header file and move it in
+asm-um headers, and to add that header where needed.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/slip_common.h |   13 +++++++------
- arch/um/drivers/slip_kern.c   |   15 ++++++++-------
- arch/um/drivers/slirp_kern.c  |   13 +++++++------
- 3 files changed, 22 insertions(+), 19 deletions(-)
+ arch/um/include/kern_util.h |    2 --
+ arch/um/kernel/reboot.c     |    1 +
+ include/asm-um/smp.h        |    2 ++
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/drivers/slip_common.h b/arch/um/drivers/slip_common.h
-index 2ae76d8..d574e0a 100644
---- a/arch/um/drivers/slip_common.h
-+++ b/arch/um/drivers/slip_common.h
-@@ -88,12 +88,13 @@ struct slip_proto {
- 	int esc;
- };
+diff --git a/arch/um/include/kern_util.h b/arch/um/include/kern_util.h
+index c649108..07176d9 100644
+--- a/arch/um/include/kern_util.h
++++ b/arch/um/include/kern_util.h
+@@ -31,8 +31,6 @@ extern int timer_irq_inited;
+ extern int jail;
+ extern int nsyscalls;
  
--#define SLIP_PROTO_INIT { \
--	.ibuf  	= { '\0' }, \
--	.obuf  	= { '\0' }, \
--        .more	= 0, \
--	.pos	= 0, \
--	.esc	= 0 \
-+static inline void slip_proto_init(struct slip_proto * slip)
-+{
-+	memset(slip->ibuf, 0, sizeof(slip->ibuf));
-+	memset(slip->obuf, 0, sizeof(slip->obuf));
-+	slip->more = 0;
-+	slip->pos = 0;
-+	slip->esc = 0;
+-extern struct task_struct *idle_threads[NR_CPUS];
+-
+ #define UML_ROUND_DOWN(addr) ((void *)(((unsigned long) addr) & PAGE_MASK))
+ #define UML_ROUND_UP(addr) \
+ 	UML_ROUND_DOWN(((unsigned long) addr) + PAGE_SIZE - 1)
+diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
+index 6f1a3a2..3ef73bf 100644
+--- a/arch/um/kernel/reboot.c
++++ b/arch/um/kernel/reboot.c
+@@ -5,6 +5,7 @@
+ 
+ #include "linux/module.h"
+ #include "linux/sched.h"
++#include "asm/smp.h"
+ #include "user_util.h"
+ #include "kern_util.h"
+ #include "kern.h"
+diff --git a/include/asm-um/smp.h b/include/asm-um/smp.h
+index d879eba..aeda665 100644
+--- a/include/asm-um/smp.h
++++ b/include/asm-um/smp.h
+@@ -23,6 +23,8 @@ extern inline void smp_cpus_done(unsigne
+ {
  }
  
- extern int slip_proto_read(int fd, void *buf, int len,
-diff --git a/arch/um/drivers/slip_kern.c b/arch/um/drivers/slip_kern.c
-index 9a6f5c8..a62f5ef 100644
---- a/arch/um/drivers/slip_kern.c
-+++ b/arch/um/drivers/slip_kern.c
-@@ -21,13 +21,14 @@ void slip_init(struct net_device *dev, v
- 
- 	private = dev->priv;
- 	spri = (struct slip_data *) private->user;
--	*spri = ((struct slip_data)
--		{ .name 	= { '\0' },
--		  .addr		= NULL,
--		  .gate_addr 	= init->gate_addr,
--		  .slave  	= -1,
--		  .slip		= SLIP_PROTO_INIT,
--		  .dev 		= dev });
++extern struct task_struct *idle_threads[NR_CPUS];
 +
-+	memset(spri->name, 0, sizeof(spri->name));
-+	spri->addr = NULL;
-+	spri->gate_addr = init->gate_addr;
-+	spri->slave = -1;
-+	spri->dev = dev;
-+
-+	slip_proto_init(&spri->slip);
+ #endif
  
- 	dev->init = NULL;
- 	dev->header_cache_update = NULL;
-diff --git a/arch/um/drivers/slirp_kern.c b/arch/um/drivers/slirp_kern.c
-index 9864d27..33d7982 100644
---- a/arch/um/drivers/slirp_kern.c
-+++ b/arch/um/drivers/slirp_kern.c
-@@ -21,12 +21,13 @@ void slirp_init(struct net_device *dev, 
- 
- 	private = dev->priv;
- 	spri = (struct slirp_data *) private->user;
--	*spri = ((struct slirp_data)
--		{ .argw 	= init->argw,
--		  .pid  	= -1,
--		  .slave  	= -1,
--		  .slip		= SLIP_PROTO_INIT,
--		  .dev 		= dev });
-+
-+	spri->argw = init->argw;
-+	spri->pid = -1;
-+	spri->slave = -1;
-+	spri->dev = dev;
-+
-+	slip_proto_init(&spri->slip);
- 
- 	dev->init = NULL;
- 	dev->hard_header_len = 0;
+ #endif
 
 
 
