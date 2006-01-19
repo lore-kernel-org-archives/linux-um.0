@@ -1,21 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzatR-0007q7-2Z for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Jan 2006 06:36:05 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzatK-0000d6-8L
+	id 1EzbIK-0001Rf-IH for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 Jan 2006 07:01:48 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzbII-0005ks-3F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Jan 2006 06:36:05 -0800
+	Thu, 19 Jan 2006 07:01:48 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 8/8] uml: avoid "CONFIG_NR_CPUS undeclared"
+	bogus error messages
+References: <20060118235132.4626.74049.stgit@zion.home.lan>
+	<20060118235522.4626.2825.stgit@zion.home.lan>
+	<20060119042104.GC8265@ccure.user-mode-linux.org>
+In-Reply-To: <20060119042104.GC8265@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200601191535.47682.blaisorblade@yahoo.it>
-Subject: [uml-devel] Remove l1-shift from the patchset
+Message-Id: <200601191601.31805.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,30 +32,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 19 Jan 2006 15:35:47 +0100
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 19 Jan 2006 16:01:28 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Again, please, remove the "l1-shift" patch from the patchset.
+On Thursday 19 January 2006 05:21, Jeff Dike wrote:
+> On Thu, Jan 19, 2006 at 12:55:23AM +0100, Paolo 'Blaisorblade' Giarrusso 
+wrote:
+> > -extern struct task_struct *idle_threads[NR_CPUS];
+> > -
+>
+> BTW, this isn't the only problem there.  There are three declarations
+> towards the bottom with struct task_struct in them which have to be moved.
 
-All these three options are already set by arch/i386/Kconfig.cpu which we 
-include (and with more accurate values).
+I saw that after, but let's say a thing which I always forgot to say:
 
-Simply, Kconfig doesn't warn for duplicated symbols, it chooses either one.
+we're often using void * in protos when we can't include a type declaration in 
+the needed file.
 
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.16-rc1/patches/l1-shift
+Gerd Knorr in his tty patch, instead, used forward declarations, like:
 
+struct task_struct; 
+
+what about that?
+
+Those functions probably should be moved anyway because they're useless there, 
+but I'm using this occasion to avoid forgetting this.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
 
 
 
