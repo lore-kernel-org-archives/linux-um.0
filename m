@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzQkY-0003pC-9A for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 19:46:14 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1EzQkW-0004Yl-VW
+	id 1EzatR-0007q7-2Z for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 Jan 2006 06:36:05 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzatK-0000d6-8L
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 19:46:14 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: Needed arch_copy_tls? Not done by dup_task_struct?
-Message-ID: <20060119043821.GD8265@ccure.user-mode-linux.org>
-References: <200601182053.31322.blaisorblade@yahoo.it>
-	<20060118233846.GA5534@ccure.user-mode-linux.org>
-	<200601190039.30094.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Thu, 19 Jan 2006 06:36:05 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200601190039.30094.blaisorblade@yahoo.it>
+Message-Id: <200601191535.47682.blaisorblade@yahoo.it>
+Subject: [uml-devel] Remove l1-shift from the patchset
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,25 +27,31 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 23:38:21 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 19 Jan 2006 15:35:47 +0100
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Jan 19, 2006 at 12:39:29AM +0100, Blaisorblade wrote:
-> Could you unapply 
-> 
-> patches/tls/uml-add-tls-support-debug-check-never-works
-> 
-> and verify it works correctly however? I want that to work :-) !
+Again, please, remove the "l1-shift" patch from the patchset.
 
-Sill seems OK.
+All these three options are already set by arch/i386/Kconfig.cpu which we 
+include (and with more accurate values).
 
-> Ok, don't think anything changed for now. I'm changing things however, so 
-> please stick modification in different patches so we merge easily.
+Simply, Kconfig doesn't warn for duplicated symbols, it chooses either one.
 
-Yeah, I'm leaving yours alone and keeping my changes in their own patches.
+http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.16-rc1/patches/l1-shift
 
-				Jeff
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
