@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzOtR-0007GH-VQ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 17:47:17 -0800
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EzOtQ-0000ls-Mq
+	id 1EzQMm-0002y1-LU for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Jan 2006 19:21:40 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1EzQMj-000571-Lc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jan 2006 17:47:18 -0800
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Message-ID: <Pine.LNX.4.64.0601182042120.4057@sparrow>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: [uml-devel] 2.6.16-rc1-um20060118 tls compile problem
+	Wed, 18 Jan 2006 19:21:40 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] 2.6.16-rc1-um20060118 tls compile problem
+Message-ID: <20060119041342.GA8265@ccure.user-mode-linux.org>
+References: <Pine.LNX.4.64.0601182042120.4057@sparrow>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0601182042120.4057@sparrow>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,61 +28,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 18 Jan 2006 20:46:07 -0500 (EST)
-To: Jeff Dike <jdike@addtoit.com>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: William Stearns <wstearns@pobox.com>
+Date: Wed, 18 Jan 2006 23:13:42 -0500
+To: William Stearns <wstearns@pobox.com>
+Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Good evening, Jeff,
- 	This is with your quilt set from today.
+On Wed, Jan 18, 2006 at 08:46:07PM -0500, William Stearns wrote:
+> arch/um/os-Linux/tls.c:48: error: syntax error before 'get_thread_area'
+> arch/um/os-Linux/tls.c:48: warning: type defaults to 'int' in declaration 
+> of '_syscall1'
 
-   CC      arch/um/os-Linux/tls.o
-arch/um/os-Linux/tls.c:48: error: syntax error before 'get_thread_area'
-arch/um/os-Linux/tls.c:48: warning: type defaults to 'int' in declaration 
-of '_syscall1'
-arch/um/os-Linux/tls.c:48: warning: function declaration isn't a prototype
-arch/um/os-Linux/tls.c:48: warning: data definition has no type or storage 
-class
-arch/um/os-Linux/tls.c:49: error: syntax error before 'set_thread_area'
-arch/um/os-Linux/tls.c:49: warning: type defaults to 'int' in declaration 
-of '_syscall1'
-arch/um/os-Linux/tls.c:49: warning: function declaration isn't a prototype
-arch/um/os-Linux/tls.c:49: warning: data definition has no type or storage 
-class
-arch/um/os-Linux/tls.c:51: warning: 'struct modify_ldt_t' declared inside 
-parameter list
-arch/um/os-Linux/tls.c:51: warning: its scope is only this definition or 
-declaration, which is probably not what you want
-arch/um/os-Linux/tls.c: In function 'do_set_thread_area_tt':
-arch/um/os-Linux/tls.c:55: warning: implicit declaration of function 
-'set_thread_area'
-arch/um/os-Linux/tls.c: At top level:
-arch/um/os-Linux/tls.c:62: warning: 'struct modify_ldt_t' declared inside 
-parameter list
-arch/um/os-Linux/tls.c: In function 'do_get_thread_area_tt':
-arch/um/os-Linux/tls.c:66: warning: implicit declaration of function 
-'get_thread_area'
-make[1]: *** [arch/um/os-Linux/tls.o] Error 1
-make: *** [arch/um/os-Linux] Error 2
+Can you try this patch for this one?
+
+Index: linux-2.6.15/arch/um/os-Linux/tls.c
+===================================================================
+--- linux-2.6.15.orig/arch/um/os-Linux/tls.c    2006-01-18 13:40:01.000000000 -0500
++++ linux-2.6.15/arch/um/os-Linux/tls.c 2006-01-18 22:18:57.000000000 -0500
+@@ -1,5 +1,6 @@
+ #include <errno.h>
+ #include <sys/ptrace.h>
++#include <linux/unistd.h>
+ #include <asm/ldt.h>
+ #include "uml-config.h"
 
 
-[root@sparrow ~]# rpm -q gcc glibc-devel glibc-kernheaders
-gcc-4.0.2-8.fc4
-glibc-devel-2.3.5-10.3
-glibc-kernheaders-2.4-9.1.94
 
- 	Please let me know if there's more I can provide or try.  Thanks 
-for all your work on this.
- 	Cheers,
- 	- Bill
+> arch/um/os-Linux/tls.c:51: warning: 'struct modify_ldt_t' declared inside 
+> parameter list
+> arch/um/os-Linux/tls.c:51: warning: its scope is only this definition or 
+> declaration, which is probably not what you want
 
----------------------------------------------------------------------------
-Do you smoke after sex?
-Why, do you know, I've never looked!
-(Courtesy of Matthias Urlichs <smurf@noris.de>)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+For these, try backing out the user-desc patch.  You may one of those 
+primitive beings who lacks a modify_ldt_t in your asm/ldt.h.
+
+				Jeff
 
 
 -------------------------------------------------------
