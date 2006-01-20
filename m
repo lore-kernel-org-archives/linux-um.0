@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1EzjPO-0001I2-Vu for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Jan 2006 15:41:38 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1EzjPN-0007g6-IO
+	id 1EzmWf-0002lw-J6 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 Jan 2006 19:01:21 -0800
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1EzmWb-0000EL-Af
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Jan 2006 15:41:39 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 8/8] uml: avoid "CONFIG_NR_CPUS undeclared"
-	bogus error messages
-References: <20060118235132.4626.74049.stgit@zion.home.lan>
-	<200601191601.31805.blaisorblade@yahoo.it>
-	<20060119194356.GA8670@ccure.user-mode-linux.org>
-In-Reply-To: <20060119194356.GA8670@ccure.user-mode-linux.org>
+	Thu, 19 Jan 2006 19:01:21 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Subject: Re: [uml-devel] 2.6.16-rc1-um20060118 tls compile problem
+In-Reply-To: <20060119041342.GA8265@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.64.0601192143270.3892@sparrow>
+References: <Pine.LNX.4.64.0601182042120.4057@sparrow>
+	<20060119041342.GA8265@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200601200041.14590.blaisorblade@yahoo.it>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,52 +28,58 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 20 Jan 2006 00:41:08 +0100
+Date: Thu, 19 Jan 2006 22:00:13 -0500 (EST)
 To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thursday 19 January 2006 20:43, Jeff Dike wrote:
-> On Thu, Jan 19, 2006 at 04:01:28PM +0100, Blaisorblade wrote:
-> > Gerd Knorr in his tty patch, instead, used forward declarations, like:
-> >
-> > struct task_struct;
-> >
-> > what about that?
+Good evening, Jeff,
 
-> I don't think so.  At least when you use void *, you are using a type
-> that's not incorrect.  In userspace code, those task_structs start
-> referring to host task_structs, which is definitely very wrong.
+On Wed, 18 Jan 2006, Jeff Dike wrote:
 
-Possibly yes, but as long as we don't dereference the pointer (and in a 
-prototype you're not going to do that) there's no problem.
+> On Wed, Jan 18, 2006 at 08:46:07PM -0500, William Stearns wrote:
+>> arch/um/os-Linux/tls.c:48: error: syntax error before 'get_thread_area'
+>> arch/um/os-Linux/tls.c:48: warning: type defaults to 'int' in declaration
+>> of '_syscall1'
+>
+> Can you try this patch for this one?
+>
+> Index: linux-2.6.15/arch/um/os-Linux/tls.c
+> ===================================================================
+> --- linux-2.6.15.orig/arch/um/os-Linux/tls.c    2006-01-18 13:40:01.000000000 -0500
+> +++ linux-2.6.15/arch/um/os-Linux/tls.c 2006-01-18 22:18:57.000000000 -0500
+> @@ -1,5 +1,6 @@
+> #include <errno.h>
+> #include <sys/ptrace.h>
+> +#include <linux/unistd.h>
+> #include <asm/ldt.h>
+> #include "uml-config.h"
 
-Using a type makes the code clearer, and it doesn't hide any warning GCC may 
-give (behaving well is left to us only).
+ 	That patch helped.
 
-In fact, btw (before I forget) we have currently the wrong errno used in 
-sys-i386/ldt.c. Just wrote the fix (it's adding a silly os_ptrace_ldt). Going 
-to compile and send.
+>> arch/um/os-Linux/tls.c:51: warning: 'struct modify_ldt_t' declared inside
+>> parameter list
+>> arch/um/os-Linux/tls.c:51: warning: its scope is only this definition or
+>> declaration, which is probably not what you want
+>
+> For these, try backing out the user-desc patch.  You may one of those
+> primitive beings who lacks a modify_ldt_t in your asm/ldt.h.
 
-> > Those functions probably should be moved anyway because they're
-> > useless there
+ 	Actually I don't need to revert this one; after reverting the 
+compile fails.  Leaving it in works.  The compile finishes.
+ 	Thanks again for your help, Jeff and Blaisor.
+ 	Cheers,
+ 	- Bill
 
-> Yeah.
-
-> 				Jeff
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+---------------------------------------------------------------------------
+ 	"Microsoft's biggest and most dangerous contribution to the
+software industry may be the degree to which it has lowered user
+expectations."
+ 	-- Esther Schindler, OS/2 Magazine
+(Courtesy of Bob Tracy - TDS <rct@merkin.csap.af.mil>)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
