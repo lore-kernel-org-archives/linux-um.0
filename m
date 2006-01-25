@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F1Wpn-0004wj-KE for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Jan 2006 14:40:19 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1F1geJ-0000Fa-Ok for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Jan 2006 01:09:07 -0800
+Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1F1Wpn-0004Wo-9p
+	(Exim 4.44) id 1F1geI-00074Q-Al
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Jan 2006 14:40:19 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060124233226.GA8941@ccure.user-mode-linux.org>
+	Wed, 25 Jan 2006 01:09:07 -0800
+From: Pekka J Enberg <penberg@cs.Helsinki.FI>
+Message-ID: <Pine.LNX.4.58.0601251105120.23552@sbz-30.cs.Helsinki.FI>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] include fixlet for uml-add-tls-support
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] [PATCH] um: fix compliation error when CONFIG_SKAS is
+	disabled
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,26 +27,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 24 Jan 2006 18:32:26 -0500
+Date: Wed, 25 Jan 2006 11:08:27 +0200 (EET)
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, wstearns@pobox.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
-linux/unistd.h is the place to get the _syscall* macros, not asm/unistd.h.
-wstearns likes it, and it doesn't hurt me, so it seems to be good.
+From: Pekka Enberg <penberg@cs.helsinki.fi>
 
-Index: linux-2.6.15/arch/um/os-Linux/tls.c
+This patch fixes the following compilation error when CONFIG_SKAS is disabled:
+
+  CC      arch/um/sys-i386/ldt.o
+arch/um/sys-i386/ldt.c:19:21: proc_mm.h: No such file or directory
+make[1]: *** [arch/um/sys-i386/ldt.o] Error 1
+
+Signed-off-by: Pekka Enberg <penberg@cs.helsinki.fi>
+---
+
+Index: 2.6/arch/um/sys-i386/ldt.c
 ===================================================================
---- linux-2.6.15.orig/arch/um/os-Linux/tls.c	2006-01-19 10:11:33.000000000 -0500
-+++ linux-2.6.15/arch/um/os-Linux/tls.c	2006-01-19 10:14:37.000000000 -0500
-@@ -43,7 +43,7 @@ int os_get_thread_area(void *data, int p
- #endif
+--- 2.6.orig/arch/um/sys-i386/ldt.c
++++ 2.6/arch/um/sys-i386/ldt.c
+@@ -16,7 +16,6 @@
+ #include "choose-mode.h"
+ #include "kern.h"
+ #include "mode_kern.h"
+-#include "proc_mm.h"
+ #include "os.h"
  
- #ifdef UML_CONFIG_MODE_TT
--#include "asm/unistd.h"
-+#include "linux/unistd.h"
+ extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
+@@ -90,6 +89,7 @@ out:
+ #include "skas.h"
+ #include "skas_ptrace.h"
+ #include "asm/mmu_context.h"
++#include "proc_mm.h"
  
- _syscall1(int, get_thread_area, modify_ldt_t *, u_info);
- _syscall1(int, set_thread_area, modify_ldt_t *, u_info);
+ long write_ldt_entry(struct mm_id * mm_idp, int func, struct user_desc * desc,
+ 		     void **addr, int done)
 
 
 -------------------------------------------------------
