@@ -2,24 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F1mVh-0003pg-CL for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Jan 2006 07:24:37 -0800
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1F1mVf-00028d-PG
+	id 1F2Ygc-0002i6-S1 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Jan 2006 10:51:06 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1F2Ygb-0008BS-S6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Jan 2006 07:24:37 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <84144f020601250133o1fd90c7vf05e8f17e1a51c2a@mail.gmail.com>
-	<200601251557.26762.blaisorblade@yahoo.it>
-	<Pine.LNX.4.58.0601251707230.8470@sbz-30.cs.Helsinki.FI>
-In-Reply-To: <Pine.LNX.4.58.0601251707230.8470@sbz-30.cs.Helsinki.FI>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200601251624.13666.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: [PROBLEM] uml refuses to boot
+	Fri, 27 Jan 2006 10:51:07 -0800
+Message-Id: <200601271730.k0RHUlB3006281@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 1/1] UML - compilation fix when MODE_SKAS disabled
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,43 +25,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 25 Jan 2006 16:24:13 +0100
-To: Pekka J Enberg <penberg@cs.helsinki.fi>
-Cc: jdike@karaya.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 27 Jan 2006 12:30:46 -0500
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Pekka Enberg <penberg@cs.helsinki.fi>
 
-On Wednesday 25 January 2006 16:09, Pekka J Enberg wrote:
-> On Wed, 25 Jan 2006, Blaisorblade wrote:
-> > So, first thing, you're still running in TT mode.
+This is 2.6.16 material.
 
-> > FYI, you should probably enable CONFIG_MODE_SKAS - it now (since 2.6.13)
-> > works even on unpatched hosts, in SKAS0 mode (even if it's a bit slower
-> > than SKAS3).
+From: Pekka Enberg <penberg@cs.helsinki.fi>
 
-> > The only reason TT mode is still in is that its code is useful for
-> > debugging and future extension (i.e. there's no SMP support in SKAS0/3
-> > modes).
+This patch fixes the following compilation error when CONFIG_SKAS is disabled:
 
-> Well, yeah, I know. I haven't been able to get the uml debug mode work
-> with SKAS which is why I use TT.
+  CC      arch/um/sys-i386/ldt.o
+arch/um/sys-i386/ldt.c:19:21: proc_mm.h: No such file or directory
+make[1]: *** [arch/um/sys-i386/ldt.o] Error 1
 
-With SKAS you simply do the normal "gdb ./vmlinux" rather than using the debug 
-parameter - that was needed for TT only because of its weirdness (and it 
-recently the ptrace proxy started being buggy too).
+Signed-off-by: Pekka Enberg <penberg@cs.helsinki.fi>
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Make sure CONFIG_CMDLINE_ON_HOST is still disabled, because gdb seems unable 
-to debug a program which ptraces itself.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Index: linux-2.6.15-mm/arch/um/sys-i386/ldt.c
+===================================================================
+--- linux-2.6.15-mm.orig/arch/um/sys-i386/ldt.c	2006-01-26 17:01:15.000000000 -0500
++++ linux-2.6.15-mm/arch/um/sys-i386/ldt.c	2006-01-26 19:48:23.000000000 -0500
+@@ -16,7 +16,6 @@
+ #include "choose-mode.h"
+ #include "kern.h"
+ #include "mode_kern.h"
+-#include "proc_mm.h"
+ #include "os.h"
+ 
+ extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
+@@ -90,6 +89,7 @@ out:
+ #include "skas.h"
+ #include "skas_ptrace.h"
+ #include "asm/mmu_context.h"
++#include "proc_mm.h"
+ 
+ long write_ldt_entry(struct mm_id * mm_idp, int func, struct user_desc * desc,
+ 		     void **addr, int done)
 
 
 
