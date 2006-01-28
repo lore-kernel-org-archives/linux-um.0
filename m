@@ -1,24 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F2dK0-0007iS-N1 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jan 2006 15:48:04 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1F2dK0-0004Sj-Em
+	id 1F2zEF-0000YG-ED for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 28 Jan 2006 15:11:35 -0800
+Received: from bay101-f14.bay101.hotmail.com ([64.4.56.24] helo=hotmail.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1F2zEF-00016U-3G
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jan 2006 15:48:04 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH] slight UML config simplification.
-Message-ID: <20060127234916.GA9998@ccure.user-mode-linux.org>
-References: <200510081837.26059.rob@landley.net>
-	<20060127180858.GA6360@ccure.user-mode-linux.org>
-	<200601271637.17770.rob@landley.net>
+	Sat, 28 Jan 2006 15:11:35 -0800
+Message-ID: <BAY101-F14AF59E645AF66A2146EF5E2170@phx.gbl>
+From: "James McMechan" <james_mcmechan@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200601271637.17770.rob@landley.net>
+Content-Type: text/plain; format=flowed
+Subject: [uml-devel] many cow files with ubd_kern.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,25 +24,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 27 Jan 2006 18:49:16 -0500
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 28 Jan 2006 23:11:31 +0000
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Jan 27, 2006 at 04:37:17PM -0600, Rob Landley wrote:
-> Understood.  Is there any way to autodetect this at runtime?
+Once again I have been tweaking ubd_kern to support lots of disks since I 
+need it for recovery
+but I hit (even on a plain 2.6.15-bs1 kernel)
+allocation failed: out of vmalloc space - use "vmalloc=<size>" to increse 
+size
+Failed to vmalloc COW bitmap
+ubd0: Can't open "COW0": errno -12
 
-Not sure, that would be nice.
+but I already had vmalloc=128M (which should be the default) and 
+vmalloc=256M and mem=384M on the command line.
+I can't seem to locate where the equivlaent of arch/i386/kernel/setup.c has 
+the vmalloc= option on arch/um though
+has anyone hit something like this before each of the bitmaps should only 
+take about 60M of memory and at this point I have only tried to allocate 1 
+for a single 250G ubd device
 
-It would have to look at its own maps and figure out that two pages mapped
-at the top of memory are the stub pages of the outer UML.  That seems a bit
-ad-hoc to me.
+This will present a larger problem when I get everything working and try to 
+allocate all 10 drives worth of bitmap ~600M
+I suppose I may have to go back to the paged bitmap logic but it is still a 
+mess...
+The multiple major numbers and C:H:S from mconsole do seem to work correctly 
+though
 
-Although maybe we could just say that any two pages there (as long as they
-are not stack) cause the stub pages to be relocated simply to avoid a
-collision.  Here, we're not explicitly looking for an outer UML, just pages
-that we are about to stomp on.
 
-				Jeff
 
 
 -------------------------------------------------------
