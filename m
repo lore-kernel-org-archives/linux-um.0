@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F6IV6-0003pt-1W for user-mode-linux-devel@lists.sourceforge.net;
+	id 1F6IV6-0003py-91 for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 06 Feb 2006 18:22:40 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1F6IV4-0008AW-IR
+	(Exim 4.44) id 1F6IV5-00044x-QU
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 06 Feb 2006 18:22:40 -0800
-Message-Id: <200602070224.k172O0oH009669@ccure.user-mode-linux.org>
+Message-Id: <200602070223.k172Nr2L009659@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 5/8] UML - Balance list_add and list_del in the
-	network driver
+Subject: [uml-devel] [PATCH 3/8] UML - Add debug switch for skas mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,83 +25,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 06 Feb 2006 21:24:00 -0500
+Date: Mon, 06 Feb 2006 21:23:53 -0500
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Pekka J Enberg <penberg@cs.Helsinki.FI>
 
-The network driver added an interface to the "opened" list when it was
-configured, not when it was brought up, and removed it when it was taken
-down.  A sequence of ifconfig up, ifconfig down, ... caused it to be removed
-multiple times from the list without being added in between, resulting in
-a crash.  This patch moves the add to when the interface is brought up.
+It doesn't do anything but emit a warning, but there's a user population
+that's used to adding 'debug' to the UML command line in order to gdb it.
+With skas0 mode, that's not necessary, but these users need some indication
+that 'debug' doesn't do what they want.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.15/arch/um/drivers/net_kern.c
+Index: linux-2.6.15/arch/um/kernel/um_arch.c
 ===================================================================
---- linux-2.6.15.orig/arch/um/drivers/net_kern.c	2006-02-06 17:33:55.000000000 -0500
-+++ linux-2.6.15/arch/um/drivers/net_kern.c	2006-02-06 17:35:58.000000000 -0500
-@@ -131,9 +131,8 @@ static int uml_net_open(struct net_devic
- 			     SA_INTERRUPT | SA_SHIRQ, dev->name, dev);
- 	if(err != 0){
- 		printk(KERN_ERR "uml_net_open: failed to get irq(%d)\n", err);
--		if(lp->close != NULL) (*lp->close)(lp->fd, &lp->user);
--		lp->fd = -1;
- 		err = -ENETUNREACH;
-+		goto out_close;
- 	}
+--- linux-2.6.15.orig/arch/um/kernel/um_arch.c	2006-02-06 17:33:55.000000000 -0500
++++ linux-2.6.15/arch/um/kernel/um_arch.c	2006-02-06 17:35:35.000000000 -0500
+@@ -193,6 +193,24 @@ __uml_setup("root=", uml_root_setup,
+ "        root=/dev/ubd5\n\n"
+ );
  
- 	lp->tl.data = (unsigned long) &lp->user;
-@@ -145,9 +144,19 @@ static int uml_net_open(struct net_devic
- 	 */
- 	while((err = uml_net_rx(dev)) > 0) ;
- 
-- out:
- 	spin_unlock(&lp->lock);
--	return(err);
++#ifndef CONFIG_MODE_TT
 +
-+	spin_lock(&opened_lock);
-+	list_add(&lp->list, &opened);
-+	spin_unlock(&opened_lock);
++static int __init no_skas_debug_setup(char *line, int *add)
++{
++	printf("'debug' is not necessary to gdb UML in skas mode - run \n");
++	printf("'gdb linux' and disable CONFIG_CMDLINE_ON_HOST if gdb \n");
++	printf("doesn't work as expected\n");
 +
 +	return 0;
-+out_close:
-+	if(lp->close != NULL) (*lp->close)(lp->fd, &lp->user);
-+	lp->fd = -1;
-+out:
-+	spin_unlock(&lp->lock);
-+	return err;
- }
- 
- static int uml_net_close(struct net_device *dev)
-@@ -161,9 +170,13 @@ static int uml_net_close(struct net_devi
- 	if(lp->close != NULL)
- 		(*lp->close)(lp->fd, &lp->user);
- 	lp->fd = -1;
--	list_del(&lp->list);
- 
- 	spin_unlock(&lp->lock);
++}
 +
-+	spin_lock(&opened_lock);
-+	list_del(&lp->list);
-+	spin_unlock(&opened_lock);
++__uml_setup("debug", no_skas_debug_setup,
++"debug\n"
++"    this flag is not needed to run gdb on UML in skas mode\n\n"
++);
 +
- 	return 0;
- }
- 
-@@ -410,11 +423,7 @@ static int eth_configure(int n, void *in
- 	if (device->have_mac)
- 		set_ether_mac(dev, device->mac);
- 
--	spin_lock(&opened_lock);
--	list_add(&lp->list, &opened);
--	spin_unlock(&opened_lock);
--
--	return(0);
-+	return 0;
- }
- 
- static struct uml_net *find_device(int n)
++#endif
++
+ #ifdef CONFIG_SMP
+ static int __init uml_ncpus_setup(char *line, int *add)
+ {
 
 
 
