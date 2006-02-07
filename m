@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F6IV6-0003py-91 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Feb 2006 18:22:40 -0800
+	id 1F6IV8-0003qB-7j for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Feb 2006 18:22:42 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1F6IV5-00044x-QU
+	(Exim 4.44) id 1F6IV6-000467-Py
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Feb 2006 18:22:40 -0800
-Message-Id: <200602070223.k172Nr2L009659@ccure.user-mode-linux.org>
+	Mon, 06 Feb 2006 18:22:42 -0800
+Message-Id: <200602070224.k172O384009674@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/8] UML - Add debug switch for skas mode
+Subject: [uml-devel] [PATCH 6/8] UML - Block SIGWINCH in ptrace tester child
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,46 +25,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 06 Feb 2006 21:23:53 -0500
+Date: Mon, 06 Feb 2006 21:24:03 -0500
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Pekka J Enberg <penberg@cs.Helsinki.FI>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-It doesn't do anything but emit a warning, but there's a user population
-that's used to adding 'debug' to the UML command line in order to gdb it.
-With skas0 mode, that's not necessary, but these users need some indication
-that 'debug' doesn't do what they want.
+The process that UML uses to probe the host's ptrace capabilities can (rarely)
+receive a SIGWINCH, confusing the parent.  This fixes that by blocking 
+SIGWINCH.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.15/arch/um/kernel/um_arch.c
+Index: linux-2.6.15/arch/um/os-Linux/start_up.c
 ===================================================================
---- linux-2.6.15.orig/arch/um/kernel/um_arch.c	2006-02-06 17:33:55.000000000 -0500
-+++ linux-2.6.15/arch/um/kernel/um_arch.c	2006-02-06 17:35:35.000000000 -0500
-@@ -193,6 +193,24 @@ __uml_setup("root=", uml_root_setup,
- "        root=/dev/ubd5\n\n"
- );
+--- linux-2.6.15.orig/arch/um/os-Linux/start_up.c	2006-02-06 17:33:55.000000000 -0500
++++ linux-2.6.15/arch/um/os-Linux/start_up.c	2006-02-06 17:36:29.000000000 -0500
+@@ -49,6 +49,7 @@ static int ptrace_child(void *arg)
+ 	int pid = os_getpid(), ppid = getppid();
+ 	int sc_result;
  
-+#ifndef CONFIG_MODE_TT
-+
-+static int __init no_skas_debug_setup(char *line, int *add)
-+{
-+	printf("'debug' is not necessary to gdb UML in skas mode - run \n");
-+	printf("'gdb linux' and disable CONFIG_CMDLINE_ON_HOST if gdb \n");
-+	printf("doesn't work as expected\n");
-+
-+	return 0;
-+}
-+
-+__uml_setup("debug", no_skas_debug_setup,
-+"debug\n"
-+"    this flag is not needed to run gdb on UML in skas mode\n\n"
-+);
-+
-+#endif
-+
- #ifdef CONFIG_SMP
- static int __init uml_ncpus_setup(char *line, int *add)
- {
++	change_sig(SIGWINCH, 0);
+ 	if(ptrace(PTRACE_TRACEME, 0, 0, 0) < 0){
+ 		perror("ptrace");
+ 		os_kill_process(pid, 0);
 
 
 
