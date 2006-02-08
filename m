@@ -1,19 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F6iuh-0008To-Hc for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Feb 2006 22:34:51 -0800
-Received: from fgwmail6.fujitsu.co.jp ([192.51.44.36])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1F6iug-00046M-6X
+	id 1F6sOD-0000Hr-2A for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Feb 2006 08:41:57 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1F6sOA-0002Fd-Q8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Feb 2006 22:34:51 -0800
-Message-ID: <43E99128.6090202@jp.fujitsu.com>
-From: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] [PATCH] unify pfn_to_page take 2 [23/25] uml funcs
+	Wed, 08 Feb 2006 08:41:57 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060208164301.GC5240@ccure.user-mode-linux.org>
+References: <200602070223.k172NpJa009654@ccure.user-mode-linux.org>
+	<a36005b50602070937h60e35294q1dbef2c21f2fb50d@mail.gmail.com>
+	<20060207185707.GB6841@ccure.user-mode-linux.org>
+	<a36005b50602071123r8179c7di8e95bf0a336f1b0c@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a36005b50602071123r8179c7di8e95bf0a336f1b0c@mail.gmail.com>
+Subject: [uml-devel] Re: [PATCH 2/8] UML - Define jmpbuf access constants
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,29 +31,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 08 Feb 2006 15:35:20 +0900
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 8 Feb 2006 11:43:01 -0500
+To: Ulrich Drepper <drepper@gmail.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-UML can use generic funcs.
+On Tue, Feb 07, 2006 at 11:23:42AM -0800, Ulrich Drepper wrote:
+> If you need this
+> functionality, implement it yourself.  setjmp is most likely overkill
+> anyway.
 
-Signed-Off-By: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+OK, I'll roll my own version.
 
-Index: test-layout-free-zone/include/asm-um/page.h
-===================================================================
---- test-layout-free-zone.orig/include/asm-um/page.h
-+++ test-layout-free-zone/include/asm-um/page.h
-@@ -106,9 +106,6 @@ extern unsigned long uml_physmem;
-  #define __pa(virt) to_phys((void *) (unsigned long) (virt))
-  #define __va(phys) to_virt((unsigned long) (phys))
-
--#define page_to_pfn(page) ((page) - mem_map)
--#define pfn_to_page(pfn) (mem_map + (pfn))
--
-  #define phys_to_pfn(p) ((p) >> PAGE_SHIFT)
-  #define pfn_to_phys(pfn) ((pfn) << PAGE_SHIFT)
-
-
+				Jeff
 
 
 -------------------------------------------------------
