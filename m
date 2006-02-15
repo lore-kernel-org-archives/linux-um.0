@@ -2,25 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F9VsP-0002UX-RO for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Feb 2006 15:16:01 -0800
-Received: from smtp.gentoo.org ([134.68.220.30])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1F9VsN-0005zs-Sv
+	id 1F9W4X-0003ee-GN for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Feb 2006 15:28:33 -0800
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1F9W4U-00021O-WC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Feb 2006 15:16:01 -0800
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.54)
-	id 1F9VsG-0003Nq-Cj for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Feb 2006 23:15:52 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.54)
-	id 1F9VrZ-0007xz-5L for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Feb 2006 23:15:09 +0000
-In-Reply-To: <bug-111575-25805@http.bugs.gentoo.org/>
-From: bugzilla-daemon@gentoo.org
-Message-Id: <E1F9VrZ-0007xz-5L@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 111575] sys-kernel/usermode-sources-2.6.14: kernel
-	panic when assigning more than 256M
+	Wed, 15 Feb 2006 15:28:33 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200602160028.25865.blaisorblade@yahoo.it>
+Subject: [uml-devel] Fixed the uml_moo 64-bit COW bug
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,31 +27,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 15 Feb 2006 23:15:09 +0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 16 Feb 2006 00:28:24 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Joel Palmius <joel.palmius@miun.se>, Antoine Martin <antoine@nagafix.co.uk>, Jeff Dike <jdike@addtoit.com>
 
+Ok, here we are. uml_moo was not portable to 64-bit AMD for some portability 
+bugs.
 
-Clear-Text: http://bugs.gentoo.org/show_bug.cgi?id=111575
-Secure: https://bugs.gentoo.org/show_bug.cgi?id=111575
+1) I fixed bug one, SIGFPE at startup of uml_moo or at boot of UML kernel 
+("Kernel mode signal 8"), time ago. The resulting binary completed the merge, 
+but the results were wrong, compared with the results from a 32-bit binary.
 
+The SIGFPE bug at boot meant another issue too - 64-bit binaries of uml_mkcow 
+and of kernel binaries use a different format than 32-bit ones.
 
+2) Today I discovered the 2nd bug, tested the result, and got everything 
+working - it produced the correct results even on a 500Mb UBD with a 270 Mb 
+COW file (I had done a dist-upgrade with months of security updates).
 
+This second bug, luckily, doesn't affect the kernel - otherwise 64-bit kernel 
+would have corrupted data in COW files.
 
-
-------- Comment #20 from blaisorblade_spam@yahoo.it  2006-02-15 15:15 PST -------
-The report says switching "CONFIG_MODE_TT" off helped.
-
-And currently, there is no known reason for which a user should need to enable
-TT mode.
-
-So, this bug can be IMHO considered RESOLVED (since it's a configuration not
-recommended, it would turn out to be RESOLVED INVALID, likely).
-
-
+After refining the code and preparing for release, I'll publish the complete 
+fixes, and a new uml-utilities release. I expect to do this in this week.
 -- 
-Configure bugmail: http://bugs.gentoo.org/userprefs.cgi?tab=email
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+
+		
+___________________________________ 
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
