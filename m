@@ -1,24 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FA4P5-0004LG-B3 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2006 04:08:03 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FA4P3-0004Oc-8s
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2006 04:08:03 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
+From: Stefano Melchior <stefano.melchior@openlabs.it>
 Subject: Re: [uml-devel] "Configuring network interfaces...execvp of 'uml_net'
 	failed - errno = 2" error msg
+Message-ID: <20060217134755.GA17720@SteX>
+Reply-To: stefano.melchior@openlabs.it
 References: <20060217115152.GA17278@SteX>
-In-Reply-To: <20060217115152.GA17278@SteX>
+	<200602171307.51262.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
 Content-Disposition: inline
-Message-Id: <200602171307.51262.blaisorblade@yahoo.it>
+In-Reply-To: <200602171307.51262.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,72 +22,104 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Feb 2006 13:07:50 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 17 Feb 2006 14:47:55 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Friday 17 February 2006 12:51, Stefano Melchior wrote:
-> Hi all,
-> I am trying to integrate 2.6.x support to debian and I encountered a
-> blocking issue on networking configuration.
-> If you use the 2.4.x uml kernel the UML image work fine with network, but
-> if you use an available 2.6.x uml image or a 2.6.x image of mine the uml
-> bootstrap phase hangs with the following error message:
 
-Indeed on the same machine and with same config? It's strange, I never saw 
-this incompatibility, and I can't find bugs in the code able to produce this 
-(with a quick look). Could you check on your part?
+--M9NhX3UHpAaciwkO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Setting up networking...done.
-> * /etc/network/options is deprecated.
-> Setting up IP spoofing protection...done (rp_filter).
-> Configuring network interfaces...execvp of 'uml_net' failed - errno = 2
+On Fri, Feb 17, 2006 at 01:07:50PM +0100, Blaisorblade wrote:
+Hi Paolo,
+> > If you use the 2.4.x uml kernel the UML image work fine with network, b=
+ut
+> > if you use an available 2.6.x uml image or a 2.6.x image of mine the uml
+> > bootstrap phase hangs with the following error message:
+>=20
+> Indeed on the same machine and with same config? It's strange, I never sa=
+w=20
 
-> From previous messages I read that this concerns uml_net and its
-> permissions.
+yes, first I tried my own configuration, then I downloaded a prebuild uml
+kernel from http://uml.nagafix.co.uk/ and I tried with this one. Same
+error again.
+Then I extracted the configuration from that image and I rebuild with that
+config, same error for the same problem.
+> this incompatibility, and I can't find bugs in the code able to produce t=
+his=20
+> (with a quick look). Could you check on your part?
+>=20
+> > Setting up networking...done.
+> > * /etc/network/options is deprecated.
+> > Setting up IP spoofing protection...done (rp_filter).
+> > Configuring network interfaces...execvp of 'uml_net' failed - errno =3D=
+ 2
+>=20
+> > From previous messages I read that this concerns uml_net and its
+> > permissions.
+>=20
+> Which are them? It should be setuid root and executable...
 
-Which are them? It should be setuid root and executable...
+ste@etinarcadiaego{~}$ ll /usr/lib/uml/uml_net
+-rwsr-x---  1 root uml-net 19836 2004-04-15 03:03 /usr/lib/uml/uml_net
 
-However, since:
+my user, ste, is in the uml-net group.
+>=20
+> However, since:
+>=20
+> # perror 2
+> OS error code   2:  No such file or directory
 
-# perror 2
-OS error code   2:  No such file or directory
+it sounds strange, isn't it?
+>=20
+> Uml is saying it didn't find uml_net, or some of its libraries, not that=
+=20
+> there's a permission problem.
+>=20
+> Possibly it's lying and printing the wrong code, dunno. But from current =
+code:
+>=20
+> arch/um/os-Linux/helper.c:helper_child
+>         execvp(argv[0], argv);
+>         errval =3D errno;
+>         printk("execvp of '%s' failed - errno =3D %d\n", argv[0], errno);
+>=20
+> it seems not (that source file was somewhere else, guess in arch/um/kerne=
+l,=20
+> until 2.6.14, but I think the content was the same).
+>=20
+It was displayed in case of my test on 2.6.15, but it occurred even with
+other kernels, such as 2.6.12 and 2.6.14.
+Indeed with all 2.6.x kernels, it is the strangest thing. With 2.4.x it
+works perfectly.
+Another info: I used either the kernel.org sources and the debian's
+linux-source(s).
 
-Uml is saying it didn't find uml_net, or some of its libraries, not that 
-there's a permission problem.
+I am going to investigate futher more
 
-Possibly it's lying and printing the wrong code, dunno. But from current code:
+SteX
 
-arch/um/os-Linux/helper.c:helper_child
-        execvp(argv[0], argv);
-        errval = errno;
-        printk("execvp of '%s' failed - errno = %d\n", argv[0], errno);
+--=20
+Stefano Melchior, GPG key =3D D52DF829 - <stefano.melchior@openlabs.it>
+http://etinarcadiaego.dyndns.org    --     http://www.stex.name
 
-it seems not (that source file was somewhere else, guess in arch/um/kernel, 
-until 2.6.14, but I think the content was the same).
+--M9NhX3UHpAaciwkO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-> Do you have an idea how to work around this issue?
-> I also need it to apply to the future debian uml support.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
-> Thank you in advance
+iQCVAwUBQ/XUC4lnkxrVLfgpAQIhagP/YeZQiXFUO/J81xlosBEASNhA27sTywtz
+5qUGbj739yJ9zEmBJNPac3gI+35M/dDvDAjylktHgBVQejYoKKzVbtSOuljoOzR/
+/JxNnWYBisU0F2/7LKYk7L4DAFcm2E2m2G+48Av6//OoaX848Wnd9OANUQ7iXteH
+P1ZRLyxGRtg=
+=9dIs
+-----END PGP SIGNATURE-----
 
-> Cheers
-
-> SteX
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+--M9NhX3UHpAaciwkO--
 
 
 -------------------------------------------------------
