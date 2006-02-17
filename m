@@ -1,26 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FA6F5-0000Pj-D9 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2006 06:05:51 -0800
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FA6Ey-0005o7-MQ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2006 06:05:47 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
+From: Stefano Melchior <stefano.melchior@openlabs.it>
 Subject: Re: [uml-devel] "Configuring network interfaces...execvp of 'uml_net'
 	failed - errno = 2" error msg
+Message-ID: <20060217142923.GA18017@SteX>
+Reply-To: stefano.melchior@openlabs.it
 References: <20060217115152.GA17278@SteX>
 	<200602171307.51262.blaisorblade@yahoo.it>
 	<20060217134755.GA17720@SteX>
-In-Reply-To: <20060217134755.GA17720@SteX>
+	<200602171505.29505.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
 Content-Disposition: inline
-Message-Id: <200602171505.29505.blaisorblade@yahoo.it>
+In-Reply-To: <200602171505.29505.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,68 +24,79 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Feb 2006 15:05:28 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Fri, 17 Feb 2006 15:29:23 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Friday 17 February 2006 14:47, Stefano Melchior wrote:
-> On Fri, Feb 17, 2006 at 01:07:50PM +0100, Blaisorblade wrote:
-> Hi Paolo,
->
-> > > If you use the 2.4.x uml kernel the UML image work fine with network,
-> > > but if you use an available 2.6.x uml image or a 2.6.x image of mine
-> > > the uml bootstrap phase hangs with the following error message:
-> >
-> > Indeed on the same machine and with same config? It's strange, I never
-> > saw
 
-> yes, first I tried my own configuration, then I downloaded a prebuild uml
-> kernel from http://uml.nagafix.co.uk/ and I tried with this one. Same
-> error again.
-> Then I extracted the configuration from that image and I rebuild with that
-> config, same error for the same problem.
+--y0ulUmNC+osPPQO6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ste@etinarcadiaego{~}$ ll /usr/lib/uml/uml_net
-> -rwsr-x---  1 root uml-net 19836 2004-04-15 03:03 /usr/lib/uml/uml_net
+On Fri, Feb 17, 2006 at 03:05:28PM +0100, Blaisorblade wrote:
+Ciao Paolo,
+> > yes, first I tried my own configuration, then I downloaded a prebuild u=
+ml
+> > kernel from http://uml.nagafix.co.uk/ and I tried with this one. Same
+> > error again.
+> > Then I extracted the configuration from that image and I rebuild with t=
+hat
+> > config, same error for the same problem.
+>=20
+> > ste@etinarcadiaego{~}$ ll /usr/lib/uml/uml_net
+> > -rwsr-x---  1 root uml-net 19836 2004-04-15 03:03 /usr/lib/uml/uml_net
+>=20
+> Ok, thanks for this informative info. This is the solution.
+>=20
+> In short, echo $PATH | grep  /usr/lib/uml, and if needed man 3 execvp, co=
+uld=20
+> enlighten you... or even the fact that I do:
+>=20
+> # ls -l /usr/bin/uml_net
+> -rws--x--x  1 root root 22856 16 feb 18:49 /usr/bin/uml_net
 
-Ok, thanks for this informative info. This is the solution.
+damn, it drived me crazy!!! now it works, and I am going to provide the
+solution in debian.
+What it sounds strange is that:
+stex@landini{~}$ ll /usr/bin/uml*
+-rwxr-xr-x 1 root root 10296 2006-02-17 03:39 /usr/bin/uml_mconsole
+-rwxr-xr-x 1 root root  9784 2006-02-17 03:39 /usr/bin/uml_mkcow
+-rwxr-xr-x 1 root root 12356 2006-02-17 03:39 /usr/bin/uml_moo
+lrwxrwxrwx 1 root root    20 2006-02-17 12:13 /usr/bin/uml_net ->
+/usr/lib/uml/uml_net
+-rwxr-xr-x 1 root root 15624 2006-02-17 03:39 /usr/bin/uml_switch
+-rwxr-xr-x 1 root root  4168 2006-02-17 03:39 /usr/bin/uml_watchdog
 
-In short, echo $PATH | grep  /usr/lib/uml, and if needed man 3 execvp, could 
-enlighten you... or even the fact that I do:
+(I temporarily linked uml_net from the current position)
+all the other uml_* files resides on /usr/bin.
+I am going to fix this.
 
-# ls -l /usr/bin/uml_net
--rws--x--x  1 root root 22856 16 feb 18:49 /usr/bin/uml_net
+Thanks Paolo for your usual good suggestions :))
 
-if you want the full story, instead, IOW:
+Cheers
 
-Debian has his own very non-standard packaging for uml_utilities, and patches 
-UML to cope with it. For instance, uml_switch has different defaults on UML 
-(the socket goes into /var/run instead of /tmp, in UML).
+SteX
 
-And (but this is the first time I hear this) you have uml_net in /usr/lib/uml 
-rather than /usr/bin. Which would be a better choice, btw... but isn't 
-implemented in mainline (we maybe should).
+--=20
+Stefano Melchior, GPG key =3D D52DF829 - <stefano.melchior@openlabs.it>
+http://etinarcadiaego.dyndns.org    --     http://www.stex.name
 
-> Another info: I used either the kernel.org sources and the debian's
-> linux-source(s).
+--y0ulUmNC+osPPQO6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-But you're using a vanilla UML without the forward ports of all 2.4 patches 
-(you're using linux-source(s), not a possible uml-linux-source(s)).
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
-For the future packaging: I do believe that Debian's defaults have been 
-actually planned while uml_utilities haven't, so I like the idea of switching 
-to Debian paths as defaults, and possibly using the current ones as 
-fallbacks.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+iQCVAwUBQ/Xdw4lnkxrVLfgpAQLq+QP+JlIHKGbG5C+gBpgiNbrkH2IKm4yy4JU+
+QJUY1u0GgQXXsB4lpRkt4cYxZDlw/tA0cp6/f/eP2X7hqrA8xcLaHNr3iQt9fY2l
+dyX4Fp00fekt5tXvqoePqkSmrQM/gpuvv/o3T1HOK3/HC1n1YMoYaU1kpkJ1Mm+H
+NoJ/XxZizIM=
+=Tz0C
+-----END PGP SIGNATURE-----
 
-		
-___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
-
+--y0ulUmNC+osPPQO6--
 
 
 -------------------------------------------------------
