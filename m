@@ -1,26 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F9lzD-0003BR-VX for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Feb 2006 08:28:07 -0800
-Received: from smtp.gentoo.org ([134.68.220.30])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1F9lzB-00037y-J1
+	id 1F9y2B-0001DL-EE for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Feb 2006 21:19:59 -0800
+Received: from slartibartfast.pa.net ([66.59.111.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1F9y28-00024r-VZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Feb 2006 08:28:08 -0800
-Received: from nuthatch.gentoo.osuosl.org ([140.211.166.163]
-	helo=nuthatch.gentoo.org) by smtp.gentoo.org with esmtp (Exim 4.54)
-	id 1F9lz5-0004jy-Ec for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Feb 2006 16:27:59 +0000
-Received: from apache by nuthatch.gentoo.org with local (Exim 4.54)
-	id 1F9lz5-000769-7G for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Feb 2006 16:27:59 +0000
-In-Reply-To: <bug-111575-25805@http.bugs.gentoo.org/>
-From: bugzilla-daemon@gentoo.org
-Message-Id: <E1F9lz5-000769-7G@nuthatch.gentoo.org>
-Subject: [uml-devel] [Bug 111575] sys-kernel/usermode-sources-2.6.14: kernel
-	panic when assigning more than 256M
+	Thu, 16 Feb 2006 21:19:59 -0800
+From: William Stearns <wstearns@pobox.com>
+Reply-To: William Stearns <wstearns@pobox.com>
+Message-ID: <Pine.LNX.4.64.0602170009160.4626@sparrow>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: [uml-devel] 2.6.16-rc2 x86_64; Jeff's uml patch tar doesn't apply
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,26 +25,76 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 16 Feb 2006 16:27:59 +0000
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 17 Feb 2006 00:19:07 -0500 (EST)
+To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
+
+Good evening, all,
+ 	The uml patch tar file at 
+http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.16-rc2/patches.tar 
+should apply to 2.6.16-rc2, but when I try to apply it I get:
 
 
-Clear-Text: http://bugs.gentoo.org/show_bug.cgi?id=111575
-Secure: https://bugs.gentoo.org/show_bug.cgi?id=111575
+==== Applying /usr/src/2.6.16-rc2-patches-20060208/uml-add-tls-support
+patching file arch/um/include/os.h
+patching file arch/um/kernel/exec_kern.c
+patching file arch/um/kernel/process_kern.c
+patching file arch/um/kernel/ptrace.c
+patching file arch/um/kernel/skas/process_kern.c
+patching file arch/um/os-Linux/Makefile
+Hunk #2 FAILED at 12.
+1 out of 2 hunks FAILED -- saving rejects to file 
+arch/um/os-Linux/Makefile.rej
+patching file arch/um/os-Linux/tls.c
+patching file arch/um/sys-i386/Makefile
+Hunk #1 FAILED at 1.
+1 out of 1 hunk FAILED -- saving rejects to file 
+arch/um/sys-i386/Makefile.rej
+patching file arch/um/sys-i386/syscalls.c
+patching file arch/um/sys-i386/tls.c
+patching file arch/um/sys-x86_64/Makefile
+Hunk #1 FAILED at 7.
+1 out of 1 hunk FAILED -- saving rejects to file 
+arch/um/sys-x86_64/Makefile.rej
+patching file arch/um/sys-x86_64/tls.c
+patching file include/asm-um/desc.h
+patching file include/asm-um/processor-i386.h
+patching file include/asm-um/processor-x86_64.h
+patching file include/asm-um/ptrace-generic.h
+patching file include/asm-um/ptrace-i386.h
+patching file include/asm-um/ptrace-x86_64.h
+patching file include/asm-um/segment.h
+Something went wrong with 
+/usr/src/2.6.16-rc2-patches-20060208/uml-add-tls-support . Press enter 
+when ready to move on.
+==== Applying /usr/src/2.6.16-rc2-patches-20060208/fix-struct-compile
+can't find file to patch at input line 6
+Perhaps you used the wrong -p or --strip option?
+The text leading up to this was:
+--------------------------
+|# Change a couple of instances of struct modify_ldt_ldt_s to struct 
+user_desc.
+|Index: linux-2.6.15/arch/um/os-Linux/tls.c
+|===================================================================
+|--- linux-2.6.15.orig/arch/um/os-Linux/tls.c   2006-02-06 
+16:47:11.000000000 -0500
+|+++ linux-2.6.15/arch/um/os-Linux/tls.c        2006-02-06 
+16:48:21.000000000 -0500
+--------------------------
+File to patch:
 
 
+ 	Cheers,
+ 	- Bill
 
-
-
-------- Comment #23 from blaisorblade_spam@yahoo.it  2006-02-16 08:27 PST -------
-> The kernel menuconfig help says: "Normally, this should be set to Y"
-Yep, good note; however likely this has already been fixed.
-
-
--- 
-Configure bugmail: http://bugs.gentoo.org/userprefs.cgi?tab=email
-------- You are receiving this mail because: -------
-You are on the CC list for the bug, or are watching someone who is.
+---------------------------------------------------------------------------
+ 	..all in all it's just another rule in the firewall.
+ 	/Ping Flood/
+(Courtesy of Hirling Endre)
+--------------------------------------------------------------------------
+William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
+rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
+--------------------------------------------------------------------------
 
 
 -------------------------------------------------------
