@@ -2,21 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FA9Qr-0007WJ-SB for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2006 09:30:13 -0800
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FA9Qp-0007t8-HC
+	id 1FAAeo-0008OU-9H for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Feb 2006 10:48:42 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FAAej-0005V6-H8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2006 09:30:13 -0800
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-In-Reply-To: <20060217165635.GA5712@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.64.0602171226260.4178@sparrow>
-References: <Pine.LNX.4.64.0602170009160.4626@sparrow>
-	<20060217165635.GA5712@ccure.user-mode-linux.org>
+	Fri, 17 Feb 2006 10:48:42 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-user] Re: [uml-devel] "Configuring network
+	interfaces...execvp of 'uml_net' failed - errno = 2" error msg
+References: <20060217115152.GA17278@SteX>
+	<200602171505.29505.blaisorblade@yahoo.it>
+	<20060217154425.GA3823@ccure.user-mode-linux.org>
+In-Reply-To: <20060217154425.GA3823@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: [uml-devel] Re: 2.6.16-rc2 x86_64; Jeff's uml patch tar doesn't apply
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200602171948.29509.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,48 +32,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Feb 2006 12:29:58 -0500 (EST)
+Date: Fri, 17 Feb 2006 19:48:25 +0100
 To: Jeff Dike <jdike@addtoit.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>, William Stearns <wstearns@pobox.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it, user-mode-linux-user@lists.sourceforge.net
 
-Good afternoon, Jeff,
-
-On Fri, 17 Feb 2006, Jeff Dike wrote:
-
-> On Fri, Feb 17, 2006 at 12:19:07AM -0500, William Stearns wrote:
->> 	The uml patch tar file at
->> http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.16-rc2/patches.tar
->> should apply to 2.6.16-rc2, but when I try to apply it I get:
+On Friday 17 February 2006 16:44, Jeff Dike wrote:
+> On Fri, Feb 17, 2006 at 03:05:28PM +0100, Blaisorblade wrote:
+> > For the future packaging: I do believe that Debian's defaults have been
+> > actually planned while uml_utilities haven't, so I like the idea of
+> > switching to Debian paths as defaults, and possibly using the current
+> > ones as fallbacks.
 >
-> I just tried that -
-> 	made a rc2 tree
-> 	grabbed my current tarball from the UML site
-> 	applied it
->
-> I got a couple of offsets (which shouldn't have been there), but it
-> applied and is currently building OK.
->
-> I submit to you that perhaps your tree is not quite the cleanest
-> 2.6.15-rc2 :-)
+> Yup, as long as they are not too Debian-specific.
 
- 	Ummm, 2.6._16_-rc2, I expect you meant.
- 	I opened up the linux-2.6.16-rc2.tar.bz2 direct from 
-ftp.kernel.org, used apply-quit-patches 
-( http://www.stearns.org/apply-quilt-patches/apply-quilt-patches ) from 
-the patches directory, and got those errors.
- 	I'm really tied up today with a drive problem, but I'll try again 
-tonight.
- 	Cheers,
- 	- Bill
+They tend to make more sense and adhere better to the 
+FHS. /var/run/uml-utilities requires support from the distro, but having 
+uml_net in /usr/lib is a correct idea, for instance.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
----------------------------------------------------------------------------
- 	..all in all it's just another rule in the firewall.
- 	/Ping Flood/
-(Courtesy of Hirling Endre)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+		
+___________________________________ 
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
