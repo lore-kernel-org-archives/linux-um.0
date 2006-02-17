@@ -1,19 +1,13 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1F9y2B-0001DL-EE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Feb 2006 21:19:59 -0800
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1F9y28-00024r-VZ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Feb 2006 21:19:59 -0800
-From: William Stearns <wstearns@pobox.com>
-Reply-To: William Stearns <wstearns@pobox.com>
-Message-ID: <Pine.LNX.4.64.0602170009160.4626@sparrow>
+From: Stefano Melchior <stefano.melchior@openlabs.it>
+Message-ID: <20060217115152.GA17278@SteX>
+Reply-To: stefano.melchior@openlabs.it
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: [uml-devel] 2.6.16-rc2 x86_64; Jeff's uml patch tar doesn't apply
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+Content-Disposition: inline
+Subject: [uml-devel] "Configuring network interfaces...execvp of 'uml_net'
+	failed - errno = 2" error msg
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,76 +19,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Feb 2006 00:19:07 -0500 (EST)
-To: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
-
-Good evening, all,
- 	The uml patch tar file at 
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.16-rc2/patches.tar 
-should apply to 2.6.16-rc2, but when I try to apply it I get:
+Date: Fri, 17 Feb 2006 12:51:52 +0100
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
 
-==== Applying /usr/src/2.6.16-rc2-patches-20060208/uml-add-tls-support
-patching file arch/um/include/os.h
-patching file arch/um/kernel/exec_kern.c
-patching file arch/um/kernel/process_kern.c
-patching file arch/um/kernel/ptrace.c
-patching file arch/um/kernel/skas/process_kern.c
-patching file arch/um/os-Linux/Makefile
-Hunk #2 FAILED at 12.
-1 out of 2 hunks FAILED -- saving rejects to file 
-arch/um/os-Linux/Makefile.rej
-patching file arch/um/os-Linux/tls.c
-patching file arch/um/sys-i386/Makefile
-Hunk #1 FAILED at 1.
-1 out of 1 hunk FAILED -- saving rejects to file 
-arch/um/sys-i386/Makefile.rej
-patching file arch/um/sys-i386/syscalls.c
-patching file arch/um/sys-i386/tls.c
-patching file arch/um/sys-x86_64/Makefile
-Hunk #1 FAILED at 7.
-1 out of 1 hunk FAILED -- saving rejects to file 
-arch/um/sys-x86_64/Makefile.rej
-patching file arch/um/sys-x86_64/tls.c
-patching file include/asm-um/desc.h
-patching file include/asm-um/processor-i386.h
-patching file include/asm-um/processor-x86_64.h
-patching file include/asm-um/ptrace-generic.h
-patching file include/asm-um/ptrace-i386.h
-patching file include/asm-um/ptrace-x86_64.h
-patching file include/asm-um/segment.h
-Something went wrong with 
-/usr/src/2.6.16-rc2-patches-20060208/uml-add-tls-support . Press enter 
-when ready to move on.
-==== Applying /usr/src/2.6.16-rc2-patches-20060208/fix-struct-compile
-can't find file to patch at input line 6
-Perhaps you used the wrong -p or --strip option?
-The text leading up to this was:
---------------------------
-|# Change a couple of instances of struct modify_ldt_ldt_s to struct 
-user_desc.
-|Index: linux-2.6.15/arch/um/os-Linux/tls.c
-|===================================================================
-|--- linux-2.6.15.orig/arch/um/os-Linux/tls.c   2006-02-06 
-16:47:11.000000000 -0500
-|+++ linux-2.6.15/arch/um/os-Linux/tls.c        2006-02-06 
-16:48:21.000000000 -0500
---------------------------
-File to patch:
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+I am trying to integrate 2.6.x support to debian and I encountered a
+blocking issue on networking configuration.
+If you use the 2.4.x uml kernel the UML image work fine with network, but
+if you use an available 2.6.x uml image or a 2.6.x image of mine the uml
+bootstrap phase hangs with the following error message:
 
- 	Cheers,
- 	- Bill
+Setting up networking...done.
+* /etc/network/options is deprecated.
+Setting up IP spoofing protection...done (rp_filter).
+Configuring network interfaces...execvp of 'uml_net' failed - errno =3D 2
 
----------------------------------------------------------------------------
- 	..all in all it's just another rule in the firewall.
- 	/Ping Flood/
-(Courtesy of Hirling Endre)
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+=46rom previous messages I read that this concerns uml_net and its
+permissions.
+Do you have an idea how to work around this issue?
+I also need it to apply to the future debian uml support.
+
+Thank you in advance=20
+
+Cheers
+
+SteX
+--=20
+Stefano Melchior, GPG key =3D D52DF829 - <stefano.melchior@openlabs.it>
+http://etinarcadiaego.dyndns.org    --     http://www.stex.name
+
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iQCVAwUBQ/W42IlnkxrVLfgpAQK0QgP/eBosjoewVaMfgDmRKD4McjDtDIN8WZ+N
+kJIr5ddZi6X3JkAWTYqLFdxlCjGnqO49bBVBN9O3nXJJu/h5+Yqfuz7aWfkevRi8
+FKKKsCtru5SQ/ZNAX7bi+8EJA2UXlsZzC4MgQSk+6FmdxUEqHx0/C92bs3K/NWv0
+F04LROWNCts=
+=YPvG
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
 
 
 -------------------------------------------------------
