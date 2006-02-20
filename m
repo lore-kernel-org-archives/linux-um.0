@@ -1,18 +1,21 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Stefano Melchior <stefano.melchior@openlabs.it>
-Subject: Re: [uml-user] Re: [uml-devel] "Configuring network
-	interfaces...execvp of 'uml_net' failed - errno = 2" error msg
-Message-ID: <20060220053419.GA6204@SteX>
-Reply-To: stefano.melchior@openlabs.it
-References: <20060217115152.GA17278@SteX>
-	<20060217154425.GA3823@ccure.user-mode-linux.org>
-	<200602171948.29509.blaisorblade@yahoo.it>
-	<200602191704.03527.rob@landley.net>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FBGFh-0003b5-MX for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Feb 2006 10:59:17 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FBGFd-0001U4-7B
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Feb 2006 10:59:17 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200602191704.03527.rob@landley.net>
+Message-Id: <200602201958.10554.blaisorblade@yahoo.it>
+Subject: [uml-devel] Using partially SKAS3 on x86_64 - news
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,81 +27,54 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 20 Feb 2006 06:34:20 +0100
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Mon, 20 Feb 2006 19:58:09 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>, Jeff Dike <jdike@addtoit.com>
 
+Talking about 32-bit UMLs on AMD64 hosts: I've just discovered that on a 
+x86_64 platform you can use at least partially the SKAS3 patch.
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Instead of adding "skas0" to the command line, to get a running UML it 
+suffices to use "noprocmm", if it's accepted by UML (I don't remember when 
+the patch was merged).
 
-On Sun, Feb 19, 2006 at 05:04:03PM -0500, Rob Landley wrote:
-Hi Rob,
-> On Friday 17 February 2006 1:48 pm, Blaisorblade wrote:
-> > On Friday 17 February 2006 16:44, Jeff Dike wrote:
-> > > On Fri, Feb 17, 2006 at 03:05:28PM +0100, Blaisorblade wrote:
-> > > > For the future packaging: I do believe that Debian's defaults have =
-been
-> > > > actually planned while uml_utilities haven't, so I like the idea of
-> > > > switching to Debian paths as defaults, and possibly using the curre=
-nt
-> > > > ones as fallbacks.
-> > >
-> > > Yup, as long as they are not too Debian-specific.
-> >
-> > They tend to make more sense and adhere better to the
-> > FHS. /var/run/uml-utilities requires support from the distro, but having
-> > uml_net in /usr/lib is a correct idea, for instance.
->=20
-> I'm confused, why would you have executables in a shared library director=
-y=20
-> instead of /usr/bin or some such?  (These are runnable elf binaries, not=
-=20
-> shared libraries, correct?)
-Citing from Debian policy (FHS):
+I've tested this with a Debian Sarge root_fs - as you already know, Slackware 
+root_fs already work in full SKAS3 mode.
 
-"/usr/lib includes object files, libraries, and internal binaries that are
-not intended to be executed directly by users or shell scripts."
+As you can see at the beginning of the boot log, it won't use /proc/mm but it 
+will use PTRACE_FAULTINFO, which is the other part of SKAS3. Since this 
+addresses the biggest slowdown of SKAS0 (Jeff said SKAS0 is slightly slower 
+than TT for page fault handling), I expect the difference to be significant.
 
-and
+I've not done any benchmark yet, however.
 
-"Some executable commands such as makewhatis and sendmail have also been
-traditionally placed in /usr/lib. makewhatis is an internal binary and
-should be placed in a binary directory; users access only catman. Newer
-sendmail binaries are now placed by default in /usr/sbin; a symbolic link
-should remain from /usr/lib. Additionally, systems using a
-sendmail-compatible mail transport agent should provide /usr/sbin/sendmail
-as a symbolic link to the appropriate executable."
+Example startup:
 
-So it would be nice if you can provide a symbolic link from the binary
-executable to the library file.
+$ kernels/vmlinux-2.6.15.3-bs2 
+ubd0=Root_images/Sarge-norm.rootfs.cow,Root_images/Sarge-norm.rootfs 
+rootfs=/dev/ubda noprocmm
 
-Cheers
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...missing
+Checking PROT_EXEC mmap in /tmp...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...found but disabled on command line
+  - PTRACE_FAULTINFO...found
+  - PTRACE_LDT...found
+UML running in SKAS0 mode
+....
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-SteX
+	
 
---=20
-Stefano Melchior, GPG key =3D D52DF829 - <stefano.melchior@openlabs.it>
-http://etinarcadiaego.dyndns.org    --     http://www.stex.name
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iQCVAwUBQ/lU24lnkxrVLfgpAQIdGgQAjGlsoAR+GhbQDDBdswD0IHjVDRMLKapQ
-fBfXZKjMzpVOzl+K3XZAfjXtth3r4W9+WCYfmSnyY7AyrkO8Mi7IO/QMz9pnRV1o
-uG02qWlClgT8dC/vLQ+L4FvJWElYC4wtuAoezpS7pdbLLZi2/3VMNXyeBSWi0eSy
-dEW9i3ZUg58=
-=1uln
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
 
 
 -------------------------------------------------------
