@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FBb8b-0001dI-4S for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Feb 2006 09:17:21 -0800
+	id 1FBb8g-0001dx-JP for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 21 Feb 2006 09:17:26 -0800
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FBb8Z-00079g-EP
+	(Exim 4.44) id 1FBb8e-0003T8-VU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Feb 2006 09:17:21 -0800
+	Tue, 21 Feb 2006 09:17:26 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060221171627.509.95340.stgit@zion.home.lan>
+Message-Id: <20060221171630.509.33472.stgit@zion.home.lan>
 In-Reply-To: <20060221171535.509.28286.stgit@zion.home.lan>
 References: <20060221171535.509.28286.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 4/6] uml: os_connect_socket error path fixup
+Subject: [uml-devel] [PATCH 5/6] uml: better error reporting for read_output
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,53 +25,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 21 Feb 2006 18:16:27 +0100
+Date: Tue, 21 Feb 2006 18:16:30 +0100
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-Fix an fd leak and a return of -1 instead of -errno in the error path - this
-showed up in intensive testing of HPPFS, the os_connect_socket user.
+Do precise error handling: print precise error messages, distinguishing short
+reads and read errors. This functions fails frequently enough for me so I
+bothered doing this fix.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/os-Linux/file.c |   19 ++++++++++++++-----
- 1 files changed, 14 insertions(+), 5 deletions(-)
+ arch/um/drivers/net_user.c |   34 ++++++++++++++++++++++------------
+ 1 files changed, 22 insertions(+), 12 deletions(-)
 
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index f55773c..3bd10de 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -272,14 +272,23 @@ int os_connect_socket(char *name)
- 	snprintf(sock.sun_path, sizeof(sock.sun_path), "%s", name);
- 
- 	fd = socket(AF_UNIX, SOCK_STREAM, 0);
--	if(fd < 0)
--		return(fd);
-+	if(fd < 0) {
-+		err = -errno;
-+		goto out;
-+	}
- 
- 	err = connect(fd, (struct sockaddr *) &sock, sizeof(sock));
--	if(err)
--		return(-errno);
-+	if(err) {
-+		err = -errno;
-+		goto out_close;
-+	}
- 
--	return(fd);
-+	return fd;
-+
-+out_close:
-+	close(fd);
-+out:
-+	return err;
+diff --git a/arch/um/drivers/net_user.c b/arch/um/drivers/net_user.c
+index 098fa65..0e2f061 100644
+--- a/arch/um/drivers/net_user.c
++++ b/arch/um/drivers/net_user.c
+@@ -47,10 +47,12 @@ void tap_check_ips(char *gate_addr, unsi
+ 	}
  }
  
- void os_close_file(int fd)
++/* Do reliable error handling as this fails frequently enough. */
+ void read_output(int fd, char *output, int len)
+ {
+-	int remain, n, actual;
++	int remain, ret, expected;
+ 	char c;
++	char *str;
+ 
+ 	if(output == NULL){
+ 		output = &c;
+@@ -58,23 +60,31 @@ void read_output(int fd, char *output, i
+ 	}
+ 		
+ 	*output = '\0';
+-	n = os_read_file(fd, &remain, sizeof(remain));
+-	if(n != sizeof(remain)){
+-		printk("read_output - read of length failed, err = %d\n", -n);
+-		return;
++	ret = os_read_file(fd, &remain, sizeof(remain));
++
++	if (ret != sizeof(remain)) {
++		expected = sizeof(remain);
++		str = "length";
++		goto err;
+ 	}
+ 
+ 	while(remain != 0){
+-		n = (remain < len) ? remain : len;
+-		actual = os_read_file(fd, output, n);
+-		if(actual != n){
+-			printk("read_output - read of data failed, "
+-			       "err = %d\n", -actual);
+-			return;
++		expected = (remain < len) ? remain : len;
++		ret = os_read_file(fd, output, expected);
++		if (ret != expected) {
++			str = "data";
++			goto err;
+ 		}
+-		remain -= actual;
++		remain -= ret;
+ 	}
++
+ 	return;
++
++err:
++	if (ret < 0)
++		printk("read_output - read of %s failed, errno = %d\n", str, -ret);
++	else
++		printk("read_output - read of %s failed, read only %d of %d bytes\n", str, ret, expected);
+ }
+ 
+ int net_read(int fd, void *buf, int len)
 
 
 
