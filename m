@@ -1,26 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FGOd2-000080-Ng for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Mar 2006 14:56:36 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FGOd1-0006XP-7F
+	id 1FGhuF-0002U1-BB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Mar 2006 11:31:39 -0800
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FGhuC-0004Vo-RS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Mar 2006 14:56:36 -0800
+	Tue, 07 Mar 2006 11:31:39 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [uml-user] Crash and stability problems with
-	2.6.15.3-bs2
-References: <LEEIJGBJEEABAGOFFGAHEEKCDEAA.brocka@sterlingcgi.com>
-	<200603061810.44997.blaisorblade@yahoo.it>
-	<20060306113353.m61i8wp6i08g8ssc@www.scgiservices.com>
-In-Reply-To: <20060306113353.m61i8wp6i08g8ssc@www.scgiservices.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200603062309.30606.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_G+dDEutK51HKvGl"
+Message-Id: <200603072031.18574.blaisorblade@yahoo.it>
+Subject: [uml-devel] Real fix for rejected patch uaccess-warning
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,60 +25,82 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 6 Mar 2006 23:09:30 +0100
-To: Anthony Brock <brocka@sterlingcgi.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+Date: Tue, 7 Mar 2006 20:31:15 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 06 March 2006 20:33, Anthony Brock wrote:
-> > On Monday 06 March 2006 9:11, Blaisorblade wrote:
-> >
-> > On Monday 27 February 2006 17:27, Anthony Brock wrote:
-> > > In the mean time, we've experienced a second crash with the
-> > > 2.6.15.1-bs1 kernel. It looks to be very similar to the previous crash.
-> > > Only, in this case, I issued the command "uml_mconsole www-prod-1 sysrq
-> > > s" in preparation for a backup (after issuing a "uml_mconsole $1 stop"
-> > > command).
-> >
-> > It's a particular scenario, and I've been doubtly about it, but
-> > indeed it seems that it's safe (at least by design).
->
-> I apologize. However, I'm having difficulty understanding your meaning
-> here.
+--Boundary-00=_G+dDEutK51HKvGl
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I.e. I had doubt about "stop + sysrq s" being safe; today when I looked at the 
-code and at what I remembered of my doubt, I concluded I was wrong.
+About
+http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.16-rc4/patches/uaccess-warning
 
-> > > Mem-info:
-> > > DMA per-cpu:
-> > > cpu 0 hot: low 0, high 18, batch 3 used:2
-> > > cpu 0 cold: low 0, high 6, batch 1 used:5
-> > > DMA32 per-cpu: empty
-> > > Normal per-cpu: empty
-> > > HighMem per-cpu: empty
-> > > Free pages:         376kB (0kB HighMem)
-> > > Active:2985 inactive:8684 dirty:4 writeback:0 unstable:0 free:94
-> > > slab:3428 mapped:933 pagetables:48
-> > > DMA free:376kB min:1024kB low:1280kB high:1536kB active:11940kB
-> > > inactive:34736kB present:65536kB pages_scanned:0 all_unreclaimable?
-> > > no
-> > > lowmem_reserve[]: 0 0 0 0
-> >
-> > There are 376kB of free pages, so it's strange that it can't satisfy
-> > this request.
->
-> I agree. However, this is the only instance where we've been able to
-> reproduce a crash with a non-bs2 patched kernel. Other than this, the
-> bs1 patches have been very stable.
->
-> What can we do to further diagnose this? Alternatively, should we try a
-> different guest kernel version or set of patches?
->
-> Tony
+I read the patch which was rejected and noticed that you put there style 
+changes to get_user. They should be kept while the rest of the patch thrown 
+away, obviously, as discussed, but reading that made me wonder at this 
+(changes are just whitespace fixups):
 
+-        const __typeof__(ptr) __private_ptr = ptr; \
+-        __typeof__(*(__private_ptr)) __private_val; \
+[...]
+-	if (__copy_from_user(&__private_val, (__private_ptr), \
+-	    sizeof(*(__private_ptr))) == 0) {\
+
+Given that __private_ptr is a const pointer, __private_val is a const value, 
+where we store something with __copy_from_user.
+That's likely why GCC complains.
+
+To fix that, we should remove some excess constness. Try the attached patch (I 
+haven't GCC 4.1 installed).
+
+Also, I wonder why all this complicate and extra type-checked calls are 
+needed.
+
+The i386 source use typeof only in 1 case, for put_user:
+when I put_user((short)b, (unsigned long *) c) I must first cast (i.e. 
+zero-extend) b to a long and only after write it to c; writing the 4/8 bytes 
+pointed to by &b would be meaningless.
+
+All this IMHO, obviously.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
+
+--Boundary-00=_G+dDEutK51HKvGl
+Content-Type: text/x-diff; charset="us-ascii";
+	name="uml-fix-const-warns-gcc-4_1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="uml-fix-const-warns-gcc-4_1"
+
+Index: linux-2.6.git/include/asm-um/uaccess.h
+===================================================================
+--- linux-2.6.git.orig/include/asm-um/uaccess.h
++++ linux-2.6.git/include/asm-um/uaccess.h
+@@ -42,7 +42,7 @@
+ #define __get_user(x, ptr) \
+ ({ \
+         const __typeof__(ptr) __private_ptr = ptr; \
+-        __typeof__(*(__private_ptr)) __private_val; \
++        __typeof__(*(ptr)) __private_val; \
+         int __private_ret = -EFAULT; \
+         (x) = (__typeof__(*(__private_ptr)))0; \
+ 	if (__copy_from_user(&__private_val, (__private_ptr), \
+@@ -55,7 +55,7 @@
+ 
+ #define get_user(x, ptr) \
+ ({ \
+-        const __typeof__((*(ptr))) __user *private_ptr = (ptr); \
++        __typeof__((*(ptr))) __user *private_ptr = (ptr); \
+         (access_ok(VERIFY_READ, private_ptr, sizeof(*private_ptr)) ? \
+ 	 __get_user(x, private_ptr) : ((x) = 0, -EFAULT)); \
+ })
+
+--Boundary-00=_G+dDEutK51HKvGl--
 
 	
 
