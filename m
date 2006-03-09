@@ -1,12 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Antoine Martin <antoine@nagafix.co.uk>
-In-Reply-To: <20060221071402.EB05F338E2@sc8-sf-spam1.sourceforge.net>
-References: <20060221071402.EB05F338E2@sc8-sf-spam1.sourceforge.net>
-Content-Type: text/plain
-Message-Id: <1141870804.10157.16.camel@localhost>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FHOQt-00020N-QB for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Mar 2006 08:56:11 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FHOQt-0006yu-Ia
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Mar 2006 08:56:12 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Real fix for rejected patch uaccess-warning
+Message-ID: <20060309165725.GC6040@ccure.user-mode-linux.org>
+References: <200603072031.18574.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] new filesystem images
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200603072031.18574.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,42 +28,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 09 Mar 2006 02:20:04 +0000
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Date: Thu, 9 Mar 2006 11:57:25 -0500
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-Hi list,
+On Tue, Mar 07, 2006 at 08:31:15PM +0100, Blaisorblade wrote:
+> To fix that, we should remove some excess constness. Try the attached patch
 
-I have added some new images here:
-http://uml.nagafix.co.uk/
-Fedora Core 4 AMD64, Mandriva-2006 x86 & AMD64, OpenSuse x86.
-All these now work well with TLS, tested with 2.6.15.6-bs3-tls.
-The last images should be uploaded by the time you get this email.
+That's certainly a lot simpler than what I had.  I'll drop it in my tree
+and see what it does.
 
-I still have to rebuild some new Honeypot images - avoid those.
-Also, do not use FC4-x86, this one still has a problem with TLS.
-Do let me know of any problems.
-
-Antoine
-
-
-PS: here is the problem with FC4-x86:
-
-Setting hostname localhost:  [  OK  ]
-set_thread_area failed when setting up thread-local storage
-/etc/rc.d/rc.sysinit: line 323:  1441 Done                    echo
-"raidautorun /dev/md0"
-      1442 Segmentation fault      | nash --quiet
-set_thread_area failed when setting up thread-local storage
-/etc/rc.d/rc.sysinit: line 340:  1445 Done                    echo
-"mkdmnod"
-      1446 Segmentation fault      | /sbin/nash --quiet >/dev/null 2>&1
-Checking filesystems
-Checking all file systems.
-[/sbin/fsck.ext3 (1) -- /] fsck.ext3 -a /dev/ubda
-set_thread_area failed when setting up thread-local storage
-Warning... fsck.ext3 for device /dev/ubda exited with signal 11.
-[FAILED]
-
+				Jeff
 
 
 -------------------------------------------------------
