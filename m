@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FHOQt-00020N-QB for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Mar 2006 08:56:11 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FHOQt-0006yu-Ia
+	id 1FHjUv-0006gk-FW for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 10 Mar 2006 07:25:45 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FHjUs-0003w9-OT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Mar 2006 08:56:12 -0800
-From: Jeff Dike <jdike@addtoit.com>
+	Fri, 10 Mar 2006 07:25:45 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Real fix for rejected patch uaccess-warning
-Message-ID: <20060309165725.GC6040@ccure.user-mode-linux.org>
 References: <200603072031.18574.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<20060309165725.GC6040@ccure.user-mode-linux.org>
+In-Reply-To: <20060309165725.GC6040@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200603072031.18574.blaisorblade@yahoo.it>
+Message-Id: <200603101622.41518.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,17 +30,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 9 Mar 2006 11:57:25 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 10 Mar 2006 16:22:41 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Tue, Mar 07, 2006 at 08:31:15PM +0100, Blaisorblade wrote:
-> To fix that, we should remove some excess constness. Try the attached patch
+On Thursday 09 March 2006 17:57, Jeff Dike wrote:
+> On Tue, Mar 07, 2006 at 08:31:15PM +0100, Blaisorblade wrote:
+> > To fix that, we should remove some excess constness. Try the attached
+> > patch
 
-That's certainly a lot simpler than what I had.  I'll drop it in my tree
-and see what it does.
+> That's certainly a lot simpler than what I had.  I'll drop it in my tree
+> and see what it does.
 
-				Jeff
+I've now seen that while that may fix the problem on 4.1 (and please, do test 
+that), on my 3.4 it causes new warnings like:
+
+fs/proc/proc_misc.c: In function `write_sysrq_trigger':
+fs/proc/proc_misc.c:686: warning: initialization discards qualifiers from 
+pointer target type
+
+686:		if (get_user(c, buf))
+where "buf" is a "const char __user *".
+
+It's complaining because "const" was lost.
+
+Ultimately, I think we should remove all this copying of pointers and do like 
+i386 in this regard - there is only one cast to do, in put_user, as I 
+mentioned in last mail.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
