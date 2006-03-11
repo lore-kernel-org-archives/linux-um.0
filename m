@@ -1,24 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FHjUv-0006gk-FW for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Mar 2006 07:25:45 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FHjUs-0003w9-OT
+	id 1FI8PB-0004ed-Tv for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 11 Mar 2006 10:01:29 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FI8PA-0006dS-Mj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 10 Mar 2006 07:25:45 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Real fix for rejected patch uaccess-warning
-References: <200603072031.18574.blaisorblade@yahoo.it>
-	<20060309165725.GC6040@ccure.user-mode-linux.org>
-In-Reply-To: <20060309165725.GC6040@ccure.user-mode-linux.org>
+	Sat, 11 Mar 2006 10:01:30 -0800
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by grelber.thyrsus.com (8.13.4/8.13.4) with ESMTP id k2BJjUFA005689
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 11 Mar 2006 14:45:30 -0500
+From: Rob Landley <rob@landley.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200603101622.41518.blaisorblade@yahoo.it>
+Message-Id: <200603111301.42195.rob@landley.net>
+Subject: [uml-devel] Occasional hang starting up.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,46 +33,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 10 Mar 2006 16:22:41 +0100
+Date: Sat, 11 Mar 2006 13:01:41 -0500
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
 
-On Thursday 09 March 2006 17:57, Jeff Dike wrote:
-> On Tue, Mar 07, 2006 at 08:31:15PM +0100, Blaisorblade wrote:
-> > To fix that, we should remove some excess constness. Try the attached
-> > patch
+On linux-2.6.16-rc5 I'm occasionally getting a hang starting up (with 
+rootfstype=hostfs), right after the initializing VFS line.  This time when I 
+killed it, I got the following error (repeated twice):
 
-> That's certainly a lot simpler than what I had.  I'll drop it in my tree
-> and see what it does.
+remove_umid_dir - actually_do_remove failed with err = -2
 
-I've now seen that while that may fix the problem on 4.1 (and please, do test 
-that), on my 3.4 it causes new warnings like:
+I'm guessing that's where it's hanging?
 
-fs/proc/proc_misc.c: In function `write_sysrq_trigger':
-fs/proc/proc_misc.c:686: warning: initialization discards qualifiers from 
-pointer target type
-
-686:		if (get_user(c, buf))
-where "buf" is a "const char __user *".
-
-It's complaining because "const" was lost.
-
-Ultimately, I think we should remove all this copying of pointers and do like 
-i386 in this regard - there is only one cast to do, in put_user, as I 
-mentioned in last mail.
+Rob
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+Never bet against the cheap plastic solution.
 
 
 -------------------------------------------------------
