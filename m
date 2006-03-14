@@ -1,28 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FJ4PW-0004hy-3M for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Mar 2006 23:57:42 -0800
-Received: from motgate8.mot.com ([129.188.136.8])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FJ4PV-0003WF-1a
+	id 1FJ8fJ-0000bK-NM for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Mar 2006 04:30:17 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FJ8fG-0004mO-QE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Mar 2006 23:57:42 -0800
-Received: from il06exr03.mot.com (il06exr03.mot.com [129.188.137.133])
-	by motgate8.mot.com (8.12.11/Motgate7) with ESMTP id k2E8D5Nh008324
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 14 Mar 2006 01:13:10 -0700 (MST)
-Received: from zmy16exm63.ds.mot.com (zmy16exm63.ap.mot.com [10.179.4.34])
-	by il06exr03.mot.com (8.13.1/8.13.0) with ESMTP id k2E8D8O1005737
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 14 Mar 2006 02:13:09 -0600 (CST)
-Content-class: urn:content-classes:message
+	Tue, 14 Mar 2006 04:30:17 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Host crash on find from UML (was: Re: [uml-devel] mount hostfs
+	problem)
+References: <565F40B9893580489B94B8D324460AF4572AA4@zmy16exm63.ds.mot.com>
+In-Reply-To: <565F40B9893580489B94B8D324460AF4572AA4@zmy16exm63.ds.mot.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6473C.EDD0ABBC"
-Message-ID: <565F40B9893580489B94B8D324460AF4572AA4@zmy16exm63.ds.mot.com>
-From: "Wang LianWei-A22439" <lian-wei.wang@motorola.com>
-Subject: [uml-devel] mount hostfs problem
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200603141330.00351.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,75 +30,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 14 Mar 2006 15:57:11 +0800
+Date: Tue, 14 Mar 2006 13:29:59 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Wang LianWei-A22439 <lian-wei.wang@motorola.com>
 
-This is a multi-part message in MIME format.
+On Tuesday 14 March 2006 08:57, Wang LianWei-A22439 wrote:
+> After launch the uml with hostfs mounted, I run the find command in '/'
+> directory,then the host system crash.
 
-------_=_NextPart_001_01C6473C.EDD0ABBC
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I know of such a *host* bug in host 2.4 kernels, which was fixed in (around) 
+2.4.25. If you have such a host kernel, upgrade it. It's an host bug anyway.
 
-After launch the uml with hostfs mounted, I run the find command in '/'
-directory,then the host system crash.
-=20
-as below procedure:
-=20
-       cd /
-       find .
-then the host crash.
-=20
-My UML kernel version is 2.6.10.
-=20
-Best Regards,
-Wang Lianwei
-[X]  General Business Information
-=20
-=20
+> as below procedure:
+>
+>        cd /
+>        find .
+> then the host crash.
+>
+> My UML kernel version is 2.6.10.
+>
+> Best Regards,
+> Wang Lianwei
+> [X]  General Business Information
 
-------_=_NextPart_001_01C6473C.EDD0ABBC
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1528" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D665254707-14032006><FONT size=3D2>After&nbsp;launch =
-the uml with=20
-hostfs mounted, I run the find command in '/' directory,then the host =
-system=20
-crash.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT size=3D2>as below=20
-procedure:</FONT></SPAN></DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd /</FONT></SPAN></DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; find .</FONT></SPAN></DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT size=3D2>then the host=20
-crash.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT size=3D2>My UML kernel =
-version is=20
-2.6.10.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D665254707-14032006><FONT =
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV align=3Dleft><FONT size=3D2>Best Regards,<BR>Wang =
-Lianwei</FONT><FONT=20
-size=3D2><BR>[X]&nbsp; General Business Information</FONT></DIV>
-<DIV align=3Dleft><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+	
 
-------_=_NextPart_001_01C6473C.EDD0ABBC--
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
