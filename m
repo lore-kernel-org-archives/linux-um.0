@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FJ8fJ-0000bK-NM for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Mar 2006 04:30:17 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FJ8fG-0004mO-QE
+	id 1FJG1a-0003vr-33 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Mar 2006 12:21:46 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FJG1Y-0005Nw-Lg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Mar 2006 04:30:17 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Host crash on find from UML (was: Re: [uml-devel] mount hostfs
-	problem)
-References: <565F40B9893580489B94B8D324460AF4572AA4@zmy16exm63.ds.mot.com>
-In-Reply-To: <565F40B9893580489B94B8D324460AF4572AA4@zmy16exm63.ds.mot.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	Tue, 14 Mar 2006 12:21:46 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Occasional hang starting up.
+Message-ID: <20060314202249.GB22286@ccure.user-mode-linux.org>
+References: <200603111301.42195.rob@landley.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200603141330.00351.blaisorblade@yahoo.it>
+In-Reply-To: <200603111301.42195.rob@landley.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,42 +28,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 14 Mar 2006 13:29:59 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Wang LianWei-A22439 <lian-wei.wang@motorola.com>
+Date: Tue, 14 Mar 2006 15:22:49 -0500
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 14 March 2006 08:57, Wang LianWei-A22439 wrote:
-> After launch the uml with hostfs mounted, I run the find command in '/'
-> directory,then the host system crash.
+On Sat, Mar 11, 2006 at 01:01:41PM -0500, Rob Landley wrote:
+> On linux-2.6.16-rc5 I'm occasionally getting a hang starting up (with 
+> rootfstype=hostfs), right after the initializing VFS line.  
 
-I know of such a *host* bug in host 2.4 kernels, which was fixed in (around) 
-2.4.25. If you have such a host kernel, upgrade it. It's an host bug anyway.
+I'm in the process of beating on the newer externfs-based hostfs and humfs,
+so I'm not too concerned with bugs in the old hostfs.  Having said that,
+if you can get a stack from the hang, it might turn out to be an easily
+diagnosed and fixed bug.
 
-> as below procedure:
->
->        cd /
->        find .
-> then the host crash.
->
-> My UML kernel version is 2.6.10.
->
-> Best Regards,
-> Wang Lianwei
-> [X]  General Business Information
+> This time when I
+> killed it, I got the following error (repeated twice):
+> 
+> remove_umid_dir - actually_do_remove failed with err = -2
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+There's some confusion sometimes during shutdown when UML is forcibly killed.
+I haven't really looked at this, but it's harmless.
 
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+				Jeff
 
 
 -------------------------------------------------------
