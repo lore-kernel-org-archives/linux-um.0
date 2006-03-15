@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FJVii-0001qs-Vk for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Mar 2006 05:07:20 -0800
-Received: from s93.xrea.com ([218.216.67.44])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FJVih-0001Wr-AH
+	id 1FJYjW-0000eR-HC for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Mar 2006 08:20:22 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FJYjV-0002HF-TH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Mar 2006 05:07:20 -0800
-Message-Id: <200603151307.AA00817@bbb-jz5c7z9hn9y.digitalinfra.co.jp>
-From: Jun OKAJIMA <okajima@digitalinfra.co.jp>
-Subject: Re: [uml-devel] Sharing code pages between host and guest
-In-Reply-To: <20060314202739.GC22286@ccure.user-mode-linux.org>
-References: <20060314202739.GC22286@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	Wed, 15 Mar 2006 08:20:22 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Soft lockup with 2.6.15+bs3-tls
+Message-ID: <20060315162130.GB4186@ccure.user-mode-linux.org>
+References: <20060315135915.63d0443e@thomas.toulouse>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20060315135915.63d0443e@thomas.toulouse>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,36 +28,23 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 15 Mar 2006 22:07:07 +0900
-To: Jeff Dike <jdike@addtoit.com>
+Date: Wed, 15 Mar 2006 11:21:30 -0500
+To: Thomas Petazzoni <thomas.petazzoni@enix.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
->> I am studying now for how you share same content page between host and guest.
->> In other words, if host and guest use just very same binary of glibc,
->> then, how to share code pages of glibc (or bash or...).
->> I think one of the biggest problem of virtualization is memory,
->> and one common technique to solve it is sharing pages, dont you?
->
->That would certainly help, although you are giving up one advantage of
->virtualization this way, which is the ability to have the guest and host
->be running different versions of the kernel and/or userspace.
->
+On Wed, Mar 15, 2006 at 01:59:15PM +0100, Thomas Petazzoni wrote:
+> While using 'gcc' under UML 2.6.15 patched with bs3-tls, no patch on
+> the host, I get the following soft lockup. The soft lockup is fully
+> reproducible, and always occurs while compiling a specific file of the
+> software I'm compiling under UML.
 
-I dont think so. It can be solved easyily with using UnionFS.
+Soft lockups are easy to reproduce with any heavy I/O load, but I
+haven't figured out what is going on.  They are harmless, though.  If
+you don't like the messages, you can just disable them in the config.
 
+The OOM is more interesting.  Is that reproducable?
 
->> My question is, if you share /lib through HostFS,
->> can I share code pages of /lib/libc.6.so between host and guest?
->
->If hostfs mmaps pages (which it currently doesn't, but is planned).
->
-
-Good to hear! I am waiting it in hope.
-
-
-            --- Okajima, Jun. Tokyo, Japan.
-
-
+				Jeff
 
 
 -------------------------------------------------------
