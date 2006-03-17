@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FKKlw-0003bS-Iv for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2006 11:38:04 -0800
+	id 1FKKnJ-0003kw-Hw for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Mar 2006 11:39:29 -0800
 Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FKKlu-0007so-0g
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FKKnI-00007K-E5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2006 11:38:04 -0800
+	Fri, 17 Mar 2006 11:39:30 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Occasional hang starting up.
-References: <200603111301.42195.rob@landley.net>
-	<20060314202249.GB22286@ccure.user-mode-linux.org>
-	<20060316112251.A17140@almesberger.net>
-In-Reply-To: <20060316112251.A17140@almesberger.net>
+Subject: Re: [uml-devel] compile failure on uml-2.6.15-bs3-tls (and an easy
+	fix)
+References: <20060317185723.GA8310@cobalt.cs.wisc.edu>
+In-Reply-To: <20060317185723.GA8310@cobalt.cs.wisc.edu>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_b/wGEiBhOjfX7/Y"
-Message-Id: <200603172036.59218.blaisorblade@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200603172039.21942.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,96 +30,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Mar 2006 20:36:58 +0100
+Date: Fri, 17 Mar 2006 20:39:21 +0100
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Werner Almesberger <wa@almesberger.net>, Jeff Dike <jdike@addtoit.com>, Rob Landley <rob@landley.net>
+Cc: Erik Paulson <epaulson@cs.wisc.edu>
 
---Boundary-00=_b/wGEiBhOjfX7/Y
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Thursday 16 March 2006 15:22, Werner Almesberger wrote:
-> Jeff Dike wrote:
-> > Having said that,
-> > if you can get a stack from the hang, it might turn out to be an easily
-> > diagnosed and fixed bug.
+On Friday 17 March 2006 19:57, Erik Paulson wrote:
+> Hello,
 >
-> Seems that arch/um/kernel/sigio_user.c:write_sigio_thread begins
-> its poll before there are any fds in current_poll
+> On a CentOS 4.2 machine, I had the same failure that Bill Stearns had
+> back in January in this message:
+>
+> http://www.mail-archive.com/user-mode-linux-devel@lists.sourceforge.net/msg
+>02943.html
 
-Ah, and you mean it hangs...
+Ah, ok... here's why he posted that patch. Thanks for the report, I had 
+integrated it anyway in my tree for next release, but I didn't know it fixed 
+a bug - RH headers are different so I didn't experience this problem.
 
-> , so update_thread 
-> caused by a add_sigio_fd shortly thereafter hangs while waiting for
-> a response.
+Fix will be in -bb5 and subsequent release.
 
-Clearly
+> (the failure:
+>
+> arch/um/os-Linux/tls.c:48: error: syntax error before 'get_thread_area'
+> arch/um/os-Linux/tls.c:48: warning: type defaults to 'int' in declaration
+> of '_syscall1'
+> )
+>
+> The small addition of #include <linux/unistd.h> fixed it for me.
+>
+> Here's how I built my kernel:
 
-> A sleep(1) at the beginning of write_sigio_thread "fixes" this :-)
+> teal(40)% rpm -qa | grep glibc
+> glibc-utils-2.3.4-2.13
+> glibc-common-2.3.4-2.13
+> glibc-headers-2.3.4-2.13
+> glibc-2.3.4-2.13
+> glibc-devel-2.3.4-2.13
+> glibc-kernheaders-2.4-9.1.98.EL
 
-Er... there's only one thing which seems unclear - poll(NULL, 0, -1) shouldn't 
-fail with -EFAULT instead of hanging? Yep, it should. I didn't believe what 
-you said, so. But then I went to check the implementation. And, indeed, it 
-seems that Linux isn't up to this :-).
-
-So:
-
-1) I'll try to fix poll(2) to return -EINVAL. Dunno whether anyone will say 
-"no, the app is stupid, it deserves no error", but hope not (with "try" I 
-refer to this). Attached patch should do this.
-
-2) write_sigio_thread should do a "down" on a semaphore/mutex and the first 
-update_thread should "up" it. As usually, this semaphore would be indeed 
-implemented as a pipe.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
---Boundary-00=_b/wGEiBhOjfX7/Y
-Content-Type: text/x-diff; charset="iso-8859-1";
-	name="poll-mustn_t-hang-0-fds.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="poll-mustn_t-hang-0-fds.patch"
+	
 
-poll(2): don't hang caller if nfds == 0
-
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, Werner Almesberger <wa@almesberger.net>
-
-As Werner Almesberger observed in a real program, poll(2) will never return if
-called with nfds == 0; which is stupid but not so badly deserving.
-
-I looked at the code and verified that indeed such a case is never detected and
-do_poll keeps looping, checking any fd passed, overlooking it wasn't passed any
-and calling schedule_timeout() endlessly. At least it's a TASK_INTERRUPTIBLE
-sleep...
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Index: linux-2.6.git/fs/select.c
-===================================================================
---- linux-2.6.git.orig/fs/select.c
-+++ linux-2.6.git/fs/select.c
-@@ -629,6 +629,10 @@ int do_sys_poll(struct pollfd __user *uf
- 	struct fdtable *fdt;
- 	int max_fdset;
- 
-+	/* Otherwise below code would hang! */
-+	if (unlikely(nfds < 1))
-+		return -EINVAL;
-+
- 	/* Do a sanity check on nfds ... */
- 	rcu_read_lock();
- 	fdt = files_fdtable(current->files);
-
---Boundary-00=_b/wGEiBhOjfX7/Y--
-
+	
 		
 ___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
