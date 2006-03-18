@@ -2,26 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FKOmI-0006P4-HB for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2006 15:54:42 -0800
-Received: from host.almesberger.net ([204.10.140.10])
+	id 1FKP32-0008FC-28 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Mar 2006 16:12:00 -0800
+Received: from dsl092-053-140.phl1.dsl.speakeasy.net ([66.92.53.140]
+	helo=grelber.thyrsus.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FKOmH-00051F-G0
+	(Exim 4.44) id 1FKP30-0000p8-IG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2006 15:54:42 -0800
-From: Werner Almesberger <wa@almesberger.net>
-Subject: Re: [uml-devel] Occasional hang starting up.
-Message-ID: <20060317205430.C8529@almesberger.net>
-References: <200603111301.42195.rob@landley.net>
-	<200603172036.59218.blaisorblade@yahoo.it>
-	<20060317182722.B8529@almesberger.net>
-	<200603172314.47124.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Fri, 17 Mar 2006 16:11:59 -0800
+From: Rob Landley <rob@landley.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200603172314.47124.blaisorblade@yahoo.it>;
-	from blaisorblade@yahoo.it on Fri, Mar 17, 2006 at 11:14:46PM
-	+0100
+Message-Id: <200603171912.12082.rob@landley.net>
+Subject: [uml-devel] kernel BUG at drivers/block/loop.c:621
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,51 +29,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 17 Mar 2006 20:54:30 -0300
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Rob Landley <rob@landley.net>
+Date: Fri, 17 Mar 2006 19:12:11 -0500
+To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> however usleep(3) exists since 4.3 BSD so this is a 
-> bit unlikely;
+I can reproduce the following in 2.6.16-rc5, User Mode Linux:
 
-Oh, there must be a million of passably valid reasons why someone
-may still do it this way, e.g.,
+kernel BUG at drivers/block/loop.c:621!
+Kernel panic - not syncing: BUG!
 
-- because they don't know of the more suitable function
+EIP: 0073:[<ffffe410>] CPU: 0 Not tainted ESP: 007b:b7de1f9c EFLAGS: 00200246
+    Not tainted
+EAX: 00000000 EBX: 000018be ECX: 00000013 EDX: 000018be
+ESI: 000018bb EDI: 00000011 EBP: b7de1fb8 DS: 007b ES: 007b
+09b87bb4:  [<0806c762>] show_regs+0x102/0x110
+09b87bd0:  [<0805b6fc>] panic_exit+0x2c/0x50
+09b87be0:  [<0807ff7d>] notifier_call_chain+0x2d/0x50
+09b87c00:  [<08071095>] panic+0x75/0x120
+09b87c20:  [<0812e181>] loop_thread+0x151/0x160
+09b87c4c:  [<08065297>] run_kernel_thread+0x37/0x60
+09b87cfc:  [<0805bbd1>] new_thread_handler+0x91/0xc0
+09b87d20:  [<ffffe420>] disks+0xf7e7ec84/0x4
 
-- because they don't trust the more suitable function for some
-  reason
+The reproduction sequence is a bit involved (my mount regression test and the 
+current svn snapshot of busybox are involved), and running the following 
+sequence of commands:
 
-- because they're using some restricted set of functions,
-  e.g., from a portable library
+mount; mount -a; mount; mount /dev/loop1 /images/vfat.dir ; 
+losetup /dev/loop1; ls; vi /etc/fstab; cat /etc/fstab; losetup /dev/loop0; 
+mount /images/vfat.img /images/vfat.dir -o ro
 
-- because the other function isn't available on all platforms
-  they care about, while the "poll" functionality (perhaps
-  through some abstraction that may also use "select") is
+The current busybox mount is still broken in a couple of known places (hence 
+the testing; I'm fixing it).  But it probably shouldn't panic the kernel...
 
-- because they use a signal to get out of the initial "hang"
-
-- because the semantics of their code actually say "I/O or
-  timeout"
-
-- because that's what the code that has passed all those
-  reviews and certifications does, and nobody is allowed to
-  touch it. Ever.
-
-etc.
-
-Just because this valid if unexpected behaviour was a little
-inconvenient for us isn't a good reason for breaking it. If
-a safe, easy, and incredibly boring life was the top item on
-our agenda, we should start with getting rid of concurrency ;-)
-
-- Werner
-
+Rob
 -- 
-  _________________________________________________________________________
- / Werner Almesberger, Buenos Aires, Argentina         wa@almesberger.net /
-/_http://www.almesberger.net/____________________________________________/
+Never bet against the cheap plastic solution.
 
 
 -------------------------------------------------------
