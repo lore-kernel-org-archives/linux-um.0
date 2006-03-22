@@ -1,25 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FM5IX-0003KT-MD for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 07:30:57 -0800
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FM5IT-0006MW-SP
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 07:30:57 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] memory option crashes the uml bootstrap phase
-References: <20060321142624.GA18505@SteX>
-	<200603211954.08891.blaisorblade@yahoo.it>
-	<20060321205127.GA22808@ccure.user-mode-linux.org>
-In-Reply-To: <20060321205127.GA22808@ccure.user-mode-linux.org>
+From: Stefano Melchior <stefano.melchior@openlabs.it>
+Subject: Re: [uml-devel] Cannot debug UML
+Message-ID: <20060322152707.GH8115@SteX>
+Reply-To: stefano.melchior@openlabs.it
+References: <44215200.8020708@gmail.com> <20060322135015.GC8115@SteX>
+	<44215B8F.6060400@gmail.com> <20060322142820.GF8115@SteX>
+	<44216384.4070709@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZYOWEO2dMm2Af3e3"
 Content-Disposition: inline
-Message-Id: <200603221630.40576.blaisorblade@yahoo.it>
+In-Reply-To: <44216384.4070709@gmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,32 +22,56 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 22 Mar 2006 16:30:39 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it, user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 22 Mar 2006 16:27:08 +0100
+To: Mikado <mikado4vn@gmail.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 21 March 2006 21:51, Jeff Dike wrote:
-> On Tue, Mar 21, 2006 at 07:54:08PM +0100, Blaisorblade wrote:
-> > However, test increasing /proc/sys/vm/max_map_count
->
-> This only bites you when you have large UML processes - I don't think it
-> can cause a crash on boot.
 
-I remember this, I didn't have many other things to suggest (apart TT mode) 
-and that setting is needed anyway (actually it's needed when you go _over_ 
-256M per guest).
+--ZYOWEO2dMm2Af3e3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fantasy is exhausting :-)
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
+On Wed, Mar 22, 2006 at 09:47:32PM +0700, Mikado wrote:
+Hi Mikado,
+>=20
+> ./linux mode=3Dtt debug ubd0=3Droot_fs ubd1=3Dswap eth0=3Dtuntap,,,192.16=
+8.0.254
+> ./linux mode=3Dtt debug ubd0=3Droot_fs ubd1=3Dswap mem=3D128m
+> eth0=3Dtuntap,,,192.168.0.254
+> ./linux mode=3Dtt debug ubd0=3Droot_fs ubd1=3Dswap mem=3D128M
+> eth0=3Dtuntap,,,192.168.0.254
+Maybe it is a stupid question:=20
+does the following command work?
 
-		
-___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
+=2E/linux ubd0=3Droot_fs
 
+Start from this, then add step by step all the needed option
+
+Cheers
+
+SteX
+--=20
+Stefano Melchior, GPG key =3D D52DF829 - <stefano.melchior@openlabs.it>
+http://etinarcadiaego.dyndns.org    --     http://www.stex.name
+Skype ID "stefanomelchior"
+
+--ZYOWEO2dMm2Af3e3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iQCVAwUBRCFsy4lnkxrVLfgpAQKE4QQAlLGz+nY81kI8ORwG3nuppnDPUVCYpOpm
+VV8odldrJxu0wqOJ2uTxXVLqlNIjoNnQsVWAySNHYyA/4dZBG6mlh3IgnDqVxQ8w
+LQohWFiXn6ILp87yaA96XvuKxohCTL8yiEHRLLLdG5Qsp6J1/II7YZuXOicsWV44
+6IPrCYxHAOM=
+=lmEk
+-----END PGP SIGNATURE-----
+
+--ZYOWEO2dMm2Af3e3--
 
 
 -------------------------------------------------------
