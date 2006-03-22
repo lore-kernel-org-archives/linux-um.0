@@ -1,15 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] memory option crashes the uml bootstrap phase
-Message-ID: <20060322165316.GA5417@ccure.user-mode-linux.org>
-References: <20060321142624.GA18505@SteX>
-	<200603211954.08891.blaisorblade@yahoo.it>
-	<20060321205127.GA22808@ccure.user-mode-linux.org>
-	<200603221630.40576.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Cannot debug UML
+Message-ID: <20060322165431.GB5417@ccure.user-mode-linux.org>
+References: <44215200.8020708@gmail.com> <20060322135015.GC8115@SteX>
+	<44215B8F.6060400@gmail.com>
+	<200603221640.50362.blaisorblade@yahoo.it>
+	<442178BA.9080302@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200603221630.40576.blaisorblade@yahoo.it>
+In-Reply-To: <442178BA.9080302@gmail.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,17 +21,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 22 Mar 2006 11:53:16 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it, user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 22 Mar 2006 11:54:31 -0500
+To: Mikado <mikado4vn@gmail.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, jdike@addtoit.com, stefano.melchior@openlabs.it
 
-On Wed, Mar 22, 2006 at 04:30:39PM +0100, Blaisorblade wrote:
-> I remember this, I didn't have many other things to suggest (apart TT mode) 
-> and that setting is needed anyway (actually it's needed when you go _over_ 
-> 256M per guest).
+On Wed, Mar 22, 2006 at 11:18:02PM +0700, Mikado wrote:
+> I wonder why "kernel debugging (under TT mode)" is accessed directly on
+> UML homepage when TT mode is "old".
 
-To be precise, it's necessary when you have UML processes with > 256M RSS.
-A 1G UML with a ton of tiny processes won't hit that limit.
+The site is in desperate need of an update (which I have planned).
 
 				Jeff
 
