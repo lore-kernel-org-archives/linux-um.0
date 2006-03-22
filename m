@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FM5SQ-0004f1-VW for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 07:41:10 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FM5SQ-0001CM-Hk
+	id 1FM5UZ-000514-C1 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Mar 2006 07:43:23 -0800
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FM5UZ-0001TC-05
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 07:41:11 -0800
+	Wed, 22 Mar 2006 07:43:23 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Cannot debug UML
-References: <44215200.8020708@gmail.com> <20060322135015.GC8115@SteX>
-	<44215B8F.6060400@gmail.com>
-In-Reply-To: <44215B8F.6060400@gmail.com>
+Subject: Re: [uml-devel] memory option crashes the uml bootstrap phase
+References: <20060321142624.GA18505@SteX>
+	<200603211954.08891.blaisorblade@yahoo.it>
+	<20060322110400.GA6861@SteX>
+In-Reply-To: <20060322110400.GA6861@SteX>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200603221640.50362.blaisorblade@yahoo.it>
+Message-Id: <200603221643.15217.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,35 +31,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 22 Mar 2006 16:40:49 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, mikado4vn@gmail.com
-Cc: stefano.melchior@openlabs.it, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 22 Mar 2006 16:43:14 +0100
+To: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Wednesday 22 March 2006 15:13, Mikado wrote:
-> Stefano Melchior wrote:
-> > On Wed, Mar 22, 2006 at 08:32:48PM +0700, Mikado wrote:
-> > Hi Mikado,
+On Wednesday 22 March 2006 12:04, Stefano Melchior wrote:
+> On Tue, Mar 21, 2006 at 07:54:08PM +0100, Blaisorblade wrote:
+> Dear all,
+>
+> > No, that crash is likely a race condition and the code treats
+> > mem=256{m,M} the same way.
+> > Verified in arch/um/kernel/physmem.c:uml_mem_setup and
+> > lib/cmdline.c:memparse.
+> >
+> > However, test increasing /proc/sys/vm/max_map_count and disabling
+> > CONFIG_MODE_TT as suggested by Jeff, I've already seen this to fix this
+> > problem.
+>
+> thus the point is if you need to disable TT mode by default, isn't it?
+> Now user-mode-linux is in debian "unstable" [1] and I need to provide a
+> config file as default configuration for the pkg: you suggested me to act
+> this way
 
-> Debugging UML requires running it under TT mode. Normally I run UML
-> under SKAS mode, everything is OK. I cannot get into GDB under SKAS mode
-> whenever I use 'debug' option.
+> #
+> # UML-specific options
+> #
+> CONFIG_MODE_TT=n
+> ^^^^^^^^^^^^^^^^
+> # CONFIG_HOST_2G_2G is not set
+> CONFIG_KERNEL_HALF_GIGS=1
+> CONFIG_MODE_SKAS=y
 
-debug is an ugly trick for TT-only.
+> and rebuild the bin, didn't you?
 
-For SKAS mode use the normal debug sequence:
+Almost yes, but that's not the correct syntax - it's a common pitfall:
 
-$ gdb vmlinux
-(gdb) <set breakpoints, do what you want>
-(gdb) run <params>
+# CONFIG_MODE_TT is not set
 
-More info at the "debugging UML" link, "SKAS" subsection on the main site.
+> [1] http://packages.qa.debian.org/u/user-mode-linux.html
+
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-	
 		
 ___________________________________ 
 Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
