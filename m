@@ -1,25 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FM5UZ-000514-C1 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 07:43:23 -0800
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FM5UZ-0001TC-05
+	id 1FM5yS-0000Ot-HN for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Mar 2006 08:14:16 -0800
+Received: from zproxy.gmail.com ([64.233.162.193])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FM5yR-0004go-5E
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 07:43:23 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] memory option crashes the uml bootstrap phase
-References: <20060321142624.GA18505@SteX>
-	<200603211954.08891.blaisorblade@yahoo.it>
-	<20060322110400.GA6861@SteX>
-In-Reply-To: <20060322110400.GA6861@SteX>
+	Wed, 22 Mar 2006 08:14:16 -0800
+Received: by zproxy.gmail.com with SMTP id n29so199573nzf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 22 Mar 2006 08:14:13 -0800 (PST)
+Message-ID: <442178BA.9080302@gmail.com>
+From: Mikado <mikado4vn@gmail.com>
+Reply-To: mikado4vn@gmail.com
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: Re: [uml-devel] Cannot debug UML
+References: <44215200.8020708@gmail.com> <20060322135015.GC8115@SteX>
+	<44215B8F.6060400@gmail.com>
+	<200603221640.50362.blaisorblade@yahoo.it>
+In-Reply-To: <200603221640.50362.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200603221643.15217.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,55 +33,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 22 Mar 2006 16:43:14 +0100
-To: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it
-Cc: user-mode-linux-user@lists.sourceforge.net
+Date: Wed, 22 Mar 2006 23:18:02 +0700
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, jdike@addtoit.com, stefano.melchior@openlabs.it
 
-On Wednesday 22 March 2006 12:04, Stefano Melchior wrote:
-> On Tue, Mar 21, 2006 at 07:54:08PM +0100, Blaisorblade wrote:
-> Dear all,
->
-> > No, that crash is likely a race condition and the code treats
-> > mem=256{m,M} the same way.
-> > Verified in arch/um/kernel/physmem.c:uml_mem_setup and
-> > lib/cmdline.c:memparse.
-> >
-> > However, test increasing /proc/sys/vm/max_map_count and disabling
-> > CONFIG_MODE_TT as suggested by Jeff, I've already seen this to fix this
-> > problem.
->
-> thus the point is if you need to disable TT mode by default, isn't it?
-> Now user-mode-linux is in debian "unstable" [1] and I need to provide a
-> config file as default configuration for the pkg: you suggested me to act
-> this way
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> #
-> # UML-specific options
-> #
-> CONFIG_MODE_TT=n
-> ^^^^^^^^^^^^^^^^
-> # CONFIG_HOST_2G_2G is not set
-> CONFIG_KERNEL_HALF_GIGS=1
-> CONFIG_MODE_SKAS=y
+Blaisorblade wrote:
+> For SKAS mode use the normal debug sequence:
+> 
+> $ gdb vmlinux
+> (gdb) <set breakpoints, do what you want>
+> (gdb) run <params>
+> 
+> More info at the "debugging UML" link, "SKAS" subsection on the main site.
 
-> and rebuild the bin, didn't you?
+Thank you Blaisorblade,
 
-Almost yes, but that's not the correct syntax - it's a common pitfall:
+Oh sorry, I didn't keep my eyes open. It's easy to miss the "Kernel
+debugging in skas mode" (
+http://user-mode-linux.sourceforge.net/debugging-skas.html ) link on
+"Kernel debugging" (
+http://user-mode-linux.sourceforge.net/debugging.html ) section.
 
-# CONFIG_MODE_TT is not set
+I wonder why "kernel debugging (under TT mode)" is accessed directly on
+UML homepage when TT mode is "old".
 
-> [1] http://packages.qa.debian.org/u/user-mode-linux.html
+Thank you all.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-		
-___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
-
+iD8DBQFEIXi6NWc9T2Wr2JcRAlIeAKCLvElfMxfWgSDMRJSSO7Xv7M5ndwCfY4qk
+MwW+qvmOQMOAQGgWyoPB7g8=
+=yJ4o
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
