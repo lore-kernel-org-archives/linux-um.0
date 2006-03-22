@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FM41y-0001pC-Ol for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 06:09:46 -0800
-Received: from zproxy.gmail.com ([64.233.162.199])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FM41y-00058E-1G
+	id 1FM4Yu-00062Y-Vh for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Mar 2006 06:43:48 -0800
+Received: from zproxy.gmail.com ([64.233.162.197])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FM4Yt-0007me-SZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Mar 2006 06:09:46 -0800
-Received: by zproxy.gmail.com with SMTP id n29so162638nzf
+	Wed, 22 Mar 2006 06:43:49 -0800
+Received: by zproxy.gmail.com with SMTP id z31so171735nzd
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 22 Mar 2006 06:09:45 -0800 (PST)
-Message-ID: <44215B8F.6060400@gmail.com>
+	Wed, 22 Mar 2006 06:43:46 -0800 (PST)
+Message-ID: <44216384.4070709@gmail.com>
 From: Mikado <mikado4vn@gmail.com>
 Reply-To: mikado4vn@gmail.com
 MIME-Version: 1.0
 Subject: Re: [uml-devel] Cannot debug UML
 References: <44215200.8020708@gmail.com> <20060322135015.GC8115@SteX>
-In-Reply-To: <20060322135015.GC8115@SteX>
+	<44215B8F.6060400@gmail.com> <20060322142820.GF8115@SteX>
+In-Reply-To: <20060322142820.GF8115@SteX>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -31,7 +32,7 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 22 Mar 2006 21:13:35 +0700
+Date: Wed, 22 Mar 2006 21:47:32 +0700
 To: stefano.melchior@openlabs.it
 Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
@@ -39,34 +40,43 @@ Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sour
 Hash: SHA1
 
 Stefano Melchior wrote:
-> On Wed, Mar 22, 2006 at 08:32:48PM +0700, Mikado wrote:
+> On Wed, Mar 22, 2006 at 09:13:35PM +0700, Mikado wrote:
 > Hi Mikado,
-
-Hi Stex
-
-> same problem as mine:
-> ./linux mode=tt debug ubd0=root_fs ubd1=swap mem=128MB eth0=tuntap,,,192.168.0.254
+>>> same problem as mine:
+>>> ./linux mode=tt debug ubd0=root_fs ubd1=swap mem=128MB eth0=tuntap,,,192.168.0.254
+>>>
+>>> You wrongly used "mem" option!
+>> I've checked my UML's memory, it's exactly 128MB. But thank you, I will
+>> follow UML rules.
 > 
-> You wrongly used "mem" option!
+> what I meant is that you need to follow what man page states: with the
+> "mem" option you need to follow the amount of memory (32, 64, 128, ...)
+> with only "m" or "M", not "MB".
+> Then in some cases it fails when you use mem=128M instead of mem=128m, for
+> instance.
+> First try without the "mem" option in the command line to see if it works;
+> then try with  mem=128M and if it doesn't work, with  mem=128m.
+> 
+> Otherwise a patch it is needed :(
+> 
+> Cheers
+> 
+> SteX
 
-I've checked my UML's memory, it's exactly 128MB. But thank you, I will
-follow UML rules.
+I've tried below cases and the same problem is still there.
 
-> First, see man user-mode-linux, you can not specify "mem=128MB", at least
-> "mem=128M". But for issue tied to TT option sometimes you need to use
-> "mem=xxxm" and sometimes "mem=xxxM".
-> Please de-select TT in the uml kernel, then try again
-
-Debugging UML requires running it under TT mode. Normally I run UML
-under SKAS mode, everything is OK. I cannot get into GDB under SKAS mode
-whenever I use 'debug' option.
+./linux mode=tt debug ubd0=root_fs ubd1=swap eth0=tuntap,,,192.168.0.254
+./linux mode=tt debug ubd0=root_fs ubd1=swap mem=128m
+eth0=tuntap,,,192.168.0.254
+./linux mode=tt debug ubd0=root_fs ubd1=swap mem=128M
+eth0=tuntap,,,192.168.0.254
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.2.2 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFEIVuPNWc9T2Wr2JcRAjsWAKDZqL/h6J/aPez9thhcgF2+Ee7BNwCeMaxh
-tLYonH5TOq0yg/7A6lCq3ag=
-=etco
+iD8DBQFEIWOENWc9T2Wr2JcRAm0GAJ0TD0KOWpUuxOek6nFvGGYcDWvoTACeKFLX
+k3B36hpIDLXZ1t/qQFgZ0eo=
+=FcYY
 -----END PGP SIGNATURE-----
 
 
