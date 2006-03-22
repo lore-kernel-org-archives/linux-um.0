@@ -1,13 +1,15 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Cannot debug UML
-Message-ID: <20060322153714.GA3975@ccure.user-mode-linux.org>
-References: <44215200.8020708@gmail.com> <20060322135015.GC8115@SteX>
-	<44215B8F.6060400@gmail.com>
+Subject: Re: [uml-user] Re: [uml-devel] memory option crashes the uml
+	bootstrap phase
+Message-ID: <20060322153923.GB3975@ccure.user-mode-linux.org>
+References: <20060321142624.GA18505@SteX> <20060321145054.GB18505@SteX>
+	<200603211954.08891.blaisorblade@yahoo.it>
+	<20060322110400.GA6861@SteX>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <44215B8F.6060400@gmail.com>
+In-Reply-To: <20060322110400.GA6861@SteX>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,21 +21,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 22 Mar 2006 10:37:14 -0500
-To: Mikado <mikado4vn@gmail.com>
-Cc: stefano.melchior@openlabs.it, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 22 Mar 2006 10:39:23 -0500
+To: Stefano Melchior <stefano.melchior@openlabs.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Wed, Mar 22, 2006 at 09:13:35PM +0700, Mikado wrote:
-> Debugging UML requires running it under TT mode. 
+On Wed, Mar 22, 2006 at 12:04:00PM +0100, Stefano Melchior wrote:
+> thus the point is if you need to disable TT mode by default, isn't it?
+> Now user-mode-linux is in debian "unstable" [1] and I need to provide a
+> config file as default configuration for the pkg: you suggested me to act
+> this way 
+> 
+> #
+> # UML-specific options
+> #
+> CONFIG_MODE_TT=n
+> ^^^^^^^^^^^^^^^^
+> # CONFIG_HOST_2G_2G is not set
+> CONFIG_KERNEL_HALF_GIGS=1
+> CONFIG_MODE_SKAS=y
+> 
+> and rebuild the bin, didn't you?
 
-No, it doesn't.  Never has.
-
-> Normally I run UML
-> under SKAS mode, everything is OK. I cannot get into GDB under SKAS mode
-> whenever I use 'debug' option.
-
-Because it's not needed.  In skas mode, you just gdb the thing, just like
-anything else.
+For anything recent (2.6.14 or later), yes.
 
 				Jeff
 
