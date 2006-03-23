@@ -2,28 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMXZS-0007dU-PE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 13:42:18 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FMXZR-0006rK-HD
+	id 1FMZTW-0005Us-0t for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Mar 2006 15:44:18 -0800
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FMZTT-0005HR-LB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 13:42:18 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Occasional hang starting up.
-Message-ID: <20060323214329.GA6701@ccure.user-mode-linux.org>
-References: <200603111301.42195.rob@landley.net>
-	<200603172036.59218.blaisorblade@yahoo.it>
-	<20060321010025.GC7860@ccure.user-mode-linux.org>
-	<200603210221.41654.blaisorblade@yahoo.it>
-	<20060323184551.GA5398@ccure.user-mode-linux.org>
-	<20060323160533.D8529@almesberger.net>
-	<20060323201301.GA6025@ccure.user-mode-linux.org>
-	<20060323182311.E8529@almesberger.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Thu, 23 Mar 2006 15:44:18 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: TLS support - status - need for re-testing
+References: <200603230317.48384.blaisorblade@yahoo.it>
+	<20060323211424.GA6130@ccure.user-mode-linux.org>
+In-Reply-To: <20060323211424.GA6130@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20060323182311.E8529@almesberger.net>
+Message-Id: <200603240044.06196.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,20 +30,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Mar 2006 16:43:29 -0500
-To: Werner Almesberger <wa@almesberger.net>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>
+Date: Fri, 24 Mar 2006 00:44:05 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Antoine Martin <antoine@nagafix.co.uk>
 
-On Thu, Mar 23, 2006 at 06:23:11PM -0300, Werner Almesberger wrote:
-> Ah, mysteries of the world, easily explained :-)
+On Thursday 23 March 2006 22:14, Jeff Dike wrote:
+> On Thu, Mar 23, 2006 at 03:17:45AM +0100, Blaisorblade wrote:
 
-:-) 
+> Do you have a set of patches which are candidates for akpm?  I'm
+> looking at
+> 	http://www.user-mode-linux.org/~blaisorblade/patches/guest/uml-2.6.15-bb6/
+>broken-out/series
 
-> Do you plan to submit this for 2.6.16.x ?
+> and that seems unsuitable, as some patches seem to reverse earlier
+> ones.
 
-Haven't thought about that yet.  It would certainly be a candidate.
+Yes, that is true, but meanwhile give a testing to them, especially regression 
+test the new patches. I can't merge new patches in until I'm sure they don't 
+cause regressions.
 
-				Jeff
+ASAP I'll test them bypassing the "x86_64 different host numbers" bug, and if 
+they work and no issue seems introduced I'll do the merge.
+
+Meanwhile I could merge the initial stack without anything touching that extra 
+load_TLS call in process_kern.c, but I hope to get to the real solution early 
+enough.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
