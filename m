@@ -1,27 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMV8C-0006FU-16 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 11:06:00 -0800
-Received: from host.almesberger.net ([204.10.140.10])
+	id 1FMWA1-0005qG-QA for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Mar 2006 12:11:57 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FMV8A-0005vF-IX
+	(Exim 4.44) id 1FMWA0-0000KO-9t
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 11:06:00 -0800
-From: Werner Almesberger <wa@almesberger.net>
+	Thu, 23 Mar 2006 12:11:57 -0800
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Occasional hang starting up.
-Message-ID: <20060323160533.D8529@almesberger.net>
+Message-ID: <20060323201301.GA6025@ccure.user-mode-linux.org>
 References: <200603111301.42195.rob@landley.net>
 	<200603172036.59218.blaisorblade@yahoo.it>
 	<20060321010025.GC7860@ccure.user-mode-linux.org>
 	<200603210221.41654.blaisorblade@yahoo.it>
 	<20060323184551.GA5398@ccure.user-mode-linux.org>
+	<20060323160533.D8529@almesberger.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20060323184551.GA5398@ccure.user-mode-linux.org>;
-	from jdike@addtoit.com on Thu, Mar 23, 2006 at 01:45:51PM -0500
+In-Reply-To: <20060323160533.D8529@almesberger.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,28 +33,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Mar 2006 16:05:33 -0300
-To: Jeff Dike <jdike@addtoit.com>
+Date: Thu, 23 Mar 2006 15:13:01 -0500
+To: Werner Almesberger <wa@almesberger.net>
 Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>
 
-Jeff Dike wrote:
-> Index: linux-2.6.15/arch/um/os-Linux/sigio.c
+On Thu, Mar 23, 2006 at 04:05:33PM -0300, Werner Almesberger wrote:
+> Hmm, is this a link ?
+> 
+> % find linux-2.6.15.5/arch/um -name sigio.c
+> %
 
-Hmm, is this a link ?
+Nope, it's just later in my patchset than one which moves the file.
 
-% find linux-2.6.15.5/arch/um -name sigio.c
-%
+> The patch applies cleanly to arch/um/kernel/sigio_user.c of 2.6.16,
+> though, and indeed seems to solve the problem.
 
-The patch applies cleanly to arch/um/kernel/sigio_user.c of 2.6.16,
-though, and indeed seems to solve the problem.
+Yup, and that's the original location.
 
-Thanks,
-- Werner
-
--- 
-  _________________________________________________________________________
- / Werner Almesberger, Buenos Aires, Argentina         wa@almesberger.net /
-/_http://www.almesberger.net/____________________________________________/
+			Jeff
 
 
 -------------------------------------------------------
