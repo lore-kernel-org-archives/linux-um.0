@@ -1,23 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMaJl-0002iT-CJ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 16:38:17 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FMaJj-00059A-Rq
+	id 1FMadr-0004ue-52 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Mar 2006 16:59:03 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FMadp-0006vQ-FD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 16:38:17 -0800
+	Thu, 23 Mar 2006 16:59:03 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Occasional hang starting up.
-References: <200603111301.42195.rob@landley.net>
-	<200603210221.41654.blaisorblade@yahoo.it>
-	<20060323184551.GA5398@ccure.user-mode-linux.org>
-In-Reply-To: <20060323184551.GA5398@ccure.user-mode-linux.org>
+References: <dvv6ir$ajn$1@sea.gmane.org>
+	<20060323235044.GA7273@ccure.user-mode-linux.org>
+	<20060324004052.GA1897@knob.reflex>
+In-Reply-To: <20060324004052.GA1897@knob.reflex>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_k9zIEZDEh8ExdMj"
-Message-Id: <200603240137.56798.blaisorblade@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200603240156.36646.blaisorblade@yahoo.it>
+Subject: [uml-devel] (implementation idea) Re: uml and nonstandard memory
+	splits?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,178 +32,64 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 01:37:54 +0100
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Werner Almesberger <wa@almesberger.net>, Rob Landley <rob@landley.net>
+Date: Fri, 24 Mar 2006 01:56:32 +0100
+To: user-mode-linux-user@lists.sourceforge.net
+Cc: Jason Lunz <lunz@falooley.org>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
---Boundary-00=_k9zIEZDEh8ExdMj
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Thursday 23 March 2006 19:45, Jeff Dike wrote:
-> On Tue, Mar 21, 2006 at 02:21:40AM +0100, Blaisorblade wrote:
-> > However, while I overlooked this, you overlooked what I did:
-> > *) you must also move the setting of write_sigio_fds and sigio_private
-> > above, or we'll get the same problem again in different places of
-> > write_sigio_thread.
-
-> OK, this is all done, I think.
-
-> What do you think about this?
-
-Yep, it seems it looks good. But 1 bug still and two suggestions.
-See also attached patch (it misses one of the suggestions because it's late 
-and I'm going to sleep).
-
-> Index: linux-2.6.15/arch/um/os-Linux/sigio.c
-> ===================================================================
-> --- linux-2.6.15.orig/arch/um/os-Linux/sigio.c	2006-03-23
-> 12:55:27.000000000 -0500 +++
-> linux-2.6.15/arch/um/os-Linux/sigio.c	2006-03-23 13:41:11.000000000 -0500
-> @@ -269,42 +269,41 @@ void write_sigio_workaround(void)
->  	/* Did we race? Don't try to optimize this, please, it's not so likely
->  	 * to happen, and no more than once at the boot. */
->  	if(write_sigio_pid != -1)
-> -		goto out_unlock;
-> +		goto out_free;
+On Friday 24 March 2006 01:40, Jason Lunz wrote:
+> On Thu, Mar 23, 2006 at 06:50:44PM -0500, Jeff Dike wrote:
+> > You can make some progress by disabling CONFIG_MODE_TT - that will
+> > cause UML to load at a normal address rather than the 0xa0000000 that
+> > CONFIG_MODE_TT will force.
+> >
+> > That should get you to the point of trying to run init.
+> >
+> > Since you have skas3, my guess is that UML will be fine at that point.
+> >
+> > On a non-skas3 host, it will run in skas0 mode, and will expect to be
+> > able to map a couple of pages at the top of the process address space
+> > (hardcoded to 0xbfffe000 and 0xbffff000).  These offsets would need to
+> > be calculated based on the host's split in order for skas0 to work.
 >
-> -	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
-> -					    CLONE_FILES | CLONE_VM, &stack, 0);
-> -
-> -	if (write_sigio_pid < 0)
-> -		goto out_clear;
-> +	current_poll = ((struct pollfds) { .poll 	= p,
-> +					   .used 	= 1,
-> +					   .size 	= 1 });
->
->  	if (write_sigio_irq(l_write_sigio_fds[0]))
-> -		goto out_kill;
-> +		goto out_free;
+> So I guess getting a 2.4 uml to work on any split other than 1G/3G is
+> pretty unlikely. Oh well, I already knew 2.4 was on its way out. So this
+> might be the thing that really forces me to use 2.6.
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-Here you're not clearing current_poll!
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+No, that's wrong - what David Lang described:
+> I don't know about other non-standard memory configs, but there is an 
+> explicit config option when compiling a uml kernel to support the 2G/2G 
+> memory split.
+was also supported by UML 2.4. I think unusual split and the UML trivial 
+support for that were born and used when 4G/4G didn't exist yet (or maybe not 
+even highmem?).
 
-> -	/* Success, finally. */
->  	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
->  	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
->
-> -	current_poll = ((struct pollfds) { .poll 	= p,
-> -					   .used 	= 1,
-> -					   .size 	= 1 });
-> +	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
-> +					    CLONE_FILES | CLONE_VM, &stack, 0);
->
-> -	sigio_unlock();
-> -	return;
-> +	if (write_sigio_pid < 0)
-> +		goto out_clear;
->
-> - out_kill:
-> -	l_write_sigio_pid = write_sigio_pid;
-> -	write_sigio_pid = -1;
->  	sigio_unlock();
-> -	/* Going to call waitpid, avoid holding the lock. */
-> -	os_kill_process(l_write_sigio_pid, 1);
-> -	goto out_free;
-> +	return;
->
->   out_clear:
->  	write_sigio_pid = -1;
-> - out_unlock:
-> -	sigio_unlock();
-> +	current_poll = ((struct pollfds) { .poll	= NULL,
-> +					   .size	= 0,
-> +					   .used	= 0 });
-> +	write_sigio_fds[0] = -1;
-> +	write_sigio_fds[1] = -1;
-> +
-> +	sigio_private[0] = -1;
-> +	sigio_private[1] = -1;
-> +
+> 2.4 support aside, my aim is to have a single uml binary that will work
+> on arbitrary host kernels. How difficult will it be to implement support
+> for dynamic offsets for these pages in skas0?
 
-If possible (there should be such array constructors) this shouldn't be 
-redundant / duplicated with the initial declarations.
+I don't think it's easy - however, it can be done. Below my idea - Jeff, 
+please comment on this
 
-Like write_sigio_fds = (int[]) {-1,-1} and having a common macro like 
+In assembly.
+It goes like this:
 
-#define SIGIO_FDS_INIT {-1,-1}
+call label /*this is coded like a relative jump, i.e. call +1*/
+label: pop $eax /*we got the saved EIP*/
 
-static int write_sigio_fds[2] = SIGIO_FDS_INIT;
-...
-write_sigio_fds = (int[]) SIGIO_FDS_INIT
+/* Now we can round EIP and subtract an offset to calculate the data page 
+location.
+*/
 
-(we _will_ get one copy wrong, if we can :-)).
+The only problem is that it must be done in assembly and at times this must be 
+redone (we don't have enough registers to save the value across a 6-param 
+syscall), and touching this code is a bit dangerous.
 
-If sending to 2.6.16 this can be kept separate or they could maybe complain 
-"ah, no extra changes, just the fix!".
-Btw, this one is not attached.
->   out_free:
->  	kfree(p);
-> +	sigio_unlock();
-
-p is a local variable, so sigio_unlock can be done before kfree(p).
-
->   out_close2:
->  	close(l_sigio_private[0]);
->  	close(l_sigio_private[1]);
+> Jason
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
-
---Boundary-00=_k9zIEZDEh8ExdMj
-Content-Type: text/x-diff; charset="iso-8859-1";
-	name="uml-fix-sigio-startup-race-hang-fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="uml-fix-sigio-startup-race-hang-fix.patch"
-
-Index: linux-2.6.git/arch/um/kernel/sigio_user.c
-===================================================================
---- linux-2.6.git.orig/arch/um/kernel/sigio_user.c
-+++ linux-2.6.git/arch/um/kernel/sigio_user.c
-@@ -398,7 +398,7 @@ void write_sigio_workaround(void)
- 					   .size 	= 1 });
- 
- 	if (write_sigio_irq(l_write_sigio_fds[0]))
--		goto out_free;
-+		goto out_clear_poll;
- 
- 	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
- 	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
-@@ -414,18 +414,20 @@ void write_sigio_workaround(void)
- 
-  out_clear:
- 	write_sigio_pid = -1;
--	current_poll = ((struct pollfds) { .poll	= NULL,
--					   .size	= 0,
--					   .used	= 0 });
-+
- 	write_sigio_fds[0] = -1;
- 	write_sigio_fds[1] = -1;
- 
- 	sigio_private[0] = -1;
- 	sigio_private[1] = -1;
- 
-+ out_clear_poll:
-+	current_poll = ((struct pollfds) { .poll	= NULL,
-+					   .size	= 0,
-+					   .used	= 0 });
-  out_free:
--	kfree(p);
- 	sigio_unlock();
-+	kfree(p);
-  out_close2:
- 	os_close_file(l_sigio_private[0]);
- 	os_close_file(l_sigio_private[1]);
-
---Boundary-00=_k9zIEZDEh8ExdMj--
 
 	
 
