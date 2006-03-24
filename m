@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMv06-0007u6-Oj for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 14:43:22 -0800
-Received: from smtp.osdl.org ([65.172.181.4])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44) id 1FMv05-0002ax-9U
+	id 1FMvmY-0004XV-Ty for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 15:33:26 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FMvmV-00052V-CL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 14:43:22 -0800
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20060324144535.37b3daf7.akpm@osdl.org>
-In-Reply-To: <200603241814.k2OIExNn005555@ccure.user-mode-linux.org>
-References: <200603241814.k2OIExNn005555@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	Fri, 24 Mar 2006 15:33:27 -0800
+Content-Disposition: inline
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [PATCH 12/16] UML - Memory hotplug
+Message-Id: <200603250033.15923.blaisorblade@yahoo.it>
+Subject: [uml-devel] Fwd: Why uml-add-tls-support-debug-check-never-works is
+	needed (was: Re: Fwd: Proposed additions to the ptrace(2)
+	manpage, take 2)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,71 +29,124 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 14:45:35 -0800
+Date: Sat, 25 Mar 2006 00:33:15 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+
+Had sent it to the wrong address, resending.
+
+----------  Forwarded Message  ----------
+
+Subject: Why uml-add-tls-support-debug-check-never-works is needed (was: Re: 
+Fwd: Proposed additions to the ptrace(2) manpage, take 2)
+Date: Saturday 25 March 2006 00:28
+From: Blaisorblade <blaisorblade@yahoo.it>
 To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@projects.sourceforge.net
 
-Jeff Dike <jdike@addtoit.com> wrote:
+On Friday 24 March 2006 18:17, Jeff Dike wrote:
+> On Fri, Mar 24, 2006 at 03:39:02PM +0100, Blaisorblade wrote:
+> > Can you retest with my -bb6 tree? It should work, and it couldn't work in
+> > you previous codebase. See below.
 >
-> This adds hotplug memory support to UML.  The mconsole syntax is
-> 	config mem=[+-]n[KMG]
-> In other words, add or subtract some number of kilobytes, megabytes, or
-> gigabytes.
->  
-> Unplugged pages are allocated and then madvise(MADV_REMOVE), which is
-> a currently experimental madvise extension.  These pages are tracked so
-> they can be plugged back in later if the admin decides to give them back.
-> The first page to be unplugged is used to keep track of about 4M of other
-> pages.  A list_head is the first thing on this page.  The rest is filled
-> with addresses of other unplugged pages.  This first page is not madvised,
-> obviously.
-> When this page is filled, the next page is used in a similar way and linked
-> onto a list with the first page.  Etc.
-> This whole process reverses when pages are plugged back in.  When a tracking
-> page no longer tracks any unplugged pages, then it is next in line for
-> plugging, which is done by freeing pages back to the kernel.
-> 
-> This patch also removes checking for /dev/anon on the host, which is obsoleted
-> by MADVISE_REMOVE.
-> 
-> ...
+> Woohoo, it works.  The auditd crash is gone, too.
 >
-> +static unsigned long long unplugged_pages_count = 0;
+> > The special treatment of -EINVAL was bogus; for the call, I thought it
+> > wasn't needed, but I tested removing that call on top of -bb6 and
+> > everything thread-based stopped working in a _consistent_ way.
+> >
+> > So I'd like assurance that the bug was only that one, which would be a
+> > welcome news.
+>
+> All of the failure cases I have are now fixed.
 
-The `= 0;' causes this to consume space in vmlinux's .data.  If we put it
-in bss and let crt0.o take care of zeroing it, we save a little disk space.
+Ok, now I have the key: I have understood why this patch works and is needed
+(and I hadn't when I wrote it!).
 
+Time ago, in my mind was born the question: can a newly forked process start
+running before that schedule does a switch_to() to it? I asked that because I
+saw in debugging signs of this happening often; this meant that TLS weren't
+flushed for newly born processes.
 
-> +			page = alloc_page(GFP_ATOMIC);
+My answer was no. Your answer was no. It couldn't make sense. We even looked
+at schedule() code! Well, we both were wrong.
 
-That's potentially quite a few atomically-allocated pages.  I guess UML is
-more resistant to oom than normal kernels (?) but it'd be nice to be able to
-run page reclaim here.
+The reasoning below shows detailedly why we were; however, the code is so
+difficult that I thought I had understood why, then said "but no", then find
+an even littler detail explaining the situations.
 
-> +	char buf[sizeof("18446744073709551615\0")];
+And as you noted, the TLS code failed on cases where (with CLONE_SETTLS) the
+child is born with a TLS and it's immediately used - the TLS set inside UML
+stays unflushed (i.e. not set on the host) only until the first schedule,
+i.e. only for the 1st timeslice.
 
-rofl.  We really ought to have a #define for "this architecture's maximum
-length of an asciified int/long/s32/s64".  Generally people do
-guess-and-giggle-plus-20%, or they just get it wrong.
+If a call to set_thread_area is done that's applied on the host immediately,
+so that's not a problem.
 
-> +#ifndef MADV_REMOVE
-> +#define MADV_REMOVE	0x5		/* remove these pages & resources */
-> +#endif
-> +
-> +int os_drop_memory(void *addr, int length)
-> +{
-> +	int err;
-> +
-> +	err = madvise(addr, length, MADV_REMOVE);
-> +	if(err < 0)
-> +		err = -errno;
-> +	return 0;
-> +}
+Now, why were we wrong? It's because our copy_thread is very strange (wrt.
+other archs).
 
- * NOTE: Currently, only shmfs/tmpfs is supported for this operation.
- * Other filesystems return -ENOSYS.
+Path:
+(arch-independent) do_fork() -> copy_thread()->copy_thread_skas() ->
+new_thread (..., fork_handler) ->
 
-Are you expecting that this memory is backed by tmpfs?
+if (setjmp() == 0) new_thread_proc(..., fork_handler) else return
+//At first time, this will return 0, letting us proceed into
+ new_thread_proc()
+
+finally new_thread_proc() calls fork_handler(), which will call userspace()
+ on the new stack.
+
+However, before calling userspace(), this threads suspends itself in
+thread_wait; it will be resumed by a longjmp() to the switch_buf of the new
+thread, i.e. by a switch_to! So, one thinks that the switch_to is called. But
+it's called by the old thread! The new thread won't execute it, until the end
+of its timeslice.
+
+A normal ctx switch executes switch_threads() from the old thread and changes
+EIP and ESP (and the rest) to point to the call to switch_threads() inside
+switch_to_skas() in the new thread (it's well explained in the comment of
+switch_to_tt(), even if the details of ctx switch are different).
+
+At this point, the new thread continues executing switch_to_skas(). And calls
+arch_switch_to_skas() and loads its TLS.
+
+BUT, this context switch at the thread born is special: the thread being
+switched away switches to a new thread not in the body of the new thread's
+call to switch_to_skas->switch_threads(), but in the body of thread_wait()!
+At that point, we lose the call to arch_switch_to_skas()!
+
+Questions and notes:
+
+*) Why does arch/um/os-Linux/skas/process.c has still one siglongjmp() call
+and sigjmp_buf vars, and that has no comments?
+
+*) Also, why thread_wait and thread_switch are almost identical, yet they're
+two different functions?
+
+*) Btw, the naming sucks - if I find better names for new_thread,
+new_thread_proc and such, would they be accepted?
+
+*) The same bug happens in TT mode fork_tramp()->finish_fork_handler():
+suspend_new_thread waits with SIGSTOP (to wait for the debugger resuming it)
+and on os_read_file on switch_pipe, like in switch_to_tt; but we don't do the
+things we do in switch_to_tt (like killing it if dead - schedule_tail is not
+the same thing).
+--
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+-------------------------------------------------------
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
 
 
 
