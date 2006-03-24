@@ -1,24 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMnMj-00038k-Jj for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 06:34:13 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FMnMh-0007Pg-TY
+	id 1FMpM0-0000tg-Bi for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 08:41:36 -0800
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FMpM0-0001Vt-5e
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 06:34:13 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Fri, 24 Mar 2006 08:41:36 -0800
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1FMpLS-0007Rx-It for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 17:41:03 +0100
+Received: from jameson.reflexsecurity.com ([72.54.64.66])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 24 Mar 2006 17:41:02 +0100
+Received: from lunz by jameson.reflexsecurity.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 24 Mar 2006 17:41:02 +0100
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <e017e2$hci$2@sea.gmane.org>
 References: <dvv6ir$ajn$1@sea.gmane.org>
 	<200603240156.36646.blaisorblade@yahoo.it>
 	<20060324023029.GD8104@ccure.user-mode-linux.org>
-In-Reply-To: <20060324023029.GD8104@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200603241534.01844.blaisorblade@yahoo.it>
+	<200603241534.01844.blaisorblade@yahoo.it>
 Subject: [uml-devel] Re: (implementation idea) Re: uml and nonstandard memory
 	splits?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -32,61 +40,27 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 15:34:01 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-user@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 24 Mar 2006 16:40:34 +0000 (UTC)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 24 March 2006 03:30, Jeff Dike wrote:
-> On Fri, Mar 24, 2006 at 01:56:32AM +0100, Blaisorblade wrote:
-> > I don't think it's easy - however, it can be done. Below my idea - Jeff,
-> > please comment on this
+blaisorblade@yahoo.it said:
+> However, currently, the rounding can't be 0.5G, it must be 0.25G with the 
+> current code, and it's still fragile if the host code is changed.
+>
+> (arch/i386/Kconfig)
+> config PAGE_OFFSET
+>         hex
+>         default 0xB0000000 if VMSPLIT_3G_OPT
+>         default 0x78000000 if VMSPLIT_2G
+>         default 0x40000000 if VMSPLIT_1G
+>         default 0xC0000000
 
-> > In assembly.
-> > It goes like this:
+Yes, I don't think other choices are too unlikely in the future.
+0xB0000000 was only chosen because it prevents a typical 32-bit machine
+with 1G of ram from having 1/8 of it in a little 128M highmem zone. In
+the future, "typical" could likely be something else.
 
-> > call label /*this is coded like a relative jump, i.e. call +1*/
-> > label: pop $eax /*we got the saved EIP*/
-> >
-> > /* Now we can round EIP and subtract an offset to calculate the data page
-> > location.
-> > */
-
-> How does this give us the location of the data page?
-
-The EIP is inside the stub code page, and the two pages are one near the 
-other.
-
-> You really want to know the end of the process address space, which
-> you can do by taking the address of a convenient local and rounding up
-> to the nearest 1G or .5G or so.
-
-You can't do that in the stub; however, what you suggest or something similar 
-is probably needed outside the stub, from the kernel code, when you need to 
-map it somewhere inside the process memory.
-
-However, currently, the rounding can't be 0.5G, it must be 0.25G with the 
-current code, and it's still fragile if the host code is changed.
-
-(arch/i386/Kconfig)
-config PAGE_OFFSET
-        hex
-        default 0xB0000000 if VMSPLIT_3G_OPT
-        default 0x78000000 if VMSPLIT_2G
-        default 0x40000000 if VMSPLIT_1G
-        default 0xC0000000
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Jason
 
 
 
