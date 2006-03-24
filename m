@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMqn8-0003aT-ES for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 10:13:42 -0800
+	id 1FMqmz-0003Zp-0s for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 10:13:33 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FMqn7-0001LI-Ay
+	(Exim 4.44) id 1FMqmy-0005Zk-GT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 10:13:42 -0800
-Message-Id: <200603241814.k2OIEoKG005540@ccure.user-mode-linux.org>
+	Fri, 24 Mar 2006 10:13:32 -0800
+Message-Id: <200603241814.k2OIEr00005545@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 9/16] UML - Move tty logging to os-Linux
+Subject: [uml-devel] [PATCH 10/16] UML - OS header cleanups
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,528 +25,75 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 13:14:50 -0500
+Date: Fri, 24 Mar 2006 13:14:53 -0500
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Gennady Sharapov <Gennady.V.Sharapov@intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-The serial UML OS-abstraction layer patch (um/kernel dir).
+This rearranges the OS declarations by moving some declarations into os.h.
 
-This moves all systemcalls from tty_log.c file under os-Linux dir
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Signed-off-by: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
-
-Index: linux-2.6.16/arch/um/kernel/exec_kern.c
+Index: linux-2.6.16/arch/um/include/os.h
 ===================================================================
---- linux-2.6.16.orig/arch/um/kernel/exec_kern.c	2006-03-23 17:15:05.000000000 -0500
-+++ linux-2.6.16/arch/um/kernel/exec_kern.c	2006-03-23 17:31:59.000000000 -0500
-@@ -30,8 +30,6 @@ void start_thread(struct pt_regs *regs, 
- 	CHOOSE_MODE_PROC(start_thread_tt, start_thread_skas, regs, eip, esp);
+--- linux-2.6.16.orig/arch/um/include/os.h	2006-03-23 17:35:34.000000000 -0500
++++ linux-2.6.16/arch/um/include/os.h	2006-03-23 17:35:56.000000000 -0500
+@@ -122,6 +122,7 @@ static inline struct openflags of_cloexe
+ 	return(flags); 
  }
+   
++/* file.c */
+ extern int os_stat_file(const char *file_name, struct uml_stat *buf);
+ extern int os_stat_fd(const int fd, struct uml_stat *buf);
+ extern int os_access(const char *file, int mode);
+@@ -157,6 +158,15 @@ extern int os_connect_socket(char *name)
+ extern int os_file_type(char *file);
+ extern int os_file_mode(char *file, struct openflags *mode_out);
+ extern int os_lock_file(int fd, int excl);
++extern void os_flush_stdout(void);
++extern int os_stat_filesystem(char *path, long *bsize_out,
++			      long long *blocks_out, long long *bfree_out,
++			      long long *bavail_out, long long *files_out,
++			      long long *ffree_out, void *fsid_out,
++			      int fsid_size, long *namelen_out,
++			      long *spare_out);
++extern int os_change_dir(char *dir);
++extern int os_fchange_dir(int fd);
  
--extern void log_exec(char **argv, void *tty);
--
- static long execve1(char *file, char __user * __user *argv,
- 		    char __user *__user *env)
- {
-Index: linux-2.6.16/arch/um/kernel/tty_log.c
+ /* start_up.c */
+ extern void os_early_checks(void);
+@@ -316,4 +326,8 @@ extern void write_sigio_workaround(void)
+ extern int add_sigio_fd(int fd, int read);
+ extern int ignore_sigio_fd(int fd);
+ 
++/* skas/trap */
++extern void sig_handler_common_skas(int sig, void *sc_ptr);
++extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
++
+ #endif
+Index: linux-2.6.16/arch/um/include/skas/mode-skas.h
 ===================================================================
---- linux-2.6.16.orig/arch/um/kernel/tty_log.c	2006-03-23 17:15:05.000000000 -0500
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,230 +0,0 @@
--/* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com) and 
-- * geoffrey hing <ghing@net.ohio-state.edu>
-- * Licensed under the GPL
-- */
--
--#include <errno.h>
--#include <string.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <sys/time.h>
--#include "init.h"
--#include "user.h"
--#include "kern_util.h"
--#include "os.h"
--
--#define TTY_LOG_DIR "./"
--
--/* Set early in boot and then unchanged */
--static char *tty_log_dir = TTY_LOG_DIR;
--static int tty_log_fd = -1;
--
--#define TTY_LOG_OPEN 1
--#define TTY_LOG_CLOSE 2
--#define TTY_LOG_WRITE 3
--#define TTY_LOG_EXEC 4
--
--#define TTY_READ 1
--#define TTY_WRITE 2
--
--struct tty_log_buf {
--	int what;
--	unsigned long tty;
--	int len;
--	int direction;
--	unsigned long sec;
--	unsigned long usec;
--};
--
--int open_tty_log(void *tty, void *current_tty)
--{
--	struct timeval tv;
--	struct tty_log_buf data;
--	char buf[strlen(tty_log_dir) + sizeof("01234567890-01234567\0")];
--	int fd;
--
--	gettimeofday(&tv, NULL);
--	if(tty_log_fd != -1){
--		data = ((struct tty_log_buf) { .what 	= TTY_LOG_OPEN,
--					       .tty  = (unsigned long) tty,
--					       .len  = sizeof(current_tty),
--					       .direction = 0,
--					       .sec = tv.tv_sec,
--					       .usec = tv.tv_usec } );
--		os_write_file(tty_log_fd, &data, sizeof(data));
--		os_write_file(tty_log_fd, &current_tty, data.len);
--		return(tty_log_fd);
--	}
--
--	sprintf(buf, "%s/%0u-%0u", tty_log_dir, (unsigned int) tv.tv_sec, 
-- 		(unsigned int) tv.tv_usec);
--
--	fd = os_open_file(buf, of_append(of_create(of_rdwr(OPENFLAGS()))),
--			  0644);
--	if(fd < 0){
--		printk("open_tty_log : couldn't open '%s', errno = %d\n",
--		       buf, -fd);
--	}
--	return(fd);
--}
--
--void close_tty_log(int fd, void *tty)
--{
--	struct tty_log_buf data;
--	struct timeval tv;
--
--	if(tty_log_fd != -1){
--		gettimeofday(&tv, NULL);
--		data = ((struct tty_log_buf) { .what 	= TTY_LOG_CLOSE,
--					       .tty  = (unsigned long) tty,
--					       .len  = 0,
--					       .direction = 0,
--					       .sec = tv.tv_sec,
--					       .usec = tv.tv_usec } );
--		os_write_file(tty_log_fd, &data, sizeof(data));
--		return;
--	}
--	os_close_file(fd);
--}
--
--static int log_chunk(int fd, const char *buf, int len)
--{
--	int total = 0, try, missed, n;
--	char chunk[64];
--
--	while(len > 0){
--		try = (len > sizeof(chunk)) ? sizeof(chunk) : len;
--		missed = copy_from_user_proc(chunk, (char *) buf, try);
--		try -= missed;
--		n = os_write_file(fd, chunk, try);
--		if(n != try) {
--			if(n < 0)
--				return(n);
--			return(-EIO);
--		}
--		if(missed != 0)
--			return(-EFAULT);
--
--		len -= try;
--		total += try;
--		buf += try;
--	}
--
--	return(total);
--}
--
--int write_tty_log(int fd, const char *buf, int len, void *tty, int is_read)
--{
--	struct timeval tv;
--	struct tty_log_buf data;
--	int direction;
--
--	if(fd == tty_log_fd){
--		gettimeofday(&tv, NULL);
--		direction = is_read ? TTY_READ : TTY_WRITE;
--		data = ((struct tty_log_buf) { .what 	= TTY_LOG_WRITE,
--					       .tty  = (unsigned long) tty,
--					       .len  = len,
--					       .direction = direction,
--					       .sec = tv.tv_sec,
--					       .usec = tv.tv_usec } );
--		os_write_file(tty_log_fd, &data, sizeof(data));
--	}
--
--	return(log_chunk(fd, buf, len));
--}
--
--void log_exec(char **argv, void *tty)
--{
--	struct timeval tv;
--	struct tty_log_buf data;
--	char **ptr,*arg;
--	int len;
--
--	if(tty_log_fd == -1) return;
--
--	gettimeofday(&tv, NULL);
--
--	len = 0;
--	for(ptr = argv; ; ptr++){
--		if(copy_from_user_proc(&arg, ptr, sizeof(arg)))
--			return;
--		if(arg == NULL) break;
--		len += strlen_user_proc(arg);
--	}
--
--	data = ((struct tty_log_buf) { .what 	= TTY_LOG_EXEC,
--				       .tty  = (unsigned long) tty,
--				       .len  = len,
--				       .direction = 0,
--				       .sec = tv.tv_sec,
--				       .usec = tv.tv_usec } );
--	os_write_file(tty_log_fd, &data, sizeof(data));
--
--	for(ptr = argv; ; ptr++){
--		if(copy_from_user_proc(&arg, ptr, sizeof(arg)))
--			return;
--		if(arg == NULL) break;
--		log_chunk(tty_log_fd, arg, strlen_user_proc(arg));
--	}
--}
--
--extern void register_tty_logger(int (*opener)(void *, void *),
--				int (*writer)(int, const char *, int,
--					      void *, int),
--				void (*closer)(int, void *));
--
--static int register_logger(void)
--{
--	register_tty_logger(open_tty_log, write_tty_log, close_tty_log);
--	return(0);
--}
--
--__uml_initcall(register_logger);
--
--static int __init set_tty_log_dir(char *name, int *add)
--{
--	tty_log_dir = name;
--	return 0;
--}
--
--__uml_setup("tty_log_dir=", set_tty_log_dir,
--"tty_log_dir=<directory>\n"
--"    This is used to specify the directory where the logs of all pty\n"
--"    data from this UML machine will be written.\n\n"
--);
--
--static int __init set_tty_log_fd(char *name, int *add)
--{
--	char *end;
--
--	tty_log_fd = strtoul(name, &end, 0);
--	if((*end != '\0') || (end == name)){
--		printf("set_tty_log_fd - strtoul failed on '%s'\n", name);
--		tty_log_fd = -1;
--	}
--
--	*add = 0;
--	return 0;
--}
--
--__uml_setup("tty_log_fd=", set_tty_log_fd,
--"tty_log_fd=<fd>\n"
--"    This is used to specify a preconfigured file descriptor to which all\n"
--"    tty data will be written.  Preconfigure the descriptor with something\n"
--"    like '10>tty_log tty_log_fd=10'.\n\n"
--);
--
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.16/arch/um/os-Linux/tty_log.c
+--- linux-2.6.16.orig/arch/um/include/skas/mode-skas.h	2006-03-23 17:35:34.000000000 -0500
++++ linux-2.6.16/arch/um/include/skas/mode-skas.h	2006-03-23 17:35:49.000000000 -0500
+@@ -13,7 +13,6 @@ extern unsigned long exec_fp_regs[];
+ extern unsigned long exec_fpx_regs[];
+ extern int have_fpx_regs;
+ 
+-extern void sig_handler_common_skas(int sig, void *sc_ptr);
+ extern void kill_off_processes_skas(void);
+ 
+ #endif
+Index: linux-2.6.16/arch/um/include/skas/skas.h
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.16/arch/um/os-Linux/tty_log.c	2006-03-23 17:34:04.000000000 -0500
-@@ -0,0 +1,218 @@
-+/*
-+ * Copyright (C) 2002 Jeff Dike (jdike@karaya.com) and
-+ * geoffrey hing <ghing@net.ohio-state.edu>
-+ * Licensed under the GPL
-+ */
-+
-+#include <errno.h>
-+#include <string.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <sys/time.h>
-+#include "init.h"
-+#include "user.h"
-+#include "kern_util.h"
-+#include "os.h"
-+
-+#define TTY_LOG_DIR "./"
-+
-+/* Set early in boot and then unchanged */
-+static char *tty_log_dir = TTY_LOG_DIR;
-+static int tty_log_fd = -1;
-+
-+#define TTY_LOG_OPEN 1
-+#define TTY_LOG_CLOSE 2
-+#define TTY_LOG_WRITE 3
-+#define TTY_LOG_EXEC 4
-+
-+#define TTY_READ 1
-+#define TTY_WRITE 2
-+
-+struct tty_log_buf {
-+	int what;
-+	unsigned long tty;
-+	int len;
-+	int direction;
-+	unsigned long sec;
-+	unsigned long usec;
-+};
-+
-+int open_tty_log(void *tty, void *current_tty)
-+{
-+	struct timeval tv;
-+	struct tty_log_buf data;
-+	char buf[strlen(tty_log_dir) + sizeof("01234567890-01234567\0")];
-+	int fd;
-+
-+	gettimeofday(&tv, NULL);
-+	if(tty_log_fd != -1){
-+		data = ((struct tty_log_buf) { .what 	= TTY_LOG_OPEN,
-+					       .tty  = (unsigned long) tty,
-+					       .len  = sizeof(current_tty),
-+					       .direction = 0,
-+					       .sec = tv.tv_sec,
-+					       .usec = tv.tv_usec } );
-+		os_write_file(tty_log_fd, &data, sizeof(data));
-+		os_write_file(tty_log_fd, &current_tty, data.len);
-+		return(tty_log_fd);
-+	}
-+
-+	sprintf(buf, "%s/%0u-%0u", tty_log_dir, (unsigned int) tv.tv_sec,
-+ 		(unsigned int) tv.tv_usec);
-+
-+	fd = os_open_file(buf, of_append(of_create(of_rdwr(OPENFLAGS()))),
-+			  0644);
-+	if(fd < 0){
-+		printk("open_tty_log : couldn't open '%s', errno = %d\n",
-+		       buf, -fd);
-+	}
-+	return(fd);
-+}
-+
-+void close_tty_log(int fd, void *tty)
-+{
-+	struct tty_log_buf data;
-+	struct timeval tv;
-+
-+	if(tty_log_fd != -1){
-+		gettimeofday(&tv, NULL);
-+		data = ((struct tty_log_buf) { .what 	= TTY_LOG_CLOSE,
-+					       .tty  = (unsigned long) tty,
-+					       .len  = 0,
-+					       .direction = 0,
-+					       .sec = tv.tv_sec,
-+					       .usec = tv.tv_usec } );
-+		os_write_file(tty_log_fd, &data, sizeof(data));
-+		return;
-+	}
-+	os_close_file(fd);
-+}
-+
-+static int log_chunk(int fd, const char *buf, int len)
-+{
-+	int total = 0, try, missed, n;
-+	char chunk[64];
-+
-+	while(len > 0){
-+		try = (len > sizeof(chunk)) ? sizeof(chunk) : len;
-+		missed = copy_from_user_proc(chunk, (char *) buf, try);
-+		try -= missed;
-+		n = os_write_file(fd, chunk, try);
-+		if(n != try) {
-+			if(n < 0)
-+				return(n);
-+			return(-EIO);
-+		}
-+		if(missed != 0)
-+			return(-EFAULT);
-+
-+		len -= try;
-+		total += try;
-+		buf += try;
-+	}
-+
-+	return(total);
-+}
-+
-+int write_tty_log(int fd, const char *buf, int len, void *tty, int is_read)
-+{
-+	struct timeval tv;
-+	struct tty_log_buf data;
-+	int direction;
-+
-+	if(fd == tty_log_fd){
-+		gettimeofday(&tv, NULL);
-+		direction = is_read ? TTY_READ : TTY_WRITE;
-+		data = ((struct tty_log_buf) { .what 	= TTY_LOG_WRITE,
-+					       .tty  = (unsigned long) tty,
-+					       .len  = len,
-+					       .direction = direction,
-+					       .sec = tv.tv_sec,
-+					       .usec = tv.tv_usec } );
-+		os_write_file(tty_log_fd, &data, sizeof(data));
-+	}
-+
-+	return(log_chunk(fd, buf, len));
-+}
-+
-+void log_exec(char **argv, void *tty)
-+{
-+	struct timeval tv;
-+	struct tty_log_buf data;
-+	char **ptr,*arg;
-+	int len;
-+
-+	if(tty_log_fd == -1) return;
-+
-+	gettimeofday(&tv, NULL);
-+
-+	len = 0;
-+	for(ptr = argv; ; ptr++){
-+		if(copy_from_user_proc(&arg, ptr, sizeof(arg)))
-+			return;
-+		if(arg == NULL) break;
-+		len += strlen_user_proc(arg);
-+	}
-+
-+	data = ((struct tty_log_buf) { .what 	= TTY_LOG_EXEC,
-+				       .tty  = (unsigned long) tty,
-+				       .len  = len,
-+				       .direction = 0,
-+				       .sec = tv.tv_sec,
-+				       .usec = tv.tv_usec } );
-+	os_write_file(tty_log_fd, &data, sizeof(data));
-+
-+	for(ptr = argv; ; ptr++){
-+		if(copy_from_user_proc(&arg, ptr, sizeof(arg)))
-+			return;
-+		if(arg == NULL) break;
-+		log_chunk(tty_log_fd, arg, strlen_user_proc(arg));
-+	}
-+}
-+
-+extern void register_tty_logger(int (*opener)(void *, void *),
-+				int (*writer)(int, const char *, int,
-+					      void *, int),
-+				void (*closer)(int, void *));
-+
-+static int register_logger(void)
-+{
-+	register_tty_logger(open_tty_log, write_tty_log, close_tty_log);
-+	return(0);
-+}
-+
-+__uml_initcall(register_logger);
-+
-+static int __init set_tty_log_dir(char *name, int *add)
-+{
-+	tty_log_dir = name;
-+	return 0;
-+}
-+
-+__uml_setup("tty_log_dir=", set_tty_log_dir,
-+"tty_log_dir=<directory>\n"
-+"    This is used to specify the directory where the logs of all pty\n"
-+"    data from this UML machine will be written.\n\n"
-+);
-+
-+static int __init set_tty_log_fd(char *name, int *add)
-+{
-+	char *end;
-+
-+	tty_log_fd = strtoul(name, &end, 0);
-+	if((*end != '\0') || (end == name)){
-+		printf("set_tty_log_fd - strtoul failed on '%s'\n", name);
-+		tty_log_fd = -1;
-+	}
-+
-+	*add = 0;
-+	return 0;
-+}
-+
-+__uml_setup("tty_log_fd=", set_tty_log_fd,
-+"tty_log_fd=<fd>\n"
-+"    This is used to specify a preconfigured file descriptor to which all\n"
-+"    tty data will be written.  Preconfigure the descriptor with something\n"
-+"    like '10>tty_log tty_log_fd=10'.\n\n"
-+);
-Index: linux-2.6.16/arch/um/kernel/Makefile
-===================================================================
---- linux-2.6.16.orig/arch/um/kernel/Makefile	2006-03-23 17:26:25.000000000 -0500
-+++ linux-2.6.16/arch/um/kernel/Makefile	2006-03-23 17:31:59.000000000 -0500
-@@ -15,15 +15,12 @@ obj-y = config.o exec_kern.o exitcode.o 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
- obj-$(CONFIG_GCOV)	+= gmon_syms.o
--obj-$(CONFIG_TTY_LOG)	+= tty_log.o
- obj-$(CONFIG_SYSCALL_DEBUG) += syscall.o
- 
- obj-$(CONFIG_MODE_TT) += tt/
- obj-$(CONFIG_MODE_SKAS) += skas/
- 
--user-objs-$(CONFIG_TTY_LOG) += tty_log.o
--
--USER_OBJS := $(user-objs-y) config.o tty_log.o
-+USER_OBJS := config.o
- 
- include arch/um/scripts/Makefile.rules
- 
-Index: linux-2.6.16/arch/um/os-Linux/Makefile
-===================================================================
---- linux-2.6.16.orig/arch/um/os-Linux/Makefile	2006-03-23 17:26:25.000000000 -0500
-+++ linux-2.6.16/arch/um/os-Linux/Makefile	2006-03-23 17:31:59.000000000 -0500
-@@ -8,10 +8,12 @@ obj-y = aio.o elf_aux.o file.o helper.o 
- 	user_syms.o util.o drivers/ sys-$(SUBARCH)/
- 
- obj-$(CONFIG_MODE_SKAS) += skas/
-+obj-$(CONFIG_TTY_LOG) += tty_log.o
-+user-objs-$(CONFIG_TTY_LOG) += tty_log.o
- 
--USER_OBJS := aio.o elf_aux.o file.o helper.o irq.o main.o mem.o process.o \
--	sigio.o signal.o start_up.o time.o trap.o tt.o tty.o uaccess.o umid.o \
--	util.o
-+USER_OBJS := $(user-objs-y) aio.o elf_aux.o file.o helper.o irq.o main.o mem.o \
-+	process.o sigio.o signal.o start_up.o time.o trap.o tt.o tty.o \
-+	uaccess.o umid.o util.o
- 
- elf_aux.o: $(ARCH_DIR)/kernel-offsets.h
- CFLAGS_elf_aux.o += -I$(objtree)/arch/um
+--- linux-2.6.16.orig/arch/um/include/skas/skas.h	2006-03-23 17:35:34.000000000 -0500
++++ linux-2.6.16/arch/um/include/skas/skas.h	2006-03-23 17:35:49.000000000 -0500
+@@ -17,7 +17,6 @@ extern int user_thread(unsigned long sta
+ extern void new_thread_proc(void *stack, void (*handler)(int sig));
+ extern void new_thread_handler(int sig);
+ extern void handle_syscall(union uml_pt_regs *regs);
+-extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
+ extern int new_mm(unsigned long stack);
+ extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
+ extern long execute_syscall_skas(void *r);
 
 
 
