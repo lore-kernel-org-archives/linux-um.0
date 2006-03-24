@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMZbI-0006Gx-Ng for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 15:52:20 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FMZbH-0007dp-Bn
+	id 1FMaJl-0002iT-CJ for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Mar 2006 16:38:17 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FMaJj-00059A-Rq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 15:52:20 -0800
+	Thu, 23 Mar 2006 16:38:17 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Real fix for rejected patch uaccess-warning
-References: <200603072031.18574.blaisorblade@yahoo.it>
-	<200603101622.41518.blaisorblade@yahoo.it>
-	<20060323205845.GA6109@ccure.user-mode-linux.org>
-In-Reply-To: <20060323205845.GA6109@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] Occasional hang starting up.
+References: <200603111301.42195.rob@landley.net>
+	<200603210221.41654.blaisorblade@yahoo.it>
+	<20060323184551.GA5398@ccure.user-mode-linux.org>
+In-Reply-To: <20060323184551.GA5398@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200603240052.11189.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_k9zIEZDEh8ExdMj"
+Message-Id: <200603240137.56798.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,73 +29,178 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 00:52:09 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 24 Mar 2006 01:37:54 +0100
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Werner Almesberger <wa@almesberger.net>, Rob Landley <rob@landley.net>
 
-On Thursday 23 March 2006 21:58, Jeff Dike wrote:
-> On Fri, Mar 10, 2006 at 04:22:41PM +0100, Blaisorblade wrote:
-> > 686:		if (get_user(c, buf))
-> > where "buf" is a "const char __user *".
-> >
-> > It's complaining because "const" was lost.
-> >
-> > Ultimately, I think we should remove all this copying of pointers and do
-> > like i386 in this regard - there is only one cast to do, in put_user, as
-> > I mentioned in last mail.
->
-> OK, my first patch was insane, try this one:
->
-> Index: linux-2.6.15/include/asm-um/uaccess.h
+--Boundary-00=_k9zIEZDEh8ExdMj
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Thursday 23 March 2006 19:45, Jeff Dike wrote:
+> On Tue, Mar 21, 2006 at 02:21:40AM +0100, Blaisorblade wrote:
+> > However, while I overlooked this, you overlooked what I did:
+> > *) you must also move the setting of write_sigio_fds and sigio_private
+> > above, or we'll get the same problem again in different places of
+> > write_sigio_thread.
+
+> OK, this is all done, I think.
+
+> What do you think about this?
+
+Yep, it seems it looks good. But 1 bug still and two suggestions.
+See also attached patch (it misses one of the suggestions because it's late 
+and I'm going to sleep).
+
+> Index: linux-2.6.15/arch/um/os-Linux/sigio.c
 > ===================================================================
-> --- linux-2.6.15.orig/include/asm-um/uaccess.h	2006-03-23
-> 15:41:15.000000000 -0500 +++
-> linux-2.6.15/include/asm-um/uaccess.h	2006-03-23 15:48:52.000000000 -0500
-> @@ -42,10 +42,10 @@
->  #define __get_user(x, ptr) \
->  ({ \
->          const __typeof__(ptr) __private_ptr = ptr; \
-> -        __typeof__(*(__private_ptr)) __private_val; \
-> +        __typeof__(x) __private_val; \
->          int __private_ret = -EFAULT; \
->          (x) = (__typeof__(*(__private_ptr)))0; \
-> -	if (__copy_from_user(&__private_val, (__private_ptr), \
-> +	if (__copy_from_user((void *) &__private_val, (__private_ptr),	\
->  	    sizeof(*(__private_ptr))) == 0) {\
->          	(x) = (__typeof__(*(__private_ptr))) __private_val; \
->  		__private_ret = 0; \
+> --- linux-2.6.15.orig/arch/um/os-Linux/sigio.c	2006-03-23
+> 12:55:27.000000000 -0500 +++
+> linux-2.6.15/arch/um/os-Linux/sigio.c	2006-03-23 13:41:11.000000000 -0500
+> @@ -269,42 +269,41 @@ void write_sigio_workaround(void)
+>  	/* Did we race? Don't try to optimize this, please, it's not so likely
+>  	 * to happen, and no more than once at the boot. */
+>  	if(write_sigio_pid != -1)
+> -		goto out_unlock;
+> +		goto out_free;
+>
+> -	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
+> -					    CLONE_FILES | CLONE_VM, &stack, 0);
+> -
+> -	if (write_sigio_pid < 0)
+> -		goto out_clear;
+> +	current_poll = ((struct pollfds) { .poll 	= p,
+> +					   .used 	= 1,
+> +					   .size 	= 1 });
+>
+>  	if (write_sigio_irq(l_write_sigio_fds[0]))
+> -		goto out_kill;
+> +		goto out_free;
 
-> The (void *) fixes the warnings all by itself, but I changed the
-> typeof because that's more correct and fixes some of the warnings by
-> itself.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+Here you're not clearing current_poll!
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-> What it can't fix is things like (from include/linux/pagemap.h):
+> -	/* Success, finally. */
+>  	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
+>  	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
+>
+> -	current_poll = ((struct pollfds) { .poll 	= p,
+> -					   .used 	= 1,
+> -					   .size 	= 1 });
+> +	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
+> +					    CLONE_FILES | CLONE_VM, &stack, 0);
+>
+> -	sigio_unlock();
+> -	return;
+> +	if (write_sigio_pid < 0)
+> +		goto out_clear;
+>
+> - out_kill:
+> -	l_write_sigio_pid = write_sigio_pid;
+> -	write_sigio_pid = -1;
+>  	sigio_unlock();
+> -	/* Going to call waitpid, avoid holding the lock. */
+> -	os_kill_process(l_write_sigio_pid, 1);
+> -	goto out_free;
+> +	return;
+>
+>   out_clear:
+>  	write_sigio_pid = -1;
+> - out_unlock:
+> -	sigio_unlock();
+> +	current_poll = ((struct pollfds) { .poll	= NULL,
+> +					   .size	= 0,
+> +					   .used	= 0 });
+> +	write_sigio_fds[0] = -1;
+> +	write_sigio_fds[1] = -1;
+> +
+> +	sigio_private[0] = -1;
+> +	sigio_private[1] = -1;
+> +
 
-> 	volatile char c;
-> 	ret = __get_user(c, uaddr);
+If possible (there should be such array constructors) this shouldn't be 
+redundant / duplicated with the initial declarations.
 
-> We unavoidably lose the volatile because we can't know it was there,
-> so the (void *) cast seems necessary in this case.
+Like write_sigio_fds = (int[]) {-1,-1} and having a common macro like 
 
-We could even do without __private_ptr, and that's surely easier to do. 
-Actually I think that it could be done like for i386:
+#define SIGIO_FDS_INIT {-1,-1}
 
-> Looking at this some more, it seems like most of the complexity could
-> go away.  I think I was avoiding any assignment to the target variable
-> until I knew that the copy_from_user had succeeded.  I think that was
-> being too paranoid, and just copy_from_user straight into x should be
-> fine.
+static int write_sigio_fds[2] = SIGIO_FDS_INIT;
+...
+write_sigio_fds = (int[]) SIGIO_FDS_INIT
 
-If we think to a userspace address crossing a page bound, we can see the 
-problem.
+(we _will_ get one copy wrong, if we can :-)).
 
-However, I think that get_user doesn't guarantee a "full copy" semantic - 
-include/asm-i386/uaccess.h says it zeroes the dest var on error, so we're 
-safe.
+If sending to 2.6.16 this can be kept separate or they could maybe complain 
+"ah, no extra changes, just the fix!".
+Btw, this one is not attached.
+>   out_free:
+>  	kfree(p);
+> +	sigio_unlock();
+
+p is a local variable, so sigio_unlock can be done before kfree(p).
+
+>   out_close2:
+>  	close(l_sigio_private[0]);
+>  	close(l_sigio_private[1]);
+
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
+
+--Boundary-00=_k9zIEZDEh8ExdMj
+Content-Type: text/x-diff; charset="iso-8859-1";
+	name="uml-fix-sigio-startup-race-hang-fix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="uml-fix-sigio-startup-race-hang-fix.patch"
+
+Index: linux-2.6.git/arch/um/kernel/sigio_user.c
+===================================================================
+--- linux-2.6.git.orig/arch/um/kernel/sigio_user.c
++++ linux-2.6.git/arch/um/kernel/sigio_user.c
+@@ -398,7 +398,7 @@ void write_sigio_workaround(void)
+ 					   .size 	= 1 });
+ 
+ 	if (write_sigio_irq(l_write_sigio_fds[0]))
+-		goto out_free;
++		goto out_clear_poll;
+ 
+ 	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
+ 	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
+@@ -414,18 +414,20 @@ void write_sigio_workaround(void)
+ 
+  out_clear:
+ 	write_sigio_pid = -1;
+-	current_poll = ((struct pollfds) { .poll	= NULL,
+-					   .size	= 0,
+-					   .used	= 0 });
++
+ 	write_sigio_fds[0] = -1;
+ 	write_sigio_fds[1] = -1;
+ 
+ 	sigio_private[0] = -1;
+ 	sigio_private[1] = -1;
+ 
++ out_clear_poll:
++	current_poll = ((struct pollfds) { .poll	= NULL,
++					   .size	= 0,
++					   .used	= 0 });
+  out_free:
+-	kfree(p);
+ 	sigio_unlock();
++	kfree(p);
+  out_close2:
+ 	os_close_file(l_sigio_private[0]);
+ 	os_close_file(l_sigio_private[1]);
+
+--Boundary-00=_k9zIEZDEh8ExdMj--
 
 	
 
