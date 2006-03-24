@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMqn8-0003aM-0u for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 10:13:42 -0800
+	id 1FMqmt-0003Z7-CS for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 10:13:27 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FMqn6-0005bn-UK
+	(Exim 4.44) id 1FMqms-0005Yg-DW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 10:13:41 -0800
-Message-Id: <200603241815.k2OIF19g005560@ccure.user-mode-linux.org>
+	Fri, 24 Mar 2006 10:13:27 -0800
+Message-Id: <200603241814.k2OIEhZr005525@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 13/16] UML - Fix segfault on signal delivery
+Subject: [uml-devel] [PATCH 6/16] UML - Move SIGIO startup code to
+	os-Linux/start_up.c
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,344 +26,434 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 13:15:01 -0500
+Date: Fri, 24 Mar 2006 13:14:43 -0500
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 
-This fixes a process segfault where a signal was being delivered
-such that a new stack page needed to be allocated to hold the signal
-frame.  This was tripping some logic in the page fault handler which
-wouldn't allocate the page if the faulting address was more that 32
-bytes lower than the current stack pointer.  Since a signal frame is
-greater than 32 bytes, this exercised that case.
-It's fixed by updating the SP in the pt_regs before starting to copy
-the signal frame.  Since those are the registers that will be copied
-on to the stack, we have to be careful to put the original SP, not
-the new one which points to the signal frame, on the stack.
+The serial UML OS-abstraction layer patch (um/kernel dir).
 
+This moves all startup code from sigio_user.c file under os-Linux dir
+
+Signed-off-by: Gennady Sharapov <Gennady.V.Sharapov@intel.com>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.15/arch/um/sys-i386/signal.c
+Index: linux-2.6.16/arch/um/include/os.h
 ===================================================================
---- linux-2.6.15.orig/arch/um/sys-i386/signal.c	2006-03-23 12:12:36.000000000 -0500
-+++ linux-2.6.15/arch/um/sys-i386/signal.c	2006-03-23 12:31:01.000000000 -0500
-@@ -58,7 +58,7 @@ static int copy_sc_from_user_skas(struct
- }
+--- linux-2.6.16.orig/arch/um/include/os.h	2006-03-23 17:23:18.000000000 -0500
++++ linux-2.6.16/arch/um/include/os.h	2006-03-23 17:23:54.000000000 -0500
+@@ -161,6 +161,7 @@ extern int os_lock_file(int fd, int excl
+ /* start_up.c */
+ extern void os_early_checks(void);
+ extern int can_do_skas(void);
++extern void os_check_bugs(void);
  
- int copy_sc_to_user_skas(struct sigcontext *to, struct _fpstate *to_fp,
--                         struct pt_regs *regs)
-+                         struct pt_regs *regs, unsigned long sp)
- {
-   	struct sigcontext sc;
- 	unsigned long fpregs[HOST_FP_SIZE];
-@@ -72,7 +72,7 @@ int copy_sc_to_user_skas(struct sigconte
- 	sc.edi = REGS_EDI(regs->regs.skas.regs);
- 	sc.esi = REGS_ESI(regs->regs.skas.regs);
- 	sc.ebp = REGS_EBP(regs->regs.skas.regs);
--	sc.esp = REGS_SP(regs->regs.skas.regs);
-+	sc.esp = sp;
- 	sc.ebx = REGS_EBX(regs->regs.skas.regs);
- 	sc.edx = REGS_EDX(regs->regs.skas.regs);
- 	sc.ecx = REGS_ECX(regs->regs.skas.regs);
-@@ -132,7 +132,7 @@ int copy_sc_from_user_tt(struct sigconte
- }
- 
- int copy_sc_to_user_tt(struct sigcontext *to, struct _fpstate *fp,
--		       struct sigcontext *from, int fpsize)
-+		       struct sigcontext *from, int fpsize, unsigned long sp)
- {
- 	struct _fpstate *to_fp, *from_fp;
- 	int err;
-@@ -140,11 +140,18 @@ int copy_sc_to_user_tt(struct sigcontext
- 	to_fp =	(fp ? fp : (struct _fpstate *) (to + 1));
- 	from_fp = from->fpstate;
- 	err = copy_to_user(to, from, sizeof(*to));
-+
-+	/* The SP in the sigcontext is the updated one for the signal
-+	 * delivery.  The sp passed in is the original, and this needs
-+	 * to be restored, so we stick it in separately.
-+	 */
-+	err |= copy_to_user(&SC_SP(to), sp, sizeof(sp));
-+
- 	if(from_fp != NULL){
- 		err |= copy_to_user(&to->fpstate, &to_fp, sizeof(to->fpstate));
- 		err |= copy_to_user(to_fp, from_fp, fpsize);
- 	}
--	return(err);
-+	return err;
- }
- #endif
- 
-@@ -159,11 +166,11 @@ static int copy_sc_from_user(struct pt_r
- }
- 
- static int copy_sc_to_user(struct sigcontext *to, struct _fpstate *fp,
--			   struct pt_regs *from)
-+			   struct pt_regs *from, unsigned long sp)
- {
- 	return(CHOOSE_MODE(copy_sc_to_user_tt(to, fp, UPT_SC(&from->regs),
--					      sizeof(*fp)),
--                           copy_sc_to_user_skas(to, fp, from)));
-+					      sizeof(*fp), sp),
-+                           copy_sc_to_user_skas(to, fp, from, sp)));
- }
- 
- static int copy_ucontext_to_user(struct ucontext *uc, struct _fpstate *fp,
-@@ -174,7 +181,7 @@ static int copy_ucontext_to_user(struct 
- 	err |= put_user(current->sas_ss_sp, &uc->uc_stack.ss_sp);
- 	err |= put_user(sas_ss_flags(sp), &uc->uc_stack.ss_flags);
- 	err |= put_user(current->sas_ss_size, &uc->uc_stack.ss_size);
--	err |= copy_sc_to_user(&uc->uc_mcontext, fp, &current->thread.regs);
-+	err |= copy_sc_to_user(&uc->uc_mcontext, fp, &current->thread.regs, sp);
- 	err |= copy_to_user(&uc->uc_sigmask, set, sizeof(*set));
- 	return(err);
- }
-@@ -207,6 +214,7 @@ int setup_signal_stack_sc(unsigned long 
- {
- 	struct sigframe __user *frame;
- 	void *restorer;
-+	unsigned long save_sp = PT_REGS_SP(regs);
- 	int err = 0;
- 
- 	stack_top &= -8UL;
-@@ -218,9 +226,19 @@ int setup_signal_stack_sc(unsigned long 
- 	if(ka->sa.sa_flags & SA_RESTORER)
- 		restorer = ka->sa.sa_restorer;
- 
-+	/* Update SP now because the page fault handler refuses to extend
-+	 * the stack if the faulting address is too far below the current
-+	 * SP, which frame now certainly is.  If there's an error, the original
-+	 * value is restored on the way out.
-+	 * When writing the sigcontext to the stack, we have to write the
-+	 * original value, so that's passed to copy_sc_to_user, which does
-+	 * the right thing with it.
-+	 */
-+	PT_REGS_SP(regs) = (unsigned long) frame;
-+
- 	err |= __put_user(restorer, &frame->pretcode);
- 	err |= __put_user(sig, &frame->sig);
--	err |= copy_sc_to_user(&frame->sc, NULL, regs);
-+	err |= copy_sc_to_user(&frame->sc, NULL, regs, save_sp);
- 	err |= __put_user(mask->sig[0], &frame->sc.oldmask);
- 	if (_NSIG_WORDS > 1)
- 		err |= __copy_to_user(&frame->extramask, &mask->sig[1],
-@@ -238,7 +256,7 @@ int setup_signal_stack_sc(unsigned long 
- 	err |= __put_user(0x80cd, (short __user *)(frame->retcode+6));
- 
- 	if(err)
--		return(err);
-+		goto err;
- 
- 	PT_REGS_SP(regs) = (unsigned long) frame;
- 	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
-@@ -248,7 +266,11 @@ int setup_signal_stack_sc(unsigned long 
- 
- 	if ((current->ptrace & PT_DTRACE) && (current->ptrace & PT_PTRACED))
- 		ptrace_notify(SIGTRAP);
--	return(0);
-+	return 0;
-+
-+err:
-+	PT_REGS_SP(regs) = save_sp;
-+	return err;
- }
- 
- int setup_signal_stack_si(unsigned long stack_top, int sig,
-@@ -257,6 +279,7 @@ int setup_signal_stack_si(unsigned long 
- {
- 	struct rt_sigframe __user *frame;
- 	void *restorer;
-+	unsigned long save_sp = PT_REGS_SP(regs);
- 	int err = 0;
- 
- 	stack_top &= -8UL;
-@@ -268,13 +291,16 @@ int setup_signal_stack_si(unsigned long 
- 	if(ka->sa.sa_flags & SA_RESTORER)
- 		restorer = ka->sa.sa_restorer;
- 
-+	/* See comment above about why this is here */
-+	PT_REGS_SP(regs) = (unsigned long) frame;
-+
- 	err |= __put_user(restorer, &frame->pretcode);
- 	err |= __put_user(sig, &frame->sig);
- 	err |= __put_user(&frame->info, &frame->pinfo);
- 	err |= __put_user(&frame->uc, &frame->puc);
- 	err |= copy_siginfo_to_user(&frame->info, info);
- 	err |= copy_ucontext_to_user(&frame->uc, &frame->fpstate, mask,
--				     PT_REGS_SP(regs));
-+				     save_sp);
- 
- 	/*
- 	 * This is movl $,%eax ; int $0x80
-@@ -288,9 +314,8 @@ int setup_signal_stack_si(unsigned long 
- 	err |= __put_user(0x80cd, (short __user *)(frame->retcode+5));
- 
- 	if(err)
--		return(err);
-+		goto err;
- 
--	PT_REGS_SP(regs) = (unsigned long) frame;
- 	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
- 	PT_REGS_EAX(regs) = (unsigned long) sig;
- 	PT_REGS_EDX(regs) = (unsigned long) &frame->info;
-@@ -298,7 +323,11 @@ int setup_signal_stack_si(unsigned long 
- 
- 	if ((current->ptrace & PT_DTRACE) && (current->ptrace & PT_PTRACED))
- 		ptrace_notify(SIGTRAP);
--	return(0);
-+	return 0;
-+
-+err:
-+	PT_REGS_SP(regs) = save_sp;
-+	return err;
- }
- 
- long sys_sigreturn(struct pt_regs regs)
-Index: linux-2.6.15/arch/um/sys-x86_64/signal.c
+ /* Make sure they are clear when running in TT mode. Required by
+  * SEGV_MAYBE_FIXABLE */
+Index: linux-2.6.16/arch/um/include/sigio.h
 ===================================================================
---- linux-2.6.15.orig/arch/um/sys-x86_64/signal.c	2005-10-28 12:58:12.000000000 -0400
-+++ linux-2.6.15/arch/um/sys-x86_64/signal.c	2006-03-23 12:28:26.000000000 -0500
-@@ -55,7 +55,8 @@ static int copy_sc_from_user_skas(struct
- }
+--- linux-2.6.16.orig/arch/um/include/sigio.h	2006-03-23 17:23:18.000000000 -0500
++++ linux-2.6.16/arch/um/include/sigio.h	2006-03-23 17:23:54.000000000 -0500
+@@ -8,7 +8,6 @@
  
- int copy_sc_to_user_skas(struct sigcontext *to, struct _fpstate *to_fp,
--                        struct pt_regs *regs, unsigned long mask)
-+			 struct pt_regs *regs, unsigned long mask,
-+			 unsigned long sp)
- {
-         struct faultinfo * fi = &current->thread.arch.faultinfo;
- 	int err = 0;
-@@ -70,7 +71,11 @@ int copy_sc_to_user_skas(struct sigconte
- 	err |= PUTREG(regs, RDI, to, rdi);
- 	err |= PUTREG(regs, RSI, to, rsi);
- 	err |= PUTREG(regs, RBP, to, rbp);
--	err |= PUTREG(regs, RSP, to, rsp);
-+        /* Must use orignal RSP, which is passed in, rather than what's in
-+         * the pt_regs, because that's already been updated to point at the
-+         * signal frame.
-+         */
-+	err |= __put_user(sp, &to->rsp);
- 	err |= PUTREG(regs, RBX, to, rbx);
- 	err |= PUTREG(regs, RDX, to, rdx);
- 	err |= PUTREG(regs, RCX, to, rcx);
-@@ -102,7 +107,7 @@ int copy_sc_to_user_skas(struct sigconte
+ extern int write_sigio_irq(int fd);
+ extern int register_sigio_fd(int fd);
+-extern int read_sigio_fd(int fd);
+ extern int add_sigio_fd(int fd, int read);
+ extern int ignore_sigio_fd(int fd);
+ extern void sigio_lock(void);
+Index: linux-2.6.16/arch/um/kernel/sigio_kern.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/kernel/sigio_kern.c	2006-03-23 17:23:18.000000000 -0500
++++ linux-2.6.16/arch/um/kernel/sigio_kern.c	2006-03-23 17:23:54.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* 
++/*
+  * Copyright (C) 2002 - 2003 Jeff Dike (jdike@addtoit.com)
+  * Licensed under the GPL
+  */
+@@ -12,13 +12,16 @@
+ #include "sigio.h"
+ #include "irq_user.h"
+ #include "irq_kern.h"
++#include "os.h"
  
- #ifdef CONFIG_MODE_TT
- int copy_sc_from_user_tt(struct sigcontext *to, struct sigcontext *from,
--                        int fpsize)
-+			 int fpsize)
- {
- 	struct _fpstate *to_fp, *from_fp;
- 	unsigned long sigs;
-@@ -120,7 +125,7 @@ int copy_sc_from_user_tt(struct sigconte
- }
+ /* Protected by sigio_lock() called from write_sigio_workaround */
+ static int sigio_irq_fd = -1;
  
- int copy_sc_to_user_tt(struct sigcontext *to, struct _fpstate *fp,
--                      struct sigcontext *from, int fpsize)
-+		       struct sigcontext *from, int fpsize, unsigned long sp)
+ static irqreturn_t sigio_interrupt(int irq, void *data, struct pt_regs *unused)
  {
- 	struct _fpstate *to_fp, *from_fp;
- 	int err;
-@@ -128,11 +133,17 @@ int copy_sc_to_user_tt(struct sigcontext
- 	to_fp = (fp ? fp : (struct _fpstate *) (to + 1));
- 	from_fp = from->fpstate;
- 	err = copy_to_user(to, from, sizeof(*to));
-+	/* The SP in the sigcontext is the updated one for the signal
-+	 * delivery.  The sp passed in is the original, and this needs
-+	 * to be restored, so we stick it in separately.
-+	 */
-+	err |= copy_to_user(&SC_SP(to), sp, sizeof(sp));
+-	read_sigio_fd(sigio_irq_fd);
++	char c;
 +
- 	if(from_fp != NULL){
- 		err |= copy_to_user(&to->fpstate, &to_fp, sizeof(to->fpstate));
- 		err |= copy_to_user(to_fp, from_fp, fpsize);
- 	}
--	return(err);
-+	return err;
++	os_read_file(sigio_irq_fd, &c, sizeof(c));
+ 	reactivate_fd(sigio_irq_fd, SIGIO_WRITE_IRQ);
+ 	return(IRQ_HANDLED);
+ }
+@@ -51,6 +54,9 @@ void sigio_unlock(void)
+ 	spin_unlock(&sigio_spinlock);
  }
  
- #endif
-@@ -148,11 +159,12 @@ static int copy_sc_from_user(struct pt_r
- }
- 
- static int copy_sc_to_user(struct sigcontext *to, struct _fpstate *fp,
--                          struct pt_regs *from, unsigned long mask)
-+			   struct pt_regs *from, unsigned long mask,
-+			   unsigned long sp)
- {
-        return(CHOOSE_MODE(copy_sc_to_user_tt(to, fp, UPT_SC(&from->regs),
--                                             sizeof(*fp)),
--                          copy_sc_to_user_skas(to, fp, from, mask)));
-+                                             sizeof(*fp), sp),
-+                          copy_sc_to_user_skas(to, fp, from, mask, sp)));
- }
- 
- struct rt_sigframe
-@@ -170,6 +182,7 @@ int setup_signal_stack_si(unsigned long 
- {
- 	struct rt_sigframe __user *frame;
- 	struct _fpstate __user *fp = NULL;
-+	unsigned long save_sp = PT_REGS_RSP(regs);
- 	int err = 0;
- 	struct task_struct *me = current;
- 
-@@ -193,14 +206,25 @@ int setup_signal_stack_si(unsigned long 
- 			goto out;
- 	}
- 
-+	/* Update SP now because the page fault handler refuses to extend
-+	 * the stack if the faulting address is too far below the current
-+	 * SP, which frame now certainly is.  If there's an error, the original
-+	 * value is restored on the way out.
-+	 * When writing the sigcontext to the stack, we have to write the
-+	 * original value, so that's passed to copy_sc_to_user, which does
-+	 * the right thing with it.
-+	 */
-+	PT_REGS_RSP(regs) = (unsigned long) frame;
++extern void sigio_cleanup(void);
++__uml_exitcall(sigio_cleanup);
 +
- 	/* Create the ucontext.  */
- 	err |= __put_user(0, &frame->uc.uc_flags);
- 	err |= __put_user(0, &frame->uc.uc_link);
- 	err |= __put_user(me->sas_ss_sp, &frame->uc.uc_stack.ss_sp);
--	err |= __put_user(sas_ss_flags(PT_REGS_SP(regs)),
-+	err |= __put_user(sas_ss_flags(save_sp),
- 			  &frame->uc.uc_stack.ss_flags);
- 	err |= __put_user(me->sas_ss_size, &frame->uc.uc_stack.ss_size);
--	err |= copy_sc_to_user(&frame->uc.uc_mcontext, fp, regs, set->sig[0]);
-+	err |= copy_sc_to_user(&frame->uc.uc_mcontext, fp, regs, set->sig[0],
-+		save_sp);
- 	err |= __put_user(fp, &frame->uc.uc_mcontext.fpstate);
- 	if (sizeof(*set) == 16) {
- 		__put_user(set->sig[0], &frame->uc.uc_sigmask.sig[0]);
-@@ -217,10 +241,10 @@ int setup_signal_stack_si(unsigned long 
- 		err |= __put_user(ka->sa.sa_restorer, &frame->pretcode);
- 	else
- 		/* could use a vstub here */
--		goto out;
-+		goto restore_sp;
+ /*
+  * Overrides for Emacs so that we follow Linus's tabbing style.
+  * Emacs will notice this stuff at the end of the file and automatically
+Index: linux-2.6.16/arch/um/kernel/sigio_user.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/kernel/sigio_user.c	2006-03-23 17:23:18.000000000 -0500
++++ linux-2.6.16/arch/um/kernel/sigio_user.c	2006-03-23 17:25:36.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* 
++/*
+  * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+  */
+@@ -20,127 +20,6 @@
+ #include "sigio.h"
+ #include "os.h"
  
- 	if (err)
--		goto out;
-+		goto restore_sp;
- 
- 	/* Set up registers for signal handler */
- 	{
-@@ -238,10 +262,12 @@ int setup_signal_stack_si(unsigned long 
- 	PT_REGS_RSI(regs) = (unsigned long) &frame->info;
- 	PT_REGS_RDX(regs) = (unsigned long) &frame->uc;
- 	PT_REGS_RIP(regs) = (unsigned long) ka->sa.sa_handler;
+-/* Changed during early boot */
+-int pty_output_sigio = 0;
+-int pty_close_sigio = 0;
 -
--	PT_REGS_RSP(regs) = (unsigned long) frame;
-  out:
--	return(err);
-+	return err;
-+
-+restore_sp:
-+	PT_REGS_RSP(regs) = save_sp;
-+	return err;
+-/* Used as a flag during SIGIO testing early in boot */
+-static volatile int got_sigio = 0;
+-
+-void __init handler(int sig)
+-{
+-	got_sigio = 1;
+-}
+-
+-struct openpty_arg {
+-	int master;
+-	int slave;
+-	int err;
+-};
+-
+-static void openpty_cb(void *arg)
+-{
+-	struct openpty_arg *info = arg;
+-
+-	info->err = 0;
+-	if(openpty(&info->master, &info->slave, NULL, NULL, NULL))
+-		info->err = -errno;
+-}
+-
+-void __init check_one_sigio(void (*proc)(int, int))
+-{
+-	struct sigaction old, new;
+-	struct openpty_arg pty = { .master = -1, .slave = -1 };
+-	int master, slave, err;
+-
+-	initial_thread_cb(openpty_cb, &pty);
+-	if(pty.err){
+-		printk("openpty failed, errno = %d\n", -pty.err);
+-		return;
+-	}
+-
+-	master = pty.master;
+-	slave = pty.slave;
+-
+-	if((master == -1) || (slave == -1)){
+-		printk("openpty failed to allocate a pty\n");
+-		return;
+-	}
+-
+-	/* Not now, but complain so we now where we failed. */
+-	err = raw(master);
+-	if (err < 0)
+-		panic("check_sigio : __raw failed, errno = %d\n", -err);
+-
+-	err = os_sigio_async(master, slave);
+-	if(err < 0)
+-		panic("tty_fds : sigio_async failed, err = %d\n", -err);
+-
+-	if(sigaction(SIGIO, NULL, &old) < 0)
+-		panic("check_sigio : sigaction 1 failed, errno = %d\n", errno);
+-	new = old;
+-	new.sa_handler = handler;
+-	if(sigaction(SIGIO, &new, NULL) < 0)
+-		panic("check_sigio : sigaction 2 failed, errno = %d\n", errno);
+-
+-	got_sigio = 0;
+-	(*proc)(master, slave);
+-		
+-	os_close_file(master);
+-	os_close_file(slave);
+-
+-	if(sigaction(SIGIO, &old, NULL) < 0)
+-		panic("check_sigio : sigaction 3 failed, errno = %d\n", errno);
+-}
+-
+-static void tty_output(int master, int slave)
+-{
+-	int n;
+-	char buf[512];
+-
+-	printk("Checking that host ptys support output SIGIO...");
+-
+-	memset(buf, 0, sizeof(buf));
+-
+-	while(os_write_file(master, buf, sizeof(buf)) > 0) ;
+-	if(errno != EAGAIN)
+-		panic("check_sigio : write failed, errno = %d\n", errno);
+-	while(((n = os_read_file(slave, buf, sizeof(buf))) > 0) && !got_sigio) ;
+-
+-	if (got_sigio) {
+-		printk("Yes\n");
+-		pty_output_sigio = 1;
+-	} else if (n == -EAGAIN) {
+-		printk("No, enabling workaround\n");
+-	} else {
+-		panic("check_sigio : read failed, err = %d\n", n);
+-	}
+-}
+-
+-static void tty_close(int master, int slave)
+-{
+-	printk("Checking that host ptys support SIGIO on close...");
+-
+-	os_close_file(slave);
+-	if(got_sigio){
+-		printk("Yes\n");
+-		pty_close_sigio = 1;
+-	}
+-	else printk("No, enabling workaround\n");
+-}
+-
+-void __init check_sigio(void)
+-{
+-	if((os_access("/dev/ptmx", OS_ACC_R_OK) < 0) &&
+-	   (os_access("/dev/ptyp0", OS_ACC_R_OK) < 0)){
+-		printk("No pseudo-terminals available - skipping pty SIGIO "
+-		       "check\n");
+-		return;
+-	}
+-	check_one_sigio(tty_output);
+-	check_one_sigio(tty_close);
+-}
+-
+ /* Protected by sigio_lock(), also used by sigio_cleanup, which is an 
+  * exitcall.
+  */
+@@ -267,10 +146,10 @@ static void update_thread(void)
+ 	if(write_sigio_pid != -1) 
+ 		os_kill_process(write_sigio_pid, 1);
+ 	write_sigio_pid = -1;
+-	os_close_file(sigio_private[0]);
+-	os_close_file(sigio_private[1]);
+-	os_close_file(write_sigio_fds[0]);
+-	os_close_file(write_sigio_fds[1]);
++	close(sigio_private[0]);
++	close(sigio_private[1]);
++	close(write_sigio_fds[0]);
++	close(write_sigio_fds[1]);
+ 	/* Critical section end */
+ 	set_signals(flags);
+ }
+@@ -428,39 +307,18 @@ void write_sigio_workaround(void)
+  out_free:
+ 	kfree(p);
+  out_close2:
+-	os_close_file(l_sigio_private[0]);
+-	os_close_file(l_sigio_private[1]);
++	close(l_sigio_private[0]);
++	close(l_sigio_private[1]);
+  out_close1:
+-	os_close_file(l_write_sigio_fds[0]);
+-	os_close_file(l_write_sigio_fds[1]);
++	close(l_write_sigio_fds[0]);
++	close(l_write_sigio_fds[1]);
+ 	return;
  }
  
- long sys_rt_sigreturn(struct pt_regs *regs)
+-int read_sigio_fd(int fd)
+-{
+-	int n;
+-	char c;
+-
+-	n = os_read_file(fd, &c, sizeof(c));
+-	if(n != sizeof(c)){
+-		if(n < 0) {
+-			printk("read_sigio_fd - read failed, err = %d\n", -n);
+-			return(n);
+-		}
+-		else {
+-			printk("read_sigio_fd - short read, bytes = %d\n", n);
+-			return(-EIO);
+-		}
+-	}
+-	return(n);
+-}
+-
+-static void sigio_cleanup(void)
++void sigio_cleanup(void)
+ {
+ 	if (write_sigio_pid != -1) {
+ 		os_kill_process(write_sigio_pid, 1);
+ 		write_sigio_pid = -1;
+ 	}
+ }
+-
+-__uml_exitcall(sigio_cleanup);
+Index: linux-2.6.16/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/kernel/um_arch.c	2006-03-23 17:23:18.000000000 -0500
++++ linux-2.6.16/arch/um/kernel/um_arch.c	2006-03-23 17:23:54.000000000 -0500
+@@ -487,8 +487,7 @@ void __init setup_arch(char **cmdline_p)
+ void __init check_bugs(void)
+ {
+ 	arch_check_bugs();
+-	check_sigio();
+-	check_devanon();
++ 	os_check_bugs();
+ }
+ 
+ void apply_alternatives(void *start, void *end)
+Index: linux-2.6.16/arch/um/os-Linux/start_up.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/os-Linux/start_up.c	2006-03-23 17:23:18.000000000 -0500
++++ linux-2.6.16/arch/um/os-Linux/start_up.c	2006-03-23 17:23:54.000000000 -0500
+@@ -3,6 +3,7 @@
+  * Licensed under the GPL
+  */
+ 
++#include <pty.h>
+ #include <stdio.h>
+ #include <stddef.h>
+ #include <stdarg.h>
+@@ -539,3 +540,130 @@ int __init parse_iomem(char *str, int *a
+ 	return(1);
+ }
+ 
++
++/* Changed during early boot */
++int pty_output_sigio = 0;
++int pty_close_sigio = 0;
++
++/* Used as a flag during SIGIO testing early in boot */
++static volatile int got_sigio = 0;
++
++static void __init handler(int sig)
++{
++	got_sigio = 1;
++}
++
++struct openpty_arg {
++	int master;
++	int slave;
++	int err;
++};
++
++static void openpty_cb(void *arg)
++{
++	struct openpty_arg *info = arg;
++
++	info->err = 0;
++	if(openpty(&info->master, &info->slave, NULL, NULL, NULL))
++		info->err = -errno;
++}
++
++static void __init check_one_sigio(void (*proc)(int, int))
++{
++	struct sigaction old, new;
++	struct openpty_arg pty = { .master = -1, .slave = -1 };
++	int master, slave, err;
++
++	initial_thread_cb(openpty_cb, &pty);
++	if(pty.err){
++		printk("openpty failed, errno = %d\n", -pty.err);
++		return;
++	}
++
++	master = pty.master;
++	slave = pty.slave;
++
++	if((master == -1) || (slave == -1)){
++		printk("openpty failed to allocate a pty\n");
++		return;
++	}
++
++	/* Not now, but complain so we now where we failed. */
++	err = raw(master);
++	if (err < 0)
++		panic("check_sigio : __raw failed, errno = %d\n", -err);
++
++	err = os_sigio_async(master, slave);
++	if(err < 0)
++		panic("tty_fds : sigio_async failed, err = %d\n", -err);
++
++	if(sigaction(SIGIO, NULL, &old) < 0)
++		panic("check_sigio : sigaction 1 failed, errno = %d\n", errno);
++	new = old;
++	new.sa_handler = handler;
++	if(sigaction(SIGIO, &new, NULL) < 0)
++		panic("check_sigio : sigaction 2 failed, errno = %d\n", errno);
++
++	got_sigio = 0;
++	(*proc)(master, slave);
++
++	close(master);
++	close(slave);
++
++	if(sigaction(SIGIO, &old, NULL) < 0)
++		panic("check_sigio : sigaction 3 failed, errno = %d\n", errno);
++}
++
++static void tty_output(int master, int slave)
++{
++	int n;
++	char buf[512];
++
++	printk("Checking that host ptys support output SIGIO...");
++
++	memset(buf, 0, sizeof(buf));
++
++	while(os_write_file(master, buf, sizeof(buf)) > 0) ;
++	if(errno != EAGAIN)
++		panic("check_sigio : write failed, errno = %d\n", errno);
++	while(((n = os_read_file(slave, buf, sizeof(buf))) > 0) && !got_sigio) ;
++
++	if(got_sigio){
++		printk("Yes\n");
++		pty_output_sigio = 1;
++	}
++	else if(n == -EAGAIN) printk("No, enabling workaround\n");
++	else panic("check_sigio : read failed, err = %d\n", n);
++}
++
++static void tty_close(int master, int slave)
++{
++	printk("Checking that host ptys support SIGIO on close...");
++
++	close(slave);
++	if(got_sigio){
++		printk("Yes\n");
++		pty_close_sigio = 1;
++	}
++	else printk("No, enabling workaround\n");
++}
++
++void __init check_sigio(void)
++{
++	if((os_access("/dev/ptmx", OS_ACC_R_OK) < 0) &&
++	   (os_access("/dev/ptyp0", OS_ACC_R_OK) < 0)){
++		printk("No pseudo-terminals available - skipping pty SIGIO "
++		       "check\n");
++		return;
++	}
++	check_one_sigio(tty_output);
++	check_one_sigio(tty_close);
++}
++
++void os_check_bugs(void)
++{
++	check_ptrace();
++	check_sigio();
++	check_devanon();
++}
++
 
 
 
