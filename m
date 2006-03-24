@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMqmz-0003Zp-0s for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 10:13:33 -0800
+	id 1FMqnA-0003ak-Vz for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 10:13:44 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FMqmy-0005Zk-GT
+	(Exim 4.44) id 1FMqnA-0005cW-FM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 10:13:32 -0800
-Message-Id: <200603241814.k2OIEr00005545@ccure.user-mode-linux.org>
+	Fri, 24 Mar 2006 10:13:44 -0800
+Message-Id: <200603241815.k2OIF5lw005570@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 10/16] UML - OS header cleanups
+Subject: [uml-devel] [PATCH 15/16] UML - Fix thread startup race
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,75 +25,110 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 13:14:53 -0500
+Date: Fri, 24 Mar 2006 13:15:05 -0500
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>
 
-This rearranges the OS declarations by moving some declarations into os.h.
+This fixes a race in the starting of write_sigio_thread.
+Previously, some of the data needed by the thread was initialized
+after the clone.  If the thread ran immediately, it would see the
+uninitialized data, including an empty pollfds, which would cause it
+to hang.
+We move the data initialization to before the clone, and adjust the
+error paths and cleanup accordingly.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.16/arch/um/include/os.h
+Index: linux-2.6.16/arch/um/os-Linux/sigio.c
 ===================================================================
---- linux-2.6.16.orig/arch/um/include/os.h	2006-03-23 17:35:34.000000000 -0500
-+++ linux-2.6.16/arch/um/include/os.h	2006-03-23 17:35:56.000000000 -0500
-@@ -122,6 +122,7 @@ static inline struct openflags of_cloexe
- 	return(flags); 
- }
-   
-+/* file.c */
- extern int os_stat_file(const char *file_name, struct uml_stat *buf);
- extern int os_stat_fd(const int fd, struct uml_stat *buf);
- extern int os_access(const char *file, int mode);
-@@ -157,6 +158,15 @@ extern int os_connect_socket(char *name)
- extern int os_file_type(char *file);
- extern int os_file_mode(char *file, struct openflags *mode_out);
- extern int os_lock_file(int fd, int excl);
-+extern void os_flush_stdout(void);
-+extern int os_stat_filesystem(char *path, long *bsize_out,
-+			      long long *blocks_out, long long *bfree_out,
-+			      long long *bavail_out, long long *files_out,
-+			      long long *ffree_out, void *fsid_out,
-+			      int fsid_size, long *namelen_out,
-+			      long *spare_out);
-+extern int os_change_dir(char *dir);
-+extern int os_fchange_dir(int fd);
- 
- /* start_up.c */
- extern void os_early_checks(void);
-@@ -316,4 +326,8 @@ extern void write_sigio_workaround(void)
- extern int add_sigio_fd(int fd, int read);
- extern int ignore_sigio_fd(int fd);
- 
-+/* skas/trap */
-+extern void sig_handler_common_skas(int sig, void *sc_ptr);
-+extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
+--- linux-2.6.16.orig/arch/um/os-Linux/sigio.c	2006-03-23 18:55:38.000000000 -0500
++++ linux-2.6.16/arch/um/os-Linux/sigio.c	2006-03-23 21:10:27.000000000 -0500
+@@ -29,8 +29,10 @@ static int write_sigio_pid = -1;
+  * the descriptors closed after it is killed.  So, it can't see them change.
+  * On the UML side, they are changed under the sigio_lock.
+  */
+-static int write_sigio_fds[2] = { -1, -1 };
+-static int sigio_private[2] = { -1, -1 };
++#define SIGIO_FDS_INIT {-1, -1}
 +
- #endif
-Index: linux-2.6.16/arch/um/include/skas/mode-skas.h
-===================================================================
---- linux-2.6.16.orig/arch/um/include/skas/mode-skas.h	2006-03-23 17:35:34.000000000 -0500
-+++ linux-2.6.16/arch/um/include/skas/mode-skas.h	2006-03-23 17:35:49.000000000 -0500
-@@ -13,7 +13,6 @@ extern unsigned long exec_fp_regs[];
- extern unsigned long exec_fpx_regs[];
- extern int have_fpx_regs;
++static int write_sigio_fds[2] = SIGIO_FDS_INIT;
++static int sigio_private[2] = SIGIO_FDS_INIT;
  
--extern void sig_handler_common_skas(int sig, void *sc_ptr);
- extern void kill_off_processes_skas(void);
+ struct pollfds {
+ 	struct pollfd *poll;
+@@ -270,49 +272,46 @@ void write_sigio_workaround(void)
+ 	/* Did we race? Don't try to optimize this, please, it's not so likely
+ 	 * to happen, and no more than once at the boot. */
+ 	if(write_sigio_pid != -1)
+-		goto out_unlock;
+-
+-	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
+-					    CLONE_FILES | CLONE_VM, &stack, 0);
++		goto out_free;
  
- #endif
-Index: linux-2.6.16/arch/um/include/skas/skas.h
-===================================================================
---- linux-2.6.16.orig/arch/um/include/skas/skas.h	2006-03-23 17:35:34.000000000 -0500
-+++ linux-2.6.16/arch/um/include/skas/skas.h	2006-03-23 17:35:49.000000000 -0500
-@@ -17,7 +17,6 @@ extern int user_thread(unsigned long sta
- extern void new_thread_proc(void *stack, void (*handler)(int sig));
- extern void new_thread_handler(int sig);
- extern void handle_syscall(union uml_pt_regs *regs);
--extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
- extern int new_mm(unsigned long stack);
- extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
- extern long execute_syscall_skas(void *r);
+-	if (write_sigio_pid < 0)
+-		goto out_clear;
++	current_poll = ((struct pollfds) { .poll 	= p,
++					   .used 	= 1,
++					   .size 	= 1 });
+ 
+ 	if (write_sigio_irq(l_write_sigio_fds[0]))
+-		goto out_kill;
++		goto out_clear_poll;
+ 
+-	/* Success, finally. */
+ 	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
+ 	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
+ 
+-	current_poll = ((struct pollfds) { .poll 	= p,
+-					   .used 	= 1,
+-					   .size 	= 1 });
++	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
++					    CLONE_FILES | CLONE_VM, &stack, 0);
+ 
+-	sigio_unlock();
+-	return;
++	if (write_sigio_pid < 0)
++		goto out_clear;
+ 
+- out_kill:
+-	l_write_sigio_pid = write_sigio_pid;
+-	write_sigio_pid = -1;
+ 	sigio_unlock();
+-	/* Going to call waitpid, avoid holding the lock. */
+-	os_kill_process(l_write_sigio_pid, 1);
+-	goto out_free;
++	return;
+ 
+- out_clear:
++out_clear:
+ 	write_sigio_pid = -1;
+- out_unlock:
+-	sigio_unlock();
+- out_free:
++	write_sigio_fds[0] = -1;
++	write_sigio_fds[1] = -1;
++	sigio_private[0] = -1;
++	sigio_private[1] = -1;
++out_clear_poll:
++	current_poll = ((struct pollfds) { .poll	= NULL,
++					   .size	= 0,
++					   .used	= 0 });
++out_free:
+ 	kfree(p);
+- out_close2:
++	sigio_unlock();
++out_close2:
+ 	close(l_sigio_private[0]);
+ 	close(l_sigio_private[1]);
+- out_close1:
++out_close1:
+ 	close(l_write_sigio_fds[0]);
+ 	close(l_write_sigio_fds[1]);
+-	return;
+ }
+ 
+ void sigio_cleanup(void)
 
 
 
