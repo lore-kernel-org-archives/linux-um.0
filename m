@@ -1,14 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Message-ID: <44237796.5080803@enterasys.com>
-From: "D. Bahi" <dbahi@enterasys.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Resend: how to debug module on UML kernel 2.6.15.6
-	+ 	SKAS mode?
-References: <442366BA.3080902@gmail.com>
-In-Reply-To: <442366BA.3080902@gmail.com>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FMjiN-00037i-IM for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 02:40:19 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FMjiN-0002Vx-At
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 02:40:19 -0800
+Subject: Re: [uml-devel] Re: TLS support - status - need for re-testing
+From: Antoine Martin <antoine@nagafix.co.uk>
+In-Reply-To: <20060324015120.GA8104@ccure.user-mode-linux.org>
+References: <200603230317.48384.blaisorblade@yahoo.it>
+	<20060323211424.GA6130@ccure.user-mode-linux.org>
+	<200603240044.06196.blaisorblade@yahoo.it>
+	<20060324015120.GA8104@ccure.user-mode-linux.org>
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="------------enigE7A86A84C541415B71F5423C"
+	boundary="=-Fb2c+g6GGOAomURob7Eo"
+Message-Id: <1143196799.2868.1.camel@localhost>
+Mime-Version: 1.0
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,110 +31,52 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Mar 2006 23:37:42 -0500
-To: mikado4vn@gmail.com
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 24 Mar 2006 10:39:59 +0000
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE7A86A84C541415B71F5423C
-Content-Type: text/plain; charset=ISO-8859-1
+
+--=-Fb2c+g6GGOAomURob7Eo
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-i think everytime you load it and unload it you may get different address=
-es
+On Thu, 2006-03-23 at 20:51 -0500, Jeff Dike wrote:
+> On Fri, Mar 24, 2006 at 12:44:05AM +0100, Blaisorblade wrote:
+> > Yes, that is true, but meanwhile give a testing to them, especially reg=
+ressio
+> > test the new patches. I can't merge new patches in until I'm sure they =
+don't=20
+> > cause regressions.
+>=20
+> OK, I give it a thumbs-up on a first boot - it's running my FC5
+> filesystem without any trouble.  I'll keep playing with it and let you
+> know of any trouble.
+I haven't been able to run FC4/FC5 x86 filesystems with any of the
+patches floating around. (on amd64 host)
 
-so you want a few more things in the [Host](gdb) section before loading
-a module these stepd should allow you to debug a module_init routine
+> Attached is a tarball of the patches merged after the patches I have
+> planned for 2.6.17.  Nothing major, just some fuzz, some Makefile
+> rejections, and rejections from some whitespace cleanup in
+> kernel/skas/process_kern.c.
+I couldn't figure out in which order I need to apply these (no series
+file) and I've ran out of time.
 
-1) from http://kgdb.linsyssoft.com/downloads/miscmacros
-    we get an idea how to address modules from within gdb
+Antoine
 
-#Miscellaneous macros
-define lsmod
-    set $mod =3D (struct module*)module_list
-    # the last module is the kernel, ignore it
-    while $mod !=3D &kernel_module
-    	printf "%p\t%s\n", (long)$mod, ($mod)->name
-	set $mod =3D $mod->next
-    end
-end
-
-2) you need a break point in module.c (sys_init_module) where we have
-    the mod pointer in hand and are about to call init. like here in 2.4.=
-26
-
-    /* Initialize the module.  */
-    atomic_set(&mod->uc.usecount,1);
-    mod->flags |=3D MOD_INITIALIZING;
-    if (mod->init && (error =3D mod->init()) !=3D 0) {
-
-3) so when you set this break point you want to do something like this:
-
-    (gdb)break module.c:553
-    # note the breakpoint number xx
-    (gdb)commands xx
-         printf "add-symbol-file %s\t%p\n", ($mod)->name, (long)$mod +
-$mod->size_of_struct
-         end
-
-Note the extra size_of_struct to point to the correct area.
-
-Cut-and-Paste the resulting line into your gdb window.
-Assuming the path to your module is in the gdb session 'dir' path
-(if not you can point it to using a path to the .o)
-
-your symbols should load and you should be able to step into
-mod->init() with code you can read.
-
-db
-
-Mikado wrote:
->
-> - How can I debug loadable modules at run time?
->
-> Here is my way:
->
->   ( /tmp/mymodule.ko exists on both [Host] and [UML] )
->   + [Host] # gdb linux
->   + [Host] (gdb) ...
->   + [Host] (gdb) r <params>
->   + [UML] # insmod /tmp/mymodule.ko
->   + [UML] # cat /sys/module/mymodule/sections/{.text,.bss,.data}
->   + [Host] (gdb) add-symbol-file /tmp/mymodule.ko <.text_addr> -s .bss
-> <.bss_addr> -s .data <.data_addr>
->   + ...
->
-> Tell me if I was wrong, thanks!
->
-> - How can I set breakpoint at module's init function?
->
-> After add module's symbol, I set breakpoint at init function then
-> 'rmmod' then re-'insmod' but gdb didn't break at init function. What wa=
-s
-> wrong?
->
-> - Sometimes gdb can't follow source codes in '.h' header files. Did I
-> miss something?
->
-> Thanks in advance,
-> Mikado.
-
-
-
---------------enigE7A86A84C541415B71F5423C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+--=-Fb2c+g6GGOAomURob7Eo
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (MingW32)
+Version: GnuPG v1.4.2.2 (GNU/Linux)
 
-iD8DBQFEI3ef3XQ4zakZ3z4RAlWnAJ0X8C28GdeOxS/XuDy6v2jo6TL7CwCfRGBk
-GLdsIgOz+GCRJ9ABFn2SyyU=
-=Uc/f
+iD8DBQBEI8x/rTBrLRG7eDcRAt/OAKCdTg7ETnZqm/sBqFA15tbX71/e5wCfa8Tj
+1bir0SJfIWZxiCpLoADrvik=
+=GLDL
 -----END PGP SIGNATURE-----
 
---------------enigE7A86A84C541415B71F5423C--
+--=-Fb2c+g6GGOAomURob7Eo--
+
 
 
 -------------------------------------------------------
