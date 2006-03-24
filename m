@@ -1,16 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FMq8K-0007Hb-1K for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 09:31:32 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FMq8I-00021U-Fa
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Mar 2006 09:31:32 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060324172644.GB5400@ccure.user-mode-linux.org>
-References: <dvv6ir$ajn$1@sea.gmane.org>
-	<200603240156.36646.blaisorblade@yahoo.it>
-	<20060324023029.GD8104@ccure.user-mode-linux.org>
-	<200603241534.01844.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: TLS support - status - need for re-testing
+Message-ID: <20060324173247.GD5400@ccure.user-mode-linux.org>
+References: <200603230317.48384.blaisorblade@yahoo.it>
+	<200603240044.06196.blaisorblade@yahoo.it>
+	<20060324041724.GB8750@ccure.user-mode-linux.org>
+	<200603241243.34687.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200603241534.01844.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: (implementation idea) Re: uml and nonstandard memory
-	splits?
+In-Reply-To: <200603241243.34687.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,41 +31,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 12:26:44 -0500
+Date: Fri, 24 Mar 2006 12:32:47 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-user@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
 
-On Fri, Mar 24, 2006 at 03:34:01PM +0100, Blaisorblade wrote:
-> The EIP is inside the stub code page, and the two pages are one near the 
-> other.
-
-I think you're going to have to talk more slowly and use shorter words.
-
-The problem is that we need to figure out at runtime where to put the
-stub pages, correct?  And we can't use the code stub page to figure out 
-where it is, because we haven't mapped it yet, because we don't know where
-to put it, correct?
-
-> However, currently, the rounding can't be 0.5G, it must be 0.25G with the 
-> current code, and it's still fragile if the host code is changed.
+On Fri, Mar 24, 2006 at 12:43:33PM +0100, Blaisorblade wrote:
+> We discussed this time ago, and read the description of the patch:
 > 
-> (arch/i386/Kconfig)
-> config PAGE_OFFSET
->         hex
->         default 0xB0000000 if VMSPLIT_3G_OPT
->         default 0x78000000 if VMSPLIT_2G
->         default 0x40000000 if VMSPLIT_1G
->         default 0xC0000000
+> # Also, as suggested by Jeff, remove a redundant enabling of SIGVTALRM,
+> # comprised in the subsequent local_irq_enable(). I'm just a bit dubious if
+> # ordering matters there...
 
-How much can stack randomization vary?  If it can vary more than the
-split varies, which I would expect, then rounding the stack pointer
-isn't going to work.
+Oops, nevermind.
 
-Another approach is to start with the current top of stack and try
-mapping pages at increments equal to the smallest split granularity
-that we think we are going to see, until one fails.
+> Note this pre-dates soft interrupts, however.
+
+Shouldn't matter.
+
+> > global-ldt-sem - We should be using mutexes now, not semaphores
+> 
+> That's your patch, but below I drop this.
+
+My patch predates mutexes.
+
+But you still use semaphores, and that should be updated.
+
+> > undo-global-ldt-sem - what's so horrible about the global?  it won't
+> > be highly contended, so making a single mutex saves memory from every
+> > ldt.
+> 
+> For memory: 500 existing processes (a huge number in practice) * 20 byte (and
+> I think a semaphore is smaller) = 10 Kbyte. We waste more for the kernel 
+> stack of 1 thread.
+> 
+> For reason: the compilation problem can be avoided differently (and the 
+> subsequent patch also merges duplicated code).
+> 
+> I didn't like global_ldt_sem because I felt it unclean; if done for memory 
+> usage it's another story, but still we need to check this creates no locking 
+> problem (almost surely no, but I want to look at the code well).
+
+It's simpler.  A single global lock is simpler than a lock in every 
+datastructure.
 
 				Jeff
+
 
 
 -------------------------------------------------------
