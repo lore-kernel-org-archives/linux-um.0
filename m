@@ -1,16 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060324023029.GD8104@ccure.user-mode-linux.org>
-References: <dvv6ir$ajn$1@sea.gmane.org>
-	<20060323235044.GA7273@ccure.user-mode-linux.org>
-	<20060324004052.GA1897@knob.reflex>
-	<200603240156.36646.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200603240156.36646.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: (implementation idea) Re: uml and nonstandard memory
-	splits?
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FMcnt-0005oA-SR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Mar 2006 19:17:33 -0800
+Received: from zproxy.gmail.com ([64.233.162.195])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FMcnr-0001bp-Ic
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Mar 2006 19:17:33 -0800
+Received: by zproxy.gmail.com with SMTP id n29so644820nzf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 23 Mar 2006 19:17:30 -0800 (PST)
+Message-ID: <442365B7.1010501@gmail.com>
+From: Mikado <mikado4vn@gmail.com>
+Reply-To: mikado4vn@gmail.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] bug: lsattr on mount point using hostfs - kernel panic
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,31 +29,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Mar 2006 21:30:29 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-user@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 24 Mar 2006 10:21:27 +0700
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Mar 24, 2006 at 01:56:32AM +0100, Blaisorblade wrote:
-> I don't think it's easy - however, it can be done. Below my idea - Jeff, 
-> please comment on this
-> 
-> In assembly.
-> It goes like this:
-> 
-> call label /*this is coded like a relative jump, i.e. call +1*/
-> label: pop $eax /*we got the saved EIP*/
-> 
-> /* Now we can round EIP and subtract an offset to calculate the data page 
-> location.
-> */
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-How does this give us the location of the data page?
+I 'chattr +i' /mnt/a and mount (using hostfs) it on UML /mnt/b then
+'lsattr' /mnt/b on UML will panic the kernel.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-You really want to know the end of the process address space, which
-you can do by taking the address of a convenient local and rounding up
-to the nearest 1G or .5G or so.
-
-				Jeff
+iD8DBQFEI2W3NWc9T2Wr2JcRAjTKAKClaWX8lOGrcdXuwXOWebZGRd6/OwCfarl0
+4OAi21FAL2axZHEykJL1HLQ=
+=U7yP
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
