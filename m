@@ -1,24 +1,14 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMdia-0003Tr-Qg for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 20:16:08 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FMdiZ-0002Ku-7D
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Mar 2006 20:16:08 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: TLS support - status - need for re-testing
-Message-ID: <20060324041724.GB8750@ccure.user-mode-linux.org>
-References: <200603230317.48384.blaisorblade@yahoo.it>
-	<20060323211424.GA6130@ccure.user-mode-linux.org>
-	<200603240044.06196.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200603240044.06196.blaisorblade@yahoo.it>
+Message-ID: <44237796.5080803@enterasys.com>
+From: "D. Bahi" <dbahi@enterasys.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] Resend: how to debug module on UML kernel 2.6.15.6
+	+ 	SKAS mode?
+References: <442366BA.3080902@gmail.com>
+In-Reply-To: <442366BA.3080902@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigE7A86A84C541415B71F5423C"
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,58 +20,110 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 23 Mar 2006 23:17:24 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Antoine Martin <antoine@nagafix.co.uk>
+Date: Thu, 23 Mar 2006 23:37:42 -0500
+To: mikado4vn@gmail.com
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Mar 24, 2006 at 12:44:05AM +0100, Blaisorblade wrote:
-> Yes, that is true, but meanwhile give a testing to them, especially
-> regression test the new patches. I can't merge new patches in until
-> I'm sure they don't cause regressions.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigE7A86A84C541415B71F5423C
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I took a quick look through the patches - here are some comments:
+i think everytime you load it and unload it you may get different address=
+es
 
-uml-clean-arch_switch -
+so you want a few more things in the [Host](gdb) section before loading
+a module these stepd should allow you to debug a module_init routine
 
-This chunk is strange:
+1) from http://kgdb.linsyssoft.com/downloads/miscmacros
+    we get an idea how to address modules from within gdb
 
-@@ -141,7 +148,6 @@ static void new_thread_handler(int sig)
- 	set_cmdline("(kernel thread)");
- 
- 	change_sig(SIGUSR1, 1);
--	change_sig(SIGVTALRM, 1);
- 	change_sig(SIGPROF, 1);
- 	local_irq_enable();
- 	if(!run_kernel_thread(fn, arg, &current->thread.exec_buf))
+#Miscellaneous macros
+define lsmod
+    set $mod =3D (struct module*)module_list
+    # the last module is the kernel, ignore it
+    while $mod !=3D &kernel_module
+    	printf "%p\t%s\n", (long)$mod, ($mod)->name
+	set $mod =3D $mod->next
+    end
+end
 
-If you're fixing a bug, you should say what it is.  But the original
-looks right, since the process has been scheduled and is running on
-its kernel stack, so it should be able to take timer interrupts now.
+2) you need a break point in module.c (sys_init_module) where we have
+    the mod pointer in hand and are about to call init. like here in 2.4.=
+26
 
-uml-add-tls-support -
+    /* Initialize the module.  */
+    atomic_set(&mod->uc.usecount,1);
+    mod->flags |=3D MOD_INITIALIZING;
+    if (mod->init && (error =3D mod->init()) !=3D 0) {
 
-copy_thread - OK for now, but we should move the CLONE_TLS bit into
-arch code.
+3) so when you set this break point you want to do something like this:
 
-arch_ptrace - Do all arches have PTRACE_[GS]ET_THREAD_AREA, maybe move
-inside an ifdef PTRACE_GET_THREAD_AREA
+    (gdb)break module.c:553
+    # note the breakpoint number xx
+    (gdb)commands xx
+         printf "add-symbol-file %s\t%p\n", ($mod)->name, (long)$mod +
+$mod->size_of_struct
+         end
 
-Any patches that change new files should be merged into this, I
-think.  That basically means that the stack will mostly collapse into
-this one patch.  I didn't see any patches which add new bits of
-functionality which would make sense standalone.
+Note the extra size_of_struct to point to the correct area.
 
-global-ldt-sem - We should be using mutexes now, not semaphores
+Cut-and-Paste the resulting line into your gdb window.
+Assuming the path to your module is in the gdb session 'dir' path
+(if not you can point it to using a path to the .o)
 
-detect-2_4-host - is there no more direct way to detect TLS support?
+your symbols should load and you should be able to step into
+mod->init() with code you can read.
 
-undo-global-ldt-sem - what's so horrible about the global?  it won't
-be highly contended, so making a single mutex saves memory from every
-ldt.
+db
 
-				Jeff
+Mikado wrote:
+>
+> - How can I debug loadable modules at run time?
+>
+> Here is my way:
+>
+>   ( /tmp/mymodule.ko exists on both [Host] and [UML] )
+>   + [Host] # gdb linux
+>   + [Host] (gdb) ...
+>   + [Host] (gdb) r <params>
+>   + [UML] # insmod /tmp/mymodule.ko
+>   + [UML] # cat /sys/module/mymodule/sections/{.text,.bss,.data}
+>   + [Host] (gdb) add-symbol-file /tmp/mymodule.ko <.text_addr> -s .bss
+> <.bss_addr> -s .data <.data_addr>
+>   + ...
+>
+> Tell me if I was wrong, thanks!
+>
+> - How can I set breakpoint at module's init function?
+>
+> After add module's symbol, I set breakpoint at init function then
+> 'rmmod' then re-'insmod' but gdb didn't break at init function. What wa=
+s
+> wrong?
+>
+> - Sometimes gdb can't follow source codes in '.h' header files. Did I
+> miss something?
+>
+> Thanks in advance,
+> Mikado.
 
 
+
+--------------enigE7A86A84C541415B71F5423C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (MingW32)
+
+iD8DBQFEI3ef3XQ4zakZ3z4RAlWnAJ0X8C28GdeOxS/XuDy6v2jo6TL7CwCfRGBk
+GLdsIgOz+GCRJ9ABFn2SyyU=
+=Uc/f
+-----END PGP SIGNATURE-----
+
+--------------enigE7A86A84C541415B71F5423C--
 
 
 -------------------------------------------------------
