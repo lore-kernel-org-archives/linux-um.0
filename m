@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FNEP5-0001yZ-1x for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Mar 2006 11:26:27 -0800
-Received: from linux01.gwdg.de ([134.76.13.21] ident=root)
+	id 1FNF2r-0005sq-57 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 25 Mar 2006 12:07:33 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FNEP3-0003yM-JH
+	(Exim 4.44) id 1FNF2p-0004jv-In
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Mar 2006 11:26:27 -0800
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-In-Reply-To: <20060324144535.37b3daf7.akpm@osdl.org>
-Message-ID: <Pine.LNX.4.61.0603252021330.29793@yvahk01.tjqt.qr>
+	Sat, 25 Mar 2006 12:07:33 -0800
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060325200845.GA4143@ccure.user-mode-linux.org>
 References: <200603241814.k2OIExNn005555@ccure.user-mode-linux.org>
 	<20060324144535.37b3daf7.akpm@osdl.org>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="1283855629-591466255-1143314768=:29793"
+	<Pine.LNX.4.61.0603252021330.29793@yvahk01.tjqt.qr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0603252021330.29793@yvahk01.tjqt.qr>
 Subject: [uml-devel] Re: [PATCH 12/16] UML - Memory hotplug
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
@@ -29,53 +30,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 25 Mar 2006 20:26:08 +0100 (MET)
-To: Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 25 Mar 2006 15:08:45 -0500
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Sat, Mar 25, 2006 at 08:26:08PM +0100, Jan Engelhardt wrote:
+> 
+> >> +	char buf[sizeof("18446744073709551615\0")];
+> 
+> And this one seems wrong[*] to me too (making it a rofl??).
+> It is two chars (or one[*]) too long.
 
---1283855629-591466255-1143314768=:29793
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by linux01.gwdg.de id
-	k2PJQ9b0004535
+One - it needs to be NULL-terminated.
+> 
+> Consider this test:
+> 
+> 	#include <stdio.h>
+> 	#include <string.h>
+> 	int main(void) {
+> 	    printf("%d\n", sizeof("18446744073709551615\0"));
+> 	    printf("%d\n", sizeof("18446744073709551615"));
+> 	    printf("%d\n", strlen("18446744073709551615"));
+> 	}
+> 
+> Which will print, when executed,
+> 
+> 	22
+> 	21
+> 	20	(the "pure string" length)
+> 
 
+Oops, I was basing this on a hazy (too hazy, apparently) recollection
+that the C standard specified sizeof("literal string") as being the
+pure string length.  Now that I'm actually thinking about it, the
+actual behavior makes much more sense.
 
->> +	char buf[sizeof("18446744073709551615\0")];
->
->rofl.  We really ought to have a #define for "this architecture's maximu=
-m
->length of an asciified int/long/s32/s64".  Generally people do
->guess-and-giggle-plus-20%, or they just get it wrong.
+Thanks for checking this out in time for me to fix it in my revised
+patch.
 
-And this one seems wrong[*] to me too (making it a rofl=C2=B2).
-It is two chars (or one[*]) too long.
-
-Consider this test:
-
-	#include <stdio.h>
-	#include <string.h>
-	int main(void) {
-	    printf("%d\n", sizeof("18446744073709551615\0"));
-	    printf("%d\n", sizeof("18446744073709551615"));
-	    printf("%d\n", strlen("18446744073709551615"));
-	}
-
-Which will print, when executed,
-
-	22
-	21
-	20	(the "pure string" length)
-
-[*] Depending on what the original author wanted.
-
-
-
-Jan Engelhardt
---=20
---1283855629-591466255-1143314768=:29793--
+				Jeff
 
 
 -------------------------------------------------------
