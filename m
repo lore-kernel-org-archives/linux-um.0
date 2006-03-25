@@ -1,30 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FMzHO-0004fg-RW for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 19:17:30 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FMzHM-0001Ms-Cj
+	id 1FNB9G-0004Xq-K9 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 25 Mar 2006 07:57:54 -0800
+Received: from zproxy.gmail.com ([64.233.162.202])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FNB9C-0005eB-Fq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Mar 2006 19:17:30 -0800
-Received: from ccure.user-mode-linux.org (littleton.addtoit.com
-	[198.99.130.129])
-	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id k2P3HQ4O016583
+	Sat, 25 Mar 2006 07:57:51 -0800
+Received: by zproxy.gmail.com with SMTP id n29so969911nzf
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 24 Mar 2006 22:17:27 -0500
-Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	by ccure.user-mode-linux.org (8.13.6/8.13.4) with ESMTP id
-	k2P3IjeR008555 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 24 Mar 2006 22:18:46 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060325031838.GA8539@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [uml-devel] Re: Why uml-add-tls-support-debug-check-never-works is
-	needed
+	Sat, 25 Mar 2006 07:57:48 -0800 (PST)
+Message-ID: <44256976.9010003@gmail.com>
+From: Mikado <mikado4vn@gmail.com>
+Reply-To: mikado4vn@gmail.com
+MIME-Version: 1.0
+Subject: Re: [uml-devel] Resend: how to debug module on UML kernel 2.6.15.6
+	+ SKAS mode?
+References: <442366BA.3080902@gmail.com>
+	<200603241544.23878.blaisorblade@yahoo.it>
+In-Reply-To: <200603241544.23878.blaisorblade@yahoo.it>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,47 +33,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 24 Mar 2006 22:18:38 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 25 Mar 2006 23:01:58 +0700
+To: Blaisorblade <blaisorblade@yahoo.it>, "D.Bahi" <dbahi@enterasys.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Mar 25, 2006 at 12:28:09AM +0100, Blaisorblade wrote:
-> BUT, this context switch at the thread born is special: the thread being 
-> switched away switches to a new thread not in the body of the new thread's 
-> call to switch_to_skas->switch_threads(), but in the body of thread_wait()! 
-> At that point, we lose the call to arch_switch_to_skas()!
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Yuck yuck yuck.  Nice spotting.
+Thank D. Bahi and Blaisorblade for your replies.
 
-There's an obvious one-line fix for this, but I wonder if we ought to
-try some restructuring to avoid this sort of thing in the future.
-
-> Questions and notes:
+Blaisorblade wrote:
+> On Friday 24 March 2006 04:25, Mikado wrote:
+>> - Sometimes gdb can't follow source codes in '.h' header files. Did I
+>> miss something?
 > 
-> *) Why does arch/um/os-Linux/skas/process.c has still one siglongjmp() call 
-> and sigjmp_buf vars, and that has no comments?
+> What happens? Maybe gdb is stepping there but the calls are inlined and it's 
+> not apparent that it's looking at source code. However I've not clear what 
+> you describe, anyway.
 
-I'm tempted to say that I just missed the call somehow.  I see no
-reason for that to be different, especially since it's preceded by a
-UML_SIGSETJMP.  As for the sigjmp_buf variables, I don't get your
-point.  Those haven't changed.
+Sometimes gdb can't access macros included in header files and it dumped
+"some_header.h: No such file or directory". Those macros can contain
+function calls so that I cannot trace that calls. Got any ideas?
 
-> *) Also, why thread_wait and thread_switch are almost identical, yet they're 
-> two different functions?
+Cheers,
+Mikado.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-switch_threads?  In order to merge them, you'd have to pass in the 1
-and the INIT_JMP_REMOVE_SIGSTACK, which I have conceptual problems
-with.  First, that makes the callers know things that they probably
-shouldn't.  Second, the 1 and the INIT_JMP_REMOVE_SIGSTACK have
-completely different meanings.  One is a message to the initial thread
-that it has to do something.  The 1 is a message to setjmp that is has
-been longjmp-ed to.
-
-> *) Btw, the naming sucks - if I find better names for new_thread, 
-> new_thread_proc and such, would they be accepted?
-
-Sure, good names are always appreciated.
-
-				Jeff
+iD8DBQFEJWl2NWc9T2Wr2JcRAib5AJ0TNyrDrXzhiu+l6scUBokqOJ03ggCgp0+3
+bMnAeWM3wMQPfFgHB3vJRp8=
+=SLX8
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
