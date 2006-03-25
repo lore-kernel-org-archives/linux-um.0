@@ -1,27 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FNB9G-0004Xq-K9 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Mar 2006 07:57:54 -0800
-Received: from zproxy.gmail.com ([64.233.162.202])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FNB9C-0005eB-Fq
+	id 1FNEP5-0001yZ-1x for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 25 Mar 2006 11:26:27 -0800
+Received: from linux01.gwdg.de ([134.76.13.21] ident=root)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FNEP3-0003yM-JH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Mar 2006 07:57:51 -0800
-Received: by zproxy.gmail.com with SMTP id n29so969911nzf
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 25 Mar 2006 07:57:48 -0800 (PST)
-Message-ID: <44256976.9010003@gmail.com>
-From: Mikado <mikado4vn@gmail.com>
-Reply-To: mikado4vn@gmail.com
+	Sat, 25 Mar 2006 11:26:27 -0800
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+In-Reply-To: <20060324144535.37b3daf7.akpm@osdl.org>
+Message-ID: <Pine.LNX.4.61.0603252021330.29793@yvahk01.tjqt.qr>
+References: <200603241814.k2OIExNn005555@ccure.user-mode-linux.org>
+	<20060324144535.37b3daf7.akpm@osdl.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Resend: how to debug module on UML kernel 2.6.15.6
-	+ SKAS mode?
-References: <442366BA.3080902@gmail.com>
-	<200603241544.23878.blaisorblade@yahoo.it>
-In-Reply-To: <200603241544.23878.blaisorblade@yahoo.it>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="1283855629-591466255-1143314768=:29793"
+Subject: [uml-devel] Re: [PATCH 12/16] UML - Memory hotplug
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,38 +29,53 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 25 Mar 2006 23:01:58 +0700
-To: Blaisorblade <blaisorblade@yahoo.it>, "D.Bahi" <dbahi@enterasys.com>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 25 Mar 2006 20:26:08 +0100 (MET)
+To: Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thank D. Bahi and Blaisorblade for your replies.
+--1283855629-591466255-1143314768=:29793
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by linux01.gwdg.de id
+	k2PJQ9b0004535
 
-Blaisorblade wrote:
-> On Friday 24 March 2006 04:25, Mikado wrote:
->> - Sometimes gdb can't follow source codes in '.h' header files. Did I
->> miss something?
-> 
-> What happens? Maybe gdb is stepping there but the calls are inlined and it's 
-> not apparent that it's looking at source code. However I've not clear what 
-> you describe, anyway.
 
-Sometimes gdb can't access macros included in header files and it dumped
-"some_header.h: No such file or directory". Those macros can contain
-function calls so that I cannot trace that calls. Got any ideas?
+>> +	char buf[sizeof("18446744073709551615\0")];
+>
+>rofl.  We really ought to have a #define for "this architecture's maximu=
+m
+>length of an asciified int/long/s32/s64".  Generally people do
+>guess-and-giggle-plus-20%, or they just get it wrong.
 
-Cheers,
-Mikado.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+And this one seems wrong[*] to me too (making it a rofl=C2=B2).
+It is two chars (or one[*]) too long.
 
-iD8DBQFEJWl2NWc9T2Wr2JcRAib5AJ0TNyrDrXzhiu+l6scUBokqOJ03ggCgp0+3
-bMnAeWM3wMQPfFgHB3vJRp8=
-=SLX8
------END PGP SIGNATURE-----
+Consider this test:
+
+	#include <stdio.h>
+	#include <string.h>
+	int main(void) {
+	    printf("%d\n", sizeof("18446744073709551615\0"));
+	    printf("%d\n", sizeof("18446744073709551615"));
+	    printf("%d\n", strlen("18446744073709551615"));
+	}
+
+Which will print, when executed,
+
+	22
+	21
+	20	(the "pure string" length)
+
+[*] Depending on what the original author wanted.
+
+
+
+Jan Engelhardt
+--=20
+--1283855629-591466255-1143314768=:29793--
 
 
 -------------------------------------------------------
