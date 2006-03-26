@@ -1,24 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FNF2r-0005sq-57 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Mar 2006 12:07:33 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FNF2p-0004jv-In
+	id 1FNaIy-0000z6-Fz for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 26 Mar 2006 10:49:36 -0800
+Received: from moutng.kundenserver.de ([212.227.126.190])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FNaIu-0000yq-KG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 25 Mar 2006 12:07:33 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060325200845.GA4143@ccure.user-mode-linux.org>
-References: <200603241814.k2OIExNn005555@ccure.user-mode-linux.org>
-	<20060324144535.37b3daf7.akpm@osdl.org>
-	<Pine.LNX.4.61.0603252021330.29793@yvahk01.tjqt.qr>
+	Sun, 26 Mar 2006 10:49:36 -0800
+Received: from [212.227.126.160] (helo=mrelayng.kundenserver.de)
+	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 1FNaIo-00046F-00 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 26 Mar 2006 20:49:26 +0200
+Received: from [84.58.132.181] (helo=gate.lan.gerd-stolpmann.de)
+	by mrelayng.kundenserver.de with asmtp (Exim 3.35 #1)
+	id 1FNaIo-00026M-00 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 26 Mar 2006 20:49:26 +0200
+Received: from flakew.lan.gerd-stolpmann.de (flakew.lan.gerd-stolpmann.de
+	[192.168.0.32])
+	by gate.lan.gerd-stolpmann.de (Postfix) with ESMTP id DED1DC094
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 26 Mar 2006 20:49:25 +0200 (CEST)
+From: Gerd Stolpmann <info@gerd-stolpmann.de>
+Content-Type: text/plain
+Message-Id: <1143398965.11224.146.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0603252021330.29793@yvahk01.tjqt.qr>
-Subject: [uml-devel] Re: [PATCH 12/16] UML - Memory hotplug
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Integer overflows in new AIO ubd driver
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,45 +38,55 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 25 Mar 2006 15:08:45 -0500
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 26 Mar 2006 20:49:25 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Mar 25, 2006 at 08:26:08PM +0100, Jan Engelhardt wrote:
-> 
-> >> +	char buf[sizeof("18446744073709551615\0")];
-> 
-> And this one seems wrong[*] to me too (making it a rofl??).
-> It is two chars (or one[*]) too long.
+Hi,
 
-One - it needs to be NULL-terminated.
-> 
-> Consider this test:
-> 
-> 	#include <stdio.h>
-> 	#include <string.h>
-> 	int main(void) {
-> 	    printf("%d\n", sizeof("18446744073709551615\0"));
-> 	    printf("%d\n", sizeof("18446744073709551615"));
-> 	    printf("%d\n", strlen("18446744073709551615"));
-> 	}
-> 
-> Which will print, when executed,
-> 
-> 	22
-> 	21
-> 	20	(the "pure string" length)
-> 
+I recently tried to benchmark the new AIO-based ubd driver (including
+O_DIRECT), and ran into serious problems with filesystems > 4GB. I think
+I found the problem; two overflows in ubd_kern.c (see patch).
 
-Oops, I was basing this on a hazy (too hazy, apparently) recollection
-that the C standard specified sizeof("literal string") as being the
-pure string length.  Now that I'm actually thinking about it, the
-actual behavior makes much more sense.
+My test system was 2.6.16 plus all patches from user-mode-linux.sf.net
+minus no_cow_odirect. Symptoms were that ext3 complained that it was
+tried to write blocks into the system zone, and switched the filesystem
+to r/o.
 
-Thanks for checking this out in time for me to fix it in my revised
-patch.
+I also experienced (hard) lockups when doing lots of I/O. But this seems
+to be unrelated to this problem (but who knows).
 
-				Jeff
+Gerd
+
+--- linux-2.6.16/arch/um/drivers/ubd_kern.c.orig        2006-03-26 16:57:11.000000000 +0200
++++ linux-2.6.16/arch/um/drivers/ubd_kern.c     2006-03-26 18:16:02.000000000 +0200
+@@ -1228,7 +1228,7 @@ static void do_ubd_request(request_queue
+                while(dev->start_sg < dev->end_sg){
+                        struct scatterlist *sg = &dev->sg[dev->start_sg];
+
+-                       prepare_request(req, &io_req, req->sector << 9,
++                       prepare_request(req, &io_req, (unsigned long long) req->sector << 9,
+                                        sg->offset, sg->length, sg->page);
+
+                        if(do_io(&io_req, req, dev) == -EAGAIN)
+@@ -1573,7 +1573,7 @@ static int do_io(struct io_thread_req *r
+                }
+
+                off = req->offsets[bit] + req->offset +
+-                       start * req->sectorsize;
++                       (unsigned long long) start * req->sectorsize;
+                len = (end - start) * req->sectorsize;
+                buf = &req->buffer[start * req->sectorsize];
+
+
+
+
+-- 
+------------------------------------------------------------
+Gerd Stolpmann * Viktoriastr. 45 * 64293 Darmstadt * Germany 
+gerd@gerd-stolpmann.de          http://www.gerd-stolpmann.de
+Phone: +49-6151-153855                  Fax: +49-6151-997714
+------------------------------------------------------------
+
 
 
 -------------------------------------------------------
