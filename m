@@ -2,31 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FNaIy-0000z6-Fz for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Mar 2006 10:49:36 -0800
-Received: from moutng.kundenserver.de ([212.227.126.190])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FNaIu-0000yq-KG
+	id 1FNaVC-0002GA-1D for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 26 Mar 2006 11:02:14 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FNaVB-0003kb-4m
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Mar 2006 10:49:36 -0800
-Received: from [212.227.126.160] (helo=mrelayng.kundenserver.de)
-	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
-	id 1FNaIo-00046F-00 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Mar 2006 20:49:26 +0200
-Received: from [84.58.132.181] (helo=gate.lan.gerd-stolpmann.de)
-	by mrelayng.kundenserver.de with asmtp (Exim 3.35 #1)
-	id 1FNaIo-00026M-00 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Mar 2006 20:49:26 +0200
-Received: from flakew.lan.gerd-stolpmann.de (flakew.lan.gerd-stolpmann.de
-	[192.168.0.32])
-	by gate.lan.gerd-stolpmann.de (Postfix) with ESMTP id DED1DC094
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 26 Mar 2006 20:49:25 +0200 (CEST)
-From: Gerd Stolpmann <info@gerd-stolpmann.de>
-Content-Type: text/plain
-Message-Id: <1143398965.11224.146.camel@localhost.localdomain>
-Mime-Version: 1.0
+	Sun, 26 Mar 2006 11:02:14 -0800
+Content-Disposition: inline
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Integer overflows in new AIO ubd driver
+Message-Id: <200603262003.58195.blaisorblade@yahoo.it>
+Subject: [uml-devel] Fwd: Re: Why uml-add-tls-support-debug-check-never-works
+	is needed (was: Re: Fwd: Proposed additions to the ptrace(2)
+	manpage, take 2)
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,54 +29,92 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 26 Mar 2006 20:49:25 +0200
+Date: Sun, 26 Mar 2006 20:03:57 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
-
-I recently tried to benchmark the new AIO-based ubd driver (including
-O_DIRECT), and ran into serious problems with filesystems > 4GB. I think
-I found the problem; two overflows in ubd_kern.c (see patch).
-
-My test system was 2.6.16 plus all patches from user-mode-linux.sf.net
-minus no_cow_odirect. Symptoms were that ext3 complained that it was
-tried to write blocks into the system zone, and switched the filesystem
-to r/o.
-
-I also experienced (hard) lockups when doing lots of I/O. But this seems
-to be unrelated to this problem (but who knows).
-
-Gerd
-
---- linux-2.6.16/arch/um/drivers/ubd_kern.c.orig        2006-03-26 16:57:11.000000000 +0200
-+++ linux-2.6.16/arch/um/drivers/ubd_kern.c     2006-03-26 18:16:02.000000000 +0200
-@@ -1228,7 +1228,7 @@ static void do_ubd_request(request_queue
-                while(dev->start_sg < dev->end_sg){
-                        struct scatterlist *sg = &dev->sg[dev->start_sg];
-
--                       prepare_request(req, &io_req, req->sector << 9,
-+                       prepare_request(req, &io_req, (unsigned long long) req->sector << 9,
-                                        sg->offset, sg->length, sg->page);
-
-                        if(do_io(&io_req, req, dev) == -EAGAIN)
-@@ -1573,7 +1573,7 @@ static int do_io(struct io_thread_req *r
-                }
-
-                off = req->offsets[bit] + req->offset +
--                       start * req->sectorsize;
-+                       (unsigned long long) start * req->sectorsize;
-                len = (end - start) * req->sectorsize;
-                buf = &req->buffer[start * req->sectorsize];
 
 
+----------  Forwarded Message  ----------
 
+Subject: Re: Why uml-add-tls-support-debug-check-never-works is needed (was: 
+Re: Fwd: Proposed additions to the ptrace(2) manpage, take 2)
+Date: Sunday 26 March 2006 19:43
+From: Blaisorblade <blaisorblade@yahoo.it>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@projects.sourceforge.net
+
+On Saturday 25 March 2006 02:17, Jeff Dike wrote:
+> On Sat, Mar 25, 2006 at 12:28:09AM +0100, Blaisorblade wrote:
+> > BUT, this context switch at the thread born is special: the thread being
+> > switched away switches to a new thread not in the body of the new
+> > thread's call to switch_to_skas->switch_threads(), but in the body of
+> > thread_wait()! At that point, we lose the call to arch_switch_to_skas()!
+>
+> Yuck yuck yuck.  Nice spotting.
+>
+> There's an obvious one-line fix for this, but I wonder if we ought to
+> try some restructuring to avoid this sort of thing in the future.
+
+Code which two people aren't able to understand until two years later _wants_
+at least some comments and if possible restructuring. The problem is how, and
+I'm not looking at the code right now. Off the top of my head, I get only
+silly ideas, since we can't join the end of switch_to_skas() and
+fork_handler().
+
+> > Questions and notes:
+> >
+> > *) Why does arch/um/os-Linux/skas/process.c has still one siglongjmp()
+> > call and sigjmp_buf vars, and that has no comments?
+>
+> I'm tempted to say that I just missed the call somehow.  I see no
+> reason for that to be different, especially since it's preceded by a
+> UML_SIGSETJMP.  As for the sigjmp_buf variables, I don't get your
+> point.  Those haven't changed.
+
+I didn't study softints, but setjmp() is supposed to use jmp_buf's, not
+sigjmp_buf's (I know they are (almost) equal in the glibc headers I've seen,
+but that equality is not guaranteed).
+
+The fact that the code compiles without warnings can be seen as a bug in
+ glibc headers.
+
+> > *) Also, why thread_wait and thread_switch are almost identical, yet
+> > they're two different functions?
+>
+> switch_threads?  In order to merge them, you'd have to pass in the 1
+> and the INIT_JMP_REMOVE_SIGSTACK, which I have conceptual problems
+> with.  First, that makes the callers know things that they probably
+> shouldn't.
+
+If you don't pass 1 and INIT_JMP_REMOVE_SIGSTACK but two further defines like
+"JUMP_TO_INITIAL_THREAD" and "JUMP_BACK" (or actually meaningful names) the
+caller won't know more than it knows now. Or you can keep the callers intact
+- just by making switch_threads() and thread_wait() two inline wrappers.
+
+> Second, the 1 and the INIT_JMP_REMOVE_SIGSTACK have
+> completely different meanings.  One is a message to the initial thread
+> that it has to do something.  The 1 is a message to setjmp that is has
+> been longjmp-ed to.
+
+--
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+-------------------------------------------------------
 
 -- 
-------------------------------------------------------------
-Gerd Stolpmann * Viktoriastr. 45 * 64293 Darmstadt * Germany 
-gerd@gerd-stolpmann.de          http://www.gerd-stolpmann.de
-Phone: +49-6151-153855                  Fax: +49-6151-997714
-------------------------------------------------------------
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
