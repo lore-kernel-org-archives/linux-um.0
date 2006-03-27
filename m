@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FNc0y-0004Mf-Em for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Mar 2006 12:39:08 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1FNtme-0003D1-GI for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 Mar 2006 07:37:32 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FNc0x-0006wg-1T
+	(Exim 4.44) id 1FNtmd-0002XE-Im
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Mar 2006 12:39:08 -0800
+	Mon, 27 Mar 2006 07:37:32 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Fwd: Re: Why
-	uml-add-tls-support-debug-check-never-works is needed (was: Re:
-	Fwd: Proposed additions to the ptrace(2) manpage, take 2)
-Message-ID: <20060326204026.GB4549@ccure.user-mode-linux.org>
-References: <200603262003.58195.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Integer overflows in new AIO ubd driver
+Message-ID: <20060327153832.GB3666@ccure.user-mode-linux.org>
+References: <1143398965.11224.146.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200603262003.58195.blaisorblade@yahoo.it>
+In-Reply-To: <1143398965.11224.146.camel@localhost.localdomain>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,12 +28,22 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 26 Mar 2006 15:40:26 -0500
-To: Blaisorblade <blaisorblade@yahoo.it>
+Date: Mon, 27 Mar 2006 10:38:32 -0500
+To: Gerd Stolpmann <info@gerd-stolpmann.de>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-And, BTW, you should probably send the TLS stuff in this week if you
-want it to go into 2.6.17 easily.
+On Sun, Mar 26, 2006 at 08:49:25PM +0200, Gerd Stolpmann wrote:
+> I recently tried to benchmark the new AIO-based ubd driver (including
+> O_DIRECT), and ran into serious problems with filesystems > 4GB. I think
+> I found the problem; two overflows in ubd_kern.c (see patch).
+
+The first bit looks reasonable.  I would change start to an unsigned
+long long instead of casting, though.
+
+> I also experienced (hard) lockups when doing lots of I/O. But this seems
+> to be unrelated to this problem (but who knows).
+
+What was your workload?
 
 				Jeff
 
