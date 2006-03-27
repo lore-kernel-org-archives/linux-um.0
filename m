@@ -1,21 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FO0J0-0002Ut-ES for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Mar 2006 14:35:22 -0800
+	id 1FO0Dy-0001ur-3P for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 Mar 2006 14:30:10 -0800
 Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FO0Iy-0006us-Rv
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FO0Dv-0003gz-V5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Mar 2006 14:35:22 -0800
-Content-Disposition: inline
+	Mon, 27 Mar 2006 14:30:09 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
+References: <dvv6ir$ajn$1@sea.gmane.org>
+	<200603241534.01844.blaisorblade@yahoo.it>
+	<20060324172644.GB5400@ccure.user-mode-linux.org>
+In-Reply-To: <20060324172644.GB5400@ccure.user-mode-linux.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200603280035.21377.blaisorblade@yahoo.it>
-Subject: [uml-devel] Fwd: SMP skas requirements
+Message-Id: <200603280030.05911.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: (implementation idea) Re: uml and nonstandard memory
+	splits?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,123 +32,74 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 28 Mar 2006 00:35:21 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 27 Mar 2006 23:30:05 +0100
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>, user-mode-linux-devel@lists.sourceforge.net
 
+On Friday 24 March 2006 18:26, Jeff Dike wrote:
+> On Fri, Mar 24, 2006 at 03:34:01PM +0100, Blaisorblade wrote:
+> > The EIP is inside the stub code page, and the two pages are one near the
+> > other.
 
+> I think you're going to have to talk more slowly and use shorter words.
 
-----------  Forwarded Message  ----------
+Yes, I've been a bit too fast :-)
 
-Subject: SMP skas requirements
-Date: Monday 20 March 2006 22:06
-From: Jeff Dike <jdike@addtoit.com>
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@projects.sourceforge.net
+> The problem is that we need to figure out at runtime where to put the
+> stub pages, correct?  And we can't use the code stub page to figure out
+> where it is, because we haven't mapped it yet, because we don't know where
+> to put it, correct?
 
-There is some interest from a group inside Intel in helping with skas
-SMP.  I wrote up the following, and I'd appreciate some review to see
-if I missed anything.
+That is problem #1, and exists; but when answering I thought to problem #2, 
+i.e. that the stub code currently hardcodes the location of the stub data 
+page, and that this must be fixed; I didn't notice that we must first put the 
+stubs somewhere.
 
-				Jeff
+So I remembered that trick to get EIP which I read time ago (the purpose was 
+to make some code Position-Independent exactly injecting some code into 
+another process address space).
 
+Btw, PIC library are another story because they're told their location (IIRC, 
+I forget the details).
 
-Summary, details below:
+Actually, we need to figure were to place the pages, so we could _maybe_ as 
+well pass the address to the stub in a register. I'm quite unsure of this 
+however as at least clone.c for i386 uses _all_ available registers for the 
+6-param syscall call.
 
-Locking between threads of skas0 data page
-Locking between threads of tlb flushing
-Create one host thread per UML process when SMP is enabled,
-	propagating CLONE_VM to host
-Use userspace_pids array properly
-Make an SMP cleaning pass over UML arch
-Add locking to filehandle
+> How much can stack randomization vary?  If it can vary more than the
+> split varies, which I would expect, then rounding the stack pointer
+> isn't going to work.
 
-Details:
+Dunno, but even if it currently works, we'd better find a solution without the 
+assumption that stack randomization doesn't create problem.
 
-The SMP work needed for UML is mostly to enable SMP in skas mode.  tt
-mode has has SMP support for a while (and tt mode will be going away
-once skas SMP works, since that's now the only thing tt mode has that
-skas mode doesn't).
+> Another approach is to start with the current top of stack
 
-In skas mode, there are several host capabilities which are checked
-for, and used if present.  If they are not present, then UML runs in
-skas0 mode (the "0" being the number of host patches needed), if they
-are present (the skas3 patch includes all of them), then UML runs in
-skas3 mode ("3" being the current version of the skas patch).
+How do you get that?
 
-skas0 brings some SMP concerns that skas3 doesn't.  In order to do
-some things that are needed by skas without host patches, it maps two
-kernel pages, called stub pages, into every process.  One, the data
-stub page, is used as the signal stack for SIGSEGV - the signal
-handler extracts the page fault information from the sigcontext
-structure and passes that to the UML page fault handler.  The other
-page, the code stub page, is UML kernel text, and is used to change
-page mappings within the process.
+> and try 
+> mapping pages at increments equal to the smallest split granularity
+> that we think we are going to see, until one fails.
 
-With SMP, access to a process data stub has to be serialized, as we
-can't have two threads handling a SIGSEGV at the same time.  This
-would require a lock in get_skas_faultinfo() which allows only one
-thread at a time into wait_stub_done for a given process.
+I don't like the idea of parsing /proc/XXX/maps, but I must mention it too; 
+however, the format changed slightly in the various kernels, so it's 
+particularly a bad idea.
 
-Also, mapping changes are written into the data stub page by the UML
-tlb flush code.  These changes are in the form of register sets, which
-are loaded into registers by the code stub before it executes a system
-call instruction.  This allows the UML kernel to have the process
-execute any system call, even though only mmap, munmap, and mprotect
-(and maybe modify_ldt) are actually used.  This page is writeable by
-the process (as it must be possible to put signal frames on it).  This
-would allow one thread of a process to try to change the host system
-calls being executed by another thread by changing the register sets
-as they are being processed.  If it can successfuly convert one into
-an execve("/bin/bash"), then that is a breakout exploit.  To prevent
-this, we should move the data to the code page instead of the data
-page.  This also needs serialization between threads, allowing one
-thread at a time into fix_range_common().
-
-In skas0 mode (actually, if /proc/mm isn't present on the host), there
-is one host process per UML address space, the pid of which is stored
-in UML's mm_context.  This process runs whenever a thread within the
-address space is scheduled.  When multiple threads can be running
-simultaneously, this doesn't work.  We need one host process per UML
-process, with CLONE_VM set on the host if it was set within UML.  The
-pid inside the mm_context can stay, as that is used to manipulate the
-address space.  The per-UML-process pids need to be stored in the
-thread struct, and are used when running threads.
-
-To control a running thread, there is a global userspace_pid array,
-which is indexed by CPU number to get the host pid to use in ptrace.
-BTW, since this array is indexed by CPU number, it doesn't need
-locking, even though it's a global.  This is present as an array, but
-it is presently defined as containing one element.  This needs fixing,
-and the code that controls the processes (userspace()), needs to
-figure out its CPU number and index the array appropriately.
-
-We should make a pass over the UML arch in order to check all global
-data for correct locking since that hasn't been done recently.
-
-Of particular concern is the filehandle abstraction, which is used for
-file descriptor management.  With hostfs and humfs, it is easy to hit
-the file descriptor limit.  filehandles transparently deal with this
-by detecting -EMFILE from the host, closing descriptors in order to
-free up slots, and reopening closed files when they become active
-again.  The problem is that there is currently nothing preventing a
-descriptor from being reclaimed while it is being used.  A descriptor
-is first checked to see if it's open (and reopened if not), and then
-used.  The descriptor reclaiming code running on a different processor
-could close the descriptor after it's checked for validity and before
-it's used.  We need something to prevent this, like a
-get_fh()/put_fh() around all such operations.
-
--------------------------------------------------------
+bfff9000-c0000000 rwxp bfff9000 00:00 0 [stack]
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+	
+
+	
 		
 ___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
