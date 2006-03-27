@@ -1,26 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FO0Dy-0001ur-3P for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Mar 2006 14:30:10 -0800
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FO0Dv-0003gz-V5
+	id 1FNzqX-0007YL-KE for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 Mar 2006 14:05:57 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FNzqW-0007Zq-IP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Mar 2006 14:30:09 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <dvv6ir$ajn$1@sea.gmane.org>
-	<200603241534.01844.blaisorblade@yahoo.it>
-	<20060324172644.GB5400@ccure.user-mode-linux.org>
-In-Reply-To: <20060324172644.GB5400@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200603280030.05911.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: (implementation idea) Re: uml and nonstandard memory
-	splits?
+	Mon, 27 Mar 2006 14:05:57 -0800
+Message-Id: <200603272206.k2RM6n6b005435@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH] UML - Hotplug memory, take 2
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,74 +25,364 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 27 Mar 2006 23:30:05 +0100
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-user@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 27 Mar 2006 17:06:49 -0500
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Blaisorblade <blaisorblade@yahoo.it>, Jan Engelhardt <jengelh@linux01.gwdg.de>
 
-On Friday 24 March 2006 18:26, Jeff Dike wrote:
-> On Fri, Mar 24, 2006 at 03:34:01PM +0100, Blaisorblade wrote:
-> > The EIP is inside the stub code page, and the two pages are one near the
-> > other.
+Changes since first version
+	added check for MADV_REMOVE support on the host
+	fixed error return botch
+	shrunk sprintf array by one character
 
-> I think you're going to have to talk more slowly and use shorter words.
+This adds hotplug memory support to UML.  The mconsole syntax is
+ 	config mem=[+-]n[KMG]
+In other words, add or subtract some number of kilobytes, megabytes, or
+gigabytes.
+ 
+Unplugged pages are allocated and then madvise(MADV_TRUNCATE), which is
+a currently experimental madvise extension.  These pages are tracked so
+they can be plugged back in later if the admin decides to give them back.
+The first page to be unplugged is used to keep track of about 4M of other
+pages.  A list_head is the first thing on this page.  The rest is filled
+with addresses of other unplugged pages.  This first page is not madvised,
+obviously.
+When this page is filled, the next page is used in a similar way and linked
+onto a list with the first page.  Etc.
+This whole process reverses when pages are plugged back in.  When a tracking
+page no longer tracks any unplugged pages, then it is next in line for
+plugging, which is done by freeing pages back to the kernel.
 
-Yes, I've been a bit too fast :-)
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-> The problem is that we need to figure out at runtime where to put the
-> stub pages, correct?  And we can't use the code stub page to figure out
-> where it is, because we haven't mapped it yet, because we don't know where
-> to put it, correct?
-
-That is problem #1, and exists; but when answering I thought to problem #2, 
-i.e. that the stub code currently hardcodes the location of the stub data 
-page, and that this must be fixed; I didn't notice that we must first put the 
-stubs somewhere.
-
-So I remembered that trick to get EIP which I read time ago (the purpose was 
-to make some code Position-Independent exactly injecting some code into 
-another process address space).
-
-Btw, PIC library are another story because they're told their location (IIRC, 
-I forget the details).
-
-Actually, we need to figure were to place the pages, so we could _maybe_ as 
-well pass the address to the stub in a register. I'm quite unsure of this 
-however as at least clone.c for i386 uses _all_ available registers for the 
-6-param syscall call.
-
-> How much can stack randomization vary?  If it can vary more than the
-> split varies, which I would expect, then rounding the stack pointer
-> isn't going to work.
-
-Dunno, but even if it currently works, we'd better find a solution without the 
-assumption that stack randomization doesn't create problem.
-
-> Another approach is to start with the current top of stack
-
-How do you get that?
-
-> and try 
-> mapping pages at increments equal to the smallest split granularity
-> that we think we are going to see, until one fails.
-
-I don't like the idea of parsing /proc/XXX/maps, but I must mention it too; 
-however, the format changed slightly in the various kernels, so it's 
-particularly a bad idea.
-
-bfff9000-c0000000 rwxp bfff9000 00:00 0 [stack]
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Index: linux-2.6.16/arch/um/drivers/mconsole_kern.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/drivers/mconsole_kern.c	2006-03-23 18:40:30.000000000 -0500
++++ linux-2.6.16/arch/um/drivers/mconsole_kern.c	2006-03-26 13:13:29.000000000 -0500
+@@ -20,6 +20,8 @@
+ #include "linux/namei.h"
+ #include "linux/proc_fs.h"
+ #include "linux/syscalls.h"
++#include "linux/list.h"
++#include "linux/mm.h"
+ #include "linux/console.h"
+ #include "asm/irq.h"
+ #include "asm/uaccess.h"
+@@ -347,6 +349,142 @@ static struct mc_device *mconsole_find_d
+ 	return(NULL);
+ }
+ 
++#define UNPLUGGED_PER_PAGE \
++	((PAGE_SIZE - sizeof(struct list_head)) / sizeof(unsigned long))
++
++struct unplugged_pages {
++	struct list_head list;
++	void *pages[UNPLUGGED_PER_PAGE];
++};
++
++static unsigned long long unplugged_pages_count = 0;
++static struct list_head unplugged_pages = LIST_HEAD_INIT(unplugged_pages);
++static int unplug_index = UNPLUGGED_PER_PAGE;
++
++static int mem_config(char *str)
++{
++	unsigned long long diff;
++	int err = -EINVAL, i, add;
++	char *ret;
++
++	if(str[0] != '=')
++		goto out;
++
++	str++;
++	if(str[0] == '-')
++		add = 0;
++	else if(str[0] == '+'){
++		add = 1;
++	}
++	else goto out;
++
++	str++;
++	diff = memparse(str, &ret);
++	if(*ret != '\0')
++		goto out;
++
++	diff /= PAGE_SIZE;
++
++	for(i = 0; i < diff; i++){
++		struct unplugged_pages *unplugged;
++		void *addr;
++
++		if(add){
++			if(list_empty(&unplugged_pages))
++				break;
++
++			unplugged = list_entry(unplugged_pages.next,
++					       struct unplugged_pages, list);
++			if(unplug_index > 0)
++				addr = unplugged->pages[--unplug_index];
++			else {
++				list_del(&unplugged->list);
++				addr = unplugged;
++				unplug_index = UNPLUGGED_PER_PAGE;
++			}
++
++			free_page((unsigned long) addr);
++			unplugged_pages_count--;
++		}
++		else {
++			struct page *page;
++
++			page = alloc_page(GFP_ATOMIC);
++			if(page == NULL)
++				break;
++
++			unplugged = page_address(page);
++			if(unplug_index == UNPLUGGED_PER_PAGE){
++				INIT_LIST_HEAD(&unplugged->list);
++				list_add(&unplugged->list, &unplugged_pages);
++				unplug_index = 0;
++			}
++			else {
++				struct list_head *entry = unplugged_pages.next;
++				addr = unplugged;
++
++				unplugged = list_entry(entry,
++						       struct unplugged_pages,
++						       list);
++				unplugged->pages[unplug_index++] = addr;
++				err = os_drop_memory(addr, PAGE_SIZE);
++				if(err)
++					printk("Failed to release memory - "
++					       "errno = %d\n", err);
++			}
++
++			unplugged_pages_count++;
++		}
++	}
++
++	err = 0;
++out:
++	return err;
++}
++
++static int mem_get_config(char *name, char *str, int size, char **error_out)
++{
++	char buf[sizeof("18446744073709551615")];
++	int len = 0;
++
++	sprintf(buf, "%ld", uml_physmem);
++	CONFIG_CHUNK(str, size, len, buf, 1);
++
++	return len;
++}
++
++static int mem_id(char **str, int *start_out, int *end_out)
++{
++	*start_out = 0;
++	*end_out = 0;
++
++	return 0;
++}
++
++static int mem_remove(int n)
++{
++	return -EBUSY;
++}
++
++static struct mc_device mem_mc = {
++	.name		= "mem",
++	.config		= mem_config,
++	.get_config	= mem_get_config,
++	.id		= mem_id,
++	.remove		= mem_remove,
++};
++
++static int mem_mc_init(void)
++{
++	if(can_drop_memory())
++		mconsole_register_dev(&mem_mc);
++	else printk("Can't release memory to the host - memory hotplug won't "
++		    "be supported\n");
++	return 0;
++}
++
++__initcall(mem_mc_init);
++
+ #define CONFIG_BUF_SIZE 64
+ 
+ static void mconsole_get_config(int (*get_config)(char *, char *, int,
+Index: linux-2.6.16/arch/um/include/os.h
+===================================================================
+--- linux-2.6.16.orig/arch/um/include/os.h	2006-03-23 18:55:38.000000000 -0500
++++ linux-2.6.16/arch/um/include/os.h	2006-03-26 13:11:43.000000000 -0500
+@@ -205,6 +205,8 @@ extern int os_map_memory(void *virt, int
+ extern int os_protect_memory(void *addr, unsigned long len, 
+ 			     int r, int w, int x);
+ extern int os_unmap_memory(void *addr, int len);
++extern int os_drop_memory(void *addr, int length);
++extern int can_drop_memory(void);
+ extern void os_flush_stdout(void);
+ 
+ /* tt.c
+Index: linux-2.6.16/arch/um/os-Linux/process.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/os-Linux/process.c	2006-03-23 18:40:30.000000000 -0500
++++ linux-2.6.16/arch/um/os-Linux/process.c	2006-03-26 13:41:47.000000000 -0500
+@@ -11,6 +11,7 @@
+ #include <linux/unistd.h>
+ #include <sys/mman.h>
+ #include <sys/wait.h>
++#include <sys/mman.h>
+ #include "ptrace_user.h"
+ #include "os.h"
+ #include "user.h"
+@@ -20,6 +21,7 @@
+ #include "kern_util.h"
+ #include "longjmp.h"
+ #include "skas_ptrace.h"
++#include "kern_constants.h"
+ 
+ #define ARBITRARY_ADDR -1
+ #define FAILURE_PID    -1
+@@ -187,6 +189,48 @@ int os_unmap_memory(void *addr, int len)
+         return(0);
+ }
+ 
++#ifndef MADV_REMOVE
++#define MADV_REMOVE	0x5		/* remove these pages & resources */
++#endif
++
++int os_drop_memory(void *addr, int length)
++{
++	int err;
++
++	err = madvise(addr, length, MADV_REMOVE);
++	if(err < 0)
++		err = -errno;
++	return err;
++}
++
++int can_drop_memory(void)
++{
++	void *addr;
++	int fd;
++
++	printk("Checking host MADV_REMOVE support...");
++	fd = create_mem_file(UM_KERN_PAGE_SIZE);
++	if(fd < 0){
++		printk("Creating test memory file failed, err = %d\n", -fd);
++		return 0;
++	}
++
++	addr = mmap64(NULL, UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
++		      MAP_PRIVATE, fd, 0);
++	if(addr == MAP_FAILED){
++		printk("Mapping test memory file failed, err = %d\n", -errno);
++		return 0;
++	}
++
++	if(madvise(addr, UM_KERN_PAGE_SIZE, MADV_REMOVE) != 0){
++		printk("MADV_REMOVE failed, err = %d\n", -errno);
++		return 0;
++	}
++
++	printk("OK\n");
++	return 1;
++}
++
+ void init_new_thread_stack(void *sig_stack, void (*usr1_handler)(int))
+ {
+ 	int flags = 0, pages;
+Index: linux-2.6.16/arch/um/include/mem_user.h
+===================================================================
+--- linux-2.6.16.orig/arch/um/include/mem_user.h	2006-03-23 18:40:30.000000000 -0500
++++ linux-2.6.16/arch/um/include/mem_user.h	2006-03-23 18:55:38.000000000 -0500
+@@ -49,7 +49,6 @@ extern int iomem_size;
+ extern unsigned long host_task_size;
+ extern unsigned long task_size;
+ 
+-extern void check_devanon(void);
+ extern int init_mem_user(void);
+ extern void setup_memory(void *entry);
+ extern unsigned long find_iomem(char *driver, unsigned long *len_out);
+Index: linux-2.6.16/arch/um/os-Linux/mem.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/os-Linux/mem.c	2006-03-23 18:40:30.000000000 -0500
++++ linux-2.6.16/arch/um/os-Linux/mem.c	2006-03-23 18:55:38.000000000 -0500
+@@ -121,36 +121,11 @@ int create_tmp_file(unsigned long long l
+ 	return(fd);
+ }
+ 
+-static int create_anon_file(unsigned long long len)
+-{
+-	void *addr;
+-	int fd;
+-
+-	fd = open("/dev/anon", O_RDWR);
+-	if(fd < 0) {
+-		perror("opening /dev/anon");
+-		exit(1);
+-	}
+-
+-	addr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+-	if(addr == MAP_FAILED){
+-		perror("mapping physmem file");
+-		exit(1);
+-	}
+-	munmap(addr, len);
+-
+-	return(fd);
+-}
+-
+-extern int have_devanon;
+-
+ int create_mem_file(unsigned long long len)
+ {
+ 	int err, fd;
+ 
+-	if(have_devanon)
+-		fd = create_anon_file(len);
+-	else fd = create_tmp_file(len);
++	fd = create_tmp_file(len);
+ 
+ 	err = os_set_exec_close(fd, 1);
+ 	if(err < 0){
+Index: linux-2.6.16/arch/um/os-Linux/start_up.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/os-Linux/start_up.c	2006-03-23 18:55:38.000000000 -0500
++++ linux-2.6.16/arch/um/os-Linux/start_up.c	2006-03-24 12:34:43.000000000 -0500
+@@ -470,25 +470,6 @@ int can_do_skas(void)
+ }
+ #endif
+ 
+-int have_devanon = 0;
+-
+-/* Runs on boot kernel stack - already safe to use printk. */
+-
+-void check_devanon(void)
+-{
+-	int fd;
+-
+-	printk("Checking for /dev/anon on the host...");
+-	fd = open("/dev/anon", O_RDWR);
+-	if(fd < 0){
+-		printk("Not available (open failed with errno %d)\n", errno);
+-		return;
+-	}
+-
+-	printk("OK\n");
+-	have_devanon = 1;
+-}
+-
+ int __init parse_iomem(char *str, int *add)
+ {
+ 	struct iomem_region *new;
+@@ -664,6 +645,5 @@ void os_check_bugs(void)
+ {
+ 	check_ptrace();
+ 	check_sigio();
+-	check_devanon();
+ }
+ 
 
 
 
