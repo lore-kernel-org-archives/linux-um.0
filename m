@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FON9E-0005aA-L1 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 14:58:48 -0800
+	id 1FON9F-0005aF-QZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 28 Mar 2006 14:58:49 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FON9E-00059M-7h
+	(Exim 4.44) id 1FON9F-00059c-IN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 14:58:48 -0800
-Message-Id: <200603282300.k2SN04Gp022967@ccure.user-mode-linux.org>
+	Tue, 28 Mar 2006 14:58:50 -0800
+Message-Id: <200603282300.k2SN06sL022972@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/10] UML - Fix initcall return values
+Subject: [uml-devel] [PATCH 3/10] UML - Eliminate symlinks to host arch
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,196 +25,147 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 28 Mar 2006 18:00:04 -0500
+Date: Tue, 28 Mar 2006 18:00:06 -0500
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk
 
-A number of UML initcalls were improperly returning 1.
-Also removed any nearby emacs formatting comments.
+From: Al Viro <viro@zeniv.linux.org.uk>
 
+uml: kills symlinks in arch/um/sys-*
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.16-mm/arch/um/drivers/daemon_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/drivers/daemon_kern.c	2006-03-23 16:40:20.000000000 -0500
-+++ linux-2.6.16-mm/arch/um/drivers/daemon_kern.c	2006-03-28 17:11:14.000000000 -0500
-@@ -95,18 +95,7 @@ static struct transport daemon_transport
- static int register_daemon(void)
- {
- 	register_transport(&daemon_transport);
--	return(1);
-+	return 0;
- }
+ arch/um/Makefile-x86_64        |    2 +-
+ arch/um/scripts/Makefile.rules |   26 ++++----------------------
+ arch/um/sys-i386/Makefile      |   17 +++++------------
+ arch/um/sys-x86_64/Makefile    |   28 +++++++++-------------------
+ 4 files changed, 19 insertions(+), 54 deletions(-)
+
+diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
+index 38df311..dfd88b6 100644
+--- a/arch/um/Makefile-x86_64
++++ b/arch/um/Makefile-x86_64
+@@ -1,7 +1,7 @@
+ # Copyright 2003 - 2004 Pathscale, Inc
+ # Released under the GPL
  
- __initcall(register_daemon);
+-libs-y += arch/um/sys-x86_64/
++core-y += arch/um/sys-x86_64/
+ START := 0x60000000
+ 
+ #We #undef __x86_64__ for kernelspace, not for userspace where
+diff --git a/arch/um/scripts/Makefile.rules b/arch/um/scripts/Makefile.rules
+index 2e41cab..b696b45 100644
+--- a/arch/um/scripts/Makefile.rules
++++ b/arch/um/scripts/Makefile.rules
+@@ -20,25 +20,7 @@ define unprofile
+ 	$(patsubst -pg,,$(patsubst -fprofile-arcs -ftest-coverage,,$(1)))
+ endef
+ 
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.16-mm/arch/um/drivers/mcast_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/drivers/mcast_kern.c	2006-03-28 17:11:00.000000000 -0500
-+++ linux-2.6.16-mm/arch/um/drivers/mcast_kern.c	2006-03-28 17:13:59.000000000 -0500
-@@ -124,18 +124,7 @@ static struct transport mcast_transport 
- static int register_mcast(void)
- {
- 	register_transport(&mcast_transport);
--	return(1);
-+	return 0;
- }
- 
- __initcall(register_mcast);
+-# cmd_make_link checks to see if the $(foo-dir) variable starts with a /.  If
+-# so, it's considered to be a path relative to $(srcdir) rather than
+-# $(srcdir)/arch/$(SUBARCH).  This is because x86_64 wants to get ldt.c from
+-# arch/um/sys-i386 rather than arch/i386 like the other borrowed files.  So,
+-# it sets $(ldt.c-dir) to /arch/um/sys-i386.
+-quiet_cmd_make_link = SYMLINK $@
+-cmd_make_link       = rm -f $@; ln -sf $(srctree)$(if $(filter-out /%,$($(notdir $@)-dir)),/arch/$(SUBARCH))/$($(notdir $@)-dir)/$(notdir $@) $@
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.16-mm/arch/um/drivers/pcap_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/drivers/pcap_kern.c	2005-08-28 19:41:01.000000000 -0400
-+++ linux-2.6.16-mm/arch/um/drivers/pcap_kern.c	2006-03-28 17:11:50.000000000 -0500
-@@ -106,18 +106,7 @@ static struct transport pcap_transport =
- static int register_pcap(void)
- {
- 	register_transport(&pcap_transport);
--	return(1);
-+	return 0;
- }
- 
- __initcall(register_pcap);
+-# this needs to be before the foreach, because targets does not accept
+-# complete paths like $(obj)/$(f). To make sure this works, use a := assignment
+-# or we will get $(obj)/$(f) in the "targets" value.
+-# Also, this forces you to use the := syntax when assigning to targets.
+-# Otherwise the line below will cause an infinite loop (if you don't know why,
+-# just do it).
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.16-mm/arch/um/drivers/slip_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/drivers/slip_kern.c	2006-03-23 16:40:20.000000000 -0500
-+++ linux-2.6.16-mm/arch/um/drivers/slip_kern.c	2006-03-28 17:13:59.000000000 -0500
-@@ -93,18 +93,7 @@ static struct transport slip_transport =
- static int register_slip(void)
- {
- 	register_transport(&slip_transport);
--	return(1);
-+	return 0;
- }
- 
- __initcall(register_slip);
+-targets := $(targets) $(SYMLINKS)
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.16-mm/arch/um/drivers/slirp_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/drivers/slirp_kern.c	2006-03-28 15:55:30.000000000 -0500
-+++ linux-2.6.16-mm/arch/um/drivers/slirp_kern.c	2006-03-28 17:13:59.000000000 -0500
-@@ -116,18 +116,7 @@ static struct transport slirp_transport 
- static int register_slirp(void)
- {
- 	register_transport(&slirp_transport);
--	return(1);
-+	return 0;
- }
- 
- __initcall(register_slirp);
+-SYMLINKS := $(foreach f,$(SYMLINKS),$(obj)/$(f))
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.16-mm/arch/um/drivers/ubd_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/drivers/ubd_kern.c	2006-03-28 15:55:30.000000000 -0500
-+++ linux-2.6.16-mm/arch/um/drivers/ubd_kern.c	2006-03-28 17:12:55.000000000 -0500
-@@ -891,7 +891,7 @@ int ubd_driver_init(void){
- 			     SA_INTERRUPT, "ubd", ubd_dev);
- 	if(err != 0)
- 		printk(KERN_ERR "um_request_irq failed - errno = %d\n", -err);
--	return(err);
-+	return 0;
- }
+-$(SYMLINKS): FORCE
+-	$(call if_changed,make_link)
++ifdef subarch-obj-y
++obj-y += subarch.o
++subarch-y = $(addprefix ../../$(SUBARCH)/,$(subarch-obj-y))
++endif
+diff --git a/arch/um/sys-i386/Makefile b/arch/um/sys-i386/Makefile
+index f5fd5b0..1c89f43 100644
+--- a/arch/um/sys-i386/Makefile
++++ b/arch/um/sys-i386/Makefile
+@@ -1,23 +1,16 @@
+-obj-y := bitops.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
+-	ptrace_user.o semaphore.o signal.o sigcontext.o syscalls.o sysrq.o \
+-	sys_call_table.o
++obj-y = bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
++	ptrace_user.o signal.o sigcontext.o syscalls.o sysrq.o sys_call_table.o
  
- device_initcall(ubd_driver_init);
-Index: linux-2.6.16-mm/arch/um/os-Linux/drivers/ethertap_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/os-Linux/drivers/ethertap_kern.c	2005-08-28 19:41:01.000000000 -0400
-+++ linux-2.6.16-mm/arch/um/os-Linux/drivers/ethertap_kern.c	2006-03-28 17:13:40.000000000 -0500
-@@ -102,18 +102,7 @@ static struct transport ethertap_transpo
- static int register_ethertap(void)
- {
- 	register_transport(&ethertap_transport);
--	return(1);
-+	return 0;
- }
+ obj-$(CONFIG_MODE_SKAS) += stub.o stub_segv.o
  
- __initcall(register_ethertap);
+-obj-$(CONFIG_HIGHMEM) += highmem.o
+-obj-$(CONFIG_MODULES) += module.o
++subarch-obj-y = lib/bitops.o kernel/semaphore.o
++subarch-obj-$(CONFIG_HIGHMEM) += mm/highmem.o
++subarch-obj-$(CONFIG_MODULES) += kernel/module.o
+ 
+ USER_OBJS := bugs.o ptrace_user.o sigcontext.o fault.o stub_segv.o
+ 
+-SYMLINKS = bitops.c semaphore.c highmem.c module.c
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.16-mm/arch/um/os-Linux/drivers/tuntap_kern.c
-===================================================================
---- linux-2.6.16-mm.orig/arch/um/os-Linux/drivers/tuntap_kern.c	2005-08-28 19:41:01.000000000 -0400
-+++ linux-2.6.16-mm/arch/um/os-Linux/drivers/tuntap_kern.c	2006-03-28 17:13:57.000000000 -0500
-@@ -87,18 +87,7 @@ static struct transport tuntap_transport
- static int register_tuntap(void)
- {
- 	register_transport(&tuntap_transport);
--	return(1);
-+	return 0;
- }
+ include arch/um/scripts/Makefile.rules
  
- __initcall(register_tuntap);
+-bitops.c-dir = lib
+-semaphore.c-dir = kernel
+-highmem.c-dir = mm
+-module.c-dir = kernel
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
+ $(obj)/stub_segv.o : _c_flags = $(call unprofile,$(CFLAGS))
+ 
+ include arch/um/scripts/Makefile.unmap
+diff --git a/arch/um/sys-x86_64/Makefile b/arch/um/sys-x86_64/Makefile
+index a351091..fd19211 100644
+--- a/arch/um/sys-x86_64/Makefile
++++ b/arch/um/sys-x86_64/Makefile
+@@ -4,30 +4,20 @@
+ # Licensed under the GPL
+ #
+ 
+-#XXX: why into lib-y?
+-lib-y = bitops.o bugs.o csum-partial.o delay.o fault.o ldt.o mem.o memcpy.o \
+-	ptrace.o ptrace_user.o sigcontext.o signal.o syscalls.o \
+-	syscall_table.o sysrq.o thunk.o
+-lib-$(CONFIG_MODE_SKAS) += stub.o stub_segv.o
++obj-y = bugs.o delay.o fault.o ldt.o mem.o ptrace.o ptrace_user.o \
++	sigcontext.o signal.o syscalls.o syscall_table.o sysrq.o ksyms.o
+ 
+-obj-y := ksyms.o
+-obj-$(CONFIG_MODULES) += module.o um_module.o
++obj-$(CONFIG_MODE_SKAS) += stub.o stub_segv.o
++obj-$(CONFIG_MODULES) += um_module.o
+ 
+-USER_OBJS := ptrace_user.o sigcontext.o stub_segv.o
++subarch-obj-y = lib/bitops.o lib/csum-partial.o lib/memcpy.o lib/thunk.o
++subarch-obj-$(CONFIG_MODULES) += kernel/module.o
+ 
+-SYMLINKS = bitops.c csum-copy.S csum-partial.c csum-wrappers.c ldt.c memcpy.S \
+-	thunk.S module.c
++ldt-y = ../sys-i386/ldt.o
+ 
+-include arch/um/scripts/Makefile.rules
++USER_OBJS := ptrace_user.o sigcontext.o stub_segv.o
+ 
+-bitops.c-dir = lib
+-csum-copy.S-dir = lib
+-csum-partial.c-dir = lib
+-csum-wrappers.c-dir = lib
+-ldt.c-dir = /arch/um/sys-i386
+-memcpy.S-dir = lib
+-thunk.S-dir = lib
+-module.c-dir = kernel
++include arch/um/scripts/Makefile.rules
+ 
+ $(obj)/stub_segv.o: _c_flags = $(call unprofile,$(CFLAGS))
+ 
 
 
 
