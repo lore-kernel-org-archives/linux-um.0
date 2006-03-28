@@ -2,29 +2,25 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FOKUJ-0002fz-Mg for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 12:08:23 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FOKUJ-0006jd-7h
+	id 1FOMJu-0007fY-AQ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 28 Mar 2006 14:05:46 -0800
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FOMJs-0003w3-Ml
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 12:08:23 -0800
-Received: from ccure.user-mode-linux.org (littleton.addtoit.com
-	[198.99.130.129])
-	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id k2SK8L9B030014
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 28 Mar 2006 15:08:22 -0500
-Received: from ccure.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	by ccure.user-mode-linux.org (8.13.6/8.13.4) with ESMTP id
-	k2SK9fFX022055 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 28 Mar 2006 15:09:42 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060328200938.GB22005@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Tue, 28 Mar 2006 14:05:46 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <dvv6ir$ajn$1@sea.gmane.org>
+	<200603280030.05911.blaisorblade@yahoo.it>
+	<20060328200219.GC21540@ccure.user-mode-linux.org>
+In-Reply-To: <20060328200219.GC21540@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: [uml-devel] Re: (implementation idea) Re: uml and nonstandard memory
-	splits?
+Message-Id: <200603290005.38074.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [uml-user] Re: (implementation idea) Re: uml and
+	nonstandard memory splits?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,68 +32,75 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 28 Mar 2006 15:09:38 -0500
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 29 Mar 2006 00:05:37 +0200
+To: user-mode-linux-user@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Jason Lunz <lunz@falooley.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Mar 27, 2006 at 11:33:37PM +0100, Blaisorblade wrote:
-> Especially maybe_map must pin the pages (see implementation of 4G/4G 
-> copy_*_user from Ingo Molnar).
+On Tuesday 28 March 2006 22:02, Jeff Dike wrote:
+> On Mon, Mar 27, 2006 at 11:30:05PM +0100, Blaisorblade wrote:
+> > That is problem #1, and exists; but when answering I thought to problem
+> > #2, i.e. that the stub code currently hardcodes the location of the stub
+> > data page, and that this must be fixed; I didn't notice that we must
+> > first put the stubs somewhere.
 
-Yup, looks like we can follow Ingo's implementation on this one.
+> I see - you're one problem ahead of me.
 
-> I'll work on this, I had come up with a nice design time ago, if you merge a 
-> lockless filehandle I'll be glad to add locking to it. If you have a somehow 
-> stable code base on it, let me know and I'll work on the patches.
+> I'm wondering if we can play some linker tricks for this.  Stick a
+> word of data on the code page and put the data page address in it.
+> Then the stub just reads that in order to get the data.
 
-I believe that the filehandle that's in my patchset is stable.  I've
-beat on it with hostfs with no problems.  humfs is less healthy, but
-it looks like the problems don't have anything to do with filehandle.
+After you place the stubs somewhere, you can pass them the address in a 
+register. Indeed, we already do that since the stack in located inside the 
+data page, so you simply need to round that (hardcoding at compile-time the 
+data size page, but we already do that).
 
-> My design was that you:
-> a) take the list lock
-> b) remove the fd from the list
-> c) drop the list lock
-> instead of simply bringing the fd upfront
-> d) call read (or whatever) on the interested fd
-> e) redo a)-c) but now to _add_ the fd on list, on the front
+Passing that in a memory word doesn't work unless you use Instruction Pointer 
+relative addressing, only available (to my knowledge) in x86_64 as 
+RIP-relative addressing.
 
-Which was pretty much the get_fh() and put_fh() I was considering.
-It's just a pain to have to wrap that around every file access.
+> That will work, too, but (as you point
+> out) requires a register.
 
-> This may also need a reference count if in step b) the fd may already be on 
-> the list.
+Not a big problem - you can recalculate it at will so that's not a real 
+problem as long as we can recalculate if without problems (which could 
+probably require switching to full assembler).
 
-The scenario I think you have in mind is
-	one process gets an fd for file I/O
-	so does another one
-	the first process finishes and sticks the thing back on the
-list
-	it is reclaimed, screwing the second process, which hasn't
-made the system call yet
+> > > Another approach is to start with the current top of stack
 
-In this case, get_fh should just increment a count, put_fh should
-decrement it, and the only list operation should be to move it to the
-end of the list so it's last to be reclaimed.  The reclaimer would not
-reclaim filehandles with non-zero counts.  I see no point in removing
-it from the list and adding it back, as that seems not to protect
-against anything.
+> Hmmmm :-)  Maybe easier said than done.  I was thinking about figuring
+> that out as basically the first thing in main, but I can think of
+> reasons that wouldn't be robust.
 
-> *) when _any_ fd API of the existing set (os_*) is called, it detects 
-> -EMFILE/-ENFILE and closes fd's on the back of the list (i.e. we do LRU on 
-> the list)
+Can we remove the assumption the pages are at the absolute top of the address 
+space?
 
-You're envisioning the os_* interfaces calling back into filehandle.c
-to get a descriptor if needed?  That would make this whole thing less
-"layery", which I can see.
+The guest process doesn't risk unmapping them because we stop it from that, 
+with gate_vma's for instance, even if I know that's a work in progress from 
+Bodo's comments (not yet begun).
 
-> *) using new APIs is only needed to register an fd as "reclaimable" - this is
-> optional since it can be used only for file-based fds (not for pipes, 
-> probably not for sockets)
+We could block mmapping over the used address, and we must do that anyway - 
+SKAS3 indeed would fail on 2G/2G and such hosts exactly because we don't do 
+that and our mmap() returns addresses beyond host TASK_SIZE.
 
-Which is how things work now, as is_reclaimable is called only when it
-is known that a file has been opened.
+However, this doesn't happen because we already implement the "top of the 
+stack" detection technique in arch/um/kernel/skas/mem.c. So we've well-tested 
+code doing this, even if maybe at times suboptimal.
 
-				Jeff
+But how much does stack randomization changes? That's the only remaining 
+doubt.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
