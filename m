@@ -1,23 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FOK6v-0008MS-QD for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 11:44:13 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FOK6u-0000IX-IH
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 11:44:13 -0800
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060328194527.GB21540@ccure.user-mode-linux.org>
-References: <20060320210659.GB6474@ccure.user-mode-linux.org>
-	<200603280032.31190.blaisorblade@yahoo.it>
+Message-ID: <20060328200219.GC21540@ccure.user-mode-linux.org>
+References: <dvv6ir$ajn$1@sea.gmane.org>
+	<200603241534.01844.blaisorblade@yahoo.it>
+	<20060324172644.GB5400@ccure.user-mode-linux.org>
+	<200603280030.05911.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200603280032.31190.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: SMP skas requirements
+In-Reply-To: <200603280030.05911.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: (implementation idea) Re: uml and nonstandard memory
+	splits?
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,21 +22,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 28 Mar 2006 14:45:27 -0500
+Date: Tue, 28 Mar 2006 15:02:19 -0500
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Mar 28, 2006 at 12:32:30AM +0200, Blaisorblade wrote:
-> There are tons of places where spinlocks are used improperly. We need 
-> stricter locking, however that is complicated by the addition of atomic 
-> sections where UML can't sleep.
+On Mon, Mar 27, 2006 at 11:30:05PM +0100, Blaisorblade wrote:
+> That is problem #1, and exists; but when answering I thought to problem #2, 
+> i.e. that the stub code currently hardcodes the location of the stub data 
+> page, and that this must be fixed; I didn't notice that we must first put the
+> stubs somewhere.
+
+I see - you're one problem ahead of me.
+
+I'm wondering if we can play some linker tricks for this.  Stick a
+word of data on the code page and put the data page address in it.
+Then the stub just reads that in order to get the data.
+
 > 
-> For instance, sigio_lock needs to be irqsave (I'll test the patch for this 
-> shortly). On the other side, uml_console_write shouldn't take any lock, it 
-> seems (see Documentation/tty.txt).
+> So I remembered that trick to get EIP which I read time ago (the purpose was 
+> to make some code Position-Independent exactly injecting some code into 
+> another process address space).
 
-Yeah, the locking needs work.  We just need to make an SMP pass over
-the arch to clean this up.
+That's the standard way of getting your EIP on x86 since there's no
+move from EIP instruction.  That will work, too, but (as you point
+out) requires a register.
+
+> > Another approach is to start with the current top of stack
+
+Hmmmm :-)  Maybe easier said than done.  I was thinking about figuring
+that out as basically the first thing in main, but I can think of
+reasons that wouldn't be robust.
+
+Other schemes, which involve a binary search for the boundary by using
+test mmaps, involve the risk of unmapping part of the stack.
 
 				Jeff
 
