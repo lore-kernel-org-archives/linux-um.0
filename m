@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FON9Q-0005ar-7y for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 14:59:00 -0800
+	id 1FON9R-0005bd-1s for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 28 Mar 2006 14:59:01 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FON9P-0005BA-12
+	(Exim 4.44) id 1FON9Q-0001bR-NJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 14:59:00 -0800
-Message-Id: <200603282300.k2SN0Ipq023002@ccure.user-mode-linux.org>
+	Tue, 28 Mar 2006 14:59:01 -0800
+Message-Id: <200603282300.k2SN0JaP023007@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 9/10] UML - Remove unused make variables
+Subject: [uml-devel] [PATCH 10/10] UML - Fix min usage
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,33 +25,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 28 Mar 2006 18:00:18 -0500
+Date: Tue, 28 Mar 2006 18:00:19 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk
 
 From: Al Viro <viro@zeniv.linux.org.uk>
-uml: removed assignments to unused variables in arch/um/os-Linux/Makefile
+type-safe min() in arch/um/drivers/mconsole_kern.c
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
- arch/um/os-Linux/Makefile |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ arch/um/drivers/mconsole_kern.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Index: linux-2.6.16-mm/arch/um/os-Linux/Makefile
+Index: linux-2.6.16-mm/arch/um/drivers/mconsole_kern.c
 ===================================================================
---- linux-2.6.16-mm.orig/arch/um/os-Linux/Makefile	2006-03-28 09:30:36.000000000 -0500
-+++ linux-2.6.16-mm/arch/um/os-Linux/Makefile	2006-03-28 09:40:31.000000000 -0500
-@@ -15,9 +15,6 @@ USER_OBJS := $(user-objs-y) aio.o elf_au
- 	process.o sigio.o signal.o start_up.o time.o trap.o tt.o tty.o \
- 	uaccess.o umid.o util.o
+--- linux-2.6.16-mm.orig/arch/um/drivers/mconsole_kern.c	2006-03-28 09:30:36.000000000 -0500
++++ linux-2.6.16-mm/arch/um/drivers/mconsole_kern.c	2006-03-28 09:40:36.000000000 -0500
+@@ -616,7 +616,7 @@ static void console_write(struct console
+ 		return;
  
--elf_aux.o: $(ARCH_DIR)/kernel-offsets.h
--CFLAGS_elf_aux.o += -I$(objtree)/arch/um
--
- CFLAGS_user_syms.o += -DSUBARCH_$(SUBARCH)
- 
- HAVE_AIO_ABI := $(shell [ -r /usr/include/linux/aio_abi.h ] && \
+ 	while(1){
+-		n = min(len, ARRAY_SIZE(console_buf) - console_index);
++		n = min((size_t)len, ARRAY_SIZE(console_buf) - console_index);
+ 		strncpy(&console_buf[console_index], string, n);
+ 		console_index += n;
+ 		string += n;
 
 
 
