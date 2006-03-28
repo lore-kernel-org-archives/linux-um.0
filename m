@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FON9O-0005ah-Ps for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 14:58:58 -0800
+	id 1FON9Q-0005ar-7y for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 28 Mar 2006 14:59:00 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FON9O-0005Aj-KL
+	(Exim 4.44) id 1FON9P-0005BA-12
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 14:58:59 -0800
-Message-Id: <200603282300.k2SN0Fci022997@ccure.user-mode-linux.org>
+	Tue, 28 Mar 2006 14:59:00 -0800
+Message-Id: <200603282300.k2SN0Ipq023002@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 8/10] UML - __user annotations
+Subject: [uml-devel] [PATCH 9/10] UML - Remove unused make variables
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,79 +25,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 28 Mar 2006 18:00:15 -0500
+Date: Tue, 28 Mar 2006 18:00:18 -0500
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk
 
 From: Al Viro <viro@zeniv.linux.org.uk>
-
-uml: __user annotations (hppfs)
+uml: removed assignments to unused variables in arch/um/os-Linux/Makefile
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
- fs/hppfs/hppfs_kern.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+ arch/um/os-Linux/Makefile |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-diff --git a/fs/hppfs/hppfs_kern.c b/fs/hppfs/hppfs_kern.c
-index a44dc58..8469826 100644
---- a/fs/hppfs/hppfs_kern.c
-+++ b/fs/hppfs/hppfs_kern.c
-@@ -216,10 +216,10 @@ static struct dentry *hppfs_lookup(struc
- static struct inode_operations hppfs_file_iops = {
- };
+Index: linux-2.6.16-mm/arch/um/os-Linux/Makefile
+===================================================================
+--- linux-2.6.16-mm.orig/arch/um/os-Linux/Makefile	2006-03-28 09:30:36.000000000 -0500
++++ linux-2.6.16-mm/arch/um/os-Linux/Makefile	2006-03-28 09:40:31.000000000 -0500
+@@ -15,9 +15,6 @@ USER_OBJS := $(user-objs-y) aio.o elf_au
+ 	process.o sigio.o signal.o start_up.o time.o trap.o tt.o tty.o \
+ 	uaccess.o umid.o util.o
  
--static ssize_t read_proc(struct file *file, char *buf, ssize_t count,
-+static ssize_t read_proc(struct file *file, char __user *buf, ssize_t count,
- 			 loff_t *ppos, int is_user)
- {
--	ssize_t (*read)(struct file *, char *, size_t, loff_t *);
-+	ssize_t (*read)(struct file *, char __user *, size_t, loff_t *);
- 	ssize_t n;
+-elf_aux.o: $(ARCH_DIR)/kernel-offsets.h
+-CFLAGS_elf_aux.o += -I$(objtree)/arch/um
+-
+ CFLAGS_user_syms.o += -DSUBARCH_$(SUBARCH)
  
- 	read = file->f_dentry->d_inode->i_fop->read;
-@@ -236,7 +236,7 @@ static ssize_t read_proc(struct file *fi
- 	return n;
- }
- 
--static ssize_t hppfs_read_file(int fd, char *buf, ssize_t count)
-+static ssize_t hppfs_read_file(int fd, char __user *buf, ssize_t count)
- {
- 	ssize_t n;
- 	int cur, err;
-@@ -274,7 +274,7 @@ static ssize_t hppfs_read_file(int fd, c
- 	return n;
- }
- 
--static ssize_t hppfs_read(struct file *file, char *buf, size_t count,
-+static ssize_t hppfs_read(struct file *file, char __user *buf, size_t count,
- 			  loff_t *ppos)
- {
- 	struct hppfs_private *hppfs = file->private_data;
-@@ -313,12 +313,12 @@ static ssize_t hppfs_read(struct file *f
- 	return(count);
- }
- 
--static ssize_t hppfs_write(struct file *file, const char *buf, size_t len,
-+static ssize_t hppfs_write(struct file *file, const char __user *buf, size_t len,
- 			   loff_t *ppos)
- {
- 	struct hppfs_private *data = file->private_data;
- 	struct file *proc_file = data->proc_file;
--	ssize_t (*write)(struct file *, const char *, size_t, loff_t *);
-+	ssize_t (*write)(struct file *, const char __user *, size_t, loff_t *);
- 	int err;
- 
- 	write = proc_file->f_dentry->d_inode->i_fop->write;
-@@ -658,7 +658,7 @@ static struct super_operations hppfs_sbo
- 	.statfs		= hppfs_statfs,
- };
- 
--static int hppfs_readlink(struct dentry *dentry, char *buffer, int buflen)
-+static int hppfs_readlink(struct dentry *dentry, char __user *buffer, int buflen)
- {
- 	struct file *proc_file;
- 	struct dentry *proc_dentry;
+ HAVE_AIO_ABI := $(shell [ -r /usr/include/linux/aio_abi.h ] && \
 
 
 
