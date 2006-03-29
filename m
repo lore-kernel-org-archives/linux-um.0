@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FOO9E-0004Xq-35 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 16:02:52 -0800
-Received: from [151.97.230.9] (helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FOO9C-0000uz-AA
+	id 1FOOy3-0001jz-Eg for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 28 Mar 2006 16:55:23 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FOOy1-0004CF-Ry
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Mar 2006 16:02:52 -0800
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060328235655.13838.14912.stgit@zion.home.lan>
-In-Reply-To: <20060328235442.13838.26861.stgit@zion.home.lan>
-References: <20060328235442.13838.26861.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 3/7] uml: clean arch_switch usage
+	Tue, 28 Mar 2006 16:55:23 -0800
+Content-Disposition: inline
+From: Blaisorblade <blaisorblade@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200603290255.11753.blaisorblade@yahoo.it>
+Subject: [uml-devel] Fwd: Re: SMP skas requirements
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,207 +27,131 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 29 Mar 2006 01:56:55 +0200
-To: Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 29 Mar 2006 02:55:10 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Call arch_switch also in switch_to_skas, even if it's, for now, a no-op for that
-case (and mark this in the comment); this will change soon.
 
-Also, arch_switch for TT mode is actually useless when the PT proxy (a
-complicate debugging instrumentation for TT mode) is not enabled. In fact, it
-only calls update_debugregs, which checks debugregs_seq against seq (to check
-if the registers are up-to-date - seq here means a "version number" of the
-registers).
+----------  Forwarded Message  ----------
 
-If the ptrace proxy is not enabled, debugregs_seq always stays 0 and
-update_debugregs will be a no-op. So, optimize this out (the compiler can't
-do it).
+Subject: Re: SMP skas requirements
+Date: Wednesday 29 March 2006 02:41
+From: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@projects.sourceforge.net
 
-Also, I've been disappointed by the fact that it would make a lot of sense
-if, after calling a successful
-update_debugregs(current->thread.arch.debugregs_seq),
-current->thread.arch.debugregs_seq were updated with the new debugregs_seq.
-But this is not done. Is this a bug or a feature? For all purposes, it seems
-a bug (otherwise the whole mechanism does not make sense, which is also a
-possibility to check), which causes some performance only problems (not
-correctness), since we write_debugregs when not needed.
+On Wed, Mar 29, 2006 at 12:40:00AM +0200, Blaisorblade wrote:
+> Since you've now split out delete-hostfs, why don't you merge the new
+> hostfs, possibly labeling it as "EXPERIMENTAL"?
 
-Also, as suggested by Jeff, remove a redundant enabling of SIGVTALRM,
-comprised in the subsequent local_irq_enable(). I'm just a bit dubious if
-ordering matters there...
+My two main gripes right now are
+	there are three filesystems (or one framework and two
+filesystems) in one directory
+	it depends on filehandle, which has aspects that neither of us likes
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+> Btw, there's a ton of other patches which I don't see reasons for not
+> merging like Al Viro's cleanups (I've given a look to them and they
+> seem safe).
 
- arch/um/include/kern_util.h          |    6 +++++-
- arch/um/include/sysdep-i386/ptrace.h |    5 +++++
- arch/um/kernel/skas/process_kern.c   |    2 ++
- arch/um/kernel/tt/process_kern.c     |   10 ++++++++--
- arch/um/sys-i386/ptrace.c            |    8 ++++++--
- arch/um/sys-i386/ptrace_user.c       |   10 +++++++++-
- 6 files changed, 35 insertions(+), 6 deletions(-)
+Just sent in today.
 
-diff --git a/arch/um/include/kern_util.h b/arch/um/include/kern_util.h
-index 07176d9..4255713 100644
---- a/arch/um/include/kern_util.h
-+++ b/arch/um/include/kern_util.h
-@@ -116,7 +116,11 @@ extern void *get_current(void);
- extern struct task_struct *get_task(int pid, int require);
- extern void machine_halt(void);
- extern int is_syscall(unsigned long addr);
--extern void arch_switch(void);
-+
-+extern void arch_switch_to_tt(struct task_struct *from, struct task_struct *to);
-+
-+extern void arch_switch_to_skas(struct task_struct *from, struct task_struct *to);
-+
- extern void free_irq(unsigned int, void *);
- extern int cpu(void);
- 
-diff --git a/arch/um/include/sysdep-i386/ptrace.h b/arch/um/include/sysdep-i386/ptrace.h
-index c8ee955..6670cc9 100644
---- a/arch/um/include/sysdep-i386/ptrace.h
-+++ b/arch/um/include/sysdep-i386/ptrace.h
-@@ -14,7 +14,12 @@
- #define MAX_REG_NR (UM_FRAME_SIZE / sizeof(unsigned long))
- #define MAX_REG_OFFSET (UM_FRAME_SIZE)
- 
-+#ifdef UML_CONFIG_PT_PROXY
- extern void update_debugregs(int seq);
-+#else
-+static inline void update_debugregs(int seq) {}
-+#endif
-+
- 
- /* syscall emulation path in ptrace */
- 
-diff --git a/arch/um/kernel/skas/process_kern.c b/arch/um/kernel/skas/process_kern.c
-index 3f70a2e..14360ac 100644
---- a/arch/um/kernel/skas/process_kern.c
-+++ b/arch/um/kernel/skas/process_kern.c
-@@ -35,6 +35,8 @@ void switch_to_skas(void *prev, void *ne
- 	switch_threads(&from->thread.mode.skas.switch_buf,
- 		       to->thread.mode.skas.switch_buf);
- 
-+	arch_switch_to_skas(current->thread.prev_sched, current);
-+
- 	if(current->pid == 0)
- 		switch_timers(1);
- }
-diff --git a/arch/um/kernel/tt/process_kern.c b/arch/um/kernel/tt/process_kern.c
-index 295c1ac..a9c1443 100644
---- a/arch/um/kernel/tt/process_kern.c
-+++ b/arch/um/kernel/tt/process_kern.c
-@@ -51,6 +51,13 @@ void switch_to_tt(void *prev, void *next
- 
- 	c = 0;
- 
-+	/* Notice that here we "up" the semaphore on which "to" is waiting, and
-+	 * below (the read) we wait on this semaphore (which is implemented by
-+	 * switch_pipe) and go sleeping. Thus, after that, we have resumed in
-+	 * "to", and can't use any more the value of "from" (which is outdated),
-+	 * nor the value in "to" (since it was the task which stole us the CPU,
-+	 * which we don't care about). */
-+
- 	err = os_write_file(to->thread.mode.tt.switch_pipe[1], &c, sizeof(c));
- 	if(err != sizeof(c))
- 		panic("write of switch_pipe failed, err = %d", -err);
-@@ -77,7 +84,7 @@ void switch_to_tt(void *prev, void *next
- 	change_sig(SIGALRM, alrm);
- 	change_sig(SIGPROF, prof);
- 
--	arch_switch();
-+	arch_switch_to_tt(prev_sched, current);
- 
- 	flush_tlb_all();
- 	local_irq_restore(flags);
-@@ -141,7 +148,6 @@ static void new_thread_handler(int sig)
- 	set_cmdline("(kernel thread)");
- 
- 	change_sig(SIGUSR1, 1);
--	change_sig(SIGVTALRM, 1);
- 	change_sig(SIGPROF, 1);
- 	local_irq_enable();
- 	if(!run_kernel_thread(fn, arg, &current->thread.exec_buf))
-diff --git a/arch/um/sys-i386/ptrace.c b/arch/um/sys-i386/ptrace.c
-index 8032a10..bf896b8 100644
---- a/arch/um/sys-i386/ptrace.c
-+++ b/arch/um/sys-i386/ptrace.c
-@@ -15,9 +15,13 @@
- #include "sysdep/sigcontext.h"
- #include "sysdep/sc.h"
- 
--void arch_switch(void)
-+void arch_switch_to_tt(struct task_struct *from, struct task_struct *to)
-+{
-+	update_debugregs(to->thread.arch.debugregs_seq);
-+}
-+
-+void arch_switch_to_skas(struct task_struct *from, struct task_struct *to)
- {
--	update_debugregs(current->thread.arch.debugregs_seq);
- }
- 
- int is_syscall(unsigned long addr)
-diff --git a/arch/um/sys-i386/ptrace_user.c b/arch/um/sys-i386/ptrace_user.c
-index 397e3c3..e6826ef 100644
---- a/arch/um/sys-i386/ptrace_user.c
-+++ b/arch/um/sys-i386/ptrace_user.c
-@@ -14,6 +14,7 @@
- #include "sysdep/thread.h"
- #include "user.h"
- #include "os.h"
-+#include "uml-config.h"
- 
- int ptrace_getregs(long pid, unsigned long *regs_out)
- {
-@@ -43,6 +44,7 @@ int ptrace_setfpregs(long pid, unsigned 
- 	return 0;
- }
- 
-+/* All the below stuff is of interest for TT mode only */
- static void write_debugregs(int pid, unsigned long *regs)
- {
- 	struct user *dummy;
-@@ -75,7 +77,6 @@ static void read_debugregs(int pid, unsi
- 
- /* Accessed only by the tracing thread */
- static unsigned long kernel_debugregs[8] = { [ 0 ... 7 ] = 0 };
--static int debugregs_seq = 0;
- 
- void arch_enter_kernel(void *task, int pid)
- {
-@@ -89,6 +90,11 @@ void arch_leave_kernel(void *task, int p
- 	write_debugregs(pid, TASK_DEBUGREGS(task));
- }
- 
-+#ifdef UML_CONFIG_PT_PROXY
-+/* Accessed only by the tracing thread */
-+static int debugregs_seq = 0;
-+
-+/* Only called by the ptrace proxy */
- void ptrace_pokeuser(unsigned long addr, unsigned long data)
- {
- 	if((addr < offsetof(struct user, u_debugreg[0])) ||
-@@ -109,6 +115,7 @@ static void update_debugregs_cb(void *ar
- 	write_debugregs(pid, kernel_debugregs);
- }
- 
-+/* Optimized out in its header when not defined */
- void update_debugregs(int seq)
- {
- 	int me;
-@@ -118,6 +125,7 @@ void update_debugregs(int seq)
- 	me = os_getpid();
- 	initial_thread_cb(update_debugregs_cb, &me);
- }
-+#endif
- 
- /*
-  * Overrides for Emacs so that we follow Linus's tabbing style.
+> And is punctuaction_fixes likely to cause instability?
+
+No, but I recall that you didn't really like it.
+
+> Finally, I'd like to get devshm merged if there aren't problems with the
+> code.
+
+That one needs to check if /dev/shm is present, and fall back to /tmp
+if not.
+
+> Don't know how do you implemented it this time, but since we had special
+> read/write functions for filehandles, the get_fh() and put_fh() could be
+> simply put in their body. Has this changed?
+
+No, but you didn't like those (and I agree) because of the extra
+layering they added.
+
+> > In this case, get_fh should just increment a count, put_fh should
+> > decrement it, and the only list operation should be to move it to the
+> > end of the list so it's last to be reclaimed.  The reclaimer would not
+> > reclaim filehandles with non-zero counts.  I see no point in removing
+> > it from the list and adding it back, as that seems not to protect
+> > against anything.
+>
+> You need a spinlock on the list. With the non-reference-counted approach,
+> removing that from the list allowed dropping the spinlock over the I/O call
+> on the host. That's not needed with the refcount.
+>
+> With the refcount, likely you don't need to move it off-list, but that
+> could maybe be useful to avoid looping on unused fd; however, this requires
+> taking the spinlock when reinserting the element on the list.
+
+I think you're agreeing with me, but I'm missing why we want to move
+things on and off the list.
+
+> Instead, with the refcount, if you decrease to 0 the refcount of FH_1 while
+> a reclaim loop is iterating over FH_1, you only risk that FH_1 is missed on
+> that reclaim pass, which isn't a race.
+
+Yup.
+
+> Note: testing that a fd has refcount 0 must be done atomically with freeing
+> it; i.e. even with an atomic_t refcount, it must be incremented only while
+> you have a lock on the list; and while freeing it, you must use
+> atomic_dec_and_lock() so you get a lock on the list if the refcount goes to
+> 0 (atomic_dec_and_lock() is equivalent to taking the lock, doing dec and
+> test, and releasing it, but is faster).
+>
+> get_fh() {
+> 	spin_lock(&list_lock);
+> 	<iterate on list>
+> 	atomic_inc(fd->count); //while still holding the lock!!
+> 	if (atomic_read(fd->count) <= 0)
+> 		BUG();
+> 	spin_unlock(&list_lock);
+> }
+>
+> put_fh(pointer to fd on list "fd") {
+> 	if(atomic_dec_and_lock(fd->count, &list_lock)) {
+> 		//Here we have the lock!
+> 		//Remove the thing from list and free it
+> 	}
+> }
+
+Yes, this looks reasonable.
+
+> > You're envisioning the os_* interfaces calling back into filehandle.c
+> > to get a descriptor if needed?
+>
+> To cause fd reclaim, that's what I mean (not sure if you meant the
+> same).
+
+Yes.
+
+> I suggested last time to rename this as "make_reclaimable" (or
+> set_reclaimable), is_reclaimable() sounds as an interrogation
+> method.
+
+Fine by me.
+
+				Jeff
+
+-------------------------------------------------------
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
