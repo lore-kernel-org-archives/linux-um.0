@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FP2Bu-0006Zu-Dc for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Mar 2006 10:48:18 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FP2Br-0004ja-PO
+	id 1FP4JS-00063Q-Ff for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Mar 2006 13:04:14 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FP4JQ-000563-PA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Mar 2006 10:48:18 -0800
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Integer overflows in new AIO ubd driver
-Message-ID: <20060330184927.GC6739@ccure.user-mode-linux.org>
-References: <1143398965.11224.146.camel@localhost.localdomain>
-	<20060327153832.GB3666@ccure.user-mode-linux.org>
-	<1143474452.11224.150.camel@localhost.localdomain>
-	<20060329193324.GC4940@ccure.user-mode-linux.org>
-	<1143666989.7192.9.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Thu, 30 Mar 2006 13:04:14 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: SMP skas requirements
+References: <20060329043656.GA25520@ccure.user-mode-linux.org>
+	<20060329123808.nlnz9h68pwg0s44s@www.scgiservices.com>
+In-Reply-To: <20060329123808.nlnz9h68pwg0s44s@www.scgiservices.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1143666989.7192.9.camel@localhost.localdomain>
+Message-Id: <200603302304.00293.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,25 +30,45 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 30 Mar 2006 13:49:27 -0500
-To: Gerd Stolpmann <info@gerd-stolpmann.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 30 Mar 2006 23:03:59 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anthony Brock <brocka@sterlingcgi.com>
 
-On Wed, Mar 29, 2006 at 11:16:27PM +0200, Gerd Stolpmann wrote:
-> Almost:
-> 
-> iozone -i 0 -i 1 -r 64k -s 5G -e -f /Data/testfile -U /Data
-> 
-> i.e. record size is 64K, and there is a umount/mount between the
-> runs. /Data is an ext3 filesystem with 4k block size, on a 20 G
-> partition.
+On Wednesday 29 March 2006 22:38, Anthony Brock wrote:
+> Quoting Jeff Dike <jdike@addtoit.com>:
+> > On Wed, Mar 29, 2006 at 12:40:00AM +0200, Blaisorblade wrote:
+> >> Finally, I'd like to get devshm merged if there aren't problems with the
+> >> code.
 
-OK, this doesn't run fine for me even the first time, so I have something
-I can chew on.
+> > That one needs to check if /dev/shm is present, and fall back to /tmp
+> > if not.
 
-BTW, your earlier fixes are now in my patchset.
+> Are you proposing that virtual servers automatically using /dev/shm if
+> available and only falling back to the $TMP variable and /tmp directory
+> if not? Or would this keep the use of $TMP if present and fall back to
+> /dev/shm followed by /tmp?
 
-				Jeff
+By looking at:
+http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.16/patches/devshm
+
+> I'm asking because I've optimized multiple host machines to offer a
+> ramfs for virtual servers. This gives me locked memory (which still
+> provides a significant performance improvement over time) for each
+> instance. I would prefer to avoid using tmpfs if possible.
+
+> Alternatively, some means for preventing the host from swapping out
+> instances would be appreciated.
+ramfs is the better way IMHO.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
