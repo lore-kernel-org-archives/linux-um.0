@@ -1,36 +1,18 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FPDWR-0006u3-9u for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Mar 2006 22:54:15 -0800
-Received: from mail.scgiservices.com ([198.107.3.67])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FPDWQ-0005Bj-BR
+	id 1FPG78-00017C-DO for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 31 Mar 2006 01:40:18 -0800
+Received: from bay101-f30.bay101.hotmail.com ([64.4.56.40] helo=hotmail.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FPG76-0002yd-59
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Mar 2006 22:54:15 -0800
-Received: from localhost (localhost [127.0.0.1])
-	by mail.scgiservices.com (Postfix) with ESMTP id 06B643C4C8
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 30 Mar 2006 22:54:13 -0800 (PST)
-Received: from mail.scgiservices.com ([127.0.0.1])
-	by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 06011-02 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 30 Mar 2006 22:54:12 -0800 (PST)
-Received: from SCG2 (c-67-160-154-69.hsd1.or.comcast.net [67.160.154.69])
-	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by mail.scgiservices.com (Postfix) with ESMTP id E51BA3C48E
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 30 Mar 2006 22:54:11 -0800 (PST)
-From: "Anthony Brock" <brocka@sterlingcgi.com>
-Subject: RE: [uml-devel] Re: SMP skas requirements
-Message-ID: <LEEIJGBJEEABAGOFFGAHAEGJDFAA.brocka@sterlingcgi.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <200603302330.00256.blaisorblade@yahoo.it>
+	Fri, 31 Mar 2006 01:40:18 -0800
+Message-ID: <BAY101-F30593AD27C598206A10CAFE2D60@phx.gbl>
+From: "James McMechan" <james_mcmechan@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Subject: [uml-devel] RE: UML-hcd driver for 2.6.x
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -42,24 +24,67 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 30 Mar 2006 22:54:08 -0800
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 31 Mar 2006 09:39:26 +0000
+To: wilhelm.golz@secunet.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> On Thursday 30 March 2006 13:30, Blaisorblade wrote:
-> Sorry, forgot to finish. That patch keeps checking TMP,TMPDIR and
-> TEMP (don't
-> remember the order), but if none is set, it switches the default
-> from /tmp
-> to /dev/shm.
+Hello Mr. Golz,
 
-This makes sense. It does appear that the patch first checks the
-environmental variable before using the defaults. While I would like to take
-advantage of the neat feature Jeff is working on (hot plug memory), I have a
-greater need for consistent and reliable speed.
+There has only been minor interest in using USB from within UML and the host 
+controller
+architecture changed ~2.4.19/2.5.59 breaking the usb-hcd.
 
-Thanks!
+Enthusiasm for fixing it has been lacking I only seem to get one or two 
+emails each year about USB on UML.
 
-Tony
+Encouragement is welcome, it has been a lack of interest that has allowed it 
+to fall to bit rot.
+
+It was working fairly well before the architecture change and could be made 
+to work again without very much more work.
+
+I have a thought that USB/IP http://usbip.naist.jp/ may provide a more 
+active approach with its virtual host controller over IP as a example of a 
+current virtual host controller, or even direct use over UMLs networking.
+
+Sorry for the extra long delay in replying, your message arrived while I was 
+out of town for two weeks and now my cat is sick...
+
+James McMechan
+
+>From: Wilhelm Golz <wilhelm.golz@secunet.com>
+>Reply-To: wilhelm.golz@secunet.com
+>To: James_McMechan@hotmail.com
+>Subject: UML-hcd driver for 2.6.x
+>Date: Wed, 15 Mar 2006 13:38:59 +0100
+>
+>Hello James,
+>
+>we (secunet) are currently strongly interested in using USB-devices
+>from within a 2.6.12-UML. As far as I have seen You are the
+>only one, who had significant success with this under Linux 2.4.
+>I tried to get Your uml-hcd-driver (2.5.59) work with a 2.6.12.1 UML
+>running on a 2.6.8-host, but up to now without progress.
+>
+>My questions: Do You plan to develop on this topic in the next time,
+>is there maybe a new driver on Your plan?
+>Or should it basically work already and am I just not on the right path?
+>Maybe there is a way to encourage You in further development of this 
+>driver?
+>
+>With kind regards   Wilhelm Golz
+>
+>
+>
+>--
+>Wilhelm Golz
+>
+>secunet Security Networks AG  	Telefon: +49.30.399782-11
+>Niederlassung Berlin		Telefax: +49.30.399782-20
+>Alt-Moabit 91c        		mailto:golz@secunet.com
+>D-10559 Berlin        		http://www.secunet.com
+>
+
 
 
 
