@@ -2,17 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FPG78-00017C-DO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 31 Mar 2006 01:40:18 -0800
-Received: from bay101-f30.bay101.hotmail.com ([64.4.56.40] helo=hotmail.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FPG76-0002yd-59
+	id 1FPRxE-0003tw-BN for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 31 Mar 2006 14:18:52 -0800
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FPRxB-0003t2-Ha
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 31 Mar 2006 01:40:18 -0800
-Message-ID: <BAY101-F30593AD27C598206A10CAFE2D60@phx.gbl>
-From: "James McMechan" <james_mcmechan@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Subject: [uml-devel] RE: UML-hcd driver for 2.6.x
+	Fri, 31 Mar 2006 14:18:52 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Kernel panic - not syncing: Kernel mode signal 7
+References: <442DA85B.1060804@theshore.net>
+In-Reply-To: <442DA85B.1060804@theshore.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200604010018.42600.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,67 +29,35 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 31 Mar 2006 09:39:26 +0000
-To: wilhelm.golz@secunet.com
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 1 Apr 2006 00:18:42 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: "Christopher S. Aker" <caker@theshore.net>
 
-Hello Mr. Golz,
+On Saturday 01 April 2006 00:08, Christopher S. Aker wrote:
+> I'm posting this for posterity.  I've asked the user to upgrade to
+> 2.6.16.1-bs1 for now.  He's hit this twice in the last month...
 
-There has only been minor interest in using USB from within UML and the host 
-controller
-architecture changed ~2.4.19/2.5.59 breaking the usb-hcd.
+> http://www.theshore.net/~caker/uml/kernels/2.6.15-linode16
 
-Enthusiasm for fixing it has been lacking I only seem to get one or two 
-emails each year about USB on UML.
+> Kernel panic - not syncing: Kernel mode signal 7
 
-Encouragement is welcome, it has been a lack of interest that has allowed it 
-to fall to bit rot.
+SIGBUS, aka /tmp (or wherever the memory is hosted, i.e. $TMP) full on the 
+host.
 
-It was working fairly well before the architecture change and could be made 
-to work again without very much more work.
+> 89ae3778: [<8001f41c>] bus_handler+0x59/0x5b
 
-I have a thought that USB/IP http://usbip.naist.jp/ may provide a more 
-active approach with its virtual host controller over IP as a example of a 
-current virtual host controller, or even direct use over UMLs networking.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-Sorry for the extra long delay in replying, your message arrived while I was 
-out of town for two weeks and now my cat is sick...
+	
 
-James McMechan
-
->From: Wilhelm Golz <wilhelm.golz@secunet.com>
->Reply-To: wilhelm.golz@secunet.com
->To: James_McMechan@hotmail.com
->Subject: UML-hcd driver for 2.6.x
->Date: Wed, 15 Mar 2006 13:38:59 +0100
->
->Hello James,
->
->we (secunet) are currently strongly interested in using USB-devices
->from within a 2.6.12-UML. As far as I have seen You are the
->only one, who had significant success with this under Linux 2.4.
->I tried to get Your uml-hcd-driver (2.5.59) work with a 2.6.12.1 UML
->running on a 2.6.8-host, but up to now without progress.
->
->My questions: Do You plan to develop on this topic in the next time,
->is there maybe a new driver on Your plan?
->Or should it basically work already and am I just not on the right path?
->Maybe there is a way to encourage You in further development of this 
->driver?
->
->With kind regards   Wilhelm Golz
->
->
->
->--
->Wilhelm Golz
->
->secunet Security Networks AG  	Telefon: +49.30.399782-11
->Niederlassung Berlin		Telefax: +49.30.399782-20
->Alt-Moabit 91c        		mailto:golz@secunet.com
->D-10559 Berlin        		http://www.secunet.com
->
-
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
