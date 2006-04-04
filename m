@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FQZdF-0003Hq-BE for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Apr 2006 17:42:53 -0700
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FQZdB-0000d0-SA
+	id 1FQZag-0002xm-Db for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Apr 2006 17:40:14 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FQZac-0004rm-F7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Apr 2006 17:42:53 -0700
+	Mon, 03 Apr 2006 17:40:14 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.6.17-rc1 with hardened gcc
-References: <1144097037.11178.24.camel@localhost>
-In-Reply-To: <1144097037.11178.24.camel@localhost>
+Subject: Re: [uml-devel] [RFC][PATCH] include /usr/lib/uml in PATH
+References: <20060402173445.GB5108@inferi.kami.home>
+	<Pine.LNX.4.62.0604022027190.15153@pademelon.sonytel.be>
+	<20060402195409.GA3695@inferi.kami.home>
+In-Reply-To: <20060402195409.GA3695@inferi.kami.home>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200604040242.30134.blaisorblade@yahoo.it>
+Message-Id: <200604040239.45495.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,85 +31,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 4 Apr 2006 02:42:29 +0200
+Date: Tue, 4 Apr 2006 02:39:44 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Antoine Martin <antoine@nagafix.co.uk>
+Cc: Mattia Dongili <malattia@linux.it>, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>
 
-On Monday 03 April 2006 22:43, Antoine Martin wrote:
-> I thought I'd give it a try.
-> I guess that these aren't bugs (since switching to non-hardened gcc
-> fixes most problems) but maybe this is useful to someone?
-
-> Otherwise just ignore most issues in this email.
-
-Don't worry, I've got and solved every report of this mail, luckily...
-
-> - the configs are available at http://uml.nagafix.co.uk/kernels
-> - GCC 3.4.5 hardened
-
-> First, the good old ASM errors are still here (IIRC there is no easy way
-> to solve this):
-Will publish the fix. I've installed hardened GCC forgetting of this, got this 
-error, and saw a "-vanilla" config.
-
-I.e. the only difference is in the spec file! I.e. adding -fno-pic to the 
-compilation flags (which was tricky since we're being too kludgy with Kbuild) 
-solved the problem!
-
-> wget
-> ftp://ftp.kernel.org/pub/linux/kernel/v2.6/testing/linux-2.6.17-rc1.tar.bz2
-> tar -jxf linux-2.6.17-rc1.tar.bz2
-> mv linux-2.6.17-rc1 linux-2.6.17-rc1-x86
-> cd linux-2.6.17-rc1-x86
-> cp ../linux-2.6.16.1-bb1-x86/.config ./
-> make ARCH=um SUBARCH=i386 oldconfig
-> make ARCH=um SUBARCH=i386
-> (...)
-> CC      arch/um/kernel/skas/clone.o
-> arch/um/kernel/skas/clone.c: In function `stub_clone_handler':
-> arch/um/include/sysdep/stub.h:45: error: can't find a register in class
-> `BREG' while reloading `asm'
-> arch/um/include/sysdep/stub.h:66: error: can't find a register in class
-> `BREG' while reloading `asm'
-> arch/um/include/sysdep/stub.h:55: error: can't find a register in class
-> `BREG' while reloading `asm'
-> arch/um/include/sysdep/stub.h:90: error: can't find a register in class
-> `BREG' while reloading `asm'
-> make[2]: *** [arch/um/kernel/skas/clone.o] Error 1
-> make[1]: *** [arch/um/kernel/skas] Error 2
-> make: *** [arch/um/kernel] Error 2
+On Sunday 02 April 2006 21:54, Mattia Dongili wrote:
+> On Sun, Apr 02, 2006 at 08:29:12PM +0200, Geert Uytterhoeven wrote:
+> > On Sun, 2 Apr 2006, Mattia Dongili wrote:
 >
+> [...]
 >
-> AMD64 works fully, but there are some warnings during the build:
->   CC      arch/um/kernel/uaccess.o
-> In file included from include/asm/processor-generic.h:14,
->                  from include/asm/processor.h:51,
->                  from include/linux/prefetch.h:14,
->                  from include/linux/list.h:7,
->                  from include/linux/wait.h:23,
->                  from include/asm/arch/semaphore.h:42,
->                  from include/asm/semaphore.h:4,
->                  from include/asm/ldt.h:11,
->                  from arch/um/include/sysdep/tls.h:25,
->                  from arch/um/include/os.h:16,
->                  from arch/um/kernel/uaccess.c:12:
-> include/asm/ptrace.h:82: warning: static declaration of
-> 'arch_switch_to_tt' follows non-static declaration
-> arch/um/include/kern_util.h:120: warning: previous declaration of
-> 'arch_switch_to_tt' was here
-> include/asm/ptrace.h:87: warning: static declaration of
-> 'arch_switch_to_skas' follows non-static declaration
-> arch/um/include/kern_util.h:122: warning: previous declaration of
-> 'arch_switch_to_skas' was here
+> > > --- a/arch/um/os-Linux/helper.c	2006-04-02 16:32:38.340801686 +0200
+> > > +++ b/arch/um/os-Linux/helper.c	2006-04-02 16:34:13.454745936 +0200
+> > > @@ -22,6 +22,9 @@ struct helper_data {
+> > >  	int fd;
+> > >  };
+> > >
+> > > +/* PATH variable to find uml helpers  installed in FHS compliant
+> > > locations */ +static char *alt_path =
+> > > "PATH=:/bin:/usr/bin:/usr/lib/uml";
+> >
+> >                                  ^
+> > Woops, this puts the current directory first in your path, which is
+> > probably
+>
+> Urgh! that was just the default path straight from the execle manpage.
+> The attached patch reimplements the thing appending /usr/lib/uml only
+> once before starting UML. Still using the above PATH if no PATH variable
+> exists as execle behaves in the same way.
 
-Fixed them too.
+Thanks for the patch, we'll possibly apply it, but we need to reimplement (or 
+copy and fix from glibc) a two-phase execvp(). I've not done it because I've 
+felt unconfortable with the idea but it's the better I could think of for 
+now.
 
-> Something else I've noticed is that some kernels fail if TT is compiled
-> in, even though it boots into skas0 or skas3 mode. I guess this isn't
-> really that important since TT is going to go away.
+In practice, we must avoid any memory allocation after a fork or clone on the 
+host, because we use the kernel allocator and after a fork() it can't be 
+used.
 
-> Finally, congratulations! all the images I have built now work - even
-> fedora (4 and 5) and opensuse.
+I'm unsure whether using the libc allocator would work in that case but mixing 
+two memory allocators is something I'd never do unless impossible to avoid 
+(and indeed, the current code does that and I haven't many ideas; however, 
+int this case it can be avoided, by performing the PATH lookup before the 
+fork()).
+
+However, probably the patch can be merged anyway, or at least its idea...
+
+*) I'd agree with Geert, but you're indeed correct for that...
+*) Saying "19" gets a "NO".
+
+#define UML_LIB_PATH ":/usr/lib/uml"
+19 -> strlen(UML_LIB_PATH)
+in snprintf, "PATH=%s:/usr/lib/uml" -> "PATH=%s" UML_LIB_PATH
+
+(using string literal concatenation)
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
