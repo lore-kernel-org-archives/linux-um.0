@@ -1,26 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRLNv-0003g8-P2 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Apr 2006 20:42:15 -0700
-Received: from smtp-out.google.com ([216.239.45.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FRLNu-0003gM-LZ
+	id 1FROky-0000h1-1u for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Apr 2006 00:18:16 -0700
+Received: from imap.epfl.ch ([128.178.50.10])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FROkw-00084Q-Kt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Apr 2006 20:42:15 -0700
-Message-ID: <44348E08.1050502@google.com>
-From: Daniel Phillips <phillips@google.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Re: [PATCH 12/16] UML - Memory hotplug
-References: <200603241814.k2OIExNn005555@ccure.user-mode-linux.org>
-	<20060324144535.37b3daf7.akpm@osdl.org>
-	<20060325010524.GA8117@ccure.user-mode-linux.org>
-	<44343E86.30301@google.com>
-	<20060406015636.GE6924@ccure.user-mode-linux.org>
-In-Reply-To: <20060406015636.GE6924@ccure.user-mode-linux.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+	Thu, 06 Apr 2006 00:18:16 -0700
+Received: from [128.178.52.94] (labospc31.epfl.ch [128.178.52.94])
+	by imap.epfl.ch (iPlanet Messaging Server 5.0 Patch 3 (built Mar 23
+	2001)) with ESMTPA id <0IXA00F0AHM5HR@imap.epfl.ch> for
+	user-mode-linux-devel@lists.sourceforge.net; Thu,
+	06 Apr 2006 09:18:05 +0200 (MET DST)
+From: Olivier Crameri <olivier.crameri@epfl.ch>
+Subject: Re: [uml-devel] system call accessing the host os
+In-reply-to: <20060406014338.GB6924@ccure.user-mode-linux.org>
+Message-id: <3F937E83-6ED4-496D-9883-24C3909B30AA@epfl.ch>
+MIME-version: 1.0
+Content-type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+Content-transfer-encoding: 7BIT
+References: <8F963598-0F1A-464A-991A-2FE95F9B418C@epfl.ch>
+	<20060405181812.GA5684@ccure.user-mode-linux.org>
+	<b54af0b00604051320l54bab57ag311746325c887d7f@mail.gmail.com>
+	<20060406014338.GB6924@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,32 +35,25 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 05 Apr 2006 20:42:00 -0700
+Date: Thu, 06 Apr 2006 09:18:04 +0200
 To: Jeff Dike <jdike@addtoit.com>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> Yeah, it's a bit non-obvious what 0 means in the twisty little maze of
-> GFP_ flags.
-> 
-> However, I do want to push the system into reclaim later.  It looks
-> like the only difference between 0 and GFP_ATOMIC is the use of
-> emergency pools, which I don't really want to exercise anyway.
-> 
-> ...This look OK to you?...
-> 
-> +			/* 0 means don't wait (like GFP_ATOMIC) and
-> +			 * don't dip into emergency pools (unlike
-> +			 * GFP_ATOMIC).
-> +			 */
-> +			new = kmalloc(sizeof(*new), 0);
+>
+>> Then, when I use fread to read
+>> my file into this buffer, if I read a small number of bytes, it  
+>> works.
+>> However when I try to fread the entire file (38k), fread returns 0.
+>
+> What's the break point between working and non-working?
 
-If you have a believable use for gfp_mask=0 then why not add GFP_NOWAIT or some
-such to gfp.h?
+It looks like it's on a page boundary. 4095 bytes is ok, 4096 is not
+I'm using 2.6.15.6 with the latest 2.6.15 patch from Blaisorblade's  
+website.
 
 Regards,
 
-Daniel
+Olivier
 
 
 -------------------------------------------------------
