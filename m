@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRYgP-0007mx-6I for user-mode-linux-devel@lists.sourceforge.net;
+	id 1FRYgP-0007my-HQ for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 06 Apr 2006 10:54:13 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FRYgN-0000Gr-KY
+	(Exim 4.44) id 1FRYgP-0007eV-BB
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 06 Apr 2006 10:54:13 -0700
-Message-Id: <200604061655.k36GtRNa005151@ccure.user-mode-linux.org>
+Message-Id: <200604061655.k36GtMvc005146@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/2] UML memory hotplug cleanups
+Subject: [uml-devel] [PATCH 1/2] Add GFP_NOWAIT
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,47 +25,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 06 Apr 2006 12:55:27 -0400
+Date: Thu, 06 Apr 2006 12:55:22 -0400
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-xfs@oss.sgi.com, Daniel Phillips <phillips@google.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Change memory hotplug to use GFP_NOWAIT instead of GFP_ATOMIC, so that it
-will grab memory without sleeping, but doesn't try to use the emergency pools.
+Introduce GFP_NOWAIT, as an alias for GFP_ATOMIC & ~__GFP_HIGH.
 
-A small list initialization suggested by Daniel Phillips - don't initialize
-lists which are just about to be list_add-ed.
+This also changes XFS, which is the only in-tree user of this idiom that I 
+could find.  The XFS piece is compile-tested only.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.16/arch/um/drivers/mconsole_kern.c
+Index: linux-2.6.16/fs/xfs/linux-2.6/xfs_buf.c
 ===================================================================
---- linux-2.6.16.orig/arch/um/drivers/mconsole_kern.c	2006-04-06 12:10:41.000000000 -0400
-+++ linux-2.6.16/arch/um/drivers/mconsole_kern.c	2006-04-06 12:21:07.000000000 -0400
-@@ -87,7 +87,7 @@ static irqreturn_t mconsole_interrupt(in
- 		if(req.cmd->context == MCONSOLE_INTR)
- 			(*req.cmd->handler)(&req);
- 		else {
--			new = kmalloc(sizeof(*new), GFP_ATOMIC);
-+			new = kmalloc(sizeof(*new), GFP_NOWAIT);
- 			if(new == NULL)
- 				mconsole_reply(&req, "Out of memory", 1, 0);
- 			else {
-@@ -415,7 +415,6 @@ static int mem_config(char *str)
+--- linux-2.6.16.orig/fs/xfs/linux-2.6/xfs_buf.c	2006-04-06 12:16:14.000000000 -0400
++++ linux-2.6.16/fs/xfs/linux-2.6/xfs_buf.c	2006-04-06 12:16:54.000000000 -0400
+@@ -182,7 +182,7 @@ free_address(
+ {
+ 	a_list_t	*aentry;
  
- 			unplugged = page_address(page);
- 			if(unplug_index == UNPLUGGED_PER_PAGE){
--				INIT_LIST_HEAD(&unplugged->list);
- 				list_add(&unplugged->list, &unplugged_pages);
- 				unplug_index = 0;
- 			}
-@@ -655,7 +654,6 @@ static void with_console(struct mc_reque
- 	struct mconsole_entry entry;
- 	unsigned long flags;
+-	aentry = kmalloc(sizeof(a_list_t), GFP_ATOMIC & ~__GFP_HIGH);
++	aentry = kmalloc(sizeof(a_list_t), GFP_NOWAIT);
+ 	if (likely(aentry)) {
+ 		spin_lock(&as_lock);
+ 		aentry->next = as_free_head;
+Index: linux-2.6.16/include/linux/gfp.h
+===================================================================
+--- linux-2.6.16.orig/include/linux/gfp.h	2006-03-21 11:50:12.000000000 -0500
++++ linux-2.6.16/include/linux/gfp.h	2006-04-06 12:15:18.000000000 -0400
+@@ -57,6 +57,8 @@ struct vm_area_struct;
+ 			__GFP_NOFAIL|__GFP_NORETRY|__GFP_NO_GROW|__GFP_COMP| \
+ 			__GFP_NOMEMALLOC|__GFP_HARDWALL)
  
--	INIT_LIST_HEAD(&entry.list);
- 	entry.request = *req;
- 	list_add(&entry.list, &clients);
- 	spin_lock_irqsave(&console_lock, flags);
++/* This equals 0, but use constants in case they ever change */
++#define GFP_NOWAIT	(GFP_ATOMIC & ~__GFP_HIGH)
+ /* GFP_ATOMIC means both !wait (__GFP_WAIT not set) and use emergency pool */
+ #define GFP_ATOMIC	(__GFP_HIGH)
+ #define GFP_NOIO	(__GFP_WAIT)
 
 
 
