@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRei8-0000zG-OA for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Apr 2006 17:20:24 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FRei3-0007pY-PW
+	id 1FRf2e-0004CM-BA for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Apr 2006 17:41:36 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FRf2d-0003c2-1e
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Apr 2006 17:20:24 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Thu, 06 Apr 2006 17:41:36 -0700
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] system call accessing the host os
+Message-ID: <20060406234248.GB6893@ccure.user-mode-linux.org>
 References: <8F963598-0F1A-464A-991A-2FE95F9B418C@epfl.ch>
 	<20060405181812.GA5684@ccure.user-mode-linux.org>
-In-Reply-To: <20060405181812.GA5684@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	<200604070220.01278.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200604070220.01278.blaisorblade@yahoo.it>
+In-Reply-To: <200604070220.01278.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,76 +30,17 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 7 Apr 2006 02:20:00 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Olivier Crameri <olivier.crameri@epfl.ch>
+Date: Thu, 6 Apr 2006 19:42:48 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Olivier Crameri <olivier.crameri@epfl.ch>
 
-On Wednesday 05 April 2006 20:18, Jeff Dike wrote:
-> On Wed, Apr 05, 2006 at 07:16:22PM +0200, Olivier Crameri wrote:
-> > Unfortunately, I'm having some weird issues that I can't really
-> > understand. I can read the file using fread, but only in a buffer
-> > that I allocated using um_kmalloc. If I use a buffer allocated by
-> > malloc, the fread fails. Then, even if I replace all  my mallocs by
-> > um_kmallocs, some libc functions (such as sscanf) don't seem to work
-> > properly. I guess I'm missing something, but I can't figure out what.
->
-> Define "fails" and "don't seem to work properly".
->
-> If your buffers are larger than 128K, then libc malloc gets turned into
-> UML kernel vmalloc.
+On Fri, Apr 07, 2006 at 02:20:00AM +0200, Blaisorblade wrote:
+> No, I made it "greater than 4k" in 2.4.24 time... in fact it's what's 
+> happening to him (see his last mail):
 
-No, I made it "greater than 4k" in 2.4.24 time... in fact it's what's 
-happening to him (see his last mail):
+Oh yeah.  In that case, the memset thing I mentioned earlier might help.
 
-void *__wrap_malloc(int size)
-{
-        void *ret;
-
-        if(!CAN_KMALLOC())
-                return(__real_malloc(size));
-        else if(size <= PAGE_SIZE) /* finding contiguos pages can be hard*/
-                ret = um_kmalloc(size);
-        else ret = um_vmalloc(size);
-}
-
-128K is the maximum conceivable kmallocable size, but it hardly works due to 
-fragmentation.
-
-> In this case, the buffer isn't mapped, and 
-> passing it into a system call will make it return -EFAULT.  The
-> easiest workaround for this is to memset the thing immediately after
-> allocating it.
-
-> Also, if you're using the libc things you're talking about, watch out
-> for your stack consumption.  By default, you get two pages (8K).
-
-By default on UML you get 4 pages, 16K, i.e. PAGE_SIZE *  (1 << 
-CONFIG_KERNEL_STACK_ORDER) == 4k * (1<<2) == 4k * 4.
-
-> printf will completely use it up, so it is unusable in kernel code.
-
-Indeed. sprintf() + write(1) works, instead - grep for my_printf in the source 
-code, I've coded this hack up.
-
-> UML kernel stack size is configurable - CONFIG_KERNEL_STACK_ORDER -
-> bumping that to 3 will double the kernel stack size.  If problems then
-> go away, then you know that libc is overflowing your stack.
-
-> 				Jeff
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
-
+				Jeff
 
 
 -------------------------------------------------------
