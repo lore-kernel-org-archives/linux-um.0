@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRLFt-0002ig-JI for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Apr 2006 20:33:57 -0700
+	id 1FRLGy-0002uR-9u for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 05 Apr 2006 20:35:04 -0700
 Received: from smtp.osdl.org ([65.172.181.4])
 	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44) id 1FRLFr-0001QN-N8
+	(Exim 4.44) id 1FRLGw-0006PY-W3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Apr 2006 20:33:57 -0700
+	Wed, 05 Apr 2006 20:35:04 -0700
 From: Andrew Morton <akpm@osdl.org>
 Subject: Re: [uml-devel] Re: [PATCH 12/16] UML - Memory hotplug
-Message-Id: <20060405203233.5fb222ae.akpm@osdl.org>
-In-Reply-To: <20060406015636.GE6924@ccure.user-mode-linux.org>
+Message-Id: <20060405203349.004d7673.akpm@osdl.org>
+In-Reply-To: <20060405203233.5fb222ae.akpm@osdl.org>
 References: <200603241814.k2OIExNn005555@ccure.user-mode-linux.org>
 	<20060324144535.37b3daf7.akpm@osdl.org>
 	<20060325010524.GA8117@ccure.user-mode-linux.org>
 	<44343E86.30301@google.com>
 	<20060406015636.GE6924@ccure.user-mode-linux.org>
+	<20060405203233.5fb222ae.akpm@osdl.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,25 +33,15 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 5 Apr 2006 20:32:33 -0700
-To: Jeff Dike <jdike@addtoit.com>
-Cc: phillips@google.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 5 Apr 2006 20:33:49 -0700
+To: jdike@addtoit.com, phillips@google.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike <jdike@addtoit.com> wrote:
+Andrew Morton <akpm@osdl.org> wrote:
 >
-> +			/* 0 means don't wait (like GFP_ATOMIC) and
->  +			 * don't dip into emergency pools (unlike
->  +			 * GFP_ATOMIC).
->  +			 */
->  +			new = kmalloc(sizeof(*new), 0);
+> I'll make that change.
 
-What we've done in the past here is to use (GFP_ATOMIC & ~__GFP_HIGH).  It
-amounts to the same thing, but it carries some semantic meaning: "whatever
-GFP_ATOMIC measn, only don't dip into page reserves".
-
-Plus it future-safes us against changes in GFP_ATOMIC.
-
-I'll make that change.
+uh, no I won't.  Am missing changelog, Subject: and Signed-off-by:.  Please
+send the final patch when it's cooked.
 
 
 -------------------------------------------------------
