@@ -2,26 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRmCR-0002fV-Co for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 01:20:11 -0700
-Received: from nproxy.gmail.com ([64.233.182.185])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FRmCP-0000G0-Hz
+	id 1FRs0i-0003G6-0F for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Apr 2006 07:32:28 -0700
+Received: from [151.97.230.9] (helo=ssc.unict.it)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FRs0e-00079m-8h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 01:20:11 -0700
-Received: by nproxy.gmail.com with SMTP id l24so231808nfc
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 07 Apr 2006 01:20:04 -0700 (PDT)
-In-Reply-To: <20060406234248.GB6893@ccure.user-mode-linux.org>
-References: <8F963598-0F1A-464A-991A-2FE95F9B418C@epfl.ch>
-	<20060405181812.GA5684@ccure.user-mode-linux.org>
-	<200604070220.01278.blaisorblade@yahoo.it>
-	<20060406234248.GB6893@ccure.user-mode-linux.org>
-Mime-Version: 1.0 (Apple Message framework v749.3)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Message-Id: <D44F616D-1F3B-496E-A311-68CF5E5FC882@epfl.ch>
-Content-Transfer-Encoding: 7bit
-Subject: Re: [uml-devel] system call accessing the host os
-From: Olivier Crameri <olivier.crameri@gmail.com>
+	Fri, 07 Apr 2006 07:32:24 -0700
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Message-Id: <20060407143107.19201.23684.stgit@zion.home.lan>
+In-Reply-To: <20060407142709.19201.99196.stgit@zion.home.lan>
+References: <20060407142709.19201.99196.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 08/17] uml: prepare fixing compilation output
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,27 +25,48 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 7 Apr 2006 10:20:01 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 07 Apr 2006 16:31:08 +0200
+To: Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Great, thanks a lot. Now I understand what's happening. It was  
-actually calling um_vmalloc....
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Olivier
+Move the build of user-offsets to arch/um/Kbuild, this will allow using the
+normal user-objs machinery. I had written this to fixup for a Kbuild change, but
+another fix was merged. This is still useful however.
 
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
-On 7 avr. 06, at 01:42, Jeff Dike wrote:
+ arch/um/Kbuild   |    4 ++++
+ arch/um/Makefile |    4 ++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-> On Fri, Apr 07, 2006 at 02:20:00AM +0200, Blaisorblade wrote:
->> No, I made it "greater than 4k" in 2.4.24 time... in fact it's what's
->> happening to him (see his last mail):
->
-> Oh yeah.  In that case, the memset thing I mentioned earlier might  
-> help.
->
-> 				Jeff
-
+diff --git a/arch/um/Kbuild b/arch/um/Kbuild
+new file mode 100644
+index 0000000..ae2a254
+--- /dev/null
++++ b/arch/um/Kbuild
+@@ -0,0 +1,4 @@
++ARCH_DIR := arch/um
++
++$(ARCH_DIR)/user-offsets.s: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.c
++	$(CC) $(USER_CFLAGS) -S -o $@ $<
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 24790be..ef8d71d 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -202,8 +202,8 @@ endef
+ $(ARCH_DIR)/include/uml-config.h : include/linux/autoconf.h
+ 	$(call filechk,umlconfig)
+ 
+-$(ARCH_DIR)/user-offsets.s: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.c
+-	$(CC) $(USER_CFLAGS) -S -o $@ $<
++$(ARCH_DIR)/user-offsets.s: FORCE
++	$(Q)$(MAKE) $(build)=$(ARCH_DIR) $@
+ 
+ define filechk_gen-asm-offsets
+         (set -e; \
 
 
 -------------------------------------------------------
