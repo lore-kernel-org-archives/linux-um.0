@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRs0o-0003HO-2z for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:34 -0700
+	id 1FRs0p-0003HG-HT for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Apr 2006 07:32:35 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FRs0j-0003Zn-Rq
+	(Exim 4.44) id 1FRs0j-0003Zs-1D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:31 -0700
+	Fri, 07 Apr 2006 07:32:32 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060407143124.19201.87107.stgit@zion.home.lan>
+Message-Id: <20060407143048.19201.78081.stgit@zion.home.lan>
 In-Reply-To: <20060407142709.19201.99196.stgit@zion.home.lan>
 References: <20060407142709.19201.99196.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 15/17] uml: local_irq_save, not local_save_flags
+Subject: [uml-devel] [PATCH 01/17] uml: make 64-bit COW files compatible with
+	32-bit ones.
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,35 +26,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 07 Apr 2006 16:31:24 +0200
+Date: Fri, 07 Apr 2006 16:30:48 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-The call to local_save_flags seems bogus since it is followed by
-local_irq_restore, and it's intended to lock the list from concurrent
-mconsole_interrupt invocations.
+This is the minimal fix to make 64-bit UML binaries create 32-bit
+compatible COW files and read them.
+I've indeed tested that current code doesn't do this - the code gets SIGFPE for
+a division by a value read at the wrong place, where 0 is found.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/mconsole_kern.c |    2 +-
+ arch/um/drivers/cow_user.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index f8c6269..a0e1200 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -62,7 +62,7 @@ static void mc_work_proc(void *unused)
- 	unsigned long flags;
+diff --git a/arch/um/drivers/cow_user.c b/arch/um/drivers/cow_user.c
+index 61951b7..afdf1ea 100644
+--- a/arch/um/drivers/cow_user.c
++++ b/arch/um/drivers/cow_user.c
+@@ -75,7 +75,7 @@ struct cow_header_v3 {
+ 	__u32 alignment;
+ 	__u32 cow_format;
+ 	char backing_file[PATH_LEN_V3];
+-};
++} __attribute__((packed));
  
- 	while(!list_empty(&mc_requests)){
--		local_save_flags(flags);
-+		local_irq_save(flags);
- 		req = list_entry(mc_requests.next, struct mconsole_entry,
- 				 list);
- 		list_del(&req->list);
+ /* COW format definitions - for now, we have only the usual COW bitmap */
+ #define COW_BITMAP 0
 
 
 -------------------------------------------------------
