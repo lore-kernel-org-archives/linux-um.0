@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRs0j-0003GU-IU for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:29 -0700
+	id 1FRs0l-0003Gy-M7 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Apr 2006 07:32:32 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FRs0j-0003Zo-12
+	(Exim 4.44) id 1FRs0i-00079o-41
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:29 -0700
+	Fri, 07 Apr 2006 07:32:31 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060407143105.19201.88376.stgit@zion.home.lan>
+Message-Id: <20060407143119.19201.41577.stgit@zion.home.lan>
 In-Reply-To: <20060407142709.19201.99196.stgit@zion.home.lan>
 References: <20060407142709.19201.99196.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 07/17] uml: fix "extern-vs-static" proto conflict
-	in TLS code
+Subject: [uml-devel] [PATCH 13/17] uml: fix failure path after conversion
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,51 +25,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 07 Apr 2006 16:31:05 +0200
+Date: Fri, 07 Apr 2006 16:31:20 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Move the prototype from arch-generic to arch-specific includes because on x86_64
-these functions are two static inlines.
+Little fix for error paths in this code.
+*) Some bug come from conversion to os-Linux (open() doesn't follow
+the kernel -errno return convention, while the old code called os_open_file()
+which followed it). This caused the wrong return code to be printed.
+*) Then be more precise about what happened and do some whitespace fixes.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/include/kern_util.h  |    4 ----
- include/asm-um/ptrace-i386.h |    3 +++
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ arch/um/os-Linux/umid.c |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/include/kern_util.h b/arch/um/include/kern_util.h
-index 4255713..efa3d33 100644
---- a/arch/um/include/kern_util.h
-+++ b/arch/um/include/kern_util.h
-@@ -117,10 +117,6 @@ extern struct task_struct *get_task(int 
- extern void machine_halt(void);
- extern int is_syscall(unsigned long addr);
+diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+index 198e591..34bfc1b 100644
+--- a/arch/um/os-Linux/umid.c
++++ b/arch/um/os-Linux/umid.c
+@@ -120,7 +120,8 @@ static int not_dead_yet(char *dir)
  
--extern void arch_switch_to_tt(struct task_struct *from, struct task_struct *to);
--
--extern void arch_switch_to_skas(struct task_struct *from, struct task_struct *to);
--
- extern void free_irq(unsigned int, void *);
- extern int cpu(void);
+ 	dead = 0;
+ 	fd = open(file, O_RDONLY);
+-	if(fd < 0){
++	if(fd < 0) {
++		fd = -errno;
+ 		if(fd != -ENOENT){
+ 			printk("not_dead_yet : couldn't open pid file '%s', "
+ 			       "err = %d\n", file, -fd);
+@@ -130,9 +131,13 @@ static int not_dead_yet(char *dir)
  
-diff --git a/include/asm-um/ptrace-i386.h b/include/asm-um/ptrace-i386.h
-index 30656c9..6e2528b 100644
---- a/include/asm-um/ptrace-i386.h
-+++ b/include/asm-um/ptrace-i386.h
-@@ -56,6 +56,9 @@ extern int do_get_thread_area_tt(struct 
- extern int arch_switch_tls_skas(struct task_struct *from, struct task_struct *to);
- extern int arch_switch_tls_tt(struct task_struct *from, struct task_struct *to);
+ 	err = 0;
+ 	n = read(fd, pid, sizeof(pid));
+-	if(n <= 0){
++	if(n < 0){
++		printk("not_dead_yet : couldn't read pid file '%s', "
++		       "err = %d\n", file, errno);
++		goto out_close;
++	} else if(n == 0){
+ 		printk("not_dead_yet : couldn't read pid file '%s', "
+-		       "err = %d\n", file, -n);
++		       "0-byte read\n", file);
+ 		goto out_close;
+ 	}
  
-+extern void arch_switch_to_tt(struct task_struct *from, struct task_struct *to);
-+extern void arch_switch_to_skas(struct task_struct *from, struct task_struct *to);
-+
- static inline int do_get_thread_area(struct user_desc *info)
- {
- 	return CHOOSE_MODE_PROC(do_get_thread_area_tt, do_get_thread_area_skas, info);
+@@ -155,9 +160,9 @@ static int not_dead_yet(char *dir)
+ 
+ 	return err;
+ 
+- out_close:
++out_close:
+ 	close(fd);
+- out:
++out:
+ 	return 0;
+ }
+ 
 
 
 -------------------------------------------------------
