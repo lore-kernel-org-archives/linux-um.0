@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRs0o-0003HT-TU for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:34 -0700
+	id 1FRs0p-0003HF-Gn for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Apr 2006 07:32:35 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FRs0l-0003ZY-Dx
+	(Exim 4.44) id 1FRs0j-0003Zr-17
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:34 -0700
+	Fri, 07 Apr 2006 07:32:32 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060407143122.19201.48879.stgit@zion.home.lan>
+Message-Id: <20060407143110.19201.91963.stgit@zion.home.lan>
 In-Reply-To: <20060407142709.19201.99196.stgit@zion.home.lan>
 References: <20060407142709.19201.99196.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 14/17] uml: fix big stack user
+Subject: [uml-devel] [PATCH 09/17] uml: fix critical typo for TT mode
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,77 +25,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 07 Apr 2006 16:31:22 +0200
+Date: Fri, 07 Apr 2006 16:31:10 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Switch this proc from storing 4k of data (a whole path) on the stack to keeping
-it on the heap.
+Noticed this for a compilation-time warning, so I'm fixing it even for TT mode -
+this is not put_user, but copy_to_user, so we need a pointer to sp, not sp
+itself (we're trying to write the word pointed to by the "sp" var.).
 
-Maybe it's not called in process context but only in early boot context (where
-in UML you have a normal process stack on the host) but just to be safe, fix it.
-
-While at it some little readability simplifications.
+Jeff, have I misunderstood anything?
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/os-Linux/mem.c |   23 +++++++++++++----------
- 1 files changed, 13 insertions(+), 10 deletions(-)
+ arch/um/sys-i386/signal.c   |    2 +-
+ arch/um/sys-x86_64/signal.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 6ab372d..71bb90a 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -53,33 +53,36 @@ static void __init find_tempdir(void)
-  */
- int make_tempfile(const char *template, char **out_tempname, int do_unlink)
- {
--	char tempname[MAXPATHLEN];
-+	char *tempname;
- 	int fd;
+diff --git a/arch/um/sys-i386/signal.c b/arch/um/sys-i386/signal.c
+index f5d0e1c..618fd85 100644
+--- a/arch/um/sys-i386/signal.c
++++ b/arch/um/sys-i386/signal.c
+@@ -147,7 +147,7 @@ int copy_sc_to_user_tt(struct sigcontext
+ 	 * delivery.  The sp passed in is the original, and this needs
+ 	 * to be restored, so we stick it in separately.
+ 	 */
+-	err |= copy_to_user(&SC_SP(to), sp, sizeof(sp));
++	err |= copy_to_user(&SC_SP(to), &sp, sizeof(sp));
  
-+	tempname = malloc(MAXPATHLEN);
-+
- 	find_tempdir();
--	if (*template != '/')
-+	if (template[0] != '/')
- 		strcpy(tempname, tempdir);
- 	else
--		*tempname = 0;
-+		tempname[0] = '\0';
- 	strcat(tempname, template);
- 	fd = mkstemp(tempname);
- 	if(fd < 0){
- 		fprintf(stderr, "open - cannot create %s: %s\n", tempname,
- 			strerror(errno));
--		return -1;
-+		goto out;
- 	}
- 	if(do_unlink && (unlink(tempname) < 0)){
- 		perror("unlink");
--		return -1;
-+		goto out;
- 	}
- 	if(out_tempname){
--		*out_tempname = strdup(tempname);
--		if(*out_tempname == NULL){
--			perror("strdup");
--			return -1;
--		}
-+		*out_tempname = tempname;
-+	} else {
-+		free(tempname);
- 	}
- 	return(fd);
-+out:
-+	free(tempname);
-+	return -1;
- }
+ 	if(from_fp != NULL){
+ 		err |= copy_to_user(&to->fpstate, &to_fp, sizeof(to->fpstate));
+diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
+index e75c4e1..a4c46a8 100644
+--- a/arch/um/sys-x86_64/signal.c
++++ b/arch/um/sys-x86_64/signal.c
+@@ -137,7 +137,7 @@ int copy_sc_to_user_tt(struct sigcontext
+ 	 * delivery.  The sp passed in is the original, and this needs
+ 	 * to be restored, so we stick it in separately.
+ 	 */
+-	err |= copy_to_user(&SC_SP(to), sp, sizeof(sp));
++	err |= copy_to_user(&SC_SP(to), &sp, sizeof(sp));
  
- #define TEMPNAME_TEMPLATE "vm_file-XXXXXX"
+ 	if(from_fp != NULL){
+ 		err |= copy_to_user(&to->fpstate, &to_fp, sizeof(to->fpstate));
 
 
 -------------------------------------------------------
