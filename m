@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRs0i-0003GO-QN for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:28 -0700
+	id 1FRs0j-0003Ga-QS for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Apr 2006 07:32:29 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FRs0f-00079k-7e
+	(Exim 4.44) id 1FRs0j-0003Zb-0n
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:28 -0700
+	Fri, 07 Apr 2006 07:32:29 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060407143128.19201.32039.stgit@zion.home.lan>
+Message-Id: <20060407143059.19201.58265.stgit@zion.home.lan>
 In-Reply-To: <20060407142709.19201.99196.stgit@zion.home.lan>
 References: <20060407142709.19201.99196.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 17/17] uml: avoid warnings for diffent names for
-	an unsigned quadword
+Subject: [uml-devel] [PATCH 05/17] uml: fix format errors
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,51 +25,100 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 07 Apr 2006 16:31:29 +0200
+Date: Fri, 07 Apr 2006 16:31:00 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Since on some 64-bit systems __u64 is rightfully defined to unsigned long and
-GCC recognizes anyway unsigned long and unsigned long long as different, fix
-some types back to being unsigned long long to avoid warnings and errors (for
-prototype mismatch) on those systems.
-
-Thanks to the report by Wesley Emeneker wesleyemeneker (at) google (dot) com
+Now that GCC warns about format errors, fix them. Nothing able to cause a crash,
+however.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/cow.h     |    2 +-
- arch/um/drivers/cow_sys.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/drivers/slirp_user.c             |    2 +-
+ arch/um/os-Linux/drivers/ethertap_user.c |    2 +-
+ arch/um/os-Linux/skas/mem.c              |    4 ++--
+ arch/um/os-Linux/skas/process.c          |    4 ++--
+ arch/um/sys-i386/ptrace_user.c           |    2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/drivers/cow.h b/arch/um/drivers/cow.h
-index 04e3958..dc36b22 100644
---- a/arch/um/drivers/cow.h
-+++ b/arch/um/drivers/cow.h
-@@ -46,7 +46,7 @@ extern int file_reader(__u64 offset, cha
- extern int read_cow_header(int (*reader)(__u64, char *, int, void *),
- 			   void *arg, __u32 *version_out,
- 			   char **backing_file_out, time_t *mtime_out,
--			   __u64 *size_out, int *sectorsize_out,
-+			   unsigned long long *size_out, int *sectorsize_out,
- 			   __u32 *align_out, int *bitmap_offset_out);
+diff --git a/arch/um/drivers/slirp_user.c b/arch/um/drivers/slirp_user.c
+index b94c661..33c5f6e 100644
+--- a/arch/um/drivers/slirp_user.c
++++ b/arch/um/drivers/slirp_user.c
+@@ -104,7 +104,7 @@ static void slirp_close(int fd, void *da
+ 	}
  
- extern int write_cow_header(char *cow_file, int fd, char *backing_file,
-diff --git a/arch/um/drivers/cow_sys.h b/arch/um/drivers/cow_sys.h
-index 94de4ea..7a5b4af 100644
---- a/arch/um/drivers/cow_sys.h
-+++ b/arch/um/drivers/cow_sys.h
-@@ -28,7 +28,7 @@ static inline int cow_seek_file(int fd, 
- 	return(os_seek_file(fd, offset));
- }
+ 	if(err == 0) {
+-		printk("slirp_close: process %d has not exited\n");
++		printk("slirp_close: process %d has not exited\n", pri->pid);
+ 		return;
+ 	}
  
--static inline int cow_file_size(char *file, __u64 *size_out)
-+static inline int cow_file_size(char *file, unsigned long long *size_out)
+diff --git a/arch/um/os-Linux/drivers/ethertap_user.c b/arch/um/os-Linux/drivers/ethertap_user.c
+index 901b85e..8f49507 100644
+--- a/arch/um/os-Linux/drivers/ethertap_user.c
++++ b/arch/um/os-Linux/drivers/ethertap_user.c
+@@ -40,7 +40,7 @@ static void etap_change(int op, unsigned
+ 			int fd)
  {
- 	return(os_file_size(file, size_out));
+ 	struct addr_change change;
+-	void *output;
++	char *output;
+ 	int n;
+ 
+ 	change.what = op;
+diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
+index fbb080c..b3c11cf 100644
+--- a/arch/um/os-Linux/skas/mem.c
++++ b/arch/um/os-Linux/skas/mem.c
+@@ -82,8 +82,8 @@ static inline long do_syscall_stub(struc
+ 	if (offset) {
+ 		data = (unsigned long *)(mm_idp->stack +
+ 					 offset - UML_CONFIG_STUB_DATA);
+-		printk("do_syscall_stub : ret = %d, offset = %d, "
+-		       "data = 0x%x\n", ret, offset, data);
++		printk("do_syscall_stub : ret = %ld, offset = %ld, "
++		       "data = %p\n", ret, offset, data);
+ 		syscall = (unsigned long *)((unsigned long)data + data[0]);
+ 		printk("do_syscall_stub: syscall %ld failed, return value = "
+ 		       "0x%lx, expected return value = 0x%lx\n",
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index bbf34cb..045ae00 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -265,7 +265,7 @@ void userspace(union uml_pt_regs *regs)
+ 		if(err)
+ 			panic("userspace - could not resume userspace process, "
+ 			      "pid=%d, ptrace operation = %d, errno = %d\n",
+-			      op, errno);
++			      pid, op, errno);
+ 
+ 		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
+ 		if(err < 0)
+@@ -369,7 +369,7 @@ int copy_context_skas0(unsigned long new
+ 	 */
+ 	wait_stub_done(pid, -1, "copy_context_skas0");
+ 	if (child_data->err != UML_CONFIG_STUB_DATA)
+-		panic("copy_context_skas0 - stub-child reports error %d\n",
++		panic("copy_context_skas0 - stub-child reports error %ld\n",
+ 		      child_data->err);
+ 
+ 	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
+diff --git a/arch/um/sys-i386/ptrace_user.c b/arch/um/sys-i386/ptrace_user.c
+index 9f3bd8e..40aa885 100644
+--- a/arch/um/sys-i386/ptrace_user.c
++++ b/arch/um/sys-i386/ptrace_user.c
+@@ -57,7 +57,7 @@ static void write_debugregs(int pid, uns
+ 		if(ptrace(PTRACE_POKEUSR, pid, &dummy->u_debugreg[i],
+ 			  regs[i]) < 0)
+ 			printk("write_debugregs - ptrace failed on "
+-			       "register %d, value = 0x%x, errno = %d\n", i,
++			       "register %d, value = 0x%lx, errno = %d\n", i,
+ 			       regs[i], errno);
+ 	}
  }
 
 
