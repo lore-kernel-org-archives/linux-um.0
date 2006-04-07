@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FRs0i-0003G6-0F for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:28 -0700
+	id 1FRs0j-0003GU-IU for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Apr 2006 07:32:29 -0700
 Received: from [151.97.230.9] (helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FRs0e-00079m-8h
+	(Exim 4.44) id 1FRs0j-0003Zo-12
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Apr 2006 07:32:24 -0700
+	Fri, 07 Apr 2006 07:32:29 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060407143107.19201.23684.stgit@zion.home.lan>
+Message-Id: <20060407143105.19201.88376.stgit@zion.home.lan>
 In-Reply-To: <20060407142709.19201.99196.stgit@zion.home.lan>
 References: <20060407142709.19201.99196.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 08/17] uml: prepare fixing compilation output
+Subject: [uml-devel] [PATCH 07/17] uml: fix "extern-vs-static" proto conflict
+	in TLS code
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,48 +26,51 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 07 Apr 2006 16:31:08 +0200
+Date: Fri, 07 Apr 2006 16:31:05 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Move the build of user-offsets to arch/um/Kbuild, this will allow using the
-normal user-objs machinery. I had written this to fixup for a Kbuild change, but
-another fix was merged. This is still useful however.
+Move the prototype from arch-generic to arch-specific includes because on x86_64
+these functions are two static inlines.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/Kbuild   |    4 ++++
- arch/um/Makefile |    4 ++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/um/include/kern_util.h  |    4 ----
+ include/asm-um/ptrace-i386.h |    3 +++
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/Kbuild b/arch/um/Kbuild
-new file mode 100644
-index 0000000..ae2a254
---- /dev/null
-+++ b/arch/um/Kbuild
-@@ -0,0 +1,4 @@
-+ARCH_DIR := arch/um
+diff --git a/arch/um/include/kern_util.h b/arch/um/include/kern_util.h
+index 4255713..efa3d33 100644
+--- a/arch/um/include/kern_util.h
++++ b/arch/um/include/kern_util.h
+@@ -117,10 +117,6 @@ extern struct task_struct *get_task(int 
+ extern void machine_halt(void);
+ extern int is_syscall(unsigned long addr);
+ 
+-extern void arch_switch_to_tt(struct task_struct *from, struct task_struct *to);
+-
+-extern void arch_switch_to_skas(struct task_struct *from, struct task_struct *to);
+-
+ extern void free_irq(unsigned int, void *);
+ extern int cpu(void);
+ 
+diff --git a/include/asm-um/ptrace-i386.h b/include/asm-um/ptrace-i386.h
+index 30656c9..6e2528b 100644
+--- a/include/asm-um/ptrace-i386.h
++++ b/include/asm-um/ptrace-i386.h
+@@ -56,6 +56,9 @@ extern int do_get_thread_area_tt(struct 
+ extern int arch_switch_tls_skas(struct task_struct *from, struct task_struct *to);
+ extern int arch_switch_tls_tt(struct task_struct *from, struct task_struct *to);
+ 
++extern void arch_switch_to_tt(struct task_struct *from, struct task_struct *to);
++extern void arch_switch_to_skas(struct task_struct *from, struct task_struct *to);
 +
-+$(ARCH_DIR)/user-offsets.s: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.c
-+	$(CC) $(USER_CFLAGS) -S -o $@ $<
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 24790be..ef8d71d 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -202,8 +202,8 @@ endef
- $(ARCH_DIR)/include/uml-config.h : include/linux/autoconf.h
- 	$(call filechk,umlconfig)
- 
--$(ARCH_DIR)/user-offsets.s: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.c
--	$(CC) $(USER_CFLAGS) -S -o $@ $<
-+$(ARCH_DIR)/user-offsets.s: FORCE
-+	$(Q)$(MAKE) $(build)=$(ARCH_DIR) $@
- 
- define filechk_gen-asm-offsets
-         (set -e; \
+ static inline int do_get_thread_area(struct user_desc *info)
+ {
+ 	return CHOOSE_MODE_PROC(do_get_thread_area_tt, do_get_thread_area_skas, info);
 
 
 -------------------------------------------------------
