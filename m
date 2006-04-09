@@ -2,32 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FSXcM-0003p0-Ld for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Apr 2006 03:58:06 -0700
-Received: from smtp-vbr14.xs4all.nl ([194.109.24.34])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FSXcM-0001q8-Da
+	id 1FSZLt-0007mi-RP for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Apr 2006 05:49:13 -0700
+Received: from [212.34.199.38] (helo=etinarcadiaego.dyndns.org)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FSZLq-0008Vr-91
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Apr 2006 03:58:06 -0700
-Received: from xs2.xs4all.nl (xs2.xs4all.nl [194.109.21.3])
-	by smtp-vbr14.xs4all.nl (8.13.6/8.13.6) with ESMTP id k39AvtNV019765
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 9 Apr 2006 12:57:56 +0200 (CEST)
-	(envelope-from rjoris@xs4all.nl)
-Received: from xs2.xs4all.nl (rjoris@localhost [127.0.0.1])
-	by xs2.xs4all.nl (8.13.6/8.13.6) with ESMTP id k39AvtKL025136
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 9 Apr 2006 12:57:55 +0200 (CEST)
-	(envelope-from rjoris@xs4all.nl)
-Received: (from rjoris@localhost)
-	by xs2.xs4all.nl (8.13.6/8.13.6/Submit) id k39AvtMf025135
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 9 Apr 2006 12:57:55 +0200 (CEST) (envelope-from rjoris)
-From: Joris van Rantwijk <jvrantwijk@xs4all.nl>
-Message-ID: <20060409105755.GA24319@xs4all.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sun, 09 Apr 2006 05:49:14 -0700
+From: Stefano Melchior <stefano.melchior@openlabs.it>
+Subject: Re: [uml-devel] [RFC][PATCH] include /usr/lib/uml in PATH
+Message-ID: <20060409125221.GB7503@SteX>
+Reply-To: stefano.melchior@openlabs.it
+References: <20060402173445.GB5108@inferi.kami.home>
+	<200604040239.45495.blaisorblade@yahoo.it>
+	<20060405211153.GE8583@inferi.kami.home>
+	<200604070845.39534.blaisorblade@yahoo.it>
+	<20060407165205.GE23715@inferi.kami.home>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] uml: problem with 2G/2G host address space
+In-Reply-To: <20060407165205.GE23715@inferi.kami.home>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,53 +34,95 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 9 Apr 2006 12:57:55 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sun, 9 Apr 2006 14:52:21 +0200
+To: Mattia Dongili <malattia@linux.it>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>
 
-Hello,
 
-I believe the current version (2.6.16.2) of UML does not work properly
-on a i386 host with non-3G/1G address space split. The included patch
-attempts to fix this.
+--TakKZr9L6Hm6aLOc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On a i386 2.6.16.2 host configured with "3G/1G user/kernel split for
-full 1G low memory" (VMSPLIT_3G_OPT), I found that UML would crash
-on boot with the following error message:
-  mapping mmap stub failed, errno = 12
+On Fri, Apr 07, 2006 at 06:52:05PM +0200, Mattia Dongili wrote:
+Dear all,
+> > > > #define UML_LIB_PATH ":/usr/lib/uml"
+> >=20
+> > > what about a config option instead? CONFIG_UML_NET_PATH
+> >=20
+> > Don't think so, that's not supposed to be changed according to any conf=
+ig=20
+> > option or I can't see that. Unless on 64-bit system that's /usr/lib64/u=
+ml,=20
+> > and in that case it makes sense to have CONFIG_XXX =3D=20
+> > "/usr/lib/uml" (without :, add them only in the source, i.e. insulate d=
+etails=20
+> > away).
+>=20
+> Yes, that was what I meant. However it's probably not worth the effort
+> yet.
+>=20
+> > > > 19 -> strlen(UML_LIB_PATH)
+> > > > in snprintf, "PATH=3D%s:/usr/lib/uml" -> "PATH=3D%s" UML_LIB_PATH
+> > > >
+> > > > (using string literal concatenation)
+> >=20
+> > > here's an updated patch, I added a check for current PATH=3D=3D"" to =
+avoid
+> > > touching the PATH variable when empty (again, kind of keeping the same
+> > > behaviour of a clean execvp, I mean it makes no sense to append
+> > > /usr/lib/uml and not /bin:/usr/bin too).
+> >=20
+> > In that case, you should append both IMHO - empty PATH and no PATH shou=
+ld be=20
+> > treated the same way, I think.
+>=20
+> updated patch attached, I hope you like the if-statement .
+>=20
+> Description:
+> append /usr/lib/uml to the existing PATH environment variable to let
+> execvp search uml_net in FHS compliant locations.
+at this point, is it the case to have also this patch for the
+uml-utilities in order to install uml-net directly on the FHS complaint
+path (uml-net):
 
-It soon made sense to me that a 3G/1G configured UML would crash like
-this, but I then found that UML 2.6.16.2 configured for 2G/2G crashed
-in exactly the same way. I think this is due to the fact that STUB_CODE
-and STUB_DATA are fixed at the 3G/1G settings. After changing these
-settings, everything seems to work properly in 2G/2G mode.
+--- uml_net/Makefile   2003-02-08 05:04:55.000000000 +0100
++++ uml_net/Makefile   2006-04-09 12:48:27.000000000 +0200
+@@ -3,7 +3,7 @@
+ BIN =3D uml_net
+ CFLAGS =3D -g -Wall $(TUNTAP)
+=20
+-BIN_DIR ?=3D /usr/bin
++BIN_DIR ?=3D /usr/lib/uml
+=20
+ OBJS =3D ethertap.o host.o output.o slip.o uml_net.o
 
-Bye,
-  Joris.
+What do you think?
 
-diff -urN -U 5 linux-2.6.16.2/arch/um/Kconfig.i386 linux-2.6.16.2-joris/arch/um/Kconfig.i386
---- linux-2.6.16.2/arch/um/Kconfig.i386	2006-04-07 18:56:47.000000000 +0200
-+++ linux-2.6.16.2-joris/arch/um/Kconfig.i386	2006-04-09 11:33:46.000000000 +0200
-@@ -33,15 +33,17 @@
- 	However, this it experimental on 32-bit architectures, so if unsure say
- 	N (on x86-64 it's automatically enabled, instead, as it's safe there).
- 
- config STUB_CODE
- 	hex
--	default 0xbfffe000
-+	default 0xbfffe000 if !HOST_2G_2G
-+	default 0x7fffe000 if HOST_2G_2G
- 
- config STUB_DATA
- 	hex
--	default 0xbffff000
-+	default 0xbffff000 if !HOST_2G_2G
-+	default 0x7ffff000 if HOST_2G_2G
- 
- config STUB_START
- 	hex
- 	default STUB_CODE
- 
---
+Cheers
+
+SteX
+--=20
+Stefano Melchior, GPG key =3D D52DF829 - <stefano.melchior@openlabs.it>
+http://etinarcadiaego.dyndns.org    --     http://www.stex.name
+Skype ID "stefanomelchior"
+
+--TakKZr9L6Hm6aLOc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iQCUAwUBRDkDhYlnkxrVLfgpAQI5AAP4xs3mOS3XvMC9FxxUkfvPx59FQ7ao3WFO
+SfjFpr/YZq6TO3iSZhzRDt93d8vWf918iyMFqEevMztQ+k2C68a6Sk8nqMStfQ/e
+tn/t7ylBnGcp27Y3eCdj0Osnw0CSFmHcL+sUg4tKGGp04N5/na0ss+IapmAAHv4E
+Ng8NJpfEKA==
+=T3A/
+-----END PGP SIGNATURE-----
+
+--TakKZr9L6Hm6aLOc--
 
 
 -------------------------------------------------------
