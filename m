@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FU6PF-0001Pb-SN for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Apr 2006 11:19:01 -0700
+	id 1FU6Pj-0001UJ-3R for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Apr 2006 11:19:31 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FU6PE-0000ws-Jk
+	(Exim 4.44) id 1FU6Pi-00019h-Jj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Apr 2006 11:19:01 -0700
-Message-Id: <200604131720.k3DHK2N3004679@ccure.user-mode-linux.org>
+	Thu, 13 Apr 2006 11:19:31 -0700
+Message-Id: <200604131720.k3DHKOTe004697@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [RFC] PATCH 1/4 - Time virtualization : namespace
+Subject: [uml-devel] [RFC] PATCH 2/4 - Time virtualization : unshare support
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,86 +25,93 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Apr 2006 13:20:00 -0400
+Date: Thu, 13 Apr 2006 13:20:20 -0400
 To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Add time namespace, which contains an offset from the system time.  
-In a namespace, gettimeofday gets the system time and adds the
-namespace offset to it.  settimeofday, which is unprivileged in a
-namespace, calculates the difference between the system time and the
-new namespace time and sets that as the namespace offset.
+Add time namespace support to unshare, controlled by CLONE_TIME.
 
-Index: linux-2.6.17-mm-vtime/kernel/time.c
-===================================================================
---- linux-2.6.17-mm-vtime.orig/kernel/time.c	2006-04-13 13:48:03.000000000 -0400
-+++ linux-2.6.17-mm-vtime/kernel/time.c	2006-04-13 13:48:32.000000000 -0400
-@@ -103,6 +103,11 @@ asmlinkage long sys_gettimeofday(struct 
- 	if (likely(tv != NULL)) {
- 		struct timeval ktv;
- 		do_gettimeofday(&ktv);
-+		if(current->time_ns != NULL){
-+			s64 now = timeval_to_ns(&ktv);
-+			now += current->time_ns->offset;
-+			ktv = ns_to_timeval(now);
-+		}
- 		if (copy_to_user(tv, &ktv, sizeof(ktv)))
- 			return -EFAULT;
- 	}
-@@ -158,6 +163,18 @@ int do_sys_settimeofday(struct timespec 
- 	if (tv && !timespec_valid(tv))
- 		return -EINVAL;
- 
-+	if(current->time_ns != NULL){
-+		struct timeval now;
-+		s64 old, new;
-+
-+		do_gettimeofday(&now);
-+		old = timeval_to_ns(&now);
-+		new = timespec_to_ns(tv);
-+		current->time_ns->offset = new - old;
-+
-+		return 0;
-+	}
-+
- 	error = security_settime(tv, tz);
- 	if (error)
- 		return error;
 Index: linux-2.6.17-mm-vtime/include/linux/sched.h
 ===================================================================
---- linux-2.6.17-mm-vtime.orig/include/linux/sched.h	2006-04-13 13:48:03.000000000 -0400
-+++ linux-2.6.17-mm-vtime/include/linux/sched.h	2006-04-13 13:48:32.000000000 -0400
-@@ -715,6 +715,11 @@ enum sleep_type {
- 	SLEEP_INTERRUPTED,
- };
+--- linux-2.6.17-mm-vtime.orig/include/linux/sched.h	2006-04-13 13:48:32.000000000 -0400
++++ linux-2.6.17-mm-vtime/include/linux/sched.h	2006-04-13 13:49:11.000000000 -0400
+@@ -65,6 +65,7 @@ struct bio;
+ #define CLONE_UNTRACED		0x00800000	/* set if the tracing process can't force CLONE_PTRACE on this clone */
+ #define CLONE_CHILD_SETTID	0x01000000	/* set the TID in the child */
+ #define CLONE_STOPPED		0x02000000	/* Start in stopped state */
++#define CLONE_TIME		0x04000000	/* Make a new time namespace */
  
-+struct time_ns {
-+	atomic_t counter;
-+	s64 offset;
-+};
-+
- struct task_struct {
- 	volatile long state;	/* -1 unrunnable, 0 runnable, >0 stopped */
- 	struct thread_info *thread_info;
-@@ -838,6 +843,7 @@ struct task_struct {
- /* signal handlers */
- 	struct signal_struct *signal;
- 	struct sighand_struct *sighand;
-+	struct time_ns *time_ns;
- 
- 	sigset_t blocked, real_blocked;
- 	sigset_t saved_sigmask;		/* To be restored with TIF_RESTORE_SIGMASK */
-Index: linux-2.6.17-mm-vtime/include/linux/init_task.h
+ /*
+  * List of flags we want to share for kernel threads,
+Index: linux-2.6.17-mm-vtime/kernel/fork.c
 ===================================================================
---- linux-2.6.17-mm-vtime.orig/include/linux/init_task.h	2006-04-13 13:48:03.000000000 -0400
-+++ linux-2.6.17-mm-vtime/include/linux/init_task.h	2006-04-13 13:48:32.000000000 -0400
-@@ -98,6 +98,7 @@ extern struct group_info init_groups;
- 	.tasks		= LIST_HEAD_INIT(tsk.tasks),			\
- 	.ptrace_children= LIST_HEAD_INIT(tsk.ptrace_children),		\
- 	.ptrace_list	= LIST_HEAD_INIT(tsk.ptrace_list),		\
-+	.time_ns	= NULL,						\
- 	.real_parent	= &tsk,						\
- 	.parent		= &tsk,						\
- 	.children	= LIST_HEAD_INIT(tsk.children),			\
+--- linux-2.6.17-mm-vtime.orig/kernel/fork.c	2006-04-13 13:48:02.000000000 -0400
++++ linux-2.6.17-mm-vtime/kernel/fork.c	2006-04-13 13:49:11.000000000 -0400
+@@ -1563,6 +1563,25 @@ static int unshare_semundo(unsigned long
+ 	return 0;
+ }
+ 
++static int unshare_time(unsigned long unshare_flags, struct time_ns **new)
++{
++	if(unshare_flags & CLONE_TIME){
++		*new = kmalloc(sizeof(struct time_ns), GFP_KERNEL);
++		if(*new == NULL)
++			return -ENOMEM;
++		atomic_set(&(*new)->counter, 1);
++		(*new)->offset = 0;
++	}
++
++	return 0;
++}
++
++static void put_time_ns(struct time_ns *time)
++{
++	if(atomic_sub_and_test(1, &time->counter))
++		kfree(time);
++}
++
+ /*
+  * unshare allows a process to 'unshare' part of the process
+  * context which was originally shared using clone.  copy_*
+@@ -1580,6 +1599,7 @@ asmlinkage long sys_unshare(unsigned lon
+ 	struct mm_struct *mm, *new_mm = NULL, *active_mm = NULL;
+ 	struct files_struct *fd, *new_fd = NULL;
+ 	struct sem_undo_list *new_ulist = NULL;
++	struct time_ns *time, *new_time = NULL;
+ 
+ 	check_unshare_flags(&unshare_flags);
+ 
+@@ -1603,8 +1623,11 @@ asmlinkage long sys_unshare(unsigned lon
+ 		goto bad_unshare_cleanup_vm;
+ 	if ((err = unshare_semundo(unshare_flags, &new_ulist)))
+ 		goto bad_unshare_cleanup_fd;
++	if ((err = unshare_time(unshare_flags, &new_time)))
++		goto bad_unshare_cleanup_fd;
+ 
+-	if (new_fs || new_ns || new_sigh || new_mm || new_fd || new_ulist) {
++	if (new_fs || new_ns || new_sigh || new_mm || new_fd || new_ulist ||
++		new_time) {
+ 
+ 		task_lock(current);
+ 
+@@ -1641,9 +1664,18 @@ asmlinkage long sys_unshare(unsigned lon
+ 			new_fd = fd;
+ 		}
+ 
++		if(new_time) {
++			time = current->time_ns;
++			current->time_ns = new_time;
++			new_time = time;
++		}
++
+ 		task_unlock(current);
+ 	}
+ 
++	if (new_time)
++		put_time_ns(new_time);
++
+ bad_unshare_cleanup_fd:
+ 	if (new_fd)
+ 		put_files_struct(new_fd);
 
 
 
