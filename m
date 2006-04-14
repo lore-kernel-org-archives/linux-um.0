@@ -2,21 +2,34 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FURDi-0002UP-6Y for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Apr 2006 09:32:30 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1FUX1C-0007xV-5u for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 14 Apr 2006 15:43:58 -0700
+Received: from mail.scgiservices.com ([198.107.3.67])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FURDg-0000km-RA
+	(Exim 4.44) id 1FUX1B-0003Jb-4H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Apr 2006 09:32:30 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: [RFC] PATCH 0/4 - Time virtualization
-Message-ID: <20060414153337.GA4152@ccure.user-mode-linux.org>
-References: <7B4268E5ACB878429B58D4BE5B780E83507BC3@NWS-EXCH2.nws.oregonstate.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7B4268E5ACB878429B58D4BE5B780E83507BC3@NWS-EXCH2.nws.oregonstate.edu>
+	Fri, 14 Apr 2006 15:43:58 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by mail.scgiservices.com (Postfix) with ESMTP id A397A3C508
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 14 Apr 2006 15:43:55 -0700 (PDT)
+Received: from mail.scgiservices.com ([127.0.0.1])
+	by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 15401-03 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 14 Apr 2006 15:43:54 -0700 (PDT)
+Received: from SCG2 (c-67-160-154-69.hsd1.or.comcast.net [67.160.154.69])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mail.scgiservices.com (Postfix) with ESMTP id BDBE83C4FB
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 14 Apr 2006 15:43:54 -0700 (PDT)
+From: "Anthony Brock" <brocka@sterlingcgi.com>
+Message-ID: <OJEEKGNKKDLJIEPBEJMIIEPCCAAA.brocka@sterlingcgi.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] TLS, Debian and 2.6.16.5
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,17 +41,24 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 14 Apr 2006 11:33:37 -0400
-To: "Brock, Anthony - NET" <Anthony.Brock@oregonstate.edu>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 14 Apr 2006 15:43:51 -0700
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Apr 14, 2006 at 08:39:01AM -0700, Brock, Anthony - NET wrote:
-> I'm assuming that this pulls "UTC" from the host and allows the guest to
-> have an offset "UTC" ... is this essentially correct?
+I'm in the process of setting up a new Debian box that needs a decent source
+of entropy. So, I have downloaded and installed a relatively new UML kernel:
 
-Basically, yes.
+www:/usr/share/doc/rng-tools# uname -a
+Linux www.myserver.com 2.6.16.5 #1 Fri Apr 14 11:44:51 PDT 2006 i686
+GNU/Linux
 
-		Jeff
+I then downloaded and installed the rng-tools package. Unfortunately, this
+software segments everything I try to use it. However, when I rename
+/lib/tls to /lib/tls.disabled the issue disappears. Are the TLS patches for
+UML included in this kernel? If not, is there a stable set of patches to add
+it?
+
+Tony
+
 
 
 -------------------------------------------------------
