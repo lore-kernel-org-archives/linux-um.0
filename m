@@ -1,19 +1,34 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FU6QP-0001b3-LS for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Apr 2006 11:20:13 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1FUCDx-0001Ju-QM for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Apr 2006 17:31:45 -0700
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FU6QO-0001Kz-BS
+	(Exim 4.44) id 1FUCDx-00015b-FM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Apr 2006 11:20:13 -0700
-Message-Id: <200604131721.k3DHLDBs004743@ccure.user-mode-linux.org>
+	Thu, 13 Apr 2006 17:31:45 -0700
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e1.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k3E0VVsX024953 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 13 Apr 2006 20:31:31 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.8) with ESMTP id
+	k3E0VVJJ238870 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 13 Apr 2006 20:31:31 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id k3E0VVQB016109
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 13 Apr 2006 20:31:31 -0400
+From: john stultz <johnstul@us.ibm.com>
+In-Reply-To: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org>
+References: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org>
+Content-Type: text/plain
+Message-Id: <1144974688.8548.26.camel@cog.beaverton.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [RFC] PATCH 4/4 - Time virtualization : UML support
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [RFC] PATCH 0/4 - Time virtualization
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,228 +40,60 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 13 Apr 2006 13:21:11 -0400
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 13 Apr 2006 17:31:27 -0700
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Add UML support for time namespaces.  We call unshare(CLONE_TIME) to create
-the new namespace, set gettimeofday to run untraced, and make settimeofday
-call the host's settimeofday to update the namespace offset rather than
-maintaining the offset locally.
+On Thu, 2006-04-13 at 13:19 -0400, Jeff Dike wrote:
+> This set of patches implements 
+> 	time virtualization by creating a time namespace
+> 	an interface to it through unshare
+> 	a ptrace extension to allow UML to take advantage of this
+> 	UML support
+> 
+> The guts of the namespace is just an offset from the system time.  Within
+> the container, gettimeofday adds this offset to the system time.  settimeofday
+> changes the offset without touching the system time.  As such, within a 
+> namespace, settimeofday is unprivileged.
+> 
+> The interface to it is through unshare(CLONE_TIME).  This creates the new
+> namespace, initialized with a zero offset from the system time.
+> 
+> The advantage of this for UML is that it can create a time namespace for itself
+> and subsequently let its process' gettimeofday run on the host, without
+> being intercepted and run inside UML.  As such, it should basically run at
+> native speed.
+> 
+> In order to allow this, we need selective system call interception.  The
+> third patch implements PTRACE_SYSCALL_MASK, which specifies, through a 
+> bitmask, which system calls are intercepted and which aren't.
+> 
+> Finally, the UML support is straightforward.  It calls unshare(CLONE_TIME)
+> to create the new namespace, sets gettimeofday to run without being 
+> intercepted, and makes settimeofday call the host's settimeofday instead
+> of maintaining the time offset itself.
+> 
+> As expected, a gettimeofday loop runs basically at native speed.  The two
+> quick tests I did had it running inside UML at 98.8 and 99.2 % of native.
+> 
+> BUG - as I was writing this, I realized that refcounting of the time_ns
+> structures is wrong - they need to be incremented at process creation and
+> decremented at process exit.
 
-Index: linux-2.6.17-mm-vtime/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6.17-mm-vtime.orig/arch/um/os-Linux/skas/process.c	2006-04-13 13:48:01.000000000 -0400
-+++ linux-2.6.17-mm-vtime/arch/um/os-Linux/skas/process.c	2006-04-13 13:50:34.000000000 -0400
-@@ -17,6 +17,7 @@
- #include <sys/time.h>
- #include <asm/unistd.h>
- #include <asm/types.h>
-+#include <asm/bitops.h>
- #include "user.h"
- #include "sysdep/ptrace.h"
- #include "user_util.h"
-@@ -209,11 +210,16 @@ static int userspace_tramp(void *stack)
- #define NR_CPUS 1
- int userspace_pid[NR_CPUS];
- 
-+#ifndef PTRACE_SYSCALL_MASK
-+#define PTRACE_SYSCALL_MASK	  27
-+#endif
-+
- int start_userspace(unsigned long stub_stack)
- {
- 	void *stack;
- 	unsigned long sp;
- 	int pid, status, n, flags;
-+	char mask[(KERNEL_NR_SYSCALLS + 7) / 8];
- 
- 	stack = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE | PROT_EXEC,
- 		     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-@@ -242,6 +248,12 @@ int start_userspace(unsigned long stub_s
- 		panic("start_userspace : PTRACE_OLDSETOPTIONS failed, errno=%d\n",
- 		      errno);
- 
-+	memset(mask, 0xff, sizeof(mask));
-+	clear_bit(__NR_gettimeofday, mask);
-+	if(ptrace(PTRACE_SYSCALL_MASK, pid, mask, sizeof(mask)) < 0)
-+		panic("start_userspace : PTRACE_SYSCALL_MASK failed, "
-+		      "errno = %d\n", errno);
-+
- 	if(munmap(stack, PAGE_SIZE) < 0)
- 		panic("start_userspace : munmap failed, errno = %d\n", errno);
- 
-@@ -321,6 +333,7 @@ int copy_context_skas0(unsigned long new
- 	struct stub_data *child_data = (struct stub_data *) new_stack;
- 	__u64 new_offset;
- 	int new_fd = phys_mapping(to_phys((void *)new_stack), &new_offset);
-+	char mask[(KERNEL_NR_SYSCALLS + 7) / 8];
- 
- 	/* prepare offset and fd of child's stack as argument for parent's
- 	 * and child's mmap2 calls
-@@ -377,6 +390,12 @@ int copy_context_skas0(unsigned long new
- 		panic("copy_context_skas0 : PTRACE_OLDSETOPTIONS failed, "
- 		      "errno = %d\n", errno);
- 
-+	memset(mask, 0xff, sizeof(mask));
-+	clear_bit(__NR_gettimeofday, mask);
-+	if(ptrace(PTRACE_SYSCALL_MASK, pid, mask, sizeof(mask)) < 0)
-+		panic("start_userspace : PTRACE_SYSCALL_MASK failed, "
-+		      "errno = %d\n", errno);
-+
- 	return pid;
- }
- 
-@@ -492,11 +511,18 @@ static void (*cb_proc)(void *arg);
- static void *cb_arg;
- static sigjmp_buf *cb_back;
- 
-+#ifndef CLONE_TIME
-+#define CLONE_TIME		0x04000000
-+#endif
-+
- int start_idle_thread(void *stack, void *switch_buf_ptr, void **fork_buf_ptr)
- {
- 	sigjmp_buf **switch_buf = switch_buf_ptr;
--	int n, enable;
-+	int n, enable, err;
- 
-+	err = unshare(CLONE_TIME);
-+	if(err)
-+		panic("Couldn't create time namespace, err = %d", err);
- 	set_handler(SIGWINCH, (__sighandler_t) sig_handler,
- 		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGALRM,
- 		    SIGVTALRM, -1);
-Index: linux-2.6.17-mm-vtime/arch/um/include/sysdep-i386/kernel-offsets.h
-===================================================================
---- linux-2.6.17-mm-vtime.orig/arch/um/include/sysdep-i386/kernel-offsets.h	2006-04-13 13:48:01.000000000 -0400
-+++ linux-2.6.17-mm-vtime/arch/um/include/sysdep-i386/kernel-offsets.h	2006-04-13 13:50:34.000000000 -0400
-@@ -1,6 +1,7 @@
- #include <linux/stddef.h>
- #include <linux/sched.h>
- #include <linux/elf.h>
-+#include <asm/unistd.h>
- 
- #define DEFINE(sym, val) \
- 	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
-@@ -16,6 +17,7 @@
- void foo(void)
- {
- 	OFFSET(HOST_TASK_DEBUGREGS, task_struct, thread.arch.debugregs);
-+	DEFINE(KERNEL_NR_SYSCALLS, NR_syscalls);
- #ifdef CONFIG_MODE_TT
- 	OFFSET(HOST_TASK_EXTERN_PID, task_struct, thread.mode.tt.extern_pid);
- #endif
-Index: linux-2.6.17-mm-vtime/arch/um/include/os.h
-===================================================================
---- linux-2.6.17-mm-vtime.orig/arch/um/include/os.h	2006-04-13 13:48:01.000000000 -0400
-+++ linux-2.6.17-mm-vtime/arch/um/include/os.h	2006-04-13 13:50:34.000000000 -0400
-@@ -281,6 +281,7 @@ extern void disable_timer(void);
- extern void user_time_init(void);
- extern void uml_idle_timer(void);
- extern unsigned long long os_nsecs(void);
-+extern int os_set_time(unsigned long long nsecs);
- 
- /* skas/mem.c */
- extern long run_syscall_stub(struct mm_id * mm_idp,
-Index: linux-2.6.17-mm-vtime/arch/um/kernel/time.c
-===================================================================
---- linux-2.6.17-mm-vtime.orig/arch/um/kernel/time.c	2006-04-13 13:48:01.000000000 -0400
-+++ linux-2.6.17-mm-vtime/arch/um/kernel/time.c	2006-04-13 13:50:50.000000000 -0400
-@@ -129,7 +129,7 @@ void do_gettimeofday(struct timeval *tv)
- 	clock_was_set();
- }
- 
--int do_settimeofday(struct timespec *tv)
-+int do_settimeofday()
- {
- 	struct timeval now;
- 	unsigned long flags;
-@@ -138,15 +138,7 @@ int do_settimeofday(struct timespec *tv)
- 	if ((unsigned long) tv->tv_nsec >= UM_NSEC_PER_SEC)
- 		return -EINVAL;
- 
--	tv_in.tv_sec = tv->tv_sec;
--	tv_in.tv_usec = tv->tv_nsec / 1000;
--
--	flags = time_lock();
--	gettimeofday(&now, NULL);
--	timersub(&tv_in, &now, &local_offset);
--	time_unlock(flags);
--
--	return(0);
-+	return os_set_time(tv);
- }
- 
- void idle_sleep(int secs)
-Index: linux-2.6.17-mm-vtime/arch/um/kernel/time_kern.c
-===================================================================
---- linux-2.6.17-mm-vtime.orig/arch/um/kernel/time_kern.c	2006-04-13 13:48:01.000000000 -0400
-+++ linux-2.6.17-mm-vtime/arch/um/kernel/time_kern.c	2006-04-13 13:50:34.000000000 -0400
-@@ -151,19 +151,6 @@ void do_gettimeofday(struct timeval *tv)
- 	tv->tv_usec = (unsigned long) nsecs / NSEC_PER_USEC;
- }
- 
--static inline void set_time(unsigned long long nsecs)
--{
--	unsigned long long now;
--	unsigned long flags;
--
--	spin_lock_irqsave(&timer_spinlock, flags);
--	now = os_nsecs();
--	local_offset = nsecs - now;
--	spin_unlock_irqrestore(&timer_spinlock, flags);
--
--	clock_was_set();
--}
--
- long um_stime(int __user *tptr)
- {
- 	int value;
-@@ -171,16 +158,12 @@ long um_stime(int __user *tptr)
- 	if (get_user(value, tptr))
-                 return -EFAULT;
- 
--	set_time((unsigned long long) value * NSEC_PER_SEC);
--
--	return 0;
-+	return os_set_time((unsigned long long) value * NSEC_PER_SEC);
- }
- 
- int do_settimeofday(struct timespec *tv)
- {
--	set_time((unsigned long long) tv->tv_sec * NSEC_PER_SEC + tv->tv_nsec);
--
--	return 0;
-+	return os_set_time((unsigned long long) tv->tv_sec * NSEC_PER_SEC + tv->tv_nsec);
- }
- 
- void timer_handler(int sig, union uml_pt_regs *regs)
-Index: linux-2.6.17-mm-vtime/arch/um/os-Linux/time.c
-===================================================================
---- linux-2.6.17-mm-vtime.orig/arch/um/os-Linux/time.c	2006-04-13 13:48:01.000000000 -0400
-+++ linux-2.6.17-mm-vtime/arch/um/os-Linux/time.c	2006-04-13 13:50:34.000000000 -0400
-@@ -126,3 +126,21 @@ void user_time_init(void)
- 		    SIGVTALRM, SIGUSR2, -1);
- 	set_interval(ITIMER_VIRTUAL);
- }
-+
-+#define NSEC_PER_USEC 1000
-+#define NSEC_PER_SEC (1000000 * NSEC_PER_USEC)
-+
-+int os_set_time(unsigned long long nsecs)
-+{
-+	struct timeval tv;
-+	int err;
-+
-+	tv.tv_sec = nsecs / NSEC_PER_SEC;
-+	nsecs -= tv.tv_sec * NSEC_PER_SEC;
-+	tv.tv_usec = (unsigned long) nsecs / NSEC_PER_USEC;
-+
-+	err = settimeofday(&tv, NULL);
-+	if(err)
-+		return -errno;
-+	return 0;
-+}
+
+Looks interesting. I've never quite understood the need for different
+time domains, it only allows you to run one domain with the incorrect
+time, but I'm sure there is some use case that is desired.
+
+I'm not psyched about possible namespace vs nanosecond confusion w/
+terms like "time_ns", but that's pretty minor.
+
+Also I hope you're not wanting to deal w/ NTP adjustments between
+domains that have the incorrect time? That would be very ugly.
+
+thanks
+-john
+
 
 
 
