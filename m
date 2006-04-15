@@ -1,35 +1,19 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FUXVg-0002gr-Lm for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Apr 2006 16:15:28 -0700
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FUXVf-000175-2C
+	id 1FUlnP-0002N0-Ry for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 15 Apr 2006 07:30:43 -0700
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FUlnP-0005xS-7m
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Apr 2006 16:15:28 -0700
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1FUXVa-0000jy-Tt for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 Apr 2006 01:15:22 +0200
-Received: from dslb-084-061-142-114.pools.arcor-ip.net ([84.61.142.114])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 15 Apr 2006 01:15:22 +0200
-Received: from skoehler by dslb-084-061-142-114.pools.arcor-ip.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 15 Apr 2006 01:15:22 +0200
-From: =?ISO-8859-1?Q?Sven_K=F6hler?= <skoehler@upb.de>
-Message-ID: <e1pae6$21m$1@sea.gmane.org>
-References: <OJEEKGNKKDLJIEPBEJMIIEPCCAAA.brocka@sterlingcgi.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigE4B7F932F60E8CF09BC1CE5E"
-In-Reply-To: <OJEEKGNKKDLJIEPBEJMIIEPCCAAA.brocka@sterlingcgi.com>
-Subject: [uml-devel] Re: TLS, Debian and 2.6.16.5
+	Sat, 15 Apr 2006 07:30:43 -0700
+From: Adrian Bunk <bunk@stusta.de>
+Message-ID: <20060415143036.GI15022@stusta.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [uml-devel] [RFC: 2.6 patch] fix the INIT_ENV_ARG_LIMIT dependencies
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,53 +25,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 15 Apr 2006 01:15:15 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 15 Apr 2006 16:30:36 +0200
+To: jdike@karaya.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Jean-Luc Leger <reiga@dspnet.fr.eu.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE4B7F932F60E8CF09BC1CE5E
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+This patch fixes the INIT_ENV_ARG_LIMIT dependencies to what seems to 
+have been intended.
 
-> I'm in the process of setting up a new Debian box that needs a decent s=
-ource
-> of entropy. So, I have downloaded and installed a relatively new UML ke=
-rnel:
->=20
-> www:/usr/share/doc/rng-tools# uname -a
-> Linux www.myserver.com 2.6.16.5 #1 Fri Apr 14 11:44:51 PDT 2006 i686
-> GNU/Linux
->=20
-> I then downloaded and installed the rng-tools package. Unfortunately, t=
-his
-> software segments everything I try to use it. However, when I rename
-> /lib/tls to /lib/tls.disabled the issue disappears. Are the TLS patches=
- for
-> UML included in this kernel? If not, is there a stable set of patches t=
-o add
-> it?
+Spotted by Jean-Luc Leger.
 
-2.6.17 includes TLS support.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-My Gentoo had some problems with iptables, so i had to revert to 2.6.16.
-
-
---------------enigE4B7F932F60E8CF09BC1CE5E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.1 (Cygwin)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFEQC0D7Ww7FjRBE4ARAvCPAKDl9tUXm1qb1xuO2RotEcrfDN2P7wCghsuS
-k+HxeVyv0mAeyNptK6+hB9k=
-=EGsO
------END PGP SIGNATURE-----
-
---------------enigE4B7F932F60E8CF09BC1CE5E--
-
+--- linux-2.6.17-rc1-mm2-full/init/Kconfig.old	2006-04-15 16:26:46.000000000 +0200
++++ linux-2.6.17-rc1-mm2-full/init/Kconfig	2006-04-15 16:27:12.000000000 +0200
+@@ -46,8 +46,8 @@
+ 
+ config INIT_ENV_ARG_LIMIT
+ 	int
+-	default 32 if !USERMODE
+-	default 128 if USERMODE
++	default 32 if !UML
++	default 128 if UML
+ 	help
+ 	  Maximum of each of the number of arguments and environment
+ 	  variables passed to init from the kernel command line.
 
 
 -------------------------------------------------------
