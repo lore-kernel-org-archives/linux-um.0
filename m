@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FW9JL-0001A3-Mu for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Apr 2006 02:49:23 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FW9JJ-0007Rw-TR
+	id 1FW9PZ-0001qy-1D for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Apr 2006 02:55:49 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FW9PW-0000zi-LZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Apr 2006 02:49:23 -0700
+	Wed, 19 Apr 2006 02:55:49 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [RFC][PATCH] include /usr/lib/uml in PATH
-References: <20060402173445.GB5108@inferi.kami.home>
-	<20060407165205.GE23715@inferi.kami.home>
-	<20060409125221.GB7503@SteX>
-In-Reply-To: <20060409125221.GB7503@SteX>
+Subject: Re: [uml-devel] Re: TLS, Debian and 2.6.16.5
+References: <OJEEKGNKKDLJIEPBEJMIIEPCCAAA.brocka@sterlingcgi.com>
+	<e1pae6$21m$1@sea.gmane.org>
+In-Reply-To: <e1pae6$21m$1@sea.gmane.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200604191152.10992.blaisorblade@yahoo.it>
+Message-Id: <200604191158.34889.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,56 +28,44 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 Apr 2006 11:52:10 +0200
-To: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it
-Cc: Mattia Dongili <malattia@linux.it>, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>
+Date: Wed, 19 Apr 2006 11:58:34 +0200
+Content-Transfer-Encoding: quoted-printable
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Sven =?iso-8859-1?q?K=F6hler?= <skoehler@upb.de>
 
-On Sunday 09 April 2006 14:52, Stefano Melchior wrote:
-> On Fri, Apr 07, 2006 at 06:52:05PM +0200, Mattia Dongili wrote:
-> Dear all,
+On Saturday 15 April 2006 01:15, Sven K=F6hler wrote:
+> > I'm in the process of setting up a new Debian box that needs a decent
+> > source of entropy. So, I have downloaded and installed a relatively new
+> > UML kernel:
+> >
+> > www:/usr/share/doc/rng-tools# uname -a
+> > Linux www.myserver.com 2.6.16.5 #1 Fri Apr 14 11:44:51 PDT 2006 i686
+> > GNU/Linux
+> >
+> > I then downloaded and installed the rng-tools package. Unfortunately,
+> > this software segments everything I try to use it. However, when I rena=
+me
+> > /lib/tls to /lib/tls.disabled the issue disappears. Are the TLS patches
+> > for UML included in this kernel? If not, is there a stable set of patch=
+es
+> > to add it?
 
-> > > > > #define UML_LIB_PATH ":/usr/lib/uml"
+> 2.6.17 includes TLS support.
 
-> > > > what about a config option instead? CONFIG_UML_NET_PATH
+> My Gentoo had some problems with iptables, so i had to revert to 2.6.16.
 
-> > > Don't think so, that's not supposed to be changed according to any
-> > > config option or I can't see that. Unless on 64-bit system that's
-> > > /usr/lib64/uml, and in that case it makes sense to have CONFIG_XXX =
-> > > "/usr/lib/uml" (without :, add them only in the source, i.e. insulate
-> > > details away).
-
-> > Yes, that was what I meant. However it's probably not worth the effort
-> > yet.
-
-
-> > Description:
-> > append /usr/lib/uml to the existing PATH environment variable to let
-> > execvp search uml_net in FHS compliant locations.
->
-> at this point, is it the case to have also this patch for the
-> uml-utilities in order to install uml-net directly on the FHS complaint
-> path (uml-net):
-
-It is likely a correct patch (didn't proof-read, seems very reasonable) but:
-
-a) make sure it can work on amd64 (/usr/lib or /usr/lib64?)
-b) I'll do this in at least 6 months from now, or users will scream - or I'll 
-add a compatibility symlink in /usr/bin for a while.
-
-Debian did it the hard way IIRC (don't remember if only for the default 
-location of uml_switch socket or also for this), and problems resulted for 
-people with self-compiled kernels.
--- 
+2.6.16-bb1 has TLS support, too.
+--=20
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
+=09
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+=09
+	=09
+___________________________________=20
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB=20
 http://mail.yahoo.it
 
 
@@ -89,8 +74,8 @@ http://mail.yahoo.it
 This SF.Net email is sponsored by xPML, a groundbreaking scripting language
 that extends applications into web and mobile media. Attend the live webcast
 and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
-_______________________________________________
+http://sel.as-us.falkag.net/sel?cmd________________________________________=
+_______
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
