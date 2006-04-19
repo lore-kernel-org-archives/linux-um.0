@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FVpm3-0000LB-9n for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Apr 2006 05:57:43 -0700
-Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FVplz-0004gj-S2
+	id 1FW81g-0000eH-1G for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Apr 2006 01:27:04 -0700
+Received: from ebiederm.dsl.xmission.com ([166.70.28.69])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FW81f-00033g-K4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Apr 2006 05:57:43 -0700
-From: Pavel Machek <pavel@ucw.cz>
-Message-ID: <20060418125728.GA26554@elf.ucw.cz>
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
+	Wed, 19 Apr 2006 01:27:04 -0700
+References: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org>
+From: ebiederm@xmission.com (Eric W. Biederman)
+In-Reply-To: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org> (Jeff
+	Dike's message of "Thu, 13 Apr 2006 13:19:36 -0400")
+Message-ID: <m1d5feotur.fsf@ebiederm.dsl.xmission.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-Subject: [uml-devel] Re: [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
+Subject: [uml-devel] Re: [RFC] PATCH 0/4 - Time virtualization
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,40 +28,79 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 18 Apr 2006 14:57:28 +0200
+Date: Wed, 19 Apr 2006 02:25:00 -0600
 To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hi!
+Jeff Dike <jdike@addtoit.com> writes:
 
-> Add PTRACE_SYSCALL_MASK, which allows system calls to be selectively
-> traced.  It takes a bitmask and a length.  A system call is traced
-> if its bit is one.  Otherwise, it executes normally, and is
-> invisible to the ptracing parent.
-> 
-> This is not just useful for UML - strace -e could make good use of it as well.
+> This set of patches implements 
+> 	time virtualization by creating a time namespace
+> 	an interface to it through unshare
+> 	a ptrace extension to allow UML to take advantage of this
+> 	UML support
+>
+> The guts of the namespace is just an offset from the system time.  Within
+> the container, gettimeofday adds this offset to the system time.  settimeofday
+> changes the offset without touching the system time.  As such, within a 
+> namespace, settimeofday is unprivileged.
+>
+> The interface to it is through unshare(CLONE_TIME).  This creates the new
+> namespace, initialized with a zero offset from the system time.
+>
+> The advantage of this for UML is that it can create a time namespace for itself
+> and subsequently let its process' gettimeofday run on the host, without
+> being intercepted and run inside UML.  As such, it should basically run at
+> native speed.
+>
+> In order to allow this, we need selective system call interception.  The
+> third patch implements PTRACE_SYSCALL_MASK, which specifies, through a 
+> bitmask, which system calls are intercepted and which aren't.
 
-> +	if((current->syscall_mask != NULL) &&
+That patch should probably be separated, from the rest.
+But it looks like a fairly sane idea. 
 
-Please put space between if and (.
 
-> @@ -690,6 +693,11 @@ int do_syscall_trace(struct pt_regs *reg
->  	if (!(current->ptrace & PT_PTRACED))
->  		goto out;
->  
-> +	if((current->syscall_mask != NULL) && ((long) regs->orig_eax != -1) &&
-> +	   !(current->syscall_mask[regs->orig_eax / (8 * sizeof(long))] &
-> +	     (1 << (regs->orig_eax % (8 * sizeof(long))))))
-> +		goto out;
-> +
+> Finally, the UML support is straightforward.  It calls unshare(CLONE_TIME)
+> to create the new namespace, sets gettimeofday to run without being 
+> intercepted, and makes settimeofday call the host's settimeofday instead
+> of maintaining the time offset itself.
 
-Same here... and perhaps you can use __get_bit/__set_bit? (this
-applies to few more places).
+I think you missed a couple essential things to a time namespace.
+Timers.  The posix timers, in particular.  The worst
+of those is the monotonic timer.  
 
-Are you going to fix non-i386, too?
-							Pavel
--- 
-Thanks for all the (sleeping) penguins.
+In the case of migration the ugly case to properly handle is the
+monotonic timer.   That needs an offset yet it is absolutely forbidden
+to provide that offset from the inside.  So this is the one namespace
+that I think is inappropriate to use sys_unshare to create.
+We need a system call so that we can specify the minimum or the
+starting monotonic time base.
+
+I don't know how we want to describe time while a process is not
+inside of a kernel.
+
+> As expected, a gettimeofday loop runs basically at native speed.  The two
+> quick tests I did had it running inside UML at 98.8 and 99.2 % of
+> native.
+
+Interesting.
+
+> BUG - as I was writing this, I realized that refcounting of the time_ns
+> structures is wrong - they need to be incremented at process creation and
+> decremented at process exit.
+
+Actually the more I think of the using PTRACE to help with some of
+these issues the more I like it.  It's only real alternative is a
+security module, and that must be written as kernel code.
+
+The reference counting is terrible, as you don't free syscall_mask,
+during ptrace_detach.
+
+As a comparison what is the overhead if you don't use syscall_mask,
+and just do a ptrace_cont on the system call you want to let through?
+
+Eric
 
 
 -------------------------------------------------------
