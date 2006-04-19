@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FW9JH-00019s-Lx for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Apr 2006 02:49:19 -0700
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FW9JH-0007eo-4i
+	id 1FW9JL-0001A3-Mu for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Apr 2006 02:49:23 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FW9JJ-0007Rw-TR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Apr 2006 02:49:19 -0700
+	Wed, 19 Apr 2006 02:49:23 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] uml_utilities-20060323 fails to build on alpha
-References: <20060409180709.GA20099@inferi.kami.home>
-In-Reply-To: <20060409180709.GA20099@inferi.kami.home>
+Subject: Re: [uml-devel] [RFC][PATCH] include /usr/lib/uml in PATH
+References: <20060402173445.GB5108@inferi.kami.home>
+	<20060407165205.GE23715@inferi.kami.home>
+	<20060409125221.GB7503@SteX>
+In-Reply-To: <20060409125221.GB7503@SteX>
 MIME-Version: 1.0
 Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <200604191152.06268.blaisorblade@yahoo.it>
+Message-Id: <200604191152.10992.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,40 +31,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 19 Apr 2006 11:52:05 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Mattia Dongili <malattia@linux.it>
+Date: Wed, 19 Apr 2006 11:52:10 +0200
+To: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it
+Cc: Mattia Dongili <malattia@linux.it>, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>
 
-On Sunday 09 April 2006 20:07, Mattia Dongili wrote:
-> Hello,
+On Sunday 09 April 2006 14:52, Stefano Melchior wrote:
+> On Fri, Apr 07, 2006 at 06:52:05PM +0200, Mattia Dongili wrote:
+> Dear all,
+
+> > > > > #define UML_LIB_PATH ":/usr/lib/uml"
+
+> > > > what about a config option instead? CONFIG_UML_NET_PATH
+
+> > > Don't think so, that's not supposed to be changed according to any
+> > > config option or I can't see that. Unless on 64-bit system that's
+> > > /usr/lib64/uml, and in that case it makes sense to have CONFIG_XXX =
+> > > "/usr/lib/uml" (without :, add them only in the source, i.e. insulate
+> > > details away).
+
+> > Yes, that was what I meant. However it's probably not worth the effort
+> > yet.
+
+
+> > Description:
+> > append /usr/lib/uml to the existing PATH environment variable to let
+> > execvp search uml_net in FHS compliant locations.
 >
-> I hear you say "who cares?" :)
-> Well, such failure uncovers a small bug on 64bit arches with __u64 not
-> defined as unsigned long long (oh, that "who cares" again :)).
+> at this point, is it the case to have also this patch for the
+> uml-utilities in order to install uml-net directly on the FHS complaint
+> path (uml-net):
 
-No, you're right, good catch.
+It is likely a correct patch (didn't proof-read, seems very reasonable) but:
 
-Systems using linux-libc-headers (i.e. RedHat and Fedora to my knowledge) 
-exhibit this, and I've applied a similar patch to Uml itself for a Fedora 
-user, but forgot it for uml_utilities. (I had "fixed" both instances of the 
-COW code together).
+a) make sure it can work on amd64 (/usr/lib or /usr/lib64?)
+b) I'll do this in at least 6 months from now, or users will scream - or I'll 
+add a compatibility symlink in /usr/bin for a while.
 
-Will apply the patch ASAP (at least next week) and release the resulting 
-thing.
-
-> cow.c: At top level:
-> cow.c:271: error: conflicting types for 'read_cow_header'
-> cow.h:25: error: previous declaration of 'read_cow_header' was here
->
-> the attached patch fixes it.
->
-> Thanks
-
+Debian did it the hard way IIRC (don't remember if only for the default 
+location of uml_switch socket or also for this), and problems resulted for 
+people with self-compiled kernels.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
-
 
 	
 
