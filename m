@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FX0CH-0006P5-F8 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:17:37 -0700
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0CC-0000Kh-38
+	id 1FX0TA-0008KX-1H for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Apr 2006 11:35:04 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0T6-0004vA-3h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:17:37 -0700
+	Fri, 21 Apr 2006 11:35:04 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [RFC] PATCH 3/4 - Time virtualization :
+Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
 	PTRACE_SYSCALL_MASK
 References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-	<20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
-In-Reply-To: <20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
+In-Reply-To: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200604212016.36859.blaisorblade@yahoo.it>
+Message-Id: <200604212034.53486.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,82 +30,106 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Apr 2006 20:16:34 +0200
+Date: Fri, 21 Apr 2006 20:34:52 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Thursday 20 April 2006 11:05, Heiko Carstens wrote:
-> > Add PTRACE_SYSCALL_MASK, which allows system calls to be selectively
-> > traced.  It takes a bitmask and a length.  A system call is traced
-> > if its bit is one.  Otherwise, it executes normally, and is
-> > invisible to the ptracing parent.
-> > [...]
-> > +int set_syscall_mask(struct task_struct *child, char __user *mask,
-> > +		     unsigned long len)
-> > +{
-> > +	int i, n = (NR_syscalls + 7) / 8;
-> > +	char c;
-> > +
-> > +	if(len > n){
-> > +		for(i = NR_syscalls; i < len * 8; i++){
-> > +			get_user(c, &mask[i / 8]);
-> > +			if(!(c & (1 << (i % 8)))){
-> > +				printk("Out of range syscall at %d\n", i);
-> > +				return -EINVAL;
-> > +			}
-> > +		}
-> > +
-> > +		len = n;
-> > +	}
+On Thursday 13 April 2006 19:20, Jeff Dike wrote:
+> Add PTRACE_SYSCALL_MASK, which allows system calls to be selectively
+> traced.  It takes a bitmask and a length.  A system call is traced
+> if its bit is one.  Otherwise, it executes normally, and is
+> invisible to the ptracing parent.
+
+> This is not just useful for UML - strace -e could make good use of it as
+> well.
+
+> Index: linux-2.6.17-mm-vtime/include/asm-i386/ptrace.h
+> ===================================================================
+> --- linux-2.6.17-mm-vtime.orig/include/asm-i386/ptrace.h	2006-04-13
+> 13:48:02.000000000 -0400 +++
+> linux-2.6.17-mm-vtime/include/asm-i386/ptrace.h	2006-04-13
+> 13:49:32.000000000 -0400 @@ -53,6 +53,7 @@ struct pt_regs {
 >
-> Since it's quite likely that len > n will be true (e.g. after installing
-> the latest version of your debug tool) it would be better to silently
-> ignore all bits not within the range of NR_syscalls.
+>  #define PTRACE_GET_THREAD_AREA    25
+>  #define PTRACE_SET_THREAD_AREA    26
+> +#define PTRACE_SYSCALL_MASK	  27
 
-For strace -e what you say is reasonable, since it will set only a few bits to 
-1 (the ones for the requested syscalls) and everything else to 0. Also, 
-there's a problem for this case since the host will 1-extend the mask, so an 
-old strace would trace some unwanted and unknown syscalls. I.e. we want here 
-to 0-extend the mask and only maybe complain for bits set to 1.
+I think there could be a reason we skipped that for SYSEMU - that's to see. 
+Also, if this capability will be implemented in other archs, we should use 
+the 0x4200-0x4300 range for it.
 
-For UML, instead, it's important to set that some peculiar syscalls are not 
-traced, that the mask is 1-extended and that errors are reported.
+>  #define PTRACE_SYSEMU		  31
+>  #define PTRACE_SYSEMU_SINGLESTEP  32
 
-So, I suggest a "flags" parameter for this. Sadly, we're using the ptrace() 
-syscall and there's no 5th argument normally, we could either use it (IIRC 
-some calls use the 5th regs indeed), or pass as "data" a struct with flags 
-and the mask.
+> @@ -450,6 +451,41 @@ int ptrace_traceme(void)
+>  	return 0;
+>  }
+>
+> +int set_syscall_mask(struct task_struct *child, char __user *mask,
+> +		     unsigned long len)
+> +{
+> +	int i, n = (NR_syscalls + 7) / 8;
+> +	char c;
+> +
+> +	if(len > n){
+> +		for(i = NR_syscalls; i < len * 8; i++){
+> +			get_user(c, &mask[i / 8]);
 
-The flags could be:
+This get_user() inside a loop is poor, it could slow down a valid call. It'd 
+be simpler to copy the mask from userspace in a local variable (with 400 
+syscalls that's 50 bytes, i.e. fully ok), and then perform the checks, if 
+wanted (I disagree with Heiko's message, this check is needed sometimes - see 
+my response to that).
 
-MASK_DEFAULT_TRACE (set the default to 1 for remaining bits)
-MASK_DEFAULT_IGNORE (set the default to 0 for remaining bits)
-MASK_STRICT_VERIFY (return -EINVAL for bits exceeding NR_syscalls and set 
-differently than the default).
+And only after that set all at once child->syscall_mask. You copy twice that 
+little quantity of data but that's not at all time-critical, and you're 
+forced to do that to avoid partial updates; btw you've saved getting twice 
+the content from userspace (slow when address spaces are distinct, like for 
+4G/4G or SKAS implementation of copy_from_user).
 
-probably with a reasonable prefix to avoid namespace pollution (something like 
-"PT_SC_-").
+Actually we would copy the whole struct in my API proposal (as I've described 
+in the other message, we need to pass another param IMHO, so we'd pack them 
+in a struct and pass its address).
 
-> There is no point in flooding the console.
+> +			if(!(c & (1 << (i % 8)))){
+> +				printk("Out of range syscall at %d\n", i);
+> +				return -EINVAL;
+> +			}
+> +		}
+> +
+> +		len = n;
+> +	}
+> +
+> +	if(child->syscall_mask == NULL){
+> +		child->syscall_mask = kmalloc(n, GFP_KERNEL);
+> +		if(child->syscall_mask == NULL)
+> +			return -ENOMEM;
+> +
+> +		memset(child->syscall_mask, 0xff, n);
+> +	}
+> +
+> +	/* XXX If this partially fails, we will have a partially updated
+> +	 * mask.
+> +	 */
+> +	if(copy_from_user(child->syscall_mask, mask, len))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
 
-This one is at all correct - that printk is only meaningful for debug.
-
-> The tracing process won't see 
-> any of the non existant syscalls it requested to see anyway.
-
-No, you misunderstood the code, it does the opposite very different - the loop 
-will detect the syscalls that the process wanted to ignore but don't exist. 
-For the UML case, it needs it must trace that syscall and execute it on his 
-own rather than rely on the host performing it.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+	
+
+	
 		
 ___________________________________ 
-Bolletta salata? Passa a Yahoo! Messenger with Voice 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
