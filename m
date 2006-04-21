@@ -1,29 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FX0TN-0008Oc-0g for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:35:17 -0700
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FX0TN-0001ah-1x for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:35:17 -0700
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FX0X1-0000NS-Lj for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Apr 2006 11:39:03 -0700
 Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0TL-0004W1-Eg
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0X0-00060t-11
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:35:17 -0700
+	Fri, 21 Apr 2006 11:39:03 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [RFC][PATCH] include /usr/lib/uml in PATH
-References: <20060402173445.GB5108@inferi.kami.home>
-	<200604191152.10992.blaisorblade@yahoo.it>
-	<20060419190708.GB21337@inferi.kami.home>
-In-Reply-To: <20060419190708.GB21337@inferi.kami.home>
+Subject: Re: [uml-devel] Re: [RFC] PATCH 3/4 - Time virtualization :
+	PTRACE_SYSCALL_MASK
+References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
+	<20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
+	<200604212016.36859.blaisorblade@yahoo.it>
+In-Reply-To: <200604212016.36859.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200604212034.13240.blaisorblade@yahoo.it>
+Message-Id: <200604212038.53323.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,46 +32,38 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Apr 2006 20:34:12 +0200
+Date: Fri, 21 Apr 2006 20:38:52 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Mattia Dongili <malattia@linux.it>, stefano.melchior@openlabs.it, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-On Wednesday 19 April 2006 21:07, Mattia Dongili wrote:
-> On Wed, Apr 19, 2006 at 11:52:10AM +0200, Blaisorblade wrote:
-> [...]
->
-> > Debian did it the hard way IIRC (don't remember if only for the default
-> > location of uml_switch socket or also for this), and problems resulted
-> > for
->
-> currently we ship unmodified uml_socket and modified uml_net paths :)
-> oh, and modified tunctl path too (installs in /usr/sbin/).
-> Anyway I'm preparing an email summarizing Debian's current
-> modifications, I've seen your call for help on the website and I hope I
-> can help someway.
->
-> > people with self-compiled kernels.
->
-> exactely, and this is the main reason why it would really be great to
-> see the add-/usr/lib/uml-to-path in mainline kernels.
+On Friday 21 April 2006 20:16, Blaisorblade wrote:
+> On Thursday 20 April 2006 11:05, Heiko Carstens wrote:
 
-Yep, that's now merged in my personal tree and will go upstream on my next 
-merge.
+> The flags could be:
+>
+> MASK_DEFAULT_TRACE (set the default to 1 for remaining bits)
+> MASK_DEFAULT_IGNORE (set the default to 0 for remaining bits)
+> MASK_STRICT_VERIFY (return -EINVAL for bits exceeding NR_syscalls and set
+> differently than the default).
 
-For uml_utilities, I'll maybe add the patch (but leaving a compat symlink) for 
-next release (which includes Mattia's fixlet).
+Actually, for a more elegant API the default should be to check and there 
+should be a flag PT_SC_MASK_IGNORE_UNKNOWN_SYSCALL (reworded in some clearer 
+way, it doesn't mean to ignore the syscall but the bits - IGNORE should be 
+something like "be comprehensive with me when you check". Maybe 
+ACCEPT_UNKNOWN_SYSCALL).
+
+> probably with a reasonable prefix to avoid namespace pollution (something
+> like "PT_SC_-").
+
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-
-	
 		
 ___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Bolletta salata? Passa a Yahoo! Messenger with Voice 
+http://it.messenger.yahoo.com
 
 
 
