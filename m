@@ -2,21 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FWck6-0000JC-P2 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Apr 2006 10:14:58 -0700
-Received: from mga01.intel.com ([192.55.52.88] helo=fmsmga101-1.fm.intel.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FWck5-0007u6-EZ
+	id 1FX0CH-0006P5-F8 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Apr 2006 11:17:37 -0700
+Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0CC-0000Kh-38
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Apr 2006 10:14:58 -0700
-From: "Luck, Tony" <tony.luck@intel.com>
-Message-ID: <20060420171356.GA19088@agluck-lia64.sc.intel.com>
-References: <200604170328.42599.jesper.juhl@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Fri, 21 Apr 2006 11:17:37 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [RFC] PATCH 3/4 - Time virtualization :
+	PTRACE_SYSCALL_MASK
+References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
+	<20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
+In-Reply-To: <20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200604170328.42599.jesper.juhl@gmail.com>
-Subject: [uml-devel] Re: [PATCH 3/5] Remove redundant NULL checks before
-	[kv]free - in arch/
+Message-Id: <200604212016.36859.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,29 +31,83 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 20 Apr 2006 10:13:56 -0700
-To: Jesper Juhl <jesper.juhl@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@osdl.org>, Erich Focht <efocht@sonycom.com>, linux-ia64@vger.kernel.org, eranian@hpl.hp.com, davidm@hpl.hp.com, Ben Herrenschmidt <benh@kernel.crashing.org>, paulus@samba.org, Jeff Dike <jdike@karaya.com>, user-mode-linux-devel@lists.sourceforge.net, Jan Engelhardt <jengelh@linux01.gwdg.de>
+Date: Fri, 21 Apr 2006 20:16:34 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-On Mon, Apr 17, 2006 at 03:28:42AM +0200, Jesper Juhl wrote:
-> Remove redundant NULL checks before [kv]free + small CodingStyle cleanup
-> for arch/
-> 
-> Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
-> ---
-> 
->  arch/ia64/kernel/topology.c               |    7 --
->  arch/ia64/sn/kernel/xpc_partition.c       |    8 --
+On Thursday 20 April 2006 11:05, Heiko Carstens wrote:
+> > Add PTRACE_SYSCALL_MASK, which allows system calls to be selectively
+> > traced.  It takes a bitmask and a length.  A system call is traced
+> > if its bit is one.  Otherwise, it executes normally, and is
+> > invisible to the ptracing parent.
+> > [...]
+> > +int set_syscall_mask(struct task_struct *child, char __user *mask,
+> > +		     unsigned long len)
+> > +{
+> > +	int i, n = (NR_syscalls + 7) / 8;
+> > +	char c;
+> > +
+> > +	if(len > n){
+> > +		for(i = NR_syscalls; i < len * 8; i++){
+> > +			get_user(c, &mask[i / 8]);
+> > +			if(!(c & (1 << (i % 8)))){
+> > +				printk("Out of range syscall at %d\n", i);
+> > +				return -EINVAL;
+> > +			}
+> > +		}
+> > +
+> > +		len = n;
+> > +	}
+>
+> Since it's quite likely that len > n will be true (e.g. after installing
+> the latest version of your debug tool) it would be better to silently
+> ignore all bits not within the range of NR_syscalls.
 
-Applied ia64 pieces.  Thanks.
+For strace -e what you say is reasonable, since it will set only a few bits to 
+1 (the ones for the requested syscalls) and everything else to 0. Also, 
+there's a problem for this case since the host will 1-extend the mask, so an 
+old strace would trace some unwanted and unknown syscalls. I.e. we want here 
+to 0-extend the mask and only maybe complain for bits set to 1.
 
->  arch/powerpc/platforms/powermac/low_i2c.c |    3
->  arch/um/kernel/irq.c                      |   93 +++++++++++++++---------------
->  arch/um/os-Linux/irq.c                    |   47 +++++++--------
+For UML, instead, it's important to set that some peculiar syscalls are not 
+traced, that the mask is 1-extended and that errors are reported.
 
-These bits left to fend for themselves in patchspace.
+So, I suggest a "flags" parameter for this. Sadly, we're using the ptrace() 
+syscall and there's no 5th argument normally, we could either use it (IIRC 
+some calls use the 5th regs indeed), or pass as "data" a struct with flags 
+and the mask.
 
--Tony
+The flags could be:
+
+MASK_DEFAULT_TRACE (set the default to 1 for remaining bits)
+MASK_DEFAULT_IGNORE (set the default to 0 for remaining bits)
+MASK_STRICT_VERIFY (return -EINVAL for bits exceeding NR_syscalls and set 
+differently than the default).
+
+probably with a reasonable prefix to avoid namespace pollution (something like 
+"PT_SC_-").
+
+> There is no point in flooding the console.
+
+This one is at all correct - that printk is only meaningful for debug.
+
+> The tracing process won't see 
+> any of the non existant syscalls it requested to see anyway.
+
+No, you misunderstood the code, it does the opposite very different - the loop 
+will detect the syscalls that the process wanted to ignore but don't exist. 
+For the UML case, it needs it must trace that syscall and execute it on his 
+own rather than rely on the host performing it.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+		
+___________________________________ 
+Bolletta salata? Passa a Yahoo! Messenger with Voice 
+http://it.messenger.yahoo.com
+
 
 
 -------------------------------------------------------
