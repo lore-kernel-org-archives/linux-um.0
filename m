@@ -1,24 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FX0TA-0008KX-1H for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:35:04 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0T6-0004vA-3h
+	id 1FX0TN-0008Oc-0g for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Apr 2006 11:35:17 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FX0TN-0001ah-1x for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Apr 2006 11:35:17 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0TL-0004W1-Eg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:35:04 -0700
+	Fri, 21 Apr 2006 11:35:17 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-In-Reply-To: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [RFC][PATCH] include /usr/lib/uml in PATH
+References: <20060402173445.GB5108@inferi.kami.home>
+	<200604191152.10992.blaisorblade@yahoo.it>
+	<20060419190708.GB21337@inferi.kami.home>
+In-Reply-To: <20060419190708.GB21337@inferi.kami.home>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200604212034.53486.blaisorblade@yahoo.it>
+Message-Id: <200604212034.13240.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,94 +35,34 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Apr 2006 20:34:52 +0200
+Date: Fri, 21 Apr 2006 20:34:12 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Cc: Mattia Dongili <malattia@linux.it>, stefano.melchior@openlabs.it, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>
 
-On Thursday 13 April 2006 19:20, Jeff Dike wrote:
-> Add PTRACE_SYSCALL_MASK, which allows system calls to be selectively
-> traced.  It takes a bitmask and a length.  A system call is traced
-> if its bit is one.  Otherwise, it executes normally, and is
-> invisible to the ptracing parent.
-
-> This is not just useful for UML - strace -e could make good use of it as
-> well.
-
-> Index: linux-2.6.17-mm-vtime/include/asm-i386/ptrace.h
-> ===================================================================
-> --- linux-2.6.17-mm-vtime.orig/include/asm-i386/ptrace.h	2006-04-13
-> 13:48:02.000000000 -0400 +++
-> linux-2.6.17-mm-vtime/include/asm-i386/ptrace.h	2006-04-13
-> 13:49:32.000000000 -0400 @@ -53,6 +53,7 @@ struct pt_regs {
+On Wednesday 19 April 2006 21:07, Mattia Dongili wrote:
+> On Wed, Apr 19, 2006 at 11:52:10AM +0200, Blaisorblade wrote:
+> [...]
 >
->  #define PTRACE_GET_THREAD_AREA    25
->  #define PTRACE_SET_THREAD_AREA    26
-> +#define PTRACE_SYSCALL_MASK	  27
-
-I think there could be a reason we skipped that for SYSEMU - that's to see. 
-Also, if this capability will be implemented in other archs, we should use 
-the 0x4200-0x4300 range for it.
-
->  #define PTRACE_SYSEMU		  31
->  #define PTRACE_SYSEMU_SINGLESTEP  32
-
-> @@ -450,6 +451,41 @@ int ptrace_traceme(void)
->  	return 0;
->  }
+> > Debian did it the hard way IIRC (don't remember if only for the default
+> > location of uml_switch socket or also for this), and problems resulted
+> > for
 >
-> +int set_syscall_mask(struct task_struct *child, char __user *mask,
-> +		     unsigned long len)
-> +{
-> +	int i, n = (NR_syscalls + 7) / 8;
-> +	char c;
-> +
-> +	if(len > n){
-> +		for(i = NR_syscalls; i < len * 8; i++){
-> +			get_user(c, &mask[i / 8]);
+> currently we ship unmodified uml_socket and modified uml_net paths :)
+> oh, and modified tunctl path too (installs in /usr/sbin/).
+> Anyway I'm preparing an email summarizing Debian's current
+> modifications, I've seen your call for help on the website and I hope I
+> can help someway.
+>
+> > people with self-compiled kernels.
+>
+> exactely, and this is the main reason why it would really be great to
+> see the add-/usr/lib/uml-to-path in mainline kernels.
 
-This get_user() inside a loop is poor, it could slow down a valid call. It'd 
-be simpler to copy the mask from userspace in a local variable (with 400 
-syscalls that's 50 bytes, i.e. fully ok), and then perform the checks, if 
-wanted (I disagree with Heiko's message, this check is needed sometimes - see 
-my response to that).
+Yep, that's now merged in my personal tree and will go upstream on my next 
+merge.
 
-And only after that set all at once child->syscall_mask. You copy twice that 
-little quantity of data but that's not at all time-critical, and you're 
-forced to do that to avoid partial updates; btw you've saved getting twice 
-the content from userspace (slow when address spaces are distinct, like for 
-4G/4G or SKAS implementation of copy_from_user).
-
-Actually we would copy the whole struct in my API proposal (as I've described 
-in the other message, we need to pass another param IMHO, so we'd pack them 
-in a struct and pass its address).
-
-> +			if(!(c & (1 << (i % 8)))){
-> +				printk("Out of range syscall at %d\n", i);
-> +				return -EINVAL;
-> +			}
-> +		}
-> +
-> +		len = n;
-> +	}
-> +
-> +	if(child->syscall_mask == NULL){
-> +		child->syscall_mask = kmalloc(n, GFP_KERNEL);
-> +		if(child->syscall_mask == NULL)
-> +			return -ENOMEM;
-> +
-> +		memset(child->syscall_mask, 0xff, n);
-> +	}
-> +
-> +	/* XXX If this partially fails, we will have a partially updated
-> +	 * mask.
-> +	 */
-> +	if(copy_from_user(child->syscall_mask, mask, len))
-> +		return -EFAULT;
-> +
-> +	return 0;
-> +}
-> +
-
+For uml_utilities, I'll maybe add the patch (but leaving a compat symlink) for 
+next release (which includes Mattia's fixlet).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
