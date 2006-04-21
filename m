@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FX0X1-0000NS-Lj for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:39:03 -0700
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX0X0-00060t-11
+	id 1FX31r-0000i5-Qe for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Apr 2006 14:19:03 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FX31o-0004A5-Tg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Apr 2006 11:39:03 -0700
+	Fri, 21 Apr 2006 14:19:03 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Re: [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-	<20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
-	<200604212016.36859.blaisorblade@yahoo.it>
-In-Reply-To: <200604212016.36859.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [RFC][PATCH] include /usr/lib/uml in PATH
+References: <20060402173445.GB5108@inferi.kami.home>
+	<200604070845.39534.blaisorblade@yahoo.it>
+	<20060407165205.GE23715@inferi.kami.home>
+In-Reply-To: <20060407165205.GE23715@inferi.kami.home>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200604212038.53323.blaisorblade@yahoo.it>
+Message-Id: <200604212318.53467.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,38 +31,47 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 21 Apr 2006 20:38:52 +0200
+Date: Fri, 21 Apr 2006 23:18:52 +0200
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Cc: Mattia Dongili <malattia@linux.it>, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>
 
-On Friday 21 April 2006 20:16, Blaisorblade wrote:
-> On Thursday 20 April 2006 11:05, Heiko Carstens wrote:
+On Friday 07 April 2006 18:52, Mattia Dongili wrote:
+> On Fri, Apr 07, 2006 at 08:45:38AM +0200, Blaisorblade wrote:
+> > On Wednesday 05 April 2006 23:11, Mattia Dongili wrote:
 
-> The flags could be:
+> > In that case, you should append both IMHO - empty PATH and no PATH should
+> > be treated the same way, I think.
 >
-> MASK_DEFAULT_TRACE (set the default to 1 for remaining bits)
-> MASK_DEFAULT_IGNORE (set the default to 0 for remaining bits)
-> MASK_STRICT_VERIFY (return -EINVAL for bits exceeding NR_syscalls and set
-> differently than the default).
+> updated patch attached, I hope you like the if-statement .
+>
+> Description:
+> append /usr/lib/uml to the existing PATH environment variable to let
+> execvp search uml_net in FHS compliant locations.
 
-Actually, for a more elegant API the default should be to check and there 
-should be a flag PT_SC_MASK_IGNORE_UNKNOWN_SYSCALL (reworded in some clearer 
-way, it doesn't mean to ignore the syscall but the bits - IGNORE should be 
-something like "be comprehensive with me when you check". Maybe 
-ACCEPT_UNKNOWN_SYSCALL).
+> Signed-off-by: Mattia Dongili <malattia@linux.it>
 
-> probably with a reasonable prefix to avoid namespace pollution (something
-> like "PT_SC_-").
+Ok, very well done - thanks for your patience (I hadn't the time to apply my 
+suggestions myself, but I realise I must have been fairly annoying), you've 
+followed the (informal) process very well.
 
+You'll probably later see that, especially when people on the other side have 
+little time or are important, care to the way you communicate is also 
+important.
+
+Meanwhile I merged it as I said in another mail - sorry for the long delay, 
+but I've been very busy.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
+	
+
+	
 		
 ___________________________________ 
-Bolletta salata? Passa a Yahoo! Messenger with Voice 
-http://it.messenger.yahoo.com
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
