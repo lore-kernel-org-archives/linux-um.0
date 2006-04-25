@@ -1,25 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FYUP3-0003Up-NJ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Apr 2006 13:44:57 -0700
+	id 1FYUvd-00078P-9U for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Apr 2006 14:18:37 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FYUvd-0003zJ-8h for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Apr 2006 14:18:37 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FYUP2-0000MX-Eb
+	(Exim 4.44) id 1FYUvc-0002uE-Ph
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Apr 2006 13:44:57 -0700
+	Tue, 25 Apr 2006 14:18:37 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
-Message-ID: <20060425183251.GB22977@ccure.user-mode-linux.org>
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-	<20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
-	<444797F8.6020509@fujitsu-siemens.com>
+Subject: Re: [uml-devel] [PATCH] uml: problem with 2G/2G host address space
+Message-ID: <20060425201922.GD22977@ccure.user-mode-linux.org>
+References: <20060409105755.GA24319@xs4all.nl>
+	<20060409170111.GC2944@ccure.user-mode-linux.org>
+	<200604191152.00990.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <444797F8.6020509@fujitsu-siemens.com>
+In-Reply-To: <200604191152.00990.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,34 +34,18 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Apr 2006 14:32:51 -0400
-To: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 25 Apr 2006 16:19:22 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Joris van Rantwijk <jvrantwijk@xs4all.nl>
 
-On Thu, Apr 20, 2006 at 04:17:28PM +0200, Bodo Stroesser wrote:
-> Shouldn't 'len' better be the number of bits in the mask than the number of 
-> chars?
+On Wed, Apr 19, 2006 at 11:52:00AM +0200, Blaisorblade wrote:
+> Jeff, for now please merge a band-aid patch (and also add an option
+> to support 1G/3G, while at it).
 
-Yup.
+OK, do you have such a patch handy?  I know I saw one go by, but some
+grepping didn't turn it up.
 
-> OTOH, I think UML shouldn't send the entire mask, but relevant part only. 
-> The missing end is filled with 0xff by host anyway. So it would be
-> enough to send the mask up to the highest bit representing a
-> syscall, that needs to be executed by host.  (currently, that is
-> __NR_gettimeofday). If UML would do so, no more problem results from
-> UML having a higher NR_syscall than the host (as long as the new
-> syscalls are to be intercepted and executed by UML)
-
-Yup, that was part of the intent of sending in the mask length.
-
-> A greater problem might be a process in UML, that calls an invalid syscall 
-> number. AFAICS syscall number (orig_eax) isn't checked before it is
-> used in do_syscall_trace to address syscall_mask. This might result
-> in a crash. 
-
-Yeah, this needs fixing.
-
-				Heff
+				Jeff
 
 
 -------------------------------------------------------
