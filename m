@@ -1,28 +1,25 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FYUvd-00078P-9U for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Apr 2006 14:18:37 -0700
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FYUvd-0003zJ-8h for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Apr 2006 14:18:37 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FYb9g-0007gS-Sb for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Apr 2006 20:57:32 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FYUvc-0002uE-Ph
+	(Exim 4.44) id 1FYb9e-0000Jw-Ca
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Apr 2006 14:18:37 -0700
+	Tue, 25 Apr 2006 20:57:33 -0700
 From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] [PATCH] uml: problem with 2G/2G host address space
-Message-ID: <20060425201922.GD22977@ccure.user-mode-linux.org>
+Message-ID: <20060426025812.GE22977@ccure.user-mode-linux.org>
 References: <20060409105755.GA24319@xs4all.nl>
 	<20060409170111.GC2944@ccure.user-mode-linux.org>
 	<200604191152.00990.blaisorblade@yahoo.it>
+	<20060425201922.GD22977@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200604191152.00990.blaisorblade@yahoo.it>
+In-Reply-To: <20060425201922.GD22977@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,16 +31,14 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 25 Apr 2006 16:19:22 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Joris van Rantwijk <jvrantwijk@xs4all.nl>
+Date: Tue, 25 Apr 2006 22:58:12 -0400
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Joris van Rantwijk <jvrantwijk@xs4all.nl>
 
-On Wed, Apr 19, 2006 at 11:52:00AM +0200, Blaisorblade wrote:
-> Jeff, for now please merge a band-aid patch (and also add an option
-> to support 1G/3G, while at it).
+On Tue, Apr 25, 2006 at 04:19:22PM -0400, Jeff Dike wrote:
+> OK, do you have such a patch handy?  I know I saw one go by, but some
+> grepping didn't turn it up.
 
-OK, do you have such a patch handy?  I know I saw one go by, but some
-grepping didn't turn it up.
+Nevermind, I found it - it was the start of this thread.
 
 				Jeff
 
