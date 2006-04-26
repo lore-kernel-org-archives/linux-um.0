@@ -1,26 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FYn8y-0006wq-SN for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Apr 2006 09:45:36 -0700
+	id 1FYpFX-0006Mq-O7 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Apr 2006 12:00:31 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FYpFX-0006db-Te for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Apr 2006 12:00:31 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FYn8x-0005HV-9n
+	(Exim 4.44) id 1FYpFW-0003HH-Bu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Apr 2006 09:45:37 -0700
+	Wed, 26 Apr 2006 12:00:31 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
-Message-ID: <20060426154607.GA8628@ccure.user-mode-linux.org>
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-	<200604212034.53486.blaisorblade@yahoo.it>
-	<20060425162941.GB22807@ccure.user-mode-linux.org>
-	<200604261747.54660.blaisorblade@yahoo.it>
+Message-ID: <20060426180110.GB8142@ccure.user-mode-linux.org>
+References: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org>
+	<m1d5feotur.fsf@ebiederm.dsl.xmission.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200604261747.54660.blaisorblade@yahoo.it>
+In-Reply-To: <m1d5feotur.fsf@ebiederm.dsl.xmission.com>
+Subject: [uml-devel] Re: [RFC] PATCH 0/4 - Time virtualization
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,30 +33,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Apr 2006 11:46:07 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Wed, 26 Apr 2006 14:01:10 -0400
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Apr 26, 2006 at 05:47:54PM +0200, Blaisorblade wrote:
-> If we can do without MASK_STRICT_VERIFY, that works fully, and
-> anyway it's simpler - however, say, when running strace -e read,tee
-> (sys_tee will soon be added, it seems) this call would fail, while it
-> would be desirable to have it work as strace -e read. 
-> 
-> MASK_STRICT_VERIFY isn't necessarily the best solution, but if
-> userspace must search the maximum allowed syscall by multiple
-> attempts, we've still a bad API.
-> 
-> Probably, a better option (_instead_ of MASK_STRICT_VERIFY) would be
-> to return somewhere an "extended error code" saying which is the
-> last allowed syscall or (better) which is the first syscall which
-> failed. I.e. if there is strace -e read,splice,tee and nor splice nor
-> tee are supported, then this value would be __NR_splice and strace (or
-> any app) could then decide what to do.
+On Wed, Apr 19, 2006 at 02:25:00AM -0600, Eric W. Biederman wrote:
+> That patch should probably be separated, from the rest.
+> But it looks like a fairly sane idea. 
 
-Why not just zero out the bits that the kernel knows about?  Then, if
-we return -EINVAL, the process just looks at the remaining bits that
-are set to see what system calls the kernel didn't know about.
+Yeah, I'll keep these together for now, but the ptrace one is
+conceptually different from the rest.
+
+> I think you missed a couple essential things to a time namespace.
+> Timers.  The posix timers, in particular.  The worst
+> of those is the monotonic timer.  
+
+Oops, thanks for pointing that out.
+
+> In the case of migration the ugly case to properly handle is the
+> monotonic timer.   That needs an offset yet it is absolutely forbidden
+> to provide that offset from the inside.  So this is the one namespace
+> that I think is inappropriate to use sys_unshare to create.
+> We need a system call so that we can specify the minimum or the
+> starting monotonic time base.
+
+For migration, it looks like the container will have to specify the
+time base at creation so that everything in it will have a consistent
+view of time if they get moved around.
+
+So, maybe it belongs in clone as a "backwards" flag similar to
+CLONE_NEWNS.
 
 				Jeff
 
