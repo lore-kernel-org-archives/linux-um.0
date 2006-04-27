@@ -1,31 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FYraC-0006BB-NT for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Apr 2006 14:30:00 -0700
+	id 1FZ5dl-0004Z3-Sr for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Apr 2006 05:30:37 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FYraC-0007wh-Nm for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Apr 2006 14:30:00 -0700
-Received: from filer.fsl.cs.sunysb.edu ([130.245.126.2])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FYraB-0004dk-4a
+	id 1FZ5dl-0006q3-UB for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Apr 2006 05:30:37 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FZ5di-0007Ps-4v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Apr 2006 14:30:00 -0700
-Subject: Re: [uml-devel] Re: [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
-From: "Charles P. Wright" <cwright@cs.sunysb.edu>
-In-Reply-To: <20060426194009.GA9845@ccure.user-mode-linux.org>
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-	<20060420090514.GA9452@osiris.boeblingen.de.ibm.com>
-	<444797F8.6020509@fujitsu-siemens.com>
-	<1146083202.10211.1.camel@localhost.localdomain>
-	<20060426194009.GA9845@ccure.user-mode-linux.org>
-Content-Type: text/plain
-Message-Id: <1146086993.10851.3.camel@localhost.localdomain>
-Mime-Version: 1.0
+	Thu, 27 Apr 2006 05:30:37 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <20060426182144.71082.qmail@web31203.mail.mud.yahoo.com>
+In-Reply-To: <20060426182144.71082.qmail@web31203.mail.mud.yahoo.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200604271430.18184.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: gdb and uml
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,31 +33,46 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 26 Apr 2006 17:29:53 -0400
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 27 Apr 2006 14:30:17 +0200
+To: Abhay Raghu <abhay_raghu@yahoo.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 2006-04-26 at 15:40 -0400, Jeff Dike wrote:
-> On Wed, Apr 26, 2006 at 04:26:42PM -0400, Charles P. Wright wrote:
-> > I have a similar local patch that I've been using.  I think it would be
-> > worthwhile to have an extra bit in the bitmap that says what to do with
-> > calls that fall outside the range [0, __NR_syscall].  That way the
-> > ptrace monitor can decide whether it is useful to get informed of these
-> > "bogus" calls.
-> 
-> The bit needs to be somewhere, but I think sticking it in the syscall
-> bitmask is a bad idea.  Mixing apples and oranges, as it were.
-> Sticking it in the op is better, even though that's a bit of apples
-> and oranges as well.
-> 
-> Another alternative would be to make it an option and set it with
-> PTRACE_SETOPTIONS.
-That is probably a better solution than sticking it in the request (I
-assume you meant request by op).   I think spawning more PTRACE_*
-requests that perform some permutation of PTRACE_SYSCALL is likely to
-make things confusing.
+On Wednesday 26 April 2006 20:21, Abhay Raghu wrote:
+> Hello
+>
+>   I have been able to debug uml by directly launching it and debugging it
+> with gdb. Could you explain how this works since both uml and gdb use
+> ptrace?
 
-Charles
+In SKAS mode, UML "kernel" thread ptraces via PTRACE_SYSCALL (or the special 
+PTRACE_SYSEMU, ask for the difference if interested) one "userspace" thread, 
+where all application code is executed - the userspace thread runs normally 
+until a syscall is executed - that syscall is intercepted and executed by 
+UML. You see the "userspace" thread with status "T" in the "ps auxw" output.
+
+In this picture, gdb ptraces the "kernel" thread - so it can possibly step 
+over a ptrace call done on the other thread, but that is not a problem. All 
+the kernel code is in the "kernel" thread so gdb'ing it simply works.
+
+In TT mode (which however is currently becoming obsolete), instead, the 
+picture is more complicate. There one thread, the tracing thread, ptraces 
+various thread (one per guest process) which execute either the application 
+code or the kernel code; when a syscall is done by a guest process, the 
+tracing thread modifies the registers for the host thread representing that 
+process so that it resumes executing UML code.
+
+So, you could ptrace the tracing thread, but that's of little interest 
+normally since it doesn't execute any kernel code. A special mechanism is 
+needed, i.e. the ptrace proxy (which seems to be born for use outside UML and 
+then incorporated): I don't know well the detail but IIRC gdb is ptraced and 
+the results of his ptrace syscalls are modified, so that it sees what is 
+happening in threads other than the tracing one.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 
