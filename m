@@ -1,27 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FZ5dl-0004Z3-Sr for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Apr 2006 05:30:37 -0700
+	id 1FZRES-000832-AG for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 04:33:56 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FZ5dl-0006q3-UB for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Apr 2006 05:30:37 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FZ5di-0007Ps-4v
+	id 1FZRES-0002LN-Bn for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 04:33:56 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FZREN-0000Vd-E7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Apr 2006 05:30:37 -0700
+	Fri, 28 Apr 2006 04:33:56 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20060426182144.71082.qmail@web31203.mail.mud.yahoo.com>
-In-Reply-To: <20060426182144.71082.qmail@web31203.mail.mud.yahoo.com>
+Subject: Re: [uml-devel] Re: [RFC] PATCH 0/4 - Time virtualization
+References: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org>
+	<m1d5feotur.fsf@ebiederm.dsl.xmission.com>
+	<20060426180110.GB8142@ccure.user-mode-linux.org>
+In-Reply-To: <20060426180110.GB8142@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200604271430.18184.blaisorblade@yahoo.it>
-Subject: [uml-devel] Re: gdb and uml
+Message-Id: <200604281333.41358.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,40 +35,30 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 27 Apr 2006 14:30:17 +0200
-To: Abhay Raghu <abhay_raghu@yahoo.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 28 Apr 2006 13:33:40 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, "Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org
 
-On Wednesday 26 April 2006 20:21, Abhay Raghu wrote:
-> Hello
->
->   I have been able to debug uml by directly launching it and debugging it
-> with gdb. Could you explain how this works since both uml and gdb use
-> ptrace?
+On Wednesday 26 April 2006 20:01, Jeff Dike wrote:
+> On Wed, Apr 19, 2006 at 02:25:00AM -0600, Eric W. Biederman wrote:
 
-In SKAS mode, UML "kernel" thread ptraces via PTRACE_SYSCALL (or the special 
-PTRACE_SYSEMU, ask for the difference if interested) one "userspace" thread, 
-where all application code is executed - the userspace thread runs normally 
-until a syscall is executed - that syscall is intercepted and executed by 
-UML. You see the "userspace" thread with status "T" in the "ps auxw" output.
+> > In the case of migration the ugly case to properly handle is the
+> > monotonic timer.   That needs an offset yet it is absolutely forbidden
+> > to provide that offset from the inside.  So this is the one namespace
+> > that I think is inappropriate to use sys_unshare to create.
+> > We need a system call so that we can specify the minimum or the
+> > starting monotonic time base.
 
-In this picture, gdb ptraces the "kernel" thread - so it can possibly step 
-over a ptrace call done on the other thread, but that is not a problem. All 
-the kernel code is in the "kernel" thread so gdb'ing it simply works.
+> For migration, it looks like the container will have to specify the
+> time base at creation so that everything in it will have a consistent
+> view of time if they get moved around.
 
-In TT mode (which however is currently becoming obsolete), instead, the 
-picture is more complicate. There one thread, the tracing thread, ptraces 
-various thread (one per guest process) which execute either the application 
-code or the kernel code; when a syscall is done by a guest process, the 
-tracing thread modifies the registers for the host thread representing that 
-process so that it resumes executing UML code.
+> So, maybe it belongs in clone as a "backwards" flag similar to
+> CLONE_NEWNS.
 
-So, you could ptrace the tracing thread, but that's of little interest 
-normally since it doesn't execute any kernel code. A special mechanism is 
-needed, i.e. the ptrace proxy (which seems to be born for use outside UML and 
-then incorporated): I don't know well the detail but IIRC gdb is ptraced and 
-the results of his ptrace syscalls are modified, so that it sees what is 
-happening in threads other than the tracing one.
+I must note that currently every (?) flag allowed for unshare is also allowed 
+for clone, so you need to do that anyway.
+
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
