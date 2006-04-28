@@ -1,29 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FZRES-000832-AG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 04:33:56 -0700
+	id 1FZSNr-0007OG-FE for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 05:47:43 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FZRES-0002LN-Bn for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 04:33:56 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FZREN-0000Vd-E7
+	id 1FZSNq-0002th-L0 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 05:47:42 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FZSNp-0002fX-7D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 04:33:56 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
+	Fri, 28 Apr 2006 05:47:42 -0700
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] Re: [RFC] PATCH 0/4 - Time virtualization
+Message-ID: <20060428114823.GA3641@ccure.user-mode-linux.org>
 References: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org>
 	<m1d5feotur.fsf@ebiederm.dsl.xmission.com>
 	<20060426180110.GB8142@ccure.user-mode-linux.org>
-In-Reply-To: <20060426180110.GB8142@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	<200604281333.41358.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200604281333.41358.blaisorblade@yahoo.it>
+In-Reply-To: <200604281333.41358.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,37 +35,33 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 Apr 2006 13:33:40 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, "Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org
+Date: Fri, 28 Apr 2006 07:48:23 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, "Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org
 
-On Wednesday 26 April 2006 20:01, Jeff Dike wrote:
-> On Wed, Apr 19, 2006 at 02:25:00AM -0600, Eric W. Biederman wrote:
+On Fri, Apr 28, 2006 at 01:33:40PM +0200, Blaisorblade wrote:
+> > So, maybe it belongs in clone as a "backwards" flag similar to
+> > CLONE_NEWNS.
+> 
+> I must note that currently every (?) flag allowed for unshare is also allowed
+> for clone, so you need to do that anyway.
 
-> > In the case of migration the ugly case to properly handle is the
-> > monotonic timer.   That needs an offset yet it is absolutely forbidden
-> > to provide that offset from the inside.  So this is the one namespace
-> > that I think is inappropriate to use sys_unshare to create.
-> > We need a system call so that we can specify the minimum or the
-> > starting monotonic time base.
+Currently.  We are running out of CLONE_ bits - in mainline, there are
+three left, and two of them are likely to be used by CLONE_TIME and
+CLONE_UTSNAME (or whatever that turns out to be called).
 
-> For migration, it looks like the container will have to specify the
-> time base at creation so that everything in it will have a consistent
-> view of time if they get moved around.
+I'm eyeing the low eight bits (CSIGNAL) for future unshare flags, but
+those would be unusable in clone().
 
-> So, maybe it belongs in clone as a "backwards" flag similar to
-> CLONE_NEWNS.
+And why should there be any overlap between clone flags and unshare
+flags?  Isn't 
+	clone(CLONE_TIME);
+the same as 
+	clone();
+	unshare(CLONE_TIME);
+?
 
-I must note that currently every (?) flag allowed for unshare is also allowed 
-for clone, so you need to do that anyway.
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+				Jeff
 
 
 -------------------------------------------------------
