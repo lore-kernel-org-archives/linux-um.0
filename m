@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FZVft-0006Nw-A9 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 09:18:33 -0700
-Received: from ebiederm.dsl.xmission.com ([166.70.28.69])
+	id 1FZWKL-0002fI-VK for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 10:00:21 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FZWKL-0005VQ-U9 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 10:00:22 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FZVfr-0007gx-VV
+	(Exim 4.44) id 1FZWKK-0003HD-Si
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 09:18:33 -0700
-Subject: Re: [uml-devel] Re: [RFC] PATCH 0/4 - Time virtualization
-References: <200604131719.k3DHJcZG004674@ccure.user-mode-linux.org>
-	<200604281333.41358.blaisorblade@yahoo.it>
-	<20060428114823.GA3641@ccure.user-mode-linux.org>
-	<200604281554.32665.blaisorblade@yahoo.it>
-From: ebiederm@xmission.com (Eric W. Biederman)
-In-Reply-To: <200604281554.32665.blaisorblade@yahoo.it>
-	(blaisorblade@yahoo.it's
-	message of "Fri, 28 Apr 2006 15:54:31 +0200")
-Message-ID: <m1wtd9d687.fsf@ebiederm.dsl.xmission.com>
-MIME-Version: 1.0
+	Fri, 28 Apr 2006 10:00:21 -0700
+Message-Id: <200604281601.k3SG17dn007532@ccure.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 4/6] UML - Clean up after MADVISE_REMOVE
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,21 +29,61 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 Apr 2006 10:18:00 -0600
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Fri, 28 Apr 2006 12:01:07 -0400
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade <blaisorblade@yahoo.it> writes:
+The MADVISE_REMOVE-checking code didn't clean up after itself.
 
-> So we get back to Eric's objection (which I haven't understood but that's my 
-> problem).
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-My objection is that to handle the monotonic timer we need an additional
-struct timespec argument when we create the time namespace.
+Index: linux-2.6.16/arch/um/os-Linux/process.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/os-Linux/process.c	2006-04-27 20:51:58.000000000 -0400
++++ linux-2.6.16/arch/um/os-Linux/process.c	2006-04-28 12:20:55.000000000 -0400
+@@ -206,29 +206,36 @@ int os_drop_memory(void *addr, int lengt
+ int can_drop_memory(void)
+ {
+ 	void *addr;
+-	int fd;
++	int fd, ok = 0;
+ 
+ 	printk("Checking host MADV_REMOVE support...");
+ 	fd = create_mem_file(UM_KERN_PAGE_SIZE);
+ 	if(fd < 0){
+ 		printk("Creating test memory file failed, err = %d\n", -fd);
+-		return 0;
++		goto out;
+ 	}
+ 
+ 	addr = mmap64(NULL, UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
+ 		      MAP_SHARED, fd, 0);
+ 	if(addr == MAP_FAILED){
+ 		printk("Mapping test memory file failed, err = %d\n", -errno);
+-		return 0;
++		goto out_close;
+ 	}
+ 
+ 	if(madvise(addr, UM_KERN_PAGE_SIZE, MADV_REMOVE) != 0){
+ 		printk("MADV_REMOVE failed, err = %d\n", -errno);
+-		return 0;
++		goto out_unmap;
+ 	}
+ 
+ 	printk("OK\n");
+-	return 1;
++	ok = 1;
++
++out_unmap:
++	munmap(addr, UM_KERN_PAGE_SIZE);
++out_close:
++	close(fd);
++out:
++	return ok;
+ }
+ 
+ void init_new_thread_stack(void *sig_stack, void (*usr1_handler)(int))
 
-There does not appear to be space in clone or unshare to pass that value.
-
-Eric
 
 
 -------------------------------------------------------
