@@ -1,44 +1,24 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FZl8i-0000Lk-Tu for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Apr 2006 01:49:20 -0700
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FZl8j-0003BF-1e for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Apr 2006 01:49:21 -0700
-Received: from mtagate4.de.ibm.com ([195.212.29.153])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FZl8h-0001Gr-Eq
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FZqdd-0001yS-1z for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 Apr 2006 07:41:37 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FZqdb-00043F-68
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Apr 2006 01:49:21 -0700
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate4.de.ibm.com (8.13.6/8.13.6) with ESMTP id k3T8n84P082820
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 29 Apr 2006 08:49:08 GMT
-Received: from d12av02.megacenter.de.ibm.com (d12av02.megacenter.de.ibm.com
-	[9.149.165.228])
-	by d12nrmr1607.megacenter.de.ibm.com (8.12.10/NCO/VER6.8) with ESMTP id
-	k3T8oHGg105856 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 29 Apr 2006 10:50:17 +0200
-Received: from d12av02.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av02.megacenter.de.ibm.com (8.12.11/8.13.3) with ESMTP id
-	k3T8n8e5023683 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 29 Apr 2006 10:49:08 +0200
-From: Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
-Message-ID: <20060429084907.GD9463@osiris.boeblingen.de.ibm.com>
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-	<200604261747.54660.blaisorblade@yahoo.it>
-	<20060426154607.GA8628@ccure.user-mode-linux.org>
-	<200604282228.46681.blaisorblade@yahoo.it>
+	Sat, 29 Apr 2006 07:41:37 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Re: [PATCH 0/6] UML - Small patches for 2.6.17
+References: <200604281601.k3SG11MJ007510@ccure.user-mode-linux.org>
+	<20060428165534.6067f5aa.akpm@osdl.org>
+In-Reply-To: <20060428165534.6067f5aa.akpm@osdl.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200604282228.46681.blaisorblade@yahoo.it>
+Message-Id: <200604291641.19864.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -50,43 +30,42 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sat, 29 Apr 2006 10:49:07 +0200
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Sat, 29 Apr 2006 16:41:18 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-> Ok, this gives us a definite proposal, which I finally like:
-> 
-> * to exclude sys_tee:
-> 
-> bitmask = 0;
-> set_bit(__NR_tee, bitmask);
-> ptrace(PTRACE_SET_NOTRACE, bitmask);
-> 
-> * to trace only sys_tee:
-> 
-> bitmask = 0;
-> set_bit(__NR_tee, bitmask);
-> ptrace(PTRACE_SET_TRACEONLY, bitmask);
-> 
-> Semantics:
-> 
-> in both cases, the mask is first zero-extended to the right (for syscalls not 
-> known to userspace), bits for syscall not known to the kernel are checked and 
-> the call fails if any of them is 1, and in the failure case E2BIG or 
-> EOVERFLOW is returned (I want to avoid EINVAL and ENOSYS to avoid confusion) 
-> and the part of the mask known to the kernel is 0-ed.
-> 
-> In case of success, for NOTRACE (which was DEFAULT_TRACE) the mask is reversed 
-> before copying in the kernel syscall mask, for TRACEONLY it's copied there 
-> directly.
+On Saturday 29 April 2006 01:55, Andrew Morton wrote:
+> Jeff Dike <jdike@addtoit.com> wrote:
+> > These patches are 2.6.17 material.
+>
+> "remove NULL checks and add some CodingStyle" isn't.
 
-IMHO this is way too complicated. Introducing a ptrace call that returns
-the number of syscalls and forcing user space to pass a complete bitmask
-is much easier. Also the semantics are much easier to understand.
+Being restrictive is ok, but keeping patches in queues for longer than needed 
+creates more headaches than it solves, in my experience.
 
-In addition your proposal would already introduce a rather complicated
-interface to figure out how many syscalls the kernel has. I'm sure this
-will be (mis)used sooner or later.
+> Unless one considers 
+> UML coding style to be a bug, which is an attractive idea ;)
+
+Well, we're slowly working on that... very slowly... I've thought multiple 
+times to at least run Lindent on arch/um but I've not spoken up because of 
+all the conflicts we (me and Jeff) would get with patches in our queues.
+
+However, there are occasions in which we get conflicts anyway for other 
+reorganization, and in that case Lindent would be useful. Ok Jeff? I'm 
+speaking for instance about moving to os-Linux and such.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
+
 
 
 -------------------------------------------------------
