@@ -1,26 +1,30 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FZcly-0003nr-6Y for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 16:53:18 -0700
+	id 1FZfWL-0007EO-M8 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 19:49:21 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FZcly-00005h-Be for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 16:53:18 -0700
-Received: from smtp.osdl.org ([65.172.181.4])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44) id 1FZclx-00058D-29
+	id 1FZfWL-0001i9-QG for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Apr 2006 19:49:21 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FZfWL-0006BA-Dc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Apr 2006 16:53:18 -0700
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20060428165534.6067f5aa.akpm@osdl.org>
-In-Reply-To: <200604281601.k3SG11MJ007510@ccure.user-mode-linux.org>
-References: <200604281601.k3SG11MJ007510@ccure.user-mode-linux.org>
+	Fri, 28 Apr 2006 19:49:21 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
+	PTRACE_SYSCALL_MASK
+Message-ID: <20060429014956.GB9734@ccure.user-mode-linux.org>
+References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
+	<200604261747.54660.blaisorblade@yahoo.it>
+	<20060426154607.GA8628@ccure.user-mode-linux.org>
+	<200604282228.46681.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [PATCH 0/6] UML - Small patches for 2.6.17
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200604282228.46681.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,18 +36,39 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 28 Apr 2006 16:55:34 -0700
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Fri, 28 Apr 2006 21:49:56 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-Jeff Dike <jdike@addtoit.com> wrote:
->
-> These patches are 2.6.17 material.
+On Fri, Apr 28, 2006 at 10:28:46PM +0200, Blaisorblade wrote:
+> Ok, this gives us a definite proposal, which I finally like:
+> 
+> * to exclude sys_tee:
+> 
+> bitmask = 0;
+> set_bit(__NR_tee, bitmask);
+> ptrace(PTRACE_SET_NOTRACE, bitmask);
+> 
+> * to trace only sys_tee:
+> 
+> bitmask = 0;
+> set_bit(__NR_tee, bitmask);
+> ptrace(PTRACE_SET_TRACEONLY, bitmask);
 
-"remove NULL checks and add some CodingStyle" isn't.  Unless one considers
-UML coding style to be a bug, which is an attractive idea ;)
+Yup, I like this.
 
-So I gave that one an extra-special look - I'll push it along, thanks.
+> the call fails if any of them is 1, and in the failure case E2BIG or 
+> EOVERFLOW is returned
+
+strerror(E2BIG) is "Arg list too long"
+
+strerror(EOVERFLOW) is "Value too large for defined data type"
+
+Neither of those seems right.  I'd just as soon stick with -EINVAL.
+
+				Jeff
+
+
 
 
 -------------------------------------------------------
