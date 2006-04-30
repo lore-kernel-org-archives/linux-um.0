@@ -1,18 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FaF9c-00016e-5T for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 09:52:16 -0700
-Received: from host2-39.pool8261.interbusiness.it ([82.61.39.2]
-	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1FaF9b-0004Oz-GI for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 09:52:16 -0700
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060430153637.27676.85042.stgit@zion.home.lan>
-In-Reply-To: <20060430153326.27676.64906.stgit@zion.home.lan>
-References: <20060430153326.27676.64906.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 2/2] uml: rename and improve actually_do_remove()
+	id 1FaFT6-00035P-8S for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Apr 2006 10:12:24 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FaFT6-0003BH-5X for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Apr 2006 10:12:24 -0700
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FaFT2-00075X-Hv
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Apr 2006 10:12:24 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <20060430141512.9060.39338.stgit@zion.home.lan>
+	<20060430141614.9060.3376.stgit@zion.home.lan>
+In-Reply-To: <20060430141614.9060.3376.stgit@zion.home.lan>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200604301732.59645.blaisorblade@yahoo.it>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [PATCH 3/7] uml: make copy_*_user atomic
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,128 +34,49 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Apr 2006 17:36:37 +0200
+Date: Sun, 30 Apr 2006 17:32:56 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+On Sunday 30 April 2006 16:16, Paolo 'Blaisorblade' Giarrusso wrote:
+> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+>
+> Make __copy_*_user_inatomic really atomic to avoid "Sleeping function
+> called in atomic context" warnings, especially from futex code.
+>
+> This is made by adding another kmap_atomic slot and making copy_*_user_skas
+> use kmap_atomic; also copy_*_user() becomes atomic, but that's true and is
+> not a problem for i386 (and we can always add might_sleep there as done
+> elsewhere). For TT mode kmap is not used, so there's no need for this.
+>
+> I've had to use another slot since both KM_USER0 and KM_USER1 are used
+> elsewhere and could cause conflicts. Till now we reused the kmap_atomic
+> slot list from the subarch, but that's not needed as that list must contain
+> the common ones (used by generic code) + the ones used in architecture
+> specific code (and Uml till now used none); so I've taken the i386 one
+> after comparing it with ones from other archs, and added KM_UML_USERCOPY.
 
-Rename actually_do_remove() to remove_files_and_dir(), make it call closedir(),
-make it ignore ENOENT (I see it frequently enough).
+> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-ENOENT is probably due to multiple threads calling the exitcall functions
-together*, but fixing that is non-trivial; and ignoring it is perfectly ok in
-any case.
+Ok, I didn't want indeed to send this one _for merging_, even if I consider it 
+correct and it indeed fixes the warnings; additionally, since HIGHMEM support 
+is not very used (it's slow and less tested), there shouldn't be problems 
+anyway.
 
-* it can surely happen: last_ditch_exit() is installed as SIGTERM handler at
-boot, and it's not removed on thread creation. So killall vmlinux (which I do)
-surely causes that. I've seen also a crash which seems to do the same.
+Please keep it in -mm however, it should be ok and there it could get more 
+exposure - and this is about interaction with the core kernel so it could get 
+valid review from people outside UML.
 
-Installing the handler on only the main thread would make UML do no cleanup when
-another thread exits, and we're not sure we want that. And mutual exclusion in
-that context is tricky - we can't use spinlock in code not on a kernel stack
-(spinlock debugging uses "current" a lot).
+Jeff, give a look to this one please. You need CONFIG_DEBUG_SPINLOCK_SLEEP and 
+a futex user (for instance starting threaded apache inside the guest) to 
+trigger the warnings.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- arch/um/os-Linux/umid.c |   53 +++++++++++++++++++++++++++++++++--------------
- 1 files changed, 37 insertions(+), 16 deletions(-)
-
-diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-index 7c53be1..8ef150f 100644
---- a/arch/um/os-Linux/umid.c
-+++ b/arch/um/os-Linux/umid.c
-@@ -67,32 +67,53 @@ err:
- 	return err;
- }
- 
--static int actually_do_remove(char *dir)
-+/*
-+ * Unlinks the files contained in @dir and then removes @dir.
-+ * Doesn't handle directory trees, so it's not like rm -rf, but almost such. We
-+ * ignore ENOENT errors for anything (they happen, strangely enough - possibly due
-+ * to races between multiple dying UML threads).
-+ */
-+static int remove_files_and_dir(char *dir)
- {
- 	DIR *directory;
- 	struct dirent *ent;
- 	int len;
- 	char file[256];
-+	int ret;
- 
- 	directory = opendir(dir);
--	if(directory == NULL)
--		return -errno;
-+	if (directory == NULL) {
-+		if (errno != ENOENT)
-+			return -errno;
-+		else
-+			return 0;
-+	}
- 
--	while((ent = readdir(directory)) != NULL){
--		if(!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
-+	while ((ent = readdir(directory)) != NULL) {
-+		if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
- 			continue;
- 		len = strlen(dir) + sizeof("/") + strlen(ent->d_name) + 1;
--		if(len > sizeof(file))
--			return -E2BIG;
-+		if (len > sizeof(file)) {
-+			ret = -E2BIG;
-+			goto out;
-+		}
- 
- 		sprintf(file, "%s/%s", dir, ent->d_name);
--		if(unlink(file) < 0)
--			return -errno;
-+		if (unlink(file) < 0 && errno != ENOENT) {
-+			ret = -errno;
-+			goto out;
-+		}
- 	}
--	if(rmdir(dir) < 0)
--		return -errno;
- 
--	return 0;
-+	if (rmdir(dir) < 0 && errno != ENOENT) {
-+		ret = -errno;
-+		goto out;
-+	}
-+
-+	ret = 0;
-+out:
-+	closedir(directory);
-+	return ret;
- }
- 
- /* This says that there isn't already a user of the specified directory even if
-@@ -172,9 +193,9 @@ static int umdir_take_if_dead(char *dir)
- 	if (is_umdir_used(dir))
- 		return -EEXIST;
- 
--	ret = actually_do_remove(dir);
-+	ret = remove_files_and_dir(dir);
- 	if (ret) {
--		printk("is_umdir_used - actually_do_remove failed with "
-+		printk("is_umdir_used - remove_files_and_dir failed with "
- 		       "err = %d\n", ret);
- 	}
- 	return ret;
-@@ -354,9 +375,9 @@ static void remove_umid_dir(void)
- 	char dir[strlen(uml_dir) + UMID_LEN + 1], err;
- 
- 	sprintf(dir, "%s%s", uml_dir, umid);
--	err = actually_do_remove(dir);
-+	err = remove_files_and_dir(dir);
- 	if(err)
--		printf("remove_umid_dir - actually_do_remove failed with "
-+		printf("remove_umid_dir - remove_files_and_dir failed with "
- 		       "err = %d\n", err);
- }
- 
 
 
 -------------------------------------------------------
