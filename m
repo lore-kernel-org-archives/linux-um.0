@@ -1,23 +1,16 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FaCl5-0001mT-Ov for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 07:18:47 -0700
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FaCl5-00020V-Nq for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 07:18:47 -0700
-Received: from host199-105.pool8255.interbusiness.it ([82.55.105.199]
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FaF8c-00010n-Ke for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Apr 2006 09:51:14 -0700
+Received: from host2-39.pool8261.interbusiness.it ([82.61.39.2]
 	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1FaCl4-0005YG-Qz for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 07:18:47 -0700
+	id 1FaF8a-0004Ox-B8 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Apr 2006 09:51:14 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060430141616.9060.36486.stgit@zion.home.lan>
-In-Reply-To: <20060430141512.9060.39338.stgit@zion.home.lan>
-References: <20060430141512.9060.39338.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 4/7] uml: use Kbuild tracking for all files and
-	fix compilation output
+Message-Id: <20060430153326.27676.64906.stgit@zion.home.lan>
+Subject: [uml-devel] [PATCH 0/2] Fixes for umid code for 2.6.17
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,101 +22,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Apr 2006 16:16:17 +0200
+Date: Sun, 30 Apr 2006 17:33:26 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Sorry, I had forgot these two ones from previous series. I've found a bug in
+startup code (related to new code in 2.6.17) and here's the fix - it is not a
+"just fix this", there's a tiny bit of reorganization but not much (splitting
+functions and changing their return conventions).
 
-Move the build of user-offsets to arch/um/sys-$(SUBARCH), where it's located. So
-we can also build it via Kbuild with its dependency tracking rather than by hand.
-While hacking here, fix also a lot of little cosmetic things.
+From stg series:
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
++ uml-not_dead_yet-remove-existing-dir   | uml: fix not_dead_yet when
+	directory is in bad state
++ uml-rename-improve-actually_do_remove  | uml: rename and improve
+	actually_do_remove()
 
- arch/um/Makefile            |   13 ++++++-------
- arch/um/sys-i386/Makefile   |    5 ++++-
- arch/um/sys-x86_64/Makefile |    5 ++++-
- 3 files changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index a508e7a..930e006 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -96,7 +96,8 @@ PHONY += linux
- all: linux
- 
- linux: vmlinux
--	ln -f $< $@
-+	@echo '  SYMLINK $@'
-+	$(Q)ln -f $< $@
- 
- define archhelp
-   echo '* linux		- Binary kernel image (./linux) - for backward'
-@@ -203,8 +204,8 @@ endef
- $(ARCH_DIR)/include/uml-config.h : include/linux/autoconf.h
- 	$(call filechk,umlconfig)
- 
--$(ARCH_DIR)/user-offsets.s: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.c
--	$(CC) $(USER_CFLAGS) -S -o $@ $<
-+$(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s: FORCE
-+	$(Q)$(MAKE) $(build)=$(ARCH_DIR)/sys-$(SUBARCH) $@
- 
- define filechk_gen-asm-offsets
-         (set -e; \
-@@ -219,13 +220,11 @@ define filechk_gen-asm-offsets
-          echo ""; )
- endef
- 
--$(ARCH_DIR)/include/user_constants.h: $(ARCH_DIR)/user-offsets.s
-+$(ARCH_DIR)/include/user_constants.h: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s
- 	$(call filechk,gen-asm-offsets)
- 
--CLEAN_FILES += $(ARCH_DIR)/user-offsets.s
--
- $(ARCH_DIR)/include/kern_constants.h: $(objtree)/$(ARCH_DIR)/include
- 	@echo '  SYMLINK $@'
--	$(Q) ln -sf ../../../include/asm-um/asm-offsets.h $@
-+	$(Q)ln -sf ../../../include/asm-um/asm-offsets.h $@
- 
- export SUBARCH USER_CFLAGS OS
-diff --git a/arch/um/sys-i386/Makefile b/arch/um/sys-i386/Makefile
-index 98b20b7..82121ab 100644
---- a/arch/um/sys-i386/Makefile
-+++ b/arch/um/sys-i386/Makefile
-@@ -10,9 +10,12 @@ subarch-obj-$(CONFIG_MODULES) += kernel/
- 
- USER_OBJS := bugs.o ptrace_user.o sigcontext.o fault.o stub_segv.o
- 
--include arch/um/scripts/Makefile.rules
-+USER_OBJS += user-offsets.s
-+extra-y += user-offsets.s
- 
- extra-$(CONFIG_MODE_TT) += unmap.o
- 
-+include arch/um/scripts/Makefile.rules
-+
- $(obj)/stub_segv.o $(obj)/unmap.o: \
- 	_c_flags = $(call unprofile,$(CFLAGS))
-diff --git a/arch/um/sys-x86_64/Makefile b/arch/um/sys-x86_64/Makefile
-index b5fc22b..f739bea 100644
---- a/arch/um/sys-x86_64/Makefile
-+++ b/arch/um/sys-x86_64/Makefile
-@@ -18,9 +18,12 @@ ldt-y = ../sys-i386/ldt.o
- 
- USER_OBJS := ptrace_user.o sigcontext.o stub_segv.o
- 
--include arch/um/scripts/Makefile.rules
-+USER_OBJS += user-offsets.s
-+extra-y += user-offsets.s
- 
- extra-$(CONFIG_MODE_TT) += unmap.o
- 
-+include arch/um/scripts/Makefile.rules
-+
- $(obj)/stub_segv.o $(obj)/unmap.o: \
- 	_c_flags = $(call unprofile,$(CFLAGS))
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
 
 -------------------------------------------------------
