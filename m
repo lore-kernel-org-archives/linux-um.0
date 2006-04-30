@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FaCkJ-0001cr-Du for user-mode-linux-devel@lists.sourceforge.net;
+	id 1FaCkJ-0001cs-EK for user-mode-linux-devel@lists.sourceforge.net;
 	Sun, 30 Apr 2006 07:17:59 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FaCkJ-0001yZ-6u for user-mode-linux-devel@lists.sourceforge.net;
+	id 1FaCkJ-0001yc-D5 for user-mode-linux-devel@lists.sourceforge.net;
 	Sun, 30 Apr 2006 07:17:59 -0700
 Received: from host199-105.pool8255.interbusiness.it ([82.55.105.199]
 	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1FaCkI-0005YH-6M for user-mode-linux-devel@lists.sourceforge.net;
+	id 1FaCkI-0005YF-BZ for user-mode-linux-devel@lists.sourceforge.net;
 	Sun, 30 Apr 2006 07:17:59 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060430141614.9060.3376.stgit@zion.home.lan>
+Message-Id: <20060430141622.9060.67032.stgit@zion.home.lan>
 In-Reply-To: <20060430141512.9060.39338.stgit@zion.home.lan>
 References: <20060430141512.9060.39338.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 3/7] uml: make copy_*_user atomic
+Subject: [uml-devel] [PATCH 6/7] uml: cleanup unprofile expression and build
+	infrastructure
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,126 +29,149 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Apr 2006 16:16:14 +0200
+Date: Sun, 30 Apr 2006 16:16:22 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Make __copy_*_user_inatomic really atomic to avoid "Sleeping function called in
-atomic context" warnings, especially from futex code.
+*) Rather than duplicate in various buggy ways the application of
+CFLAGS_NO_HARDENING and UNPROFILE (which apply to the same files), centralize it
+in Makefile.rules. UNPROFILE_OBJS mustn't be listed in USER_OBJS but are
+compiled as such.
 
-This is made by adding another kmap_atomic slot and making copy_*_user_skas use
-kmap_atomic; also copy_*_user() becomes atomic, but that's true and is not a
-problem for i386 (and we can always add might_sleep there as done elsewhere).
-For TT mode kmap is not used, so there's no need for this.
+I've also verified that unprofile didn't work in the current form, because we
+set _c_flags directly (using CFLAGS and not USER_CFLAGS, which is wrong), which
+is normally used by c_flags, but we also override c_flags for all USER_OBJS, and
+there we don't call unprofile.
 
-I've had to use another slot since both KM_USER0 and KM_USER1 are used elsewhere
-and could cause conflicts. Till now we reused the kmap_atomic slot list from the
-subarch, but that's not needed as that list must contain the common ones (used
-by generic code) + the ones used in architecture specific code (and Uml till now
-used none); so I've taken the i386 one after comparing it with ones from other
-archs, and added KM_UML_USERCOPY.
+Instead it only worked for unmap.o, the only one which wasn't a USER_OBJ.
+
+We need to set c_flags (which is not a public Kbuild API) to clear a lot of
+compilation flags like -nostdinc which Kbuild forces on everything.
+
+*) Rather than $(CFLAGS_$(notdir $@)), which expands to CFLAGS_anObj.s when
+building "anObj.s", use $(CFLAGS_$(*F).o) which always accesses
+CFLAGS_anObj.o, like done by Kbuild.
+
+*) Make c_flags apply to all targets having the same basename, rather than
+listing .s, .i, .lst and .o, with the use (which I tested) of
+	$(USER_OBJS:.o=.%): c_flags = ...
+
+and of
+ -      $(obj)/unmap.c: _c_flags = ...
+ +      $(obj)/unmap.%: _c_flags = ...
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/kernel/skas/uaccess.c |   15 +++++++++------
- include/asm-um/kmap_types.h   |   20 +++++++++++++++++++-
- 2 files changed, 28 insertions(+), 7 deletions(-)
+ arch/um/kernel/skas/Makefile   |    9 ++-------
+ arch/um/scripts/Makefile.rules |   12 ++++++++++--
+ arch/um/sys-i386/Makefile      |   10 +++++-----
+ arch/um/sys-x86_64/Makefile    |   10 +++++-----
+ 4 files changed, 22 insertions(+), 19 deletions(-)
 
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 5992c32..8912cec 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -8,6 +8,7 @@
- #include "linux/kernel.h"
- #include "linux/string.h"
- #include "linux/fs.h"
-+#include "linux/hardirq.h"
- #include "linux/highmem.h"
- #include "asm/page.h"
- #include "asm/pgtable.h"
-@@ -38,7 +39,7 @@ static unsigned long maybe_map(unsigned 
- 	return((unsigned long) phys);
- }
+diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
+index ad84296..ea3a8e4 100644
+--- a/arch/um/kernel/skas/Makefile
++++ b/arch/um/kernel/skas/Makefile
+@@ -6,16 +6,11 @@
+ obj-y := clone.o exec_kern.o mem.o mmu.o process_kern.o \
+ 	syscall.o tlb.o uaccess.o
  
--static int do_op(unsigned long addr, int len, int is_write,
-+static int do_op_one_page(unsigned long addr, int len, int is_write,
- 		 int (*op)(unsigned long addr, int len, void *arg), void *arg)
- {
- 	struct page *page;
-@@ -49,9 +50,11 @@ static int do_op(unsigned long addr, int
- 		return(-1);
+-USER_OBJS := clone.o
+-
+-include arch/um/scripts/Makefile.rules
+-
+ # clone.o is in the stub, so it can't be built with profiling
+ # GCC hardened also auto-enables -fpic, but we need %ebx so it can't work ->
+ # disable it
  
- 	page = phys_to_page(addr);
--	addr = (unsigned long) kmap(page) + (addr & ~PAGE_MASK);
-+	addr = (unsigned long) kmap_atomic(page, KM_UML_USERCOPY) + (addr & ~PAGE_MASK);
+ CFLAGS_clone.o := $(CFLAGS_NO_HARDENING)
++UNPROFILE_OBJS := clone.o
+ 
+-# since we're setting c_flags we _must_ add $(CFLAGS_$(*F).o).
+-
+-$(obj)/clone.o : c_flags = -Wp,-MD,$(depfile) $(call unprofile,$(USER_CFLAGS)) $(CFLAGS_$(*F).o)
++include arch/um/scripts/Makefile.rules
+diff --git a/arch/um/scripts/Makefile.rules b/arch/um/scripts/Makefile.rules
+index 5e7a9c3..1347dc6 100644
+--- a/arch/um/scripts/Makefile.rules
++++ b/arch/um/scripts/Makefile.rules
+@@ -7,11 +7,19 @@ USER_SINGLE_OBJS := \
+ USER_OBJS += $(filter %_user.o,$(obj-y) $(obj-m)  $(USER_SINGLE_OBJS))
+ USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
+ 
+-$(USER_OBJS) $(USER_OBJS:.o=.i) $(USER_OBJS:.o=.s) $(USER_OBJS:.o=.lst): \
+-	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) $(CFLAGS_$(notdir $@))
++$(USER_OBJS:.o=.%): \
++	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) $(CFLAGS_$(*F).o)
+ $(USER_OBJS) : CHECKFLAGS := -D__linux__ -Dlinux -D__STDC__ \
+ 	-Dunix -D__unix__ -D__$(SUBARCH)__
+ 
++# These are like USER_OBJS but filter USER_CFLAGS through unprofile instead of
++# using it directly.
++UNPROFILE_OBJS := $(foreach file,$(UNPROFILE_OBJS),$(obj)/$(file))
 +
- 	n = (*op)(addr, len, arg);
--	kunmap(page);
++$(UNPROFILE_OBJS:.o=.%): \
++	c_flags = -Wp,-MD,$(depfile) $(call unprofile,$(USER_CFLAGS)) $(CFLAGS_$(*F).o)
++$(UNPROFILE_OBJS) : CHECKFLAGS := -D__linux__ -Dlinux -D__STDC__ \
++	-Dunix -D__unix__ -D__$(SUBARCH)__
+ 
+ # The stubs and unmap.o can't try to call mcount or update basic block data
+ define unprofile
+diff --git a/arch/um/sys-i386/Makefile b/arch/um/sys-i386/Makefile
+index 3734c3e..374d61a 100644
+--- a/arch/um/sys-i386/Makefile
++++ b/arch/um/sys-i386/Makefile
+@@ -8,16 +8,16 @@ subarch-obj-y = lib/bitops.o kernel/sema
+ subarch-obj-$(CONFIG_HIGHMEM) += mm/highmem.o
+ subarch-obj-$(CONFIG_MODULES) += kernel/module.o
+ 
+-USER_OBJS := bugs.o ptrace_user.o sigcontext.o fault.o stub_segv.o
++USER_OBJS := bugs.o ptrace_user.o sigcontext.o fault.o
+ 
+ USER_OBJS += user-offsets.s
+ extra-y += user-offsets.s
+ 
+-CFLAGS_stub_segv.o := $(CFLAGS_NO_HARDENING)
+-
+ extra-$(CONFIG_MODE_TT) += unmap.o
+ 
++UNPROFILE_OBJS := stub_segv.o
++CFLAGS_stub_segv.o := $(CFLAGS_NO_HARDENING)
 +
-+	kunmap_atomic(page, KM_UML_USERCOPY);
+ include arch/um/scripts/Makefile.rules
  
- 	return(n);
- }
-@@ -77,7 +80,7 @@ static void do_buffer_op(void *jmpbuf, v
- 	remain = len;
+-$(obj)/stub_segv.o $(obj)/unmap.o: \
+-	_c_flags = $(call unprofile,$(CFLAGS))
++$(obj)/unmap.%: _c_flags = $(call unprofile,$(CFLAGS))
+diff --git a/arch/um/sys-x86_64/Makefile b/arch/um/sys-x86_64/Makefile
+index 6d3b29c..c19794d 100644
+--- a/arch/um/sys-x86_64/Makefile
++++ b/arch/um/sys-x86_64/Makefile
+@@ -16,16 +16,16 @@ subarch-obj-$(CONFIG_MODULES) += kernel/
  
- 	current->thread.fault_catcher = jmpbuf;
--	n = do_op(addr, size, is_write, op, arg);
-+	n = do_op_one_page(addr, size, is_write, op, arg);
- 	if(n != 0){
- 		*res = (n < 0 ? remain : 0);
- 		goto out;
-@@ -91,7 +94,7 @@ static void do_buffer_op(void *jmpbuf, v
- 	}
+ ldt-y = ../sys-i386/ldt.o
  
- 	while(addr < ((addr + remain) & PAGE_MASK)){
--		n = do_op(addr, PAGE_SIZE, is_write, op, arg);
-+		n = do_op_one_page(addr, PAGE_SIZE, is_write, op, arg);
- 		if(n != 0){
- 			*res = (n < 0 ? remain : 0);
- 			goto out;
-@@ -105,7 +108,7 @@ static void do_buffer_op(void *jmpbuf, v
- 		goto out;
- 	}
+-USER_OBJS := ptrace_user.o sigcontext.o stub_segv.o
++USER_OBJS := ptrace_user.o sigcontext.o
  
--	n = do_op(addr, remain, is_write, op, arg);
-+	n = do_op_one_page(addr, remain, is_write, op, arg);
- 	if(n != 0)
- 		*res = (n < 0 ? remain : 0);
- 	else *res = 0;
-diff --git a/include/asm-um/kmap_types.h b/include/asm-um/kmap_types.h
-index 0b22ad7..6c03acd 100644
---- a/include/asm-um/kmap_types.h
-+++ b/include/asm-um/kmap_types.h
-@@ -6,6 +6,24 @@
- #ifndef __UM_KMAP_TYPES_H
- #define __UM_KMAP_TYPES_H
+ USER_OBJS += user-offsets.s
+ extra-y += user-offsets.s
  
--#include "asm/arch/kmap_types.h"
-+/* No more #include "asm/arch/kmap_types.h" ! */
+-CFLAGS_stub_segv.o := $(CFLAGS_NO_HARDENING)
+-
+ extra-$(CONFIG_MODE_TT) += unmap.o
+ 
++UNPROFILE_OBJS := stub_segv.o
++CFLAGS_stub_segv.o := $(CFLAGS_NO_HARDENING)
 +
-+enum km_type {
-+	KM_BOUNCE_READ,
-+	KM_SKB_SUNRPC_DATA,
-+	KM_SKB_DATA_SOFTIRQ,
-+	KM_USER0,
-+	KM_USER1,
-+	KM_UML_USERCOPY,	/* UML specific, for copy_*_user - used in do_op_one_page */
-+	KM_BIO_SRC_IRQ,
-+	KM_BIO_DST_IRQ,
-+	KM_PTE0,
-+	KM_PTE1,
-+	KM_IRQ0,
-+	KM_IRQ1,
-+	KM_SOFTIRQ0,
-+	KM_SOFTIRQ1,
-+	KM_TYPE_NR
-+};
+ include arch/um/scripts/Makefile.rules
  
- #endif
+-$(obj)/stub_segv.o $(obj)/unmap.o: \
+-	_c_flags = $(call unprofile,$(CFLAGS))
++$(obj)/unmap.%: _c_flags = $(call unprofile,$(CFLAGS))
 
 
 -------------------------------------------------------
