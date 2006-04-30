@@ -2,18 +2,17 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FaF9d-00016f-66 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 09:52:17 -0700
+	id 1FaF9c-00016e-5T for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Apr 2006 09:52:16 -0700
 Received: from host2-39.pool8261.interbusiness.it ([82.61.39.2]
 	helo=zion.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1FaF9c-0004Oy-Fr for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 09:52:17 -0700
+	id 1FaF9b-0004Oz-GI for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Apr 2006 09:52:16 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Message-Id: <20060430153634.27676.89350.stgit@zion.home.lan>
+Message-Id: <20060430153637.27676.85042.stgit@zion.home.lan>
 In-Reply-To: <20060430153326.27676.64906.stgit@zion.home.lan>
 References: <20060430153326.27676.64906.stgit@zion.home.lan>
-Subject: [uml-devel] [PATCH 1/2] uml: fix not_dead_yet when directory is in
-	bad state
+Subject: [uml-devel] [PATCH 2/2] uml: rename and improve actually_do_remove()
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,146 +24,128 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Apr 2006 17:36:35 +0200
+Date: Sun, 30 Apr 2006 17:36:37 +0200
 To: Andrew Morton <akpm@osdl.org>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-The bug occurred to me when a UML left an empty ~/.uml/Sarge-norm folder - when
-trying to reuse not_dead_yet() failed one of its check. The comment says that's
-ok and means that we can take the directory, but while normally not_dead_yet()
-removes it and returns 0 (i.e. go on, use this), on failure it returns 0 but
-forgets to remove it.
-The fix is to remove it anytime we're going to return 0.
+Rename actually_do_remove() to remove_files_and_dir(), make it call closedir(),
+make it ignore ENOENT (I see it frequently enough).
 
-But since "not_dead_yet" didn't make the interface so clear, causing this bug,
-and I couldn't find a convenient name for the mix of things it did, I split it
-into two parts:
+ENOENT is probably due to multiple threads calling the exitcall functions
+together*, but fixing that is non-trivial; and ignoring it is perfectly ok in
+any case.
 
-is_umdir_used()      -	returns a boolean, contains all checks of not_dead_yet()
-umdir_take_if_dead   -	tries to remove the dir unless it's used - returns
-			whether it removed it, that is we now own it.
+* it can surely happen: last_ditch_exit() is installed as SIGTERM handler at
+boot, and it's not removed on thread creation. So killall vmlinux (which I do)
+surely causes that. I've seen also a crash which seems to do the same.
 
-With this changes the control flow is IMHO a bit clearer and needs less comment
-for control flow.
+Installing the handler on only the main thread would make UML do no cleanup when
+another thread exits, and we're not sure we want that. And mutual exclusion in
+that context is tricky - we can't use spinlock in code not on a kernel stack
+(spinlock debugging uses "current" a lot).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/os-Linux/umid.c |   48 ++++++++++++++++++++++++++++-------------------
- 1 files changed, 29 insertions(+), 19 deletions(-)
+ arch/um/os-Linux/umid.c |   53 +++++++++++++++++++++++++++++++++--------------
+ 1 files changed, 37 insertions(+), 16 deletions(-)
 
 diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-index 34bfc1b..7c53be1 100644
+index 7c53be1..8ef150f 100644
 --- a/arch/um/os-Linux/umid.c
 +++ b/arch/um/os-Linux/umid.c
-@@ -103,9 +103,10 @@ static int actually_do_remove(char *dir)
-  * 	something other than UML sticking stuff in the directory
-  *	this boot racing with a shutdown of the other UML
-  * In any of these cases, the directory isn't useful for anything else.
-+ *
-+ * Boolean return: 1 if in use, 0 otherwise.
-  */
--
--static int not_dead_yet(char *dir)
-+static inline int is_umdir_used(char *dir)
- {
- 	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
- 	char pid[sizeof("nnnnn\0")], *end;
-@@ -113,7 +114,7 @@ static int not_dead_yet(char *dir)
- 
- 	n = snprintf(file, sizeof(file), "%s/pid", dir);
- 	if(n >= sizeof(file)){
--		printk("not_dead_yet - pid filename too long\n");
-+		printk("is_umdir_used - pid filename too long\n");
- 		err = -E2BIG;
- 		goto out;
- 	}
-@@ -123,7 +124,7 @@ static int not_dead_yet(char *dir)
- 	if(fd < 0) {
- 		fd = -errno;
- 		if(fd != -ENOENT){
--			printk("not_dead_yet : couldn't open pid file '%s', "
-+			printk("is_umdir_used : couldn't open pid file '%s', "
- 			       "err = %d\n", file, -fd);
- 		}
- 		goto out;
-@@ -132,18 +133,18 @@ static int not_dead_yet(char *dir)
- 	err = 0;
- 	n = read(fd, pid, sizeof(pid));
- 	if(n < 0){
--		printk("not_dead_yet : couldn't read pid file '%s', "
-+		printk("is_umdir_used : couldn't read pid file '%s', "
- 		       "err = %d\n", file, errno);
- 		goto out_close;
- 	} else if(n == 0){
--		printk("not_dead_yet : couldn't read pid file '%s', "
-+		printk("is_umdir_used : couldn't read pid file '%s', "
- 		       "0-byte read\n", file);
- 		goto out_close;
- 	}
- 
- 	p = strtoul(pid, &end, 0);
- 	if(end == pid){
--		printk("not_dead_yet : couldn't parse pid file '%s', "
-+		printk("is_umdir_used : couldn't parse pid file '%s', "
- 		       "errno = %d\n", file, errno);
- 		goto out_close;
- 	}
-@@ -153,19 +154,32 @@ static int not_dead_yet(char *dir)
- 		return 1;
- 	}
- 
--	err = actually_do_remove(dir);
--	if(err)
--		printk("not_dead_yet - actually_do_remove failed with "
--		       "err = %d\n", err);
--
--	return err;
--
- out_close:
- 	close(fd);
- out:
- 	return 0;
+@@ -67,32 +67,53 @@ err:
+ 	return err;
  }
  
+-static int actually_do_remove(char *dir)
 +/*
-+ * Try to remove the directory @dir unless it's in use.
-+ * Precondition: @dir exists.
-+ * Returns 0 for success, < 0 for failure in removal or if the directory is in
-+ * use.
++ * Unlinks the files contained in @dir and then removes @dir.
++ * Doesn't handle directory trees, so it's not like rm -rf, but almost such. We
++ * ignore ENOENT errors for anything (they happen, strangely enough - possibly due
++ * to races between multiple dying UML threads).
 + */
-+static int umdir_take_if_dead(char *dir)
-+{
-+	int ret;
-+	if (is_umdir_used(dir))
-+		return -EEXIST;
-+
-+	ret = actually_do_remove(dir);
-+	if (ret) {
-+		printk("is_umdir_used - actually_do_remove failed with "
-+		       "err = %d\n", ret);
-+	}
-+	return ret;
-+}
-+
- static void __init create_pid_file(void)
++static int remove_files_and_dir(char *dir)
  {
- 	char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
-@@ -244,11 +258,7 @@ int __init make_umid(void)
- 		if(err != -EEXIST)
- 			goto err;
+ 	DIR *directory;
+ 	struct dirent *ent;
+ 	int len;
+ 	char file[256];
++	int ret;
  
--		/* 1   -> this umid is already in use
--		 * < 0 -> we couldn't remove the umid directory
--		 * In either case, we can't use this umid, so return -EEXIST.
--		 */
--		if(not_dead_yet(tmp) != 0)
-+		if(umdir_take_if_dead(tmp) < 0)
- 			goto err;
+ 	directory = opendir(dir);
+-	if(directory == NULL)
+-		return -errno;
++	if (directory == NULL) {
++		if (errno != ENOENT)
++			return -errno;
++		else
++			return 0;
++	}
  
- 		err = mkdir(tmp, 0777);
+-	while((ent = readdir(directory)) != NULL){
+-		if(!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
++	while ((ent = readdir(directory)) != NULL) {
++		if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
+ 			continue;
+ 		len = strlen(dir) + sizeof("/") + strlen(ent->d_name) + 1;
+-		if(len > sizeof(file))
+-			return -E2BIG;
++		if (len > sizeof(file)) {
++			ret = -E2BIG;
++			goto out;
++		}
+ 
+ 		sprintf(file, "%s/%s", dir, ent->d_name);
+-		if(unlink(file) < 0)
+-			return -errno;
++		if (unlink(file) < 0 && errno != ENOENT) {
++			ret = -errno;
++			goto out;
++		}
+ 	}
+-	if(rmdir(dir) < 0)
+-		return -errno;
+ 
+-	return 0;
++	if (rmdir(dir) < 0 && errno != ENOENT) {
++		ret = -errno;
++		goto out;
++	}
++
++	ret = 0;
++out:
++	closedir(directory);
++	return ret;
+ }
+ 
+ /* This says that there isn't already a user of the specified directory even if
+@@ -172,9 +193,9 @@ static int umdir_take_if_dead(char *dir)
+ 	if (is_umdir_used(dir))
+ 		return -EEXIST;
+ 
+-	ret = actually_do_remove(dir);
++	ret = remove_files_and_dir(dir);
+ 	if (ret) {
+-		printk("is_umdir_used - actually_do_remove failed with "
++		printk("is_umdir_used - remove_files_and_dir failed with "
+ 		       "err = %d\n", ret);
+ 	}
+ 	return ret;
+@@ -354,9 +375,9 @@ static void remove_umid_dir(void)
+ 	char dir[strlen(uml_dir) + UMID_LEN + 1], err;
+ 
+ 	sprintf(dir, "%s%s", uml_dir, umid);
+-	err = actually_do_remove(dir);
++	err = remove_files_and_dir(dir);
+ 	if(err)
+-		printf("remove_umid_dir - actually_do_remove failed with "
++		printf("remove_umid_dir - remove_files_and_dir failed with "
+ 		       "err = %d\n", err);
+ }
+ 
 
 
 -------------------------------------------------------
