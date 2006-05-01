@@ -1,27 +1,23 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Facio-0001h8-Bc for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 11:02:10 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1FagDH-00011G-10 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 14:45:51 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FagDH-0005uJ-4r for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 14:45:51 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Facim-0004QO-SU
+	(Exim 4.44) id 1FagDF-0000NG-MO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 11:02:10 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
-	PTRACE_SYSCALL_MASK
-Message-ID: <20060501170233.GC4592@ccure.user-mode-linux.org>
-References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
-	<200604261747.54660.blaisorblade@yahoo.it>
-	<20060426154607.GA8628@ccure.user-mode-linux.org>
-	<200604282228.46681.blaisorblade@yahoo.it>
-	<20060429084907.GD9463@osiris.boeblingen.de.ibm.com>
+	Mon, 01 May 2006 14:45:51 -0700
+Message-Id: <200605012046.k41KkURr005868@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060429084907.GD9463@osiris.boeblingen.de.ibm.com>
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH] UML - Change timer initialization
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,58 +29,32 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 1 May 2006 13:02:33 -0400
-To: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Mon, 01 May 2006 16:46:29 -0400
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Apr 29, 2006 at 10:49:07AM +0200, Heiko Carstens wrote:
-> IMHO this is way too complicated. Introducing a ptrace call that returns
-> the number of syscalls and forcing user space to pass a complete bitmask
-> is much easier. Also the semantics are much easier to understand.
+This is definite 2.6.17 material...
 
-This sounds more complicated than what we are proposing.  
+As of rc3-mm1, inet_init, which schedules, is called before the UML timer_init,
+which sets up the timer.  The result is the interval timers being manipulated
+before the appropriate signal handlers are established, causing unhandled
+timers.
 
-This would make the process care about the number of system calls
-implemented by the kernel, which is something that doesn't even come
-up in the normal case with the current interface.  You only care about
-it if you get a -EINVAL and want to figure out exactly why.
+This is fixed by making timer_init be called earlier.
 
-From a practical point of view, you would want code that looks like
-this:
-	n = nsyscalls();
-	mask = malloc((n + 7)/8);
-	if(mask == NULL)
-		return;
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-	/* Zero mask, set bits, call ptrace */
+Index: linux-2.6.17-mm/arch/um/kernel/time_kern.c
+===================================================================
+--- linux-2.6.17-mm.orig/arch/um/kernel/time_kern.c	2006-03-23 16:40:20.000000000 -0500
++++ linux-2.6.17-mm/arch/um/kernel/time_kern.c	2006-05-01 17:34:41.000000000 -0400
+@@ -209,4 +209,4 @@ int __init timer_init(void)
+ 	return(0);
+ }
+ 
+-__initcall(timer_init);
++arch_initcall(timer_init);
 
-	free(mask);
-
-rather than code like this:
-
-	int mask[(BIGGEST_SYSCALL_I_CARE_ABOUT + 7) / 8];
-
-	/* Zero mask, set bits, call ptrace */
-
-That doesn't seem like an improvement to me.
-
-The second case would be more complicated if it wanted to figure out
-what the problem was if ptrace returned -EINVAL.  However, some users
-won't care, so that complexity is optional.  For example, UML will
-already know by other means what system calls are implemented on the
-host, so it won't bother looking at the mask in the case of a
-failure.  I'm not sure what the right thing for strace is.
-
-> In addition your proposal would already introduce a rather complicated
-> interface to figure out how many syscalls the kernel has. I'm sure this
-> will be (mis)used sooner or later.
-
-How?  And, if so, why is that a problem?
-
-There are already complicated ways to figure out what system calls the
-kernel has, and I don't recall them causing problems.
-
-				Jeff
 
 
 -------------------------------------------------------
