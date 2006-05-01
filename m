@@ -1,19 +1,29 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FacMU-0007Rv-TR for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 10:39:06 -0700
+	id 1FacSv-0008Bj-KO for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 10:45:45 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FacSv-0003gA-O2 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 10:45:45 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FacMT-0006lH-Eq
+	(Exim 4.44) id 1FacSu-0001Ji-A4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 10:39:06 -0700
-Message-Id: <200605011639.k41GdkGV004644@ccure.user-mode-linux.org>
+	Mon, 01 May 2006 10:45:45 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Re: [PATCH 0/6] UML - Small patches for 2.6.17
+Message-ID: <20060501164625.GB4592@ccure.user-mode-linux.org>
+References: <200604281601.k3SG11MJ007510@ccure.user-mode-linux.org>
+	<20060428165534.6067f5aa.akpm@osdl.org>
+	<200604291641.19864.blaisorblade@yahoo.it>
+	<20060429084430.27ea0d91.akpm@osdl.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] UML - uml-makefile-nicer uses SYMLINK incorrectly
+Content-Disposition: inline
+In-Reply-To: <20060429084430.27ea0d91.akpm@osdl.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,29 +35,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 01 May 2006 12:39:46 -0400
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Date: Mon, 1 May 2006 12:46:25 -0400
+To: Andrew Morton <akpm@osdl.org>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-Blaisorblade's uml-makefile-nicer makes a V=0 build say SYMLINK where what's
-happening is really a LINK.
+On Sat, Apr 29, 2006 at 08:44:30AM -0700, Andrew Morton wrote:
+> Lindent doesn't do a terribly good job, and one ends up having to perform a
+> lot of manual fixups.  Perhaps as many as are presently needed.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+We are doing style cleanups as code is changed - this is slow, but I
+think this is the best way to go, as it is fairly unobtrusive and
+doesn't create any merge barriers.
 
-Index: linux-2.6.16/arch/um/Makefile
-===================================================================
---- linux-2.6.16.orig/arch/um/Makefile	2006-05-01 13:23:13.000000000 -0400
-+++ linux-2.6.16/arch/um/Makefile	2006-05-01 13:28:47.000000000 -0400
-@@ -96,7 +96,7 @@ PHONY += linux
- all: linux
- 
- linux: vmlinux
--	@echo '  SYMLINK $@'
-+	@echo '  LINK $@'
- 	$(Q)ln -f $< $@
- 
- define archhelp
-
+				Jeff
 
 
 -------------------------------------------------------
