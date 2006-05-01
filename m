@@ -1,29 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FacSv-0008Bj-KO for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 10:45:45 -0700
+	id 1Faca5-0000eQ-TH for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 10:53:09 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FacSv-0003gA-O2 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 10:45:45 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FacSu-0001Ji-A4
+	id 1Faca6-0003lq-1f for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 10:53:10 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Faca2-00036z-20
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 10:45:45 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Re: [PATCH 0/6] UML - Small patches for 2.6.17
-Message-ID: <20060501164625.GB4592@ccure.user-mode-linux.org>
-References: <200604281601.k3SG11MJ007510@ccure.user-mode-linux.org>
-	<20060428165534.6067f5aa.akpm@osdl.org>
-	<200604291641.19864.blaisorblade@yahoo.it>
-	<20060429084430.27ea0d91.akpm@osdl.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Mon, 01 May 2006 10:53:10 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+References: <200605011639.k41GdkGV004644@ccure.user-mode-linux.org>
+In-Reply-To: <200605011639.k41GdkGV004644@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20060429084430.27ea0d91.akpm@osdl.org>
+Message-Id: <200605011952.43733.blaisorblade@yahoo.it>
+Subject: [uml-devel] Re: [PATCH] UML - uml-makefile-nicer uses SYMLINK
+	incorrectly
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,19 +34,26 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 1 May 2006 12:46:25 -0400
-To: Andrew Morton <akpm@osdl.org>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Mon, 1 May 2006 19:52:35 +0200
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Apr 29, 2006 at 08:44:30AM -0700, Andrew Morton wrote:
-> Lindent doesn't do a terribly good job, and one ends up having to perform a
-> lot of manual fixups.  Perhaps as many as are presently needed.
+On Monday 01 May 2006 18:39, Jeff Dike wrote:
+> Blaisorblade's uml-makefile-nicer makes a V=0 build say SYMLINK where
+> what's happening is really a LINK.
+>
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-We are doing style cleanups as code is changed - this is slow, but I
-think this is the best way to go, as it is fairly unobtrusive and
-doesn't create any merge barriers.
+Good catch:
 
-				Jeff
+Acked-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 
 -------------------------------------------------------
