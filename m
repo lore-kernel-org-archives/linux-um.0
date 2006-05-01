@@ -2,26 +2,27 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FaYoQ-0007my-I7 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 06:51:42 -0700
-Received: from nevyn.them.org ([66.93.172.17] ident=Debian-exim)
+	id 1FaZeI-0005Ja-Co for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 07:45:18 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FaYoP-0002Hw-Eg
+	(Exim 4.44) id 1FaZeG-0001O0-Te
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 06:51:42 -0700
-From: Daniel Jacobowitz <dan@debian.org>
+	Mon, 01 May 2006 07:45:18 -0700
+From: Jeff Dike <jdike@addtoit.com>
 Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
 	PTRACE_SYSCALL_MASK
-Message-ID: <20060501135127.GA1276@nevyn.them.org>
+Message-ID: <20060501134552.GA3686@ccure.user-mode-linux.org>
 References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
 	<200604261747.54660.blaisorblade@yahoo.it>
 	<20060426154607.GA8628@ccure.user-mode-linux.org>
 	<200604282228.46681.blaisorblade@yahoo.it>
 	<20060429014956.GB9734@ccure.user-mode-linux.org>
+	<20060501135127.GA1276@nevyn.them.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20060429014956.GB9734@ccure.user-mode-linux.org>
+In-Reply-To: <20060501135127.GA1276@nevyn.them.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,57 +34,36 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 1 May 2006 09:51:27 -0400
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+Date: Mon, 1 May 2006 09:45:52 -0400
+To: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Fri, Apr 28, 2006 at 09:49:56PM -0400, Jeff Dike wrote:
-> On Fri, Apr 28, 2006 at 10:28:46PM +0200, Blaisorblade wrote:
-> > Ok, this gives us a definite proposal, which I finally like:
+On Mon, May 01, 2006 at 09:51:27AM -0400, Daniel Jacobowitz wrote:
+> On Fri, Apr 28, 2006 at 09:49:56PM -0400, Jeff Dike wrote:
+> > On Fri, Apr 28, 2006 at 10:28:46PM +0200, Blaisorblade wrote:
+> > > bitmask = 0;
+> > > set_bit(__NR_tee, bitmask);
+> > > ptrace(PTRACE_SET_TRACEONLY, bitmask);
 > > 
-> > * to exclude sys_tee:
-> > 
-> > bitmask = 0;
-> > set_bit(__NR_tee, bitmask);
-> > ptrace(PTRACE_SET_NOTRACE, bitmask);
-> > 
-> > * to trace only sys_tee:
-> > 
-> > bitmask = 0;
-> > set_bit(__NR_tee, bitmask);
-> > ptrace(PTRACE_SET_TRACEONLY, bitmask);
+> > Yup, I like this.
 > 
-> Yup, I like this.
+> I really recommend you not do this.  
 
-I really recommend you not do this.  One (better) suggestion earlier
-was:
+> Suppose the kernel knows about 32 more syscalls than userspace.  It's
+> going to read extra bits out of the bitmask that userspace didn't
+> initialize!
 
-struct {
-  int bitmask_length;
-  int flags;
-  char bitmask[0];
-};
+The example above is a sketch, not a fully formed, compilable user.  Every
+proposed interface has had the mask length passed in - in the case
+above in the data argument.
 
-The difference between this case and the sigprocmask example is that
-the size of a sigset_t is very hard to change - it's a userspace ABI
-break.  If you want to model it after sigprocmask, don't look at the
-man page, which describes the POSIX function.  Look at the more recent
-RT version of the syscall instead:
+> Also, if you store the mask with the child process, it risks surprising
+> existing tracers: attach, set mask, detach, then the next time someone
+> attaches an old version of strace some syscalls will be "hidden".
 
-sys_rt_sigprocmask(int how, sigset_t __user *set, sigset_t __user *oset, size_t sigsetsize)
+Not if the mask only survives for the duration of a PTRACE_ATTACH, and
+the mask is released on PTRACE_DETACH.
 
-Suppose the kernel knows about 32 more syscalls than userspace.  It's
-going to read extra bits out of the bitmask that userspace didn't
-initialize!
-
-Also, if you store the mask with the child process, it risks surprising
-existing tracers: attach, set mask, detach, then the next time someone
-attaches an old version of strace some syscalls will be "hidden".
-
-
--- 
-Daniel Jacobowitz
-CodeSourcery
+				Jeff
 
 
 -------------------------------------------------------
