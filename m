@@ -1,28 +1,27 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FaFT6-00035P-8S for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 10:12:24 -0700
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FaFT6-0003BH-5X for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 10:12:24 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FaFT2-00075X-Hv
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FaYoQ-0007my-I7 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 06:51:42 -0700
+Received: from nevyn.them.org ([66.93.172.17] ident=Debian-exim)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FaYoP-0002Hw-Eg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 30 Apr 2006 10:12:24 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-References: <20060430141512.9060.39338.stgit@zion.home.lan>
-	<20060430141614.9060.3376.stgit@zion.home.lan>
-In-Reply-To: <20060430141614.9060.3376.stgit@zion.home.lan>
-MIME-Version: 1.0
+	Mon, 01 May 2006 06:51:42 -0700
+From: Daniel Jacobowitz <dan@debian.org>
+Subject: Re: [uml-devel] [RFC] PATCH 3/4 - Time virtualization :
+	PTRACE_SYSCALL_MASK
+Message-ID: <20060501135127.GA1276@nevyn.them.org>
+References: <200604131720.k3DHKqdr004720@ccure.user-mode-linux.org>
+	<200604261747.54660.blaisorblade@yahoo.it>
+	<20060426154607.GA8628@ccure.user-mode-linux.org>
+	<200604282228.46681.blaisorblade@yahoo.it>
+	<20060429014956.GB9734@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200604301732.59645.blaisorblade@yahoo.it>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [PATCH 3/7] uml: make copy_*_user atomic
+In-Reply-To: <20060429014956.GB9734@ccure.user-mode-linux.org>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,49 +33,57 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 30 Apr 2006 17:32:56 +0200
-To: Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 1 May 2006 09:51:27 -0400
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Bodo Stroesser <bstroesser@fujitsu-siemens.com>
 
-On Sunday 30 April 2006 16:16, Paolo 'Blaisorblade' Giarrusso wrote:
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
->
-> Make __copy_*_user_inatomic really atomic to avoid "Sleeping function
-> called in atomic context" warnings, especially from futex code.
->
-> This is made by adding another kmap_atomic slot and making copy_*_user_skas
-> use kmap_atomic; also copy_*_user() becomes atomic, but that's true and is
-> not a problem for i386 (and we can always add might_sleep there as done
-> elsewhere). For TT mode kmap is not used, so there's no need for this.
->
-> I've had to use another slot since both KM_USER0 and KM_USER1 are used
-> elsewhere and could cause conflicts. Till now we reused the kmap_atomic
-> slot list from the subarch, but that's not needed as that list must contain
-> the common ones (used by generic code) + the ones used in architecture
-> specific code (and Uml till now used none); so I've taken the i386 one
-> after comparing it with ones from other archs, and added KM_UML_USERCOPY.
+On Fri, Apr 28, 2006 at 09:49:56PM -0400, Jeff Dike wrote:
+> On Fri, Apr 28, 2006 at 10:28:46PM +0200, Blaisorblade wrote:
+> > Ok, this gives us a definite proposal, which I finally like:
+> > 
+> > * to exclude sys_tee:
+> > 
+> > bitmask = 0;
+> > set_bit(__NR_tee, bitmask);
+> > ptrace(PTRACE_SET_NOTRACE, bitmask);
+> > 
+> > * to trace only sys_tee:
+> > 
+> > bitmask = 0;
+> > set_bit(__NR_tee, bitmask);
+> > ptrace(PTRACE_SET_TRACEONLY, bitmask);
+> 
+> Yup, I like this.
 
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+I really recommend you not do this.  One (better) suggestion earlier
+was:
 
-Ok, I didn't want indeed to send this one _for merging_, even if I consider it 
-correct and it indeed fixes the warnings; additionally, since HIGHMEM support 
-is not very used (it's slow and less tested), there shouldn't be problems 
-anyway.
+struct {
+  int bitmask_length;
+  int flags;
+  char bitmask[0];
+};
 
-Please keep it in -mm however, it should be ok and there it could get more 
-exposure - and this is about interaction with the core kernel so it could get 
-valid review from people outside UML.
+The difference between this case and the sigprocmask example is that
+the size of a sigset_t is very hard to change - it's a userspace ABI
+break.  If you want to model it after sigprocmask, don't look at the
+man page, which describes the POSIX function.  Look at the more recent
+RT version of the syscall instead:
 
-Jeff, give a look to this one please. You need CONFIG_DEBUG_SPINLOCK_SLEEP and 
-a futex user (for instance starting threaded apache inside the guest) to 
-trigger the warnings.
+sys_rt_sigprocmask(int how, sigset_t __user *set, sigset_t __user *oset, size_t sigsetsize)
+
+Suppose the kernel knows about 32 more syscalls than userspace.  It's
+going to read extra bits out of the bitmask that userspace didn't
+initialize!
+
+Also, if you store the mask with the child process, it risks surprising
+existing tracers: attach, set mask, detach, then the next time someone
+attaches an old version of strace some syscalls will be "hidden".
+
+
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+Daniel Jacobowitz
+CodeSourcery
 
 
 -------------------------------------------------------
