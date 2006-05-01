@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FagDH-00011G-10 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 14:45:51 -0700
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FagDH-0005uJ-4r for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 14:45:51 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FagDF-0000NG-MO
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FagNI-00026y-Id for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 May 2006 14:56:12 -0700
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1FagNE-0006JD-Fm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 May 2006 14:45:51 -0700
-Message-Id: <200605012046.k41KkURr005868@ccure.user-mode-linux.org>
+	Mon, 01 May 2006 14:56:09 -0700
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20060501145837.1069e19e.akpm@osdl.org>
+In-Reply-To: <200605012046.k41KkURr005868@ccure.user-mode-linux.org>
+References: <200605012046.k41KkURr005868@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] UML - Change timer initialization
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: [uml-devel] Re: [PATCH] UML - Change timer initialization
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,32 +28,21 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 01 May 2006 16:46:29 -0400
-To: akpm@osdl.org
+Date: Mon, 1 May 2006 14:58:37 -0700
+To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This is definite 2.6.17 material...
+Jeff Dike <jdike@addtoit.com> wrote:
+>
+> This is definite 2.6.17 material...
+> 
+> As of rc3-mm1, inet_init, which schedules, is called before the UML timer_init,
+> which sets up the timer.  The result is the interval timers being manipulated
+> before the appropriate signal handlers are established, causing unhandled
+> timers.
+> 
 
-As of rc3-mm1, inet_init, which schedules, is called before the UML timer_init,
-which sets up the timer.  The result is the interval timers being manipulated
-before the appropriate signal handlers are established, causing unhandled
-timers.
-
-This is fixed by making timer_init be called earlier.
-
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-
-Index: linux-2.6.17-mm/arch/um/kernel/time_kern.c
-===================================================================
---- linux-2.6.17-mm.orig/arch/um/kernel/time_kern.c	2006-03-23 16:40:20.000000000 -0500
-+++ linux-2.6.17-mm/arch/um/kernel/time_kern.c	2006-05-01 17:34:41.000000000 -0400
-@@ -209,4 +209,4 @@ int __init timer_init(void)
- 	return(0);
- }
- 
--__initcall(timer_init);
-+arch_initcall(timer_init);
-
+Which means nobody's tested uml against the last couple of -mm's.  Bad.
 
 
 -------------------------------------------------------
