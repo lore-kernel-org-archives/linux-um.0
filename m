@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FcnYs-0006Nb-IL for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 May 2006 11:00:54 -0700
+	id 1FcpGx-0006hm-Rs for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 May 2006 12:50:31 -0700
 Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FcnYp-0003dR-RR
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FcpGv-0002Ii-4h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 May 2006 11:00:54 -0700
+	Sun, 07 May 2006 12:50:32 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Problem on generation a locales on uml image
-References: <20060505124937.GA4327@SteX> <20060505223816.GB6864@SteX>
-	<20060506030333.GA6830@ccure.user-mode-linux.org>
-In-Reply-To: <20060506030333.GA6830@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] do_uml_initcalls
+References: <20060507125412.GA16519@Starbuck>
+In-Reply-To: <20060507125412.GA16519@Starbuck>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200605071952.28441.blaisorblade@yahoo.it>
+Message-Id: <200605072150.18891.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,36 +29,73 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Sun, 7 May 2006 19:52:28 +0200
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Stefano Melchior <stefano.melchior@openlabs.it>, user-mode-linux-devel@lists.sourceforge.net, Mattia Dongili <malattia@linux.it>
+Date: Sun, 7 May 2006 21:50:18 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: tyler@agat.net
 
-On Saturday 06 May 2006 05:03, Jeff Dike wrote:
-> On Sat, May 06, 2006 at 12:38:16AM +0200, Stefano Melchior wrote:
-> > I may understand that my public server (where I also use to play with uml
-> > too, from remote, i.e. free time at the office) is a PIII500 with only
-> > 128MB of RAM and an old 12GB hdd: this lack of performances and the
-> > temporary high cpu load (postfix+spamassassin+apache2+mysql) can be the
-> > reason of this problems.
+On Sunday 07 May 2006 14:54, user-mode-linux-devel-admin@lists.sourceforge.net 
+wrote:
+> Hi all,
 >
-> It doesn't seem to have much to do with the capabilities of the host.  I
-> can make it happen on an unloaded, fairly capable host.
+> I was looking at the initialization code of UML and I found the function
+> do_uml_initcalls :
 >
-> > May it be reasonable to increase this schedule timeout? I mean moving the
-> > limit to 15-20sec?
+> 1: static __init void do_uml_initcalls(void)
+> 2: {
+> 3: 	initcall_t *call;
+> 4:
+> 5: 	call = &__uml_initcall_start;
+> 6:	 while (call < &__uml_initcall_end){;
+> 7:	(*call)();
+> 8:         call++;
+> 9:  }
 >
-> Or you can just disable it.
+> First, there's a ';' at the end of line 6 : typo error I guess.
 
-Beyond false positives, also true positives exists and somebody hits them; 
-ignoring the report if the system doesn't hang is also ok.
+Apart from this one, everything is like the general Linux kernel. See below.
 
+> But my point is : this function is unreadable !
+
+> It does simply call all the functions in the ".initcall"
+> section.
+
+Not exactly, that's .uml.initcall.init; see include/asm-um/common.lds.S:
+
+  __uml_initcall_start = .;
+  .uml.initcall.init : { *(.uml.initcall.init) }
+  __uml_initcall_end = .;
+
+Also, in the section there is a list of pointers, not the functions 
+themselves.
+
+> Wouldn't it be better to call all the functions explicitely ?
+>
+> Because I was thinking of another problem : the modules. If some modules
+> are compiled and that the init_modules functions are put in the initcall
+> section, then all the modules will be loaded.
+
+Nothing from modules is linked inside the kernel.
+The function set as module_init() function is put into the above section only 
+if the code is linked statically, not as module. When it's a module it's put 
+somewhere so when the module is loaded that function is called.
+
+> That was just some thoughts :p
+
+This idea is not new for UML - the linux kernel uses the same idea 
+for .initcall.init section (we do that separately because some functions must 
+be called at different moments). And that works.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
