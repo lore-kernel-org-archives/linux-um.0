@@ -1,29 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FcE0d-0004AA-Nq for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 May 2006 21:03:11 -0700
+	id 1Fckt9-0007sl-BP for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 May 2006 08:09:39 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FcE0d-0003jb-R3 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 May 2006 21:03:11 -0700
+	id 1Fckt9-0004cA-Ak for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 07 May 2006 08:09:39 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FcE0Y-000611-Ty
+	(Exim 4.44) id 1Fckt8-0007IU-Pq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 May 2006 21:03:09 -0700
+	Sun, 07 May 2006 08:09:39 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Problem on generation a locales on uml image
-Message-ID: <20060506030333.GA6830@ccure.user-mode-linux.org>
-References: <20060505124937.GA4327@SteX> <20060505141208.GA4940@SteX>
-	<20060505145248.GE23227@inferi.kami.home>
-	<200605052247.29478.blaisorblade@yahoo.it>
-	<20060505223816.GB6864@SteX>
+Subject: Re: [uml-devel] do_uml_initcalls
+Message-ID: <20060507140956.GA3108@ccure.user-mode-linux.org>
+References: <20060507125412.GA16519@Starbuck>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20060505223816.GB6864@SteX>
+In-Reply-To: <20060507125412.GA16519@Starbuck>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,24 +32,50 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 5 May 2006 23:03:33 -0400
-To: Stefano Melchior <stefano.melchior@openlabs.it>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, Mattia Dongili <malattia@linux.it>
+Date: Sun, 7 May 2006 10:09:56 -0400
+To: tyler@agat.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, May 06, 2006 at 12:38:16AM +0200, Stefano Melchior wrote:
-> I may understand that my public server (where I also use to play with uml
-> too, from remote, i.e. free time at the office) is a PIII500 with only
-> 128MB of RAM and an old 12GB hdd: this lack of performances and the
-> temporary high cpu load (postfix+spamassassin+apache2+mysql) can be the 
-> reason of this problems.
+On Sun, May 07, 2006 at 02:54:12PM +0200, user-mode-linux-devel-admin@lists.sourceforge.net wrote:
+> First, there's a ';' at the end of line 6 : typo error I guess.
 
-It doesn't seem to have much to do with the capabilities of the host.  I 
-can make it happen on an unloaded, fairly capable host.
+Yup, nice spotting.
 
-> May it be reasonable to increase this schedule timeout? I mean moving the
-> limit to 15-20sec?
+> But my point is : this function is unreadable !
 
-Or you can just disable it.
+It could hardly get any simpler.
+
+> It does simply call all the functions in the ".initcall"
+> section.
+> 
+> Wouldn't it be better to call all the functions explicitely ?
+
+No, adding an initcall now is a matter of writing it and declaring it
+as an initcall, which adds one contiguous piece of code to one file.
+Adding an explicit call means 
+	writing the function
+	declaring it in a header so that do_uml_initcalls will see it
+	including that header in the file that implements the function
+to ensure that the implementation and declaration are the same
+	adding the call to do_uml_initcalls
+
+Aside from the extra code that requires, the calls and the
+declarations would turn into a hot spot that a lot of patches change,
+and hot spots are a pain when it comes to reordering patches.
+
+> Btw, what is the difference between the initcall and init sections ?
+
+init sections are code which are executed only during initialization
+and which can be thrown out once the kernel is booted.  initcall makes
+the function be automatically called, init just makes it be thrown out
+- you have to arrange to call it yourself.
+
+> Because I was thinking of another problem : the modules. If some modules
+> are compiled and that the init_modules functions are put in the initcall
+> section, then all the modules will be loaded.
+
+I don't think so.  The init functions can only be called if they are
+in the kernel's initcall section, and then they aren't modules any
+more.
 
 				Jeff
 
