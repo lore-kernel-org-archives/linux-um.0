@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FdP1X-00087y-QD for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 May 2006 03:00:59 -0700
-Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
+	id 1FdT5Y-0004Kr-9x for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 09 May 2006 07:21:24 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FdP1W-0007Wa-Kb
+	(Exim 4.44) id 1FdT5V-00020X-Oz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 May 2006 03:01:00 -0700
-From: Pekka J Enberg <penberg@cs.Helsinki.FI>
-In-Reply-To: <20060509092154.GC9417@osiris.boeblingen.de.ibm.com>
-Message-ID: <Pine.LNX.4.58.0605091259430.27821@sbz-30.cs.Helsinki.FI>
+	Tue, 09 May 2006 07:21:24 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] [PROBLEM] UML is killed by SIGALRM
+Message-ID: <20060509142126.GA3906@ccure.user-mode-linux.org>
 References: <Pine.LNX.4.58.0605091125400.24592@sbz-30.cs.Helsinki.FI>
-	<20060509092154.GC9417@osiris.boeblingen.de.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Subject: [uml-devel] Re: [PROBLEM] UML is killed by SIGALRM
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0605091125400.24592@sbz-30.cs.Helsinki.FI>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,29 +28,19 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 9 May 2006 13:00:44 +0300 (EEST)
-To: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: davem@davemloft.net, akpm@osdl.org, linux-kernel@vger.kernel.org, blaisorblade@yahoo.it, jdike@karaya.com, user-mode-linux-devel@lists.sourceforge.net
+Date: Tue, 9 May 2006 10:21:26 -0400
+To: Pekka J Enberg <penberg@cs.Helsinki.FI>
+Cc: davem@davemloft.net, akpm@osdl.org, heiko.carstens@de.ibm.com, linux-kernel@vger.kernel.org, blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 9 May 2006, Heiko Carstens wrote:
-> No idea what might cause this. Guess there are no messages on the console?
+On Tue, May 09, 2006 at 11:28:19AM +0300, Pekka J Enberg wrote:
+> UML in Linus' head doesn't start on my machine whereas 2.6.17-rc3 works 
+> fine:
 
-Nope.
+This is fixed for me by http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=6760da0197a6ee327a09dafc070b26e2f02651fe;hp=f0ec5e39765cd254d436a6d86e211d81795952a4
 
-On Tue, 9 May 2006, Heiko Carstens wrote:
-> > I did a git bisect which found the offending commit:
-> > 
-> >     [IPV4]: inet_init() -> fs_initcall
-> > 
-> >     Convert inet_init to an fs_initcall to make sure its called before any
-> >     device driver's initcall.
-> 
-> Could you try the patch below? It will move inet_init a bit down the chain of
-> the initcall list. Even though I doubt it will help...
+And that's been in Linus' git since last week.
 
-Tried it, still the same problem.
-
-				Pekka
+				Jeff
 
 
 -------------------------------------------------------
