@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FeCS2-0004w4-Ay for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 May 2006 07:47:38 -0700
-Received: from outgoing.securityfocus.com ([205.206.231.27])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FeCS2-0007eJ-2I
+	id 1FeD7M-0001wh-3p for User-mode-linux-devel@lists.sourceforge.net;
+	Thu, 11 May 2006 08:30:20 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FeD7K-00055Y-L6
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 May 2006 07:47:38 -0700
-Received: from mail.securityfocus.com (mail.securityfocus.com [205.206.231.9])
-	by outgoing3.securityfocus.com (Postfix) with SMTP id 31478237D28
-	for <User-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 11 May 2006 07:57:51 -0600 (MDT)
-Message-ID: <20060511144508.25147.qmail@securityfocus.com>
-Content-Type: text/plain
+	Thu, 11 May 2006 08:30:20 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] SecurityFocus Article
+Message-ID: <20060511153007.GA3472@ccure.user-mode-linux.org>
+References: <20060511144508.25147.qmail@securityfocus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-MIME-Version: 1.0
-From: "Ed White" <ed.white@libero.it>
-Subject: [uml-devel] SecurityFocus Article
+In-Reply-To: <20060511144508.25147.qmail@securityfocus.com>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,38 +28,40 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: 11 May 2006 14:45:08 -0000
-Content-Transfer-Encoding: 8bit
-To: ML <User-mode-linux-devel@lists.sourceforge.net>
+Date: Thu, 11 May 2006 11:30:07 -0400
+To: Ed White <ed.white@libero.it>
+Cc: ML <User-mode-linux-devel@lists.sourceforge.net>
 
-A researcher of the french NSA discovered a scary vulnerability in modern x86 cpus and chipsets that expose the kernel to direct tampering.
+On Thu, May 11, 2006 at 02:45:08PM -0000, Ed White wrote:
+> I would like to know if UML barriers could by bypassed using this
+> attack, or not. Maybe we will need a patch for the kernel, or for UML,
+> or what? 
 
-The problem is that a feature called System Management Mode could be used to bypass the kernel and execute code at the highest level possible: ring zero.
+I don't see an actual attack.  The article is assuming some
+unspecified vulnerability in the X server.
 
-The big problem is that the attack is possible thanks to the way X Windows is designed, and so the only way to eradicate it is to redesign it, moving video card driver into the kernel, but it seems that this cannot be done also for missing drivers and documentation!
+That being said, UML instances (and processes inside them) typically
+have no access to the host's X server, so I can't see this being used
+to break out of a UML.
 
-I would like to know if UML barriers could by bypassed using this attack, or not. Maybe we will need a patch for the kernel, or for UML, or what?
+If the host X server accepts connections from remote machines, and has
+a vulnerability that can be exploited remotely, then a UML can connect
+to it and use it to break out.  However, I would regard this as being
+a generic remote exploit that a UML happens to be able to use rather
+than something specific to UML.
 
-Any hint is appreciated. 
+In this case, as with other remote exploits, the fix is on the host
+rather than in the UML.
 
-
-------------------------------------------------------------------------
-
-The quest for ring 0
-
-by Federico Biancuzzi
-2006-05-10
-
-Federico Biancuzzi interviews French researcher Lo&iuml;c Duflot to learn about the System Management Mode attack, how to mitigate it, what hardware is vulnerable, and why we should be concerned with recent X Server bugs.
-http://www.securityfocus.com/columnists/402
-
+				Jeff
 
 
 -------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd_______________________________________________
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+_______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
