@@ -1,22 +1,33 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FeD7M-0001wh-3p for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 May 2006 08:30:20 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1Fey6z-0005rr-LT for User-mode-linux-devel@lists.sourceforge.net;
+	Sat, 13 May 2006 10:41:05 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1Fey6z-0000Ik-Ol for User-mode-linux-devel@lists.sourceforge.net;
+	Sat, 13 May 2006 10:41:05 -0700
+Received: from mail.signal1network.com ([208.176.116.2]
+	helo=ucontrol.mobiledns.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FeD7K-00055Y-L6
+	(Exim 4.44) id 1Fey6y-0002hC-8P
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 May 2006 08:30:20 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] SecurityFocus Article
-Message-ID: <20060511153007.GA3472@ccure.user-mode-linux.org>
-References: <20060511144508.25147.qmail@securityfocus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060511144508.25147.qmail@securityfocus.com>
+	Sat, 13 May 2006 10:41:05 -0700
+Received: from ucontrol.mobiledns.com (localhost [127.0.0.1])
+	by ucontrol.mobiledns.com (8.13.4/8.13.4/Debian-3sarge1) with ESMTP id
+	k4DHeuPY011191 for <User-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 13 May 2006 13:40:56 -0400
+Received: from localhost (pyro@localhost)
+	by ucontrol.mobiledns.com (8.13.4/8.13.4/Submit) with ESMTP id
+	k4DHenXo011185 for <User-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 13 May 2006 13:40:56 -0400
+From: Steven James <pyro@linuxlabs.com>
+Message-ID: <Pine.LNX.4.58.0605111220070.664@ucontrol.mobiledns.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [uml-devel] [PATCH] RFC allow PTRACE_SYSCALL to selectively skip
+	syscalls
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,32 +39,43 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Thu, 11 May 2006 11:30:07 -0400
-To: Ed White <ed.white@libero.it>
-Cc: ML <User-mode-linux-devel@lists.sourceforge.net>
+Date: Sat, 13 May 2006 13:40:48 -0400 (EDT)
+To: User-mode-linux-devel@lists.sourceforge.net
 
-On Thu, May 11, 2006 at 02:45:08PM -0000, Ed White wrote:
-> I would like to know if UML barriers could by bypassed using this
-> attack, or not. Maybe we will need a patch for the kernel, or for UML,
-> or what? 
+Greetings,
 
-I don't see an actual attack.  The article is assuming some
-unspecified vulnerability in the X server.
+I have been working on a few experimental system calls using a ptrace
+mechanism similar to UML to implement the calls. Naturally this lead me to
+look at PTRACE_SYSEMU vs. PTRACE_SYSCALL. Since the extra system calls are
+implemented entirely by the ptrace thread it seems a shame to take the
+context switch on entry and exit from the call. In some cases, I need to
+also implement a few of the standard Linux kernel calls in the ptrace
+thread as well, based on parameters of the call (for example, writes to
+specific open files).
 
-That being said, UML instances (and processes inside them) typically
-have no access to the host's X server, so I can't see this being used
-to break out of a UML.
+The patch below for x86_64 implements a scheme where a ptraced system call
+is skipped if the ptrace thread sets a return value (in RAX) when it
+handles the syscall entry. Otherwise things proceed normally.
 
-If the host X server accepts connections from remote machines, and has
-a vulnerability that can be exploited remotely, then a UML can connect
-to it and use it to break out.  However, I would regard this as being
-a generic remote exploit that a UML happens to be able to use rather
-than something specific to UML.
+A similar change is even easier on i386 since the needed logic is already
+in entry.S for SYSEMU.
 
-In this case, as with other remote exploits, the fix is on the host
-rather than in the UML.
+I chose changing RAX as the trigger since that is otherwise a useless
+thing for a tracing thread to do at syscall entry.
 
-				Jeff
+G'day,
+sjames
+
+
+||||| |||| |||||||||||||  |||
+by Linux Labs International, Inc.
+   Steven James, CTO
+
+55 Marietta Street
+Suite 1830
+Atlanta, Ga 30303
+866 824 9737 support
+
 
 
 -------------------------------------------------------
