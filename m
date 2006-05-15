@@ -1,30 +1,26 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Fff1Q-0001pA-0X for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 May 2006 08:30:12 -0700
+	id 1FfU3Y-0004U3-1b for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 May 2006 20:47:40 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fff1Q-0000Er-1q for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 May 2006 08:30:12 -0700
-Received: from wx-out-0102.google.com ([66.249.82.203])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Fff1O-0000Wb-Ce
+	id 1FfU3Y-0005Xh-5t for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 14 May 2006 20:47:40 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FfU3X-0005hC-Nd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 May 2006 08:30:12 -0700
-Received: by wx-out-0102.google.com with SMTP id h26so694498wxd
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 15 May 2006 08:30:03 -0700 (PDT)
-From: Alberto Bertogli <albertito@gmail.com>
-Subject: Re: [uml-devel] [UML] Problems building and running 2.6.17-rc4 on
-	x86-64
-Message-ID: <20060515152958.GA4553@gmail.com>
-References: <20060514182541.GA4980@gmail.com>
-	<20060515033919.GD21383@ccure.user-mode-linux.org>
+	Sun, 14 May 2006 20:47:40 -0700
+From: Jeff Dike <jdike@addtoit.com>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x87800000, ip 0x400007b0
+Message-ID: <20060515034813.GF21383@ccure.user-mode-linux.org>
+References: <44619F72.7060009@theshore.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20060515033919.GD21383@ccure.user-mode-linux.org>
+In-Reply-To: <44619F72.7060009@theshore.net>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,64 +32,41 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 May 2006 12:29:58 -0300
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Sun, 14 May 2006 23:48:13 -0400
+To: "Christopher S. Aker" <caker@theshore.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, May 14, 2006 at 11:39:19PM -0400, Jeff Dike wrote:
-> On Sun, May 14, 2006 at 03:25:41PM -0300, Alberto Bertogli wrote:
-> > So I copied them from sysdeps/x86_64/jmpbuf-offsets.h, and building went
-> > on. Probably, the same happens under i386.
+On Wed, May 10, 2006 at 03:08:18AM -0500, Christopher S. Aker wrote:
+> 2.6.16 + bb1
 > 
-> The current patch for this is http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.17-rc4/patches/jmpbuf
+> Kernel panic - not syncing: Kernel mode fault at addr 0x87800000, ip 
+> 0x400007b0
 > 
-> I need to redo it, but that works for now.
+> EIP: 0073:[<400007b0>] CPU: 0 Not tainted ESP: 007b:bfe19380 EFLAGS: 
+> 00000212
+>     Not tainted
+> EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
+> ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 007b ES: 007b
+> 87163704:  [<80053225>] notifier_call_chain+0x27/0x3e
+> 87163720:  [<80040ebb>] panic+0x70/0x102
+> 87163738:  [<8001ea71>] segv+0x292/0x2c0
+> 87163794:  [<80022cd6>] fix_range+0x46/0x4a
+> 87163804:  [<8001e7a0>] segv_handler+0xa5/0xe4
+> 87163828:  [<8001e6fb>] segv_handler+0x0/0xe4
+> 8716382c:  [<80033ef6>] sig_handler_common_skas+0x92/0xe1
+> 8716384c:  [<8002fd7e>] sig_handler+0x62/0x6d
+> 87163860:  [<8038fbf8>] __restore+0x0/0x8
+> 871638a0:  [<80254a39>] vsnprintf+0x343/0x4de
+> 871638c4:  [<800319f1>] setjmp_wrapper+0x36/0x85
+> 87163950:  [<80023073>] buffer_op+0x47/0x77
+> 87163954:  [<80022eda>] do_buffer_op+0x0/0x152
 
-Thanks!
+I don't suppose this is reproducable?  
 
+If you have the UML kernel that did this, can you disassemble
+setjmp_wrapper and send that to me?
 
-> > It begins to boot, but panics right after mounting root:
-> > 
-> > [42949373.800000] kjournald starting.  Commit interval 5 seconds
-> > [42949373.800000] EXT3-fs: mounted filesystem with ordered data mode.
-> > [42949373.800000] VFS: Mounted root (ext3 filesystem) readonly.
-> > [42949373.800000] Kernel panic - not syncing: handle_trap - failed to wait at end of syscall, errno = 0, status = 2943
-> 
-> This is a segfault happening when it shouldn't.
-> 
-> Can you disassemble stub_segv_handler and send me the output?
-
-Sure, here it is:
-(gdb) disas stub_segv_handler
-Dump of assembler code for function stub_segv_handler:
-0x000000006027c0e0 <stub_segv_handler+0>:       mov    %rdx,%r8
-0x000000006027c0e3 <stub_segv_handler+3>:       mov    0xd8(%r8),%rax
-0x000000006027c0ea <stub_segv_handler+10>:      mov    $0x7fbffff000,%rdx
-0x000000006027c0f4 <stub_segv_handler+20>:      mov    %rax,0x8(%rdx)
-0x000000006027c0f8 <stub_segv_handler+24>:      mov    0xc0(%r8),%rax
-0x000000006027c0ff <stub_segv_handler+31>:      mov    %eax,(%rdx)
-0x000000006027c101 <stub_segv_handler+33>:      mov    0xc8(%r8),%rax
-0x000000006027c108 <stub_segv_handler+40>:      mov    %eax,0x10(%rdx)
-0x000000006027c10b <stub_segv_handler+43>:      mov    $0x27,%eax
-0x000000006027c110 <stub_segv_handler+48>:      syscall
-0x000000006027c112 <stub_segv_handler+50>:      mov    $0x3e,%edx
-0x000000006027c117 <stub_segv_handler+55>:      movslq %eax,%rdi
-0x000000006027c11a <stub_segv_handler+58>:      mov    $0xa,%esi
-0x000000006027c11f <stub_segv_handler+63>:      mov    %rdx,%rax
-0x000000006027c122 <stub_segv_handler+66>:      syscall
-0x000000006027c124 <stub_segv_handler+68>:      mov    %r8,%rsp
-0x000000006027c127 <stub_segv_handler+71>:      mov    $0xf,%rax
-0x000000006027c12e <stub_segv_handler+78>:      syscall
-0x000000006027c130 <stub_segv_handler+80>:      retq
-End of assembler dump.
-
-
-Please let me know if you need anything else.
-
-Thanks,
-		Alberto
-
-
+				Jeff
 
 
 -------------------------------------------------------
