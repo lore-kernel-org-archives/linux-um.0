@@ -1,26 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FfcMa-0000NT-HI for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 May 2006 05:39:52 -0700
+	id 1FfoGy-0008MC-QY for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 May 2006 18:22:52 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FfoGy-0004In-Qs for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 May 2006 18:22:52 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FfcMZ-00087u-8G
+	(Exim 4.44) id 1FfoGy-000495-CE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 May 2006 05:39:52 -0700
+	Mon, 15 May 2006 18:22:52 -0700
 From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: Bug#366915: [uml-devel] Re: Bug#366915: user-mode-linux: fails
-	when host kernel is linux-image-2.6.16-1-k7
-Message-ID: <20060515123954.GA3337@ccure.user-mode-linux.org>
+Subject: Re: [Pkg-uml-pkgs] Bug#366915: [uml-devel] Re: Bug#366915:
+	user-mode-linux: fails when host kernel is linux-image-2.6.16-1-k7
+Message-ID: <20060516012319.GE7206@ccure.user-mode-linux.org>
 References: <20060512035019.18151.73446.reportbug@doof.home>
 	<20060512200806.GA27800@inferi.kami.home>
 	<20060515034427.GE21383@ccure.user-mode-linux.org>
 	<58990.217.33.203.18.1147687738.squirrel@picard.linux.it>
+	<20060515123954.GA3337@ccure.user-mode-linux.org>
+	<20060515195508.GP27800@inferi.kami.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <58990.217.33.203.18.1147687738.squirrel@picard.linux.it>
+In-Reply-To: <20060515195508.GP27800@inferi.kami.home>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,20 +38,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Mon, 15 May 2006 08:39:54 -0400
+Date: Mon, 15 May 2006 21:23:19 -0400
 To: Mattia Dongili <malattia@linux.it>
-Cc: Paul Dwerryhouse <paul@dwerryhouse.com.au>, 366915@bugs.debian.org, UML-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: 366915@bugs.debian.org, UML-devel <user-mode-linux-devel@lists.sourceforge.net>, Paul Dwerryhouse <paul@dwerryhouse.com.au>
 
-On Mon, May 15, 2006 at 12:08:58PM +0200, Mattia Dongili wrote:
-> Oh, I found
-> CONFIG_PAGE_OFFSET=0xB0000000
-> 
-> may this be the problem? I found reports telling it broke other SW:
-> http://lists.debian.org/debian-kernel/2006/04/msg00042.html
+On Mon, May 15, 2006 at 09:55:09PM +0200, Mattia Dongili wrote:
+> Does this mean that UML will run on a non-standard-vm-split _only_ if
+> the host has CONFIG_VMSPLIT_2G=y ?
 
-Yup, that's the problem.  They did spring a split change on you.
+The question is not clear.  The host will only have a nonstandard
+split if it has CONFIG_VMSPLIT_2G or equivalent enabled.
 
-On rc4, UML will run if you enable host 2G/2G support.
+Do you instead mean whether UML will run on a nonstandard split host
+if IT (not the host) has CONFIG_HOST_2G_2G (not CONFIG_VMSPLIT_2G)
+enabled?
+
+If so, the answer for now is yes.
+
+> If so is this considered a bug or a feature? :)
+
+More a bug.  We are considering ways of detecting the host vmsplit at
+run time and adapting to it, but added back the CONFIG_HOST_2G_2G as
+an interim measure.
 
 				Jeff
 
