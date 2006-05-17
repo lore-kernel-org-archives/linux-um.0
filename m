@@ -2,25 +2,16 @@ Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FgFeI-0000o5-5S for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 May 2006 23:36:46 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FgFeE-0001tx-Rg
+	id 1FgLhr-0006wM-FZ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 May 2006 06:04:51 -0700
+Received: from 245-051.dyn-fa.pool.ew.hu ([193.226.245.51]
+	helo=dorka.pomaz.szeredi.hu)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FgLhq-0008Gu-44
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 May 2006 23:36:46 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [UML] Problems building and running 2.6.17-rc4 on
-	x86-64ync-mailbox><next-undeleted><enter-command>set editor=vim
-References: <20060514182541.GA4980@gmail.com>
-	<20060516191244.GB6337@ccure.user-mode-linux.org>
-	<20060517023942.GI9066@gmail.com>
-In-Reply-To: <20060517023942.GI9066@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200605170836.41009.blaisorblade@yahoo.it>
+	Wed, 17 May 2006 06:04:51 -0700
+Message-Id: <E1FgLhI-0001eK-00@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Subject: [uml-devel] klibc build broken on UML
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,44 +23,20 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 17 May 2006 08:36:40 +0200
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Alberto Bertogli <albertito@gmail.com>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Date: Wed, 17 May 2006 15:04:16 +0200
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, hpa@zytor.com, akpm@osdl.org
 
-On Wednesday 17 May 2006 04:39, Alberto Bertogli wrote:
-> On Tue, May 16, 2006 at 03:12:44PM -0400, Jeff Dike wrote:
-> > On Mon, May 15, 2006 at 12:29:58PM -0300, Alberto Bertogli wrote:
-> > > Sure, here it is:
-> > > (gdb) disas stub_segv_handler
-> >
-> > Sorry, I misread the error message and asked for the wrong thing.
-> > Your UML is seeing a process segfault during a system call, before the
-> > SIGTRAP expected at the end of the system call.  I don't know what's
-> > happening there.
-> >
-> > Can you apply the following patch, which will just give you a register
-> > dump of the process, and send me the output?
->
-> Here it is. While the patch worked, it was for 2.6.16, and I'm using
-> 2.6.17-rc4, I hope that's not a problem.
+I get this on 2.6.17-rc4-mm1:
 
-Guess not - I'll test this patch soon because I have the same problem, however 
-are you running a 2.6.16 host?
+  CHK     include/linux/compile.h
+/usr/src/quilt/linux/scripts/Kbuild.klibc:60: /usr/src/quilt/linux/usr/klibc/arch/um/MCONFIG: No such file or directory
+usr/klibc/Kbuild:71: usr/klibc/arch/um/Makefile.inc: No such file or directory
+make[2]: *** No rule to make target `usr/klibc/arch/um/Makefile.inc'.  Stop.
+make[1]: *** [_usr_klibc] Error 2
+make: *** [usr] Error 2
 
-If so, can you verify whether on a 2.6.15 host kernel the same binary runs 
-fine (as is the case for me)?
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-	
-	
-		
-___________________________________ 
-Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
-http://it.messenger.yahoo.com
-
+Miklos
 
 
 -------------------------------------------------------
