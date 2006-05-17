@@ -1,28 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FgBx0-0000Ys-Mi for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 May 2006 19:39:50 -0700
-Received: from wx-out-0102.google.com ([66.249.82.203])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FgBwz-0003bD-PC
+	id 1FgFOh-0007dh-3x for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 May 2006 23:20:39 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FgFOh-0003ZL-3X for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 May 2006 23:20:39 -0700
+Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FgFOd-0005Mi-FT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 May 2006 19:39:50 -0700
-Received: by wx-out-0102.google.com with SMTP id s10so91969wxc
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 16 May 2006 19:39:48 -0700 (PDT)
-From: Alberto Bertogli <albertito@gmail.com>
-Subject: Re: [uml-devel] [UML] Problems building and running 2.6.17-rc4 on
-	x86-64ync-mailbox><next-undeleted><enter-command>set editor=vim
-Message-ID: <20060517023942.GI9066@gmail.com>
-References: <20060514182541.GA4980@gmail.com>
-	<20060515033919.GD21383@ccure.user-mode-linux.org>
-	<20060515152958.GA4553@gmail.com>
-	<20060516191244.GB6337@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Tue, 16 May 2006 23:20:39 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] RFC allow PTRACE_SYSCALL to selectively skip
+	syscalls
+References: <Pine.LNX.4.58.0605111220070.664@ucontrol.mobiledns.com>
+In-Reply-To: <Pine.LNX.4.58.0605111220070.664@ucontrol.mobiledns.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20060516191244.GB6337@ccure.user-mode-linux.org>
+Message-Id: <200605170820.30922.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,84 +34,66 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Tue, 16 May 2006 23:39:42 -0300
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Date: Wed, 17 May 2006 08:20:30 +0200
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Steven James <pyro@linuxlabs.com>
 
-On Tue, May 16, 2006 at 03:12:44PM -0400, Jeff Dike wrote:
-> On Mon, May 15, 2006 at 12:29:58PM -0300, Alberto Bertogli wrote:
-> > Sure, here it is:
-> > (gdb) disas stub_segv_handler
-> 
-> Sorry, I misread the error message and asked for the wrong thing.
-> Your UML is seeing a process segfault during a system call, before the
-> SIGTRAP expected at the end of the system call.  I don't know what's
-> happening there.
-> 
-> Can you apply the following patch, which will just give you a register
-> dump of the process, and send me the output?
+On Saturday 13 May 2006 19:40, Steven James wrote:
+> Greetings,
+>
+> I have been working on a few experimental system calls using a ptrace
+> mechanism similar to UML to implement the calls. Naturally this lead me to
+> look at PTRACE_SYSEMU vs. PTRACE_SYSCALL. Since the extra system calls are
+> implemented entirely by the ptrace thread it seems a shame to take the
+> context switch on entry and exit from the call. In some cases, I need to
+> also implement a few of the standard Linux kernel calls in the ptrace
+> thread as well, based on parameters of the call (for example, writes to
+> specific open files).
+>
+> The patch below for x86_64 implements a scheme where a ptraced system call
+> is skipped if the ptrace thread sets a return value (in RAX) when it
+> handles the syscall entry. Otherwise things proceed normally.
 
-Here it is. While the patch worked, it was for 2.6.16, and I'm using
-2.6.17-rc4, I hope that's not a problem.
+Just to make things clearer: is this a different API than SYSEMU to do the 
+same thing, as it seems? If so, is it faster by any way, or just more elegant 
+in your opinion, or what? I think it's as fast as SYSEMU since you must 
+switch to the tracer on the syscall entry, look at params, set the result and 
+switch back with a ptrace call, with PTRACE_SYSEMU in my case, with 
+PTRACE_SYSCALL (?) in your case.
 
+The current problem with PTRACE_SYSEMU is that you decide whether you'll skip 
+the syscall before looking at parameters (other people have already 
+complained about this). If this is the problem you have, I'll recover the 
+past discussions and let you know.
 
-[42949373.940000] EXT3-fs: mounted filesystem with ordered data mode.
-[42949373.940000] VFS: Mounted root (ext3 filesystem) readonly.
-[42949374.050000] Stub registers -
-[42949374.050000]       0 - 8
-[42949374.050000]       1 - 400040
-[42949374.050000]       2 - 40001530
-[42949374.050000]       3 - 2
-[42949374.050000]       4 - fffffffd
-[42949374.050000]       5 - 7
-[42949374.050000]       6 - 5
-[42949374.050000]       7 - 37
-[42949374.050000]       8 - 3
-[42949374.050000]       9 - 20611
-[42949374.050000]       10 - 0
-[42949374.050000]       11 - 2d
-[42949374.050000]       12 - 11
-[42949374.050000]       13 - 7f7f8d4539
-[42949374.050000]       14 - 0
-[42949374.050000]       15 - ffffffffffffffff
-[42949374.050000]       16 - 4000eae0
-[42949374.050000]       17 - 33
-[42949374.050000]       18 - 10246
-[42949374.050000]       19 - 7f7f8d4498
-[42949374.050000]       20 - 2b
-[42949374.050000] Kernel panic - not syncing: Kernel mode fault at addr 0x0, ip 0x4000f349
-[42949374.050000]
-[42949374.050000] Modules linked in:
-[42949374.050000] Pid: 1, comm: init Not tainted 2.6.17-rc4
-[42949374.050000] RIP: 0033:[<000000004000f349>]
-[42949374.050000] RSP: 0000007f7f8d4498  EFLAGS: 00000246
-[42949374.050000] RAX: 0000000000000000 RBX: 0000007f7f8d44b0 RCX: ffffffffffffffff
-[42949374.050000] RDX: 0000007f7f8d4770 RSI: 0000000040010900 RDI: 0000007f7f8d44b0
-[42949374.050000] RBP: 0000000000402240 R08: 0000000000000000 R09: 0000000000000000
-[42949374.050000] R10: 0000000000000064 R11: 0000000000000246 R12: 0000007f7f8d4640
-[42949374.050000] R13: 0000000040001530 R14: 0000000000400040 R15: 0000000000000008
-[42949374.050000] Call Trace:
-[42949374.050000] 60433888:  [<6001a10a>] panic_exit+0x2a/0x50
-[42949374.050000] 60433898:  [<60044acc>] notifier_call_chain+0x1c/0x30
-[42949374.050000] 604338b8:  [<600348cf>] panic+0xcf/0x170
-[42949374.050000] 60433918:  [<600285b4>] set_signals+0x14/0x30
-[42949374.050000] 60433928:  [<6001947b>] handle_page_fault+0x1bb/0x270
-[42949374.050000] 60433998:  [<600197b8>] segv+0x208/0x300
-[42949374.050000] 60433a80:  [<60019530>] segv_handler+0x0/0x80
-[42949374.050000] 60433a98:  [<600195ab>] segv_handler+0x7b/0x80
-[42949374.050000] 60433ab8:  [<6002ca18>] sig_handler_common_skas+0xe8/0x140
-[42949374.050000] 60433ae8:  [<6002873f>] sig_handler+0x5f/0x80
-[42949374.050000] 60433c20:  [<6001b450>] copy_chunk_to_user+0x0/0x40
-[42949374.050000] 60433c88:  [<6002b877>] ptrace_dump_regs+0x47/0x70
-[42949374.050000] 60433dc0:  [<60014010>] init+0x0/0x170
-[42949374.050000] 60433dd8:  [<6001a7a2>] new_thread_handler+0x102/0x140
-[42949374.050000]
+> A similar change is even easier on i386 since the needed logic is already
+> in entry.S for SYSEMU.
+>
+> I chose changing RAX as the trigger since that is otherwise a useless
+> thing for a tracing thread to do at syscall entry.
 
-Please let me know if there's anything else you want me to try.
+What if the tracing thread must set -ENOSYS as the return value?
+@@ -644,16 +644,24 @@
+                send_sig(current->exit_code, current, 1);
+                current->exit_code = 0;
+        }
++       if(regs->rax != -ENOSYS)
++               return 1;
++
++       return 0;
+ }
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
 
-Thanks,
-		Alberto
+	
 
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
 
 
