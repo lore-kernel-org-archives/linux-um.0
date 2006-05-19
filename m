@@ -1,26 +1,28 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
+Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Fgtff-0006FN-Cq for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 May 2006 18:20:51 -0700
+	id 1Fh70N-0006x7-P2 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 19 May 2006 08:35:07 -0700
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1Fh70N-0001aY-Qj for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 19 May 2006 08:35:07 -0700
 Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Fgtfe-0004Fb-OE
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Fh70K-0001LN-8k
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 May 2006 18:20:51 -0700
+	Fri, 19 May 2006 08:35:07 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [UML] Problems building and running 2.6.17-rc4 on
-	x86-64
-References: <20060514182541.GA4980@gmail.com>
-	<200605170836.41009.blaisorblade@yahoo.it>
-	<20060518194843.GA9593@gmail.com>
-In-Reply-To: <20060518194843.GA9593@gmail.com>
+Subject: Re: [uml-devel] [PATCH] RFC allow PTRACE_SYSCALL to selectively skip
+	syscalls
+References: <Pine.LNX.4.58.0605111220070.664@ucontrol.mobiledns.com>
+	<200605170820.30922.blaisorblade@yahoo.it>
+	<Pine.LNX.4.58.0605171020350.664@ucontrol.mobiledns.com>
+In-Reply-To: <Pine.LNX.4.58.0605171020350.664@ucontrol.mobiledns.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200605190320.47833.blaisorblade@yahoo.it>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_jGdbEDZ3NqfdjA8"
+Message-Id: <200605191609.39884.blaisorblade@yahoo.it>
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,98 +34,218 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Fri, 19 May 2006 03:20:47 +0200
-To: Alberto Bertogli <albertito@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Date: Fri, 19 May 2006 16:09:39 +0200
+To: Steven James <pyro@linuxlabs.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, "Charles P. Wright" <cwright@cs.sunysb.edu>
 
-On Thursday 18 May 2006 21:48, Alberto Bertogli wrote:
-> On Wed, May 17, 2006 at 08:36:40AM +0200, Blaisorblade wrote:
-> > On Wednesday 17 May 2006 04:39, Alberto Bertogli wrote:
-> > > On Tue, May 16, 2006 at 03:12:44PM -0400, Jeff Dike wrote:
-> > > > On Mon, May 15, 2006 at 12:29:58PM -0300, Alberto Bertogli wrote:
+--Boundary-00=_jGdbEDZ3NqfdjA8
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Wednesday 17 May 2006 16:45, Steven James wrote:
+> On Wed, 17 May 2006, Blaisorblade wrote:
+> > On Saturday 13 May 2006 19:40, Steven James wrote:
+> > > Greetings,
 > > >
-> > > Here it is. While the patch worked, it was for 2.6.16, and I'm using
-> > > 2.6.17-rc4, I hope that's not a problem.
-> >
-> > Guess not - I'll test this patch soon because I have the same problem,
-> > however are you running a 2.6.16 host?
-> >
-> > If so, can you verify whether on a 2.6.15 host kernel the same binary
-> > runs fine (as is the case for me)?
->
-> I tried running 2.6.15.1 and 2.6.17-rc1 on the host. Both advanced more
-> than 2.6.17-rc4, but failed in different ways.
->
-> 2.6.15.1 was the most successful one, it managed to boot and it kinda
-> worked, but I got semi-random segmentation faults when running some apps
-> like apt-get. I reported this some time ago to Jeff Dike.
->
-> 2.6.17-rc1 didn't got that far, and 'panic'ed when starting runlevel 2;
-> I attach the output below.
+> > > I have been working on a few experimental system calls using a ptrace
+> > > mechanism similar to UML to implement the calls. Naturally this lead me
+> > > to look at PTRACE_SYSEMU vs. PTRACE_SYSCALL. Since the extra system
+> > > calls are implemented entirely by the ptrace thread it seems a shame to
+> > > take the context switch on entry and exit from the call. In some cases,
+> > > I need to also implement a few of the standard Linux kernel calls in
+> > > the ptrace thread as well, based on parameters of the call (for
+> > > example, writes to specific open files).
+> > >
+> > > The patch below for x86_64 implements a scheme where a ptraced system
+> > > call is skipped if the ptrace thread sets a return value (in RAX) when
+> > > it handles the syscall entry. Otherwise things proceed normally.
 
-Interesting, I'll test ASAP, meanwhile please verify if a 2.6.16 guest kernel 
-works fine at least on 2.6.15 host (as it does here). So we'll know that the 
-semi-random segfault is a bug in 2.6.17-rc guests.
+> > Just to make things clearer: is this a different API than SYSEMU to do
+> > the same thing, as it seems? If so, is it faster by any way, or just more
+> > elegant in your opinion, or what? I think it's as fast as SYSEMU since
+> > you must switch to the tracer on the syscall entry, look at params, set
+> > the result and switch back with a ptrace call, with PTRACE_SYSEMU in my
+> > case, with PTRACE_SYSCALL (?) in your case.
 
-I've built all 2.6.16-rc releases to start doing binary search to insulate 
-where was the host change.
+> It's no faster than SYSEMU and it's not necessarily any more elegant.
 
-> Initializing random number generator...done.
-> INIT: Entering runlevel: 2
-> INIT: PANIC: segmentation violation! sleeping for 30 seconds.
-> [42949380.750000] BUG: failure at
-> /usr/src/linux-2.6.17-rc4/include/linux/elfcore.h:95/elf_core_copy_regs()!
-> [42949380.750000] Kernel panic - not syncing: BUG!
-> [42949380.750000]
-> [42949380.750000] Modules linked in:
-> [42949380.750000] Pid: 444, comm: init Not tainted 2.6.17-rc4
-> [42949380.750000] RIP: 0033:[<0000000040145896>]
-> [42949380.750000] RSP: 0000007f7f811f30  EFLAGS: 00000246
-> [42949380.750000] RAX: 0000000000000000 RBX: 0000000040017600 RCX:
-> ffffffffffffffff [42949380.750000] RDX: 0000000000000000 RSI:
-> 0000007f7f811f48 RDI: 0000000000000002 [42949380.750000] RBP:
-> 0000000000000000 R08: 00000000000001bc R09: 000000000000000b
-> [42949380.750000] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000002 [42949380.750000] R13: 00000000005096bc R14:
-> 0000000000406b21 R15: 0000000000406b21 [42949380.750000] Call Trace:
-> [42949380.750000] 67efb768:  [<6001a10a>] panic_exit+0x2a/0x50
-> [42949380.750000] 67efb778:  [<60044acc>] notifier_call_chain+0x1c/0x30
-> [42949380.750000] 67efb798:  [<600348cf>] panic+0xcf/0x170
-> [42949380.750000] 67efb7b8:  [<600c336f>] ext3_mark_iloc_dirty+0xf/0x20
-> [42949380.750000] 67efb7f8:  [<600c7000>] ext3_orphan_del+0x1d0/0x280
-> [42949380.750000] 67efb808:  [<600c3528>] ext3_dirty_inode+0x78/0xa0
-> [42949380.750000] 67efb838:  [<6009d1c2>] __mark_inode_dirty+0x102/0x1b0
-> [42949380.750000] 67efb848:  [<600285b4>] set_signals+0x14/0x30
-> [42949380.750000] 67efb858:  [<600742c8>] kmem_cache_alloc+0x48/0x70
-> [42949380.750000] 67efb878:  [<600aa4e4>] elf_core_dump+0x264/0x2f0
-> [42949380.750000] 67efb938:  [<6007554d>] do_truncate+0x5d/0x70
-> [42949380.750000] 67efb9a8:  [<600842e7>] do_coredump+0x2c7/0x370
-> [42949380.750000] 67efba48:  [<60040bd9>] recalc_sigpending+0x19/0x20
-> [42949380.750000] 67efba58:  [<60041064>] __dequeue_signal+0x84/0xf0
-> [42949380.750000] 67efbad8:  [<600432e3>] get_signal_to_deliver+0x3e3/0x400
-> [42949380.750000] 67efbb68:  [<60065b6d>] __handle_mm_fault+0x23d/0x280
-> [42949380.750000] 67efbb88:  [<6013f13e>] __up_read+0x1e/0xc0
-> [42949380.750000] 67efbbe8:  [<60017866>] kern_do_signal+0x86/0x230
-> [42949380.750000] 67efbc00:  [<6001b370>] copy_chunk_from_user+0x0/0x40
-> [42949380.750000] 67efbc18:  [<600197cb>] segv+0x21b/0x300
-> [42949380.750000] 67efbcb8:  [<6002b8f8>] wait_stub_done+0x58/0x110
-> [42949380.750000] 67efbce8:  [<600434de>] sys_rt_sigprocmask+0x7e/0x120
-> [42949380.750000] 67efbd28:  [<60017a30>] do_signal+0x20/0x30
-> [42949380.750000] 67efbd38:  [<60016795>] interrupt_end+0x45/0x60
-> [42949380.750000] 67efbd58:  [<6002be8c>] userspace+0x15c/0x2f0
-> [42949380.750000] 67efbd78:  [<6001b502>] copy_to_user_skas+0x72/0x90
-> [42949380.750000] 67efbde8:  [<6001a8fe>] fork_handler+0xee/0x100
-> [42949380.750000]
-> [42949380.750000]  * route del -host 192.168.0.2 dev tap0
-> [42949380.750000] * bash -c echo 0 > /proc/sys/net/ipv4/conf/tap0/proxy_arp
+Ok
+
+> > The current problem with PTRACE_SYSEMU is that you decide whether you'll
+> > skip the syscall before looking at parameters (other people have already
+> > complained about this). If this is the problem you have, I'll recover the
+> > past discussions and let you know.
+
+> That's exactly the problem I had. The emulator can't decide if it wants to
+> handle the call itself or let the Linux kernel do it until it knows what
+> syscall it is and in some cases the parameters.
+
+> My objective in the patch was to fix that with minimal changes to the
+> kernel. I did x86_64 first because I had one that was more convieniant for
+> me to reboot at the time :-)
+
+Fine then.
+
+> > > A similar change is even easier on i386 since the needed logic is
+> > > already in entry.S for SYSEMU.
+> > >
+> > > I chose changing RAX as the trigger since that is otherwise a useless
+> > > thing for a tracing thread to do at syscall entry.
+
+> > What if the tracing thread must set -ENOSYS as the return value?
+
+> That's a flaw in the way I'm doing it. I would have to change orig_rax to
+> an invalid syscall number
+
+or getpid(),as we do (dunno whether it makes any difference; but you're sure 
+getpid is getpid, while an invalid number may become valid).
+
+> and take the extra context switches. 
+
+> An alternative would be to either add yet another process flag that is
+> checked after the ptrace_notify in (do_)syscall_trace or change the
+> behaviour of TIF_SYSCALL_EMU by checking it after ptrace_notify.
+
+That is more or less my idea, however I've not had the time to work on it. 
+Instead of changing the semantics we must add another option - I thought to 
+use a ptrace option (the ones you set with PTRACE_SETOPTIONS), Charles Wright 
+coded instead a PTRACE_CHECKEMU, but this is the concept.
+
+So, I'm going to forward you the emails containing two patches:
+*) PTRACE_CHECKEMU from Charles Wright
+*) PTRACE_SYSCALL_MASK - to make the debugger be notified only of some 
+syscalls; the only check is via syscall number though. It's unrelated to this 
+but probably useful to you.
+
+And I'm attaching my original version of the PTRACE_CHECKEMU thing 
+> > @@ -644,16 +644,24 @@
+> >                 send_sig(current->exit_code, current, 1);
+> >                 current->exit_code = 0;
+> >         }
+> > +       if(regs->rax != -ENOSYS)
+> > +               return 1;
+> > +
+> > +       return 0;
+> >  }
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
 http://www.user-mode-linux.org/~blaisorblade
 
-	
-	
+--Boundary-00=_jGdbEDZ3NqfdjA8
+Content-Type: text/x-diff; charset="iso-8859-1"; name="sysemu-new-interface"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="sysemu-new-interface"
+
+[RFC] SYSEMU: new more powerful behaviour
+
+The current behaviour of SYSEMU allows switching between SYSEMU and SYSTRACE,
+but the kind of performed tracing must be decided before allowing the process to
+start a syscall.
+
+Charles P. Wright expressed interest in "conditional emulation", i.e. he is
+writing a filesystem emulator which needs to fully emulate only some syscalls (I
+guess the filesystem-related ones, more or less).
+
+Due to the current API, this cannot exploit the SYSEMU faster API.
+
+What happens:
+a) the process starts a syscall
+b) the ptracer is resumed
+c) it reads the syscall number and params, possibly modifies them (in UML, this
+is used to avoid syscall execution, when SYSEMU is not available), and then
+resumes the process
+d) depending on the state at step a), the syscall is either skipped totally, or
+it is executed, leading to another ptracer resumption at the end moment.
+
+What Charles would need:
+a), b) and c): the same thing
+d) the syscall is executed or skipped depending not on the state at step a), but
+on the resumption command used at step c, after examining the syscall type.
+
+It turns out that the following simple patch should implement his idea.
+I've added a new ptrace option for the desired behaviour.
+
+The current one is left unaltered, for UML use - switching to the new one would
+leave existing binaries unsupported and, for UML, using the new API would need
+careful testing for some edge cases (especially singlestepping) for some
+details.
+
+Testing is currently needed. I'd like to get a simple test program which uses
+the syscall, but I've not right now the time to support this.
+
+CC: Charles P. Wright <cwright@cs.sunysb.edu>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Index: linux-2.6.git/arch/i386/kernel/ptrace.c
+===================================================================
+--- linux-2.6.git.orig/arch/i386/kernel/ptrace.c
++++ linux-2.6.git/arch/i386/kernel/ptrace.c
+@@ -779,6 +779,12 @@ int do_syscall_trace(struct pt_regs *reg
+ 		current->exit_code = 0;
+ 	}
+ 	ret = is_sysemu;
++	// XXX: fix name
++	if (current->ptrace & PT_SYSEMU_CHOICE) {
++		/* The debugger might have changed the syscall intercepting mode. Apply
++		 * this update now, rather than at next syscall. */
++		ret = test_thread_flag(TIF_SYSCALL_EMU);
++	}
+ out:
+ 	if (unlikely(current->audit_context) && !entryexit)
+ 		audit_syscall_entry(current, AUDIT_ARCH_I386, regs->orig_eax,
+Index: linux-2.6.git/include/linux/ptrace.h
+===================================================================
+--- linux-2.6.git.orig/include/linux/ptrace.h
++++ linux-2.6.git/include/linux/ptrace.h
+@@ -35,8 +35,10 @@
+ #define PTRACE_O_TRACEEXEC	0x00000010
+ #define PTRACE_O_TRACEVFORKDONE	0x00000020
+ #define PTRACE_O_TRACEEXIT	0x00000040
++#define PTRACE_O_SYSEMUCHOICE	0x00000080
+ 
+-#define PTRACE_O_MASK		0x0000007f
++/* Mask of valid codes - all the above must be or'ed here. */
++#define PTRACE_O_MASK		0x000000ff
+ 
+ /* Wait extended result codes for the above trace options.  */
+ #define PTRACE_EVENT_FORK	1
+@@ -64,8 +66,14 @@
+ #define PT_TRACE_VFORK_DONE	0x00000100
+ #define PT_TRACE_EXIT	0x00000200
+ #define PT_ATTACHED	0x00000400	/* parent != real_parent */
++#define PT_SYSEMU_CHOICE	0x00000800
+ 
+-#define PT_TRACE_MASK	0x000003f4
++#if 0
++#define PT_TRACE_MASK	0x00000bf4
++#endif
++/* All options flags - to be cleared when using setoptions. */
++#define PT_TRACE_MASK	(PT_TRACESYSGOOD|PT_TRACE_FORK|PT_TRACE_VFORK|PT_TRACE_CLONE| \
++		PT_TRACE_EXEC|PT_TRACE_VFORK_DONE|PT_TRACE_EXIT)
+ 
+ /* single stepping state bits (used on ARM and PA-RISC) */
+ #define PT_SINGLESTEP_BIT	31
+Index: linux-2.6.git/kernel/ptrace.c
+===================================================================
+--- linux-2.6.git.orig/kernel/ptrace.c
++++ linux-2.6.git/kernel/ptrace.c
+@@ -339,6 +339,9 @@ static int ptrace_setoptions(struct task
+ 	if (data & PTRACE_O_TRACEEXIT)
+ 		child->ptrace |= PT_TRACE_EXIT;
+ 
++	if (data & PTRACE_O_SYSEMUCHOICE)
++		child->ptrace |= PT_SYSEMU_CHOICE;
++
+ 	return (data & ~PTRACE_O_MASK) ? -EINVAL : 0;
+ }
+ 
+
+--Boundary-00=_jGdbEDZ3NqfdjA8--
+
 		
 ___________________________________ 
 Yahoo! Messenger with Voice: chiama da PC a telefono a tariffe esclusive 
