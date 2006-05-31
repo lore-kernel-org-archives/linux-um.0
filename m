@@ -1,27 +1,32 @@
 Return-Path: <user-mode-linux-devel-admin@lists.sourceforge.net>
-Received: from [10.3.1.93] (helo=sc8-sf-list1-new.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FlW0g-0001iK-9a for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 May 2006 12:05:38 -0700
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FlW0g-0000m3-6a for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 May 2006 12:05:38 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FlWph-0000sC-IQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 31 May 2006 12:58:21 -0700
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FlW0d-0004Ee-DY
+	(Exim 4.44) id 1FlWph-00079W-7H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 May 2006 12:05:38 -0700
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] Randomize on MAC address when bringing up ethernet
-	iface
-Message-ID: <20060531190553.GA6111@ccure.user-mode-linux.org>
+	Wed, 31 May 2006 12:58:21 -0700
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1FlWoI-00074Z-WC for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 31 May 2006 21:56:55 +0200
+Received: from jameson.reflexsecurity.com ([72.54.64.66])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 31 May 2006 21:56:54 +0200
+Received: from lunz by jameson.reflexsecurity.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 31 May 2006 21:56:54 +0200
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <e5kscm$tt3$1@sea.gmane.org>
 References: <200605302013.00091.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200605302013.00091.blaisorblade@yahoo.it>
+	<20060531190553.GA6111@ccure.user-mode-linux.org>
+Subject: [uml-devel] Re: Randomize on MAC address when bringing up ethernet
+	iface
 Sender: user-mode-linux-devel-admin@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +38,28 @@ List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=h
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=user-mode-linux-devel>
-Date: Wed, 31 May 2006 15:05:53 -0400
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Wed, 31 May 2006 19:56:06 +0000 (UTC)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, May 30, 2006 at 08:12:59PM +0200, Blaisorblade wrote:
-> I've being thinking to this and I'm wondering why we shouldn't do it. When we
-> have set no IP or 0.0.0.0, which is not a unique IP, and we bring it up, we 
-> should choose a random MAC to use.
-> Conditions: the broadcast bit must be 0 and the "locally-assigned address 
-> flag" must be 1 (as likely we already do).
+jdike@addtoit.com said:
+> So what is the second bit?  I only know about the broadcast/multicast bit, and
+> no one has bothered clueing me in on any other special bits :-)
 
-Yeah, this sounds like a good idea.
+the other one's the "locally administered" bit.  It's a lot like rfc1918
+address space in ipv4, only for ethernet. wikipedia's discussion is
+decent:
 
-> For which bits they are, I've a doubt.
-> On Tanenbaum's book they're marked as the two most significant (leftmost) bits
-> (broadcast being the most significant one), but since we've longly known the 
-> broadcast bit is the lowest-order one of the highest bit, I suspect that MACs
-> are read in little-endian bit order (which likely implies the same for the 
-> whole packets). I can't verify this, but bytes in many fields are moved to be
-> in network order i.e. big-endian order (MACs are always used in the network 
-> order).
+http://en.wikipedia.org/wiki/MAC_address
+http://en.wikipedia.org/wiki/Locally_Administered_Address
 
-So what is the second bit?  I only know about the broadcast/multicast bit, and
-no one has bothered clueing me in on any other special bits :-)
+those are the only two special mac address bits that i'm aware of.
 
-				Jeff
+The effect of setting it is that you ensure that your randomly-generated
+mac address will never collide with a globally administered one. Of
+course, it might collide with other locally-administered ones.
+
+Jason
+
 
 
 -------------------------------------------------------
