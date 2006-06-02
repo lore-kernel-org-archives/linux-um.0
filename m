@@ -2,25 +2,27 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-list1-b.sourceforge.net ([10.3.1.7]
 	helo=sc8-sf-list1.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fm9zQ-0005kA-5j for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jun 2006 06:47:00 -0700
+	id 1FmBQN-0000Rk-7L for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Jun 2006 08:18:55 -0700
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1Fm9zO-00012y-Ev for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jun 2006 06:46:58 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Fm9zJ-00084s-Mk
+	id 1FmBQN-0005nm-11 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Jun 2006 08:18:55 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FmBQM-0002ev-J9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Jun 2006 06:46:58 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 1 Jun 2006 21:07:46 +0200
-References: <5d8380130605220711u536aa04aud8db4e4bbbb146e@mail.gmail.com>
-In-Reply-To: <5d8380130605220711u536aa04aud8db4e4bbbb146e@mail.gmail.com>
-MIME-Version: 1.0
+	Fri, 02 Jun 2006 08:18:55 -0700
+Date: Fri, 2 Jun 2006 11:19:16 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060602151916.GC4708@ccure.user-mode-linux.org>
+References: <20060602030825.GA8006@ccure.user-mode-linux.org>
+	<1149231262.20582.119.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200606012107.47130.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Problem in compiling without optimisations
+In-Reply-To: <1149231262.20582.119.camel@localhost.localdomain>
+Subject: Re: [uml-devel] non-scalar ktime addition and subtraction broken
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,55 +36,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Nikola Knezevic <laladelausanne@gmail.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, "Christopher S. Aker" <caker@theshore.net>
 
-On Monday 22 May 2006 16:11, Nikola Knezevic wrote:
-> Hi all,
-> When I change Makefile to have -O0 instead of -O2, this is what I get
-> after make ARCH=um:
+On Fri, Jun 02, 2006 at 08:54:22AM +0200, Thomas Gleixner wrote:
+> NAK. ktime_t is defined that ist must be normalized the same way as
+> timespecs. The nsec part must be >= 0 and < NSEC_PER_SEC. Fix the part
+> which is feeding non normalized values.
 
-There are other spots where -O0 would lead to failure; search for -O0 on the 
-ML, I remember that adding -finline and something else made it work (IIRC 
-2.6.15 time), and this code was present.
+Aha, that would be me, initializing wall_to_monotonic incorrectly.  Thanks
+for the clue.
 
->   CC      arch/um/kernel/skas/clone.o
-> arch/um/include/sysdep/stub.h: In function 'remap_stack':
-> arch/um/include/sysdep/stub.h:90: warning: asm operand 7 probably
-> doesn't match constraints
-> arch/um/include/sysdep/stub.h:90: error: impossible constraint in 'asm'
-> make[2]: *** [arch/um/kernel/skas/clone.o] Error 1
-> make[1]: *** [arch/um/kernel/skas] Error 2
-> make: *** [arch/um/kernel] Error 2
->
-> This is the culprit:
-> static inline void remap_stack(int fd, unsigned long offset)
-> {
->         __asm__ volatile ("movl %%eax,%%ebp ; movl %0,%%eax ; int $0x80 ;"
->                           "movl %7, %%ebx ; movl %%eax, (%%ebx)"
->
->                           : : "g" (STUB_MMAP_NR), "b"
->                           : : (UML_CONFIG_STUB_DATA),
->
->                             "c" (UM_KERN_PAGE_SIZE),
->                             "d" (PROT_READ | PROT_WRITE),
->                             "S" (MAP_FIXED | MAP_SHARED), "D" (fd),
->                             "a" (offset),
->                             "i" (&((struct stub_data *)
-> UML_CONFIG_STUB_DATA)->err)
->
->                           : "memory");
->
-> }
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+				Jeff
 
 
 _______________________________________________
