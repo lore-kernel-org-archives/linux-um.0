@@ -1,27 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-list1-b.sourceforge.net ([10.3.1.7]
-	helo=sc8-sf-list1.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FqGNV-0002pV-FE for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jun 2006 14:24:49 -0700
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FqGNV-0002F4-8p for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jun 2006 14:24:49 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FqGNQ-00033s-Su
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1FqIaT-0006cn-0m for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Jun 2006 16:46:21 -0700
+Received: from web25218.mail.ukl.yahoo.com ([217.146.176.204])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FqIaR-0005D9-9d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jun 2006 14:24:46 -0700
-Date: Tue, 13 Jun 2006 17:24:45 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060613212445.GA5574@ccure.user-mode-linux.org>
-References: <20060613202511.36857.qmail@web55208.mail.re4.yahoo.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060613202511.36857.qmail@web55208.mail.re4.yahoo.com>
-Subject: Re: [uml-devel] uml
+	Tue, 13 Jun 2006 16:46:21 -0700
+Message-ID: <20060613234551.69651.qmail@web25218.mail.ukl.yahoo.com>
+Date: Wed, 14 Jun 2006 01:45:51 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <20060613182129.GA4619@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [UML] Problems building and running 2.6.17-rc4 on
+	x86-64
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,17 +28,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: divs reddy <dkuchiku@yahoo.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jun 13, 2006 at 01:25:11PM -0700, divs reddy wrote:
->I am currently 
-> working on UML but I am getting some compilation errors. 
+Jeff Dike <jdike@addtoit.com> ha scritto: 
 
-Were you thinking of telling us what those compilation errors are, or
-is it a secret?
+> On Tue, Jun 13, 2006 at 11:57:18AM -0300, Alberto Bertogli wrote:
+> > I just wanted to report that this went away when trying
+> 2.6.17-rc6 as a
+> > host. It also works fine as a guest (after I patch it with
+> >
+>
+http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.17-rc4/patches/jmpbuf
+> > so that it builds).
 
-				Jeff
+> > Besides, the random segfault problems I had with previous guests
+> > versions also seem to be fixed.
+
+> These two problems are related, and were both on the host.  Bodo
+> Stroesser reported a while ago that ptrace, by returning via sysret
+> rather than iret, could cause register corruption when tracing
+> sigreturn.
+
+> The UML crash seems to have been caused by the fix to that problem.
+
+If that problem has been fixed, this would imply that SKAS should
+work on x86-64... or not? Well, I remember that problem being on IA32
+emulation and IA32 wasn't included in the patch (for what I can see).
+Can you ask more information about this? Also, could you verify if at
+least with noprocmm and a host SKAS-V9 it works? Two things are to
+check:
+* Uml64 should use /proc/mm64 (unimplemented)
+* Uml64 should use the right version of PTRACE_FAULTINFO (I don't
+remember what I did, if I introduced PTRACE_EX_FAULTINFO or if I
+directly added the missing trap_no field in PTRACE_FAULTINFO; please
+verify).
+
+I won't have the time to check this at least until the 22 June.
+
+Bye
+
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 _______________________________________________
