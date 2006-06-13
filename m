@@ -2,26 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-list1-b.sourceforge.net ([10.3.1.7]
 	helo=sc8-sf-list1.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FoA3F-0008LY-P5 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jun 2006 19:15:13 -0700
+	id 1FpzMT-0003xt-Fe for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 12 Jun 2006 20:14:37 -0700
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1FoA3F-0005r0-KY for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jun 2006 19:15:13 -0700
+	id 1FpzMT-0003xW-CA for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 12 Jun 2006 20:14:37 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FoA3E-0001Yu-VU
+	(Exim 4.44) id 1FpzMR-00060B-U8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Jun 2006 19:15:13 -0700
-Date: Wed, 7 Jun 2006 22:15:25 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060608021525.GB5567@ccure.user-mode-linux.org>
-References: <835bb2cb0606060553q6402b169p19e9b37bdec5fa16@mail.gmail.com>
+	Mon, 12 Jun 2006 20:14:37 -0700
+Message-Id: <200606130314.k5D3Ei09008886@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <835bb2cb0606060553q6402b169p19e9b37bdec5fa16@mail.gmail.com>
-Subject: Re: [uml-devel] linux-2.6.16 build broken?
+Date: Mon, 12 Jun 2006 23:14:44 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH] UML - Fix wall_to_monotonic initialization
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,19 +32,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Murali Nagaraj <muralin@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jun 06, 2006 at 05:53:08PM +0500, Murali Nagaraj wrote:
->   CC      arch/um/os-Linux/sys-i386/registers.o
-> arch/um/os-Linux/sys-i386/registers.c: In function 'get_thread_regs':
-> arch/um/os-Linux/sys-i386/registers.c:137: error: 'JB_PC' undeclared
-> (first use in this function)
+This is 2.6.17 material.
 
-Apply this patch - we are figuring out a real way to fix this:
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.17-rc5/patches/jmpbuf
+Change a variable from unsigned to signed in order to get sign-extension
+when the thing is negated.  Without this, uptime is horribly confused.
 
-				Jeff
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+
+Index: linux-2.6.16/arch/um/kernel/time_kern.c
+===================================================================
+--- linux-2.6.16.orig/arch/um/kernel/time_kern.c	2006-06-12 22:57:34.000000000 -0400
++++ linux-2.6.16/arch/um/kernel/time_kern.c	2006-06-12 23:01:48.000000000 -0400
+@@ -87,7 +87,7 @@ void timer_irq(union uml_pt_regs *regs)
+ 
+ void time_init_kern(void)
+ {
+-	unsigned long long nsecs;
++	long long nsecs;
+ 
+ 	nsecs = os_nsecs();
+ 	set_normalized_timespec(&wall_to_monotonic, -nsecs / BILLION,
+
 
 
 _______________________________________________
