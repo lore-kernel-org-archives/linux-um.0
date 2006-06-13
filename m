@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
+Received: from sc8-sf-list1-b.sourceforge.net ([10.3.1.7]
+	helo=sc8-sf-list1.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FqDWT-000378-3S for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jun 2006 11:21:53 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FqDWS-0005pY-AK
+	id 1FqFRv-0005xy-C7 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Jun 2006 13:25:19 -0700
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FqFRv-0005ut-6K for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Jun 2006 13:25:19 -0700
+Received: from web55208.mail.re4.yahoo.com ([206.190.58.172])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FqFRu-0008LF-Nv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Jun 2006 11:21:53 -0700
-Date: Tue, 13 Jun 2006 14:21:29 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060613182129.GA4619@ccure.user-mode-linux.org>
-References: <20060514182541.GA4980@gmail.com> <20060613145718.GB9729@gmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060613145718.GB9729@gmail.com>
-Subject: Re: [uml-devel] [UML] Problems building and running 2.6.17-rc4 on
-	x86-64
+	Tue, 13 Jun 2006 13:25:19 -0700
+Message-ID: <20060613202511.36857.qmail@web55208.mail.re4.yahoo.com>
+Date: Tue, 13 Jun 2006 13:25:11 -0700 (PDT)
+From: divs reddy <dkuchiku@yahoo.com>
+MIME-Version: 1.0
+Subject: [uml-devel] uml
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,33 +27,58 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0375110848=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Alberto Bertogli <albertito@gmail.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jun 13, 2006 at 11:57:18AM -0300, Alberto Bertogli wrote:
-> I just wanted to report that this went away when trying 2.6.17-rc6 as a
-> host. It also works fine as a guest (after I patch it with
-> http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.17-rc4/patches/jmpbuf
-> so that it builds).
-> 
-> Besides, the random segfault problems I had with previous guests
-> versions also seem to be fixed.
+--===============0375110848==
+Content-Type: multipart/alternative; boundary="0-1545780835-1150230311=:33084"
+Content-Transfer-Encoding: 8bit
 
-These two problems are related, and were both on the host.  Bodo
-Stroesser reported a while ago that ptrace, by returning via sysret
-rather than iret, could cause register corruption when tracing
-sigreturn.
+--0-1545780835-1150230311=:33084
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-The UML crash seems to have been caused by the fix to that problem.
+Hello,
+     My name is Divya. I'm a graduate student at GMU. I am currently 
+working on UML but I am getting some compilation errors. My host OS is 
+Red Hat Linux Enterprise Edition 4. I am not sure whether this version of 
+Linux supports UML. I worked on 2.4 and 2.6 versions of uml patches but 
+I never got the linux executable.
+Please reply asap.
+Thank You
+Divya
 
-				Jeff
+ __________________________________________________
+ __________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
+--0-1545780835-1150230311=:33084
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
+Hello,<BR>&nbsp;&nbsp;&nbsp;&nbsp; My name is Divya. I'm a graduate student at GMU. I am currently <BR>working on UML but I am getting some compilation errors. My host OS is <BR>Red Hat Linux Enterprise Edition 4. I am not sure whether this version of <BR>Linux supports UML. I worked on 2.4 and 2.6 versions of uml patches but <BR>I never got the linux executable.<BR>Please reply asap.<BR>Thank You<BR>Divya<BR><BR> __________________________________________________<p>&#32;__________________________________________________<br>Do You Yahoo!?<br>Tired of spam?  Yahoo! Mail has the best spam protection around <br>http://mail.yahoo.com 
+--0-1545780835-1150230311=:33084--
+
+
+--===============0375110848==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0375110848==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============0375110848==--
