@@ -1,24 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fqawk-00010j-On for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Jun 2006 12:22:34 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Fqawj-0002sm-9V
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Jun 2006 12:22:34 -0700
-Date: Wed, 14 Jun 2006 15:22:31 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060614192231.GA5325@ccure.user-mode-linux.org>
-References: <20060613182129.GA4619@ccure.user-mode-linux.org>
-	<20060613234551.69651.qmail@web25218.mail.ukl.yahoo.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060613234551.69651.qmail@web25218.mail.ukl.yahoo.com>
-Subject: Re: [uml-devel] [UML] Problems building and running 2.6.17-rc4 on
-	x86-64
+Message-ID: <3E83FDAC.4E7ABBD@geocities.com>
+Date: Fri, 16 Jun 2006 23:14:50 -0600
+From: "Hester" <uhryll@geocities.com>
+MIME-Version: 1.0
+Subject: [uml-devel] hello!
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,17 +17,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo Giarrusso <blaisorblade@yahoo.it>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: husky-discuss@lists.sourceforge.net
+Cc: htdig-discuss@lists.sourceforge.net, introspector-developers@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, squirrelmail-users@lists.sourceforge.net, mh-e-announce@lists.sourceforge.net
 
-On Wed, Jun 14, 2006 at 01:45:51AM +0200, Paolo Giarrusso wrote:
-> If that problem has been fixed, this would imply that SKAS should
-> work on x86-64... or not? 
+Hi,
+Hope I am not writing to wrong address. I am nice, pretty looking
+girl. I am planning on visiting your atown this month. Can 
+we meet each other in person? Message me back at djfnh@mailforfreedom.com
 
-No, this has nothing to do with skas or ia32 emulation.  It was a
-straightforward register corruption bug.
 
-				Jeff
 
 
 _______________________________________________
