@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FsAdP-0002Ab-Fw for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jun 2006 20:41:07 -0700
+	id 1FsBR0-0006Cu-6M for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jun 2006 21:32:22 -0700
 Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FsAdO-0008UE-75
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FsBQy-00024d-RN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jun 2006 20:41:07 -0700
-Received: from [192.168.1.103] (lori.theshore.net [69.245.15.49])
-	by www.theshore.net (8.13.6/8.9.1) with ESMTP id k5J3f4gE030568
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 18 Jun 2006 23:41:04 -0400
-Message-ID: <44961CC8.1060302@theshore.net>
-Date: Sun, 18 Jun 2006 22:40:56 -0500
+	Sun, 18 Jun 2006 21:32:22 -0700
+Message-ID: <449628CB.6050206@theshore.net>
+Date: Sun, 18 Jun 2006 23:32:11 -0500
 From: "Christopher S. Aker" <caker@theshore.net>
 MIME-Version: 1.0
-Subject: [uml-devel] 2.6.17-um - new uptime record (40 years!)
+References: <44961CC8.1060302@theshore.net>
+In-Reply-To: <44961CC8.1060302@theshore.net>
+Subject: Re: [uml-devel] 2.6.17-um - new uptime record (40 years!)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,13 +29,29 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 
-root@none:~ # uname -a
-Linux none 2.6.17-linode20 #1 Sun Jun 18 00:04:18 EDT 2006 i686 GNU/Linux
-root@none:~ # uptime
-  23:37:50 up 14663 days, 20:54,  1 user,  load average: 0.00, 0.00, 0.00
-root@none:~ # cat /proc/uptime
-1266958484.15 69449.04
+Christopher S. Aker wrote:
+> root@none:~ # uname -a
+> Linux none 2.6.17-linode20 #1 Sun Jun 18 00:04:18 EDT 2006 i686 GNU/Linux
+> root@none:~ # uptime
+>   23:37:50 up 14663 days, 20:54,  1 user,  load average: 0.00, 0.00, 0.00
+> root@none:~ # cat /proc/uptime
+> 1266958484.15 69449.04
+> 
+> -Chris
+
+OK, 2.6.17 final missed Jeff's "Fix wall_to_monotonic initialization" 
+patch...
+
+http://marc.theaimsgroup.com/?l=linux-kernel&m=115016859504778&w=2
+
+I can confirm that this fixes the issue.  Queue this sucker up for the 
+next stable release!
+
+I hope nothing else was missed, but so far this is the only snag we've 
+hit with 2.6.17-um.  Rock on!  Maybe now I can finally stop making new 
+deployments default to 2.4-um.
 
 -Chris
 
