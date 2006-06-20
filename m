@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FsBR0-0006Cu-6M for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jun 2006 21:32:22 -0700
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FsBQy-00024d-RN
+	id 1FsofJ-0005hM-05 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jun 2006 15:25:45 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FsofI-00085U-Hy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jun 2006 21:32:22 -0700
-Message-ID: <449628CB.6050206@theshore.net>
-Date: Sun, 18 Jun 2006 23:32:11 -0500
-From: "Christopher S. Aker" <caker@theshore.net>
-MIME-Version: 1.0
-References: <44961CC8.1060302@theshore.net>
-In-Reply-To: <44961CC8.1060302@theshore.net>
-Subject: Re: [uml-devel] 2.6.17-um - new uptime record (40 years!)
+	Tue, 20 Jun 2006 15:25:44 -0700
+Message-Id: <200606202225.k5KMP3U5006871@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Tue, 20 Jun 2006 18:25:03 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [-stable PATCH] UML - fix uptime
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,32 +27,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
+To: stable@kernel.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Christopher S. Aker wrote:
-> root@none:~ # uname -a
-> Linux none 2.6.17-linode20 #1 Sun Jun 18 00:04:18 EDT 2006 i686 GNU/Linux
-> root@none:~ # uptime
->   23:37:50 up 14663 days, 20:54,  1 user,  load average: 0.00, 0.00, 0.00
-> root@none:~ # cat /proc/uptime
-> 1266958484.15 69449.04
-> 
-> -Chris
+Please consider this for 2.6.17-stable.  It made -mm briefly, but missed
+2.6.17.  It fixes the value of uptime, which was broken by a patch late in
+2.6.17-rc.
 
-OK, 2.6.17 final missed Jeff's "Fix wall_to_monotonic initialization" 
-patch...
+The use of unsigned instead of unsigned here broke the calculations on
+negative numbers that are involved in calculating wall_to_monotonic.
 
-http://marc.theaimsgroup.com/?l=linux-kernel&m=115016859504778&w=2
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-I can confirm that this fixes the issue.  Queue this sucker up for the 
-next stable release!
+Index: linux-2.6.17-mm/arch/um/kernel/time_kern.c
+===================================================================
+--- linux-2.6.17-mm.orig/arch/um/kernel/time_kern.c	2006-06-11 16:35:49.000000000 -0400
++++ linux-2.6.17-mm/arch/um/kernel/time_kern.c	2006-06-12 17:44:54.000000000 -0400
+@@ -87,7 +87,7 @@ void timer_irq(union uml_pt_regs *regs)
+ 
+ void time_init_kern(void)
+ {
+-	unsigned long long nsecs;
++	long long nsecs;
+ 
+ 	nsecs = os_nsecs();
+ 	set_normalized_timespec(&wall_to_monotonic, -nsecs / BILLION,
 
-I hope nothing else was missed, but so far this is the only snag we've 
-hit with 2.6.17-um.  Rock on!  Maybe now I can finally stop making new 
-deployments default to 2.4-um.
-
--Chris
 
 
 _______________________________________________
