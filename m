@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ft8XX-00084i-GM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Jun 2006 12:39:03 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user67409)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ft8XS-000727-S6
+	id 1FtBwQ-0002W0-Dq for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jun 2006 16:17:07 -0700
+Received: from web25225.mail.ukl.yahoo.com ([217.146.176.211])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FtBwN-0004bz-Rh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Jun 2006 12:39:00 -0700
-Received: from esperi.org.uk (nix@hades.wkstn.nix [192.168.14.18])
-	by mail.esperi.org.uk (8.12.11.20060614/8.12.11) with ESMTP id
-	k5LJcpXd002069 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 21 Jun 2006 20:38:51 +0100
-From: Nix <nix@esperi.org.uk>
-Date: Wed, 21 Jun 2006 20:38:50 +0100
-Message-ID: <87sllyl2np.fsf@hades.wkstn.nix>
+	Wed, 21 Jun 2006 16:16:58 -0700
+Message-ID: <20060621231649.25378.qmail@web25225.mail.ukl.yahoo.com>
+Date: Thu, 22 Jun 2006 01:16:49 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <CA52872BEA6FD41182A50008C724B23003F2FFD2@corp01uk.bordersgroupinc.com>
 MIME-Version: 1.0
-Subject: [uml-devel] problems compiling 2.6.17 against glibc 2.4
+Subject: Re: [uml-devel] Another cause for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,46 +27,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: "Carl Radford (DC0854-IT)" <CRADFORD@bordersgroupinc.com>, Laurent@lvivier.info, for@gmx.de, Jeff Dike <jdike@addtoit.com>, UML-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-The problem is that arch/um/os-Linux/sys-i386/registers.c
-messes around inside a jmp_buf, and in glibc 2.4 the glibc
-maintainers have helpfully removed the definitions that
-let you poke around in there (they were only there for the
-sake of one macro, _JMPBUF_UNWINDS, which is no longer
-user-visible.)
+"Carl Radford (DC0854-IT)" <CRADFORD@bordersgroupinc.com> ha scritto:
 
-This vile patch lets me compile but is almost certainly not good enough:
-however, I don't know what *is* good enough: now that glibc is blocking
-us from the layout of the jmp_buf, what's to stop them from changing it?
-(Well, other than that it would break the ABI ;) )
 
-A temporary hack to make it compile is
+> Any chance I can interest the UML developers
 
---- linux-orig/arch/um/os-Linux/sys-i386/registers.c	2006-06-20 08:17:47.000000000 +0100
-+++ linux/arch/um/os-Linux/sys-i386/registers.c	2006-06-21 07:54:52.000000000 +0100
-@@ -130,6 +130,14 @@
- 		       HOST_FP_SIZE * sizeof(unsigned long));
- }
- 
-+# define JB_BX  0
-+# define JB_SI  1
-+# define JB_DI  2
-+# define JB_BP  3
-+# define JB_SP  4
-+# define JB_PC  5
-+# define JB_SIZE 24
-+
- void get_thread_regs(union uml_pt_regs *uml_regs, void *buffer)
- {
- 	struct __jmp_buf_tag *jmpbuf = buffer;
+I've included some more address (including Jeff, UML 1st author and
+maintainer).
 
-but that's hardly acceptable in the long run.
+> in fixing UML to
+> support openMosix (for the purposes of debugging) ?
 
--- 
-`NB: Anyone suggesting that we should say "Tibibytes" instead of
- Terabytes there will be hunted down and brutally slain.
- That is all.' --- Matthew Wilcox
+> I applied the openMosix patch to a stock kernel (2.6.16) and then
+> tried to build a um kernel (yes I should know better :>),
+> but there are (obviously) inconsistencies between the would-be-used
+> include/arch-i386 header files and the actually-used
+> include/um header files (seem to be mostly ptrace/regs stuff).
+
+> For
+> someone who knows their way around UML, it should
+> be quite trivial to sort the compilation issues  (yes I'm
+> simplifying, but I'm trying to get you on my side).
+> I am not trying to recruit you, from there on it would be up to the
+> openMosix development team not to break it again, unless
+> you wanted to contribute, of course...... :>).
+
+> Being able to debug the kernel this way would be of great benefit
+> to openMosix development and earn UML yet another gold star.
+Having helped NTFS (and probably FUSE) to get going is one of the UML
+merits, but we likely should advertise this (we know this indirectly,
+by having seen those projects' authors using UML for debug).
+
+Start posting some of these errors and we'll look at how trivial it
+is (unless the compiler is flooding you). If they look trivial to us
+we may try it...
+
+But my 1st question is: does OpenMosix currently support anything
+else than x86? If not a little compatibility layer may be needed and
+this may hinder significantly the porting - however they'll have to
+fix this anyway to support x86_64 at the very least.
+
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 All the advantages of Linux Managed Hosting--Without the Cost and Risk!
 Fully trained technicians. The highest number of Red Hat certifications in
