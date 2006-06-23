@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FtWlB-0002nl-4F for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jun 2006 14:30:45 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FtWlA-0004hN-Lj
+	id 1FtgKv-00033B-4b for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Jun 2006 00:44:17 -0700
+Received: from outboundsmtp.bordersgroupinc.com ([198.179.227.40]
+	helo=corpex01.bgpcorp.net)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FtgKu-0001Wq-RK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jun 2006 14:30:45 -0700
-Date: Thu, 22 Jun 2006 17:30:37 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060622213037.GC6848@ccure.user-mode-linux.org>
-References: <CA52872BEA6FD41182A50008C724B23003F2FFD2@corp01uk.bordersgroupinc.com>
-	<20060621231649.25378.qmail@web25225.mail.ukl.yahoo.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060621231649.25378.qmail@web25225.mail.ukl.yahoo.com>
+	Fri, 23 Jun 2006 00:44:17 -0700
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Fri, 23 Jun 2006 03:43:30 -0400
+Message-ID: <CA52872BEA6FD41182A50008C724B23003F2FFE3@corp01uk.bordersgroupinc.com>
+From: "Carl Radford (DC0854-IT)" <CRADFORD@bordersgroupinc.com>
 Subject: Re: [uml-devel] Another cause for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,8 +28,80 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo Giarrusso <blaisorblade@yahoo.it>
-Cc: "Carl Radford (DC0854-IT)" <CRADFORD@bordersgroupinc.com>, Jeff Dike <jdike@addtoit.com>, Laurent@lvivier.info, UML-devel <user-mode-linux-devel@lists.sourceforge.net>, for@gmx.de
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Paolo Giarrusso <blaisorblade@yahoo.it>, Laurent@lvivier.info, UML-devel <user-mode-linux-devel@lists.sourceforge.net>, for@gmx.de
+
+
+This is a list of the stock kernel files that om patches, and may have
+a knock-on effect with um. Not all files are heavily patched, some are
+trivial (conditionally compile out "static" from function declarations). 
+
+|-- Makefile
+|-- arch
+|   |-- i386
+|   |   |-- Kconfig
+|   |   |-- kernel
+|   |   |   |-- asm-offsets.c
+|   |   |   |-- entry.S
+|   |   |   |-- i387.c
+|   |   |   |-- process.c
+|   |   |   |-- signal.c
+|   |   |   |-- sys_i386.c
+|   |   |   `-- vm86.c
+|   |   `-- lib
+|   |       `-- usercopy.c
+|   |-- ppc
+|   |   |-- Kconfig
+|   |   `-- kernel
+|   |       |-- asm-offsets.c
+|   |       |-- entry.S
+|   |       `-- misc.S
+|   `-- x86_64
+|       |-- Kconfig
+|       |-- kernel
+|       |   |-- asm-offsets.c
+|       |   |-- entry.S
+|       |   `-- sys_x86_64.c
+|       `-- lib
+|           |-- copy_user.S
+|           `-- usercopy.c
+|-- fs
+|   |-- namei.c
+|   `-- proc
+|       |-- base.c
+|       `-- root.c
+|
+|-- include
+|   |-- asm-i386
+|   |   `-- uaccess.h
+|   |-- asm-ppc
+|   |   `-- uaccess.h
+|   `-- linux
+|       |-- compiler.h
+|       |-- hpc.h
+|       |-- init_task.h
+|       |-- net.h
+|       |-- sched.h
+|       `-- signal.h
+|-- kernel
+|   |-- exit.c
+|   |-- fork.c
+|   `-- sched.c
+|-- mm
+|   |-- mlock.c
+|   `-- mmap.c
+|-- net
+    `-- socket.c
+
+
+-----Original Message-----
+From: Jeff Dike [mailto:jdike@addtoit.com]
+Sent: 22 June 2006 22:31
+To: Paolo Giarrusso
+Cc: Carl Radford (DC0854-IT); Laurent@lvivier.info; for@gmx.de; Jeff
+Dike; UML-devel
+Subject: Re: [uml-devel] Another cause for UML
+
 
 On Thu, Jun 22, 2006 at 01:16:49AM +0200, Paolo Giarrusso wrote:
 > Start posting some of these errors and we'll look at how trivial it
@@ -49,6 +118,12 @@ I agree.
 My recollection is that OM dropped stuff directly into arch.
 
 				Jeff
+
+
+
+
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
