@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FtgKv-00033B-4b for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jun 2006 00:44:17 -0700
-Received: from outboundsmtp.bordersgroupinc.com ([198.179.227.40]
-	helo=corpex01.bgpcorp.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FtgKu-0001Wq-RK
+	id 1FuVmO-0007FA-5H for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Jun 2006 07:40:04 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FuVmJ-00030w-BA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Jun 2006 00:44:17 -0700
-content-class: urn:content-classes:message
+	Sun, 25 Jun 2006 07:40:04 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 25 Jun 2006 16:38:31 +0200
+References: <87sllyl2np.fsf@hades.wkstn.nix>
+In-Reply-To: <87sllyl2np.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Date: Fri, 23 Jun 2006 03:43:30 -0400
-Message-ID: <CA52872BEA6FD41182A50008C724B23003F2FFE3@corp01uk.bordersgroupinc.com>
-From: "Carl Radford (DC0854-IT)" <CRADFORD@bordersgroupinc.com>
-Subject: Re: [uml-devel] Another cause for UML
+Content-Disposition: inline
+Message-Id: <200606251638.31879.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] problems compiling 2.6.17 against glibc 2.4
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,101 +29,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Paolo Giarrusso <blaisorblade@yahoo.it>, Laurent@lvivier.info, UML-devel <user-mode-linux-devel@lists.sourceforge.net>, for@gmx.de
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Nix <nix@esperi.org.uk>, Jeff Dike <jdike@addtoit.com>
 
+On Wednesday 21 June 2006 21:38, Nix wrote:
+> The problem is that arch/um/os-Linux/sys-i386/registers.c
+> messes around inside a jmp_buf, and in glibc 2.4 the glibc
+> maintainers have helpfully removed the definitions that
+> let you poke around in there (they were only there for the
+> sake of one macro, _JMPBUF_UNWINDS, which is no longer
+> user-visible.)
+>
+> This vile patch lets me compile but is almost certainly not good enough:
+> however, I don't know what *is* good enough: now that glibc is blocking
+> us from the layout of the jmp_buf, what's to stop them from changing it?
+> (Well, other than that it would break the ABI ;) )
+I made the same thought, but no, they have *already* changed it.
+Search for the message from Ulrich Drepper (and if you understand 
+the "security reasons" I'd be curious to hear them); also the below patch is 
+available in Jeff's tree from some time.
 
-This is a list of the stock kernel files that om patches, and may have
-a knock-on effect with um. Not all files are heavily patched, some are
-trivial (conditionally compile out "static" from function declarations). 
+I asked Jeff to #ifdef that code out for 2.6.17 release (since the below patch 
+was refused)... anyway Jeff found that we can take setjmp() implementation 
+from klibc and include it in UML.
 
-|-- Makefile
-|-- arch
-|   |-- i386
-|   |   |-- Kconfig
-|   |   |-- kernel
-|   |   |   |-- asm-offsets.c
-|   |   |   |-- entry.S
-|   |   |   |-- i387.c
-|   |   |   |-- process.c
-|   |   |   |-- signal.c
-|   |   |   |-- sys_i386.c
-|   |   |   `-- vm86.c
-|   |   `-- lib
-|   |       `-- usercopy.c
-|   |-- ppc
-|   |   |-- Kconfig
-|   |   `-- kernel
-|   |       |-- asm-offsets.c
-|   |       |-- entry.S
-|   |       `-- misc.S
-|   `-- x86_64
-|       |-- Kconfig
-|       |-- kernel
-|       |   |-- asm-offsets.c
-|       |   |-- entry.S
-|       |   `-- sys_x86_64.c
-|       `-- lib
-|           |-- copy_user.S
-|           `-- usercopy.c
-|-- fs
-|   |-- namei.c
-|   `-- proc
-|       |-- base.c
-|       `-- root.c
-|
-|-- include
-|   |-- asm-i386
-|   |   `-- uaccess.h
-|   |-- asm-ppc
-|   |   `-- uaccess.h
-|   `-- linux
-|       |-- compiler.h
-|       |-- hpc.h
-|       |-- init_task.h
-|       |-- net.h
-|       |-- sched.h
-|       `-- signal.h
-|-- kernel
-|   |-- exit.c
-|   |-- fork.c
-|   `-- sched.c
-|-- mm
-|   |-- mlock.c
-|   `-- mmap.c
-|-- net
-    `-- socket.c
+> A temporary hack to make it compile is
+>
+> --- linux-orig/arch/um/os-Linux/sys-i386/registers.c	2006-06-20
+> 08:17:47.000000000 +0100 +++
+> linux/arch/um/os-Linux/sys-i386/registers.c	2006-06-21 07:54:52.000000000
+> +0100 @@ -130,6 +130,14 @@
+>  		       HOST_FP_SIZE * sizeof(unsigned long));
+>  }
+>
+> +# define JB_BX  0
+> +# define JB_SI  1
+> +# define JB_DI  2
+> +# define JB_BP  3
+> +# define JB_SP  4
+> +# define JB_PC  5
+> +# define JB_SIZE 24
+> +
+>  void get_thread_regs(union uml_pt_regs *uml_regs, void *buffer)
+>  {
+>  	struct __jmp_buf_tag *jmpbuf = buffer;
+>
+> but that's hardly acceptable in the long run.
 
-
------Original Message-----
-From: Jeff Dike [mailto:jdike@addtoit.com]
-Sent: 22 June 2006 22:31
-To: Paolo Giarrusso
-Cc: Carl Radford (DC0854-IT); Laurent@lvivier.info; for@gmx.de; Jeff
-Dike; UML-devel
-Subject: Re: [uml-devel] Another cause for UML
-
-
-On Thu, Jun 22, 2006 at 01:16:49AM +0200, Paolo Giarrusso wrote:
-> Start posting some of these errors and we'll look at how trivial it
-> is (unless the compiler is flooding you). If they look trivial to us
-> we may try it...
-
-I agree.
-
-> But my 1st question is: does OpenMosix currently support anything
-> else than x86? If not a little compatibility layer may be needed and
-> this may hinder significantly the porting - however they'll have to
-> fix this anyway to support x86_64 at the very least.
-
-My recollection is that OM dropped stuff directly into arch.
-
-				Jeff
-
-
-
-
-
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 Using Tomcat but need to do more? Need to support web services, security?
