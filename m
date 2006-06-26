@@ -2,21 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FuuEY-0002bP-9I for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jun 2006 09:46:46 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FuuEV-0000Il-ML
+	id 1FuubA-0004rF-TX for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Jun 2006 10:10:08 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user6920)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Fuub9-00066y-5F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jun 2006 09:46:46 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Mon, 26 Jun 2006 18:45:54 +0200
+	Mon, 26 Jun 2006 10:10:08 -0700
 References: <87sllyl2np.fsf@hades.wkstn.nix>
 	<200606252133.41822.blaisorblade@yahoo.it>
 	<87veqnhohe.fsf@hades.wkstn.nix>
-In-Reply-To: <87veqnhohe.fsf@hades.wkstn.nix>
+	<200606261845.55165.blaisorblade@yahoo.it>
+From: Nix <nix@esperi.org.uk>
+Date: Mon, 26 Jun 2006 18:09:58 +0100
+In-Reply-To: <200606261845.55165.blaisorblade@yahoo.it>
+	(blaisorblade@yahoo.it's message of "Mon,
+	26 Jun 2006 18:45:54 +0200")
+Message-ID: <87r71bhmhl.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200606261845.55165.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] problems compiling 2.6.17 against glibc 2.4
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,42 +34,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Nix <nix@esperi.org.uk>, Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Monday 26 June 2006 18:26, Nix wrote:
-> On Sun, 25 Jun 2006, blaisorblade@yahoo.it spake:
-> > On Sunday 25 June 2006 21:19, Nix wrote:
-> >> On Sun, 25 Jun 2006, blaisorblade@yahoo.it announced authoritatively:
-> >> > On Wednesday 21 June 2006 21:38, Nix wrote:
-> >>
-> >> [jmp_buf goes hidden]
-> >>
-> >> > I made the same thought, but no, they have *already* changed it.
-> >> > Search for the message from Ulrich Drepper
-> >>
-> >> It's not easy to find it given that little info :(
-> >
-> > No working author search?
->
-> sourceware.org/gcc.gnu.org ran out of space to support its mailing list
-> archive search in mid-2005. I don't think this was ever fixed. AIUI you
-> can only get search results from after that by using Google.
->
-> (And it never supported author search anyway.)
-Ok, I missed one important bit of info. Plus, MARC archives when searching for 
-author don't support restricting to one ML. So, here's the link to the 
-discussion within UML-devel. Which is just a pointer to the issue (he surely 
-doesn't explain here the security issues).
+On Mon, 26 Jun 2006, blaisorblade@yahoo.it wrote:
+> Ok, I missed one important bit of info. Plus, MARC archives when searching for 
+> author don't support restricting to one ML. So, here's the link to the 
+> discussion within UML-devel. Which is just a pointer to the issue (he surely 
+> doesn't explain here the security issues).
 
-http://marc.theaimsgroup.com/?t=113927900500002&r=1&w=2
+Oh, it was on *l-k*. Right.
+
+The security issue is (probably) that attackers can stick stuff into a
+jmp_buf if they can successfully execute arbitrary code in some (buggy)
+function, and thus can trigger a later longjmp() by the application
+which would go somewhere unexpected. glibc fixes this by xoring the
+pointers in the jmp_buf with (IIRC) a TLS-stored random cookie (much as
+-fstack-protector sticks a TLS-stored random cookie on the stack;
+obviously it can't actually modify the on-stack return address, so that
+is the next best thing).
+
+A shame Roland wasn't listening in: he made the original changes and
+he's a lot more, well, *helpful* than Ulrich... he'll say what
+the problem is where Ulrich will just growl at you.
+
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+`NB: Anyone suggesting that we should say "Tibibytes" instead of
+ Terabytes there will be hunted down and brutally slain.
+ That is all.' --- Matthew Wilcox
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
