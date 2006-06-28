@@ -1,21 +1,41 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FvJyi-0000ka-Lw for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jun 2006 13:16:08 -0700
-Received: from 216-99-217-87.dsl.aracnet.com ([216.99.217.87]
-	helo=sous-sol.org)
+	id 1FvODx-0008Es-Qc for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jun 2006 17:48:09 -0700
+Received: from e33.co.us.ibm.com ([32.97.110.151])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FvJyi-0004xG-9e
+	(Exim 4.44) id 1FvODw-0006iT-Df
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jun 2006 13:16:08 -0700
-Message-Id: <20060627201423.217921000@sous-sol.org>
-References: <20060627200745.771284000@sous-sol.org>
-Date: Tue, 27 Jun 2006 00:00:15 -0700
-From: Chris Wright <chrisw@sous-sol.org>
-Content-Disposition: inline; filename=uml-fix-uptime.patch
-Subject: [uml-devel] [PATCH 15/25] UML: fix uptime
+	Tue, 27 Jun 2006 17:48:09 -0700
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
+	[9.17.195.11])
+	by e33.co.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k5S0lvuV004776
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 27 Jun 2006 20:47:58 -0400
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by westrelay02.boulder.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
+	k5S0lPhp095188
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 27 Jun 2006 18:47:26 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	k5S0lviG030963 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 27 Jun 2006 18:47:57 -0600
+Date: Tue, 27 Jun 2006 17:47:56 -0700
+From: Nishanth Aravamudan <nacc@us.ibm.com>
+Message-ID: <20060628004756.GC4488@us.ibm.com>
+References: <20060626220234.GG4223@us.ibm.com>
+	<200606271656.13712.blaisorblade@yahoo.it>
+	<20060627183128.GA4488@us.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20060627183128.GA4488@us.ibm.com>
+Subject: Re: [uml-devel] [PATCH] Fix UML build on i386 Ubuntu Dapper
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,41 +45,49 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: akpm@osdl.org, Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Justin Forbes <jmforbes@linuxtx.org>, torvalds@osdl.org, Chris Wedgwood <reviews@ml.cw.f00f.org>, Randy Dunlap <rdunlap@xenotime.net>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, alan@lxorguk.ukuu.org.uk
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
--stable review patch.  If anyone has any objections, please let us know.
-------------------
+On 27.06.2006 [11:31:28 -0700], Nishanth Aravamudan wrote:
+> On 27.06.2006 [16:56:13 +0200], Blaisorblade wrote:
+> > On Tuesday 27 June 2006 00:02, Nishanth Aravamudan wrote:
+> > > Hi Jeff,
+> > >
+> > > I run an x86_64 kernel with i386 userspace (Ubuntu Dapper) and decided
+> > > to try out UML today. I found that UML wasn't quite aware of biarch
+> > > compilers (which Ubuntu i386 ships). A fix similar to what was done for
+> > > x86_64 should probably be committed (see
+> > > http://marc.theaimsgroup.com/?l=linux-kernel&m=113425940204010&w=2).
+> > 
+> > Ok, it seemed strange but I understand the stuff... that's very
+> > interesting as this is the setup I'd wished to have since ages. I'll
+> > switch to it ASAP...
+> 
+> Indeed :)
+> 
+> > > Without the FLAGS changes, the build will fail at a number of places and
+> > > without the LINK change, the final link will fail.
+> > >
+> > > Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+> > 
+> > The first hunk (#undef i386) should be unnecessary given you specify
+> > -m64 (add it to CPPFLAGS too). Also it can/could be problematic for
 
-From: Jeff Dike <jdike@addtoit.com>
+Hrm, I somehow overlooked the CPPFLAGS bit. Is it necessary? That wasn't
+changed for x86_64 and having not changed it for UML, it doesn't appear
+to have prevented the build from working on both x86_64 and i386
+SUBARCHs here.
 
-The use of signed instead of unsigned here broke the calculations on
-negative numbers that are involved in calculating wall_to_monotonic.
+Thanks,
+Nish
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-Signed-off-by: Chris Wright <chrisw@sous-sol.org>
----
- arch/um/kernel/time_kern.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-2.6.17.1.orig/arch/um/kernel/time_kern.c
-+++ linux-2.6.17.1/arch/um/kernel/time_kern.c
-@@ -87,7 +87,7 @@ void timer_irq(union uml_pt_regs *regs)
- 
- void time_init_kern(void)
- {
--	unsigned long long nsecs;
-+	long long nsecs;
- 
- 	nsecs = os_nsecs();
- 	set_normalized_timespec(&wall_to_monotonic, -nsecs / BILLION,
-
---
+-- 
+Nishanth Aravamudan <nacc@us.ibm.com>
+IBM Linux Technology Center
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
