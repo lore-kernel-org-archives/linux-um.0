@@ -2,41 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FvR4j-00073I-NO for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jun 2006 20:50:49 -0700
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FvR4j-0006MN-BF
+	id 1FvX3j-0007i0-CU for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Jun 2006 03:14:11 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FvX3f-0004Uo-HK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Jun 2006 20:50:49 -0700
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e4.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	k5S3og1Y010098
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 27 Jun 2006 23:50:42 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
-	k5S3ogBN285516
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 27 Jun 2006 23:50:42 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	k5S3ofmF012375 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 27 Jun 2006 23:50:42 -0400
-Date: Tue, 27 Jun 2006 20:50:42 -0700
-From: Nishanth Aravamudan <nacc@us.ibm.com>
-Message-ID: <20060628035042.GE4488@us.ibm.com>
+	Wed, 28 Jun 2006 03:14:11 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 28 Jun 2006 12:13:21 +0200
 References: <20060626220234.GG4223@us.ibm.com>
-	<200606271656.13712.blaisorblade@yahoo.it>
 	<20060627183128.GA4488@us.ibm.com>
-	<20060628021131.GE9089@ccure.user-mode-linux.org>
-	<20060628025407.GD4488@us.ibm.com>
-	<20060628034339.GA9966@ccure.user-mode-linux.org>
+	<20060628004756.GC4488@us.ibm.com>
+In-Reply-To: <20060628004756.GC4488@us.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20060628034339.GA9966@ccure.user-mode-linux.org>
+Message-Id: <200606281213.21696.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH] Fix UML build on i386 Ubuntu Dapper
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -51,27 +31,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+To: Nishanth Aravamudan <nacc@us.ibm.com>
+Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-On 27.06.2006 [23:43:39 -0400], Jeff Dike wrote:
-> On Tue, Jun 27, 2006 at 07:54:07PM -0700, Nishanth Aravamudan wrote:
-> > Did I miss something?
-> 
-> Nope, I misread your mail.  You described a problem (which had been
-> fixed in the original patch), followed by "updated patch here",
-> leading me to believe there was something fixed in it.
-> 
-> nevermind...
+On Wednesday 28 June 2006 02:47, Nishanth Aravamudan wrote:
+> On 27.06.2006 [11:31:28 -0700], Nishanth Aravamudan wrote:
+> > On 27.06.2006 [16:56:13 +0200], Blaisorblade wrote:
+> > > On Tuesday 27 June 2006 00:02, Nishanth Aravamudan wrote:
+> > > > Hi Jeff,
+> > > >
+> > > > I run an x86_64 kernel with i386 userspace (Ubuntu Dapper) and
+> > > > decided to try out UML today. I found that UML wasn't quite aware of
+> > > > biarch compilers (which Ubuntu i386 ships). A fix similar to what was
+> > > > done for x86_64 should probably be committed (see
+> > > > http://marc.theaimsgroup.com/?l=linux-kernel&m=113425940204010&w=2).
+> > >
+> > > Ok, it seemed strange but I understand the stuff... that's very
+> > > interesting as this is the setup I'd wished to have since ages. I'll
+> > > switch to it ASAP...
+> >
+> > Indeed :)
+> >
+> > > > Without the FLAGS changes, the build will fail at a number of places
+> > > > and without the LINK change, the final link will fail.
+> > > >
+> > > > Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+> > >
+> > > The first hunk (#undef i386) should be unnecessary given you specify
+> > > -m64 (add it to CPPFLAGS too). Also it can/could be problematic for
+>
+> Hrm, I somehow overlooked the CPPFLAGS bit. Is it necessary? That wasn't
+> changed for x86_64 and having not changed it for UML, it doesn't appear
+> to have prevented the build from working on both x86_64 and i386
+> SUBARCHs here.
 
-Ah, sorry about that :)
+It shouldn't go in the general CPPFLAGS indeed.
+I think that -m64 in the preprocessor command used to build vmlinux.lds.S 
+would be cleaner than #undef i386... test it by preprocessing by hand and 
+report, I'll code the CPPFLAGS_vmlinux.lds.S = -m64 assignment (if it is 
+exactly this way) if it works.
 
-Thanks,
-Nish
-
+Anyway, this is minor refinement, the patch is otherwise ok.
 -- 
-Nishanth Aravamudan <nacc@us.ibm.com>
-IBM Linux Technology Center
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade (Skype ID "PaoloGiarrusso", ICQ 215621894)
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
