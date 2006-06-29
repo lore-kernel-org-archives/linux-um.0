@@ -1,41 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fw3Yu-0003Ea-Jn for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 13:56:32 -0700
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	id 1Fw4BQ-0006sg-MN for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Jun 2006 14:36:21 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Fw3Ys-0005GS-On
+	(Exim 4.44) id 1Fw4BQ-0004WC-7V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 13:56:32 -0700
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e2.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	k5TKuLWr030169
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 29 Jun 2006 16:56:22 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
-	k5TKuLZ1263242
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 29 Jun 2006 16:56:21 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	k5TKuLMn014754 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 29 Jun 2006 16:56:21 -0400
-Date: Thu, 29 Jun 2006 13:56:26 -0700
-From: Nishanth Aravamudan <nacc@us.ibm.com>
-Message-ID: <20060629205626.GH4488@us.ibm.com>
-References: <20060626220234.GG4223@us.ibm.com>
-	<20060627183128.GA4488@us.ibm.com>
-	<20060628004756.GC4488@us.ibm.com>
-	<200606281213.21696.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200606281213.21696.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] Fix UML build on i386 Ubuntu Dapper
+	Thu, 29 Jun 2006 14:36:20 -0700
+Message-Id: <200606292136.k5TLaOjV010792@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Thu, 29 Jun 2006 17:36:23 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 1/9] UML - Fix /proc/mounts parsing boundary
+	condition
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -49,112 +28,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On 28.06.2006 [12:13:21 +0200], Blaisorblade wrote:
-> On Wednesday 28 June 2006 02:47, Nishanth Aravamudan wrote:
-> > On 27.06.2006 [11:31:28 -0700], Nishanth Aravamudan wrote:
-> > > On 27.06.2006 [16:56:13 +0200], Blaisorblade wrote:
-> > > > On Tuesday 27 June 2006 00:02, Nishanth Aravamudan wrote:
-> > > > > Hi Jeff,
-> > > > >
-> > > > > I run an x86_64 kernel with i386 userspace (Ubuntu Dapper) and
-> > > > > decided to try out UML today. I found that UML wasn't quite
-> > > > > aware of biarch compilers (which Ubuntu i386 ships). A fix
-> > > > > similar to what was done for x86_64 should probably be
-> > > > > committed (see
-> > > > > http://marc.theaimsgroup.com/?l=linux-kernel&m=113425940204010&w=2).
-> > > >
-> > > > Ok, it seemed strange but I understand the stuff... that's very
-> > > > interesting as this is the setup I'd wished to have since ages.
-> > > > I'll switch to it ASAP...
-> > >
-> > > Indeed :)
-> > >
-> > > > > Without the FLAGS changes, the build will fail at a number of
-> > > > > places and without the LINK change, the final link will fail.
-> > > > >
-> > > > > Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
-> > > >
-> > > > The first hunk (#undef i386) should be unnecessary given you
-> > > > specify -m64 (add it to CPPFLAGS too). Also it can/could be
-> > > > problematic for
-> >
-> > Hrm, I somehow overlooked the CPPFLAGS bit. Is it necessary? That
-> > wasn't changed for x86_64 and having not changed it for UML, it
-> > doesn't appear to have prevented the build from working on both
-> > x86_64 and i386 SUBARCHs here.
-> 
-> It shouldn't go in the general CPPFLAGS indeed.  I think that -m64 in
-> the preprocessor command used to build vmlinux.lds.S would be cleaner
-> than #undef i386... test it by preprocessing by hand and report, I'll
-> code the CPPFLAGS_vmlinux.lds.S = -m64 assignment (if it is exactly
-> this way) if it works.
+When parsing /proc/mounts looking for a tmpfs mount on /dev/shm, if
+a string that we are looking for if split across reads, then it
+won't be recognized.
 
-Just for clarity's sake, the reason the #undef is there, as far as I can
-tell, is otherwise the preprocessor (I'm assuming) goes and makes the
-output specification as 1:x86_64 instead of i386:x86_64. If one were
-then to go and manually change the 1 to i386 and then reissue make, the
-kernel will build just fine.
+Fix this by refilling the buffer whenever we advance the cursor.
 
-I removed the #undef i386 from vmlinux.ld.S and added a
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-CPPFLAGS += -m64
-
-to arch/um/Makefile-x86_64
-
-The build completed fine here.
-
-I wonder if a patch against x86_64 to remove the #undef there should
-also be applied? I'll take a look.
-
-Thanks,
-Nish
-
----
-
-I run an x86_64 kernel with i386 userspace (Ubuntu Dapper) and decided
-to try out UML today. I found that UML wasn't quite aware of biarch
-compilers (which Ubuntu i386 ships). A fix similar to what was done for
-x86_64 should probably be committed (see
-http://marc.theaimsgroup.com/?l=linux-kernel&m=113425940204010&w=2).
-Without the FLAGS changes, the build will fail at a number of places and
-without the LINK change, the final link will fail.
-
-This is the patch I'm currently using. I don't know if putting the
-CPPFLAGS in the Makefile-x86_64 is bad or not, I'll leave that up to
-those with more knowledge to decide.
-
-Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
-
-diff -urpN 2.6.17/arch/um/Makefile-x86_64 2.6.17-dev/arch/um/Makefile-x86_64
---- 2.6.17/arch/um/Makefile-x86_64	2006-06-17 18:49:35.000000000 -0700
-+++ 2.6.17-dev/arch/um/Makefile-x86_64	2006-06-29 13:47:22.000000000 -0700
-@@ -6,9 +6,12 @@ START := 0x60000000
+Index: linux-2.6.16-rc-mm/arch/um/os-Linux/mem.c
+===================================================================
+--- linux-2.6.16-rc-mm.orig/arch/um/os-Linux/mem.c	2006-06-11 14:27:36.000000000 -0400
++++ linux-2.6.16-rc-mm/arch/um/os-Linux/mem.c	2006-06-28 13:07:35.000000000 -0400
+@@ -55,7 +55,7 @@ static void __init find_tempdir(void)
+  */
+ static int next(int fd, char *buf, int size, char c)
+ {
+-	int n;
++	int n, len;
+ 	char *ptr;
  
- #We #undef __x86_64__ for kernelspace, not for userspace where
- #it's needed for headers to work!
--CFLAGS += -U__$(SUBARCH)__ -fno-builtin
--USER_CFLAGS += -fno-builtin
-+CFLAGS += -U__$(SUBARCH)__ -fno-builtin -m64
-+USER_CFLAGS += -fno-builtin -m64
- CHECKFLAGS  += -m64
-+AFLAGS += -m64
-+LDFLAGS += -m elf_x86_64
-+CPPFLAGS += -m64
+ 	while((ptr = strchr(buf, c)) == NULL){
+@@ -69,7 +69,17 @@ static int next(int fd, char *buf, int s
+ 	}
  
- ELF_ARCH := i386:x86-64
- ELF_FORMAT := elf64-x86-64
-@@ -16,3 +19,4 @@ ELF_FORMAT := elf64-x86-64
- # Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
+ 	ptr++;
+-	memmove(buf, ptr, strlen(ptr) + 1);
++	len = strlen(ptr);
++	memmove(buf, ptr, len + 1);
++
++	/* Refill the buffer so that if there's a partial string that we care
++	 * about, it will be completed, and we can recognize it.
++	 */
++	n = read(fd, &buf[len], size - len - 1);
++	if(n < 0)
++		return -errno;
++
++	buf[len + n] = '\0';
+ 	return 1;
+ }
  
- LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
-+LINK-y += -m64
 
--- 
-Nishanth Aravamudan <nacc@us.ibm.com>
-IBM Linux Technology Center
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
