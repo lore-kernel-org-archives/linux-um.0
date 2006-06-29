@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fw4Bc-0006tq-5p for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 14:36:32 -0700
+	id 1Fw4Bd-0006tw-QU for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Jun 2006 14:36:33 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Fw4Bb-0004Yu-1J
+	(Exim 4.44) id 1Fw4Bd-0005My-2Q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 14:36:32 -0700
-Message-Id: <200606292136.k5TLaaFx010822@ccure.user-mode-linux.org>
+	Thu, 29 Jun 2006 14:36:33 -0700
+Message-Id: <200606292136.k5TLacIh010827@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Thu, 29 Jun 2006 17:36:36 -0400
+Date: Thu, 29 Jun 2006 17:36:38 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/9] UML - Remove stray file
+Subject: [uml-devel] [PATCH 8/9] UML - Fix biarch gcc build on x86_64
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,190 +28,52 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Nishanth Aravamudan <nacc@us.ibm.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Forgot to remove arch/um/kernel/time.c when it was mostly moved to 
-arch/um/os-Linux.
+I run an x86_64 kernel with i386 userspace (Ubuntu Dapper) and decided
+to try out UML today. I found that UML wasn't quite aware of biarch
+compilers (which Ubuntu i386 ships). A fix similar to what was done for
+x86_64 should probably be committed (see
+http://marc.theaimsgroup.com/?l=linux-kernel&m=113425940204010&w=2).
+Without the FLAGS changes, the build will fail at a number of places and
+without the LINK change, the final link will fail.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
 
-Index: linux-2.6.16-rc-mm/arch/um/kernel/time.c
+Index: linux-2.6.17/arch/um/Makefile-x86_64
 ===================================================================
---- linux-2.6.16-rc-mm.orig/arch/um/kernel/time.c	2006-06-26 17:50:17.000000000 -0400
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,172 +0,0 @@
--/* 
-- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <time.h>
--#include <sys/time.h>
--#include <signal.h>
--#include <errno.h>
--#include "user_util.h"
--#include "kern_util.h"
--#include "user.h"
--#include "process.h"
--#include "time_user.h"
--#include "kern_constants.h"
--#include "os.h"
--
--/* XXX This really needs to be declared and initialized in a kernel file since
-- * it's in <linux/time.h>
-- */
--extern struct timespec wall_to_monotonic;
--
--extern struct timeval xtime;
--
--struct timeval local_offset = { 0, 0 };
--
--void timer(void)
--{
--	gettimeofday(&xtime, NULL);
--	timeradd(&xtime, &local_offset, &xtime);
--}
--
--static void set_interval(int timer_type)
--{
--	int usec = 1000000/hz();
--	struct itimerval interval = ((struct itimerval) { { 0, usec },
--							  { 0, usec } });
--
--	if(setitimer(timer_type, &interval, NULL) == -1)
--		panic("setitimer failed - errno = %d\n", errno);
--}
--
--void enable_timer(void)
--{
--	set_interval(ITIMER_VIRTUAL);
--}
--
--void prepare_timer(void * ptr)
--{
--	int usec = 1000000/hz();
--	*(struct itimerval *)ptr = ((struct itimerval) { { 0, usec },
--							 { 0, usec }});
--}
--
--void disable_timer(void)
--{
--	struct itimerval disable = ((struct itimerval) { { 0, 0 }, { 0, 0 }});
--	if((setitimer(ITIMER_VIRTUAL, &disable, NULL) < 0) ||
--	   (setitimer(ITIMER_REAL, &disable, NULL) < 0))
--		printk("disnable_timer - setitimer failed, errno = %d\n",
--		       errno);
--	/* If there are signals already queued, after unblocking ignore them */
--	set_handler(SIGALRM, SIG_IGN, 0, -1);
--	set_handler(SIGVTALRM, SIG_IGN, 0, -1);
--}
--
--void switch_timers(int to_real)
--{
--	struct itimerval disable = ((struct itimerval) { { 0, 0 }, { 0, 0 }});
--	struct itimerval enable = ((struct itimerval) { { 0, 1000000/hz() },
--							{ 0, 1000000/hz() }});
--	int old, new;
--
--	if(to_real){
--		old = ITIMER_VIRTUAL;
--		new = ITIMER_REAL;
--	}
--	else {
--		old = ITIMER_REAL;
--		new = ITIMER_VIRTUAL;
--	}
--
--	if((setitimer(old, &disable, NULL) < 0) ||
--	   (setitimer(new, &enable, NULL)))
--		printk("switch_timers - setitimer failed, errno = %d\n",
--		       errno);
--}
--
--void uml_idle_timer(void)
--{
--	if(signal(SIGVTALRM, SIG_IGN) == SIG_ERR)
--		panic("Couldn't unset SIGVTALRM handler");
--	
--	set_handler(SIGALRM, (__sighandler_t) alarm_handler, 
--		    SA_RESTART, SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
--	set_interval(ITIMER_REAL);
--}
--
--extern void ktime_get_ts(struct timespec *ts);
--#define do_posix_clock_monotonic_gettime(ts) ktime_get_ts(ts)
--
--void time_init(void)
--{
--	struct timespec now;
--
--	if(signal(SIGVTALRM, boot_timer_handler) == SIG_ERR)
--		panic("Couldn't set SIGVTALRM handler");
--	set_interval(ITIMER_VIRTUAL);
--
--	do_posix_clock_monotonic_gettime(&now);
--	wall_to_monotonic.tv_sec = -now.tv_sec;
--	wall_to_monotonic.tv_nsec = -now.tv_nsec;
--}
--
--/* Defined in linux/ktimer.h, which can't be included here */
--#define clock_was_set()		do { } while (0)
--
--void do_gettimeofday(struct timeval *tv)
--{
--	unsigned long flags;
--
--	flags = time_lock();
--	gettimeofday(tv, NULL);
--	timeradd(tv, &local_offset, tv);
--	time_unlock(flags);
--	clock_was_set();
--}
--
--int do_settimeofday(struct timespec *tv)
--{
--	struct timeval now;
--	unsigned long flags;
--	struct timeval tv_in;
--
--	if ((unsigned long) tv->tv_nsec >= UM_NSEC_PER_SEC)
--		return -EINVAL;
--
--	tv_in.tv_sec = tv->tv_sec;
--	tv_in.tv_usec = tv->tv_nsec / 1000;
--
--	flags = time_lock();
--	gettimeofday(&now, NULL);
--	timersub(&tv_in, &now, &local_offset);
--	time_unlock(flags);
--
--	return(0);
--}
--
--void idle_sleep(int secs)
--{
--	struct timespec ts;
--
--	ts.tv_sec = secs;
--	ts.tv_nsec = 0;
--	nanosleep(&ts, NULL);
--}
--
--/* XXX This partly duplicates init_irq_signals */
--
--void user_time_init(void)
--{
--	set_handler(SIGVTALRM, (__sighandler_t) alarm_handler,
--		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH,
--		    SIGALRM, SIGUSR2, -1);
--	set_handler(SIGALRM, (__sighandler_t) alarm_handler,
--		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH,
--		    SIGVTALRM, SIGUSR2, -1);
--	set_interval(ITIMER_VIRTUAL);
--}
+--- linux-2.6.17.orig/arch/um/Makefile-x86_64	2006-06-20 17:24:29.000000000 -0400
++++ linux-2.6.17/arch/um/Makefile-x86_64	2006-06-29 10:36:18.000000000 -0400
+@@ -6,9 +6,11 @@ START := 0x60000000
+ 
+ #We #undef __x86_64__ for kernelspace, not for userspace where
+ #it's needed for headers to work!
+-CFLAGS += -U__$(SUBARCH)__ -fno-builtin
+-USER_CFLAGS += -fno-builtin
++CFLAGS += -U__$(SUBARCH)__ -fno-builtin -m64
++USER_CFLAGS += -fno-builtin -m64
+ CHECKFLAGS  += -m64
++AFLAGS += -m64
++LDFLAGS += -m elf_x86_64
+ 
+ ELF_ARCH := i386:x86-64
+ ELF_FORMAT := elf64-x86-64
+@@ -16,3 +18,4 @@ ELF_FORMAT := elf64-x86-64
+ # Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
+ 
+ LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
++LINK-y += -m64
+Index: linux-2.6.17/arch/um/kernel/vmlinux.lds.S
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/vmlinux.lds.S	2005-08-28 19:41:01.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/vmlinux.lds.S	2006-06-29 10:36:18.000000000 -0400
+@@ -1,4 +1,6 @@
+ #include <linux/config.h>
++/* in case the preprocessor is a 32bit one */
++#undef i386
+ #ifdef CONFIG_LD_SCRIPT_STATIC
+ #include "uml.lds.S"
+ #else
 
 
 Using Tomcat but need to do more? Need to support web services, security?
