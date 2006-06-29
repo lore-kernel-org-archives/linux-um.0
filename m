@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fw4BQ-0006sg-MN for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 14:36:21 -0700
+	id 1Fw4BS-0006sv-8J for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Jun 2006 14:36:22 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Fw4BQ-0004WC-7V
+	(Exim 4.44) id 1Fw4BR-0005KC-Nq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 14:36:20 -0700
-Message-Id: <200606292136.k5TLaOjV010792@ccure.user-mode-linux.org>
+	Thu, 29 Jun 2006 14:36:22 -0700
+Message-Id: <200606292136.k5TLaR27010797@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Thu, 29 Jun 2006 17:36:23 -0400
+Date: Thu, 29 Jun 2006 17:36:27 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/9] UML - Fix /proc/mounts parsing boundary
-	condition
+Subject: [uml-devel] [PATCH 2/9] UML - Fix off-by-one bug in VM file creation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,45 +30,29 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-When parsing /proc/mounts looking for a tmpfs mount on /dev/shm, if
-a string that we are looking for if split across reads, then it
-won't be recognized.
-
-Fix this by refilling the buffer whenever we advance the cursor.
+Fix an off-by-one bug in temp file creation.  Seeking to the desired
+length and writing a byte resulted in the file being one byte longer
+than expected.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.16-rc-mm/arch/um/os-Linux/mem.c
+Index: linux-2.6.17/arch/um/os-Linux/mem.c
 ===================================================================
---- linux-2.6.16-rc-mm.orig/arch/um/os-Linux/mem.c	2006-06-11 14:27:36.000000000 -0400
-+++ linux-2.6.16-rc-mm/arch/um/os-Linux/mem.c	2006-06-28 13:07:35.000000000 -0400
-@@ -55,7 +55,7 @@ static void __init find_tempdir(void)
-  */
- static int next(int fd, char *buf, int size, char c)
- {
--	int n;
-+	int n, len;
- 	char *ptr;
- 
- 	while((ptr = strchr(buf, c)) == NULL){
-@@ -69,7 +69,17 @@ static int next(int fd, char *buf, int s
+--- linux-2.6.17.orig/arch/um/os-Linux/mem.c	2006-06-29 10:42:11.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/mem.c	2006-06-29 11:42:23.000000000 -0400
+@@ -210,8 +210,11 @@ int create_tmp_file(unsigned long long l
+ 		exit(1);
  	}
  
- 	ptr++;
--	memmove(buf, ptr, strlen(ptr) + 1);
-+	len = strlen(ptr);
-+	memmove(buf, ptr, len + 1);
-+
-+	/* Refill the buffer so that if there's a partial string that we care
-+	 * about, it will be completed, and we can recognize it.
+-        if (lseek64(fd, len, SEEK_SET) < 0) {
+- 		perror("os_seek_file");
++	/* Seek to len - 1 because writing a character there will
++	 * increase the file size by one byte, to the desired length.
 +	 */
-+	n = read(fd, &buf[len], size - len - 1);
-+	if(n < 0)
-+		return -errno;
-+
-+	buf[len + n] = '\0';
- 	return 1;
- }
++	if (lseek64(fd, len - 1, SEEK_SET) < 0) {
++		perror("os_seek_file");
+ 		exit(1);
+ 	}
  
 
 
