@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fw4YY-0000me-T5 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 15:00:14 -0700
-Received: from ns1.suse.de ([195.135.220.2] helo=mx1.suse.de)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Fw4YX-0001mz-HE
+	id 1Fw6tR-0004nh-Kq for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Jun 2006 17:29:57 -0700
+Received: from web25212.mail.ukl.yahoo.com ([217.12.10.72])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Fw6tO-0006PD-RZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2006 15:00:14 -0700
-From: Andi Kleen <ak@suse.de>
-Date: Thu, 29 Jun 2006 23:41:13 +0200
-References: <200606292136.k5TLaTGc010802@ccure.user-mode-linux.org>
-In-Reply-To: <200606292136.k5TLaTGc010802@ccure.user-mode-linux.org>
+	Thu, 29 Jun 2006 17:29:57 -0700
+Message-ID: <20060630002948.76478.qmail@web25212.mail.ukl.yahoo.com>
+Date: Fri, 30 Jun 2006 02:29:48 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <20060629205626.GH4488@us.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200606292341.13952.ak@suse.de>
-Subject: Re: [uml-devel] [PATCH 3/9] UML - Remove pte_mkexec
+Subject: Re: [uml-devel] [PATCH] Fix UML build on i386 Ubuntu Dapper
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,17 +27,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Nishanth Aravamudan <nacc@us.ibm.com>
+Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 29 June 2006 23:36, Jeff Dike wrote:
-> Andi is making pte_mkexec go away, and UML had one of the last uses.
+Nishanth Aravamudan <nacc@us.ibm.com> ha scritto: 
 
-Actually not go away, but do the correct thing on i386/x86-64.
-Just relying on its side effects of setting _USER was bad.
+> On 28.06.2006 [12:13:21 +0200], Blaisorblade wrote:
 
-Thanks,
--Andi
+> Just for clarity's sake, the reason the #undef is there, as far as
+> I can
+> tell, is otherwise the preprocessor (I'm assuming) goes and makes
+> the
+> output specification as 1:x86_64 instead of i386:x86_64.
+
+I can confirm this is also what I understood.
+
+> I removed the #undef i386 from vmlinux.ld.S and added a
+> 
+> CPPFLAGS += -m64
+> 
+> to arch/um/Makefile-x86_64
+
+> The build completed fine here.
+Yep, that's ok too (and shouldn't hurt for the rest - we'll get -m64
+twice for .c files but it shouldn't be a problem; I thought to make
+it specific it only for vmlinux.lds.S to avoid the duplication).
+
+> I wonder if a patch against x86_64 to remove the #undef there
+> should
+> also be applied? I'll take a look.
+
+Probably it can, and IMHO it's cleaner. For me the patch is now
+perfect; Jeff please update the one in -mm.
+
+> Thanks,
+> Nish
+
+
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
