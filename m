@@ -1,18 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FwDmd-0008Ln-IW for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jun 2006 00:51:23 -0700
-Received: from [218.104.33.231] (helo=centecnetworks.com)
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FwDmU-0003kO-PU
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jun 2006 00:51:20 -0700
-Message-ID: <006401c69c19$eb9edbd0$d4190a0a@centecnetworks.com>
-From: "Miao Qingjun" <qmiao@centecnetworks.com>
-Date: Fri, 30 Jun 2006 15:50:56 +0800
-MIME-Version: 1.0
-Subject: [uml-devel] UML 2.6.17 problems (section mismatch,
+Date: Fri, 30 Jun 2006 09:45:09 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060630134509.GA3510@ccure.user-mode-linux.org>
+References: <006401c69c19$eb9edbd0$d4190a0a@centecnetworks.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <006401c69c19$eb9edbd0$d4190a0a@centecnetworks.com>
+Subject: Re: [uml-devel] [uml-user] UML 2.6.17 problems (section mismatch,
 	get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -23,170 +17,53 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1878594365=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-user@lists.sourceforge.net
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Miao Qingjun <qmiao@centecnetworks.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
+On Fri, Jun 30, 2006 at 03:50:56PM +0800, Miao Qingjun wrote:
+> WARNING: vmlinux - Section mismatch: reference to .init.text: from .plt after '' (at offset 0x8347e44)
 
---===============1878594365==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0061_01C69C5C.F98B5460"
+These are harmless.
 
-This is a multi-part message in MIME format.
+> Second one,
+> 
+> when run uml compiled with "-g" and without "-O2",
+> uml crashed
+> 
+> VFS: Mounted root (ext2 filesystem).
+> Stub registers -
+>         0 - 0
+>         1 - 0
+>         2 - 0
+>         3 - 0
+>         4 - 0
+>         5 - bffffd1c
+>         6 - e
+>         7 - 7b
+>         8 - 7b
+>         9 - 0
+>         10 - 0
+>         11 - ffffffff
+>         12 - bfdb8f9a
+>         13 - 73
+>         14 - 10282
+>         15 - bffffd04
+>         16 - 7b
+> Kernel panic - not syncing: get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP, pid = 7760, n = 7760, errno = 0, status = 0xb7f
 
-------=_NextPart_000_0061_01C69C5C.F98B5460
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Can you send the disassembly of stub_segv_handler?
 
-SGksDQoNClR3byBwcm9ibGVtcw0KDQpGaXJzdCBvbmUsDQp3aGVuIGJ1aWxkaW5nIGtlcm5lbCBh
-bmQgTEtNcywNCldBUk5JTkc6IHZtbGludXggLSBTZWN0aW9uIG1pc21hdGNoOiByZWZlcmVuY2Ug
-dG8gLmluaXQudGV4dDogZnJvbSAucGx0IGFmdGVyICcnIChhdCBvZmZzZXQgMHg4MzQ3ZTQ0KQ0K
-V0FSTklORzogdm1saW51eCAtIFNlY3Rpb24gbWlzbWF0Y2g6IHJlZmVyZW5jZSB0byAuaW5pdDog
-ZnJvbSAucGx0IGFmdGVyICcnIChhdCBvZmZzZXQgMHg4MzQ3ZTY0KQ0KV0FSTklORzogdm1saW51
-eCAtIFNlY3Rpb24gbWlzbWF0Y2g6IHJlZmVyZW5jZSB0byAuaW5pdC5zZXR1cDogZnJvbSAucGx0
-IGFmdGVyICcnIChhdCBvZmZzZXQgMHg4MzQ3ZWE0KQ0KV0FSTklORzogdm1saW51eCAtIFNlY3Rp
-b24gbWlzbWF0Y2g6IHJlZmVyZW5jZSB0byAuaW5pdC50ZXh0Om5vc21wIGZyb20gLnBsdCBhZnRl
-ciAnJyAoYXQgb2Zmc2V0IDB4ODM0N2YyMCkNCldBUk5JTkc6IHZtbGludXggLSBTZWN0aW9uIG1p
-c21hdGNoOiByZWZlcmVuY2UgdG8gLmluaXQuc2V0dXA6X19zZXR1cF9ub3NtcCBmcm9tIC5wbHQg
-YWZ0ZXIgJycgKGF0IG9mZnNldCAweDgzNDdmMjgpDQpXQVJOSU5HOiB2bWxpbnV4IC0gU2VjdGlv
-biBtaXNtYXRjaDogcmVmZXJlbmNlIHRvIC5pbml0LnRleHQ6bWF4Y3B1cyBmcm9tIC5wbHQgYWZ0
-ZXIgJycgKGF0IG9mZnNldCAweDgzNDdmMmMpDQouLi4NCi4uLg0KDQpTbyB3aGVuIGdkYiBsb2Fk
-cyBMS00gc3ltYm9scywgaXQgc2VlbXMgLmluaXQudGV4dCBhbmQgLmV4aXQudGV4dCBzZWN0aW9u
-cyBvdmVybGFwcGVkIHdpdGggLnRleHQgc2VjdGlvbi4NCg0KDQpTZWNvbmQgb25lLA0KDQp3aGVu
-IHJ1biB1bWwgY29tcGlsZWQgd2l0aCAiLWciIGFuZCB3aXRob3V0ICItTzIiLA0KdW1sIGNyYXNo
-ZWQNCg0KVkZTOiBNb3VudGVkIHJvb3QgKGV4dDIgZmlsZXN5c3RlbSkuDQpTdHViIHJlZ2lzdGVy
-cyAtDQogICAgICAgIDAgLSAwDQogICAgICAgIDEgLSAwDQogICAgICAgIDIgLSAwDQogICAgICAg
-IDMgLSAwDQogICAgICAgIDQgLSAwDQogICAgICAgIDUgLSBiZmZmZmQxYw0KICAgICAgICA2IC0g
-ZQ0KICAgICAgICA3IC0gN2INCiAgICAgICAgOCAtIDdiDQogICAgICAgIDkgLSAwDQogICAgICAg
-IDEwIC0gMA0KICAgICAgICAxMSAtIGZmZmZmZmZmDQogICAgICAgIDEyIC0gYmZkYjhmOWENCiAg
-ICAgICAgMTMgLSA3Mw0KICAgICAgICAxNCAtIDEwMjgyDQogICAgICAgIDE1IC0gYmZmZmZkMDQN
-CiAgICAgICAgMTYgLSA3Yg0KS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IGdldF9za2FzX2Zh
-dWx0aW5mbyA6IGZhaWxlZCB0byB3YWl0IGZvciBTSUdVU1IxL1NJR1RSQVAsIHBpZCA9IDc3NjAs
-IG4gPSA3NzYwLCBlcnJubyA9IDAsIHN0YXR1cyA9IDB4YjdmDQoNCiANCkVJUDogMDA3MzpbPDQw
-MDAwN2IwPl0gQ1BVOiAwIE5vdCB0YWludGVkIEVTUDogMDA3YjpiZjlmYTUzMCBFRkxBR1M6IDAw
-MDEwMjQ2DQogICAgTm90IHRhaW50ZWQNCkVBWDogMDAwMDAwMDAgRUJYOiAwMDAwMDAwMCBFQ1g6
-IDAwMDAwMDAwIEVEWDogMDAwMDAwMDANCkVTSTogMDAwMDAwMDAgRURJOiAwMDAwMDAwMCBFQlA6
-IDAwMDAwMDAwIERTOiAwMDdiIEVTOiAwMDdiDQowODhhN2IxODogIFs8MDgwODJhYmI+XSBzaG93
-X3JlZ3MrMHgxMjMvMHgxMjUNCjA4OGE3YjM0OiAgWzwwODA2NjQ0MT5dIHBhbmljX2V4aXQrMHgz
-ZS8weDYwDQowODhhN2I0YzogIFs8MDgwYTViZWQ+XSBub3RpZmllcl9jYWxsX2NoYWluKzB4M2Mv
-MHg2NA0KMDg4YTdiNmM6ICBbPDA4MGE1Y2E5Pl0gYXRvbWljX25vdGlmaWVyX2NhbGxfY2hhaW4r
-MHgxZi8weDI3DQowODhhN2I4NDogIFs8MDgwOGNmMzc+XSBwYW5pYysweDdkLzB4MTI2DQowODhh
-N2JhODogIFs8MDgwN2MyOTM+XSB3YWl0X3N0dWJfZG9uZSsweDFlNC8weDFlNg0KMDg4YTdjMjg6
-ICBbPDA4MDdjMzIxPl0gZ2V0X3NrYXNfZmF1bHRpbmZvKzB4OGMvMHhhYQ0KMDg4YTdjNDQ6ICBb
-PDA4MDdkNjQ2Pl0gdXNlcl9zaWduYWwrMHg1Ny8weDgxDQowODhhN2M2MDogIFs8MDgwN2NhZTc+
-XSB1c2Vyc3BhY2UrMHgyMTEvMHgyYzINCjA4OGE3Y2M4OiAgWzwwODA2NmRlYj5dIG5ld190aHJl
-YWRfaGFuZGxlcisweDFhYS8weDFiOA0KMDg4YTdkMjA6ICBbPDAwNmMyYTQ4Pl0gMHg2YzJhNDg=
-
-------=_NextPart_000_0061_01C69C5C.F98B5460
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
-MC4yOTAwLjI2MjciIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
-Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIGZhY2U9y87M5SBzaXplPTI+SGksPC9G
-T05UPjwvRElWPg0KPERJVj48Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJ
-Vj4NCjxESVY+PEZPTlQgZmFjZT3LzszlIHNpemU9Mj5Ud28gcHJvYmxlbXM8L0ZPTlQ+PC9ESVY+
-DQo8RElWPjxGT05UIGZhY2U9y87M5SBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48
-Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPkZpcnN0IG9uZSw8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05U
-IGZhY2U9y87M5SBzaXplPTI+d2hlbiBidWlsZGluZyBrZXJuZWwgYW5kIExLTXMsPC9GT05UPjwv
-RElWPg0KPERJVj48Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPldBUk5JTkc6IHZtbGludXggLSBTZWN0
-aW9uIG1pc21hdGNoOiByZWZlcmVuY2UgdG8gDQouaW5pdC50ZXh0OiBmcm9tIC5wbHQgYWZ0ZXIg
-JycgKGF0IG9mZnNldCAweDgzNDdlNDQpPEJSPldBUk5JTkc6IHZtbGludXggLSANClNlY3Rpb24g
-bWlzbWF0Y2g6IHJlZmVyZW5jZSB0byAuaW5pdDogZnJvbSAucGx0IGFmdGVyICcnIChhdCBvZmZz
-ZXQgDQoweDgzNDdlNjQpPEJSPldBUk5JTkc6IHZtbGludXggLSBTZWN0aW9uIG1pc21hdGNoOiBy
-ZWZlcmVuY2UgdG8gLmluaXQuc2V0dXA6IA0KZnJvbSAucGx0IGFmdGVyICcnIChhdCBvZmZzZXQg
-MHg4MzQ3ZWE0KTxCUj5XQVJOSU5HOiB2bWxpbnV4IC0gU2VjdGlvbiBtaXNtYXRjaDogDQpyZWZl
-cmVuY2UgdG8gLmluaXQudGV4dDpub3NtcCBmcm9tIC5wbHQgYWZ0ZXIgJycgKGF0IG9mZnNldCAN
-CjB4ODM0N2YyMCk8QlI+V0FSTklORzogdm1saW51eCAtIFNlY3Rpb24gbWlzbWF0Y2g6IHJlZmVy
-ZW5jZSB0byANCi5pbml0LnNldHVwOl9fc2V0dXBfbm9zbXAgZnJvbSAucGx0IGFmdGVyICcnIChh
-dCBvZmZzZXQgMHg4MzQ3ZjI4KTxCUj5XQVJOSU5HOiANCnZtbGludXggLSBTZWN0aW9uIG1pc21h
-dGNoOiByZWZlcmVuY2UgdG8gLmluaXQudGV4dDptYXhjcHVzIGZyb20gLnBsdCBhZnRlciAnJyAN
-CihhdCBvZmZzZXQgMHg4MzQ3ZjJjKTwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFjZT3Lzszl
-IHNpemU9Mj4uLi48L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9y87M5SBzaXplPTI+Li4u
-PC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8
-L0RJVj4NCjxESVY+PEZPTlQgZmFjZT3LzszlIHNpemU9Mj5TbyB3aGVuIGdkYiBsb2FkcyBMS00g
-c3ltYm9scywgaXQgc2VlbXMgLmluaXQudGV4dCBhbmQgDQouZXhpdC50ZXh0IHNlY3Rpb25zIG92
-ZXJsYXBwZWQgd2l0aCAudGV4dCBzZWN0aW9uLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgZmFj
-ZT3LzszlIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9y87M5SBz
-aXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPlNl
-Y29uZCBvbmUsPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPjwvRk9O
-VD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgZmFjZT3LzszlIHNpemU9Mj53aGVuIHJ1biB1bWwg
-Y29tcGlsZWQgd2l0aCAiLWciIGFuZCB3aXRob3V0IA0KIi1PMiIsPC9GT05UPjwvRElWPg0KPERJ
-Vj48Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPnVtbCBjcmFzaGVkPC9GT05UPjwvRElWPg0KPERJVj48
-Rk9OVCBmYWNlPcvOzOUgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgZmFj
-ZT3LzszlIHNpemU9Mj5WRlM6IE1vdW50ZWQgcm9vdCAoZXh0MiBmaWxlc3lzdGVtKS48QlI+U3R1
-YiByZWdpc3RlcnMgDQotPEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
-YnNwOyAwIC0gDQowPEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
-OyAxIC0gDQowPEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAy
-IC0gDQowPEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAzIC0g
-DQowPEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyA0IC0gDQow
-PEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyA1IC0gDQpiZmZm
-ZmQxYzxCUj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgNiAtIA0K
-ZTxCUj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgNyAtIA0KN2I8
-QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IDggLSANCjdiPEJS
-PiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyA5IC0gDQowPEJSPiZu
-YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAxMCAtIA0KMDxCUj4mbmJz
-cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgMTEgLSANCmZmZmZmZmZmPEJS
-PiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAxMiAtIA0KYmZkYjhm
-OWE8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IDEzIC0gDQo3
-MzxCUj4mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgMTQgLSANCjEw
-MjgyPEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyAxNSAtIA0K
-YmZmZmZkMDQ8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IDE2
-IC0gN2I8QlI+S2VybmVsIHBhbmljIC0gDQpub3Qgc3luY2luZzogZ2V0X3NrYXNfZmF1bHRpbmZv
-IDogZmFpbGVkIHRvIHdhaXQgZm9yIFNJR1VTUjEvU0lHVFJBUCwgcGlkID0gDQo3NzYwLCBuID0g
-Nzc2MCwgZXJybm8gPSAwLCBzdGF0dXMgPSAweGI3ZjwvRk9OVD48L0RJVj4NCjxESVY+Jm5ic3A7
-PC9ESVY+DQo8RElWPjxGT05UIGZhY2U9y87M5SBzaXplPTI+Jm5ic3A7PEJSPkVJUDogMDA3Mzpb
-Jmx0OzQwMDAwN2IwJmd0O10gQ1BVOiAwIE5vdCANCnRhaW50ZWQgRVNQOiAwMDdiOmJmOWZhNTMw
-IEVGTEFHUzogMDAwMTAyNDY8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IE5vdCANCnRhaW50ZWQ8QlI+
-RUFYOiAwMDAwMDAwMCBFQlg6IDAwMDAwMDAwIEVDWDogMDAwMDAwMDAgRURYOiAwMDAwMDAwMDxC
-Uj5FU0k6IA0KMDAwMDAwMDAgRURJOiAwMDAwMDAwMCBFQlA6IDAwMDAwMDAwIERTOiAwMDdiIEVT
-OiAwMDdiPEJSPjA4OGE3YjE4OiZuYnNwOyANClsmbHQ7MDgwODJhYmImZ3Q7XSBzaG93X3JlZ3Mr
-MHgxMjMvMHgxMjU8QlI+MDg4YTdiMzQ6Jm5ic3A7IFsmbHQ7MDgwNjY0NDEmZ3Q7XSANCnBhbmlj
-X2V4aXQrMHgzZS8weDYwPEJSPjA4OGE3YjRjOiZuYnNwOyBbJmx0OzA4MGE1YmVkJmd0O10gDQpu
-b3RpZmllcl9jYWxsX2NoYWluKzB4M2MvMHg2NDxCUj4wODhhN2I2YzombmJzcDsgWyZsdDswODBh
-NWNhOSZndDtdIA0KYXRvbWljX25vdGlmaWVyX2NhbGxfY2hhaW4rMHgxZi8weDI3PEJSPjA4OGE3
-Yjg0OiZuYnNwOyBbJmx0OzA4MDhjZjM3Jmd0O10gDQpwYW5pYysweDdkLzB4MTI2PEJSPjA4OGE3
-YmE4OiZuYnNwOyBbJmx0OzA4MDdjMjkzJmd0O10gDQp3YWl0X3N0dWJfZG9uZSsweDFlNC8weDFl
-NjxCUj4wODhhN2MyODombmJzcDsgWyZsdDswODA3YzMyMSZndDtdIA0KZ2V0X3NrYXNfZmF1bHRp
-bmZvKzB4OGMvMHhhYTxCUj4wODhhN2M0NDombmJzcDsgWyZsdDswODA3ZDY0NiZndDtdIA0KdXNl
-cl9zaWduYWwrMHg1Ny8weDgxPEJSPjA4OGE3YzYwOiZuYnNwOyBbJmx0OzA4MDdjYWU3Jmd0O10g
-DQp1c2Vyc3BhY2UrMHgyMTEvMHgyYzI8QlI+MDg4YTdjYzg6Jm5ic3A7IFsmbHQ7MDgwNjZkZWIm
-Z3Q7XSANCm5ld190aHJlYWRfaGFuZGxlcisweDFhYS8weDFiODxCUj4wODhhN2QyMDombmJzcDsg
-WyZsdDswMDZjMmE0OCZndDtdIA0KMHg2YzJhNDg8L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4N
-Cg==
-
-------=_NextPart_000_0061_01C69C5C.F98B5460--
-
-
-
---===============1878594365==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+				Jeff
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-
---===============1878594365==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============1878594365==--
-
