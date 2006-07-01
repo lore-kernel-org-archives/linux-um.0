@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FwKy7-00005e-56 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jun 2006 08:31:43 -0700
-Received: from smtp109.plus.mail.re2.yahoo.com ([206.190.53.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FwKy3-0001v5-1O
+	id 1FwTVM-0006km-D3 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Jun 2006 17:38:36 -0700
+Received: from [218.104.33.231] (helo=centecnetworks.com)
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1FwTVK-00057v-O6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Jun 2006 08:31:43 -0700
-Date: Fri, 30 Jun 2006 17:31:28 +0200
-Message-ID: <20060630153128.GA4951@portableric>
-References: <20060522212649.GA4946@portableric>
-	<20060629153516.GA8610@ccure.user-mode-linux.org>
+	Fri, 30 Jun 2006 17:38:36 -0700
+Message-ID: <007401c69ca6$a6e00040$d4190a0a@centecnetworks.com>
+From: "Miao Qingjun" <qmiao@centecnetworks.com>
+References: <006401c69c19$eb9edbd0$d4190a0a@centecnetworks.com>
+	<20060630134509.GA3510@ccure.user-mode-linux.org>
+Date: Sat, 1 Jul 2006 08:38:20 +0800
 MIME-Version: 1.0
-In-Reply-To: <20060629153516.GA8610@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Task Size Init cleanup
+Subject: Re: [uml-devel] [uml-user] UML 2.6.17 problems (section mismatch,
+	get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,243 +25,102 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2000757022=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-From: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
---===============2000757022==
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by nerdnet.nl id
-	k5UFW0DD021609
+Hi, 
+For first one problem, why .exit.text symbol's address seems overlapped with .text section
+(I use GDB add-symbol-file to load lkm symbols, and section addresses are get from /sys/module/<lkm>/sections)
 
-On Thu, Jun 29, 2006 at 11:35:16AM -0400, Jeff Dike wrote:
-> On Mon, May 22, 2006 at 11:26:49PM +0200, tyler@agat.net wrote:
-> > I was looking at the code of the UML and more precisely at the functi=
-ons
-> > set_task_sizes_tt and set_task_sizes_skas. I noticed that these 2
-> > functions take a paramater (arg) which is not used : the function is
-> > always called with the value 0.
-> >=20
-> > I suppose that this value might change in the future (or even can be
-> > configured), so I added a constant in mem_user.h file.
-> >=20
-> > Also, I rounded CONFIG_HOST_TASk_SIZE to a 4M.
->=20
-> What I have in my tree is below.  Can I get a Signed-off-by for it
-> from you so I can send it to mainline?
->=20
-> 				Jeff
->=20
->=20
-> Index: linux-2.6.16-rc-mm/arch/um/include/mem_user.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.16-rc-mm.orig/arch/um/include/mem_user.h	2006-06-11 14:27=
-:37.000000000 -0400
-> +++ linux-2.6.16-rc-mm/arch/um/include/mem_user.h	2006-06-11 14:52:53.0=
-00000000 -0400
-> @@ -44,6 +44,7 @@ struct iomem_region {
->  extern struct iomem_region *iomem_regions;
->  extern int iomem_size;
-> =20
-> +#define DEFAULT_HOST_TASK_SIZE			0
->  #define ROUND_4M(n) ((((unsigned long) (n)) + (1 << 22)) & ~((1 << 22)=
- - 1))
-> =20
->  extern unsigned long host_task_size;
-> Index: linux-2.6.16-rc-mm/arch/um/kernel/skas/mem.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.16-rc-mm.orig/arch/um/kernel/skas/mem.c	2006-06-11 14:27:=
-37.000000000 -0400
-> +++ linux-2.6.16-rc-mm/arch/um/kernel/skas/mem.c	2006-06-11 14:52:53.00=
-0000000 -0400
-> @@ -9,14 +9,14 @@
->  #include "mem_user.h"
->  #include "skas.h"
-> =20
-> -unsigned long set_task_sizes_skas(int arg, unsigned long *host_size_ou=
-t,=20
-> +unsigned long set_task_sizes_skas(unsigned long *host_size_out,
->  				  unsigned long *task_size_out)
->  {
->  	/* Round up to the nearest 4M */
-> -	unsigned long top =3D ROUND_4M((unsigned long) &arg);
-> +	unsigned long top =3D ROUND_4M((unsigned long) &host_size_out);
-> =20
->  #ifdef CONFIG_HOST_TASK_SIZE
-> -	*host_size_out =3D CONFIG_HOST_TASK_SIZE;
-> +	*host_size_out =3D ROUND_4M(CONFIG_HOST_TASK_SIZE);
->  	*task_size_out =3D CONFIG_HOST_TASK_SIZE;
->  #else
->  	*host_size_out =3D top;
-> @@ -24,16 +24,5 @@ unsigned long set_task_sizes_skas(int ar
->  		*task_size_out =3D top;
->  	else *task_size_out =3D CONFIG_STUB_START & PGDIR_MASK;
->  #endif
-> -	return(((unsigned long) set_task_sizes_skas) & ~0xffffff);
-> +	return ((unsigned long) set_task_sizes_skas) & ~0xffffff;
->  }
-> -
-> -/*
-> - * Overrides for Emacs so that we follow Linus's tabbing style.
-> - * Emacs will notice this stuff at the end of the file and automatical=
-ly
-> - * adjust the settings for this buffer only.  This must remain at the =
-end
-> - * of the file.
-> - * -------------------------------------------------------------------=
---------
-> - * Local variables:
-> - * c-file-style: "linux"
-> - * End:
-> - */
-> Index: linux-2.6.16-rc-mm/arch/um/kernel/tt/mem.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.16-rc-mm.orig/arch/um/kernel/tt/mem.c	2006-06-11 14:27:37=
-.000000000 -0400
-> +++ linux-2.6.16-rc-mm/arch/um/kernel/tt/mem.c	2006-06-11 14:52:53.0000=
-00000 -0400
-> @@ -24,22 +24,11 @@ void before_mem_tt(unsigned long brk_sta
->  #define SIZE ((CONFIG_NEST_LEVEL + CONFIG_KERNEL_HALF_GIGS) * 0x200000=
-00)
->  #define START (CONFIG_TOP_ADDR - SIZE)
-> =20
-> -unsigned long set_task_sizes_tt(int arg, unsigned long *host_size_out,=
-=20
-> +unsigned long set_task_sizes_tt(unsigned long *host_size_out,
->  				unsigned long *task_size_out)
->  {
->  	/* Round up to the nearest 4M */
-> -	*host_size_out =3D ROUND_4M((unsigned long) &arg);
-> +	*host_size_out =3D ROUND_4M((unsigned long) &host_size_out);
->  	*task_size_out =3D START;
-> -	return(START);
-> +	return START;
->  }
-> -
-> -/*
-> - * Overrides for Emacs so that we follow Linus's tabbing style.
-> - * Emacs will notice this stuff at the end of the file and automatical=
-ly
-> - * adjust the settings for this buffer only.  This must remain at the =
-end
-> - * of the file.
-> - * -------------------------------------------------------------------=
---------
-> - * Local variables:
-> - * c-file-style: "linux"
-> - * End:
-> - */
-> Index: linux-2.6.16-rc-mm/arch/um/kernel/um_arch.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.16-rc-mm.orig/arch/um/kernel/um_arch.c	2006-06-11 14:28:5=
-2.000000000 -0400
-> +++ linux-2.6.16-rc-mm/arch/um/kernel/um_arch.c	2006-06-28 13:07:29.000=
-000000 -0400
-> @@ -374,7 +374,7 @@ int linux_main(int argc, char **argv)
-> =20
->  	printf("UML running in %s mode\n", mode);
-> =20
-> -	uml_start =3D CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas=
-, 0,
-> +	uml_start =3D CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas=
-,
->  				     &host_task_size, &task_size);
-> =20
->  	/*
-> Index: linux-2.6.16-rc-mm/arch/um/include/skas/mode_kern_skas.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.16-rc-mm.orig/arch/um/include/skas/mode_kern_skas.h	2006-=
-06-11 14:27:37.000000000 -0400
-> +++ linux-2.6.16-rc-mm/arch/um/include/skas/mode_kern_skas.h	2006-06-11=
- 14:52:53.000000000 -0400
-> @@ -29,7 +29,7 @@ extern void flush_tlb_mm_skas(struct mm_
->  extern void force_flush_all_skas(void);
->  extern long execute_syscall_skas(void *r);
->  extern void before_mem_skas(unsigned long unused);
-> -extern unsigned long set_task_sizes_skas(int arg, unsigned long *host_=
-size_out,
-> +extern unsigned long set_task_sizes_skas(unsigned long *host_size_out,
->  					 unsigned long *task_size_out);
->  extern int start_uml_skas(void);
->  extern int external_pid_skas(struct task_struct *task);
-> Index: linux-2.6.16-rc-mm/arch/um/include/tt/mode_kern_tt.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.16-rc-mm.orig/arch/um/include/tt/mode_kern_tt.h	2006-06-1=
-1 14:27:37.000000000 -0400
-> +++ linux-2.6.16-rc-mm/arch/um/include/tt/mode_kern_tt.h	2006-06-11 14:=
-52:53.000000000 -0400
-> @@ -30,7 +30,7 @@ extern void flush_tlb_mm_tt(struct mm_st
->  extern void force_flush_all_tt(void);
->  extern long execute_syscall_tt(void *r);
->  extern void before_mem_tt(unsigned long brk_start);
-> -extern unsigned long set_task_sizes_tt(int arg, unsigned long *host_si=
-ze_out,
-> +extern unsigned long set_task_sizes_tt(unsigned long *host_size_out,
->  				       unsigned long *task_size_out);
->  extern int start_uml_tt(void);
->  extern int external_pid_tt(struct task_struct *task);
->=20
+For the second problem,
 
-Well my signoff would be :
-Signed-off-by: Tyler <tyler@agat.net>
-I guess :)
+082c90c8 <stub_segv_handler>:
+ 82c90c8:       55                      push   %ebp
+ 82c90c9:       89 e5                   mov    %esp,%ebp
+ 82c90cb:       83 ec 14                sub    $0x14,%esp
+ 82c90ce:       8d 45 0c                lea    0xc(%ebp),%eax
+ 82c90d1:       89 45 fc                mov    %eax,0xfffffffc(%ebp)
+ 82c90d4:       8b 45 fc                mov    0xfffffffc(%ebp),%eax
+ 82c90d7:       83 c0 54                add    $0x54,%eax
+ 82c90da:       8b 00                   mov    (%eax),%eax
+ 82c90dc:       a3 04 f0 ff bf          mov    %eax,0xbffff004
+ 82c90e1:       8b 45 fc                mov    0xfffffffc(%ebp),%eax
+ 82c90e4:       83 c0 34                add    $0x34,%eax
+ 82c90e7:       8b 00                   mov    (%eax),%eax
+ 82c90e9:       a3 00 f0 ff bf          mov    %eax,0xbffff000
+ 82c90ee:       8b 45 fc                mov    0xfffffffc(%ebp),%eax
+ 82c90f1:       83 c0 30                add    $0x30,%eax
+ 82c90f4:       8b 00                   mov    (%eax),%eax
+ 82c90f6:       a3 08 f0 ff bf          mov    %eax,0xbffff008
+ 82c90fb:       c7 04 24 14 00 00 00    movl   $0x14,(%esp)
+ 82c9102:       e8 93 ae db ff          call   8083f9a <stub_syscall0>
+ 82c9107:       89 45 f8                mov    %eax,0xfffffff8(%ebp)
+ 82c910a:       c7 44 24 08 0a 00 00    movl   $0xa,0x8(%esp)
+ 82c9111:       00 
+ 82c9112:       8b 45 f8                mov    0xfffffff8(%ebp),%eax
+ 82c9115:       89 44 24 04             mov    %eax,0x4(%esp)
+ 82c9119:       c7 04 24 25 00 00 00    movl   $0x25,(%esp)
+ 82c9120:       e8 57 ae db ff          call   8083f7c <stub_syscall2>
+ 82c9125:       8b 45 fc                mov    0xfffffffc(%ebp),%eax
+ 82c9128:       89 c4                   mov    %eax,%esp
+ 82c912a:       b8 77 00 00 00          mov    $0x77,%eax
+ 82c912f:       cd 80                   int    $0x80
+ 82c9131:       c9                      leave  
+ 82c9132:       c3                      ret    
 
-Thx,
+Thanks!
+
+----- Original Message ----- 
+From: "Jeff Dike" <jdike@addtoit.com>
+To: "Miao Qingjun" <qmiao@centecnetworks.com>
+Cc: <user-mode-linux-user@lists.sourceforge.net>; <user-mode-linux-devel@lists.sourceforge.net>
+Sent: Friday, June 30, 2006 9:45 PM
+Subject: Re: [uml-user] UML 2.6.17 problems (section mismatch, get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP)
 
 
---=20
-tyler
-tyler@agat.net
-
-
-=09
-
-=09
-	=09
-_________________________________________________________________________=
-__=20
-Yahoo! Mail r=E9invente le mail ! D=E9couvrez le nouveau Yahoo! Mail et s=
-on interface r=E9volutionnaire.
-http://fr.mail.yahoo.com
-
-
-
---===============2000757022==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-
+> On Fri, Jun 30, 2006 at 03:50:56PM +0800, Miao Qingjun wrote:
+>> WARNING: vmlinux - Section mismatch: reference to .init.text: from .plt after '' (at offset 0x8347e44)
+> 
+> These are harmless.
+> 
+>> Second one,
+>> 
+>> when run uml compiled with "-g" and without "-O2",
+>> uml crashed
+>> 
+>> VFS: Mounted root (ext2 filesystem).
+>> Stub registers -
+>>         0 - 0
+>>         1 - 0
+>>         2 - 0
+>>         3 - 0
+>>         4 - 0
+>>         5 - bffffd1c
+>>         6 - e
+>>         7 - 7b
+>>         8 - 7b
+>>         9 - 0
+>>         10 - 0
+>>         11 - ffffffff
+>>         12 - bfdb8f9a
+>>         13 - 73
+>>         14 - 10282
+>>         15 - bffffd04
+>>         16 - 7b
+>> Kernel panic - not syncing: get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP, pid = 7760, n = 7760, errno = 0, status = 0xb7f
+> 
+> Can you send the disassembly of stub_segv_handler?
+> 
+> Jeff
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-
---===============2000757022==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============2000757022==--
