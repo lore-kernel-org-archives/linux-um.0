@@ -1,13 +1,41 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Stefan Hofmann <sh@luci.de>
-In-Reply-To: <20060703103313.06igshf1vd44kokk@mail.admindu.de>
-References: <1151740200.5540.7.camel@chronos> <1151914665.5505.7.camel@chronos>
-	<20060703103313.06igshf1vd44kokk@mail.admindu.de>
-Date: Mon, 03 Jul 2006 22:18:17 +0200
-Message-Id: <1151957898.6025.8.camel@chronos>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] [uml-user] Kernel panic - not syncing: Kernel mode
-	signal	7	(with 2.6.17.1 and .2)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1Fxajo-0003Xj-Qt for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Jul 2006 19:34:08 -0700
+Received: from mailgw2.fnal.gov ([131.225.111.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FxaUh-0002gp-Kh
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Jul 2006 19:18:31 -0700
+Received: from mailav2.fnal.gov (mailav2.fnal.gov [131.225.111.20])
+	by mailgw2.fnal.gov
+	(iPlanet Messaging Server 5.2 HotFix 2.06 (built Mar 28 2005))
+	with SMTP id <0J1U00501WZLHP@mailgw2.fnal.gov> for
+	user-mode-linux-devel@lists.sourceforge.net; Mon,
+	03 Jul 2006 21:16:35 -0500 (CDT)
+Received: from mailgw2.fnal.gov ([131.225.111.12])
+	by mailav2.fnal.gov (SAVSMTP 3.1.7.47) with SMTP id
+	M2006070321163403444 for
+	<user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 03 Jul 2006 21:16:34 -0500
+Received: from conversion-daemon.mailgw2.fnal.gov by mailgw2.fnal.gov
+	(iPlanet Messaging Server 5.2 HotFix 2.06 (built Mar 28 2005))
+	id <0J1U00201WY1SI@mailgw2.fnal.gov> (original mail from
+	egilber2@cs.uiuc.edu)
+	for user-mode-linux-devel@lists.sourceforge.net; Mon,
+	03 Jul 2006 21:16:35 -0500 (CDT)
+Received: from [192.168.1.103]
+	(DHCP-74-135-160-104.insightbb.com [74.135.160.104])
+	by mailgw2.fnal.gov (iPlanet Messaging Server 5.2 HotFix 2.06 (built
+	Mar 28 2005)) with ESMTPSA id <0J1U005JMWZMJ5@mailgw2.fnal.gov> for
+	user-mode-linux-devel@lists.sourceforge.net; Mon,
+	03 Jul 2006 21:16:34 -0500 (CDT)
+Date: Mon, 03 Jul 2006 21:16:32 -0500
+From: Eric Gilbert <egilber2@cs.uiuc.edu>
+Message-id: <EC85DF4B-91B1-4AFB-B68C-384F6EFC0CF6@cs.uiuc.edu>
+MIME-version: 1.0
+Subject: [uml-devel] Research study on CVS - you can help and get paid!
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,36 +49,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Daniel Tombeil <dt@admindu.de>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Am Montag, den 03.07.2006, 10:33 +0200 schrieb Daniel Tombeil:
+I am a Computer Science graduate student at the University of  
+Illinois at Urbana-Champaign. I need your help in a study I want to  
+conduct. I have created a project called LifeSource that visualizes  
+CVS repositories. You can find screenshots and info here:
 
-Hi Daniel,
+http://social.cs.uiuc.edu/people/gilbert (info on me)
+http://social.cs.uiuc.edu/people/gilbert/research.html (info on  
+LifeSource, the CVS project)
 
-> > can anyone help me, please? My systems run very dirty and I cannot use
-> > any 2.6.17.x kernels. Am I alone with this problem? Under 2.6.16.20 I
-> > never saw such a kernel panic.
-> 
-> I had similar looking panics and in my case it was a problem with  
-> tmpfs running out of space. tmpfs can be in various locations. In my  
-> case /dev/shm was used and it was far to small. I found that out using  
-> lsof and grepping for my UML instances.
-> 
-> hope this helps
+LifeSource appeared as a Work-in-Progress paper at ACM's CHI 2006 in  
+Montreal (http://www.chi2006.org). I applied LifeSource to the  
+Azureus and Gaim CVS repositories. I would like to apply the same  
+visualization to your
+project. Next, I want to see if you as the visualized community find  
+it accurate, helpful, disturbing, etc.
 
-yes, this was the reason. Many thanks for your tip.
-I had a hugde swap space and therefor a big tmpfs in /tmp and /var/tmp
-but my /dev/shm was just 512MB and this is a joke for 8-12 UML
-instances. Maybe the 2.6.17.x kernel uses more /dev/shm(?); this problem
-never occours before.
+In order to participate in the study, you will need to view the  
+LifeSource visualization once a week (on the web) for four weeks and  
+respond to two short online surveys.
 
-Now my shm is about 2G and the host and all UMLs are well alive :)
+You will receive a $20 gift certificate for your participation.
 
-Thanks and greetings,
-stefan
+I can fully explain the process in the near future - just email me  
+back. I will provide all of the information of the methodology of the  
+study online. (We can set up a blog for study members to leave  
+further comments.)
 
+Please let me know what you think. I plan on using the study in a  
+long paper to CHI 2007.
 
+Cheers,
+Eric
+
+P.S. I apologize for the spam and will send no more.
 
 
 Using Tomcat but need to do more? Need to support web services, security?
