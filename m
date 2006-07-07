@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FyeHj-0006a8-Jo for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:31 -0700
+	id 1FyeHm-0006aK-FO for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Jul 2006 17:33:34 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FyeHi-0006YJ-Hq
+	(Exim 4.44) id 1FyeHl-0000hO-IU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:31 -0700
-Message-Id: <200607070033.k670XhQR008707@ccure.user-mode-linux.org>
+	Thu, 06 Jul 2006 17:33:34 -0700
+Message-Id: <200607070033.k670XXqc008662@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Thu, 06 Jul 2006 20:33:43 -0400
+Date: Thu, 06 Jul 2006 20:33:31 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 10/19] UML - Remove spinlock wrapper functions
+Subject: [uml-devel] [PATCH 1/19] UML - Clean up address space limits code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,170 +28,130 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Tyler <tyler@agat.net>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-The irq_spinlock is not needed from user code any more, so the
-irq_lock and irq_unlock wrappers can go away.  This also changes the
-name of the lock to irq_lock.
+I was looking at the code of the UML and more precisely at the functions
+set_task_sizes_tt and set_task_sizes_skas. I noticed that these 2
+functions take a paramater (arg) which is not used : the function is
+always called with the value 0.
 
+I suppose that this value might change in the future (or even can be
+configured), so I added a constant in mem_user.h file.
+
+Also, I rounded CONFIG_HOST_TASk_SIZE to a 4M.
+
+Signed-off-by: Tyler <tyler@agat.net>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.17/arch/um/include/irq_user.h
+Index: linux-2.6.17/arch/um/kernel/skas/mem.c
 ===================================================================
---- linux-2.6.17.orig/arch/um/include/irq_user.h	2006-07-06 13:27:58.000000000 -0400
-+++ linux-2.6.17/arch/um/include/irq_user.h	2006-07-06 13:28:14.000000000 -0400
-@@ -29,8 +29,6 @@ extern void reactivate_fd(int fd, int ir
- extern void deactivate_fd(int fd, int irqnum);
- extern int deactivate_all_fds(void);
- extern int activate_ipi(int fd, int pid);
--extern unsigned long irq_lock(void);
--extern void irq_unlock(unsigned long flags);
+--- linux-2.6.17.orig/arch/um/kernel/skas/mem.c	2006-06-29 10:37:16.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/skas/mem.c	2006-06-29 10:41:54.000000000 -0400
+@@ -9,14 +9,14 @@
+ #include "mem_user.h"
+ #include "skas.h"
  
- #ifdef CONFIG_MODE_TT
- extern void forward_interrupts(int pid);
-Index: linux-2.6.17/arch/um/kernel/irq.c
-===================================================================
---- linux-2.6.17.orig/arch/um/kernel/irq.c	2006-07-06 13:27:58.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/irq.c	2006-07-06 13:28:43.000000000 -0400
-@@ -123,6 +123,8 @@ static void maybe_sigio_broken(int fd, i
- 	}
- }
- 
-+static DEFINE_SPINLOCK(irq_lock);
-+
- int activate_fd(int irq, int fd, int type, void *dev_id)
+-unsigned long set_task_sizes_skas(int arg, unsigned long *host_size_out, 
++unsigned long set_task_sizes_skas(unsigned long *host_size_out,
+ 				  unsigned long *task_size_out)
  {
- 	struct pollfd *tmp_pfd;
-@@ -166,7 +168,7 @@ int activate_fd(int irq, int fd, int typ
- 	 * this is called only from process context, and can be locked with
- 	 * a semaphore.
- 	 */
--	flags = irq_lock();
-+	spin_lock_irqsave(&irq_lock, flags);
- 	for (irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd->next) {
- 		if ((irq_fd->fd == fd) && (irq_fd->type == type)) {
- 			printk("Registering fd %d twice\n", fd);
-@@ -199,7 +201,7 @@ int activate_fd(int irq, int fd, int typ
- 		 * so we will not be able to put new pollfd struct to pollfds
- 		 * then we free the buffer tmp_fds and try again.
- 		 */
--		irq_unlock(flags);
-+		spin_unlock_irqrestore(&irq_lock, flags);
- 		kfree(tmp_pfd);
- 		tmp_pfd = NULL;
+ 	/* Round up to the nearest 4M */
+-	unsigned long top = ROUND_4M((unsigned long) &arg);
++	unsigned long top = ROUND_4M((unsigned long) &host_size_out);
  
-@@ -207,14 +209,14 @@ int activate_fd(int irq, int fd, int typ
- 		if (tmp_pfd == NULL)
- 			goto out_kfree;
- 
--		flags = irq_lock();
-+		spin_lock_irqsave(&irq_lock, flags);
- 	}
- 	/*-------------*/
- 
- 	*last_irq_ptr = new_fd;
- 	last_irq_ptr = &new_fd->next;
- 
--	irq_unlock(flags);
-+	spin_unlock_irqrestore(&irq_lock, flags);
- 
- 	/* This calls activate_fd, so it has to be outside the critical
- 	 * section.
-@@ -224,7 +226,7 @@ int activate_fd(int irq, int fd, int typ
- 	return(0);
- 
-  out_unlock:
--	irq_unlock(flags);
-+	spin_unlock_irqrestore(&irq_lock, flags);
-  out_kfree:
- 	kfree(new_fd);
-  out:
-@@ -235,9 +237,9 @@ static void free_irq_by_cb(int (*test)(s
- {
- 	unsigned long flags;
- 
--	flags = irq_lock();
-+	spin_lock_irqsave(&irq_lock, flags);
- 	os_free_irq_by_cb(test, arg, active_fds, &last_irq_ptr);
--	irq_unlock(flags);
-+	spin_unlock_irqrestore(&irq_lock, flags);
- }
- 
- struct irq_and_dev {
-@@ -304,14 +306,14 @@ void reactivate_fd(int fd, int irqnum)
- 	unsigned long flags;
- 	int i;
- 
--	flags = irq_lock();
-+	spin_lock_irqsave(&irq_lock, flags);
- 	irq = find_irq_by_fd(fd, irqnum, &i);
- 	if (irq == NULL) {
--		irq_unlock(flags);
-+		spin_unlock_irqrestore(&irq_lock, flags);
- 		return;
- 	}
- 	os_set_pollfd(i, irq->fd);
--	irq_unlock(flags);
-+	spin_unlock_irqrestore(&irq_lock, flags);
- 
- 	/* This calls activate_fd, so it has to be outside the critical
- 	 * section.
-@@ -325,13 +327,13 @@ void deactivate_fd(int fd, int irqnum)
- 	unsigned long flags;
- 	int i;
- 
--	flags = irq_lock();
-+	spin_lock_irqsave(&irq_lock, flags);
- 	irq = find_irq_by_fd(fd, irqnum, &i);
- 	if (irq == NULL)
- 		goto out;
- 	os_set_pollfd(i, -1);
-  out:
--	irq_unlock(flags);
-+	spin_unlock_irqrestore(&irq_lock, flags);
- }
- 
- int deactivate_all_fds(void)
-@@ -357,7 +359,7 @@ void forward_interrupts(int pid)
- 	unsigned long flags;
- 	int err;
- 
--	flags = irq_lock();
-+	spin_lock_irqsave(&irq_lock, flags);
- 	for (irq = active_fds; irq != NULL; irq = irq->next) {
- 		err = os_set_owner(irq->fd, pid);
- 		if (err < 0) {
-@@ -370,7 +372,7 @@ void forward_interrupts(int pid)
- 
- 		irq->pid = pid;
- 	}
--	irq_unlock(flags);
-+	spin_unlock_irqrestore(&irq_lock, flags);
- }
+ #ifdef CONFIG_HOST_TASK_SIZE
+-	*host_size_out = CONFIG_HOST_TASK_SIZE;
++	*host_size_out = ROUND_4M(CONFIG_HOST_TASK_SIZE);
+ 	*task_size_out = CONFIG_HOST_TASK_SIZE;
+ #else
+ 	*host_size_out = top;
+@@ -24,16 +24,5 @@ unsigned long set_task_sizes_skas(int ar
+ 		*task_size_out = top;
+ 	else *task_size_out = CONFIG_STUB_START & PGDIR_MASK;
  #endif
+-	return(((unsigned long) set_task_sizes_skas) & ~0xffffff);
++	return ((unsigned long) set_task_sizes_skas) & ~0xffffff;
+ }
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.17/arch/um/kernel/tt/mem.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/tt/mem.c	2006-06-29 10:37:16.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/tt/mem.c	2006-06-29 10:41:54.000000000 -0400
+@@ -24,22 +24,11 @@ void before_mem_tt(unsigned long brk_sta
+ #define SIZE ((CONFIG_NEST_LEVEL + CONFIG_KERNEL_HALF_GIGS) * 0x20000000)
+ #define START (CONFIG_TOP_ADDR - SIZE)
  
-@@ -405,21 +407,6 @@ int um_request_irq(unsigned int irq, int
- EXPORT_SYMBOL(um_request_irq);
- EXPORT_SYMBOL(reactivate_fd);
+-unsigned long set_task_sizes_tt(int arg, unsigned long *host_size_out, 
++unsigned long set_task_sizes_tt(unsigned long *host_size_out,
+ 				unsigned long *task_size_out)
+ {
+ 	/* Round up to the nearest 4M */
+-	*host_size_out = ROUND_4M((unsigned long) &arg);
++	*host_size_out = ROUND_4M((unsigned long) &host_size_out);
+ 	*task_size_out = START;
+-	return(START);
++	return START;
+ }
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.17/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/um_arch.c	2006-06-29 10:37:16.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/um_arch.c	2006-06-29 10:41:54.000000000 -0400
+@@ -374,7 +374,7 @@ int linux_main(int argc, char **argv)
  
--static DEFINE_SPINLOCK(irq_spinlock);
--
--unsigned long irq_lock(void)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&irq_spinlock, flags);
--	return flags;
--}
--
--void irq_unlock(unsigned long flags)
--{
--	spin_unlock_irqrestore(&irq_spinlock, flags);
--}
--
- /* hw_interrupt_type must define (startup || enable) &&
-  * (shutdown || disable) && end */
- static void dummy(unsigned int irq)
+ 	printf("UML running in %s mode\n", mode);
+ 
+-	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas, 0,
++	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas,
+ 				     &host_task_size, &task_size);
+ 
+ 	/*
+Index: linux-2.6.17/arch/um/include/skas/mode_kern_skas.h
+===================================================================
+--- linux-2.6.17.orig/arch/um/include/skas/mode_kern_skas.h	2006-06-29 10:37:16.000000000 -0400
++++ linux-2.6.17/arch/um/include/skas/mode_kern_skas.h	2006-06-29 10:41:54.000000000 -0400
+@@ -29,7 +29,7 @@ extern void flush_tlb_mm_skas(struct mm_
+ extern void force_flush_all_skas(void);
+ extern long execute_syscall_skas(void *r);
+ extern void before_mem_skas(unsigned long unused);
+-extern unsigned long set_task_sizes_skas(int arg, unsigned long *host_size_out,
++extern unsigned long set_task_sizes_skas(unsigned long *host_size_out,
+ 					 unsigned long *task_size_out);
+ extern int start_uml_skas(void);
+ extern int external_pid_skas(struct task_struct *task);
+Index: linux-2.6.17/arch/um/include/tt/mode_kern_tt.h
+===================================================================
+--- linux-2.6.17.orig/arch/um/include/tt/mode_kern_tt.h	2006-06-29 10:37:16.000000000 -0400
++++ linux-2.6.17/arch/um/include/tt/mode_kern_tt.h	2006-06-29 10:41:54.000000000 -0400
+@@ -30,7 +30,7 @@ extern void flush_tlb_mm_tt(struct mm_st
+ extern void force_flush_all_tt(void);
+ extern long execute_syscall_tt(void *r);
+ extern void before_mem_tt(unsigned long brk_start);
+-extern unsigned long set_task_sizes_tt(int arg, unsigned long *host_size_out,
++extern unsigned long set_task_sizes_tt(unsigned long *host_size_out,
+ 				       unsigned long *task_size_out);
+ extern int start_uml_tt(void);
+ extern int external_pid_tt(struct task_struct *task);
 
 
 Using Tomcat but need to do more? Need to support web services, security?
