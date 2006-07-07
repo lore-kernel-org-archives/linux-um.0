@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FyeHm-0006aK-FO for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:34 -0700
+	id 1FyeHi-0006Zm-5Y for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Jul 2006 17:33:30 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FyeHl-0000hO-IU
+	(Exim 4.44) id 1FyeHh-0006Y1-MX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:34 -0700
-Message-Id: <200607070033.k670XXqc008662@ccure.user-mode-linux.org>
+	Thu, 06 Jul 2006 17:33:30 -0700
+Message-Id: <200607070033.k670XgKO008702@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Thu, 06 Jul 2006 20:33:31 -0400
+Date: Thu, 06 Jul 2006 20:33:42 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/19] UML - Clean up address space limits code
+Subject: [uml-devel] [PATCH 9/19] UML - mark forward_interrupts as being
+	mode-specific
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,130 +29,59 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
-Cc: Tyler <tyler@agat.net>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-I was looking at the code of the UML and more precisely at the functions
-set_task_sizes_tt and set_task_sizes_skas. I noticed that these 2
-functions take a paramater (arg) which is not used : the function is
-always called with the value 0.
+Mark forward_interrupts as being tt-mode only.
 
-I suppose that this value might change in the future (or even can be
-configured), so I added a constant in mem_user.h file.
-
-Also, I rounded CONFIG_HOST_TASk_SIZE to a 4M.
-
-Signed-off-by: Tyler <tyler@agat.net>
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.17/arch/um/kernel/skas/mem.c
+Index: linux-2.6.17/arch/um/include/irq_user.h
 ===================================================================
---- linux-2.6.17.orig/arch/um/kernel/skas/mem.c	2006-06-29 10:37:16.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/skas/mem.c	2006-06-29 10:41:54.000000000 -0400
-@@ -9,14 +9,14 @@
- #include "mem_user.h"
- #include "skas.h"
+--- linux-2.6.17.orig/arch/um/include/irq_user.h	2006-07-05 23:53:28.000000000 -0400
++++ linux-2.6.17/arch/um/include/irq_user.h	2006-07-06 11:50:06.000000000 -0400
+@@ -6,6 +6,8 @@
+ #ifndef __IRQ_USER_H__
+ #define __IRQ_USER_H__
  
--unsigned long set_task_sizes_skas(int arg, unsigned long *host_size_out, 
-+unsigned long set_task_sizes_skas(unsigned long *host_size_out,
- 				  unsigned long *task_size_out)
- {
- 	/* Round up to the nearest 4M */
--	unsigned long top = ROUND_4M((unsigned long) &arg);
-+	unsigned long top = ROUND_4M((unsigned long) &host_size_out);
++#include "uml-config.h"
++
+ struct irq_fd {
+ 	struct irq_fd *next;
+ 	void *id;
+@@ -26,9 +28,12 @@ extern void free_irq_by_fd(int fd);
+ extern void reactivate_fd(int fd, int irqnum);
+ extern void deactivate_fd(int fd, int irqnum);
+ extern int deactivate_all_fds(void);
+-extern void forward_interrupts(int pid);
+ extern int activate_ipi(int fd, int pid);
+ extern unsigned long irq_lock(void);
+ extern void irq_unlock(unsigned long flags);
  
- #ifdef CONFIG_HOST_TASK_SIZE
--	*host_size_out = CONFIG_HOST_TASK_SIZE;
-+	*host_size_out = ROUND_4M(CONFIG_HOST_TASK_SIZE);
- 	*task_size_out = CONFIG_HOST_TASK_SIZE;
- #else
- 	*host_size_out = top;
-@@ -24,16 +24,5 @@ unsigned long set_task_sizes_skas(int ar
- 		*task_size_out = top;
- 	else *task_size_out = CONFIG_STUB_START & PGDIR_MASK;
++#ifdef CONFIG_MODE_TT
++extern void forward_interrupts(int pid);
++#endif
++
  #endif
--	return(((unsigned long) set_task_sizes_skas) & ~0xffffff);
-+	return ((unsigned long) set_task_sizes_skas) & ~0xffffff;
- }
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.17/arch/um/kernel/tt/mem.c
+Index: linux-2.6.17/arch/um/kernel/irq.c
 ===================================================================
---- linux-2.6.17.orig/arch/um/kernel/tt/mem.c	2006-06-29 10:37:16.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/tt/mem.c	2006-06-29 10:41:54.000000000 -0400
-@@ -24,22 +24,11 @@ void before_mem_tt(unsigned long brk_sta
- #define SIZE ((CONFIG_NEST_LEVEL + CONFIG_KERNEL_HALF_GIGS) * 0x20000000)
- #define START (CONFIG_TOP_ADDR - SIZE)
+--- linux-2.6.17.orig/arch/um/kernel/irq.c	2006-07-06 11:50:06.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/irq.c	2006-07-06 11:50:38.000000000 -0400
+@@ -350,6 +350,7 @@ int deactivate_all_fds(void)
+ 	return 0;
+ }
  
--unsigned long set_task_sizes_tt(int arg, unsigned long *host_size_out, 
-+unsigned long set_task_sizes_tt(unsigned long *host_size_out,
- 				unsigned long *task_size_out)
++#ifdef CONFIG_MODE_TT
+ void forward_interrupts(int pid)
  {
- 	/* Round up to the nearest 4M */
--	*host_size_out = ROUND_4M((unsigned long) &arg);
-+	*host_size_out = ROUND_4M((unsigned long) &host_size_out);
- 	*task_size_out = START;
--	return(START);
-+	return START;
+ 	struct irq_fd *irq;
+@@ -371,6 +372,7 @@ void forward_interrupts(int pid)
+ 	}
+ 	irq_unlock(flags);
  }
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.17/arch/um/kernel/um_arch.c
-===================================================================
---- linux-2.6.17.orig/arch/um/kernel/um_arch.c	2006-06-29 10:37:16.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/um_arch.c	2006-06-29 10:41:54.000000000 -0400
-@@ -374,7 +374,7 @@ int linux_main(int argc, char **argv)
++#endif
  
- 	printf("UML running in %s mode\n", mode);
- 
--	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas, 0,
-+	uml_start = CHOOSE_MODE_PROC(set_task_sizes_tt, set_task_sizes_skas,
- 				     &host_task_size, &task_size);
- 
- 	/*
-Index: linux-2.6.17/arch/um/include/skas/mode_kern_skas.h
-===================================================================
---- linux-2.6.17.orig/arch/um/include/skas/mode_kern_skas.h	2006-06-29 10:37:16.000000000 -0400
-+++ linux-2.6.17/arch/um/include/skas/mode_kern_skas.h	2006-06-29 10:41:54.000000000 -0400
-@@ -29,7 +29,7 @@ extern void flush_tlb_mm_skas(struct mm_
- extern void force_flush_all_skas(void);
- extern long execute_syscall_skas(void *r);
- extern void before_mem_skas(unsigned long unused);
--extern unsigned long set_task_sizes_skas(int arg, unsigned long *host_size_out,
-+extern unsigned long set_task_sizes_skas(unsigned long *host_size_out,
- 					 unsigned long *task_size_out);
- extern int start_uml_skas(void);
- extern int external_pid_skas(struct task_struct *task);
-Index: linux-2.6.17/arch/um/include/tt/mode_kern_tt.h
-===================================================================
---- linux-2.6.17.orig/arch/um/include/tt/mode_kern_tt.h	2006-06-29 10:37:16.000000000 -0400
-+++ linux-2.6.17/arch/um/include/tt/mode_kern_tt.h	2006-06-29 10:41:54.000000000 -0400
-@@ -30,7 +30,7 @@ extern void flush_tlb_mm_tt(struct mm_st
- extern void force_flush_all_tt(void);
- extern long execute_syscall_tt(void *r);
- extern void before_mem_tt(unsigned long brk_start);
--extern unsigned long set_task_sizes_tt(int arg, unsigned long *host_size_out,
-+extern unsigned long set_task_sizes_tt(unsigned long *host_size_out,
- 				       unsigned long *task_size_out);
- extern int start_uml_tt(void);
- extern int external_pid_tt(struct task_struct *task);
+ /*
+  * do_IRQ handles all normal device IRQ's (the special
 
 
 Using Tomcat but need to do more? Need to support web services, security?
