@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FytfC-0003u2-47 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Jul 2006 09:58:46 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FytfA-0000z2-NS
+	id 1Fytni-0004lK-2Q for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Jul 2006 10:07:34 -0700
+Received: from smtp2.oregonstate.edu ([128.193.4.8] ident=postfix)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Fytng-0002le-IN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Jul 2006 09:58:46 -0700
-Date: Fri, 7 Jul 2006 12:58:51 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060707165851.GA5391@ccure.user-mode-linux.org>
-References: <200607070033.k670Xt1w008752@ccure.user-mode-linux.org>
-	<7B4268E5ACB878429B58D4BE5B780E83010B6B42@NWS-EXCH2.nws.oregonstate.edu>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7B4268E5ACB878429B58D4BE5B780E83010B6B42@NWS-EXCH2.nws.oregonstate.edu>
-Subject: Re: [uml-devel] [PATCH 19/19] UML - Make mconsole version
-	requestshappen in a process
+	Fri, 07 Jul 2006 10:07:33 -0700
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Fri, 7 Jul 2006 10:07:25 -0700
+Message-ID: <7B4268E5ACB878429B58D4BE5B780E83010B6B49@NWS-EXCH2.nws.oregonstate.edu>
+In-reply-to: <20060707165851.GA5391@ccure.user-mode-linux.org>
+From: "Brock, Anthony - NET" <Anthony.Brock@oregonstate.edu>
+Subject: Re: [uml-devel] [PATCH 19/19] UML - Make mconsole
+	versionrequestshappen in a process
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,23 +29,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Brock, Anthony - NET" <Anthony.Brock@oregonstate.edu>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Jul 07, 2006 at 08:31:50AM -0700, Brock, Anthony - NET wrote:
-> I'm running UML on an SMP machine, but have never encountered the "hang"
-> issue. Is this text still accurate? 
+> -----Original Message-----
+> > Also, can this command still be used
+> >  to "wake up" a UML process? Is this still the recommended means for
+> > verifying that a UML process if running?
+> 
+> No, and no.
 
-No, it's ancient history.  No one ever figured out what the problem was,
-but it hasn't been seen in ages.
+What is the recommended means for verifying that a UML process is
+running?
 
-> Also, can this command still be used
->  to "wake up" a UML process? Is this still the recommended means for
-> verifying that a UML process if running?
-
-No, and no.
-
-				Jeff
+Tony
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
