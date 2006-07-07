@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FyeHi-0006Zm-5Y for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:30 -0700
+	id 1FyeHm-0006aQ-Qc for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Jul 2006 17:33:34 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FyeHh-0006Y1-MX
+	(Exim 4.44) id 1FyeHm-0000fb-Be
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:30 -0700
-Message-Id: <200607070033.k670XgKO008702@ccure.user-mode-linux.org>
+	Thu, 06 Jul 2006 17:33:34 -0700
+Message-Id: <200607070033.k670XbdL008687@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Thu, 06 Jul 2006 20:33:42 -0400
+Date: Thu, 06 Jul 2006 20:33:37 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 9/19] UML - mark forward_interrupts as being
-	mode-specific
+Subject: [uml-devel] [PATCH 6/19] UML - Remove useless declaration
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,57 +30,26 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Mark forward_interrupts as being tt-mode only.
+wall_to_monotonic isn't used in this file, so we can remove the declaration.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.17/arch/um/include/irq_user.h
+Index: linux-2.6.16-rc-mm/arch/um/os-Linux/time.c
 ===================================================================
---- linux-2.6.17.orig/arch/um/include/irq_user.h	2006-07-05 23:53:28.000000000 -0400
-+++ linux-2.6.17/arch/um/include/irq_user.h	2006-07-06 11:50:06.000000000 -0400
-@@ -6,6 +6,8 @@
- #ifndef __IRQ_USER_H__
- #define __IRQ_USER_H__
+--- linux-2.6.16-rc-mm.orig/arch/um/os-Linux/time.c	2006-06-26 17:51:36.000000000 -0400
++++ linux-2.6.16-rc-mm/arch/um/os-Linux/time.c	2006-06-28 13:07:09.000000000 -0400
+@@ -17,11 +17,6 @@
+ #include "kern_constants.h"
+ #include "os.h"
  
-+#include "uml-config.h"
-+
- struct irq_fd {
- 	struct irq_fd *next;
- 	void *id;
-@@ -26,9 +28,12 @@ extern void free_irq_by_fd(int fd);
- extern void reactivate_fd(int fd, int irqnum);
- extern void deactivate_fd(int fd, int irqnum);
- extern int deactivate_all_fds(void);
--extern void forward_interrupts(int pid);
- extern int activate_ipi(int fd, int pid);
- extern unsigned long irq_lock(void);
- extern void irq_unlock(unsigned long flags);
- 
-+#ifdef CONFIG_MODE_TT
-+extern void forward_interrupts(int pid);
-+#endif
-+
- #endif
-Index: linux-2.6.17/arch/um/kernel/irq.c
-===================================================================
---- linux-2.6.17.orig/arch/um/kernel/irq.c	2006-07-06 11:50:06.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/irq.c	2006-07-06 11:50:38.000000000 -0400
-@@ -350,6 +350,7 @@ int deactivate_all_fds(void)
- 	return 0;
- }
- 
-+#ifdef CONFIG_MODE_TT
- void forward_interrupts(int pid)
+-/* XXX This really needs to be declared and initialized in a kernel file since
+- * it's in <linux/time.h>
+- */
+-extern struct timespec wall_to_monotonic;
+-
+ static void set_interval(int timer_type)
  {
- 	struct irq_fd *irq;
-@@ -371,6 +372,7 @@ void forward_interrupts(int pid)
- 	}
- 	irq_unlock(flags);
- }
-+#endif
- 
- /*
-  * do_IRQ handles all normal device IRQ's (the special
+ 	int usec = 1000000/hz();
 
 
 Using Tomcat but need to do more? Need to support web services, security?
