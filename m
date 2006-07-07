@@ -2,18 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FyeHw-0006bM-Pi for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:44 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1FyeTv-0007jj-Q5 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Jul 2006 17:46:07 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FyeHv-0000kY-Ah
+	(Exim 4.44) id 1FyeTu-0004go-As
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:33:44 -0700
-Message-Id: <200607070033.k670XrGr008742@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Thu, 06 Jul 2006 20:33:53 -0400
+	Thu, 06 Jul 2006 17:46:07 -0700
+Date: Thu, 6 Jul 2006 20:45:52 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 17/19] UML - Add some EINTR protection
+Message-ID: <20060707004552.GC8756@ccure.user-mode-linux.org>
+References: <006401c69c19$eb9edbd0$d4190a0a@centecnetworks.com>
+	<20060630134509.GA3510@ccure.user-mode-linux.org>
+	<007401c69ca6$a6e00040$d4190a0a@centecnetworks.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <007401c69ca6$a6e00040$d4190a0a@centecnetworks.com>
+Subject: Re: [uml-devel] [uml-user] UML 2.6.17 problems (section mismatch,
+	get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,73 +33,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Miao Qingjun <qmiao@centecnetworks.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Add some more uses of the CATCH_EINTR wrapper.
+On Sat, Jul 01, 2006 at 08:38:20AM +0800, Miao Qingjun wrote:
+> 082c90c8 <stub_segv_handler>:
+...
+>  82c9102:       e8 93 ae db ff          call   8083f9a <stub_syscall0>
+...
+>  82c9120:       e8 57 ae db ff          call   8083f7c <stub_syscall2>
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+I guess we should consider a no-O2 compilation to be a case of "it
+hurts, so don't do it".  
 
-Index: linux-2.6.17/arch/um/drivers/net_user.c
-===================================================================
---- linux-2.6.17.orig/arch/um/drivers/net_user.c	2006-07-05 20:54:02.000000000 -0400
-+++ linux-2.6.17/arch/um/drivers/net_user.c	2006-07-05 21:04:12.000000000 -0400
-@@ -105,9 +105,7 @@ int net_recvfrom(int fd, void *buf, int 
- {
- 	int n;
- 
--	while(((n = recvfrom(fd,  buf,  len, 0, NULL, NULL)) < 0) && 
--	      (errno == EINTR)) ;
--
-+	CATCH_EINTR(n = recvfrom(fd,  buf,  len, 0, NULL, NULL));
- 	if(n < 0){
- 		if(errno == EAGAIN)
- 			return 0;
-@@ -135,7 +133,7 @@ int net_send(int fd, void *buf, int len)
- {
- 	int n;
- 
--	while(((n = send(fd, buf, len, 0)) < 0) && (errno == EINTR)) ;
-+	CATCH_EINTR(n = send(fd, buf, len, 0));
- 	if(n < 0){
- 		if(errno == EAGAIN)
- 			return 0;
-@@ -150,8 +148,8 @@ int net_sendto(int fd, void *buf, int le
- {
- 	int n;
- 
--	while(((n = sendto(fd, buf, len, 0, (struct sockaddr *) to,
--			   sock_len)) < 0) && (errno == EINTR)) ;
-+	CATCH_EINTR(n = sendto(fd, buf, len, 0, (struct sockaddr *) to,
-+			       sock_len));
- 	if(n < 0){
- 		if(errno == EAGAIN)
- 			return 0;
-Index: linux-2.6.17/arch/um/os-Linux/file.c
-===================================================================
---- linux-2.6.17.orig/arch/um/os-Linux/file.c	2006-07-05 21:04:02.000000000 -0400
-+++ linux-2.6.17/arch/um/os-Linux/file.c	2006-07-05 21:04:12.000000000 -0400
-@@ -18,6 +18,7 @@
- #include "os.h"
- #include "user.h"
- #include "kern_util.h"
-+#include "user_util.h"
- 
- static void copy_stat(struct uml_stat *dst, struct stat64 *src)
- {
-@@ -42,10 +43,7 @@ int os_stat_fd(const int fd, struct uml_
- 	struct stat64 sbuf;
- 	int err;
- 
--	do {
--		err = fstat64(fd, &sbuf);
--	} while((err < 0) && (errno == EINTR)) ;
--
-+	CATCH_EINTR(err = fstat64(fd, &sbuf));
- 	if(err < 0)
- 		return -errno;
- 
+What happened here is that two functions which absolutely have to be
+inlined (because this code is mapped into UML processes with no other
+UML code, so it must be self-contained) weren't.
 
+It should be possible to detect O2 or greater optimization and fail
+the build if it's not there.  But that assumes that we know that
+non-O2 won't inline stuff, which may not always be true.  Hmmmm
+
+				Jeff
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
