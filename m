@@ -2,40 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Fxajo-0003Xj-Qt for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Jul 2006 19:34:08 -0700
-Received: from mailgw2.fnal.gov ([131.225.111.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FxaUh-0002gp-Kh
+	id 1FyeHi-0006Zl-53 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Jul 2006 17:33:30 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FyeHh-0000fe-GX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Jul 2006 19:18:31 -0700
-Received: from mailav2.fnal.gov (mailav2.fnal.gov [131.225.111.20])
-	by mailgw2.fnal.gov
-	(iPlanet Messaging Server 5.2 HotFix 2.06 (built Mar 28 2005))
-	with SMTP id <0J1U00501WZLHP@mailgw2.fnal.gov> for
-	user-mode-linux-devel@lists.sourceforge.net; Mon,
-	03 Jul 2006 21:16:35 -0500 (CDT)
-Received: from mailgw2.fnal.gov ([131.225.111.12])
-	by mailav2.fnal.gov (SAVSMTP 3.1.7.47) with SMTP id
-	M2006070321163403444 for
-	<user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 03 Jul 2006 21:16:34 -0500
-Received: from conversion-daemon.mailgw2.fnal.gov by mailgw2.fnal.gov
-	(iPlanet Messaging Server 5.2 HotFix 2.06 (built Mar 28 2005))
-	id <0J1U00201WY1SI@mailgw2.fnal.gov> (original mail from
-	egilber2@cs.uiuc.edu)
-	for user-mode-linux-devel@lists.sourceforge.net; Mon,
-	03 Jul 2006 21:16:35 -0500 (CDT)
-Received: from [192.168.1.103]
-	(DHCP-74-135-160-104.insightbb.com [74.135.160.104])
-	by mailgw2.fnal.gov (iPlanet Messaging Server 5.2 HotFix 2.06 (built
-	Mar 28 2005)) with ESMTPSA id <0J1U005JMWZMJ5@mailgw2.fnal.gov> for
-	user-mode-linux-devel@lists.sourceforge.net; Mon,
-	03 Jul 2006 21:16:34 -0500 (CDT)
-Date: Mon, 03 Jul 2006 21:16:32 -0500
-From: Eric Gilbert <egilber2@cs.uiuc.edu>
-Message-id: <EC85DF4B-91B1-4AFB-B68C-384F6EFC0CF6@cs.uiuc.edu>
-MIME-version: 1.0
-Subject: [uml-devel] Research study on CVS - you can help and get paid!
+	Thu, 06 Jul 2006 17:33:30 -0700
+Message-Id: <200607070033.k670XbOC008682@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Thu, 06 Jul 2006 20:33:37 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 5/19] UML - signal initialization cleanup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -49,42 +27,118 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-I am a Computer Science graduate student at the University of  
-Illinois at Urbana-Champaign. I need your help in a study I want to  
-conduct. I have created a project called LifeSource that visualizes  
-CVS repositories. You can find screenshots and info here:
+It turns out that init_new_thread_signals is always called with
+altstack == 1, so we can eliminate the parameter.
 
-http://social.cs.uiuc.edu/people/gilbert (info on me)
-http://social.cs.uiuc.edu/people/gilbert/research.html (info on  
-LifeSource, the CVS project)
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-LifeSource appeared as a Work-in-Progress paper at ACM's CHI 2006 in  
-Montreal (http://www.chi2006.org). I applied LifeSource to the  
-Azureus and Gaim CVS repositories. I would like to apply the same  
-visualization to your
-project. Next, I want to see if you as the visualized community find  
-it accurate, helpful, disturbing, etc.
-
-In order to participate in the study, you will need to view the  
-LifeSource visualization once a week (on the web) for four weeks and  
-respond to two short online surveys.
-
-You will receive a $20 gift certificate for your participation.
-
-I can fully explain the process in the near future - just email me  
-back. I will provide all of the information of the methodology of the  
-study online. (We can set up a blog for study members to leave  
-further comments.)
-
-Please let me know what you think. I plan on using the study in a  
-long paper to CHI 2007.
-
-Cheers,
-Eric
-
-P.S. I apologize for the spam and will send no more.
+Index: linux-2.6.17/arch/um/include/os.h
+===================================================================
+--- linux-2.6.17.orig/arch/um/include/os.h	2006-06-20 17:24:29.000000000 -0400
++++ linux-2.6.17/arch/um/include/os.h	2006-07-06 13:25:20.000000000 -0400
+@@ -199,7 +199,7 @@ extern int os_getpid(void);
+ extern int os_getpgrp(void);
+ 
+ extern void init_new_thread_stack(void *sig_stack, void (*usr1_handler)(int));
+-extern void init_new_thread_signals(int altstack);
++extern void init_new_thread_signals(void);
+ extern int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr);
+ 
+ extern int os_map_memory(void *virt, int fd, unsigned long long off,
+Index: linux-2.6.17/arch/um/kernel/skas/process_kern.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/skas/process_kern.c	2006-06-20 17:24:29.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/skas/process_kern.c	2006-07-06 13:25:20.000000000 -0400
+@@ -177,7 +177,7 @@ int start_uml_skas(void)
+ 	if(proc_mm)
+ 		userspace_pid[0] = start_userspace(0);
+ 
+-	init_new_thread_signals(1);
++	init_new_thread_signals();
+ 
+ 	init_task.thread.request.u.thread.proc = start_kernel_proc;
+ 	init_task.thread.request.u.thread.arg = NULL;
+Index: linux-2.6.17/arch/um/kernel/tt/exec_kern.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/tt/exec_kern.c	2006-03-23 16:40:20.000000000 -0500
++++ linux-2.6.17/arch/um/kernel/tt/exec_kern.c	2006-07-06 13:25:20.000000000 -0400
+@@ -21,7 +21,7 @@
+ static int exec_tramp(void *sig_stack)
+ {
+ 	init_new_thread_stack(sig_stack, NULL);
+-	init_new_thread_signals(1);
++	init_new_thread_signals();
+ 	os_stop_process(os_getpid());
+ 	return(0);
+ }
+Index: linux-2.6.17/arch/um/kernel/tt/process_kern.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/tt/process_kern.c	2006-07-06 13:22:13.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/tt/process_kern.c	2006-07-06 13:25:20.000000000 -0400
+@@ -142,7 +142,7 @@ static void new_thread_handler(int sig)
+ 		schedule_tail(current->thread.prev_sched);
+ 	current->thread.prev_sched = NULL;
+ 
+-	init_new_thread_signals(1);
++	init_new_thread_signals();
+ 	enable_timer();
+ 	free_page(current->thread.temp_stack);
+ 	set_cmdline("(kernel thread)");
+Index: linux-2.6.17/arch/um/os-Linux/process.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/process.c	2006-06-20 17:24:29.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/process.c	2006-07-06 13:26:38.000000000 -0400
+@@ -250,25 +250,24 @@ void init_new_thread_stack(void *sig_sta
+ 	if(usr1_handler) set_handler(SIGUSR1, usr1_handler, flags, -1);
+ }
+ 
+-void init_new_thread_signals(int altstack)
++void init_new_thread_signals(void)
+ {
+-	int flags = altstack ? SA_ONSTACK : 0;
+-
+-	set_handler(SIGSEGV, (__sighandler_t) sig_handler, flags,
++	set_handler(SIGSEGV, (__sighandler_t) sig_handler, SA_ONSTACK,
+ 		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
+-	set_handler(SIGTRAP, (__sighandler_t) sig_handler, flags,
++	set_handler(SIGTRAP, (__sighandler_t) sig_handler, SA_ONSTACK,
+ 		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
+-	set_handler(SIGFPE, (__sighandler_t) sig_handler, flags,
++	set_handler(SIGFPE, (__sighandler_t) sig_handler, SA_ONSTACK,
+ 		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
+-	set_handler(SIGILL, (__sighandler_t) sig_handler, flags,
++	set_handler(SIGILL, (__sighandler_t) sig_handler, SA_ONSTACK,
+ 		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
+-	set_handler(SIGBUS, (__sighandler_t) sig_handler, flags,
++	set_handler(SIGBUS, (__sighandler_t) sig_handler, SA_ONSTACK,
+ 		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
+ 	set_handler(SIGUSR2, (__sighandler_t) sig_handler,
+-		    flags, SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
++		    SA_ONSTACK, SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM,
++		    -1);
+ 	signal(SIGHUP, SIG_IGN);
+ 
+-	init_irq_signals(altstack);
++	init_irq_signals(1);
+ }
+ 
+ int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr)
+Index: linux-2.6.17/arch/um/os-Linux/skas/process.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/skas/process.c	2006-06-20 17:24:29.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/skas/process.c	2006-07-06 13:25:20.000000000 -0400
+@@ -159,7 +159,7 @@ static int userspace_tramp(void *stack)
+ 
+ 	ptrace(PTRACE_TRACEME, 0, 0, 0);
+ 
+-	init_new_thread_signals(1);
++	init_new_thread_signals();
+ 	enable_timer();
+ 
+ 	if(!proc_mm){
 
 
 Using Tomcat but need to do more? Need to support web services, security?
