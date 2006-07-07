@@ -2,26 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FygoR-0003sn-1k for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 20:15:27 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FygoP-0004bm-IE
+	id 1FysJR-0004EC-VX for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 07 Jul 2006 08:32:14 -0700
+Received: from smtp3.oregonstate.edu ([128.193.0.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1FysJQ-0001LH-B2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 20:15:26 -0700
-Date: Thu, 6 Jul 2006 23:15:21 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060707031521.GA10357@ccure.user-mode-linux.org>
-References: <006401c69c19$eb9edbd0$d4190a0a@centecnetworks.com>
-	<20060630134509.GA3510@ccure.user-mode-linux.org>
-	<007401c69ca6$a6e00040$d4190a0a@centecnetworks.com>
-	<20060707004552.GC8756@ccure.user-mode-linux.org>
-	<1152238941.13247.67.camel@athena.fprintf.net>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1152238941.13247.67.camel@athena.fprintf.net>
-Subject: Re: [uml-devel] [uml-user] UML 2.6.17 problems (section mismatch,
-	get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP)
+	Fri, 07 Jul 2006 08:32:13 -0700
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Fri, 7 Jul 2006 08:31:50 -0700
+Message-ID: <7B4268E5ACB878429B58D4BE5B780E83010B6B42@NWS-EXCH2.nws.oregonstate.edu>
+In-reply-to: <200607070033.k670Xt1w008752@ccure.user-mode-linux.org>
+From: "Brock, Anthony - NET" <Anthony.Brock@oregonstate.edu>
+Subject: Re: [uml-devel] [PATCH 19/19] UML - Make mconsole version
+	requestshappen in a process
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,19 +29,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Daniel Gryniewicz <dang@gentoo.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>, akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Jul 06, 2006 at 10:22:21PM -0400, Daniel Gryniewicz wrote:
-> Isn't this what CONFIG_FORCE_INLINING is supposed to do?  Granted, it
-> appears to only work for gcc4, but...
+So what impact does this have on the following quote from
+http://user-mode-linux.sourceforge.net/mconsole.html :
 
-It's supposed to force inlining for performance, not for correctness.
 
-If a config setting is needed for correctness, it shouldn't be a config
-setting.
+It's a simple no-op which can be used to check that a UML is running.
+It's also a way of sending an interrupt to the UML. This is sometimes
+useful on SMP hosts, where there's a bug which causes signals to UML to
+be lost, often causing it to appear to hang. Sending such a UML the
+mconsole version command is a good way to 'wake it up' before networking
+has been enabled, as it does not do anything to the function of the UML.
 
-				Jeff
+
+I'm running UML on an SMP machine, but have never encountered the "hang"
+issue. Is this text still accurate? Also, can this command still be used
+to "wake up" a UML process? Is this still the recommended means for
+verifying that a UML process if running?
+
+Tony
+
+> -----Original Message-----
+> From: user-mode-linux-devel-bounces@lists.sourceforge.net 
+> [mailto:user-mode-linux-devel-bounces@lists.sourceforge.net] 
+> On Behalf Of Jeff Dike
+> Sent: Thursday, July 06, 2006 5:34 PM
+> To: akpm@osdl.org
+> Cc: linux-kernel@vger.kernel.org; 
+> user-mode-linux-devel@lists.sourceforge.net
+> Subject: [uml-devel] [PATCH 19/19] UML - Make mconsole 
+> version requestshappen in a process
+> 
+> Handling a host mconsole version request must be done in a 
+> process context
+> rather than interrupt context now that utsname information can be 
+> process-specific rather than global.
+> 
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+> 
+> Index: linux-2.6.16/arch/um/drivers/mconsole_user.c
+> ===================================================================
+> --- linux-2.6.16.orig/arch/um/drivers/mconsole_user.c
+> +++ linux-2.6.16/arch/um/drivers/mconsole_user.c
+> @@ -18,7 +18,12 @@
+>  #include "umid.h"
+>  
+>  static struct mconsole_command commands[] = {
+> -	{ "version", mconsole_version, MCONSOLE_INTR },
+> +	/* With uts namespaces, uts information becomes 
+> process-specific, so
+> +	 * we need a process context.  If we try handling this 
+> in interrupt
+> +	 * context, we may hit an exiting process without a valid uts
+> +	 * namespace.
+> +	 */
+> +	{ "version", mconsole_version, MCONSOLE_PROC },
+>  	{ "halt", mconsole_halt, MCONSOLE_PROC },
+>  	{ "reboot", mconsole_reboot, MCONSOLE_PROC },
+>  	{ "config", mconsole_config, MCONSOLE_PROC },
+> 
+> 
+> Using Tomcat but need to do more? Need to support web 
+> services, security?
+> Get stuff done quickly with pre-integrated technology to make 
+> your job easier
+> Download IBM WebSphere Application Server v.1.0.1 based on 
+> Apache Geronimo
+> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&
+> dat=121642
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> 
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
