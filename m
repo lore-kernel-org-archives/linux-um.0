@@ -1,25 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FyeTv-0007jj-Q5 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:46:07 -0700
+	id 1Fyea8-0008FV-8o for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Jul 2006 17:52:32 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1FyeTu-0004go-As
+	(Exim 4.44) id 1Fyea6-0002f7-Oo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2006 17:46:07 -0700
-Date: Thu, 6 Jul 2006 20:45:52 -0400
+	Thu, 06 Jul 2006 17:52:32 -0700
+Date: Thu, 6 Jul 2006 20:52:39 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060707004552.GC8756@ccure.user-mode-linux.org>
-References: <006401c69c19$eb9edbd0$d4190a0a@centecnetworks.com>
-	<20060630134509.GA3510@ccure.user-mode-linux.org>
-	<007401c69ca6$a6e00040$d4190a0a@centecnetworks.com>
+Message-ID: <20060707005239.GE8756@ccure.user-mode-linux.org>
+References: <20060626220234.GG4223@us.ibm.com>
+	<20060627183128.GA4488@us.ibm.com>
+	<20060628004756.GC4488@us.ibm.com>
+	<200606281213.21696.blaisorblade@yahoo.it>
+	<20060629205626.GH4488@us.ibm.com>
+	<20060629214924.GJ4488@us.ibm.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <007401c69ca6$a6e00040$d4190a0a@centecnetworks.com>
-Subject: Re: [uml-devel] [uml-user] UML 2.6.17 problems (section mismatch,
-	get_skas_faultinfo : failed to wait for SIGUSR1/SIGTRAP)
+In-Reply-To: <20060629214924.GJ4488@us.ibm.com>
+Subject: Re: [uml-devel] [PATCH] Fix UML build on i386 Ubuntu Dapper
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,26 +35,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miao Qingjun <qmiao@centecnetworks.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Nishanth Aravamudan <nacc@us.ibm.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jul 01, 2006 at 08:38:20AM +0800, Miao Qingjun wrote:
-> 082c90c8 <stub_segv_handler>:
-...
->  82c9102:       e8 93 ae db ff          call   8083f9a <stub_syscall0>
-...
->  82c9120:       e8 57 ae db ff          call   8083f7c <stub_syscall2>
+On Thu, Jun 29, 2006 at 02:49:24PM -0700, Nishanth Aravamudan wrote:
+> An incremental patch for Blaisorblade's idea follows. It builds
+> successfully here.
 
-I guess we should consider a no-O2 compilation to be a case of "it
-hurts, so don't do it".  
-
-What happened here is that two functions which absolutely have to be
-inlined (because this code is mapped into UML processes with no other
-UML code, so it must be self-contained) weren't.
-
-It should be possible to detect O2 or greater optimization and fail
-the build if it's not there.  But that assumes that we know that
-non-O2 won't inline stuff, which may not always be true.  Hmmmm
+OK, that's in my tree, and I'll be sending it Linus-wards.
 
 				Jeff
 
