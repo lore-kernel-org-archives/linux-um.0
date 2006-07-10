@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1FzcAy-00033C-NX for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jul 2006 09:30:32 -0700
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1FzcAu-0000rP-Or
+	id 1FzkGi-00061d-Ip for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Jul 2006 18:09:00 -0700
+Received: from nemesis.fprintf.net ([66.134.112.218])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1FzkGh-0008OK-0z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Jul 2006 09:30:32 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 9 Jul 2006 18:30:20 +0200
-References: <20060604185212.28436.74951.stgit@memento.home.lan>
-	<200606051306.53234.blaisorblade@yahoo.it>
-	<200606060139.18327.ak@suse.de>
-In-Reply-To: <200606060139.18327.ak@suse.de>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200607091830.21167.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] uml: fix signal code x86-64 [for 2.6.15]
+	Sun, 09 Jul 2006 18:09:00 -0700
+From: Daniel Gryniewicz <dang@gentoo.org>
+Date: Sun, 09 Jul 2006 21:08:35 -0400
+Message-Id: <1152493715.28826.13.camel@athena.fprintf.net>
+Mime-Version: 1.0
+Subject: [uml-devel] UML fails to build with CONFIG_MK7 set
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,59 +23,59 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1991829245=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@addtoit.com, Andi Kleen <ak@suse.de>
+To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tuesday 06 June 2006 01:39, Andi Kleen wrote:
-> On Monday 05 June 2006 13:06, Blaisorblade wrote:
-> > On Sunday 04 June 2006 21:06, Andi Kleen wrote:
-> > > > It isn't yet perfect, because we don't yet save floating point
-> > > > context. But that will come later. Additionally, there's a potential
-> > > > problem since RED zones will alternate stacks are used, unlike
-> > > > x86_64, so more stack space (128 bytes more) is used. But this
-> > > > shouldn't be a problem. Instead, having no red zone (like x86_64)
-> > >
-> > > x86-64 has a red zone.
-> >
-> > On the alternate stack too?
 
-> No, there not.
+--===============1991829245==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-tHP8Vuf2ZlElP5US4VnL"
 
-It has a redzone if a new signal handler is invoked.
 
-> > The comment in the below code confused me... even
-> > if when nesting signal frames sas_ss_flags(rsp) should be 0 and so the
-> > redzone will be used.
-> > The below "RED-PEN" comment is probably wrong then... or not?
-> >
-> > arch/x86_64/kernel/signal.c:
-> >         /* RED-PEN: redzone on that stack? */
->
-> It's bogus because the alternative stack cannot be nested. I will remove
-> it.
+--=-tHP8Vuf2ZlElP5US4VnL
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-No, it's bogus because if we're already on the alternate stack sas_ss_flags() 
-won't return 0, but stacks can be nested (in that case the default path will 
-correctly setup a red zone).
+Hi, all.
 
-From man sigaltstack:
-Functions called from a signal handler executing on an alternate signal stack 
-will also use the alternate signal stack. (This also applies to  any  
-handlers invoked for  other  signals  while the process is executing on the 
-alternate signal stack.)
+I got a bug report (http://bugs.gentoo.org/show_bug.cgi?id=3D138536) about
+UML 2.6.16-bs2 failing to build.  I've checked it out, and it fails to
+build because CONFIG_MK7 is set, which sets CONFIG_X86_USE_3DNOW, which
+causes asm/arch/string.h to pull in asm/mmx.h, which doesn't exist
+(because it's in asm/arch/mxx.h, this being UML).  The obvious solution
+is to symlink it in, but this raises another question:
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+How useful are the various arch settings when building UML?  Does it
+actually make a difference if I build with K7 rather than i686?  If so,
+this should probably be fixed.  If not, the options to select ARCHES
+should probably be removed when configuring UML.
 
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+Daniel
 
+--=-tHP8Vuf2ZlElP5US4VnL
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.4-ecc0.1.6 (GNU/Linux)
+
+iD8DBQBEsaiTomPajV0RnrERAq+sAKCDqI/58N/3+PtkYmJsFdnkXVYG5gCdFoG8
+2VW4oGrjPxJHg4w5uVGa1Nw=
+=chCu
+-----END PGP SIGNATURE-----
+
+--=-tHP8Vuf2ZlElP5US4VnL--
+
+
+
+--===============1991829245==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
 -------------------------------------------------------------------------
@@ -87,7 +83,17 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+
+--===============1991829245==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============1991829245==--
+
