@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G15lA-00077i-Sq for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 11:18:00 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G15l9-0008LM-BV
+	id 1G16C4-00016z-M3 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jul 2006 11:45:48 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1G16Bz-0006Vy-Ml
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 11:18:00 -0700
-Date: Thu, 13 Jul 2006 14:17:55 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060713181754.GA5343@ccure.user-mode-linux.org>
-References: <200607121639.k6CGdiMw021221@ccure.user-mode-linux.org>
-	<20060713012421.b59f05d4.akpm@osdl.org>
-Mime-Version: 1.0
+	Thu, 13 Jul 2006 11:45:48 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Thu, 13 Jul 2006 20:45:38 +0200
+References: <023b01c6a67a$c94b6420$d4190a0a@centecnetworks.com>
+In-Reply-To: <023b01c6a67a$c94b6420$d4190a0a@centecnetworks.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20060713012421.b59f05d4.akpm@osdl.org>
-Subject: Re: [uml-devel] [PATCH 1/5] UML - Fix ZONE_HIGHMEM compilation error
+Message-Id: <200607132045.39305.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] SIGTRAP and gdb multithreading program under UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,33 +29,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Miao Qingjun <qmiao@centecnetworks.com>, user-mode-linux-user@lists.sourceforge.net
 
-On Thu, Jul 13, 2006 at 01:24:21AM -0700, Andrew Morton wrote:
-> >  	for(i=0;i<sizeof(zones_size)/sizeof(zones_size[0]);i++) 
-> 
-> I spy an ARRAY_SIZE().
+On Thursday 13 July 2006 14:49, Miao Qingjun wrote:
+> Hi,
+>
+> Under UML bash, I gdb a multithreading program, and set a breakpoint on
+> thread entry function, But when run it, gdb is not stop at the breakpoint,
+> instead, program exit because:
+>
+> Program terminated with signal SIGTRAP, Trace/breakpoint trap.
+I don't know, but:
+Is that different under host / UML? If yes /lib/tls may play a role (but it is 
+used on host, and it should be used in UML).
 
-Yup, I did an ARRAY_SIZE pass a while ago, but I missed that somehow,
-and some grepping shows there are a bunch more.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-> Maybe this is an rc1-mm1 fix?  Did Christoph's patches break UML, perhaps??
-
-Yes, it's this bit in mmzone.h:
-    #ifdef CONFIG_HIGHMEM
-	/*
-	 * A memory area that is only addressable by the kernel through
-	 * mapping portions into its own address space. This is for example
-	 * used by i386 to allow the kernel to address the memory beyond
-	 * 900MB. The kernel will set up special mappings (page
-	 * table entries on i386) for each page that the kernel needs to
-	 * access.
-	 */
-	ZONE_HIGHMEM,
-    #endif
-
-				Jeff
 
 
 -------------------------------------------------------------------------
