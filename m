@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G0wS1-0004Qr-6B for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 01:21:37 -0700
-Received: from web25222.mail.ukl.yahoo.com ([217.146.176.208])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1G0wRz-00044Q-Ar
+	id 1G0wUj-0004gM-OR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jul 2006 01:24:25 -0700
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1G0wUi-0003uZ-DJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 01:21:37 -0700
-Message-ID: <20060713082129.95046.qmail@web25222.mail.ukl.yahoo.com>
-Date: Thu, 13 Jul 2006 10:21:29 +0200 (CEST)
-From: Paolo Giarrusso <blaisorblade@yahoo.it>
-In-Reply-To: <44B5659E.5070000@zytor.com>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 4/5] UML - Reenable SysRq support
+	Thu, 13 Jul 2006 01:24:25 -0700
+Date: Thu, 13 Jul 2006 01:24:21 -0700
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20060713012421.b59f05d4.akpm@osdl.org>
+In-Reply-To: <200607121639.k6CGdiMw021221@ccure.user-mode-linux.org>
+References: <200607121639.k6CGdiMw021221@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 1/5] UML - Fix ZONE_HIGHMEM compilation error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,27 +29,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: akpm@osdl.org, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-"H. Peter Anvin" <hpa@zytor.com> ha scritto: 
+On Wed, 12 Jul 2006 12:39:43 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
-> Why not:
+> References to ZONE_HIGHMEM need to depend on CONFIG_HIGHMEM.
 > 
-> config MAGIC_SYSRQ
-> 	bool
-> 	prompt "Magic SysRq key"
-> 	depends on !UML || MCONSOLE
-> 	default y if UML
+
+There are several such references in mm/page_alloc.c
+
 > 
-> 	-hpa
+> Index: linux-2.6.17/arch/um/kernel/mem.c
+> ===================================================================
+> --- linux-2.6.17.orig/arch/um/kernel/mem.c	2006-07-12 11:29:02.000000000 -0400
+> +++ linux-2.6.17/arch/um/kernel/mem.c	2006-07-12 11:29:11.000000000 -0400
+> @@ -226,7 +226,9 @@ void paging_init(void)
+>  	for(i=0;i<sizeof(zones_size)/sizeof(zones_size[0]);i++) 
 
-Because it has always been elsewhere in Kconfig (near MCONSOLE) for a
-meaningful reason (it is used through mconsole) and nobody has
-decided to move it.
+I spy an ARRAY_SIZE().
 
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+>  		zones_size[i] = 0;
+>  	zones_size[ZONE_DMA] = (end_iomem >> PAGE_SHIFT) - (uml_physmem >> PAGE_SHIFT);
+> +#ifdef CONFIG_HIGHMEM
+>  	zones_size[ZONE_HIGHMEM] = highmem >> PAGE_SHIFT;
+> +#endif
+>  	free_area_init(zones_size);
+>  
+
+Maybe this is an rc1-mm1 fix?  Did Christoph's patches break UML, perhaps??
 
 
 -------------------------------------------------------------------------
