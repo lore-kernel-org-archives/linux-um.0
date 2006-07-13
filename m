@@ -1,14 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Thu, 13 Jul 2006 15:16:42 -0400
+Date: Thu, 13 Jul 2006 15:37:12 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060713191642.GA6048@ccure.user-mode-linux.org>
-References: <023b01c6a67a$c94b6420$d4190a0a@centecnetworks.com>
-	<20060713184556.GB5413@ccure.user-mode-linux.org>
-	<200607132050.30062.blaisorblade@yahoo.it>
+Message-ID: <20060713193712.GE5413@ccure.user-mode-linux.org>
+References: <019a01c6a54f$405ffdf0$d4190a0a@centecnetworks.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200607132050.30062.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SIGTRAP and gdb multithreading program under UML
+In-Reply-To: <019a01c6a54f$405ffdf0$d4190a0a@centecnetworks.com>
+Subject: Re: [uml-devel] [uml-user] uml and gdb debugging questions
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,16 +20,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Miao Qingjun <qmiao@centecnetworks.com>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+To: Miao Qingjun <qmiao@centecnetworks.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Jul 13, 2006 at 08:50:29PM +0200, Blaisorblade wrote:
-> SIGTRAP must be sent for the breakpoint - I think the problem is that either 
-> GDB misinterprets it or it is not sent the correct way.
+On Wed, Jul 12, 2006 at 09:05:22AM +0800, Miao Qingjun wrote:
+> I start "gdb uml", "b sys_init_module", then "run",
+> but gdb is not break at sys_init_module() when I insmod LKM?
+> Why? How can I do it?
 
-I'm thinking the latter...
+Some versions of gdb don't work well on UML.  One thing that often
+works is to attach to UML when it's booted, just before doing whatever
+you want to debug.
 
-			Jeff
+				Jeff
+
+> When I type control-c in gdb, the virtual console xterm is also
+> closed,
+
+How are you running UML?  You normally can't ^C to get back to gdb
+because the UML console has put the terminal in raw mode, so it can
+see ^C, ^Z, etc and pass them along to the UML foreground process.
+
+What I normally do is kill -INT <pid>, where pid is the lowest UML
+pid.
+
+				Jeff
 
 
 -------------------------------------------------------------------------
