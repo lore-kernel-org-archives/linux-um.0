@@ -1,20 +1,11 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G16C4-00016z-M3 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 11:45:48 -0700
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1G16Bz-0006Vy-Ml
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 11:45:48 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 13 Jul 2006 20:45:38 +0200
+Date: Thu, 13 Jul 2006 14:45:56 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060713184556.GB5413@ccure.user-mode-linux.org>
 References: <023b01c6a67a$c94b6420$d4190a0a@centecnetworks.com>
-In-Reply-To: <023b01c6a67a$c94b6420$d4190a0a@centecnetworks.com>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200607132045.39305.blaisorblade@yahoo.it>
+In-Reply-To: <023b01c6a67a$c94b6420$d4190a0a@centecnetworks.com>
 Subject: Re: [uml-devel] SIGTRAP and gdb multithreading program under UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,28 +20,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Miao Qingjun <qmiao@centecnetworks.com>, user-mode-linux-user@lists.sourceforge.net
+To: Miao Qingjun <qmiao@centecnetworks.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 13 July 2006 14:49, Miao Qingjun wrote:
-> Hi,
->
-> Under UML bash, I gdb a multithreading program, and set a breakpoint on
-> thread entry function, But when run it, gdb is not stop at the breakpoint,
+On Thu, Jul 13, 2006 at 08:49:31PM +0800, Miao Qingjun wrote:
+> Under UML bash, I gdb a multithreading program, and set a breakpoint on thread entry function,
+> But when run it, gdb is not stop at the breakpoint, 
 > instead, program exit because:
->
+> 
 > Program terminated with signal SIGTRAP, Trace/breakpoint trap.
-I don't know, but:
-Is that different under host / UML? If yes /lib/tls may play a role (but it is 
-used on host, and it should be used in UML).
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+What version of UML?  Sounds like a bug in UML interrupt handling.
 
+Can you send me a copy of the binary you're debugging?
+
+				Jeff
 
 
 -------------------------------------------------------------------------
