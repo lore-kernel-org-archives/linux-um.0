@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G10dS-0001xn-ML for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 05:49:42 -0700
-Received: from [218.104.33.231] (helo=centecnetworks.com)
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1G10dR-0002ki-3R
+	id 1G15lA-00077i-Sq for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Jul 2006 11:18:00 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1G15l9-0008LM-BV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Jul 2006 05:49:42 -0700
-Received: from qmiao ([218.104.33.229])
-	(envelope-sender <qmiao@centecnetworks.com>)
-	by 192.168.25.7 with ESMTP
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 13 Jul 2006 20:49:28 +0800
-Message-ID: <023b01c6a67a$c94b6420$d4190a0a@centecnetworks.com>
-From: "Miao Qingjun" <qmiao@centecnetworks.com>
-Date: Thu, 13 Jul 2006 20:49:31 +0800
-MIME-Version: 1.0
-Subject: [uml-devel] SIGTRAP and gdb multithreading program under UML
+	Thu, 13 Jul 2006 11:18:00 -0700
+Date: Thu, 13 Jul 2006 14:17:55 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060713181754.GA5343@ccure.user-mode-linux.org>
+References: <200607121639.k6CGdiMw021221@ccure.user-mode-linux.org>
+	<20060713012421.b59f05d4.akpm@osdl.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20060713012421.b59f05d4.akpm@osdl.org>
+Subject: Re: [uml-devel] [PATCH 1/5] UML - Fix ZONE_HIGHMEM compilation error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,62 +27,37 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0198542791=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
+On Thu, Jul 13, 2006 at 01:24:21AM -0700, Andrew Morton wrote:
+> >  	for(i=0;i<sizeof(zones_size)/sizeof(zones_size[0]);i++) 
+> 
+> I spy an ARRAY_SIZE().
 
---===============0198542791==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0238_01C6A6BD.D7592050"
+Yup, I did an ARRAY_SIZE pass a while ago, but I missed that somehow,
+and some grepping shows there are a bunch more.
 
-This is a multi-part message in MIME format.
+> Maybe this is an rc1-mm1 fix?  Did Christoph's patches break UML, perhaps??
 
-------=_NextPart_000_0238_01C6A6BD.D7592050
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Yes, it's this bit in mmzone.h:
+    #ifdef CONFIG_HIGHMEM
+	/*
+	 * A memory area that is only addressable by the kernel through
+	 * mapping portions into its own address space. This is for example
+	 * used by i386 to allow the kernel to address the memory beyond
+	 * 900MB. The kernel will set up special mappings (page
+	 * table entries on i386) for each page that the kernel needs to
+	 * access.
+	 */
+	ZONE_HIGHMEM,
+    #endif
 
-SGksDQoNClVuZGVyIFVNTCBiYXNoLCBJIGdkYiBhIG11bHRpdGhyZWFkaW5nIHByb2dyYW0sIGFu
-ZCBzZXQgYSBicmVha3BvaW50IG9uIHRocmVhZCBlbnRyeSBmdW5jdGlvbiwNCkJ1dCB3aGVuIHJ1
-biBpdCwgZ2RiIGlzIG5vdCBzdG9wIGF0IHRoZSBicmVha3BvaW50LCANCmluc3RlYWQsIHByb2dy
-YW0gZXhpdCBiZWNhdXNlOg0KDQpQcm9ncmFtIHRlcm1pbmF0ZWQgd2l0aCBzaWduYWwgU0lHVFJB
-UCwgVHJhY2UvYnJlYWtwb2ludCB0cmFwLg0KDQpXaHk/DQoNClRoYW5rcy4=
-
-------=_NextPart_000_0238_01C6A6BD.D7592050
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
-L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
-dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
-MC4yOTAwLjI2MjciIG5hbWU9R0VORVJBVE9SPg0KPFNUWUxFPjwvU1RZTEU+DQo8L0hFQUQ+DQo8
-Qk9EWSBiZ0NvbG9yPSNmZmZmZmY+DQo8RElWPjxGT05UIHNpemU9Mj5IaSw8L0ZPTlQ+PC9ESVY+
-DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9
-Mj5VbmRlciBVTUwgYmFzaCwgSSBnZGIgYSBtdWx0aXRocmVhZGluZyBwcm9ncmFtLCBhbmQgc2V0
-IGEgDQpicmVha3BvaW50IG9uIHRocmVhZCBlbnRyeSBmdW5jdGlvbiw8L0ZPTlQ+PC9ESVY+DQo8
-RElWPjxGT05UIHNpemU9Mj5CdXQgd2hlbiBydW4gaXQsIGdkYiBpcyBub3Qgc3RvcCBhdCB0aGUg
-YnJlYWtwb2ludCwgDQo8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5pbnN0ZWFkLCBw
-cm9ncmFtIGV4aXQgYmVjYXVzZTo8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZP
-TlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5Qcm9ncmFtIHRlcm1pbmF0ZWQgd2l0
-aCBzaWduYWwgU0lHVFJBUCwgVHJhY2UvYnJlYWtwb2ludCANCnRyYXAuPC9GT05UPjwvRElWPg0K
-PERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+
-V2h5PzwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4N
-CjxESVY+PEZPTlQgc2l6ZT0yPlRoYW5rcy48L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
-
-------=_NextPart_000_0238_01C6A6BD.D7592050--
-
-
-
---===============0198542791==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+				Jeff
 
 
 -------------------------------------------------------------------------
@@ -90,17 +65,7 @@ Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-
---===============0198542791==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============0198542791==--
-
