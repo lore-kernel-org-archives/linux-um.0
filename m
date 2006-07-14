@@ -2,18 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G1TiO-0008BI-JB for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jul 2006 12:52:44 -0700
+	id 1G1UQH-0003yZ-Ly for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 14 Jul 2006 13:38:05 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G1TiL-0000iq-Q4
+	(Exim 4.44) id 1G1UQG-0001Xk-6w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jul 2006 12:52:44 -0700
-Message-Id: <200607141952.k6EJqOtL005577@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Fri, 14 Jul 2006 15:52:23 -0400
+	Fri, 14 Jul 2006 13:38:05 -0700
+Date: Fri, 14 Jul 2006 16:37:44 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] UML - fix utsname build breakage
+Message-ID: <20060714203744.GA6260@ccure.user-mode-linux.org>
+References: <44B79AB9.3020401@garzik.org> <44B7A007.2010204@garzik.org>
+	<200607142052.05666.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200607142052.05666.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] UML build broken everywhere?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,64 +31,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: torvalds@osdl.org
-Cc: Jeff Garzik <jeff@garzik.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Andrew Morton <akpm@osdl.org>, jdike@karaya.com, Jeff Garzik <jeff@garzik.org>, user-mode-linux-devel@lists.sourceforge.net, Linux Kernel <linux-kernel@vger.kernel.org>
 
-Some -mm-only material leaked into a patch destined for mainline, and I didn't
-notice.
+On Fri, Jul 14, 2006 at 08:52:05PM +0200, Blaisorblade wrote:
+> Jeff (Dike), please choose one of the "simple" patches I suggested (comment 
+> out offending code, for instance) since you (correctly) deferred the real fix
+> (incorporating klibc's setjmp implementation) to later.
 
-This was the replacement of system_utsname with utsname() that's required by
-the uts namespace patch.  This patch reverts those changes (which are correct
-in -mm) so that mainline UML builds again.
+Well, I have a patch which just copies the klibc setjmp stuff into the UML
+tree until such time as klibc makes it into mainline.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Any objections?
 
-Index: linux-2.6.17/arch/um/kernel/syscall.c
-===================================================================
---- linux-2.6.17.orig/arch/um/kernel/syscall.c	2006-07-14 12:42:46.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/syscall.c	2006-07-14 15:43:31.000000000 -0400
-@@ -110,7 +110,7 @@ long sys_uname(struct old_utsname __user
- 	if (!name)
- 		return -EFAULT;
- 	down_read(&uts_sem);
--	err = copy_to_user(name, utsname(), sizeof (*name));
-+	err = copy_to_user(name, &system_utsname, sizeof (*name));
- 	up_read(&uts_sem);
- 	return err?-EFAULT:0;
- }
-@@ -126,21 +126,21 @@ long sys_olduname(struct oldold_utsname 
- 
-   	down_read(&uts_sem);
- 
--	error = __copy_to_user(&name->sysname, &utsname()->sysname,
-+	error = __copy_to_user(&name->sysname,&system_utsname.sysname,
- 			       __OLD_UTS_LEN);
--	error |= __put_user(0, name->sysname + __OLD_UTS_LEN);
--	error |= __copy_to_user(&name->nodename, &utsname()->nodename,
-+	error |= __put_user(0,name->sysname+__OLD_UTS_LEN);
-+	error |= __copy_to_user(&name->nodename,&system_utsname.nodename,
- 				__OLD_UTS_LEN);
--	error |= __put_user(0, name->nodename + __OLD_UTS_LEN);
--	error |= __copy_to_user(&name->release, &utsname()->release,
-+	error |= __put_user(0,name->nodename+__OLD_UTS_LEN);
-+	error |= __copy_to_user(&name->release,&system_utsname.release,
- 				__OLD_UTS_LEN);
--	error |= __put_user(0, name->release + __OLD_UTS_LEN);
--	error |= __copy_to_user(&name->version, &utsname()->version,
-+	error |= __put_user(0,name->release+__OLD_UTS_LEN);
-+	error |= __copy_to_user(&name->version,&system_utsname.version,
- 				__OLD_UTS_LEN);
--	error |= __put_user(0, name->version + __OLD_UTS_LEN);
--	error |= __copy_to_user(&name->machine, &utsname()->machine,
-+	error |= __put_user(0,name->version+__OLD_UTS_LEN);
-+	error |= __copy_to_user(&name->machine,&system_utsname.machine,
- 				__OLD_UTS_LEN);
--	error |= __put_user(0, name->machine + __OLD_UTS_LEN);
-+	error |= __put_user(0,name->machine+__OLD_UTS_LEN);
- 
- 	up_read(&uts_sem);
- 
-
+				Jeff
 
 
 -------------------------------------------------------------------------
