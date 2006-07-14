@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G1NzR-0004nM-7n for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jul 2006 06:45:58 -0700
-Received: from srv5.dvmed.net ([207.36.208.214] helo=mail.dvmed.net)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G1NzM-0002Ct-Sm
+	id 1G1SjR-0002Lc-54 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 14 Jul 2006 11:49:45 -0700
+Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1G1SjQ-0002xC-JF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jul 2006 06:45:54 -0700
-Message-ID: <44B7A007.2010204@garzik.org>
-Date: Fri, 14 Jul 2006 09:45:43 -0400
-From: Jeff Garzik <jeff@garzik.org>
+	Fri, 14 Jul 2006 11:49:45 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Fri, 14 Jul 2006 20:48:56 +0200
+References: <019a01c6a54f$405ffdf0$d4190a0a@centecnetworks.com>
+	<20060713193712.GE5413@ccure.user-mode-linux.org>
+In-Reply-To: <20060713193712.GE5413@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-References: <44B79AB9.3020401@garzik.org>
-In-Reply-To: <44B79AB9.3020401@garzik.org>
-Subject: Re: [uml-devel] UML build broken everywhere?
+Content-Disposition: inline
+Message-Id: <200607142048.57255.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [uml-user] uml and gdb debugging questions
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,19 +30,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@karaya.com
-Cc: Andrew Morton <akpm@osdl.org>, Linux Kernel <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Miao Qingjun <qmiao@centecnetworks.com>, user-mode-linux-user@lists.sourceforge.net
 
-Jeff Garzik wrote:
-> I tried to build 2.6.17 and 2.6.17.4 UML on x86-64 with the attached 
-> .config on a Fedora Core 5 OS, and it broke:
+On Thursday 13 July 2006 21:37, Jeff Dike wrote:
+> On Wed, Jul 12, 2006 at 09:05:22AM +0800, Miao Qingjun wrote:
+> > I start "gdb uml", "b sys_init_module", then "run",
+> > but gdb is not break at sys_init_module() when I insmod LKM?
+> > Why? How can I do it?
+>
+> Some versions of gdb don't work well on UML.  One thing that often
+> works is to attach to UML when it's booted, just before doing whatever
+> you want to debug.
+>
+> 				Jeff
+>
+> > When I type control-c in gdb, the virtual console xterm is also
+> > closed,
+>
+> How are you running UML?  You normally can't ^C to get back to gdb
+> because the UML console has put the terminal in raw mode, so it can
+> see ^C, ^Z, etc and pass them along to the UML foreground process.
+>
+> What I normally do is kill -INT <pid>, where pid is the lowest UML
+> pid.
+I forgot one note - I either attach gdb to UML after boot or boot it with con0 
+redirected away from fd:0,fd:1.
+And I often find that setting a breakpoint after UML has fully booted works 
+better than setting it before boot. A lot better.
 
-I just verified that ARCH=um on 32-bit x86 is also broken, with the same 
-build errors, on 2.6.17, 2.6.17.4, and 2.6.18-rc1-gitX (latest).
-
-	Jeff
-
-
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 
