@@ -2,20 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G1Slc-0002XM-QC for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jul 2006 11:52:01 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1G1Slb-0003ih-Vl
+	id 1G1TiO-0008BI-JB for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 14 Jul 2006 12:52:44 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1G1TiL-0000iq-Q4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Jul 2006 11:52:00 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Fri, 14 Jul 2006 20:52:05 +0200
-References: <44B79AB9.3020401@garzik.org> <44B7A007.2010204@garzik.org>
-In-Reply-To: <44B7A007.2010204@garzik.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200607142052.05666.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] UML build broken everywhere?
+	Fri, 14 Jul 2006 12:52:44 -0700
+Message-Id: <200607141952.k6EJqOtL005577@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Fri, 14 Jul 2006 15:52:23 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH] UML - fix utsname build breakage
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,31 +27,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andrew Morton <akpm@osdl.org>, jdike@karaya.com, Linux Kernel <linux-kernel@vger.kernel.org>, Jeff Garzik <jeff@garzik.org>
+To: torvalds@osdl.org
+Cc: Jeff Garzik <jeff@garzik.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 14 July 2006 15:45, Jeff Garzik wrote:
-> Jeff Garzik wrote:
-> > I tried to build 2.6.17 and 2.6.17.4 UML on x86-64 with the attached
-> > .config on a Fedora Core 5 OS, and it broke:
->
-> I just verified that ARCH=um on 32-bit x86 is also broken, with the same
-> build errors, on 2.6.17, 2.6.17.4, and 2.6.18-rc1-gitX (latest).
->
-> 	Jeff
-Jeff (Garzik), the above error is specific to glibc 2.4. There is a workaround 
-patch (which is wrong, but makes UML compile - and the affected code is not 
-normally used except for debugging).
+Some -mm-only material leaked into a patch destined for mainline, and I didn't
+notice.
 
-Jeff (Dike), please choose one of the "simple" patches I suggested (comment 
-out offending code, for instance) since you (correctly) deferred the real fix 
-(incorporating klibc's setjmp implementation) to later.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+This was the replacement of system_utsname with utsname() that's required by
+the uts namespace patch.  This patch reverts those changes (which are correct
+in -mm) so that mainline UML builds again.
+
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+
+Index: linux-2.6.17/arch/um/kernel/syscall.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/syscall.c	2006-07-14 12:42:46.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/syscall.c	2006-07-14 15:43:31.000000000 -0400
+@@ -110,7 +110,7 @@ long sys_uname(struct old_utsname __user
+ 	if (!name)
+ 		return -EFAULT;
+ 	down_read(&uts_sem);
+-	err = copy_to_user(name, utsname(), sizeof (*name));
++	err = copy_to_user(name, &system_utsname, sizeof (*name));
+ 	up_read(&uts_sem);
+ 	return err?-EFAULT:0;
+ }
+@@ -126,21 +126,21 @@ long sys_olduname(struct oldold_utsname 
+ 
+   	down_read(&uts_sem);
+ 
+-	error = __copy_to_user(&name->sysname, &utsname()->sysname,
++	error = __copy_to_user(&name->sysname,&system_utsname.sysname,
+ 			       __OLD_UTS_LEN);
+-	error |= __put_user(0, name->sysname + __OLD_UTS_LEN);
+-	error |= __copy_to_user(&name->nodename, &utsname()->nodename,
++	error |= __put_user(0,name->sysname+__OLD_UTS_LEN);
++	error |= __copy_to_user(&name->nodename,&system_utsname.nodename,
+ 				__OLD_UTS_LEN);
+-	error |= __put_user(0, name->nodename + __OLD_UTS_LEN);
+-	error |= __copy_to_user(&name->release, &utsname()->release,
++	error |= __put_user(0,name->nodename+__OLD_UTS_LEN);
++	error |= __copy_to_user(&name->release,&system_utsname.release,
+ 				__OLD_UTS_LEN);
+-	error |= __put_user(0, name->release + __OLD_UTS_LEN);
+-	error |= __copy_to_user(&name->version, &utsname()->version,
++	error |= __put_user(0,name->release+__OLD_UTS_LEN);
++	error |= __copy_to_user(&name->version,&system_utsname.version,
+ 				__OLD_UTS_LEN);
+-	error |= __put_user(0, name->version + __OLD_UTS_LEN);
+-	error |= __copy_to_user(&name->machine, &utsname()->machine,
++	error |= __put_user(0,name->version+__OLD_UTS_LEN);
++	error |= __copy_to_user(&name->machine,&system_utsname.machine,
+ 				__OLD_UTS_LEN);
+-	error |= __put_user(0, name->machine + __OLD_UTS_LEN);
++	error |= __put_user(0,name->machine+__OLD_UTS_LEN);
+ 
+ 	up_read(&uts_sem);
+ 
 
 
 
