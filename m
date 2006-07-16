@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G1xFV-0002lD-Oq for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 Jul 2006 20:24:53 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G1xFU-0004Da-V2
+	id 1G23uf-00066q-6T for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 16 Jul 2006 03:31:49 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1G23ub-000271-8C
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 Jul 2006 20:24:53 -0700
-Date: Sat, 15 Jul 2006 23:24:40 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060716032440.GA5126@ccure.user-mode-linux.org>
-References: <200607141952.k6EJqOtL005577@ccure.user-mode-linux.org>
-	<44B996B2.8040202@garzik.org>
-Mime-Version: 1.0
+	Sun, 16 Jul 2006 03:31:49 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 16 Jul 2006 12:31:51 +0200
+References: <20060715152343.GA12263@var.cx>
+In-Reply-To: <20060715152343.GA12263@var.cx>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <44B996B2.8040202@garzik.org>
-Subject: Re: [uml-devel] [PATCH] UML - fix utsname build breakage
+Message-Id: <200607161231.51516.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] cap-bound not working in uml
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,62 +29,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Garzik <jeff@garzik.org>
-Cc: torvalds@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jul 15, 2006 at 09:30:26PM -0400, Jeff Garzik wrote:
-> I can't find any 'JB_' symbols on my computer, except for the uses in 
-> your source code.   :(
+On Saturday 15 July 2006 17:23, Frank v Waveren wrote:
+> I was trying to limit some unecessary capabilities in a UML instance
+> with /proc/sys/kernel/cap-bound, but it turned out not to take.
 
-In libc, there used to be.
+To remove capabilities from the whole system (i.e. all processes) the 
+recommended way wasn't to use lcap (or a similar program bundled with 
+libcap)?
 
-A quick and dirty patch, unsuitable for mainline is this:
+> The source of the problem (or at least something a bit of the way up
+> the garden path of the problem) is at security/commoncap.c:140 at the
+> top of cap_bprm_apply_creds(bprm, unsafe):
+>
+>    void cap_bprm_apply_creds (struct linux_binprm *bprm, int unsafe)
+>    {
+>            /* Derived from fs/exec.c:compute_creds. */
+>            kernel_cap_t new_permitted, working;
+>
+>            new_permitted = cap_intersect (bprm->cap_permitted, cap_bset);
+>            working = cap_intersect (bprm->cap_inheritable,
+>                                     current->cap_inheritable);
+>            new_permitted = cap_combine (new_permitted, working);
+>            ...
+>
+> Here the new permitted set gets limited to the bits in cap_bset, which
+> is as it should be, but then the intersection of the of the current
+> and exec inheritable masks get added to that set, whereas as I
+> understand it, cap_bset should always be the bounding set.
+>
+> I've tried commenting out that bit and everything worked as I'd hoped
+> (I haven't done extensive testing, but bounding the caps worked, as
+> did suids and such).
+>
+> That doesn't explain why it works with those lines left in on a
+> non-UML kernel though, so I assume I'm missing something fundamental.
+>
+> (My guest kernel is
+>   Linux version 2.6.16.24 (fvw@jupiter.var.cx) (gcc version 4.0.3 20051201
+>   (prerelease) (Debian 4.0.2-5)) #3 Sat Jul 15 16:54:20 CEST 2006
+> , should it matter)
 
-Newer libcs don't define the JB_* jmp_buf access macros.  If this is
-the case, we provide values ourselves.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-Index: linux-2.6.15/arch/um/os-Linux/sys-i386/registers.c
-===================================================================
---- linux-2.6.15.orig/arch/um/os-Linux/sys-i386/registers.c	2006-02-13 13:00:06.000000000 -0500
-+++ linux-2.6.15/arch/um/os-Linux/sys-i386/registers.c	2006-02-13 13:04:07.000000000 -0500
-@@ -130,6 +130,12 @@ void get_safe_registers(unsigned long *r
- 		       HOST_FP_SIZE * sizeof(unsigned long));
- }
- 
-+#ifndef JB_PC
-+#define JB_PC 5
-+#define JB_SP 4
-+#define JB_BP 3
-+#endif
-+
- void get_thread_regs(union uml_pt_regs *uml_regs, void *buffer)
- {
- 	struct __jmp_buf_tag *jmpbuf = buffer;
-Index: linux-2.6.15/arch/um/os-Linux/sys-x86_64/registers.c
-===================================================================
---- linux-2.6.15.orig/arch/um/os-Linux/sys-x86_64/registers.c	2006-02-13 13:00:06.000000000 -0500
-+++ linux-2.6.15/arch/um/os-Linux/sys-x86_64/registers.c	2006-02-13 13:04:07.000000000 -0500
-@@ -78,6 +78,12 @@ void get_safe_registers(unsigned long *r
- 		       HOST_FP_SIZE * sizeof(unsigned long));
- }
- 
-+#ifndef JB_PC
-+#define JB_PC 7
-+#define JB_RSP 6
-+#define JB_RBP 1
-+#endif
-+
- void get_thread_regs(union uml_pt_regs *uml_regs, void *buffer)
- {
- 	struct __jmp_buf_tag *jmpbuf = buffer;
-
-I have a couple other patches, which may be better for mainline, which
-take klibc's setjmp implementation.  My -mm patch grabs the
-appropriate klibc header and object, and my mainline patch simply
-copies the klibc sources into the UML tree.  If you want either of
-those, let me know.
-
-				Jeff
 
 
 -------------------------------------------------------------------------
