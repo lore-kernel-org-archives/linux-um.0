@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G4FxZ-0005jh-5l for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Jul 2006 04:47:53 -0700
-Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
+	id 1G4GEo-0007No-I8 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 22 Jul 2006 05:05:42 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G4FxY-00087O-QN
+	(Exim 4.44) id 1G4GEn-0003Kh-25
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Jul 2006 04:47:53 -0700
-From: Pekka Enberg <penberg@cs.helsinki.fi>
-In-Reply-To: <20060722110215.GA24905@ccure.user-mode-linux.org>
+	Sat, 22 Jul 2006 05:05:42 -0700
+Date: Sat, 22 Jul 2006 08:05:30 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060722120530.GA25188@ccure.user-mode-linux.org>
 References: <1153557998.5589.20.camel@ubuntu>
 	<20060722110215.GA24905@ccure.user-mode-linux.org>
-Date: Sat, 22 Jul 2006 14:47:49 +0300
-Message-Id: <1153568869.7543.8.camel@ubuntu>
+	<1153567351.7543.4.camel@ubuntu>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1153567351.7543.4.camel@ubuntu>
 Subject: Re: [uml-devel] UML hangs after forking gettys
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,40 +32,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Pekka Enberg <penberg@cs.helsinki.fi>
 Cc: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On Sat, Jul 22, 2006 at 02:22:31PM +0300, Pekka Enberg wrote:
+> Seems to work.
 
-On Sat, 2006-07-22 at 07:02 -0400, Jeff Dike wrote:
-> On Sat, Jul 22, 2006 at 11:46:37AM +0300, Pekka Enberg wrote:
-> > I have a problem with UML compiled from 2.6.18-rc2 git head. The kernel
-> > boots fine and starts up the userspace but hangs completely after
-> > forking gettys. I have port-helper in /usr/lib/uml but it doesn't seem
-> > to start up.
-> 
-> The gettys are all sleeping.  I would think that at least some of them
-> would be reading or selecting.  I believe there's a few second pause
-> before getty puts out a login prompt.  Maybe the delay code is
-> horribly broken.
+OK.
 
-Oh, and if I wait long enough, I get:
+> This is a new installation for me, so anything I should check?
 
-Starting PCMCIA services: module directory /lib/modules/2.6.16/pcmcia
-not found.
-Starting deferred execution scheduler: atd.
-Starting periodic command scheduler: cron.
-INIT: Id "1" respawning too fast: disabled for 5 minutes
-INIT: Id "2" respawning too fast: disabled for 5 minutes
-INIT: Id "3" respawning too fast: disabled for 5 minutes
-INIT: Id "4" respawning too fast: disabled for 5 minutes
-INIT: Id "5" respawning too fast: disabled for 5 minutes
-INIT: Id "6" respawning too fast: disabled for 5 minutes
-INIT: no more processes left in this runlevel
+I.e. both a new kernel and new filesystem?  If so, can you vary them
+to see which is at fault?
 
-
-
-
+				Jeff
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
