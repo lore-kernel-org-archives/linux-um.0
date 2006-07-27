@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G69mY-0006po-1H for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Jul 2006 10:36:22 -0700
-Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
+	id 1G6AOg-0007YG-PP for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Jul 2006 11:15:48 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G69mW-0000Cl-10
+	(Exim 4.44) id 1G67ar-0004kA-Lt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Jul 2006 10:36:21 -0700
-From: Pekka Enberg <penberg@cs.helsinki.fi>
-In-Reply-To: <20060727151540.GA4744@ccure.user-mode-linux.org>
+	Thu, 27 Jul 2006 08:16:11 -0700
+Date: Thu, 27 Jul 2006 11:15:40 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060727151540.GA4744@ccure.user-mode-linux.org>
 References: <1153557998.5589.20.camel@ubuntu>
 	<20060722110215.GA24905@ccure.user-mode-linux.org>
 	<1153568869.7543.8.camel@ubuntu>
-	<20060727151540.GA4744@ccure.user-mode-linux.org>
-Date: Thu, 27 Jul 2006 20:36:14 +0300
-Message-Id: <1154021774.7190.0.camel@ubuntu>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1153568869.7543.8.camel@ubuntu>
 Subject: Re: [uml-devel] UML hangs after forking gettys
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -32,18 +32,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Pekka Enberg <penberg@cs.helsinki.fi>
 Cc: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 2006-07-27 at 11:15 -0400, Jeff Dike wrote:
-> This makes me suspicious of the contents of your inittab.  Generally,
-> if the getty lines refer to non-existent devices, this will happen.
+On Sat, Jul 22, 2006 at 02:47:49PM +0300, Pekka Enberg wrote:
+> Oh, and if I wait long enough, I get:
+> 
+> Starting PCMCIA services: module directory /lib/modules/2.6.16/pcmcia
+> not found.
+> Starting deferred execution scheduler: atd.
+> Starting periodic command scheduler: cron.
+> INIT: Id "1" respawning too fast: disabled for 5 minutes
+> INIT: Id "2" respawning too fast: disabled for 5 minutes
+> INIT: Id "3" respawning too fast: disabled for 5 minutes
+> INIT: Id "4" respawning too fast: disabled for 5 minutes
+> INIT: Id "5" respawning too fast: disabled for 5 minutes
+> INIT: Id "6" respawning too fast: disabled for 5 minutes
+> INIT: no more processes left in this runlevel
 
-Aah, you're absolutely right. I was missing /dev/tty[1-6] device nodes.
-Thanks!
+This makes me suspicious of the contents of your inittab.  Generally,
+if the getty lines refer to non-existent devices, this will happen.
 
-				Pekka
-
+				Jeff
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
