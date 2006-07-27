@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G4LJv-0003Sx-Tu for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Jul 2006 10:31:20 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1G4LJs-0000ym-3T
+	id 1G69mY-0006po-1H for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Jul 2006 10:36:22 -0700
+Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1G69mW-0000Cl-10
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Jul 2006 10:31:19 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 22 Jul 2006 19:31:06 +0200
+	Thu, 27 Jul 2006 10:36:21 -0700
+From: Pekka Enberg <penberg@cs.helsinki.fi>
+In-Reply-To: <20060727151540.GA4744@ccure.user-mode-linux.org>
 References: <1153557998.5589.20.camel@ubuntu>
-	<20060722120530.GA25188@ccure.user-mode-linux.org>
-	<1153571552.7543.12.camel@ubuntu>
-In-Reply-To: <1153571552.7543.12.camel@ubuntu>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200607221931.07137.blaisorblade@yahoo.it>
+	<20060722110215.GA24905@ccure.user-mode-linux.org>
+	<1153568869.7543.8.camel@ubuntu>
+	<20060727151540.GA4744@ccure.user-mode-linux.org>
+Date: Thu, 27 Jul 2006 20:36:14 +0300
+Message-Id: <1154021774.7190.0.camel@ubuntu>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] UML hangs after forking gettys
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,31 +32,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Pekka Enberg <penberg@cs.helsinki.fi>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 22 July 2006 14:32, Pekka Enberg wrote:
-> Hi,
->
-> On Sat, Jul 22, 2006 at 02:22:31PM +0300, Pekka Enberg wrote:
-> > > This is a new installation for me, so anything I should check?
->
-> On Sat, 2006-07-22 at 08:05 -0400, Jeff Dike wrote:
-> > I.e. both a new kernel and new filesystem?  If so, can you vary them
-> > to see which is at fault?
->
-> I have never run UML on this box, so yeah, everything is new including
-> the host. I can try a known working image on Monday when I get access to
-> that box. 2.6.18-rc2 works on the other box too.
->
-> Could be Ubuntu userspace too. Any known problems with that?
-No that I know of (and I run Ubuntu 6.06 64bit with 32bit UMLs).
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+On Thu, 2006-07-27 at 11:15 -0400, Jeff Dike wrote:
+> This makes me suspicious of the contents of your inittab.  Generally,
+> if the getty lines refer to non-existent devices, this will happen.
+
+Aah, you're absolutely right. I was missing /dev/tty[1-6] device nodes.
+Thanks!
+
+				Pekka
 
 
 -------------------------------------------------------------------------
