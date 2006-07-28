@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G6IgS-0005cC-OV for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Jul 2006 20:06:41 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1G6Igb-0005g2-JY for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Jul 2006 20:06:50 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G6IgS-0007dw-5L
+	(Exim 4.44) id 1G6IgT-00033L-FD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Jul 2006 20:06:40 -0700
-Message-Id: <200607280306.k6S36UcA007951@ccure.user-mode-linux.org>
+	Thu, 27 Jul 2006 20:06:43 -0700
+Message-Id: <200607280306.k6S36SYl007946@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Thu, 27 Jul 2006 23:06:30 -0400
+Date: Thu, 27 Jul 2006 23:06:28 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/7] UML - Improve SIGBUS diagnostics
+Subject: [uml-devel] [PATCH 6/7] UML - Fix handling of failed execs of helpers
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,35 +30,61 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-UML can get a SIGBUS anywhere if the tmpfs mount being used for its
-memory runs out of space.  This patch adds a printk before the panic
-to provide a clue as to what likely went wrong.
+There were some bugs in handling failures to exec helper programs.
+errno was passed back from the child with the wrong sign.  It was also
+ignored.  In the case where it mattered, the errno from the
+(successful) read in the parent was used instead.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.17/arch/um/kernel/trap.c
+Index: linux-2.6.17/arch/um/os-Linux/helper.c
 ===================================================================
---- linux-2.6.17.orig/arch/um/kernel/trap.c	2006-07-12 10:47:56.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/trap.c	2006-07-13 16:27:40.000000000 -0400
-@@ -227,9 +227,16 @@ void bad_segv(struct faultinfo fi, unsig
+--- linux-2.6.17.orig/arch/um/os-Linux/helper.c	2006-07-13 15:32:08.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/helper.c	2006-07-14 10:19:35.000000000 -0400
+@@ -42,7 +42,7 @@ static int helper_child(void *arg)
+ 	if(data->pre_exec != NULL)
+ 		(*data->pre_exec)(data->pre_data);
+ 	execvp(argv[0], argv);
+-	errval = errno;
++	errval = -errno;
+ 	printk("helper_child - execve of '%s' failed - errno = %d\n", argv[0], errno);
+ 	os_write_file(data->fd, &errval, sizeof(errval));
+ 	kill(os_getpid(), SIGKILL);
+@@ -62,7 +62,7 @@ int run_helper(void (*pre_exec)(void *),
+ 		stack = *stack_out;
+ 	else stack = alloc_stack(0, __cant_sleep());
+ 	if(stack == 0)
+-		return(-ENOMEM);
++		return -ENOMEM;
  
- void relay_signal(int sig, union uml_pt_regs *regs)
- {
--	if(arch_handle_signal(sig, regs)) return;
--	if(!UPT_IS_USER(regs))
-+	if(arch_handle_signal(sig, regs))
-+		return;
-+
-+	if(!UPT_IS_USER(regs)){
-+		if(sig == SIGBUS)
-+			printk("Bus error - the /dev/shm or /tmp mount likely "
-+			       "just ran out of space\n");
- 		panic("Kernel mode signal %d", sig);
-+	}
-+
-         current->thread.arch.faultinfo = *UPT_FAULTINFO(regs);
- 	force_sig(sig, current);
- }
+ 	ret = os_pipe(fds, 1, 0);
+ 	if(ret < 0){
+@@ -95,16 +95,16 @@ int run_helper(void (*pre_exec)(void *),
+ 	/* Read the errno value from the child, if the exec failed, or get 0 if
+ 	 * the exec succeeded because the pipe fd was set as close-on-exec. */
+ 	n = os_read_file(fds[0], &ret, sizeof(ret));
+-	if (n < 0) {
+-		printk("run_helper : read on pipe failed, ret = %d\n", -n);
+-		ret = n;
+-		kill(pid, SIGKILL);
+-		CATCH_EINTR(waitpid(pid, NULL, 0));
+-	} else if(n != 0){
+-		CATCH_EINTR(n = waitpid(pid, NULL, 0));
+-		ret = -errno;
+-	} else {
++	if(n == 0)
+ 		ret = pid;
++	else {
++		if(n < 0){
++			printk("run_helper : read on pipe failed, ret = %d\n", 
++			       -n);
++			ret = n;
++			kill(pid, SIGKILL);
++		}
++		CATCH_EINTR(waitpid(pid, NULL, 0));
+ 	}
+ 
+ out_close:
 
 
 -------------------------------------------------------------------------
