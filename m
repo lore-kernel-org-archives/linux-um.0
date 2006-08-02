@@ -1,28 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-list1-b.sourceforge.net ([10.3.1.7]
-	helo=sc8-sf-list1.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G6Zc4-0003ju-Mo for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Jul 2006 14:11:16 -0700
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
-	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
-	id 1G67os-0007Ct-H7 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Jul 2006 08:30:38 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G67oo-00030Y-Lq
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1G8IHD-0001b6-Ke for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Aug 2006 08:04:51 -0700
+Received: from web25219.mail.ukl.yahoo.com ([217.146.176.205])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1G8IHD-0004rh-0b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Jul 2006 08:30:36 -0700
-Date: Thu, 27 Jul 2006 11:29:56 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060727152956.GB4744@ccure.user-mode-linux.org>
-References: <Pine.LNX.4.64.0607251401110.3223@sparrow>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0607251401110.3223@sparrow>
-Subject: Re: [uml-devel] building 2.6.18-rc2 with Jeff's 2.6.17 patchset,
-	add-stub-vmas patch issue
+	Wed, 02 Aug 2006 08:04:51 -0700
+Message-ID: <20060802150443.99963.qmail@web25219.mail.ukl.yahoo.com>
+Date: Wed, 2 Aug 2006 17:04:43 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <3A30AD378ECC6F41A4AC64F18E8B3F7F6E0A21@ala-mail04.corp.ad.wrs.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [uml-user] Promiscuous mode interface bug?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,17 +27,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: William Stearns <wstearns@pobox.com>
-Cc: Bodo Stroesser <bstroesser@fujitsu-siemens.com>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: "Stephens, Allan" <allan.stephens@windriver.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Tue, Jul 25, 2006 at 02:35:26PM -0400, William Stearns wrote:
-> 	A few of the patches don't apply - I skipped those.
-> 	Of those that do, it _looks_ like Bodo's add-stub-vmas.patch has 
-> an issue:
+"Stephens, Allan" <allan.stephens@windriver.com> ha scritto: 
 
-I just pushed out the latest stuff.
+> Hi Paolo:
+> 
+> OK, let me take one more try at explaining what I've observed. 
+> (And my
+> apologies for making this whole issue more confusing than necessary
+> ...
+> I'm pretty inexperienced when it comes to detailing with the
+> details of
+> network interface operation.)
+> 
+> When I used "ethX=daemon", each interface I configured on a UML
+> guest
+> forwarded only the traffic that was destined for it to my network
+> protocol software -- indicating that the uml_switch application was
+> getting UML to filter things correctly.
 
-				Jeff
+Does it works corrently even with uml_switch -hub or not?
+
+> When I used "ethX=mcast", each interface I configured on a UML
+> guest
+> forwarded all packets sent to the associated multicast group to my
+> network protocol software
+which I guess operates with raw sockets...
+>, even though the interfaces were not
+> configured as "promiscuous".
+
+> The latter observation was the source of my original concern,
+> causing me
+> to ask "why doesn't UML mark the device as promiscuous if it is
+> passing
+> on all packets?".  Your subsequent explanations now make me think
+> that I
+> should have asked "why isn't UML filtering out the unwanted packets
+> since the device isn't configured as promiscuous?".
+
+> I just repeated my "ethX=mcast" testing to make sure I hadn't done
+> something stupid, like configure both interfaces with the same MAC
+> address, but I still see the same result.  This leads me to
+> conclude
+> that there is a real problem with the way UML is filtering packets
+> on
+> "ethX=mcast" interfaces.  Admittedly, I can circumvent this problem
+> being by manually configuring the interfaces as promiscuous, but it
+> still looks like a bug.
+
+> Does this (finally) make sense?
+
+Yes, it makes a lot of sense (in fact I'm forwarding this to
+uml-devel); I have looked at the code but I don't see any really
+_obvious_ difference. Everything depends on uml_switch -hub result,
+which I'd like to see.
+
+Thanks for your effort meanwhile!
+Bye
+
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
