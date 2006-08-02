@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G8MrM-0003mv-DM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Aug 2006 12:58:28 -0700
+	id 1G8MrN-0003n0-0l for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Aug 2006 12:58:29 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1G8MrJ-0008E7-JS
+	(Exim 4.44) id 1G8MrJ-0008EC-JP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Aug 2006 12:58:28 -0700
-Message-Id: <200608021958.k72JwHkj005987@ccure.user-mode-linux.org>
+	Wed, 02 Aug 2006 12:58:29 -0700
+Message-Id: <200608021958.k72JwJUo005992@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 02 Aug 2006 15:58:16 -0400
+Date: Wed, 02 Aug 2006 15:58:19 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/4] UML - SIGIO cleanups
+Subject: [uml-devel] [PATCH 2/4] UML - Move signal handlers to arch code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,326 +30,371 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Various cleanups in the sigio code.
-Removed explicit zero-initializations of a few structures.
-Improved some error messages.
-An API change - there was an asymmetry between reactivate_fd calling
-maybe_sigio_broken, which goes through all the machinery of figuring
-out if a file descriptor supports SIGIO and applying the workaround to
-it if not, and deactivate_fd, which just turns off the descriptor.
-This is changed so that only activate_fd calls maybe_sigio_broken,
-when the descriptor is first seen.  reactivate_fd now calls
-add_sigio_fd, which is symmetric with ignore_sigio_fd.  This removes a
-recursion which makes a critical section look more critical than it
-really was, obsoleting a big comment to that effect.
-This requires keeping track of all descriptors which are getting the
-SIGIO treatment, not just the ones being polled at any given moment,
-so that reactivate_fd, through add_sigio_fd, doesn't try to tell the
-SIGIO thread about descriptors it doesn't care about.
+Have most signals go through an arch-provided handler which recovers
+the sigcontext and then calls a generic handler.  This replaces the
+ARCH_GET_SIGCONTEXT macro, which was somewhat fragile.  On x86_64,
+recovering %rdx (which holds the sigcontext pointer) must be the first
+thing that happens.  sig_handler duly invokes that first, but there is
+no guarantee that I can see that instructions won't be reordered such
+that %rdx is used before that.  Having the arch provide the handler
+seems much more robust.
+
+Some signals in some parts of UML require their own handlers - these
+places don't call set_handler any more.  They call sigaction or signal
+themselves.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.18-rc2-mm1/arch/um/include/os.h
+Index: linux-2.6.18-rc2-mm1/arch/um/include/sysdep-i386/signal.h
 ===================================================================
---- linux-2.6.18-rc2-mm1.orig/arch/um/include/os.h	2006-08-01 13:10:20.000000000 -0400
-+++ linux-2.6.18-rc2-mm1/arch/um/include/os.h	2006-08-01 13:12:44.000000000 -0400
-@@ -329,6 +329,7 @@ extern void os_set_ioignore(void);
- extern void init_irq_signals(int on_sigstack);
- 
- /* sigio.c */
-+extern int add_sigio_fd(int fd);
- extern int ignore_sigio_fd(int fd);
- extern void maybe_sigio_broken(int fd, int read);
- 
-Index: linux-2.6.18-rc2-mm1/arch/um/kernel/irq.c
-===================================================================
---- linux-2.6.18-rc2-mm1.orig/arch/um/kernel/irq.c	2006-08-01 13:10:20.000000000 -0400
-+++ linux-2.6.18-rc2-mm1/arch/um/kernel/irq.c	2006-08-01 13:12:44.000000000 -0400
-@@ -142,19 +142,6 @@ int activate_fd(int irq, int fd, int typ
- 				     .events 		= events,
- 				     .current_events 	= 0 } );
- 
--	/* Critical section - locked by a spinlock because this stuff can
--	 * be changed from interrupt handlers.  The stuff above is done
--	 * outside the lock because it allocates memory.
--	 */
+--- linux-2.6.18-rc2-mm1.orig/arch/um/include/sysdep-i386/signal.h	2006-08-02 15:53:33.000000000 -0400
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,27 +0,0 @@
+-/*
+- * Copyright (C) 2004 PathScale, Inc
+- * Licensed under the GPL
+- */
 -
--	/* Actually, it only looks like it can be called from interrupt
--	 * context.  The culprit is reactivate_fd, which calls
--	 * maybe_sigio_broken, which calls write_sigio_workaround,
--	 * which calls activate_fd.  However, write_sigio_workaround should
--	 * only be called once, at boot time.  That would make it clear that
--	 * this is called only from process context, and can be locked with
--	 * a semaphore.
--	 */
- 	spin_lock_irqsave(&irq_lock, flags);
- 	for (irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd->next) {
- 		if ((irq_fd->fd == fd) && (irq_fd->type == type)) {
-@@ -165,7 +152,6 @@ int activate_fd(int irq, int fd, int typ
- 		}
- 	}
- 
--	/*-------------*/
- 	if (type == IRQ_WRITE)
- 		fd = -1;
- 
-@@ -198,7 +184,6 @@ int activate_fd(int irq, int fd, int typ
- 
- 		spin_lock_irqsave(&irq_lock, flags);
- 	}
--	/*-------------*/
- 
- 	*last_irq_ptr = new_fd;
- 	last_irq_ptr = &new_fd->next;
-@@ -210,14 +195,14 @@ int activate_fd(int irq, int fd, int typ
- 	 */
- 	maybe_sigio_broken(fd, (type == IRQ_READ));
- 
--	return(0);
-+	return 0;
- 
-  out_unlock:
- 	spin_unlock_irqrestore(&irq_lock, flags);
-  out_kfree:
- 	kfree(new_fd);
-  out:
--	return(err);
-+	return err;
- }
- 
- static void free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg)
-@@ -302,10 +287,7 @@ void reactivate_fd(int fd, int irqnum)
- 	os_set_pollfd(i, irq->fd);
- 	spin_unlock_irqrestore(&irq_lock, flags);
- 
--	/* This calls activate_fd, so it has to be outside the critical
--	 * section.
--	 */
--	maybe_sigio_broken(fd, (irq->type == IRQ_READ));
-+	add_sigio_fd(fd);
- }
- 
- void deactivate_fd(int fd, int irqnum)
-@@ -316,11 +298,15 @@ void deactivate_fd(int fd, int irqnum)
- 
- 	spin_lock_irqsave(&irq_lock, flags);
- 	irq = find_irq_by_fd(fd, irqnum, &i);
--	if (irq == NULL)
--		goto out;
-+	if(irq == NULL){
-+		spin_unlock_irqrestore(&irq_lock, flags);
-+		return;
-+	}
-+
- 	os_set_pollfd(i, -1);
-- out:
- 	spin_unlock_irqrestore(&irq_lock, flags);
-+
-+	ignore_sigio_fd(fd);
- }
- 
- int deactivate_all_fds(void)
-Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/sigio.c
-===================================================================
---- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/sigio.c	2006-08-01 13:10:20.000000000 -0400
-+++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/sigio.c	2006-08-01 13:12:44.000000000 -0400
-@@ -43,17 +43,9 @@ struct pollfds {
- /* Protected by sigio_lock().  Used by the sigio thread, but the UML thread
-  * synchronizes with it.
-  */
--static struct pollfds current_poll = {
--	.poll  		= NULL,
--	.size 		= 0,
--	.used 		= 0
--};
+-#ifndef __I386_SIGNAL_H_
+-#define __I386_SIGNAL_H_
 -
--static struct pollfds next_poll = {
--	.poll  		= NULL,
--	.size 		= 0,
--	.used 		= 0
--};
-+static struct pollfds current_poll;
-+static struct pollfds next_poll;
-+static struct pollfds all_sigio_fds;
- 
- static int write_sigio_thread(void *unused)
- {
-@@ -78,7 +70,8 @@ static int write_sigio_thread(void *unus
- 				n = os_read_file(sigio_private[1], &c, sizeof(c));
- 				if(n != sizeof(c))
- 					printk("write_sigio_thread : "
--					       "read failed, err = %d\n", -n);
-+					       "read on socket failed, "
-+					       "err = %d\n", -n);
- 				tmp = current_poll;
- 				current_poll = next_poll;
- 				next_poll = tmp;
-@@ -93,35 +86,36 @@ static int write_sigio_thread(void *unus
- 
- 			n = os_write_file(respond_fd, &c, sizeof(c));
- 			if(n != sizeof(c))
--				printk("write_sigio_thread : write failed, "
--				       "err = %d\n", -n);
-+				printk("write_sigio_thread : write on socket "
-+				       "failed, err = %d\n", -n);
- 		}
- 	}
- 
- 	return 0;
- }
- 
--static int need_poll(int n)
-+static int need_poll(struct pollfds *polls, int n)
- {
--	if(n <= next_poll.size){
--		next_poll.used = n;
--		return(0);
--	}
--	kfree(next_poll.poll);
--	next_poll.poll = um_kmalloc_atomic(n * sizeof(struct pollfd));
--	if(next_poll.poll == NULL){
-+	if(n <= polls->size){
-+		polls->used = n;
-+		return 0;
-+	}
-+	kfree(polls->poll);
-+	polls->poll = um_kmalloc_atomic(n * sizeof(struct pollfd));
-+	if(polls->poll == NULL){
- 		printk("need_poll : failed to allocate new pollfds\n");
--		next_poll.size = 0;
--		next_poll.used = 0;
--		return(-1);
--	}
--	next_poll.size = n;
--	next_poll.used = n;
--	return(0);
-+		polls->size = 0;
-+		polls->used = 0;
-+		return -ENOMEM;
-+	}
-+	polls->size = n;
-+	polls->used = n;
-+	return 0;
- }
- 
- /* Must be called with sigio_lock held, because it's needed by the marked
-- * critical section. */
-+ * critical section.
+-#include <signal.h>
+-
+-#define ARCH_SIGHDLR_PARAM int sig
+-
+-#define ARCH_GET_SIGCONTEXT(sc, sig) \
+-	do sc = (struct sigcontext *) (&sig + 1); while(0)
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.18-rc2-mm1/arch/um/include/sysdep-x86_64/signal.h
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/include/sysdep-x86_64/signal.h	2006-08-02 15:53:33.000000000 -0400
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,29 +0,0 @@
+-/*
+- * Copyright (C) 2004 PathScale, Inc
+- * Licensed under the GPL
+- */
+-
+-#ifndef __X86_64_SIGNAL_H_
+-#define __X86_64_SIGNAL_H_
+-
+-#define ARCH_SIGHDLR_PARAM int sig
+-
+-#define ARCH_GET_SIGCONTEXT(sc, sig_addr) \
+-	do { \
+-		struct ucontext *__uc; \
+-		asm("movq %%rdx, %0" : "=r" (__uc)); \
+-		sc = (struct sigcontext *) &__uc->uc_mcontext; \
+-	} while(0)
+-
+-#endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-i386/signal.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-i386/signal.c	2006-08-02 15:53:39.000000000 -0400
+@@ -0,0 +1,15 @@
++/*
++ * Copyright (C) 2006 Jeff Dike (jdike@addtoit.com)
++ * Licensed under the GPL
 + */
- static void update_thread(void)
- {
- 	unsigned long flags;
-@@ -156,34 +150,39 @@ static void update_thread(void)
- 	set_signals(flags);
- }
- 
--static int add_sigio_fd(int fd, int read)
-+int add_sigio_fd(int fd)
- {
--	int err = 0, i, n, events;
-+	struct pollfd *p;
-+	int err = 0, i, n;
- 
- 	sigio_lock();
-+	for(i = 0; i < all_sigio_fds.used; i++){
-+		if(all_sigio_fds.poll[i].fd == fd)
-+			break;
-+	}
-+	if(i == all_sigio_fds.used)
-+		goto out;
 +
-+	p = &all_sigio_fds.poll[i];
++#include <signal.h>
 +
- 	for(i = 0; i < current_poll.used; i++){
- 		if(current_poll.poll[i].fd == fd)
- 			goto out;
- 	}
++extern void (*handlers[])(int sig, struct sigcontext *sc);
++
++void hard_handler(int sig)
++{
++	struct sigcontext *sc = (struct sigcontext *) (&sig + 1);
++
++	(*handlers[sig])(sig, sc);
++}
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-x86_64/signal.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-x86_64/signal.c	2006-08-02 15:53:39.000000000 -0400
+@@ -0,0 +1,16 @@
++/*
++ * Copyright (C) 2006 Jeff Dike (jdike@addtoit.com)
++ * Licensed under the GPL
++ */
++
++#include <signal.h>
++
++extern void (*handlers[])(int sig, struct sigcontext *sc);
++
++void hard_handler(int sig)
++{
++	struct ucontext *uc;
++	asm("movq %%rdx, %0" : "=r" (uc));
++
++	(*handlers[sig])(sig, (struct sigcontext *) &uc->uc_mcontext);
++}
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/signal.c
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/signal.c	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/signal.c	2006-08-02 15:53:39.000000000 -0400
+@@ -15,7 +15,6 @@
+ #include "user.h"
+ #include "signal_kern.h"
+ #include "sysdep/sigcontext.h"
+-#include "sysdep/signal.h"
+ #include "sigcontext.h"
+ #include "mode.h"
+ #include "os.h"
+@@ -38,18 +37,10 @@
+ static int signals_enabled = 1;
+ static int pending = 0;
  
- 	n = current_poll.used + 1;
--	err = need_poll(n);
-+	err = need_poll(&next_poll, n);
- 	if(err)
- 		goto out;
+-void sig_handler(ARCH_SIGHDLR_PARAM)
++void sig_handler(int sig, struct sigcontext *sc)
+ {
+-	struct sigcontext *sc;
+ 	int enabled;
  
- 	for(i = 0; i < current_poll.used; i++)
- 		next_poll.poll[i] = current_poll.poll[i];
- 
--	if(read) events = POLLIN;
--	else events = POLLOUT;
+-	/* Must be the first thing that this handler does - x86_64 stores
+-	 * the sigcontext in %rdx, and we need to save it before it has a
+-	 * chance to get trashed.
+-	 */
 -
--	next_poll.poll[n - 1] = ((struct pollfd) { .fd  	= fd,
--						   .events 	= events,
--						   .revents 	= 0 });
-+	next_poll.poll[n - 1] = *p;
- 	update_thread();
-  out:
- 	sigio_unlock();
--	return(err);
-+	return err;
+-	ARCH_GET_SIGCONTEXT(sc, sig);
+-
+ 	enabled = signals_enabled;
+ 	if(!enabled && (sig == SIGIO)){
+ 		pending |= SIGIO_MASK;
+@@ -84,13 +75,10 @@ static void real_alarm_handler(int sig, 
+ 
  }
  
- int ignore_sigio_fd(int fd)
-@@ -205,18 +204,14 @@ int ignore_sigio_fd(int fd)
- 	if(i == current_poll.used)
- 		goto out;
- 
--	err = need_poll(current_poll.used - 1);
-+	err = need_poll(&next_poll, current_poll.used - 1);
- 	if(err)
- 		goto out;
- 
- 	for(i = 0; i < current_poll.used; i++){
- 		p = &current_poll.poll[i];
--		if(p->fd != fd) next_poll.poll[n++] = current_poll.poll[i];
--	}
--	if(n == i){
--		printk("ignore_sigio_fd : fd %d not found\n", fd);
--		err = -1;
--		goto out;
-+		if(p->fd != fd)
-+			next_poll.poll[n++] = *p;
- 	}
- 
- 	update_thread();
-@@ -234,7 +229,7 @@ static struct pollfd *setup_initial_poll
- 		printk("setup_initial_poll : failed to allocate poll\n");
- 		return NULL;
- 	}
--	*p = ((struct pollfd) { .fd  	= fd,
-+	*p = ((struct pollfd) { .fd		= fd,
- 				.events 	= POLLIN,
- 				.revents 	= 0 });
- 	return p;
-@@ -323,6 +318,8 @@ out_close1:
- 
- void maybe_sigio_broken(int fd, int read)
+-void alarm_handler(ARCH_SIGHDLR_PARAM)
++void alarm_handler(int sig, struct sigcontext *sc)
  {
-+	int err;
-+
- 	if(!isatty(fd))
- 		return;
+-	struct sigcontext *sc;
+ 	int enabled;
  
-@@ -330,7 +327,19 @@ void maybe_sigio_broken(int fd, int read
- 		return;
- 
- 	write_sigio_workaround();
--	add_sigio_fd(fd, read);
-+
-+	sigio_lock();
-+	err = need_poll(&all_sigio_fds, all_sigio_fds.used + 1);
-+	if(err){
-+		printk("maybe_sigio_broken - failed to add pollfd\n");
-+		goto out;
-+	}
-+	all_sigio_fds.poll[all_sigio_fds.used++] =
-+		((struct pollfd) { .fd  	= fd,
-+				   .events 	= read ? POLLIN : POLLOUT,
-+				   .revents 	= 0 });
-+out:
-+	sigio_unlock();
+-	ARCH_GET_SIGCONTEXT(sc, sig);
+-
+ 	enabled = signals_enabled;
+ 	if(!signals_enabled){
+ 		if(sig == SIGVTALRM)
+@@ -126,6 +114,10 @@ void remove_sigstack(void)
+ 		panic("disabling signal stack failed, errno = %d\n", errno);
  }
  
- static void sigio_cleanup(void)
++void (*handlers[_NSIG])(int sig, struct sigcontext *sc);
++
++extern void hard_handler(int sig);
++
+ void set_handler(int sig, void (*handler)(int), int flags, ...)
+ {
+ 	struct sigaction action;
+@@ -133,13 +125,15 @@ void set_handler(int sig, void (*handler
+ 	sigset_t sig_mask;
+ 	int mask;
+ 
+-	va_start(ap, flags);
+ 	action.sa_handler = handler;
++
+ 	sigemptyset(&action.sa_mask);
+-	while((mask = va_arg(ap, int)) != -1){
++
++	va_start(ap, flags);
++	while((mask = va_arg(ap, int)) != -1)
+ 		sigaddset(&action.sa_mask, mask);
+-	}
+ 	va_end(ap);
++
+ 	action.sa_flags = flags;
+ 	action.sa_restorer = NULL;
+ 	if(sigaction(sig, &action, NULL) < 0)
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/process.c
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/process.c	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/process.c	2006-08-02 15:53:39.000000000 -0400
+@@ -246,7 +246,17 @@ void init_new_thread_stack(void *sig_sta
+ 		set_sigstack(sig_stack, pages * page_size());
+ 		flags = SA_ONSTACK;
+ 	}
+-	if(usr1_handler) set_handler(SIGUSR1, usr1_handler, flags, -1);
++	if(usr1_handler){
++		struct sigaction sa;
++
++		sa.sa_handler = usr1_handler;
++		sigemptyset(&sa.sa_mask);
++		sa.sa_flags = flags;
++		sa.sa_restorer = NULL;
++		if(sigaction(SIGUSR1, &sa, NULL) < 0)
++			panic("init_new_thread_stack - sigaction failed - "
++			      "errno = %d\n", errno);
++	}
+ }
+ 
+ void init_new_thread_signals(void)
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/time.c
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/time.c	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/time.c	2006-08-02 15:53:39.000000000 -0400
+@@ -40,8 +40,8 @@ void disable_timer(void)
+ 		printk("disnable_timer - setitimer failed, errno = %d\n",
+ 		       errno);
+ 	/* If there are signals already queued, after unblocking ignore them */
+-	set_handler(SIGALRM, SIG_IGN, 0, -1);
+-	set_handler(SIGVTALRM, SIG_IGN, 0, -1);
++	signal(SIGALRM, SIG_IGN);
++	signal(SIGVTALRM, SIG_IGN);
+ }
+ 
+ void switch_timers(int to_real)
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/irq.c
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/irq.c	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/irq.c	2006-08-02 15:53:39.000000000 -0400
+@@ -132,7 +132,7 @@ void os_set_pollfd(int i, int fd)
+ 
+ void os_set_ioignore(void)
+ {
+-	set_handler(SIGIO, SIG_IGN, 0, -1);
++	signal(SIGIO, SIG_IGN);
+ }
+ 
+ void init_irq_signals(int on_sigstack)
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/main.c
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/main.c	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/main.c	2006-08-02 15:53:39.000000000 -0400
+@@ -67,13 +67,32 @@ static __init void do_uml_initcalls(void
+ 
+ static void last_ditch_exit(int sig)
+ {
+-	signal(SIGINT, SIG_DFL);
+-	signal(SIGTERM, SIG_DFL);
+-	signal(SIGHUP, SIG_DFL);
+ 	uml_cleanup();
+ 	exit(1);
+ }
+ 
++static void install_fatal_handler(int sig)
++{
++	struct sigaction action;
++
++	/* All signals are enabled in this handler ... */
++	sigemptyset(&action.sa_mask);
++
++	/* ... including the signal being handled, plus we want the
++	 * handler reset to the default behavior, so that if an exit
++	 * handler is hanging for some reason, the UML will just die
++	 * after this signal is sent a second time.
++	 */
++	action.sa_flags = SA_RESETHAND | SA_NODEFER;
++	action.sa_restorer = NULL;
++	action.sa_handler = last_ditch_exit;
++	if(sigaction(sig, &action, NULL) < 0){
++		printf("failed to install handler for signal %d - errno = %d\n",
++		       errno);
++		exit(1);
++	}
++}
++
+ #define UML_LIB_PATH	":/usr/lib/uml"
+ 
+ static void setup_env_path(void)
+@@ -158,9 +177,12 @@ int main(int argc, char **argv, char **e
+ 	}
+ 	new_argv[argc] = NULL;
+ 
+-	set_handler(SIGINT, last_ditch_exit, SA_ONESHOT | SA_NODEFER, -1);
+-	set_handler(SIGTERM, last_ditch_exit, SA_ONESHOT | SA_NODEFER, -1);
+-	set_handler(SIGHUP, last_ditch_exit, SA_ONESHOT | SA_NODEFER, -1);
++	/* Allow these signals to bring down a UML if all other
++	 * methods of control fail.
++	 */
++	install_fatal_handler(SIGINT);
++	install_fatal_handler(SIGTERM);
++	install_fatal_handler(SIGHUP);
+ 
+ 	scan_elf_aux( envp);
+ 
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/skas/process.c
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/skas/process.c	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/skas/process.c	2006-08-02 15:53:39.000000000 -0400
+@@ -189,14 +189,25 @@ static int userspace_tramp(void *stack)
+ 		}
+ 	}
+ 	if(!ptrace_faultinfo && (stack != NULL)){
++		struct sigaction sa;
++
+ 		unsigned long v = UML_CONFIG_STUB_CODE +
+ 				  (unsigned long) stub_segv_handler -
+ 				  (unsigned long) &__syscall_stub_start;
+ 
+ 		set_sigstack((void *) UML_CONFIG_STUB_DATA, page_size());
+-		set_handler(SIGSEGV, (void *) v, SA_ONSTACK,
+-			    SIGIO, SIGWINCH, SIGALRM, SIGVTALRM,
+-			    SIGUSR1, -1);
++		sigemptyset(&sa.sa_mask);
++		sigaddset(&sa.sa_mask, SIGIO);
++		sigaddset(&sa.sa_mask, SIGWINCH);
++		sigaddset(&sa.sa_mask, SIGALRM);
++		sigaddset(&sa.sa_mask, SIGVTALRM);
++		sigaddset(&sa.sa_mask, SIGUSR1);
++		sa.sa_flags = SA_ONSTACK;
++		sa.sa_handler = (void *) v;
++		sa.sa_restorer = NULL;
++		if(sigaction(SIGSEGV, &sa, NULL) < 0)
++			panic("userspace_tramp - setting SIGSEGV handler "
++			      "failed - errno = %d\n", errno);
+ 	}
+ 
+ 	os_stop_process(os_getpid());
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-i386/Makefile
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/sys-i386/Makefile	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-i386/Makefile	2006-08-02 15:53:39.000000000 -0400
+@@ -3,7 +3,7 @@
+ # Licensed under the GPL
+ #
+ 
+-obj-$(CONFIG_MODE_SKAS) = registers.o tls.o
++obj-$(CONFIG_MODE_SKAS) = registers.o signal.o tls.o
+ 
+ USER_OBJS := $(obj-y)
+ 
+Index: linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-x86_64/Makefile
+===================================================================
+--- linux-2.6.18-rc2-mm1.orig/arch/um/os-Linux/sys-x86_64/Makefile	2006-08-02 15:53:33.000000000 -0400
++++ linux-2.6.18-rc2-mm1/arch/um/os-Linux/sys-x86_64/Makefile	2006-08-02 15:53:39.000000000 -0400
+@@ -3,7 +3,7 @@
+ # Licensed under the GPL
+ #
+ 
+-obj-$(CONFIG_MODE_SKAS) = registers.o
++obj-$(CONFIG_MODE_SKAS) = registers.o signal.o
+ 
+ USER_OBJS := $(obj-y)
+ 
 
 
 -------------------------------------------------------------------------
