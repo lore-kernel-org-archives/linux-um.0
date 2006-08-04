@@ -1,12 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Fri, 4 Aug 2006 09:01:21 -0400 (EDT)
-From: Steven James <pyro@linuxlabs.com>
-In-Reply-To: <20060803214501.GA5677@ccure.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.63.0608040840520.5542@localhost.localdomain>
-References: <3A30AD378ECC6F41A4AC64F18E8B3F7F6E0F66@ala-mail04.corp.ad.wrs.com>
-	<20060803214501.GA5677@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [uml-user] Promiscuous mode interface bug?
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1G90SF-0006WA-1f for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Aug 2006 07:15:11 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1G90SA-0002iF-IO
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Aug 2006 07:15:07 -0700
+Date: Fri, 4 Aug 2006 10:14:47 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060804141447.GA3837@ccure.user-mode-linux.org>
+References: <200607070033.k670XhQR008707@ccure.user-mode-linux.org>
+	<517e86fb0608040600n52f36b8ci60f4e219f8cd4b5a@mail.gmail.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <517e86fb0608040600n52f36b8ci60f4e219f8cd4b5a@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH 10/19] UML - Remove spinlock wrapper functions
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,55 +31,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Paolo Giarrusso <blaisorblade@yahoo.it>, "Stephens,  Allan" <allan.stephens@windriver.com>, user-mode-linux-user@lists.sourceforge.net
+To: alessandro salvatori <sandr8@gmail.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
+On Fri, Aug 04, 2006 at 01:00:43PM +0000, alessandro salvatori wrote:
+>   the new lock irq_lock is still static, but we now have preprocessor
+> macros to be included from a header file instead of non-static functions in
+> the same module as the static irq_lock.
 
-On Thu, 3 Aug 2006, Jeff Dike wrote:
+I don't understand.  The changes in this patch are -
+	remove two functions and their declarations
+	replace calls to those functions with spin_lock_irq_save and
+spin_unlock_irqsave
+	move the spinlock declaration above the spin_(un)lock_irq_save
+calls
 
-> On Thu, Aug 03, 2006 at 01:08:51PM -0700, Stephens, Allan wrote:
->> Where I think my confusion is arising is in the details of how the
->> filtering
->> controlled by the promiscuous setting is actually done.  If a packet
->> with
->> the "wrong" destination address arrives at an interface, who checks to
->> see
->> whether the interface has been configured as promiscuous and
->> passes/discards it
->> accordingly?  I have naively assumed that this was handled in hardware
->> on the
->> NIC card in a real system, but is it really done by software?
->
-> Ah, a light goes on.  I believe that it is done on the card.
->
->> What I seem to
->> be
->> observing in my UML testing is that *nobody* is doing this filtering,
->> resulting in
->> unwanted packets being handed to my protocol (which sits directly on top
->> of the
->> Ethernet driver).
->
-> And since UML doesn't have "cards", it may be that the driver should do the
-> filtering at the bottom layer and it isn't.
+Which of these are you talking about?
 
-
-IIRC, most but not all cards will do the filtering in hardware unless 
-they're in promiscuous mode. However if the card is in promiscuous mode or 
-doesn't support filtering, the next step is when eth_type_trans sets the 
-pkt_type of the skb to PACKET_OTHERHOST. I remember there being something 
-odd about the handling of ethernet headers a good while ago.
-
-In any event, doing the filtering in the device would help, but won't work 
-when it's promisc (for example if tcpdump is running).
-
-G'day,
-sjames
-
-
->
-> 				Jeff
->
+				Jeff
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
