@@ -1,24 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G8zIH-0008Tl-Dv for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Aug 2006 06:00:49 -0700
-Received: from ug-out-1314.google.com ([66.249.92.168])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1G8zIE-0004nK-7K
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Aug 2006 06:00:49 -0700
-Received: by ug-out-1314.google.com with SMTP id s2so36943uge
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 04 Aug 2006 06:00:44 -0700 (PDT)
-Message-ID: <517e86fb0608040600n52f36b8ci60f4e219f8cd4b5a@mail.gmail.com>
-Date: Fri, 4 Aug 2006 13:00:43 +0000
-From: "alessandro salvatori" <sandr8@gmail.com>
-In-Reply-To: <200607070033.k670XhQR008707@ccure.user-mode-linux.org>
+Date: Fri, 4 Aug 2006 09:01:21 -0400 (EDT)
+From: Steven James <pyro@linuxlabs.com>
+In-Reply-To: <20060803214501.GA5677@ccure.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.63.0608040840520.5542@localhost.localdomain>
+References: <3A30AD378ECC6F41A4AC64F18E8B3F7F6E0F66@ala-mail04.corp.ad.wrs.com>
+	<20060803214501.GA5677@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-References: <200607070033.k670XhQR008707@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH 10/19] UML - Remove spinlock wrapper functions
-Reply-To: sandr8@gmail.com
+Subject: Re: [uml-devel] [uml-user] Promiscuous mode interface bug?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,291 +16,66 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1405849250=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-
---===============1405849250==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_36777_15419397.1154696443975"
-
-------=_Part_36777_15419397.1154696443975
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Jeff,
-
-   the new lock irq_lock is still static, but we now have preprocessor
-macros to be included from a header file instead of non-static functions in
-the same module as the static irq_lock.
-
-Am I missing something?
-
-cheers
-Alessandro Salvatori
-
-On 7/7/06, Jeff Dike <jdike@addtoit.com> wrote:
->
-> The irq_spinlock is not needed from user code any more, so the
-> irq_lock and irq_unlock wrappers can go away.  This also changes the
-> name of the lock to irq_lock.
->
-> Signed-off-by: Jeff Dike <jdike@addtoit.com>
->
-> Index: linux-2.6.17/arch/um/include/irq_user.h
-> ===================================================================
-> --- linux-2.6.17.orig/arch/um/include/irq_user.h        2006-07-06 13:27:
-> 58.000000000 -0400
-> +++ linux-2.6.17/arch/um/include/irq_user.h     2006-07-06 13:28:
-> 14.000000000 -0400
-> @@ -29,8 +29,6 @@ extern void reactivate_fd(int fd, int ir
-> extern void deactivate_fd(int fd, int irqnum);
-> extern int deactivate_all_fds(void);
-> extern int activate_ipi(int fd, int pid);
-> -extern unsigned long irq_lock(void);
-> -extern void irq_unlock(unsigned long flags);
->
-> #ifdef CONFIG_MODE_TT
-> extern void forward_interrupts(int pid);
-> Index: linux-2.6.17/arch/um/kernel/irq.c
-> ===================================================================
-> --- linux-2.6.17.orig/arch/um/kernel/irq.c      2006-07-06 13:27:
-> 58.000000000 -0400
-> +++ linux-2.6.17/arch/um/kernel/irq.c   2006-07-06 13:28:43.000000000-0400
-> @@ -123,6 +123,8 @@ static void maybe_sigio_broken(int fd, i
->         }
-> }
->
-> +static DEFINE_SPINLOCK(irq_lock);
-> +
-> int activate_fd(int irq, int fd, int type, void *dev_id)
-> {
->         struct pollfd *tmp_pfd;
-> @@ -166,7 +168,7 @@ int activate_fd(int irq, int fd, int typ
->          * this is called only from process context, and can be locked
-> with
->          * a semaphore.
->          */
-> -       flags = irq_lock();
-> +       spin_lock_irqsave(&irq_lock, flags);
->         for (irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd->next) {
->                 if ((irq_fd->fd == fd) && (irq_fd->type == type)) {
->                         printk("Registering fd %d twice\n", fd);
-> @@ -199,7 +201,7 @@ int activate_fd(int irq, int fd, int typ
->                  * so we will not be able to put new pollfd struct to
-> pollfds
->                  * then we free the buffer tmp_fds and try again.
->                  */
-> -               irq_unlock(flags);
-> +               spin_unlock_irqrestore(&irq_lock, flags);
->                 kfree(tmp_pfd);
->                 tmp_pfd = NULL;
->
-> @@ -207,14 +209,14 @@ int activate_fd(int irq, int fd, int typ
->                 if (tmp_pfd == NULL)
->                         goto out_kfree;
->
-> -               flags = irq_lock();
-> +               spin_lock_irqsave(&irq_lock, flags);
->         }
->         /*-------------*/
->
->         *last_irq_ptr = new_fd;
->         last_irq_ptr = &new_fd->next;
->
-> -       irq_unlock(flags);
-> +       spin_unlock_irqrestore(&irq_lock, flags);
->
->         /* This calls activate_fd, so it has to be outside the critical
->          * section.
-> @@ -224,7 +226,7 @@ int activate_fd(int irq, int fd, int typ
->         return(0);
->
->   out_unlock:
-> -       irq_unlock(flags);
-> +       spin_unlock_irqrestore(&irq_lock, flags);
->   out_kfree:
->         kfree(new_fd);
->   out:
-> @@ -235,9 +237,9 @@ static void free_irq_by_cb(int (*test)(s
-> {
->         unsigned long flags;
->
-> -       flags = irq_lock();
-> +       spin_lock_irqsave(&irq_lock, flags);
->         os_free_irq_by_cb(test, arg, active_fds, &last_irq_ptr);
-> -       irq_unlock(flags);
-> +       spin_unlock_irqrestore(&irq_lock, flags);
-> }
->
-> struct irq_and_dev {
-> @@ -304,14 +306,14 @@ void reactivate_fd(int fd, int irqnum)
->         unsigned long flags;
->         int i;
->
-> -       flags = irq_lock();
-> +       spin_lock_irqsave(&irq_lock, flags);
->         irq = find_irq_by_fd(fd, irqnum, &i);
->         if (irq == NULL) {
-> -               irq_unlock(flags);
-> +               spin_unlock_irqrestore(&irq_lock, flags);
->                 return;
->         }
->         os_set_pollfd(i, irq->fd);
-> -       irq_unlock(flags);
-> +       spin_unlock_irqrestore(&irq_lock, flags);
->
->         /* This calls activate_fd, so it has to be outside the critical
->          * section.
-> @@ -325,13 +327,13 @@ void deactivate_fd(int fd, int irqnum)
->         unsigned long flags;
->         int i;
->
-> -       flags = irq_lock();
-> +       spin_lock_irqsave(&irq_lock, flags);
->         irq = find_irq_by_fd(fd, irqnum, &i);
->         if (irq == NULL)
->                 goto out;
->         os_set_pollfd(i, -1);
->   out:
-> -       irq_unlock(flags);
-> +       spin_unlock_irqrestore(&irq_lock, flags);
-> }
->
-> int deactivate_all_fds(void)
-> @@ -357,7 +359,7 @@ void forward_interrupts(int pid)
->         unsigned long flags;
->         int err;
->
-> -       flags = irq_lock();
-> +       spin_lock_irqsave(&irq_lock, flags);
->         for (irq = active_fds; irq != NULL; irq = irq->next) {
->                 err = os_set_owner(irq->fd, pid);
->                 if (err < 0) {
-> @@ -370,7 +372,7 @@ void forward_interrupts(int pid)
->
->                 irq->pid = pid;
->         }
-> -       irq_unlock(flags);
-> +       spin_unlock_irqrestore(&irq_lock, flags);
-> }
-> #endif
->
-> @@ -405,21 +407,6 @@ int um_request_irq(unsigned int irq, int
-> EXPORT_SYMBOL(um_request_irq);
-> EXPORT_SYMBOL(reactivate_fd);
->
-> -static DEFINE_SPINLOCK(irq_spinlock);
-> -
-> -unsigned long irq_lock(void)
-> -{
-> -       unsigned long flags;
-> -
-> -       spin_lock_irqsave(&irq_spinlock, flags);
-> -       return flags;
-> -}
-> -
-> -void irq_unlock(unsigned long flags)
-> -{
-> -       spin_unlock_irqrestore(&irq_spinlock, flags);
-> -}
-> -
-> /* hw_interrupt_type must define (startup || enable) &&
->   * (shutdown || disable) && end */
-> static void dummy(unsigned int irq)
->
->
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job
-> easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
+Cc: user-mode-linux-devel@lists.sourceforge.net, Paolo Giarrusso <blaisorblade@yahoo.it>, "Stephens,  Allan" <allan.stephens@windriver.com>, user-mode-linux-user@lists.sourceforge.net
 
 
+On Thu, 3 Aug 2006, Jeff Dike wrote:
 
--- 
-Alessandro Salvatori
-
-------=_Part_36777_15419397.1154696443975
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Jeff,<br>
-<br>
-&nbsp;&nbsp; the new lock irq_lock is still static, but we now have
-preprocessor macros to be included from a header file instead of
-non-static functions in the same module as the static irq_lock.<br>
-<br>
-Am I missing something?<br>
-<br>
-cheers<br>
-Alessandro Salvatori<br><br><div><span class="gmail_quote">On 7/7/06, <b class="gmail_sendername">Jeff Dike</b> &lt;<a href="mailto:jdike@addtoit.com">jdike@addtoit.com</a>&gt; wrote:</span><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-The irq_spinlock is not needed from user code any more, so the<br>irq_lock and irq_unlock wrappers can go away.&nbsp;&nbsp;This also changes the<br>name of the lock to irq_lock.<br><br>Signed-off-by: Jeff Dike &lt;<a href="mailto:jdike@addtoit.com">
-jdike@addtoit.com</a>&gt;<br><br>Index: linux-2.6.17/arch/um/include/irq_user.h<br>===================================================================<br>---
-linux-2.6.17.orig/arch/um/include/irq_user.h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2006-07-06
-13:27:58.000000000 -0400<br>+++ linux-2.6.17/arch/um/include/irq_user.h&nbsp;&nbsp;&nbsp;&nbsp; 2006-07-06 13:28:14.000000000 -0400<br>@@ -29,8 +29,6 @@ extern void reactivate_fd(int fd, int ir<br> extern void deactivate_fd(int fd, int irqnum);
-<br> extern int deactivate_all_fds(void);<br> extern int activate_ipi(int fd, int pid);<br>-extern unsigned long irq_lock(void);<br>-extern void irq_unlock(unsigned long flags);<br><br> #ifdef CONFIG_MODE_TT<br> extern void forward_interrupts(int pid);
-<br>Index: linux-2.6.17/arch/um/kernel/irq.c<br>===================================================================<br>--- linux-2.6.17.orig/arch/um/kernel/irq.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2006-07-06 13:27:58.000000000 -0400<br>+++ linux-2.6.17
-/arch/um/kernel/irq.c&nbsp;&nbsp; 2006-07-06 13:28:43.000000000 -0400<br>@@ -123,6 +123,8 @@ static void maybe_sigio_broken(int fd, i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br> }<br><br>+static DEFINE_SPINLOCK(irq_lock);<br>+<br> int activate_fd(int irq, int fd, int type, void *dev_id)
-<br> {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;struct pollfd *tmp_pfd;<br>@@ -166,7 +168,7 @@ int activate_fd(int irq, int fd, int typ<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * this is called only from process context, and can be locked with<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * a semaphore.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; flags = irq_lock();<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_lock_irqsave(&amp;irq_lock, flags);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd-&gt;next) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if
-((irq_fd-&gt;fd == fd) &amp;&amp; (irq_fd-&gt;type == type)) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printk(&quot;Registering
-fd %d twice\n&quot;, fd);<br>@@ -199,7 +201,7 @@ int activate_fd(int irq, int fd, int typ<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-* so we will not be able to put new pollfd struct to pollfds<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-* then we free the buffer tmp_fds and try again.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kfree(tmp_pfd);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp_pfd = NULL;
-<br><br>@@ -207,14 +209,14 @@ int activate_fd(int irq, int fd, int typ<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (tmp_pfd == NULL)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;goto
-out_kfree;<br><br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; flags = irq_lock();<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_lock_irqsave(&amp;irq_lock, flags);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/*-------------*/<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*last_irq_ptr = new_fd;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;last_irq_ptr = &amp;new_fd-&gt;next;
-<br><br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* This calls activate_fd, so it has to be outside the critical<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * section.<br>@@ -224,7 +226,7 @@ int activate_fd(int irq, int fd, int typ
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return(0);<br><br>&nbsp;&nbsp;out_unlock:<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);<br>&nbsp;&nbsp;out_kfree:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kfree(new_fd);<br>&nbsp;&nbsp;out:<br>@@ -235,9 +237,9 @@ static void free_irq_by_cb(int (*test)(s
-<br> {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned long flags;<br><br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; flags = irq_lock();<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_lock_irqsave(&amp;irq_lock, flags);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;os_free_irq_by_cb(test, arg, active_fds, &amp;last_irq_ptr);<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);
-<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);<br> }<br><br> struct irq_and_dev {<br>@@ -304,14 +306,14 @@ void reactivate_fd(int fd, int irqnum)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned long flags;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int i;<br><br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; flags = irq_lock();
-<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_lock_irqsave(&amp;irq_lock, flags);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irq = find_irq_by_fd(fd, irqnum, &amp;i);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (irq == NULL) {<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;os_set_pollfd(i, irq-&gt;fd);<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* This calls activate_fd, so it has to be outside the critical
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * section.<br>@@ -325,13 +327,13 @@ void deactivate_fd(int fd, int irqnum)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned long flags;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int i;<br><br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; flags = irq_lock();<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_lock_irqsave(&amp;irq_lock, flags);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irq = find_irq_by_fd(fd, irqnum, &amp;i);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (irq == NULL)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;goto out;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;os_set_pollfd(i, -1);<br>&nbsp;&nbsp;out:<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);
-<br> }<br><br> int deactivate_all_fds(void)<br>@@ -357,7 +359,7 @@ void forward_interrupts(int pid)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unsigned long flags;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int err;<br><br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; flags = irq_lock();<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_lock_irqsave(&amp;irq_lock, flags);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (irq = active_fds; irq != NULL; irq = irq-&gt;next) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err
-= os_set_owner(irq-&gt;fd, pid);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (err &lt; 0) {<br>@@ -370,7 +372,7 @@ void forward_interrupts(int pid)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;irq-&gt;pid = pid;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; irq_unlock(flags);<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_lock, flags);
-<br> }<br> #endif<br><br>@@ -405,21 +407,6 @@ int um_request_irq(unsigned int irq, int<br> EXPORT_SYMBOL(um_request_irq);<br> EXPORT_SYMBOL(reactivate_fd);<br><br>-static DEFINE_SPINLOCK(irq_spinlock);<br>-<br>-unsigned long irq_lock(void)
-<br>-{<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long flags;<br>-<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_lock_irqsave(&amp;irq_spinlock, flags);<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return flags;<br>-}<br>-<br>-void irq_unlock(unsigned long flags)<br>-{<br>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spin_unlock_irqrestore(&amp;irq_spinlock, flags);
-<br>-}<br>-<br> /* hw_interrupt_type must define (startup || enable) &amp;&amp;<br>&nbsp;&nbsp;* (shutdown || disable) &amp;&amp; end */<br> static void dummy(unsigned int irq)<br><br><br>Using Tomcat but need to do more? Need to support web services, security?
-<br>Get stuff done quickly with pre-integrated technology to make your job easier<br>Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo<br><a href="http://sel.as-us.falkag.net/sel?cmd=lnk&amp;kid=120709&amp;bid=263057&amp;dat=121642">
-http://sel.as-us.falkag.net/sel?cmd=lnk&amp;kid=120709&amp;bid=263057&amp;dat=121642</a><br>_______________________________________________<br>User-mode-linux-devel mailing list<br><a href="mailto:User-mode-linux-devel@lists.sourceforge.net">
-User-mode-linux-devel@lists.sourceforge.net</a><br><a href="https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel">https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel</a><br></blockquote></div>
-<br><br clear="all"><br>-- <br>Alessandro Salvatori
-
-------=_Part_36777_15419397.1154696443975--
+> On Thu, Aug 03, 2006 at 01:08:51PM -0700, Stephens, Allan wrote:
+>> Where I think my confusion is arising is in the details of how the
+>> filtering
+>> controlled by the promiscuous setting is actually done.  If a packet
+>> with
+>> the "wrong" destination address arrives at an interface, who checks to
+>> see
+>> whether the interface has been configured as promiscuous and
+>> passes/discards it
+>> accordingly?  I have naively assumed that this was handled in hardware
+>> on the
+>> NIC card in a real system, but is it really done by software?
+>
+> Ah, a light goes on.  I believe that it is done on the card.
+>
+>> What I seem to
+>> be
+>> observing in my UML testing is that *nobody* is doing this filtering,
+>> resulting in
+>> unwanted packets being handed to my protocol (which sits directly on top
+>> of the
+>> Ethernet driver).
+>
+> And since UML doesn't have "cards", it may be that the driver should do the
+> filtering at the bottom layer and it isn't.
 
 
---===============1405849250==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+IIRC, most but not all cards will do the filtering in hardware unless 
+they're in promiscuous mode. However if the card is in promiscuous mode or 
+doesn't support filtering, the next step is when eth_type_trans sets the 
+pkt_type of the skb to PACKET_OTHERHOST. I remember there being something 
+odd about the handling of ethernet headers a good while ago.
+
+In any event, doing the filtering in the device would help, but won't work 
+when it's promisc (for example if tcpdump is running).
+
+G'day,
+sjames
+
+
+>
+> 				Jeff
+>
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1405849250==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============1405849250==--
