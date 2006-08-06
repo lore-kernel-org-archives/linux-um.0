@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1G9kq7-0002pT-AM for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Aug 2006 08:46:55 -0700
+	id 1G9kq8-0002pZ-U6 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Aug 2006 08:46:57 -0700
 Received: from host17-96.pool873.interbusiness.it ([87.3.96.17]
 	helo=memento.home.lan) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1G9kq5-00011l-Uj for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 06 Aug 2006 08:46:55 -0700
+	id 1G9kq8-0007BQ-2t for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Aug 2006 08:46:56 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Sun, 06 Aug 2006 17:47:03 +0200
-Message-Id: <20060806154703.536.80128.stgit@memento.home.lan>
+Date: Sun, 06 Aug 2006 17:47:05 +0200
+Message-Id: <20060806154705.536.49855.stgit@memento.home.lan>
 In-Reply-To: <20060806154700.536.32978.stgit@memento.home.lan>
 References: <20060806154700.536.32978.stgit@memento.home.lan>
-Subject: [uml-devel] [PATCH 2/3] uml: fix proc-vs-interrupt context spinlock
-	deadlock
+Subject: [uml-devel] [PATCH 3/3] uml: clean our set_ether_mac
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,100 +33,69 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-This spinlock can be taken on interrupt too, so spin_lock_irq[save] must be used.
+Clean set_ether_mac usage. Maybe could also be removed, but surely it can't be a
+global function taking a void* argument.
 
-However, Documentation/networking/netdevices.txt explains we are called with
-rtnl_lock() held - so we don't need to care about other concurrent opens.
-Verified also in LDD3 and by direct checking. Also verified that the network
-layer (through a state machine) guarantees us that nobody will close the
-interface while it's being used. Please correct me if I'm wrong.
-
-Also, we must check we don't sleep with irqs disabled!!! But anyway, this is not
-news - we already can't sleep while holding a spinlock. Who says this is
-guaranted really by the present code?
+You may want to defer this patch to next kernel release.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/net_kern.c |   16 ++++------------
- 1 files changed, 4 insertions(+), 12 deletions(-)
+ arch/um/drivers/net_kern.c |   14 ++++++--------
+ arch/um/include/net_user.h |    1 -
+ 2 files changed, 6 insertions(+), 9 deletions(-)
 
 diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 6af229c..f5fba74 100644
+index f5fba74..e26601a 100644
 --- a/arch/um/drivers/net_kern.c
 +++ b/arch/um/drivers/net_kern.c
-@@ -109,8 +109,6 @@ static int uml_net_open(struct net_devic
- 	struct uml_net_private *lp = dev->priv;
- 	int err;
+@@ -31,6 +31,11 @@ #include "init.h"
+ #include "irq_user.h"
+ #include "irq_kern.h"
  
--	spin_lock(&lp->lock);
--
- 	if(lp->fd >= 0){
- 		err = -ENXIO;
- 		goto out;
-@@ -144,8 +142,6 @@ static int uml_net_open(struct net_devic
- 	 */
- 	while((err = uml_net_rx(dev)) > 0) ;
++static inline void set_ether_mac(struct net_device *dev, unsigned char *addr)
++{
++	memcpy(dev->dev_addr, addr, ETH_ALEN);
++}
++
+ #define DRIVER_NAME "uml-netdev"
  
--	spin_unlock(&lp->lock);
--
- 	spin_lock(&opened_lock);
- 	list_add(&lp->list, &opened);
- 	spin_unlock(&opened_lock);
-@@ -155,7 +151,6 @@ out_close:
- 	if(lp->close != NULL) (*lp->close)(lp->fd, &lp->user);
- 	lp->fd = -1;
- out:
--	spin_unlock(&lp->lock);
- 	return err;
- }
- 
-@@ -164,15 +159,12 @@ static int uml_net_close(struct net_devi
- 	struct uml_net_private *lp = dev->priv;
- 	
- 	netif_stop_queue(dev);
--	spin_lock(&lp->lock);
- 
- 	free_irq(dev->irq, dev);
- 	if(lp->close != NULL)
- 		(*lp->close)(lp->fd, &lp->user);
- 	lp->fd = -1;
- 
--	spin_unlock(&lp->lock);
--
- 	spin_lock(&opened_lock);
- 	list_del(&lp->list);
- 	spin_unlock(&opened_lock);
-@@ -241,9 +233,9 @@ static int uml_net_set_mac(struct net_de
- 	struct uml_net_private *lp = dev->priv;
+ static DEFINE_SPINLOCK(opened_lock);
+@@ -234,7 +239,7 @@ static int uml_net_set_mac(struct net_de
  	struct sockaddr *hwaddr = addr;
  
--	spin_lock(&lp->lock);
-+	spin_lock_irq(&lp->lock);
- 	memcpy(dev->dev_addr, hwaddr->sa_data, ETH_ALEN);
--	spin_unlock(&lp->lock);
-+	spin_unlock_irq(&lp->lock);
+ 	spin_lock_irq(&lp->lock);
+-	memcpy(dev->dev_addr, hwaddr->sa_data, ETH_ALEN);
++	set_ether_mac(dev, hwaddr->sa_data);
+ 	spin_unlock_irq(&lp->lock);
  
  	return(0);
- }
-@@ -253,7 +245,7 @@ static int uml_net_change_mtu(struct net
- 	struct uml_net_private *lp = dev->priv;
- 	int err = 0;
- 
--	spin_lock(&lp->lock);
-+	spin_lock_irq(&lp->lock);
- 
- 	new_mtu = (*lp->set_mtu)(new_mtu, &lp->user);
- 	if(new_mtu < 0){
-@@ -264,7 +256,7 @@ static int uml_net_change_mtu(struct net
- 	dev->mtu = new_mtu;
- 
-  out:
--	spin_unlock(&lp->lock);
-+	spin_unlock_irq(&lp->lock);
- 	return err;
+@@ -788,13 +793,6 @@ void dev_ip_addr(void *d, unsigned char 
+ 	memcpy(bin_buf, &in->ifa_address, sizeof(in->ifa_address));
  }
  
+-void set_ether_mac(void *d, unsigned char *addr)
+-{
+-	struct net_device *dev = d;
+-
+-	memcpy(dev->dev_addr, addr, ETH_ALEN);	
+-}
+-
+ struct sk_buff *ether_adjust_skb(struct sk_buff *skb, int extra)
+ {
+ 	if((skb != NULL) && (skb_tailroom(skb) < extra)){
+diff --git a/arch/um/include/net_user.h b/arch/um/include/net_user.h
+index 800c403..47ef7cb 100644
+--- a/arch/um/include/net_user.h
++++ b/arch/um/include/net_user.h
+@@ -26,7 +26,6 @@ struct net_user_info {
+ 
+ extern void ether_user_init(void *data, void *dev);
+ extern void dev_ip_addr(void *d, unsigned char *bin_buf);
+-extern void set_ether_mac(void *d, unsigned char *addr);
+ extern void iter_addresses(void *d, void (*cb)(unsigned char *, 
+ 					       unsigned char *, void *), 
+ 			   void *arg);
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
