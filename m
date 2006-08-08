@@ -2,18 +2,16 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GAPfT-0000TK-8Z for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 04:22:39 -0700
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GAPfR-0002Vc-Qn
+	id 1GASBM-00065b-QK for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Aug 2006 07:03:44 -0700
+Received: from web25219.mail.ukl.yahoo.com ([217.146.176.205])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GASBJ-0005y8-RX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 04:22:39 -0700
-References: <20060806154700.536.32978.stgit@memento.home.lan>
-From: Andi Kleen <ak@suse.de>
-Date: 08 Aug 2006 13:22:31 +0200
-In-Reply-To: <20060806154700.536.32978.stgit@memento.home.lan>
-Message-ID: <p733bc7pj48.fsf@verdi.suse.de>
+	Tue, 08 Aug 2006 07:03:44 -0700
+Message-ID: <20060808140335.81959.qmail@web25219.mail.ukl.yahoo.com>
+Date: Tue, 8 Aug 2006 16:03:35 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <p733bc7pj48.fsf@verdi.suse.de>
 MIME-Version: 1.0
 Subject: Re: [uml-devel] [PATCH 1/3] uml: use -mcmodel=kernel for x86_64
 List-Id: The user-mode Linux development list
@@ -29,22 +27,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+To: Andi Kleen <ak@suse.de>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it> writes:
+Andi Kleen <ak@suse.de> ha scritto: 
 
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it> writes:
 > 
-> We have never used this flag and recently one user experienced a complaining
-> warning about this (there was a symbol in the positive half of the address space
-> IIRC). So fix it.
+> > From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> > 
+> > We have never used this flag and recently one user experienced a
+> complaining
+> > warning about this (there was a symbol in the positive half of
+> the address space
+> > IIRC). So fix it.
+> 
+> You can't use kernel cmodel in user space.  It requires running on
+> negative
+> virtual addresses. I would be surprised if it worked for you.
 
-You can't use kernel cmodel in user space.  It requires running on negative
-virtual addresses. I would be surprised if it worked for you.
+Argh, yes, I didn't test the patch and I didn't think to it a lot. So
+what about the following bug? Should we hack our own module loader
+based on x86-64's one?
 
--Andi
->
+Moreover, who has recently tested module loading in x86-64 uml
+kernels? I don't remember doing such testing recently...
+
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=115125101012707&w=2
+
+
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
