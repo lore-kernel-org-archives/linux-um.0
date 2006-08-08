@@ -1,23 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GADPO-0004zx-FF for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Aug 2006 15:17:14 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GADPN-0003iQ-Vj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Aug 2006 15:17:14 -0700
-Date: Mon, 7 Aug 2006 18:17:03 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060807221703.GD5890@ccure.user-mode-linux.org>
-References: <20060806154700.536.32978.stgit@memento.home.lan>
-	<20060806154705.536.49855.stgit@memento.home.lan>
+	id 1GAJZe-0002RM-BN for User-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Aug 2006 21:52:14 -0700
+Received: from bay0-omc2-s35.bay0.hotmail.com ([65.54.246.171])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GAJZb-0007eu-3Q
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Aug 2006 21:52:14 -0700
+Message-ID: <BAY7-F8B837FF733995C731DEAA94540@phx.gbl>
+From: "Alejandro Liu" <alejandro_liu@hotmail.com>
+Date: Tue, 08 Aug 2006 04:52:03 +0000
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060806154705.536.49855.stgit@memento.home.lan>
-Subject: Re: [uml-devel] [PATCH 3/3] uml: clean our set_ether_mac
+Subject: [uml-devel] Which version to use
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,22 +26,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: User-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Aug 06, 2006 at 05:47:05PM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> 
-> Clean set_ether_mac usage. Maybe could also be removed, but surely it can't be a
-> global function taking a void* argument.
-> 
-> You may want to defer this patch to next kernel release.
-> 
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Hi,
 
-This one I can go along with :-)
+What is a "current" version of UML to use as a guest?  I am currently using 
+the one that comes with the vanilla 2.6.17.6 kernel and trying to use hostfs 
+as root and found a number of bugs.
 
-Acked-by: Jeff Dike <jdike@addtoit.com>
+Of course I went ahead and fixed those bugs but I don't know if I should 
+send the patches somewhere or if these bugs were fixed in some "secret" 
+development version of UML.
+
+PS: Actually I did not set out to do bug hunting, I was just adding some 
+features to hostfs that I wanted to use.  The bug fixing was just a side 
+effect.
+
+_________________________________________________________________
+FREE pop-up blocking with the new MSN Toolbar - get it now! 
+http://toolbar.msn.click-url.com/go/onm00200415ave/direct/01/
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
