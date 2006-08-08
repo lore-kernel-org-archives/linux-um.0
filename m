@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GAWKw-0005xr-QA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 11:29:54 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GAWKs-00032l-Qf
+	id 1GAXmw-0005Zu-6G for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Aug 2006 13:02:54 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GAXmt-0005MK-LO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 11:29:54 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 8 Aug 2006 20:29:53 +0200
-References: <BAY7-F8B837FF733995C731DEAA94540@phx.gbl>
-In-Reply-To: <BAY7-F8B837FF733995C731DEAA94540@phx.gbl>
-MIME-Version: 1.0
+	Tue, 08 Aug 2006 13:02:54 -0700
+Date: Tue, 8 Aug 2006 16:02:31 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060808200231.GA6463@ccure.user-mode-linux.org>
+References: <20060807221400.GC5890@ccure.user-mode-linux.org>
+	<20060808105905.10762.qmail@web25224.mail.ukl.yahoo.com>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200608082029.53613.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Which version to use
+In-Reply-To: <20060808105905.10762.qmail@web25224.mail.ukl.yahoo.com>
+Subject: Re: [uml-devel] [PATCH 2/3] uml: fix proc-vs-interrupt context
+	spinlock deadlock
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,43 +32,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Paolo Giarrusso <blaisorblade@yahoo.it>
+Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 08 August 2006 06:52, Alejandro Liu wrote:
-> Hi,
->
-> What is a "current" version of UML to use as a guest?  I am currently using
-> the one that comes with the vanilla 2.6.17.6 kernel and trying to use
-> hostfs as root and found a number of bugs.
+On Tue, Aug 08, 2006 at 12:59:05PM +0200, Paolo Giarrusso wrote:
+> I could be wrong, but I trust that thanks to deep and good work by
+> who designed locking in the network layer, this patch is correct. And
+> indeed I addressed your issues below.
 
-> Of course I went ahead and fixed those bugs but I don't know if I should
-> send the patches somewhere 
+OK, but there will need to be comments explaining why it is OK that
+this data only looks half-locked.
 
-Yes, thanks. To this list, Jeff Dike and me (and if you want LKML, but don't 
-do that if you're shy or not entirely sure).
+The locking, as it stands, looks consistent and conservative.
+However, there are some places where critical sections are too big and
+the locking should be narrowed.
 
-> or if these bugs were fixed in some "secret" 
-> development version of UML.
+> This is also true of char/block devices (you don't need to lock
+> against write/read in open/close; UBD doesn't know that but I have
+> unfinished patches for it), but there it's simpler: if userspace you
+> call close while a read is executing, thanks to refcounting (sys_read
+> does fget) the ->close (or ->release) is only called after the end of
+> ->read.
 
-No. hostfs is _at the moment_ unmaintained. There is a rewrite of hostfs 
-(based on the new externfs), but it is nowhere near merging (it's under slow 
-development since at least an year).
+In my current patchset, there is a per-queue lock which is mostly
+managed by the block layer.
 
-You can find the development tree here:
-http://user-mode-linux.sourceforge.net/patches.html
-
-> PS: Actually I did not set out to do bug hunting, I was just adding some
-> features to hostfs that I wanted to use.
-You could maybe post them too.
-> The bug fixing was just a side 
-> effect.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
