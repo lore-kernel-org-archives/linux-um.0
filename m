@@ -1,24 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GAXmw-0005Zu-6G for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 13:02:54 -0700
+	id 1GAYel-0001oQ-5u for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Aug 2006 13:58:31 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GAXmt-0005MK-LO
+	(Exim 4.44) id 1GAYek-0008JD-Q1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 13:02:54 -0700
-Date: Tue, 8 Aug 2006 16:02:31 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060808200231.GA6463@ccure.user-mode-linux.org>
-References: <20060807221400.GC5890@ccure.user-mode-linux.org>
-	<20060808105905.10762.qmail@web25224.mail.ukl.yahoo.com>
+	Tue, 08 Aug 2006 13:58:31 -0700
+Message-Id: <200608082058.k78KwJpx006536@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060808105905.10762.qmail@web25224.mail.ukl.yahoo.com>
-Subject: Re: [uml-devel] [PATCH 2/3] uml: fix proc-vs-interrupt context
-	spinlock deadlock
+Date: Tue, 08 Aug 2006 16:58:19 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 2/2] UML - use ptrace-abi.h instead of ptrace.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,32 +27,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo Giarrusso <blaisorblade@yahoo.it>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: akpm@osdl.org
+Cc: Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Kyle Moffett <mrmacman_g4@mac.com>
 
-On Tue, Aug 08, 2006 at 12:59:05PM +0200, Paolo Giarrusso wrote:
-> I could be wrong, but I trust that thanks to deep and good work by
-> who designed locking in the network layer, this patch is correct. And
-> indeed I addressed your issues below.
+Include the host architecture's ptrace-abi.h instead of ptrace.h.
 
-OK, but there will need to be comments explaining why it is OK that
-this data only looks half-locked.
+There was some cpp mangling of names around the ptrace.h include to
+avoid symbol clashes between UML and the host architecture.  Most of
+these can go away.  The exception is struct pt_regs, which is
+convenient to have in userspace, but must be renamed in order that UML
+can define its own.
 
-The locking, as it stands, looks consistent and conservative.
-However, there are some places where critical sections are too big and
-the locking should be narrowed.
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-> This is also true of char/block devices (you don't need to lock
-> against write/read in open/close; UBD doesn't know that but I have
-> unfinished patches for it), but there it's simpler: if userspace you
-> call close while a read is executing, thanks to refcounting (sys_read
-> does fget) the ->close (or ->release) is only called after the end of
-> ->read.
+Index: linux-2.6.18-mm/include/asm-um/ptrace-generic.h
+===================================================================
+--- linux-2.6.18-mm.orig/include/asm-um/ptrace-generic.h	2006-08-06 14:51:28.000000000 -0400
++++ linux-2.6.18-mm/include/asm-um/ptrace-generic.h	2006-08-06 20:35:20.000000000 -0400
+@@ -8,18 +8,9 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
+-
+ #define pt_regs pt_regs_subarch
+-#define show_regs show_regs_subarch
+-#define send_sigtrap send_sigtrap_subarch
+-
+-#include "asm/arch/ptrace.h"
+-
++#include "asm/arch/ptrace-abi.h"
+ #undef pt_regs
+-#undef show_regs
+-#undef send_sigtrap
+-#undef user_mode
+-#undef instruction_pointer
+ 
+ #include "sysdep/ptrace.h"
+ 
 
-In my current patchset, there is a per-queue lock which is mostly
-managed by the block layer.
-
-				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
