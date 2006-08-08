@@ -2,17 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GAJZe-0002RM-BN for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Aug 2006 21:52:14 -0700
-Received: from bay0-omc2-s35.bay0.hotmail.com ([65.54.246.171])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GAJZb-0007eu-3Q
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Aug 2006 21:52:14 -0700
-Message-ID: <BAY7-F8B837FF733995C731DEAA94540@phx.gbl>
-From: "Alejandro Liu" <alejandro_liu@hotmail.com>
-Date: Tue, 08 Aug 2006 04:52:03 +0000
-Mime-Version: 1.0
-Subject: [uml-devel] Which version to use
+	id 1GAP6E-0005oz-Qz for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Aug 2006 03:46:14 -0700
+Received: from web25224.mail.ukl.yahoo.com ([217.146.176.210])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GAP6C-0000GP-8E
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Aug 2006 03:46:14 -0700
+Message-ID: <20060808104605.6696.qmail@web25224.mail.ukl.yahoo.com>
+Date: Tue, 8 Aug 2006 12:46:05 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <20060807211850.GB5890@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 1/3] uml: use -mcmodel=kernel for x86_64
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,26 +27,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: User-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+Jeff Dike <jdike@addtoit.com> ha scritto: 
 
-What is a "current" version of UML to use as a guest?  I am currently using 
-the one that comes with the vanilla 2.6.17.6 kernel and trying to use hostfs 
-as root and found a number of bugs.
+> On Sun, Aug 06, 2006 at 05:47:00PM +0200, Paolo 'Blaisorblade'
+> Giarrusso wrote:
+> > +_extra_flags_ = -fno-builtin -m64 -mcmodel=kernel
 
-Of course I went ahead and fixed those bugs but I don't know if I should 
-send the patches somewhere or if these bugs were fixed in some "secret" 
-development version of UML.
+> What exactly does this do
+go to "man gcc" and search mcmodel for the answer to this one.
+And x86_64 uses it too, so this patch should go for 2.6.18.
 
-PS: Actually I did not set out to do bug hunting, I was just adding some 
-features to hostfs that I wanted to use.  The bug fixing was just a side 
-effect.
+>, and can you remember why you think it's
+> needed?
 
-_________________________________________________________________
-FREE pop-up blocking with the new MSN Toolbar - get it now! 
-http://toolbar.msn.click-url.com/go/onm00200415ave/direct/01/
+Ok, here's my answer to the original bugreport, which is a complete
+explaination - sorry for not providing the link, I have very little
+time for UML this summer.
 
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=115125101012707&w=2
+
+Bye
+
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
