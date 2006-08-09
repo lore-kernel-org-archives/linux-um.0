@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GAdW4-0001oJ-TF for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 19:09:52 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GAdW3-0006Rh-D4
+	id 1GApJ0-0004sJ-Q1 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Aug 2006 07:45:10 -0700
+Received: from web25222.mail.ukl.yahoo.com ([217.146.176.208])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GApIx-0000Ja-UX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Aug 2006 19:09:52 -0700
-Date: Tue, 8 Aug 2006 22:09:35 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060809020935.GB8201@ccure.user-mode-linux.org>
-References: <200608082058.k78KwGa4006531@ccure.user-mode-linux.org>
-	<p73u04mol9k.fsf@verdi.suse.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <p73u04mol9k.fsf@verdi.suse.de>
-Subject: Re: [uml-devel] [PATCH 1/2] Split i386 and x86_64 ptrace.h
+	Wed, 09 Aug 2006 07:45:10 -0700
+Message-ID: <20060809144459.58896.qmail@web25222.mail.ukl.yahoo.com>
+Date: Wed, 9 Aug 2006 16:44:59 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <20060808200231.GA6463@ccure.user-mode-linux.org>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 2/3] uml: fix proc-vs-interrupt context
+	spinlock deadlock
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,20 +28,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andi Kleen <ak@suse.de>
-Cc: Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Kyle Moffett <mrmacman_g4@mac.com>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Aug 09, 2006 at 01:33:43AM +0200, Andi Kleen wrote:
-> I think I would prefer a well placed ifdef __KERNEL__ or two for this - i don't
-> like it when it becomes harder to grep include files like this
-> (like the errno->errno-base split was quite bad in this regard)
+Jeff Dike <jdike@addtoit.com> ha scritto: 
 
-__KERNEL__ doesn't help because UML defines it just like any other arch.
+> On Tue, Aug 08, 2006 at 12:59:05PM +0200, Paolo Giarrusso wrote:
+> > I could be wrong, but I trust that thanks to deep and good work
+> by
+> > who designed locking in the network layer, this patch is correct.
+> And
+> > indeed I addressed your issues below.
+> 
+> OK, but there will need to be comments explaining why it is OK that
+> this data only looks half-locked.
 
-If you want to play ifdef tricks, it would have to be #ifdef UML, or something
-similar.
+Guess I'll put it in Documentation and reference it.
 
-				Jeff
+> The locking, as it stands, looks consistent and conservative.
+Yes, it is.
+> However, there are some places where critical sections are too big
+> and
+> the locking should be narrowed.
+
+Yes, in particular we cannot hold a spinlock for the whole _open
+since it must call sleeping functions. 
+
+> > This is also true of char/block devices (you don't need to lock
+> > against write/read in open/close; UBD doesn't know that but I
+> have
+> > unfinished patches for it), but there it's simpler: if userspace
+> you
+> > call close while a read is executing, thanks to refcounting
+> (sys_read
+> > does fget) the ->close (or ->release) is only called after the
+> end of
+> > ->read.
+> 
+> In my current patchset, there is a per-queue lock which is mostly
+> managed by the block layer.
+
+I'll try then to finish the patches soon and merge them; the main
+problem is splitting (including the use of different locks) normal
+locking from our peculiar locking of _open/_close against mconsole
+changes.
+
+
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
