@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GAqZf-0004I6-I9 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Aug 2006 09:06:27 -0700
-Received: from bay0-omc3-s24.bay0.hotmail.com ([65.54.246.224])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GAqZc-0007EA-0B
+	id 1GAzlW-00059j-Ez for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Aug 2006 18:55:18 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GAzlV-0001fY-UO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Aug 2006 09:06:27 -0700
-Message-ID: <BAY7-F2368BCD814F328231685E594550@phx.gbl>
-From: "Alejandro Liu" <alejandro_liu@hotmail.com>
-Date: Wed, 09 Aug 2006 16:06:10 +0000
+	Wed, 09 Aug 2006 18:55:18 -0700
+Message-Id: <200608091815.k79IFW3W005315@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_3144_338a_dae"
-Subject: Re: [uml-devel] Which version to use
+Date: Wed, 09 Aug 2006 14:15:30 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH] UML - Stack usage reduction
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,388 +23,135 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
+The KSTK_* macros used an inordinate amount of stack.  In order to
+overcome an impedance mismatch between their interface, which just
+returns a single register value, and the interface of get_thread_regs,
+which took a full pt_regs, the implementation created an on-stack
+pt_regs, filled it in, and returned one field.  do_task_stat calls
+KSTK_* twice, resulting in two local pt_regs, blowing out the stack.
 
-------=_NextPart_000_3144_338a_dae
-Content-Type: text/plain; format=flowed
+This patch changes the interface (and name) of get_thread_regs to just
+return a single register from a jmp_buf.
 
-Since I am shy, I am posting this here (and not to the LKML).
+The include of archsetjmp.h" in registers.h to get the definition of
+jmp_buf exposed a bogus include of <setjmp.h> in start_up.c.
+<setjmp.h> shouldn't be used anywhere any more since UML uses the
+klibc setjmp/longjmp.
 
-I am including to patch files:
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-    patch-hostfsfix.gz
+Index: linux-2.6.17/arch/um/include/registers.h
+===================================================================
+--- linux-2.6.17.orig/arch/um/include/registers.h	2006-06-17 21:49:35.000000000 -0400
++++ linux-2.6.17/arch/um/include/registers.h	2006-08-09 13:42:06.000000000 -0400
+@@ -7,6 +7,7 @@
+ #define __REGISTERS_H
+ 
+ #include "sysdep/ptrace.h"
++#include "sysdep/archsetjmp.h"
+ 
+ extern void init_thread_registers(union uml_pt_regs *to);
+ extern int save_fp_registers(int pid, unsigned long *fp_regs);
+@@ -15,6 +16,6 @@ extern void save_registers(int pid, unio
+ extern void restore_registers(int pid, union uml_pt_regs *regs);
+ extern void init_registers(int pid);
+ extern void get_safe_registers(unsigned long * regs, unsigned long * fp_regs);
+-extern void get_thread_regs(union uml_pt_regs *uml_regs, void *buffer);
++extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
+ 
+ #endif
+Index: linux-2.6.17/arch/um/os-Linux/sys-i386/registers.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/sys-i386/registers.c	2006-08-09 13:36:17.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/sys-i386/registers.c	2006-08-09 13:42:06.000000000 -0400
+@@ -130,11 +130,14 @@ void get_safe_registers(unsigned long *r
+ 		       HOST_FP_SIZE * sizeof(unsigned long));
+ }
+ 
+-void get_thread_regs(union uml_pt_regs *uml_regs, void *buffer)
++unsigned long get_thread_reg(int reg, jmp_buf *buf)
+ {
+-	struct __jmp_buf *jmpbuf = buffer;
+-
+-	UPT_SET(uml_regs, EIP, jmpbuf->__eip);
+-	UPT_SET(uml_regs, UESP, jmpbuf->__esp);
+-	UPT_SET(uml_regs, EBP, jmpbuf->__ebp);
++	switch(reg){
++	case EIP: return buf[0]->__eip;
++	case UESP: return buf[0]->__esp;
++	case EBP: return buf[0]->__ebp;
++	default:
++		printk("get_thread_regs - unknown register %d\n", reg);
++		return 0;
++	}
+ }
+Index: linux-2.6.17/arch/um/os-Linux/sys-x86_64/registers.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/sys-x86_64/registers.c	2006-08-09 13:36:17.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/sys-x86_64/registers.c	2006-08-09 13:42:06.000000000 -0400
+@@ -78,11 +78,14 @@ void get_safe_registers(unsigned long *r
+ 		       HOST_FP_SIZE * sizeof(unsigned long));
+ }
+ 
+-void get_thread_regs(union uml_pt_regs *uml_regs, void *buffer)
++unsigned long get_thread_reg(int reg, jmp_buf *buf)
+ {
+-	struct __jmp_buf *jmpbuf = buffer;
+-
+-	UPT_SET(uml_regs, RIP, jmpbuf->__rip);
+-	UPT_SET(uml_regs, RSP, jmpbuf->__rsp);
+-	UPT_SET(uml_regs, RBP, jmpbuf->__rbp);
++	switch(reg){
++	case RIP: return buf[0]->__rip;
++	case RSP: return buf[0]->__rsp;
++	case RBP: return buf[0]->__rbp;
++	default:
++		printk("get_thread_regs - unknown register %d\n", reg);
++		return 0;
++	}
+ }
+Index: linux-2.6.17/include/asm-um/processor-generic.h
+===================================================================
+--- linux-2.6.17.orig/include/asm-um/processor-generic.h	2006-08-09 13:35:31.000000000 -0400
++++ linux-2.6.17/include/asm-um/processor-generic.h	2006-08-09 13:42:06.000000000 -0400
+@@ -138,9 +138,7 @@ extern struct cpuinfo_um cpu_data[];
+ 
+ #ifdef CONFIG_MODE_SKAS
+ #define KSTK_REG(tsk, reg) \
+-	({ union uml_pt_regs regs; \
+-	   get_thread_regs(&regs, tsk->thread.mode.skas.switch_buf); \
+-	   UPT_REG(&regs, reg); })
++	get_thread_reg(reg, tsk->thread.mode.skas.switch_buf)
+ #else
+ #define KSTK_REG(tsk, reg) (0xbadbabe)
+ #endif
+Index: linux-2.6.17/arch/um/os-Linux/start_up.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/start_up.c	2006-08-09 13:56:44.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/start_up.c	2006-08-09 13:56:54.000000000 -0400
+@@ -14,7 +14,6 @@
+ #include <sched.h>
+ #include <fcntl.h>
+ #include <errno.h>
+-#include <setjmp.h>
+ #include <sys/time.h>
+ #include <sys/wait.h>
+ #include <sys/mman.h>
 
-This one fixes a crash when trying to mount hostfs, an error on how the 
-mount options were
-passed and fixed the setattr to set the time correctly (touch command works 
-now).
-
-   patch-frhost.gz
-
-This is a hack of hostfs.  Essentially it adds a new filesystem type to UML, 
-frhost.  This
-filesystem is nearly identical to hostfs except one big difference:  It 
-stores and uses file ownership,
-permissions and mknod data from an external ".meta" file.  All files under 
-frhost are created using
-0700 mode and owned by the UID of the UML process, however, internally, 
-these files may be owned by the UML users.  I guess this is similar to HUMFS 
-(but I couldn't find it before I made my own).
-
-BTW, frhost is limited to run over filesystems that use real i-node numbers. 
-  So it will not work over FAT file systems, for example.
-
-PS: I have succesfully tested frhost as root file system and also compiling 
-the linux kernel.
-
->From: Blaisorblade <blaisorblade@yahoo.it>
->To: user-mode-linux-devel@lists.sourceforge.net
->CC: "Alejandro Liu" <alejandro_liu@hotmail.com>
->Subject: Re: [uml-devel] Which version to use
->Date: Tue, 8 Aug 2006 20:29:53 +0200
->
->On Tuesday 08 August 2006 06:52, Alejandro Liu wrote:
-> > Hi,
-> >
-> > What is a "current" version of UML to use as a guest?  I am currently 
->using
-> > the one that comes with the vanilla 2.6.17.6 kernel and trying to use
-> > hostfs as root and found a number of bugs.
->
-> > Of course I went ahead and fixed those bugs but I don't know if I should
-> > send the patches somewhere
->
->Yes, thanks. To this list, Jeff Dike and me (and if you want LKML, but 
->don't
->do that if you're shy or not entirely sure).
->
-> > or if these bugs were fixed in some "secret"
-> > development version of UML.
->
->No. hostfs is _at the moment_ unmaintained. There is a rewrite of hostfs
->(based on the new externfs), but it is nowhere near merging (it's under 
->slow
->development since at least an year).
->
->You can find the development tree here:
->http://user-mode-linux.sourceforge.net/patches.html
->
-> > PS: Actually I did not set out to do bug hunting, I was just adding some
-> > features to hostfs that I wanted to use.
->You could maybe post them too.
-> > The bug fixing was just a side
-> > effect.
->--
->Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
->Paolo Giarrusso, aka Blaisorblade
->http://www.user-mode-linux.org/~blaisorblade
->Chiacchiera con i tuoi amici in tempo reale!
->  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com
-
-_________________________________________________________________
-FREE pop-up blocking with the new MSN Toolbar - get it now! 
-http://toolbar.msn.click-url.com/go/onm00200415ave/direct/01/
-
-------=_NextPart_000_3144_338a_dae
-Content-Type: application/gzip; name="patch-hostfsfix.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="patch-hostfsfix.gz"
-
-H4sICAUF2kQAA3BhdGNoLWhvc3Rmc2ZpeACtVdlu2kAUfYavuH0BG3tgMGtA
-RKkq0kYNpAr0pW1kGXscrBg78oyjLsm/dxabPY1TZR4yzp1zt3MXvMD3AaUJ
-hEGU/kRWvVtv9urdhk8by5iy9WXfkSSqu3sw5CfL56BlhFBBqyUL4y7CPdTs
-Am4NMB60W3WcHzBwH+OyYRiv8J6Z7CN8Arg/sDqDdu/A5NkZoJN2y+yBoa6z
-szL8KUOJsiR1GQRR7BGoJXHMbPk95G/u0kmgFjkrYkLNc5gDI/CGZVQKIgYk
-SYZlI/80IeQawt4CnVJ7EcbuHQ1+E67RxFZ7ePhiLwJG5fNQRddpmU2Lhyfu
-royvFPiapvyOYPr18lKHx0fQarmo+gNXdZ3jSllwefgiFKPkxwlo4QgPxev3
-8AYqFcg/33FtszoMDUOXWfigqSfUvJGmG1UdEOJJGdw+T5BbR+Pp1WQ8EQQI
-TrjkbuWEPB+NkxiSSFrQwYCmCR/Pv9ifx9fT8aW0v4cPj4BktgqXJSsSu41Z
-DHHKREZIFMu9/6WpikhvwviKrNZSITTDtU+R6giwKs2muFwW3BKm0YUJOPe9
-/ZxHIAvTx7Jt+u2sbfZPowbTGIL7VLQRsGVAwXUogQVxnZTfbEnAE69eTCj/
-z2EgSpNSqDUOrQmkpnpFRCSi2z+bV1CBipKsqbL9hBBBwDZ5+XlSTBCWJpEm
-UveKbgWeSVJwKyhooa2goG+6FXZM5luhxU12jm4Fq3kiyquufOocxhKKTgPH
-fnDCwIMKfLqazc9n9vv5/NqeXXwb62J5CCjfH5HrMKL5Qci7cqMphlzXIeMa
-8RmKYtlrT7xaKzGu2zbfzy8mY3s2nsPjjnySy2WnH9U6ppH19JFEVnxEeX/z
-S2awSP2647JAzucG7QhJnT3YlLjDHLeKvQPgagcoCbX6klB5SUJJyKdAesu2
-rdCh98QFRtVgv8z5mh8etlEUr1LM1hdlDp8NXqSsUmJwnv0r9UqlbXmF0UOg
-LKgMRzjhWxWrpWG1FAmtNQkSlIrMM/8VTqmeqUhvh50iW+XlXCev5Gbyhtwc
-ZeUFbjpyoapLcfMkx6LA6H2QoYP8ET6G1QpNhy6JKmjgX0OpKxb/g8RtKit7
-c8dZ3RuwHfgOw38BB4Ann9YJAAA=
-
-
-------=_NextPart_000_3144_338a_dae
-Content-Type: application/gzip; name="patch-frhost.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="patch-frhost.gz"
-
-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
-
-
-------=_NextPart_000_3144_338a_dae
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-------=_NextPart_000_3144_338a_dae
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-------=_NextPart_000_3144_338a_dae--
