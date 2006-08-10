@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GB242-0008DB-5C for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Aug 2006 21:22:34 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GB240-0003M4-MN
+	id 1GB8Qt-0007mv-F1 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Aug 2006 04:10:35 -0700
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GB8Qr-0004jk-2g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Aug 2006 21:22:34 -0700
-Date: Thu, 10 Aug 2006 00:22:16 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060810042216.GA7754@ccure.user-mode-linux.org>
+	Thu, 10 Aug 2006 04:10:35 -0700
+Date: Thu, 10 Aug 2006 13:10:03 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Message-ID: <20060810111003.GA11194@wohnheim.fh-wedel.de>
 References: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
-	<20060810020922.GO6908@waste.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20060810020922.GO6908@waste.org>
+In-Reply-To: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
 Subject: Re: [uml-devel] [PATCH] UML - support checkstack
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -27,36 +25,35 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Matt Mackall <mpm@selenic.com>
-Cc: akpm@osdl.org, Joern Engel <joern@wohnheim.fh-wedel.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Content-Transfer-Encoding: quoted-printable
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Matt Mackall <mpm@selenic.com>
 
-On Wed, Aug 09, 2006 at 09:09:22PM -0500, Matt Mackall wrote:
-> On Wed, Aug 09, 2006 at 02:15:24PM -0400, Jeff Dike wrote:
-> > Make checkstack work for UML.  We need to pass the underlying architecture
-> > name, rather than "um" to checkstack.pl.
-> 
-> Does this do the right thing with something like Voyager?
+On Wed, 9 August 2006 14:15:24 -0400, Jeff Dike wrote:
+>=20
+> Make checkstack work for UML.  We need to pass the underlying architecture
+> name, rather than "um" to checkstack.pl.
+>=20
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-SUBARCH has a different meaning here.  For UML, it's the underlying,
-host, architecture, not a variant architecture like Voyager.
+Acked-by: Joern Engel <joern@wohnheim.fh-wedel.de>
 
-> 
-> Or should we just get together a small fund to send the remaining
-> Voyager users proper computers?
+J=F6rn
 
-Yeah, that's a plan :-)
-
-				Jeff
+--=20
+Geld macht nicht gl=FCcklich.
+Gl=FCck macht nicht satt.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
+Get stuff done quickly with pre-integrated technology to make your job easi=
+er
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D1=
+21642
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
