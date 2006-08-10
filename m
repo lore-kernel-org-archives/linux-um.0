@@ -2,18 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GAzld-0005A0-NI for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Aug 2006 18:55:27 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1GB00P-0006L6-4o for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Aug 2006 19:10:41 -0700
+Received: from waste.org ([66.93.16.53])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GAzld-00087k-97
+	(Exim 4.44) id 1GB00N-0002OL-Nf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Aug 2006 18:55:25 -0700
-Message-Id: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
+	Wed, 09 Aug 2006 19:10:41 -0700
+Date: Wed, 9 Aug 2006 21:09:22 -0500
+From: Matt Mackall <mpm@selenic.com>
+Message-ID: <20060810020922.GO6908@waste.org>
+References: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 09 Aug 2006 14:15:24 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] UML - support checkstack
+Content-Disposition: inline
+In-Reply-To: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] UML - support checkstack
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,34 +30,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: Joern Engel <joern@wohnheim.fh-wedel.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Matt Mackall <mpm@selenic.com>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, Joern Engel <joern@wohnheim.fh-wedel.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Make checkstack work for UML.  We need to pass the underlying architecture
-name, rather than "um" to checkstack.pl.
+On Wed, Aug 09, 2006 at 02:15:24PM -0400, Jeff Dike wrote:
+> Make checkstack work for UML.  We need to pass the underlying architecture
+> name, rather than "um" to checkstack.pl.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Does this do the right thing with something like Voyager?
 
-Index: linux-2.6.18-mm/Makefile
-===================================================================
---- linux-2.6.18-mm.orig/Makefile	2006-08-07 13:49:52.000000000 -0400
-+++ linux-2.6.18-mm/Makefile	2006-08-07 13:53:34.000000000 -0400
-@@ -1315,9 +1315,13 @@ endif #ifeq ($(config-targets),1)
- endif #ifeq ($(mixed-targets),1)
- 
- PHONY += checkstack kernelrelease kernelversion
-+
-+# Use $(SUBARCH) here instead of $(ARCH) so that this works for UML.
-+# In the UML case, $(SUBARCH) is the name of the underlying
-+# architecture, while for all other arches, it is the same as $(ARCH).
- checkstack:
- 	$(OBJDUMP) -d vmlinux $$(find . -name '*.ko') | \
--	$(PERL) $(src)/scripts/checkstack.pl $(ARCH)
-+	$(PERL) $(src)/scripts/checkstack.pl $(SUBARCH)
- 
- kernelrelease:
- 	$(if $(wildcard include/config/kernel.release), $(Q)echo $(KERNELRELEASE), \
+Or should we just get together a small fund to send the remaining
+Voyager users proper computers?
 
+-- 
+Mathematics is the supreme nostalgia of our time.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
