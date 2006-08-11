@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GBDgU-0005YN-3c for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Aug 2006 09:47:02 -0700
-Received: from waste.org ([66.93.16.53])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GBDgS-00053L-Lv
+	id 1GBVoG-0003VK-Sl for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 11 Aug 2006 05:08:16 -0700
+Received: from nf-out-0910.google.com ([64.233.182.185])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GBVoF-0005r4-Da
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Aug 2006 09:47:02 -0700
-Date: Thu, 10 Aug 2006 11:45:48 -0500
-From: Matt Mackall <mpm@selenic.com>
-Message-ID: <20060810164548.GS6908@waste.org>
-References: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
-	<20060810020922.GO6908@waste.org>
-	<20060810042216.GA7754@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060810042216.GA7754@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] UML - support checkstack
+	Fri, 11 Aug 2006 05:08:16 -0700
+Received: by nf-out-0910.google.com with SMTP id a27so875338nfc
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 11 Aug 2006 05:08:13 -0700 (PDT)
+Message-ID: <f8194a940608110508hee34903kdc134042b5f59b6c@mail.gmail.com>
+Date: Fri, 11 Aug 2006 20:08:13 +0800
+From: "QJ Miao" <qjmiao@gmail.com>
+MIME-Version: 1.0
+Subject: [uml-devel] How to submit UML patch?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,37 +25,66 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0380987248=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: akpm@osdl.org, Joern Engel <joern@wohnheim.fh-wedel.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Aug 10, 2006 at 12:22:16AM -0400, Jeff Dike wrote:
-> On Wed, Aug 09, 2006 at 09:09:22PM -0500, Matt Mackall wrote:
-> > On Wed, Aug 09, 2006 at 02:15:24PM -0400, Jeff Dike wrote:
-> > > Make checkstack work for UML.  We need to pass the underlying architecture
-> > > name, rather than "um" to checkstack.pl.
-> > 
-> > Does this do the right thing with something like Voyager?
-> 
-> SUBARCH has a different meaning here.  For UML, it's the underlying,
-> host, architecture, not a variant architecture like Voyager.
+--===============0380987248==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_18574_8233396.1155298093310"
 
-Right, so it sounds like this breaks Voyager. Which I think means we
-ought to pass ARCH and SUBARCH and do the right thing inside
-checkstack.
+------=_Part_18574_8233396.1155298093310
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- 
-Mathematics is the supreme nostalgia of our time.
+Hi,
+
+I have some useful UML patch to submit.
+But I don not know how to do it.
+
+
+Thanks.
+qjmiao
+
+------=_Part_18574_8233396.1155298093310
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<div>Hi,</div>
+<div>&nbsp;</div>
+<div>I have some useful UML patch to submit.</div>
+<div>But I don not know how to do it.</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>Thanks.</div>
+<div>qjmiao</div>
+
+------=_Part_18574_8233396.1155298093310--
+
+
+--===============0380987248==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--===============0380987248==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============0380987248==--
