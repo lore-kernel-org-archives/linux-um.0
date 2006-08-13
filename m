@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GCIKQ-00012x-AM for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 13 Aug 2006 08:56:42 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GCIKN-0007bW-B6
+	id 1GCIOR-0001SD-9z for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 13 Aug 2006 09:00:51 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GCIOP-0000k7-OJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 13 Aug 2006 08:56:42 -0700
+	Sun, 13 Aug 2006 09:00:51 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 13 Aug 2006 17:56:18 +0200
+Date: Sun, 13 Aug 2006 18:00:37 +0200
 References: <BAY101-F3556FC13777163E2ABDF69E2490@phx.gbl>
 In-Reply-To: <BAY101-F3556FC13777163E2ABDF69E2490@phx.gbl>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200608131756.18571.blaisorblade@yahoo.it>
+Message-Id: <200608131800.37555.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [ link to patch] resurrecting the uml-hcd
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -40,59 +40,27 @@ On Sunday 13 August 2006 17:41, James McMechan wrote:
 > >Subject: Re: [uml-devel] [ link to patch] resurrecting the uml-hcd
 > >Date: Sun, 13 Aug 2006 13:24:28 +0200
 
-> No problem, I don't like it either, if the registration functions
-> still worked I would have kept using the old ones and defered the
-> platform update.
+> It is a maze of calls and I have not been able to use breakpoints with gdb
+> much less the module symbols
+For module debugging a very recent mail explained the solution in detail.
+For break panic, it never worked for me - the suggestion is to add a pause() 
+call in a loop checking a variable, and to change the var only in gdb; since 
+such a var would be optimized out, add a global function called nowhere which 
+sets that var too (on the list a more involved solution was proposed to stop 
+the optimization but this should work).
 
-Don't worry, that's clear.
-
-> this is the result of mad typeing to get the silly thing 
-> working under 2.6.17
+> I set the usual
 >
-> it is not too hard to just delete the !PLATFORM sections but I will
-> be needing them in 2.6.12 later so I had left them in
-> the struct redefs and function arg changes don't seem to fit well
-> into a header abstraction unless you want #RETURNVALUE1
-> #ARGLIST1 and simliar oddness.
-See the irqreturn_t definition - they suggest similar things indeed for 2.4 
-compatibility (they suggest "add 
-#if 2.4
-#define irqreturn_t void
-#define IRQ_HANDLED /**/
-#endif
-).
+> b sys_init_module
+> b panic
+>
+> and on modprobe I just get
+>
+> [42949532.180000] Kernel panic - not syncing: Segfault with no mm
+> [42949532.180000]  [42949532.180000]
+> Program exited with code 01.
+> (gdb)
 
-> If I understood you correctly my problem would be
-> in .h
-> #ifdef KERN2_6_17
-> #define func old_func
-> #else
-> #define func new_func
-> #endif
-> and in .c
-> #ifdef PLATFORM
-> new_return new_func(new_arg)
-> {}
-> #else
-> old_return old_func(old_arg)
-> {}
-> #endif
-> since the new and old version won't compile due to
-> renaming arguments and return values that don't exist
-> in the other version I think I would just end up duplicating
-> the code in a bigger ifdef.
-
-I don't know the specific issue (i.e. how different are the two routines), my 
-proposal was something like
-
-#if LINUX_KERNEL_VERSION < ...
-#define pci_init_driver pci_register_driver
-#endif
-
-or to have a micro-wrapper just for the changed thing. If the init is too 
-different then ok - actually if you write with the #ifdef possibly when you 
-merge you can remove it, and even if you keep it I don't think there will be 
-too many objections.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
