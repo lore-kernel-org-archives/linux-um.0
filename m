@@ -1,22 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GBzoW-0001g6-WE for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Aug 2006 13:10:33 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GBzoV-0001r0-BQ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Aug 2006 13:10:32 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 12 Aug 2006 22:10:31 +0200
-References: <39134b110608100842p5acdf798o807b48801ea9a706@mail.gmail.com>
-	<200608122022.42389.blaisorblade@yahoo.it>
-In-Reply-To: <200608122022.42389.blaisorblade@yahoo.it>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200608122210.32222.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] UML hostfs bugs
+Message-ID: <BAY101-F23508A11EBFB151C043062E2490@phx.gbl>
+From: "James McMechan" <james_mcmechan@hotmail.com>
+Date: Sun, 13 Aug 2006 04:10:11 +0000
+Mime-Version: 1.0
+Subject: [uml-devel] [ link to patch] resurrecting the uml-hcd
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,42 +17,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
-Cc: wang lianwei <lianwei.wang@gmail.com>
+To: linux-usb-devel@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Cc: James_McMechan@hotmail.com
 
-On Saturday 12 August 2006 20:22, Blaisorblade wrote:
-> On Thursday 10 August 2006 17:42, wang lianwei wrote:
-> > Hi all,
-> >
-> > There is a bug with UML kernel, some host directory can not be read, for
-> > example "ls /mnt/host/usr/lib", this command is dead until you press
-> > CTRL+c. I test it with Redhat Enterprise Linux 4.
+I am attempting to resurrect the uml-hcd driver
+this version is based off of the gadget/dummy_hcd.c driver.
 
-> I can maybe understand why it could happen. I'd be more interested in
-> checking if a simple sequence of readdir() calls (without seekdir()) would
-> work (probably write a standalone test program, it will be easier to use
-> and debug) and 
+I am aiming at a 2.6.12.2 target where it will be used.
+I have forward ported it to 2.6.17.6 for testing and hopefully
+eventual inclusion.
 
-> why read_dir needs to do seekdir (I think it's done to 
-> handle calls to seekdir by the underlying process, but there should be
-> different ways to do it).
+This patch has a #PLATFORM to deal with the issues between
+2.6.17.6/2.6.12.2 since platform_register... is not present in older
+kernels and the new kernels don't work with the older registration.
 
-I want to propose as an alternative modifying hostfs_dir_fops.llseek to point 
-to a wrapper of generic_file_llseek doing what we need (i.e. seeking the 
-underlying pointer), and avoiding seekdir and telldir in read_dir.
-This should fix the issue (I think).
+For some reason the usb core is not sending hub urbs to my hcd
+all the control seems to run through hub_control and hub_status_data
+both of which are not checked before calling and so segfaults the kernel
+if not present rather than queuing a control urb to get the
+status as I would have expected...
 
-I'm sorry but I will not have the time to code the patch, so please do it 
-yourselves; Wang, you're welcome to code it yourself if you feel like doing 
-it.
+Now I realize, that in hub_control I can assemble a urb out of the data
+presented and call my enqueue method, but it looks like that would
+be unusually dense of me, since it appears that there should already be
+some way to get the urbs.
 
-Bye
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+Notes:
+I found that core/message.c does not include asm/scatterlist.h
+it appears to assume that linux/pci.h has the scatterlist stuff,
+but since UML has no PCI at all pci.h does not include it.
+I just added the scatterlist.h should I have removed pci.h?
+
+On 2.6.17.6 it segfaults in the core at hub.c:2251 dev_dbg
+where udev->bus->controller->driver->name is used without checking
+if driver == NULL which it was in my version.  I have not figured out
+where that driver is supposed to be set since the controller appears to
+be created in the usb core somewhere...
+This patch now checks for that.
+
+Does anyone know where bus->controller->driver is supposed to be set?
+
+uml-hcd is currently partly operational
+I can enumerate the device, libusb will talk to it.
+Control URBs seem to go back and forth.
+and report status back correctly.
+
+I have walked through the usbmon output on the host and the hub simulation
+is producing the same status in the same order as the host does
+the host appears to produce urbs for its root hub however.
+under uml usbmon does not show up in /sys/kernel/debug so
+I have not been able to test it there, my current spew level dev_info dumps
+all the hub control/status to my console.
+
+Your thoughts are welcome, I would hate to have to fall back to creating a
+virtual proc files system that just forwards all the libusb calls down to 
+the
+host OS.  This was working a few years ago and it looks (from dummy_hcd.c
+and usbip) that it should be possible here. I know it was possible to write
+a complete usb from userspace without requiring a stub driver back in
+the bad old days of 2.4.18...
+
+No doubt this version takes may liberties with the core and driver model
+if you could point out some of the more obvious ones to me,
+I still was thinking about the automatic interrupt urb submission when last
+this was current.
+
+The patch can be fetched from 
+http://mysite.verizon.net/james.mcmechan/uml-hcd.2.6.17.6.patch
+or bzipped as 
+http://mysite.verizon.net/james.mcmechan/uml-hcd.2.6.17.6.patch.bz2
+it is 1104 lines long & 31K in size so I stuck it on a web page.
+
+Enjoy,
+
+James McMechan
+
 
 
 -------------------------------------------------------------------------
