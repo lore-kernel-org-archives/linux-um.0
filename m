@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GCpRF-0007jZ-Ew for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Aug 2006 20:17:58 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GCpRC-0006ll-Ve
+	id 1GD31T-0000Ym-Sc for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Aug 2006 10:48:15 -0700
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GD31R-0002HL-4X
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Aug 2006 20:17:57 -0700
-Date: Mon, 14 Aug 2006 23:17:33 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060815031733.GA7089@ccure.user-mode-linux.org>
-References: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
-	<20060810020922.GO6908@waste.org>
-	<20060810042216.GA7754@ccure.user-mode-linux.org>
-	<20060810164548.GS6908@waste.org>
-Mime-Version: 1.0
+	Tue, 15 Aug 2006 10:48:15 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Tue, 15 Aug 2006 19:47:54 +0200
+References: <39134b110608100842p5acdf798o807b48801ea9a706@mail.gmail.com>
+	<200608122022.42389.blaisorblade@yahoo.it>
+	<39134b110608140407n718d0cf5rfed71f8295ea43e0@mail.gmail.com>
+In-Reply-To: <39134b110608140407n718d0cf5rfed71f8295ea43e0@mail.gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20060810164548.GS6908@waste.org>
-Subject: Re: [uml-devel] [PATCH] UML - support checkstack
+Message-Id: <200608151947.54925.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] UML hostfs bugs
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,28 +31,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Matt Mackall <mpm@selenic.com>
-Cc: akpm@osdl.org, Joern Engel <joern@wohnheim.fh-wedel.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: wang lianwei <lianwei.wang@gmail.com>, Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Aug 10, 2006 at 11:45:48AM -0500, Matt Mackall wrote:
-> > SUBARCH has a different meaning here.  For UML, it's the underlying,
-> > host, architecture, not a variant architecture like Voyager.
-> 
-> Right, so it sounds like this breaks Voyager. Which I think means we
-> ought to pass ARCH and SUBARCH and do the right thing inside
-> checkstack.
+On Monday 14 August 2006 13:07, wang lianwei wrote:
+> Answers:
+>
+> 1. I test it on ext3 filesystem.
+>
+> 2. You are right. Sometimes the pos telldir returned is not the next entry
+> offset. just as your point out:
+>       position 0 -> readdir "." -> you call telldir -> it _again_ says
+> you're at 0.
+>
+> 3. I also try to resolve it by remove the seekdir(only use the
+> sequence readdir call), It is also worked.
 
-There is no use of the symbol SUBARCH in arch/i386.  While this may be
-jarring to people who know and love Voyager, it doesn't break
-anything.
+I can guess what the patch does but please generate with the additional -p 
+option so it's easier to read (otherwise the recipient _has_ to read the 
+source). Compliments for the solution, it's really simpler and better than my 
+proposal.
 
-We could do what you suggest, but that sounds unnecessary.
+Also, you have to regenerate it anyway for another (tiny) reason: it is not 
+always safe to use "seekdir" in kernelspace code, you need (sadly) a new 
+wrapper in hostfs_user.c and to call it instead of seekdir in hostfs_kern.c; 
+almost surely you'll get an "undeclared function" warning but miscompilations 
+in some rare cases are also possible, say for stat(): it is defined almost 
+only as a static inline function, or for some structures having different 
+definitions in userspace and kernelspace.
 
-I'd rather either
-	leave things as they are
-	rename SUBARCH
+> --- linux-2.6.x/fs/hostfs/hostfs_kern.c 2006-04-12 15:12:51.000000000 +0800
+> +++ linux-2.6.10-src/fs/hostfs/hostfs_kern.c      2006-08-14 18:25:
+> 13.772237744 +0800
+> @@ -338,6 +338,7 @@
+>         kfree(name);
+>         if(dir == NULL) return(-error);
+>         next = file->f_pos;
+> +       seekdir(dir,next);
+>         while((name = read_dir(dir, &next, &ino, &len)) != NULL){
+>                 error = (*filldir)(ent, name, len, file->f_pos,
+>                                    ino, DT_UNKNOWN);
+>
+>
+> --- linux-2.6.x/fs/hostfs/hostfs_user.c 2006-04-12 15:12:52.000000000 +0800
+> +++ linux-2.6.10-src/fs/hostfs/hostfs_user.c      2006-08-14 18:36:
+> 24.276305632 +0800
+> @@ -122,7 +122,6 @@
+>         DIR *dir = stream;
+>         struct dirent *ent;
+>
+> -       seekdir(dir, *pos);
+>         ent = readdir(dir);
+>         if(ent == NULL) return(NULL);
+>         *len_out = strlen(ent->d_name);
 
-				Jeff
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
