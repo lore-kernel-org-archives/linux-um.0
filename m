@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GD31T-0000Ym-Sc for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Aug 2006 10:48:15 -0700
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GD31R-0002HL-4X
+	id 1GD3BF-0001Ry-BQ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Aug 2006 10:58:21 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GD3BC-0004rr-NB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Aug 2006 10:48:15 -0700
+	Tue, 15 Aug 2006 10:58:21 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 15 Aug 2006 19:47:54 +0200
-References: <39134b110608100842p5acdf798o807b48801ea9a706@mail.gmail.com>
-	<200608122022.42389.blaisorblade@yahoo.it>
-	<39134b110608140407n718d0cf5rfed71f8295ea43e0@mail.gmail.com>
-In-Reply-To: <39134b110608140407n718d0cf5rfed71f8295ea43e0@mail.gmail.com>
+Date: Tue, 15 Aug 2006 19:57:59 +0200
+References: <200608091815.k79IFQVB005310@ccure.user-mode-linux.org>
+	<20060810164548.GS6908@waste.org>
+	<20060815031733.GA7089@ccure.user-mode-linux.org>
+In-Reply-To: <20060815031733.GA7089@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200608151947.54925.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] UML hostfs bugs
+Message-Id: <200608151957.59759.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] UML - support checkstack
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,59 +31,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: wang lianwei <lianwei.wang@gmail.com>, Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: akpm@osdl.org, Jeff Dike <jdike@addtoit.com>, Joern Engel <joern@wohnheim.fh-wedel.de>, linux-kernel@vger.kernel.org, Matt Mackall <mpm@selenic.com>
 
-On Monday 14 August 2006 13:07, wang lianwei wrote:
-> Answers:
+On Tuesday 15 August 2006 05:17, Jeff Dike wrote:
+> On Thu, Aug 10, 2006 at 11:45:48AM -0500, Matt Mackall wrote:
+> > > SUBARCH has a different meaning here.  For UML, it's the underlying,
+> > > host, architecture, not a variant architecture like Voyager.
+> >
+> > Right, so it sounds like this breaks Voyager. Which I think means we
+> > ought to pass ARCH and SUBARCH and do the right thing inside
+> > checkstack.
 >
-> 1. I test it on ext3 filesystem.
+> There is no use of the symbol SUBARCH in arch/i386.  While this may be
+> jarring to people who know and love Voyager, it doesn't break
+> anything.
 >
-> 2. You are right. Sometimes the pos telldir returned is not the next entry
-> offset. just as your point out:
->       position 0 -> readdir "." -> you call telldir -> it _again_ says
-> you're at 0.
+> We could do what you suggest, but that sounds unnecessary.
 >
-> 3. I also try to resolve it by remove the seekdir(only use the
-> sequence readdir call), It is also worked.
-
-I can guess what the patch does but please generate with the additional -p 
-option so it's easier to read (otherwise the recipient _has_ to read the 
-source). Compliments for the solution, it's really simpler and better than my 
-proposal.
-
-Also, you have to regenerate it anyway for another (tiny) reason: it is not 
-always safe to use "seekdir" in kernelspace code, you need (sadly) a new 
-wrapper in hostfs_user.c and to call it instead of seekdir in hostfs_kern.c; 
-almost surely you'll get an "undeclared function" warning but miscompilations 
-in some rare cases are also possible, say for stat(): it is defined almost 
-only as a static inline function, or for some structures having different 
-definitions in userspace and kernelspace.
-
-> --- linux-2.6.x/fs/hostfs/hostfs_kern.c 2006-04-12 15:12:51.000000000 +0800
-> +++ linux-2.6.10-src/fs/hostfs/hostfs_kern.c      2006-08-14 18:25:
-> 13.772237744 +0800
-> @@ -338,6 +338,7 @@
->         kfree(name);
->         if(dir == NULL) return(-error);
->         next = file->f_pos;
-> +       seekdir(dir,next);
->         while((name = read_dir(dir, &next, &ino, &len)) != NULL){
->                 error = (*filldir)(ent, name, len, file->f_pos,
->                                    ino, DT_UNKNOWN);
->
->
-> --- linux-2.6.x/fs/hostfs/hostfs_user.c 2006-04-12 15:12:52.000000000 +0800
-> +++ linux-2.6.10-src/fs/hostfs/hostfs_user.c      2006-08-14 18:36:
-> 24.276305632 +0800
-> @@ -122,7 +122,6 @@
->         DIR *dir = stream;
->         struct dirent *ent;
->
-> -       seekdir(dir, *pos);
->         ent = readdir(dir);
->         if(ent == NULL) return(NULL);
->         *len_out = strlen(ent->d_name);
+> I'd rather either
+> 	leave things as they are
+Yes, and make the script check if it ARCH=um or not (which is obvious for 
+now - nobody really wants a clear abstraction here).
+> 	rename SUBARCH
 
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
