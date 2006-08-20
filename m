@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GEkSt-0005Gl-Eo for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Aug 2006 03:23:35 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GEkSr-0000AN-PX
+	id 1GEkUi-0005Z3-7R for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Aug 2006 03:25:28 -0700
+Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GEkUg-0004e7-F1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Aug 2006 03:23:35 -0700
+	Sun, 20 Aug 2006 03:25:28 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 20 Aug 2006 12:23:15 +0200
+Date: Sun, 20 Aug 2006 12:24:50 +0200
 References: <200608171256.57196.peter@fusselt.net>
 	<200608191653.43641.blaisorblade@yahoo.it>
-	<20060820004259.GA4465@ccure.user-mode-linux.org>
-In-Reply-To: <20060820004259.GA4465@ccure.user-mode-linux.org>
+	<200608191838.51481.peter@fusselt.net>
+In-Reply-To: <200608191838.51481.peter@fusselt.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200608201223.15659.blaisorblade@yahoo.it>
+Message-Id: <200608201224.51029.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Strange behaviour in eth assignments
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -32,22 +32,57 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Peter Hovorka <peter@fusselt.net>
 
-On Sunday 20 August 2006 02:42, Jeff Dike wrote:
-> On Sat, Aug 19, 2006 at 04:53:43PM +0200, Blaisorblade wrote:
-> > Do you really mean "tap112"? Nobody I think tried this.
+On Saturday 19 August 2006 18:38, Peter Hovorka wrote:
+> Hi,
 >
-> I have :-)
-I forgot!
-> Read The Book (and BTW, I need to figure out a way to get you 
-> a copy).
+> > > ./um2.6.16.27-bb1 ubd0=root_fs ubd1=swap_fs eth0=tuntap,tap112
+> >
+> > Do you really mean "tap112"?
+>
+> Yes, Sir.
+I didn't want to be rude, sorry.
 
-I reviewed it at the time, I've not seen later changes (and not had the time - 
-I'm concentrating on avoiding housekeeping and doing instead big UML jobs 
-like remap_file_pages for this).
+> > Nobody I think tried this. > I've checked
+> > for bugs in parsing, but there is none. Please give more details and
+> > try a saner setting, or elaborate on the reason of this strange
+> > setting. At least let's determine if changing it causes the bug not
+> > to show up.
+>
+> I've used taps according to the used IP in a range of 1-254 since 2002 -
+> and I've never experienced any problems in doing so. So tap112 is quite
+> a sane setting - for me at least it is.
 
-And I still need to send the document to AWL to get paid (I think it's too 
-late probably... but I should!).
+I was just surprised, and one of my thoughts was "it is barfing on 112 because 
+maybe the code is stupid and expects 1 digit". So I asked just to make sure.
+
+The other was "why is he doing this? Does he need? Probably yes, I won't take 
+that for granted and instead I'll ask him".
+
+> > The other possibility is that something in the guest image (I'm not
+> > talking about the kernel, but about the rootfs) is calling ifrename.
+> > But since some kernels don't do that, this is probably not the case.
+
+> I have tried this with three more or less different file systems after
+> your mail to the list (and I should have done earlier - only thing I
+> hadn't thought of), as there are:
+
+> - Ubuntu Server 6.0.6 LTS
+> - Fedora Core 5
+> - Debian Sarge
+
+> The problem seems to be Ubuntu - FC5 and Debian Sarge do well.
+> No 
+> problems with them. I would like to use Ubuntu, though - so it would be
+> nice to have a workaround or at least the cause for this to happen.
+
+About Ubuntu, make sure ifrename is not installed and /etc/network/if-* 
+and /etc/rc2.d do not mention ifrename, and that ifrename is not installed.
+I can only think that some hotplug script is receiving an event through 
+sysfs / hotplug / some such hell and is renaming the interface.
+
+Bye
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
