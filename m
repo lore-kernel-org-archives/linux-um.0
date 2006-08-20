@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GEbPZ-0006kL-CO for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Aug 2006 17:43:33 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GEbPW-0002dv-TT
+	id 1GEkSt-0005Gl-Eo for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Aug 2006 03:23:35 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GEkSr-0000AN-PX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Aug 2006 17:43:33 -0700
-Date: Sat, 19 Aug 2006 20:42:59 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060820004259.GA4465@ccure.user-mode-linux.org>
+	Sun, 20 Aug 2006 03:23:35 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 20 Aug 2006 12:23:15 +0200
 References: <200608171256.57196.peter@fusselt.net>
 	<200608191653.43641.blaisorblade@yahoo.it>
-Mime-Version: 1.0
+	<20060820004259.GA4465@ccure.user-mode-linux.org>
+In-Reply-To: <20060820004259.GA4465@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200608191653.43641.blaisorblade@yahoo.it>
+Message-Id: <200608201223.15659.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Strange behaviour in eth assignments
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,23 +31,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Peter Hovorka <peter@fusselt.net>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Aug 19, 2006 at 04:53:43PM +0200, Blaisorblade wrote:
-> Do you really mean "tap112"? Nobody I think tried this. 
+On Sunday 20 August 2006 02:42, Jeff Dike wrote:
+> On Sat, Aug 19, 2006 at 04:53:43PM +0200, Blaisorblade wrote:
+> > Do you really mean "tap112"? Nobody I think tried this.
+>
+> I have :-)
+I forgot!
+> Read The Book (and BTW, I need to figure out a way to get you 
+> a copy).
 
-I have :-)  Read The Book (and BTW, I need to figure out a way to get you 
-a copy).
+I reviewed it at the time, I've not seen later changes (and not had the time - 
+I'm concentrating on avoiding housekeeping and doing instead big UML jobs 
+like remap_file_pages for this).
 
-> If this were, say, a buffer overflow, or a bug because tap112 does not exist,
-> the source causes "unspecified behaviour", so totally unrelated changes can 
-> change the actual behaviour to change.
+And I still need to send the document to AWL to get paid (I think it's too 
+late probably... but I should!).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-I don't see anything on the host affecting this.  Something funky is happening
-when the UML network subsystem chooses names for new interfaces.
-
-				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
