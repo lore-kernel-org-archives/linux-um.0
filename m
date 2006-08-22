@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GFYnH-0003Vt-7z for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Aug 2006 09:07:59 -0700
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GFYnE-0008IQ-Hq
+	id 1GFaHF-0003rM-OC for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Aug 2006 10:43:01 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GFaHC-0000IG-6V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Aug 2006 09:07:59 -0700
-Date: Tue, 22 Aug 2006 18:07:41 +0200
-From: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20060822160741.GB11651@stusta.de>
+	Tue, 22 Aug 2006 10:43:01 -0700
+Date: Tue, 22 Aug 2006 13:42:33 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060822174233.GA5471@ccure.user-mode-linux.org>
 References: <20060821215641.GQ11651@stusta.de>
 	<20060822022012.GA7070@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	<20060822160741.GB11651@stusta.de>
+Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20060822022012.GA7070@ccure.user-mode-linux.org>
+In-Reply-To: <20060822160741.GB11651@stusta.de>
 Subject: Re: [uml-devel] arch/um/sys-i386/setjmp.S: useless #ifdef _REGPARM's?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,58 +32,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Adrian Bunk <bunk@stusta.de>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Aug 21, 2006 at 10:20:12PM -0400, Jeff Dike wrote:
-> On Mon, Aug 21, 2006 at 11:56:41PM +0200, Adrian Bunk wrote:
-> > arch/um/sys-i386/setjmp.S contains two #ifdef _REGPARM's.
-> > 
-> > Even if regparm was used in i386 uml (which isn't currently done (why?)),
-> > I don't see _REGPARM being defined anywhere.
+On Tue, Aug 22, 2006 at 06:07:41PM +0200, Adrian Bunk wrote:
+> I didn't find a corresponding open bug in the gcc Bugzilla.
 > 
-> setjmp.S was stolen from klibc, and I'd just as soon leave it alone and
-> not try to customize it for UML.  That file will disappear if/when klibc 
-> is in mainline, and I can just pull it in from usr.
+> Can someone verify whether it's still present, and if yes, open a gcc 
+> bug?
 
-Ah, klibc defines _REGPARM if required.
+Yup, it's easy enough to check.
 
-> In general, there's no reason that regparam can't be used for UML.  However,
-> in the past (I don't know if it's still a problem) gcc miscompiled regparam
-> code in the presence of -pg.
+> It's set globally in arch/i386/Makefile:
+>   cflags-$(CONFIG_REGPARM) += -mregparm=3
 
-I didn't find a corresponding open bug in the gcc Bugzilla.
+IIRC, there used to be functions explicitly declared as __regparam or
+something, and that's what I was grepping for.  Does this turn every
+function with three or fewer parameters into a regparam function?
 
-Can someone verify whether it's still present, and if yes, open a gcc 
-bug?
+> That's not pulled by UML, but if there are no outstanding problems with 
+> regparm, we could both enable it uncomditionally on i386 and enable it
+> on UML/i386.
 
-> As for why it's not, I don't see any occurences of regparam in include/linux
-> or include/asm-i386 either.
+That shouldn't be a problem.
 
-It's set globally in arch/i386/Makefile:
-  cflags-$(CONFIG_REGPARM) += -mregparm=3
-
-That's not pulled by UML, but if there are no outstanding problems with 
-regparm, we could both enable it uncomditionally on i386 and enable it
-on UML/i386.
-
-> > Is this a bug waiting for happening when regparm will be used on uml or 
-> > do I miss anything?
-> 
-> Probably not.
-> 
-> 				Jeff
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
