@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GFvDg-0006Ls-7e for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Aug 2006 09:04:44 -0700
-Received: from slartibartfast.pa.net ([66.59.111.182])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GFvDc-0003zt-FW
+	id 1GFvcD-0000O1-1O for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Aug 2006 09:30:05 -0700
+Received: from mail2.tqmcube.com ([65.98.66.133] helo=mail.tqmcube.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GFvcA-0001V8-Ec
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Aug 2006 09:04:43 -0700
-Date: Wed, 23 Aug 2006 12:03:24 -0400 (EDT)
-From: William Stearns <wstearns@pobox.com>
-In-Reply-To: <20060822223432.3f9b3d3e@dch.TQMcube.com>
-Message-ID: <Pine.LNX.4.64.0608231034020.3504@sparrow>
+	Wed, 23 Aug 2006 09:30:04 -0700
+Date: Wed, 23 Aug 2006 12:29:55 -0400
+From: David Cary Hart <DavidHart@TQMcube.com>
+Message-ID: <20060823122955.04d463b7@dch.TQMcube.com>
+In-Reply-To: <Pine.LNX.4.64.0608231034020.3504@sparrow>
 References: <20060822223432.3f9b3d3e@dch.TQMcube.com>
-MIME-Version: 1.0
+	<Pine.LNX.4.64.0608231034020.3504@sparrow>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] IPTables Issues on UML Host
-Reply-To: William Stearns <wstearns@pobox.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,47 +29,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: David Cary Hart <DavidHart@TQMcube.com>
-Cc: William Stearns <wstearns@pobox.com>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: William Stearns <wstearns@pobox.com>, user-mode-linux-devel@lists.sourceforge.net
 
-Good morning, David,
+On Wed, 23 Aug 2006 12:03:24 -0400 (EDT), William Stearns
+<wstearns@pobox.com> opined:
+> Good morning, David,
+> 
+> >
+> > I keep getting the following error:
+> > # iptables-save >/etc/sysconfig.iptables
+> > Can't find library for match `tcp'
+> >> 
+>  	I think this is probably independent of UML.
+> 
+>  	If you're building netfilter from scratch, head back to
+> the netfilter directory and re-run make; see if there are any
+> errors in the build process.  If that works OK, run "make install"
+> to see if it finally copies over a libipt_tcp.so.  Depending on the
+> build options, it _may_ be installed to /usr/lib/iptables/ instead
+> of /lib/iptables.  If that's the case, the easiest way to fix this
+> may be to make a symlnk from the existing directory
+> to /lib/iptables.  Up to you. Cheers,
+>  	- Bill
 
-On Tue, 22 Aug 2006, David Cary Hart wrote:
+Thanks for the reply.
+> 
+I am a UML nitwit but I even made a static build of IPTables. No
+dice. I have also made builds with specified LIBDIR and BINDIR. 
 
-> I hope that this is the right list.
->
-> I have a VDS on UML. Kernel=2.6.17.9
->
-> I have re-install netfilter several times and the host just
-> recompiled the kernel.
->
-> I keep getting the following error:
-> # iptables-save >/etc/sysconfig.iptables
-> Can't find library for match `tcp'
->
-> libipt_tcp.so is where it should be in /lib/iptables. What am I
-> missing?
-
- 	I think this is probably independent of UML.
-
- 	If you're building netfilter from scratch, head back to the 
-netfilter directory and re-run make; see if there are any errors in the 
-build process.  If that works OK, run "make install" to see if it finally 
-copies over a libipt_tcp.so.  Depending on the build options, it _may_ be 
-installed to /usr/lib/iptables/ instead of /lib/iptables.  If that's the 
-case, the easiest way to fix this may be to make a symlnk from the 
-existing directory to /lib/iptables.  Up to you.
- 	Cheers,
- 	- Bill
-
----------------------------------------------------------------------------
-         "Smile despite the circumstances and laugh throughout the pain.
-Life is full of hardships but it is how you deal with them that will, in
-the end, define your character."
---------------------------------------------------------------------------
-William Stearns (wstearns@pobox.com).  Mason, Buildkernel, freedups, p0f,
-rsync-backup, ssh-keyinstall, dns-check, more at:   http://www.stearns.org
---------------------------------------------------------------------------
+Oh well, I guess that I need to tinker. Fortunately IPTables is
+running properly.
+-- 
+Our DNSRBL - Eliminate Spam at the Source: http://www.TQMcube.com
+               Don't Subsidize Criminals: http://boulderpledge.org
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
