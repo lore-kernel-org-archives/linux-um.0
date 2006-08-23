@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GFbvG-0005BK-JQ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Aug 2006 12:28:26 -0700
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GFbvC-0003Wy-Se
+	id 1GFiZl-0001Wt-QY for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Aug 2006 19:34:41 -0700
+Received: from mail2.tqmcube.com ([65.98.66.133] helo=mail.tqmcube.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GFiZj-0004FG-E7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Aug 2006 12:28:26 -0700
-Date: Tue, 22 Aug 2006 21:28:14 +0200
-From: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20060822192814.GA19896@stusta.de>
-References: <20060821215641.GQ11651@stusta.de>
-	<20060822022012.GA7070@ccure.user-mode-linux.org>
-	<20060822160741.GB11651@stusta.de>
-	<20060822174233.GA5471@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060822174233.GA5471@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] arch/um/sys-i386/setjmp.S: useless #ifdef _REGPARM's?
+	Tue, 22 Aug 2006 19:34:41 -0700
+Received: from dch.TQMcube.com (mailone.tqmcube.com [68.236.166.73])
+	by mail.tqmcube.com (Postfix) with ESMTP id B43B12B553
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 22 Aug 2006 22:34:32 -0400 (EDT)
+Date: Tue, 22 Aug 2006 22:34:32 -0400
+From: David Cary Hart <DavidHart@TQMcube.com>
+Message-ID: <20060822223432.3f9b3d3e@dch.TQMcube.com>
+Mime-Version: 1.0
+Subject: [uml-devel] IPTables Issues on UML Host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,43 +30,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Aug 22, 2006 at 01:42:33PM -0400, Jeff Dike wrote:
-> On Tue, Aug 22, 2006 at 06:07:41PM +0200, Adrian Bunk wrote:
-> > I didn't find a corresponding open bug in the gcc Bugzilla.
-> > 
-> > Can someone verify whether it's still present, and if yes, open a gcc 
-> > bug?
-> 
-> Yup, it's easy enough to check.
+I hope that this is the right list.
+
+I have a VDS on UML. Kernel=2.6.17.9
+
+I have re-install netfilter several times and the host just
+recompiled the kernel.
+
+I keep getting the following error:
+# iptables-save >/etc/sysconfig.iptables
+Can't find library for match `tcp'
+
+libipt_tcp.so is where it should be in /lib/iptables. What am I
+missing?
 
 Thanks.
 
-> > It's set globally in arch/i386/Makefile:
-> >   cflags-$(CONFIG_REGPARM) += -mregparm=3
-> 
-> IIRC, there used to be functions explicitly declared as __regparam or
-> something, and that's what I was grepping for.  Does this turn every
-> function with three or fewer parameters into a regparam function?
->...
-
-With -mregparm=3, the first up to three parameters that aren't bigger 
-than an integer are passed in registers instead of on the stack.
-
-> 				Jeff
-
-cu
-Adrian
-
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+Our DNSRBL - Eliminate Spam at the Source: http://www.TQMcube.com
+               Don't Subsidize Criminals: http://boulderpledge.org
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
