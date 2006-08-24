@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GFvcD-0000O1-1O for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Aug 2006 09:30:05 -0700
-Received: from mail2.tqmcube.com ([65.98.66.133] helo=mail.tqmcube.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GFvcA-0001V8-Ec
+	id 1GGJq4-00059U-Ij for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Aug 2006 11:22:00 -0700
+Received: from www.scgiservices.com ([198.107.3.66] helo=www.sterlingcgi.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GGJq3-0005PS-0w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Aug 2006 09:30:04 -0700
-Date: Wed, 23 Aug 2006 12:29:55 -0400
-From: David Cary Hart <DavidHart@TQMcube.com>
-Message-ID: <20060823122955.04d463b7@dch.TQMcube.com>
-In-Reply-To: <Pine.LNX.4.64.0608231034020.3504@sparrow>
-References: <20060822223432.3f9b3d3e@dch.TQMcube.com>
-	<Pine.LNX.4.64.0608231034020.3504@sparrow>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] IPTables Issues on UML Host
+	Thu, 24 Aug 2006 11:22:00 -0700
+Message-ID: <20060824112154.f1tf1hdk89ioow44@www.scgiservices.com>
+Date: Thu, 24 Aug 2006 11:21:54 -0700
+From: Anthony Brock <brocka@sterlingcgi.com>
+References: <CBELIFGMBIEPIEOFCJFACENKCAAA.brocka@sterlingcgi.com>
+In-Reply-To: <CBELIFGMBIEPIEOFCJFACENKCAAA.brocka@sterlingcgi.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: Re: [uml-devel] Tomcat5 fails to run after UML kernel upgrade
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,39 +29,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: William Stearns <wstearns@pobox.com>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 23 Aug 2006 12:03:24 -0400 (EDT), William Stearns
-<wstearns@pobox.com> opined:
-> Good morning, David,
-> 
-> >
-> > I keep getting the following error:
-> > # iptables-save >/etc/sysconfig.iptables
-> > Can't find library for match `tcp'
-> >> 
->  	I think this is probably independent of UML.
-> 
->  	If you're building netfilter from scratch, head back to
-> the netfilter directory and re-run make; see if there are any
-> errors in the build process.  If that works OK, run "make install"
-> to see if it finally copies over a libipt_tcp.so.  Depending on the
-> build options, it _may_ be installed to /usr/lib/iptables/ instead
-> of /lib/iptables.  If that's the case, the easiest way to fix this
-> may be to make a symlnk from the existing directory
-> to /lib/iptables.  Up to you. Cheers,
->  	- Bill
+Does anyone have suggestions or ideas for this problem?  I am only  
+able to run Tomcat (kaffe) on 2.6.16.x and prior UML kernels.
 
-Thanks for the reply.
-> 
-I am a UML nitwit but I even made a static build of IPTables. No
-dice. I have also made builds with specified LIBDIR and BINDIR. 
+I have downgraded the host to 2.6.16.27-skas3-v8.2 but the problem  
+with 2.6.17 UML kernels still persists. I just tried upgrading the  
+guest to a stock 2.6.17.11 kernel without success.
 
-Oh well, I guess that I need to tinker. Fortunately IPTables is
-running properly.
--- 
-Our DNSRBL - Eliminate Spam at the Source: http://www.TQMcube.com
-               Don't Subsidize Criminals: http://boulderpledge.org
+I would really like to eventually upgrade my guest kernels beyond  
+2.6.26.x. However, this issues with Tomcat is a show stopper. Any  
+ideas or suggestions?
+
+Tony
+
+Quoting Anthony Brock <brocka@sterlingcgi.com>:
+> I'm running Tomcat5 on a virtual server instance. I just tried to upgrade
+> the UML kernel (and guest) to a 2.6.17.4 version. Previously the host was
+> running 2.6.16.9-skas3-v8.2 and the guest was running 2.6.17-rc6. Both host
+> and guest are Debian Etch distributions.
+>
+> However, with the host running 2.6.17.4-skas3-v9-pre9 and the guest running
+> a stock 2.6.17.4, I'm now experiencing a problem with Tomcat on startup.
+> Unfortunately, I don't have enough knowledge of Tomcat to get more detail,
+> but the following appears in the /var/log/tomcat5/catalina_2006-07-14.log
+> file:
+>
+> Using CATALINA_BASE:   /var/lib/tomcat5
+> Using CATALINA_HOME:   /usr/share/tomcat5
+> Using CATALINA_TMPDIR: /var/lib/tomcat5/temp
+> Using JAVA_HOME:       /usr/lib/kaffe
+> Using Security Manager
+> Internal error: caught an unexpected exception.
+> Please check your CLASSPATH and your installation.
+> java/lang/NullPointerException
+>
+> However, reversing the guest kernel back to 2.6.17-rc6 allows the Tomcat
+> server to start normally (leaving the host at 2.6.17.4-skas3-v9-pre9).
+>
+> I haven't seen anything specific to Tomcat cross the list recently. However,
+> is there a known bug in the stock 2.6.17.4 kernel that would cause this
+> behavior? Any suggestions on how to get more detailed information on the
+> crash?
+>
+> I originally attached a copy of the relevant config files for all 4 kernels.
+> However, the message was moderated due to size. Please contact me if you
+> would like copies of the configuration files for the different kernels.
+> Also, it's worth noting that the configuration for both guest kernels are
+> identical.
+>
+> Any suggestions or advice is appreciated!
+>
+> Tony
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
