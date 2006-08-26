@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GGxsk-0005MN-LV for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Aug 2006 06:07:26 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GGxsh-0002yj-Ug
+	id 1GGy4P-0006U4-L5 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Aug 2006 06:19:29 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GGy4M-0005bK-0z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Aug 2006 06:07:26 -0700
+	Sat, 26 Aug 2006 06:19:29 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 26 Aug 2006 15:07:08 +0200
-References: <200608171256.57196.peter@fusselt.net>
-	<517e86fb0608201103r7f07f57cxc433d1d15d49824b@mail.gmail.com>
-	<200608261435.17970.peter@fusselt.net>
-In-Reply-To: <200608261435.17970.peter@fusselt.net>
+Date: Sat, 26 Aug 2006 15:19:10 +0200
+References: <1156500157.27177.269394882@webmail.messagingengine.com>
+	<200608261308.00016.blaisorblade@yahoo.it>
+	<1156594303.17628.269468247@webmail.messagingengine.com>
+In-Reply-To: <1156594303.17628.269468247@webmail.messagingengine.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200608261507.09004.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Strange behaviour in eth assignments
+Message-Id: <200608261519.10930.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [uml-user] 2.6.17.10
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,24 +32,37 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Peter Hovorka <peter@fusselt.net>
+Cc: Jeff Dike <jdike@addtoit.com>, Mathew Brown <mathewbrown@fastmail.fm>, Dalibor Dukic <dalibor.dukic@gmail.com>
 
-On Saturday 26 August 2006 14:35, Peter Hovorka wrote:
-> Hi there,
+On Saturday 26 August 2006 14:11, Mathew Brown wrote:
+> On Sat, 26 Aug 2006 13:07:59 +0200, "Blaisorblade"
 >
-> my sincere apologies to all of you for bothering about the Ubuntu eth
-> problem.
+> <blaisorblade@yahoo.it> said:
+> > On Saturday 26 August 2006 12:41, Mathew Brown wrote:
+> > > On Fri, 25 Aug 2006 16:47:38 +0200, "Dalibor Dukic"
+> > >
+> > > I mentioned this in my previous thread and Jeff redirected me to:
+> > > http://uml.harlowhill.com/  Unfortunately, it's read only.
+> >
+> > Since when? It's never been so - likely you just need a free account to
+> > edit
+> > it. My info may be out of date but this is real (and strange) news.
+> > --
+>
+> I'm not sure since when but it states so clearly on the main page:  "We
+> seem to have a problem with wiki-spam from various sources. I am going
+> to make the wiki read only while I resolve the problem & probably create
+> a username/password system to help protect us from this evil scourge!"
+>
+> I didn't find any mention of where you can apply for a
+> username/password..
+Ok, I didn't visit it so recently - sorry for not going to see myself (I'm a 
+bit busy).
 
-Thanks for your apologies but thanks anyway for your competent cooperation.
-
-> After talking to the ubuntu team we found out that the ubuntu 
-> installer makes some entries in /etc/iftab to help udev whilst booting
-> the system. There were the two entries from the host system with eth0
-> and eth1 - entries deleted the whole system runs well.
-
-I'm starting to get sick of udev - on Ubuntu currently I'm unable to compile a 
-vanilla kernel that works (I must still do more complete tests but I'm 
-already beyond the "I've misconfigured something" moment).
+Jeff (and the wiki administrator - I don't know who is, please CC him), given 
+that we need a wiki and that sourceforge offers free PHP + MySQL hosting (if 
+things didn't change - this was true 2 years ago), do we need to host the 
+wiki or offer help to the admin or to help it in whichever way?
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
