@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GGJq4-00059U-Ij for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Aug 2006 11:22:00 -0700
-Received: from www.scgiservices.com ([198.107.3.66] helo=www.sterlingcgi.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GGJq3-0005PS-0w
+	id 1GGvOU-0007dH-DB for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Aug 2006 03:28:02 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GGvOP-0000uK-AU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Aug 2006 11:22:00 -0700
-Message-ID: <20060824112154.f1tf1hdk89ioow44@www.scgiservices.com>
-Date: Thu, 24 Aug 2006 11:21:54 -0700
-From: Anthony Brock <brocka@sterlingcgi.com>
-References: <CBELIFGMBIEPIEOFCJFACENKCAAA.brocka@sterlingcgi.com>
-In-Reply-To: <CBELIFGMBIEPIEOFCJFACENKCAAA.brocka@sterlingcgi.com>
+	Sat, 26 Aug 2006 03:28:02 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sat, 26 Aug 2006 12:27:39 +0200
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: Re: [uml-devel] Tomcat5 fails to run after UML kernel upgrade
+Message-Id: <200608261227.39263.blaisorblade@yahoo.it>
+Subject: [uml-devel] UniProcessor UML running on SMP host: things to care
+	about in the code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,59 +28,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Does anyone have suggestions or ideas for this problem?  I am only  
-able to run Tomcat (kaffe) on 2.6.16.x and prior UML kernels.
+I was thinking to some possible (theoretical?) troubles which could happen 
+with UML running on a SMP host - they're due to the code assuming it is 
+running on an UP machine.
 
-I have downgraded the host to 2.6.16.27-skas3-v8.2 but the problem  
-with 2.6.17 UML kernels still persists. I just tried upgrading the  
-guest to a stock 2.6.17.11 kernel without success.
+1) Over the host we use pipes as synchronization mechanism. Who on the heart 
+assures the "memory barrier" guarantees a lock needs to satisfy? Is it just 
+that i386 is so nice? And anyway, are i386 guarantees enough for the existing 
+code to be safe? Or does the code use them as a simple (slow) wakeup 
+mechanism without memory guarantees?
 
-I would really like to eventually upgrade my guest kernels beyond  
-2.6.26.x. However, this issues with Tomcat is a show stopper. Any  
-ideas or suggestions?
+2) (luckily a non-problem) atomic_t definition: we use i386 code, which can 
+take for granted that if CONFIG_SMP is off it does not need memory barriers 
+and so on (in particular, LOCK_PREFIX is null).
 
-Tony
+With CONFIG_SMP off, if two different UML kernel threads could run on 
+different CPUs things would break, however this cannot happen (and when the 
+kernel migrates UML that must be trasparent to the user, so it is still ok).
 
-Quoting Anthony Brock <brocka@sterlingcgi.com>:
-> I'm running Tomcat5 on a virtual server instance. I just tried to upgrade
-> the UML kernel (and guest) to a 2.6.17.4 version. Previously the host was
-> running 2.6.16.9-skas3-v8.2 and the guest was running 2.6.17-rc6. Both host
-> and guest are Debian Etch distributions.
->
-> However, with the host running 2.6.17.4-skas3-v9-pre9 and the guest running
-> a stock 2.6.17.4, I'm now experiencing a problem with Tomcat on startup.
-> Unfortunately, I don't have enough knowledge of Tomcat to get more detail,
-> but the following appears in the /var/log/tomcat5/catalina_2006-07-14.log
-> file:
->
-> Using CATALINA_BASE:   /var/lib/tomcat5
-> Using CATALINA_HOME:   /usr/share/tomcat5
-> Using CATALINA_TMPDIR: /var/lib/tomcat5/temp
-> Using JAVA_HOME:       /usr/lib/kaffe
-> Using Security Manager
-> Internal error: caught an unexpected exception.
-> Please check your CLASSPATH and your installation.
-> java/lang/NullPointerException
->
-> However, reversing the guest kernel back to 2.6.17-rc6 allows the Tomcat
-> server to start normally (leaving the host at 2.6.17.4-skas3-v9-pre9).
->
-> I haven't seen anything specific to Tomcat cross the list recently. However,
-> is there a known bug in the stock 2.6.17.4 kernel that would cause this
-> behavior? Any suggestions on how to get more detailed information on the
-> crash?
->
-> I originally attached a copy of the relevant config files for all 4 kernels.
-> However, the message was moderated due to size. Please contact me if you
-> would like copies of the configuration files for the different kernels.
-> Also, it's worth noting that the configuration for both guest kernels are
-> identical.
->
-> Any suggestions or advice is appreciated!
->
-> Tony
+However this is to keep in mind when having different host thread running.
+
+*) Is there any other case to warn about?
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 -------------------------------------------------------------------------
