@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GGvOU-0007dH-DB for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Aug 2006 03:28:02 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GGvOP-0000uK-AU
+	id 1GGvqY-0001bA-AK for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Aug 2006 03:57:02 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GGvqS-0005Av-IX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Aug 2006 03:28:02 -0700
+	Sat, 26 Aug 2006 03:57:02 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 26 Aug 2006 12:27:39 +0200
+Date: Sat, 26 Aug 2006 12:56:36 +0200
+References: <20060821215641.GQ11651@stusta.de>
+In-Reply-To: <20060821215641.GQ11651@stusta.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200608261227.39263.blaisorblade@yahoo.it>
-Subject: [uml-devel] UniProcessor UML running on SMP host: things to care
-	about in the code
+Message-Id: <200608261256.36654.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] arch/um/sys-i386/setjmp.S: useless #ifdef _REGPARM's?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,30 +29,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@karaya.com, linux-kernel@vger.kernel.org, Adrian Bunk <bunk@stusta.de>
 
-I was thinking to some possible (theoretical?) troubles which could happen 
-with UML running on a SMP host - they're due to the code assuming it is 
-running on an UP machine.
-
-1) Over the host we use pipes as synchronization mechanism. Who on the heart 
-assures the "memory barrier" guarantees a lock needs to satisfy? Is it just 
-that i386 is so nice? And anyway, are i386 guarantees enough for the existing 
-code to be safe? Or does the code use them as a simple (slow) wakeup 
-mechanism without memory guarantees?
-
-2) (luckily a non-problem) atomic_t definition: we use i386 code, which can 
-take for granted that if CONFIG_SMP is off it does not need memory barriers 
-and so on (in particular, LOCK_PREFIX is null).
-
-With CONFIG_SMP off, if two different UML kernel threads could run on 
-different CPUs things would break, however this cannot happen (and when the 
-kernel migrates UML that must be trasparent to the user, so it is still ok).
-
-However this is to keep in mind when having different host thread running.
-
-*) Is there any other case to warn about?
+On Monday 21 August 2006 23:56, Adrian Bunk wrote:
+> arch/um/sys-i386/setjmp.S contains two #ifdef _REGPARM's.
+>
+> Even if regparm was used in i386 uml (which isn't currently done (why?)),
+> I don't see _REGPARM being defined anywhere.
+>
+> Is this a bug waiting for happening when regparm will be used on uml or
+> do I miss anything?
+Can anybody explain me how can we use REGPARM if we have to link with host 
+glibc?
+If we are going to use klibc instead of glibc that's ok (and this is not the 
+case I'm talking about), but I do not know that plan (and nobody discussed 
+the implications).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
