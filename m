@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GHyvp-00073L-HA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Aug 2006 01:26:49 -0700
-Received: from web25222.mail.ukl.yahoo.com ([217.146.176.208])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GHyvn-00078Z-UF
+	id 1GHyzC-0007PA-NZ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Aug 2006 01:30:18 -0700
+Received: from web25224.mail.ukl.yahoo.com ([217.146.176.210])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GHyzA-0008MB-4C
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Aug 2006 01:26:49 -0700
-Message-ID: <20060829082641.48020.qmail@web25222.mail.ukl.yahoo.com>
-Date: Tue, 29 Aug 2006 10:26:41 +0200 (CEST)
+	Tue, 29 Aug 2006 01:30:18 -0700
+Message-ID: <20060829083009.95142.qmail@web25224.mail.ukl.yahoo.com>
+Date: Tue, 29 Aug 2006 10:30:09 +0200 (CEST)
 From: Paolo Giarrusso <blaisorblade@yahoo.it>
-In-Reply-To: <20060828203514.GC6728@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] arch/um/sys-i386/setjmp.S: useless #ifdef _REGPARM's?
+Subject: [uml-devel] Using -fcombine for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,54 +27,13 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Adrian Bunk <bunk@stusta.de>
+Cc: UML-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Jeff Dike <jdike@addtoit.com> ha scritto: 
+Look there, it would be very useful IMHO for UML:
 
-> On Sat, Aug 26, 2006 at 12:56:36PM +0200, Blaisorblade wrote:
-> > Can anybody explain me how can we use REGPARM if we have to link
-> with host 
-> > glibc?
+http://lkml.org/lkml/2006/8/24/212
 
-> Umm, yeah, good point.  This regparam behavior is different from
-> the old
-> behavior, where regparam functions had to be declared as such.
-
-And which can still be enabled - I think fastcall is for this, and it
-is still useful.
-
-However more useful is to move many wrappers where this is possible
-to headers (for instance the ones calling just
-CHOOSE_MODE($me_tt,$me_skas) - moving them to headers is always
-possible and saves a call).
-
-> However, this is a potential problem with all regparam users, who
-> all
-> presumably use libc, so I'd imagine it works somehow.
-
-For my knowledge, the only user is the non-UML Linux kernel, which
-doesn't use libc :-).
-
-And if you want to mix regparm and not regparm calls, you end up
-marking it at a prototype level (i.e. with the old approach); GCC
-could be smarter and allow specifying it at a per-header or per
-header-folder level, but I do not think it does.
-
-> > If we are going to use klibc instead of glibc that's ok (and this
-> is not the 
-> > case I'm talking about), but I do not know that plan (and nobody
-> discussed 
-> > the implications).
-
-> I've been idly considering that, but it's no more than idle
-> consideration
-> right now.
-
-Fine... it is actually a good idea for some points (we currently
-refrain from using certain things, such as futexes, because our
-tricks could conflict with glibc tricks which we don't know - with
-klibc it would be different).
-We'll see.
+But I will not have the time for the UML changes, so tune in for them.
 
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
