@@ -1,26 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GMnie-0006oZ-0W for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Sep 2006 08:29:08 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1GMqNq-0005r6-DY for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Sep 2006 11:19:50 -0700
+Received: from [81.2.110.250] (helo=lxorguk.ukuu.org.uk)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GMnic-0004Ti-2C
+	(Exim 4.44) id 1GMqNo-00077u-Pn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Sep 2006 08:29:07 -0700
-Date: Mon, 11 Sep 2006 11:27:39 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060911152739.GA4443@ccure.user-mode-linux.org>
-References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
-	<200503132106.35599.blaisorblade@yahoo.it>
-	<EBD0B8CF381E8B44BB99E8EA137E27C0021AD010@CPEXBE-EML06.kpnsp.local>
-	<200609091131.36909.blaisorblade@yahoo.it>
+	Mon, 11 Sep 2006 11:19:50 -0700
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Date: Mon, 11 Sep 2006 19:43:00 +0100
+Message-Id: <1158000180.23085.201.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200609091131.36909.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Partial fix! - Was: Re: [BUG report] UML linux-2.6
-	latest BK doesn't compile
+Subject: [uml-devel] [PATCH] UML - tty locking
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,34 +27,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Anton Altaparmakov <aia21@cam.ac.uk>, lkml <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, i.r.wezeman@hetnet.nl
+To: akpm@osdl.org, jdike@karaya.com
 
-On Sat, Sep 09, 2006 at 11:31:36AM +0200, Blaisorblade wrote:
-> On Saturday 09 September 2006 00:25, i.r.wezeman@hetnet.nl wrote:
-> > Hi there.
-> > 
-> > I got a error undefined reference to `__bb_init_func' when
-> > compiling uml with kernel 2.6.17.6, gcc 4.1.1 and glibc-2.4
+Jeff this is the tty locking diff I mentioned at Linux Kongress, it just
+ensures current->signal->tty doesn't get freed during log_exec().
 
-Happens to me with -rc6.
+Signed-off-by: Alan Cox <alan@redhat.com>
 
-> Try removing from arch/um/kernel/gmon_syms.c these 2 lines:
-> 
-> extern void __bb_init_func(void *);
-> EXPORT_SYMBOL(__bb_init_func);
+diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.18-rc6-mm1/arch/um/kernel/exec.c linux-2.6.18-rc6-mm1/arch/um/kernel/exec.c
+--- linux.vanilla-2.6.18-rc6-mm1/arch/um/kernel/exec.c	2006-09-11 11:02:11.000000000 +0100
++++ linux-2.6.18-rc6-mm1/arch/um/kernel/exec.c	2006-09-11 17:16:36.000000000 +0100
+@@ -41,9 +41,11 @@
+         long error;
+ 
+ #ifdef CONFIG_TTY_LOG
+-	task_lock(current);
++	mutex_lock(&tty_mutex);
++	task_lock(current);	/* FIXME:  is this needed ? */
+ 	log_exec(argv, current->signal->tty);
+ 	task_unlock(current);
++	mutex_unlock(&tty_mutex);
+ #endif
+         error = do_execve(file, argv, env, &current->thread.regs);
+         if (error == 0){
 
-And this seems to fix it.
-
-> Better yet, try if adding the weak attribute like below fixes 
-> the problem:
-> 
-> extern void __bb_init_func(void *) __attribute__((weak));
-> EXPORT_SYMBOL(__bb_init_func);
-
-And this fixes it even better.
-
-				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
