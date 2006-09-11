@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GM4md-0000VL-4x for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Sep 2006 08:30:17 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GM4mZ-0008Bd-DK
+	id 1GMnie-0006oZ-0W for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Sep 2006 08:29:08 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GMnic-0004Ti-2C
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Sep 2006 08:30:14 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 9 Sep 2006 17:30:02 +0200
+	Mon, 11 Sep 2006 08:29:07 -0700
+Date: Mon, 11 Sep 2006 11:27:39 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060911152739.GA4443@ccure.user-mode-linux.org>
 References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
+	<200503132106.35599.blaisorblade@yahoo.it>
+	<EBD0B8CF381E8B44BB99E8EA137E27C0021AD010@CPEXBE-EML06.kpnsp.local>
 	<200609091131.36909.blaisorblade@yahoo.it>
-	<EBD0B8CF381E8B44BB99E8EA137E27C0021AD015@CPEXBE-EML06.kpnsp.local>
-In-Reply-To: <EBD0B8CF381E8B44BB99E8EA137E27C0021AD015@CPEXBE-EML06.kpnsp.local>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200609091730.02654.blaisorblade@yahoo.it>
+In-Reply-To: <200609091131.36909.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Partial fix! - Was: Re: [BUG report] UML linux-2.6
 	latest BK doesn't compile
 List-Id: The user-mode Linux development list
@@ -32,74 +34,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: i.r.wezeman@hetnet.nl
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Anton Altaparmakov <aia21@cam.ac.uk>, lkml <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, i.r.wezeman@hetnet.nl
 
-On Saturday 09 September 2006 15:39, i.r.wezeman@hetnet.nl wrote:
-> The 'Try removing' will not work.
-In all these cases you get a message about `get_safe_registers', i.e. another 
-error; do you get the error about __bb_init_func with the "try removing" 
-thing?
-Also, it should compile by disabling CONFIG_GCOV (as you know probably), and 
-this option is only for debugging - if it does not compile in that case 
-there's something _very_ strange going on (like if `get_safe_registers' had 
-been removed by hand-editing); anyway this discussion is useful to find the 
-fix to the bug.
-> So have do the 'Better yet ' with make 
-> clean, make distclean, make allmodconfig ARCH=um and make linux ARCH=um
->
-> Now got the same error after 'Better yet':
->   CC      init/version.o
->   LD      init/built-in.o
->   LD      .tmp_vmlinux1
-> arch/um/os-Linux/built-in.o: In function `do_syscall_stub':
-> arch/um/os-Linux/skas/mem.c:63: undefined reference to `get_safe_registers'
-> arch/um/os-Linux/built-in.o: In function `copy_context_skas0':
-> arch/um/os-Linux/skas/process.c:333: undefined reference to
-> `get_safe_registers' collect2: ld returned 1 exit status
->   KSYM    .tmp_kallsyms1.S
-> nm: '.tmp_vmlinux1': No such file
-> No valid symbol.
-> make: *** [.tmp_kallsyms1.S] Error 1
->
-> error, do: #CONFIG_MODE_TT=y
-> make clean and make linux ARCH=um
->
-> Now got the same error as with 'Better yet'
->
-> error, do: CONFIG_STATIC_LINK=y
-> make clean and make linux ARCH=um
->
-> Same error as with 'Better yet'
->
-> error, do: CONFIG_GPROF=y
-> make clean and make linux ARCH=um
->
-> Same error as with 'Better yet'
->
-> TODO: get_safe_register should be undefined only
-> because of the previous failure.
->
-> In which to undefine?
-No, don't undefine it. I was talking about this error message, which I can't 
-explain - I thought it was just a conseguence of the error above.
-> > arch/um/os-Linux/built-in.o: In function `do_syscall_stub':
-> > arch/um/os-Linux/skas/mem.c:63: undefined reference to
-> > `get_safe_registers'
-> > arch/um/os-Linux/built-in.o: In function `copy_context_skas0':
-> > arch/um/os-Linux/skas/process.c:333: undefined reference to
-> > `get_safe_registers'
-since get_safe_registers is defined in arch/um/os-Linux/sys-i386/registers.c, 
-this error does not make a lot of sense. Make sure you haven't removed the 
-definition by mistake - the other possibility is that file is not linked with 
-the rest, but this would cause also other "undefined reference" errors.
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+On Sat, Sep 09, 2006 at 11:31:36AM +0200, Blaisorblade wrote:
+> On Saturday 09 September 2006 00:25, i.r.wezeman@hetnet.nl wrote:
+> > Hi there.
+> > 
+> > I got a error undefined reference to `__bb_init_func' when
+> > compiling uml with kernel 2.6.17.6, gcc 4.1.1 and glibc-2.4
 
+Happens to me with -rc6.
+
+> Try removing from arch/um/kernel/gmon_syms.c these 2 lines:
+> 
+> extern void __bb_init_func(void *);
+> EXPORT_SYMBOL(__bb_init_func);
+
+And this seems to fix it.
+
+> Better yet, try if adding the weak attribute like below fixes 
+> the problem:
+> 
+> extern void __bb_init_func(void *) __attribute__((weak));
+> EXPORT_SYMBOL(__bb_init_func);
+
+And this fixes it even better.
+
+				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
