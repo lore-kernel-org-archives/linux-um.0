@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GMqNq-0005r6-DY for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Sep 2006 11:19:50 -0700
-Received: from [81.2.110.250] (helo=lxorguk.ukuu.org.uk)
+	id 1GNAa6-0004ct-Vw for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Sep 2006 08:53:51 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GMqNo-00077u-Pn
+	(Exim 4.44) id 1GNAa5-0008JT-6E
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Sep 2006 11:19:50 -0700
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Date: Mon, 11 Sep 2006 19:43:00 +0100
-Message-Id: <1158000180.23085.201.camel@localhost.localdomain>
+	Tue, 12 Sep 2006 08:53:51 -0700
+Message-Id: <200609121552.k8CFqDcJ008012@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Subject: [uml-devel] [PATCH] UML - tty locking
+Date: Tue, 12 Sep 2006 11:52:13 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 2/2] Make UML use ptrace-abi.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,29 +27,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org, jdike@karaya.com
+To: akpm@osdl.org
+Cc: zach@vmware.com, jeremy@xensource.com, user-mode-linux-devel@lists.sourceforge.net, rusty@rustcorp.com.au, linux-kernel@vger.kernel.org, ak@muc.de, 76306.1226@compuserve.com
 
-Jeff this is the tty locking diff I mentioned at Linux Kongress, it just
-ensures current->signal->tty doesn't get freed during log_exec().
+Include the host architecture's ptrace-abi.h instead of ptrace.h.
 
-Signed-off-by: Alan Cox <alan@redhat.com>
+There was some cpp mangling of names around the ptrace.h include to
+avoid symbol clashes between UML and the host architecture.  Most of
+these can go away.  The exception is struct pt_regs, which is
+convenient to have in userspace, but must be renamed in order that UML
+can define its own.
 
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.18-rc6-mm1/arch/um/kernel/exec.c linux-2.6.18-rc6-mm1/arch/um/kernel/exec.c
---- linux.vanilla-2.6.18-rc6-mm1/arch/um/kernel/exec.c	2006-09-11 11:02:11.000000000 +0100
-+++ linux-2.6.18-rc6-mm1/arch/um/kernel/exec.c	2006-09-11 17:16:36.000000000 +0100
-@@ -41,9 +41,11 @@
-         long error;
+ptrace-x86_64.h needed to have some now-obsolete cpp cruft and a declaration
+removed.
+
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+
+Index: linux-2.6.18-mm/include/asm-um/ptrace-generic.h
+===================================================================
+--- linux-2.6.18-mm.orig/include/asm-um/ptrace-generic.h	2006-09-12 11:09:26.000000000 -0400
++++ linux-2.6.18-mm/include/asm-um/ptrace-generic.h	2006-09-12 11:17:23.000000000 -0400
+@@ -8,19 +8,7 @@
  
- #ifdef CONFIG_TTY_LOG
--	task_lock(current);
-+	mutex_lock(&tty_mutex);
-+	task_lock(current);	/* FIXME:  is this needed ? */
- 	log_exec(argv, current->signal->tty);
- 	task_unlock(current);
-+	mutex_unlock(&tty_mutex);
- #endif
-         error = do_execve(file, argv, env, &current->thread.regs);
-         if (error == 0){
+ #ifndef __ASSEMBLY__
+ 
+-
+-#define pt_regs pt_regs_subarch
+-#define show_regs show_regs_subarch
+-#define send_sigtrap send_sigtrap_subarch
+-
+-#include "asm/arch/ptrace.h"
+-
+-#undef pt_regs
+-#undef show_regs
+-#undef send_sigtrap
+-#undef user_mode
+-#undef instruction_pointer
+-
++#include "asm/arch/ptrace-abi.h"
+ #include "sysdep/ptrace.h"
+ 
+ struct pt_regs {
+Index: linux-2.6.18-mm/include/asm-um/ptrace-x86_64.h
+===================================================================
+--- linux-2.6.18-mm.orig/include/asm-um/ptrace-x86_64.h	2006-06-17 21:49:35.000000000 -0400
++++ linux-2.6.18-mm/include/asm-um/ptrace-x86_64.h	2006-09-12 11:43:41.000000000 -0400
+@@ -11,15 +11,11 @@
+ #include "asm/errno.h"
+ #include "asm/host_ldt.h"
+ 
+-#define signal_fault signal_fault_x86_64
+ #define __FRAME_OFFSETS /* Needed to get the R* macros */
+ #include "asm/ptrace-generic.h"
+-#undef signal_fault
+ 
+ #define HOST_AUDIT_ARCH AUDIT_ARCH_X86_64
+ 
+-void signal_fault(struct pt_regs_subarch *regs, void *frame, char *where);
+-
+ #define FS_BASE (21 * sizeof(unsigned long))
+ #define GS_BASE (22 * sizeof(unsigned long))
+ #define DS (23 * sizeof(unsigned long))
 
 
 -------------------------------------------------------------------------
