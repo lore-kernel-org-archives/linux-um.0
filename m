@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GOFlX-0001tb-8v for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Sep 2006 08:38:07 -0700
+	id 1GOH5X-0001Q2-PQ for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 15 Sep 2006 10:02:51 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GOFlV-00053A-Fg
+	(Exim 4.44) id 1GOH5W-0007YO-7Q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Sep 2006 08:38:07 -0700
-Date: Fri, 15 Sep 2006 11:36:56 -0400
+	Fri, 15 Sep 2006 10:02:51 -0700
+Date: Fri, 15 Sep 2006 13:01:49 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060915153656.GA4581@ccure.user-mode-linux.org>
-References: <CBELIFGMBIEPIEOFCJFACENKCAAA.brocka@sterlingcgi.com>
-	<20060824112154.f1tf1hdk89ioow44@www.scgiservices.com>
+Message-ID: <20060915170149.GG4581@ccure.user-mode-linux.org>
+References: <mailman.1307.1157397566.8760.user-mode-linux-user@lists.sourceforge.net>
+	<44FF2B54.5020201@nagafix.co.uk>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20060824112154.f1tf1hdk89ioow44@www.scgiservices.com>
-Subject: Re: [uml-devel] Tomcat5 fails to run after UML kernel upgrade
+In-Reply-To: <44FF2B54.5020201@nagafix.co.uk>
+Subject: Re: [uml-devel] virtual framebuffer device visible on host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,16 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Anthony Brock <brocka@sterlingcgi.com>
+To: Antoine Martin <antoine@nagafix.co.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Aug 24, 2006 at 11:21:54AM -0700, Anthony Brock wrote:
-> Does anyone have suggestions or ideas for this problem?  I am only  
-> able to run Tomcat (kaffe) on 2.6.16.x and prior UML kernels.
+On Wed, Sep 06, 2006 at 09:11:00PM +0100, Antoine Martin wrote:
+> Just a thought, but how hard would it be to have a virtual device in the 
+> guests that mimics a framebuffer device and is in fact an X window on 
+> the host? I think this could almost be a killer-app.
 
-Can you give me a filesystem in which this happens?
+There is such a patch in my development tree.  The problem is that it
+totally doesn't work for me, even though it's fine for the guy who wrote
+it.
 
-			Jeff
+It needs to be run on a local X server since it uses the shared memory
+extension, but even when I do that, I get a black window with nothing
+in it.
+
+				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
