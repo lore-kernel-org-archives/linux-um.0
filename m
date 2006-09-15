@@ -1,19 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GNWPk-0004Tr-83 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Sep 2006 08:12:36 -0700
+	id 1GOFlX-0001tb-8v for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 15 Sep 2006 08:38:07 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GNWPi-0003FS-Gt
+	(Exim 4.44) id 1GOFlV-00053A-Fg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Sep 2006 08:12:36 -0700
-Message-Id: <200609131510.k8DFAvIM004159@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Wed, 13 Sep 2006 11:10:57 -0400
+	Fri, 15 Sep 2006 08:38:07 -0700
+Date: Fri, 15 Sep 2006 11:36:56 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] Properly export ptrace-abi.h
+Message-ID: <20060915153656.GA4581@ccure.user-mode-linux.org>
+References: <CBELIFGMBIEPIEOFCJFACENKCAAA.brocka@sterlingcgi.com>
+	<20060824112154.f1tf1hdk89ioow44@www.scgiservices.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20060824112154.f1tf1hdk89ioow44@www.scgiservices.com>
+Subject: Re: [uml-devel] Tomcat5 fails to run after UML kernel upgrade
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,41 +31,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org, David Woodhouse <dwmw2@infradead.org>
-Cc: zach@vmware.com, jeremy@xensource.com, user-mode-linux-devel@lists.sourceforge.net, rusty@rustcorp.com.au, linux-kernel@vger.kernel.org, ak@muc.de, 76306.1226@compuserve.com
+To: Anthony Brock <brocka@sterlingcgi.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-The ptrace.h splitting patch neglected to add the new, userspace-usable
-header to the appropriate header export lists.
+On Thu, Aug 24, 2006 at 11:21:54AM -0700, Anthony Brock wrote:
+> Does anyone have suggestions or ideas for this problem?  I am only  
+> able to run Tomcat (kaffe) on 2.6.16.x and prior UML kernels.
 
-This patch does so.
+Can you give me a filesystem in which this happens?
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-
-Index: linux-2.6.18-mm/include/asm-i386/Kbuild
-===================================================================
---- linux-2.6.18-mm.orig/include/asm-i386/Kbuild	2006-09-12 10:43:40.000000000 -0400
-+++ linux-2.6.18-mm/include/asm-i386/Kbuild	2006-09-13 11:03:48.000000000 -0400
-@@ -1,5 +1,5 @@
- include include/asm-generic/Kbuild.asm
- 
--header-y += boot.h debugreg.h ldt.h ucontext.h
-+header-y += boot.h debugreg.h ldt.h ptrace-abi.h ucontext.h
- 
- unifdef-y += mtrr.h setup.h vm86.h
-Index: linux-2.6.18-mm/include/asm-x86_64/Kbuild
-===================================================================
---- linux-2.6.18-mm.orig/include/asm-x86_64/Kbuild	2006-09-11 10:47:53.000000000 -0400
-+++ linux-2.6.18-mm/include/asm-x86_64/Kbuild	2006-09-13 11:04:03.000000000 -0400
-@@ -5,7 +5,7 @@ ARCHDEF := defined __x86_64__
- ALTARCHDEF := defined __i386__
- 
- header-y += boot.h bootsetup.h cpufeature.h debugreg.h ldt.h \
--	 msr.h prctl.h setup.h sigcontext32.h ucontext.h \
-+	 msr.h prctl.h ptrace-abi.h setup.h sigcontext32.h ucontext.h \
- 	 vsyscall32.h
- 
- unifdef-y += mce.h mtrr.h vsyscall.h
-
+			Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
