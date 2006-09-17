@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GOH5X-0001Q2-PQ for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Sep 2006 10:02:51 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GOH5W-0007YO-7Q
+	id 1GP10s-0001aY-U1 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 17 Sep 2006 11:05:06 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GP10o-0003CL-QD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Sep 2006 10:02:51 -0700
-Date: Fri, 15 Sep 2006 13:01:49 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060915170149.GG4581@ccure.user-mode-linux.org>
-References: <mailman.1307.1157397566.8760.user-mode-linux-user@lists.sourceforge.net>
-	<44FF2B54.5020201@nagafix.co.uk>
-Mime-Version: 1.0
+	Sun, 17 Sep 2006 11:05:06 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 17 Sep 2006 20:04:20 +0200
+References: <1107857395.15872.2.camel@imp.csi.cam.ac.uk>
+	<200609091131.36909.blaisorblade@yahoo.it>
+	<20060911152739.GA4443@ccure.user-mode-linux.org>
+In-Reply-To: <20060911152739.GA4443@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <44FF2B54.5020201@nagafix.co.uk>
-Subject: Re: [uml-devel] virtual framebuffer device visible on host
+Message-Id: <200609172004.21083.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Partial fix! - Was: Re: [BUG report] UML linux-2.6
+	latest BK doesn't compile
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,23 +32,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Sep 06, 2006 at 09:11:00PM +0100, Antoine Martin wrote:
-> Just a thought, but how hard would it be to have a virtual device in the 
-> guests that mimics a framebuffer device and is in fact an X window on 
-> the host? I think this could almost be a killer-app.
+On Monday 11 September 2006 17:27, Jeff Dike wrote:
+> On Sat, Sep 09, 2006 at 11:31:36AM +0200, Blaisorblade wrote:
+> > On Saturday 09 September 2006 00:25, i.r.wezeman@hetnet.nl wrote:
+> > > Hi there.
+> > >
+> > > I got a error undefined reference to `__bb_init_func' when
+> > > compiling uml with kernel 2.6.17.6, gcc 4.1.1 and glibc-2.4
+>
+> Happens to me with -rc6.
+>
+> > Try removing from arch/um/kernel/gmon_syms.c these 2 lines:
+> >
+> > extern void __bb_init_func(void *);
+> > EXPORT_SYMBOL(__bb_init_func);
+>
+> And this seems to fix it.
+>
+> > Better yet, try if adding the weak attribute like below fixes
+> > the problem:
+> >
+> > extern void __bb_init_func(void *) __attribute__((weak));
+> > EXPORT_SYMBOL(__bb_init_func);
+>
+> And this fixes it even better.
 
-There is such a patch in my development tree.  The problem is that it
-totally doesn't work for me, even though it's fine for the guy who wrote
-it.
+Ok, I expect you to send the final patch, thanks... it should go for 2.6.18 
+possibly, and since you tested it you have it almost ready.
 
-It needs to be run on a local X server since it uses the shared memory
-extension, but even when I do that, I get a black window with nothing
-in it.
+Bye bye
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
