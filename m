@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GP16U-00022I-9L for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Sep 2006 11:10:54 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GP16Q-0004IK-LJ
+	id 1GPhQr-00072I-70 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Sep 2006 08:22:45 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GPhQp-0002To-Nb
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Sep 2006 11:10:54 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 17 Sep 2006 20:10:13 +0200
+	Tue, 19 Sep 2006 08:22:45 -0700
+Date: Tue, 19 Sep 2006 11:21:29 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060919152129.GC4820@ccure.user-mode-linux.org>
 References: <20060829083009.95142.qmail@web25224.mail.ukl.yahoo.com>
 	<20060912170841.GA7980@ccure.user-mode-linux.org>
-In-Reply-To: <20060912170841.GA7980@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	<200609172010.13315.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200609172010.13315.blaisorblade@yahoo.it>
+In-Reply-To: <200609172010.13315.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] Using -fcombine for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,42 +32,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: UML-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tuesday 12 September 2006 19:08, Jeff Dike wrote:
-> On Tue, Aug 29, 2006 at 10:30:09AM +0200, Paolo Giarrusso wrote:
-> > Look there, it would be very useful IMHO for UML:
-> >
-> > http://lkml.org/lkml/2006/8/24/212
->
-> Yeah, looks interesting, but a bunch of work.  When you build a directory
-> at a time,
-I was thinking by thematic areas - for instance each _user with its _kern 
-(there are still some such examples). Having little wrappers inlined 
-(especially for some ones in the hot paths, I'm recalling something about mm 
-fault handling or such) would help however, and could be prioritized.
-> everything that is exposed to the outside needs to be declared 
-> __global.
+On Sun, Sep 17, 2006 at 08:10:13PM +0200, Blaisorblade wrote:
+> I was thinking by thematic areas - for instance each _user with its _kern 
+> (there are still some such examples). Having little wrappers inlined 
+> (especially for some ones in the hot paths, I'm recalling something about mm 
+> fault handling or such) would help however, and could be prioritized.
 
-> This is useful documentation in its own right, but it will take some time
-> to do.
-Obviously...
-> 				Jeff
+That's an interesting idea.  However, I'm trying to get rid of the
+_user/_kern pairs, and have mostly succeeded by now.  We would have to
+pair up files in different directories.
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+				Jeff
 
 -------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys -- and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
