@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GSH8j-0006hi-3H for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 10:54:41 -0700
+	id 1GSH8S-0006gn-Lr for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Sep 2006 10:54:26 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GSH8i-0001Va-Lp
+	(Exim 4.44) id 1GSH8S-0005vf-6S
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 10:54:41 -0700
-Message-Id: <200609261753.k8QHrMrV005540@ccure.user-mode-linux.org>
+	Tue, 26 Sep 2006 10:54:24 -0700
+Message-Id: <200609261753.k8QHrJWN005535@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Tue, 26 Sep 2006 13:53:22 -0400
+Date: Tue, 26 Sep 2006 13:53:19 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/5] UML - disable header exporting
+Subject: [uml-devel] [PATCH 2/5] UML - add an export
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,18 +28,24 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Disable header exporting on UML since it exports no headers.
+Some modules need strnlen_user_skas.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.17/include/asm-um/Kbuild
+Index: linux-2.6.18-mm/arch/um/kernel/ksyms.c
 ===================================================================
---- linux-2.6.17.orig/include/asm-um/Kbuild	2006-09-13 09:54:34.000000000 -0400
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1 +0,0 @@
--include include/asm-generic/Kbuild.asm
+--- linux-2.6.18-mm.orig/arch/um/kernel/ksyms.c	2006-09-22 09:51:13.000000000 -0400
++++ linux-2.6.18-mm/arch/um/kernel/ksyms.c	2006-09-22 10:12:03.000000000 -0400
+@@ -46,6 +46,7 @@ EXPORT_SYMBOL(copy_to_user_tt);
+ #endif
+ 
+ #ifdef CONFIG_MODE_SKAS
++EXPORT_SYMBOL(strnlen_user_skas);
+ EXPORT_SYMBOL(strncpy_from_user_skas);
+ EXPORT_SYMBOL(copy_to_user_skas);
+ EXPORT_SYMBOL(copy_from_user_skas);
 
 
 -------------------------------------------------------------------------
