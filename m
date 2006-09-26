@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GSH8S-0006gn-Lr for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 10:54:26 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1GSJEM-0002Ra-Mq for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Sep 2006 13:08:38 -0700
+Received: from pentafluge.infradead.org ([213.146.154.40])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GSH8S-0005vf-6S
+	(Exim 4.44) id 1GSJEK-0004UB-9W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 10:54:24 -0700
-Message-Id: <200609261753.k8QHrJWN005535@ccure.user-mode-linux.org>
+	Tue, 26 Sep 2006 13:08:38 -0700
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <200609261753.k8QHrMrV005540@ccure.user-mode-linux.org>
+References: <200609261753.k8QHrMrV005540@ccure.user-mode-linux.org>
+Date: Tue, 26 Sep 2006 21:08:24 +0100
+Message-Id: <1159301304.3309.37.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Date: Tue, 26 Sep 2006 13:53:19 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/5] UML - add an export
+Subject: Re: [uml-devel] [PATCH 3/5] UML - disable header exporting
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,25 +29,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Some modules need strnlen_user_skas.
+On Tue, 2006-09-26 at 13:53 -0400, Jeff Dike wrote:
+> Disable header exporting on UML since it exports no headers.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+Already done upstream.
 
-Index: linux-2.6.18-mm/arch/um/kernel/ksyms.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/ksyms.c	2006-09-22 09:51:13.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/kernel/ksyms.c	2006-09-22 10:12:03.000000000 -0400
-@@ -46,6 +46,7 @@ EXPORT_SYMBOL(copy_to_user_tt);
- #endif
- 
- #ifdef CONFIG_MODE_SKAS
-+EXPORT_SYMBOL(strnlen_user_skas);
- EXPORT_SYMBOL(strncpy_from_user_skas);
- EXPORT_SYMBOL(copy_to_user_skas);
- EXPORT_SYMBOL(copy_from_user_skas);
+-- 
+dwmw2
 
 
 -------------------------------------------------------------------------
