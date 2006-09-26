@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GSJEM-0002Ra-Mq for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 13:08:38 -0700
-Received: from pentafluge.infradead.org ([213.146.154.40])
+	id 1GSKhy-0002iO-LT for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Sep 2006 14:43:18 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GSJEK-0004UB-9W
+	(Exim 4.44) id 1GSKhx-00088C-76
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 13:08:38 -0700
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200609261753.k8QHrMrV005540@ccure.user-mode-linux.org>
+	Tue, 26 Sep 2006 14:43:18 -0700
+Date: Tue, 26 Sep 2006 17:41:49 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060926214149.GA6880@ccure.user-mode-linux.org>
 References: <200609261753.k8QHrMrV005540@ccure.user-mode-linux.org>
-Date: Tue, 26 Sep 2006 21:08:24 +0100
-Message-Id: <1159301304.3309.37.camel@pmac.infradead.org>
+	<1159301304.3309.37.camel@pmac.infradead.org>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1159301304.3309.37.camel@pmac.infradead.org>
 Subject: Re: [uml-devel] [PATCH 3/5] UML - disable header exporting
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,17 +31,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: David Woodhouse <dwmw2@infradead.org>
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 2006-09-26 at 13:53 -0400, Jeff Dike wrote:
-> Disable header exporting on UML since it exports no headers.
+On Tue, Sep 26, 2006 at 09:08:24PM +0100, David Woodhouse wrote:
+> Already done upstream.
 
-Already done upstream.
+Oops, didn't notice.
 
--- 
-dwmw2
+Please drop this then.
 
+			Jeff
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
