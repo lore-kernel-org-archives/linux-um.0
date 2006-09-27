@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GSKhy-0002iO-LT for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 14:43:18 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GSKhx-00088C-76
+	id 1GSQJe-0007Ul-Id for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Sep 2006 20:42:34 -0700
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1GSQJc-0007ym-SA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Sep 2006 14:43:18 -0700
-Date: Tue, 26 Sep 2006 17:41:49 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060926214149.GA6880@ccure.user-mode-linux.org>
-References: <200609261753.k8QHrMrV005540@ccure.user-mode-linux.org>
-	<1159301304.3309.37.camel@pmac.infradead.org>
+	Tue, 26 Sep 2006 20:42:34 -0700
+Date: Tue, 26 Sep 2006 20:42:24 -0700
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20060926204224.e365734f.akpm@osdl.org>
+In-Reply-To: <200609261753.k8QHrGlI005530@ccure.user-mode-linux.org>
+References: <200609261753.k8QHrGlI005530@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1159301304.3309.37.camel@pmac.infradead.org>
-Subject: Re: [uml-devel] [PATCH 3/5] UML - disable header exporting
+Subject: Re: [uml-devel] [PATCH 1/5] UML - file renaming
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,17 +29,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Sep 26, 2006 at 09:08:24PM +0100, David Woodhouse wrote:
-> Already done upstream.
+On Tue, 26 Sep 2006 13:53:15 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
-Oops, didn't notice.
+> Move some foo_kern.c files to foo.c now that the old foo.c files are out
+> of the way.
 
-Please drop this then.
+This doesn't apply, because arch/um/kernel/process_kern.c has been altered
+by uml-fix-stack-alignment.patch.
 
-			Jeff
+I fixed that up via
+
+	 mv arch/um/kernel/process_kern.c arch/um/kernel/skas/process_kern.c
+
+> Also cleaned up some whitespace and an emacs formatting comment.
+
+So if any of these changes were made to process_kern.c, you've lost 'em.
+
+They shouldn't have been: please do code-moving and code-changing within
+distinct patches.
+
+This file-moving also moved over a bunch of trailing-whitespace, which I
+removed.  Which violates the previous rule.  I'm bad.
+
+btw, it'd be nice to change your scripts to add a diffstat after the ^---.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
