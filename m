@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GSdgU-0001Ih-HM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Sep 2006 10:59:02 -0700
+	id 1GSdgW-0001LC-Np for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Sep 2006 10:59:04 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GSdgT-0004c2-Kq
+	(Exim 4.44) id 1GSdgT-0004bE-Kp
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Sep 2006 10:59:02 -0700
-Message-Id: <200609271757.k8RHvvtK005747@ccure.user-mode-linux.org>
+	Wed, 27 Sep 2006 10:59:04 -0700
+Message-Id: <200609271757.k8RHvqnk005732@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 27 Sep 2006 13:57:57 -0400
+Date: Wed, 27 Sep 2006 13:57:52 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 5/5] UML - Stack consumption reduction
+Subject: [uml-devel] [PATCH 2/5] UML - Mechanical tidying after random MACs
+	change
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,73 +31,250 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Fix some stack abuse in the sysrq t path.
+Mechanical, hopefully non-functional changes stemming from
+setup_etheraddr always succeeding now that it always assigns a MAC,
+either from the command line or generated randomly:
+   the test of the return of setup_etheraddr is removed, and code
+dependent on it succeeding is now unconditional
+   setup_etheraddr can now be made void
+   struct uml_net.have_mac is now always 1, so tests of it can be
+similarly removed, and uses of it can be replaced with 1
+   struct uml_net.have_mac is no longer used, so it can be removed
+   struct uml_net_private.have_mac is copied from struct uml_net, so
+it is always 1
+   tests of uml_net_private.have_mac can be removed
+   uml_net_private.have_mac can now be removed
+   the only call to dev_ip_addr was removed, so it can be deleted
+
+It also turns out that setup_etheraddr is called only once, from the
+same file, so it can be static and its declaration removed from
+net_kern.h.
+
+Similarly, set_ether_mac is defined and called only from one file.
+
+Finally, setup_etheraddr and set_ether_mac were moved to avoid
+needing forward declarations.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 ---
 
- arch/um/drivers/mconsole_kern.c |   15 ++++++++++-----
- arch/um/drivers/mconsole_user.c |    4 ++++
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ arch/um/drivers/net_kern.c |  105 +++++++++++++++++----------------------------
+ arch/um/include/net_kern.h |   14 ------
+ arch/um/include/net_user.h |    1 
+ 3 files changed, 40 insertions(+), 80 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/drivers/mconsole_kern.c
+Index: linux-2.6.18-mm/arch/um/drivers/net_kern.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/mconsole_kern.c	2006-09-26 16:28:51.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/drivers/mconsole_kern.c	2006-09-26 16:39:37.000000000 -0400
-@@ -598,6 +598,11 @@ out:
- 	mconsole_reply(req, err_msg, err, 0);
+--- linux-2.6.18-mm.orig/arch/um/drivers/net_kern.c	2006-09-22 10:19:26.000000000 -0400
++++ linux-2.6.18-mm/arch/um/drivers/net_kern.c	2006-09-22 10:33:33.000000000 -0400
+@@ -118,11 +118,6 @@ static int uml_net_open(struct net_devic
+ 		goto out;
+ 	}
+ 
+-	if(!lp->have_mac){
+- 		dev_ip_addr(dev, &lp->mac[2]);
+- 		set_ether_mac(dev, lp->mac);
+-	}
+-
+ 	lp->fd = (*lp->open)(&lp->user);
+ 	if(lp->fd < 0){
+ 		err = lp->fd;
+@@ -286,6 +281,39 @@ void uml_net_user_timer_expire(unsigned 
+ #endif
  }
  
-+struct mconsole_output {
-+	struct list_head list;
-+	struct mc_request *req;
-+};
++static void setup_etheraddr(char *str, unsigned char *addr)
++{
++	char *end;
++	int i;
 +
- static DEFINE_SPINLOCK(console_lock);
- static LIST_HEAD(clients);
- static char console_buf[MCONSOLE_MAX_DATA];
-@@ -622,10 +627,10 @@ static void console_write(struct console
- 			return;
++	if(str == NULL)
++		goto random;
++
++	for(i=0;i<6;i++){
++		addr[i] = simple_strtoul(str, &end, 16);
++		if((end == str) ||
++		   ((*end != ':') && (*end != ',') && (*end != '\0'))){
++			printk(KERN_ERR
++			       "setup_etheraddr: failed to parse '%s' "
++			       "as an ethernet address\n", str);
++			goto random;
++		}
++		str = end + 1;
++	}
++	if(addr[0] & 1){
++		printk(KERN_ERR
++		       "Attempt to assign a broadcast ethernet address to a "
++		       "device disallowed\n");
++		goto random;
++	}
++	return;
++
++random:
++	addr[0] = 0xfe;
++	addr[1] = 0xfd;
++	random_mac(addr);
++}
++
+ static DEFINE_SPINLOCK(devices_lock);
+ static LIST_HEAD(devices);
  
- 		list_for_each(ele, &clients){
--			struct mconsole_entry *entry;
-+			struct mconsole_output *entry;
+@@ -321,15 +349,13 @@ static int eth_configure(int n, void *in
+ 	list_add(&device->list, &devices);
+ 	spin_unlock(&devices_lock);
  
--			entry = list_entry(ele, struct mconsole_entry, list);
--			mconsole_reply_len(&entry->request, console_buf,
-+			entry = list_entry(ele, struct mconsole_output, list);
-+			mconsole_reply_len(entry->req, console_buf,
- 					   console_index, 0, 1);
- 		}
+-	if (setup_etheraddr(mac, device->mac))
+-		device->have_mac = 1;
++	setup_etheraddr(mac, device->mac);
  
-@@ -649,10 +654,10 @@ late_initcall(mc_add_console);
- static void with_console(struct mc_request *req, void (*proc)(void *),
- 			 void *arg)
+ 	printk(KERN_INFO "Netdevice %d ", n);
+-	if (device->have_mac)
+-		printk("(%02x:%02x:%02x:%02x:%02x:%02x) ",
+-		       device->mac[0], device->mac[1],
+-		       device->mac[2], device->mac[3],
+-		       device->mac[4], device->mac[5]);
++	printk("(%02x:%02x:%02x:%02x:%02x:%02x) ",
++	       device->mac[0], device->mac[1],
++	       device->mac[2], device->mac[3],
++	       device->mac[4], device->mac[5]);
+ 	printk(": ");
+ 	dev = alloc_etherdev(size);
+ 	if (dev == NULL) {
+@@ -395,7 +421,6 @@ static int eth_configure(int n, void *in
+ 		  .dev 			= dev,
+ 		  .fd 			= -1,
+ 		  .mac 			= { 0xfe, 0xfd, 0x0, 0x0, 0x0, 0x0},
+-		  .have_mac 		= device->have_mac,
+ 		  .protocol 		= transport->kern->protocol,
+ 		  .open 		= transport->user->open,
+ 		  .close 		= transport->user->close,
+@@ -410,14 +435,12 @@ static int eth_configure(int n, void *in
+ 	init_timer(&lp->tl);
+ 	spin_lock_init(&lp->lock);
+ 	lp->tl.function = uml_net_user_timer_expire;
+-	if (lp->have_mac)
+-		memcpy(lp->mac, device->mac, sizeof(lp->mac));
++	memcpy(lp->mac, device->mac, sizeof(lp->mac));
+ 
+ 	if (transport->user->init) 
+ 		(*transport->user->init)(&lp->user, dev);
+ 
+-	if (device->have_mac)
+-		set_ether_mac(dev, device->mac);
++	set_ether_mac(dev, device->mac);
+ 
+ 	return 0;
+ }
+@@ -746,54 +769,6 @@ static void close_devices(void)
+ 
+ __uml_exitcall(close_devices);
+ 
+-int setup_etheraddr(char *str, unsigned char *addr)
+-{
+-	char *end;
+-	int i;
+-
+-	if(str == NULL)
+-		goto random;
+-
+-	for(i=0;i<6;i++){
+-		addr[i] = simple_strtoul(str, &end, 16);
+-		if((end == str) ||
+-		   ((*end != ':') && (*end != ',') && (*end != '\0'))){
+-			printk(KERN_ERR 
+-			       "setup_etheraddr: failed to parse '%s' "
+-			       "as an ethernet address\n", str);
+-			goto random;
+-		}
+-		str = end + 1;
+-	}
+-	if(addr[0] & 1){
+-		printk(KERN_ERR 
+-		       "Attempt to assign a broadcast ethernet address to a "
+-		       "device disallowed\n");
+-		goto random;
+-	}
+-	return 1;
+-
+-random:
+-	addr[0] = 0xfe;
+-	addr[1] = 0xfd;
+-	random_mac(addr);
+-	return 1;
+-}
+-
+-void dev_ip_addr(void *d, unsigned char *bin_buf)
+-{
+-	struct net_device *dev = d;
+-	struct in_device *ip = dev->ip_ptr;
+-	struct in_ifaddr *in;
+-
+-	if((ip == NULL) || ((in = ip->ifa_list) == NULL)){
+-		printk(KERN_WARNING "dev_ip_addr - device not assigned an "
+-		       "IP address\n");
+-		return;
+-	}
+-	memcpy(bin_buf, &in->ifa_address, sizeof(in->ifa_address));
+-}
+-
+ struct sk_buff *ether_adjust_skb(struct sk_buff *skb, int extra)
  {
--	struct mconsole_entry entry;
-+	struct mconsole_output entry;
- 	unsigned long flags;
- 
--	entry.request = *req;
-+	entry.req = req;
- 	list_add(&entry.list, &clients);
- 	spin_lock_irqsave(&console_lock, flags);
- 
-Index: linux-2.6.18-mm/arch/um/drivers/mconsole_user.c
+ 	if((skb != NULL) && (skb_tailroom(skb) < extra)){
+Index: linux-2.6.18-mm/arch/um/include/net_kern.h
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/mconsole_user.c	2006-09-26 16:28:51.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/drivers/mconsole_user.c	2006-09-26 16:39:37.000000000 -0400
-@@ -131,6 +131,10 @@ int mconsole_get_request(int fd, struct 
- int mconsole_reply_len(struct mc_request *req, const char *str, int total,
- 		       int err, int more)
- {
-+	/* XXX This is a stack consumption problem.  It'd be nice to
-+	 * make it global and serialize access to it, but there are a
-+	 * ton of callers to this function.
-+	 */
- 	struct mconsole_reply reply;
- 	int len, n;
+--- linux-2.6.18-mm.orig/arch/um/include/net_kern.h	2006-09-22 09:19:50.000000000 -0400
++++ linux-2.6.18-mm/arch/um/include/net_kern.h	2006-09-22 10:22:59.000000000 -0400
+@@ -18,7 +18,6 @@ struct uml_net {
+ 	struct platform_device pdev;
+ 	int index;
+ 	unsigned char mac[ETH_ALEN];
+-	int have_mac;
+ };
  
+ struct uml_net_private {
+@@ -29,7 +28,6 @@ struct uml_net_private {
+ 	struct net_device_stats stats;
+ 	int fd;
+ 	unsigned char mac[ETH_ALEN];
+-	int have_mac;
+ 	unsigned short (*protocol)(struct sk_buff *);
+ 	int (*open)(void *);
+ 	void (*close)(int, void *);
+@@ -62,7 +60,6 @@ struct transport {
+ 
+ extern struct net_device *ether_init(int);
+ extern unsigned short ether_protocol(struct sk_buff *);
+-extern int setup_etheraddr(char *str, unsigned char *addr);
+ extern struct sk_buff *ether_adjust_skb(struct sk_buff *skb, int extra);
+ extern int tap_setup_common(char *str, char *type, char **dev_name, 
+ 			    char **mac_out, char **gate_addr);
+@@ -70,14 +67,3 @@ extern void register_transport(struct tr
+ extern unsigned short eth_protocol(struct sk_buff *skb);
+ 
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.18-mm/arch/um/include/net_user.h
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/include/net_user.h	2006-09-22 10:20:11.000000000 -0400
++++ linux-2.6.18-mm/arch/um/include/net_user.h	2006-09-22 10:34:01.000000000 -0400
+@@ -25,7 +25,6 @@ struct net_user_info {
+ };
+ 
+ extern void ether_user_init(void *data, void *dev);
+-extern void dev_ip_addr(void *d, unsigned char *bin_buf);
+ extern void iter_addresses(void *d, void (*cb)(unsigned char *,
+ 					       unsigned char *, void *),
+ 			   void *arg);
 
 
 -------------------------------------------------------------------------
