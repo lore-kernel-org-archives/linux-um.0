@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GSdgX-0001LN-1b for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Sep 2006 10:59:05 -0700
+	id 1GSdgU-0001Ih-HM for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Sep 2006 10:59:02 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GSdgT-0004b0-L1
+	(Exim 4.44) id 1GSdgT-0004c2-Kq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Sep 2006 10:59:05 -0700
-Message-Id: <200609271757.k8RHvmgj005727@ccure.user-mode-linux.org>
+	Wed, 27 Sep 2006 10:59:02 -0700
+Message-Id: <200609271757.k8RHvvtK005747@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 27 Sep 2006 13:57:47 -0400
+Date: Wed, 27 Sep 2006 13:57:57 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/5] UML - Assign random MACs to interfaces if
-	necessary
+Subject: [uml-devel] [PATCH 5/5] UML - Stack consumption reduction
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,157 +30,73 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Assign a random MAC to an ethernet interface if one was not provided on
-the command line.  This became pressing when distros started
-bringing interfaces up before assigning IPs to them.  The previous
-pattern of assigning an IP then bringing it up allowed the MAC to be
-generated from the first IP assigned.  However, once the thing is
-up, it's probably a bad idea to change the MAC, so the MAC stayed
-initialized to fe:fd:0:0:0:0.
-
-Now, if there is no MAC from the command line, one is generated.  We
-use the microseconds from gettimeofday (20 bits), plus the low 12
-bits of the pid to seed the random number generator.  random() is
-called twice, with 16 bits of each result used.  I didn't want to
-have to try to fill in 32 bits optimally given an arbitrary
-RAND_MAX, so I just assume that it is greater than 65536 and use 16
-bits of each random() return.
-
-There is also a bit of reformatting and whitespace cleanup here.
+Fix some stack abuse in the sysrq t path.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 ---
 
- arch/um/drivers/net_kern.c |   15 +++++++++++----
- arch/um/drivers/net_user.c |   30 ++++++++++++++++++++++++++++++
- arch/um/include/net_user.h |   19 +++++--------------
- 3 files changed, 46 insertions(+), 18 deletions(-)
+ arch/um/drivers/mconsole_kern.c |   15 ++++++++++-----
+ arch/um/drivers/mconsole_user.c |    4 ++++
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/drivers/net_user.c
+Index: linux-2.6.18-mm/arch/um/drivers/mconsole_kern.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/net_user.c	2006-09-12 16:31:36.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/drivers/net_user.c	2006-09-22 10:19:26.000000000 -0400
-@@ -12,6 +12,7 @@
- #include <string.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
-+#include <sys/time.h>
- #include "user.h"
- #include "user_util.h"
- #include "kern_util.h"
-@@ -258,3 +259,32 @@ char *split_if_spec(char *str, ...)
- 	va_end(ap);
- 	return str;
+--- linux-2.6.18-mm.orig/arch/um/drivers/mconsole_kern.c	2006-09-26 16:28:51.000000000 -0400
++++ linux-2.6.18-mm/arch/um/drivers/mconsole_kern.c	2006-09-26 16:39:37.000000000 -0400
+@@ -598,6 +598,11 @@ out:
+ 	mconsole_reply(req, err_msg, err, 0);
  }
-+
-+void random_mac(unsigned char *addr)
-+{
-+	struct timeval tv;
-+	long n;
-+	unsigned int seed;
-+
-+	gettimeofday(&tv, NULL);
-+
-+	/* Assume that 20 bits of microseconds and 12 bits of the pid are
-+	 * reasonably unpredictable.
-+	 */
-+	seed = tv.tv_usec | (os_getpid() << 20);
-+	srandom(seed);
-+
-+	/* Don't care about endianness here - switching endianness
-+	 * just rearranges what are hopefully random numbers.
-+	 *
-+	 * Assume that RAND_MAX > 65536, so random is called twice and
-+	 * we use 16 bits of the result.
-+	 */
-+	n = random();
-+	addr[2] = (n >> 8) & 255;
-+	addr[3] = n % 255;
-+
-+	n = random();
-+	addr[4] = (n >> 8) & 255;
-+	addr[5] = n % 255;
-+}
-Index: linux-2.6.18-mm/arch/um/include/net_user.h
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/include/net_user.h	2006-09-12 10:43:38.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/include/net_user.h	2006-09-22 10:20:11.000000000 -0400
-@@ -1,4 +1,4 @@
--/* 
-+/*
-  * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-  */
-@@ -26,8 +26,8 @@ struct net_user_info {
  
- extern void ether_user_init(void *data, void *dev);
- extern void dev_ip_addr(void *d, unsigned char *bin_buf);
--extern void iter_addresses(void *d, void (*cb)(unsigned char *, 
--					       unsigned char *, void *), 
-+extern void iter_addresses(void *d, void (*cb)(unsigned char *,
-+					       unsigned char *, void *),
- 			   void *arg);
- 
- extern void *get_output_buffer(int *len_out);
-@@ -51,15 +51,6 @@ extern char *split_if_spec(char *str, ..
- 
- extern int dev_netmask(void *d, void *m);
- 
--#endif
-+extern void random_mac(unsigned char *addr);
- 
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-+#endif
-Index: linux-2.6.18-mm/arch/um/drivers/net_kern.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/net_kern.c	2006-09-22 10:17:11.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/drivers/net_kern.c	2006-09-22 10:19:26.000000000 -0400
-@@ -752,7 +752,8 @@ int setup_etheraddr(char *str, unsigned 
- 	int i;
- 
- 	if(str == NULL)
--		return(0);
-+		goto random;
++struct mconsole_output {
++	struct list_head list;
++	struct mc_request *req;
++};
 +
- 	for(i=0;i<6;i++){
- 		addr[i] = simple_strtoul(str, &end, 16);
- 		if((end == str) ||
-@@ -760,7 +761,7 @@ int setup_etheraddr(char *str, unsigned 
- 			printk(KERN_ERR 
- 			       "setup_etheraddr: failed to parse '%s' "
- 			       "as an ethernet address\n", str);
--			return(0);
-+			goto random;
+ static DEFINE_SPINLOCK(console_lock);
+ static LIST_HEAD(clients);
+ static char console_buf[MCONSOLE_MAX_DATA];
+@@ -622,10 +627,10 @@ static void console_write(struct console
+ 			return;
+ 
+ 		list_for_each(ele, &clients){
+-			struct mconsole_entry *entry;
++			struct mconsole_output *entry;
+ 
+-			entry = list_entry(ele, struct mconsole_entry, list);
+-			mconsole_reply_len(&entry->request, console_buf,
++			entry = list_entry(ele, struct mconsole_output, list);
++			mconsole_reply_len(entry->req, console_buf,
+ 					   console_index, 0, 1);
  		}
- 		str = end + 1;
- 	}
-@@ -768,9 +769,15 @@ int setup_etheraddr(char *str, unsigned 
- 		printk(KERN_ERR 
- 		       "Attempt to assign a broadcast ethernet address to a "
- 		       "device disallowed\n");
--		return(0);
-+		goto random;
- 	}
--	return(1);
-+	return 1;
-+
-+random:
-+	addr[0] = 0xfe;
-+	addr[1] = 0xfd;
-+	random_mac(addr);
-+	return 1;
- }
  
- void dev_ip_addr(void *d, unsigned char *bin_buf)
+@@ -649,10 +654,10 @@ late_initcall(mc_add_console);
+ static void with_console(struct mc_request *req, void (*proc)(void *),
+ 			 void *arg)
+ {
+-	struct mconsole_entry entry;
++	struct mconsole_output entry;
+ 	unsigned long flags;
+ 
+-	entry.request = *req;
++	entry.req = req;
+ 	list_add(&entry.list, &clients);
+ 	spin_lock_irqsave(&console_lock, flags);
+ 
+Index: linux-2.6.18-mm/arch/um/drivers/mconsole_user.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/drivers/mconsole_user.c	2006-09-26 16:28:51.000000000 -0400
++++ linux-2.6.18-mm/arch/um/drivers/mconsole_user.c	2006-09-26 16:39:37.000000000 -0400
+@@ -131,6 +131,10 @@ int mconsole_get_request(int fd, struct 
+ int mconsole_reply_len(struct mc_request *req, const char *str, int total,
+ 		       int err, int more)
+ {
++	/* XXX This is a stack consumption problem.  It'd be nice to
++	 * make it global and serialize access to it, but there are a
++	 * ton of callers to this function.
++	 */
+ 	struct mconsole_reply reply;
+ 	int len, n;
+ 
 
 
 -------------------------------------------------------------------------
