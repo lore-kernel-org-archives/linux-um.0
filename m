@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GSdgU-0001II-D1 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Sep 2006 10:59:02 -0700
+	id 1GSdgT-0001HL-Am for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Sep 2006 10:59:01 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GSdgR-0004LW-Id
+	(Exim 4.44) id 1GSdgR-0004LD-Ig
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Sep 2006 10:59:02 -0700
-Message-Id: <200609271757.k8RHvtNK005742@ccure.user-mode-linux.org>
+	Wed, 27 Sep 2006 10:59:01 -0700
+Message-Id: <200609271757.k8RHvsX1005737@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 27 Sep 2006 13:57:55 -0400
+Date: Wed, 27 Sep 2006 13:57:54 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 4/5] UML - Close file descriptor leaks
+Subject: [uml-devel] [PATCH 3/5] UML - Locking documentation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,79 +30,95 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Close two file descriptor leaks, one in the ubd driver and one to
-/proc/mounts.  The ubd driver bug also leaked some vmalloc space.
-The /proc/mounts leak was a descriptor that was just never closed.
+Some locking documentation and a cleanup.  uml_exitcode is copied
+into a local before sprintf sees it, in case sprintf does anything
+non-atomic with it.
+
+The rest are comments about why certain globals don't need any kind
+of locking.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 ---
 
- arch/um/drivers/ubd_kern.c |    9 ++-------
- arch/um/os-Linux/mem.c     |    6 +++++-
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ arch/um/drivers/null.c           |    1 +
+ arch/um/drivers/random.c         |    4 ++++
+ arch/um/drivers/stderr_console.c |    2 ++
+ arch/um/drivers/stdio_console.c  |    1 +
+ arch/um/kernel/exitcode.c        |    8 ++++++--
+ 5 files changed, 14 insertions(+), 2 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/drivers/ubd_kern.c
+Index: linux-2.6.18-mm/arch/um/kernel/exitcode.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/ubd_kern.c	2006-09-26 16:28:58.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/drivers/ubd_kern.c	2006-09-26 16:31:24.000000000 -0400
-@@ -667,18 +667,15 @@ static int ubd_add(int n)
- 	if(dev->file == NULL)
- 		goto out;
+--- linux-2.6.18-mm.orig/arch/um/kernel/exitcode.c	2006-09-26 16:28:49.000000000 -0400
++++ linux-2.6.18-mm/arch/um/kernel/exitcode.c	2006-09-26 16:29:14.000000000 -0400
+@@ -16,9 +16,13 @@ int uml_exitcode = 0;
+ static int read_proc_exitcode(char *page, char **start, off_t off,
+ 			      int count, int *eof, void *data)
+ {
+-	int len;
++	int len, val;
  
--	if (ubd_open_dev(dev))
--		goto out;
--
- 	err = ubd_file_size(dev, &dev->size);
- 	if(err < 0)
--		goto out_close;
-+		goto out;
- 
- 	dev->size = ROUND_BLOCK(dev->size);
- 
- 	err = ubd_new_disk(MAJOR_NR, dev->size, n, &ubd_gendisk[n]);
- 	if(err)
--		goto out_close;
-+		goto out;
- 
- 	if(fake_major != MAJOR_NR)
- 		ubd_new_disk(fake_major, dev->size, n,
-@@ -690,8 +687,6 @@ static int ubd_add(int n)
- 		make_ide_entries(ubd_gendisk[n]->disk_name);
- 
- 	err = 0;
--out_close:
--	ubd_close(dev);
- out:
- 	return err;
- }
-Index: linux-2.6.18-mm/arch/um/os-Linux/mem.c
+-	len = sprintf(page, "%d\n", uml_exitcode);
++	/* Save uml_exitcode in a local so that we don't need to guarantee
++	 * that sprintf accesses it atomically.
++	 */
++	val = uml_exitcode;
++	len = sprintf(page, "%d\n", val);
+ 	len -= off;
+ 	if(len <= off+count) *eof = 1;
+ 	*start = page + off;
+Index: linux-2.6.18-mm/arch/um/drivers/null.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/os-Linux/mem.c	2006-09-26 16:28:50.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/os-Linux/mem.c	2006-09-26 16:31:24.000000000 -0400
-@@ -132,6 +132,9 @@ err:
- 	else if(found < 0)
- 		printf("read returned errno %d\n", -found);
+--- linux-2.6.18-mm.orig/arch/um/drivers/null.c	2006-09-26 16:28:49.000000000 -0400
++++ linux-2.6.18-mm/arch/um/drivers/null.c	2006-09-26 16:29:39.000000000 -0400
+@@ -8,6 +8,7 @@
+ #include "chan_user.h"
+ #include "os.h"
  
-+out:
-+	close(fd);
-+
- 	return;
++/* This address is used only as a unique identifer */
+ static int null_chan;
  
- found:
-@@ -141,11 +144,12 @@ found:
+ static void *null_init(char *str, int device, const struct chan_opts *opts)
+Index: linux-2.6.18-mm/arch/um/drivers/random.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/drivers/random.c	2006-09-26 16:28:49.000000000 -0400
++++ linux-2.6.18-mm/arch/um/drivers/random.c	2006-09-26 16:29:39.000000000 -0400
+@@ -20,6 +20,10 @@
  
- 	if(strncmp(buf, "tmpfs", strlen("tmpfs"))){
- 		printf("not tmpfs\n");
--		return;
-+		goto out;
- 	}
+ #define RNG_MISCDEV_MINOR		183 /* official */
  
- 	printf("OK\n");
- 	default_tmpdir = "/dev/shm";
-+	goto out;
- }
++/* Changed at init time, in the non-modular case, and at module load
++ * time, in the module case.  Presumably, the module subsystem
++ * protects against a module being loaded twice at the same time.
++ */
+ static int random_fd = -1;
  
+ static int rng_dev_open (struct inode *inode, struct file *filp)
+Index: linux-2.6.18-mm/arch/um/drivers/stderr_console.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/drivers/stderr_console.c	2006-09-26 16:28:49.000000000 -0400
++++ linux-2.6.18-mm/arch/um/drivers/stderr_console.c	2006-09-26 16:29:39.000000000 -0400
+@@ -9,6 +9,8 @@
  /*
+  * Don't register by default -- as this registeres very early in the
+  * boot process it becomes the default console.
++ *
++ * Initialized at init time.
+  */
+ static int use_stderr_console = 0;
+ 
+Index: linux-2.6.18-mm/arch/um/drivers/stdio_console.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/drivers/stdio_console.c	2006-09-26 16:28:49.000000000 -0400
++++ linux-2.6.18-mm/arch/um/drivers/stdio_console.c	2006-09-26 16:29:39.000000000 -0400
+@@ -107,6 +107,7 @@ static int con_open(struct tty_struct *t
+ 	return line_open(vts, tty);
+ }
+ 
++/* Set in an initcall, checked in an exitcall */
+ static int con_init_done = 0;
+ 
+ static const struct tty_operations console_ops = {
 
 
 -------------------------------------------------------------------------
