@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GT0QY-0002Yo-7q for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Sep 2006 11:16:06 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GT0QX-0007iL-6C
+	id 1GT1rv-0002ci-8g for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Sep 2006 12:48:27 -0700
+Received: from aa012msr.fastwebnet.it ([85.18.95.72])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GT1rt-00038p-JQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Sep 2006 11:16:06 -0700
-Message-Id: <200609281814.k8SIEsG8005226@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Thu, 28 Sep 2006 14:14:54 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/2] UML - Don't roll my own random MAC generator
+	Thu, 28 Sep 2006 12:48:27 -0700
+Date: Thu, 28 Sep 2006 21:47:27 +0200
+From: Mattia Dongili <malattia@linux.it>
+Message-ID: <20060928194727.GC8519@inferi.kami.home>
+References: <2flhcyrq2nr.fsf@saruman.uio.no>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2flhcyrq2nr.fsf@saruman.uio.no>
+Subject: Re: [uml-devel] [Pkg-uml-pkgs] How is user-mode-linux using /dev/shm/?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,84 +29,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: dhollis@davehollis.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>
+To: Petter Reinholdtsen <pere@hungry.com>
+Cc: User Mode Linux Maintainers <pkg-uml-pkgs@lists.alioth.debian.org>, pkg-sysvinit-devel@lists.alioth.debian.org, Paolo Giarrusso <blaisorblade@yahoo.it>, UML-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Use the existing random_ether_addr() instead of cooking up my own
-version.  Pointed out by Dave Hollis and Jason Lunz.
+Thanks Petter for writing, 
+I was going to followup to the sysvinit bug :)
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
----
+I'm Cc-ing upstream too.
 
- arch/um/drivers/net_kern.c |    4 +---
- arch/um/drivers/net_user.c |   29 -----------------------------
- arch/um/include/net_user.h |    2 --
- 3 files changed, 1 insertion(+), 34 deletions(-)
+On Thu, Sep 28, 2006 at 08:14:32PM +0200, Petter Reinholdtsen wrote:
+> 
+> Hi
+> 
+> I am one of the sysvinit maintainers.  Recently we changed the mount
+> options of /dev/shm/, and got a bug report about uml refusing to start
+> (#386945).  Because of this, I am curious how uml uses /dev/shm/.  Is
+> it using the shm-functions in glibc, or something else?  Please
+> explain how it work.
 
-Index: linux-2.6.18-mm/arch/um/drivers/net_kern.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/net_kern.c	2006-09-28 12:51:50.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/drivers/net_kern.c	2006-09-28 13:00:58.000000000 -0400
-@@ -309,9 +309,7 @@ static void setup_etheraddr(char *str, u
- 	return;
- 
- random:
--	addr[0] = 0xfe;
--	addr[1] = 0xfd;
--	random_mac(addr);
-+	random_ether_addr(addr)
- }
- 
- static DEFINE_SPINLOCK(devices_lock);
-Index: linux-2.6.18-mm/arch/um/drivers/net_user.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/net_user.c	2006-09-28 12:51:50.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/drivers/net_user.c	2006-09-28 13:00:06.000000000 -0400
-@@ -259,32 +259,3 @@ char *split_if_spec(char *str, ...)
- 	va_end(ap);
- 	return str;
- }
--
--void random_mac(unsigned char *addr)
--{
--	struct timeval tv;
--	long n;
--	unsigned int seed;
--
--	gettimeofday(&tv, NULL);
--
--	/* Assume that 20 bits of microseconds and 12 bits of the pid are
--	 * reasonably unpredictable.
--	 */
--	seed = tv.tv_usec | (os_getpid() << 20);
--	srandom(seed);
--
--	/* Don't care about endianness here - switching endianness
--	 * just rearranges what are hopefully random numbers.
--	 *
--	 * Assume that RAND_MAX > 65536, so random is called twice and
--	 * we use 16 bits of the result.
--	 */
--	n = random();
--	addr[2] = (n >> 8) & 255;
--	addr[3] = n % 255;
--
--	n = random();
--	addr[4] = (n >> 8) & 255;
--	addr[5] = n % 255;
--}
-Index: linux-2.6.18-mm/arch/um/include/net_user.h
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/include/net_user.h	2006-09-28 12:15:48.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/include/net_user.h	2006-09-28 13:01:51.000000000 -0400
-@@ -50,6 +50,4 @@ extern char *split_if_spec(char *str, ..
- 
- extern int dev_netmask(void *d, void *m);
- 
--extern void random_mac(unsigned char *addr);
--
- #endif
+I don't think it uses shm* functions, as far as I can tell the /dev/shm
+location is sensible to $TMP, $TEMP or $TEMPDIR, thus changing one of
+them to a different location goes farther than what's reported in the
+bureport:
 
+$ TMPDIR=./TMP linux ubd0=rootfs_debian-sid.172.20.0.20 ubd1=swap-172.20.0.20 eth0=tuntap,,,172.20.0.19 umid=debian mem=128
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking for tmpfs mount on /dev/shm...OK
+Checking PROT_EXEC mmap in ./TMP/...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...not found
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
+UML running in SKAS0 mode
+Mapping memory: Cannot allocate memory
+
+Don't know now, it's maybe easy to fix, there's a nice global variable
+set to "/dev/shm" in arch/um/os-Linux/mem.c and UML uses mkstemp() to
+create files.
+
+> To make some writable tmpfs available to those in need of such system,
+> and to avoid using /dev/shm/ which is reserved for the shm-functions,
+> I just uploaded sysvinit version 2.86.ds1-26.  It will mount a tmpfs
+> on /lib/init/rw/ that can be used instead.  If /lib/init/rw/.ramfs
+> exist, that mount point is a tmpfs.  I'm not sure if this last change
+> will make it into Etch or not, but I hope so, to solve any problems
+> with packages previously using /dev/shm/ as a generic tmpfs file
+> system.
+
+Well, I'd actually prefer if you could remove the noexec flag from
+/dev/shm. I understand the security reasons given in the bugreport but
+I'd prefer avoid having to deal with one more Debian-only (is it?)
+thing given the soon to come general freeze. 
+
+Thanks
+-- 
+mattia
+:wq!
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
