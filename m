@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GT3pi-0005EM-GT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Sep 2006 14:54:18 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1GTCcb-00015L-FI for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Sep 2006 00:17:21 -0700
+Received: from picard.linux.it ([213.254.12.146])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GT3pi-0003of-22
+	(Exim 4.44) id 1GTCca-0004PY-RX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Sep 2006 14:54:18 -0700
-Date: Thu, 28 Sep 2006 17:51:43 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20060928215143.GC6327@ccure.user-mode-linux.org>
+	Fri, 29 Sep 2006 00:17:21 -0700
+Message-ID: <56699.85.47.20.193.1159514238.squirrel@picard.linux.it>
+In-Reply-To: <20060928201933.GA24770@saruman.uio.no>
 References: <2flhcyrq2nr.fsf@saruman.uio.no>
 	<20060928194727.GC8519@inferi.kami.home>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060928194727.GC8519@inferi.kami.home>
+	<20060928201933.GA24770@saruman.uio.no>
+Date: Fri, 29 Sep 2006 09:17:18 +0200 (CEST)
+From: "Mattia Dongili" <malattia@linux.it>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] [Pkg-uml-pkgs] How is user-mode-linux using /dev/shm/?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,31 +31,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Mattia Dongili <malattia@linux.it>
-Cc: User Mode Linux Maintainers <pkg-uml-pkgs@lists.alioth.debian.org>, pkg-sysvinit-devel@lists.alioth.debian.org, Paolo Giarrusso <blaisorblade@yahoo.it>, UML-devel <user-mode-linux-devel@lists.sourceforge.net>, Petter Reinholdtsen <pere@hungry.com>
+To: Petter Reinholdtsen <pere@hungry.com>
+Cc: User Mode Linux Maintainers <pkg-uml-pkgs@lists.alioth.debian.org>, Mattia Dongili <malattia@linux.it>, Paolo Giarrusso <blaisorblade@yahoo.it>, pkg-sysvinit-devel@lists.alioth.debian.org, UML-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Sep 28, 2006 at 09:47:27PM +0200, Mattia Dongili wrote:
-> On Thu, Sep 28, 2006 at 08:14:32PM +0200, Petter Reinholdtsen wrote:
-> > To make some writable tmpfs available to those in need of such system,
-> > and to avoid using /dev/shm/ which is reserved for the shm-functions,
-> > I just uploaded sysvinit version 2.86.ds1-26.  It will mount a tmpfs
-> > on /lib/init/rw/ that can be used instead.  If /lib/init/rw/.ramfs
-> > exist, that mount point is a tmpfs.  I'm not sure if this last change
-> > will make it into Etch or not, but I hope so, to solve any problems
-> > with packages previously using /dev/shm/ as a generic tmpfs file
-> > system.
-> 
-> Well, I'd actually prefer if you could remove the noexec flag from
-> /dev/shm. I understand the security reasons given in the bugreport but
-> I'd prefer avoid having to deal with one more Debian-only (is it?)
-> thing given the soon to come general freeze. 
+On Thu, September 28, 2006 10:19 pm, Petter Reinholdtsen said:
+> [Mattia Dongili]
+>> Well, I'd actually prefer if you could remove the noexec flag from
+>> /dev/shm. I understand the security reasons given in the bugreport
+>> but I'd prefer avoid having to deal with one more Debian-only (is
+>> it?)  thing given the soon to come general freeze.
+>
+> I am considering this for etch only, and to reinsert it once etch is
+> released.  I suspect it is better to break uml, dosemu and others
+> misusing /dev/shm/ early in the etch+1 release cycle instead of late
+> in the etch cycle.
 
-UML needs a non-noexec place to keep a file that will be used as its
-physical memory.  A tmpfs mount is greatly preferred for performance
-reasons as well as tmpfs being the only filesystem supporting
-MADV_REMOVE, which is used for memory hotplug.
+absolutely seconded.
 
-				Jeff
+> But I might be too late, as base and sysvinit is already frozen,
+> according to the email from Andreas. :( We will have to discuss it
+> with the release managers, I guess.
+
+I can still file a critical bug because sysvinit "breaks unrelated SW" :)
+Let's submit the question to d-release then.
+
+-- 
+mattia
+:wq!
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
