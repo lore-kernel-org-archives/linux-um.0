@@ -2,25 +2,34 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GTOPL-0002Vf-5w for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Sep 2006 12:52:27 -0700
-Received: from out1.smtp.messagingengine.com ([66.111.4.25])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GTOPJ-0005nl-Jl
+	id 1GTQhD-0006i7-Kv for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Sep 2006 15:19:03 -0700
+Received: from smtp-out.google.com ([216.239.45.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GTQhC-0006P6-Us
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Sep 2006 12:52:27 -0700
-Date: Fri, 29 Sep 2006 16:52:12 -0300
-From: Henrique de Moraes Holschuh <hmh@debian.org>
-Message-ID: <20060929195212.GA3656@khazad-dum.debian.net>
-References: <2flhcyrq2nr.fsf@saruman.uio.no>
-	<20060928194727.GC8519@inferi.kami.home>
-	<20060928215143.GC6327@ccure.user-mode-linux.org>
-	<20060929174601.GF13444@inferi.kami.home>
-	<20060929185934.GB8051@ccure.user-mode-linux.org>
+	Fri, 29 Sep 2006 15:19:03 -0700
+Received: from zps75.corp.google.com (zps75.corp.google.com [172.25.146.75])
+	by smtp-out.google.com with ESMTP id k8TMIurk009471
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 29 Sep 2006 15:18:56 -0700
+Received: from smtp-out2.google.com (fpr7.prod.google.com [10.253.18.7])
+	by zps75.corp.google.com with ESMTP id k8TMElf3021762
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 29 Sep 2006 15:18:53 -0700
+Received: by smtp-out2.google.com with SMTP id 7so2fpr
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 29 Sep 2006 15:18:53 -0700 (PDT)
+Message-ID: <65dd6fd50609291518s129786fbt1739c80533d1a36@mail.google.com>
+Date: Fri, 29 Sep 2006 15:18:52 -0700
+From: "Ollie Wild" <aaw@google.com>
+In-Reply-To: <200609281814.k8SIEsG8005226@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20060929185934.GB8051@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] [Pkg-sysvinit-devel] Re: [Pkg-uml-pkgs] How is
-	user-mode-linux using /dev/shm/?
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_4360_29040619.1159568332997"
+References: <200609281814.k8SIEsG8005226@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH 2/2] UML - Don't roll my own random MAC
+	generator
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,39 +39,139 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: User Mode Linux Maintainers <pkg-uml-pkgs@lists.alioth.debian.org>, Mattia Dongili <malattia@linux.it>, Paolo Giarrusso <blaisorblade@yahoo.it>, pkg-sysvinit-devel@lists.alioth.debian.org, UML-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: akpm@osdl.org, dhollis@davehollis.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jason Lunz <lunz@falooley.org>
 
-On Fri, 29 Sep 2006, Jeff Dike wrote:
-> On Fri, Sep 29, 2006 at 07:46:01PM +0200, Mattia Dongili wrote:
-> > Thinking of a Debian only fix for the above, does simply playing with
-> > default_tmpdir in arch/um/os-Linux/mem.c (probably in which_tmpdir())
-> > suffice to use /lib/init/rw/.ramfs as default?
-> > 
-> > (Yes I should try it... will try to find some time next week)
-> 
-> What difference would this make?  You still have some world-writable place
-> not mounted noexec that nasty people could try to take advantage of.  You're
-> just changing the name of that place.
+------=_Part_4360_29040619.1159568332997
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-It does not intrude in SYSV shm namespace anymore.
+This patch as provided breaks my build due to a missing semicolon.
 
--- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+Patch attached.
+
+Ollie
+
+On 9/28/06, Jeff Dike <jdike@addtoit.com> wrote:
+> Use the existing random_ether_addr() instead of cooking up my own
+> version.  Pointed out by Dave Hollis and Jason Lunz.
+>
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+> ---
+>
+>  arch/um/drivers/net_kern.c |    4 +---
+>  arch/um/drivers/net_user.c |   29 -----------------------------
+>  arch/um/include/net_user.h |    2 --
+>  3 files changed, 1 insertion(+), 34 deletions(-)
+>
+> Index: linux-2.6.18-mm/arch/um/drivers/net_kern.c
+> ===================================================================
+> --- linux-2.6.18-mm.orig/arch/um/drivers/net_kern.c     2006-09-28 12:51:50.000000000 -0400
+> +++ linux-2.6.18-mm/arch/um/drivers/net_kern.c  2006-09-28 13:00:58.000000000 -0400
+> @@ -309,9 +309,7 @@ static void setup_etheraddr(char *str, u
+>         return;
+>
+>  random:
+> -       addr[0] = 0xfe;
+> -       addr[1] = 0xfd;
+> -       random_mac(addr);
+> +       random_ether_addr(addr)
+>  }
+>
+>  static DEFINE_SPINLOCK(devices_lock);
+> Index: linux-2.6.18-mm/arch/um/drivers/net_user.c
+> ===================================================================
+> --- linux-2.6.18-mm.orig/arch/um/drivers/net_user.c     2006-09-28 12:51:50.000000000 -0400
+> +++ linux-2.6.18-mm/arch/um/drivers/net_user.c  2006-09-28 13:00:06.000000000 -0400
+> @@ -259,32 +259,3 @@ char *split_if_spec(char *str, ...)
+>         va_end(ap);
+>         return str;
+>  }
+> -
+> -void random_mac(unsigned char *addr)
+> -{
+> -       struct timeval tv;
+> -       long n;
+> -       unsigned int seed;
+> -
+> -       gettimeofday(&tv, NULL);
+> -
+> -       /* Assume that 20 bits of microseconds and 12 bits of the pid are
+> -        * reasonably unpredictable.
+> -        */
+> -       seed = tv.tv_usec | (os_getpid() << 20);
+> -       srandom(seed);
+> -
+> -       /* Don't care about endianness here - switching endianness
+> -        * just rearranges what are hopefully random numbers.
+> -        *
+> -        * Assume that RAND_MAX > 65536, so random is called twice and
+> -        * we use 16 bits of the result.
+> -        */
+> -       n = random();
+> -       addr[2] = (n >> 8) & 255;
+> -       addr[3] = n % 255;
+> -
+> -       n = random();
+> -       addr[4] = (n >> 8) & 255;
+> -       addr[5] = n % 255;
+> -}
+> Index: linux-2.6.18-mm/arch/um/include/net_user.h
+> ===================================================================
+> --- linux-2.6.18-mm.orig/arch/um/include/net_user.h     2006-09-28 12:15:48.000000000 -0400
+> +++ linux-2.6.18-mm/arch/um/include/net_user.h  2006-09-28 13:01:51.000000000 -0400
+> @@ -50,6 +50,4 @@ extern char *split_if_spec(char *str, ..
+>
+>  extern int dev_netmask(void *d, void *m);
+>
+> -extern void random_mac(unsigned char *addr);
+> -
+>  #endif
+>
+> -
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
+
+------=_Part_4360_29040619.1159568332997
+Content-Type: text/x-patch; name=random_ether_addr.patch; 
+	charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_esp50wda
+Content-Disposition: attachment; filename="random_ether_addr.patch"
+
+ZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy9uZXRfa2Vybi5jIGIvYXJjaC91bS9kcml2ZXJz
+L25ldF9rZXJuLmMKaW5kZXggMTZhYTU3Mi4uMzAwYTU0YSAxMDA2NDQKLS0tIGEvYXJjaC91bS9k
+cml2ZXJzL25ldF9rZXJuLmMKKysrIGIvYXJjaC91bS9kcml2ZXJzL25ldF9rZXJuLmMKQEAgLTMx
+MCw3ICszMTAsNyBAQCBzdGF0aWMgdm9pZCBzZXR1cF9ldGhlcmFkZHIoY2hhciAqc3RyLCB1CiAJ
+cmV0dXJuOwogCiByYW5kb206Ci0JcmFuZG9tX2V0aGVyX2FkZHIoYWRkcikKKwlyYW5kb21fZXRo
+ZXJfYWRkcihhZGRyKTsKIH0KIAogc3RhdGljIERFRklORV9TUElOTE9DSyhkZXZpY2VzX2xvY2sp
+Owo=
+------=_Part_4360_29040619.1159568332997
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+------=_Part_4360_29040619.1159568332997
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+------=_Part_4360_29040619.1159568332997--
