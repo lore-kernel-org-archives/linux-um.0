@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GTWA3-0001Uq-MP for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Sep 2006 21:09:11 -0700
-Received: from smtp.osdl.org ([65.172.181.4])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44) id 1GTWA2-0008Ix-Af
+	id 1GTWHw-0002Ak-TU for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Sep 2006 21:17:20 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GTWHv-0003Cy-EB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Sep 2006 21:09:11 -0700
-Date: Fri, 29 Sep 2006 21:08:57 -0700
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20060929210857.fffc1e5d.akpm@osdl.org>
-In-Reply-To: <20060930035234.GB10307@ccure.user-mode-linux.org>
+	Fri, 29 Sep 2006 21:17:20 -0700
+Date: Sat, 30 Sep 2006 00:15:59 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20060930041559.GE10307@ccure.user-mode-linux.org>
 References: <200609281814.k8SIEsG8005226@ccure.user-mode-linux.org>
 	<65dd6fd50609291518s129786fbt1739c80533d1a36@mail.google.com>
 	<20060929153853.9bab3ca7.akpm@osdl.org>
-	<20060930035234.GB10307@ccure.user-mode-linux.org>
+	<65dd6fd50609291548x39707437yb7f1308c3397c488@mail.google.com>
+	<20060929161616.7e47c453.akpm@osdl.org>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20060929161616.7e47c453.akpm@osdl.org>
 Subject: Re: [uml-devel] [PATCH 2/2] UML - Don't roll my own random MAC
 	generator
 List-Id: The user-mode Linux development list
@@ -33,18 +35,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: dhollis@davehollis.com, Jason@sc8-sf-spam2-b.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, Lunz <lunz@falooley.org>, linux-kernel@vger.kernel.org, Ollie Wild <aaw@google.com>
+To: Andrew Morton <akpm@osdl.org>
+Cc: dhollis@davehollis.com, Jason Lunz <lunz@falooley.org>, Ollie Wild <aaw@google.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Fri, 29 Sep 2006 23:52:34 -0400
-Jeff Dike <jdike@addtoit.com> wrote:
+On Fri, Sep 29, 2006 at 04:16:16PM -0700, Andrew Morton wrote:
+> arch/um/os-Linux/sys-i386/registers.c: In function 'get_thread_regs':
+> arch/um/os-Linux/sys-i386/registers.c:137: error: 'JB_PC' undeclared (first use in this function)
+> arch/um/os-Linux/sys-i386/registers.c:137: error: (Each undeclared identifier is reported only once
+> arch/um/os-Linux/sys-i386/registers.c:137: error: for each function it appears in.)
+> arch/um/os-Linux/sys-i386/registers.c:138: error: 'JB_SP' undeclared (first use in this function)
+> arch/um/os-Linux/sys-i386/registers.c:139: error: 'JB_BP' undeclared (first use in this function)
 
-> > Jeff, could we pleeeeeze arrange for UML's `make allmodconfig' to work, and
-> > to continue to work?
-> 
-> It works for me - I haven't built -mm2 on x86_64 yet, but I'll check that.
+Hmmm, I never tried a cross-build before, but I don't even get this far:
 
-that was mainline.  Perhaps a toolchain thing?
+  CC      arch/um/sys-i386/user-offsets.s
+In file included from /usr/include/features.h:352,
+                 from /usr/include/stdio.h:28,
+                 from /home/jdike/linux/2.6/linux-2.6.17/arch/um/sys-i386/user-\offsets.c:1:
+/usr/include/gnu/stubs.h:7:27: error: gnu/stubs-32.h: No such file or directory
+m
+
+I just flew into Ohio and am not in any shape to debug this atm.  I'll have
+another look tomorrow.
+
+				Jeff
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
