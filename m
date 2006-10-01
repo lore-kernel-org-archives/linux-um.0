@@ -2,31 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GTpSf-00065C-9Z for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Sep 2006 17:45:41 -0700
-Received: from gwu.lbox.cz ([62.245.111.132])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GTpSd-0006gM-L5
+	id 1GU2fn-0005DR-BW for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Oct 2006 07:52:07 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GU2fk-0005Hb-AB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Sep 2006 17:45:41 -0700
-Received: from linuxbox.linuxbox.cz (linuxbox.linuxbox.cz [10.76.66.10])
-	by gwu.lbox.cz (Sendmail) with ESMTP id k910jWh0017415
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 1 Oct 2006 02:45:32 +0200
-Received: from [10.76.66.65] (nbnik.linuxbox.cz [10.76.66.65])
-	(authenticated bits=0)
-	by linuxbox.linuxbox.cz (Sendmail) with ESMTP id k910jUrf017208
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 1 Oct 2006 02:45:31 +0200
-Message-ID: <451F0FAA.2090402@linuxbox.cz>
-Date: Sun, 01 Oct 2006 03:45:30 +0300
-From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+	Sun, 01 Oct 2006 07:52:07 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 1 Oct 2006 16:49:07 +0200
+References: <200609251834.k8PIYWLu005031@ccure.user-mode-linux.org>
+In-Reply-To: <200609251834.k8PIYWLu005031@ccure.user-mode-linux.org>
 MIME-Version: 1.0
-References: <451E9BAB.5030009@linuxbox.cz>	<20060930214902.GA16457@ccure.user-mode-linux.org>	<451EEB99.6030406@linuxbox.cz>	<20060930235752.GA16968@ccure.user-mode-linux.org>	<1159661291.2940.21.camel@nik-nb>
-	<451F0985.4090100@linuxbox.cz>
-In-Reply-To: <451F0985.4090100@linuxbox.cz>
-Subject: Re: [uml-devel] SKAS mode not working, x86_64 SMP host, x86_64	guest, 
-	problems with noprocmm
+Content-Disposition: inline
+Message-Id: <200610011649.08382.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 3/8] UML - Fix missing x86_64 register
+	definitions
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,58 +31,85 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-Jeff,
-I'm terribly sorry, please ignore previous two emails. Problem was not 
-in UML itself, but in my scripts, as it happened that I was running it 
-with setarch i386, which caused guest uml report i386 architecture, and 
-it made quite a mess when I was testing it...
-once again I'm sorry, I guess I really should rather have some sleep :(
-n.
-PS: but anyways, I wonder, is this behavior bug or feature? that running 
-x86_64 uml using setarch i386 then causes guest UML report i686 arch? 
-(even it's still x86_64)
+On Monday 25 September 2006 20:34, Jeff Dike wrote:
+> The UML/x86_64 headers were missing ptrace support for some segment
+> registers. The underlying problem was that the x86_64 kernel uses
+> user_regs_struct rather than the ptrace register definitions in ptrace. 
+> This patch switches UML/x86_64 to using user_regs_struct for its
+> definitions of the host's registers.
 
-Nikola Ciprich wrote:
-> oops, so difference is not in mode, problems seems to be in NPTL usage, 
-> arch is correctly reported only when I set LD_ASSUME_KERNEL to 2.4.1
-> sorry about confusion...
+> Signed-off-by: Jeff Dike <jdike@addtoit.com>
+> Cc: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> Signed-off-by: Andrew Morton <akpm@osdl.org>
+> ---
 >
-> Nikola Ciprich wrote:
->   
->> hmm, I've also noticed another strange thing (maybe bug?)
->> when I run this UML using noprocmm, arch is incorrectly reported as
->> i686, while if I run it using skas0, it's (correctly) reported as
->> x86_64...
->> n.
->> PS: You don't need to CC me, I'm reading this list
->>
->>
->> -------------------------------------------------------------------------
->> Take Surveys. Earn Cash. Influence the Future of IT
->> Join SourceForge.net's Techsay panel and you'll get the chance to share your
->> opinions on IT & business topics through brief surveys -- and earn cash
->> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
->> _______________________________________________
->> User-mode-linux-devel mailing list
->> User-mode-linux-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->>
->>   
->>     
+>  arch/um/include/sysdep-x86_64/ptrace.h |   43 +++++++++++++++++++++--
+>  arch/um/include/sysdep-x86_64/sc.h     |    2 -
+>  include/asm-um/ptrace-x86_64.h         |    3 +
+>  3 files changed, 44 insertions(+), 4 deletions(-)
 >
+> diff -puN
+> arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-missing-x86_64-register-defi
+>nitions arch/um/include/sysdep-x86_64/ptrace.h ---
+> a/arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-missing-x86_64-register-de
+>finitions +++ a/arch/um/include/sysdep-x86_64/ptrace.h
+> @@ -50,6 +50,21 @@
+>  #define HOST_FS 25
+>  #define HOST_GS 26
 >
-> -------------------------------------------------------------------------
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share your
-> opinions on IT & business topics through brief surveys -- and earn cash
-> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> +/* Also defined in asm/ptrace-x86_64.h, but not in libc headers.  So,
+> these + * are already defined for kernel code, but not for userspace code.
+> + */
+> +#ifndef FS_BASE
+> +/* These aren't defined in ptrace.h, but exist in struct user_regs_struct,
+> + * which is what x86_64 ptrace actually uses.
+> + */
+> +#define FS_BASE (HOST_FS_BASE * sizeof(long))
+> +#define GS_BASE (HOST_GS_BASE * sizeof(long))
+> +#define DS (HOST_DS * sizeof(long))
+> +#define ES (HOST_ES * sizeof(long))
+> +#define FS (HOST_FS * sizeof(long))
+> +#define GS (HOST_GS * sizeof(long))
+> +#endif
+> +
+>  #define REGS_FS_BASE(r) ((r)[HOST_FS_BASE])
+>  #define REGS_GS_BASE(r) ((r)[HOST_GS_BASE])
+>  #define REGS_DS(r) ((r)[HOST_DS])
+
+> diff -puN
+> include/asm-um/ptrace-x86_64.h~uml-fix-missing-x86_64-register-definitions
+> include/asm-um/ptrace-x86_64.h ---
+> a/include/asm-um/ptrace-x86_64.h~uml-fix-missing-x86_64-register-definition
+>s +++ a/include/asm-um/ptrace-x86_64.h
+> @@ -16,12 +16,15 @@
 >
->   
+>  #define HOST_AUDIT_ARCH AUDIT_ARCH_X86_64
+>
+> +/* Also defined in sysdep/ptrace.h, so may already be defined. */
+> +#ifndef FS_BASE
+>  #define FS_BASE (21 * sizeof(unsigned long))
+>  #define GS_BASE (22 * sizeof(unsigned long))
+>  #define DS (23 * sizeof(unsigned long))
+>  #define ES (24 * sizeof(unsigned long))
+>  #define FS (25 * sizeof(unsigned long))
+>  #define GS (26 * sizeof(unsigned long))
+> +#endif
+>
+>  #define PT_REGS_RBX(r) UPT_RBX(&(r)->regs)
+>  #define PT_REGS_RCX(r) UPT_RCX(&(r)->regs)
+
+The patch is ok for me, but frankly, this hunk could be further cleaned up - 
+there is an awful hardcoded duplication of code which could be removed (the 
+definition could be split away from <sysdep/ptrace.h> if inclusion order hell 
+starts).
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 -------------------------------------------------------------------------
