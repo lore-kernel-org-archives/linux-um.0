@@ -1,30 +1,30 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GTp3F-0003vR-Kt for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Sep 2006 17:19:25 -0700
+	id 1GTpSf-00065C-9Z for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Sep 2006 17:45:41 -0700
 Received: from gwu.lbox.cz ([62.245.111.132])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GTp3E-00009X-WF
+	(Exim 4.44) id 1GTpSd-0006gM-L5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Sep 2006 17:19:25 -0700
+	Sat, 30 Sep 2006 17:45:41 -0700
 Received: from linuxbox.linuxbox.cz (linuxbox.linuxbox.cz [10.76.66.10])
-	by gwu.lbox.cz (Sendmail) with ESMTP id k910JLGO016220
+	by gwu.lbox.cz (Sendmail) with ESMTP id k910jWh0017415
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 1 Oct 2006 02:19:21 +0200
+	Sun, 1 Oct 2006 02:45:32 +0200
 Received: from [10.76.66.65] (nbnik.linuxbox.cz [10.76.66.65])
 	(authenticated bits=0)
-	by linuxbox.linuxbox.cz (Sendmail) with ESMTP id k910JHxG016357
+	by linuxbox.linuxbox.cz (Sendmail) with ESMTP id k910jUrf017208
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 1 Oct 2006 02:19:17 +0200
-Message-ID: <451F0985.4090100@linuxbox.cz>
-Date: Sun, 01 Oct 2006 03:19:17 +0300
+	Sun, 1 Oct 2006 02:45:31 +0200
+Message-ID: <451F0FAA.2090402@linuxbox.cz>
+Date: Sun, 01 Oct 2006 03:45:30 +0300
 From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
 MIME-Version: 1.0
-References: <451E9BAB.5030009@linuxbox.cz>	<20060930214902.GA16457@ccure.user-mode-linux.org>	<451EEB99.6030406@linuxbox.cz>	<20060930235752.GA16968@ccure.user-mode-linux.org>
-	<1159661291.2940.21.camel@nik-nb>
-In-Reply-To: <1159661291.2940.21.camel@nik-nb>
+References: <451E9BAB.5030009@linuxbox.cz>	<20060930214902.GA16457@ccure.user-mode-linux.org>	<451EEB99.6030406@linuxbox.cz>	<20060930235752.GA16968@ccure.user-mode-linux.org>	<1159661291.2940.21.camel@nik-nb>
+	<451F0985.4090100@linuxbox.cz>
+In-Reply-To: <451F0985.4090100@linuxbox.cz>
 Subject: Re: [uml-devel] SKAS mode not working, x86_64 SMP host, x86_64	guest, 
 	problems with noprocmm
 List-Id: The user-mode Linux development list
@@ -42,17 +42,44 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-oops, so difference is not in mode, problems seems to be in NPTL usage, 
-arch is correctly reported only when I set LD_ASSUME_KERNEL to 2.4.1
-sorry about confusion...
+Jeff,
+I'm terribly sorry, please ignore previous two emails. Problem was not 
+in UML itself, but in my scripts, as it happened that I was running it 
+with setarch i386, which caused guest uml report i386 architecture, and 
+it made quite a mess when I was testing it...
+once again I'm sorry, I guess I really should rather have some sleep :(
+n.
+PS: but anyways, I wonder, is this behavior bug or feature? that running 
+x86_64 uml using setarch i386 then causes guest UML report i686 arch? 
+(even it's still x86_64)
 
 Nikola Ciprich wrote:
-> hmm, I've also noticed another strange thing (maybe bug?)
-> when I run this UML using noprocmm, arch is incorrectly reported as
-> i686, while if I run it using skas0, it's (correctly) reported as
-> x86_64...
-> n.
-> PS: You don't need to CC me, I'm reading this list
+> oops, so difference is not in mode, problems seems to be in NPTL usage, 
+> arch is correctly reported only when I set LD_ASSUME_KERNEL to 2.4.1
+> sorry about confusion...
+>
+> Nikola Ciprich wrote:
+>   
+>> hmm, I've also noticed another strange thing (maybe bug?)
+>> when I run this UML using noprocmm, arch is incorrectly reported as
+>> i686, while if I run it using skas0, it's (correctly) reported as
+>> x86_64...
+>> n.
+>> PS: You don't need to CC me, I'm reading this list
+>>
+>>
+>> -------------------------------------------------------------------------
+>> Take Surveys. Earn Cash. Influence the Future of IT
+>> Join SourceForge.net's Techsay panel and you'll get the chance to share your
+>> opinions on IT & business topics through brief surveys -- and earn cash
+>> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+>> _______________________________________________
+>> User-mode-linux-devel mailing list
+>> User-mode-linux-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>>
+>>   
+>>     
 >
 >
 > -------------------------------------------------------------------------
