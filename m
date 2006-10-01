@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GU2fn-0005DR-BW for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Oct 2006 07:52:07 -0700
+	id 1GU2yi-00082r-Qv for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Oct 2006 08:11:40 -0700
 Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GU2fk-0005Hb-AB
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GU2yf-0006m2-7k
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Oct 2006 07:52:07 -0700
+	Sun, 01 Oct 2006 08:11:40 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 1 Oct 2006 16:49:07 +0200
-References: <200609251834.k8PIYWLu005031@ccure.user-mode-linux.org>
-In-Reply-To: <200609251834.k8PIYWLu005031@ccure.user-mode-linux.org>
+Date: Sun, 1 Oct 2006 17:08:45 +0200
+References: <451E9BAB.5030009@linuxbox.cz> <451F0985.4090100@linuxbox.cz>
+	<451F0FAA.2090402@linuxbox.cz>
+In-Reply-To: <451F0FAA.2090402@linuxbox.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200610011649.08382.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 3/8] UML - Fix missing x86_64 register
-	definitions
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_9n9HFNmI4Bw2Rkz"
+Message-Id: <200610011708.45909.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel]
+	=?iso-8859-1?q?SKAS_mode_not_working=2C_x86=5F64_SMP_?=
+	=?iso-8859-1?q?host=2C_x86=5F64=09guest_=2C_problems_with_noprocmm?=
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,98 +29,94 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
+Cc: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
 
-On Monday 25 September 2006 20:34, Jeff Dike wrote:
-> The UML/x86_64 headers were missing ptrace support for some segment
-> registers. The underlying problem was that the x86_64 kernel uses
-> user_regs_struct rather than the ptrace register definitions in ptrace. 
-> This patch switches UML/x86_64 to using user_regs_struct for its
-> definitions of the host's registers.
+--Boundary-00=_9n9HFNmI4Bw2Rkz
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> Signed-off-by: Jeff Dike <jdike@addtoit.com>
-> Cc: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> Signed-off-by: Andrew Morton <akpm@osdl.org>
-> ---
->
->  arch/um/include/sysdep-x86_64/ptrace.h |   43 +++++++++++++++++++++--
->  arch/um/include/sysdep-x86_64/sc.h     |    2 -
->  include/asm-um/ptrace-x86_64.h         |    3 +
->  3 files changed, 44 insertions(+), 4 deletions(-)
->
-> diff -puN
-> arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-missing-x86_64-register-defi
->nitions arch/um/include/sysdep-x86_64/ptrace.h ---
-> a/arch/um/include/sysdep-x86_64/ptrace.h~uml-fix-missing-x86_64-register-de
->finitions +++ a/arch/um/include/sysdep-x86_64/ptrace.h
-> @@ -50,6 +50,21 @@
->  #define HOST_FS 25
->  #define HOST_GS 26
->
-> +/* Also defined in asm/ptrace-x86_64.h, but not in libc headers.  So,
-> these + * are already defined for kernel code, but not for userspace code.
-> + */
-> +#ifndef FS_BASE
-> +/* These aren't defined in ptrace.h, but exist in struct user_regs_struct,
-> + * which is what x86_64 ptrace actually uses.
-> + */
-> +#define FS_BASE (HOST_FS_BASE * sizeof(long))
-> +#define GS_BASE (HOST_GS_BASE * sizeof(long))
-> +#define DS (HOST_DS * sizeof(long))
-> +#define ES (HOST_ES * sizeof(long))
-> +#define FS (HOST_FS * sizeof(long))
-> +#define GS (HOST_GS * sizeof(long))
-> +#endif
-> +
->  #define REGS_FS_BASE(r) ((r)[HOST_FS_BASE])
->  #define REGS_GS_BASE(r) ((r)[HOST_GS_BASE])
->  #define REGS_DS(r) ((r)[HOST_DS])
+On Sunday 01 October 2006 02:45, Nikola Ciprich wrote:
+> Jeff,
+> I'm terribly sorry, please ignore previous two emails. Problem was not
+> in UML itself, but in my scripts, as it happened that I was running it
+> with setarch i386, which caused guest uml report i386 architecture, and
+> it made quite a mess when I was testing it...
+> once again I'm sorry, I guess I really should rather have some sleep :(
+> n.
 
-> diff -puN
-> include/asm-um/ptrace-x86_64.h~uml-fix-missing-x86_64-register-definitions
-> include/asm-um/ptrace-x86_64.h ---
-> a/include/asm-um/ptrace-x86_64.h~uml-fix-missing-x86_64-register-definition
->s +++ a/include/asm-um/ptrace-x86_64.h
-> @@ -16,12 +16,15 @@
->
->  #define HOST_AUDIT_ARCH AUDIT_ARCH_X86_64
->
-> +/* Also defined in sysdep/ptrace.h, so may already be defined. */
-> +#ifndef FS_BASE
->  #define FS_BASE (21 * sizeof(unsigned long))
->  #define GS_BASE (22 * sizeof(unsigned long))
->  #define DS (23 * sizeof(unsigned long))
->  #define ES (24 * sizeof(unsigned long))
->  #define FS (25 * sizeof(unsigned long))
->  #define GS (26 * sizeof(unsigned long))
-> +#endif
->
->  #define PT_REGS_RBX(r) UPT_RBX(&(r)->regs)
->  #define PT_REGS_RCX(r) UPT_RCX(&(r)->regs)
+> PS: but anyways, I wonder, is this behavior bug or feature? that running
+> x86_64 uml using setarch i386 then causes guest UML report i686 arch?
+> (even it's still x86_64)
 
-The patch is ok for me, but frankly, this hunk could be further cleaned up - 
-there is an awful hardcoded duplication of code which could be removed (the 
-definition could be split away from <sysdep/ptrace.h> if inclusion order hell 
-starts).
+It is a bug. Under setarch i386, uname returns i686; however, UML should 
+correct this. A 32bit UML says i686 on a 64bit host. Patch attached 
+(compile-tested).
+Please report whether it works or not.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
 http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
+--Boundary-00=_9n9HFNmI4Bw2Rkz
+Content-Type: text/x-diff; charset="iso-8859-1";
+	name="fix-uname-under-setarch-i386"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="fix-uname-under-setarch-i386"
+
+Index: linux-2.6.git/arch/um/os-Linux/util.c
+===================================================================
+--- linux-2.6.git.orig/arch/um/os-Linux/util.c
++++ linux-2.6.git/arch/um/os-Linux/util.c
+@@ -81,11 +81,18 @@ void setup_machinename(char *machine_out
+ 	struct utsname host;
+ 
+ 	uname(&host);
+-#if defined(UML_CONFIG_UML_X86) && !defined(UML_CONFIG_64BIT)
++#ifdef UML_CONFIG_UML_X86
++# ifndef UML_CONFIG_64BIT
+ 	if (!strcmp(host.machine, "x86_64")) {
+ 		strcpy(machine_out, "i686");
+ 		return;
+ 	}
++# else
++	if (!strcmp(host.machine, "i686")) {
++		strcpy(machine_out, "x86_64");
++		return;
++	}
++# endif
+ #endif
+ 	strcpy(machine_out, host.machine);
+ }
+
+--Boundary-00=_9n9HFNmI4Bw2Rkz
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys -- and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--Boundary-00=_9n9HFNmI4Bw2Rkz
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--Boundary-00=_9n9HFNmI4Bw2Rkz--
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
