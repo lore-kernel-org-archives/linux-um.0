@@ -2,18 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GUtF2-0002QV-KG for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Oct 2006 16:00:00 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GUtF1-0003bF-3B
+	id 1GUumv-0001vH-5X for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Oct 2006 17:39:05 -0700
+Received: from wx-out-0506.google.com ([66.249.82.231])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GUumu-00078O-GI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Oct 2006 16:00:00 -0700
-Message-Id: <200610032256.k93MulSV006888@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Tue, 03 Oct 2006 18:56:46 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] UML - add generic BUG support
+	Tue, 03 Oct 2006 17:39:05 -0700
+Received: by wx-out-0506.google.com with SMTP id r21so2871648wxc
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 03 Oct 2006 17:39:03 -0700 (PDT)
+Date: Sun, 1 Oct 2006 21:30:54 -0300
+From: Rodrigo Baroni <baroni@ime.usp.br>
+Message-ID: <20061002003054.GA9780@baroni.homelinux.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] compile error: user-offsets.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,137 +26,87 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf8"
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Content-Transfer-Encoding: base64
+To: user-mode-linux-devel@lists.sourceforge.net
 
-The BUG changes in -mm3 need some arch support.  This patch adds the UML 
-support needed.  For the most part, it was stolen from the underlying 
-architecture.  The exception is the kernel eip < PAGE_OFFSET test, which is 
-wrong for skas mode UMLs.
-
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
----
- arch/um/Kconfig             |    5 +++++
- arch/um/sys-i386/Makefile   |    2 +-
- arch/um/sys-i386/bug.c      |   20 ++++++++++++++++++++
- arch/um/sys-x86_64/Makefile |    2 +-
- arch/um/sys-x86_64/bug.c    |   20 ++++++++++++++++++++
- include/asm-um/bug.h        |    4 +++-
- 6 files changed, 50 insertions(+), 3 deletions(-)
-
-Index: linux-2.6.18-mm/arch/um/Kconfig
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/Kconfig	2006-10-03 12:46:44.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/Kconfig	2006-10-03 17:44:32.000000000 -0400
-@@ -29,6 +29,11 @@ config GENERIC_CALIBRATE_DELAY
- 	bool
- 	default y
- 
-+config GENERIC_BUG
-+	bool
-+	default y
-+	depends on BUG
-+
- # Used in kernel/irq/manage.c and include/linux/irq.h
- config IRQ_RELEASE_METHOD
- 	bool
-Index: linux-2.6.18-mm/include/asm-um/bug.h
-===================================================================
---- linux-2.6.18-mm.orig/include/asm-um/bug.h	2006-06-17 21:49:35.000000000 -0400
-+++ linux-2.6.18-mm/include/asm-um/bug.h	2006-10-03 13:29:28.000000000 -0400
-@@ -1,4 +1,6 @@
- #ifndef __UM_BUG_H
- #define __UM_BUG_H
--#include <asm-generic/bug.h>
-+
-+#include <asm/arch/bug.h>
-+
- #endif
-Index: linux-2.6.18-mm/arch/um/sys-i386/Makefile
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/sys-i386/Makefile	2006-10-03 12:53:13.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/sys-i386/Makefile	2006-10-03 17:44:32.000000000 -0400
-@@ -1,4 +1,4 @@
--obj-y = bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
-+obj-y = bug.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
- 	ptrace_user.o setjmp.o signal.o sigcontext.o syscalls.o sysrq.o \
- 	sys_call_table.o tls.o
- 
-Index: linux-2.6.18-mm/arch/um/sys-i386/bug.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.18-mm/arch/um/sys-i386/bug.c	2006-10-03 13:45:39.000000000 -0400
-@@ -0,0 +1,20 @@
-+/*
-+ * Copyright (C) 2006 Jeff Dike (jdike@addtoit.com)
-+ * Licensed under the GPL V2
-+ */
-+
-+#include <linux/uaccess.h>
-+
-+/* Mostly copied from i386/x86_86 - eliminated the eip < PAGE_OFFSET because
-+ * that's not relevent in skas mode.
-+ */
-+
-+int is_valid_bugaddr(unsigned long eip)
-+{
-+	unsigned short ud2;
-+
-+	if (probe_kernel_address((unsigned short __user *)eip, ud2))
-+		return 0;
-+
-+	return ud2 == 0x0b0f;
-+}
-Index: linux-2.6.18-mm/arch/um/sys-x86_64/Makefile
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/sys-x86_64/Makefile	2006-10-03 12:53:13.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/sys-x86_64/Makefile	2006-10-03 17:44:32.000000000 -0400
-@@ -4,7 +4,7 @@
- # Licensed under the GPL
- #
- 
--obj-y = bugs.o delay.o fault.o ldt.o mem.o ptrace.o ptrace_user.o \
-+obj-y = bug.o bugs.o delay.o fault.o ldt.o mem.o ptrace.o ptrace_user.o \
- 	setjmp.o sigcontext.o signal.o syscalls.o syscall_table.o sysrq.o \
- 	ksyms.o tls.o
- 
-Index: linux-2.6.18-mm/arch/um/sys-x86_64/bug.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.18-mm/arch/um/sys-x86_64/bug.c	2006-10-03 13:45:53.000000000 -0400
-@@ -0,0 +1,20 @@
-+/*
-+ * Copyright (C) 2006 Jeff Dike (jdike@addtoit.com)
-+ * Licensed under the GPL V2
-+ */
-+
-+#include <linux/uaccess.h>
-+
-+/* Mostly copied from i386/x86_86 - eliminated the eip < PAGE_OFFSET because
-+ * that's not relevent in skas mode.
-+ */
-+
-+int is_valid_bugaddr(unsigned long eip)
-+{
-+	unsigned short ud2;
-+
-+	if (probe_kernel_address((unsigned short __user *)eip, ud2))
-+		return 0;
-+
-+	return ud2 == 0x0b0f;
-+}
-
-
--------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys -- and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+ICBIaSBhbGwuIEknbSBnZXR0aW5nIHRoZSBmb2xsb3dpbmcgZXJyb3IgKGJlbG93KSBtZXNzYWdl
+IGFmdGVyIGV4ZWN1dGUgICAgIG1ha2UgZGVmY29uZmlnIEFSQ0g9dW0gOyBtYWtlIG1lbnVjb25m
+aWcgQVJDSD11bSA7IG1ha2UgbGludXggQVJDSD11bQogIExpbnV4J3MgdmVyc2lvbnMgdGVzdGVk
+OiAgICAtIHYyLjYuMTYgYW5kICAgICAtIHYyLjYuMTgtcmM3IChsYXN0IC1yYykgICAgICBHY2Mn
+cyB2ZXJzaW9ucyB0ZXN0ZWQ6ICAgIC0gZ2NjLTQuMSwgICAgIC0gZ2NjLTQuMCBhbmQgICAgIC0g
+Z2NjLTMuNAogIFRoZSBob3N0IGxpbnV4IHZlcnNpb24gaXMgdjIuNi4xOC1yYzcuIEFsbCBrZXJu
+ZWwgc291cmNlIHZlcnNpb25zIHdhcyBjYXRjaGVkZnJvbSBsaW51cydzIGdpdCB0cmVlLgogIFBs
+ZWFzZSwgYW55IGlkZWFzLCBzdWdnZXN0aW9ucyBhbmQgY2xhcmlmaWNhdGlvbnMgYXJlIHZlcnkg
+YXBwcmVjaWF0ZWQuIEknbW5vdCB0aGUgdXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWwgbGlzdCwg
+cGxlYXNlIGNjOiBtZS4KICBCZWxvdywgdGhlIGVycm9yIG1lc3NhZ2U6CmJhcm9uaUBiYXJvbmk6
+L3Vzci9zcmMvdjIuNi4xNi11bWwkICBtYWtlIGxpbnV4IEFSQ0g9dW0gIFNZTUxJTksgYXJjaC91
+bS9pbmNsdWRlL2tlcm5fY29uc3RhbnRzLmggIFNZTUxJTksgYXJjaC91bS9pbmNsdWRlL3N5c2Rl
+cGdjYyAtV2FsbCAtV3VuZGVmIC1Xc3RyaWN0LXByb3RvdHlwZXMgLVduby10cmlncmFwaHMgLWZu
+by1zdHJpY3QtYWxpYXNpbmcgLWZuby1jb21tb24gLWZmcmVlc3RhbmRpbmcgLU9zIC1mbm8tb21p
+dC1mcmFtZS1wb2ludGVyIC1mbm8tb3B0aW1pemUtc2libGluZy1jYWxscyAtZyAtRF9fYXJjaF91
+bV9fIC1EU1VCQVJDSD1cImkzODZcIiAtRHZtYXA9a2VybmVsX3ZtYXAgLURpbjZhZGRyX2xvb3Bi
+YWNrPWtlcm5lbF9pbjZhZGRyX2xvb3BiYWNrIC1JYXJjaC91bS9pbmNsdWRlICAtSS91c3Ivc3Jj
+L3YyLjYuMTYtdW1sL2FyY2gvdW0vaW5jbHVkZS90dCAgLUkvdXNyL3NyYy92Mi42LjE2LXVtbC9h
+cmNoL3VtL2luY2x1ZGUvc2thcyAtRF9GSUxFX09GRlNFVF9CSVRTPTY0IC1tYXJjaD1pNjg2IC1t
+cHJlZmVycmVkLXN0YWNrLWJvdW5kYXJ5PTIgLURfR05VX1NPVVJDRSAtRF9MQVJHRUZJTEU2NF9T
+T1VSQ0UgLVMgLW8gYXJjaC91bS91c2VyLW9mZnNldHMucyBhcmNoL3VtL3N5cy1pMzg2L3VzZXIt
+b2Zmc2V0cy5jYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzogSW4gZnVuY3Rpb24g4oCY
+Zm9v4oCZOmFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6MTg6IHdhcm5pbmc6IGltcGxp
+Y2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmG9mZnNldG9m4oCZYXJjaC91bS9zeXMtaTM4
+Ni91c2VyLW9mZnNldHMuYzoxODogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKA
+mHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6MTk6IGVycm9yOiBleHBl
+Y3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXIt
+b2Zmc2V0cy5jOjIwOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN0
+4oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzoyMTogZXJyb3I6IGV4cGVjdGVkIGV4
+cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRz
+LmM6MjI6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNo
+L3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjIzOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lv
+biBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzoyNDog
+ZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lz
+LWkzODYvdXNlci1vZmZzZXRzLmM6MjU6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9y
+ZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjI2OiBlcnJvcjog
+ZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91
+c2VyLW9mZnNldHMuYzoyNzogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0
+cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6Mjg6IGVycm9yOiBleHBlY3Rl
+ZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zm
+c2V0cy5jOjI5OiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZ
+YXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzozMDogZXJyb3I6IGV4cGVjdGVkIGV4cHJl
+c3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6
+MzE6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3Vt
+L3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjMyOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBi
+ZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzozMzogZXJy
+b3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkz
+ODYvdXNlci1vZmZzZXRzLmM6MzQ6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDi
+gJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjM1OiBlcnJvcjogZXhw
+ZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2Vy
+LW9mZnNldHMuYzozNjogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVj
+dOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6Mzc6IGVycm9yOiBleHBlY3RlZCBl
+eHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0
+cy5jOjM4OiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJj
+aC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzozOTogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Np
+b24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6NDA6
+IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5
+cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjQxOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZv
+cmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzo0MjogZXJyb3I6
+IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYv
+dXNlci1vZmZzZXRzLmM6NDM6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhz
+dHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjQ0OiBlcnJvcjogZXhwZWN0
+ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9m
+ZnNldHMuYzo0NTogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKA
+mWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6NDY6IGVycm9yOiBleHBlY3RlZCBleHBy
+ZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5j
+OjQ3OiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZbWFrZTog
+KiogW2FyY2gvdW0vdXNlci1vZmZzZXRzLnNdIEVycm8gMWJhcm9uaUBiYXJvbmk6L3Vzci9zcmMv
+djIuNi4xNi11bWwkClRoYW5rcyxSb2RyaWdvCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1UYWtlIFN1cnZleXMu
+IEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVRKb2luIFNvdXJjZUZvcmdlLm5l
+dCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3Vy
+b3BpbmlvbnMgb24gSVQgJiBidXNpbmVzcyB0b3BpY3MgdGhyb3VnaCBicmllZiBzdXJ2ZXlzIC0t
+IGFuZCBlYXJuIGNhc2hodHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhwP3BhZ2U9am9p
+bi5waHAmcD1zb3VyY2Vmb3JnZSZDSUQ9REVWREVWX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19Vc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0VXNl
+ci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldGh0dHBzOi8vbGlzdHMuc291
+cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
