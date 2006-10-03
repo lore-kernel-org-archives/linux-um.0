@@ -1,22 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GU9UO-0002QR-0X for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Oct 2006 15:08:48 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GU9UN-0006vy-Ea
+	id 1GUpLR-0006fj-6S for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Oct 2006 11:50:21 -0700
+Received: from web25224.mail.ukl.yahoo.com ([217.146.176.210])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GUpLQ-0002xw-Cz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Oct 2006 15:08:47 -0700
-Date: Sun, 1 Oct 2006 18:07:27 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061001220727.GA5194@ccure.user-mode-linux.org>
-References: <200609271757.k8RHvtNK005742@ccure.user-mode-linux.org>
-	<200610011910.37805.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200610011910.37805.blaisorblade@yahoo.it>
+	Tue, 03 Oct 2006 11:50:21 -0700
+Message-ID: <20061003185006.91302.qmail@web25224.mail.ukl.yahoo.com>
+Date: Tue, 3 Oct 2006 20:50:06 +0200 (CEST)
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+In-Reply-To: <20061001220727.GA5194@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] [PATCH 4/5] UML - Close file descriptor leaks
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,67 +27,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Oct 01, 2006 at 07:10:37PM +0200, Blaisorblade wrote:
-> NACK on the ubd driver part. It adds a bugs and does fix the one you found in
-> the right point. ACK on the other hunk.
-> 
-> Now, Andrew, you can ignore what follows if you want:
-> 
-> Jeff, please explain me the exact ubd driver bug - I believe that the open 
-> must be done there, that it is balanced by ubd_close(), and that the leak fix
-> should be done differently. 
+Jeff Dike <jdike@addtoit.com> ha scritto: 
 
-The code as it was was just wrong.  There was a call to ubd_open_dev
-at the start and a matching ubd_close at the end.  So far, so good,
-since ubd_close inverts ubd_open_dev.  However, neither manipulates
-dev->count (this is done by ubd_open/ubd_release) and the call to
-ubd_add_disk indirectly calls ubd_open, which, since dev->count is
-still zero redoes the initialization, leaking the descriptor and
-vmalloc space allocated by the first ubd_open_dev call.
+> On Sun, Oct 01, 2006 at 07:10:37PM +0200, Blaisorblade wrote:
+> > NACK on the ubd driver part. It adds a bugs and does fix the one
+> you found in
+> > the right point. ACK on the other hunk.
 
-The fix is simple - there is no need for ubd_add to call ubd_open_dev
-or ubd_close (ubd_file_size doesn't require the device be opened), so
-the calls can simply be deleted.  With the non-count-changing
-device-opening call gone, the leaks just disappear.
+I'm answering away from the code (limited Internet access) so I'll
+have to look better some things. The patch has been merged, I'll care
+for that in any case (avoiding conflicts with my changes as needed).
 
-There are multiple things wrong with the code, many of which are still
-there, but I don't see this as being an argument against this change.
-It eliminates some useless code, which is good from both a maintenance
-and performance standpoint.  However, leaks aside, the main benefit of
-this change is that eliminates the one call to ubd_open_dev outside of
-ubd_open, and thus opening stuff on the host and allocating memory is
-always inside a check of dev->open.
+> However, neither manipulates
+> dev->count (this is done by ubd_open/ubd_release) and the call to
+> ubd_add_disk indirectly calls ubd_open, which, since dev->count is
+> still zero redoes the initialization, leaking the descriptor and
+> vmalloc space allocated by the first ubd_open_dev call.
 
-> I've done huge changes to the UBD driver and I'll
-> send them you briefly for your tree (they work but they're not yet in a 
-> perfect shape).
+Ah, ok. I fixed exactly this - now ubd_open_dev and ubd_close_dev are
+called only through ubd_{get,put}_dev, which manage the refcount. I
+did this also for other reasons - the refcount makes "close while it
+is being used" impossible, so solves "mutual exclusion without
+locking" (like the network layer state machine does for network
+devices, this is used in general for fds; I'll write something about
+this).
 
-OK, just make sure you preserve (or add) this property.
+> The fix is simple - there is no need for ubd_add to call
+> ubd_open_dev
+> or ubd_close (ubd_file_size doesn't require the device be opened),
 
-> For what I can gather from your description and code, the leak you diagnosed 
-> is a bug in ubd_open_dev(), and is valid for any call to it: 
+I know ubd_file_size doesn't require opening, I thought (and still
+think) that call was for error checking. I'll have to re-read the
+code now that I saw your point.
+> so
+> the calls can simply be deleted.  With the non-count-changing
+> device-opening call gone, the leaks just disappear.
 
-No, the bug is doing the work of opening the device outside a check of
-the device refcount.
+> There are multiple things wrong with the code, many of which are
+> still
+> there, but I don't see this as being an argument against this
+> change.
+> It eliminates some useless code, which is good from both a
+> maintenance
+> and performance standpoint.  However, leaks aside, the main benefit
+> of
+> this change is that eliminates the one call to ubd_open_dev outside
+> of
+> ubd_open, and thus opening stuff on the host and allocating memory
+> is
+> always inside a check of dev->open.
 
-> generally, if an
-> _open function fails it should leave nothing to cleanup, and in particular 
-> the corresponding _close should not be called (this is the implicit standard 
-> I've seen in Linux). 
+Well, this may simplify locking, so it may be interesting - I'll see.
 
-This is true - however the _open function was succeeding, so it's
-irrelevant in this case.
+> > I've done huge changes to the UBD driver and I'll
+> > send them you briefly for your tree (they work but they're not
+> yet in a 
+> > perfect shape).
 
-> Btw, ubd_open_dev() and ubd_close() are matching functions, while ubd_close()
-> does not match ubd_open(), so I renamed ubd_close -> ubd_close_dev.
+> OK, just make sure you preserve (or add) this property.
 
-Yes, this is one of the things wrong with the current code - the names
-are messed up.
+> > For what I can gather from your description and code, the leak
+> you diagnosed 
+> > is a bug in ubd_open_dev(), and is valid for any call to it: 
 
-				Jeff
+> No, the bug is doing the work of opening the device outside a check
+> of
+> the device refcount.
+
+Ok, but the one I saw exists (in the error: label), (but I have the
+patch for it).
+
+__________________________________________________
+Do You Yahoo!?
+Poco spazio e tanto spam? Yahoo! Mail ti protegge dallo spam e ti da tanto spazio gratuito per i tuoi file e i messaggi 
+http://mail.yahoo.it 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
