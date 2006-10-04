@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GUvuw-0008Ui-Ji for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Oct 2006 18:51:26 -0700
-Received: from wx-out-0506.google.com ([66.249.82.235])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GUvuv-0007FN-6h
+	id 1GUw20-0000cI-Np for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Oct 2006 18:58:44 -0700
+Received: from wx-out-0506.google.com ([66.249.82.239])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GUw20-0000D2-Br
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Oct 2006 18:51:26 -0700
-Received: by wx-out-0506.google.com with SMTP id r21so24191wxc
+	Tue, 03 Oct 2006 18:58:44 -0700
+Received: by wx-out-0506.google.com with SMTP id r21so26332wxc
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 03 Oct 2006 18:51:24 -0700 (PDT)
-Date: Tue, 3 Oct 2006 22:51:19 -0300
-From: Rodrigo Baroni <rodrigobaroni@gmail.com>
-Message-ID: <20061004015119.GC10190@baroni.homelinux.org>
+	Tue, 03 Oct 2006 18:58:44 -0700 (PDT)
+Date: Tue, 3 Oct 2006 21:09:45 -0300
+From: Rodrigo Baroni <baroni@ime.usp.br>
+Message-ID: <20061004000945.GA10190@baroni.homelinux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 Subject: [uml-devel] compile error: user-offsets.c
