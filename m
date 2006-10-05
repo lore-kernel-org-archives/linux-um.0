@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVayc-0006TD-NH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:41:58 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayb-0000Gk-5f
+	id 1GVayh-0006Vz-Ps for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:42:03 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVaye-0000H5-7L
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:41:58 -0700
+	Thu, 05 Oct 2006 14:42:03 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Thu, 05 Oct 2006 23:38:52 +0200
-Message-Id: <20061005213852.17268.13871.stgit@memento.home.lan>
+Date: Thu, 05 Oct 2006 23:38:55 +0200
+Message-Id: <20061005213855.17268.40985.stgit@memento.home.lan>
 In-Reply-To: <20061005213212.17268.7409.stgit@memento.home.lan>
 References: <20061005213212.17268.7409.stgit@memento.home.lan>
-Subject: [uml-devel] [PATCH 06/14] uml: make UML_SETJMP always safe
+Subject: [uml-devel] [PATCH 07/14] uml: fix processor selection to exclude
+	unsupported processors and features
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +34,41 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-If enable is moved by GCC in a register its value may not be preserved after
-coming back there with longjmp(). So, mark it as volatile to prevent this; this
-is suggested (it seems) in info gcc, when it talks about -Wuninitialized. I
-re-read this and it seems to say something different, but I still believe this
-may be needed.
+Makes UML compile on any possible processor choice. The two problems were:
+
+*) x86 code, when 386 is selected, checks at runtime boot_cpuflags, which we do
+   not have.
+*) 3Dnow support for memcpy() et al. does not compile currently and fixing this
+   is not trivial, so simply disable it; with this change, if one selects MK7
+   UML compiles (while it did not).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/include/longjmp.h |    3 ++-
+ arch/i386/Kconfig.cpu |    3 ++-
  1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/include/longjmp.h b/arch/um/include/longjmp.h
-index e93c6d3..e860bc5 100644
---- a/arch/um/include/longjmp.h
-+++ b/arch/um/include/longjmp.h
-@@ -12,7 +12,8 @@ #define UML_LONGJMP(buf, val) do { \
- } while(0)
+diff --git a/arch/i386/Kconfig.cpu b/arch/i386/Kconfig.cpu
+index 21c9a4e..fc4f2ab 100644
+--- a/arch/i386/Kconfig.cpu
++++ b/arch/i386/Kconfig.cpu
+@@ -7,6 +7,7 @@ choice
  
- #define UML_SETJMP(buf) ({ \
--	int n, enable;	   \
-+	int n;	   \
-+	volatile int enable;	\
- 	enable = get_signals(); \
- 	n = setjmp(*buf); \
- 	if(n != 0) \
+ config M386
+ 	bool "386"
++	depends on !UML
+ 	---help---
+ 	  This is the processor type of your CPU. This information is used for
+ 	  optimizing purposes. In order to compile a kernel that can run on
+@@ -301,7 +302,7 @@ config X86_USE_PPRO_CHECKSUM
+ 
+ config X86_USE_3DNOW
+ 	bool
+-	depends on MCYRIXIII || MK7 || MGEODE_LX
++	depends on (MCYRIXIII || MK7 || MGEODE_LX) && !UML
+ 	default y
+ 
+ config X86_OOSTORE
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
