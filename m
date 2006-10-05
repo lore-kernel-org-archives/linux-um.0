@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVayn-0006YG-6m for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:42:09 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVaym-0000K9-LL
+	id 1GVayp-0006YV-Sm for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:42:11 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayp-0000NA-BR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:42:09 -0700
+	Thu, 05 Oct 2006 14:42:11 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Thu, 05 Oct 2006 23:39:02 +0200
-Message-Id: <20061005213902.17268.25046.stgit@memento.home.lan>
+Date: Thu, 05 Oct 2006 23:39:06 +0200
+Message-Id: <20061005213906.17268.44290.stgit@memento.home.lan>
 In-Reply-To: <20061005213212.17268.7409.stgit@memento.home.lan>
 References: <20061005213212.17268.7409.stgit@memento.home.lan>
-Subject: [uml-devel] [PATCH 09/14] uml: declare in Kconfig our partial
-	LOCKDEP support
+Subject: [uml-devel] [PATCH 10/14] uml: allow using again x86/x86_64 crypto
+	code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,40 +34,66 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Declare UML partial support for LOCKDEP - however IRQFLAGS tracing requires some
-coding which nobody did yet, so we cannot run full lockdep on UML. Grep for
-CONFIG_TRACE_IRQFLAGS on i386 code to find their implementation.
+Enable compilation of x86_64 crypto code;, and add the needed constant to make
+the code compile again (that macro was added to i386 asm-offsets between 2.6.17
+and 2.6.18, in 6c2bb98bc33ae33c7a33a133a4cd5a06395fece5).
 
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/Kconfig |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+ arch/um/Makefile-x86_64                        |    2 +-
+ arch/um/include/common-offsets.h               |    1 +
+ arch/um/include/sysdep-i386/kernel-offsets.h   |    1 +
+ arch/um/include/sysdep-x86_64/kernel-offsets.h |    1 +
+ 4 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index d753075..450547a 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -25,6 +25,19 @@ config PCI
- config PCMCIA
- 	bool
+diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
+index 87d6373..d278682 100644
+--- a/arch/um/Makefile-x86_64
++++ b/arch/um/Makefile-x86_64
+@@ -1,7 +1,7 @@
+ # Copyright 2003 - 2004 Pathscale, Inc
+ # Released under the GPL
  
-+# Yet to do!
-+config TRACE_IRQFLAGS_SUPPORT
-+	bool
-+	default n
-+
-+config LOCKDEP_SUPPORT
-+	bool
-+	default y
-+
-+config STACKTRACE_SUPPORT
-+	bool
-+	default y
-+
- config GENERIC_CALIBRATE_DELAY
- 	bool
- 	default y
+-core-y += arch/um/sys-x86_64/
++core-y += arch/um/sys-x86_64/ arch/x86_64/crypto/
+ START := 0x60000000
+ 
+ _extra_flags_ = -fno-builtin -m64
+diff --git a/arch/um/include/common-offsets.h b/arch/um/include/common-offsets.h
+index 356390d..39bb210 100644
+--- a/arch/um/include/common-offsets.h
++++ b/arch/um/include/common-offsets.h
+@@ -15,3 +15,4 @@ DEFINE_STR(UM_KERN_DEBUG, KERN_DEBUG);
+ DEFINE(UM_ELF_CLASS, ELF_CLASS);
+ DEFINE(UM_ELFCLASS32, ELFCLASS32);
+ DEFINE(UM_ELFCLASS64, ELFCLASS64);
++DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
+diff --git a/arch/um/include/sysdep-i386/kernel-offsets.h b/arch/um/include/sysdep-i386/kernel-offsets.h
+index 2c13de3..2e58c4c 100644
+--- a/arch/um/include/sysdep-i386/kernel-offsets.h
++++ b/arch/um/include/sysdep-i386/kernel-offsets.h
+@@ -1,6 +1,7 @@
+ #include <linux/stddef.h>
+ #include <linux/sched.h>
+ #include <linux/elf.h>
++#include <linux/crypto.h>
+ #include <asm/mman.h>
+ 
+ #define DEFINE(sym, val) \
+diff --git a/arch/um/include/sysdep-x86_64/kernel-offsets.h b/arch/um/include/sysdep-x86_64/kernel-offsets.h
+index 91d129f..4cbfbb9 100644
+--- a/arch/um/include/sysdep-x86_64/kernel-offsets.h
++++ b/arch/um/include/sysdep-x86_64/kernel-offsets.h
+@@ -2,6 +2,7 @@ #include <linux/stddef.h>
+ #include <linux/sched.h>
+ #include <linux/time.h>
+ #include <linux/elf.h>
++#include <linux/crypto.h>
+ #include <asm/page.h>
+ #include <asm/mman.h>
+ 
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
