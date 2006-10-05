@@ -2,21 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVCqG-0007yg-Ks for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Oct 2006 12:55:44 -0700
-Received: from nz-out-0102.google.com ([64.233.162.203])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GVCqE-0002CT-6W
+	id 1GVKCV-0003E4-6t for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Oct 2006 20:47:11 -0700
+Received: from web56008.mail.re3.yahoo.com ([216.252.110.187])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVKCS-0001Au-LG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Oct 2006 12:55:44 -0700
-Received: by nz-out-0102.google.com with SMTP id m22so92971nzf
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 04 Oct 2006 12:55:41 -0700 (PDT)
-Date: Wed, 4 Oct 2006 16:55:36 -0300
-From: Rodrigo Baroni <rodrigobaroni@gmail.com>
-Message-ID: <20061004195536.GB5746@baroni.homelinux.org>
+	Wed, 04 Oct 2006 20:47:11 -0700
+Message-ID: <20061005034658.86376.qmail@web56008.mail.re3.yahoo.com>
+Date: Wed, 4 Oct 2006 20:46:58 -0700 (PDT)
+From: John Daniels <johnqdaniels@yahoo.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] compile error: user-offsets.c
+Subject: [uml-devel] CentOS rootfs?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,87 +22,37 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Content-Transfer-Encoding: base64
 To: user-mode-linux-devel@lists.sourceforge.net
 
-ICBIaSBhbGwuIEknbSBnZXR0aW5nIHRoZSBmb2xsb3dpbmcgZXJyb3IgKGJlbG93KSBtZXNzYWdl
-IGFmdGVyIGV4ZWN1dGUgICAgIG1ha2UgZGVmY29uZmlnIEFSQ0g9dW0gOyBtYWtlIG1lbnVjb25m
-aWcgQVJDSD11bSA7IG1ha2UgbGludXggQVJDSD11bQogIExpbnV4J3MgdmVyc2lvbnMgdGVzdGVk
-OiAgICAtIHYyLjYuMTYgYW5kICAgICAtIHYyLjYuMTgtcmM3IChsYXN0IC1yYykgICAgICBHY2Mn
-cyB2ZXJzaW9ucyB0ZXN0ZWQ6ICAgIC0gZ2NjLTQuMSwgICAgIC0gZ2NjLTQuMCBhbmQgICAgIC0g
-Z2NjLTMuNAogIFRoZSBob3N0IGxpbnV4IHZlcnNpb24gaXMgdjIuNi4xOC1yYzcuIEFsbCBrZXJu
-ZWwgc291cmNlIHZlcnNpb25zIHdhcyBjYXRjaGVkZnJvbSBsaW51cydzIGdpdCB0cmVlLgogIFBs
-ZWFzZSwgYW55IGlkZWFzLCBzdWdnZXN0aW9ucyBhbmQgY2xhcmlmaWNhdGlvbnMgYXJlIHZlcnkg
-YXBwcmVjaWF0ZWQuIEknbW5vdCB0aGUgdXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWwgbGlzdCwg
-cGxlYXNlIGNjOiBtZS4KICBCZWxvdywgdGhlIGVycm9yIG1lc3NhZ2U6CmJhcm9uaUBiYXJvbmk6
-L3Vzci9zcmMvdjIuNi4xNi11bWwkICBtYWtlIGxpbnV4IEFSQ0g9dW0gIFNZTUxJTksgYXJjaC91
-bS9pbmNsdWRlL2tlcm5fY29uc3RhbnRzLmggIFNZTUxJTksgYXJjaC91bS9pbmNsdWRlL3N5c2Rl
-cGdjYyAtV2FsbCAtV3VuZGVmIC1Xc3RyaWN0LXByb3RvdHlwZXMgLVduby10cmlncmFwaHMgLWZu
-by1zdHJpY3QtYWxpYXNpbmcgLWZuby1jb21tb24gLWZmcmVlc3RhbmRpbmcgLU9zIC1mbm8tb21p
-dC1mcmFtZS1wb2ludGVyIC1mbm8tb3B0aW1pemUtc2libGluZy1jYWxscyAtZyAtRF9fYXJjaF91
-bV9fIC1EU1VCQVJDSD1cImkzODZcIiAtRHZtYXA9a2VybmVsX3ZtYXAgLURpbjZhZGRyX2xvb3Bi
-YWNrPWtlcm5lbF9pbjZhZGRyX2xvb3BiYWNrIC1JYXJjaC91bS9pbmNsdWRlICAtSS91c3Ivc3Jj
-L3YyLjYuMTYtdW1sL2FyY2gvdW0vaW5jbHVkZS90dCAgLUkvdXNyL3NyYy92Mi42LjE2LXVtbC9h
-cmNoL3VtL2luY2x1ZGUvc2thcyAtRF9GSUxFX09GRlNFVF9CSVRTPTY0IC1tYXJjaD1pNjg2IC1t
-cHJlZmVycmVkLXN0YWNrLWJvdW5kYXJ5PTIgLURfR05VX1NPVVJDRSAtRF9MQVJHRUZJTEU2NF9T
-T1VSQ0UgLVMgLW8gYXJjaC91bS91c2VyLW9mZnNldHMucyBhcmNoL3VtL3N5cy1pMzg2L3VzZXIt
-b2Zmc2V0cy5jYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzogSW4gZnVuY3Rpb24g4oCY
-Zm9v4oCZOmFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6MTg6IHdhcm5pbmc6IGltcGxp
-Y2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmG9mZnNldG9m4oCZYXJjaC91bS9zeXMtaTM4
-Ni91c2VyLW9mZnNldHMuYzoxODogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKA
-mHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6MTk6IGVycm9yOiBleHBl
-Y3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXIt
-b2Zmc2V0cy5jOjIwOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN0
-4oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzoyMTogZXJyb3I6IGV4cGVjdGVkIGV4
-cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRz
-LmM6MjI6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNo
-L3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjIzOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lv
-biBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzoyNDog
-ZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lz
-LWkzODYvdXNlci1vZmZzZXRzLmM6MjU6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9y
-ZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjI2OiBlcnJvcjog
-ZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91
-c2VyLW9mZnNldHMuYzoyNzogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0
-cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6Mjg6IGVycm9yOiBleHBlY3Rl
-ZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zm
-c2V0cy5jOjI5OiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZ
-YXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzozMDogZXJyb3I6IGV4cGVjdGVkIGV4cHJl
-c3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6
-MzE6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3Vt
-L3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjMyOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBi
-ZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzozMzogZXJy
-b3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkz
-ODYvdXNlci1vZmZzZXRzLmM6MzQ6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDi
-gJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjM1OiBlcnJvcjogZXhw
-ZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2Vy
-LW9mZnNldHMuYzozNjogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVj
-dOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6Mzc6IGVycm9yOiBleHBlY3RlZCBl
-eHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0
-cy5jOjM4OiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJj
-aC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzozOTogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Np
-b24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6NDA6
-IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5
-cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjQxOiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZv
-cmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9mZnNldHMuYzo0MjogZXJyb3I6
-IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKAmWFyY2gvdW0vc3lzLWkzODYv
-dXNlci1vZmZzZXRzLmM6NDM6IGVycm9yOiBleHBlY3RlZCBleHByZXNzaW9uIGJlZm9yZSDigJhz
-dHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5jOjQ0OiBlcnJvcjogZXhwZWN0
-ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZYXJjaC91bS9zeXMtaTM4Ni91c2VyLW9m
-ZnNldHMuYzo0NTogZXJyb3I6IGV4cGVjdGVkIGV4cHJlc3Npb24gYmVmb3JlIOKAmHN0cnVjdOKA
-mWFyY2gvdW0vc3lzLWkzODYvdXNlci1vZmZzZXRzLmM6NDY6IGVycm9yOiBleHBlY3RlZCBleHBy
-ZXNzaW9uIGJlZm9yZSDigJhzdHJ1Y3TigJlhcmNoL3VtL3N5cy1pMzg2L3VzZXItb2Zmc2V0cy5j
-OjQ3OiBlcnJvcjogZXhwZWN0ZWQgZXhwcmVzc2lvbiBiZWZvcmUg4oCYc3RydWN04oCZbWFrZTog
-KiogW2FyY2gvdW0vdXNlci1vZmZzZXRzLnNdIEVycm8gMWJhcm9uaUBiYXJvbmk6L3Vzci9zcmMv
-djIuNi4xNi11bWwkClRoYW5rcyxSb2RyaWdvCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1UYWtlIFN1cnZleXMu
-IEVhcm4gQ2FzaC4gSW5mbHVlbmNlIHRoZSBGdXR1cmUgb2YgSVRKb2luIFNvdXJjZUZvcmdlLm5l
-dCdzIFRlY2hzYXkgcGFuZWwgYW5kIHlvdSdsbCBnZXQgdGhlIGNoYW5jZSB0byBzaGFyZSB5b3Vy
-b3BpbmlvbnMgb24gSVQgJiBidXNpbmVzcyB0b3BpY3MgdGhyb3VnaCBicmllZiBzdXJ2ZXlzIC0t
-IGFuZCBlYXJuIGNhc2hodHRwOi8vd3d3LnRlY2hzYXkuY29tL2RlZmF1bHQucGhwP3BhZ2U9am9p
-bi5waHAmcD1zb3VyY2Vmb3JnZSZDSUQ9REVWREVWX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19Vc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0VXNl
-ci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldGh0dHBzOi8vbGlzdHMuc291
-cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+Hi all,
+
+Does anyone have a CentOS 4, preferably 4.3, rootfs
+image that I could use? Or a script that would create
+a CentOS rootfs? Ideally, I'd like a rootfs that has
+gcc and the like, since I'd like to do some kernel
+development.
+
+If no one has such a script, should I look at mkrootfs
+or would you recommend uml-builder instead?
+
+Thanks all,
+John
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
+
+-------------------------------------------------------------------------
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys -- and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
