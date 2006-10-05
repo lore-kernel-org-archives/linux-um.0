@@ -1,23 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVb23-0006ro-E7 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:45:31 -0700
-Received: from ns1.suse.de ([195.135.220.2] helo=mx1.suse.de)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GVb23-00010f-1P
+	id 1GVbFd-0008Ag-0z for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:59:33 -0700
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GVbFZ-0005tz-CB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:45:31 -0700
-From: Andi Kleen <ak@suse.de>
-Date: Thu, 5 Oct 2006 23:45:09 +0200
-References: <20061005213212.17268.7409.stgit@memento.home.lan>
-	<20061005213839.17268.28062.stgit@memento.home.lan>
-In-Reply-To: <20061005213839.17268.28062.stgit@memento.home.lan>
+	Thu, 05 Oct 2006 14:59:33 -0700
+Message-ID: <4525802F.1080900@theshore.net>
+Date: Thu, 05 Oct 2006 16:59:11 -0500
+From: "Christopher S. Aker" <caker@theshore.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200610052345.09704.ak@suse.de>
-Subject: Re: [uml-devel] [PATCH 02/14] uml: revert wrong patch
+Subject: [uml-devel] 2.6.18-skas-v9-pre9 broken
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,17 +26,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 05 October 2006 23:38, Paolo 'Blaisorblade' Giarrusso wrote:
+Blaisorblade,
 
-> Andi Kleen pointed out that -mcmodel=kernel does not make sense for userspace
-> code and would stop everything from working, 
+I recently deployed a 2.6.18-skas3-v9-pre9 host, and some users weren't 
+able to boot UML beyond "VFS: Mounted root (ext3 filesystem) readonly". 
+  As it turns out, only 2.6-um kernels were affected, 2.4-um worked fine.
 
-did it work at all with it? 
+This happened both in skas3 and skas0 modes.  Jeff graciously took a 
+look at some straces, and his comment was that "something broke page 
+fault handling generically".
 
--Andi
+The traces are here:
+
+http://www.theshore.net/~caker/uml/skas2.6.18-uml_trace.txt (skas3)
+http://www.theshore.net/~caker/uml/skas2.6.18-uml_trace_skas0.txt
+
+Reverting back to a skas3-v8.2 kernel fixed it.
+
+HTH,
+-Chris
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
