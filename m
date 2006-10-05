@@ -1,22 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVawO-0006GY-9Z for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:39:40 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GVawM-0008HI-Dm
+	id 1GVayJ-0006SH-8R for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:41:39 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayH-00022g-ND
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:39:40 -0700
-Date: Thu, 5 Oct 2006 17:37:54 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061005213754.GC6790@ccure.user-mode-linux.org>
-References: <11600785071661-git-send-email-blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <11600785071661-git-send-email-blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] uml: use DEFCONFIG_LIST to avoid reading host's config
+	Thu, 05 Oct 2006 14:41:39 -0700
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Date: Thu, 05 Oct 2006 23:32:12 +0200
+Message-Id: <20061005213212.17268.7409.stgit@memento.home.lan>
+Subject: [uml-devel] [PATCH 00/14] UML: simple changes for 2.6.19
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,35 +21,30 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Cc: stable@kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Oct 05, 2006 at 10:01:47PM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> 
-> This should make sure that, for UML, host's configuration files are not
-> considered, which avoids various pains to the user. Our dependency are such that
-> the obtained Kconfig will be valid and will lead to successful compilation -
-> however they cannot prevent an user from disabling any boot device, and if an
-> option is not set in the read .config (say /boot/config-XXX), with make
-> menuconfig ARCH=um, it is not set. This always disables UBD and all console I/O
-> channels, which leads to non-working UML kernels, so this bothers users -
-> especially now, since it will happen on almost every machine
-> (/boot/config-`uname -r` exists almost on every machine). It can be workarounded
-> with make defconfig ARCH=um, but it is non-obvious and can be avoided, so please
-> _do_ merge this patch.
-> 
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+This is the first set of patches for UML for 2.6.19 I send - I have various
+other patches to merge but I'm sending them in separate batches to avoid
+flooding.
 
-Acked-by: Jeff Dike <jdike@addtoit.com>
+This first batch consists of:
+* compilation/linking correction to merged patches (both from Jeff and from me)
+in different configurations (including fixing up Pcap and crypto-modules
+compilation)
+* some longly needed changes to Kconfig entries (deprecate TT mode, update some
+comments, add HOST_VMSPLIT config option to match host's VMSPLIT option).
 
-Paolo - send this to Andrew as well so it doesn't get lost.
+--
+Paolo 'Blaisorblade' Giarrusso
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-				Jeff
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
