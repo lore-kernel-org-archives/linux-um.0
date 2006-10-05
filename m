@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVav9-0006AB-94 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:38:23 -0700
+	id 1GVawO-0006GY-9Z for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:39:40 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GVav6-0001ND-QW
+	(Exim 4.44) id 1GVawM-0008HI-Dm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:38:23 -0700
-Date: Thu, 5 Oct 2006 17:36:33 -0400
+	Thu, 05 Oct 2006 14:39:40 -0700
+Date: Thu, 5 Oct 2006 17:37:54 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061005213633.GB6790@ccure.user-mode-linux.org>
-References: <11600768683307-git-send-email-blaisorblade@yahoo.it>
+Message-ID: <20061005213754.GC6790@ccure.user-mode-linux.org>
+References: <11600785071661-git-send-email-blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <11600768683307-git-send-email-blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] uml: allow using again x86/x86_64 crypto code
+In-Reply-To: <11600785071661-git-send-email-blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] uml: use DEFCONFIG_LIST to avoid reading host's config
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,16 +33,28 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Cc: stable@kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2006 at 09:34:28PM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
+On Thu, Oct 05, 2006 at 10:01:47PM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
 > From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 > 
-> Enable compilation of x86_64 crypto code;, and add the needed constant to make
-> the code compile again (that macro was added to i386 asm-offsets between 2.6.17
-> and 2.6.18, in 6c2bb98bc33ae33c7a33a133a4cd5a06395fece5).
+> This should make sure that, for UML, host's configuration files are not
+> considered, which avoids various pains to the user. Our dependency are such that
+> the obtained Kconfig will be valid and will lead to successful compilation -
+> however they cannot prevent an user from disabling any boot device, and if an
+> option is not set in the read .config (say /boot/config-XXX), with make
+> menuconfig ARCH=um, it is not set. This always disables UBD and all console I/O
+> channels, which leads to non-working UML kernels, so this bothers users -
+> especially now, since it will happen on almost every machine
+> (/boot/config-`uname -r` exists almost on every machine). It can be workarounded
+> with make defconfig ARCH=um, but it is non-obvious and can be avoided, so please
+> _do_ merge this patch.
 > 
 > Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
 Acked-by: Jeff Dike <jdike@addtoit.com>
+
+Paolo - send this to Andrew as well so it doesn't get lost.
+
+				Jeff
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
