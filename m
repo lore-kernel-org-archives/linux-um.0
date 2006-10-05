@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVayh-0006Vz-Ps for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:42:03 -0700
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVaye-0000H5-7L
+	id 1GVayj-0006X6-4D for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:42:05 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayh-0000Hu-JW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:42:03 -0700
+	Thu, 05 Oct 2006 14:42:05 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Thu, 05 Oct 2006 23:38:55 +0200
-Message-Id: <20061005213855.17268.40985.stgit@memento.home.lan>
+Date: Thu, 05 Oct 2006 23:38:58 +0200
+Message-Id: <20061005213858.17268.99875.stgit@memento.home.lan>
 In-Reply-To: <20061005213212.17268.7409.stgit@memento.home.lan>
 References: <20061005213212.17268.7409.stgit@memento.home.lan>
-Subject: [uml-devel] [PATCH 07/14] uml: fix processor selection to exclude
-	unsupported processors and features
+Subject: [uml-devel] [PATCH 08/14] uml: fix uname under setarch i386
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,41 +33,41 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Makes UML compile on any possible processor choice. The two problems were:
+On a 64bit Uml, if run under "setarch i386" (which a user did), uname()
+currently returns the obtained i686 as machine - fix that. Btw, I'm quite
+surprised that under setarch i386 a 64-bit binary can run.
 
-*) x86 code, when 386 is selected, checks at runtime boot_cpuflags, which we do
-   not have.
-*) 3Dnow support for memcpy() et al. does not compile currently and fixing this
-   is not trivial, so simply disable it; with this change, if one selects MK7
-   UML compiles (while it did not).
-
+Cc: Andi Kleen <ak@suse.de>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/i386/Kconfig.cpu |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ arch/um/os-Linux/util.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
 
-diff --git a/arch/i386/Kconfig.cpu b/arch/i386/Kconfig.cpu
-index 21c9a4e..fc4f2ab 100644
---- a/arch/i386/Kconfig.cpu
-+++ b/arch/i386/Kconfig.cpu
-@@ -7,6 +7,7 @@ choice
+diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
+index 3f5b151..56b8a50 100644
+--- a/arch/um/os-Linux/util.c
++++ b/arch/um/os-Linux/util.c
+@@ -80,11 +80,18 @@ void setup_machinename(char *machine_out
+ 	struct utsname host;
  
- config M386
- 	bool "386"
-+	depends on !UML
- 	---help---
- 	  This is the processor type of your CPU. This information is used for
- 	  optimizing purposes. In order to compile a kernel that can run on
-@@ -301,7 +302,7 @@ config X86_USE_PPRO_CHECKSUM
- 
- config X86_USE_3DNOW
- 	bool
--	depends on MCYRIXIII || MK7 || MGEODE_LX
-+	depends on (MCYRIXIII || MK7 || MGEODE_LX) && !UML
- 	default y
- 
- config X86_OOSTORE
+ 	uname(&host);
+-#if defined(UML_CONFIG_UML_X86) && !defined(UML_CONFIG_64BIT)
++#ifdef UML_CONFIG_UML_X86
++# ifndef UML_CONFIG_64BIT
+ 	if (!strcmp(host.machine, "x86_64")) {
+ 		strcpy(machine_out, "i686");
+ 		return;
+ 	}
++# else
++	if (!strcmp(host.machine, "i686")) {
++		strcpy(machine_out, "x86_64");
++		return;
++	}
++# endif
+ #endif
+ 	strcpy(machine_out, host.machine);
+ }
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
