@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVayY-0006Sx-Jf for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:41:54 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayY-00025I-0r
+	id 1GVayc-0006TD-NH for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:41:58 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayb-0000Gk-5f
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:41:54 -0700
+	Thu, 05 Oct 2006 14:41:58 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Thu, 05 Oct 2006 23:38:49 +0200
-Message-Id: <20061005213849.17268.88029.stgit@memento.home.lan>
+Date: Thu, 05 Oct 2006 23:38:52 +0200
+Message-Id: <20061005213852.17268.13871.stgit@memento.home.lan>
 In-Reply-To: <20061005213212.17268.7409.stgit@memento.home.lan>
 References: <20061005213212.17268.7409.stgit@memento.home.lan>
-Subject: [uml-devel] [PATCH 05/14] uml: make TT mode compile after
-	setjmp-related changes
+Subject: [uml-devel] [PATCH 06/14] uml: make UML_SETJMP always safe
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,59 +33,32 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Make TT mode compile after the introduction of klibc's implementation of setjmp.
+If enable is moved by GCC in a register its value may not be preserved after
+coming back there with longjmp(). So, mark it as volatile to prevent this; this
+is suggested (it seems) in info gcc, when it talks about -Wuninitialized. I
+re-read this and it seems to say something different, but I still believe this
+may be needed.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/kernel/tt/uaccess_user.c |    6 +++---
- arch/um/os-Linux/tt.c            |    1 -
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ arch/um/include/longjmp.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/kernel/tt/uaccess_user.c b/arch/um/kernel/tt/uaccess_user.c
-index 6c92bbc..ed1abcf 100644
---- a/arch/um/kernel/tt/uaccess_user.c
-+++ b/arch/um/kernel/tt/uaccess_user.c
-@@ -4,13 +4,13 @@
-  * Licensed under the GPL
-  */
+diff --git a/arch/um/include/longjmp.h b/arch/um/include/longjmp.h
+index e93c6d3..e860bc5 100644
+--- a/arch/um/include/longjmp.h
++++ b/arch/um/include/longjmp.h
+@@ -12,7 +12,8 @@ #define UML_LONGJMP(buf, val) do { \
+ } while(0)
  
--#include <setjmp.h>
- #include <string.h>
- #include "user_util.h"
- #include "uml_uaccess.h"
- #include "task.h"
- #include "kern_util.h"
- #include "os.h"
-+#include "longjmp.h"
- 
- int __do_copy_from_user(void *to, const void *from, int n,
- 			void **fault_addr, void **fault_catcher)
-@@ -80,10 +80,10 @@ int __do_strnlen_user(const char *str, u
- 	struct tt_regs save = TASK_REGS(get_current())->tt;
- 	int ret;
- 	unsigned long *faddrp = (unsigned long *)fault_addr;
--	sigjmp_buf jbuf;
-+	jmp_buf jbuf;
- 
- 	*fault_catcher = &jbuf;
--	if(sigsetjmp(jbuf, 1) == 0)
-+	if(UML_SETJMP(&jbuf) == 0)
- 		ret = strlen(str) + 1;
- 	else ret = *faddrp - (unsigned long) str;
- 
-diff --git a/arch/um/os-Linux/tt.c b/arch/um/os-Linux/tt.c
-index 5461a06..3dc3a02 100644
---- a/arch/um/os-Linux/tt.c
-+++ b/arch/um/os-Linux/tt.c
-@@ -10,7 +10,6 @@ #include <sched.h>
- #include <errno.h>
- #include <stdarg.h>
- #include <stdlib.h>
--#include <setjmp.h>
- #include <sys/time.h>
- #include <sys/ptrace.h>
- #include <linux/ptrace.h>
+ #define UML_SETJMP(buf) ({ \
+-	int n, enable;	   \
++	int n;	   \
++	volatile int enable;	\
+ 	enable = get_signals(); \
+ 	n = setjmp(*buf); \
+ 	if(n != 0) \
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
