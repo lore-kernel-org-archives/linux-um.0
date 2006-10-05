@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVayW-0006Ss-Tj for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:41:52 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayU-00024l-Rk
+	id 1GVayY-0006Sx-Jf for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:41:54 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVayY-00025I-0r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Oct 2006 14:41:52 -0700
+	Thu, 05 Oct 2006 14:41:54 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Thu, 05 Oct 2006 23:38:46 +0200
-Message-Id: <20061005213846.17268.31893.stgit@memento.home.lan>
+Date: Thu, 05 Oct 2006 23:38:49 +0200
+Message-Id: <20061005213849.17268.88029.stgit@memento.home.lan>
 In-Reply-To: <20061005213212.17268.7409.stgit@memento.home.lan>
 References: <20061005213212.17268.7409.stgit@memento.home.lan>
-Subject: [uml-devel] [PATCH 04/14] uml: readd forgot prototype
+Subject: [uml-devel] [PATCH 05/14] uml: make TT mode compile after
+	setjmp-related changes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,26 +34,59 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-This was forgot in a previous patch so UML does not compile with TT mode enabled.
+Make TT mode compile after the introduction of klibc's implementation of setjmp.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/include/os.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ arch/um/kernel/tt/uaccess_user.c |    6 +++---
+ arch/um/os-Linux/tt.c            |    1 -
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/include/os.h b/arch/um/include/os.h
-index 120ca21..6516f6d 100644
---- a/arch/um/include/os.h
-+++ b/arch/um/include/os.h
-@@ -201,6 +201,7 @@ extern int os_getpgrp(void);
+diff --git a/arch/um/kernel/tt/uaccess_user.c b/arch/um/kernel/tt/uaccess_user.c
+index 6c92bbc..ed1abcf 100644
+--- a/arch/um/kernel/tt/uaccess_user.c
++++ b/arch/um/kernel/tt/uaccess_user.c
+@@ -4,13 +4,13 @@
+  * Licensed under the GPL
+  */
  
- #ifdef UML_CONFIG_MODE_TT
- extern void init_new_thread_stack(void *sig_stack, void (*usr1_handler)(int));
-+extern void stop(void);
- #endif
- extern void init_new_thread_signals(void);
- extern int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr);
+-#include <setjmp.h>
+ #include <string.h>
+ #include "user_util.h"
+ #include "uml_uaccess.h"
+ #include "task.h"
+ #include "kern_util.h"
+ #include "os.h"
++#include "longjmp.h"
+ 
+ int __do_copy_from_user(void *to, const void *from, int n,
+ 			void **fault_addr, void **fault_catcher)
+@@ -80,10 +80,10 @@ int __do_strnlen_user(const char *str, u
+ 	struct tt_regs save = TASK_REGS(get_current())->tt;
+ 	int ret;
+ 	unsigned long *faddrp = (unsigned long *)fault_addr;
+-	sigjmp_buf jbuf;
++	jmp_buf jbuf;
+ 
+ 	*fault_catcher = &jbuf;
+-	if(sigsetjmp(jbuf, 1) == 0)
++	if(UML_SETJMP(&jbuf) == 0)
+ 		ret = strlen(str) + 1;
+ 	else ret = *faddrp - (unsigned long) str;
+ 
+diff --git a/arch/um/os-Linux/tt.c b/arch/um/os-Linux/tt.c
+index 5461a06..3dc3a02 100644
+--- a/arch/um/os-Linux/tt.c
++++ b/arch/um/os-Linux/tt.c
+@@ -10,7 +10,6 @@ #include <sched.h>
+ #include <errno.h>
+ #include <stdarg.h>
+ #include <stdlib.h>
+-#include <setjmp.h>
+ #include <sys/time.h>
+ #include <sys/ptrace.h>
+ #include <linux/ptrace.h>
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
