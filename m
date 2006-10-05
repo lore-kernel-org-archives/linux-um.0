@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GVKCV-0003E4-6t for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Oct 2006 20:47:11 -0700
-Received: from web56008.mail.re3.yahoo.com ([216.252.110.187])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GVKCS-0001Au-LG
+	id 1GVaT9-0003QU-NF for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Oct 2006 14:09:27 -0700
+Received: from host253-106-dynamic.55-82-r.retail.telecomitalia.it
+	([82.55.106.253] helo=memento.home.lan)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GVaT9-0003dm-4G
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Oct 2006 20:47:11 -0700
-Message-ID: <20061005034658.86376.qmail@web56008.mail.re3.yahoo.com>
-Date: Wed, 4 Oct 2006 20:46:58 -0700 (PDT)
-From: John Daniels <johnqdaniels@yahoo.com>
-MIME-Version: 1.0
-Subject: [uml-devel] CentOS rootfs?
+	Thu, 05 Oct 2006 14:09:27 -0700
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Date: Thu,  5 Oct 2006 21:34:28 +0200
+Message-Id: <11600768683307-git-send-email-blaisorblade@yahoo.it>
+Subject: [uml-devel] uml: allow using again x86/x86_64 crypto code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,30 +22,67 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: stable@kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hi all,
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Does anyone have a CentOS 4, preferably 4.3, rootfs
-image that I could use? Or a script that would create
-a CentOS rootfs? Ideally, I'd like a rootfs that has
-gcc and the like, since I'd like to do some kernel
-development.
+Enable compilation of x86_64 crypto code;, and add the needed constant to make
+the code compile again (that macro was added to i386 asm-offsets between 2.6.17
+and 2.6.18, in 6c2bb98bc33ae33c7a33a133a4cd5a06395fece5).
 
-If no one has such a script, should I look at mkrootfs
-or would you recommend uml-builder instead?
-
-Thanks all,
-John
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Index: linux-2.6.git/arch/um/Makefile-x86_64
+===================================================================
+--- linux-2.6.git.orig/arch/um/Makefile-x86_64
++++ linux-2.6.git/arch/um/Makefile-x86_64
+@@ -1,7 +1,7 @@
+ # Copyright 2003 - 2004 Pathscale, Inc
+ # Released under the GPL
+ 
+-core-y += arch/um/sys-x86_64/
++core-y += arch/um/sys-x86_64/ arch/x86_64/crypto/
+ START := 0x60000000
+ 
+ #We #undef __x86_64__ for kernelspace, not for userspace where
+Index: linux-2.6.git/arch/um/include/common-offsets.h
+===================================================================
+--- linux-2.6.git.orig/arch/um/include/common-offsets.h
++++ linux-2.6.git/arch/um/include/common-offsets.h
+@@ -15,3 +15,4 @@ DEFINE_STR(UM_KERN_DEBUG, KERN_DEBUG);
+ DEFINE(UM_ELF_CLASS, ELF_CLASS);
+ DEFINE(UM_ELFCLASS32, ELFCLASS32);
+ DEFINE(UM_ELFCLASS64, ELFCLASS64);
++DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
+Index: linux-2.6.git/arch/um/include/sysdep-i386/kernel-offsets.h
+===================================================================
+--- linux-2.6.git.orig/arch/um/include/sysdep-i386/kernel-offsets.h
++++ linux-2.6.git/arch/um/include/sysdep-i386/kernel-offsets.h
+@@ -1,6 +1,7 @@
+ #include <linux/stddef.h>
+ #include <linux/sched.h>
+ #include <linux/elf.h>
++#include <linux/crypto.h>
+ #include <asm/mman.h>
+ 
+ #define DEFINE(sym, val) \
+Index: linux-2.6.git/arch/um/include/sysdep-x86_64/kernel-offsets.h
+===================================================================
+--- linux-2.6.git.orig/arch/um/include/sysdep-x86_64/kernel-offsets.h
++++ linux-2.6.git/arch/um/include/sysdep-x86_64/kernel-offsets.h
+@@ -2,6 +2,7 @@
+ #include <linux/sched.h>
+ #include <linux/time.h>
+ #include <linux/elf.h>
++#include <linux/crypto.h>
+ #include <asm/page.h>
+ #include <asm/mman.h>
+ 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
