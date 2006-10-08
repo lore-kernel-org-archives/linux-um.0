@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GWD99-0007tx-Sa for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 Oct 2006 07:27:23 -0700
-Received: from gwu.lbox.cz ([62.245.111.132])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GWD98-0005OC-8n
+	id 1GWWVU-0005Ew-UO for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 Oct 2006 04:07:44 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GWWVQ-0006R9-9b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 07 Oct 2006 07:27:23 -0700
-Message-ID: <4527B93B.8070508@linuxbox.cz>
-Date: Sat, 07 Oct 2006 17:27:07 +0300
-From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+	Sun, 08 Oct 2006 04:07:44 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 8 Oct 2006 13:04:39 +0200
+References: <451E9BAB.5030009@linuxbox.cz> <45202C79.5080502@linuxbox.cz>
+	<200610051333.15711.blaisorblade@yahoo.it>
+In-Reply-To: <200610051333.15711.blaisorblade@yahoo.it>
 MIME-Version: 1.0
-References: <451E9BAB.5030009@linuxbox.cz>	<200610011725.16069.blaisorblade@yahoo.it>	<451FE3F0.1070304@linuxbox.cz>
-	<200610052214.31864.blaisorblade@yahoo.it>
-In-Reply-To: <200610052214.31864.blaisorblade@yahoo.it>
+Content-Disposition: inline
+Message-Id: <200610081304.39570.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] SKAS mode not working, x86_64 SMP host, x86_64 guest, 
 	problems with noprocmm
 List-Id: The user-mode Linux development list
@@ -31,27 +31,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
 
-Yes, You're right, reverting this particular patch fixed the problem, so 
-it boots now...
-All other problems (halt problem with x86_64 guest and hang trying to 
-run i386 guest) persist
-Is there something else I could try to fix those or find where the 
-problem is?
-thanks in advance!
-nik.
+On Thursday 05 October 2006 13:33, Blaisorblade wrote:
+> On Sunday 01 October 2006 23:00, Nikola Ciprich wrote:
+> > OK, so I've tested 2.6.18-mm2, results are:
+> > pcap network transport seems to be broken, and doesn't compile, I had to
+> > disable it
+>
+> Attached patch should fix it (it's against git head but should be the same
+> thing).
+Since you've said that that patch does not fix pcap compilation, post the 
+compilation error (both with and without the patch) so I know what happens 
+there. Assuming that pcap compiles on your system for stable kernels (i.e. 
+libpcap.a is installed), as you imply in your report.
 
-Blaisorblade wrote:
-> Ok, you are the second user reporting this problem. Some option is not being 
-> parsed correctly by UML, so it is passed to init.
->
-> So you obtain this as a regression in -bb1... try unapplying 
-> patches/tls/x86-64-support.diff (you find separate patches in the broken-out 
-> folder in the archive).
->
->   
+> > apart from that, all of behavior described before remains the same,
+> > nothing behaves neither better, nor worse...
+> > n.
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 -------------------------------------------------------------------------
