@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GWWVU-0005Ew-UO for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 Oct 2006 04:07:44 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GWWVQ-0006R9-9b
+	id 1GWe1C-0007dB-9K for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 Oct 2006 12:08:58 -0700
+Received: from gwu.lbox.cz ([62.245.111.132])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GWe19-00028a-Kj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 Oct 2006 04:07:44 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 8 Oct 2006 13:04:39 +0200
-References: <451E9BAB.5030009@linuxbox.cz> <45202C79.5080502@linuxbox.cz>
-	<200610051333.15711.blaisorblade@yahoo.it>
-In-Reply-To: <200610051333.15711.blaisorblade@yahoo.it>
+	Sun, 08 Oct 2006 12:08:58 -0700
+Message-ID: <45294CBD.2010602@linuxbox.cz>
+Date: Sun, 08 Oct 2006 22:08:45 +0300
+From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200610081304.39570.blaisorblade@yahoo.it>
+References: <451E9BAB.5030009@linuxbox.cz>
+	<45202C79.5080502@linuxbox.cz>	<200610051333.15711.blaisorblade@yahoo.it>
+	<200610081304.39570.blaisorblade@yahoo.it>
+In-Reply-To: <200610081304.39570.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] SKAS mode not working, x86_64 SMP host, x86_64 guest, 
 	problems with noprocmm
 List-Id: The user-mode Linux development list
@@ -31,33 +32,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 05 October 2006 13:33, Blaisorblade wrote:
-> On Sunday 01 October 2006 23:00, Nikola Ciprich wrote:
-> > OK, so I've tested 2.6.18-mm2, results are:
-> > pcap network transport seems to be broken, and doesn't compile, I had to
-> > disable it
+Hello Paolo,
+I've spent half a day today trying all variants, and well, I'm no longer 
+able to reproduce the problem :(
+In fact now APPLYING your patch seems to cause the problem, which is of 
+course weird.
+So please consider this false bugreport until I'm able to find out how 
+the hell did I manage to do it.
+If I'm reading my confusing posts to this list, I'm starting to feel a 
+bit stupid, sorry for them :-/
+I'll certainly have to track all my attempts and compilations, as I'm 
+having quite a mess in it then...
+n.
+
+> Since you've said that that patch does not fix pcap compilation, post the 
+> compilation error (both with and without the patch) so I know what happens 
+> there. Assuming that pcap compiles on your system for stable kernels (i.e. 
+> libpcap.a is installed), as you imply in your report.
 >
-> Attached patch should fix it (it's against git head but should be the same
-> thing).
-Since you've said that that patch does not fix pcap compilation, post the 
-compilation error (both with and without the patch) so I know what happens 
-there. Assuming that pcap compiles on your system for stable kernels (i.e. 
-libpcap.a is installed), as you imply in your report.
-
-> > apart from that, all of behavior described before remains the same,
-> > nothing behaves neither better, nor worse...
-> > n.
-
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+>   
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
