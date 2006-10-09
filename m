@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GX73o-0003lR-0r for user-mode-linux-devel@lists.sourceforge.net;
+	id 1GX73o-0003lb-Im for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 09 Oct 2006 19:09:36 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GX73n-000318-BE
+	(Exim 4.44) id 1GX73n-0000GW-Lp
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Oct 2006 19:09:35 -0700
-Date: Mon, 9 Oct 2006 14:00:13 -0400
+	Mon, 09 Oct 2006 19:09:36 -0700
+Date: Mon, 9 Oct 2006 12:32:08 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061009180013.GB4931@ccure.user-mode-linux.org>
+Message-ID: <20061009163208.GA4931@ccure.user-mode-linux.org>
 References: <20061005213212.17268.7409.stgit@memento.home.lan>
-	<20061005213852.17268.13871.stgit@memento.home.lan>
+	<20061005213836.17268.96038.stgit@memento.home.lan>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20061005213852.17268.13871.stgit@memento.home.lan>
-Subject: Re: [uml-devel] [PATCH 06/14] uml: make UML_SETJMP always safe
+In-Reply-To: <20061005213836.17268.96038.stgit@memento.home.lan>
+Subject: Re: [uml-devel] [PATCH 01/14] uml: fix compilation options for
+	USER_OBJS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,48 +35,44 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Oct 05, 2006 at 11:38:52PM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
-> From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+On Thu, Oct 05, 2006 at 11:38:36PM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
+> Again, move inclusion of arch's Makefile after CFLAGS setting - I remember
+> merging the same patch eons ago in 2.6, so I added a comment.
 > 
-> If enable is moved by GCC in a register its value may not be preserved after
-> coming back there with longjmp(). So, mark it as volatile to prevent this; this
-> is suggested (it seems) in info gcc, when it talks about -Wuninitialized. I
-> re-read this and it seems to say something different, but I still believe this
-> may be needed.
-> 
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> ---
-> 
->  arch/um/include/longjmp.h |    3 ++-
->  1 files changed, 2 insertions(+), 1 deletions(-)
-> 
-> diff --git a/arch/um/include/longjmp.h b/arch/um/include/longjmp.h
-> index e93c6d3..e860bc5 100644
-> --- a/arch/um/include/longjmp.h
-> +++ b/arch/um/include/longjmp.h
-> @@ -12,7 +12,8 @@ #define UML_LONGJMP(buf, val) do { \
->  } while(0)
->  
->  #define UML_SETJMP(buf) ({ \
-> -	int n, enable;	   \
-> +	int n;	   \
-> +	volatile int enable;	\
->  	enable = get_signals(); \
->  	n = setjmp(*buf); \
->  	if(n != 0) \
+> I discovered this because debug info weren't enabled for USER_OBJS - they're
+> compiled with USER_CFLAGS which is calculated from CFLAGS (the whole thing is a
+> bit of an hack but fixing it is not easy, so we're leaving it as-is).
 
-I agree with this, but not entirely with your reasoning.  The
--Wuninitialized documentation just talks about when gcc emits a
-warning.
+What's the matter with this:
 
-What we want is a guarantee that enable is not cached in a register,
-but is stored in memory.  What documentation I can find seems to imply
-that is the case ("accesses to volatile objects must have settled
-before the next sequence point").
+Index: linux-2.6.18-mm/arch/um/Makefile
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/Makefile       2006-10-03 17:44:32.000000000 -0400
++++ linux-2.6.18-mm/arch/um/Makefile    2006-10-09 12:29:32.000000000 -0400
+@@ -64,9 +64,8 @@ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSU
+ 
+ AFLAGS += $(ARCH_INCLUDE)
+ 
+-USER_CFLAGS := $(patsubst -I%,,$(CFLAGS))
+-USER_CFLAGS := $(patsubst -D__KERNEL__,,$(USER_CFLAGS)) $(ARCH_INCLUDE) \
+-       $(MODE_INCLUDE) -D_FILE_OFFSET_BITS=64
++USER_CFLAGS = $(patsubst -D__KERNEL__,,$(patsubst -I%,,$(CFLAGS))) \
++       $(ARCH_INCLUDE) $(MODE_INCLUDE) -D_FILE_OFFSET_BITS=64
+ 
+ # -Derrno=kernel_errno - This turns all kernel references to errno into
+ # kernel_errno to separate them from the libc errno.  This allows -fno-common
 
-However, given the prevailing opinion that essentially all volatile
-declarations are hiding bugs, I wouldn't mind a bit of review of this
-from someone holding this opinion.
+The real problem is the use of := which assigns USER_CFLAGS from the
+current value of CFLAGS, which is incomplete, as you noted.
+
+Moving the include around seems slightly bogus, since its precise
+location shouldn't matter.
+
+If we switch to plain =, then it will be lazy-evaluated with the full
+CFLAGS.
+
+And we should check other uses of := to make sure they don't have
+similar problems.
 
 				Jeff
 
