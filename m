@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GXAyV-0000q0-34 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Oct 2006 23:20:23 -0700
-Received: from mx2.suse.de ([195.135.220.15])
+	id 1GXAyc-0000q5-Hb for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Oct 2006 23:20:30 -0700
+Received: from ns1.suse.de ([195.135.220.2] helo=mx1.suse.de)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GXAyU-0006N7-C9
+	(Exim 4.44) id 1GXAyb-0006O7-KX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Oct 2006 23:20:23 -0700
+	Mon, 09 Oct 2006 23:20:30 -0700
 From: <gregkh@suse.de>
-Date: Mon, 09 Oct 2006 23:20:00 -0700
-In-Reply-To: <11600768683307-git-send-email-blaisorblade@yahoo.it>
-Message-Id: <20061010062015.21E838F9161@imap.suse.de>
+Date: Mon, 09 Oct 2006 23:20:08 -0700
+In-Reply-To: <11600785071661-git-send-email-blaisorblade@yahoo.it>
+Message-Id: <20061010062022.AE3F38BBB1B@imap.suse.de>
 Subject: [uml-devel] patch
-	uml-allow-using-again-x86-x86_64-crypto-code.patch queued to
-	-stable tree
+	uml-use-defconfig_list-to-avoid-reading-host-s-config.patch
+	queued to -stable tree
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,81 +36,69 @@ Cc: stable@kernel.org
 
 This is a note to let we have just queued up the patch titled
 
-     Subject: uml: allow using again x86/x86_64 crypto code
+     Subject: uml: use DEFCONFIG_LIST to avoid reading host's config
 
 to the -stable tree.  Its filename is
 
-     uml-allow-using-again-x86-x86_64-crypto-code.patch
+     uml-use-defconfig_list-to-avoid-reading-host-s-config.patch
 
 A git repo of this tree can be found at 
     http://www.kernel.org/pub/linux/kernel/people/stable/stable-queue/
 
 
-From stable-bounces@linux.kernel.org Thu Oct  5 14:10:24 2006
+From stable-bounces@linux.kernel.org Thu Oct  5 14:10:16 2006
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
 To: stable@kernel.org
-Date: Thu,  5 Oct 2006 21:34:28 +0200
-Message-Id: <11600768683307-git-send-email-blaisorblade@yahoo.it>
+Date: Thu,  5 Oct 2006 22:01:47 +0200
+Message-Id: <11600785071661-git-send-email-blaisorblade@yahoo.it>
 Cc: Jeff Dike <jdike@addtoit.com>,
         "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>,
         <user-mode-linux-devel@lists.sourceforge.net>
-Subject: uml: allow using again x86/x86_64 crypto code
+Subject: uml: use DEFCONFIG_LIST to avoid reading host's config
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Enable compilation of x86_64 crypto code;, and add the needed constant
-to make the code compile again (that macro was added to i386 asm-offsets
-between 2.6.17 and 2.6.18, in 6c2bb98bc33ae33c7a33a133a4cd5a06395fece5).
+This should make sure that, for UML, host's configuration files are not
+considered, which avoids various pains to the user. Our dependency are such that
+the obtained Kconfig will be valid and will lead to successful compilation -
+however they cannot prevent an user from disabling any boot device, and if an
+option is not set in the read .config (say /boot/config-XXX), with make
+menuconfig ARCH=um, it is not set. This always disables UBD and all console I/O
+channels, which leads to non-working UML kernels, so this bothers users -
+especially now, since it will happen on almost every machine
+(/boot/config-`uname -r` exists almost on every machine). It can be workarounded
+with make defconfig ARCH=um, but it is non-obvious and can be avoided, so please
+_do_ merge this patch.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Acked-by: Jeff Dike <jdike@addtoit.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 ---
- arch/um/Makefile-x86_64                        |    2 +-
- arch/um/include/common-offsets.h               |    1 +
- arch/um/include/sysdep-i386/kernel-offsets.h   |    1 +
- arch/um/include/sysdep-x86_64/kernel-offsets.h |    1 +
- 4 files changed, 4 insertions(+), 1 deletion(-)
+ arch/um/Kconfig |    5 +++++
+ init/Kconfig    |    1 +
+ 2 files changed, 6 insertions(+)
 
---- linux-2.6.18.orig/arch/um/Makefile-x86_64
-+++ linux-2.6.18/arch/um/Makefile-x86_64
-@@ -1,7 +1,7 @@
- # Copyright 2003 - 2004 Pathscale, Inc
- # Released under the GPL
- 
--core-y += arch/um/sys-x86_64/
-+core-y += arch/um/sys-x86_64/ arch/x86_64/crypto/
- START := 0x60000000
- 
- #We #undef __x86_64__ for kernelspace, not for userspace where
---- linux-2.6.18.orig/arch/um/include/common-offsets.h
-+++ linux-2.6.18/arch/um/include/common-offsets.h
-@@ -15,3 +15,4 @@ DEFINE_STR(UM_KERN_DEBUG, KERN_DEBUG);
- DEFINE(UM_ELF_CLASS, ELF_CLASS);
- DEFINE(UM_ELFCLASS32, ELFCLASS32);
- DEFINE(UM_ELFCLASS64, ELFCLASS64);
-+DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
---- linux-2.6.18.orig/arch/um/include/sysdep-i386/kernel-offsets.h
-+++ linux-2.6.18/arch/um/include/sysdep-i386/kernel-offsets.h
-@@ -1,6 +1,7 @@
- #include <linux/stddef.h>
- #include <linux/sched.h>
- #include <linux/elf.h>
-+#include <linux/crypto.h>
- #include <asm/mman.h>
- 
- #define DEFINE(sym, val) \
---- linux-2.6.18.orig/arch/um/include/sysdep-x86_64/kernel-offsets.h
-+++ linux-2.6.18/arch/um/include/sysdep-x86_64/kernel-offsets.h
-@@ -2,6 +2,7 @@
- #include <linux/sched.h>
- #include <linux/time.h>
- #include <linux/elf.h>
-+#include <linux/crypto.h>
- #include <asm/page.h>
- #include <asm/mman.h>
- 
+--- linux-2.6.18.orig/arch/um/Kconfig
++++ linux-2.6.18/arch/um/Kconfig
+@@ -1,3 +1,8 @@
++config DEFCONFIG_LIST
++	string
++	option defconfig_list
++	default "arch/$ARCH/defconfig"
++
+ # UML uses the generic IRQ sugsystem
+ config GENERIC_HARDIRQS
+ 	bool
+--- linux-2.6.18.orig/init/Kconfig
++++ linux-2.6.18/init/Kconfig
+@@ -1,5 +1,6 @@
+ config DEFCONFIG_LIST
+ 	string
++	depends on !UML
+ 	option defconfig_list
+ 	default "/lib/modules/$UNAME_RELEASE/.config"
+ 	default "/etc/kernel-config"
 
 
 Patches currently in stable-queue which might be from blaisorblade@yahoo.it are
