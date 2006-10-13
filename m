@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GYTLA-0000h1-OJ for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Oct 2006 13:09:08 -0700
+	id 1GYTNO-0000tH-Ae for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Oct 2006 13:11:26 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GYTL8-0000Vv-21
+	(Exim 4.44) id 1GYTNN-0001EQ-Ne
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Oct 2006 13:09:08 -0700
-Date: Fri, 13 Oct 2006 16:07:47 -0400
+	Fri, 13 Oct 2006 13:11:26 -0700
+Date: Fri, 13 Oct 2006 16:10:10 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061013200747.GB5517@ccure.user-mode-linux.org>
-References: <452C29F2.8050908@theshore.net>
+Message-ID: <20061013201010.GC5517@ccure.user-mode-linux.org>
+References: <20061009163208.GA4931@ccure.user-mode-linux.org>
+	<20061011110828.43576.qmail@web25221.mail.ukl.yahoo.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <452C29F2.8050908@theshore.net>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x92c00000, ip 0x80bcead
+In-Reply-To: <20061011110828.43576.qmail@web25221.mail.ukl.yahoo.com>
+Subject: Re: [uml-devel] [PATCH 01/14] uml: fix compilation options for
+	USER_OBJS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,56 +32,104 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Christopher S. Aker" <caker@theshore.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Paolo Giarrusso <blaisorblade@yahoo.it>
+Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Oct 10, 2006 at 06:17:06PM -0500, Christopher S. Aker wrote:
-> This is 2.6.18-um, on top of a 2.6.16.29-skas3-v8.2 host.
-> 
-> Kernel file is here:
-> http://www.theshore.net/~caker/uml/kernels/2.6.18-linode25
-> 
-> 
-> Kernel panic - not syncing: Kernel mode fault at addr 0x92c00000, ip 
-> 0x80bcead
+On Wed, Oct 11, 2006 at 01:08:27PM +0200, Paolo Giarrusso wrote:
+> Ok, at a first glance this alternative solution is ok. Make sure (run
+> gdb on an userspace object file and saying list <function>) that it
+> works and we'll be ok.
 
-The stack I get from that is:
+After discovering that the original patch broke UML/i386 and broke the
+UML/x86_64 build, I now have the patch below.
 
-85a0f49c:  [<800350cf>] csum_partial+0xdb/0xe8
-85a0f74c:  [<802aafe2>] skb_checksum+0xe7/0x28f
-85a0f788:  [<802afd31>] skb_checksum_help+0x9c/0x13e
-85a0f7ac:  [<803292fc>] ip_nat_fn+0x1d2/0x1e7
-85a0f7e0:  [<80329528>] ip_nat_local_fn+0x75/0xf3
-85a0f808:  [<802d8569>] nf_iterate+0x63/0x7b
-85a0f830:  [<802d85ec>] nf_hook_slow+0x6b/0xe4
-85a0f86c:  [<802e4a44>] ip_queue_xmit+0x3d7/0x4c2
-85a0f944:  [<802f7668>] tcp_transmit_skb+0x2b8/0x4b1
-85a0f984:  [<802f91fd>] tcp_push_one+0xde/0x159
-85a0f9ac:  [<802eca55>] tcp_sendmsg+0x438/0xe54
-85a0fa30:  [<8030a718>] inet_sendmsg+0x4a/0x56
-			__sock_sendmsg
-85a0fa48:  [<802a4aad>] do_sock_write+0xbb/0xc5
-85a0fa6c:  [<802a4c5f>] sock_aio_write+0x95/0x99
-85a0fae0:  [<80082978>] do_sync_write+0xde/0x124
-85a0fb90:  [<80082b81>] vfs_write+0x1c3/0x23d
-85a0fbc8:  [<80082ccc>] sys_write+0x51/0x80
-85a0fbf0:  [<80022bda>] handle_syscall+0x11a/0x138
-85a0fc6c:  [<80033b68>] handle_trap+0x31/0x12d
-85a0fc94:  [<80034192>] userspace+0x1c7/0x21e
-85a0fcf0:  [<80022808>] fork_handler+0xef/0xff
-85a0fd1c:  [<8039a828>] __restore+0x0/0x8
-85a0fd5c:  [<8039aa81>] kill+0x11/0x20
-
-> Is this a UML issue?
-
-Hard to say.  With a kernel fault, I'd be tempted to say so, but I see no
-UML code on the stack.
-
-Have you seen just this one occurence of this?  I spent part of the
-afternoon dusting off a patch which would provide the registers at the
-time of the segfault.  That maybe would have helped here.
+Listing userspace functions is fine.
 
 				Jeff
+
+
+Index: linux-2.6.18-mm/arch/um/Makefile
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/Makefile	2006-10-13 10:20:51.000000000 -0400
++++ linux-2.6.18-mm/arch/um/Makefile	2006-10-13 10:21:50.000000000 -0400
+@@ -64,9 +64,14 @@ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSU
+ 
+ AFLAGS += $(ARCH_INCLUDE)
+ 
+-USER_CFLAGS := $(patsubst -I%,,$(CFLAGS))
+-USER_CFLAGS := $(patsubst -D__KERNEL__,,$(USER_CFLAGS)) $(ARCH_INCLUDE) \
+-	$(MODE_INCLUDE) -D_FILE_OFFSET_BITS=64
++USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -D__KERNEL__,,\
++	$(patsubst -I%,,$(CFLAGS)))) $(ARCH_INCLUDE) $(MODE_INCLUDE) \
++	-D_FILE_OFFSET_BITS=64
++
++include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
++
++#This will adjust *FLAGS accordingly to the platform.
++include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
+ 
+ # -Derrno=kernel_errno - This turns all kernel references to errno into
+ # kernel_errno to separate them from the libc errno.  This allows -fno-common
+@@ -74,15 +79,11 @@ USER_CFLAGS := $(patsubst -D__KERNEL__,,
+ # errnos.
+ # These apply to kernelspace only.
+ 
+-CFLAGS += -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
+-	-Dmktime=kernel_mktime
++KERNEL_DEFINES = -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
++	-Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES)
++CFLAGS += $(KERNEL_DEFINES)
+ CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
+ 
+-include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
+-
+-#This will adjust *FLAGS accordingly to the platform.
+-include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
+-
+ # These are needed for clean and mrproper, since in that case .config is not
+ # included; the values here are meaningless
+ 
+Index: linux-2.6.18-mm/arch/um/Makefile-x86_64
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/Makefile-x86_64	2006-10-13 10:20:51.000000000 -0400
++++ linux-2.6.18-mm/arch/um/Makefile-x86_64	2006-10-13 10:21:50.000000000 -0400
+@@ -8,8 +8,8 @@ _extra_flags_ = -fno-builtin -m64
+ 
+ #We #undef __x86_64__ for kernelspace, not for userspace where
+ #it's needed for headers to work!
+-CFLAGS += -U__$(SUBARCH)__ $(_extra_flags_)
+-USER_CFLAGS += $(_extra_flags_)
++ARCH_KERNEL_DEFINES = -U__$(SUBARCH)__
++CFLAGS += $(_extra_flags_)
+ 
+ CHECKFLAGS  += -m64
+ AFLAGS += -m64
+Index: linux-2.6.18-mm/arch/um/Makefile-i386
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/Makefile-i386	2006-10-10 09:10:21.000000000 -0400
++++ linux-2.6.18-mm/arch/um/Makefile-i386	2006-10-13 10:28:43.000000000 -0400
+@@ -16,7 +16,6 @@ OBJCOPYFLAGS  		:= -O binary -R .note -R
+ ifeq ("$(origin SUBARCH)", "command line")
+ ifneq ("$(shell uname -m | sed -e s/i.86/i386/)", "$(SUBARCH)")
+ CFLAGS			+= $(call cc-option,-m32)
+-USER_CFLAGS		+= $(call cc-option,-m32)
+ AFLAGS			+= $(call cc-option,-m32)
+ LINK-y			+= $(call cc-option,-m32)
+ UML_OBJCOPYFLAGS	+= -F $(ELF_FORMAT)
+@@ -25,7 +24,7 @@ export LDFLAGS HOSTCFLAGS HOSTLDFLAGS UM
+ endif
+ endif
+ 
+-CFLAGS += -U__$(SUBARCH)__ -U$(SUBARCH)
++ARCH_KERNEL_DEFINES += -U__$(SUBARCH)__ -U$(SUBARCH)
+ 
+ # First of all, tune CFLAGS for the specific CPU. This actually sets cflags-y.
+ include $(srctree)/arch/i386/Makefile.cpu
+@@ -38,4 +37,3 @@ cflags-y += $(call cc-option,-mpreferred
+ cflags-y += -ffreestanding
+ 
+ CFLAGS += $(cflags-y)
+-USER_CFLAGS += $(cflags-y)
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
