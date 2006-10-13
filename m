@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GXbx9-0004aE-OS for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Oct 2006 04:08:47 -0700
-Received: from web25221.mail.ukl.yahoo.com ([217.146.176.207])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GXbx6-00010d-T9
+	id 1GYTLA-0000h1-OJ for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Oct 2006 13:09:08 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GYTL8-0000Vv-21
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Oct 2006 04:08:47 -0700
-Message-ID: <20061011110828.43576.qmail@web25221.mail.ukl.yahoo.com>
-Date: Wed, 11 Oct 2006 13:08:27 +0200 (CEST)
-From: Paolo Giarrusso <blaisorblade@yahoo.it>
-In-Reply-To: <20061009163208.GA4931@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 01/14] uml: fix compilation options for
-	USER_OBJS
+	Fri, 13 Oct 2006 13:09:08 -0700
+Date: Fri, 13 Oct 2006 16:07:47 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20061013200747.GB5517@ccure.user-mode-linux.org>
+References: <452C29F2.8050908@theshore.net>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <452C29F2.8050908@theshore.net>
+Subject: Re: [uml-devel] Kernel mode fault at addr 0x92c00000, ip 0x80bcead
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,76 +30,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: "Christopher S. Aker" <caker@theshore.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike <jdike@addtoit.com> ha scritto: 
-
-> On Thu, Oct 05, 2006 at 11:38:36PM +0200, Paolo 'Blaisorblade'
-> Giarrusso wrote:
-> > Again, move inclusion of arch's Makefile after CFLAGS setting - I
-> remember
-> > merging the same patch eons ago in 2.6, so I added a comment.
-> > 
-> > I discovered this because debug info weren't enabled for
-> USER_OBJS - they're
-> > compiled with USER_CFLAGS which is calculated from CFLAGS (the
-> whole thing is a
-> > bit of an hack but fixing it is not easy, so we're leaving it
-> as-is).
+On Tue, Oct 10, 2006 at 06:17:06PM -0500, Christopher S. Aker wrote:
+> This is 2.6.18-um, on top of a 2.6.16.29-skas3-v8.2 host.
 > 
-> What's the matter with this:
+> Kernel file is here:
+> http://www.theshore.net/~caker/uml/kernels/2.6.18-linode25
 > 
-> Index: linux-2.6.18-mm/arch/um/Makefile
-> ===================================================================
-> --- linux-2.6.18-mm.orig/arch/um/Makefile       2006-10-03
-> 17:44:32.000000000 -0400
-> +++ linux-2.6.18-mm/arch/um/Makefile    2006-10-09
-> 12:29:32.000000000 -0400
-> @@ -64,9 +64,8 @@ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSU
->  
->  AFLAGS += $(ARCH_INCLUDE)
->  
-> -USER_CFLAGS := $(patsubst -I%,,$(CFLAGS))
-> -USER_CFLAGS := $(patsubst -D__KERNEL__,,$(USER_CFLAGS))
-> $(ARCH_INCLUDE) \
-> -       $(MODE_INCLUDE) -D_FILE_OFFSET_BITS=64
-> +USER_CFLAGS = $(patsubst -D__KERNEL__,,$(patsubst -I%,,$(CFLAGS)))
-> \
-> +       $(ARCH_INCLUDE) $(MODE_INCLUDE) -D_FILE_OFFSET_BITS=64
->  
->  # -Derrno=kernel_errno - This turns all kernel references to errno
-> into
->  # kernel_errno to separate them from the libc errno.  This allows
-> -fno-common
 > 
-> The real problem is the use of := which assigns USER_CFLAGS from
-> the
-> current value of CFLAGS, which is incomplete, as you noted.
+> Kernel panic - not syncing: Kernel mode fault at addr 0x92c00000, ip 
+> 0x80bcead
 
-Ok, at a first glance this alternative solution is ok. Make sure (run
-gdb on an userspace object file and saying list <function>) that it
-works and we'll be ok.
+The stack I get from that is:
 
-> Moving the include around seems slightly bogus, since its precise
-> location shouldn't matter.
-> 
-> If we switch to plain =, then it will be lazy-evaluated with the
-> full
-> CFLAGS.
-> 
-> And we should check other uses of := to make sure they don't have
-> similar problems.
+85a0f49c:  [<800350cf>] csum_partial+0xdb/0xe8
+85a0f74c:  [<802aafe2>] skb_checksum+0xe7/0x28f
+85a0f788:  [<802afd31>] skb_checksum_help+0x9c/0x13e
+85a0f7ac:  [<803292fc>] ip_nat_fn+0x1d2/0x1e7
+85a0f7e0:  [<80329528>] ip_nat_local_fn+0x75/0xf3
+85a0f808:  [<802d8569>] nf_iterate+0x63/0x7b
+85a0f830:  [<802d85ec>] nf_hook_slow+0x6b/0xe4
+85a0f86c:  [<802e4a44>] ip_queue_xmit+0x3d7/0x4c2
+85a0f944:  [<802f7668>] tcp_transmit_skb+0x2b8/0x4b1
+85a0f984:  [<802f91fd>] tcp_push_one+0xde/0x159
+85a0f9ac:  [<802eca55>] tcp_sendmsg+0x438/0xe54
+85a0fa30:  [<8030a718>] inet_sendmsg+0x4a/0x56
+			__sock_sendmsg
+85a0fa48:  [<802a4aad>] do_sock_write+0xbb/0xc5
+85a0fa6c:  [<802a4c5f>] sock_aio_write+0x95/0x99
+85a0fae0:  [<80082978>] do_sync_write+0xde/0x124
+85a0fb90:  [<80082b81>] vfs_write+0x1c3/0x23d
+85a0fbc8:  [<80082ccc>] sys_write+0x51/0x80
+85a0fbf0:  [<80022bda>] handle_syscall+0x11a/0x138
+85a0fc6c:  [<80033b68>] handle_trap+0x31/0x12d
+85a0fc94:  [<80034192>] userspace+0x1c7/0x21e
+85a0fcf0:  [<80022808>] fork_handler+0xef/0xff
+85a0fd1c:  [<8039a828>] __restore+0x0/0x8
+85a0fd5c:  [<8039aa81>] kill+0x11/0x20
 
-Maybe, but I hope not... however if CFLAGS is used elsewhere its
-occurrences must be looked for and checked.
---
-Paolo 'Blaisorblade' Giarrusso
+> Is this a UML issue?
 
-__________________________________________________
-Do You Yahoo!?
-Poco spazio e tanto spam? Yahoo! Mail ti protegge dallo spam e ti da tanto spazio gratuito per i tuoi file e i messaggi 
-http://mail.yahoo.it 
+Hard to say.  With a kernel fault, I'd be tempted to say so, but I see no
+UML code on the stack.
+
+Have you seen just this one occurence of this?  I spent part of the
+afternoon dusting off a patch which would provide the registers at the
+time of the segfault.  That maybe would have helped here.
+
+				Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
