@@ -1,23 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GYaJc-0005a4-3E for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Oct 2006 20:36:00 -0700
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GYa1P-00029n-Vl
+	id 1GYfkP-0000VH-6e for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 14 Oct 2006 02:24:01 -0700
+Received: from gwu.lbox.cz ([62.245.111.132])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GYfkN-00011k-Ff
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Oct 2006 20:17:14 -0700
-Message-ID: <453056B0.1060000@theshore.net>
-Date: Fri, 13 Oct 2006 22:17:04 -0500
-From: "Christopher S. Aker" <caker@theshore.net>
-MIME-Version: 1.0
-References: <452C29F2.8050908@theshore.net>
-	<200610140243.00086.blaisorblade@yahoo.it>
-	<45303B3C.808@theshore.net>
-	<200610140435.09094.blaisorblade@yahoo.it>
-In-Reply-To: <200610140435.09094.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x92c00000, ip 0x80bcead
+	Sat, 14 Oct 2006 02:24:01 -0700
+From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+In-Reply-To: <200610140223.09328.blaisorblade@yahoo.it>
+References: <451E9BAB.5030009@linuxbox.cz>
+	<200610082130.52498.blaisorblade@yahoo.it>
+	<452958FD.3020400@linuxbox.cz>
+	<200610140223.09328.blaisorblade@yahoo.it>
+Date: Sat, 14 Oct 2006 12:23:50 +0300
+Message-Id: <1160817830.11878.9.camel@nik-nb>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] SKAS mode not working, x86_64 SMP host, x86_64	guest, 
+	problems with noprocmm
+Reply-To: nikola.ciprich@linuxbox.cz
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,54 +35,37 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> Which is the cmd line? With how much memory where these instances started?
+Hi,
+thanks for tips! actually I'm really glad for them as I'd like to help
+in any way and later even join development if I'll be able to do sth ;).
+Actually there are two questions regarding to this I have:
+1) You mentioned GIT, do You use it? or Jeff? I haven't noticed any UML
+git branch...
+2) I'm still worried about this halt problem on amd64, can You give me
+some tips I could track it down?? I't only thing which is preventing me
+from migrating users on new machine, otherwise it seems to be working
+great (but of course I'm still really looking forward for full SKAS ;))
+thanks a lot for Your patience with me...
+nik
 
-Kernel command line: mem=300M fake_ide fakehd con=null con0=fd:0,fd:1 
-devfs=nomount root=/dev/ubda ubda=<snip> 7 ubdb=<snip> 
-eth0=tuntap,encode1_0,fe:fd:46:55:81:95 token_max=400000 token_refill=512
-
-> Ok, Jeff, I recall something but I'm not sure. I even thought kernel threads 
-> mapped the whole RAM at boot in their physical range part (which is their 
-> entire address space), but it does not seem so.
+On Sat, 2006-10-14 at 02:23 +0200, Blaisorblade wrote:
+> On Sunday 08 October 2006 22:01, Nikola Ciprich wrote:
+> > That's it!
+> > -mm3 kernel is causing this problem, and Your patch indeed fixes it! I
+> > completely forgot that I was also trying mm patches and I certainly
+> > mixed them with Your patches :-/
+> > at least I'm glad that I now know where the problem was...
 > 
-> The host is just a 64G with 3G/1G split, however the UML is a TT+SKAS with 
-> HALF_GIGS=2 (which _is_ unusual, and could be replaced with disabling TT 
-
-Jeff had this discussion with me a few weeks ago when I was trying to 
-get UML to use more than ~550M.
-
-At that time, I tried disabling TT mode but had to revert because non-TT 
-mode enabled umls wouldn't boot on some very old skas hosts of mine.  I 
-suspected that you might point in the same direction he did.  That 
-problem is less important since I should really just upgrade those boxes...
-
-> entirely, which gives a free 2,75G of memory space for UML). In fact, the UML 
-> binary starts at 0x8000 0000 (i.e. 2G), and there are various holes in the 
-> virtual RAM mapped in kernel side - a big part of about 30M (the 
-> 0x80607000-0x92c00000 range), then there is a 4M hole (the pre-vmalloc hole 
-> should be 8M, but we have a 4M hole for uml_reserved after current brk()), 
-> then various holes and allocated ranges (with varying offsets) here and 
-> there, like if the area were allocated for vmalloc(). The problem is that we 
-> have an allocated anonymous memory range (which the checksum is accessing) 
-> before the 4M hole!
+> Fine!
+> Next time, however, you'll save your time if you cut'n'paste the gcc output 
+> and do "head Makefile" (brighter variations are possible, but that should 
+> work if you don't use git) to get the exact version string. I don't want to 
+> criticize, just to give you a tip :-) !
 > 
-> 80000000-80514000 rwxp 00000000 fd:00 540678     /vbin/kernel/2.6.18-linode25
-> 80514000-80607000 rwxp 80514000 00:00 0          [heap]
-> 80607000-92c00000 rwxs 00607000 00:16
-> 	738427     /linodes/encode1/tmp/vm_file-AVT0fb (deleted)
-> <hole here>
-> 93000000-9300b000 rwxs 006b6000 00:16
-> 	738427     /linodes/encode1/tmp/vm_file-AVT0fb (deleted)
-> 9300c000-93017000 rwxs 006c2000 00:16
-> 	738427     /linodes/encode1/tmp/vm_file-AVT0fb (deleted)
-> 
-> I can't follow this code at the moment, so I go for now.
-> Bye!
+> Bye
 
--Chris
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
