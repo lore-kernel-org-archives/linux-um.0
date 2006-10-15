@@ -1,25 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GZ9x5-0000Np-QG for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Oct 2006 10:39:07 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GZ9x2-00004x-OY
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Oct 2006 10:39:07 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 15 Oct 2006 19:35:48 +0200
-References: <451E9BAB.5030009@linuxbox.cz>
-	<200610140223.09328.blaisorblade@yahoo.it>
-	<1160817830.11878.9.camel@nik-nb>
-In-Reply-To: <1160817830.11878.9.camel@nik-nb>
+References: <E1GYDno-0007SX-JC@nicferrier.tapsellferrier.co.uk>
+	<200610140346.11356.blaisorblade@yahoo.it>
+	<871wpb16c3.fsf@nicferrier.tapsellferrier.co.uk>
+	<200610151924.04559.blaisorblade@yahoo.it>
+From: Nic James Ferrier <nferrier@tapsellferrier.co.uk>
+In-Reply-To: <200610151924.04559.blaisorblade@yahoo.it>
+	(blaisorblade@yahoo.it's message of "Sun,
+	15 Oct 2006 19:24:04 +0200")
+Date: Mon, 16 Oct 2006 00:32:37 +0100
+Message-ID: <87hcy5rw8a.fsf@nicferrier.tapsellferrier.co.uk>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200610151935.48276.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel]
-	=?iso-8859-1?q?SKAS_mode_not_working=2C_x86=5F64_SMP_?=
-	=?iso-8859-1?q?host=2C_x86=5F64=09guest_=2C_problems_with_noprocmm?=
+Content-Type: multipart/mixed; boundary="=-=-="
+Subject: Re: [uml-devel] [uml-user] proc filesystem ipaddress
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,92 +21,185 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, nikola.ciprich@linuxbox.cz
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 14 October 2006 11:23, Nikola Ciprich wrote:
-> Hi,
-> thanks for tips! actually I'm really glad for them as I'd like to help
-> in any way and later even join development if I'll be able to do sth ;).
-> Actually there are two questions regarding to this I have:
-> 1) You mentioned GIT, do You use it? or Jeff?
+--=-=-=
 
-I use it, I was thinking about the Linus' git branch. If you use that, head 
-Makefile won't tell you the whole truth (it won't tell you which commit you 
-are on).
+Blaisorblade <blaisorblade@yahoo.it> writes:
 
-> I haven't noticed any UML 
-> git branch...
+>> > Beyond that, I've found your bug. You can cast a (struct sockaddr*) to a
+>> > (struct sockaddr_in*), but your doing a worse cast; since ifr_addr is a
+>> > struct sockaddr,
+>>
+>> I don't think I'm doing that:
+>>
+>>   ifreq.ifr_addr
+>>
+>>   is the same as:  ifreq.ifr_ifru.ifru_addr
+>>
+>>   which is a:  struct sockaddr
+>
+> Yes, what I said.
+>
+>> So ifreq.ifr_addr.sa_data is a sockaddr_in right?
+>
+> Not at all. This explains the 2 missing bytes.
+>
+> Both struct sockaddr and struct sockaddr_in have the first member 
+> (sa_family_t), which is 2 bytes wide - that's because this is like 
+> inheritance but in C: sockaddr_{un,in,*} are all casted to struct sockaddr 
+> when passing them to generic APIs (look for a bind() or connect() example to 
+> see this).
 
-Right, we queue our patches with quilt and send them through -mm. Jeff 
-publishes his *development* quilt tree on UML homepage.
+Ok. My confusion was to do with what exactly is contained in:
 
-> 2) I'm still worried about this halt problem on amd64, can You give me
-> some tips I could track it down?? I't only thing which is preventing me
-> from migrating users on new machine, otherwise it seems to be working
-> great (but of course I'm still really looking forward for full SKAS ;))
+   struct sockaddr.sa_data
 
-A 100%-cpu loop without messages is difficult to diagnose - the first answer 
-is "check if SMP is enabled on that UML binary, disable SMP, and see if it 
-disappears". SMP does not work; when Jeff will announce "SMP support ready" 
-then it will be possible to start using it again.
+since it's typed at char[14].
 
-Otherwise, if you enable debug info and recompile it, try attaching gdb to the 
-process using 100% cpu (type gdb $vmlinux_binary $pid) and then type bt at 
-the prompt. While recompiling, under "Kernel hacking" try enabling every 
-debug option (excluding "kobject debugging" and a few others) - this is what 
-I have on testing kernels, for reference (comes from a GIT head kernel):
+I *thought* that it contained a ptr to a struct sockaddr_in.
 
-CONFIG_PRINTK_TIME=y
-CONFIG_ENABLE_MUST_CHECK=y
-# CONFIG_UNUSED_SYMBOLS is not set
-CONFIG_DEBUG_KERNEL=y
-CONFIG_LOG_BUF_SHIFT=15
-CONFIG_DETECT_SOFTLOCKUP=y
-CONFIG_SCHEDSTATS=y
-CONFIG_DEBUG_SLAB=y
-CONFIG_DEBUG_SLAB_LEAK=y
-CONFIG_DEBUG_RT_MUTEXES=y
-CONFIG_DEBUG_PI_LIST=y
-CONFIG_RT_MUTEX_TESTER=y
-CONFIG_DEBUG_SPINLOCK=y
-CONFIG_DEBUG_MUTEXES=y
-CONFIG_DEBUG_RWSEMS=y
-CONFIG_DEBUG_SPINLOCK_SLEEP=y
-CONFIG_DEBUG_LOCKING_API_SELFTESTS=y
-# CONFIG_DEBUG_KOBJECT is not set
-CONFIG_DEBUG_INFO=y
-# CONFIG_DEBUG_FS is not set
-CONFIG_DEBUG_VM=y
-CONFIG_DEBUG_LIST=y
-CONFIG_FRAME_POINTER=y
-CONFIG_UNWIND_INFO=y
-# CONFIG_FORCED_INLINING is not set
-CONFIG_RCU_TORTURE_TEST=m
-# CONFIG_CMDLINE_ON_HOST is not set
-# CONFIG_PT_PROXY is not set
-# CONFIG_GCOV is not set
+Of course, I was wrong and this page led me to understand my mistake:
 
-> thanks a lot for Your patience with me...
-> nik
+  http://www.comsc.ucok.edu/~mcdaniel/sockets/beej/sockaddr_structures.html
+
+I should have read the Stephens in my bookshelf.
+
+Thanks for putting me on the right track.
+
+
+This is now fit for my purpose. I'm going to release an interesting
+little service based on this code (I'll let the list know when it goes
+live).
+
+
+I will also add the necessary to the patch so that it can be submitted
+to the kernel hackers (eg: interface iteration).
 
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+Nic Ferrier
+http://www.tapsellferrier.co.uk   for all your tapsell ferrier needs
 
+
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: inline; filename=netaddress_proc_patch
+
+--- /scp:root@sanders:/var/local/virtualmachine/kernels/linux-2.6.17.1/net/ipv4/proc.c
++++ /var/local/src/linux-2.6.17.1/net/ipv4/proc.c
+@@ -44,6 +44,62 @@
+ #include <net/sock.h>
+ #include <net/raw.h>
+ 
++
++//// New IP Address proc interface
++#include <asm/uaccess.h>
++#include <linux/if.h>
++
++static int ipaddress_dev_ioctl(struct ifreq *ir, unsigned int cmd)
++{
++	int res;
++        mm_segment_t oldfs;
++
++	oldfs = get_fs();
++	set_fs(KERNEL_DS);
++	res = devinet_ioctl(cmd, (struct ifreq __user *) ir);
++	set_fs(oldfs);
++	return res;
++}
++
++static int ipaddress_seq_show(struct seq_file *seq, void *v)
++{
++        struct ifreq ir;
++        struct sockaddr_in* sa;
++        uint32_t addr;
++
++        memset(&ir, 0, sizeof(ir));
++        strcpy(ir.ifr_ifrn.ifrn_name, "eth0");
++
++        ipaddress_dev_ioctl(&ir, SIOCGIFADDR);
++        sa = (struct sockaddr_in *) &(ir.ifr_addr);
++        addr = sa->sin_addr.s_addr;
++        
++        seq_printf(seq,
++                   "eth0: %u.%u.%u.%u\n",
++                   (addr & 0xff),
++                   (addr & 0xff00) >>8,
++                   (addr & 0x00ff0000) >> 16,
++                   (addr & 0xff000000) >> 24);
++
++        return 0;
++}
++
++static int ipaddress_seq_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, ipaddress_seq_show, NULL);
++}
++
++static struct file_operations ipaddress_seq_fops = {
++	.owner	 = THIS_MODULE,
++	.open	 = ipaddress_seq_open,
++	.read	 = seq_read,
++	.llseek	 = seq_lseek,
++	.release = single_release,
++};
++
++//// End new IP Address proc interface
++
++
+ static int fold_prot_inuse(struct proto *proto)
+ {
+ 	int res = 0;
+@@ -65,7 +121,7 @@
+ 		   fold_prot_inuse(&tcp_prot), atomic_read(&tcp_orphan_count),
+ 		   tcp_death_row.tw_count, atomic_read(&tcp_sockets_allocated),
+ 		   atomic_read(&tcp_memory_allocated));
+-	seq_printf(seq, "UDP: inuse %d\n", fold_prot_inuse(&udp_prot));
++ 	seq_printf(seq, "UDP: inuse %d\n", fold_prot_inuse(&udp_prot));
+ 	seq_printf(seq, "RAW: inuse %d\n", fold_prot_inuse(&raw_prot));
+ 	seq_printf(seq,  "FRAG: inuse %d memory %d\n", ip_frag_nqueues,
+ 		   atomic_read(&ip_frag_mem));
+@@ -365,8 +421,14 @@
+ 
+ 	if (!proc_net_fops_create("sockstat", S_IRUGO, &sockstat_seq_fops))
+ 		goto out_sockstat;
++
++        if (!proc_net_fops_create("ipaddress", S_IRUGO, &ipaddress_seq_fops))
++                goto out_ipaddress;
++
+ out:
+ 	return rc;
++out_ipaddress:
++        proc_net_remove("sockstat");
+ out_sockstat:
+ 	proc_net_remove("snmp");
+ out_snmp:
+
+Diff finished.  Mon Oct 16 00:30:02 2006
+
+--=-=-=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
 Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+--=-=-=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--=-=-=--
