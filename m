@@ -2,23 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GZTjT-0002hR-66 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Oct 2006 07:46:23 -0700
+	id 1GZU11-0004Z2-HN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Oct 2006 08:04:31 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GZTjN-0000wf-GW
+	(Exim 4.44) id 1GZU0y-000777-Rd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Oct 2006 07:46:22 -0700
-Date: Mon, 16 Oct 2006 10:44:53 -0400
+	Mon, 16 Oct 2006 08:04:31 -0700
+Date: Mon, 16 Oct 2006 11:02:59 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061016144453.GB4350@ccure.user-mode-linux.org>
-References: <452C29F2.8050908@theshore.net>
-	<20061013200747.GB5517@ccure.user-mode-linux.org>
-	<200610140243.00086.blaisorblade@yahoo.it>
+Message-ID: <20061016150259.GA4381@ccure.user-mode-linux.org>
+References: <451E9BAB.5030009@linuxbox.cz>
+	<200610082130.52498.blaisorblade@yahoo.it>
+	<452958FD.3020400@linuxbox.cz>
+	<200610140223.09328.blaisorblade@yahoo.it>
+	<1160817830.11878.9.camel@nik-nb>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200610140243.00086.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x92c00000, ip 0x80bcead
+In-Reply-To: <1160817830.11878.9.camel@nik-nb>
+Subject: Re: [uml-devel] SKAS mode not working, x86_64 SMP host, x86_64	guest, 
+	problems with noprocmm
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,42 +35,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, "Christopher S. Aker" <caker@theshore.net>
+To: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Oct 14, 2006 at 02:42:59AM +0200, Blaisorblade wrote:
-> > > Kernel panic - not syncing: Kernel mode fault at addr 0x92c00000, ip
-> > > 0x80bcead
-> Jeff, are these addresses normal? They tell that the binary is a statically 
-> linked one - but what is the memory layout? Chris, can you post 
-> cat /proc/<pid>/maps on a running instance of that kernel, together with host 
-> and guest config (the guest's one is contained there, I know, but I don't 
-> have the time to extract).
+On Sat, Oct 14, 2006 at 12:23:50PM +0300, Nikola Ciprich wrote:
+> 1) You mentioned GIT, do You use it? or Jeff? I haven't noticed any UML
+> git branch...
 
-I'm not sure.  I've never trusted the numbers coming from that panic
-message (which hurts debugging, I know).  I don't believe the fault
-address, and the IP doesn't match anything in the symbol table, so I
-don't believe that either.
+I don't.  I use quilt, although I occasionally construct a git tree
+when there's something in -linux that I need to look at.
 
-> I.e. all the rest are bogus functions?
+> 2) I'm still worried about this halt problem on amd64, can You give me
+> some tips I could track it down??
 
-No.  Above the skb_checksum frame, there are lots of occurrences of
-dst_output, which is a function pointer being passed down the stack.
-What remains looks like the remnants of old stacks.
+The hang happens at the very end of the shutdown sequence, after all
+services have been turned off?
 
-Between csum_partial and skb_checksum, there's a big frame (and I
-don't know what's causing that) with what looks like old stack in it.
+IIRC, you said that stracing UML shows a VTALRM-handling loop and that
+the UML is consuming all available CPU.  Those two statements are not
+consistent, AFIAK, since there should be no busy loops in UML
+(although I can imagine bugs which could induce one) and the VTALRM
+loop is the sign of the idle loop, which isn't busy.
 
-> There are automated solutions for this - compiling with frame pointers allows
-> correct backtracing with a runtime penalty but is implemented; however, we 
-> could reuse (not copy, please, we cannot maintain it) the x86 DWARF unwinder 
-> (instead of using frame pointer and to slow down fast paths, additional 
-> out-of-line debug info are used when the stack trace is output) - but we 
-> should implement this latter one. Jeff, can you take a look at it?
+So, could you confirm all this, and also get a stack trace from the
+hang?
 
-Yup, that sounds like a good idea.
-
-				Jeff
+			Jeff
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
