@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GZwSx-0001yf-1i for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Oct 2006 14:27:15 -0700
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GZwSw-0002Sh-Gz
+	id 1GZwT1-0001yq-7M for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Oct 2006 14:27:19 -0700
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GZwT0-0002Gi-K5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Oct 2006 14:27:15 -0700
+	Tue, 17 Oct 2006 14:27:19 -0700
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Tue, 17 Oct 2006 23:27:09 +0200
-Message-Id: <20061017212709.26445.54420.stgit@americanbeauty.home.lan>
+Date: Tue, 17 Oct 2006 23:27:13 +0200
+Message-Id: <20061017212713.26445.72572.stgit@americanbeauty.home.lan>
 In-Reply-To: <20061017211943.26445.75719.stgit@americanbeauty.home.lan>
 References: <20061017211943.26445.75719.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 03/10] uml: fix prototypes
+Subject: [uml-devel] [PATCH 05/10] uml: code convention cleanup of a file
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,42 +33,157 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Fix prototypes in user.h - was needed when including user.h in kernelspace, as
-we did in previous patch.
+Fix coding conventions violations is arch/um/os-Linux/helper.c.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/include/user.h |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+ arch/um/os-Linux/helper.c |   53 ++++++++++++++++++++++++---------------------
+ 1 files changed, 28 insertions(+), 25 deletions(-)
 
-diff --git a/arch/um/include/user.h b/arch/um/include/user.h
-index acadce3..6921f3e 100644
---- a/arch/um/include/user.h
-+++ b/arch/um/include/user.h
-@@ -6,6 +6,10 @@
- #ifndef __USER_H__
- #define __USER_H__
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index f72c512..e887179 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -38,17 +38,17 @@ static int helper_child(void *arg)
+ 	char **argv = data->argv;
+ 	int errval;
  
-+/* Both on kernelspace and userspace this will provide the size_t definition. It should, at
-+ * least. But on userspace it won't hurt surely. */
-+#include <linux/types.h>
-+
- extern void panic(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
- extern int printk(const char *fmt, ...)
-@@ -13,9 +17,8 @@ extern int printk(const char *fmt, ...)
- extern void schedule(void);
- extern int in_aton(char *str);
- extern int open_gdb_chan(void);
--/* These use size_t, however unsigned long is correct on both i386 and x86_64. */
--extern unsigned long strlcpy(char *, const char *, unsigned long);
--extern unsigned long strlcat(char *, const char *, unsigned long);
-+extern size_t strlcpy(char *, const char *, size_t);
-+extern size_t strlcat(char *, const char *, size_t);
+-	if(helper_pause){
++	if (helper_pause) {
+ 		signal(SIGHUP, helper_hup);
+ 		pause();
+ 	}
+-	if(data->pre_exec != NULL)
++	if (data->pre_exec != NULL)
+ 		(*data->pre_exec)(data->pre_data);
+ 	errval = execvp_noalloc(data->buf, argv[0], argv);
+ 	printk("helper_child - execvp of '%s' failed - errno = %d\n", argv[0], -errval);
+ 	os_write_file(data->fd, &errval, sizeof(errval));
+ 	kill(os_getpid(), SIGKILL);
+-	return(0);
++	return 0;
+ }
  
- #endif
+ /* Returns either the pid of the child process we run or -E* on failure.
+@@ -60,20 +60,21 @@ int run_helper(void (*pre_exec)(void *),
+ 	unsigned long stack, sp;
+ 	int pid, fds[2], ret, n;
  
+-	if((stack_out != NULL) && (*stack_out != 0))
++	if ((stack_out != NULL) && (*stack_out != 0))
+ 		stack = *stack_out;
+-	else stack = alloc_stack(0, __cant_sleep());
+-	if(stack == 0)
++	else
++		stack = alloc_stack(0, __cant_sleep());
++	if (stack == 0)
+ 		return -ENOMEM;
+ 
+ 	ret = os_pipe(fds, 1, 0);
+-	if(ret < 0){
++	if (ret < 0) {
+ 		printk("run_helper : pipe failed, ret = %d\n", -ret);
+ 		goto out_free;
+ 	}
+ 
+ 	ret = os_set_exec_close(fds[1], 1);
+-	if(ret < 0){
++	if (ret < 0) {
+ 		printk("run_helper : setting FD_CLOEXEC failed, ret = %d\n",
+ 		       -ret);
+ 		goto out_close;
+@@ -86,7 +87,7 @@ int run_helper(void (*pre_exec)(void *),
+ 	data.fd = fds[1];
+ 	data.buf = __cant_sleep() ? um_kmalloc_atomic(PATH_MAX) : um_kmalloc(PATH_MAX);
+ 	pid = clone(helper_child, (void *) sp, CLONE_VM | SIGCHLD, &data);
+-	if(pid < 0){
++	if (pid < 0) {
+ 		ret = -errno;
+ 		printk("run_helper : clone failed, errno = %d\n", errno);
+ 		goto out_free2;
+@@ -98,10 +99,10 @@ int run_helper(void (*pre_exec)(void *),
+ 	/* Read the errno value from the child, if the exec failed, or get 0 if
+ 	 * the exec succeeded because the pipe fd was set as close-on-exec. */
+ 	n = os_read_file(fds[0], &ret, sizeof(ret));
+-	if(n == 0)
++	if (n == 0) {
+ 		ret = pid;
+-	else {
+-		if(n < 0){
++	} else {
++		if (n < 0) {
+ 			printk("run_helper : read on pipe failed, ret = %d\n",
+ 			       -n);
+ 			ret = n;
+@@ -117,10 +118,11 @@ out_close:
+ 		close(fds[1]);
+ 	close(fds[0]);
+ out_free:
+-	if(stack_out == NULL)
++	if (stack_out == NULL)
+ 		free_stack(stack, 0);
+-	else *stack_out = stack;
+-	return(ret);
++	else
++		*stack_out = stack;
++	return ret;
+ }
+ 
+ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
+@@ -130,31 +132,32 @@ int run_helper_thread(int (*proc)(void *
+ 	int pid, status, err;
+ 
+ 	stack = alloc_stack(stack_order, __cant_sleep());
+-	if(stack == 0) return(-ENOMEM);
++	if (stack == 0)
++		return -ENOMEM;
+ 
+ 	sp = stack + (page_size() << stack_order) - sizeof(void *);
+ 	pid = clone(proc, (void *) sp, flags | SIGCHLD, arg);
+-	if(pid < 0){
++	if (pid < 0) {
+ 		err = -errno;
+ 		printk("run_helper_thread : clone failed, errno = %d\n",
+ 		       errno);
+ 		return err;
+ 	}
+-	if(stack_out == NULL){
++	if (stack_out == NULL) {
+ 		CATCH_EINTR(pid = waitpid(pid, &status, 0));
+-		if(pid < 0){
++		if (pid < 0) {
+ 			err = -errno;
+ 			printk("run_helper_thread - wait failed, errno = %d\n",
+ 			       errno);
+ 			pid = err;
+ 		}
+-		if(!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
++		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
+ 			printk("run_helper_thread - thread returned status "
+ 			       "0x%x\n", status);
+ 		free_stack(stack, stack_order);
+-	}
+-	else *stack_out = stack;
+-	return(pid);
++	} else
++		*stack_out = stack;
++	return pid;
+ }
+ 
+ int helper_wait(int pid)
+@@ -162,9 +165,9 @@ int helper_wait(int pid)
+ 	int ret;
+ 
+ 	CATCH_EINTR(ret = waitpid(pid, NULL, WNOHANG));
+-	if(ret < 0){
++	if (ret < 0) {
+ 		ret = -errno;
+ 		printk("helper_wait : waitpid failed, errno = %d\n", errno);
+ 	}
+-	return(ret);
++	return ret;
+ }
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
