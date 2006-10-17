@@ -1,20 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GZwTD-0001zX-70 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Oct 2006 14:27:31 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GZwTA-0002IF-Lk
+	id 1GZyXc-0005yV-8Z for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Oct 2006 16:40:12 -0700
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GZyXY-0003MD-6R
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Oct 2006 14:27:31 -0700
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Tue, 17 Oct 2006 23:27:23 +0200
-Message-Id: <20061017212723.26445.57342.stgit@americanbeauty.home.lan>
-In-Reply-To: <20061017211943.26445.75719.stgit@americanbeauty.home.lan>
-References: <20061017211943.26445.75719.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 10/10] uml: mmapper - remove just added but
-	wrong "const" attribute
+	Tue, 17 Oct 2006 16:40:12 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 18 Oct 2006 01:39:55 +0200
+References: <451E9BAB.5030009@linuxbox.cz>
+	<20061016150259.GA4381@ccure.user-mode-linux.org>
+	<1161116486.2709.15.camel@nik-nb>
+In-Reply-To: <1161116486.2709.15.camel@nik-nb>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200610180139.55496.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel]
+	=?iso-8859-1?q?SKAS_mode_not_working=2C_x86=5F64_SMP_?=
+	=?iso-8859-1?q?host=2C_x86=5F64=09guest_=2C_problems_with_noprocmm?=
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,44 +29,92 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+On Tuesday 17 October 2006 22:21, Nikola Ciprich wrote:
+> Hi guys,
+> thanks for suggestions. Now I've been able to track the problem, and it
+> seems to be arch/um/sys-x86_64/delay.c, function __const_udelay.
+> halt process hangs at drivers/md/md.c, function md_notify_reboot(...):
+> it never gets after the mdelay(1000*1) line, however according to my
+> printk's I've added it seems that this function is being executed
+> periodically, but it's certainly because of some overflow.
+> I've noticed that it's being called with usecs value of 4294000, and
+> I've also noticed following comment at include/linux/delay.h:
+> /*
+>  * Using udelay() for intervals greater than a few milliseconds can
+>  * risk overflow for high loops_per_jiffy (high bogomips) machines. The
+>  * mdelay() provides a wrapper to prevent this.  For delays greater
+>  * than MAX_UDELAY_MS milliseconds, the wrapper is used.  Architecture
+>  * specific values can be defined in asm-???/delay.h as an override.
+>  * The 2nd mdelay() definition ensures GCC will optimize away the
+>  * while loop for the common cases where n <= MAX_UDELAY_MS  --  Paul G.
+>  */
+> So maybe calling __const_udelay with such high value is problem? When I
+> print value of n, it's always some big value (like 3419150745), so it
+> seems that this variable is overflowing). When I compare um-i386 and
+> um-x86_64 implementation of __const_udelay, it turns that difference
+> between them is that i386 version uses plain unsigned ints, while x86_64
+> version uses unsigned longs. So I've tried to change longs to ints (yup,
+> it's certainly brain damaged, but I just wanted to try) and things seem
+> to started working.
 
-When enabling the mmapper driver I got warnings because this "const" miscdevice
-structure is passed to function as non-const pointer; unlike struct
-tty_operations, however, I verified that misc_{de,}register _do_ modify their
-parameter, so this const attribute must be removed.
+You really changed long to int? In this case, you may only have introduced a 
+bigger overflow.
+Jeff, I remember vaguely a recent (>=2.6.17) patch about udelay fixing a 
+misbehaviour, would you please complete my recollection and verify the 
+interaction with this?
 
-Since the purpose of the change was to guarantee that no lock was needed, add a
-comment to prove this differently.
+Also, since we take __const_udelay and __udelay() from asm/arch/delay.h:
+(for i386):
+#define udelay(n) (__builtin_constant_p(n) ? \
+        ((n) > 20000 ? __bad_udelay() : __const_udelay((n) * 0x10c6ul)) : \
+        __udelay(n))
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+#define ndelay(n) (__builtin_constant_p(n) ? \
+       ((n) > 20000 ? __bad_ndelay() : __const_udelay((n) * 5ul)) : \
+       __ndelay(n))
 
- arch/um/drivers/mmapper_kern.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+We then do _not_ take these definitions:
+arch/i386/lib/delay.c:
 
-diff --git a/arch/um/drivers/mmapper_kern.c b/arch/um/drivers/mmapper_kern.c
-index 9a3b5da..df3516e 100644
---- a/arch/um/drivers/mmapper_kern.c
-+++ b/arch/um/drivers/mmapper_kern.c
-@@ -95,7 +95,8 @@ static const struct file_operations mmap
- 	.release	= mmapper_release,
- };
- 
--static const struct miscdevice mmapper_dev = {
-+/* No locking needed - only used (and modified) by below initcall and exitcall. */
-+static struct miscdevice mmapper_dev = {
- 	.minor		= MISC_DYNAMIC_MINOR,
- 	.name		= "mmapper",
- 	.fops		= &mmapper_fops
+void __udelay(unsigned long usecs)
+{
+        __const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
+}
+
+void __ndelay(unsigned long nsecs)
+{
+        __const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
+}
+
+instead for us __udelay and __const_udelay match, which is not likely to help 
+at all. Their code is correct because the asm "mull" call divides the 
+obtained product by 2^32 by throwing away the 32 low bits (i.e. EAX, since 
+the mull result is in EDX:EAX), and the meaning of this is to do the division 
+only at the very end (to improve accuracy).
+
+This bug is here at least since 2.6.16.
+Suggested solution:
+1) have _our own_ delay.h, to avoid depending on subarchs' changes
+2) first avoid playing so complex tricks, then maybe copy their implementation 
+(note it is slightly different already among x86 and x86_64).
+
+> But I'm sure this is not the right solution, so what 
+> do You guys suggest? And also is really i386 variant safely implemented?
+
+> thanks a lot!
+> nik.
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
