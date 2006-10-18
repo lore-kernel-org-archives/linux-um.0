@@ -1,27 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ga62r-0005Ub-FH for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Oct 2006 00:40:57 -0700
-Received: from gwu.lbox.cz ([62.245.111.132])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ga62q-00068T-Pg
+	id 1GaDQs-00075L-OH for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Oct 2006 08:34:14 -0700
+Received: from rzcomm12.rz.tu-bs.de ([134.169.9.59])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GaDQo-0007H8-2A
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Oct 2006 00:40:57 -0700
-From: Nikola Ciprich <nikola.ciprich@linuxbox.cz>
-In-Reply-To: <200610180139.55496.blaisorblade@yahoo.it>
-References: <451E9BAB.5030009@linuxbox.cz>
-	<20061016150259.GA4381@ccure.user-mode-linux.org>
-	<1161116486.2709.15.camel@nik-nb>
-	<200610180139.55496.blaisorblade@yahoo.it>
-Date: Wed, 18 Oct 2006 10:40:36 +0300
-Message-Id: <1161157236.7397.13.camel@nik-nb>
-Mime-Version: 1.0
-Subject: Re: [uml-devel]
-	=?iso-8859-1?q?SKAS_mode_not_working=2C_x86=5F64_SMP_?=
-	=?iso-8859-1?q?host=2C_x86=5F64=09guest_=2C_problems_with_noprocmm?=
-Reply-To: nikola.ciprich@linuxbox.cz
+	Wed, 18 Oct 2006 08:34:14 -0700
+Received: from [134.169.64.140] (imt12.imt.ing.tu-bs.de [134.169.64.140])
+	by rzcomm12.rz.tu-bs.de (8.11.1/8.11.1) with ESMTP id k9IFXqS18031
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 18 Oct 2006 17:33:53 +0200 (METDST)
+Message-ID: <4536495E.7010006@l4x.org>
+Date: Wed, 18 Oct 2006 17:33:50 +0200
+From: Jan Dittmer <jdi@l4x.org>
+MIME-Version: 1.0
+Subject: [uml-devel] Programs in guest segfault, amd64 host and guest
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,71 +30,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> You really changed long to int? In this case, you may only have introduced a 
-> bigger overflow.
+- Guest 2.6.19-rc1-git11
+- Host Debian 2.6.18-1-amd64
+- Debian etch for host and guest
+- both using ext3
+- command to start the guest
+./linux-2.6.19-rc1-git11 ubd0=umlblob.cow,etch-amd64.img \
+    eth0=daemon,10:00:00:00:00:02,unix,/var/run/uml-utilities/uml_switch.ctl \
+         mem=128M \
+         con=null umid=umlprey \
+         >/dev/null 2>&1 &
 
-Yes, I'm aware of that, I just wanted to try how i386 variant behaves.
-btw I just tried gdb to find out why i386 UML on x86_64 host hangs just
-at the beginning, and it turned out to be same problem with
-__const_udelay. well, it's not a big surprise now I guess.
-So if You need further testing, please feel free to post patches etc ;)
-regards
-nik.
 
+$ strace btlaunchmany /tmp/
+...
+mmap(NULL, 8392704, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|0x40, 
+-1, 0) = 0x41c4e000
+mprotect(0x41c4e000, 4096, PROT_NONE)   = 0
+clone(Process 484 attached
+child_stack=0x4244e280, 
+flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID|CLONE_DETACHED, 
+parent_tidptr=0x4244e9f0, tls=0x4244e960, child_tidptr=0x4244e9f0) = 484
+[pid   483] rt_sigprocmask(SIG_SETMASK, [],  <unfinished ...>
+[pid   484] --- SIGSEGV (Segmentation fault) @ 0 (0) ---
+Process 484 detached
+<... rt_sigprocmask resumed> NULL, 8)   = 0
++++ killed by SIGSEGV +++
+Process 483 detached
 
-On Wed, 2006-10-18 at 01:39 +0200, Blaisorblade wrote:
-> On Tuesday 17 October 2006 22:21, Nikola Ciprich wrote:
+$ strace mlnet -stdout
+...
+gettimeofday({1161185543, 817872}, NULL) = 0
+mmap(NULL, 8392704, PROT_READ|PROT_WRITE|PROT_EXEC, 
+MAP_PRIVATE|MAP_ANONYMOUS|0x40, -1, 0) = 0x41ccd000
+mprotect(0x41ccd000, 4096, PROT_NONE)   = 0
+clone(child_stack=0x424cd270, 
+flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID|CLONE_DETACHED, 
+parent_tidptr=0x424cd9f0, tls=0x424cd960, child_tidptr=0x424cd9f0) = 502
+gettimeofday({1161185543, 820912}, NULL) = 0
+poll([{fd=7, events=POLLIN}, {fd=6, events=POLLIN}, {fd=5, events=POLLIN}, 
+{fd=4, events=POLLIN}, {fd=3, events=POLLIN}], 5, 96) = -1 EINTR 
+(Interrupted system call)
++++ killed by SIGSEGV +++
+Process 501 detached
 
-> You really changed long to int? In this case, you may only have introduced a 
-> bigger overflow.
-> Jeff, I remember vaguely a recent (>=2.6.17) patch about udelay fixing a 
-> misbehaviour, would you please complete my recollection and verify the 
-> interaction with this?
-> 
-> Also, since we take __const_udelay and __udelay() from asm/arch/delay.h:
-> (for i386):
-> #define udelay(n) (__builtin_constant_p(n) ? \
->         ((n) > 20000 ? __bad_udelay() : __const_udelay((n) * 0x10c6ul)) : \
->         __udelay(n))
-> 
-> #define ndelay(n) (__builtin_constant_p(n) ? \
->        ((n) > 20000 ? __bad_ndelay() : __const_udelay((n) * 5ul)) : \
->        __ndelay(n))
-> 
-> We then do _not_ take these definitions:
-> arch/i386/lib/delay.c:
-> 
-> void __udelay(unsigned long usecs)
-> {
->         __const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
-> }
-> 
-> void __ndelay(unsigned long nsecs)
-> {
->         __const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
-> }
-> 
-> instead for us __udelay and __const_udelay match, which is not likely to help 
-> at all. Their code is correct because the asm "mull" call divides the 
-> obtained product by 2^32 by throwing away the 32 low bits (i.e. EAX, since 
-> the mull result is in EDX:EAX), and the meaning of this is to do the division 
-> only at the very end (to improve accuracy).
-> 
-> This bug is here at least since 2.6.16.
-> Suggested solution:
-> 1) have _our own_ delay.h, to avoid depending on subarchs' changes
-> 2) first avoid playing so complex tricks, then maybe copy their implementation 
-> (note it is slightly different already among x86 and x86_64).
-> 
-> > But I'm sure this is not the right solution, so what 
-> > do You guys suggest? And also is really i386 variant safely implemented?
-> 
-> > thanks a lot!
-> > nik.
-> 
+Additionally I'm having build failure compiling ARCH=um SUBARCH=i386.
+
+Thanks for any pointers,
+
+Jan
 
 
 -------------------------------------------------------------------------
