@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GaGpA-0005wU-My for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Oct 2006 12:11:32 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1GaGvD-0006WV-QP for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Oct 2006 12:17:47 -0700
+Received: from mail.trixing.net ([87.230.125.58])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GaGp8-0001kC-V4
+	(Exim 4.44) id 1GaGvB-0004IW-PX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Oct 2006 12:11:32 -0700
-Date: Wed, 18 Oct 2006 15:09:57 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061018190957.GG6566@ccure.user-mode-linux.org>
+	Wed, 18 Oct 2006 12:17:47 -0700
+Message-ID: <45367D7E.9040609@l4x.org>
+Date: Wed, 18 Oct 2006 21:16:14 +0200
+From: Jan Dittmer <jdi@l4x.org>
+MIME-Version: 1.0
 References: <4536495E.7010006@l4x.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4536495E.7010006@l4x.org>
+	<20061018190957.GG6566@ccure.user-mode-linux.org>
+In-Reply-To: <20061018190957.GG6566@ccure.user-mode-linux.org>
 Subject: Re: [uml-devel] Programs in guest segfault, amd64 host and guest
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,26 +30,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jan Dittmer <jdi@l4x.org>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Oct 18, 2006 at 05:33:50PM +0200, Jan Dittmer wrote:
-> clone(Process 484 attached
-> child_stack=0x4244e280, 
-> flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID|CLONE_DETACHED, 
-> parent_tidptr=0x4244e9f0, tls=0x4244e960, child_tidptr=0x4244e9f0) = 484
-> [pid   483] rt_sigprocmask(SIG_SETMASK, [],  <unfinished ...>
-> [pid   484] --- SIGSEGV (Segmentation fault) @ 0 (0) ---
-> Process 484 detached
-> <... rt_sigprocmask resumed> NULL, 8)   = 0
-> +++ killed by SIGSEGV +++
+Jeff Dike wrote:
+> On Wed, Oct 18, 2006 at 05:33:50PM +0200, Jan Dittmer wrote:
+>> clone(Process 484 attached
+>> child_stack=0x4244e280, 
+>> flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID|CLONE_DETACHED, 
+>> parent_tidptr=0x4244e9f0, tls=0x4244e960, child_tidptr=0x4244e9f0) = 484
+>> [pid   483] rt_sigprocmask(SIG_SETMASK, [],  <unfinished ...>
+>> [pid   484] --- SIGSEGV (Segmentation fault) @ 0 (0) ---
+>> Process 484 detached
+>> <... rt_sigprocmask resumed> NULL, 8)   = 0
+>> +++ killed by SIGSEGV +++
+> 
+> I suspect it's due to UML/x86_64 having incomplete NPTL support,
+> although I've had almost no problems with up-to-date Fedora
+> filesystems on x86_64.  The one thing I do see is yum segfaulting
+> occassionally, but I haven't been able to tie that to NPTL.
 
-I suspect it's due to UML/x86_64 having incomplete NPTL support,
-although I've had almost no problems with up-to-date Fedora
-filesystems on x86_64.  The one thing I do see is yum segfaulting
-occassionally, but I haven't been able to tie that to NPTL.
+This is 100% reproducible here. Perfect test case. How to debug?
 
-				Jeff
+Jan
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
