@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GaxKe-0004ej-VO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 09:34:53 -0700
+	id 1GaxOu-00056R-1v for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Oct 2006 09:39:16 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GaxKa-0002nu-Cq
+	(Exim 4.44) id 1GaxOr-0008Ou-JT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 09:34:52 -0700
-Date: Fri, 20 Oct 2006 12:33:01 -0400
+	Fri, 20 Oct 2006 09:39:16 -0700
+Date: Fri, 20 Oct 2006 12:37:51 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061020163301.GB5530@ccure.user-mode-linux.org>
-References: <4536495E.7010006@l4x.org>
-	<20061018190957.GG6566@ccure.user-mode-linux.org>
-	<45367D7E.9040609@l4x.org>
-	<20061018210506.GA7541@ccure.user-mode-linux.org>
-	<45369BBE.9040100@l4x.org>
+Message-ID: <20061020163751.GD5530@ccure.user-mode-linux.org>
+References: <7b2fa1820610192302o52213a59uc220df19e6a84fbb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <45369BBE.9040100@l4x.org>
-Subject: Re: [uml-devel] Programs in guest segfault, amd64 host and guest
+In-Reply-To: <7b2fa1820610192302o52213a59uc220df19e6a84fbb@mail.gmail.com>
+Subject: Re: [uml-devel] 2.4.21 insmod problem: unresolved symbol to_virt
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,16 +30,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jan Dittmer <jdi@l4x.org>
+To: Ian Jiang <ianjiang.ict@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Oct 18, 2006 at 11:25:18PM +0200, Jan Dittmer wrote:
-> As I wrote in the original message: Debian/etch amd64 host+guest,
-> running btlaunchmany (from the bittorrent package). I can put you
-> the compressed root + kernel somewhere if that helps. It's roughly
-> 100mb.
+On Fri, Oct 20, 2006 at 02:02:09PM +0800, Ian Jiang wrote:
+> Then I tried the example 4-1 chardev.c at
+> http://tldp.org/LDP/lkmpg/2.4/html/x579.html, but I got "unresolved
+> symbol to_virt" from insmod. I noted it's the calling for put_user()
+> by chardev.c that lead to use of to_virt(). 
 
-Yeah, that would be useful.
+Export it in arch/um/kernel/ksyms.c
+
+> However, this symbol has
+> already been exported in System.map of UML.
+
+That's not an export table.  The export table is /proc/ksyms.
 
 				Jeff
 
