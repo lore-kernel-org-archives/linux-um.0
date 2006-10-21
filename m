@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gb4Sl-0005J6-SJ for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 17:11:43 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gb4Sh-0004FE-SP
+	id 1Gb5If-0001eK-9a for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Oct 2006 18:05:21 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gb5Id-0005Wi-Lw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 17:11:43 -0700
+	Fri, 20 Oct 2006 18:05:21 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 21 Oct 2006 02:11:28 +0200
-References: <20061017211943.26445.75719.stgit@americanbeauty.home.lan>
-	<20061017212711.26445.79770.stgit@americanbeauty.home.lan>
-	<20061018183707.GB6566@ccure.user-mode-linux.org>
-In-Reply-To: <20061018183707.GB6566@ccure.user-mode-linux.org>
+Date: Sat, 21 Oct 2006 02:38:16 +0200
+References: <v0r6x41bnb.fsf@marajade.sandelman.ca>
+	<v0vemg6jbo.fsf@marajade.sandelman.ca>
+In-Reply-To: <v0vemg6jbo.fsf@marajade.sandelman.ca>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200610210211.28502.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 04/10] uml: make execvp safe for our usage
+Message-Id: <200610210238.16557.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Xen 3.0.2 and UML guest
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,48 +30,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>
 
-On Wednesday 18 October 2006 20:37, Jeff Dike wrote:
-> On Tue, Oct 17, 2006 at 11:27:11PM +0200, Paolo 'Blaisorblade' Giarrusso 
-wrote:
-> > Reimplement execvp for our purposes - after we call fork() it is
-> > fundamentally unsafe to use the kernel allocator - current is not valid
-> > there.
+On Friday 20 October 2006 00:18, Michael Richardson wrote:
+> >>>>> "Michael" == Michael Richardson <mcr@sandelman.ottawa.on.ca> writes:
 >
-> This is horriby ugly.
+>     Michael> The fault may well be Xen's.  I'm looking for other
+> experiences, Michael> yeah or nay.
+>
+> I built a tree on my laptop as I normally do. It runs etch, and as does my
+> debian XenU.  With 2.6.15 UML guest on my laptop, everything is fine.
+>
+> Same binary running under a XenU, goes into R state under XenU:
 
-Detail why. The code of execvp()? Passing in the buffer?
-I'm not saying it's the brightest code around here, but it's ok for me.
+I forget - XenU is an unprivileged guest, and Xen0 is the main one IIRC 
+(vaguely) - if that is an unprivileged guest have you tried on the root one?
 
-> Can we instead do something different like 
-> check out the paths of helpers at early boot, before the kernel is
-> running, save them, and simply execve them later?
-I initially thought to design a two-steps API with a "which" operation (where 
-memory allocation was used) to call later execvp(); when I saw the glibc 
-implementation (it allocates one single fixed-size buffer) I saw it was 
-simpler this way.
+>  5749 pts/1    Ss+    0:00 /bin/sh
+> /0i/sandboxes/UMLPOOL/260ocf/umlbuild/east/st 5750 pts/1    R+     2:33
+> /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5756 pts/1    S+    
+> 0:00 /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5757 pts/1    S+
+>     0:00 /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5758 pts/1  
+>  S+     0:00 /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5759
+> pts/1    T+     1:19 [linux]
+>
+> It looks like this happens as soon as the scheduler is enabled.
+> mode=tt WORKS.
+>
+> Running uml_mconsole east sysrq t:
+>
+> Checking that ptrace can change system call numbers...OK
+> Checking syscall emulation patch for ptrace...OK
+> Checking advanced syscall emulation patch for ptrace...OK
+> Checking PROT_EXEC mmap in /tmp...OK
+> Checking for the skas3 patch in the host:
+>   - /proc/mm...not found
+>   - PTRACE_FAULTINFO...not found
+>   - PTRACE_LDT...not found
+> UML running in SKAS0 mode
+>
+>     <BIG PAUSE ******>
+>
+> Linux version 2.6.15 (mcr@marajade.sandelman.ca) (gcc version 4.1.2
+> 20060901 (pr                      erelease) (Debian 4.1.1-13)) #2 Thu Oct
+> 19 17:29:21 EDT 2006 Built 1 zonelists
 
-Additionally, error handling cannot be done properly without trying an exec - 
-I think it is also ok to drop this execvp semantic, so that if the first 
-binary found in path is marked executable but has the wrong binary format the 
-whole thing just does not start.
-
-The current implementation already diverges from glibc - it never calls 
-directly the shell passing a script, because IMHO execve() will care for that 
-(and testing confirmed this IIRC).
-
-I'd not do that at boot, but just before the fork()+execve() - it is 
-conceivable that a given user will install a support binary after booting 
-UML.
-
-I must say that I've seen files without the shebang working ok (if having the 
-executable bit set) when executed from the shell, and I've had the doubt 
-execvp() would handle that.
-
-> At that point, something like running "which foo" would be fine by me.
-
+A strace -t (or whichever option shows the timings) would help finding _where_ 
+is the big pause...
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
