@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GaxOu-00056R-1v for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 09:39:16 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GaxOr-0008Ou-JT
+	id 1Gb4Sl-0005J6-SJ for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Oct 2006 17:11:43 -0700
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gb4Sh-0004FE-SP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 09:39:16 -0700
-Date: Fri, 20 Oct 2006 12:37:51 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061020163751.GD5530@ccure.user-mode-linux.org>
-References: <7b2fa1820610192302o52213a59uc220df19e6a84fbb@mail.gmail.com>
-Mime-Version: 1.0
+	Fri, 20 Oct 2006 17:11:43 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sat, 21 Oct 2006 02:11:28 +0200
+References: <20061017211943.26445.75719.stgit@americanbeauty.home.lan>
+	<20061017212711.26445.79770.stgit@americanbeauty.home.lan>
+	<20061018183707.GB6566@ccure.user-mode-linux.org>
+In-Reply-To: <20061018183707.GB6566@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <7b2fa1820610192302o52213a59uc220df19e6a84fbb@mail.gmail.com>
-Subject: Re: [uml-devel] 2.4.21 insmod problem: unresolved symbol to_virt
+Message-Id: <200610210211.28502.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 04/10] uml: make execvp safe for our usage
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,23 +31,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ian Jiang <ianjiang.ict@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Oct 20, 2006 at 02:02:09PM +0800, Ian Jiang wrote:
-> Then I tried the example 4-1 chardev.c at
-> http://tldp.org/LDP/lkmpg/2.4/html/x579.html, but I got "unresolved
-> symbol to_virt" from insmod. I noted it's the calling for put_user()
-> by chardev.c that lead to use of to_virt(). 
+On Wednesday 18 October 2006 20:37, Jeff Dike wrote:
+> On Tue, Oct 17, 2006 at 11:27:11PM +0200, Paolo 'Blaisorblade' Giarrusso 
+wrote:
+> > Reimplement execvp for our purposes - after we call fork() it is
+> > fundamentally unsafe to use the kernel allocator - current is not valid
+> > there.
+>
+> This is horriby ugly.
 
-Export it in arch/um/kernel/ksyms.c
+Detail why. The code of execvp()? Passing in the buffer?
+I'm not saying it's the brightest code around here, but it's ok for me.
 
-> However, this symbol has
-> already been exported in System.map of UML.
+> Can we instead do something different like 
+> check out the paths of helpers at early boot, before the kernel is
+> running, save them, and simply execve them later?
+I initially thought to design a two-steps API with a "which" operation (where 
+memory allocation was used) to call later execvp(); when I saw the glibc 
+implementation (it allocates one single fixed-size buffer) I saw it was 
+simpler this way.
 
-That's not an export table.  The export table is /proc/ksyms.
+Additionally, error handling cannot be done properly without trying an exec - 
+I think it is also ok to drop this execvp semantic, so that if the first 
+binary found in path is marked executable but has the wrong binary format the 
+whole thing just does not start.
 
-				Jeff
+The current implementation already diverges from glibc - it never calls 
+directly the shell passing a script, because IMHO execve() will care for that 
+(and testing confirmed this IIRC).
+
+I'd not do that at boot, but just before the fork()+execve() - it is 
+conceivable that a given user will install a support binary after booting 
+UML.
+
+I must say that I've seen files without the shebang working ok (if having the 
+executable bit set) when executed from the shell, and I've had the doubt 
+execvp() would handle that.
+
+> At that point, something like running "which foo" would be fine by me.
+
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
