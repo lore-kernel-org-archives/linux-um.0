@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gb5If-0001eK-9a for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 18:05:21 -0700
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gb5Id-0005Wi-Lw
+	id 1Gb5J5-0001fN-03 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Oct 2006 18:05:47 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gb5J3-0000Qh-AL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 18:05:21 -0700
+	Fri, 20 Oct 2006 18:05:46 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 21 Oct 2006 02:38:16 +0200
-References: <v0r6x41bnb.fsf@marajade.sandelman.ca>
-	<v0vemg6jbo.fsf@marajade.sandelman.ca>
-In-Reply-To: <v0vemg6jbo.fsf@marajade.sandelman.ca>
+Date: Sat, 21 Oct 2006 03:05:37 +0200
+References: <4525802F.1080900@theshore.net>
+In-Reply-To: <4525802F.1080900@theshore.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200610210238.16557.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Xen 3.0.2 and UML guest
+Message-Id: <200610210305.37629.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] 2.6.18-skas-v9-pre9 broken
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,53 +30,28 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+Cc: "Christopher S. Aker" <caker@theshore.net>
 
-On Friday 20 October 2006 00:18, Michael Richardson wrote:
-> >>>>> "Michael" == Michael Richardson <mcr@sandelman.ottawa.on.ca> writes:
+On Thursday 05 October 2006 23:59, Christopher S. Aker wrote:
+> Blaisorblade,
 >
->     Michael> The fault may well be Xen's.  I'm looking for other
-> experiences, Michael> yeah or nay.
+> I recently deployed a 2.6.18-skas3-v9-pre9 host, and some users weren't
+> able to boot UML beyond "VFS: Mounted root (ext3 filesystem) readonly".
+>   As it turns out, only 2.6-um kernels were affected, 2.4-um worked fine.
 >
-> I built a tree on my laptop as I normally do. It runs etch, and as does my
-> debian XenU.  With 2.6.15 UML guest on my laptop, everything is fine.
+> This happened both in skas3 and skas0 modes.  Jeff graciously took a
+> look at some straces, and his comment was that "something broke page
+> fault handling generically".
 >
-> Same binary running under a XenU, goes into R state under XenU:
+> The traces are here:
+>
+> http://www.theshore.net/~caker/uml/skas2.6.18-uml_trace.txt (skas3)
+> http://www.theshore.net/~caker/uml/skas2.6.18-uml_trace_skas0.txt
+>
+> Reverting back to a skas3-v8.2 kernel fixed it.
 
-I forget - XenU is an unprivileged guest, and Xen0 is the main one IIRC 
-(vaguely) - if that is an unprivileged guest have you tried on the root one?
-
->  5749 pts/1    Ss+    0:00 /bin/sh
-> /0i/sandboxes/UMLPOOL/260ocf/umlbuild/east/st 5750 pts/1    R+     2:33
-> /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5756 pts/1    S+    
-> 0:00 /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5757 pts/1    S+
->     0:00 /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5758 pts/1  
->  S+     0:00 /0i/sandboxes/UMLPOOL/260ocf/umlbuild/swan26/linux in 5759
-> pts/1    T+     1:19 [linux]
->
-> It looks like this happens as soon as the scheduler is enabled.
-> mode=tt WORKS.
->
-> Running uml_mconsole east sysrq t:
->
-> Checking that ptrace can change system call numbers...OK
-> Checking syscall emulation patch for ptrace...OK
-> Checking advanced syscall emulation patch for ptrace...OK
-> Checking PROT_EXEC mmap in /tmp...OK
-> Checking for the skas3 patch in the host:
->   - /proc/mm...not found
->   - PTRACE_FAULTINFO...not found
->   - PTRACE_LDT...not found
-> UML running in SKAS0 mode
->
->     <BIG PAUSE ******>
->
-> Linux version 2.6.15 (mcr@marajade.sandelman.ca) (gcc version 4.1.2
-> 20060901 (pr                      erelease) (Debian 4.1.1-13)) #2 Thu Oct
-> 19 17:29:21 EDT 2006 Built 1 zonelists
-
-A strace -t (or whichever option shows the timings) would help finding _where_ 
-is the big pause...
+An important question: you reverted to a 2.6.18 + skas kernel or a 2.6.17 one? 
+A similar bug is being discussed about a regression in 2.6.18 vanilla...
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
