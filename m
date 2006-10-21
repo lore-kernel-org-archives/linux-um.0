@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gb5JI-0001fo-98 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 18:06:00 -0700
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gb5JG-0000T3-Ga
+	id 1Gb5Tk-0002cV-Bm for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Oct 2006 18:16:48 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gb5Ti-0008Jd-PG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Oct 2006 18:06:00 -0700
+	Fri, 20 Oct 2006 18:16:48 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 21 Oct 2006 03:05:50 +0200
-References: <452C29F2.8050908@theshore.net>
-	<200610140243.00086.blaisorblade@yahoo.it>
-	<20061016144453.GB4350@ccure.user-mode-linux.org>
-In-Reply-To: <20061016144453.GB4350@ccure.user-mode-linux.org>
+Date: Sat, 21 Oct 2006 03:16:38 +0200
+References: <20061017211943.26445.75719.stgit@americanbeauty.home.lan>
+	<20061017212711.26445.79770.stgit@americanbeauty.home.lan>
+	<20061018183707.GB6566@ccure.user-mode-linux.org>
+In-Reply-To: <20061018183707.GB6566@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200610210305.50736.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Kernel mode fault at addr 0x92c00000, ip 0x80bcead
+Message-Id: <200610210316.38732.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 04/10] uml: make execvp safe for our usage
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,30 +32,25 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, "Christopher S. Aker" <caker@theshore.net>
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-On Monday 16 October 2006 16:44, Jeff Dike wrote:
-> On Sat, Oct 14, 2006 at 02:42:59AM +0200, Blaisorblade wrote:
-> > > > Kernel panic - not syncing: Kernel mode fault at addr 0x92c00000, ip
-> > > > 0x80bcead
-> >
-> > Jeff, are these addresses normal? They tell that the binary is a
-> > statically linked one - but what is the memory layout? Chris, can you
-> > post
-> > cat /proc/<pid>/maps on a running instance of that kernel, together with
-> > host and guest config (the guest's one is contained there, I know, but I
-> > don't have the time to extract).
+On Wednesday 18 October 2006 20:37, Jeff Dike wrote:
+> On Tue, Oct 17, 2006 at 11:27:11PM +0200, Paolo 'Blaisorblade' Giarrusso 
+wrote:
+> > Reimplement execvp for our purposes - after we call fork() it is
+> > fundamentally unsafe to use the kernel allocator - current is not valid
+> > there.
 >
-> I'm not sure.  I've never trusted the numbers coming from that panic
-> message (which hurts debugging, I know).  I don't believe the fault
-> address, and the IP doesn't match anything in the symbol table, so I
-> don't believe that either.
-Ok, this is an issue, too.
-> Yup, that sounds like a good idea.
+> This is horriby ugly.  Can we instead do something different like
+> check out the paths of helpers at early boot, before the kernel is
+> running, save them, and simply execve them later?
 >
-> 				Jeff
-Btw fixing even the above issue (if possible) would be another good idea - any 
-major difficulty on that?
+> At that point, something like running "which foo" would be fine by me.
+
+I'd add that this can IMHO cause hard-to-diagnose crashes (I've seen strange 
+behaviours in debug mode, and even schedule-while-atomic warnings, maybe 
+because the creator thread had gone in atomic mode), and since this is a 
+working fix, either this or a replacement should go in.
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
