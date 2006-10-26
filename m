@@ -2,23 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GcyQA-00060C-2a for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Oct 2006 23:08:54 -0700
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GcyQ6-00051e-7E
+	id 1Gd5ya-0001G9-2U for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Oct 2006 07:12:56 -0700
+Received: from nutty.inf.ed.ac.uk ([129.215.216.3])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Gd5yV-0006BO-Bo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Oct 2006 23:08:53 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 26 Oct 2006 08:08:26 +0200
-References: <20061009163208.GA4931@ccure.user-mode-linux.org>
-	<20061011110828.43576.qmail@web25221.mail.ukl.yahoo.com>
-	<20061013201010.GC5517@ccure.user-mode-linux.org>
-In-Reply-To: <20061013201010.GC5517@ccure.user-mode-linux.org>
+	Thu, 26 Oct 2006 07:12:56 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200610260808.27508.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 01/14] uml: fix compilation options for
-	USER_OBJS
+Message-ID: <17728.49750.141048.595960@palau.inf.ed.ac.uk>
+Date: Thu, 26 Oct 2006 15:12:38 +0100
+From: Julian Bradfield <jcb+uml@inf.ed.ac.uk>
+Subject: [uml-devel] broken mdelay
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,27 +28,76 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-On Friday 13 October 2006 22:10, Jeff Dike wrote:
-> On Wed, Oct 11, 2006 at 01:08:27PM +0200, Paolo Giarrusso wrote:
-> > Ok, at a first glance this alternative solution is ok. Make sure (run
-> > gdb on an userspace object file and saying list <function>) that it
-> > works and we'll be ok.
->
-> After discovering that the original patch broke UML/i386 and broke the
-> UML/x86_64 build, I now have the patch below.
-Where is it? It should go in 2.6.19. I'm going to test it locally and merge 
-it.
-> Listing userspace functions is fine.
-Good...
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+A few years ago, I reported a problem with mdelay (that it basically
+didn't work) - see
 
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=103774842828993&w=2
+
+and preceding messages.
+
+I see the problem is still there in 2.6.18 (I find it because I insert an
+mdelay(1000) into one of the ubd routines to simulate the effect of
+busy-waiting on i/o in one of my practical exercises).
+
+Here's the patch I currently use to fix it. I can't remember now how I
+produced this patch four years ago, but it should make sense in
+conjunction with the above referenced message.
+
+--- arch/um/sys-i386/delay.c.dist	2006-10-26 14:50:38.069023000 +0100
++++ arch/um/sys-i386/delay.c	2006-10-26 14:50:42.527846000 +0100
+@@ -3,7 +3,7 @@
+ #include <linux/delay.h>
+ #include <asm/param.h>
+ 
+-void __delay(unsigned long time)
++static void __loop_delay(unsigned long loops)
+ {
+ 	/* Stolen from the i386 __loop_delay */
+ 	int d0;
+@@ -14,27 +14,28 @@
+ 		".align 16\n"
+ 		"2:\tdecl %0\n\tjns 2b"
+ 		:"=&a" (d0)
+-		:"0" (time));
++		:"0" (loops));
+ }
+ 
+-void __udelay(unsigned long usecs)
++void __delay(unsigned long loops)
+ {
+-	int i, n;
+-
+-	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-        for(i=0;i<n;i++)
+-                cpu_relax();
++	__loop_delay(loops);
+ }
+ 
+-EXPORT_SYMBOL(__udelay);
+-
+-void __const_udelay(unsigned long usecs)
++inline void __const_udelay(unsigned long xloops)
+ {
+-	int i, n;
++	int d0;
++	__asm__("mull %0"
++		:"=d" (xloops), "=&a" (d0)
++		:"1" (xloops),"0" (loops_per_jiffy));
++        __delay(xloops * HZ);
++}
+ 
+-	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-        for(i=0;i<n;i++)
+-                cpu_relax();
++void __udelay(unsigned long usecs)
++{
++	__const_udelay(usecs * 0x000010c6);  /* 2**32 / 1000000 */
+ }
+ 
++EXPORT_SYMBOL(__udelay);
++
+ EXPORT_SYMBOL(__const_udelay);
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
