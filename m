@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gcsp6-0006bq-Pm for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Oct 2006 17:10:17 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Gcsp3-0003ZP-5f
+	id 1GctAz-00009L-GH for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Oct 2006 17:32:53 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GctAx-00012E-Tw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Oct 2006 17:10:16 -0700
+	Wed, 25 Oct 2006 17:32:53 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 26 Oct 2006 02:10:05 +0200
-References: <7b2fa1820610192302o52213a59uc220df19e6a84fbb@mail.gmail.com>
-	<7b2fa1820610221904q53df7d55w522384177fe3d705@mail.gmail.com>
-	<20061025152635.GC4323@ccure.user-mode-linux.org>
-In-Reply-To: <20061025152635.GC4323@ccure.user-mode-linux.org>
+Date: Thu, 26 Oct 2006 02:32:43 +0200
+References: <453DCB33.3060607@0Bits.COM>
+	<84144f020610240131j7603a75ftf8d8a5718e895699@mail.gmail.com>
+In-Reply-To: <84144f020610240131j7603a75ftf8d8a5718e895699@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200610260210.05495.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] 2.4.21 insmod problem: unresolved symbol to_virt
+Message-Id: <200610260232.44294.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [Fwd: Re: More uml build failures on 2.16.19-rc3
+	and 2.6.18.1]
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,25 +32,18 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Ian Jiang <ianjiang.ict@gmail.com>
+Cc: Mitch <Mitch@0bits.com>, Pekka Enberg <penberg@cs.helsinki.fi>, linux-kernel@vger.kernel.org
 
-On Wednesday 25 October 2006 17:26, Jeff Dike wrote:
-> On Mon, Oct 23, 2006 at 10:04:00AM +0800, Ian Jiang wrote:
-> > In fact, I used to export the symbol to_virt in um/kernel/physmem.c
-> > where it was defined.
+On Tuesday 24 October 2006 10:31, Pekka Enberg wrote:
+> Hi,
 >
-> There is no to_virt defined in physmem.c in my tree now.
+> On 10/24/06, Mitch <Mitch@0bits.com> wrote:
+> > Yup, did do 'make mrproper'. config attached.
 >
-> > But this had no effect. What is the difference
-> > between the ksyms.c and physmem.c while exporting symbols? Could you
-> > give an explanation?
->
-> There shouldn't be any difference.  physmem.c already exports some stuff,
-> so there's no reason it can export more.
-On 2.4 kernels (and no Jeff, your tree is not a 2.4) EXPORT_SYMBOLS only works 
-on some special files (like ksyms.c) devoted to this (they're marked in 
-Makefile's); on 2.6 you can add the export everywhere and it will work.
-
+> Works for me. Perhaps the UML people can figure out what's going on.
+Guess this is not enough info... please forward us the report or at least send 
+us a link to the thread (but I tend not to read links except when I've 
+exceptionally much time in excess, i.e. never).
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
