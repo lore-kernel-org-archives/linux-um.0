@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GctAz-00009L-GH for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Oct 2006 17:32:53 -0700
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GctAx-00012E-Tw
+	id 1GcyQA-00060C-2a for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Oct 2006 23:08:54 -0700
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GcyQ6-00051e-7E
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 25 Oct 2006 17:32:53 -0700
+	Wed, 25 Oct 2006 23:08:53 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 26 Oct 2006 02:32:43 +0200
-References: <453DCB33.3060607@0Bits.COM>
-	<84144f020610240131j7603a75ftf8d8a5718e895699@mail.gmail.com>
-In-Reply-To: <84144f020610240131j7603a75ftf8d8a5718e895699@mail.gmail.com>
+Date: Thu, 26 Oct 2006 08:08:26 +0200
+References: <20061009163208.GA4931@ccure.user-mode-linux.org>
+	<20061011110828.43576.qmail@web25221.mail.ukl.yahoo.com>
+	<20061013201010.GC5517@ccure.user-mode-linux.org>
+In-Reply-To: <20061013201010.GC5517@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200610260232.44294.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [Fwd: Re: More uml build failures on 2.16.19-rc3
-	and 2.6.18.1]
+Message-Id: <200610260808.27508.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 01/14] uml: fix compilation options for
+	USER_OBJS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,18 +33,20 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Mitch <Mitch@0bits.com>, Pekka Enberg <penberg@cs.helsinki.fi>, linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org
 
-On Tuesday 24 October 2006 10:31, Pekka Enberg wrote:
-> Hi,
+On Friday 13 October 2006 22:10, Jeff Dike wrote:
+> On Wed, Oct 11, 2006 at 01:08:27PM +0200, Paolo Giarrusso wrote:
+> > Ok, at a first glance this alternative solution is ok. Make sure (run
+> > gdb on an userspace object file and saying list <function>) that it
+> > works and we'll be ok.
 >
-> On 10/24/06, Mitch <Mitch@0bits.com> wrote:
-> > Yup, did do 'make mrproper'. config attached.
->
-> Works for me. Perhaps the UML people can figure out what's going on.
-Guess this is not enough info... please forward us the report or at least send 
-us a link to the thread (but I tend not to read links except when I've 
-exceptionally much time in excess, i.e. never).
+> After discovering that the original patch broke UML/i386 and broke the
+> UML/x86_64 build, I now have the patch below.
+Where is it? It should go in 2.6.19. I'm going to test it locally and merge 
+it.
+> Listing userspace functions is fine.
+Good...
 -- 
 Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
 Paolo Giarrusso, aka Blaisorblade
