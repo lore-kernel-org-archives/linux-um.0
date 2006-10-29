@@ -2,20 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GeDz9-0000Hq-Nb for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 08:58:12 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeDz4-0004h7-N2
+	id 1GeFU7-0000Xw-Hd for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Oct 2006 10:34:15 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeFU4-0003lA-LO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 08:58:11 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 29 Oct 2006 18:57:58 +0100
-References: <45433D3E.3070109@0Bits.COM>
-In-Reply-To: <45433D3E.3070109@0Bits.COM>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200610291857.58707.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] More uml build failures on 2.16.19-rc3 and 2.6.18.1
+	Sun, 29 Oct 2006 10:34:15 -0800
+From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
+Date: Sun, 29 Oct 2006 19:34:05 +0100
+Message-Id: <20061029183405.31657.44335.stgit@americanbeauty.home.lan>
+Subject: [uml-devel] [PATCH 1/2] Fix "Remove the use of _syscallX macros in
+	UML"
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,54 +22,120 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Mitch <Mitch@0bits.com>, user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@addtoit.com, penberg@cs.helsinki.fi, linux-kernel@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 28 October 2006 13:21, Mitch wrote:
-> Hi Jeff, all,
->
-> Sorry for the dealy but i've been out of the country.
->
-> Anyhow i did some investigation and i've figured out the bug.
->
-> Essentially if you try to compile a UML kernel on a 2.6.18.1 or above
-> *host* kernel
+From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-> it will fail with the error messages shown (essentially 
-> offsetof macro undefined) because between 2.6.18 and 2.6.18.1 that macro
-> in /usr/include/linux/stddef.h is now wrapped in a #ifdef __KERNEL__ .
-> However since UML doesn't build it's sources with that defined we get an
-> undefined macro and a build failure.
+Fix commit 5f4c6bc1f369f20807a8e753c2308d1629478c61: it spits out warnings about
+missing syscall prototype (it is in <unistd.h>) and it does not recognize that
+two uses of _syscallX are to be resolved against kernel headers in the source
+tree, not against _syscallX; they in fact do not compile and would not work
+anyway.
 
-Ok, we have one bug and one mistake on your part:
-1) we should include <stddef.h> instead of <linux/stddef.h> in files using 
-host headers (I don't have the error message at hand, so please handle this 
-yourself, Jeff)
-2) /usr/include/{linux,asm} being symlinks inside /usr/src/linux/include is an 
-unsupported configuration since ages. #1 is still a valid bug because when a 
-distribution will distribute glibc and kernheaders based on 2.6.18.1+/2.6.19 
-ones we'll break anyway.
+If _syscallX macros will be removed from the kernel tree altogether, the only
+reasonable solution for that piece of code is switching to open-coded inline
+assembly (it's remapping the whole executable from memory, except the page
+containing this code).
 
-> So i'm partly right and partly wrong in my statement below. Yes i did
-> compile a guest UML kernel 2.6.18 fine on host kernel of 2.6.18, and i
-> believe i will be able to compile 2.6.18.1 and above also on a host
-> kernel of 2.6.18 but if i change my host kernel to 2.6.18.1 or above all
-> UML guest builds will fail.
->
-> Can someone confirm they can build guest UML kernels on a host kernel >=
-> 2.6.18.1 ??
->
-> Thanks
-> M
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+---
 
--- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+ arch/um/os-Linux/sys-i386/tls.c |    3 +++
+ arch/um/os-Linux/tls.c          |    1 +
+ arch/um/sys-i386/unmap.c        |   11 +++++++----
+ arch/um/sys-x86_64/unmap.c      |   11 +++++++----
+ 4 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/arch/um/os-Linux/sys-i386/tls.c b/arch/um/os-Linux/sys-i386/tls.c
+index 6e945ab..2565320 100644
+--- a/arch/um/os-Linux/sys-i386/tls.c
++++ b/arch/um/os-Linux/sys-i386/tls.c
+@@ -1,6 +1,9 @@
+ #include <errno.h>
+ #include <linux/unistd.h>
++
+ #include <sys/syscall.h>
++#include <unistd.h>
++
+ #include "sysdep/tls.h"
+ #include "user_util.h"
+ 
+diff --git a/arch/um/os-Linux/tls.c b/arch/um/os-Linux/tls.c
+index a2de258..9f7999f 100644
+--- a/arch/um/os-Linux/tls.c
++++ b/arch/um/os-Linux/tls.c
+@@ -1,6 +1,7 @@
+ #include <errno.h>
+ #include <sys/ptrace.h>
+ #include <sys/syscall.h>
++#include <unistd.h>
+ #include <asm/ldt.h>
+ #include "sysdep/tls.h"
+ #include "uml-config.h"
+diff --git a/arch/um/sys-i386/unmap.c b/arch/um/sys-i386/unmap.c
+index 8e55cd5..1b0ad0e 100644
+--- a/arch/um/sys-i386/unmap.c
++++ b/arch/um/sys-i386/unmap.c
+@@ -5,17 +5,20 @@
+ 
+ #include <linux/mman.h>
+ #include <asm/unistd.h>
+-#include <sys/syscall.h>
+ 
++static int errno;
++
++static inline _syscall2(int,munmap,void *,start,size_t,len)
++static inline _syscall6(void *,mmap2,void *,addr,size_t,len,int,prot,int,flags,int,fd,off_t,offset)
+ int switcheroo(int fd, int prot, void *from, void *to, int size)
+ {
+-	if (syscall(__NR_munmap, to, size) < 0){
++	if(munmap(to, size) < 0){
+ 		return(-1);
+ 	}
+-	if (syscall(__NR_mmap2, to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1 ){
++	if(mmap2(to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1 ){
+ 		return(-1);
+ 	}
+-	if (syscall(__NR_munmap, from, size) < 0){
++	if(munmap(from, size) < 0){
+ 		return(-1);
+ 	}
+ 	return(0);
+diff --git a/arch/um/sys-x86_64/unmap.c b/arch/um/sys-x86_64/unmap.c
+index 57c9286..f4a4bff 100644
+--- a/arch/um/sys-x86_64/unmap.c
++++ b/arch/um/sys-x86_64/unmap.c
+@@ -5,17 +5,20 @@
+ 
+ #include <linux/mman.h>
+ #include <asm/unistd.h>
+-#include <sys/syscall.h>
+ 
++static int errno;
++
++static inline _syscall2(int,munmap,void *,start,size_t,len)
++static inline _syscall6(void *,mmap,void *,addr,size_t,len,int,prot,int,flags,int,fd,off_t,offset)
+ int switcheroo(int fd, int prot, void *from, void *to, int size)
+ {
+-	if (syscall(__NR_munmap, to, size) < 0){
++	if(munmap(to, size) < 0){
+ 		return(-1);
+ 	}
+-	if (syscall(__NR_mmap, to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1){
++	if(mmap(to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1){
+ 		return(-1);
+ 	}
+-	if (syscall(__NR_munmap, from, size) < 0){
++	if(munmap(from, size) < 0){
+ 		return(-1);
+ 	}
+ 	return(0);
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
