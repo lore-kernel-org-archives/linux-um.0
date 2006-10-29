@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GeGDK-00069H-Eg for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:58 -0800
-Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGDH-0005zX-N9
+	id 1GeGrc-0001c7-KI for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Oct 2006 12:02:36 -0800
+Received: from smtp.osdl.org ([65.172.181.4])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1GeGrZ-0007n1-Q6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:58 -0800
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Sun, 29 Oct 2006 20:20:52 +0100
-Message-Id: <20061029192052.12292.3146.stgit@americanbeauty.home.lan>
+	Sun, 29 Oct 2006 12:02:36 -0800
+Date: Sun, 29 Oct 2006 12:02:24 -0800
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20061029120224.d25e3204.akpm@osdl.org>
 In-Reply-To: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
 References: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 11/11] uml ubd driver: various little changes
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 00/11] UBD driver little cleanups for 2.6.19
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,186 +25,30 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
+To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+On Sun, 29 Oct 2006 20:17:23 +0100
+"Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it> wrote:
 
-Fix a small memory leak in ubd_config, and clearify the confusion which lead to
-it.
+> Many cleanups for the UBD driver; these are mostly microfixes, I was waiting to
+> finish and reorder also locking fixes (the code works, it is only to resplit,
+> reproof-read and changelogs must be written) but I decided to send these ones
+> for now. The rest will maybe be merged for 2.6.20.
 
-Then, some little changes not affecting operations -
-* move init functions together,
-* add a comment about a potential problem in case of some evolution in the block layer,
-* mark all initcalls as static __init functions
-* mark an used once little function as inline
-* document that mconsole methods are all called in process context (was
-  triggered when checking ubd mconsole methods).
+None of this really looks like -rc3 material.  Why do you think it's
+serious enough to justify late inclusion?
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+I'm not particularly fussed about UBD though - if you and Jeff particularly
+want this lot in 2.6.19 then the world won't end.
 
- arch/um/drivers/ubd_kern.c      |   44 ++++++++++++++++++++++-----------------
- arch/um/include/mconsole_kern.h |    1 +
- arch/um/kernel/tt/tracer.c      |    1 -
- 3 files changed, 26 insertions(+), 20 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 641782e..8323af0 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -202,17 +202,6 @@ #define DEFAULT_UBD { \
- 
- struct ubd ubd_devs[MAX_DEV] = { [ 0 ... MAX_DEV - 1 ] = DEFAULT_UBD };
- 
--static int ubd0_init(void)
--{
--	struct ubd *ubd_dev = &ubd_devs[0];
--
--	if(ubd_dev->file == NULL)
--		ubd_dev->file = "root_fs";
--	return(0);
--}
--
--__initcall(ubd0_init);
--
- /* Only changed by fake_ide_setup which is a setup */
- static int fake_ide = 0;
- static struct proc_dir_entry *proc_ide_root = NULL;
-@@ -293,6 +282,10 @@ static int parse_unit(char **ptr)
- 	return(n);
- }
- 
-+/* If *index_out == -1 at exit, the passed option was a general one;
-+ * otherwise, the str pointer is used (and owned) inside ubd_devs array, so it
-+ * should not be freed on exit.
-+ */
- static int ubd_setup_common(char *str, int *index_out)
- {
- 	struct ubd *ubd_dev;
-@@ -480,8 +473,9 @@ int thread_fd = -1;
- 
- /* Changed by ubd_handler, which is serialized because interrupts only
-  * happen on CPU 0.
-+ * XXX: currently unused.
-  */
--int intr_count = 0;
-+static int intr_count = 0;
- 
- /* call ubd_finish if you need to serialize */
- static void __ubd_finish(struct request *req, int error)
-@@ -554,7 +548,7 @@ void kill_io_thread(void)
- 
- __uml_exitcall(kill_io_thread);
- 
--static int ubd_file_size(struct ubd *ubd_dev, __u64 *size_out)
-+static inline int ubd_file_size(struct ubd *ubd_dev, __u64 *size_out)
- {
- 	char *file;
- 
-@@ -730,7 +724,7 @@ static int ubd_config(char *str)
- 	}
- 	if (n == -1) {
- 		ret = 0;
--		goto out;
-+		goto err_free;
- 	}
- 
-  	mutex_lock(&ubd_lock);
-@@ -827,6 +821,7 @@ out:
- 	return err;
- }
- 
-+/* All these are called by mconsole in process context and without ubd-specific locks. */
- static struct mc_device ubd_mc = {
- 	.name		= "ubd",
- 	.config		= ubd_config,
-@@ -835,7 +830,7 @@ static struct mc_device ubd_mc = {
- 	.remove		= ubd_remove,
- };
- 
--static int ubd_mc_init(void)
-+static int __init ubd_mc_init(void)
- {
- 	mconsole_register_dev(&ubd_mc);
- 	return 0;
-@@ -843,13 +838,24 @@ static int ubd_mc_init(void)
- 
- __initcall(ubd_mc_init);
- 
-+static int __init ubd0_init(void)
-+{
-+	struct ubd *ubd_dev = &ubd_devs[0];
-+
-+	if(ubd_dev->file == NULL)
-+		ubd_dev->file = "root_fs";
-+	return(0);
-+}
-+
-+__initcall(ubd0_init);
-+
- static struct platform_driver ubd_driver = {
- 	.driver = {
- 		.name  = DRIVER_NAME,
- 	},
- };
- 
--int ubd_init(void)
-+static int __init ubd_init(void)
- {
-         int i;
- 
-@@ -877,7 +883,7 @@ int ubd_init(void)
- 
- late_initcall(ubd_init);
- 
--int ubd_driver_init(void){
-+static int __init ubd_driver_init(void){
- 	unsigned long stack;
- 	int err;
- 
-@@ -1384,8 +1390,8 @@ void do_io(struct io_thread_req *req)
-  */
- int kernel_fd = -1;
- 
--/* Only changed by the io thread */
--int io_count = 0;
-+/* Only changed by the io thread. XXX: currently unused. */
-+static int io_count = 0;
- 
- int io_thread(void *arg)
- {
-diff --git a/arch/um/include/mconsole_kern.h b/arch/um/include/mconsole_kern.h
-index d0b6901..1ea6d92 100644
---- a/arch/um/include/mconsole_kern.h
-+++ b/arch/um/include/mconsole_kern.h
-@@ -14,6 +14,7 @@ struct mconsole_entry {
- 	struct mc_request request;
- };
- 
-+/* All these methods are called in process context. */
- struct mc_device {
- 	struct list_head list;
- 	char *name;
-diff --git a/arch/um/kernel/tt/tracer.c b/arch/um/kernel/tt/tracer.c
-index 9882342..b919535 100644
---- a/arch/um/kernel/tt/tracer.c
-+++ b/arch/um/kernel/tt/tracer.c
-@@ -176,7 +176,6 @@ struct {
- int signal_index[32];
- int nsignals = 0;
- int debug_trace = 0;
--extern int io_nsignals, io_count, intr_count;
- 
- extern void signal_usr1(int sig);
- 
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+"[PATCH 03/11] uml ubd driver: var renames" didn't apply due to
+dummy_device_release not being present, which doesn't inspire confidence. 
+What tree are you patching?
 
 
 -------------------------------------------------------------------------
