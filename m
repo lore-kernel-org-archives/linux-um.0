@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GeGD9-000691-A9 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:47 -0800
-Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGD7-0005xx-CY
+	id 1GeGDH-00069C-7f for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Oct 2006 11:20:55 -0800
+Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGDE-0007Qw-Jg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:47 -0800
+	Sun, 29 Oct 2006 11:20:55 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Sun, 29 Oct 2006 20:20:43 +0100
-Message-Id: <20061029192043.12292.76166.stgit@americanbeauty.home.lan>
+Date: Sun, 29 Oct 2006 20:20:49 +0100
+Message-Id: <20061029192049.12292.24192.stgit@americanbeauty.home.lan>
 In-Reply-To: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
 References: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 08/11] uml ubd driver: convert do_ubd to a
-	boolean variable
+Subject: [uml-devel] [PATCH 10/11] uml ubd driver: do not store error codes
+	as ->fd
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,58 +34,63 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-do_ubd is actually just a boolean variable - the way it is used currently is a
-leftover from the old 2.4 block layer, but it is still used; its use is
-suspicious, but removing it would be too intrusive for now and needs more
-thinking.
+To simplify error handling, make sure fd is saved into ubd_dev->fd only when we
+are sure it is an fd and not an error code.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/ubd_kern.c |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+ arch/um/drivers/ubd_kern.c |   17 ++++++++++-------
+ 1 files changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 48b2a4f..1a85d39 100644
+index 66dc23d..641782e 100644
 --- a/arch/um/drivers/ubd_kern.c
 +++ b/arch/um/drivers/ubd_kern.c
-@@ -112,7 +112,9 @@ static DEFINE_SPINLOCK(ubd_io_lock);
+@@ -578,33 +578,36 @@ static int ubd_open_dev(struct ubd *ubd_
+ 	struct openflags flags;
+ 	char **back_ptr;
+ 	int err, create_cow, *create_ptr;
++	int fd;
  
- static DEFINE_MUTEX(ubd_lock);
+ 	ubd_dev->openflags = ubd_dev->boot_openflags;
+ 	create_cow = 0;
+ 	create_ptr = (ubd_dev->cow.file != NULL) ? &create_cow : NULL;
+ 	back_ptr = ubd_dev->no_cow ? NULL : &ubd_dev->cow.file;
+-	ubd_dev->fd = open_ubd_file(ubd_dev->file, &ubd_dev->openflags, ubd_dev->shared,
++
++	fd = open_ubd_file(ubd_dev->file, &ubd_dev->openflags, ubd_dev->shared,
+ 				back_ptr, &ubd_dev->cow.bitmap_offset,
+ 				&ubd_dev->cow.bitmap_len, &ubd_dev->cow.data_offset,
+ 				create_ptr);
  
--static void (*do_ubd)(void);
-+/* XXX - this made sense in 2.4 days, now it's only used as a boolean, and
-+ * probably it doesn't make sense even for that. */
-+static int do_ubd;
+-	if((ubd_dev->fd == -ENOENT) && create_cow){
+-		ubd_dev->fd = create_cow_file(ubd_dev->file, ubd_dev->cow.file,
++	if((fd == -ENOENT) && create_cow){
++		fd = create_cow_file(ubd_dev->file, ubd_dev->cow.file,
+ 					  ubd_dev->openflags, 1 << 9, PAGE_SIZE,
+ 					  &ubd_dev->cow.bitmap_offset,
+ 					  &ubd_dev->cow.bitmap_len,
+ 					  &ubd_dev->cow.data_offset);
+-		if(ubd_dev->fd >= 0){
++		if(fd >= 0){
+ 			printk(KERN_INFO "Creating \"%s\" as COW file for "
+ 			       "\"%s\"\n", ubd_dev->file, ubd_dev->cow.file);
+ 		}
+ 	}
  
- static int ubd_open(struct inode * inode, struct file * filp);
- static int ubd_release(struct inode * inode, struct file * file);
-@@ -508,6 +510,7 @@ static inline void ubd_finish(struct req
- 	spin_unlock(&ubd_io_lock);
- }
+-	if(ubd_dev->fd < 0){
++	if(fd < 0){
+ 		printk("Failed to open '%s', errno = %d\n", ubd_dev->file,
+-		       -ubd_dev->fd);
+-		return(ubd_dev->fd);
++		       -fd);
++		return fd;
+ 	}
++	ubd_dev->fd = fd;
  
-+/* XXX - move this inside ubd_intr. */
- /* Called without ubd_io_lock held, and only in interrupt context. */
- static void ubd_handler(void)
- {
-@@ -515,7 +518,7 @@ static void ubd_handler(void)
- 	struct request *rq = elv_next_request(ubd_queue);
- 	int n;
- 
--	do_ubd = NULL;
-+	do_ubd = 0;
- 	intr_count++;
- 	n = os_read_file(thread_fd, &req, sizeof(req));
- 	if(n != sizeof(req)){
-@@ -1058,7 +1061,7 @@ static void do_ubd_request(request_queue
- 			return;
- 		err = prepare_request(req, &io_req);
- 		if(!err){
--			do_ubd = ubd_handler;
-+			do_ubd = 1;
- 			n = os_write_file(thread_fd, (char *) &io_req,
- 					 sizeof(io_req));
- 			if(n != sizeof(io_req))
+ 	if(ubd_dev->cow.file != NULL){
+ 		err = -ENOMEM;
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
