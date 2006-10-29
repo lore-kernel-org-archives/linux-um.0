@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GeGD0-00068j-IB for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:38 -0800
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGCy-0007NL-TC
+	id 1GeGD2-00068p-Hw for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Oct 2006 11:20:40 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGD1-0005xI-TM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:38 -0800
+	Sun, 29 Oct 2006 11:20:40 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Sun, 29 Oct 2006 20:20:33 +0100
-Message-Id: <20061029192033.12292.72082.stgit@americanbeauty.home.lan>
+Date: Sun, 29 Oct 2006 20:20:38 +0100
+Message-Id: <20061029192038.12292.46985.stgit@americanbeauty.home.lan>
 In-Reply-To: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
 References: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 04/11] uml ubd driver: give better names to some
-	functions.
+Subject: [uml-devel] [PATCH 06/11] uml ubd driver: ubd_io_lock usage fixup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,75 +33,71 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-To rethink locking, I needed to understand well what each function does. While
-doing this I renamed some:
+Add some comments about requirements for ubd_io_lock and expand its use.
 
-* ubd_close -> ubd_close_dev (since it pairs with ubd_open_dev)
+When an irq signals that the "controller" (i.e. another thread on the host,
+which does the actual requests and is the only one blocked on I/O on the host)
+has done some work, we call again the request function ourselves
+(do_ubd_request).
 
-* ubd_new_disk -> ubd_disk_register (it handles registration with the block
-  layer - one hopes this makes clearer the difference with ubd_add())
+We now do that with ubd_io_lock held - that's useful to protect against
+concurrent calls to elv_next_request and so on.
 
+XXX: Maybe we shouldn't call at all the request function. Input needed on this.
+Are we supposed to plug and unplug the queue? That code "indirectly" does that
+by setting a flag, called do_ubd, which makes the request function return (it's
+a residual of 2.4 block layer interface).
+
+Meanwhile, however, merge this patch, which improves things.
+
+Cc: Jens Axboe <axboe@suse.de>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/ubd_kern.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+ arch/um/drivers/ubd_kern.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
 diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 50385cc..23663b7 100644
+index e4fd29a..1202592 100644
 --- a/arch/um/drivers/ubd_kern.c
 +++ b/arch/um/drivers/ubd_kern.c
-@@ -552,7 +552,7 @@ static int ubd_file_size(struct ubd *ubd
- 	return(os_file_size(file, size_out));
+@@ -106,6 +106,8 @@ static inline void ubd_set_bit(__u64 bit
+ 
+ #define DRIVER_NAME "uml-blkdev"
+ 
++/* Can be taken in interrupt context, and is passed to the block layer to lock
++ * the request queue. Kernel side code knows that. */
+ static DEFINE_SPINLOCK(ubd_io_lock);
+ 
+ static DEFINE_MUTEX(ubd_lock);
+@@ -497,6 +499,8 @@ static void __ubd_finish(struct request
+ 	end_request(req, 1);
  }
  
--static void ubd_close(struct ubd *ubd_dev)
-+static void ubd_close_dev(struct ubd *ubd_dev)
++/* Callable only from interrupt context - otherwise you need to do
++ * spin_lock_irq()/spin_lock_irqsave() */
+ static inline void ubd_finish(struct request *req, int error)
  {
- 	os_close_file(ubd_dev->fd);
- 	if(ubd_dev->cow.file == NULL)
-@@ -629,7 +629,7 @@ static void dummy_device_release(struct
- {
+  	spin_lock(&ubd_io_lock);
+@@ -504,7 +508,7 @@ static inline void ubd_finish(struct req
+ 	spin_unlock(&ubd_io_lock);
  }
  
--static int ubd_new_disk(int major, u64 size, int unit,
-+static int ubd_disk_register(int major, u64 size, int unit,
- 			struct gendisk **disk_out)
- 			
+-/* Called without ubd_io_lock held */
++/* Called without ubd_io_lock held, and only in interrupt context. */
+ static void ubd_handler(void)
  {
-@@ -682,12 +682,12 @@ static int ubd_add(int n)
+ 	struct io_thread_req req;
+@@ -525,7 +529,9 @@ static void ubd_handler(void)
  
- 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
- 
--	err = ubd_new_disk(MAJOR_NR, ubd_dev->size, n, &ubd_gendisk[n]);
-+	err = ubd_disk_register(MAJOR_NR, ubd_dev->size, n, &ubd_gendisk[n]);
- 	if(err)
- 		goto out;
- 
- 	if(fake_major != MAJOR_NR)
--		ubd_new_disk(fake_major, ubd_dev->size, n,
-+		ubd_disk_register(fake_major, ubd_dev->size, n,
- 			     &fake_gendisk[n]);
- 
- 	/* perhaps this should also be under the "if (fake_major)" above */
-@@ -904,7 +904,7 @@ static int ubd_open(struct inode *inode,
- 	/* This should no more be needed. And it didn't work anyway to exclude
- 	 * read-write remounting of filesystems.*/
- 	/*if((filp->f_mode & FMODE_WRITE) && !ubd_dev->openflags.w){
--	        if(--ubd_dev->count == 0) ubd_close(ubd_dev);
-+	        if(--ubd_dev->count == 0) ubd_close_dev(ubd_dev);
- 	        err = -EROFS;
- 	}*/
-  out:
-@@ -917,7 +917,7 @@ static int ubd_release(struct inode * in
- 	struct ubd *ubd_dev = disk->private_data;
- 
- 	if(--ubd_dev->count == 0)
--		ubd_close(ubd_dev);
-+		ubd_close_dev(ubd_dev);
- 	return(0);
+ 	ubd_finish(rq, req.error);
+ 	reactivate_fd(thread_fd, UBD_IRQ);	
++	spin_lock(&ubd_io_lock);
+ 	do_ubd_request(ubd_queue);
++	spin_unlock(&ubd_io_lock);
  }
  
+ static irqreturn_t ubd_intr(int irq, void *dev)
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
