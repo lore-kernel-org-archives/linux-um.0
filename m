@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GeGDB-000696-UA for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:50 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGD9-0007Pu-Pi
+	id 1GeGD9-000691-A9 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Oct 2006 11:20:47 -0800
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGD7-0005xx-CY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:49 -0800
+	Sun, 29 Oct 2006 11:20:47 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Sun, 29 Oct 2006 20:20:46 +0100
-Message-Id: <20061029192046.12292.72461.stgit@americanbeauty.home.lan>
+Date: Sun, 29 Oct 2006 20:20:43 +0100
+Message-Id: <20061029192043.12292.76166.stgit@americanbeauty.home.lan>
 In-Reply-To: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
 References: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 09/11] uml ubd driver: use bitfields where possible
+Subject: [uml-devel] [PATCH 08/11] uml ubd driver: convert do_ubd to a
+	boolean variable
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,29 +34,58 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Use bitfields for boolean fields in ubd data structure.
+do_ubd is actually just a boolean variable - the way it is used currently is a
+leftover from the old 2.4 block layer, but it is still used; its use is
+suspicious, but removing it would be too intrusive for now and needs more
+thinking.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/ubd_kern.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/drivers/ubd_kern.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 1a85d39..66dc23d 100644
+index 48b2a4f..1a85d39 100644
 --- a/arch/um/drivers/ubd_kern.c
 +++ b/arch/um/drivers/ubd_kern.c
-@@ -174,8 +174,8 @@ struct ubd {
- 	__u64 size;
- 	struct openflags boot_openflags;
- 	struct openflags openflags;
--	int shared;
--	int no_cow;
-+	unsigned shared:1;
-+	unsigned no_cow:1;
- 	struct cow cow;
- 	struct platform_device pdev;
- };
+@@ -112,7 +112,9 @@ static DEFINE_SPINLOCK(ubd_io_lock);
+ 
+ static DEFINE_MUTEX(ubd_lock);
+ 
+-static void (*do_ubd)(void);
++/* XXX - this made sense in 2.4 days, now it's only used as a boolean, and
++ * probably it doesn't make sense even for that. */
++static int do_ubd;
+ 
+ static int ubd_open(struct inode * inode, struct file * filp);
+ static int ubd_release(struct inode * inode, struct file * file);
+@@ -508,6 +510,7 @@ static inline void ubd_finish(struct req
+ 	spin_unlock(&ubd_io_lock);
+ }
+ 
++/* XXX - move this inside ubd_intr. */
+ /* Called without ubd_io_lock held, and only in interrupt context. */
+ static void ubd_handler(void)
+ {
+@@ -515,7 +518,7 @@ static void ubd_handler(void)
+ 	struct request *rq = elv_next_request(ubd_queue);
+ 	int n;
+ 
+-	do_ubd = NULL;
++	do_ubd = 0;
+ 	intr_count++;
+ 	n = os_read_file(thread_fd, &req, sizeof(req));
+ 	if(n != sizeof(req)){
+@@ -1058,7 +1061,7 @@ static void do_ubd_request(request_queue
+ 			return;
+ 		err = prepare_request(req, &io_req);
+ 		if(!err){
+-			do_ubd = ubd_handler;
++			do_ubd = 1;
+ 			n = os_write_file(thread_fd, (char *) &io_req,
+ 					 sizeof(io_req));
+ 			if(n != sizeof(io_req))
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
