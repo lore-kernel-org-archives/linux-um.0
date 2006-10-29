@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GeGDH-00069C-7f for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:55 -0800
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGDE-0007Qw-Jg
+	id 1GeGDK-00069H-Eg for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Oct 2006 11:20:58 -0800
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeGDH-0005zX-N9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Oct 2006 11:20:55 -0800
+	Sun, 29 Oct 2006 11:20:58 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Sun, 29 Oct 2006 20:20:49 +0100
-Message-Id: <20061029192049.12292.24192.stgit@americanbeauty.home.lan>
+Date: Sun, 29 Oct 2006 20:20:52 +0100
+Message-Id: <20061029192052.12292.3146.stgit@americanbeauty.home.lan>
 In-Reply-To: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
 References: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 10/11] uml ubd driver: do not store error codes
-	as ->fd
+Subject: [uml-devel] [PATCH 11/11] uml ubd driver: various little changes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,63 +33,174 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-To simplify error handling, make sure fd is saved into ubd_dev->fd only when we
-are sure it is an fd and not an error code.
+Fix a small memory leak in ubd_config, and clearify the confusion which lead to
+it.
+
+Then, some little changes not affecting operations -
+* move init functions together,
+* add a comment about a potential problem in case of some evolution in the block layer,
+* mark all initcalls as static __init functions
+* mark an used once little function as inline
+* document that mconsole methods are all called in process context (was
+  triggered when checking ubd mconsole methods).
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/drivers/ubd_kern.c |   17 ++++++++++-------
- 1 files changed, 10 insertions(+), 7 deletions(-)
+ arch/um/drivers/ubd_kern.c      |   44 ++++++++++++++++++++++-----------------
+ arch/um/include/mconsole_kern.h |    1 +
+ arch/um/kernel/tt/tracer.c      |    1 -
+ 3 files changed, 26 insertions(+), 20 deletions(-)
 
 diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 66dc23d..641782e 100644
+index 641782e..8323af0 100644
 --- a/arch/um/drivers/ubd_kern.c
 +++ b/arch/um/drivers/ubd_kern.c
-@@ -578,33 +578,36 @@ static int ubd_open_dev(struct ubd *ubd_
- 	struct openflags flags;
- 	char **back_ptr;
- 	int err, create_cow, *create_ptr;
-+	int fd;
+@@ -202,17 +202,6 @@ #define DEFAULT_UBD { \
  
- 	ubd_dev->openflags = ubd_dev->boot_openflags;
- 	create_cow = 0;
- 	create_ptr = (ubd_dev->cow.file != NULL) ? &create_cow : NULL;
- 	back_ptr = ubd_dev->no_cow ? NULL : &ubd_dev->cow.file;
--	ubd_dev->fd = open_ubd_file(ubd_dev->file, &ubd_dev->openflags, ubd_dev->shared,
+ struct ubd ubd_devs[MAX_DEV] = { [ 0 ... MAX_DEV - 1 ] = DEFAULT_UBD };
+ 
+-static int ubd0_init(void)
+-{
+-	struct ubd *ubd_dev = &ubd_devs[0];
+-
+-	if(ubd_dev->file == NULL)
+-		ubd_dev->file = "root_fs";
+-	return(0);
+-}
+-
+-__initcall(ubd0_init);
+-
+ /* Only changed by fake_ide_setup which is a setup */
+ static int fake_ide = 0;
+ static struct proc_dir_entry *proc_ide_root = NULL;
+@@ -293,6 +282,10 @@ static int parse_unit(char **ptr)
+ 	return(n);
+ }
+ 
++/* If *index_out == -1 at exit, the passed option was a general one;
++ * otherwise, the str pointer is used (and owned) inside ubd_devs array, so it
++ * should not be freed on exit.
++ */
+ static int ubd_setup_common(char *str, int *index_out)
+ {
+ 	struct ubd *ubd_dev;
+@@ -480,8 +473,9 @@ int thread_fd = -1;
+ 
+ /* Changed by ubd_handler, which is serialized because interrupts only
+  * happen on CPU 0.
++ * XXX: currently unused.
+  */
+-int intr_count = 0;
++static int intr_count = 0;
+ 
+ /* call ubd_finish if you need to serialize */
+ static void __ubd_finish(struct request *req, int error)
+@@ -554,7 +548,7 @@ void kill_io_thread(void)
+ 
+ __uml_exitcall(kill_io_thread);
+ 
+-static int ubd_file_size(struct ubd *ubd_dev, __u64 *size_out)
++static inline int ubd_file_size(struct ubd *ubd_dev, __u64 *size_out)
+ {
+ 	char *file;
+ 
+@@ -730,7 +724,7 @@ static int ubd_config(char *str)
+ 	}
+ 	if (n == -1) {
+ 		ret = 0;
+-		goto out;
++		goto err_free;
+ 	}
+ 
+  	mutex_lock(&ubd_lock);
+@@ -827,6 +821,7 @@ out:
+ 	return err;
+ }
+ 
++/* All these are called by mconsole in process context and without ubd-specific locks. */
+ static struct mc_device ubd_mc = {
+ 	.name		= "ubd",
+ 	.config		= ubd_config,
+@@ -835,7 +830,7 @@ static struct mc_device ubd_mc = {
+ 	.remove		= ubd_remove,
+ };
+ 
+-static int ubd_mc_init(void)
++static int __init ubd_mc_init(void)
+ {
+ 	mconsole_register_dev(&ubd_mc);
+ 	return 0;
+@@ -843,13 +838,24 @@ static int ubd_mc_init(void)
+ 
+ __initcall(ubd_mc_init);
+ 
++static int __init ubd0_init(void)
++{
++	struct ubd *ubd_dev = &ubd_devs[0];
 +
-+	fd = open_ubd_file(ubd_dev->file, &ubd_dev->openflags, ubd_dev->shared,
- 				back_ptr, &ubd_dev->cow.bitmap_offset,
- 				&ubd_dev->cow.bitmap_len, &ubd_dev->cow.data_offset,
- 				create_ptr);
++	if(ubd_dev->file == NULL)
++		ubd_dev->file = "root_fs";
++	return(0);
++}
++
++__initcall(ubd0_init);
++
+ static struct platform_driver ubd_driver = {
+ 	.driver = {
+ 		.name  = DRIVER_NAME,
+ 	},
+ };
  
--	if((ubd_dev->fd == -ENOENT) && create_cow){
--		ubd_dev->fd = create_cow_file(ubd_dev->file, ubd_dev->cow.file,
-+	if((fd == -ENOENT) && create_cow){
-+		fd = create_cow_file(ubd_dev->file, ubd_dev->cow.file,
- 					  ubd_dev->openflags, 1 << 9, PAGE_SIZE,
- 					  &ubd_dev->cow.bitmap_offset,
- 					  &ubd_dev->cow.bitmap_len,
- 					  &ubd_dev->cow.data_offset);
--		if(ubd_dev->fd >= 0){
-+		if(fd >= 0){
- 			printk(KERN_INFO "Creating \"%s\" as COW file for "
- 			       "\"%s\"\n", ubd_dev->file, ubd_dev->cow.file);
- 		}
- 	}
+-int ubd_init(void)
++static int __init ubd_init(void)
+ {
+         int i;
  
--	if(ubd_dev->fd < 0){
-+	if(fd < 0){
- 		printk("Failed to open '%s', errno = %d\n", ubd_dev->file,
--		       -ubd_dev->fd);
--		return(ubd_dev->fd);
-+		       -fd);
-+		return fd;
- 	}
-+	ubd_dev->fd = fd;
+@@ -877,7 +883,7 @@ int ubd_init(void)
  
- 	if(ubd_dev->cow.file != NULL){
- 		err = -ENOMEM;
+ late_initcall(ubd_init);
+ 
+-int ubd_driver_init(void){
++static int __init ubd_driver_init(void){
+ 	unsigned long stack;
+ 	int err;
+ 
+@@ -1384,8 +1390,8 @@ void do_io(struct io_thread_req *req)
+  */
+ int kernel_fd = -1;
+ 
+-/* Only changed by the io thread */
+-int io_count = 0;
++/* Only changed by the io thread. XXX: currently unused. */
++static int io_count = 0;
+ 
+ int io_thread(void *arg)
+ {
+diff --git a/arch/um/include/mconsole_kern.h b/arch/um/include/mconsole_kern.h
+index d0b6901..1ea6d92 100644
+--- a/arch/um/include/mconsole_kern.h
++++ b/arch/um/include/mconsole_kern.h
+@@ -14,6 +14,7 @@ struct mconsole_entry {
+ 	struct mc_request request;
+ };
+ 
++/* All these methods are called in process context. */
+ struct mc_device {
+ 	struct list_head list;
+ 	char *name;
+diff --git a/arch/um/kernel/tt/tracer.c b/arch/um/kernel/tt/tracer.c
+index 9882342..b919535 100644
+--- a/arch/um/kernel/tt/tracer.c
++++ b/arch/um/kernel/tt/tracer.c
+@@ -176,7 +176,6 @@ struct {
+ int signal_index[32];
+ int nsignals = 0;
+ int debug_trace = 0;
+-extern int io_nsignals, io_count, intr_count;
+ 
+ extern void signal_usr1(int sig);
+ 
 Chiacchiera con i tuoi amici in tempo reale! 
  http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
