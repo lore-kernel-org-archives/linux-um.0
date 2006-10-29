@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gd5ya-0001G9-2U for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Oct 2006 07:12:56 -0700
-Received: from nutty.inf.ed.ac.uk ([129.215.216.3])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Gd5yV-0006BO-Bo
+	id 1GeDz9-0000Hq-Nb for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Oct 2006 08:58:12 -0800
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GeDz4-0004h7-N2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Oct 2006 07:12:56 -0700
+	Sun, 29 Oct 2006 08:58:11 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 29 Oct 2006 18:57:58 +0100
+References: <45433D3E.3070109@0Bits.COM>
+In-Reply-To: <45433D3E.3070109@0Bits.COM>
 MIME-Version: 1.0
-Message-ID: <17728.49750.141048.595960@palau.inf.ed.ac.uk>
-Date: Thu, 26 Oct 2006 15:12:38 +0100
-From: Julian Bradfield <jcb+uml@inf.ed.ac.uk>
-Subject: [uml-devel] broken mdelay
+Content-Disposition: inline
+Message-Id: <200610291857.58707.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] More uml build failures on 2.16.19-rc3 and 2.6.18.1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,77 +29,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Mitch <Mitch@0bits.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@addtoit.com, penberg@cs.helsinki.fi, linux-kernel@vger.kernel.org
 
-A few years ago, I reported a problem with mdelay (that it basically
-didn't work) - see
+On Saturday 28 October 2006 13:21, Mitch wrote:
+> Hi Jeff, all,
+>
+> Sorry for the dealy but i've been out of the country.
+>
+> Anyhow i did some investigation and i've figured out the bug.
+>
+> Essentially if you try to compile a UML kernel on a 2.6.18.1 or above
+> *host* kernel
 
-http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=103774842828993&w=2
+> it will fail with the error messages shown (essentially 
+> offsetof macro undefined) because between 2.6.18 and 2.6.18.1 that macro
+> in /usr/include/linux/stddef.h is now wrapped in a #ifdef __KERNEL__ .
+> However since UML doesn't build it's sources with that defined we get an
+> undefined macro and a build failure.
 
-and preceding messages.
+Ok, we have one bug and one mistake on your part:
+1) we should include <stddef.h> instead of <linux/stddef.h> in files using 
+host headers (I don't have the error message at hand, so please handle this 
+yourself, Jeff)
+2) /usr/include/{linux,asm} being symlinks inside /usr/src/linux/include is an 
+unsupported configuration since ages. #1 is still a valid bug because when a 
+distribution will distribute glibc and kernheaders based on 2.6.18.1+/2.6.19 
+ones we'll break anyway.
 
-I see the problem is still there in 2.6.18 (I find it because I insert an
-mdelay(1000) into one of the ubd routines to simulate the effect of
-busy-waiting on i/o in one of my practical exercises).
+> So i'm partly right and partly wrong in my statement below. Yes i did
+> compile a guest UML kernel 2.6.18 fine on host kernel of 2.6.18, and i
+> believe i will be able to compile 2.6.18.1 and above also on a host
+> kernel of 2.6.18 but if i change my host kernel to 2.6.18.1 or above all
+> UML guest builds will fail.
+>
+> Can someone confirm they can build guest UML kernels on a host kernel >=
+> 2.6.18.1 ??
+>
+> Thanks
+> M
 
-Here's the patch I currently use to fix it. I can't remember now how I
-produced this patch four years ago, but it should make sense in
-conjunction with the above referenced message.
+-- 
+Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
---- arch/um/sys-i386/delay.c.dist	2006-10-26 14:50:38.069023000 +0100
-+++ arch/um/sys-i386/delay.c	2006-10-26 14:50:42.527846000 +0100
-@@ -3,7 +3,7 @@
- #include <linux/delay.h>
- #include <asm/param.h>
- 
--void __delay(unsigned long time)
-+static void __loop_delay(unsigned long loops)
- {
- 	/* Stolen from the i386 __loop_delay */
- 	int d0;
-@@ -14,27 +14,28 @@
- 		".align 16\n"
- 		"2:\tdecl %0\n\tjns 2b"
- 		:"=&a" (d0)
--		:"0" (time));
-+		:"0" (loops));
- }
- 
--void __udelay(unsigned long usecs)
-+void __delay(unsigned long loops)
- {
--	int i, n;
--
--	n = (loops_per_jiffy * HZ * usecs) / MILLION;
--        for(i=0;i<n;i++)
--                cpu_relax();
-+	__loop_delay(loops);
- }
- 
--EXPORT_SYMBOL(__udelay);
--
--void __const_udelay(unsigned long usecs)
-+inline void __const_udelay(unsigned long xloops)
- {
--	int i, n;
-+	int d0;
-+	__asm__("mull %0"
-+		:"=d" (xloops), "=&a" (d0)
-+		:"1" (xloops),"0" (loops_per_jiffy));
-+        __delay(xloops * HZ);
-+}
- 
--	n = (loops_per_jiffy * HZ * usecs) / MILLION;
--        for(i=0;i<n;i++)
--                cpu_relax();
-+void __udelay(unsigned long usecs)
-+{
-+	__const_udelay(usecs * 0x000010c6);  /* 2**32 / 1000000 */
- }
- 
-+EXPORT_SYMBOL(__udelay);
-+
- EXPORT_SYMBOL(__const_udelay);
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
