@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Geccy-0000Ji-Nm for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Oct 2006 11:16:56 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1GecoW-0001ay-P8 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Oct 2006 11:28:53 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Gecct-0007Cj-Jc
+	(Exim 4.44) id 1GecoV-0001yW-OJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Oct 2006 11:16:56 -0800
-Date: Mon, 30 Oct 2006 15:14:54 -0500
+	Mon, 30 Oct 2006 11:28:52 -0800
+Date: Mon, 30 Oct 2006 15:26:57 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061030201454.GA6079@ccure.user-mode-linux.org>
+Message-ID: <20061030202657.GB6079@ccure.user-mode-linux.org>
 References: <20061029191723.12292.50164.stgit@americanbeauty.home.lan>
-	<20061029192029.12292.15703.stgit@americanbeauty.home.lan>
+	<20061029192041.12292.95078.stgit@americanbeauty.home.lan>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20061029192029.12292.15703.stgit@americanbeauty.home.lan>
-Subject: Re: [uml-devel] [PATCH 03/11] uml ubd driver: var renames
+In-Reply-To: <20061029192041.12292.95078.stgit@americanbeauty.home.lan>
+Subject: Re: [uml-devel] [PATCH 07/11] uml ubd driver: reformat ubd_config
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,24 +34,30 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Oct 29, 2006 at 08:20:29PM +0100, Paolo 'Blaisorblade' Giarrusso wrote:
+On Sun, Oct 29, 2006 at 08:20:41PM +0100, Paolo 'Blaisorblade' Giarrusso wrote:
 > From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> 
-> and then call any "struct ubd" ubd_dev instead of dev, which doesn't
-> make clear what we're treating (and no, it's not hungarian notation -
-> not any more than calling all vm_area_struct vma or all inodes
-> inode).
 
-I can't say that I like this part of it.  I don't see any alternate
-interpretation of a variable called 'dev', and renaming it to
-'ubd_dev' seems redundant, given that we are in the ubd driver.
+> -		return(1);
+> +		ret = 1;
+> +		goto out;
 
-Plus, this change sent a couple of lines over the 80-character
-boundary.
+> +out:
+> + 	return ret;
+
+I think the original form should stay, except for the CodingStyle fix.
+As Al once pointed out, 'goto out; ... out: return' is spelled
+'return'.  If you have no cleanup to do before returning, you might as
+well just return.
+
+> +	if (n == -1) {
+> +		ret = 0;
+> +		goto out;
+>  	}
+> -	if(n == -1) return(0);
+
+The comment should have noted the bug fix present here.
 
 				Jeff
-
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
