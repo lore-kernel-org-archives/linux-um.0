@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GedNQ-0005BO-Tt for user-mode-linux-devel@lists.sourceforge.net;
+	id 1GedNR-0005BY-Tr for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 30 Oct 2006 12:04:57 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GedNM-0004HR-2t
+	(Exim 4.44) id 1GedNN-0004HZ-9P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Oct 2006 12:04:56 -0800
-Message-Id: <200610302102.k9UL2xX8006234@ccure.user-mode-linux.org>
+	Mon, 30 Oct 2006 12:04:57 -0800
+Message-Id: <200610302103.k9UL30nZ006239@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Mon, 30 Oct 2006 16:02:59 -0500
+Date: Mon, 30 Oct 2006 16:03:00 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/3] UML - Add _text definition to linker scripts
+Subject: [uml-devel] [PATCH 2/3] UML - add INITCALLS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,35 +30,29 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-kallsyms now refers to addresses as '_text + 0xADDRESS', rather than
-just '0xADDRESS', so we need to define _text.
+This is the UML piece of the INITCALLS tidying.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Index: linux-2.6.18-mm/arch/um/kernel/dyn.lds.S
+Index: linux-2.6.18-mm/include/asm-um/common.lds.S
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/dyn.lds.S	2006-10-30 13:11:25.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/dyn.lds.S	2006-10-30 13:52:26.000000000 -0500
-@@ -14,6 +14,7 @@ SECTIONS
-    * is remapped.*/
-   __binary_start = .;
-   . = ALIGN(4096);		/* Init code and data */
-+  _text = .;
-   _stext = .;
-   __init_begin = .;
-   .init.text : {
-Index: linux-2.6.18-mm/arch/um/kernel/uml.lds.S
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/uml.lds.S	2006-10-30 13:11:25.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/uml.lds.S	2006-10-30 13:52:10.000000000 -0500
-@@ -25,6 +25,7 @@ SECTIONS
-   . = ALIGN(4096);		/* Init code and data */
- #endif
+--- linux-2.6.18-mm.orig/include/asm-um/common.lds.S	2006-06-17 21:49:35.000000000 -0400
++++ linux-2.6.18-mm/include/asm-um/common.lds.S	2006-10-30 13:55:48.000000000 -0500
+@@ -42,13 +42,7 @@
+ 	
+   __initcall_start = .;
+   .initcall.init : {
+-	*(.initcall1.init) 
+-	*(.initcall2.init) 
+-	*(.initcall3.init) 
+-	*(.initcall4.init) 
+-	*(.initcall5.init) 
+-	*(.initcall6.init) 
+-	*(.initcall7.init)
++	INITCALLS
+   }
+   __initcall_end = .;
  
-+  _text = .;
-   _stext = .;
-   __init_begin = .;
-   .init.text : {
 
 
 -------------------------------------------------------------------------
