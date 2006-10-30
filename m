@@ -2,18 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GedNR-0005BY-Tr for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Oct 2006 12:04:57 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1GeeR9-0003O1-J1 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Oct 2006 13:12:51 -0800
+Received: from gwu.lbox.cz ([62.245.111.132])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GedNN-0004HZ-9P
+	(Exim 4.44) id 1GeeR5-0007Lf-A0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Oct 2006 12:04:57 -0800
-Message-Id: <200610302103.k9UL30nZ006239@ccure.user-mode-linux.org>
+	Mon, 30 Oct 2006 13:12:51 -0800
+Date: Mon, 30 Oct 2006 22:12:22 +0100
+From: extmaillist@linuxbox.cz
+Message-ID: <20061030211222.GB9748@umlbox3.linuxbox.cz>
+References: <17728.49750.141048.595960@palau.inf.ed.ac.uk>
+	<200610291943.39433.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Date: Mon, 30 Oct 2006 16:03:00 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 2/3] UML - add INITCALLS
+Content-Disposition: inline
+In-Reply-To: <200610291943.39433.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] broken mdelay
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,33 +31,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Julian Bradfield <jcb+uml@inf.ed.ac.uk>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-This is the UML piece of the INITCALLS tidying.
+Hello,
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
+seems like Your patch fixed 64bit guests for me! 32bit ones running on 64bit guest seem to be still overflowing though.
 
-Index: linux-2.6.18-mm/include/asm-um/common.lds.S
-===================================================================
---- linux-2.6.18-mm.orig/include/asm-um/common.lds.S	2006-06-17 21:49:35.000000000 -0400
-+++ linux-2.6.18-mm/include/asm-um/common.lds.S	2006-10-30 13:55:48.000000000 -0500
-@@ -42,13 +42,7 @@
- 	
-   __initcall_start = .;
-   .initcall.init : {
--	*(.initcall1.init) 
--	*(.initcall2.init) 
--	*(.initcall3.init) 
--	*(.initcall4.init) 
--	*(.initcall5.init) 
--	*(.initcall6.init) 
--	*(.initcall7.init)
-+	INITCALLS
-   }
-   __initcall_end = .;
- 
+Thanks!
 
+NiK
+
+> I've not yet looked at that messages, however:
+> 
+> Direct invocations of __const_udelay (see include/asm-i386/delay.h) are still 
+> broken with the below patch IMHO, since you do not multiply the value passed 
+> there by that magic constant - look also at arch/i386/lib/delay.c. Please try 
+> if the attached patch works for you. Also, a number of other users complained 
+> about the same bug (hangs on shutdown result for device-mapper users in some 
+> particular conditions, for instance).
+> 
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
