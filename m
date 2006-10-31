@@ -1,21 +1,13 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GerkQ-0003qI-E2 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 Oct 2006 03:25:38 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GerkM-0000JG-5z
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 Oct 2006 03:25:38 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 31 Oct 2006 12:25:16 +0100
+Date: Tue, 31 Oct 2006 16:11:55 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20061031211155.GA6824@ccure.user-mode-linux.org>
 References: <8764elbcrj.fsf@glaurung.internal.golden-gryphon.com>
 	<20061025122339.GA23127@SteX> <20061031075238.GB17198@SteX>
-In-Reply-To: <20061031075238.GB17198@SteX>
-MIME-Version: 1.0
+	<200610311225.16874.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200610311225.16874.blaisorblade@yahoo.it>
+In-Reply-To: <200610311225.16874.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [Pkg-uml-devel] Re: [Pkg-uml-pkgs] Bug#393263:
 	uml-utilities: New version uml_utilities_20060622 has humsify,
 	please update
@@ -32,33 +24,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, stefano.melchior@openlabs.it, Jeff Dike <jdike@addtoit.com>
-Cc: 393263@bugs.debian.org, Pkg-UML developers <pkg-uml-devel@lists.alioth.debian.org>, user-mode-linux-user@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Pkg-UML developers <pkg-uml-devel@lists.alioth.debian.org>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, 393263@bugs.debian.org, user-mode-linux-user@lists.sourceforge.net, stefano.melchior@openlabs.it
 
-On Tuesday 31 October 2006 08:52, Stefano Melchior wrote:
-> On Wed, Oct 25, 2006 at 02:23:40PM +0200, Stefano Melchior wrote:
-> Dear all,
+> About this, I'd have one question to pose to Jeff: when are you going to 
+> include humfs in mainline? Last time I asked you this you said "ok", so I can
+> guess you'll send for next cycle (2.6.20). Is that right?
 
-> > I just started to work on porting the 2006-06-22 to svn and then I
-> > think, accordingly with Mattia's agreement, it will be ready for Etch+1.
+Yeah, I was going to do it a couple of weeks ago, but then I decided to bang
+on it a bit.  I fixed the inode refcount bugs that turned up, but you still get
+still some interesting link counts when removing directories.
 
-> I am also trying to write a quick man page for the humfsify tool and I am
-> planning to release it as soon as the package seems to be ready.
-> I tried to find if someone else already wrote it, but I could not find
-> anyone, so I decided to proceed.
+See the gory details in yesterday's diary entry.
 
-> When ready please check if it will be exhaustive enough
+When I stop finding bugs, I'll send it in.
 
-About this, I'd have one question to pose to Jeff: when are you going to 
-include humfs in mainline? Last time I asked you this you said "ok", so I can 
-guess you'll send for next cycle (2.6.20). Is that right?
+				Jeff
+
 -- 
-Inform me of my mistakes, so I can keep imitating Homer Simpson's "Doh!".
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
