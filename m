@@ -1,16 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Tue, 31 Oct 2006 16:11:55 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061031211155.GA6824@ccure.user-mode-linux.org>
-References: <8764elbcrj.fsf@glaurung.internal.golden-gryphon.com>
-	<20061025122339.GA23127@SteX> <20061031075238.GB17198@SteX>
-	<200610311225.16874.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200610311225.16874.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [Pkg-uml-devel] Re: [Pkg-uml-pkgs] Bug#393263:
-	uml-utilities: New version uml_utilities_20060622 has humsify,
-	please update
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1GfCEB-0001W4-SF for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Nov 2006 01:17:44 -0800
+Received: from gw-e.panasas.com ([65.194.124.178] helo=cassoulet.panasas.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GfCEA-0001Tv-7Z
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 01 Nov 2006 01:17:43 -0800
+Received: from riverside.int.panasas.com (localhost.localdomain [127.0.0.1])
+	by cassoulet.panasas.com (8.12.10/8.12.10) with ESMTP id kA19HeaT005812
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 1 Nov 2006 04:17:40 -0500
+Message-ID: <45486636.3020808@panasas.com>
+Date: Wed, 01 Nov 2006 11:17:42 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
+MIME-Version: 1.0
+Subject: [uml-devel] UML and SCSI
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,25 +31,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Pkg-UML developers <pkg-uml-devel@lists.alioth.debian.org>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, 393263@bugs.debian.org, user-mode-linux-user@lists.sourceforge.net, stefano.melchior@openlabs.it
+To: user-mode-linux-devel@lists.sourceforge.net
 
-> About this, I'd have one question to pose to Jeff: when are you going to 
-> include humfs in mainline? Last time I asked you this you said "ok", so I can
-> guess you'll send for next cycle (2.6.20). Is that right?
+I have searched the archives and seen some old posts about SCSI not 
+compiling with UML. Since than I have seen some post on the net of the 
+like http://lkml.org/lkml/2006/9/12/200. (which does not apply but the 
+Idea is clear and can be done by hand).
+Now when carefully configured I can compile the SCSI and iSCSI layers.
 
-Yeah, I was going to do it a couple of weeks ago, but then I decided to bang
-on it a bit.  I fixed the inode refcount bugs that turned up, but you still get
-still some interesting link counts when removing directories.
+[Q] I have worked on below patch but now SCSI is on by default. (As in 
+the regular kernel). Is there a way to include the original Kconfig from 
+drivers/scsi but override it's defaultness?
 
-See the gory details in yesterday's diary entry.
+[Q2] Are there more deeper implication than meet the eye, why SCSI-iSCSI 
+cannot run in a UML? It might have good performance 2.
 
-When I stop finding bugs, I'll send it in.
+<um_2.6.19-rc1_Kconfig.patch>
 
-				Jeff
+diff -Nup /tmp/tmp.19763.0 
+/home/bharrosh/p4.local/pub/linux-2.6.19-rc1/arch/um/Kconfig -L 
+a/arch/um/Kconfig -L b/arch/um/Kconfig
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -285,21 +285,7 @@ source "crypto/Kconfig"
 
--- 
-Work email - jdike at linux dot intel dot com
+ source "lib/Kconfig"
+
+-menu "SCSI support"
+-depends on BROKEN
+-
+-config SCSI
+-       tristate "SCSI support"
+-
+-# This gives us free_dma, which scsi.c wants.
+-config GENERIC_ISA_DMA
+-       bool
+-       depends on SCSI
+-       default y
+-
+-source "arch/um/Kconfig.scsi"
+-
+-endmenu
++source "drivers/scsi/Kconfig"
+
+ source "drivers/md/Kconfig"
+
+</um_2.6.19-rc1_Kconfig.patch>
+
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
