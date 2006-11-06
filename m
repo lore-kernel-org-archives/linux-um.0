@@ -1,31 +1,33 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ggsgj-0007yc-4E for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Nov 2006 16:50:09 -0800
+	id 1GhCHx-00070j-2R for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Nov 2006 13:45:54 -0800
 Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ggsgi-0006YI-L2
+	(Exim 4.44) id 1GhCHt-0000u6-Cs
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 05 Nov 2006 16:50:09 -0800
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1Ggsgb-0007zN-Uu for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 06 Nov 2006 01:50:02 +0100
-Received: from m974b36d0.tmodns.net ([208.54.75.151])
+	Mon, 06 Nov 2006 13:45:53 -0800
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1GhCHc-0007AG-2y for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Nov 2006 22:45:32 +0100
+Received: from dhcp65-62.ietf67.org ([130.129.65.62])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 06 Nov 2006 01:50:01 +0100
-Received: from mcr by m974b36d0.tmodns.net with local (Gmexim 0.1 (Debian))
+	Mon, 06 Nov 2006 22:45:32 +0100
+Received: from mcr by dhcp65-62.ietf67.org with local (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 06 Nov 2006 01:50:01 +0100
+	Mon, 06 Nov 2006 22:45:32 +0100
 From: Michael Richardson <mcr@sandelman.ca>
-Date: Sun, 05 Nov 2006 16:29:39 -0800
-Message-ID: <eilvlj$b5r$1@sea.gmane.org>
+Date: Mon, 06 Nov 2006 13:44:56 -0800
+Message-ID: <eioacp$m4r$1@sea.gmane.org>
+References: <eilvlj$b5r$1@sea.gmane.org>
 Mime-Version: 1.0
-Subject: [uml-devel] problems with ifup-a on etch compiled kernels
+In-Reply-To: <eilvlj$b5r$1@sea.gmane.org>
+Subject: Re: [uml-devel] problems with ifup-a on etch compiled kernels
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,45 +43,69 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-I don't know whether to blame a recent update to debian testing from stable --- likely it would be a glibc issue, but...
-I did run into the _syscall0() problem after that, and I found that I could get around it by appropriately #define 
-_KERNEL prior to #include <linux/unistd.h>. What I don't get about the remark of Paolo is that _syscall0() is a userland 
-thing, not a kernel thing.
+Michael Richardson wrote:
+> I don't know whether to blame a recent update to debian testing from stable --- likely it would be a glibc issue, but...
+> I did run into the _syscall0() problem after that, and I found that I could get around it by appropriately #define 
+> _KERNEL prior to #include <linux/unistd.h>. What I don't get about the remark of Paolo is that _syscall0() is a userland 
+> thing, not a kernel thing.
+> 
+> I.e. any user program should be able to use _syscall() to get an open coded call to the kernel.
+> 
+> Anyway, my problem: 2.6.15, 2.6.17.13 (both patched as above), and 2.6.19-rc3 all fail during ifup -a:
+> 
+> + echo -n 'Configuring network interfaces: '
+> Configuring network interfaces: + ifup -a
+> BUG: soft lockup detected on CPU#0!
+> 083bf9f0:  [<080632a2>] dump_stack+0x22/0x30
+> 083bfa08:  [<080a25c4>] softlockup_tick+0x84/0xa0
+> 083bfa20:  [<0808ca32>] run_local_timers+0x12/0x20
+> 083bfa28:  [<0808c796>] update_process_times+0x36/0x90
+> 083bfa48:  [<080636fc>] timer_handler+0x3c/0x70
+> 083bfa64:  [<080798f9>] sig_handler_common_skas+0xa9/0x100
+> 083bfa88:  [<08075413>] real_alarm_handler+0x23/0x60
+> 083bfaa0:  [<080754a2>] alarm_handler+0x52/0x70
+> 083bfabc:  [<08077eda>] hard_handler+0x1a/0x20
+> 083bfacc:  [<ffffe420>] _etext+0xf7df5404/0x0
+> 083bfe14:  [<081a3431>] inet_ioctl+0x61/0xa0
+> 083bfe2c:  [<081525a4>] sock_ioctl+0x144/0x2b0
 
-I.e. any user program should be able to use _syscall() to get an open coded call to the kernel.
+I've tracked this down to a number of places. It looks like the ifa->ifa_dev is not
+valid when the notification chain is called:
 
-Anyway, my problem: 2.6.15, 2.6.17.13 (both patched as above), and 2.6.19-rc3 all fail during ifup -a:
+08707a08:  [<08074329>] sig_handler_common_skas+0xa9/0x120
+08707a30:  [<0806ff25>] sig_handler+0x35/0x70
+08707a4c:  [<080728ea>] hard_handler+0x1a/0x20
+08707a5c:  [<ffffe420>] _etext+0xf7defac0/0x0
+08707d64:  [<0808bcdc>] notifier_call_chain+0x6c/0x90
+08707d94:  [<0808beb0>] blocking_notifier_call_chain+0x30/0x50
+08707db0:  [<081a2d14>] __inet_insert_ifa+0xd4/0x160
+08707dd4:  [<081a2dbd>] inet_insert_ifa+0x1d/0x20
 
-+ echo -n 'Configuring network interfaces: '
-Configuring network interfaces: + ifup -a
-BUG: soft lockup detected on CPU#0!
-083bf9f0:  [<080632a2>] dump_stack+0x22/0x30
-083bfa08:  [<080a25c4>] softlockup_tick+0x84/0xa0
-083bfa20:  [<0808ca32>] run_local_timers+0x12/0x20
-083bfa28:  [<0808c796>] update_process_times+0x36/0x90
-083bfa48:  [<080636fc>] timer_handler+0x3c/0x70
-083bfa64:  [<080798f9>] sig_handler_common_skas+0xa9/0x100
-083bfa88:  [<08075413>] real_alarm_handler+0x23/0x60
-083bfaa0:  [<080754a2>] alarm_handler+0x52/0x70
-083bfabc:  [<08077eda>] hard_handler+0x1a/0x20
-083bfacc:  [<ffffe420>] _etext+0xf7df5404/0x0
-083bfe14:  [<081a3431>] inet_ioctl+0x61/0xa0
-083bfe2c:  [<081525a4>] sock_ioctl+0x144/0x2b0
-083bfe60:  [<080d022f>] do_ioctl+0x5f/0x70
-083bfe80:  [<080d04e2>] vfs_ioctl+0x62/0x2d0
-083bfebc:  [<080d0791>] sys_ioctl+0x41/0x70
-083bfee4:  [<08065a83>] handle_syscall+0xd3/0xe0
-083bff54:  [<0807897a>] handle_trap+0x2a/0x130
-083bff7c:  [<08079074>] userspace+0x1c4/0x220
-083bffd4:  [<0806569e>] fork_handler+0x9e/0xb0
-083bfffc:  [<00000000>] _sinittext+0xf7fb7000/0x20
+The stack item <ffffe420>] _etext+0xf7defac0/0x0, seems to be bogus. I instrumented
+kernel/sys.c, to print the functions which notifier_call_chain was calling,
+and learnt that it was crashing in arch/um/drivers/net_kern.c because of:
+	struct net_device *dev = ifa->ifa_dev->dev;
 
-If I boot with "linux emergency" login to the single user shell and run "ifup -a", everything is fine.
+in uml_inetaddr_event.
 
-This is on my laptop running 2.6.17.4 as the host kernel, not under XenU as I previously had
-been posting about.
+sure enough, ifa->ifa_dev was NULL. Naturally, if I run things manually, or under GDB, it fails.
+Furthermore, this happens with 2.6.15 and 2.6.17.13 (patched to compile on etch), and
+with 2.6.19-rc3 (which I'm using as my debug base).  I tried with gcc-3.3 and with gcc-4.1.2.
 
-(I'm in an airport lounge at Chicago)
+So, whatever is going on is related somehow to the glibc, (my guess), but represents some
+real bug that has been hidden for awhile.
+
+I patched around the problem in uml_inetaddr_event (return immediately if ifa_dev==NULL), and found
+the next instance of it net/ipv4/fib_frontend.c, in fib_netdev_event.
+Clearly, either we aren't initializing something right, or it's getting blown away at some point.
+Perhaps a different malloc policy in this glibc?
+
+I will spend the rest of today on this (I'm at IETF in San Diego), but afterwards,
+I'll begin to start reverting to sarge (if I can), so that I can continue working on my real problem.
+I should be on IRC and in jabber. (mrcharlesr@gmail.com, mrichardson@ecotroph.net).
+
+(Hmm. I'm trying Mozilla news for gmane.org reading. I don't like the composer much, I have no
+idea what column I'm on...)
 
 
 -------------------------------------------------------------------------
