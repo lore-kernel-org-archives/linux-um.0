@@ -2,20 +2,30 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GfQ99-0002nB-EW for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Nov 2006 16:09:27 -0800
-Received: from smtp.osdl.org ([65.172.181.4])
-	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
-	(Exim 4.44) id 1GfQ96-0003bb-Qr
+	id 1Ggsgj-0007yc-4E for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 05 Nov 2006 16:50:09 -0800
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ggsgi-0006YI-L2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Nov 2006 16:09:27 -0800
-Date: Wed, 1 Nov 2006 16:09:17 -0800
-From: Andrew Morton <akpm@osdl.org>
-Message-Id: <20061101160917.ebc40069.akpm@osdl.org>
-In-Reply-To: <200611011732.kA1HWfZt005499@ccure.user-mode-linux.org>
-References: <200611011732.kA1HWfZt005499@ccure.user-mode-linux.org>
+	Sun, 05 Nov 2006 16:50:09 -0800
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1Ggsgb-0007zN-Uu for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Nov 2006 01:50:02 +0100
+Received: from m974b36d0.tmodns.net ([208.54.75.151])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 06 Nov 2006 01:50:01 +0100
+Received: from mcr by m974b36d0.tmodns.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 06 Nov 2006 01:50:01 +0100
+From: Michael Richardson <mcr@sandelman.ca>
+Date: Sun, 05 Nov 2006 16:29:39 -0800
+Message-ID: <eilvlj$b5r$1@sea.gmane.org>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 1/2] UML - Fix I/O hang
+Subject: [uml-devel] problems with ifup-a on etch compiled kernels
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,83 +39,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 01 Nov 2006 12:32:41 -0500
-Jeff Dike <jdike@addtoit.com> wrote:
+I don't know whether to blame a recent update to debian testing from stable --- likely it would be a glibc issue, but...
+I did run into the _syscall0() problem after that, and I found that I could get around it by appropriately #define 
+_KERNEL prior to #include <linux/unistd.h>. What I don't get about the remark of Paolo is that _syscall0() is a userland 
+thing, not a kernel thing.
 
-> This patch fixes a UML hang in which everything would just stop until
-> some I/O happened - a ping, someone whacking the keyboard - at which
-> point everything would start up again as though nothing had happened.
-> 
-> The cause was gcc reordering some code which absolutely needed to be
-> executed in the order in the source.  When unblock_signals switches
-> signals from off to on, it needs to see if any interrupts had happened
-> in the critical section.  The interrupt handlers check signals_enabled -
-> if it is zero, then the handler adds a bit to the "pending" bitmask
-> and returns.  unblock_signals checks this mask to see if any signals
-> need to be delivered.
-> 
-> The crucial part is this:
-> 	signals_enabled = 1;
-> 	save_pending = pending;
-> 	if(save_pending == 0)
-> 		return;
-> 	pending = 0;
-> 
-> In order to avoid an interrupt arriving between reading pending and
-> setting it to zero, in which case, the record of the interrupt would
-> be erased, signals are enabled.
-> 
-> What happened was that gcc reordered this so that 'save_pending = pending'
-> came before 'signals_enabled = 1', creating a one-instruction window
-> within which an interrupt could arrive, set its bit in pending, and
-> have it be immediately erased.
+I.e. any user program should be able to use _syscall() to get an open coded call to the kernel.
 
-So you need a compiler barrier, not a memory barrier.
+Anyway, my problem: 2.6.15, 2.6.17.13 (both patched as above), and 2.6.19-rc3 all fail during ifup -a:
 
-> When the I/O workload is purely disk-based, the loss of a block device
-> interrupt stops the entire I/O system because the next block request
-> will wait for the current one to finish.  Thus the system hangs until
-> something else causes some I/O to arrive, such as a network packet or
-> console input.
-> 
-> The fix to this particular problem is a memory barrier between
-> enabling signals and reading the pending signal mask.  An xchg would
-> also probably work.
-> 
-> Looking over this code for similar problems led me to do a few more
-> things -
-> 	make signals_enabled and pending volatile so that they don't
-> get cached in registers
-> 	add an mb() to the return paths of block_signals and
-> unblock_signals so that the modification of signals_enabled doesn't
-> get shuffled into the caller in the event that these are inlined in
-> the future.
-> 
-> Signed-off-by: Jeff Dike <jdike@addtoit.com>
-> 
-> Index: linux-2.6.18-mm/arch/um/include/sysdep-i386/barrier.h
-> ===================================================================
-> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-> +++ linux-2.6.18-mm/arch/um/include/sysdep-i386/barrier.h	2006-10-31 14:41:52.000000000 -0500
-> @@ -0,0 +1,9 @@
-> +#ifndef __SYSDEP_I386_BARRIER_H
-> +#define __SYSDEP_I386_BARRIER_H
-> +
-> +/* Copied from include/asm-i386 for use by userspace.  i386 has the option
-> + * of using mfence, but I'm just using this, which works everywhere, for now.
-> + */
-> +#define mb() asm volatile("lock; addl $0,0(%esp)")
++ echo -n 'Configuring network interfaces: '
+Configuring network interfaces: + ifup -a
+BUG: soft lockup detected on CPU#0!
+083bf9f0:  [<080632a2>] dump_stack+0x22/0x30
+083bfa08:  [<080a25c4>] softlockup_tick+0x84/0xa0
+083bfa20:  [<0808ca32>] run_local_timers+0x12/0x20
+083bfa28:  [<0808c796>] update_process_times+0x36/0x90
+083bfa48:  [<080636fc>] timer_handler+0x3c/0x70
+083bfa64:  [<080798f9>] sig_handler_common_skas+0xa9/0x100
+083bfa88:  [<08075413>] real_alarm_handler+0x23/0x60
+083bfaa0:  [<080754a2>] alarm_handler+0x52/0x70
+083bfabc:  [<08077eda>] hard_handler+0x1a/0x20
+083bfacc:  [<ffffe420>] _etext+0xf7df5404/0x0
+083bfe14:  [<081a3431>] inet_ioctl+0x61/0xa0
+083bfe2c:  [<081525a4>] sock_ioctl+0x144/0x2b0
+083bfe60:  [<080d022f>] do_ioctl+0x5f/0x70
+083bfe80:  [<080d04e2>] vfs_ioctl+0x62/0x2d0
+083bfebc:  [<080d0791>] sys_ioctl+0x41/0x70
+083bfee4:  [<08065a83>] handle_syscall+0xd3/0xe0
+083bff54:  [<0807897a>] handle_trap+0x2a/0x130
+083bff7c:  [<08079074>] userspace+0x1c4/0x220
+083bffd4:  [<0806569e>] fork_handler+0x9e/0xb0
+083bfffc:  [<00000000>] _sinittext+0xf7fb7000/0x20
 
-That's a memory barrier, which is more expensive.
+If I boot with "linux emergency" login to the single user shell and run "ifup -a", everything is fine.
 
-This:
+This is on my laptop running 2.6.17.4 as the host kernel, not under XenU as I previously had
+been posting about.
 
-#define barrier() __asm__ __volatile__("": : :"memory")
-
-should suffice?
+(I'm in an airport lounge at Chicago)
 
 
 -------------------------------------------------------------------------
