@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GmvDJ-00015O-F3 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Nov 2006 08:44:45 -0800
+	id 1GmvGc-0001WL-78 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Nov 2006 08:48:10 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GmvDG-0006Xy-H4
+	(Exim 4.44) id 1GmvGb-0006Cq-Qg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Nov 2006 08:44:44 -0800
-Date: Wed, 22 Nov 2006 11:41:18 -0500
+	Wed, 22 Nov 2006 08:48:10 -0800
+Date: Wed, 22 Nov 2006 11:44:46 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061122164118.GA5120@ccure.user-mode-linux.org>
+Message-ID: <20061122164446.GB5120@ccure.user-mode-linux.org>
 References: <22a33e9f0611180345w7ec64513l34424a59e1671479@mail.gmail.com>
 	<200611210813.14745.blaisorblade@yahoo.it>
 	<22a33e9f0611211123w3b57d6bdh5e599a87589816c9@mail.gmail.com>
@@ -40,18 +40,16 @@ Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforg
 
 On Wed, Nov 22, 2006 at 08:04:59AM +0000, Matt Willsher wrote:
 > UML running in TT mode
-> 
-> Does that not indicate that it is running in TT mode? The kernel
-> option for TT mode is set. I tried to disable SKAS support but the
-> kernel won't compile with out that set (check_host_supports_tls not
-> found, as reported on the user mailing list last month). I will
-> however try with 2.6.13 and 2.6.14.
 
-Disable CONFIG_MODE_TT.  Its presence in the binary, even if it's not running,
-has caused boot failures.
+Sorry about that last suggestion - I missed that you were trying an
+old UML.
+
+I have to repeat what BB said about the "init not found" error.  I
+never seen that not be a filesystem problem.  Can you try booting that
+filesystem in an environment which is known to work, to make sure that
+it is sane?
 
 				Jeff
-
 -- 
 Work email - jdike at linux dot intel dot com
 
